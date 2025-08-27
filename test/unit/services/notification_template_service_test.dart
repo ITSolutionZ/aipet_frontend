@@ -239,7 +239,8 @@ void main() {
   group('NotificationTemplateFactory Tests', () {
     test('should create default templates', () {
       // Act
-      final defaultTemplates = NotificationTemplateFactory.getDefaultTemplates();
+      final defaultTemplates =
+          NotificationTemplateFactory.getDefaultTemplates();
 
       // Assert
       expect(defaultTemplates, isNotEmpty);
@@ -287,15 +288,17 @@ void main() {
       final templates = NotificationTemplateFactory.getDefaultTemplates();
 
       // Act
-      final generalTemplates = NotificationTemplateFactory.filterByNotificationType(
-        templates,
-        NotificationType.general,
-      );
+      final generalTemplates =
+          NotificationTemplateFactory.filterByNotificationType(
+            templates,
+            NotificationType.general,
+          );
 
-      final feedingTemplates = NotificationTemplateFactory.filterByNotificationType(
-        templates,
-        NotificationType.feeding,
-      );
+      final feedingTemplates =
+          NotificationTemplateFactory.filterByNotificationType(
+            templates,
+            NotificationType.feeding,
+          );
 
       // Assert
       expect(generalTemplates, isNotEmpty);
@@ -315,7 +318,9 @@ void main() {
       final templates = NotificationTemplateFactory.getDefaultTemplates();
 
       // Act
-      final activeTemplates = NotificationTemplateFactory.filterActive(templates);
+      final activeTemplates = NotificationTemplateFactory.filterActive(
+        templates,
+      );
 
       // Assert
       expect(activeTemplates, isNotEmpty);

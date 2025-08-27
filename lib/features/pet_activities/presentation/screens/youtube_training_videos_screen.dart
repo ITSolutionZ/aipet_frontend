@@ -14,23 +14,20 @@ import '../widgets/youtube_video_card.dart';
 /// YouTube 교육 영상 관리 화면
 class YouTubeTrainingVideosScreen extends ConsumerStatefulWidget {
   final String petId;
-  
-  const YouTubeTrainingVideosScreen({
-    super.key,
-    required this.petId,
-  });
+
+  const YouTubeTrainingVideosScreen({super.key, required this.petId});
 
   @override
-  ConsumerState<YouTubeTrainingVideosScreen> createState() => 
+  ConsumerState<YouTubeTrainingVideosScreen> createState() =>
       _YouTubeTrainingVideosScreenState();
 }
 
-class _YouTubeTrainingVideosScreenState 
+class _YouTubeTrainingVideosScreenState
     extends ConsumerState<YouTubeTrainingVideosScreen> {
   late YouTubeVideosController _controller;
   String _searchQuery = '';
   final List<String> _selectedTags = [];
-  
+
   @override
   void initState() {
     super.initState();
@@ -47,7 +44,7 @@ class _YouTubeTrainingVideosScreenState
       context: context,
       builder: (context) => AddYouTubeVideoDialog(petId: widget.petId),
     );
-    
+
     if (result != null) {
       await _controller.registerVideo(
         youtubeUrl: result['url'],
@@ -61,18 +58,18 @@ class _YouTubeTrainingVideosScreenState
   }
 
   Future<void> _openVideo(YouTubeVideoEntity video, {int? startTime}) async {
-    final url = startTime != null 
+    final url = startTime != null
         ? video.getYouTubeUrlWithTime(startTime)
         : video.youtubeUrl;
-    
+
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('YouTube 앱을 열 수 없습니다.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('YouTube 앱을 열 수 없습니다.')));
       }
     }
   }
@@ -130,10 +127,10 @@ class _YouTubeTrainingVideosScreenState
         children: [
           // 검색 바
           _buildSearchBar(),
-          
+
           // 태그 필터
           _buildTagFilter(),
-          
+
           // 비디오 목록
           Expanded(
             child: videosState.when(
@@ -207,7 +204,7 @@ class _YouTubeTrainingVideosScreenState
     // 모든 비디오에서 사용된 태그들 수집
     final videosState = ref.watch(youTubeVideosProvider(widget.petId));
     final allTags = <String>{};
-    
+
     videosState.whenData((videos) {
       for (final video in videos) {
         allTags.addAll(video.tags);
@@ -225,7 +222,7 @@ class _YouTubeTrainingVideosScreenState
         itemBuilder: (context, index) {
           final tag = allTags.elementAt(index);
           final isSelected = _selectedTags.contains(tag);
-          
+
           return Container(
             margin: const EdgeInsets.only(right: AppSpacing.sm),
             child: FilterChip(
@@ -252,7 +249,7 @@ class _YouTubeTrainingVideosScreenState
   Widget _buildVideoList(List<YouTubeVideoEntity> videos) {
     // 필터링된 비디오 목록
     var filteredVideos = videos;
-    
+
     // 검색어 필터
     if (_searchQuery.isNotEmpty) {
       final query = _searchQuery.toLowerCase();
@@ -262,7 +259,7 @@ class _YouTubeTrainingVideosScreenState
             video.tags.any((tag) => tag.toLowerCase().contains(query));
       }).toList();
     }
-    
+
     // 태그 필터
     if (_selectedTags.isNotEmpty) {
       filteredVideos = filteredVideos.where((video) {

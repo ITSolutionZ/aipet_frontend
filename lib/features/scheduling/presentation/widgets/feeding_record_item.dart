@@ -5,10 +5,7 @@ import '../../../../shared/design/design.dart';
 class FeedingRecordItem extends StatelessWidget {
   final dynamic record;
 
-  const FeedingRecordItem({
-    super.key,
-    required this.record,
-  });
+  const FeedingRecordItem({super.key, required this.record});
 
   @override
   Widget build(BuildContext context) {

@@ -54,12 +54,12 @@ class FacilityDetailController {
     try {
       final facilityList = ref.read(facilityListNotifierProvider.notifier);
       facilityList.toggleFavorite(facilityId);
-      
+
       final facility = await loadFacilityById(facilityId);
       if (facility != null) {
-        final message = facility.isFavorite 
-          ? '즐겨찾기에 추가되었습니다.' 
-          : '즐겨찾기에서 제거되었습니다.';
+        final message = facility.isFavorite
+            ? '즐겨찾기에 추가되었습니다.'
+            : '즐겨찾기에서 제거되었습니다.';
         _showSuccessMessage(message);
       }
     } catch (error) {

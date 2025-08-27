@@ -28,8 +28,7 @@ dependencies:
   share_plus: ^7.2.1
   qr_code_scanner: ^1.0.1
   permission_handler: ^11.3.1
-  aipet_walk:
-    path: plugin/aipet_walk/aipet_walk # Added
+
   mockito: ^5.4.4
 
 dev_dependencies:

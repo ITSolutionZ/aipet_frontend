@@ -32,8 +32,8 @@ class AuthButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.medium),
           ),
           elevation: 2,
-          disabledBackgroundColor: 
-              (backgroundColor ?? AppColors.pointBrown).withValues(alpha: 0.3),
+          disabledBackgroundColor: (backgroundColor ?? AppColors.pointBrown)
+              .withValues(alpha: 0.3),
         ),
         child: isLoading
             ? SizedBox(
