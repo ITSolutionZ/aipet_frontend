@@ -16,7 +16,8 @@ class NotificationListScreen extends ConsumerStatefulWidget {
       _NotificationListScreenState();
 }
 
-class _NotificationListScreenState extends ConsumerState<NotificationListScreen> {
+class _NotificationListScreenState
+    extends ConsumerState<NotificationListScreen> {
   late final NotificationUIController _uiController;
 
   @override
@@ -55,10 +56,7 @@ class _NotificationListScreenState extends ConsumerState<NotificationListScreen>
           ),
         ],
       ),
-      body: const NotificationListWidget(
-        showEmptyState: true,
-        maxItems: 50,
-      ),
+      body: const NotificationListWidget(showEmptyState: true, maxItems: 50),
     );
   }
 }

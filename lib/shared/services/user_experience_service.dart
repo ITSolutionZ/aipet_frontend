@@ -240,7 +240,7 @@ class UserExperienceService {
     return longestScreen;
   }
 
-    /// 사용자 행동 패턴 분석
+  /// 사용자 행동 패턴 분석
   Map<String, dynamic> analyzeUserBehavior() {
     return {
       'preferredScreens': _getPreferredScreens(),

@@ -165,7 +165,9 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
 
   // YouTube Video 관련 구현
   @override
-  Future<YouTubeVideoEntity> registerYouTubeVideo(YouTubeVideoEntity video) async {
+  Future<YouTubeVideoEntity> registerYouTubeVideo(
+    YouTubeVideoEntity video,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (MockDataService.isEnabled) {
@@ -181,9 +183,7 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
     await Future.delayed(const Duration(milliseconds: 300));
 
     if (MockDataService.isEnabled) {
-      return _youtubeVideos
-          .where((video) => video.petId == petId)
-          .toList()
+      return _youtubeVideos.where((video) => video.petId == petId).toList()
         ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     }
 
@@ -191,7 +191,9 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
   }
 
   @override
-  Future<YouTubeVideoEntity> updateYouTubeVideo(YouTubeVideoEntity video) async {
+  Future<YouTubeVideoEntity> updateYouTubeVideo(
+    YouTubeVideoEntity video,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (MockDataService.isEnabled) {

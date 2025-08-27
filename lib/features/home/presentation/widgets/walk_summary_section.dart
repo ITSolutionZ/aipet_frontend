@@ -72,7 +72,7 @@ class _WalkSummarySectionState extends ConsumerState<WalkSummarySection> {
 
     final todayDistance = _walkData?['todayDistance'] ?? 12.3;
     final todayTime = _walkData?['todayTime'] ?? 30;
-    
+
     final distanceValue = _controller.formatDistance(todayDistance);
     final distanceUnit = _controller.getDistanceUnit(todayDistance);
     final timeValue = _controller.formatTime(todayTime);

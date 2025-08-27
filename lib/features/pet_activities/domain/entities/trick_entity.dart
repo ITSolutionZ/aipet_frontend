@@ -64,7 +64,8 @@ class TrickEntity {
       youtubeUrl: youtubeUrl ?? this.youtubeUrl,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
-      lastPlayedTimeInSeconds: lastPlayedTimeInSeconds ?? this.lastPlayedTimeInSeconds,
+      lastPlayedTimeInSeconds:
+          lastPlayedTimeInSeconds ?? this.lastPlayedTimeInSeconds,
     );
   }
 
@@ -114,13 +115,16 @@ class TrickEntity {
   /// 유튜브 링크가 유효한지 확인
   bool get hasValidYoutubeUrl {
     if (youtubeUrl == null) return false;
-    return youtubeUrl!.contains('youtube.com') || youtubeUrl!.contains('youtu.be');
+    return youtubeUrl!.contains('youtube.com') ||
+        youtubeUrl!.contains('youtu.be');
   }
 
   /// 유튜브 비디오 ID 추출
   String? get youtubeVideoId {
     if (!hasValidYoutubeUrl) return null;
-    final regExp = RegExp(r'(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)');
+    final regExp = RegExp(
+      r'(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)',
+    );
     final match = regExp.firstMatch(youtubeUrl!);
     return match?.group(1);
   }
@@ -148,7 +152,7 @@ class TrickEntity {
   /// 유튜브 URL에 마지막 재생 시점 포함
   String? get youtubeUrlWithLastPlayedTime {
     if (youtubeUrl == null || !hasLastPlayedTime) return youtubeUrl;
-    
+
     if (youtubeUrl!.contains('youtube.com/watch')) {
       final separator = youtubeUrl!.contains('?') ? '&' : '?';
       return '$youtubeUrl${separator}t=${lastPlayedTimeInSeconds}s';

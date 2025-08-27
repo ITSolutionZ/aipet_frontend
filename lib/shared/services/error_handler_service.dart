@@ -323,8 +323,12 @@ class ErrorHandlerService {
   Map<String, dynamic> getErrorStats() {
     return {
       'totalErrors': _errorHistory.length,
-      'errorCounters': _errorCounters.map((key, value) => MapEntry(key.name, value)),
-      'severityCounters': _severityCounters.map((key, value) => MapEntry(key.name, value)),
+      'errorCounters': _errorCounters.map(
+        (key, value) => MapEntry(key.name, value),
+      ),
+      'severityCounters': _severityCounters.map(
+        (key, value) => MapEntry(key.name, value),
+      ),
       'recentErrors': _errorHistory.take(10).map((e) => e.toJson()).toList(),
     };
   }

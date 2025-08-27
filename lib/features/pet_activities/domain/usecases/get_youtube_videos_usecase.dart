@@ -13,13 +13,16 @@ class GetYouTubeVideosUseCase {
   }
 
   /// 태그로 필터링된 YouTube 비디오 목록을 조회합니다.
-  Future<List<YouTubeVideoEntity>> getByTags(String petId, List<String> tags) async {
+  Future<List<YouTubeVideoEntity>> getByTags(
+    String petId,
+    List<String> tags,
+  ) async {
     final allVideos = await _repository.getYouTubeVideosByPetId(petId);
-    
+
     if (tags.isEmpty) {
       return allVideos;
     }
-    
+
     return allVideos.where((video) {
       return video.tags.any((tag) => tags.contains(tag));
     }).toList();
@@ -28,13 +31,13 @@ class GetYouTubeVideosUseCase {
   /// 검색어로 YouTube 비디오를 검색합니다.
   Future<List<YouTubeVideoEntity>> search(String petId, String query) async {
     final allVideos = await _repository.getYouTubeVideosByPetId(petId);
-    
+
     if (query.isEmpty) {
       return allVideos;
     }
-    
+
     final lowerQuery = query.toLowerCase();
-    
+
     return allVideos.where((video) {
       return video.title.toLowerCase().contains(lowerQuery) ||
           video.description?.toLowerCase().contains(lowerQuery) == true ||

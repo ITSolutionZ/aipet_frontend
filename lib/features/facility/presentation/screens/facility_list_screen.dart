@@ -37,46 +37,51 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
   void _loadInitialData() {
     final facilityList = ref.read(facilityListNotifierProvider);
     final searchResults = ref.read(searchResultsNotifierProvider.notifier);
-    
+
     searchResults.setSearchResults(facilityList);
   }
 
   void _onSearchChanged(String query) {
     ref.read(searchQueryNotifierProvider.notifier).setQuery(query);
-    
+
     final facilityList = ref.read(facilityListNotifierProvider.notifier);
     final searchResults = ref.read(searchResultsNotifierProvider.notifier);
-    
+
     final results = facilityList.search(query);
     searchResults.setSearchResults(results);
   }
 
   void _onFilterChanged(FacilityType? type) {
     ref.read(selectedFacilityTypeNotifierProvider.notifier).setType(type);
-    
+
     final facilityList = ref.read(facilityListNotifierProvider.notifier);
     final searchResults = ref.read(searchResultsNotifierProvider.notifier);
     final query = ref.read(searchQueryNotifierProvider);
-    
+
     List<Facility> results;
     if (type != null) {
       results = facilityList.getByType(type);
       if (query.isNotEmpty) {
-        results = results.where((facility) =>
-          facility.name.toLowerCase().contains(query.toLowerCase()) ||
-          facility.description.toLowerCase().contains(query.toLowerCase())
-        ).toList();
+        results = results
+            .where(
+              (facility) =>
+                  facility.name.toLowerCase().contains(query.toLowerCase()) ||
+                  facility.description.toLowerCase().contains(
+                    query.toLowerCase(),
+                  ),
+            )
+            .toList();
       }
     } else {
       results = facilityList.search(query);
     }
-    
+
     searchResults.setSearchResults(results);
   }
 
   void _onSortChanged(String sortType) {
     final searchResults = ref.read(searchResultsNotifierProvider.notifier);
-    
+
     switch (sortType) {
       case 'distance':
         searchResults.sortByDistance();
@@ -93,30 +98,35 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
   void _toggleFavorite(String facilityId) {
     final facilityList = ref.read(facilityListNotifierProvider.notifier);
     facilityList.toggleFavorite(facilityId);
-    
+
     _refreshSearchResults();
   }
 
   void _refreshSearchResults() {
     final query = ref.read(searchQueryNotifierProvider);
     final selectedType = ref.read(selectedFacilityTypeNotifierProvider);
-    
+
     final facilityList = ref.read(facilityListNotifierProvider.notifier);
     final searchResults = ref.read(searchResultsNotifierProvider.notifier);
-    
+
     List<Facility> results;
     if (selectedType != null) {
       results = facilityList.getByType(selectedType);
       if (query.isNotEmpty) {
-        results = results.where((facility) =>
-          facility.name.toLowerCase().contains(query.toLowerCase()) ||
-          facility.description.toLowerCase().contains(query.toLowerCase())
-        ).toList();
+        results = results
+            .where(
+              (facility) =>
+                  facility.name.toLowerCase().contains(query.toLowerCase()) ||
+                  facility.description.toLowerCase().contains(
+                    query.toLowerCase(),
+                  ),
+            )
+            .toList();
       }
     } else {
       results = facilityList.search(query);
     }
-    
+
     searchResults.setSearchResults(results);
   }
 
@@ -194,10 +204,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
               children: [
                 Text(
                   '${searchResults.length}件の施設',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
                 const Spacer(),
                 if (searchQuery.isNotEmpty || selectedType != null)
@@ -246,28 +253,18 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.search_off,
-            size: 64,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
           const SizedBox(height: 16),
           Text(
             searchQuery.isNotEmpty || selectedType != null
                 ? '検索条件に合う施設が見つかりません'
                 : '施設が見つかりません',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
           ),
           const SizedBox(height: 8),
           Text(
             '別の条件で検索してみてください',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
           ),
         ],
       ),

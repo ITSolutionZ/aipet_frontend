@@ -59,55 +59,67 @@ class HomeController extends BaseController {
   Future<HomeResult> handleNotification() async {
     try {
       final notifications = <String>[];
-      
+
       // 대시보드 데이터 가져오기
       final dashboardData = await _getDashboardDataUseCase.call();
-      
+
       // 예정된 예약 알림 확인
       final upcomingAppointments = dashboardData.upcomingAppointments;
       for (final appointment in upcomingAppointments) {
-        final timeDifference = appointment.scheduledTime.difference(DateTime.now());
-        
+        final timeDifference = appointment.scheduledTime.difference(
+          DateTime.now(),
+        );
+
         // 24시간 이내 예약 알림
         if (timeDifference.inHours <= 24 && timeDifference.inHours > 0) {
-          notifications.add('${appointment.petName}의 ${appointment.type} 예약이 내일 ${_formatTime(appointment.scheduledTime)}에 예정되어 있습니다.');
+          notifications.add(
+            '${appointment.petName}의 ${appointment.type} 예약이 내일 ${_formatTime(appointment.scheduledTime)}에 예정되어 있습니다.',
+          );
         }
         // 2시간 이내 예약 알림
         else if (timeDifference.inHours <= 2 && timeDifference.inHours > 0) {
-          notifications.add('${appointment.petName}의 ${appointment.type} 예약이 ${timeDifference.inHours}시간 후에 있습니다.');
+          notifications.add(
+            '${appointment.petName}의 ${appointment.type} 예약이 ${timeDifference.inHours}시간 후에 있습니다.',
+          );
         }
       }
-      
+
       // 건강 상태 알림 확인
       final healthSummary = dashboardData.petHealthSummary;
       if (healthSummary.petsNeedingAttention > 0) {
-        notifications.add('주의가 필요한 펫이 ${healthSummary.petsNeedingAttention}마리 있습니다.');
+        notifications.add(
+          '주의가 필요한 펫이 ${healthSummary.petsNeedingAttention}마리 있습니다.',
+        );
       }
-      
+
       // 건강 알림 확인
       for (final alert in healthSummary.alerts) {
         notifications.add('${alert.petName}: ${alert.message}');
       }
-      
+
       // 산책 알림 확인
       final walkSummary = dashboardData.walkSummary;
       final now = DateTime.now();
-      
+
       // 오늘 산책을 한 번도 안 했을 경우 (오후 6시 이후)
       if (walkSummary.todayWalks == 0 && now.hour >= 18) {
         notifications.add('오늘 아직 산책을 하지 않았습니다. 반려동물과 함께 산책을 해보세요!');
       }
-      
+
       // 주간 목표 달성률이 낮을 경우
-      final weeklyProgress = (walkSummary.weeklyProgress / walkSummary.weeklyGoal * 100);
-      if (weeklyProgress < 50 && now.weekday >= 5) { // 금요일 이후
-        notifications.add('이번 주 산책 목표 달성률이 ${weeklyProgress.toInt()}%입니다. 조금 더 노력해보세요!');
+      final weeklyProgress =
+          (walkSummary.weeklyProgress / walkSummary.weeklyGoal * 100);
+      if (weeklyProgress < 50 && now.weekday >= 5) {
+        // 금요일 이후
+        notifications.add(
+          '이번 주 산책 목표 달성률이 ${weeklyProgress.toInt()}%입니다. 조금 더 노력해보세요!',
+        );
       }
-      
+
       return HomeResult.success(
-        notifications.isEmpty 
-          ? '새로운 알림이 없습니다' 
-          : '${notifications.length}개의 알림이 있습니다',
+        notifications.isEmpty
+            ? '새로운 알림이 없습니다'
+            : '${notifications.length}개의 알림이 있습니다',
         notifications,
       );
     } catch (error) {
@@ -115,7 +127,7 @@ class HomeController extends BaseController {
       return HomeResult.failure(getUserFriendlyErrorMessage(error));
     }
   }
-  
+
   /// 시간 포맷팅 헬퍼 메서드
   String _formatTime(DateTime dateTime) {
     final hour = dateTime.hour.toString().padLeft(2, '0');
@@ -129,14 +141,11 @@ class HomeController extends BaseController {
       // 펫 프로필 정보를 다시 로드하여 최신 상태로 업데이트
       final petProfiles = await _repository.getPetProfiles();
       final dashboardData = await _getDashboardDataUseCase.call();
-      
+
       // 프로필 업데이트 성공 메시지와 함께 업데이트된 데이터 반환
       return HomeResult.success(
         '프로필이 업데이트되었습니다 (${petProfiles.length}마리 펫 정보)',
-        {
-          'pets': petProfiles,
-          'dashboard': dashboardData,
-        },
+        {'pets': petProfiles, 'dashboard': dashboardData},
       );
     } catch (error) {
       handleError(error);
