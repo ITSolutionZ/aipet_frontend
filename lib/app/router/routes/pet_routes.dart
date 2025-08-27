@@ -9,6 +9,7 @@ import 'route_constants.dart';
 /// 펫 관련 라우트 설정
 ///
 /// 펫 등록 플로우, 펫 프로필, 백신 등 펫과 관련된 모든 라우트를 포함합니다.
+/// 이 라우트들은 Shell 밖에서 독립적으로 실행되며, 펫 관리 기능을 담당합니다.
 class PetRoutes {
   static List<RouteBase> get routes => [
     // ===== PET REGISTRATION FLOW =====
@@ -65,7 +66,7 @@ class PetRoutes {
       builder: (context, state) => const FeedingMainScreen(),
     ),
     GoRoute(
-      path: '/recipes',
+      path: RouteConstants.recipesRoute,
       name: 'recipes',
       builder: (context, state) {
         final petId = state.uri.queryParameters['petId'] ?? 'default';
@@ -73,14 +74,14 @@ class PetRoutes {
       },
     ),
     GoRoute(
-      path: '/add-recipe',
+      path: RouteConstants.addRecipeRoute,
       name: 'add-recipe',
       builder: (context, state) => const AddRecipeScreen(),
     ),
 
     // ===== PET ACTIVITIES =====
     GoRoute(
-      path: '/learn-trick',
+      path: RouteConstants.allTricksRoute,
       name: 'learn-trick',
       builder: (context, state) => const LearnTrickScreen(),
     ),
