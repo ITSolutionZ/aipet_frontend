@@ -1,0 +1,286 @@
+# AI Pet Frontend - Cursor Rules
+
+## 적용 대상
+- 본 규칙은 AI Pet Frontend 프로젝트를 주 대상으로 합니다.
+- 향후 admin_dashboard 및 backend 프로젝트와도 규칙을 공유하여 일관된 개발 문화를 유지할 예정입니다.
+
+## 프로젝트 개요
+이 프로젝트는 Flutter로 개발된 AI Pet Management App으로, Clean Architecture 원칙과 Riverpod 상태 관리를 사용합니다.
+
+## 아키텍처 원칙
+
+### 1. Clean Architecture
+- **Presentation Layer**: UI 위젯, 컨트롤러, 화면
+- **Domain Layer**: 엔티티, 유스케이스, 리포지토리 인터페이스
+- **Data Layer**: 리포지토리 구현, 데이터 소스, 프로바이더
+- **Infrastructure Layer**: 외부 서비스 연동, API 호출, DB 연결
+
+### 2. 폴더 구조
+```
+lib/
+├── app/                    # 앱 레벨 설정
+│   ├── bootstrap.dart      # 앱 초기화
+│   ├── controllers/        # 기본 컨트롤러
+│   ├── providers/          # 앱 레벨 프로바이더
+│   └── router/             # 라우팅 설정
+├── features/               # 기능별 모듈
+│   ├── auth/              # 인증 기능
+│   ├── home/              # 홈 화면
+│   ├── pet/               # 펫 관리
+│   └── ...
+└── shared/                # 공유 리소스
+    ├── design/            # 디자인 시스템
+    ├── utils/             # 유틸리티
+    └── widgets/           # 공통 위젯
+```
+
+## 코딩 스타일
+
+### 1. 위젯 클래스
+- **ConsumerStatefulWidget** 사용을 우선 (Riverpod 통합)
+- 상태 관리가 필요 없는 경우 **StatelessWidget** 사용
+- 클래스명은 **PascalCase** (예: `HomeScreen`, `PetProfileCard`)
+- private 클래스는 **언더스코어** 접두사 (예: `_HomeScreenState`)
+
+### 2. 파일명 규칙
+- **snake_case** 사용
+- 화면: `home_screen.dart`
+- 위젯: `pet_profile_card.dart`
+- 컨트롤러: `home_controller.dart`
+- 프로바이더: `home_providers.dart`
+
+### 3. Import 규칙
+- **Barrel 파일** 사용 권장: `import '../../../../shared/shared.dart';`
+- 상대 경로 사용 시 3단계 이상은 절대 경로 고려
+- Flutter 패키지는 최상단에 배치
+
+#### 📦 배럴 파일 구조 규칙
+- **각 feature 내부**: 각 레이어별 배럴 파일 작성
+  - `data/data.dart`: data 레이어 export
+  - `domain/domain.dart`: domain 레이어 export
+  - `presentation/presentation.dart`: presentation 레이어 export
+- **최종 feature 배럴**: `feature_name.dart` (예: `auth.dart`, `home.dart`)
+- **Feature 간 import**: 다른 feature를 import할 경우 해당 feature의 최종 배럴 사용
+  ```dart
+  // ✅ 올바른 예시
+  import '../../../features/auth/auth.dart';
+  import '../../../features/home/home.dart';
+
+  // ❌ 잘못된 예시
+  import '../../../features/auth/presentation/screens/login_screen.dart';
+  import '../../../features/home/domain/entities/home_entity.dart';
+  ```
+
+#### 🏗️ 배럴 파일 구조 예시
+```
+lib/features/auth/
+├── auth.dart                    # 최종 배럴
+├── data/
+│   ├── data.dart               # data 레이어 배럴
+│   ├── auth_providers.dart
+│   └── repositories/
+├── domain/
+│   ├── domain.dart             # domain 레이어 배럴
+│   ├── entities/
+│   └── repositories/
+└── presentation/
+    ├── presentation.dart        # presentation 레이어 배럴
+    ├── screens/
+    ├── widgets/
+    └── controllers/
+```
+api연계 전, 데이터는 전부 mockito, mock_data폴더에 있는 데이터를 사용합니다.
+필요시 mockito, mock_data폴더에 있는 데이터를 수정해서 사용할 수 있습니다.
+
+### 4. 상태 관리
+- **Riverpod** 사용 (flutter_riverpod, riverpod_annotation)
+- **@riverpod** 어노테이션 사용
+- StateNotifierProvider 대신 riverpod_annotation 사용
+- 단순한 상태: Notifier 사용
+- 비동기 상태 (API 호출, DB 연동): AsyncNotifier 사용
+
+#### 🎯 Controller vs Provider 역할 분리
+- **Provider**: 상태 관리 및 데이터 변환에 집중
+  ```dart
+  @riverpod
+  class UserState extends _$UserState {
+    @override
+    UserStateData build() => const UserStateData();
+
+    void updateUser(User user) {
+      state = state.copyWith(user: user, isLoading: false);
+    }
+  }
+  ```
+- **Controller**: 비즈니스 로직, 에러 처리, 사용자 피드백에 집중
+  ```dart
+  class UserController extends BaseController {
+    Future<void> loadUserProfile() async {
+      try {
+        final user = await _repository.getUser();
+        ref.read(userStateProvider.notifier).updateUser(user);
+        showSuccess('사용자 정보를 로드했습니다');
+      } catch (error) {
+        handleError(error);
+      }
+    }
+  }
+  ```
+
+#### 📋 사용 가이드라인
+- **단순한 상태 변경**: Provider만 사용
+- **복잡한 비즈니스 로직**: Controller + Provider 조합
+- **에러 처리 필요**: Controller 사용
+- **사용자 피드백 필요**: Controller 사용
+
+### 5. 라우팅
+- **go_router** 사용
+- 라우트 상수는 `AppRouter` 클래스에 정의
+- 라우트 이동: `context.go(AppRouter.homeRoute)`
+
+### 6. 폴더 및 네임스페이스 가이드
+- core/: 전역 설정, 서비스, 에러 처리, 초기화
+- shared/: 재사용 가능한 디자인/위젯/유틸
+- features/: 도메인 기능 단위 (auth, pet, walk 등)
+
+## 디자인 시스템
+
+### 1. 색상
+- **AppColors** 클래스 사용
+- Point Colors: `pointBrown`, `pointGreen`, `pointBlue` 등
+- Tone Colors: `toneOffWhite`, `tonePeach` 등
+
+### 2. 간격
+- **AppSpacing** 상수 사용: `xs(4)`, `sm(8)`, `md(16)`, `lg(24)`, `xl(32)`
+
+### 3. 폰트
+- **AppFonts** 클래스 사용
+- 기본: Noto Sans JP
+- 포인트: M PLUS 1
+- 특별: Fredoka, Aldrich
+
+### 4. 텍스트 스타일
+```dart
+// 기본 텍스트
+AppFonts.bodyMedium
+
+// 제목
+AppFonts.titleLarge
+
+// 특별 폰트
+AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.bold)
+```
+
+## 컨트롤러 패턴
+
+### 1. 기본 컨트롤러
+- **BaseController** 상속
+- 에러 처리, 로딩 상태, 메시지 표시 기능 포함
+
+### 2. 컨트롤러 사용
+```dart
+class HomeController extends BaseController {
+  HomeController(super.ref, super.context);
+
+  // 메서드 구현
+}
+```
+
+## 주석 및 문서화
+
+### 1. 한국어 주석 사용
+- 모든 주석은 한국어로 작성
+- TODO, FIXME, HACK 태그 사용
+
+### 2. 문서화
+- 클래스와 메서드에 /// 문서화 주석 사용
+- 복잡한 로직에 인라인 주석 추가
+
+## 에러 처리
+
+### 1. 컨트롤러 에러 처리
+```dart
+try {
+  // 비즈니스 로직
+} catch (error) {
+  handleError(error);
+}
+```
+
+### 2. 사용자 피드백
+- `showSuccess()`, `showWarning()`, `showInfo()` 메서드 사용
+- SnackBar를 통한 메시지 표시
+
+## 성능 최적화
+
+### 1. 위젯 최적화
+- `const` 생성자 사용
+- 불필요한 rebuild 방지
+- `Consumer` 위젯 적절히 사용
+
+### 2. 메모리 관리
+- `dispose()` 메서드에서 리소스 해제
+- 컨트롤러 정리
+
+## 테스트 고려사항
+
+### 1. 단위 테스트
+- 비즈니스 로직 테스트
+- 프로바이더 테스트
+
+### 2. 위젯 테스트
+- UI 컴포넌트 테스트
+- 사용자 상호작용 테스트
+
+### 3. 통합 테스트
+- 주요 유스케이스 시나리오 기반
+- 라우팅 및 Provider 연동 검증
+
+## 개발 가이드라인
+
+### 1. DRY 원칙
+- 중복 코드 제거
+- 공통 위젯 활용
+- 유틸리티 함수 사용
+
+### 2. 일관성
+- 동일한 패턴 반복 사용
+- 네이밍 컨벤션 준수
+- 코드 스타일 통일
+
+### 3. 가독성
+- 명확한 변수명과 함수명
+- 적절한 줄바꿈과 들여쓰기
+- 복잡한 로직 분리
+
+## 자동화 및 도구
+
+### 1. 코드 생성
+```bash
+flutter packages pub run build_runner build
+```
+
+### 2. 린트 규칙
+- `flutter_lints` 사용
+- `analysis_options.yaml` 설정 준수
+
+### 3. 포맷팅
+- `dart format` 사용
+- 일관된 코드 스타일 유지
+
+## 배포 고려사항
+
+### 1. 환경 설정
+- 개발/스테이징/프로덕션 환경 분리
+- 환경별 설정 관리
+
+### 2. 성능 최적화
+- 릴리즈 빌드 최적화
+- 이미지 및 리소스 최적화
+
+### 3. 보안
+; - .env를 통한 민감 정보 관리
+- 환경별 Firebase/서버 키 분리
+- HTTPS/TLS 통신 강제
+
+이 룰을 따라 일관성 있고 유지보수 가능하며, 확장성과 보안까지 고려한 코드를 작성하세요.
