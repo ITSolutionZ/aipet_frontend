@@ -10,6 +10,8 @@ import 'routes/routes.dart';
 /// - auth_routes.dart: 인증 관련 라우트 (로그인, 회원가입)
 /// - shell_routes.dart: 메인 앱 Shell 라우트 (하단 네비게이션)
 /// - standalone_routes.dart: 독립적인 전체화면 라우트
+///
+/// 라우터는 모듈형 구조로 설계되어 있어 유지보수와 확장이 용이합니다.
 class AppRouter {
   // 라우트 상수들은 RouteConstants에서 관리
   static const String logoRoute = RouteConstants.logoRoute;
@@ -65,6 +67,8 @@ class AppRouter {
   /// 2. AuthRoutes: 인증 관련 라우트 (로그인, 회원가입)
   /// 3. ShellRoutes: 메인 앱 Shell 라우트 (하단 네비게이션)
   /// 4. StandaloneRoutes: 독립적인 전체화면 라우트
+  ///
+  /// [return] 구성된 GoRouter 인스턴스
   static GoRouter createRouter() {
     return GoRouter(
       initialLocation: logoRoute,

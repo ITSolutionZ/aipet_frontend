@@ -7,11 +7,7 @@ class MemoInput extends StatelessWidget {
   final TextEditingController controller;
   final int maxLines;
 
-  const MemoInput({
-    super.key,
-    required this.controller,
-    this.maxLines = 3,
-  });
+  const MemoInput({super.key, required this.controller, this.maxLines = 3});
 
   @override
   Widget build(BuildContext context) {

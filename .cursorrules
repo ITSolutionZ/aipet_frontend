@@ -1,46 +1,58 @@
 # AI Pet Frontend - Cursor Rules
 
 ## 적용 대상
-- 본 규칙은 AI Pet Frontend 프로젝트를 주 대상으로 합니다.
-- 향후 admin_dashboard 및 backend 프로젝트와도 규칙을 공유하여 일관된 개발 문화를 유지할 예정입니다.
+- 본 규칙은 **AI Pet Frontend** 프로젝트 전용입니다.
+- Flutter 앱 개발에 특화된 가이드라인을 제공합니다.
+- Backend API는 별도 프로젝트에서 개발되므로, Frontend에서는 API 호출 및 상태 관리에 집중합니다.
 
 ## 프로젝트 개요
-이 프로젝트는 Flutter로 개발된 AI Pet Management App으로, Clean Architecture 원칙과 Riverpod 상태 관리를 사용합니다.
+이 프로젝트는 Flutter로 개발된 AI Pet Management App으로, Clean Architecture 원칙을 기반으로 합니다.
+
+### 주요 기술 스택
+- **상태 관리**: Riverpod (flutter_riverpod, riverpod_annotation)
+- **라우팅**: GoRouter (go_router)
+- **목업/테스트**: Mockito 
+- **API 연계 전까지**: mock_data 폴더의 Mock 데이터 사용
 
 ## 아키텍처 원칙
 
-### 1. Clean Architecture
-- **Presentation Layer**: UI 위젯, 컨트롤러, 화면
-- **Domain Layer**: 엔티티, 유스케이스, 리포지토리 인터페이스
-- **Data Layer**: 리포지토리 구현, 데이터 소스, 프로바이더
-- **Infrastructure Layer**: 외부 서비스 연동, API 호출, DB 연결
+### 1. Clean Architecture (Frontend 특화)
+- **Presentation Layer**: UI 위젯, 화면, 사용자 인터랙션 처리
+- **Domain Layer**: 엔티티, 비즈니스 로직, 리포지토리 인터페이스
+- **Data Layer**: API 호출, 로컬 저장소, Mock 데이터 관리
+- **Infrastructure Layer**: HTTP 클라이언트, 로컬 DB(SQLite), 외부 서비스 연동
 
-### 2. 폴더 구조
+### 2. Flutter 앱 폴더 구조
 ```
 lib/
-├── app/                    # 앱 레벨 설정
-│   ├── bootstrap.dart      # 앱 초기화
-│   ├── controllers/        # 기본 컨트롤러
-│   ├── providers/          # 앱 레벨 프로바이더
-│   └── router/             # 라우팅 설정
-├── features/               # 기능별 모듈
-│   ├── auth/              # 인증 기능
-│   ├── home/              # 홈 화면
-│   ├── pet/               # 펫 관리
-│   └── ...
-└── shared/                # 공유 리소스
-    ├── design/            # 디자인 시스템
-    ├── utils/             # 유틸리티
-    └── widgets/           # 공통 위젯
+├── app/                    # 앱 레벨 설정 및 라우팅
+│   ├── bootstrap.dart      # 앱 초기화 로직
+│   ├── controllers/        # BaseController 등 공통 컨트롤러
+│   ├── providers/          # 앱 상태, 초기화 프로바이더
+│   └── router/             # GoRouter 설정 및 라우트 정의
+├── features/               # 기능별 Feature 모듈
+│   ├── auth/              # 로그인, 회원가입
+│   ├── home/              # 메인 대시보드
+│   ├── pet_profile/       # 펫 프로필 관리
+│   ├── walk/              # 산책 기록
+│   ├── facility/          # 시설 검색
+│   └── ...                # 기타 기능들
+└── shared/                # 앱 전체에서 공유하는 리소스
+    ├── design/            # 테마, 색상, 폰트 등 디자인 시스템
+    ├── services/          # API 서비스, 로컬 저장소 등
+    ├── utils/             # 유틸리티 함수들
+    ├── widgets/           # 공통 UI 컴포넌트
+    └── mock_data/         # API 연계 전 Mock 데이터
 ```
 
 ## 코딩 스타일
 
-### 1. 위젯 클래스
-- **ConsumerStatefulWidget** 사용을 우선 (Riverpod 통합)
-- 상태 관리가 필요 없는 경우 **StatelessWidget** 사용
-- 클래스명은 **PascalCase** (예: `HomeScreen`, `PetProfileCard`)
-- private 클래스는 **언더스코어** 접두사 (예: `_HomeScreenState`)
+### 1. Flutter 위젯 클래스
+- **ConsumerWidget**: 상태 구독이 필요한 경우 (Riverpod)
+- **ConsumerStatefulWidget**: 로컬 상태 + 전역 상태 둘 다 필요한 경우
+- **StatelessWidget**: 순수한 UI 컴포넌트
+- **위젯 네이밍**: `HomeScreen`, `PetProfileCard`, `CustomButton`
+- **State 클래스**: `_HomeScreenState` (언더스코어 접두사)
 
 ### 2. 파일명 규칙
 - **snake_case** 사용
@@ -50,47 +62,126 @@ lib/
 - 프로바이더: `home_providers.dart`
 
 ### 3. Import 규칙
-- **Barrel 파일** 사용 권장: `import '../../../../shared/shared.dart';`
-- 상대 경로 사용 시 3단계 이상은 절대 경로 고려
-- Flutter 패키지는 최상단에 배치
 
-#### 📦 배럴 파일 구조 규칙
-- **각 feature 내부**: 각 레이어별 배럴 파일 작성
-  - `data/data.dart`: data 레이어 export
-  - `domain/domain.dart`: domain 레이어 export
-  - `presentation/presentation.dart`: presentation 레이어 export
-- **최종 feature 배럴**: `feature_name.dart` (예: `auth.dart`, `home.dart`)
-- **Feature 간 import**: 다른 feature를 import할 경우 해당 feature의 최종 배럴 사용
+#### Import 순서 및 그룹핑
+```dart
+// 1. Dart core 라이브러리
+import 'dart:async';
+import 'dart:convert';
+
+// 2. Flutter 패키지 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// 3. 외부 패키지 (riverpod, go_router 등)
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mockito/mockito.dart';
+
+// 4. 프로젝트 내부 import (배럴 파일 사용)
+import '../../shared/shared.dart';
+import '../auth/auth.dart';
+import '../home/home.dart';
+
+// 5. 현재 feature 내부 (상대 경로)
+import 'widgets/login_form.dart';
+import 'controllers/auth_controller.dart';
+```
+
+#### 배럴 파일 Import 가이드라인
+- **다른 feature import**: 반드시 최종 배럴 파일 사용
   ```dart
   // ✅ 올바른 예시
   import '../../../features/auth/auth.dart';
   import '../../../features/home/home.dart';
+  import '../../../shared/shared.dart';
 
-  // ❌ 잘못된 예시
+  // ❌ 잘못된 예시  
   import '../../../features/auth/presentation/screens/login_screen.dart';
   import '../../../features/home/domain/entities/home_entity.dart';
+  import '../../../shared/widgets/custom_button.dart';
   ```
+
+- **동일 feature 내부**: 상대 경로 또는 레이어 배럴 사용
+  ```dart
+  // ✅ 올바른 예시 (같은 feature 내부)
+  import '../domain/domain.dart';           // 레이어 배럴
+  import 'widgets/login_form.dart';         // 직접 import (같은 레이어)
+  
+  // ❌ 잘못된 예시
+  import '../../../features/auth/domain/entities/user.dart';  // 너무 긴 경로
+  ```
+
+#### 경로 선택 기준
+- **3단계 이상 상대 경로**: 절대 경로 고려
+- **같은 레이어 내**: 직접 상대 경로 사용
+- **다른 레이어**: 해당 레이어 배럴 사용
+- **다른 feature**: 최종 배럴 파일 사용
+
+#### 📦 배럴 파일 구조 규칙
+
+##### Feature 내부 배럴 파일 계층
+각 feature는 다음과 같은 배럴 파일 계층을 가져야 합니다:
+
+1. **Layer별 배럴 파일** (각 레이어 내부)
+   - `data/data.dart`: data 레이어의 모든 파일 export
+   - `domain/domain.dart`: domain 레이어의 모든 파일 export  
+   - `presentation/presentation.dart`: presentation 레이어의 모든 파일 export
+
+2. **Feature 최종 배럴** (feature 루트)
+   - `feature_name.dart`: 해당 feature의 모든 레이어를 통합 export
+   - 예: `auth.dart`, `home.dart`, `pet.dart`
+
+##### 배럴 파일 작성 예시
+```dart
+// lib/features/auth/data/data.dart
+export 'auth_providers.dart';
+export 'repositories/auth_repository_impl.dart';
+export 'datasources/auth_remote_datasource.dart';
+export 'models/user_model.dart';
+
+// lib/features/auth/domain/domain.dart  
+export 'entities/user.dart';
+export 'repositories/auth_repository.dart';
+export 'usecases/login_usecase.dart';
+
+// lib/features/auth/presentation/presentation.dart
+export 'screens/login_screen.dart';
+export 'widgets/login_form.dart'; 
+export 'controllers/auth_controller.dart';
+
+// lib/features/auth/auth.dart (최종 배럴)
+export 'data/data.dart';
+export 'domain/domain.dart';
+export 'presentation/presentation.dart';
+```
 
 #### 🏗️ 배럴 파일 구조 예시
 ```
 lib/features/auth/
-├── auth.dart                    # 최종 배럴
+├── auth.dart                    # 최종 배럴 (모든 레이어 통합)
 ├── data/
 │   ├── data.dart               # data 레이어 배럴
 │   ├── auth_providers.dart
-│   └── repositories/
+│   ├── repositories/
+│   ├── datasources/
+│   └── models/
 ├── domain/
 │   ├── domain.dart             # domain 레이어 배럴
 │   ├── entities/
-│   └── repositories/
+│   ├── repositories/
+│   └── usecases/
 └── presentation/
     ├── presentation.dart        # presentation 레이어 배럴
     ├── screens/
     ├── widgets/
     └── controllers/
 ```
-api연계 전, 데이터는 전부 mockito, mock_data폴더에 있는 데이터를 사용합니다.
-필요시 mockito, mock_data폴더에 있는 데이터를 수정해서 사용할 수 있습니다.
+
+##### Mock 데이터 관리
+- API 연계 전까지는 `mock_data/` 폴더의 Mock 데이터 사용
+- Mock 데이터도 배럴 파일로 관리: `mock_data/mock_data.dart`
+- 필요시 `mock_data/` 폴더의 데이터 수정 가능
 
 ### 4. 상태 관리
 - **Riverpod** 사용 (flutter_riverpod, riverpod_annotation)
@@ -133,15 +224,25 @@ api연계 전, 데이터는 전부 mockito, mock_data폴더에 있는 데이터�
 - **에러 처리 필요**: Controller 사용
 - **사용자 피드백 필요**: Controller 사용
 
-### 5. 라우팅
-- **go_router** 사용
+### 5. 라우팅 (GoRouter)
+- **go_router** 패키지 사용
 - 라우트 상수는 `AppRouter` 클래스에 정의
-- 라우트 이동: `context.go(AppRouter.homeRoute)`
+- 라우트 이동 방식:
+  ```dart
+  // 페이지 이동
+  context.go(AppRouter.homeRoute);
+  context.push(AppRouter.petDetailRoute);
+  
+  // 매개변수가 있는 라우트
+  context.goNamed('petDetail', pathParameters: {'petId': petId});
+  ```
+- **라우트 가드**: 인증이 필요한 페이지는 redirect 로직 구현
 
-### 6. 폴더 및 네임스페이스 가이드
-- core/: 전역 설정, 서비스, 에러 처리, 초기화
-- shared/: 재사용 가능한 디자인/위젯/유틸
-- features/: 도메인 기능 단위 (auth, pet, walk 등)
+### 6. Frontend 개발 관점에서의 역할 분담
+- **app/**: 앱 전체 설정, 라우팅, 초기화
+- **features/**: 사용자 기능별 UI와 비즈니스 로직
+- **shared/**: 재사용 가능한 컴포넌트, 서비스, 유틸리티
+- **mock_data/**: Backend API 개발 전까지 사용하는 임시 데이터
 
 ## 디자인 시스템
 
@@ -186,55 +287,153 @@ class HomeController extends BaseController {
 }
 ```
 
-## 주석 및 문서화
+## 언어 사용 규칙
 
-### 1. 한국어 주석 사용
-- 모든 주석은 한국어로 작성
+### 1. UI 표시 텍스트
+- **사용자에게 보이는 모든 텍스트는 일본어로 작성**
+  ```dart
+  // ✅ 올바른 예시
+  Text('ログイン')                    // 로그인
+  Text('ペットプロフィール')           // 펫 프로필  
+  Text('設定')                       // 설정
+  AppLocalizations.of(context)?.loginButtonText ?? 'ログイン'
+
+  // ❌ 잘못된 예시
+  Text('Login')                      // 영어 사용 금지
+  Text('로그인')                     // 한국어 사용 금지
+  ```
+
+- **다국어 지원**: 추후 다국어 지원 시를 대비하여 하드코딩보다는 localization 활용 권장
+  ```dart
+  // 권장 방식
+  Text(AppLocalizations.of(context)?.loginTitle ?? 'ログイン')
+  
+  // 임시 방식 (개발 단계)
+  Text('ログイン')
+  ```
+
+### 2. 코드 및 주석 언어
+- **모든 주석은 한국어로 작성**
+- **변수명, 함수명, 클래스명은 영어 사용** (Dart/Flutter 컨벤션)
 - TODO, FIXME, HACK 태그 사용
 
-### 2. 문서화
-- 클래스와 메서드에 /// 문서화 주석 사용
-- 복잡한 로직에 인라인 주석 추가
-
-## 에러 처리
-
-### 1. 컨트롤러 에러 처리
+#### 일본어 UI 텍스트 예시
 ```dart
+// 공통 UI 텍스트
+'ログイン'          // 로그인
+'ログアウト'        // 로그아웃  
+'保存'            // 저장
+'キャンセル'        // 취소
+'確認'            // 확인
+'設定'            // 설정
+'プロフィール'      // 프로필
+'ホーム'          // 홈
+
+// 펫 관련
+'ペット'          // 펫
+'ペット登録'       // 펫 등록
+'散歩'           // 산책
+'健康記録'        // 건강기록
+'餌やり'         // 먹이주기
+```
+
+### 3. 문서화
+- 클래스와 메서드에 /// 문서화 주석 사용 (한국어)
+- 복잡한 로직에 인라인 주석 추가 (한국어)
+
+## Frontend 에러 처리
+
+### 1. UI 레벨 에러 처리
+```dart
+// API 호출 에러 처리
 try {
-  // 비즈니스 로직
+  final result = await ref.read(petRepositoryProvider).fetchPets();
+  // 성공 처리
+} on NetworkException catch (e) {
+  // 네트워크 에러 (사용자에게 재시도 옵션 제공)
+} on ApiException catch (e) {
+  // API 에러 (상태 코드별 처리)
 } catch (error) {
+  // 예상치 못한 에러
   handleError(error);
 }
 ```
 
-### 2. 사용자 피드백
-- `showSuccess()`, `showWarning()`, `showInfo()` 메서드 사용
-- SnackBar를 통한 메시지 표시
+### 2. 사용자 피드백 (일본어)
+- **성공**: `showSuccess('保存しました')` - 저장했습니다
+- **경고**: `showWarning('接続を確認してください')` - 연결을 확인해주세요  
+- **정보**: `showInfo('データを更新中です')` - 데이터를 업데이트 중입니다
+- **SnackBar**: 짧은 피드백 메시지
+- **Dialog**: 중요한 확인이나 에러 메시지
 
-## 성능 최적화
+## Flutter 성능 최적화
 
-### 1. 위젯 최적화
-- `const` 생성자 사용
-- 불필요한 rebuild 방지
-- `Consumer` 위젯 적절히 사용
+### 1. 위젯 성능
+```dart
+// const 생성자 사용
+const CustomButton(
+  text: 'ログイン',
+  onPressed: handleLogin,
+);
+
+// Consumer로 필요한 부분만 rebuild
+Consumer(
+  builder: (context, ref, child) {
+    final petList = ref.watch(petListProvider);
+    return ListView.builder(...);
+  },
+);
+```
 
 ### 2. 메모리 관리
-- `dispose()` 메서드에서 리소스 해제
-- 컨트롤러 정리
+- **컨트롤러**: `dispose()` 에서 StreamController, Timer 정리
+- **이미지**: `CachedNetworkImage` 사용으로 메모리 효율성 향상
+- **리스트**: `ListView.builder` 사용으로 가상화 구현
 
-## 테스트 고려사항
+### 3. 빌드 최적화
+- `flutter build appbundle --analyze-size`: 앱 크기 분석
+- `flutter build --profile`: 프로파일링 빌드
 
-### 1. 단위 테스트
-- 비즈니스 로직 테스트
-- 프로바이더 테스트
+## 테스트 및 Mock 전략
 
-### 2. 위젯 테스트
-- UI 컴포넌트 테스트
-- 사용자 상호작용 테스트
+### 1. Mock 데이터 활용 (API 연계 전)
+```dart
+// Mock 데이터 사용 예시
+@riverpod
+class PetRepository extends _$PetRepository {
+  @override
+  Future<List<Pet>> fetchPets() async {
+    // API 연계 전까지는 Mock 데이터 사용
+    return MockPetData.pets;
+  }
+}
+```
 
-### 3. 통합 테스트
-- 주요 유스케이스 시나리오 기반
-- 라우팅 및 Provider 연동 검증
+### 2. Mockito를 사용한 테스트
+```dart
+// Repository Mock 생성
+@GenerateNiceMocks([MockSpec<PetRepository>()])
+import 'pet_repository_test.mocks.dart';
+
+void main() {
+  late MockPetRepository mockRepository;
+  
+  setUp(() {
+    mockRepository = MockPetRepository();
+  });
+  
+  testWidgets('pet list display test', (tester) async {
+    when(mockRepository.fetchPets())
+        .thenAnswer((_) async => MockPetData.pets);
+    // 테스트 구현
+  });
+}
+```
+
+### 3. Flutter 테스트 전략
+- **단위 테스트**: Riverpod Provider, 유틸리티 함수 테스트
+- **위젯 테스트**: UI 컴포넌트, 사용자 인터랙션 테스트
+- **통합 테스트**: 전체 플로우 (로그인 → 홈 → 펫 등록) 시나리오
 
 ## 개발 가이드라인
 
@@ -253,34 +452,108 @@ try {
 - 적절한 줄바꿈과 들여쓰기
 - 복잡한 로직 분리
 
-## 자동화 및 도구
+## Flutter 개발 도구
 
-### 1. 코드 생성
+### 1. 코드 생성 (Riverpod + build_runner)
 ```bash
-flutter packages pub run build_runner build
+# Provider 코드 생성
+dart run build_runner build
+
+# 변경사항 감지하며 자동 생성
+dart run build_runner watch
 ```
 
-### 2. 린트 규칙
-- `flutter_lints` 사용
-- `analysis_options.yaml` 설정 준수
+### 2. 코드 품질 도구
+```bash
+# 린트 검사
+flutter analyze
 
-### 3. 포맷팅
-- `dart format` 사용
-- 일관된 코드 스타일 유지
+# 코드 포맷팅
+dart format lib/
+
+# 테스트 실행
+flutter test
+```
+
+### 3. Git Commit 규칙
+
+#### Commit 메시지 형식 (일본어)
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+**중요**: 모든 커밋 메시지는 일본어로 작성해야 합니다.
+
+#### Commit Type
+- **feat**: 새로운 기능 추가
+- **fix**: 버그 수정
+- **docs**: 문서 변경
+- **style**: 코드 스타일 변경 (포맷팅, 세미콜론 등)
+- **refactor**: 코드 리팩토링 (기능 변경 없음)
+- **perf**: 성능 최적화
+- **test**: 테스트 코드 추가/수정
+- **chore**: 빌드/패키지 매니저 등 기타 변경사항
+- **ui**: UI/UX 개선 및 디자인 변경
+
+#### 예시 (일본어 커밋 메시지)
+```bash
+# 기능 추가
+git commit -m "feat(auth): ログイン画面のUI実装"
+git commit -m "feat(pet): ペットプロフィール登録機能を追加"
+
+# 버그 수정  
+git commit -m "fix(walk): 散歩時間計算のエラーを修正"
+git commit -m "fix(ui): ローディング状態でボタンを無効化する処理を追加"
+
+# UI 개선
+git commit -m "ui(home): メインダッシュボードのレイアウトを改善"
+git commit -m "ui(shared): 共通ボタンコンポーネントのデザインを更新"
+
+# 리팩토링
+git commit -m "refactor(auth): BaseControllerパターンにリファクタリング"
+git commit -m "refactor(shared): バレルファイル構造を改善"
+
+# 문서화
+git commit -m "docs(readme): セットアップ手順を更新"
+git commit -m "docs(api): API仕様書を追加"
+
+# 테스트
+git commit -m "test(pet): ペット登録機能のユニットテストを追加"
+git commit -m "test(auth): ログイン処理の統合テストを実装"
+```
+
+#### Scope 가이드
+- **feature 이름**: auth, pet, walk, home, facility 등
+- **공통 영역**: shared, app, ui
+- **도구/설정**: config, build, deps
+
+### 4. 개발 효율성
+- **Hot Reload**: UI 변경사항 즉시 반영
+- **Flutter Inspector**: 위젯 트리 디버깅
+- **Performance Profiler**: 성능 측정
 
 ## 배포 고려사항
 
-### 1. 환경 설정
-- 개발/스테이징/프로덕션 환경 분리
-- 환경별 설정 관리
+### 1. Flutter 앱 배포
+- **개발/스테이징/프로덕션**: flavor별 빌드 설정
+- **iOS**: TestFlight을 통한 베타 테스트
+- **Android**: Google Play Console 내부 테스트
 
 ### 2. 성능 최적화
-- 릴리즈 빌드 최적화
-- 이미지 및 리소스 최적화
+- 릴리즈 빌드 최적화 (`flutter build --release`)
+- 이미지 및 에셋 최적화
+- 번들 크기 분석 (`flutter build appbundle --analyze-size`)
 
-### 3. 보안
-; - .env를 통한 민감 정보 관리
-- 환경별 Firebase/서버 키 분리
-- HTTPS/TLS 통신 강제
+### 3. Frontend 보안
+- **API 키 관리**: 환경별 설정 파일로 분리
+- **민감 데이터**: Secure Storage 사용
+- **네트워크 보안**: Certificate Pinning 적용 (필요시)
 
-이 룰을 따라 일관성 있고 유지보수 가능하며, 확장성과 보안까지 고려한 코드를 작성하세요.
+---
+
+**이 가이드라인을 따라 일관성 있고 확장 가능한 Flutter 앱을 개발하세요.**  
+**Backend API와의 연계는 별도 프로젝트에서 처리되므로, Frontend는 UI/UX와 상태 관리에 집중합니다.**

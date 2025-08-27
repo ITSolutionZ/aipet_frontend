@@ -5,7 +5,8 @@ import 'route_constants.dart';
 
 /// 인증 관련 라우트 설정
 ///
-/// 로그인, 회원가입, 환영 화면 등 순수한 인증 관련 라우트만 포함
+/// 로그인, 회원가입, 환영 화면 등 순수한 인증 관련 라우트만 포함합니다.
+/// 이 라우트들은 Shell 밖에서 독립적으로 실행되며, 인증 플로우를 담당합니다.
 class AuthRoutes {
   static List<RouteBase> get routes => [
     GoRoute(

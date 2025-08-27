@@ -78,5 +78,4 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
       ),
     );
   }
-
 }

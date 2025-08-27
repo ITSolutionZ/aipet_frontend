@@ -1,0 +1,26 @@
+blank_issues_enabled: false
+
+issue_templates:
+  - name: 🐞 Bug Report / バグ報告
+    description: 버그를 보고합니다 / バグを報告します
+    file: bug_report.md
+  - name: 🌟 Feature Request / 機能提案
+    description: 새로운 기능을 제안합니다 / 新機能を提案します
+    file: feature_request.md
+  - name: 📖 Docs Update / ドキュメント更新
+    description: 문서 업데이트를 요청합니다 / ドキュメント更新を依頼します
+    file: docs_update.md
+  - name: 🧹 Chore Task / 雑務タスク
+    description: 단순 작업이나 리팩토링을 요청합니다 / 雑務タスクやリファクタリングを依頼します
+    file: chore_task.md
+  - name: ❓ Question / 質問
+    description: 질문이나 문의를 작성합니다 / 質問や問い合わせを記載します
+    file: question.md
+
+contact_links:
+  - name: 📖 프로젝트 위키 / プロジェクトWiki
+    url: https://github.com/ITSolutionZ/aipet_frontend/wiki
+    about: "[한국어/日本語] 공식 문서를 먼저 확인해주세요 / 公式ドキュメントを先に確認してください"
+  - name: 🐙 GitHub Issues / イシュー一覧
+    url: https://github.com/ITSolutionZ/aipet_frontend/issues
+    about: "[한국어/日本語] 기존 등록된 이슈를 먼저 확인해주세요 / 既存のイシューを先に確認してください"

@@ -79,10 +79,7 @@ class DateTimeSelector extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.access_time,
-                      color: AppColors.pointBrown,
-                    ),
+                    const Icon(Icons.access_time, color: AppColors.pointBrown),
                     const SizedBox(width: AppSpacing.md),
                     Text(
                       selectedTime.format(context),

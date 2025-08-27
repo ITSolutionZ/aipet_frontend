@@ -42,7 +42,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // 저장된 데이터가 있으면 로드, 없으면 기본값 사용
       _userNameController.text = prefs.getString(_keyUserName) ?? 'ユーザ';
       _emailController.text = prefs.getString(_keyEmail) ?? 'test@test.com';
@@ -83,15 +83,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           child: Column(
             children: [
               _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
+                  ? const Center(child: CircularProgressIndicator())
                   : ProfileHeaderWidget(
-                      userName: _userNameController.text.isNotEmpty 
-                          ? _userNameController.text 
+                      userName: _userNameController.text.isNotEmpty
+                          ? _userNameController.text
                           : 'ユーザ',
-                      email: _emailController.text.isNotEmpty 
-                          ? _emailController.text 
+                      email: _emailController.text.isNotEmpty
+                          ? _emailController.text
                           : 'test@test.com',
                       isEditable: true,
                     ),
@@ -159,7 +157,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.lg,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.medium),
                     ),
@@ -201,11 +201,14 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // 각 필드의 데이터를 SharedPreferences에 저장
       await prefs.setString(_keyUserName, _userNameController.text.trim());
       await prefs.setString(_keyEmail, _emailController.text.trim());
-      await prefs.setString(_keyNameKatakana, _nameKatakanaController.text.trim());
+      await prefs.setString(
+        _keyNameKatakana,
+        _nameKatakanaController.text.trim(),
+      );
       await prefs.setString(_keyContact, _contactController.text.trim());
 
       if (mounted) {
@@ -216,7 +219,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             duration: Duration(seconds: 2),
           ),
         );
-        
+
         // 프로필 업데이트 완료 후 이전 화면으로 돌아가기
         Navigator.of(context).pop(true); // true를 반환하여 변경사항이 있음을 알림
       }

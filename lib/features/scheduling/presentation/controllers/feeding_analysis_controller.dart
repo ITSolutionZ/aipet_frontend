@@ -4,7 +4,8 @@ import '../../../../shared/shared.dart';
 
 /// 급여 분석 컨트롤러
 class FeedingAnalysisController extends StateNotifier<FeedingAnalysisState> {
-  FeedingAnalysisController({required String petId}) : super(FeedingAnalysisState(petId: petId)) {
+  FeedingAnalysisController({required String petId})
+    : super(FeedingAnalysisState(petId: petId)) {
     _loadAnalysisData();
   }
 
@@ -70,7 +71,11 @@ class FeedingAnalysisState {
 }
 
 /// 컨트롤러 프로바이더
-final feedingAnalysisControllerProvider = StateNotifierProvider.family<
-    FeedingAnalysisController, FeedingAnalysisState, String>((ref, petId) {
-  return FeedingAnalysisController(petId: petId);
-});
+final feedingAnalysisControllerProvider =
+    StateNotifierProvider.family<
+      FeedingAnalysisController,
+      FeedingAnalysisState,
+      String
+    >((ref, petId) {
+      return FeedingAnalysisController(petId: petId);
+    });

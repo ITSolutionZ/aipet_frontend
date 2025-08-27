@@ -3,19 +3,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../shared/shared.dart';
-import 'config/app_config.dart';
-import 'providers/app_initialization_provider.dart';
-import 'providers/router_provider.dart';
+import 'config/config.dart';
+import 'providers/providers.dart';
 
-/// 앱의 메인 위젯을 생성합니다.
+/// 앱의 메인 위젯을 생성하는 클래스
+///
+/// 앱 초기화 및 부트스트랩 로직을 담당합니다.
 class AppBootstrap {
-  /// 앱 초기화 및 설정
+  /// 앱 초기화 및 설정을 수행합니다.
+  ///
+  /// 환경별 설정을 초기화하고 앱 실행에 필요한 기본 설정을 로드합니다.
   static void initialize() {
     // 환경별 설정 초기화
     _initializeAppConfig();
   }
 
-  /// 환경별 앱 설정 초기화
+  /// 환경별 앱 설정을 초기화합니다.
+  ///
+  /// 환경 변수에 따라 개발/스테이징/프로덕션 설정을 선택합니다.
   static void _initializeAppConfig() {
     // 환경 변수에 따른 설정 선택
     const environment = String.fromEnvironment(
@@ -42,6 +47,8 @@ class AppBootstrap {
 }
 
 /// 메인 앱 위젯
+///
+/// 앱의 최상위 위젯으로, 초기화 상태에 따라 적절한 UI를 표시합니다.
 class AIPetApp extends ConsumerStatefulWidget {
   const AIPetApp({super.key});
 
@@ -76,7 +83,9 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
     return _buildMainApp(router);
   }
 
-  /// 로딩 중 앱 UI
+  /// 로딩 중 앱 UI를 구성합니다.
+  ///
+  /// 앱 초기화가 진행 중일 때 표시되는 로딩 화면을 반환합니다.
   Widget _buildLoadingApp() {
     return MaterialApp(
       title: 'AI Pet',
@@ -88,13 +97,13 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // 로딩 애니메이션 (Lottie 사용 권장)
+              // 브랜드 로딩 애니메이션
               const CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
               ),
               const SizedBox(height: AppSpacing.lg),
               Text(
-                '앱을 초기화하고 있습니다...',
+                'アプリを初期化しています...',
                 style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
               ),
             ],
@@ -104,7 +113,9 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
     );
   }
 
-  /// 에러 상태 앱 UI
+  /// 에러 상태 앱 UI를 구성합니다.
+  ///
+  /// 앱 초기화 중 오류가 발생했을 때 표시되는 에러 화면을 반환합니다.
   Widget _buildErrorApp(String error) {
     return MaterialApp(
       title: 'AI Pet',
@@ -125,7 +136,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  '앱 초기화 중 오류가 발생했습니다',
+                  'アプリ初期化中にエラーが発生しました',
                   style: AppFonts.titleMedium.copyWith(
                     color: AppColors.pointDark,
                     fontWeight: FontWeight.bold,
@@ -154,7 +165,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
                       vertical: AppSpacing.md,
                     ),
                   ),
-                  child: const Text('다시 시도'),
+                  child: const Text('再試行'),
                 ),
               ],
             ),
@@ -164,7 +175,9 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
     );
   }
 
-  /// 메인 앱 UI
+  /// 메인 앱 UI를 구성합니다.
+  ///
+  /// 앱 초기화가 완료된 후 표시되는 메인 앱 화면을 반환합니다.
   Widget _buildMainApp(GoRouter router) {
     return MaterialApp.router(
       title: 'AI Pet',

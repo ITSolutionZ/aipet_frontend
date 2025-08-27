@@ -12,7 +12,7 @@ class WeatherCard extends ConsumerStatefulWidget {
     this.location = '東京 品川区',
     this.weatherId = 500,
   });
-  
+
   final int temp;
   final String location;
   final int weatherId;
@@ -33,7 +33,10 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
     _controller = WeatherController(ref);
     _isDay = _controller.isDayTime();
     _message = _controller.generateWeatherMessage(widget.temp);
-    _iconName = _controller.getWeatherIconName(widget.weatherId, isDay: _isDay!);
+    _iconName = _controller.getWeatherIconName(
+      widget.weatherId,
+      isDay: _isDay!,
+    );
   }
 
   @override
@@ -91,7 +94,9 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
               color: AppColors.pointOffWhite.withValues(alpha: 0.8),
               borderRadius: BorderRadius.circular(60),
             ),
-            child: Center(child: MeteoconsIcon(name: _iconName ?? 'clear-day', size: 100)),
+            child: Center(
+              child: MeteoconsIcon(name: _iconName ?? 'clear-day', size: 100),
+            ),
           ),
         ],
       ),
@@ -127,10 +132,13 @@ class _MeteoconsIconState extends ConsumerState<MeteoconsIcon> {
   Future<void> _loadSvgAndCreateHtml() async {
     try {
       final result = await _weatherController.loadWeatherIcon(widget.name);
-      
+
       if (result.isSuccess) {
         final svgString = result.data as String;
-        final html = _weatherController.generateWeatherIconHtml(svgString, widget.size);
+        final html = _weatherController.generateWeatherIconHtml(
+          svgString,
+          widget.size,
+        );
 
         await controller.loadHtmlString(html, baseUrl: 'about:blank');
         if (mounted) {

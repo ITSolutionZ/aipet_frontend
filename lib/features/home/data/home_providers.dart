@@ -42,18 +42,20 @@ class HomeStateData {
 Stream<String> homeCurrentTimeStream(Ref ref) async* {
   late StreamController<String> controller;
   Timer? timer;
-  
+
   controller = StreamController<String>(
     onListen: () {
       // 즉시 현재 시간을 emit
       final now = DateTime.now();
-      final timeString = '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+      final timeString =
+          '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
       controller.add(timeString);
-      
+
       // 1초마다 시간 업데이트
       timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         final now = DateTime.now();
-        final timeString = '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+        final timeString =
+            '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
         if (!controller.isClosed) {
           controller.add(timeString);
         }
@@ -64,12 +66,12 @@ Stream<String> homeCurrentTimeStream(Ref ref) async* {
       timer = null;
     },
   );
-  
+
   // Riverpod provider가 dispose될 때 정리
   ref.onDispose(() {
     timer?.cancel();
     controller.close();
   });
-  
+
   yield* controller.stream;
 }

@@ -14,15 +14,15 @@ import 'route_constants.dart';
 /// 이 라우트들은 하단 네비게이션 없이 전체화면으로 표시됩니다.
 ///
 /// 주의: 설정 관련 라우트는 shell_routes.dart에서 관리됩니다.
+/// 이 라우트들은 Shell과 독립적으로 실행되며, 전체화면 경험을 제공합니다.
 class StandaloneRoutes {
   static List<RouteBase> get routes => [
     // 기타 독립 라우트
     GoRoute(
       path: RouteConstants.addFamilyManagerRoute,
       name: 'add-family-manager',
-      builder: (context, state) => const Scaffold(
-        body: Center(child: Text('Add Family Manager Screen - Coming Soon')),
-      ),
+      builder: (context, state) =>
+          const Scaffold(body: Center(child: Text('家族管理者追加画面 - 近日公開'))),
     ),
     GoRoute(
       path: RouteConstants.weightTrackingRoute,
@@ -35,10 +35,8 @@ class StandaloneRoutes {
       builder: (context, state) {
         final petId = state.uri.queryParameters['petId'] ?? '1';
         return Scaffold(
-          appBar: AppBar(title: const Text('Health Records')),
-          body: Center(
-            child: Text('Health Records for Pet ID: $petId - Coming Soon'),
-          ),
+          appBar: AppBar(title: const Text('健康記録')),
+          body: Center(child: Text('ペットID: $petId の健康記録 - 近日公開')),
         );
       },
     ),
@@ -48,10 +46,8 @@ class StandaloneRoutes {
       builder: (context, state) {
         final petId = state.uri.queryParameters['petId'] ?? '1';
         return Scaffold(
-          appBar: AppBar(title: const Text('Vaccination Records')),
-          body: Center(
-            child: Text('Vaccination Records for Pet ID: $petId - Coming Soon'),
-          ),
+          appBar: AppBar(title: const Text('ワクチン記録')),
+          body: Center(child: Text('ペットID: $petId のワクチン記録 - 近日公開')),
         );
       },
     ),
@@ -71,9 +67,8 @@ class StandaloneRoutes {
     GoRoute(
       path: RouteConstants.eventDetailRoute,
       name: 'event-detail',
-      builder: (context, state) => const Scaffold(
-        body: Center(child: Text('Event Detail Screen - Coming Soon')),
-      ),
+      builder: (context, state) =>
+          const Scaffold(body: Center(child: Text('イベント詳細画面 - 近日公開'))),
     ),
     GoRoute(
       path: RouteConstants.allTricksRoute,

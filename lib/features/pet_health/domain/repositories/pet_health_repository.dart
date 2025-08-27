@@ -7,13 +7,13 @@ abstract class PetHealthRepository {
   Future<VaccineRecordEntity> addVaccineRecord(VaccineRecordEntity record);
   Future<VaccineRecordEntity> updateVaccineRecord(VaccineRecordEntity record);
   Future<void> deleteVaccineRecord(String recordId);
-  
+
   // Weight records
   Future<List<WeightRecordEntity>> getWeightRecords(String petId);
   Future<WeightRecordEntity> addWeightRecord(WeightRecordEntity record);
   Future<WeightRecordEntity> updateWeightRecord(WeightRecordEntity record);
   Future<void> deleteWeightRecord(String recordId);
-  
+
   // Health statistics
   Future<List<VaccineRecordEntity>> getUpcomingVaccines(String petId);
   Future<WeightRecordEntity?> getLatestWeight(String petId);

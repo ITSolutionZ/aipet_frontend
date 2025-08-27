@@ -52,7 +52,7 @@ class AppointmentController extends BaseController {
     // Mock data - 실제로는 repository에서 데이터 가져옴
     final now = DateTime.now();
     final nextAppointment = now.add(const Duration(days: 1));
-    
+
     return AppointmentData(
       petName: 'ペコ',
       petImagePath: 'assets/images/dogs/poodle.jpg',
@@ -70,7 +70,7 @@ class AppointmentController extends BaseController {
     final day = scheduledTime.day;
     final hour = scheduledTime.hour;
     final minute = scheduledTime.minute.toString().padLeft(2, '0');
-    
+
     return '$location・$month月$day日 $hour:$minute';
   }
 
@@ -78,7 +78,7 @@ class AppointmentController extends BaseController {
   String getTimeUntilAppointment(DateTime scheduledTime) {
     final now = DateTime.now();
     final difference = scheduledTime.difference(now);
-    
+
     if (difference.inDays > 0) {
       return '${difference.inDays}日後';
     } else if (difference.inHours > 0) {
@@ -94,7 +94,7 @@ class AppointmentController extends BaseController {
   String getAppointmentStatus(DateTime scheduledTime) {
     final now = DateTime.now();
     final difference = scheduledTime.difference(now);
-    
+
     if (difference.inHours <= 1 && difference.inMinutes > 0) {
       return '間もなく';
     } else if (difference.inHours <= 24) {
@@ -118,7 +118,9 @@ class AppointmentController extends BaseController {
   }
 
   /// 예약 알림 설정
-  Future<AppointmentResult> setAppointmentReminder(DateTime scheduledTime) async {
+  Future<AppointmentResult> setAppointmentReminder(
+    DateTime scheduledTime,
+  ) async {
     try {
       // 알림 설정 로직
       return AppointmentResult.success('예약 알림이 설정되었습니다');

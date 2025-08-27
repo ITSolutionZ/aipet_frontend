@@ -470,7 +470,11 @@ class PointTextButton extends StatelessWidget {
 
     final baseText =
         textStyle ??
-        const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: pointBrown);
+        const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: pointBrown,
+        );
 
     final contentChild = isLoading
         ? const SizedBox(
@@ -531,7 +535,11 @@ class PointOutlinedButton extends StatelessWidget {
 
     final baseText =
         textStyle ??
-        const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: pointBrown);
+        const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: pointBrown,
+        );
 
     final contentChild = isLoading
         ? const SizedBox(

@@ -254,7 +254,7 @@ class _FeedingScheduleEditScreenState
 
             const SizedBox(height: AppSpacing.lg),
 
-            // 양 설정  
+            // 양 설정
             AmountInput(controller: _amountController),
 
             const SizedBox(height: AppSpacing.lg),

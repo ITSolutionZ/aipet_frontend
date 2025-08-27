@@ -16,10 +16,6 @@ class SplashLogoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LogoWidget(
-      imagePath: logoPath,
-      width: width,
-      height: height,
-    );
+    return LogoWidget(imagePath: logoPath, width: width, height: height);
   }
 }

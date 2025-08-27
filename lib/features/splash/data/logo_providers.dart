@@ -48,28 +48,22 @@ class LogoState extends _$LogoState {
 
   /// ITZ 로고 표시 단계 - 정확히 3초
   Future<void> _showCompanyLogo() async {
-    state = state.copyWith(
-      currentPhase: LogoPhase.company,
-      isLoading: true,
-    );
-    
+    state = state.copyWith(currentPhase: LogoPhase.company, isLoading: true);
+
     // 정확히 3초 대기
     await Future.delayed(const Duration(seconds: 3));
-    
+
     // ITZ 로고 완료 후 AI Pet 단계로 자동 전환
     state = state.copyWith(currentPhase: LogoPhase.app);
   }
 
   /// AI Pet 로고 표시 단계 - 정확히 3초
   Future<void> _showAppLogo() async {
-    state = state.copyWith(
-      currentPhase: LogoPhase.app,
-      isLoading: true,
-    );
-    
+    state = state.copyWith(currentPhase: LogoPhase.app, isLoading: true);
+
     // 정확히 3초 대기
     await Future.delayed(const Duration(seconds: 3));
-    
+
     // AI Pet 로고 완료 후 completed 단계로 자동 전환
     state = state.copyWith(currentPhase: LogoPhase.completed);
   }

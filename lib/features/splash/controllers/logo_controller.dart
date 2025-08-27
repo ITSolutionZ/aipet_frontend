@@ -61,9 +61,9 @@ class LogoController extends BaseController {
         'phase': 1,
         'totalPhases': 2,
       });
-      
+
       await Future.delayed(const Duration(seconds: 3));
-      
+
       // 2단계: 앱 로고 표시 (3초)
       yield LogoResult.success('앱 로고 표시 중...', {
         'type': 'app',
@@ -71,9 +71,9 @@ class LogoController extends BaseController {
         'phase': 2,
         'totalPhases': 2,
       });
-      
+
       await Future.delayed(const Duration(seconds: 3));
-      
+
       // 완료
       yield LogoResult.success('로고 표시 완료', {
         'type': 'completed',
@@ -81,7 +81,6 @@ class LogoController extends BaseController {
         'phase': 2,
         'totalPhases': 2,
       });
-      
     } catch (error) {
       handleError(error);
       yield LogoResult.failure(getUserFriendlyErrorMessage(error));

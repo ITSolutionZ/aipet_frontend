@@ -205,7 +205,9 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen> {
             // 펫 프로필 이미지
             CircleAvatar(
               radius: 30,
-              backgroundImage: AssetImage(pet.imagePath ?? 'assets/images/dogs/shiba.png'),
+              backgroundImage: AssetImage(
+                pet.imagePath ?? 'assets/images/dogs/shiba.png',
+              ),
               backgroundColor: AppColors.pointBrown,
             ),
             const SizedBox(width: AppSpacing.md),
@@ -385,7 +387,8 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen> {
   Future<void> _shareProfile(PetProfileEntity pet) async {
     try {
       final shareLink = _generateShareLink(pet);
-      final shareText = '''
+      final shareText =
+          '''
 🐾 ${pet.name}의 프로필을 공유합니다!
 
 반려동물: ${pet.type} (${pet.breed})
@@ -396,10 +399,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen> {
 AiPet 앱에서 더 많은 정보를 확인하세요!
       ''';
 
-      await Share.share(
-        shareText,
-        subject: '${pet.name}의 펫 프로필',
-      );
+      await Share.share(shareText, subject: '${pet.name}의 펫 프로필');
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -496,7 +496,8 @@ AiPet 앱에서 더 많은 정보를 확인하세요!
                       ),
                     ),
                     IconButton(
-                      onPressed: () => _copyLinkToClipboard(_generateShareLink(pet)),
+                      onPressed: () =>
+                          _copyLinkToClipboard(_generateShareLink(pet)),
                       icon: const Icon(
                         Icons.copy,
                         color: AppColors.pointBlue,

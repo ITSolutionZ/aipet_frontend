@@ -62,88 +62,96 @@ class _AppointmentCardState extends ConsumerState<AppointmentCard> {
           color: AppColors.pointBrown.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(AppRadius.large),
         ),
-      child: Row(
-        children: [
-          // 펫 아바타
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withValues(alpha: 0.3),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(25),
-              child: Image.asset(
-                _appointmentData!.petImagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.pets, color: Colors.white, size: 25);
-                },
+        child: Row(
+          children: [
+            // 펫 아바타
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.3),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: Image.asset(
+                  _appointmentData!.petImagePath,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(
+                      Icons.pets,
+                      color: Colors.white,
+                      size: 25,
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.md),
 
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _appointmentData!.petName,
+                    style: AppFonts.fredoka(
+                      fontSize: AppFonts.lg,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    _appointmentData!.appointmentTitle,
+                    style: AppFonts.bodyMedium.copyWith(
+                      color: Colors.white.withValues(alpha: 0.9),
+                    ),
+                  ),
+                  Text(
+                    _appointmentData!.appointmentInfo,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: Colors.white.withValues(alpha: 0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // 위치 아이콘과 상세 버튼
+            Column(
               children: [
-                Text(
-                  _appointmentData!.petName,
-                  style: AppFonts.fredoka(
-                    fontSize: AppFonts.lg,
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: AppColors.pointBrown.withValues(alpha: 0.3),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.location_on,
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                    size: 20,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  _appointmentData!.appointmentTitle,
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: Colors.white.withValues(alpha: 0.9),
+                const SizedBox(height: AppSpacing.sm),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
                   ),
-                ),
-                Text(
-                  _appointmentData!.appointmentInfo,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: Colors.white.withValues(alpha: 0.8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(AppRadius.medium),
+                  ),
+                  child: Text(
+                    '詳細',
+                    style: AppFonts.bodySmall.copyWith(color: Colors.white),
                   ),
                 ),
               ],
             ),
-          ),
-
-          // 위치 아이콘과 상세 버튼
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.sm),
-                decoration: BoxDecoration(
-                  color: AppColors.pointBrown.withValues(alpha: 0.3),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.location_on, color: Colors.white, size: 20),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                ),
-                child: Text(
-                  '詳細',
-                  style: AppFonts.bodySmall.copyWith(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -223,10 +231,7 @@ class _AppointmentCardState extends ConsumerState<AppointmentCard> {
                 ),
                 Text(
                   '新しい予約を作成してください',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
             ),
