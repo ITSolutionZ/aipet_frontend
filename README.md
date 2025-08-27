@@ -1,5 +1,7 @@
 # aipet_frontend
 
+aipetのフロントエンドレポジトリです
+
 A new Flutter project.
 
 ## Getting Started
