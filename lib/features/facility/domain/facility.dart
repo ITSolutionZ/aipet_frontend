@@ -1,7 +1,4 @@
-enum FacilityType {
-  grooming,
-  hospital,
-}
+enum FacilityType { grooming, hospital }
 
 class Facility {
   final String id;

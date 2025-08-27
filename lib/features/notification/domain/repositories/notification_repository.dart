@@ -8,14 +8,10 @@ abstract class NotificationRepository {
   Future<NotificationModel?> getNotificationById(String id);
 
   /// 알림 생성
-  Future<NotificationModel> createNotification(
-    NotificationModel notification,
-  );
+  Future<NotificationModel> createNotification(NotificationModel notification);
 
   /// 알림 업데이트
-  Future<NotificationModel> updateNotification(
-    NotificationModel notification,
-  );
+  Future<NotificationModel> updateNotification(NotificationModel notification);
 
   /// 알림 삭제
   Future<void> deleteNotification(String id);

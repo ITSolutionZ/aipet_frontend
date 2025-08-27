@@ -21,7 +21,8 @@ class FacilityDetailScreenRefactored extends ConsumerStatefulWidget {
       _FacilityDetailScreenRefactoredState();
 }
 
-class _FacilityDetailScreenRefactoredState extends ConsumerState<FacilityDetailScreenRefactored> {
+class _FacilityDetailScreenRefactoredState
+    extends ConsumerState<FacilityDetailScreenRefactored> {
   late FacilityDetailController _controller;
   Facility? _facility;
   bool _isLoading = true;
@@ -63,7 +64,11 @@ class _FacilityDetailScreenRefactoredState extends ConsumerState<FacilityDetailS
         appBar: AppBar(
           backgroundColor: AppColors.pointBrown,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: 20,
+            ),
             onPressed: () => context.pop(),
           ),
           title: Text(
@@ -90,7 +95,11 @@ class _FacilityDetailScreenRefactoredState extends ConsumerState<FacilityDetailS
         appBar: AppBar(
           backgroundColor: AppColors.pointBrown,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: 20,
+            ),
             onPressed: () => context.pop(),
           ),
           title: Text(
@@ -109,12 +118,7 @@ class _FacilityDetailScreenRefactoredState extends ConsumerState<FacilityDetailS
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      body: CustomScrollView(
-        slivers: [
-          _buildSliverAppBar(),
-          _buildContent(),
-        ],
-      ),
+      body: CustomScrollView(slivers: [_buildSliverAppBar(), _buildContent()]),
     );
   }
 
@@ -257,9 +261,9 @@ class _FacilityDetailScreenRefactoredState extends ConsumerState<FacilityDetailS
             ),
           ),
         ),
-        
+
         const SizedBox(height: AppSpacing.md),
-        
+
         // 연락처 추가 버튼
         Center(
           child: TextButton.icon(

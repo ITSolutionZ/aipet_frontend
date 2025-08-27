@@ -5,14 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AI Pet App Integration Tests', () {
-    testWidgets('should complete full app flow from splash to home',
-        (WidgetTester tester) async {
+    testWidgets('should complete full app flow from splash to home', (
+      WidgetTester tester,
+    ) async {
       // Arrange
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: AIPetApp(),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: AIPetApp()));
 
       // Act & Assert - Splash Screen (로고 이미지 확인)
       expect(find.byType(Image), findsOneWidget);
@@ -23,7 +20,10 @@ void main() {
 
       // Act & Assert - Onboarding or Login Screen
       // Check if we're on onboarding or login screen
-      final isOnboarding = find.text('반려동물과 함께하는\n스마트한 일상').evaluate().isNotEmpty;
+      final isOnboarding = find
+          .text('반려동물과 함께하는\n스마트한 일상')
+          .evaluate()
+          .isNotEmpty;
       final isLogin = find.text('로그인').evaluate().isNotEmpty;
 
       if (isOnboarding) {
@@ -42,14 +42,11 @@ void main() {
       expect(find.text('설정'), findsOneWidget);
     });
 
-    testWidgets('should handle navigation between main screens',
-        (WidgetTester tester) async {
+    testWidgets('should handle navigation between main screens', (
+      WidgetTester tester,
+    ) async {
       // Arrange - Start app and navigate to home
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: AIPetApp(),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: AIPetApp()));
       await tester.pumpAndSettle(const Duration(seconds: 4));
 
       // Skip onboarding/login if needed
@@ -76,13 +73,11 @@ void main() {
       expect(find.text('홈'), findsOneWidget);
     });
 
-    testWidgets('should handle pet management flow', (WidgetTester tester) async {
+    testWidgets('should handle pet management flow', (
+      WidgetTester tester,
+    ) async {
       // Arrange - Navigate to pet screen
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: AIPetApp(),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: AIPetApp()));
       await tester.pumpAndSettle(const Duration(seconds: 4));
       await _skipToHome(tester);
 
@@ -96,14 +91,8 @@ void main() {
         await tester.pumpAndSettle();
 
         // Fill pet information
-        await tester.enterText(
-          find.byType(TextField).first,
-          '테스트 펫',
-        );
-        await tester.enterText(
-          find.byType(TextField).at(1),
-          '3',
-        );
+        await tester.enterText(find.byType(TextField).first, '테스트 펫');
+        await tester.enterText(find.byType(TextField).at(1), '3');
 
         // Select pet type
         await tester.tap(find.text('강아지'));
@@ -118,13 +107,11 @@ void main() {
       }
     });
 
-    testWidgets('should handle authentication flow', (WidgetTester tester) async {
+    testWidgets('should handle authentication flow', (
+      WidgetTester tester,
+    ) async {
       // Arrange
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: AIPetApp(),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: AIPetApp()));
       await tester.pumpAndSettle(const Duration(seconds: 4));
 
       // Check if login screen is shown
@@ -137,14 +124,11 @@ void main() {
       expect(find.text('홈'), findsOneWidget);
     });
 
-    testWidgets('should handle settings and logout flow',
-        (WidgetTester tester) async {
+    testWidgets('should handle settings and logout flow', (
+      WidgetTester tester,
+    ) async {
       // Arrange - Navigate to settings
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: AIPetApp(),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: AIPetApp()));
       await tester.pumpAndSettle(const Duration(seconds: 4));
       await _skipToHome(tester);
 
@@ -169,13 +153,11 @@ void main() {
       }
     });
 
-    testWidgets('should handle splash screen animation', (WidgetTester tester) async {
+    testWidgets('should handle splash screen animation', (
+      WidgetTester tester,
+    ) async {
       // Arrange
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: AIPetApp(),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: AIPetApp()));
 
       // Act & Assert - Initial splash state
       expect(find.byType(Image), findsOneWidget);
@@ -189,10 +171,12 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 4));
 
       // Verify navigation occurred
-      expect(find.text('홈').evaluate().isNotEmpty ||
-          find.text('로그인').evaluate().isNotEmpty ||
-          find.text('반려동물과 함께하는\n스마트한 일상').evaluate().isNotEmpty,
-          isTrue);
+      expect(
+        find.text('홈').evaluate().isNotEmpty ||
+            find.text('로그인').evaluate().isNotEmpty ||
+            find.text('반려동물과 함께하는\n스마트한 일상').evaluate().isNotEmpty,
+        isTrue,
+      );
     });
   });
 }
@@ -213,14 +197,8 @@ Future<void> _completeOnboarding(WidgetTester tester) async {
 /// 로그인 플로우 완료
 Future<void> _completeLogin(WidgetTester tester) async {
   // Enter test credentials
-  await tester.enterText(
-    find.byType(TextField).first,
-    'test@example.com',
-  );
-  await tester.enterText(
-    find.byType(TextField).at(1),
-    'password123',
-  );
+  await tester.enterText(find.byType(TextField).first, 'test@example.com');
+  await tester.enterText(find.byType(TextField).at(1), 'password123');
 
   // Login
   await tester.tap(find.text('로그인'));

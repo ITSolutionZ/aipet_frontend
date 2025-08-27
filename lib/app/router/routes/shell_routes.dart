@@ -8,9 +8,9 @@ import '../../../features/notification/presentation/screens/screens.dart';
 import '../../../features/pet_activities/pet_activities.dart';
 import '../../../features/pet_profile/presentation/presentation.dart';
 import '../../../features/scheduling/presentation/presentation.dart';
-import '../../../shared/mock_data/mock_data_service.dart';
 import '../../../features/settings/presentation/screens/screens.dart';
 import '../../../features/walk/presentation/screens/screens.dart';
+import '../../../shared/mock_data/mock_data_service.dart';
 import '../../../shared/widgets/navigation/main_navigation_screen.dart';
 import 'route_constants.dart';
 
@@ -18,6 +18,9 @@ import 'route_constants.dart';
 ///
 /// 이 Shell은 MainNavigationScreen을 통해 하단 네비게이션을 제공하며,
 /// 홈, 스케줄링, AI, 산책, 캘린더, 설정 탭을 포함합니다.
+///
+/// 모든 메인 앱 화면은 이 Shell 내에서 실행되며, 하단 네비게이션을 통해
+/// 탭 간 이동이 가능합니다.
 class ShellRoutes {
   static ShellRoute get shellRoute => ShellRoute(
     builder: (context, state, child) {
@@ -99,12 +102,18 @@ class ShellRoutes {
                 path: 'edit',
                 name: 'feeding-schedule-edit',
                 builder: (context, state) {
-                  final defaults = MockDataService.getDefaultFeedingScheduleParams();
+                  final defaults =
+                      MockDataService.getDefaultFeedingScheduleParams();
                   final mealType =
-                      state.uri.queryParameters['mealType'] ?? defaults['mealType']!;
-                  final time = state.uri.queryParameters['time'] ?? defaults['time']!;
-                  final amount = state.uri.queryParameters['amount'] ?? defaults['amount']!;
-                  final petId = state.uri.queryParameters['petId'] ?? defaults['petId']!;
+                      state.uri.queryParameters['mealType'] ??
+                      defaults['mealType']!;
+                  final time =
+                      state.uri.queryParameters['time'] ?? defaults['time']!;
+                  final amount =
+                      state.uri.queryParameters['amount'] ??
+                      defaults['amount']!;
+                  final petId =
+                      state.uri.queryParameters['petId'] ?? defaults['petId']!;
                   return FeedingScheduleEditScreen(
                     mealType: mealType,
                     currentTime: time,

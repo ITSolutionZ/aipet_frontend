@@ -27,7 +27,7 @@ class WalkSummaryController extends BaseController {
         'weeklyTime': 120,
         'lastWalkTime': DateTime.now().subtract(const Duration(hours: 2)),
       };
-      
+
       return WalkSummaryResult.success('산책 정보가 로드되었습니다', walkData);
     } catch (error) {
       handleError(error);
@@ -67,7 +67,7 @@ class WalkSummaryController extends BaseController {
   /// 산책 권장 메시지 생성
   String generateWalkRecommendation(double todayDistance, int todayTime) {
     final now = DateTime.now();
-    
+
     if (todayDistance == 0 && now.hour >= 16) {
       return 'まだ散歩していません。お散歩はいかがですか？';
     } else if (todayDistance < 5.0) {
