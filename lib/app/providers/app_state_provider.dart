@@ -2,7 +2,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_state_provider.g.dart';
 
-/// 앱 전체 상태 관리
+/// 앱 전체 상태를 관리하는 Provider
+///
+/// 앱의 전역 상태를 관리하며, 로딩, 에러, 시간, 온라인 상태 등을 추적합니다.
 @riverpod
 class AppState extends _$AppState {
   @override
@@ -17,17 +19,23 @@ class AppState extends _$AppState {
     );
   }
 
-  /// 로딩 상태 설정
+  /// 로딩 상태를 설정합니다.
+  ///
+  /// [loading] 로딩 상태 여부
   void setLoading(bool loading) {
     state = state.copyWith(isLoading: loading);
   }
 
-  /// 에러 상태 설정
+  /// 에러 상태를 설정합니다.
+  ///
+  /// [error] 에러 메시지 (null이면 에러 없음)
   void setError(String? error) {
     state = state.copyWith(error: error);
   }
 
-  /// 현재 시간 업데이트
+  /// 현재 시간을 업데이트합니다.
+  ///
+  /// 현재 시간을 HH:MM 형식으로 포맷하여 상태에 저장합니다.
   void updateCurrentTime() {
     final now = DateTime.now();
     final timeString =
@@ -35,22 +43,30 @@ class AppState extends _$AppState {
     state = state.copyWith(currentTime: timeString);
   }
 
-  /// 온라인 상태 설정
+  /// 온라인 상태를 설정합니다.
+  ///
+  /// [isOnline] 온라인 상태 여부
   void setOnlineStatus(bool isOnline) {
     state = state.copyWith(isOnline: isOnline);
   }
 
-  /// 앱 버전 설정
+  /// 앱 버전을 설정합니다.
+  ///
+  /// [version] 설정할 앱 버전
   void setAppVersion(String version) {
     state = state.copyWith(appVersion: version);
   }
 
-  /// 마지막 동기화 시간 설정
+  /// 마지막 동기화 시간을 설정합니다.
+  ///
+  /// [syncTime] 마지막 동기화 시간 (null이면 동기화 기록 없음)
   void setLastSyncTime(DateTime? syncTime) {
     state = state.copyWith(lastSyncTime: syncTime);
   }
 
-  /// 앱 상태 초기화
+  /// 앱 상태를 초기화합니다.
+  ///
+  /// 모든 상태를 기본값으로 리셋합니다.
   void reset() {
     state = const AppStateData(
       isLoading: false,
@@ -64,6 +80,9 @@ class AppState extends _$AppState {
 }
 
 /// 앱 상태 데이터 클래스
+///
+/// 앱의 전역 상태를 담는 불변 데이터 클래스입니다.
+/// 모든 상태 변경은 copyWith 메서드를 통해 이루어집니다.
 class AppStateData {
   final bool isLoading;
   final String? error;
