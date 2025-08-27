@@ -1,0 +1,2 @@
+# aipet_frontend
+aipetのフロントエンドレポジトリです
