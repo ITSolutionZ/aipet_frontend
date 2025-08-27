@@ -1,0 +1,122 @@
+{
+  "cmake.ignoreCMakeListsMissing": true,
+
+  // Flutter 관련 설정
+  "dart.flutterSdkPath": null,
+  "dart.sdkPath": null,
+  "dart.analysisServerFolding": true,
+  "dart.analysisServerFoldingOutline": true,
+  "dart.closingLabels": true,
+  "dart.lineLength": 80,
+  "dart.previewFlutterUiGuides": true,
+  "dart.previewFlutterUiGuidesCustomTracking": true,
+  "dart.showTodos": true,
+  "dart.enableSdkFormatter": true,
+
+  // 에디터 설정
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.rulers": [80],
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+
+  // 파일 관련 설정
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+
+  // 검색 설정
+  "search.exclude": {
+    "**/build/**": true,
+    "**/.dart_tool/**": true,
+    "**/.flutter-plugins/**": true,
+    "**/.flutter-plugins-dependencies": true,
+    "**/ios/Pods/**": true,
+    "**/android/.gradle/**": true
+  },
+
+  // 파일 감시 설정
+  "files.watcherExclude": {
+    "**/build/**": true,
+    "**/.dart_tool/**": true,
+    "**/ios/Pods/**": true,
+    "**/android/.gradle/**": true
+  },
+
+  // Flutter Hot Reload 설정
+  "dart.hotReloadOnSave": "all",
+
+  // 코드 스니펫 설정
+  "editor.snippetSuggestions": "top",
+
+  // 자동 완성 설정
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+
+  // 브래킷 페어 설정
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+
+  // 미니맵 설정
+  "editor.minimap.enabled": false,
+  "editor.minimap.showSlider": "always",
+
+  // 라인 번호 설정
+  "editor.lineNumbers": "on",
+  "editor.renderLineHighlight": "all",
+
+  // 커서 설정
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.cursorWidth": 2,
+
+  // 선택 설정
+  "editor.multiCursorModifier": "alt",
+  "editor.multiCursorPaste": "full",
+
+  // 스크롤 설정
+  "editor.smoothScrolling": true,
+  "editor.scrollBeyondLastLine": false,
+
+  // 폰트 설정
+  "editor.fontFamily": "'Noto Sans JP', 'Fira Code', 'Consolas', 'Monaco', monospace",
+  "editor.fontSize": 12,
+  "editor.fontLigatures": true,
+
+  // 사이드바 및 탐색기 폰트 설정
+  "workbench.tree.indent": 20,
+  "workbench.tree.renderIndentGuides": "always",
+  "workbench.fontAliasing": "antialiased",
+
+  // 파일 탐색기 폰트 설정
+  "explorer.decorations.fontFamily": "'Fira Code', monospace",
+  "explorer.decorations.fontSize": 12,
+
+  // 사이드바 폰트 설정
+  "workbench.sideBar.location": "left",
+
+  // 테마 설정
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.iconTheme": "material-icon-theme",
+
+  // 확장 프로그램 권장 설정
+  "extensions.ignoreRecommendations": false,
+
+  // Git 설정
+  "git.enableSmartCommit": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+
+  // 터미널 설정
+  "terminal.integrated.fontFamily": "'JetBrains Mono', 'Fira Code', monospace",
+  "terminal.integrated.fontSize": 12,
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable"
+}
