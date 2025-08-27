@@ -51,12 +51,8 @@ class PetSelectionCard extends StatelessWidget {
             Text(
               petInfo['name'],
               style: AppFonts.bodySmall.copyWith(
-                color: isSelected
-                    ? AppColors.pointBrown
-                    : AppColors.pointDark,
-                fontWeight: isSelected
-                    ? FontWeight.bold
-                    : FontWeight.normal,
+                color: isSelected ? AppColors.pointBrown : AppColors.pointDark,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
             Text(

@@ -54,7 +54,10 @@ void main() {
 
     test('should record user action', () {
       // Act
-      service.recordUserAction('button_click', context: {'screen': 'TestScreen'});
+      service.recordUserAction(
+        'button_click',
+        context: {'screen': 'TestScreen'},
+      );
 
       // Assert
       final stats = service.getUserExperienceStats();

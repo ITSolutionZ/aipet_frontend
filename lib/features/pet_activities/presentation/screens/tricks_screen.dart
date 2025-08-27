@@ -127,11 +127,7 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
           color: AppColors.pointBlue.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppSpacing.sm),
         ),
-        child: Icon(
-          icon,
-          color: AppColors.pointBlue,
-          size: 24,
-        ),
+        child: Icon(icon, color: AppColors.pointBlue, size: 24),
       ),
       title: Text(
         title,
@@ -172,9 +168,7 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
           ),
           content: Text(
             'Are you sure you want to reset all trick progress? This action cannot be undone.',
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointDark,
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
           ),
           actions: [
             TextButton(

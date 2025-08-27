@@ -12,7 +12,10 @@ abstract class ScheduleRepository {
   Future<List<ScheduleEntity>> getSchedulesByDate(DateTime date);
 
   /// 특정 기간의 스케줄 가져오기
-  Future<List<ScheduleEntity>> getSchedulesByDateRange(DateTime startDate, DateTime endDate);
+  Future<List<ScheduleEntity>> getSchedulesByDateRange(
+    DateTime startDate,
+    DateTime endDate,
+  );
 
   /// 특정 스케줄 가져오기
   Future<ScheduleEntity?> getScheduleById(String id);

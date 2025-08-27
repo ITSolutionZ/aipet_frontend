@@ -37,7 +37,11 @@ class AccessibleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final effectiveBackgroundColor = backgroundColor ?? theme.primaryColor;
-    final effectiveForegroundColor = foregroundColor ?? (theme.primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white);
+    final effectiveForegroundColor =
+        foregroundColor ??
+        (theme.primaryColor.computeLuminance() > 0.5
+            ? Colors.black
+            : Colors.white);
 
     return Semantics(
       button: true,
@@ -49,7 +53,9 @@ class AccessibleButton extends StatelessWidget {
           width: width,
           height: height,
           decoration: BoxDecoration(
-            color: enabled && !isLoading ? effectiveBackgroundColor : effectiveBackgroundColor.withValues(alpha: 0.5),
+            color: enabled && !isLoading
+                ? effectiveBackgroundColor
+                : effectiveBackgroundColor.withValues(alpha: 0.5),
             borderRadius: borderRadius ?? BorderRadius.circular(8.0),
             border: border,
           ),
@@ -59,7 +65,12 @@ class AccessibleButton extends StatelessWidget {
               onTap: enabled && !isLoading ? onPressed : null,
               borderRadius: borderRadius ?? BorderRadius.circular(8.0),
               child: Container(
-                padding: padding ?? const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding:
+                    padding ??
+                    const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 12.0,
+                    ),
                 child: Center(
                   child: isLoading
                       ? SizedBox(
@@ -67,7 +78,9 @@ class AccessibleButton extends StatelessWidget {
                           height: 20.0,
                           child: CircularProgressIndicator(
                             strokeWidth: 2.0,
-                            valueColor: AlwaysStoppedAnimation<Color>(effectiveForegroundColor),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              effectiveForegroundColor,
+                            ),
                           ),
                         )
                       : DefaultTextStyle(
@@ -137,7 +150,9 @@ class AccessibleIconButton extends StatelessWidget {
           width: effectiveSize,
           height: effectiveSize,
           decoration: BoxDecoration(
-            color: enabled ? effectiveBackgroundColor : effectiveBackgroundColor.withValues(alpha: 0.5),
+            color: enabled
+                ? effectiveBackgroundColor
+                : effectiveBackgroundColor.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(effectiveSize / 2),
           ),
           child: Material(
@@ -149,7 +164,9 @@ class AccessibleIconButton extends StatelessWidget {
                 padding: padding ?? EdgeInsets.all(effectiveSize * 0.25),
                 child: Icon(
                   icon,
-                  color: enabled ? effectiveIconColor : effectiveIconColor?.withValues(alpha: 0.5),
+                  color: enabled
+                      ? effectiveIconColor
+                      : effectiveIconColor?.withValues(alpha: 0.5),
                   size: effectiveSize * 0.5,
                 ),
               ),
@@ -215,14 +232,27 @@ class _AccessibleToggleButtonState extends State<AccessibleToggleButton> {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: widget.onChanged != null ? () => widget.onChanged!(!widget.value) : null,
+              onTap: widget.onChanged != null
+                  ? () => widget.onChanged!(!widget.value)
+                  : null,
               borderRadius: BorderRadius.circular(8.0),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
                 child: Center(
                   child: widget.value
-                      ? (widget.activeChild ?? const Text('활성화', style: TextStyle(color: Colors.white)))
-                      : (widget.inactiveChild ?? const Text('비활성화', style: TextStyle(color: Colors.white))),
+                      ? (widget.activeChild ??
+                            const Text(
+                              '활성화',
+                              style: TextStyle(color: Colors.white),
+                            ))
+                      : (widget.inactiveChild ??
+                            const Text(
+                              '비활성화',
+                              style: TextStyle(color: Colors.white),
+                            )),
                 ),
               ),
             ),

@@ -67,7 +67,11 @@ class SocialLoginButton extends StatelessWidget {
   Widget _buildIcon() {
     switch (type) {
       case SocialLoginType.email:
-        return const Icon(Icons.email_outlined, size: 20, color: AppColors.pointDark);
+        return const Icon(
+          Icons.email_outlined,
+          size: 20,
+          color: AppColors.pointDark,
+        );
       case SocialLoginType.google:
         return Container(
           width: 20,

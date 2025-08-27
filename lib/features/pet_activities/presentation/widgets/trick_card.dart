@@ -36,7 +36,7 @@ class TrickCard extends StatelessWidget {
               // 트릭 이미지
               _buildTrickImage(),
               const SizedBox(width: AppSpacing.md),
-              
+
               // 트릭 정보
               Expanded(
                 child: Column(
@@ -52,9 +52,9 @@ class TrickCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    
+
                     const SizedBox(height: AppSpacing.xs),
-                    
+
                     // 설명 (있는 경우)
                     if (trick.description?.isNotEmpty == true) ...[
                       Text(
@@ -67,7 +67,7 @@ class TrickCard extends StatelessWidget {
                       ),
                       const SizedBox(height: AppSpacing.sm),
                     ],
-                    
+
                     // 난이도와 진행도
                     Row(
                       children: [
@@ -75,16 +75,15 @@ class TrickCard extends StatelessWidget {
                         _buildDifficultyChip(),
                         const Spacer(),
                         // 진행도 (학습 중인 경우)
-                        if (trick.progress != null)
-                          _buildProgressIndicator(),
+                        if (trick.progress != null) _buildProgressIndicator(),
                       ],
                     ),
                   ],
                 ),
               ),
-              
+
               const SizedBox(width: AppSpacing.sm),
-              
+
               // 액션 버튼
               _buildActionButton(),
             ],
@@ -107,7 +106,8 @@ class TrickCard extends StatelessWidget {
         child: Image.asset(
           trick.imagePath,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+          errorBuilder: (context, error, stackTrace) =>
+              _buildPlaceholderImage(),
         ),
       ),
     );
@@ -117,11 +117,7 @@ class TrickCard extends StatelessWidget {
     return Container(
       color: AppColors.pointBrown.withValues(alpha: 0.1),
       child: const Center(
-        child: Icon(
-          Icons.pets,
-          color: AppColors.pointBrown,
-          size: 24,
-        ),
+        child: Icon(Icons.pets, color: AppColors.pointBrown, size: 24),
       ),
     );
   }
@@ -129,7 +125,7 @@ class TrickCard extends StatelessWidget {
   Widget _buildDifficultyChip() {
     final difficulty = trick.difficulty ?? 'unknown';
     final color = _getDifficultyColor(difficulty);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
@@ -152,7 +148,7 @@ class TrickCard extends StatelessWidget {
 
   Widget _buildProgressIndicator() {
     if (trick.progress == null) return const SizedBox.shrink();
-    
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -170,7 +166,9 @@ class TrickCard extends StatelessWidget {
           child: LinearProgressIndicator(
             value: (trick.progress ?? 0) / 100,
             backgroundColor: AppColors.pointDark.withValues(alpha: 0.1),
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.pointBlue),
+            valueColor: const AlwaysStoppedAnimation<Color>(
+              AppColors.pointBlue,
+            ),
           ),
         ),
       ],
@@ -180,7 +178,7 @@ class TrickCard extends StatelessWidget {
   Widget _buildActionButton() {
     final isLearned = trick.progress != null && trick.progress! >= 100;
     final isLearning = trick.progress != null && trick.progress! < 100;
-    
+
     if (isLearned) {
       return Container(
         padding: const EdgeInsets.all(AppSpacing.sm),
@@ -188,14 +186,10 @@ class TrickCard extends StatelessWidget {
           color: AppColors.pointGreen,
           shape: BoxShape.circle,
         ),
-        child: const Icon(
-          Icons.check,
-          color: Colors.white,
-          size: 16,
-        ),
+        child: const Icon(Icons.check, color: Colors.white, size: 16),
       );
     }
-    
+
     return IconButton(
       onPressed: onStartLearning,
       icon: Icon(

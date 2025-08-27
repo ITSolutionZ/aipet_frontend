@@ -7,10 +7,7 @@ import '../../domain/entities/youtube_video_entity.dart';
 class AddYouTubeVideoDialog extends StatefulWidget {
   final String petId;
 
-  const AddYouTubeVideoDialog({
-    super.key,
-    required this.petId,
-  });
+  const AddYouTubeVideoDialog({super.key, required this.petId});
 
   @override
   State<AddYouTubeVideoDialog> createState() => _AddYouTubeVideoDialogState();
@@ -22,7 +19,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _tagController = TextEditingController();
-  
+
   final List<String> _tags = [];
   bool _isLoading = false;
 
@@ -52,16 +49,16 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
     try {
       // YouTube API 호출 시뮬레이션
       await Future.delayed(const Duration(milliseconds: 500));
-      
+
       // 제목이 비어있다면 자동으로 채우기
       if (_titleController.text.trim().isEmpty) {
         _titleController.text = MockDataService.getDefaultVideoTitle(videoId);
       }
-      
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('유효한 YouTube URL입니다!')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('유효한 YouTube URL입니다!')));
       }
     } catch (error) {
       _showError('YouTube 비디오 정보를 가져올 수 없습니다.');
@@ -90,10 +87,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 
@@ -102,7 +96,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
 
     final url = _urlController.text.trim();
     final videoId = YouTubeVideoEntity.extractVideoId(url);
-    
+
     if (videoId == null) {
       _showError('유효하지 않은 YouTube URL입니다.');
       return;
@@ -133,19 +127,19 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
                 // YouTube URL 입력
                 _buildUrlField(),
                 const SizedBox(height: AppSpacing.md),
-                
+
                 // 제목 입력
                 _buildTitleField(),
                 const SizedBox(height: AppSpacing.md),
-                
+
                 // 설명 입력
                 _buildDescriptionField(),
                 const SizedBox(height: AppSpacing.md),
-                
+
                 // 태그 입력
                 _buildTagField(),
                 const SizedBox(height: AppSpacing.sm),
-                
+
                 // 태그 목록
                 if (_tags.isNotEmpty) _buildTagList(),
               ],
@@ -220,10 +214,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '제목 *',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        const Text('제목 *', style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: _titleController,
@@ -250,10 +241,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '설명',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        const Text('설명', style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: _descriptionController,
@@ -275,10 +263,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '태그',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        const Text('태그', style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: AppSpacing.xs),
         Row(
           children: [
@@ -325,15 +310,16 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
         Wrap(
           spacing: AppSpacing.xs,
           runSpacing: AppSpacing.xs,
-          children: _tags.map((tag) => Chip(
-            label: Text(
-              tag,
-              style: const TextStyle(fontSize: 12),
-            ),
-            deleteIcon: const Icon(Icons.close, size: 16),
-            onDeleted: () => _removeTag(tag),
-            backgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
-          )).toList(),
+          children: _tags
+              .map(
+                (tag) => Chip(
+                  label: Text(tag, style: const TextStyle(fontSize: 12)),
+                  deleteIcon: const Icon(Icons.close, size: 16),
+                  onDeleted: () => _removeTag(tag),
+                  backgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
+                ),
+              )
+              .toList(),
         ),
       ],
     );

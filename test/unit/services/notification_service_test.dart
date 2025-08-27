@@ -25,11 +25,7 @@ void main() {
         const type = NotificationType.general;
 
         // Act
-        await service.createNotification(
-          title: title,
-          body: body,
-          type: type,
-        );
+        await service.createNotification(title: title, body: body, type: type);
 
         // Assert
         final notifications = await service.getNotifications();
@@ -59,16 +55,8 @@ void main() {
       test('should create notification with actions', () async {
         // Arrange
         final actions = [
-          const NotificationAction(
-            id: 'action1',
-            title: '확인',
-            type: 'confirm',
-          ),
-          const NotificationAction(
-            id: 'action2',
-            title: '취소',
-            type: 'cancel',
-          ),
+          const NotificationAction(id: 'action1', title: '확인', type: 'confirm'),
+          const NotificationAction(id: 'action2', title: '취소', type: 'cancel'),
         ];
 
         // Act
@@ -88,11 +76,7 @@ void main() {
 
       test('should create notification with data', () async {
         // Arrange
-        final data = {
-          'key1': 'value1',
-          'key2': 123,
-          'key3': true,
-        };
+        final data = {'key1': 'value1', 'key2': 123, 'key3': true};
 
         // Act
         await service.createNotification(
@@ -154,9 +138,15 @@ void main() {
 
         // Assert
         expect(generalNotifications.length, equals(1));
-        expect(generalNotifications.first.type, equals(NotificationType.general));
+        expect(
+          generalNotifications.first.type,
+          equals(NotificationType.general),
+        );
         expect(reservationNotifications.length, equals(1));
-        expect(reservationNotifications.first.type, equals(NotificationType.reservation));
+        expect(
+          reservationNotifications.first.type,
+          equals(NotificationType.reservation),
+        );
       });
 
       test('should filter notifications by status', () async {
@@ -287,9 +277,18 @@ void main() {
 
         // Assert
         expect(loadedSettings.enabled, equals(customSettings.enabled));
-        expect(loadedSettings.soundEnabled, equals(customSettings.soundEnabled));
-        expect(loadedSettings.vibrationEnabled, equals(customSettings.vibrationEnabled));
-        expect(loadedSettings.badgeEnabled, equals(customSettings.badgeEnabled));
+        expect(
+          loadedSettings.soundEnabled,
+          equals(customSettings.soundEnabled),
+        );
+        expect(
+          loadedSettings.vibrationEnabled,
+          equals(customSettings.vibrationEnabled),
+        );
+        expect(
+          loadedSettings.badgeEnabled,
+          equals(customSettings.badgeEnabled),
+        );
       });
 
       test('should check if notification type is enabled', () async {
@@ -515,7 +514,10 @@ void main() {
         expect(fromJson.enabled, equals(settings.enabled));
         expect(fromJson.soundEnabled, equals(settings.soundEnabled));
         expect(fromJson.typeSettings[NotificationType.general], equals(true));
-        expect(fromJson.typeSettings[NotificationType.reservation], equals(false));
+        expect(
+          fromJson.typeSettings[NotificationType.reservation],
+          equals(false),
+        );
       });
 
       test('should copy notification settings', () {
@@ -534,8 +536,14 @@ void main() {
         // Assert
         expect(copiedSettings.enabled, equals(false));
         expect(copiedSettings.soundEnabled, equals(false));
-        expect(copiedSettings.vibrationEnabled, equals(originalSettings.vibrationEnabled));
-        expect(copiedSettings.badgeEnabled, equals(originalSettings.badgeEnabled));
+        expect(
+          copiedSettings.vibrationEnabled,
+          equals(originalSettings.vibrationEnabled),
+        );
+        expect(
+          copiedSettings.badgeEnabled,
+          equals(originalSettings.badgeEnabled),
+        );
       });
     });
 

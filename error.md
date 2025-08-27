@@ -2391,7 +2391,7 @@ husky - pre-commit script failed (code 1)
 2025-08-28 02:29:33.004 [info] > git config --get-all user.email [12ms]
 2025-08-28 02:29:33.017 [info] > git config --get commit.template [12ms]
 2025-08-28 02:29:33.017 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [12ms]
-2025-08-28 02:29:33.032 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(\*objectname) [13ms]
+2025-08-28 02:29:33.032 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [13ms]
 2025-08-28 02:29:33.046 [info] > git status -z -uall [28ms]
 2025-08-28 02:29:33.075 [info] > git rev-parse --abbrev-ref HEAD [13ms]
 2025-08-28 02:29:33.078 [info] > git diff --no-color [18ms]
@@ -2413,3 +2413,291 @@ husky - pre-commit script failed (code 1)
 2025-08-28 02:29:33.519 [info] > git blame --root --incremental 8c378bbe34fbf25c111a0f1ba52bdce139240bef -- .husky/pre-commit [14ms]
 2025-08-28 02:29:33.519 [info] fatal: no such path .husky/pre-commit in 8c378bbe34fbf25c111a0f1ba52bdce139240bef
 2025-08-28 02:29:33.575 [info] > git rev-parse --show-toplevel [13ms]
+2025-08-28 02:30:01.238 [info] > git show --textconv :error.md [13ms]
+2025-08-28 02:30:01.239 [warning] [GitFileSystemProvider][readFile] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/error.md.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2Ferror.md%22%2C%22ref%22%3A%22%22%7D
+2025-08-28 02:30:01.239 [info] > git ls-files --stage -- error.md [13ms]
+2025-08-28 02:30:01.240 [warning] [GitFileSystemProvider][stat] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/error.md.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2Ferror.md%22%2C%22ref%22%3A%22%22%7D
+2025-08-28 02:30:01.539 [info] > git check-ignore -v -z --stdin [17ms]
+2025-08-28 02:30:02.175 [info] > git config --get commit.template [28ms]
+2025-08-28 02:30:02.183 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [35ms]
+2025-08-28 02:30:02.224 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [30ms]
+2025-08-28 02:30:02.260 [info] > git status -z -uall [66ms]
+2025-08-28 02:30:02.671 [info] > git diff --no-color [329ms]
+2025-08-28 02:30:02.689 [info] > git rev-parse --abbrev-ref HEAD [305ms]
+2025-08-28 02:30:02.689 [info] > git ls-files --others --exclude-standard [344ms]
+2025-08-28 02:30:06.376 [info] > git rev-parse --show-toplevel [73ms]
+2025-08-28 02:30:07.938 [info] > git blame --root --incremental 8c378bbe34fbf25c111a0f1ba52bdce139240bef -- .husky/commit-msg [35ms]
+2025-08-28 02:30:07.938 [info] fatal: no such path .husky/commit-msg in 8c378bbe34fbf25c111a0f1ba52bdce139240bef
+2025-08-28 02:30:08.140 [info] > git config --get commit.template [29ms]
+2025-08-28 02:30:08.141 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [28ms]
+2025-08-28 02:30:08.167 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [25ms]
+2025-08-28 02:30:08.188 [info] > git status -z -uall [46ms]
+2025-08-28 02:31:31.509 [info] > git config --get commit.template [30ms]
+2025-08-28 02:31:31.513 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [31ms]
+2025-08-28 02:31:31.535 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [20ms]
+2025-08-28 02:31:31.583 [info] > git ls-files --stage -- .husky/pre-commit [12ms]
+2025-08-28 02:31:31.584 [info] > git ls-files --stage -- .husky/commit-msg [13ms]
+2025-08-28 02:31:31.596 [info] > git cat-file -s 0477d1550d6279638ec67b9728b3dfa44eae22d2 [12ms]
+2025-08-28 02:31:31.596 [info] > git cat-file -s 3b4299ef30ebc3565e5bb2e66710664b232a7c76 [12ms]
+2025-08-28 02:31:31.603 [info] > git status -z -uall [89ms]
+2025-08-28 02:31:31.615 [info] > git show --textconv :.husky/pre-commit [18ms]
+2025-08-28 02:31:31.615 [info] > git show --textconv :.husky/commit-msg [17ms]
+2025-08-28 02:31:49.394 [info] > git config --get commit.template [18ms]
+2025-08-28 02:31:49.397 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [17ms]
+2025-08-28 02:31:49.414 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [15ms]
+2025-08-28 02:31:49.435 [info] > git status -z -uall [37ms]
+2025-08-28 02:32:22.092 [info] > git config --get commit.template [16ms]
+2025-08-28 02:32:22.094 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [17ms]
+2025-08-28 02:32:22.111 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [15ms]
+2025-08-28 02:32:22.125 [info] > git status -z -uall [30ms]
+2025-08-28 02:32:22.154 [info] > git rev-parse --abbrev-ref HEAD [12ms]
+2025-08-28 02:32:22.157 [info] > git diff --no-color [17ms]
+2025-08-28 02:32:22.165 [info] > git ls-files --others --exclude-standard [25ms]
+2025-08-28 02:32:22.589 [info] > git ls-files --stage -- error.md [22ms]
+2025-08-28 02:32:22.590 [info] > git show --textconv HEAD:error.md [25ms]
+2025-08-28 02:32:22.591 [info] > git ls-tree -l HEAD -- error.md [22ms]
+2025-08-28 02:32:22.591 [warning] [GitFileSystemProvider][stat] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/error.md.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2Ferror.md%22%2C%22ref%22%3A%22HEAD%22%7D
+2025-08-28 02:32:22.592 [warning] [GitFileSystemProvider][readFile] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/error.md.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2Ferror.md%22%2C%22ref%22%3A%22HEAD%22%7D
+2025-08-28 02:32:22.594 [info] > git show --textconv :error.md [31ms]
+2025-08-28 02:32:22.611 [info] > git cat-file -s c1f34114a6e110ac3cc8976be072c4de436ef186 [21ms]
+2025-08-28 02:32:22.756 [info] > git blame --root --incremental 8c378bbe34fbf25c111a0f1ba52bdce139240bef -- error.md [124ms]
+2025-08-28 02:32:22.756 [info] fatal: no such path error.md in 8c378bbe34fbf25c111a0f1ba52bdce139240bef
+2025-08-28 02:32:22.757 [info] > git rev-parse --show-toplevel [116ms]
+2025-08-28 02:32:23.232 [info] > git config --get commit.template [13ms]
+2025-08-28 02:32:23.232 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [13ms]
+2025-08-28 02:32:23.247 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [13ms]
+2025-08-28 02:32:23.262 [info] > git status -z -uall [29ms]
+2025-08-28 02:32:23.334 [info] > git ls-files --stage -- .husky/pre-commit [14ms]
+2025-08-28 02:32:23.335 [info] > git ls-files --stage -- .husky/commit-msg [14ms]
+2025-08-28 02:32:23.335 [info] > git ls-files --stage -- error.md [14ms]
+2025-08-28 02:32:23.349 [info] > git cat-file -s c1f34114a6e110ac3cc8976be072c4de436ef186 [13ms]
+2025-08-28 02:32:23.349 [info] > git cat-file -s 3b4299ef30ebc3565e5bb2e66710664b232a7c76 [14ms]
+2025-08-28 02:32:23.349 [info] > git cat-file -s 0477d1550d6279638ec67b9728b3dfa44eae22d2 [14ms]
+2025-08-28 02:32:23.473 [info] > git show --textconv :.husky/commit-msg [122ms]
+2025-08-28 02:32:23.473 [info] > git show --textconv :.husky/pre-commit [121ms]
+2025-08-28 02:32:23.476 [info] > git show --textconv :error.md [126ms]
+2025-08-28 02:32:26.571 [info] > git config --get commit.template [18ms]
+2025-08-28 02:32:26.572 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [18ms]
+2025-08-28 02:32:26.588 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [14ms]
+2025-08-28 02:32:26.604 [info] > git status -z -uall [31ms]
+2025-08-28 02:32:33.552 [info] > git fetch [547ms]
+2025-08-28 02:32:33.568 [info] > git config --get commit.template [15ms]
+2025-08-28 02:32:33.569 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [15ms]
+2025-08-28 02:32:33.591 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [20ms]
+2025-08-28 02:32:33.609 [info] > git status -z -uall [39ms]
+2025-08-28 02:32:34.748 [info] > git ls-files --stage -- error.md [17ms]
+2025-08-28 02:32:34.767 [info] > git cat-file -s c1f34114a6e110ac3cc8976be072c4de436ef186 [17ms]
+2025-08-28 02:32:34.790 [info] > git show --textconv :error.md [21ms]
+2025-08-28 02:32:39.207 [info] > git config --get commit.template [32ms]
+2025-08-28 02:32:39.207 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [29ms]
+2025-08-28 02:32:39.231 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [22ms]
+2025-08-28 02:32:39.250 [info] > git status -z -uall [42ms]
+2025-08-28 02:32:39.282 [info] > git rev-parse --abbrev-ref HEAD [12ms]
+2025-08-28 02:32:39.295 [info] > git ls-files --others --exclude-standard [25ms]
+2025-08-28 02:32:39.325 [info] > git diff --no-color [56ms]
+2025-08-28 02:32:39.796 [info] > git rev-parse --show-toplevel [25ms]
+2025-08-28 02:32:44.287 [info] > git config --get commit.template [14ms]
+2025-08-28 02:32:44.289 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [15ms]
+2025-08-28 02:32:44.308 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [17ms]
+2025-08-28 02:32:44.331 [info] > git status -z -uall [41ms]
+2025-08-28 02:32:57.031 [info] > git config --get commit.template [13ms]
+2025-08-28 02:32:57.032 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [14ms]
+2025-08-28 02:32:57.049 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [15ms]
+2025-08-28 02:32:57.069 [info] > git status -z -uall [36ms]
+2025-08-28 02:32:57.134 [info] > git ls-files --stage -- error.md [14ms]
+2025-08-28 02:32:57.150 [info] > git cat-file -s c1f34114a6e110ac3cc8976be072c4de436ef186 [15ms]
+2025-08-28 02:32:57.169 [info] > git show --textconv :error.md [18ms]
+2025-08-28 02:33:02.125 [info] > git config --get commit.template [26ms]
+2025-08-28 02:33:02.126 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [22ms]
+2025-08-28 02:33:02.144 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [16ms]
+2025-08-28 02:33:02.175 [info] > git status -z -uall [48ms]
+2025-08-28 02:33:59.009 [info] > git config --get commit.template [23ms]
+2025-08-28 02:33:59.012 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [22ms]
+2025-08-28 02:33:59.029 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [15ms]
+2025-08-28 02:33:59.057 [info] > git status -z -uall [44ms]
+2025-08-28 02:33:59.152 [info] > git rev-parse --abbrev-ref HEAD [31ms]
+2025-08-28 02:33:59.295 [info] > git ls-files --others --exclude-standard [175ms]
+2025-08-28 02:33:59.498 [info] > git show --textconv HEAD:.husky/pre-commit [166ms]
+2025-08-28 02:33:59.500 [warning] [GitFileSystemProvider][readFile] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/.husky/pre-commit.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2F.husky%2Fpre-commit%22%2C%22ref%22%3A%22HEAD%22%7D
+2025-08-28 02:33:59.503 [info] > git show --textconv :.husky/pre-commit [174ms]
+2025-08-28 02:33:59.510 [info] > git ls-tree -l HEAD -- .husky/pre-commit [174ms]
+2025-08-28 02:33:59.510 [warning] [GitFileSystemProvider][stat] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/.husky/pre-commit.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2F.husky%2Fpre-commit%22%2C%22ref%22%3A%22HEAD%22%7D
+2025-08-28 02:33:59.510 [info] > git ls-files --stage -- .husky/pre-commit [177ms]
+2025-08-28 02:33:59.534 [info] > git cat-file -s 0477d1550d6279638ec67b9728b3dfa44eae22d2 [23ms]
+2025-08-28 02:33:59.562 [info] > git diff --no-color [442ms]
+2025-08-28 02:33:59.663 [info] > git rev-parse --show-toplevel [38ms]
+2025-08-28 02:34:09.105 [info] > git rev-parse --show-toplevel [16ms]
+2025-08-28 02:34:20.740 [info] > git config --get commit.template [25ms]
+2025-08-28 02:34:20.743 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [27ms]
+2025-08-28 02:34:20.765 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [20ms]
+2025-08-28 02:34:20.784 [info] > git status -z -uall [39ms]
+2025-08-28 02:34:20.813 [info] > git rev-parse --abbrev-ref HEAD [11ms]
+2025-08-28 02:34:20.824 [info] > git ls-files --others --exclude-standard [24ms]
+2025-08-28 02:34:20.860 [info] > git diff --no-color [60ms]
+2025-08-28 02:34:21.374 [info] > git rev-parse --show-toplevel [74ms]
+2025-08-28 02:35:03.336 [info] > git show --textconv :pubspec.yaml [36ms]
+2025-08-28 02:35:03.336 [info] > git ls-files --stage -- pubspec.yaml [37ms]
+2025-08-28 02:35:03.357 [info] > git cat-file -s 99052da009ae66dc8e5a490b534d35b18f5813c6 [20ms]
+2025-08-28 02:35:03.610 [info] > git blame --root --incremental 8c378bbe34fbf25c111a0f1ba52bdce139240bef -- pubspec.yaml [23ms]
+2025-08-28 02:35:15.931 [info] > git config --get commit.template [14ms]
+2025-08-28 02:35:15.933 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [16ms]
+2025-08-28 02:35:15.950 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [16ms]
+2025-08-28 02:35:15.975 [info] > git status -z -uall [42ms]
+2025-08-28 02:35:16.019 [info] > git rev-parse --abbrev-ref HEAD [17ms]
+2025-08-28 02:35:16.031 [info] > git ls-files --others --exclude-standard [31ms]
+2025-08-28 02:35:16.048 [info] > git diff --no-color [47ms]
+2025-08-28 02:35:16.518 [info] > git rev-parse --show-toplevel [18ms]
+2025-08-28 02:35:30.619 [info] > git config --get commit.template [48ms]
+2025-08-28 02:35:30.623 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [48ms]
+2025-08-28 02:35:30.641 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [16ms]
+2025-08-28 02:35:30.661 [info] > git status -z -uall [37ms]
+2025-08-28 02:35:30.697 [info] > git rev-parse --abbrev-ref HEAD [14ms]
+2025-08-28 02:35:30.716 [info] > git ls-files --others --exclude-standard [34ms]
+2025-08-28 02:35:30.731 [info] > git diff --no-color [50ms]
+2025-08-28 02:35:31.195 [info] > git rev-parse --show-toplevel [14ms]
+2025-08-28 02:35:32.635 [info] > git show --textconv HEAD:.husky/pre-commit [19ms]
+2025-08-28 02:35:32.635 [info] > git ls-tree -l HEAD -- .husky/pre-commit [18ms]
+2025-08-28 02:35:32.635 [warning] [GitFileSystemProvider][stat] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/.husky/pre-commit.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2F.husky%2Fpre-commit%22%2C%22ref%22%3A%22HEAD%22%7D
+2025-08-28 02:35:32.636 [warning] [GitFileSystemProvider][readFile] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/.husky/pre-commit.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2F.husky%2Fpre-commit%22%2C%22ref%22%3A%22HEAD%22%7D
+2025-08-28 02:35:34.397 [info] > git fetch [778ms]
+2025-08-28 02:35:34.415 [info] > git config --get commit.template [15ms]
+2025-08-28 02:35:34.416 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [16ms]
+2025-08-28 02:35:34.438 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [20ms]
+2025-08-28 02:35:34.462 [info] > git status -z -uall [45ms]
+2025-08-28 02:37:02.060 [info] > git ls-files --stage -- pubspec.yaml [54ms]
+2025-08-28 02:37:02.061 [info] > git config --get commit.template [45ms]
+2025-08-28 02:37:02.061 [info] > git ls-files --stage -- .husky/pre-commit [61ms]
+2025-08-28 02:37:02.062 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [41ms]
+2025-08-28 02:37:02.090 [info] > git cat-file -s 99052da009ae66dc8e5a490b534d35b18f5813c6 [30ms]
+2025-08-28 02:37:02.097 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [32ms]
+2025-08-28 02:37:02.098 [info] > git cat-file -s 0477d1550d6279638ec67b9728b3dfa44eae22d2 [37ms]
+2025-08-28 02:37:02.125 [info] > git status -z -uall [62ms]
+2025-08-28 02:37:02.481 [info] > git show --textconv :.husky/pre-commit [94ms]
+2025-08-28 02:37:02.482 [info] > git show --textconv :pubspec.yaml [97ms]
+2025-08-28 02:37:02.878 [info] > git log --format=%H%n%aN%n%aE%n%at%n%ct%n%P%n%D%n%B -z --shortstat --diff-merges=first-parent -n50 --skip=0 --topo-order --decorate=full --stdin [792ms]
+2025-08-28 02:37:02.898 [info] > git check-ignore -v -z --stdin [13ms]
+2025-08-28 02:37:07.155 [info] > git config --get commit.template [14ms]
+2025-08-28 02:37:07.156 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [14ms]
+2025-08-28 02:37:07.171 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [13ms]
+2025-08-28 02:37:07.189 [info] > git status -z -uall [32ms]
+2025-08-28 02:37:10.433 [info] > git check-ignore -v -z --stdin [108ms]
+2025-08-28 02:37:14.481 [info] > git -c user.useConfigOnly=true commit --quiet --allow-empty-message --file - [3115ms]
+2025-08-28 02:37:14.481 [info] 🧹 Checking dart format...
+Formatted 585 files (0 changed) in 2.22 seconds.
+✅ dart format passed.
+🔍 Running flutter analyze...
+Error detected in pubspec.yaml:
+Expected YAML map
+Please correct the pubspec.yaml file at /Users/charlotte/Documents/Github/aipet_frontend/pubspec.yaml
+husky - pre-commit script failed (code 1)
+2025-08-28 02:37:14.495 [info] > git config --get-all user.name [13ms]
+2025-08-28 02:37:14.508 [info] > git config --get-all user.email [11ms]
+2025-08-28 02:37:14.521 [info] > git config --get commit.template [13ms]
+2025-08-28 02:37:14.522 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [13ms]
+2025-08-28 02:37:14.537 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [14ms]
+2025-08-28 02:37:14.553 [info] > git status -z -uall [31ms]
+2025-08-28 02:37:30.082 [info] > git show --textconv :.husky/pre-commit [129ms]
+2025-08-28 02:37:30.084 [info] > git ls-tree -l HEAD -- .husky/pre-commit [125ms]
+2025-08-28 02:37:30.084 [warning] [GitFileSystemProvider][stat] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/.husky/pre-commit.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2F.husky%2Fpre-commit%22%2C%22ref%22%3A%22HEAD%22%7D
+2025-08-28 02:37:30.085 [info] > git show --textconv HEAD:.husky/pre-commit [129ms]
+2025-08-28 02:37:30.085 [info] > git ls-files --stage -- .husky/pre-commit [128ms]
+2025-08-28 02:37:30.085 [warning] [GitFileSystemProvider][readFile] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/.husky/pre-commit.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2F.husky%2Fpre-commit%22%2C%22ref%22%3A%22HEAD%22%7D
+2025-08-28 02:37:30.098 [info] > git cat-file -s 0477d1550d6279638ec67b9728b3dfa44eae22d2 [13ms]
+2025-08-28 02:38:06.887 [info] > git ls-files --stage -- pubspec.yaml [19ms]
+2025-08-28 02:38:06.890 [info] > git show --textconv :pubspec.yaml [23ms]
+2025-08-28 02:38:06.902 [info] > git cat-file -s 99052da009ae66dc8e5a490b534d35b18f5813c6 [14ms]
+2025-08-28 02:38:28.364 [info] > git config --get commit.template [16ms]
+2025-08-28 02:38:28.365 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [16ms]
+2025-08-28 02:38:28.391 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [25ms]
+2025-08-28 02:38:28.411 [info] > git status -z -uall [45ms]
+2025-08-28 02:38:33.445 [info] > git config --get commit.template [16ms]
+2025-08-28 02:38:33.446 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [16ms]
+2025-08-28 02:38:33.462 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [15ms]
+2025-08-28 02:38:33.480 [info] > git status -z -uall [34ms]
+2025-08-28 02:38:34.999 [info] > git fetch [521ms]
+2025-08-28 02:38:35.013 [info] > git config --get commit.template [13ms]
+2025-08-28 02:38:35.014 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [13ms]
+2025-08-28 02:38:35.030 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [15ms]
+2025-08-28 02:38:35.048 [info] > git status -z -uall [33ms]
+2025-08-28 02:38:36.212 [info] > git ls-files --stage -- .husky/pre-commit [13ms]
+2025-08-28 02:38:36.213 [info] > git ls-files --stage -- pubspec.yaml [14ms]
+2025-08-28 02:38:36.225 [info] > git cat-file -s 99052da009ae66dc8e5a490b534d35b18f5813c6 [12ms]
+2025-08-28 02:38:36.226 [info] > git cat-file -s 0477d1550d6279638ec67b9728b3dfa44eae22d2 [13ms]
+2025-08-28 02:38:36.240 [info] > git show --textconv :pubspec.yaml [13ms]
+2025-08-28 02:38:36.240 [info] > git show --textconv :.husky/pre-commit [13ms]
+2025-08-28 02:38:38.515 [info] > git config --get commit.template [18ms]
+2025-08-28 02:38:38.517 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [19ms]
+2025-08-28 02:38:38.545 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [26ms]
+2025-08-28 02:38:38.563 [info] > git status -z -uall [44ms]
+2025-08-28 02:38:53.051 [info] > git config --get commit.template [33ms]
+2025-08-28 02:38:53.056 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [25ms]
+2025-08-28 02:38:53.082 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [14ms]
+2025-08-28 02:38:53.103 [info] > git status -z -uall [36ms]
+2025-08-28 02:38:54.469 [info] > git show --textconv HEAD:.husky/pre-commit [17ms]
+2025-08-28 02:38:54.470 [warning] [GitFileSystemProvider][readFile] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/.husky/pre-commit.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2F.husky%2Fpre-commit%22%2C%22ref%22%3A%22HEAD%22%7D
+2025-08-28 02:38:54.470 [info] > git ls-tree -l HEAD -- .husky/pre-commit [18ms]
+2025-08-28 02:38:54.470 [warning] [GitFileSystemProvider][stat] File not found - git:/Users/charlotte/Documents/Github/aipet_frontend/.husky/pre-commit.git?%7B%22path%22%3A%22%2FUsers%2Fcharlotte%2FDocuments%2FGithub%2Faipet_frontend%2F.husky%2Fpre-commit%22%2C%22ref%22%3A%22HEAD%22%7D
+2025-08-28 02:39:09.092 [info] > git rev-parse --show-toplevel [14ms]
+2025-08-28 02:39:09.510 [info] > git config user.email [32ms]
+2025-08-28 02:39:09.540 [info] > git log --pretty=format:%H<|ENT|><|RY|>%s<|COM|><|MIT|> -n 10 --author j-lee@tisol.co.jp [29ms]
+2025-08-28 02:39:15.234 [info] > git config --get commit.template [33ms]
+2025-08-28 02:39:15.235 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [30ms]
+2025-08-28 02:39:15.264 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [27ms]
+2025-08-28 02:39:15.300 [info] > git status -z -uall [64ms]
+2025-08-28 02:39:15.972 [info] > git log --format=%H%n%aN%n%aE%n%at%n%ct%n%P%n%D%n%B -z --shortstat --diff-merges=first-parent -n50 --skip=0 --topo-order --decorate=full --stdin [595ms]
+2025-08-28 02:39:20.329 [info] > git config --get commit.template [13ms]
+2025-08-28 02:39:20.330 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [14ms]
+2025-08-28 02:39:20.347 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [16ms]
+2025-08-28 02:39:20.368 [info] > git status -z -uall [37ms]
+2025-08-28 02:39:23.722 [info] > git check-ignore -v -z --stdin [20ms]
+2025-08-28 02:39:32.732 [info] > git -c user.useConfigOnly=true commit --quiet --allow-empty-message --file - [7109ms]
+2025-08-28 02:39:32.733 [info] 🧹 Checking dart format...
+Formatted 585 files (0 changed) in 2.17 seconds.
+✅ dart format passed.
+🔍 Running flutter analyze...
+Analyzing aipet_frontend...
+
+info • Sort directive sections alphabetically • lib/features/home/presentation/controllers/health_summary_controller.dart:5:1 • directives_ordering
+info • Sort directive sections alphabetically • lib/features/home/presentation/controllers/health_summary_controller.dart:6:1 • directives_ordering
+info • Statements in an if should be enclosed in a block • lib/features/home/presentation/controllers/weather_controller.dart:34:7 • curly_braces_in_flow_control_structures
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:21:25 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:30:27 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:32:25 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:40:27 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:42:25 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:53:27 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:55:25 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:66:27 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:68:25 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:76:27 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:78:25 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:90:29 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:92:29 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/controllers/notification_ui_controller.dart:96:25 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/screens/notification_detail_screen.dart:532:11 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/screens/notification_detail_screen.dart:535:9 • use_build_context_synchronously
+info • Don't use 'BuildContext's across async gaps • lib/features/notification/presentation/screens/push_notification_screen.dart:89:9 • use_build_context_synchronously
+info • Sort directive sections alphabetically • lib/features/pet_activities/domain/usecases/register_youtube_video_usecase.dart:3:1 • directives_ordering
+warning • The value of 'refresh' should be used • lib/features/pet_activities/presentation/controllers/youtube_videos_controller.dart:19:9 • unused_result
+info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/features/pet_activities/presentation/screens/tricks_screen.dart:188:40 • use_build_context_synchronously
+warning • The value of 'refresh' should be used • lib/features/pet_activities/presentation/widgets/video_bookmark_list.dart:67:11 • unused_result
+warning • The value of 'refresh' should be used • lib/features/pet_activities/presentation/widgets/video_bookmark_list.dart:110:13 • unused_result
+info • Sort directive sections alphabetically • lib/features/pet_feeding/presentation/screens/screens.dart:3:1 • directives_ordering
+warning • Unused import: '../../../../shared/shared.dart' • lib/features/pet_profile/presentation/controllers/pet_profile_controller.dart:4:8 • unused_import
+warning • The value of the field '\_selectedVaccine' isn't used • lib/features/pet_profile/presentation/screens/vaccine_screen.dart:18:11 • unused_field
+info • Sort directive sections alphabetically • lib/features/scheduling/presentation/controllers/controllers.dart:7:1 • directives_ordering
+info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/scheduling/presentation/screens/health_main_screen.dart:110:32 • deprecated_member_use
+info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/scheduling/presentation/screens/scheduling_screen.dart:160:32 • deprecated_member_use
+info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/scheduling/presentation/screens/training_main_screen.dart:110:32 • deprecated_member_use
+info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/scheduling/presentation/screens/watering_main_screen.dart:110:32 • deprecated_member_use
+info • Missing an 'await' for the 'Future' computed by this expression • lib/features/splash/presentation/screens/splash_screen.dart:55:7 • unawaited_futures
+info • Sort directive sections alphabetically • lib/shared/shared.dart:30:1 • directives_ordering
+
+35 issues found. (ran in 2.8s)
+husky - pre-commit script failed (code 1)
+2025-08-28 02:39:32.748 [info] > git config --get-all user.name [14ms]
+2025-08-28 02:39:32.762 [info] > git config --get-all user.email [13ms]
+2025-08-28 02:39:32.778 [info] > git config --get commit.template [14ms]
+2025-08-28 02:39:32.780 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) --ignore-case refs/heads/fix/app refs/remotes/fix/app [16ms]
+2025-08-28 02:39:32.798 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(\*objectname) [15ms]
+2025-08-28 02:39:32.825 [info] > git status -z -uall [44ms]

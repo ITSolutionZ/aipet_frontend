@@ -7,8 +7,12 @@ class PetCoreController extends BaseController {
 
   // Repository 및 UseCase 인스턴스
   late final PetRepository _repository = PetRepositoryImpl();
-  late final GetAllPetsUseCase _getAllPetsUseCase = GetAllPetsUseCase(_repository);
-  late final GetPetByIdUseCase _getPetByIdUseCase = GetPetByIdUseCase(_repository);
+  late final GetAllPetsUseCase _getAllPetsUseCase = GetAllPetsUseCase(
+    _repository,
+  );
+  late final GetPetByIdUseCase _getPetByIdUseCase = GetPetByIdUseCase(
+    _repository,
+  );
   late final CreatePetUseCase _createPetUseCase = CreatePetUseCase(_repository);
   late final UpdatePetUseCase _updatePetUseCase = UpdatePetUseCase(_repository);
   late final DeletePetUseCase _deletePetUseCase = DeletePetUseCase(_repository);

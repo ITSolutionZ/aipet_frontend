@@ -6,10 +6,7 @@ import 'meal_status_widget.dart';
 class TodayMealsCard extends StatelessWidget {
   final List<Map<String, dynamic>> todayMeals;
 
-  const TodayMealsCard({
-    super.key,
-    required this.todayMeals,
-  });
+  const TodayMealsCard({super.key, required this.todayMeals});
 
   @override
   Widget build(BuildContext context) {

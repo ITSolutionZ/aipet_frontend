@@ -102,12 +102,18 @@ class ShellRoutes {
                 path: 'edit',
                 name: 'feeding-schedule-edit',
                 builder: (context, state) {
-                  final defaults = MockDataService.getDefaultFeedingScheduleParams();
+                  final defaults =
+                      MockDataService.getDefaultFeedingScheduleParams();
                   final mealType =
-                      state.uri.queryParameters['mealType'] ?? defaults['mealType']!;
-                  final time = state.uri.queryParameters['time'] ?? defaults['time']!;
-                  final amount = state.uri.queryParameters['amount'] ?? defaults['amount']!;
-                  final petId = state.uri.queryParameters['petId'] ?? defaults['petId']!;
+                      state.uri.queryParameters['mealType'] ??
+                      defaults['mealType']!;
+                  final time =
+                      state.uri.queryParameters['time'] ?? defaults['time']!;
+                  final amount =
+                      state.uri.queryParameters['amount'] ??
+                      defaults['amount']!;
+                  final petId =
+                      state.uri.queryParameters['petId'] ?? defaults['petId']!;
                   return FeedingScheduleEditScreen(
                     mealType: mealType,
                     currentTime: time,

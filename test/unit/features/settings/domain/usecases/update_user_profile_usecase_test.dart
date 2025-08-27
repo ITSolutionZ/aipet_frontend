@@ -29,8 +29,9 @@ void main() {
         lastLoginAt: DateTime.now(),
       );
 
-      when(mockRepository.updateUserProfile(userProfile))
-          .thenAnswer((_) async => true);
+      when(
+        mockRepository.updateUserProfile(userProfile),
+      ).thenAnswer((_) async => true);
 
       // Act
       final result = await useCase(userProfile);
@@ -51,8 +52,9 @@ void main() {
         lastLoginAt: DateTime.now(),
       );
 
-      when(mockRepository.updateUserProfile(userProfile))
-          .thenAnswer((_) async => false);
+      when(
+        mockRepository.updateUserProfile(userProfile),
+      ).thenAnswer((_) async => false);
 
       // Act
       final result = await useCase(userProfile);

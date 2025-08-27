@@ -57,7 +57,7 @@ class HealthSummaryController extends BaseController {
     final todayWeight = await _getTodayWeightInfo(petId);
     final lastCheckup = await _getLastCheckupInfo(petId);
     final vaccinationStatus = await _getVaccinationInfo(petId);
-    
+
     return [
       HealthItemData(
         title: '今日の食事',
@@ -91,9 +91,11 @@ class HealthSummaryController extends BaseController {
     try {
       final todaySchedules = await _scheduleRepository.getTodaySchedules();
       final feedingSchedules = todaySchedules
-          .where((schedule) => 
-              schedule.type == ScheduleType.feeding && 
-              schedule.petId == petId)
+          .where(
+            (schedule) =>
+                schedule.type == ScheduleType.feeding &&
+                schedule.petId == petId,
+          )
           .toList();
 
       if (feedingSchedules.isEmpty) {
@@ -105,10 +107,10 @@ class HealthSummaryController extends BaseController {
           .length;
 
       final totalFeedings = feedingSchedules.length;
-      
+
       // 평균적인 급여량 추정 (실제로는 스케줄에 저장된 데이터 사용)
       final estimatedAmount = totalFeedings * 100;
-      
+
       return '${estimatedAmount}g・$completedFeedings/$totalFeedings回';
     } catch (error) {
       // Fallback to mock data
@@ -121,10 +123,12 @@ class HealthSummaryController extends BaseController {
     try {
       final todaySchedules = await _scheduleRepository.getTodaySchedules();
       final weightSchedules = todaySchedules
-          .where((schedule) => 
-              schedule.type == ScheduleType.weight && 
-              schedule.petId == petId &&
-              schedule.status == ScheduleStatus.completed)
+          .where(
+            (schedule) =>
+                schedule.type == ScheduleType.weight &&
+                schedule.petId == petId &&
+                schedule.status == ScheduleStatus.completed,
+          )
           .toList();
 
       if (weightSchedules.isNotEmpty) {
@@ -138,12 +142,15 @@ class HealthSummaryController extends BaseController {
       }
 
       // 이번 주 체중 기록 확인
-      final thisWeekSchedules = await _scheduleRepository.getThisWeekSchedules();
+      final thisWeekSchedules = await _scheduleRepository
+          .getThisWeekSchedules();
       final recentWeightSchedules = thisWeekSchedules
-          .where((schedule) => 
-              schedule.type == ScheduleType.weight && 
-              schedule.petId == petId &&
-              schedule.status == ScheduleStatus.completed)
+          .where(
+            (schedule) =>
+                schedule.type == ScheduleType.weight &&
+                schedule.petId == petId &&
+                schedule.status == ScheduleStatus.completed,
+          )
           .toList();
 
       if (recentWeightSchedules.isNotEmpty) {
@@ -166,16 +173,20 @@ class HealthSummaryController extends BaseController {
     try {
       final allSchedules = await _scheduleRepository.getAllSchedules();
       final checkupSchedules = allSchedules
-          .where((schedule) => 
-              (schedule.type == ScheduleType.checkup || 
-               schedule.type == ScheduleType.medical) && 
-              schedule.petId == petId &&
-              schedule.status == ScheduleStatus.completed)
+          .where(
+            (schedule) =>
+                (schedule.type == ScheduleType.checkup ||
+                    schedule.type == ScheduleType.medical) &&
+                schedule.petId == petId &&
+                schedule.status == ScheduleStatus.completed,
+          )
           .toList();
 
       if (checkupSchedules.isNotEmpty) {
         // 가장 최근 검진 날짜로 정렬
-        checkupSchedules.sort((a, b) => b.startDateTime.compareTo(a.startDateTime));
+        checkupSchedules.sort(
+          (a, b) => b.startDateTime.compareTo(a.startDateTime),
+        );
         final lastCheckup = checkupSchedules.first.startDateTime;
         return '${lastCheckup.month}月${lastCheckup.day}日';
       }
@@ -193,10 +204,12 @@ class HealthSummaryController extends BaseController {
     try {
       final allSchedules = await _scheduleRepository.getAllSchedules();
       final vaccinationSchedules = allSchedules
-          .where((schedule) => 
-              schedule.type == ScheduleType.vaccination && 
-              schedule.petId == petId &&
-              schedule.status == ScheduleStatus.completed)
+          .where(
+            (schedule) =>
+                schedule.type == ScheduleType.vaccination &&
+                schedule.petId == petId &&
+                schedule.status == ScheduleStatus.completed,
+          )
           .toList();
 
       if (vaccinationSchedules.isEmpty) {
@@ -229,18 +242,18 @@ class HealthSummaryController extends BaseController {
   /// 건강 알림 생성
   List<String> generateHealthAlerts(String petId) {
     final alerts = <String>[];
-    
+
     // Mock alert logic
     const lastFeedingHours = 3;
     if (lastFeedingHours > 8) {
       alerts.add('食事の時間が過ぎています');
     }
-    
+
     const weightChange = -0.1; // kg
     if (weightChange < -0.2) {
       alerts.add('体重が減少しています');
     }
-    
+
     return alerts;
   }
 
@@ -261,14 +274,14 @@ class HealthSummaryController extends BaseController {
       final healthItems = await _generateHealthItems(petId);
       final healthStatus = evaluateHealthStatus(petId);
       final alerts = generateHealthAlerts(petId);
-      
+
       final report = {
         'items': healthItems,
         'status': healthStatus,
         'alerts': alerts,
         'timestamp': DateTime.now(),
       };
-      
+
       return HealthSummaryResult.success('건강 리포트가 생성되었습니다', report);
     } catch (error) {
       handleError(error);

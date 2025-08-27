@@ -16,7 +16,7 @@ class FacilityListController {
     try {
       final facilityList = ref.read(facilityListNotifierProvider);
       final searchResults = ref.read(searchResultsNotifierProvider.notifier);
-      
+
       searchResults.setSearchResults(facilityList);
     } catch (error) {
       _showErrorMessage('시설 데이터를 불러오는데 실패했습니다: $error');
@@ -27,10 +27,10 @@ class FacilityListController {
   Future<void> handleSearchChanged(String query) async {
     try {
       ref.read(searchQueryNotifierProvider.notifier).setQuery(query);
-      
+
       final facilityList = ref.read(facilityListNotifierProvider.notifier);
       final searchResults = ref.read(searchResultsNotifierProvider.notifier);
-      
+
       final results = facilityList.search(query);
       searchResults.setSearchResults(results);
     } catch (error) {
@@ -42,24 +42,29 @@ class FacilityListController {
   Future<void> handleFilterChanged(FacilityType? type) async {
     try {
       ref.read(selectedFacilityTypeNotifierProvider.notifier).setType(type);
-      
+
       final facilityList = ref.read(facilityListNotifierProvider.notifier);
       final searchResults = ref.read(searchResultsNotifierProvider.notifier);
       final query = ref.read(searchQueryNotifierProvider);
-      
+
       List<Facility> results;
       if (type != null) {
         results = facilityList.getByType(type);
         if (query.isNotEmpty) {
-          results = results.where((facility) =>
-            facility.name.toLowerCase().contains(query.toLowerCase()) ||
-            facility.description.toLowerCase().contains(query.toLowerCase())
-          ).toList();
+          results = results
+              .where(
+                (facility) =>
+                    facility.name.toLowerCase().contains(query.toLowerCase()) ||
+                    facility.description.toLowerCase().contains(
+                      query.toLowerCase(),
+                    ),
+              )
+              .toList();
         }
       } else {
         results = facilityList.search(query);
       }
-      
+
       searchResults.setSearchResults(results);
     } catch (error) {
       _showErrorMessage('필터링 중 오류가 발생했습니다: $error');
@@ -70,7 +75,7 @@ class FacilityListController {
   Future<void> handleSortChanged(String sortType) async {
     try {
       final searchResults = ref.read(searchResultsNotifierProvider.notifier);
-      
+
       switch (sortType) {
         case 'distance':
           searchResults.sortByDistance();
@@ -85,7 +90,7 @@ class FacilityListController {
           _showErrorMessage('알 수 없는 정렬 기준입니다');
           return;
       }
-      
+
       _showSuccessMessage('정렬이 적용되었습니다');
     } catch (error) {
       _showErrorMessage('정렬 중 오류가 발생했습니다: $error');
@@ -97,7 +102,7 @@ class FacilityListController {
     try {
       final facilityList = ref.read(facilityListNotifierProvider.notifier);
       facilityList.toggleFavorite(facilityId);
-      
+
       await refreshSearchResults();
       _showSuccessMessage('즐겨찾기가 업데이트되었습니다');
     } catch (error) {
@@ -110,23 +115,28 @@ class FacilityListController {
     try {
       final query = ref.read(searchQueryNotifierProvider);
       final selectedType = ref.read(selectedFacilityTypeNotifierProvider);
-      
+
       final facilityList = ref.read(facilityListNotifierProvider.notifier);
       final searchResults = ref.read(searchResultsNotifierProvider.notifier);
-      
+
       List<Facility> results;
       if (selectedType != null) {
         results = facilityList.getByType(selectedType);
         if (query.isNotEmpty) {
-          results = results.where((facility) =>
-            facility.name.toLowerCase().contains(query.toLowerCase()) ||
-            facility.description.toLowerCase().contains(query.toLowerCase())
-          ).toList();
+          results = results
+              .where(
+                (facility) =>
+                    facility.name.toLowerCase().contains(query.toLowerCase()) ||
+                    facility.description.toLowerCase().contains(
+                      query.toLowerCase(),
+                    ),
+              )
+              .toList();
         }
       } else {
         results = facilityList.search(query);
       }
-      
+
       searchResults.setSearchResults(results);
     } catch (error) {
       _showErrorMessage('검색 결과 새로고침 중 오류가 발생했습니다: $error');
@@ -138,7 +148,7 @@ class FacilityListController {
     try {
       ref.read(searchQueryNotifierProvider.notifier).setQuery('');
       ref.read(selectedFacilityTypeNotifierProvider.notifier).setType(null);
-      
+
       await loadInitialData();
       _showSuccessMessage('모든 필터가 초기화되었습니다');
     } catch (error) {

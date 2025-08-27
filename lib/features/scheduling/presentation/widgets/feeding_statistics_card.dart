@@ -36,10 +36,7 @@ class FeedingStatisticsCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             Row(
               children: [
-                _buildStatItem(
-                  '総食事回数',
-                  '${statistics['totalFeedings']}回',
-                ),
+                _buildStatItem('総食事回数', '${statistics['totalFeedings']}回'),
                 const SizedBox(width: AppSpacing.md),
                 _buildStatItem(
                   '完了率',
@@ -91,10 +88,7 @@ class FeedingStatisticsCard extends StatelessWidget {
 class FeedingChart extends StatelessWidget {
   final List<dynamic> feedingRecords;
 
-  const FeedingChart({
-    super.key,
-    required this.feedingRecords,
-  });
+  const FeedingChart({super.key, required this.feedingRecords});
 
   @override
   Widget build(BuildContext context) {

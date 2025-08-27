@@ -11,7 +11,7 @@ class YouTubeVideoEntity {
   final List<String> tags; // 트릭 태그 (예: 'sit', 'shake', 'roll')
   final DateTime createdAt;
   final DateTime updatedAt;
-  
+
   const YouTubeVideoEntity({
     required this.id,
     required this.youtubeUrl,
@@ -25,7 +25,7 @@ class YouTubeVideoEntity {
     required this.createdAt,
     required this.updatedAt,
   });
-  
+
   YouTubeVideoEntity copyWith({
     String? id,
     String? youtubeUrl,
@@ -53,7 +53,7 @@ class YouTubeVideoEntity {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
-  
+
   /// YouTube 비디오 ID를 URL에서 추출하는 정적 메소드
   static String? extractVideoId(String url) {
     final regex = RegExp(
@@ -63,39 +63,39 @@ class YouTubeVideoEntity {
     final match = regex.firstMatch(url);
     return match?.group(1);
   }
-  
+
   /// YouTube 썸네일 URL 생성
   static String generateThumbnailUrl(String videoId) {
     return 'https://img.youtube.com/vi/$videoId/maxresdefault.jpg';
   }
-  
+
   /// 비디오 길이를 MM:SS 또는 HH:MM:SS 형식으로 포맷
   String get formattedDuration {
     final hours = durationSeconds ~/ 3600;
     final minutes = (durationSeconds % 3600) ~/ 60;
     final seconds = durationSeconds % 60;
-    
+
     if (hours > 0) {
       return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     }
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
-  
+
   /// 태그들을 문자열로 결합
   String get tagsString {
     return tags.join(', ');
   }
-  
+
   /// YouTube 비디오가 유효한지 확인
   bool get isValidYouTubeVideo {
     return youtubeVideoId.isNotEmpty && youtubeVideoId.length == 11;
   }
-  
+
   /// 특정 시간으로 이동하는 YouTube URL 생성
   String getYouTubeUrlWithTime(int startTimeSeconds) {
     return '$youtubeUrl&t=${startTimeSeconds}s';
   }
-  
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

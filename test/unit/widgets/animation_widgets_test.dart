@@ -6,37 +6,41 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AnimatedFadeWidget Tests', () {
-    testWidgets('should show child with fade animation', (WidgetTester tester) async {
+    testWidgets('should show child with fade animation', (
+      WidgetTester tester,
+    ) async {
       // Arrange
-      const testWidget = AnimatedFadeWidget(
-        show: true,
-        child: Text('Test'),
-      );
+      const testWidget = AnimatedFadeWidget(show: true, child: Text('Test'));
 
       // Act
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: testWidget)));
+      await tester.pumpWidget(
+        const MaterialApp(home: Scaffold(body: testWidget)),
+      );
       await tester.pumpAndSettle();
 
       // Assert
       expect(find.text('Test'), findsOneWidget);
     });
 
-    testWidgets('should hide child when show is false', (WidgetTester tester) async {
+    testWidgets('should hide child when show is false', (
+      WidgetTester tester,
+    ) async {
       // Arrange
-      const testWidget = AnimatedFadeWidget(
-        show: false,
-        child: Text('Test'),
-      );
+      const testWidget = AnimatedFadeWidget(show: false, child: Text('Test'));
 
       // Act
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: testWidget)));
+      await tester.pumpWidget(
+        const MaterialApp(home: Scaffold(body: testWidget)),
+      );
       await tester.pumpAndSettle();
 
       // Assert
       expect(find.text('Test'), findsOneWidget);
     });
 
-    testWidgets('should call onAnimationComplete when animation completes', (WidgetTester tester) async {
+    testWidgets('should call onAnimationComplete when animation completes', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       bool callbackCalled = false;
       final testWidget = AnimatedFadeWidget(
@@ -57,19 +61,19 @@ void main() {
   });
 
   group('StaggeredFadeWidget Tests', () {
-    testWidgets('should show all children with staggered animation', (WidgetTester tester) async {
+    testWidgets('should show all children with staggered animation', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       const testWidget = StaggeredFadeWidget(
         show: true,
-        children: [
-          Text('Child 1'),
-          Text('Child 2'),
-          Text('Child 3'),
-        ],
+        children: [Text('Child 1'), Text('Child 2'), Text('Child 3')],
       );
 
       // Act
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: testWidget)));
+      await tester.pumpWidget(
+        const MaterialApp(home: Scaffold(body: testWidget)),
+      );
       await tester.pumpAndSettle();
 
       // Assert
@@ -80,7 +84,9 @@ void main() {
   });
 
   group('AnimatedSlideWidget Tests', () {
-    testWidgets('should show child with slide animation from bottom', (WidgetTester tester) async {
+    testWidgets('should show child with slide animation from bottom', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       const testWidget = AnimatedSlideWidget(
         direction: SlideDirection.fromBottom,
@@ -89,14 +95,18 @@ void main() {
       );
 
       // Act
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: testWidget)));
+      await tester.pumpWidget(
+        const MaterialApp(home: Scaffold(body: testWidget)),
+      );
       await tester.pumpAndSettle();
 
       // Assert
       expect(find.text('Test'), findsOneWidget);
     });
 
-    testWidgets('should show child with slide animation from left', (WidgetTester tester) async {
+    testWidgets('should show child with slide animation from left', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       const testWidget = AnimatedSlideWidget(
         direction: SlideDirection.fromLeft,
@@ -105,14 +115,18 @@ void main() {
       );
 
       // Act
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: testWidget)));
+      await tester.pumpWidget(
+        const MaterialApp(home: Scaffold(body: testWidget)),
+      );
       await tester.pumpAndSettle();
 
       // Assert
       expect(find.text('Test'), findsOneWidget);
     });
 
-    testWidgets('should call onAnimationComplete when animation completes', (WidgetTester tester) async {
+    testWidgets('should call onAnimationComplete when animation completes', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       bool callbackCalled = false;
       final testWidget = AnimatedSlideWidget(
@@ -134,20 +148,20 @@ void main() {
   });
 
   group('StaggeredSlideWidget Tests', () {
-    testWidgets('should show all children with staggered slide animation', (WidgetTester tester) async {
+    testWidgets('should show all children with staggered slide animation', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       const testWidget = StaggeredSlideWidget(
         direction: SlideDirection.fromBottom,
         show: true,
-        children: [
-          Text('Child 1'),
-          Text('Child 2'),
-          Text('Child 3'),
-        ],
+        children: [Text('Child 1'), Text('Child 2'), Text('Child 3')],
       );
 
       // Act
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: testWidget)));
+      await tester.pumpWidget(
+        const MaterialApp(home: Scaffold(body: testWidget)),
+      );
       await tester.pumpAndSettle();
 
       // Assert
@@ -158,7 +172,9 @@ void main() {
   });
 
   group('AnimatedScaleWidget Tests', () {
-    testWidgets('should show child with scale animation', (WidgetTester tester) async {
+    testWidgets('should show child with scale animation', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       const testWidget = AnimatedScaleWidget(
         show: true,
@@ -168,14 +184,18 @@ void main() {
       );
 
       // Act
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: testWidget)));
+      await tester.pumpWidget(
+        const MaterialApp(home: Scaffold(body: testWidget)),
+      );
       await tester.pumpAndSettle();
 
       // Assert
       expect(find.text('Test'), findsOneWidget);
     });
 
-    testWidgets('should call onAnimationComplete when animation completes', (WidgetTester tester) async {
+    testWidgets('should call onAnimationComplete when animation completes', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       bool callbackCalled = false;
       final testWidget = AnimatedScaleWidget(
@@ -198,21 +218,21 @@ void main() {
   });
 
   group('StaggeredScaleWidget Tests', () {
-    testWidgets('should show all children with staggered scale animation', (WidgetTester tester) async {
+    testWidgets('should show all children with staggered scale animation', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       const testWidget = StaggeredScaleWidget(
         show: true,
         beginScale: 0.0,
         endScale: 1.0,
-        children: [
-          Text('Child 1'),
-          Text('Child 2'),
-          Text('Child 3'),
-        ],
+        children: [Text('Child 1'), Text('Child 2'), Text('Child 3')],
       );
 
       // Act
-      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: testWidget)));
+      await tester.pumpWidget(
+        const MaterialApp(home: Scaffold(body: testWidget)),
+      );
       await tester.pumpAndSettle();
 
       // Assert
@@ -223,7 +243,9 @@ void main() {
   });
 
   group('AnimatedButtonWidget Tests', () {
-    testWidgets('should show button with scale animation on tap', (WidgetTester tester) async {
+    testWidgets('should show button with scale animation on tap', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       bool buttonPressed = false;
       final testWidget = AnimatedButtonWidget(
@@ -242,7 +264,9 @@ void main() {
       expect(buttonPressed, isTrue);
     });
 
-    testWidgets('should not respond to tap when disabled', (WidgetTester tester) async {
+    testWidgets('should not respond to tap when disabled', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       bool buttonPressed = false;
       final testWidget = AnimatedButtonWidget(

@@ -10,11 +10,8 @@ class PetHealthController extends StateNotifier<PetHealthState> {
   void loadHealthRecords(String petId) {
     // MockDataService에서 사용 가능한 메서드 사용
     final healthData = MockDataService.getMockHealthData();
-    
-    state = state.copyWith(
-      petId: petId,
-      healthRecords: [healthData],
-    );
+
+    state = state.copyWith(petId: petId, healthRecords: [healthData]);
   }
 
   /// 건강 기록 추가
@@ -26,7 +23,9 @@ class PetHealthController extends StateNotifier<PetHealthState> {
 
   /// 건강 기록 삭제
   void deleteHealthRecord(String recordId) {
-    final newRecords = state.healthRecords.where((record) => record['id'] != recordId).toList();
+    final newRecords = state.healthRecords
+        .where((record) => record['id'] != recordId)
+        .toList();
     state = state.copyWith(healthRecords: newRecords);
   }
 }
@@ -36,10 +35,7 @@ class PetHealthState {
   final String petId;
   final List<Map<String, dynamic>> healthRecords;
 
-  const PetHealthState({
-    this.petId = '',
-    this.healthRecords = const [],
-  });
+  const PetHealthState({this.petId = '', this.healthRecords = const []});
 
   PetHealthState copyWith({
     String? petId,
@@ -55,5 +51,5 @@ class PetHealthState {
 /// 컨트롤러 프로바이더
 final petHealthControllerProvider =
     StateNotifierProvider<PetHealthController, PetHealthState>((ref) {
-  return PetHealthController();
-});
+      return PetHealthController();
+    });

@@ -66,7 +66,10 @@ class AuthPasswordField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
-              borderSide: const BorderSide(color: AppColors.pointBrown, width: 2),
+              borderSide: const BorderSide(
+                color: AppColors.pointBrown,
+                width: 2,
+              ),
             ),
             filled: true,
             fillColor: Colors.white,

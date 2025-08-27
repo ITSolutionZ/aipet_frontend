@@ -6,15 +6,13 @@ import '../../../../shared/shared.dart';
 import '../controllers/health_summary_controller.dart';
 
 class HealthSummarySection extends ConsumerStatefulWidget {
-  const HealthSummarySection({
-    super.key,
-    this.petId = '1',
-  });
+  const HealthSummarySection({super.key, this.petId = '1'});
 
   final String petId;
 
   @override
-  ConsumerState<HealthSummarySection> createState() => _HealthSummarySectionState();
+  ConsumerState<HealthSummarySection> createState() =>
+      _HealthSummarySectionState();
 }
 
 class _HealthSummarySectionState extends ConsumerState<HealthSummarySection> {
@@ -101,9 +99,9 @@ class _HealthSummarySectionState extends ConsumerState<HealthSummarySection> {
 
   Widget _buildHealthCard(
     BuildContext context,
-    String title, 
-    String value, 
-    IconData icon, 
+    String title,
+    String value,
+    IconData icon,
     String route,
   ) {
     return GestureDetector(
@@ -209,10 +207,7 @@ class _HealthSummarySectionState extends ConsumerState<HealthSummarySection> {
               ],
             ),
           ),
-          Icon(
-            Icons.chevron_right,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.chevron_right, color: Colors.grey[400]),
         ],
       ),
     );

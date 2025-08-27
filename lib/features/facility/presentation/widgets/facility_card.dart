@@ -40,7 +40,9 @@ class FacilityCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: _getTypeColor(facility.type).withValues(alpha: 0.1),
+                      color: _getTypeColor(
+                        facility.type,
+                      ).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -78,59 +80,45 @@ class FacilityCard extends StatelessWidget {
                     onPressed: onFavoriteToggle,
                     icon: Icon(
                       Icons.favorite,
-                      color: facility.isFavorite 
-                          ? Colors.red 
+                      color: facility.isFavorite
+                          ? Colors.red
                           : Colors.grey.shade300,
                     ),
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               Text(
                 facility.description,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[700],
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              
+
               const SizedBox(height: 8),
-              
+
               Row(
                 children: [
-                  const Icon(
-                    Icons.location_on,
-                    size: 16,
-                    color: Colors.grey,
-                  ),
+                  const Icon(Icons.location_on, size: 16, color: Colors.grey),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       facility.address,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 8),
-              
+
               Row(
                 children: [
-                  const Icon(
-                    Icons.star,
-                    size: 16,
-                    color: Colors.amber,
-                  ),
+                  const Icon(Icons.star, size: 16, color: Colors.amber),
                   const SizedBox(width: 4),
                   Text(
                     facility.rating.toStringAsFixed(1),
@@ -142,27 +130,17 @@ class FacilityCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     '(${facility.reviewCount}件)',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   const Spacer(),
                   if (facility.lastVisit != null)
                     const Row(
                       children: [
-                        Icon(
-                          Icons.history,
-                          size: 14,
-                          color: Colors.grey,
-                        ),
+                        Icon(Icons.history, size: 14, color: Colors.grey),
                         SizedBox(width: 4),
                         Text(
                           '最後の訪問',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                       ],
                     ),

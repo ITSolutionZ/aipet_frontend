@@ -36,7 +36,9 @@ class PetActivitiesController extends StateNotifier<PetActivitiesState> {
 
   /// 트릭 삭제
   void deleteTrick(String trickId) {
-    final newTricks = state.tricks.where((trick) => trick.id != trickId).toList();
+    final newTricks = state.tricks
+        .where((trick) => trick.id != trickId)
+        .toList();
     state = state.copyWith(tricks: newTricks);
   }
 }
@@ -69,5 +71,5 @@ class PetActivitiesState {
 /// 컨트롤러 프로바이더
 final petActivitiesControllerProvider =
     StateNotifierProvider<PetActivitiesController, PetActivitiesState>((ref) {
-  return PetActivitiesController();
-});
+      return PetActivitiesController();
+    });
