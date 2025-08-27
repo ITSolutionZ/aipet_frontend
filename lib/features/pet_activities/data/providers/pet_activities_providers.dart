@@ -24,10 +24,7 @@ Future<List<TrickEntity>> allTricks(Ref ref) async {
 
 /// 특정 펫의 트릭을 가져오는 프로바이더
 @riverpod
-Future<List<TrickEntity>> tricksByPetId(
-  Ref ref,
-  String petId,
-) async {
+Future<List<TrickEntity>> tricksByPetId(Ref ref, String petId) async {
   final repository = ref.read(petActivitiesRepositoryProvider);
   return repository.getTricksByPetId(petId);
 }
@@ -46,8 +43,9 @@ GetYouTubeVideosUseCase getYouTubeVideosUseCase(Ref ref) {
 }
 
 /// YouTube 비디오 목록 프로바이더
-final youTubeVideosProvider = FutureProvider.family<List<YouTubeVideoEntity>, String>((ref, petId) async {
-  final repository = ref.read(petActivitiesRepositoryProvider);
-  final useCase = GetYouTubeVideosUseCase(repository);
-  return useCase.call(petId);
-});
+final youTubeVideosProvider =
+    FutureProvider.family<List<YouTubeVideoEntity>, String>((ref, petId) async {
+      final repository = ref.read(petActivitiesRepositoryProvider);
+      final useCase = GetYouTubeVideosUseCase(repository);
+      return useCase.call(petId);
+    });

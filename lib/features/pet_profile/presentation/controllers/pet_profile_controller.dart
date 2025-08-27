@@ -34,10 +34,7 @@ class PetProfileState {
   final TabController? tabController;
   final String selectedPetName;
 
-  const PetProfileState({
-    this.tabController,
-    this.selectedPetName = 'ポチ',
-  });
+  const PetProfileState({this.tabController, this.selectedPetName = 'ポチ'});
 
   PetProfileState copyWith({
     TabController? tabController,
@@ -53,5 +50,5 @@ class PetProfileState {
 /// 컨트롤러 프로바이더
 final petProfileControllerProvider =
     StateNotifierProvider<PetProfileController, PetProfileState>((ref) {
-  return PetProfileController();
-});
+      return PetProfileController();
+    });

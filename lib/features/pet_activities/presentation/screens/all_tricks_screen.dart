@@ -33,23 +33,33 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
 
     // 카테고리 필터링
     if (_selectedCategory != 'all') {
-      filtered = filtered.where((trick) => trick.difficulty == _selectedCategory).toList();
+      filtered = filtered
+          .where((trick) => trick.difficulty == _selectedCategory)
+          .toList();
     }
 
     // 검색어 필터링
     if (_searchQuery.isNotEmpty) {
-      filtered = filtered.where((trick) =>
-          trick.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          (trick.description?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false)
-      ).toList();
+      filtered = filtered
+          .where(
+            (trick) =>
+                trick.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                (trick.description?.toLowerCase().contains(
+                      _searchQuery.toLowerCase(),
+                    ) ??
+                    false),
+          )
+          .toList();
     }
 
     return filtered;
   }
 
-  Map<String, List<TrickEntity>> _groupTricksByCategory(List<TrickEntity> tricks) {
+  Map<String, List<TrickEntity>> _groupTricksByCategory(
+    List<TrickEntity> tricks,
+  ) {
     final Map<String, List<TrickEntity>> grouped = {};
-    
+
     for (final trick in tricks) {
       final category = trick.difficulty ?? 'unknown';
       if (!grouped.containsKey(category)) {
@@ -99,11 +109,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Colors.red,
-              ),
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Error loading tricks: $error',
@@ -130,11 +136,9 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
       children: [
         // 검색 및 필터 섹션
         _buildSearchAndFilter(),
-        
+
         // 트릭 목록
-        Expanded(
-          child: _buildTricksList(groupedTricks),
-        ),
+        Expanded(child: _buildTricksList(groupedTricks)),
       ],
     );
   }
@@ -178,9 +182,9 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
               });
             },
           ),
-          
+
           const SizedBox(height: AppSpacing.md),
-          
+
           // 카테고리 필터
           _buildCategoryFilter(),
         ],
@@ -223,7 +227,9 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.lg),
                 side: BorderSide(
-                  color: isSelected ? AppColors.pointBrown : AppColors.pointDark.withValues(alpha: 0.2),
+                  color: isSelected
+                      ? AppColors.pointBrown
+                      : AppColors.pointDark.withValues(alpha: 0.2),
                 ),
               ),
             ),
@@ -269,7 +275,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
       itemBuilder: (context, index) {
         final category = groupedTricks.keys.elementAt(index);
         final tricks = groupedTricks[category]!;
-        
+
         return _buildCategorySection(category, tricks);
       },
     );
@@ -325,17 +331,19 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
             ),
           ),
         ],
-        
+
         // 트릭 카드들
-        ...tricks.map((trick) => Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-          child: TrickCard(
-            trick: trick,
-            onTap: () => _showTrickDetail(trick),
-            onStartLearning: () => _startLearning(trick),
+        ...tricks.map(
+          (trick) => Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+            child: TrickCard(
+              trick: trick,
+              onTap: () => _showTrickDetail(trick),
+              onStartLearning: () => _startLearning(trick),
+            ),
           ),
-        )),
-        
+        ),
+
         if (_selectedCategory == 'all' && tricks.isNotEmpty)
           const SizedBox(height: AppSpacing.lg),
       ],
@@ -358,7 +366,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
         behavior: SnackBarBehavior.floating,
       ),
     );
-    
+
     // 트릭 상세 화면이나 학습 화면으로 이동
     context.push('/learn-trick/${trick.id}');
   }
@@ -405,25 +413,25 @@ class _TrickDetailDialog extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: AppSpacing.md),
-            
+
             // 트릭 이미지
             Container(
-                width: double.infinity,
-                height: 180,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppSpacing.md),
-                  image: DecorationImage(
-                    image: AssetImage(trick.imagePath),
-                    fit: BoxFit.cover,
-                    onError: (exception, stackTrace) {},
-                  ),
+              width: double.infinity,
+              height: 180,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppSpacing.md),
+                image: DecorationImage(
+                  image: AssetImage(trick.imagePath),
+                  fit: BoxFit.cover,
+                  onError: (exception, stackTrace) {},
                 ),
               ),
-            
+            ),
+
             const SizedBox(height: AppSpacing.md),
-            
+
             // 난이도 태그
             Container(
               padding: const EdgeInsets.symmetric(
@@ -431,7 +439,9 @@ class _TrickDetailDialog extends StatelessWidget {
                 vertical: AppSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: _getDifficultyColor(trick.difficulty).withValues(alpha: 0.1),
+                color: _getDifficultyColor(
+                  trick.difficulty,
+                ).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppSpacing.sm),
               ),
               child: Text(
@@ -442,9 +452,9 @@ class _TrickDetailDialog extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: AppSpacing.md),
-            
+
             // 설명
             if (trick.description?.isNotEmpty == true) ...[
               Text(
@@ -464,7 +474,7 @@ class _TrickDetailDialog extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.lg),
             ],
-            
+
             // 액션 버튼들
             Row(
               children: [
@@ -473,7 +483,9 @@ class _TrickDetailDialog extends StatelessWidget {
                     onPressed: () => Navigator.of(context).pop(),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppColors.pointDark),
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppSpacing.md),
                       ),
@@ -497,7 +509,9 @@ class _TrickDetailDialog extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.pointBlue,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppSpacing.md),
                       ),

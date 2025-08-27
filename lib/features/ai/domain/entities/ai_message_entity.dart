@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 /// AI 채팅 메시지 타입
 enum MessageType {
-  user,      // 사용자 메시지
+  user, // 사용자 메시지
   assistant, // AI 어시스턴트 메시지
-  system,    // 시스템 메시지
+  system, // 시스템 메시지
 }
 
 /// AI 채팅 메시지 엔티티
@@ -104,10 +104,7 @@ class AiChatSessionEntity {
   /// 메시지 추가
   AiChatSessionEntity addMessage(AiMessageEntity message) {
     final updatedMessages = List<AiMessageEntity>.from(messages)..add(message);
-    return copyWith(
-      messages: updatedMessages,
-      updatedAt: DateTime.now(),
-    );
+    return copyWith(messages: updatedMessages, updatedAt: DateTime.now());
   }
 
   /// 마지막 메시지
@@ -138,10 +135,10 @@ class AiSuggestedQuestionEntity {
 
 /// AI 응답 타입
 enum AiResponseType {
-  text,           // 텍스트 응답
+  text, // 텍스트 응답
   recommendation, // 추천 사항
-  warning,        // 경고
-  information,    // 정보 제공
+  warning, // 경고
+  information, // 정보 제공
 }
 
 /// AI 응답 메타데이터

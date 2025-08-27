@@ -220,7 +220,11 @@ class _PetSelectorBottomSheet extends StatelessWidget {
             ),
             // 선택 표시
             if (isSelected)
-              const Icon(Icons.check_circle, color: AppColors.pointBrown, size: 24),
+              const Icon(
+                Icons.check_circle,
+                color: AppColors.pointBrown,
+                size: 24,
+              ),
           ],
         ),
       ),

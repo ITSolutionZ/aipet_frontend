@@ -48,11 +48,7 @@ class FeedingRecordsController {
       final targetData = <FlSpot>[];
 
       for (int i = 6; i >= 0; i--) {
-        final date = DateTime(
-          now.year,
-          now.month,
-          now.day - i,
-        );
+        final date = DateTime(now.year, now.month, now.day - i);
 
         final dayRecords = feedingRecords.where((record) {
           final recordDate = DateTime(
@@ -61,8 +57,8 @@ class FeedingRecordsController {
             record.fedTime.day,
           );
           return recordDate.year == date.year &&
-                 recordDate.month == date.month &&
-                 recordDate.day == date.day;
+              recordDate.month == date.month &&
+              recordDate.day == date.day;
         }).toList();
 
         final actualAmount = dayRecords.fold<double>(
@@ -76,10 +72,7 @@ class FeedingRecordsController {
         targetData.add(FlSpot((6 - i).toDouble(), targetAmount));
       }
 
-      final data = {
-        'chartData': chartData,
-        'targetData': targetData,
-      };
+      final data = {'chartData': chartData, 'targetData': targetData};
 
       return FeedingRecordsResult.success('차트 데이터가 생성되었습니다', data);
     } catch (error) {
@@ -128,12 +121,8 @@ class FeedingRecordsController {
   FlTitlesData _buildTitlesData() {
     return FlTitlesData(
       show: true,
-      rightTitles: const AxisTitles(
-        sideTitles: SideTitles(showTitles: false),
-      ),
-      topTitles: const AxisTitles(
-        sideTitles: SideTitles(showTitles: false),
-      ),
+      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       bottomTitles: AxisTitles(
         sideTitles: SideTitles(
           showTitles: true,
@@ -268,23 +257,27 @@ class FeedingRecordsController {
   }
 
   /// 급여 기록 필터링
-  List<dynamic> filterRecordsByDate(List<dynamic> records, DateTime startDate, DateTime endDate) {
+  List<dynamic> filterRecordsByDate(
+    List<dynamic> records,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
     return records.where((record) {
       final recordDate = record.fedTime;
       return recordDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
-             recordDate.isBefore(endDate.add(const Duration(days: 1)));
+          recordDate.isBefore(endDate.add(const Duration(days: 1)));
     }).toList();
   }
 
   /// 급여 기록 검색
   List<dynamic> searchRecords(List<dynamic> records, String query) {
     if (query.isEmpty) return records;
-    
+
     final lowerQuery = query.toLowerCase();
     return records.where((record) {
       return record.petName.toLowerCase().contains(lowerQuery) ||
-             record.foodType.toLowerCase().contains(lowerQuery) ||
-             record.foodBrand.toLowerCase().contains(lowerQuery);
+          record.foodType.toLowerCase().contains(lowerQuery) ||
+          record.foodBrand.toLowerCase().contains(lowerQuery);
     }).toList();
   }
 
@@ -299,7 +292,7 @@ class FeedingRecordsController {
     try {
       // Mock add logic - 실제로는 repository를 통해 저장
       await Future.delayed(const Duration(milliseconds: 500));
-      
+
       final record = {
         'id': DateTime.now().millisecondsSinceEpoch.toString(),
         'petName': petName,
@@ -339,7 +332,7 @@ class FeedingRecordsController {
     try {
       // Mock update logic
       await Future.delayed(const Duration(milliseconds: 500));
-      
+
       final updatedRecord = {
         'id': recordId,
         'petName': petName,
@@ -363,16 +356,20 @@ class FeedingRecordsController {
     final weekEnd = weekStart.add(const Duration(days: 6));
 
     final weeklyRecords = filterRecordsByDate(records, weekStart, weekEnd);
-    
+
     final totalFeedings = weeklyRecords.length;
     final totalAmount = weeklyRecords.fold<double>(
-      0.0, 
+      0.0,
       (sum, record) => sum + record.amount,
     );
-    
+
     final averageAmount = totalFeedings > 0 ? totalAmount / totalFeedings : 0.0;
-    final completedFeedings = weeklyRecords.where((r) => r.status == 'completed').length;
-    final completionRate = totalFeedings > 0 ? completedFeedings / totalFeedings : 0.0;
+    final completedFeedings = weeklyRecords
+        .where((r) => r.status == 'completed')
+        .length;
+    final completionRate = totalFeedings > 0
+        ? completedFeedings / totalFeedings
+        : 0.0;
 
     return {
       'totalFeedings': totalFeedings,
