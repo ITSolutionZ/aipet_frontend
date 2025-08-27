@@ -1,6 +1,6 @@
 # aipet_frontend
 
-aipetのフロントエンドレポジトリです
+aipet のフロントエンドレポジトリです
 
 A new Flutter project.
 
