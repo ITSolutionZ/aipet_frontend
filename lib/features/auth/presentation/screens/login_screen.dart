@@ -47,11 +47,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       await _authController.loadSavedCredentials();
 
       // 저장된 정보가 있으면 텍스트 컨트롤러 업데이트
-      final authState = ref.read(authStateNotifierProvider);
+      final authState = ref.read(authFormStateNotifierProvider);
       if (authState.rememberMe) {
         setState(() {
           _emailController.text = authState.email;
-          _passwordController.text = authState.password;
+          // 패스워드는 저장하지 않으므로 컨트롤러에 설정하지 않음
         });
       }
     } catch (e) {
@@ -93,10 +93,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authStateNotifierProvider);
+    final authState = ref.watch(authFormStateNotifierProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -144,7 +143,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   controller: _passwordController,
                   isVisible: authState.isPasswordVisible,
                   onToggleVisibility: _authController.togglePasswordVisibility,
-                  onChanged: _authController.updatePassword,
+                  onChanged: (value) {
+                    // 패스워드는 AuthFormState에 저장하지 않음 (보안상 이유)
+                    // UI에서만 사용하고 검증 후 즉시 메모리에서 제거
+                  },
                   validator: (value) {
                     // 개발 모드에서는 유효성 검사 생략 (빈 값만 체크)
                     if (value == null || value.isEmpty) {

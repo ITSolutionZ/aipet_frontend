@@ -18,7 +18,9 @@ class NotificationUIController extends BaseController {
       final notifications = await _notificationController.getNotifications();
       return notifications;
     } catch (error) {
-      showErrorSnackBar(context, 'アラーム通知の読み込みに失敗しました: $error');
+      if (context.mounted) {
+        showErrorSnackBar(context, 'アラーム通知の読み込みに失敗しました: $error');
+      }
       return [];
     }
   }
@@ -27,9 +29,13 @@ class NotificationUIController extends BaseController {
   Future<void> refreshNotificationsWithFeedback(BuildContext context) async {
     try {
       await _notificationController.refreshNotifications();
-      showSuccessSnackBar(context, 'アラーム通知が更新されました。');
+      if (context.mounted) {
+        showSuccessSnackBar(context, 'アラーム通知が更新されました。');
+      }
     } catch (error) {
-      showErrorSnackBar(context, 'アラーム通知の更新に失敗しました: $error');
+      if (context.mounted) {
+        showErrorSnackBar(context, 'アラーム通知の更新に失敗しました: $error');
+      }
     }
   }
 
@@ -37,9 +43,13 @@ class NotificationUIController extends BaseController {
   Future<void> markAsReadWithFeedback(BuildContext context, String id) async {
     try {
       await _notificationController.markAsRead(id);
-      showSuccessSnackBar(context, 'アラーム通知を既読にしました。');
+      if (context.mounted) {
+        showSuccessSnackBar(context, 'アラーム通知を既読にしました。');
+      }
     } catch (error) {
-      showErrorSnackBar(context, 'アラーム通知の既読処理に失敗しました: $error');
+      if (context.mounted) {
+        showErrorSnackBar(context, 'アラーム通知の既読処理に失敗しました: $error');
+      }
     }
   }
 
@@ -50,9 +60,13 @@ class NotificationUIController extends BaseController {
   ) async {
     try {
       await _notificationController.deleteNotification(id);
-      showSuccessSnackBar(context, 'アラーム通知が削除されました。');
+      if (context.mounted) {
+        showSuccessSnackBar(context, 'アラーム通知が削除されました。');
+      }
     } catch (error) {
-      showErrorSnackBar(context, 'アラーム通知の削除に失敗しました: $error');
+      if (context.mounted) {
+        showErrorSnackBar(context, 'アラーム通知の削除に失敗しました: $error');
+      }
     }
   }
 
@@ -63,9 +77,13 @@ class NotificationUIController extends BaseController {
   ) async {
     try {
       await _notificationController.saveNotificationSettings(settings);
-      showSuccessSnackBar(context, 'アラーム通知の設定が保存されました。');
+      if (context.mounted) {
+        showSuccessSnackBar(context, 'アラーム通知の設定が保存されました。');
+      }
     } catch (error) {
-      showErrorSnackBar(context, 'アラーム通知の設定の保存に失敗しました: $error');
+      if (context.mounted) {
+        showErrorSnackBar(context, 'アラーム通知の設定の保存に失敗しました: $error');
+      }
     }
   }
 
@@ -73,9 +91,13 @@ class NotificationUIController extends BaseController {
   Future<void> sendTestNotificationWithFeedback(BuildContext context) async {
     try {
       await _notificationController.sendTestNotification();
-      showSuccessSnackBar(context, 'テストアラーム通知が送信されました。');
+      if (context.mounted) {
+        showSuccessSnackBar(context, 'テストアラーム通知が送信されました。');
+      }
     } catch (error) {
-      showErrorSnackBar(context, 'テストアラーム通知の送信に失敗しました: $error');
+      if (context.mounted) {
+        showErrorSnackBar(context, 'テストアラーム通知の送信に失敗しました: $error');
+      }
     }
   }
 
@@ -86,14 +108,18 @@ class NotificationUIController extends BaseController {
     try {
       final result = await _notificationController
           .requestNotificationPermission();
-      if (result) {
-        showSuccessSnackBar(context, 'アラーム通知の許可が許可されました。');
-      } else {
-        showWarningSnackBar(context, 'アラーム通知の許可が拒否されました。');
+      if (context.mounted) {
+        if (result) {
+          showSuccessSnackBar(context, 'アラーム通知の許可が許可されました。');
+        } else {
+          showWarningSnackBar(context, 'アラーム通知の許可が拒否されました。');
+        }
       }
       return result;
     } catch (error) {
-      showErrorSnackBar(context, 'アラーム通知の許可の要求に失敗しました: $error');
+      if (context.mounted) {
+        showErrorSnackBar(context, 'アラーム通知の許可の要求に失敗しました: $error');
+      }
       return false;
     }
   }
