@@ -15,7 +15,6 @@ class VaccineScreen extends ConsumerStatefulWidget {
 
 class _VaccineScreenState extends ConsumerState<VaccineScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String? _selectedVaccine;
 
   // 임시 백신 데이터
   final Map<String, List<Map<String, dynamic>>> _vaccineData = {

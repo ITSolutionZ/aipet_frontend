@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../domain/auth_state.dart';
+import '../domain/auth_form_state.dart';
 
 part 'auth_providers.g.dart';
 
@@ -32,20 +32,12 @@ Future<SharedPreferences> sharedPreferences(Ref ref) async {
 }
 
 @riverpod
-class AuthStateNotifier extends _$AuthStateNotifier {
+class AuthFormStateNotifier extends _$AuthFormStateNotifier {
   @override
-  AuthState build() => const AuthState();
+  AuthFormState build() => const AuthFormState();
 
   void updateEmail(String email) {
     state = state.copyWith(email: email, error: null);
-  }
-
-  void updatePassword(String password) {
-    state = state.copyWith(password: password, error: null);
-  }
-
-  void updateConfirmPassword(String confirmPassword) {
-    state = state.copyWith(confirmPassword: confirmPassword, error: null);
   }
 
   void updateUsername(String username) {
@@ -68,7 +60,7 @@ class AuthStateNotifier extends _$AuthStateNotifier {
 
   /// 인증 상태 초기화
   void resetState() {
-    state = const AuthState();
+    state = const AuthFormState();
   }
 
   Future<void> login() async {
@@ -79,7 +71,7 @@ class AuthStateNotifier extends _$AuthStateNotifier {
       // TODO: 실제 로그인 API 호출
       await Future.delayed(const Duration(seconds: 1)); // 임시 딜레이
 
-      // Remember Me가 체크되어 있으면 로그인 정보 저장
+      // Remember Me가 체크되어 있으면 이메일만 저장
       if (state.rememberMe) {
         await _saveLoginCredentials();
       }
@@ -177,9 +169,6 @@ class AuthStateNotifier extends _$AuthStateNotifier {
     state = state.copyWith(rememberMe: false);
     debugPrint('메모리에서 Remember Me 정보 삭제 완료');
   }
-
-  // 로그인/회원가입 로직은 AuthController로 이동
-  // 여기서는 상태 관리만 담당
 
   void clearError() {
     state = state.copyWith(error: null);

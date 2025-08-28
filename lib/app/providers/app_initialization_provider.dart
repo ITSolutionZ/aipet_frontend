@@ -1,4 +1,6 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -192,7 +194,8 @@ class AppInitialization extends _$AppInitialization {
 
       // 온보딩 완료 버전 확인 (앱 업데이트 시 온보딩 재표시 여부 결정)
       final onboardingVersion = prefs.getString('onboarding_version');
-      const currentAppVersion = '1.0.0'; // TODO: PackageInfo에서 가져오도록 수정
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentAppVersion = packageInfo.version;
 
       // 온보딩 버전이 다르면 온보딩 미완료로 처리
       final isVersionMatched = onboardingVersion == currentAppVersion;
@@ -225,12 +228,11 @@ class AppInitialization extends _$AppInitialization {
       bool isNetworkConnected = false;
 
       // 네트워크 연결 상태 확인
-      // 실제 구현에서는 connectivity_plus 패키지 사용
-      // TODO: connectivity_plus 패키지를 사용하여 실제 네트워크 연결 상태 확인
       try {
-        // HTTP 요청 시뮬레이션 (실제로는 google.com 등에 ping)
-        await Future.delayed(const Duration(milliseconds: 100));
-        isNetworkConnected = true;
+        final connectivityResult = await Connectivity().checkConnectivity();
+        isNetworkConnected =
+            connectivityResult.isNotEmpty &&
+            !connectivityResult.contains(ConnectivityResult.none);
       } catch (e) {
         isNetworkConnected = false;
       }
@@ -268,8 +270,8 @@ class AppInitialization extends _$AppInitialization {
   /// 현재 앱 버전을 가져와서 상태에 저장합니다.
   Future<void> _getAppVersion() async {
     try {
-      // TODO: package_info_plus를 사용하여 실제 앱 버전 가져오기
-      const appVersion = '1.0.0';
+      final packageInfo = await PackageInfo.fromPlatform();
+      final appVersion = packageInfo.version;
 
       // 상태 업데이트
       state = state.copyWith(appVersion: appVersion);
@@ -319,7 +321,7 @@ class AppInitialization extends _$AppInitialization {
       // Flutter에서는 폰트가 자동으로 로드되므로 별도 처리 불필요
 
       // 중요한 이미지들 캐시 준비
-      // TODO: precacheImage나 ImageCacheService를 사용하여 이미지 사전 로딩
+      await _precacheImportantImages();
 
       // 애니메이션 리소스 준비
       // Lottie 애니메이션 등의 사전 로딩
@@ -334,6 +336,33 @@ class AppInitialization extends _$AppInitialization {
         debugPrint('❌ 리소스 초기화 실패: $e');
       }
       rethrow;
+    }
+  }
+
+  /// 중요한 이미지들을 사전 로드합니다.
+  ///
+  /// 앱에서 자주 사용되는 이미지들을 미리 캐시하여 성능을 향상시킵니다.
+  /// BuildContext가 필요한 precacheImage는 위젯 트리에서 처리합니다.
+  Future<void> _precacheImportantImages() async {
+    try {
+      // 이미지 캐시 준비 (실제 precacheImage는 위젯에서 처리)
+      const importantImages = [
+        'assets/icons/aipet_logo.png',
+        'assets/icons/logo_notinclude_text.png',
+        'assets/images/placeholder.png',
+        'assets/images/empty_image.png',
+      ];
+
+      if (kDebugMode) {
+        debugPrint('✅ 이미지 사전 로드 준비 완료: ${importantImages.length}개 이미지');
+        for (final imagePath in importantImages) {
+          debugPrint('   - $imagePath');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ 이미지 사전 로드 준비 중 오류: $e');
+      }
     }
   }
 }

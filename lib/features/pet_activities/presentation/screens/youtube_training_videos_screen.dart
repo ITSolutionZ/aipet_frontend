@@ -35,8 +35,8 @@ class _YouTubeTrainingVideosScreenState
     _loadVideos();
   }
 
-  Future<void> _loadVideos() async {
-    await _controller.loadYouTubeVideos(widget.petId);
+  void _loadVideos() {
+    _controller.loadYouTubeVideos(widget.petId);
   }
 
   Future<void> _addVideo() async {

@@ -64,6 +64,7 @@ class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
       await repository.addVideoBookmark(bookmark);
 
       // 북마크 목록 새로고침
+      // ignore: unused_result
       ref.refresh(videoBookmarksProvider(widget.videoId));
 
       if (mounted) {
@@ -107,6 +108,7 @@ class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
         final repository = ref.read(petActivitiesRepositoryProvider);
         await repository.removeVideoBookmark(bookmark.id);
 
+        // ignore: unused_result
         ref.refresh(videoBookmarksProvider(widget.videoId));
 
         if (mounted) {

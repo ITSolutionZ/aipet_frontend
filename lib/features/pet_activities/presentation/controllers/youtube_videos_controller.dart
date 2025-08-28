@@ -13,9 +13,10 @@ class YouTubeVideosController {
   YouTubeVideosController(this.ref, this.context);
 
   /// YouTube 비디오 목록을 로드합니다.
-  Future<void> loadYouTubeVideos(String petId) async {
+  void loadYouTubeVideos(String petId) {
     // FutureProvider는 자동으로 로딩 상태를 관리하므로
     // refresh만 호출하면 됩니다.
+    // ignore: unused_result
     ref.refresh(youTubeVideosProvider(petId));
   }
 

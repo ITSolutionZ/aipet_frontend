@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart'; // Changed: Firebase 초기화
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/auth/data/services/firebase_token_service.dart';
 import '../shared/shared.dart';
 import 'config/config.dart';
 import 'providers/providers.dart';
@@ -16,6 +18,32 @@ class AppBootstrap {
   static void initialize() {
     // 환경별 설정 초기화
     _initializeAppConfig();
+
+    // Changed: Firebase 초기화 (모바일 네이티브 구성 파일 기반)
+    // android/app/google-services.json, ios/Runner/GoogleService-Info.plist가 있으면
+    // 옵션 없이도 초기화 가능. 웹 추가 시 firebase_options.dart 사용으로 전환 권장.
+    Firebase.initializeApp()
+        .then((_) {
+          debugPrint('✅ Firebase initialized');
+          // Firebase 인증 상태 리스너 설정
+          FirebaseTokenService.setupAuthStateListener();
+          debugPrint('✅ Firebase Auth State Listener setup');
+        })
+        .catchError((e) {
+          debugPrint('🔥 Firebase init failed: $e');
+        });
+
+    // NOTE:
+    // 웹/멀티플랫폼에서 옵션이 필요하다면 아래 주석을 해제하고
+    // `flutterfire configure`로 생성된 firebase_options.dart를 사용하세요.
+    /*
+    import 'package:aipet_frontend/firebase_options.dart' as fbopts; // 파일 경로는 프로젝트에 맞게 조정
+    Firebase.initializeApp(
+      options: fbopts.DefaultFirebaseOptions.currentPlatform,
+    )
+    .then((_) => debugPrint('✅ Firebase initialized with options'))
+    .catchError((e) => debugPrint('🔥 Firebase init(with options) failed: $e'));
+    */
   }
 
   /// 환경별 앱 설정을 초기화합니다.
