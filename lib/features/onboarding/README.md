@@ -11,14 +11,14 @@
 
 ### 📋 목차 (Table of Contents)
 
-- [개요 (Overview)](#overview)
-- [아키텍처 (Architecture)](#architecture)
-- [주요 기능 (Key Features)](#key-features)
-- [디렉토리 구조 (Directory Structure)](#directory-structure)
-- [온보딩 플로우 (Onboarding Flow)](#onboarding-flow)
-- [UI 구성 (UI Components)](#ui-components)
-- [사용 방법 (Usage)](#usage)
-- [설정 (Configuration)](#configuration)
+- [개요 (Overview)](#개요-overview)
+- [아키텍처 (Architecture)](#아키텍처-architecture)
+- [주요 기능 (Key Features)](#주요-기능-key-features)
+- [디렉토리 구조 (Directory Structure)](#디렉토리-구조-directory-structure)
+- [온보딩 플로우 (Onboarding Flow)](#온보딩-플로우-onboarding-flow)
+- [UI 구성 (UI Components)](#ui-구성-ui-components)
+- [사용 방법 (Usage)](#사용-방법-usage)
+- [설정 (Configuration)](#설정-configuration)
 
 ### 개요 (Overview)
 
@@ -133,7 +133,7 @@ onboarding/
 
 #### 🔄 상태 관리 플로우
 
-**1단계: 앱 초기화 시 온보딩 상태 확인**
+##### 1단계: 앱 초기화 시 온보딩 상태 확인
 
 ```dart
 // AppInitializationProvider에서 온보딩 상태 로드
@@ -149,7 +149,7 @@ if (isOnboardingCompleted) {
 }
 ```
 
-**2단계: 온보딩 진행 상태 관리**
+##### 2단계: 온보딩 진행 상태 관리
 
 ```dart
 // 페이지 변경 시 상태 저장
@@ -167,7 +167,7 @@ void _completeOnboarding() async {
 }
 ```
 
-**3단계: 재방문 사용자 처리**
+##### 3단계: 재방문 사용자 처리
 
 ```dart
 // 시청 횟수 기반 Skip 버튼 표시
@@ -359,14 +359,14 @@ dependencies:
 
 ### 📋 目次 (Table of Contents)
 
-- [概要 (Overview)](#overview-1)
-- [アーキテクチャ (Architecture)](#architecture-1)
-- [主要機能 (Key Features)](#key-features-1)
-- [ディレクトリ構造 (Directory Structure)](#directory-structure-1)
-- [オンボーディングフロー (Onboarding Flow)](#onboarding-flow-1)
-- [UI 構成 (UI Components)](#ui-components-1)
-- [使用方法 (Usage)](#usage-1)
-- [設定 (Configuration)](#configuration-1)
+- [概要 (Overview)](#概要-overview)
+- [アーキテクチャ (Architecture)](#アーキテクチャ-architecture)
+- [主要機能 (Key Features)](#主要機能-key-features)
+- [ディレクトリ構造 (Directory Structure)](#ディレクトリ構造-directory-structure)
+- [オンボーディングフロー (Onboarding Flow)](#オンボーディングフロー-onboarding-flow)
+- [UI 構成 (UI Components)](#ui-構成-ui-components)
+- [使用方法 (Usage)](#使用方法-usage)
+- [設定 (Configuration)](#設定-configuration)
 
 ### 概要 (Overview)
 
@@ -481,7 +481,7 @@ onboarding/
 
 #### 🔄 状態管理フロー
 
-**ステップ 1: アプリ初期化時のオンボーディング状態確認**
+##### ステップ 1: アプリ初期化時のオンボーディング状態確認
 
 ```dart
 // AppInitializationProviderでオンボーディング状態読み込み
@@ -497,7 +497,7 @@ if (isOnboardingCompleted) {
 }
 ```
 
-**ステップ 2: オンボーディング進行状態管理**
+##### ステップ 2: オンボーディング進行状態管理
 
 ```dart
 // ページ変更時の状態保存
@@ -515,7 +515,7 @@ void _completeOnboarding() async {
 }
 ```
 
-**ステップ 3: 再訪問ユーザー処理**
+##### ステップ 3: 再訪問ユーザー処理
 
 ```dart
 // 視聴回数ベースのSkipボタン表示
@@ -712,4 +712,4 @@ dependencies:
 
 ---
 
-**© 2024 AI Pet. 프로덕션 레벨 온보딩 시스템 / Production-ready Onboarding System**
+© 2025 AI Pet. 프로덕션 레벨 온보딩 시스템 / Production-ready Onboarding System
