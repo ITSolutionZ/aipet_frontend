@@ -38,7 +38,7 @@ AI Pet 애플리케이션의 스플래시 화면 기능을 담당하는 모듈�
 ```txt
 lib/features/splash/
 ├── data/               # 데이터 계층
-├── domain/             # 도메인 계층 
+├── domain/             # 도메인 계층
 ├── presentation/       # 프레젠테이션 계층
 └── splash.dart         # 전체 모듈 export
 ```
@@ -55,7 +55,7 @@ lib/features/splash/
 
 - **1단계**: 초기화 (애니메이션 및 회사 로고 준비)
 - **2단계**: ITZ 회사 로고 - **무조건 3초간 표시** (조건 없음)
-- **3단계**: AI Pet 앱 로고 - **무조건 3초간 표시** (조건 없음)  
+- **3단계**: AI Pet 앱 로고 - **무조건 3초간 표시** (조건 없음)
 - **4단계**: 완료 후 온보딩 화면으로 자동 이동
 
 **⚠️ 핵심 요구사항**:
@@ -182,11 +182,13 @@ yield SplashResult.success(
 #### 🎯 상태별 UI 렌더링
 
 **회사 로고 상태:**
+
 - 크기: 196x130 (SplashConstants.companyLogoWidth/Height)
 - 배경: 흰색 컨테이너
 - 모서리: 8px 라운드 (SplashConstants.companyLogoRadius)
 
 **앱 로고 상태:**
+
 - 크기: 300x300 (SplashConstants.appLogoSize)
 - 배경: 그라데이션 효과
 - 모서리: 20px 라운드 (SplashConstants.logoRadius)
@@ -224,7 +226,7 @@ class SplashSequenceNotifier extends _$SplashSequenceNotifier {
 **스플래시 상태 모델:**
 
 ```dart
-enum SplashPhase { 
+enum SplashPhase {
   initializing,    // 초기화 중
   companyLogo,     // 회사 로고 표시
   appLogo,         // 앱 로고 표시
@@ -293,7 +295,7 @@ class MySplashWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final splashState = ref.watch(splashSequenceNotifierProvider);
-    
+
     return SplashLogoWidget(splashState: splashState);
   }
 }
@@ -308,11 +310,11 @@ class SplashConstants {
   // 타이밍 설정
   static const Duration logoDisplayDuration = Duration(seconds: 3);
   static const Duration animationDuration = Duration(milliseconds: 3000);
-  
+
   // 이미지 경로
   static const String companyLogoPath = 'assets/icons/itz.png';
   static const String appLogoPath = 'assets/icons/aipet_logo.png';
-  
+
   // 크기 설정
   static const double companyLogoWidth = 196.0;
   static const double companyLogoHeight = 130.0;
@@ -356,11 +358,11 @@ dependencies:
 
 ### 概要 (Overview)
 
-AI Petアプリケーションのスプラッシュ画面機能を担当するモジュールです。Clean Architectureパターンをベースにした拡張可能でメンテナンスしやすいスプラッシュシステムを提供します。
+AI Pet アプリケーションのスプラッシュ画面機能を担当するモジュールです。Clean Architecture パターンをベースにした拡張可能でメンテナンスしやすいスプラッシュシステムを提供します。
 
 **主な特徴:**
 
-- 🎨 **完全順次表示**: 会社ロゴ(ITZ) 3秒 → アプリロゴ(AI Pet) 3秒 - **無条件進行**
+- 🎨 **完全順次表示**: 会社ロゴ(ITZ) 3 秒 → アプリロゴ(AI Pet) 3 秒 - **無条件進行**
 - 🔄 **ストリームベースの状態管理**: リアルタイム状態追跡・更新
 - 🛡️ **エラーリカバリー保証**: 例外発生時も順次進行完了保証
 - 📱 **レスポンシブデザイン**: 様々な画面サイズ対応
@@ -372,12 +374,12 @@ AI Petアプリケーションのスプラッシュ画面機能を担当する�
 ```txt
 lib/features/splash/
 ├── data/               # データ層
-├── domain/             # ドメイン層 
+├── domain/             # ドメイン層
 ├── presentation/       # プレゼンテーション層
 └── splash.dart         # 全モジュール export
 ```
 
-**Clean Architecture適用:**
+**Clean Architecture 適用:**
 
 - **Domain Layer**: ビジネスロジックと状態モデル定義
 - **Data Layer**: スプラッシュ設定と状態管理実装
@@ -387,16 +389,16 @@ lib/features/splash/
 
 #### 🎬 スプラッシュシーケンス - 完全固定順序進行
 
-- **1段階**: 初期化 (アニメーション及び会社ロゴ準備)
-- **2段階**: ITZ 会社ロゴ - **無条件3秒間表示** (条件なし)
-- **3段階**: AI Pet アプリロゴ - **無条件3秒間表示** (条件なし)
-- **4段階**: 完了後オンボーディング画面へ自動移動
+- **1 段階**: 初期化 (アニメーション及び会社ロゴ準備)
+- **2 段階**: ITZ 会社ロゴ - **無条件 3 秒間表示** (条件なし)
+- **3 段階**: AI Pet アプリロゴ - **無条件 3 秒間表示** (条件なし)
+- **4 段階**: 完了後オンボーディング画面へ自動移動
 
 **⚠️ 核心要求事項**:
 
 - 会社ロゴとアプリロゴの間には **いかなる分岐ロジックも存在しない**
 - エラー発生時も同じ順序で進行完了
-- ユーザー入力や他の条件と関係なく **固定された6秒シーケンス** 進行
+- ユーザー入力や他の条件と関係なく **固定された 6 秒シーケンス** 進行
 
 #### 🎨 視覚効果
 
@@ -408,7 +410,7 @@ lib/features/splash/
 
 - **画像読み込み失敗** 時のフォールバックアイコン表示
 - **ストリームエラー** 発生時も次画面に進行
-- **メモリリーク防止** - 適切なdisposeパターン
+- **メモリリーク防止** - 適切な dispose パターン
 
 #### 🔄 状態管理
 
@@ -471,7 +473,7 @@ splash/
 
 #### 🔄 状態遷移プロセス
 
-**ステップ1: 初期化 (Initializing)**
+**ステップ 1: 初期化 (Initializing)**
 
 ```dart
 // SplashState.initializing() 生成
@@ -481,7 +483,7 @@ yield SplashResult.success(
 );
 ```
 
-**ステップ2: 会社ロゴ表示 (Company Logo)**
+**ステップ 2: 会社ロゴ表示 (Company Logo)**
 
 ```dart
 // 会社ロゴ状態に遷移し3秒待機
@@ -492,7 +494,7 @@ yield SplashResult.success(
 await Future.delayed(SplashConstants.logoDisplayDuration);
 ```
 
-**ステップ3: アプリロゴ表示 (App Logo)**
+**ステップ 3: アプリロゴ表示 (App Logo)**
 
 ```dart
 // アプリロゴ状態に遷移し3秒待機
@@ -503,7 +505,7 @@ yield SplashResult.success(
 await Future.delayed(SplashConstants.logoDisplayDuration);
 ```
 
-**ステップ4: 完了とルーティング (Completed)**
+**ステップ 4: 完了とルーティング (Completed)**
 
 ```dart
 // 完了状態に遷移
@@ -515,7 +517,7 @@ yield SplashResult.success(
 
 ### 状態管理 (State Management)
 
-#### 🔄 Riverpodベースの状態管理
+#### 🔄 Riverpod ベースの状態管理
 
 **SplashSequenceNotifier:**
 
@@ -534,7 +536,7 @@ class SplashSequenceNotifier extends _$SplashSequenceNotifier {
 **スプラッシュ状態モデル:**
 
 ```dart
-enum SplashPhase { 
+enum SplashPhase {
   initializing,    // 初期化中
   companyLogo,     // 会社ロゴ表示
   appLogo,         // アプリロゴ表示
@@ -590,11 +592,11 @@ class SplashConstants {
   // タイミング設定
   static const Duration logoDisplayDuration = Duration(seconds: 3);
   static const Duration animationDuration = Duration(milliseconds: 3000);
-  
+
   // 画像パス
   static const String companyLogoPath = 'assets/icons/itz.png';
   static const String appLogoPath = 'assets/icons/aipet_logo.png';
-  
+
   // サイズ設定
   static const double companyLogoWidth = 196.0;
   static const double companyLogoHeight = 130.0;
