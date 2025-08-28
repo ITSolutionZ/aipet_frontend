@@ -6,39 +6,56 @@ part of 'splash_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$splashAnimationTimerHash() =>
-    r'2572e6336c0b2df2021af5f65dd8388f7cb22ada';
+String _$splashRepositoryHash() => r'89da06c2948df192ff41ba131dd4008faba9f393';
 
-/// See also [splashAnimationTimer].
-@ProviderFor(splashAnimationTimer)
-final splashAnimationTimerProvider = AutoDisposeFutureProvider<void>.internal(
-  splashAnimationTimer,
-  name: r'splashAnimationTimerProvider',
+/// See also [splashRepository].
+@ProviderFor(splashRepository)
+final splashRepositoryProvider = AutoDisposeProvider<SplashRepository>.internal(
+  splashRepository,
+  name: r'splashRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$splashAnimationTimerHash,
+      : _$splashRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SplashAnimationTimerRef = AutoDisposeFutureProviderRef<void>;
-String _$splashStateHash() => r'5a99f12dd8914a30723cf18e3b305350b9ad9a8d';
+typedef SplashRepositoryRef = AutoDisposeProviderRef<SplashRepository>;
+String _$splashConfigHash() => r'bcf6346c8c25a10f44de83069c25e96e9aec1787';
 
-/// See also [SplashState].
-@ProviderFor(SplashState)
-final splashStateProvider =
-    AutoDisposeNotifierProvider<SplashState, SplashStateData>.internal(
-      SplashState.new,
-      name: r'splashStateProvider',
+/// See also [splashConfig].
+@ProviderFor(splashConfig)
+final splashConfigProvider = AutoDisposeFutureProvider<SplashEntity>.internal(
+  splashConfig,
+  name: r'splashConfigProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$splashConfigHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef SplashConfigRef = AutoDisposeFutureProviderRef<SplashEntity>;
+String _$splashSequenceNotifierHash() =>
+    r'75c960910ff08b4d6a801c9b66ac0a3dbaade571';
+
+/// See also [SplashSequenceNotifier].
+@ProviderFor(SplashSequenceNotifier)
+final splashSequenceNotifierProvider =
+    AutoDisposeNotifierProvider<SplashSequenceNotifier, SplashState>.internal(
+      SplashSequenceNotifier.new,
+      name: r'splashSequenceNotifierProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$splashStateHash,
+          : _$splashSequenceNotifierHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$SplashState = AutoDisposeNotifier<SplashStateData>;
+typedef _$SplashSequenceNotifier = AutoDisposeNotifier<SplashState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
