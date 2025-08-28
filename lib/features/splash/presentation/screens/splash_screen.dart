@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
+import '../../data/data.dart';
+import '../../domain/domain.dart';
+import '../controllers/controllers.dart';
+import '../widgets/widgets.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -16,53 +20,72 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  late SplashController _controller;
 
   @override
   void initState() {
     super.initState();
+    _controller = SplashController(ref);
     _initializeAnimations();
-    _startAIPetLogo();
+    _startSplashSequence();
   }
 
   void _initializeAnimations() {
-    // AI Pet 로고 애니메이션 (3초)
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 3000),
+      duration: SplashConstants.animationDuration,
       vsync: this,
     );
 
-    // 페이드 인 애니메이션 (0-1초)
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.0, 0.33, curve: Curves.easeIn),
-      ),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: SplashConstants.fadeStart,
+      end: SplashConstants.fadeEnd,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: SplashConstants.fadeInterval,
+    ));
 
-    // 스케일 애니메이션 (0-1초)
-    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.0, 0.33, curve: Curves.elasticOut),
-      ),
+    _scaleAnimation = Tween<double>(
+      begin: SplashConstants.scaleStart,
+      end: SplashConstants.scaleEnd,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: SplashConstants.scaleInterval,
+    ));
+  }
+
+  void _startSplashSequence() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _animationController.forward();
+      _listenToSplashSequence();
+    });
+  }
+
+  void _listenToSplashSequence() {
+    _controller.startSplashSequence().listen(
+      (result) {
+        if (result.isSuccess && result.data != null) {
+          // 상태 업데이트
+          ref.read(splashSequenceNotifierProvider.notifier).updateState(result.data!);
+          
+          // 완료 시 다음 화면으로 이동
+          if (result.data!.isCompleted) {
+            _navigateToNext();
+          }
+        }
+      },
+      onError: (error) {
+        // 에러 발생 시에도 다음 화면으로 이동
+        _navigateToNext();
+      },
     );
   }
 
-  /// AI Pet 로고 시작 - UI 초기화만 담당
-  void _startAIPetLogo() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // 애니메이션 시작
-      // ignore: unawaited_futures
-      _animationController.forward();
-
-      // AI Pet 로고를 3초간 표시
-      await Future.delayed(const Duration(seconds: 3));
-
-      // 3초 후 onboarding 화면으로 이동
-      if (mounted) {
-        _navigateToNext();
-      }
-    });
+  Future<void> _navigateToNext() async {
+    if (!mounted) return;
+    
+    // 스플래시 완료 후 무조건 온보딩으로 이동
+    // 다른 조건이나 분기 로직 없음
+    context.go(AppRouter.onboardingRoute);
   }
 
   @override
@@ -80,6 +103,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Widget _buildContent() {
+    final splashState = ref.watch(splashSequenceNotifierProvider);
+    
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
@@ -87,46 +112,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           opacity: _fadeAnimation,
           child: ScaleTransition(
             scale: _scaleAnimation,
-            child: _buildLogoContent(),
+            child: SplashLogoWidget(
+              splashState: splashState,
+            ),
           ),
         );
       },
     );
-  }
-
-  /// AI Pet 로고 표시 UI
-  Widget _buildLogoContent() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // AI Pet 로고 이미지 (300x300 고정 크기)
-        Container(
-          width: 300,
-          height: 300,
-          decoration: BoxDecoration(
-            // 그라데이션 배경
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.white.withAlpha(23), Colors.white.withAlpha(10)],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withAlpha(22), width: 1),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.asset(
-              'assets/icons/aipet_logo.png',
-              fit: BoxFit.contain,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// 다음 화면으로 이동 - UI 로직만 담당
-  void _navigateToNext() {
-    context.go(AppRouter.onboardingRoute);
   }
 }
