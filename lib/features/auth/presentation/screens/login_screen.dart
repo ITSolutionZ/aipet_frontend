@@ -93,15 +93,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  /// 이메일 검증
-  bool _validateEmail(String email) {
-    return ValidationUtils.isValidEmail(email);
-  }
-
-  /// 비밀번호 검증
-  bool _validatePassword(String password) {
-    return ValidationUtils.isValidPassword(password);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,15 +128,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   prefixIcon: Icons.email_outlined,
                   onChanged: _authController.updateEmail,
                   validator: (value) {
+                    // 개발 모드에서는 유효성 검사 생략 (빈 값만 체크)
                     if (value == null || value.isEmpty) {
                       return 'メールアドレスを入力してください';
                     }
-
-                    // 개발 중에는 모든 입력을 허용
-                    if (!_validateEmail(value)) {
-                      return '올바른 이메일 형식을 입력해주세요';
-                    }
-
                     return null;
                   },
                 ),
@@ -160,15 +146,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   onToggleVisibility: _authController.togglePasswordVisibility,
                   onChanged: _authController.updatePassword,
                   validator: (value) {
+                    // 개발 모드에서는 유효성 검사 생략 (빈 값만 체크)
                     if (value == null || value.isEmpty) {
                       return 'パスワードを入力してください';
                     }
-
-                    // 개발 중에는 모든 입력을 허용
-                    if (!_validatePassword(value)) {
-                      return '올바른 비밀번호 형식을 입력해주세요';
-                    }
-
                     return null;
                   },
                 ),
