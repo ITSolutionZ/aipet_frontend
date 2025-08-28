@@ -1,2 +1,3 @@
-export 'domain/entities/entities.dart';
-export 'presentation/screens/ai_chat_screen.dart';
+export 'data/data.dart';
+export 'domain/domain.dart';
+export 'presentation/presentation.dart';
