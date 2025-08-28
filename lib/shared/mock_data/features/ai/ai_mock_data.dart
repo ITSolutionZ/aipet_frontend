@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../features/ai/domain/domain.dart';
+
 /// AI 관련 Mock 데이터 서비스
 /// 
 /// 실제 API 연계 전까지 사용하는 Mock 데이터를 중앙 관리합니다.
@@ -146,6 +148,61 @@ class AiMockDataService {
       'petId': petId,
       'petName': null,
     };
+  }
+
+  /// AI 채팅 기록 목 데이터
+  static List<AiMessageEntity> getChatHistory() {
+    return [
+      AiMessageEntity(
+        id: '1',
+        content: initialMessage,
+        type: MessageType.assistant,
+        timestamp: DateTime.now().subtract(const Duration(minutes: 10)),
+      ),
+      AiMessageEntity(
+        id: '2',
+        content: 'Max가 식사를 거부하고 있어요. 어떻게 해야 할까요?',
+        type: MessageType.user,
+        timestamp: DateTime.now().subtract(const Duration(minutes: 8)),
+      ),
+      AiMessageEntity(
+        id: '3',
+        content: 'Max의 식사 거부는 여러 원인이 있을 수 있습니다. 먼저 건강 상태를 확인해보시고, 사료를 바꿔보거나 소량으로 나누어 주는 것을 시도해보세요.',
+        type: MessageType.assistant,
+        timestamp: DateTime.now().subtract(const Duration(minutes: 7)),
+      ),
+    ];
+  }
+
+  /// AI 채팅 세션 목 데이터
+  static List<AiChatSessionEntity> getChatSessions() {
+    return [
+      AiChatSessionEntity(
+        id: '1',
+        title: 'Max 식사 문제 상담',
+        messages: getChatHistory(),
+        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+        updatedAt: DateTime.now().subtract(const Duration(minutes: 7)),
+        petId: '1',
+      ),
+    ];
+  }
+
+  /// AI 추천 질문 목 데이터 (간단한 형태)
+  static List<Map<String, dynamic>> getSuggestedQuestions() {
+    return [
+      {
+        'id': '1',
+        'question': '반려동물이 식사를 거부할 때는 어떻게 해야 하나요?',
+        'category': 'health',
+      },
+      {
+        'id': '2',
+        'question': '산책 중 반려동물이 다른 강아지를 무서워해요',
+        'category': 'behavior',
+      },
+      {'id': '3', 'question': '고양이의 적정 사료량은 얼마인가요?', 'category': 'feeding'},
+    ];
   }
 
   /// API 지연 시뮬레이션
