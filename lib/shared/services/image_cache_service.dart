@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 /// 이미지 캐싱 전략 타입
@@ -54,17 +54,6 @@ class ImageCacheService {
   factory ImageCacheService() => _instance;
   ImageCacheService._internal();
 
-  /// 기본 캐시 매니저
-  static final CacheManager _defaultCacheManager = CacheManager(
-    Config(
-      'aipet_images',
-      stalePeriod: const Duration(days: 7),
-      maxNrOfCacheObjects: 100,
-      repo: JsonCacheInfoRepository(databaseName: 'aipet_images'),
-      fileService: HttpFileService(),
-    ),
-  );
-
   /// 메모리 캐시 (타임스탬프 포함)
   final Map<String, _CacheEntry> _memoryCache = {};
 
@@ -99,31 +88,36 @@ class ImageCacheService {
       // 디스크 캐시 확인
       if (cacheConfig.strategy == ImageCacheStrategy.disk ||
           cacheConfig.strategy == ImageCacheStrategy.hybrid) {
-        final file = await _defaultCacheManager.getSingleFile(url);
-        if (await file.exists()) {
-          final bytes = await file.readAsBytes();
-
+        final cachedBytes = await _loadFromDiskCache(url);
+        if (cachedBytes != null) {
           // 메모리 캐시에 저장
           if (cacheConfig.strategy == ImageCacheStrategy.hybrid) {
-            _memoryCache[url] = _CacheEntry(bytes, DateTime.now());
+            _memoryCache[url] = _CacheEntry(cachedBytes, DateTime.now());
           }
-
-          return bytes;
+          return cachedBytes;
         }
       }
 
       // 네트워크에서 로드
       if (cacheConfig.strategy != ImageCacheStrategy.none) {
-        final file = await _defaultCacheManager.getSingleFile(url);
-        final bytes = await file.readAsBytes();
+        final response = await http.get(Uri.parse(url));
+        if (response.statusCode == 200) {
+          final bytes = response.bodyBytes;
 
-        // 메모리 캐시에 저장
-        if (cacheConfig.strategy == ImageCacheStrategy.memory ||
-            cacheConfig.strategy == ImageCacheStrategy.hybrid) {
-          _memoryCache[url] = _CacheEntry(bytes, DateTime.now());
+          // 디스크 캐시에 저장
+          if (cacheConfig.strategy == ImageCacheStrategy.disk ||
+              cacheConfig.strategy == ImageCacheStrategy.hybrid) {
+            await _saveToDiskCache(url, bytes);
+          }
+
+          // 메모리 캐시에 저장
+          if (cacheConfig.strategy == ImageCacheStrategy.memory ||
+              cacheConfig.strategy == ImageCacheStrategy.hybrid) {
+            _memoryCache[url] = _CacheEntry(bytes, DateTime.now());
+          }
+
+          return bytes;
         }
-
-        return bytes;
       }
     } catch (error) {
       debugPrint('이미지 로드 실패: $url - $error');
@@ -174,6 +168,45 @@ class ImageCacheService {
     return data.buffer.asUint8List();
   }
 
+  /// 디스크 캐시에서 로드
+  Future<Uint8List?> _loadFromDiskCache(String url) async {
+    try {
+      final cacheDir = await getTemporaryDirectory();
+      final cacheFile = File(
+        '${cacheDir.path}/image_cache/${_getCacheKey(url)}',
+      );
+
+      if (await cacheFile.exists()) {
+        return await cacheFile.readAsBytes();
+      }
+    } catch (error) {
+      debugPrint('디스크 캐시 로드 실패: $error');
+    }
+    return null;
+  }
+
+  /// 디스크 캐시에 저장
+  Future<void> _saveToDiskCache(String url, Uint8List bytes) async {
+    try {
+      final cacheDir = await getTemporaryDirectory();
+      final cacheDirFile = Directory('${cacheDir.path}/image_cache');
+
+      if (!await cacheDirFile.exists()) {
+        await cacheDirFile.create(recursive: true);
+      }
+
+      final cacheFile = File('${cacheDirFile.path}/${_getCacheKey(url)}');
+      await cacheFile.writeAsBytes(bytes);
+    } catch (error) {
+      debugPrint('디스크 캐시 저장 실패: $error');
+    }
+  }
+
+  /// 캐시 키 생성
+  String _getCacheKey(String url) {
+    return url.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_');
+  }
+
   /// 이미지 프리로드
   Future<void> preloadImages(List<String> urls) async {
     for (final url in urls) {
@@ -195,7 +228,16 @@ class ImageCacheService {
     }
 
     if (clearDisk) {
-      await _defaultCacheManager.emptyCache();
+      try {
+        final cacheDir = await getTemporaryDirectory();
+        final cacheDirFile = Directory('${cacheDir.path}/image_cache');
+
+        if (await cacheDirFile.exists()) {
+          await cacheDirFile.delete(recursive: true);
+        }
+      } catch (error) {
+        debugPrint('디스크 캐시 정리 실패: $error');
+      }
     }
   }
 
@@ -211,8 +253,7 @@ class ImageCacheService {
     // 디스크 캐시 크기
     try {
       final cacheDir = await getTemporaryDirectory();
-      final cachePath = '${cacheDir.path}/libCachedImageData';
-      final cacheDirFile = Directory(cachePath);
+      final cacheDirFile = Directory('${cacheDir.path}/image_cache');
 
       if (await cacheDirFile.exists()) {
         await for (final file in cacheDirFile.list(recursive: true)) {
@@ -231,7 +272,19 @@ class ImageCacheService {
   /// 특정 이미지 캐시 제거
   Future<void> removeFromCache(String key) async {
     _memoryCache.remove(key);
-    await _defaultCacheManager.removeFile(key);
+
+    try {
+      final cacheDir = await getTemporaryDirectory();
+      final cacheFile = File(
+        '${cacheDir.path}/image_cache/${_getCacheKey(key)}',
+      );
+
+      if (await cacheFile.exists()) {
+        await cacheFile.delete();
+      }
+    } catch (error) {
+      debugPrint('캐시 제거 실패: $error');
+    }
   }
 
   /// 오래된 캐시 정리
@@ -250,8 +303,25 @@ class ImageCacheService {
       _memoryCache.remove(key);
     }
 
-    // 디스크 캐시 정리 (CacheManager가 자동으로 처리)
-    await _defaultCacheManager.emptyCache();
+    // 디스크 캐시 정리 (간단한 구현)
+    try {
+      final cacheDir = await getTemporaryDirectory();
+      final cacheDirFile = Directory('${cacheDir.path}/image_cache');
+
+      if (await cacheDirFile.exists()) {
+        await for (final file in cacheDirFile.list()) {
+          if (file is File) {
+            final stat = await file.stat();
+            if (DateTime.now().difference(stat.modified) >
+                const Duration(days: 7)) {
+              await file.delete();
+            }
+          }
+        }
+      }
+    } catch (error) {
+      debugPrint('오래된 캐시 정리 실패: $error');
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../../shared/services/secure_storage_service.dart';
+import '../../../../shared/services/secure_storage_service_v2.dart';
 import '../../domain/auth_token.dart';
 
 /// 토큰을 안전하게 저장하고 관리하는 서비스
@@ -17,14 +17,14 @@ class TokenStorageService {
   static Future<void> saveToken(AuthToken token) async {
     try {
       await Future.wait([
-        SecureStorageService.setString(_accessTokenKey, token.accessToken),
+        SecureStorageServiceV2.setString(_accessTokenKey, token.accessToken),
         if (token.refreshToken != null)
-          SecureStorageService.setString(_refreshTokenKey, token.refreshToken!),
-        SecureStorageService.setString(
+          SecureStorageServiceV2.setString(_refreshTokenKey, token.refreshToken!),
+        SecureStorageServiceV2.setString(
           _tokenExpiresAtKey,
           token.expiresAt.toIso8601String(),
         ),
-        SecureStorageService.setString(_tokenTypeKey, token.tokenType),
+        SecureStorageServiceV2.setString(_tokenTypeKey, token.tokenType),
       ]);
 
       if (kDebugMode) {
@@ -40,10 +40,10 @@ class TokenStorageService {
   static Future<AuthToken?> getToken() async {
     try {
       final results = await Future.wait([
-        SecureStorageService.getString(_accessTokenKey),
-        SecureStorageService.getString(_refreshTokenKey),
-        SecureStorageService.getString(_tokenExpiresAtKey),
-        SecureStorageService.getString(_tokenTypeKey),
+        SecureStorageServiceV2.getString(_accessTokenKey),
+        SecureStorageServiceV2.getString(_refreshTokenKey),
+        SecureStorageServiceV2.getString(_tokenExpiresAtKey),
+        SecureStorageServiceV2.getString(_tokenTypeKey),
       ]);
 
       final accessToken = results[0];
@@ -71,10 +71,10 @@ class TokenStorageService {
   static Future<void> clearToken() async {
     try {
       await Future.wait([
-        SecureStorageService.remove(_accessTokenKey),
-        SecureStorageService.remove(_refreshTokenKey),
-        SecureStorageService.remove(_tokenExpiresAtKey),
-        SecureStorageService.remove(_tokenTypeKey),
+        SecureStorageServiceV2.remove(_accessTokenKey),
+        SecureStorageServiceV2.remove(_refreshTokenKey),
+        SecureStorageServiceV2.remove(_tokenExpiresAtKey),
+        SecureStorageServiceV2.remove(_tokenTypeKey),
       ]);
 
       if (kDebugMode) {
@@ -90,8 +90,8 @@ class TokenStorageService {
   static Future<void> saveRememberMeEmail(String email) async {
     try {
       await Future.wait([
-        SecureStorageService.setString(_savedEmailKey, email),
-        SecureStorageService.setBool(_rememberMeKey, true),
+        SecureStorageServiceV2.setString(_savedEmailKey, email),
+        SecureStorageServiceV2.setBool(_rememberMeKey, true),
       ]);
 
       if (kDebugMode) {
@@ -107,12 +107,12 @@ class TokenStorageService {
   static Future<String?> getRememberMeEmail() async {
     try {
       final isRememberMe =
-          await SecureStorageService.getBool(_rememberMeKey) ?? false;
+          await SecureStorageServiceV2.getBool(_rememberMeKey) ?? false;
       if (!isRememberMe) {
         return null;
       }
 
-      return await SecureStorageService.getString(_savedEmailKey);
+      return await SecureStorageServiceV2.getString(_savedEmailKey);
     } catch (e) {
       debugPrint('Remember Me 정보 불러오기 실패: $e');
       return null;
@@ -123,8 +123,8 @@ class TokenStorageService {
   static Future<void> clearRememberMe() async {
     try {
       await Future.wait([
-        SecureStorageService.remove(_savedEmailKey),
-        SecureStorageService.setBool(_rememberMeKey, false),
+        SecureStorageServiceV2.remove(_savedEmailKey),
+        SecureStorageServiceV2.setBool(_rememberMeKey, false),
       ]);
 
       if (kDebugMode) {

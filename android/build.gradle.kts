@@ -1,3 +1,13 @@
+// Changed: Google Services 플러그인 classpath 추가
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.google.gms:google-services:4.4.2")
+    }
+}
 allprojects {
     repositories {
         google()

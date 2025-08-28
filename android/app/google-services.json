@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "916090550504",
+    "firebase_url": "https://aipet-1c44e-default-rtdb.firebaseio.com",
+    "project_id": "aipet-1c44e",
+    "storage_bucket": "aipet-1c44e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916090550504:android:c8690251473cd186af715d",
+        "android_client_info": {
+          "package_name": "com.itz.aipet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916090550504-fk26u8ia66ko1kv576hkrtc9b6je5kkm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_hnnc4cBx8QI0662vscDwlJHeLNsoA2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "916090550504-fk26u8ia66ko1kv576hkrtc9b6je5kkm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "916090550504-97vppt5jc31t90h6o260qatfrphvoc3a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.itz.aipet"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
