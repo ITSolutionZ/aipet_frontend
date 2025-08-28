@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../features/pet_registor/domain/entities/pet_profile_entity.dart';
-import '../../base/mock_data_base.dart';
+import '../../../../features/pet_registor/domain/entities/pet_profile_entity.dart';
 import '../../base/mock_data_constants.dart';
 
 /// 펫 관련 Mock 데이터 서비스
@@ -145,7 +144,7 @@ class PetMockData {
         'type': 'dog',
         'name': 'いぬ',
         'icon': 'pets',
-        'description': '充実스럽고 활발한 반려견',
+        'description': '活発で元気なペット',
         'color': MockDataConstants.primaryColor,
         'image': 'assets/images/pets/dog.png',
       },
@@ -153,7 +152,7 @@ class PetMockData {
         'type': 'cat',
         'name': 'ねこ',
         'icon': 'pets',
-        'description': '우아하고 독립적인 반려묘',
+        'description': '優雅で独立したペット',
         'color': MockDataConstants.secondaryColor,
         'image': 'assets/images/pets/cat.png',
       },
@@ -161,7 +160,7 @@ class PetMockData {
         'type': 'rabbit',
         'name': 'うさぎ',
         'icon': 'cruelty_free',
-        'description': '귀엽고 온순한 반려토끼',
+        'description': '可愛くて優しいペット',
         'color': MockDataConstants.accentColor,
         'image': 'assets/images/pets/rabbit.png',
       },
@@ -169,7 +168,7 @@ class PetMockData {
         'type': 'hamster',
         'name': 'ハムスター',
         'icon': 'circle',
-        'description': '작고 사랑스러운 반려햄스터',
+        'description': '小さくて可愛いペット',
         'color': const Color(0xFFD4A574),
         'image': 'assets/images/pets/hamster.png',
       },
@@ -240,17 +239,17 @@ class PetMockData {
       '小型': {
         'description': '小型犬・猫 (体重5kg以下)',
         'recommendedRange': '60-100g',
-        'tips': '소량으로 나누어 주는 것이 좋습니다',
+        'tips': '少量でわけてあげるのがいいです',
       },
       '中型': {
         'description': '中型犬・猫 (体重5-20kg)',
         'recommendedRange': '100-200g',
-        'tips': '하루 2-3회로 나누어 주세요',
+        'tips': '1日2-3回に分けてあげましょう',
       },
       '大型': {
         'description': '大型犬 (体重20kg以上)',
         'recommendedRange': '200-400g',
-        'tips': '운동량에 따라 조절이 필요합니다',
+        'tips': '運動量に応じて調整が必要です',
       },
     };
   }
