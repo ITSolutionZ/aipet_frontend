@@ -1,71 +1,33 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../domain/domain.dart';
+import 'repositories/splash_repository_impl.dart';
+
 part 'splash_providers.g.dart';
 
-// 스플래시 상태 관리
 @riverpod
-class SplashState extends _$SplashState {
+SplashRepository splashRepository(Ref ref) {
+  return SplashRepositoryImpl();
+}
+
+@riverpod
+Future<SplashEntity> splashConfig(Ref ref) async {
+  final repository = ref.watch(splashRepositoryProvider);
+  return repository.getSplashConfig();
+}
+
+// 스플래시 시퀀스 상태 관리
+@riverpod
+class SplashSequenceNotifier extends _$SplashSequenceNotifier {
   @override
-  SplashStateData build() {
-    return const SplashStateData(
-      isLoading: true,
-      error: null,
-      logoPath: 'assets/icons/aipet_logo.png',
-      animationProgress: 0.0,
-    );
+  SplashState build() => SplashState.initializing();
+
+  void updateState(SplashState newState) {
+    state = newState;
   }
 
-  Future<void> loadSplashConfig() async {
-    state = state.copyWith(isLoading: true, error: null);
-
-    try {
-      // 시뮬레이션된 로딩
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      state = state.copyWith(isLoading: false);
-    } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
-    }
+  void reset() {
+    state = SplashState.initializing();
   }
-
-  void updateAnimationProgress(double progress) {
-    state = state.copyWith(animationProgress: progress);
-  }
-}
-
-// 스플래시 상태 데이터 클래스
-class SplashStateData {
-  final bool isLoading;
-  final String? error;
-  final String logoPath;
-  final double animationProgress;
-
-  const SplashStateData({
-    required this.isLoading,
-    this.error,
-    required this.logoPath,
-    required this.animationProgress,
-  });
-
-  SplashStateData copyWith({
-    bool? isLoading,
-    String? error,
-    String? logoPath,
-    double? animationProgress,
-  }) {
-    return SplashStateData(
-      isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
-      logoPath: logoPath ?? this.logoPath,
-      animationProgress: animationProgress ?? this.animationProgress,
-    );
-  }
-}
-
-// 스플래시 애니메이션 타이머
-@riverpod
-Future<void> splashAnimationTimer(Ref ref) async {
-  await Future.delayed(const Duration(milliseconds: 2000));
-  await Future.delayed(const Duration(milliseconds: 1000));
 }
