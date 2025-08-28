@@ -29,7 +29,7 @@ class OnboardingState {
     if (identical(this, other)) return true;
     return other is OnboardingState &&
         other.currentPage == currentPage &&
-        other.isCompleted == other.isCompleted &&
+        other.isCompleted == isCompleted &&
         other.viewCount == viewCount;
   }
 

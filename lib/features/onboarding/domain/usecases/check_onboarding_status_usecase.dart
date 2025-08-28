@@ -1,12 +1,11 @@
-import '../onboarding_state.dart';
-import '../repositories/onboarding_repository.dart';
+import '../domain.dart';
 
 /// 온보딩 상태 확인 UseCase
-class CheckOnboardingStatusUseCase {
-  final OnboardingRepository repository;
+class CheckOnboardingStatusUseCase
+    extends BaseUseCaseNoParams<OnboardingState> {
+  const CheckOnboardingStatusUseCase(super.repository);
 
-  CheckOnboardingStatusUseCase(this.repository);
-
+  @override
   Future<OnboardingState> call() async {
     // 비즈니스 로직: 온보딩 완료 여부 확인
     final isCompleted = await repository.isOnboardingCompleted();
