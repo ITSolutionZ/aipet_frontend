@@ -1,5 +1,4 @@
-import '../onboarding_data.dart';
-import '../onboarding_state.dart';
+import '../domain.dart';
 
 /// 온보딩 관리 리포지토리 인터페이스
 ///
