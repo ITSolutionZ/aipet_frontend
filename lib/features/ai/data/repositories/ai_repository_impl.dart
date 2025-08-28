@@ -1,45 +1,62 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/ai_message_entity.dart';
-import '../../domain/repositories/ai_repository.dart';
+import '../../../../shared/shared.dart';
+import '../../domain/domain.dart';
 
 class AiRepositoryImpl implements AiRepository {
   @override
   Future<List<AiMessageEntity>> getChatHistory() async {
-    // TODO: Implement actual chat history retrieval
-    // For now, return mock data
-    return [
-      AiMessageEntity(
-        id: '1',
-        content: 'AI와 대화를 시작하세요!',
-        type: MessageType.assistant,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
-      ),
-    ];
+    // TODO: Replace with actual API call
+    // final response = await _httpClient.get('/api/ai/chat/history');
+    // return response.data.map((json) => AiMessageEntity.fromJson(json)).toList();
+    
+    await AiMockDataService.simulateApiDelay();
+    final mockData = AiMockDataService.getChatHistoryMockData();
+    
+    return mockData.map((json) => AiMessageEntity(
+      id: json['id'] as String,
+      content: json['content'] as String,
+      type: _parseMessageType(json['type'] as String),
+      timestamp: DateTime.parse(json['timestamp'] as String),
+    )).toList();
   }
 
   @override
   Future<AiMessageEntity> sendMessage(String message) async {
-    // TODO: Implement actual AI API call
-    // For now, return mock response
-    await Future.delayed(const Duration(seconds: 1)); // Simulate API delay
-
+    // TODO: Replace with actual API call
+    // final response = await _httpClient.post('/api/ai/chat/send', {
+    //   'message': message,
+    // });
+    // return AiMessageEntity.fromJson(response.data);
+    
+    await AiMockDataService.simulateApiDelay(seconds: 2);
+    final mockData = AiMockDataService.generateAiResponseMockData(message);
+    
     return AiMessageEntity(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      content: 'AI 응답: $message에 대한 답변입니다.',
-      type: MessageType.assistant,
-      timestamp: DateTime.now(),
+      id: mockData['id'] as String,
+      content: mockData['content'] as String,
+      type: _parseMessageType(mockData['type'] as String),
+      timestamp: DateTime.parse(mockData['timestamp'] as String),
     );
   }
 
   @override
   Future<void> clearChatHistory() async {
-    // TODO: Implement chat history clearing
+    // TODO: Replace with actual API call
+    // await _httpClient.delete('/api/ai/chat/history');
+    
+    await AiMockDataService.simulateApiDelay();
+    // Mock implementation: no actual storage to clear
   }
 
   @override
   Future<List<AiChatSessionEntity>> getChatSessions() async {
-    // TODO: Implement actual chat sessions retrieval
+    // TODO: Replace with actual API call
+    // final response = await _httpClient.get('/api/ai/chat/sessions');
+    // return response.data.map((json) => AiChatSessionEntity.fromJson(json)).toList();
+    
+    await AiMockDataService.simulateApiDelay();
+    // Mock implementation: return empty list
     return [];
   }
 
@@ -48,40 +65,66 @@ class AiRepositoryImpl implements AiRepository {
     String title, {
     String? petId,
   }) async {
-    // TODO: Implement actual chat session creation
+    // TODO: Replace with actual API call
+    // final response = await _httpClient.post('/api/ai/chat/sessions', {
+    //   'title': title,
+    //   'petId': petId,
+    // });
+    // return AiChatSessionEntity.fromJson(response.data);
+    
+    await AiMockDataService.simulateApiDelay();
+    final mockData = AiMockDataService.createChatSessionMockData(title, petId: petId);
+    
     return AiChatSessionEntity(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: title,
+      id: mockData['id'] as String,
+      title: mockData['title'] as String,
       messages: [],
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      petId: petId,
+      createdAt: DateTime.parse(mockData['createdAt'] as String),
+      updatedAt: DateTime.parse(mockData['updatedAt'] as String),
+      petId: mockData['petId'] as String?,
+      petName: mockData['petName'] as String?,
     );
   }
 
   @override
   Future<void> deleteChatSession(String sessionId) async {
-    // TODO: Implement chat session deletion
+    // TODO: Replace with actual API call
+    // await _httpClient.delete('/api/ai/chat/sessions/$sessionId');
+    
+    await AiMockDataService.simulateApiDelay();
+    // Mock implementation: no actual storage to delete from
   }
 
   @override
   Future<List<AiSuggestedQuestionEntity>> getSuggestedQuestions() async {
-    // TODO: Implement suggested questions retrieval
-    return [
-      const AiSuggestedQuestionEntity(
-        id: '1',
-        question: '우리 강아지 건강 상태는 어떤가요?',
-        category: '건강',
-        icon: Icons.health_and_safety,
-        description: '반려동물의 전반적인 건강 상태를 확인합니다',
+    // TODO: Replace with actual API call
+    // final response = await _httpClient.get('/api/ai/suggested-questions');
+    // return response.data.map((json) => AiSuggestedQuestionEntity.fromJson(json)).toList();
+    
+    await AiMockDataService.simulateApiDelay();
+    
+    return AiMockDataService.suggestedQuestions.map((data) => 
+      AiSuggestedQuestionEntity(
+        id: data['id'] as String,
+        question: data['question'] as String,
+        category: data['category'] as String,
+        icon: data['icon'] as IconData,
+        description: data['description'] as String?,
       ),
-      const AiSuggestedQuestionEntity(
-        id: '2',
-        question: '산책 일정을 추천해 주세요',
-        category: '활동',
-        icon: Icons.pets,
-        description: '최적의 산책 시간과 장소를 추천합니다',
-      ),
-    ];
+    ).toList();
+  }
+
+  /// MessageType 문자열을 enum으로 파싱
+  MessageType _parseMessageType(String typeString) {
+    switch (typeString.toLowerCase()) {
+      case 'user':
+        return MessageType.user;
+      case 'assistant':
+        return MessageType.assistant;
+      case 'system':
+        return MessageType.system;
+      default:
+        return MessageType.assistant;
+    }
   }
 }

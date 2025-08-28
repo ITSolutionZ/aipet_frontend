@@ -16,43 +16,34 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
   late AiChatController _controller;
-  bool _isTyping = false;
-
+  
   @override
   void initState() {
     super.initState();
-    _controller = AiChatController();
-    _controller.onMessagesChanged = _onMessagesChanged;
+    _controller = AiChatController(ref);
+    
+    // 초기 데이터 로드 (Controller를 통해서만 접근)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.initializeChat();
+    });
   }
 
   @override
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
+    _controller.dispose();
     super.dispose();
-  }
-
-  void _onMessagesChanged() {
-    setState(() {});
-    _scrollToBottom();
   }
 
   void _sendMessage(String content) async {
     if (content.trim().isEmpty) return;
-
-    setState(() {
-      _isTyping = true;
-    });
 
     _messageController.clear();
     _scrollToBottom();
 
     // 컨트롤러를 통해 메시지 전송
     await _controller.sendMessage(content);
-
-    setState(() {
-      _isTyping = false;
-    });
   }
 
   void _scrollToBottom() {
@@ -67,13 +58,15 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     });
   }
 
-  void _clearChatHistory() {
-    _controller.clearChatHistory();
-    setState(() {});
+  Future<void> _clearChatHistory() async {
+    await _controller.clearChatHistory();
   }
 
   @override
   Widget build(BuildContext context) {
+    // UI와 Logic 분리: Controller를 통해서만 상태 접근
+    _controller.watchChatState(); // Provider 변화 감지를 위해 호출
+    
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       appBar: AppBar(
@@ -92,15 +85,15 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'AI 어시스턴트',
+                  'AIアシスタント',
                   style: AppFonts.bodyMedium.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (_isTyping)
+                if (_controller.isTyping)
                   Text(
-                    '입력 중...',
+                    '入力中...',
                     style: AppFonts.bodySmall.copyWith(color: Colors.white70),
                   ),
               ],
@@ -123,7 +116,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
             child: ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.all(AppSpacing.md),
-              itemCount: _controller.messages.length + (_isTyping ? 1 : 0),
+              itemCount: _controller.messages.length + (_controller.isTyping ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index < _controller.messages.length) {
                   return AiMessageBubble(message: _controller.messages[index]);
@@ -145,7 +138,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
           AiMessageInput(
             controller: _messageController,
             onSendMessage: _sendMessage,
-            isLoading: _isTyping,
+            isLoading: _controller.isTyping,
           ),
         ],
       ),
