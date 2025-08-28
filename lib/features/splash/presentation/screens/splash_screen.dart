@@ -52,6 +52,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   void _startAIPetLogo() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // 애니메이션 시작
+      // ignore: unawaited_futures
       _animationController.forward();
 
       // AI Pet 로고를 3초간 표시
