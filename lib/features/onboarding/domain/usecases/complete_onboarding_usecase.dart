@@ -1,11 +1,10 @@
-import '../repositories/onboarding_repository.dart';
+import '../domain.dart';
 
 /// 온보딩 완료 UseCase
-class CompleteOnboardingUseCase {
-  final OnboardingRepository repository;
+class CompleteOnboardingUseCase extends BaseUseCaseNoParams<void> {
+  const CompleteOnboardingUseCase(super.repository);
 
-  CompleteOnboardingUseCase(this.repository);
-
+  @override
   Future<void> call() async {
     // 비즈니스 로직: 온보딩 완료 처리
     await repository.completeOnboarding();

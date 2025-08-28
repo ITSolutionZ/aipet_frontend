@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/onboarding/data/data.dart';
 import '../../shared/services/error_handler_service.dart';
 import '../../shared/services/notification_service.dart';
 import '../../shared/services/performance_monitor_service.dart';
@@ -186,13 +187,13 @@ class AppInitialization extends _$AppInitialization {
   /// 온보딩 완료 플래그와 버전을 확인하여 온보딩 상태를 결정합니다.
   Future<void> _checkOnboardingStatus() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-
-      // 온보딩 완료 플래그 확인
-      final isOnboardingCompleted =
-          prefs.getBool('onboarding_completed') ?? false;
+      // 온보딩 리포지토리를 통해 상태 확인
+      final onboardingRepository = ref.read(onboardingRepositoryProvider);
+      final isOnboardingCompleted = await onboardingRepository
+          .isOnboardingCompleted();
 
       // 온보딩 완료 버전 확인 (앱 업데이트 시 온보딩 재표시 여부 결정)
+      final prefs = await SharedPreferences.getInstance();
       final onboardingVersion = prefs.getString('onboarding_version');
       final packageInfo = await PackageInfo.fromPlatform();
       final currentAppVersion = packageInfo.version;
@@ -200,6 +201,13 @@ class AppInitialization extends _$AppInitialization {
       // 온보딩 버전이 다르면 온보딩 미완료로 처리
       final isVersionMatched = onboardingVersion == currentAppVersion;
       final finalOnboardingStatus = isOnboardingCompleted && isVersionMatched;
+
+      // 온보딩 상태 로드 및 초기화
+      final onboardingStateNotifier = ref.read(
+        onboardingStateNotifierProvider.notifier,
+      );
+      final savedState = await onboardingRepository.loadOnboardingState();
+      onboardingStateNotifier.state = savedState;
 
       // 상태 업데이트
       state = state.copyWith(isOnboardingCompleted: finalOnboardingStatus);
