@@ -30,8 +30,9 @@ class WeatherController extends BaseController {
     if (weatherId == 731 || weatherId == 761) return 'dust';
     if (weatherId == 781) return 'tornado';
     if (weatherId == 800) return isDay ? 'clear-day' : 'clear-night';
-    if (weatherId == 801)
+    if (weatherId == 801) {
       return isDay ? 'partly-cloudy-day' : 'partly-cloudy-night';
+    }
     return 'wind';
   }
 
