@@ -94,94 +94,88 @@ class AuthStateNotifier extends _$AuthStateNotifier {
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: 'ログインに失敗しました');
+      debugPrint('로그인 실패: $e');
     }
   }
 
-  // 로그인 정보 저장 (암호화된 SharedPreferences 사용)
+  // Remember Me - 이메일만 저장 (패스워드는 저장하지 않음)
   Future<void> _saveLoginCredentials() async {
     try {
-      // 민감한 데이터는 암호화하여 저장
+      // 보안상 이메일만 저장하고 패스워드는 저장하지 않음
       await SecureStorageService.setString('saved_email', state.email);
-      await SecureStorageService.setString('saved_password', state.password);
       await SecureStorageService.setBool('remember_me', true);
-      debugPrint('로그인 정보 암호화 저장됨: ${state.email}');
+      // 개발 모드에서만 디버그 출력
+      debugPrint('Remember Me 이메일 저장 완료');
     } catch (e) {
-      debugPrint('로그인 정보 암호화 저장 실패: $e');
+      debugPrint('Remember Me 저장 실패: $e');
       // 암호화 저장 실패 시 메모리에만 저장 (임시 해결책)
       _saveToMemory();
     }
   }
 
-  // 저장된 로그인 정보 불러오기
+  // 저장된 Remember Me 정보 불러오기 (이메일만)
   Future<void> loadSavedCredentials() async {
     try {
-      // 암호화된 데이터에서 불러오기
       final savedEmail = await SecureStorageService.getString('saved_email');
-      final savedPassword = await SecureStorageService.getString(
-        'saved_password',
-      );
       final rememberMe =
           await SecureStorageService.getBool('remember_me') ?? false;
 
-      if (rememberMe && savedEmail != null && savedPassword != null) {
+      if (rememberMe && savedEmail != null) {
         state = state.copyWith(
           email: savedEmail,
-          password: savedPassword,
           rememberMe: true,
+          // 패스워드는 불러오지 않음 (보안상 이유)
         );
-        debugPrint('암호화된 로그인 정보 불러오기 완료: $savedEmail');
+        debugPrint('Remember Me 이메일 불러오기 완료');
       }
     } catch (e) {
-      debugPrint('암호화된 로그인 정보 불러오기 실패: $e');
-      // 암호화 저장소 실패 시 메모리에서 불러오기 (임시 해결책)
+      debugPrint('Remember Me 정보 불러오기 실패: $e');
+      // 저장소 실패 시 메모리에서 불러오기 (임시 해결책)
       _loadFromMemory();
     }
   }
 
-  // 저장된 로그인 정보 삭제
+  // Remember Me 정보 삭제
   Future<void> clearSavedCredentials() async {
     try {
-      // 암호화된 데이터 삭제
+      // 저장된 데이터 삭제
       await SecureStorageService.remove('saved_email');
-      await SecureStorageService.remove('saved_password');
       await SecureStorageService.setBool('remember_me', false);
       state = state.copyWith(rememberMe: false);
-      debugPrint('암호화된 로그인 정보 삭제 완료');
+      debugPrint('Remember Me 정보 삭제 완료');
     } catch (e) {
-      debugPrint('암호화된 로그인 정보 삭제 실패: $e');
-      // 암호화 저장소 실패 시 메모리에서 삭제 (임시 해결책)
+      debugPrint('Remember Me 정보 삭제 실패: $e');
+      // 저장소 실패 시 메모리에서 삭제 (임시 해결책)
       _clearFromMemory();
     }
   }
 
-  // 메모리에 임시 저장 (SharedPreferences 실패 시 대안)
+  // 메모리에 임시 저장 (저장소 실패 시 대안) - 이메일만 저장
   static String? _tempEmail;
-  static String? _tempPassword;
   static bool _tempRememberMe = false;
 
   void _saveToMemory() {
     _tempEmail = state.email;
-    _tempPassword = state.password;
+    // 패스워드는 메모리에도 저장하지 않음 (보안상 이유)
     _tempRememberMe = true;
   }
 
   void _loadFromMemory() {
-    if (_tempRememberMe && _tempEmail != null && _tempPassword != null) {
+    if (_tempRememberMe && _tempEmail != null) {
       state = state.copyWith(
         email: _tempEmail!,
-        password: _tempPassword!,
         rememberMe: true,
+        // 패스워드는 불러오지 않음
       );
-      debugPrint('메모리에서 로그인 정보 불러오기 완료: $_tempEmail');
+      debugPrint('메모리에서 Remember Me 정보 불러오기 완료');
     }
   }
 
   void _clearFromMemory() {
     _tempEmail = null;
-    _tempPassword = null;
     _tempRememberMe = false;
     state = state.copyWith(rememberMe: false);
-    debugPrint('메모리에서 로그인 정보 삭제 완료');
+    debugPrint('메모리에서 Remember Me 정보 삭제 완료');
   }
 
   // 로그인/회원가입 로직은 AuthController로 이동
