@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../design/color.dart';
-import '../design/radius.dart';
 
 class LogoWidget extends StatelessWidget {
   final String imagePath;
@@ -22,16 +21,12 @@ class LogoWidget extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.pointCream,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-      ),
+      decoration: BoxDecoration(color: backgroundColor ?? AppColors.pointCream),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Image.asset(
           imagePath,
-          width: width - 16,
-          height: height - 16,
+          width: width - 8,
+          height: height - 8,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) =>
               SizedBox(width: width - 16, height: height - 16),

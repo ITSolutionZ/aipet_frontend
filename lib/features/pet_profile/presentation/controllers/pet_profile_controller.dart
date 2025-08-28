@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/shared.dart';
-
 /// 펫 프로필 컨트롤러
 class PetProfileController extends StateNotifier<PetProfileState> {
   PetProfileController() : super(const PetProfileState());
