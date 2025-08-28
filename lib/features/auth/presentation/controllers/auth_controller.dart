@@ -1,7 +1,7 @@
 import '../../../../app/controllers/base_controller.dart';
 import '../../data/auth_providers.dart';
 import '../../domain/auth_error.dart';
-import '../../domain/auth_state.dart';
+import '../../domain/auth_form_state.dart';
 import '../../domain/result.dart';
 import '../../utils/auth_validator.dart';
 
@@ -14,38 +14,28 @@ typedef AuthValidationResult = Result<void>;
 class AuthController extends BaseController {
   AuthController(super.ref);
 
-  AuthState get currentState => ref.read(authStateNotifierProvider);
+  AuthFormState get currentState => ref.read(authFormStateNotifierProvider);
 
   void updateEmail(String email) {
-    ref.read(authStateNotifierProvider.notifier).updateEmail(email);
-  }
-
-  void updatePassword(String password) {
-    ref.read(authStateNotifierProvider.notifier).updatePassword(password);
-  }
-
-  void updateConfirmPassword(String confirmPassword) {
-    ref
-        .read(authStateNotifierProvider.notifier)
-        .updateConfirmPassword(confirmPassword);
+    ref.read(authFormStateNotifierProvider.notifier).updateEmail(email);
   }
 
   void updateUsername(String username) {
-    ref.read(authStateNotifierProvider.notifier).updateUsername(username);
+    ref.read(authFormStateNotifierProvider.notifier).updateUsername(username);
   }
 
   void togglePasswordVisibility() {
-    ref.read(authStateNotifierProvider.notifier).togglePasswordVisibility();
+    ref.read(authFormStateNotifierProvider.notifier).togglePasswordVisibility();
   }
 
   void toggleConfirmPasswordVisibility() {
     ref
-        .read(authStateNotifierProvider.notifier)
+        .read(authFormStateNotifierProvider.notifier)
         .toggleConfirmPasswordVisibility();
   }
 
   void toggleRememberMe() {
-    ref.read(authStateNotifierProvider.notifier).toggleRememberMe();
+    ref.read(authFormStateNotifierProvider.notifier).toggleRememberMe();
   }
 
   /// 로그인 처리 (UI 로직 분리)
@@ -56,7 +46,10 @@ class AuthController extends BaseController {
       if (validationResult.isFailure) {
         final error = validationResult.errorOrNull;
         return Result.failure(
-          ValidationError(field: 'login', reason: error?.message ?? 'Validation failed'),
+          ValidationError(
+            field: 'login',
+            reason: error?.message ?? 'Validation failed',
+          ),
         );
       }
 
@@ -77,7 +70,10 @@ class AuthController extends BaseController {
       if (validationResult.isFailure) {
         final error = validationResult.errorOrNull;
         return Result.failure(
-          ValidationError(field: 'signup', reason: error?.message ?? 'Validation failed'),
+          ValidationError(
+            field: 'signup',
+            reason: error?.message ?? 'Validation failed',
+          ),
         );
       }
 
@@ -105,7 +101,9 @@ class AuthController extends BaseController {
   /// 저장된 로그인 정보 불러오기
   Future<void> loadSavedCredentials() async {
     try {
-      await ref.read(authStateNotifierProvider.notifier).loadSavedCredentials();
+      await ref
+          .read(authFormStateNotifierProvider.notifier)
+          .loadSavedCredentials();
     } catch (error) {
       handleError(error);
     }
@@ -115,7 +113,7 @@ class AuthController extends BaseController {
   Future<bool> clearSavedCredentials() async {
     try {
       await ref
-          .read(authStateNotifierProvider.notifier)
+          .read(authFormStateNotifierProvider.notifier)
           .clearSavedCredentials();
       return true;
     } catch (error, stackTrace) {
@@ -131,7 +129,7 @@ class AuthController extends BaseController {
       await clearSavedCredentials();
 
       // 인증 상태 초기화
-      ref.read(authStateNotifierProvider.notifier).resetState();
+      ref.read(authFormStateNotifierProvider.notifier).resetState();
 
       // TODO: Firebase 로그아웃 로직 (추후 구현)
       // await FirebaseAuth.instance.signOut();
@@ -155,12 +153,8 @@ class AuthController extends BaseController {
       );
     }
 
-    // 비밀번호 검증 (로그인은 빈 값만 체크)
-    if (state.password.isEmpty) {
-      return Result.failure(
-        const ValidationError(field: 'password', reason: 'パスワードを入力してください'),
-      );
-    }
+    // 비밀번호 검증은 UI에서 직접 처리 (AuthFormState에는 패스워드 없음)
+    // 실제 검증은 TextFormField의 validator에서 수행
 
     return Result.success(null);
   }
@@ -177,25 +171,6 @@ class AuthController extends BaseController {
       );
     }
 
-    // 비밀번호 검증
-    final passwordError = AuthValidator.getPasswordErrorMessage(state.password);
-    if (passwordError != null) {
-      return Result.failure(
-        ValidationError(field: 'password', reason: passwordError),
-      );
-    }
-
-    // 비밀번호 확인 검증
-    final confirmPasswordError = AuthValidator.getConfirmPasswordErrorMessage(
-      state.password, 
-      state.confirmPassword,
-    );
-    if (confirmPasswordError != null) {
-      return Result.failure(
-        ValidationError(field: 'confirmPassword', reason: confirmPasswordError),
-      );
-    }
-
     // 사용자명 검증
     final usernameError = AuthValidator.getUsernameErrorMessage(state.username);
     if (usernameError != null) {
@@ -204,12 +179,14 @@ class AuthController extends BaseController {
       );
     }
 
+    // 비밀번호 검증은 UI에서 직접 처리 (AuthFormState에는 패스워드 없음)
+    // 실제 검증은 TextFormField의 validator에서 수행
+
     return Result.success(null);
   }
 
-
   /// 에러 메시지 초기화
   void clearError() {
-    ref.read(authStateNotifierProvider.notifier).clearError();
+    ref.read(authFormStateNotifierProvider.notifier).clearError();
   }
 }

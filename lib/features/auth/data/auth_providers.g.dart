@@ -44,21 +44,22 @@ final navigationCallbackNotifierProvider =
     );
 
 typedef _$NavigationCallbackNotifier = AutoDisposeNotifier<Function()?>;
-String _$authStateNotifierHash() => r'3b0cb949363eb8fe199f0e252da149e8822115b9';
+String _$authFormStateNotifierHash() =>
+    r'a15018124b3f92a3af108534d44b5f262089dbe4';
 
-/// See also [AuthStateNotifier].
-@ProviderFor(AuthStateNotifier)
-final authStateNotifierProvider =
-    AutoDisposeNotifierProvider<AuthStateNotifier, AuthState>.internal(
-      AuthStateNotifier.new,
-      name: r'authStateNotifierProvider',
+/// See also [AuthFormStateNotifier].
+@ProviderFor(AuthFormStateNotifier)
+final authFormStateNotifierProvider =
+    AutoDisposeNotifierProvider<AuthFormStateNotifier, AuthFormState>.internal(
+      AuthFormStateNotifier.new,
+      name: r'authFormStateNotifierProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$authStateNotifierHash,
+          : _$authFormStateNotifierHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$AuthStateNotifier = AutoDisposeNotifier<AuthState>;
+typedef _$AuthFormStateNotifier = AutoDisposeNotifier<AuthFormState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
