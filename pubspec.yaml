@@ -34,6 +34,7 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   dio: ^5.4.3+1
   package_info_plus: ^8.0.2
+  connectivity_plus: ^6.0.5
 
   mockito: ^5.4.4
 
