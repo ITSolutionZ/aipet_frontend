@@ -76,6 +76,7 @@ class AuthUser {
   final bool isEmailVerified;
   final DateTime? lastSignInTime;
   final DateTime creationTime;
+  final Map<String, dynamic>? customData; // 백엔드 토큰 등 추가 정보
 
   const AuthUser({
     required this.uid,
@@ -85,6 +86,7 @@ class AuthUser {
     this.isEmailVerified = false,
     this.lastSignInTime,
     required this.creationTime,
+    this.customData,
   });
 
   AuthUser copyWith({
@@ -95,6 +97,7 @@ class AuthUser {
     bool? isEmailVerified,
     DateTime? lastSignInTime,
     DateTime? creationTime,
+    Map<String, dynamic>? customData,
   }) {
     return AuthUser(
       uid: uid ?? this.uid,
@@ -104,6 +107,7 @@ class AuthUser {
       isEmailVerified: isEmailVerified ?? this.isEmailVerified,
       lastSignInTime: lastSignInTime ?? this.lastSignInTime,
       creationTime: creationTime ?? this.creationTime,
+      customData: customData ?? this.customData,
     );
   }
 }

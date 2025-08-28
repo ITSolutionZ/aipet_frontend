@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -192,7 +193,8 @@ class AppInitialization extends _$AppInitialization {
 
       // 온보딩 완료 버전 확인 (앱 업데이트 시 온보딩 재표시 여부 결정)
       final onboardingVersion = prefs.getString('onboarding_version');
-      const currentAppVersion = '1.0.0'; // TODO: PackageInfo에서 가져오도록 수정
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentAppVersion = packageInfo.version;
 
       // 온보딩 버전이 다르면 온보딩 미완료로 처리
       final isVersionMatched = onboardingVersion == currentAppVersion;
@@ -268,8 +270,8 @@ class AppInitialization extends _$AppInitialization {
   /// 현재 앱 버전을 가져와서 상태에 저장합니다.
   Future<void> _getAppVersion() async {
     try {
-      // TODO: package_info_plus를 사용하여 실제 앱 버전 가져오기
-      const appVersion = '1.0.0';
+      final packageInfo = await PackageInfo.fromPlatform();
+      final appVersion = packageInfo.version;
 
       // 상태 업데이트
       state = state.copyWith(appVersion: appVersion);

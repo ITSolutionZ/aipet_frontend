@@ -45,6 +45,7 @@ class _NotificationDetailScreenState
         .read(notificationByIdProvider(widget.notificationId))
         .when(
           data: (notification) {
+            if (!mounted) return;
             setState(() {
               _notification = notification;
               _isLoading = false;
@@ -57,9 +58,11 @@ class _NotificationDetailScreenState
             }
           },
           loading: () {
+            if (!mounted) return;
             setState(() => _isLoading = true);
           },
           error: (error, stack) {
+            if (!mounted) return;
             setState(() => _isLoading = false);
             _uiController.showErrorSnackBar(
               context,
@@ -526,6 +529,7 @@ class _NotificationDetailScreenState
 
     // UI 컨트롤러를 통해 삭제 확인 다이얼로그 표시
     _uiController.showDeleteConfirmationDialog(context).then((confirmed) {
+      if (!mounted) return;
       if (confirmed) {
         // UI 컨트롤러를 통해 알림 삭제 (UI 피드백 포함)
         _uiController.deleteNotificationWithFeedback(

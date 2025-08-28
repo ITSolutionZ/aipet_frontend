@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>916090550504-97vppt5jc31t90h6o260qatfrphvoc3a.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.916090550504-97vppt5jc31t90h6o260qatfrphvoc3a</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBMGGVKpekvx7hIglGOEix69EoIG9JIQrI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>916090550504</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.itz.aipet</string>
+	<key>PROJECT_ID</key>
+	<string>aipet-1c44e</string>
+	<key>STORAGE_BUCKET</key>
+	<string>aipet-1c44e.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:916090550504:ios:0a887fc627a77acbaf715d</string>
+	<key>DATABASE_URL</key>
+	<string>https://aipet-1c44e-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
