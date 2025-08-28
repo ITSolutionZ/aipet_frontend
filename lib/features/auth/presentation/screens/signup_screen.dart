@@ -50,10 +50,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authStateNotifierProvider);
+    final authState = ref.watch(authFormStateNotifierProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -135,7 +134,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   isVisible: authState.isPasswordVisible,
                   labelColor: AppColors.pointBrown,
                   onToggleVisibility: _authController.togglePasswordVisibility,
-                  onChanged: _authController.updatePassword,
+                  onChanged: (value) {
+                    // 패스워드는 AuthFormState에 저장하지 않음 (보안상 이유)
+                    // UI에서만 사용하고 검증 후 즉시 메모리에서 제거
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'パスワードを入力してください';
@@ -157,7 +159,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   labelColor: AppColors.pointBrown,
                   onToggleVisibility:
                       _authController.toggleConfirmPasswordVisibility,
-                  onChanged: _authController.updateConfirmPassword,
+                  onChanged: (value) {
+                    // 패스워드는 AuthFormState에 저장하지 않음 (보안상 이유)
+                    // UI에서만 사용하고 검증 후 즉시 메모리에서 제거
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'パスワードを再入力してください';
