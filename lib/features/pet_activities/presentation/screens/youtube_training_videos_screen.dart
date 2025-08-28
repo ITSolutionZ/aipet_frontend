@@ -53,7 +53,7 @@ class _YouTubeTrainingVideosScreenState
         tags: List<String>.from(result['tags']),
         petId: widget.petId,
       );
-      await _loadVideos();
+      _loadVideos();
     }
   }
 
@@ -337,7 +337,7 @@ class _YouTubeTrainingVideosScreenState
 
     if (confirmed == true) {
       await _controller.deleteVideo(video.id);
-      await _loadVideos();
+      _loadVideos();
     }
   }
 }
