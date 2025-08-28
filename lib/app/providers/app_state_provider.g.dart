@@ -8,7 +8,9 @@ part of 'app_state_provider.dart';
 
 String _$appStateHash() => r'61bd04d66a1e6f6493361cae94ccb7114cd7dcde';
 
-/// 앱 전체 상태 관리
+/// 앱 전체 상태를 관리하는 Provider
+///
+/// 앱의 전역 상태를 관리하며, 로딩, 에러, 시간, 온라인 상태 등을 추적합니다.
 ///
 /// Copied from [AppState].
 @ProviderFor(AppState)
