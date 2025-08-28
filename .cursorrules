@@ -11,8 +11,8 @@
 ### 주요 기술 스택
 - **상태 관리**: Riverpod (flutter_riverpod, riverpod_annotation)
 - **라우팅**: GoRouter (go_router)
-- **목업/테스트**: Mockito 
-- **API 연계 전까지**: mock_data 폴더의 Mock 데이터 사용
+- **목업/테스트**: Mockito
+- **API 연계 전까지**: mock_data 폴더의 Mock 데이터 사용을 위하여, 기본 코드는 api를 추후 연계하는 것을 기본으로 mockito 사용하도록 코드를 계획합니다.
 
 ## 아키텍처 원칙
 
@@ -20,7 +20,8 @@
 - **Presentation Layer**: UI 위젯, 화면, 사용자 인터랙션 처리
 - **Domain Layer**: 엔티티, 비즈니스 로직, 리포지토리 인터페이스
 - **Data Layer**: API 호출, 로컬 저장소, Mock 데이터 관리
-- **Infrastructure Layer**: HTTP 클라이언트, 로컬 DB(SQLite), 외부 서비스 연동
+- **Infrastructure Layer**: 현재는 mock_data 사용, 추후 API 연동시 변경 예정
+- **UI & Logic 분리**: ui, Logic을 분리하여 작성하여 DRY원칙을 적용합니다.
 
 ### 2. Flutter 앱 폴더 구조
 ```
@@ -31,12 +32,13 @@ lib/
 │   ├── providers/          # 앱 상태, 초기화 프로바이더
 │   └── router/             # GoRouter 설정 및 라우트 정의
 ├── features/               # 기능별 Feature 모듈
-│   ├── auth/              # 로그인, 회원가입
-│   ├── home/              # 메인 대시보드
-│   ├── pet_profile/       # 펫 프로필 관리
-│   ├── walk/              # 산책 기록
-│   ├── facility/          # 시설 검색
-│   └── ...                # 기타 기능들
+│   ├── auth/               # 로그인, 회원가입
+│   ├── home/               # 메인 대시보드
+│   ├── pet_profile/        # 펫 프로필 관리
+│   ├── walk/               # 산책 기록
+│   ├── facility/           # 시설 검색
+│   ├── ai/                 # AI 챗봇
+│   └── ...                 # 기타 기능들
 └── shared/                # 앱 전체에서 공유하는 리소스
     ├── design/            # 테마, 색상, 폰트 등 디자인 시스템
     ├── services/          # API 서비스, 로컬 저장소 등
@@ -69,7 +71,7 @@ lib/
 import 'dart:async';
 import 'dart:convert';
 
-// 2. Flutter 패키지 
+// 2. Flutter 패키지
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -96,7 +98,7 @@ import 'controllers/auth_controller.dart';
   import '../../../features/home/home.dart';
   import '../../../shared/shared.dart';
 
-  // ❌ 잘못된 예시  
+  // ❌ 잘못된 예시
   import '../../../features/auth/presentation/screens/login_screen.dart';
   import '../../../features/home/domain/entities/home_entity.dart';
   import '../../../shared/widgets/custom_button.dart';
@@ -107,7 +109,7 @@ import 'controllers/auth_controller.dart';
   // ✅ 올바른 예시 (같은 feature 내부)
   import '../domain/domain.dart';           // 레이어 배럴
   import 'widgets/login_form.dart';         // 직접 import (같은 레이어)
-  
+
   // ❌ 잘못된 예시
   import '../../../features/auth/domain/entities/user.dart';  // 너무 긴 경로
   ```
@@ -125,7 +127,7 @@ import 'controllers/auth_controller.dart';
 
 1. **Layer별 배럴 파일** (각 레이어 내부)
    - `data/data.dart`: data 레이어의 모든 파일 export
-   - `domain/domain.dart`: domain 레이어의 모든 파일 export  
+   - `domain/domain.dart`: domain 레이어의 모든 파일 export
    - `presentation/presentation.dart`: presentation 레이어의 모든 파일 export
 
 2. **Feature 최종 배럴** (feature 루트)
@@ -140,14 +142,14 @@ export 'repositories/auth_repository_impl.dart';
 export 'datasources/auth_remote_datasource.dart';
 export 'models/user_model.dart';
 
-// lib/features/auth/domain/domain.dart  
+// lib/features/auth/domain/domain.dart
 export 'entities/user.dart';
 export 'repositories/auth_repository.dart';
 export 'usecases/login_usecase.dart';
 
 // lib/features/auth/presentation/presentation.dart
 export 'screens/login_screen.dart';
-export 'widgets/login_form.dart'; 
+export 'widgets/login_form.dart';
 export 'controllers/auth_controller.dart';
 
 // lib/features/auth/auth.dart (최종 배럴)
@@ -232,7 +234,7 @@ lib/features/auth/
   // 페이지 이동
   context.go(AppRouter.homeRoute);
   context.push(AppRouter.petDetailRoute);
-  
+
   // 매개변수가 있는 라우트
   context.goNamed('petDetail', pathParameters: {'petId': petId});
   ```
@@ -294,7 +296,7 @@ class HomeController extends BaseController {
   ```dart
   // ✅ 올바른 예시
   Text('ログイン')                    // 로그인
-  Text('ペットプロフィール')           // 펫 프로필  
+  Text('ペットプロフィール')           // 펫 프로필
   Text('設定')                       // 설정
   AppLocalizations.of(context)?.loginButtonText ?? 'ログイン'
 
@@ -307,7 +309,7 @@ class HomeController extends BaseController {
   ```dart
   // 권장 방식
   Text(AppLocalizations.of(context)?.loginTitle ?? 'ログイン')
-  
+
   // 임시 방식 (개발 단계)
   Text('ログイン')
   ```
@@ -321,7 +323,7 @@ class HomeController extends BaseController {
 ```dart
 // 공통 UI 텍스트
 'ログイン'          // 로그인
-'ログアウト'        // 로그아웃  
+'ログアウト'        // 로그아웃
 '保存'            // 저장
 'キャンセル'        // 취소
 '確認'            // 확인
@@ -361,7 +363,7 @@ try {
 
 ### 2. 사용자 피드백 (일본어)
 - **성공**: `showSuccess('保存しました')` - 저장했습니다
-- **경고**: `showWarning('接続を確認してください')` - 연결을 확인해주세요  
+- **경고**: `showWarning('接続を確認してください')` - 연결을 확인해주세요
 - **정보**: `showInfo('データを更新中です')` - 데이터를 업데이트 중입니다
 - **SnackBar**: 짧은 피드백 메시지
 - **Dialog**: 중요한 확인이나 에러 메시지
@@ -417,11 +419,11 @@ import 'pet_repository_test.mocks.dart';
 
 void main() {
   late MockPetRepository mockRepository;
-  
+
   setUp(() {
     mockRepository = MockPetRepository();
   });
-  
+
   testWidgets('pet list display test', (tester) async {
     when(mockRepository.fetchPets())
         .thenAnswer((_) async => MockPetData.pets);
@@ -505,7 +507,7 @@ flutter test
 git commit -m "feat(auth): ログイン画面のUI実装"
 git commit -m "feat(pet): ペットプロフィール登録機能を追加"
 
-# 버그 수정  
+# 버그 수정
 git commit -m "fix(walk): 散歩時間計算のエラーを修正"
 git commit -m "fix(ui): ローディング状態でボタンを無効化する処理を追加"
 
@@ -555,5 +557,5 @@ git commit -m "test(auth): ログイン処理の統合テストを実装"
 
 ---
 
-**이 가이드라인을 따라 일관성 있고 확장 가능한 Flutter 앱을 개발하세요.**  
+**이 가이드라인을 따라 일관성 있고 확장 가능한 Flutter 앱을 개발하세요.**
 **Backend API와의 연계는 별도 프로젝트에서 처리되므로, Frontend는 UI/UX와 상태 관리에 집중합니다.**

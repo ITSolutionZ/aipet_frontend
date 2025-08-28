@@ -6,9 +6,11 @@ part of 'app_initialization_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appInitializationHash() => r'370ea87285d5ea8ca324fce8da381e33fd698b19';
+String _$appInitializationHash() => r'8013709941c94dfbb01e1966e7f3c02a6a8ad7fa';
 
-/// 앱 초기화 상태 관리
+/// 앱 초기화 상태를 관리하는 Provider
+///
+/// 앱 시작 시 필요한 모든 초기화 작업을 관리하고 상태를 추적합니다.
 ///
 /// Copied from [AppInitialization].
 @ProviderFor(AppInitialization)

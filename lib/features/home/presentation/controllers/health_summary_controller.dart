@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/controllers/base_controller.dart';
-import '../../../scheduling/domain/repositories/schedule_repository.dart';
-import '../../../scheduling/domain/entities/schedule_entity.dart';
 import '../../../scheduling/data/repositories/schedule_repository_impl.dart';
+import '../../../scheduling/domain/entities/schedule_entity.dart';
+import '../../../scheduling/domain/repositories/schedule_repository.dart';
 
 class HealthSummaryResult {
   final bool isSuccess;
