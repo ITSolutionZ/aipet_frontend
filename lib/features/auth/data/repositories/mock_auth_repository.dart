@@ -1,5 +1,6 @@
 import 'package:mockito/annotations.dart';
 
+import '../../../../shared/mock_data/mock_data.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 /// Mock AuthRepository 생성
@@ -19,18 +20,47 @@ class MockAuthRepositoryImpl implements AuthRepository {
     String email,
     String password,
   ) async {
-    // 개발 중에는 모든 로그인을 성공으로 처리
-    await Future.delayed(const Duration(seconds: 1)); // 시뮬레이션
+    try {
+      // 개발 모드에서는 모든 입력을 성공으로 처리
+      final mockResult = await AuthMockData.mockLogin(email, password);
+      
+      // Null safety 강화
+      final userData = mockResult['user'];
+      final tokenData = mockResult['token'];
+      
+      if (userData is! Map<String, dynamic> || tokenData is! Map<String, dynamic>) {
+        return AuthResult.failure('認証データが不正です', errorCode: 'INVALID_DATA');
+      }
 
-    return AuthResult.success(
-      '로그인되었습니다',
-      user: AuthUser(
-        uid: 'mock_user_${DateTime.now().millisecondsSinceEpoch}',
-        email: email,
-        displayName: email.split('@')[0],
-        creationTime: DateTime.now(),
-      ),
-    );
+      // 필수 필드 검증
+      final uid = userData['id'];
+      final userEmail = userData['email'];
+      final displayName = userData['displayName'];
+      
+      if (uid is! String || userEmail is! String || displayName is! String) {
+        return AuthResult.failure('ユーザーデータが不正です', errorCode: 'INVALID_USER_DATA');
+      }
+
+      // Mock 토큰을 저장 (실제 앱에서는 TokenStorageService 사용)
+      // 개발 환경에서는 토큰 저장 생략 가능
+      
+      return AuthResult.success(
+        mockResult['message'] as String? ?? 'ログイン成功',
+        user: AuthUser(
+          uid: uid,
+          email: userEmail,
+          displayName: displayName,
+          isEmailVerified: userData['isEmailVerified'] as bool? ?? false,
+          creationTime: userData['createdAt'] as DateTime? ?? DateTime.now(),
+          lastSignInTime: userData['lastLoginAt'] as DateTime? ?? DateTime.now(),
+        ),
+      );
+    } catch (e) {
+      return AuthResult.failure(
+        'ログインに失敗しました', 
+        errorCode: 'LOGIN_ERROR',
+      );
+    }
   }
 
   @override
@@ -38,86 +68,113 @@ class MockAuthRepositoryImpl implements AuthRepository {
     String email,
     String password,
   ) async {
-    // 개발 중에는 모든 회원가입을 성공으로 처리
-    await Future.delayed(const Duration(seconds: 1)); // 시뮬레이션
+    // 개발 모드에서는 모든 회원가입을 성공으로 처리
+    final mockResult = await AuthMockData.mockSignup(
+      email, 
+      password, 
+      email.split('@')[0],
+    );
+    final userData = mockResult['user'] as Map<String, dynamic>;
 
     return AuthResult.success(
-      '회원가입이 완료되었습니다',
+      mockResult['message'] as String,
       user: AuthUser(
-        uid: 'mock_user_${DateTime.now().millisecondsSinceEpoch}',
-        email: email,
-        displayName: email.split('@')[0],
-        creationTime: DateTime.now(),
+        uid: userData['id'] as String,
+        email: userData['email'] as String,
+        displayName: userData['displayName'] as String,
+        isEmailVerified: userData['isEmailVerified'] as bool,
+        creationTime: userData['createdAt'] as DateTime,
+        lastSignInTime: userData['lastLoginAt'] as DateTime,
       ),
     );
   }
 
   @override
   Future<AuthResult> signInWithGoogle() async {
-    await Future.delayed(const Duration(seconds: 1));
+    final mockResult = await AuthMockData.mockSocialLogin('google');
+    final userData = mockResult['user'] as Map<String, dynamic>;
+
     return AuthResult.success(
-      'Google 로그인이 완료되었습니다',
+      mockResult['message'] as String,
       user: AuthUser(
-        uid: 'mock_google_user_${DateTime.now().millisecondsSinceEpoch}',
-        email: 'google_user@example.com',
-        displayName: 'Google User',
-        creationTime: DateTime.now(),
+        uid: userData['id'] as String,
+        email: userData['email'] as String,
+        displayName: userData['displayName'] as String,
+        photoURL: userData['photoUrl'] as String?,
+        isEmailVerified: userData['isEmailVerified'] as bool,
+        creationTime: userData['createdAt'] as DateTime,
+        lastSignInTime: userData['lastLoginAt'] as DateTime,
       ),
     );
   }
 
   @override
   Future<AuthResult> signInWithApple() async {
-    await Future.delayed(const Duration(seconds: 1));
+    final mockResult = await AuthMockData.mockSocialLogin('apple');
+    final userData = mockResult['user'] as Map<String, dynamic>;
+
     return AuthResult.success(
-      'Apple 로그인이 완료되었습니다',
+      mockResult['message'] as String,
       user: AuthUser(
-        uid: 'mock_apple_user_${DateTime.now().millisecondsSinceEpoch}',
-        email: 'apple_user@example.com',
-        displayName: 'Apple User',
-        creationTime: DateTime.now(),
+        uid: userData['id'] as String,
+        email: userData['email'] as String,
+        displayName: userData['displayName'] as String,
+        photoURL: userData['photoUrl'] as String?,
+        isEmailVerified: userData['isEmailVerified'] as bool,
+        creationTime: userData['createdAt'] as DateTime,
+        lastSignInTime: userData['lastLoginAt'] as DateTime,
       ),
     );
   }
 
   @override
   Future<AuthResult> signInWithLine() async {
-    await Future.delayed(const Duration(seconds: 1));
+    final mockResult = await AuthMockData.mockSocialLogin('line');
+    final userData = mockResult['user'] as Map<String, dynamic>;
+
     return AuthResult.success(
-      'LINE 로그인이 완료되었습니다',
+      mockResult['message'] as String,
       user: AuthUser(
-        uid: 'mock_line_user_${DateTime.now().millisecondsSinceEpoch}',
-        email: 'line_user@example.com',
-        displayName: 'LINE User',
-        creationTime: DateTime.now(),
+        uid: userData['id'] as String,
+        email: userData['email'] as String,
+        displayName: userData['displayName'] as String,
+        photoURL: userData['photoUrl'] as String?,
+        isEmailVerified: userData['isEmailVerified'] as bool,
+        creationTime: userData['createdAt'] as DateTime,
+        lastSignInTime: userData['lastLoginAt'] as DateTime,
       ),
     );
   }
 
   @override
   Future<void> signOut() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await AuthMockData.mockLogout();
   }
 
   @override
   Future<AuthUser?> getCurrentUser() async {
-    // 개발 중에는 항상 Mock 사용자 반환
+    final userData = await AuthMockData.mockGetCurrentUser();
+    if (userData == null) return null;
+
     return AuthUser(
-      uid: 'mock_current_user',
-      email: 'current_user@example.com',
-      displayName: 'Current User',
-      creationTime: DateTime.now().subtract(const Duration(days: 30)),
+      uid: userData['id'] as String,
+      email: userData['email'] as String,
+      displayName: userData['displayName'] as String,
+      photoURL: userData['photoUrl'] as String?,
+      isEmailVerified: userData['isEmailVerified'] as bool,
+      creationTime: userData['createdAt'] as DateTime,
+      lastSignInTime: userData['lastLoginAt'] as DateTime,
     );
   }
 
   @override
   Future<void> sendPasswordResetEmail(String email) async {
-    await Future.delayed(const Duration(seconds: 1));
+    await AuthMockData.mockPasswordReset(email);
   }
 
   @override
   Future<void> sendEmailVerification() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await AuthMockData.mockEmailVerification();
   }
 
   @override
