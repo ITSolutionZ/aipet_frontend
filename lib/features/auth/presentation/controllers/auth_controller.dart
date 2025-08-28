@@ -1,32 +1,15 @@
 import '../../../../app/controllers/base_controller.dart';
 import '../../data/auth_providers.dart';
+import '../../domain/auth_error.dart';
 import '../../domain/auth_state.dart';
+import '../../domain/result.dart';
+import '../../utils/auth_validator.dart';
 
-/// 인증 작업 결과
-class AuthControllerResult {
-  final bool isSuccess;
-  final String message;
+/// 인증 작업 결과 (Result 패턴 사용)
+typedef AuthControllerResult = Result<String>;
 
-  const AuthControllerResult._(this.isSuccess, this.message);
-
-  factory AuthControllerResult.success(String message) =>
-      AuthControllerResult._(true, message);
-  factory AuthControllerResult.failure(String message) =>
-      AuthControllerResult._(false, message);
-}
-
-/// 인증 유효성 검사 결과
-class AuthValidationResult {
-  final bool isValid;
-  final String errorMessage;
-
-  const AuthValidationResult._(this.isValid, this.errorMessage);
-
-  factory AuthValidationResult.valid() =>
-      const AuthValidationResult._(true, '');
-  factory AuthValidationResult.invalid(String message) =>
-      AuthValidationResult._(false, message);
-}
+/// 인증 유효성 검사 결과 (Result 패턴 사용)
+typedef AuthValidationResult = Result<void>;
 
 class AuthController extends BaseController {
   AuthController(super.ref);
@@ -70,16 +53,19 @@ class AuthController extends BaseController {
     try {
       // 유효성 검사
       final validationResult = validateLoginData();
-      if (!validationResult.isValid) {
-        return AuthControllerResult.failure(validationResult.errorMessage);
+      if (validationResult.isFailure) {
+        final error = validationResult.errorOrNull;
+        return Result.failure(
+          ValidationError(field: 'login', reason: error?.message ?? 'Validation failed'),
+        );
       }
 
       // TODO: 실제 로그인 API 호출
 
-      return AuthControllerResult.success('ログインが完了しました。');
+      return Result.success('ログインが完了しました。');
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return AuthControllerResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.fromError(error);
     }
   }
 
@@ -88,16 +74,19 @@ class AuthController extends BaseController {
     try {
       // 유효성 검사
       final validationResult = validateSignupData();
-      if (!validationResult.isValid) {
-        return AuthControllerResult.failure(validationResult.errorMessage);
+      if (validationResult.isFailure) {
+        final error = validationResult.errorOrNull;
+        return Result.failure(
+          ValidationError(field: 'signup', reason: error?.message ?? 'Validation failed'),
+        );
       }
 
       // TODO: 실제 회원가입 API 호출
 
-      return AuthControllerResult.success('会員登録が完了しました。');
+      return Result.success('会員登録が完了しました。');
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return AuthControllerResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.fromError(error);
     }
   }
 
@@ -106,10 +95,10 @@ class AuthController extends BaseController {
     try {
       // TODO: 실제 소셜 로그인 API 호출
 
-      return AuthControllerResult.success('$provider ログインが完了しました。');
+      return Result.success('$provider ログインが完了しました。');
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return AuthControllerResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.fromError(error);
     }
   }
 
@@ -147,10 +136,10 @@ class AuthController extends BaseController {
       // TODO: Firebase 로그아웃 로직 (추후 구현)
       // await FirebaseAuth.instance.signOut();
 
-      return AuthControllerResult.success('ログアウトが完了しました。');
+      return Result.success('ログアウトが完了しました。');
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return AuthControllerResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.fromError(error);
     }
   }
 
@@ -158,64 +147,66 @@ class AuthController extends BaseController {
   AuthValidationResult validateLoginData() {
     final state = currentState;
 
-    if (state.email.isEmpty) {
-      return AuthValidationResult.invalid('メールアドレスを入力してください');
+    // 이메일 검증
+    final emailError = AuthValidator.getEmailErrorMessage(state.email);
+    if (emailError != null) {
+      return Result.failure(
+        ValidationError(field: 'email', reason: emailError),
+      );
     }
 
-    if (!_isValidEmail(state.email)) {
-      return AuthValidationResult.invalid('正しいメールアドレスを入力してください');
-    }
-
+    // 비밀번호 검증 (로그인은 빈 값만 체크)
     if (state.password.isEmpty) {
-      return AuthValidationResult.invalid('パスワードを入力してください');
+      return Result.failure(
+        const ValidationError(field: 'password', reason: 'パスワードを入力してください'),
+      );
     }
 
-    return AuthValidationResult.valid();
+    return Result.success(null);
   }
 
   /// 회원가입 데이터 유효성 검사 (UI 로직 분리)
   AuthValidationResult validateSignupData() {
     final state = currentState;
 
-    if (state.email.isEmpty) {
-      return AuthValidationResult.invalid('メールアドレスを入力してください');
+    // 이메일 검증
+    final emailError = AuthValidator.getEmailErrorMessage(state.email);
+    if (emailError != null) {
+      return Result.failure(
+        ValidationError(field: 'email', reason: emailError),
+      );
     }
 
-    if (!_isValidEmail(state.email)) {
-      return AuthValidationResult.invalid('正しいメールアドレスを入力してください');
+    // 비밀번호 검증
+    final passwordError = AuthValidator.getPasswordErrorMessage(state.password);
+    if (passwordError != null) {
+      return Result.failure(
+        ValidationError(field: 'password', reason: passwordError),
+      );
     }
 
-    if (state.password.isEmpty) {
-      return AuthValidationResult.invalid('パスワードを入力してください');
+    // 비밀번호 확인 검증
+    final confirmPasswordError = AuthValidator.getConfirmPasswordErrorMessage(
+      state.password, 
+      state.confirmPassword,
+    );
+    if (confirmPasswordError != null) {
+      return Result.failure(
+        ValidationError(field: 'confirmPassword', reason: confirmPasswordError),
+      );
     }
 
-    if (state.password.length < 6) {
-      return AuthValidationResult.invalid('パスワードは6文字以上である必要があります');
+    // 사용자명 검증
+    final usernameError = AuthValidator.getUsernameErrorMessage(state.username);
+    if (usernameError != null) {
+      return Result.failure(
+        ValidationError(field: 'username', reason: usernameError),
+      );
     }
 
-    if (state.confirmPassword.isEmpty) {
-      return AuthValidationResult.invalid('パスワード確認を入力してください');
-    }
-
-    if (state.password != state.confirmPassword) {
-      return AuthValidationResult.invalid('パスワードが一致しません');
-    }
-
-    if (state.username.isEmpty) {
-      return AuthValidationResult.invalid('ユーザー名は2文字以上である必要があります');
-    }
-
-    if (state.username.length < 2) {
-      return AuthValidationResult.invalid('ユーザー名は2文字以上である必要があります');
-    }
-
-    return AuthValidationResult.valid();
+    return Result.success(null);
   }
 
-  /// 이메일 유효성 검사
-  bool _isValidEmail(String email) {
-    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
-  }
 
   /// 에러 메시지 초기화
   void clearError() {
