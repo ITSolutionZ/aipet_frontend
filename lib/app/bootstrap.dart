@@ -1,10 +1,11 @@
-import 'package:firebase_core/firebase_core.dart'; // Changed: Firebase 초기화
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/auth/data/services/firebase_token_service.dart';
+import '../firebase_options.dart';
 import '../shared/shared.dart';
 import 'config/config.dart';
 import 'providers/providers.dart';
@@ -12,19 +13,43 @@ import 'providers/providers.dart';
 /// Firebase 초기화 상태를 전역으로 관리
 class FirebaseManager {
   static bool _isInitialized = false;
+  static String? _initializationError;
+  
   static bool get isInitialized => _isInitialized;
+  static String? get initializationError => _initializationError;
   
   static Future<bool> initialize() async {
+    if (_isInitialized) {
+      return true; // 이미 초기화됨
+    }
+    
     try {
-      await Firebase.initializeApp();
+      debugPrint('🚀 Attempting Firebase initialization with options...');
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
       _isInitialized = true;
-      debugPrint('✅ Firebase initialized successfully');
+      _initializationError = null;
+      debugPrint('✅ Firebase initialized successfully with options');
       return true;
-    } catch (e) {
+    } catch (e, stackTrace) {
       _isInitialized = false;
-      debugPrint('🔥 Firebase init failed: $e');
-      debugPrint('ℹ️  Firebase는 선택적 기능입니다. 앱은 계속 실행됩니다.');
+      _initializationError = e.toString();
+      debugPrint('🔥 Firebase initialization failed: $e');
+      debugPrint('📍 Stack trace: $stackTrace');
+      debugPrint('ℹ️  Firebase 기능이 비활성화됩니다. 앱은 계속 실행됩니다.');
       return false;
+    }
+  }
+  
+  /// Firebase 서비스 사용 전 안전성 검사
+  static void ensureInitialized() {
+    if (!_isInitialized) {
+      throw StateError(
+        'Firebase is not initialized. '
+        'Error: ${_initializationError ?? "Unknown error"}. '
+        'Call FirebaseManager.initialize() first.'
+      );
     }
   }
 }

@@ -11,15 +11,11 @@ class FirebaseTokenService {
   static const String _firebaseIdTokenKey = 'firebase_id_token';
   static const String _firebaseIdTokenExpiresKey = 'firebase_id_token_expires';
   
+  static FirebaseAuth? _firebaseAuthInstance;
+  
   static FirebaseAuth get _firebaseAuth {
-    if (!_isFirebaseInitialized) {
-      if (kDebugMode) {
-        debugPrint('⚠️ Firebase가 초기화되지 않은 상태에서 FirebaseAuth 접근 시도');
-        debugPrint('⚠️ StackTrace: ${StackTrace.current}');
-      }
-      throw Exception('Firebase has not been initialized');
-    }
-    return FirebaseAuth.instance;
+    FirebaseManager.ensureInitialized();
+    return _firebaseAuthInstance ??= FirebaseAuth.instance;
   }
 
   /// Firebase가 초기화되어 있는지 확인
