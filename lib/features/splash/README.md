@@ -15,14 +15,15 @@
 - [아키텍처 (Architecture)](#architecture)
 - [주요 기능 (Key Features)](#key-features)
 - [디렉토리 구조 (Directory Structure)](#directory-structure)
-- [스플래시 시퀀스 플로우 (Splash Sequence Flow)](#splash-sequence-flow-스플래시-시퀀스-플로우)
+- [스플래시 시퀀스 플로우 (Splash Sequence Flow)](#splash-sequence-flow)
 - [상태 관리 (State Management)](#state-management)
 - [사용 방법 (Usage)](#usage)
 - [설정 (Configuration)](#configuration)
 
-### 개요 (Overview)
+### 개요 (Overview) {#overview}
 
-AI Pet 애플리케이션의 스플래시 화면 기능을 담당하는 모듈입니다. Clean Architecture 패턴을 기반으로 한 확장 가능하고 유지보수가 쉬운 스플래시 시스템을 제공합니다.
+AI Pet 애플리케이션의 스플래시 화면 기능을 담당하는 모듈입니다.
+Clean Architecture 패턴을 기반으로 한 확장 가능하고 유지보수가 쉬운 스플래시 시스템을 제공합니다.
 
 **주요 특징:**
 
@@ -33,7 +34,7 @@ AI Pet 애플리케이션의 스플래시 화면 기능을 담당하는 모듈�
 - 🎯 **Clean Architecture**: 완벽한 계층 분리 (Domain/Data/Presentation)
 - ⚡ **조건 분기 없음**: 어떤 상황에서도 회사로고 → 앱로고 순서 고정
 
-### 아키텍처 (Architecture)
+### 아키텍처 (Architecture) {#architecture}
 
 ```txt
 lib/features/splash/
@@ -49,7 +50,7 @@ lib/features/splash/
 - **Data Layer**: 스플래시 설정 및 상태 관리 구현
 - **Presentation Layer**: UI 컨트롤러 및 화면 구성
 
-### 주요 기능 (Key Features)
+### 주요 기능 (Key Features) {#key-features}
 
 #### 🎬 스플래시 시퀀스 - 완전 고정 순서 진행
 
@@ -82,7 +83,7 @@ lib/features/splash/
 - **진행률 표시** - 0.0 → 0.5 → 1.0 진행률
 - **자동 라우팅** - 상태 기반 다음 화면 결정
 
-### 디렉토리 구조 (Directory Structure)
+### 디렉토리 구조 (Directory Structure) {#directory-structure}
 
 ```txt
 splash/
@@ -122,7 +123,7 @@ splash/
         └── splash_logo_widget.dart      # 로고 위젯
 ```
 
-### 스플래시 시퀀스 플로우 (Splash Sequence Flow)
+### 스플래시 시퀀스 플로우 (Splash Sequence Flow) {#splash-sequence-flow}
 
 스플래시 기능은 스트림 기반의 상태 관리를 통해 순차적인 로고 표시 시퀀스를 구현합니다.
 
@@ -137,7 +138,7 @@ splash/
 
 #### 🔄 상태 전환 과정
 
-**1단계: 초기화 (Initializing)**
+#### 1단계: 초기화 (Initializing)
 
 ```dart
 // SplashState.initializing() 생성
@@ -147,7 +148,7 @@ yield SplashResult.success(
 );
 ```
 
-**2단계: 회사 로고 표시 (Company Logo)**
+#### 2단계: 회사 로고 표시 (Company Logo)
 
 ```dart
 // 회사 로고 상태로 전환 및 3초 대기
@@ -158,7 +159,7 @@ yield SplashResult.success(
 await Future.delayed(SplashConstants.logoDisplayDuration);
 ```
 
-**3단계: 앱 로고 표시 (App Logo)**
+#### 3단계: 앱 로고 표시 (App Logo)
 
 ```dart
 // 앱 로고 상태로 전환 및 3초 대기
@@ -169,7 +170,7 @@ yield SplashResult.success(
 await Future.delayed(SplashConstants.logoDisplayDuration);
 ```
 
-**4단계: 완료 및 라우팅 (Completed)**
+#### 4단계: 완료 및 라우팅 (Completed)
 
 ```dart
 // 완료 상태로 전환
@@ -205,7 +206,7 @@ errorBuilder: (context, error, stackTrace) {
 }
 ```
 
-### 상태 관리 (State Management)
+### 상태 관리 (State Management) {#state-management}
 
 #### 🔄 Riverpod 기반 상태 관리
 
@@ -257,7 +258,7 @@ switch (splashState.phase) {
 }
 ```
 
-### 사용 방법 (Usage)
+### 사용 방법 (Usage) {#usage}
 
 #### 1. **기본 사용법**
 
@@ -301,7 +302,7 @@ class MySplashWidget extends ConsumerWidget {
 }
 ```
 
-### 설정 (Configuration)
+### 설정 (Configuration) {#configuration}
 
 #### 상수 설정
 
@@ -351,12 +352,12 @@ dependencies:
 - [アーキテクチャ (Architecture)](#architecture-1)
 - [主要機能 (Key Features)](#key-features-1)
 - [ディレクトリ構造 (Directory Structure)](#directory-structure-1)
-- [スプラッシュシーケンスフロー (Splash Sequence Flow)](#splash-sequence-flow-スプラッシュシーケンスフロー-1)
+- [スプラッシュシーケンスフロー (Splash Sequence Flow)](#splash-sequence-flow-1)
 - [状態管理 (State Management)](#state-management-1)
 - [使用方法 (Usage)](#usage-1)
 - [設定 (Configuration)](#configuration-1)
 
-### 概要 (Overview)
+### 概要 (Overview) {#overview-1}
 
 AI Pet アプリケーションのスプラッシュ画面機能を担当するモジュールです。Clean Architecture パターンをベースにした拡張可能でメンテナンスしやすいスプラッシュシステムを提供します。
 
@@ -369,7 +370,7 @@ AI Pet アプリケーションのスプラッシュ画面機能を担当する�
 - 🎯 **Clean Architecture**: 完璧な層分離 (Domain/Data/Presentation)
 - ⚡ **条件分岐なし**: どんな状況でも 会社ロゴ → アプリロゴ 順序固定
 
-### アーキテクチャ (Architecture)
+### アーキテクチャ (Architecture) {#architecture-1}
 
 ```txt
 lib/features/splash/
@@ -385,7 +386,7 @@ lib/features/splash/
 - **Data Layer**: スプラッシュ設定と状態管理実装
 - **Presentation Layer**: UI コントローラーと画面構成
 
-### 主要機能 (Key Features)
+### 主要機能 (Key Features) {#key-features-1}
 
 #### 🎬 スプラッシュシーケンス - 完全固定順序進行
 
@@ -418,7 +419,7 @@ lib/features/splash/
 - **進捗表示** - 0.0 → 0.5 → 1.0 進捗率
 - **自動ルーティング** - 状態ベースの次画面決定
 
-### ディレクトリ構造 (Directory Structure)
+### ディレクトリ構造 (Directory Structure) {#directory-structure-1}
 
 ```txt
 splash/
@@ -458,7 +459,7 @@ splash/
         └── splash_logo_widget.dart      # ロゴウィジェット
 ```
 
-### スプラッシュシーケンスフロー (Splash Sequence Flow)
+### スプラッシュシーケンスフロー (Splash Sequence Flow) {#splash-sequence-flow-1}
 
 スプラッシュ機能はストリームベースの状態管理を通じて順次的なロゴ表示シーケンスを実装します。
 
@@ -473,7 +474,7 @@ splash/
 
 #### 🔄 状態遷移プロセス
 
-**ステップ 1: 初期化 (Initializing)**
+#### ステップ 1: 初期化 (Initializing)
 
 ```dart
 // SplashState.initializing() 生成
@@ -483,7 +484,7 @@ yield SplashResult.success(
 );
 ```
 
-**ステップ 2: 会社ロゴ表示 (Company Logo)**
+#### ステップ 2: 会社ロゴ表示 (Company Logo)
 
 ```dart
 // 会社ロゴ状態に遷移し3秒待機
@@ -494,7 +495,7 @@ yield SplashResult.success(
 await Future.delayed(SplashConstants.logoDisplayDuration);
 ```
 
-**ステップ 3: アプリロゴ表示 (App Logo)**
+#### ステップ 3: アプリロゴ表示 (App Logo)
 
 ```dart
 // アプリロゴ状態に遷移し3秒待機
@@ -505,7 +506,7 @@ yield SplashResult.success(
 await Future.delayed(SplashConstants.logoDisplayDuration);
 ```
 
-**ステップ 4: 完了とルーティング (Completed)**
+#### ステップ 4: 完了とルーティング (Completed)
 
 ```dart
 // 完了状態に遷移
@@ -515,7 +516,33 @@ yield SplashResult.success(
 );
 ```
 
-### 状態管理 (State Management)
+#### 🎯 状態別 UI レンダリング
+
+**会社ロゴ状態:**
+
+- サイズ: 196x130 (SplashConstants.companyLogoWidth/Height)
+- 背景: 白いコンテナ
+- 角: 8px ラウンド (SplashConstants.companyLogoRadius)
+
+**アプリロゴ状態:**
+
+- サイズ: 300x300 (SplashConstants.appLogoSize)
+- 背景: グラデーション効果
+- 角: 20px ラウンド (SplashConstants.logoRadius)
+
+#### 🛡️ エラーリカバリーシナリオ
+
+```dart
+// 画像読み込み失敗時のフォールバックUI
+errorBuilder: (context, error, stackTrace) {
+  return Container(
+    color: Colors.grey[200],
+    child: const Icon(Icons.pets, size: 60, color: Colors.grey),
+  );
+}
+```
+
+### 状態管理 (State Management) {#state-management-1}
 
 #### 🔄 Riverpod ベースの状態管理
 
@@ -552,7 +579,22 @@ class SplashState {
 }
 ```
 
-### 使用方法 (Usage)
+#### 📊 状態追跡例
+
+```dart
+final splashState = ref.watch(splashSequenceNotifierProvider);
+
+switch (splashState.phase) {
+  case SplashPhase.companyLogo:
+    print('会社ロゴ表示中 (${splashState.progress * 100}%)');
+  case SplashPhase.appLogo:
+    print('アプリロゴ表示中 (${splashState.progress * 100}%)');
+  case SplashPhase.completed:
+    print('スプラッシュ完了');
+}
+```
+
+### 使用方法 (Usage) {#usage-1}
 
 #### 1. **基本使用法**
 
@@ -583,7 +625,20 @@ splashController.startSplashSequence().listen(
 );
 ```
 
-### 設定 (Configuration)
+#### 3. **状態購読**
+
+```dart
+class MySplashWidget extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final splashState = ref.watch(splashSequenceNotifierProvider);
+
+    return SplashLogoWidget(splashState: splashState);
+  }
+}
+```
+
+### 設定 (Configuration) {#configuration-1}
 
 #### 定数設定
 
@@ -602,6 +657,16 @@ class SplashConstants {
   static const double companyLogoHeight = 130.0;
   static const double appLogoSize = 300.0;
 }
+```
+
+#### Assets 設定
+
+```yaml
+# pubspec.yaml
+flutter:
+  assets:
+    - assets/icons/itz.png
+    - assets/icons/aipet_logo.png
 ```
 
 #### 依存関係
@@ -624,4 +689,4 @@ dependencies:
 
 ---
 
-**© 2024 AI Pet. 프로덕션 레벨 스플래시 시스템 / Production-ready Splash System**
+© 2024 AI Pet. 프로덕션 레벨 스플래시 시스템 / Production-ready Splash System
