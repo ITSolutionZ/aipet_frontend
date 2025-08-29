@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart'; // Changed: Firebase 초기화
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,23 +16,33 @@ class AppBootstrap {
   /// 앱 초기화 및 설정을 수행합니다.
   ///
   /// 환경별 설정을 초기화하고 앱 실행에 필요한 기본 설정을 로드합니다.
-  static void initialize() {
+  static Future<void> initialize() async {
+    // .env 파일 로드
+    await dotenv.load(fileName: '.env');
+    
     // 환경별 설정 초기화
     _initializeAppConfig();
 
-    // Changed: Firebase 초기화 (모바일 네이티브 구성 파일 기반)
-    // android/app/google-services.json, ios/Runner/GoogleService-Info.plist가 있으면
-    // 옵션 없이도 초기화 가능. 웹 추가 시 firebase_options.dart 사용으로 전환 권장.
-    Firebase.initializeApp()
-        .then((_) {
-          debugPrint('✅ Firebase initialized');
-          // Firebase 인증 상태 리스너 설정
-          FirebaseTokenService.setupAuthStateListener();
-          debugPrint('✅ Firebase Auth State Listener setup');
-        })
-        .catchError((e) {
-          debugPrint('🔥 Firebase init failed: $e');
-        });
+    // Firebase 초기화 (옵션, 설정 파일이 있는 경우에만)
+    bool isFirebaseInitialized = false;
+    try {
+      await Firebase.initializeApp();
+      isFirebaseInitialized = true;
+      debugPrint('✅ Firebase initialized');
+    } catch (e) {
+      debugPrint('🔥 Firebase init failed: $e');
+      debugPrint('ℹ️  Firebase는 선택적 기능입니다. 앱은 계속 실행됩니다.');
+    }
+
+    // Firebase가 성공적으로 초기화된 경우에만 인증 상태 리스너 설정
+    if (isFirebaseInitialized) {
+      try {
+        FirebaseTokenService.setupAuthStateListener();
+        debugPrint('✅ Firebase Auth State Listener setup');
+      } catch (e) {
+        debugPrint('⚠️ Firebase Auth State Listener setup failed: $e');
+      }
+    }
 
     // NOTE:
     // 웹/멀티플랫폼에서 옵션이 필요하다면 아래 주석을 해제하고
