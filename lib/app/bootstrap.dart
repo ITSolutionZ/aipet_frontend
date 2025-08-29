@@ -9,6 +9,26 @@ import '../shared/shared.dart';
 import 'config/config.dart';
 import 'providers/providers.dart';
 
+/// Firebase 초기화 상태를 전역으로 관리
+class FirebaseManager {
+  static bool _isInitialized = false;
+  static bool get isInitialized => _isInitialized;
+  
+  static Future<bool> initialize() async {
+    try {
+      await Firebase.initializeApp();
+      _isInitialized = true;
+      debugPrint('✅ Firebase initialized successfully');
+      return true;
+    } catch (e) {
+      _isInitialized = false;
+      debugPrint('🔥 Firebase init failed: $e');
+      debugPrint('ℹ️  Firebase는 선택적 기능입니다. 앱은 계속 실행됩니다.');
+      return false;
+    }
+  }
+}
+
 /// 앱의 메인 위젯을 생성하는 클래스
 ///
 /// 앱 초기화 및 부트스트랩 로직을 담당합니다.
@@ -24,15 +44,7 @@ class AppBootstrap {
     _initializeAppConfig();
 
     // Firebase 초기화 (옵션, 설정 파일이 있는 경우에만)
-    bool isFirebaseInitialized = false;
-    try {
-      await Firebase.initializeApp();
-      isFirebaseInitialized = true;
-      debugPrint('✅ Firebase initialized');
-    } catch (e) {
-      debugPrint('🔥 Firebase init failed: $e');
-      debugPrint('ℹ️  Firebase는 선택적 기능입니다. 앱은 계속 실행됩니다.');
-    }
+    final isFirebaseInitialized = await FirebaseManager.initialize();
 
     // Firebase가 성공적으로 초기화된 경우에만 인증 상태 리스너 설정
     if (isFirebaseInitialized) {
