@@ -54,6 +54,18 @@ abstract class AppConfig {
   /// 데이터베이스 버전
   int get databaseVersion;
 
+  /// LINE 채널 ID
+  String get lineChannelId;
+
+  /// OpenAI API 키
+  String get openaiApiKey;
+
+  /// 날씨 API 키
+  String get weatherApiKey;
+
+  /// Google Cloud Map Platform API 키
+  String get googleMapsApiKey;
+
   /// 현재 설정된 앱 설정 인스턴스를 반환합니다.
   static AppConfig get current => _current;
   static AppConfig _current = DevelopmentConfig();
@@ -118,6 +130,18 @@ class DevelopmentConfig extends AppConfig {
 
   @override
   int get databaseVersion => 1;
+
+  @override
+  String get lineChannelId => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+
+  @override
+  String get openaiApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+
+  @override
+  String get weatherApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+
+  @override
+  String get googleMapsApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
 }
 
 /// 스테이징 환경 설정
@@ -172,6 +196,18 @@ class StagingConfig extends AppConfig {
 
   @override
   int get databaseVersion => 1;
+
+  @override
+  String get lineChannelId => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+
+  @override
+  String get openaiApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+
+  @override
+  String get weatherApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+
+  @override
+  String get googleMapsApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
 }
 
 /// 프로덕션 환경 설정
@@ -226,4 +262,16 @@ class ProductionConfig extends AppConfig {
 
   @override
   int get databaseVersion => 1;
+
+  @override
+  String get lineChannelId => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+
+  @override
+  String get openaiApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+
+  @override
+  String get weatherApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+
+  @override
+  String get googleMapsApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
 }
