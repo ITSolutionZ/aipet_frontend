@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../features/ai/domain/domain.dart';
+import '../../../../features/pet_registor/domain/entities/pet_profile_entity.dart';
 
 /// AI 관련 Mock 데이터 서비스
 /// 
@@ -117,14 +118,7 @@ class AiMockDataService {
 
   /// 채팅 히스토리 Mock 데이터 생성
   static List<Map<String, dynamic>> getChatHistoryMockData() {
-    return [
-      {
-        'id': '1',
-        'content': initialMessage,
-        'type': 'assistant',
-        'timestamp': DateTime.now().subtract(const Duration(minutes: 5)).toIso8601String(),
-      }
-    ];
+    return [];
   }
 
   /// AI 응답 Mock 데이터 생성
@@ -150,36 +144,17 @@ class AiMockDataService {
     };
   }
 
-  /// AI 채팅 기록 목 데이터
+  /// AI 채팅 기록 목 데이터 (빈 상태로 시작)
   static List<AiMessageEntity> getChatHistory() {
-    return [
-      AiMessageEntity(
-        id: '1',
-        content: initialMessage,
-        type: MessageType.assistant,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 10)),
-      ),
-      AiMessageEntity(
-        id: '2',
-        content: 'Max가 식사를 거부하고 있어요. 어떻게 해야 할까요?',
-        type: MessageType.user,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 8)),
-      ),
-      AiMessageEntity(
-        id: '3',
-        content: 'Max의 식사 거부는 여러 원인이 있을 수 있습니다. 먼저 건강 상태를 확인해보시고, 사료를 바꿔보거나 소량으로 나누어 주는 것을 시도해보세요.',
-        type: MessageType.assistant,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 7)),
-      ),
-    ];
+    return [];
   }
 
-  /// AI 채팅 세션 목 데이터
+  /// AI 채팅 세션 목 데이터 (일본어)
   static List<AiChatSessionEntity> getChatSessions() {
     return [
       AiChatSessionEntity(
         id: '1',
-        title: 'Max 식사 문제 상담',
+        title: 'ゆうくん食事問題相談',
         messages: getChatHistory(),
         createdAt: DateTime.now().subtract(const Duration(hours: 1)),
         updatedAt: DateTime.now().subtract(const Duration(minutes: 7)),
@@ -188,20 +163,91 @@ class AiMockDataService {
     ];
   }
 
-  /// AI 추천 질문 목 데이터 (간단한 형태)
+  /// AI 추천 질문 목 데이터 (일본語)
   static List<Map<String, dynamic>> getSuggestedQuestions() {
     return [
       {
         'id': '1',
-        'question': '반려동물이 식사를 거부할 때는 어떻게 해야 하나요?',
+        'question': 'ペットが食事を拒否する時はどうしたらいいですか？',
         'category': 'health',
       },
       {
         'id': '2',
-        'question': '산책 중 반려동물이 다른 강아지를 무서워해요',
+        'question': '散歩中にペットが他の犬を怖がります',
         'category': 'behavior',
       },
-      {'id': '3', 'question': '고양이의 적정 사료량은 얼마인가요?', 'category': 'feeding'},
+      {'id': '3', 'question': '猫の適正なフード量はどれくらいですか？', 'category': 'feeding'},
+    ];
+  }
+
+  /// 즐겨찾기 QA Mock 데이터 생성
+  static List<AiFavoriteQaEntity> getFavoriteQAsMockData() {
+    final now = DateTime.now();
+    final mockPet1 = PetProfileEntity(
+      id: 'pet1',
+      name: 'ゆうくん',
+      type: 'dog',
+      breed: '柴犬',
+      birthDate: DateTime(2020, 3, 15),
+      ownerId: 'user1',
+      createdAt: now.subtract(const Duration(days: 30)),
+      updatedAt: now.subtract(const Duration(days: 1)),
+      imagePath: null,
+    );
+    
+    final mockPet2 = PetProfileEntity(
+      id: 'pet2', 
+      name: 'みゃあちゃん',
+      type: 'cat',
+      breed: 'マンチカン',
+      birthDate: DateTime(2021, 7, 20),
+      ownerId: 'user1',
+      createdAt: now.subtract(const Duration(days: 20)),
+      updatedAt: now.subtract(const Duration(days: 1)),
+      imagePath: null,
+    );
+    
+    return [
+      AiFavoriteQaEntity(
+        id: 'fav1',
+        question: 'ペットが食事を拒否する時はどうしたらいいですか？',
+        answer: '🍽️ お腹の調子が悪い理由はたくさんあります:\n\n1. **健康上の問題**: 歯の問題, 消化器の問題\n2. **ストレス**: 環境の変化, 新しい食事\n3. **活動量不足**: 運動が不足すると食欲が落ちます\n\n**解決策:**\n• 定められた時間に定期的に食事\n• 食器を清潔に保つ\n• 十分な運動でエネルギーを消費\n• 継続的に症状があれば獣医師に相談を推奨',
+        pet: mockPet1,
+        categoryId: 'health',
+        categoryName: '健康',
+        createdAt: now.subtract(const Duration(days: 2)),
+        originalTimestamp: now.subtract(const Duration(days: 2, hours: 1)),
+      ),
+      AiFavoriteQaEntity(
+        id: 'fav2',
+        question: '散歩の時間はどれくらいかかりますか?',
+        answer: '🚶‍♂️ ペットの散歩ガイド:\n\n**小型犬 (5kg 未満)**\n• 1日30-60分 (2-3回に分けて)\n\n**中型犬 (5-25kg)**\n• 1日60-90分 (朝, 夕方)\n\n**大型犬 (25kg 以上)**\n• 1日90-120分 (活発な運動が必要)\n\n**注意事項:**\n• 暑い時間帯を避ける (アスファルトの熱傷に注意)\n• 十分な水分補給\n• 段階的に運動量を増やす',
+        pet: mockPet1,
+        categoryId: 'exercise',
+        categoryName: '運動',
+        createdAt: now.subtract(const Duration(days: 1)),
+        originalTimestamp: now.subtract(const Duration(days: 1, hours: 2)),
+      ),
+      AiFavoriteQaEntity(
+        id: 'fav3',
+        question: '猫の適正なフード量はどれくらいですか？',
+        answer: '🐱 猫のフード量ガイド:\n\n**年齢別の基準:**\n• 子猫 (2-12か月): 体重×80-100kcal/日\n• 成猫 (1-7歳): 体重×70-80kcal/日\n• 高齢猫 (7歳以上): 体重×60-70kcal/日\n\n**フードタイプ別:**\n• ドライフード: 1日2-3回に分けて\n• ウェットフード: 1日2回が理想\n\n**注意事項:**\n• 急な変更は避ける\n• 水分摂取量も重要\n• 体重変化を定期的にチェック',
+        pet: mockPet2,
+        categoryId: 'feeding',
+        categoryName: '食事',
+        createdAt: now.subtract(const Duration(hours: 5)),
+        originalTimestamp: now.subtract(const Duration(hours: 6)),
+      ),
+      AiFavoriteQaEntity(
+        id: 'fav4',
+        question: '一般的なペットケアについて教えてください',
+        answer: '🐾 一般的なペットケアの基本:\n\n**日常ケア:**\n• 定期的なブラッシング\n• 歯磨きまたは歯のケア\n• 爪切り\n• 耳掃除\n\n**健康管理:**\n• 年1-2回の健康チェック\n• 予防接種の継続\n• 体重管理\n• 異常な行動や症状の観察\n\n**環境整備:**\n• 清潔な生活空間\n• 適切な温度管理\n• 十分な運動と遊び時間',
+        pet: null,
+        categoryId: 'general',
+        categoryName: '一般',
+        createdAt: now.subtract(const Duration(hours: 3)),
+        originalTimestamp: now.subtract(const Duration(hours: 4)),
+      ),
     ];
   }
 

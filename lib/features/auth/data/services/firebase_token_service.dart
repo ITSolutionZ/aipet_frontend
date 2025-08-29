@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../../shared/services/secure_storage_service_v2.dart';
@@ -11,6 +12,15 @@ class FirebaseTokenService {
   static const String _firebaseIdTokenExpiresKey = 'firebase_id_token_expires';
   
   static FirebaseAuth get _firebaseAuth => FirebaseAuth.instance;
+
+  /// Firebase가 초기화되어 있는지 확인
+  static bool get _isFirebaseInitialized {
+    try {
+      return Firebase.apps.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
 
   /// 현재 유효한 Firebase ID Token 가져오기 (자동 갱신 포함)
   static Future<String?> getCurrentIdToken({bool forceRefresh = false}) async {

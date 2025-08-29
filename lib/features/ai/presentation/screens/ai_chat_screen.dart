@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../shared/shared.dart';
 import '../controllers/ai_chat_controller.dart';
 import '../widgets/widgets.dart';
+import 'ai_favorite_messages_screen.dart';
 
 class AiChatScreen extends ConsumerStatefulWidget {
   const AiChatScreen({super.key});
@@ -15,16 +16,14 @@ class AiChatScreen extends ConsumerStatefulWidget {
 class _AiChatScreenState extends ConsumerState<AiChatScreen> {
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
-  late AiChatController _controller;
   
   @override
   void initState() {
     super.initState();
-    _controller = AiChatController(ref);
     
-    // 초기 데이터 로드 (Controller를 통해서만 접근)
+    // 초기 데이터 로드
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.initializeChat();
+      ref.read(aiChatNotifierProvider.notifier).initializeChat();
     });
   }
 
@@ -32,7 +31,6 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
-    _controller.dispose();
     super.dispose();
   }
 
@@ -42,8 +40,8 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     _messageController.clear();
     _scrollToBottom();
 
-    // 컨트롤러를 통해 메시지 전송
-    await _controller.sendMessage(content);
+    // 노티파이어를 통해 메시지 전송
+    await ref.read(aiChatNotifierProvider.notifier).sendMessage(content);
   }
 
   void _scrollToBottom() {
@@ -59,13 +57,125 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
   }
 
   Future<void> _clearChatHistory() async {
-    await _controller.clearChatHistory();
+    await ref.read(aiChatNotifierProvider.notifier).clearChatHistory();
+  }
+
+  void _navigateToFavoriteMessages() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const AiFavoriteMessagesScreen(),
+      ),
+    );
+  }
+
+  int _getTotalItemCount(AiChatState chatState) {
+    int count = 0;
+    
+    // 펫 선택이 완료되지 않은 경우 펫 선택 버블 표시
+    if (!chatState.hasPetSelected) {
+      count += 1;
+    }
+    
+    // 펫은 선택했지만 카테고리 선택이 완료되지 않은 경우
+    if (chatState.hasPetSelected && !chatState.hasCategorySelected) {
+      count += 1; // 카테고리 선택 메시지
+    }
+    
+    // 카테고리가 선택되었지만 메시지가 없는 경우
+    if (chatState.hasCategorySelected && chatState.messages.isEmpty) {
+      count += 1; // 구체적인 질문 요청 메시지
+    }
+    
+    // 실제 메시지들
+    count += chatState.messages.length;
+    
+    // 타이핑 인디케이터
+    if (chatState.isTyping) {
+      count += 1;
+    }
+    
+    // 추천 질문들은 AiQuestionRequestBubble에 포함되어 있으므로 별도로 카운트하지 않음
+    
+    return count;
+  }
+
+  Widget _buildChatItem(BuildContext context, WidgetRef ref, AiChatState chatState, int index) {
+    int currentIndex = 0;
+    
+    // 1. 펫 선택 버블 (펫이 선택되지 않은 경우 첫 번째로 표시)
+    if (!chatState.hasPetSelected) {
+      if (index == currentIndex) {
+        return AiPetSelectionBubble(
+          selectedPet: chatState.selectedPet,
+          onPetSelected: (pet) {
+            ref.read(aiChatNotifierProvider.notifier).selectPet(pet);
+          },
+        );
+      }
+      currentIndex++;
+    }
+    
+    // 2. 카테고리 선택 버블 (펫은 선택했지만 카테고리가 선택되지 않은 경우)
+    if (chatState.hasPetSelected && !chatState.hasCategorySelected) {
+      if (index == currentIndex) {
+        return AiCategorySelectionBubble(
+          selectedCategory: chatState.selectedCategory,
+          onCategorySelected: (category) {
+            ref.read(aiChatNotifierProvider.notifier).selectCategory(category);
+          },
+        );
+      }
+      currentIndex++;
+    }
+    
+    // 3. 구체적인 질문 요청 버블 (카테고리가 선택되었지만 메시지가 없는 경우)
+    if (chatState.hasCategorySelected && chatState.messages.isEmpty) {
+      if (index == currentIndex) {
+        return AiQuestionRequestBubble(
+          selectedPet: chatState.selectedPet,
+          selectedCategory: chatState.selectedCategory,
+          onQuestionTap: _sendMessage,
+        );
+      }
+      currentIndex++;
+    }
+    
+    // 4. 실제 메시지들
+    if (index >= currentIndex && index < currentIndex + chatState.messages.length) {
+      final messageIndex = index - currentIndex;
+      final message = chatState.messages[messageIndex];
+      return AiMessageBubble(
+        message: message,
+        isFavorite: chatState.favoriteMessageIds.contains(message.id),
+        onFavoriteToggle: (msg) {
+          ref.read(aiChatNotifierProvider.notifier).toggleFavorite(msg);
+        },
+      );
+    }
+    currentIndex += chatState.messages.length;
+    
+    // 5. 추천 질문들은 AiQuestionRequestBubble에 포함되어 있으므로 별도 처리 불필요
+    
+    // 6. 타이핑 인디케이터
+    if (chatState.isTyping && index == currentIndex) {
+      return const AiTypingIndicator();
+    }
+    
+    return const SizedBox.shrink();
   }
 
   @override
   Widget build(BuildContext context) {
-    // UI와 Logic 분리: Controller를 통해서만 상태 접근
-    _controller.watchChatState(); // Provider 변화 감지를 위해 호출
+    // UI에서 직접 Provider 상태 감지
+    final chatState = ref.watch(aiChatNotifierProvider);
+    
+    // 디버그 로그
+    print('🐾 AI Chat Debug:');
+    print('  - hasPetSelected: ${chatState.hasPetSelected}');
+    print('  - hasCategorySelected: ${chatState.hasCategorySelected}');
+    print('  - messages count: ${chatState.messages.length}');
+    print('  - selectedPet: ${chatState.selectedPet?.name}');
+    print('  - selectedCategory: ${chatState.selectedCategory?.name}');
     
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -91,7 +201,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (_controller.isTyping)
+                if (chatState.isTyping)
                   Text(
                     '入力中...',
                     style: AppFonts.bodySmall.copyWith(color: Colors.white70),
@@ -104,43 +214,41 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
         foregroundColor: Colors.white,
         actions: [
           IconButton(
+            onPressed: _navigateToFavoriteMessages,
+            icon: const Icon(Icons.star),
+            tooltip: 'お気に入り',
+          ),
+          IconButton(
             onPressed: _clearChatHistory,
             icon: const Icon(Icons.refresh),
+            tooltip: 'チャットをクリア',
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // 메시지 리스트
-          Expanded(
-            child: ListView.builder(
+      body: SafeArea(
+        child: Column(
+          children: [
+            // 메시지 리스트
+            Expanded(
+              child: ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.all(AppSpacing.md),
-              itemCount: _controller.messages.length + (_controller.isTyping ? 1 : 0),
+              itemCount: _getTotalItemCount(chatState),
               itemBuilder: (context, index) {
-                if (index < _controller.messages.length) {
-                  return AiMessageBubble(message: _controller.messages[index]);
-                } else {
-                  return const AiTypingIndicator();
-                }
+                return _buildChatItem(context, ref, chatState, index);
               },
             ),
           ),
 
-          // 추천 질문 (메시지가 적을 때만 표시)
-          if (_controller.messages.length <= 2)
-            AiSuggestedQuestions(
-              questions: _controller.suggestedQuestions,
-              onQuestionTap: _sendMessage,
+          // 메시지 입력 영역 (카테고리까지 선택된 후에만 표시)
+          if (chatState.hasCategorySelected)
+            AiMessageInput(
+              controller: _messageController,
+              onSendMessage: _sendMessage,
+              isLoading: chatState.isTyping,
             ),
-
-          // 메시지 입력 영역
-          AiMessageInput(
-            controller: _messageController,
-            onSendMessage: _sendMessage,
-            isLoading: _controller.isTyping,
-          ),
         ],
+        ),
       ),
     );
   }
