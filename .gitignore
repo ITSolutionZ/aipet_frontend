@@ -26,6 +26,12 @@ migrate_working_dir/
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
+
+# Environment variables (환경 변수)
+.env
+.env.local
+.env.*.local
+
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
