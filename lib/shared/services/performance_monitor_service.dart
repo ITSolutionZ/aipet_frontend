@@ -75,7 +75,7 @@ class PerformanceMonitorService {
     _detectPerformanceIssues(metric);
 
     if (kDebugMode) {
-      print('성능 메트릭 수집: ${metric.toString()}');
+      // print('성능 메트릭 수집: ${metric.toString()}');
     }
   }
 

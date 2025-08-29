@@ -35,6 +35,7 @@ dependencies:
   dio: ^5.4.3+1
   package_info_plus: ^8.0.2
   connectivity_plus: ^6.0.5
+  flutter_dotenv: ^5.1.0
 
   mockito: ^5.4.4
 
@@ -49,6 +50,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - .env
     - assets/
     - assets/meteocons/
     - assets/meteocons/design/fill/animation-ready/

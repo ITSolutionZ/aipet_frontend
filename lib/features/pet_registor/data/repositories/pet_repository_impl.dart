@@ -1,3 +1,4 @@
+import '../../../../shared/mock_data/features/pet/pet_mock_data.dart';
 import '../../domain/entities/pet_profile_entity.dart';
 import '../../domain/entities/temporary_pet_data_entity.dart';
 import '../../domain/repositories/pet_repository.dart';
@@ -10,30 +11,7 @@ class PetRepositoryImpl implements PetRepository {
     // 시뮬레이션된 데이터
     await Future.delayed(const Duration(milliseconds: 500));
 
-    return [
-      PetProfileEntity(
-        id: '1',
-        name: '멍멍이',
-        type: 'dog',
-        breed: '골든 리트리버',
-        birthDate: DateTime(2020, 3, 15),
-        imagePath: 'assets/images/dogs/golden.jpg',
-        ownerId: 'user1',
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        updatedAt: DateTime.now(),
-      ),
-      PetProfileEntity(
-        id: '2',
-        name: '냥냥이',
-        type: 'cat',
-        breed: '페르시안',
-        birthDate: DateTime(2021, 7, 22),
-        imagePath: 'assets/images/cats/persian.jpg',
-        ownerId: 'user1',
-        createdAt: DateTime.now().subtract(const Duration(days: 15)),
-        updatedAt: DateTime.now(),
-      ),
-    ];
+    return PetMockData.getMockPets();
   }
 
   @override
