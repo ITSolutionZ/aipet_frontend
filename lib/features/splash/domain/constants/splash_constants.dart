@@ -15,10 +15,14 @@ class SplashConstants {
   static const String companyLogoPath = 'assets/icons/itz.png';
   static const String appLogoPath = 'assets/icons/aipet_logo.png';
 
+  // Lottie 애니메이션 경로
+  static const String loadingLottiePath = 'assets/lottie/loading.json';
+
   // 크기 상수
   static const double companyLogoWidth = 196.0;
   static const double companyLogoHeight = 130.0;
   static const double appLogoSize = 300.0;
+  static const double loadingLottieSize = 200.0;
 
   // 애니메이션 상수
   static const double fadeStart = 0.0;
@@ -29,8 +33,16 @@ class SplashConstants {
   static const double companyLogoRadius = 8.0;
 
   // 애니메이션 인터벌
-  static const Interval fadeInterval = Interval(0.0, 0.33, curve: Curves.easeIn);
-  static const Interval scaleInterval = Interval(0.0, 0.33, curve: Curves.elasticOut);
+  static const Interval fadeInterval = Interval(
+    0.0,
+    0.33,
+    curve: Curves.easeIn,
+  );
+  static const Interval scaleInterval = Interval(
+    0.0,
+    0.33,
+    curve: Curves.elasticOut,
+  );
 
   // 색상 투명도
   static const int gradientAlpha1 = 23;

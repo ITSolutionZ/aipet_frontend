@@ -87,23 +87,23 @@ class PetProfileEntity {
     }
   }
 
-  /// 펫 타입 한글명
+  /// 펫 타입 일본어명
   String get typeName {
     switch (type.toLowerCase()) {
       case 'dog':
-        return '강아지';
+        return '犬';
       case 'cat':
-        return '고양이';
+        return '猫';
       case 'bird':
-        return '새';
+        return '鳥';
       case 'hamster':
-        return '햄스터';
+        return 'ハムスター';
       case 'rabbit':
-        return '토끼';
+        return 'うさぎ';
       case 'turtle':
-        return '거북이';
+        return '亀';
       default:
-        return '펫';
+        return 'ペット';
     }
   }
 
