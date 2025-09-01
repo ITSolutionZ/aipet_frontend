@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
@@ -7,7 +8,8 @@ import '../../../../app/config/app_config.dart';
 import '../models/weather_model.dart';
 
 class WeatherService {
-  static const String _oneCallUrl = 'https://api.openweathermap.org/data/3.0/onecall';
+  static const String _oneCallUrl =
+      'https://api.openweathermap.org/data/3.0/onecall';
   static const String _geocodingUrl = 'http://api.openweathermap.org/geo/1.0';
 
   Future<WeatherData?> getCurrentWeather({WeatherLocation? location}) async {
@@ -44,14 +46,18 @@ class WeatherService {
           return await _getCurrentWeatherFallback(weatherLocation);
         }
       } catch (fallbackError) {
-        throw Exception('Weather API error: $e (fallback also failed: $fallbackError)');
+        throw Exception(
+          'Weather API error: $e (fallback also failed: $fallbackError)',
+        );
       }
       throw Exception('Weather API error: $e');
     }
   }
 
   // 기본 날씨 API로 폴백
-  Future<WeatherData?> _getCurrentWeatherFallback(WeatherLocation weatherLocation) async {
+  Future<WeatherData?> _getCurrentWeatherFallback(
+    WeatherLocation weatherLocation,
+  ) async {
     final apiKey = AppConfig.current.weatherApiKey;
     final url = Uri.parse(
       'https://api.openweathermap.org/data/2.5/weather?lat=${weatherLocation.latitude}&lon=${weatherLocation.longitude}&appid=$apiKey&units=metric&lang=ja',
@@ -69,36 +75,36 @@ class WeatherService {
 
   Future<WeatherLocation?> _getCurrentLocation() async {
     // 🏙️ 테스트용: 강제로 도쿄 사용 (주석 해제하면 항상 도쿄 사용)
-    return _getDefaultLocation();
-    
+    // return _getDefaultLocation();
+
     try {
-      print('🌍 위치 서비스 확인 시작...');
-      
+      debugPrint('🌍 위치 서비스 확인 시작...');
+
       final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        print('❌ 위치 서비스가 비활성화되어 있습니다. 기본 위치(도쿄) 사용');
+        debugPrint('❌ 위치 서비스가 비활성화되어 있습니다. 기본 위치(도쿄) 사용');
         return _getDefaultLocation();
       }
-      print('✅ 위치 서비스 활성화됨');
+      debugPrint('✅ 위치 서비스 활성화됨');
 
       LocationPermission permission = await Geolocator.checkPermission();
-      print('📍 현재 위치 권한: $permission');
-      
+      debugPrint('📍 현재 위치 권한: $permission');
+
       if (permission == LocationPermission.denied) {
-        print('🔒 위치 권한 요청 중...');
+        debugPrint('🔒 위치 권한 요청 중...');
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          print('❌ 위치 권한이 거부되었습니다. 기본 위치(도쿄) 사용');
+          debugPrint('❌ 위치 권한이 거부되었습니다. 기본 위치(도쿄) 사용');
           return _getDefaultLocation();
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        print('❌ 위치 권한이 영구적으로 거부되었습니다. 기본 위치(도쿄) 사용');
+        debugPrint('❌ 위치 권한이 영구적으로 거부되었습니다. 기본 위치(도쿄) 사용');
         return _getDefaultLocation();
       }
 
-      print('📱 GPS 위치 취득 시도 중...');
+      debugPrint('📱 GPS 위치 취득 시도 중...');
       final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.medium,
@@ -106,14 +112,14 @@ class WeatherService {
         ),
       );
 
-      print('✅ GPS 위치 취득 성공: ${position.latitude}, ${position.longitude}');
+      debugPrint('✅ GPS 위치 취득 성공: ${position.latitude}, ${position.longitude}');
 
       final locationName = await _getLocationName(
         position.latitude,
         position.longitude,
       );
 
-      print('🏷️ 위치명: $locationName');
+      debugPrint('🏷️ 위치명: $locationName');
 
       return WeatherLocation(
         latitude: position.latitude,
@@ -121,7 +127,7 @@ class WeatherService {
         name: locationName,
       );
     } catch (e) {
-      print('❌ 위치 취득 실패: $e. 기본 위치(도쿄) 사용');
+      debugPrint('❌ 위치 취득 실패: $e. 기본 위치(도쿄) 사용');
       return _getDefaultLocation();
     }
   }
@@ -130,28 +136,28 @@ class WeatherService {
     try {
       final apiKey = AppConfig.current.weatherApiKey;
       if (apiKey.isEmpty) {
-        print('⚠️ Weather API 키가 없습니다');
+        debugPrint('⚠️ Weather API 키가 없습니다');
         return '現在地';
       }
 
-      print('🔍 위치명 검색 중: $lat, $lon');
+      debugPrint('🔍 위치명 검색 중: $lat, $lon');
       final url = Uri.parse(
         '$_geocodingUrl/reverse?lat=$lat&lon=$lon&limit=1&appid=$apiKey&lang=ja',
       );
 
       final response = await http.get(url).timeout(const Duration(seconds: 5));
-      print('🌐 Geocoding API 응답: ${response.statusCode}');
+      debugPrint('🌐 Geocoding API 응답: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as List;
-        print('📍 Geocoding 데이터: $data');
-        
+        debugPrint('📍 Geocoding 데이터: $data');
+
         if (data.isNotEmpty) {
           final location = data.first as Map<String, dynamic>;
           final city = location['name'] as String? ?? '';
           final state = location['state'] as String? ?? '';
           final country = location['country'] as String? ?? '';
-          
+
           String locationName;
           if (state.isNotEmpty) {
             locationName = '$state $city';
@@ -162,22 +168,22 @@ class WeatherService {
           } else {
             locationName = '現在地';
           }
-          
-          print('✅ 위치명 결정: $locationName');
+
+          debugPrint('✅ 위치명 결정: $locationName');
           return locationName;
         }
       } else {
-        print('❌ Geocoding API 에러: ${response.statusCode}');
+        debugPrint('❌ Geocoding API 에러: ${response.statusCode}');
       }
     } catch (e) {
-      print('❌ 위치명 취득 실패: $e');
+      debugPrint('❌ 위치명 취득 실패: $e');
     }
     return '現在地';
   }
 
   WeatherLocation _getDefaultLocation() {
     // 東京都品川区をデフォルト位置とする
-    print('🏙️ デフォルト位置を使用: 東京都品川区');
+    debugPrint('🏙️ デフォルト位置を使用: 東京都品川区');
     return const WeatherLocation(
       latitude: 35.6092,
       longitude: 139.7301,
