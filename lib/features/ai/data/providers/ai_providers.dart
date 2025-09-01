@@ -11,5 +11,5 @@ part 'ai_providers.g.dart';
 /// 실제 API 연계 시점에는 AiRepositoryImpl을 실제 API 구현체로 교체하면 됩니다.
 @riverpod
 AiRepository aiRepository(Ref ref) {
-  return AiRepositoryImpl();
+  return AiRepositoryImpl(ref);
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../../app/bootstrap.dart';
 import '../../../../shared/constants/error_codes.dart';
 import '../../../../shared/services/http_client_service.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -8,8 +9,14 @@ import '../services/firebase_token_service.dart';
 
 /// Firebase Auth 실제 구현체
 class FirebaseAuthRepositoryImpl implements AuthRepository {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  FirebaseAuth? _firebaseAuth;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  
+  /// Firebase Auth 인스턴스를 안전하게 가져옵니다.
+  FirebaseAuth get _auth {
+    FirebaseManager.ensureInitialized();
+    return _firebaseAuth ??= FirebaseAuth.instance;
+  }
 
   @override
   Future<AuthResult> signInWithEmailAndPassword(
@@ -18,7 +25,7 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
   ) async {
     try {
       // 1단계: Firebase Auth로 로그인
-      final credential = await _firebaseAuth.signInWithEmailAndPassword(
+      final credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -94,7 +101,7 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
   ) async {
     try {
       // 1단계: Firebase Auth로 회원가입
-      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
+      final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -181,7 +188,7 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
       );
 
       // 2단계: Firebase Auth로 로그인
-      final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final userCredential = await _auth.signInWithCredential(credential);
       final user = userCredential.user;
 
       if (user == null) {
@@ -251,7 +258,7 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
   Future<AuthResult> signInWithApple() async {
     try {
       final appleProvider = AppleAuthProvider();
-      final userCredential = await _firebaseAuth.signInWithProvider(appleProvider);
+      final userCredential = await _auth.signInWithProvider(appleProvider);
       final user = userCredential.user;
 
       if (user == null) {
@@ -276,14 +283,14 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> signOut() async {
     await Future.wait([
-      _firebaseAuth.signOut(),
+      _auth.signOut(),
       _googleSignIn.signOut(),
     ]);
   }
 
   @override
   Future<AuthUser?> getCurrentUser() async {
-    final user = _firebaseAuth.currentUser;
+    final user = _auth.currentUser;
     if (user == null) return null;
     
     return _mapFirebaseUserToAuthUser(user);
@@ -292,7 +299,7 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> sendPasswordResetEmail(String email) async {
     try {
-      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       final errorCode = ErrorCodes.mapFirebaseAuthError(e.code);
       final errorMessage = ErrorCodes.getErrorMessage(errorCode);
@@ -302,7 +309,7 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> sendEmailVerification() async {
-    final user = _firebaseAuth.currentUser;
+    final user = _auth.currentUser;
     if (user != null) {
       await user.sendEmailVerification();
     }
@@ -313,7 +320,7 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
     String? displayName,
     String? photoURL,
   }) async {
-    final user = _firebaseAuth.currentUser;
+    final user = _auth.currentUser;
     if (user != null) {
       await user.updateDisplayName(displayName);
       await user.updatePhotoURL(photoURL);
@@ -322,7 +329,7 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> deleteAccount() async {
-    final user = _firebaseAuth.currentUser;
+    final user = _auth.currentUser;
     if (user != null) {
       await user.delete();
     }

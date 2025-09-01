@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../../app/bootstrap.dart';
 import '../../../../shared/services/secure_storage_service_v2.dart';
 
 /// Firebase ID Token 관리 서비스
@@ -10,10 +11,27 @@ class FirebaseTokenService {
   static const String _firebaseIdTokenKey = 'firebase_id_token';
   static const String _firebaseIdTokenExpiresKey = 'firebase_id_token_expires';
   
-  static FirebaseAuth get _firebaseAuth => FirebaseAuth.instance;
+  static FirebaseAuth? _firebaseAuthInstance;
+  
+  static FirebaseAuth get _firebaseAuth {
+    FirebaseManager.ensureInitialized();
+    return _firebaseAuthInstance ??= FirebaseAuth.instance;
+  }
+
+  /// Firebase가 초기화되어 있는지 확인
+  static bool get _isFirebaseInitialized {
+    return FirebaseManager.isInitialized;
+  }
 
   /// 현재 유효한 Firebase ID Token 가져오기 (자동 갱신 포함)
   static Future<String?> getCurrentIdToken({bool forceRefresh = false}) async {
+    if (!_isFirebaseInitialized) {
+      if (kDebugMode) {
+        debugPrint('Firebase가 초기화되지 않음 - 캐시된 토큰 시도');
+      }
+      return _getCachedIdToken();
+    }
+
     try {
       final user = _firebaseAuth.currentUser;
       if (user == null) {
@@ -57,6 +75,13 @@ class FirebaseTokenService {
 
   /// ID Token이 유효한지 확인
   static Future<bool> isIdTokenValid() async {
+    if (!_isFirebaseInitialized) {
+      if (kDebugMode) {
+        debugPrint('Firebase가 초기화되지 않음 - ID 토큰 유효성 검사 건너뜀');
+      }
+      return false;
+    }
+
     try {
       final user = _firebaseAuth.currentUser;
       if (user == null) return false;
@@ -171,34 +196,54 @@ class FirebaseTokenService {
 
   /// Firebase 사용자 상태 변경 리스너 설정
   static void setupAuthStateListener() {
-    _firebaseAuth.authStateChanges().listen((User? user) async {
-      if (user == null) {
-        // 로그아웃 시 캐시된 토큰 삭제
-        await clearCachedIdToken();
-        if (kDebugMode) {
-          debugPrint('Firebase 사용자 로그아웃 - 캐시 삭제됨');
-        }
-      } else {
-        // 로그인 시 새 토큰 캐시
-        try {
-          final idToken = await user.getIdToken();
-          if (idToken != null) {
-            await _cacheIdToken(idToken);
+    if (!_isFirebaseInitialized) {
+      if (kDebugMode) {
+        debugPrint('Firebase가 초기화되지 않아 Auth State Listener 설정을 건너뜀');
+      }
+      return;
+    }
+
+    try {
+      _firebaseAuth.authStateChanges().listen((User? user) async {
+        if (user == null) {
+          // 로그아웃 시 캐시된 토큰 삭제
+          await clearCachedIdToken();
+          if (kDebugMode) {
+            debugPrint('Firebase 사용자 로그아웃 - 캐시 삭제됨');
+          }
+        } else {
+          // 로그인 시 새 토큰 캐시
+          try {
+            final idToken = await user.getIdToken();
+            if (idToken != null) {
+              await _cacheIdToken(idToken);
+              if (kDebugMode) {
+                debugPrint('Firebase 사용자 로그인 - 새 토큰 캐시됨');
+              }
+            }
+          } catch (e) {
             if (kDebugMode) {
-              debugPrint('Firebase 사용자 로그인 - 새 토큰 캐시됨');
+              debugPrint('로그인 후 토큰 캐시 실패: $e');
             }
           }
-        } catch (e) {
-          if (kDebugMode) {
-            debugPrint('로그인 후 토큰 캐시 실패: $e');
-          }
         }
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Auth State Listener 설정 실패: $e');
       }
-    });
+    }
   }
 
   /// Firebase ID Token의 클레임 정보 가져오기
   static Future<Map<String, dynamic>?> getIdTokenClaims() async {
+    if (!_isFirebaseInitialized) {
+      if (kDebugMode) {
+        debugPrint('Firebase가 초기화되지 않음 - ID 토큰 클레임 가져오기 건너뜀');
+      }
+      return null;
+    }
+
     try {
       final user = _firebaseAuth.currentUser;
       if (user == null) return null;
@@ -215,6 +260,13 @@ class FirebaseTokenService {
 
   /// Firebase 사용자가 이메일 인증을 완료했는지 확인
   static Future<bool> isEmailVerified() async {
+    if (!_isFirebaseInitialized) {
+      if (kDebugMode) {
+        debugPrint('Firebase가 초기화되지 않음 - 이메일 인증 상태 확인 건너뜀');
+      }
+      return false;
+    }
+
     try {
       final user = _firebaseAuth.currentUser;
       if (user == null) return false;
@@ -234,6 +286,13 @@ class FirebaseTokenService {
 
   /// 이메일 인증 메일 재발송
   static Future<bool> resendEmailVerification() async {
+    if (!_isFirebaseInitialized) {
+      if (kDebugMode) {
+        debugPrint('Firebase가 초기화되지 않음 - 이메일 인증 메일 재발송 건너뜀');
+      }
+      return false;
+    }
+
     try {
       final user = _firebaseAuth.currentUser;
       if (user == null || user.emailVerified) return false;

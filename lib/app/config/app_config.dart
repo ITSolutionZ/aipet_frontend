@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 /// 앱 설정 관리 클래스
 ///
 /// 환경별 설정값들을 중앙에서 관리하고,
@@ -59,6 +61,9 @@ abstract class AppConfig {
 
   /// OpenAI API 키
   String get openaiApiKey;
+
+  /// OpenAI AI 모델명
+  String get openaiModel;
 
   /// 날씨 API 키
   String get weatherApiKey;
@@ -132,16 +137,19 @@ class DevelopmentConfig extends AppConfig {
   int get databaseVersion => 1;
 
   @override
-  String get lineChannelId => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get lineChannelId => dotenv.env['LINE_CHANNEL_ID'] ?? '';
 
   @override
-  String get openaiApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get openaiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
 
   @override
-  String get weatherApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get openaiModel => dotenv.env['OPENAI_MODEL'] ?? 'gpt-3.5-turbo';
 
   @override
-  String get googleMapsApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get weatherApiKey => dotenv.env['WEATHER_API_KEY'] ?? '';
+
+  @override
+  String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
 }
 
 /// 스테이징 환경 설정
@@ -198,16 +206,19 @@ class StagingConfig extends AppConfig {
   int get databaseVersion => 1;
 
   @override
-  String get lineChannelId => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get lineChannelId => dotenv.env['LINE_CHANNEL_ID'] ?? '';
 
   @override
-  String get openaiApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get openaiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
 
   @override
-  String get weatherApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get openaiModel => dotenv.env['OPENAI_MODEL'] ?? 'gpt-3.5-turbo';
 
   @override
-  String get googleMapsApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get weatherApiKey => dotenv.env['WEATHER_API_KEY'] ?? '';
+
+  @override
+  String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
 }
 
 /// 프로덕션 환경 설정
@@ -264,14 +275,17 @@ class ProductionConfig extends AppConfig {
   int get databaseVersion => 1;
 
   @override
-  String get lineChannelId => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get lineChannelId => dotenv.env['LINE_CHANNEL_ID'] ?? '';
 
   @override
-  String get openaiApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get openaiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
 
   @override
-  String get weatherApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get openaiModel => dotenv.env['OPENAI_MODEL'] ?? 'gpt-4';
 
   @override
-  String get googleMapsApiKey => ''; // Mock 환경에서는 빈 문자열, 추후 백엔드 연동 시 .env에서 로드
+  String get weatherApiKey => dotenv.env['WEATHER_API_KEY'] ?? '';
+
+  @override
+  String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
 }

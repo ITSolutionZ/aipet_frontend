@@ -1,1 +1,5 @@
+export 'ai_category_entity.dart';
+export 'ai_chat_summary_entity.dart';
+export 'ai_favorite_entity.dart';
+export 'ai_favorite_qa_entity.dart';
 export 'ai_message_entity.dart';
