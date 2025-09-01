@@ -143,21 +143,21 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
       String petName, List<AiFavoriteQaEntity> favorites, WidgetRef ref) {
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
-      elevation: 2,
+      elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.large),
       ),
-      child: Column(
-        children: [
-          // 펫 정보 헤더
-          Container(
+      child: Theme(
+        data: ThemeData().copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          initiallyExpanded: favorites.length <= 5, // 5개 이하일 때만 기본 열림
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          title: Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.pointBrown.withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(AppRadius.large),
-                topRight: Radius.circular(AppRadius.large),
-              ),
+              color: AppColors.pointBrown.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(AppRadius.large),
             ),
             child: Row(
               children: [
@@ -178,37 +178,123 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        petName,
-                        style: AppFonts.titleMedium.copyWith(
-                          color: AppColors.pointDark,
-                          fontWeight: FontWeight.bold,
+                      Flexible(
+                        child: Text(
+                          petName.split(' ').first, // 펫 이름만 추출 (종류 정보 제거)
+                          style: AppFonts.titleMedium.copyWith(
+                            color: AppColors.pointDark,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Text(
-                        '${favorites.length}件のお気に入り',
-                        style: AppFonts.bodySmall.copyWith(
-                          color: AppColors.pointGray,
+                      const SizedBox(height: 4),
+                      Flexible(
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.pointBrown.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                    size: 12,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${favorites.length}件',
+                                    style: AppFonts.bodySmall.copyWith(
+                                      color: AppColors.pointBrown,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Text(
+                              'のお気に入り',
+                              style: AppFonts.bodySmall.copyWith(
+                                color: AppColors.pointGray,
+                              ),
+                            ),
+                            if (favorites.isNotEmpty) ...[
+                              const SizedBox(width: AppSpacing.sm),
+                              Text(
+                                '•',
+                                style: AppFonts.bodySmall.copyWith(
+                                  color: AppColors.pointGray,
+                                ),
+                              ),
+                              const SizedBox(width: AppSpacing.sm),
+                              Flexible(
+                                child: Text(
+                                  _getLatestActivityText(favorites),
+                                  style: AppFonts.bodySmall.copyWith(
+                                    color: AppColors.pointGray,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-                const Icon(
-                  Icons.keyboard_arrow_down,
-                  color: AppColors.pointGray,
+                // 확장 상태 표시
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppColors.pointBrown.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: AppColors.pointBrown,
+                    size: 18,
+                  ),
                 ),
               ],
             ),
           ),
-          
           // 즐겨찾기 질문-답변 목록
-          ...favorites.asMap().entries.map((entry) {
-            final index = entry.key;
-            final favorite = entry.value;
-            return _buildQAAccordion(favorite, index == favorites.length - 1, ref);
-          }),
-        ],
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.grey,
+                    width: 0.3,
+                  ),
+                ),
+              ),
+              child: Column(
+                children: favorites.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final favorite = entry.value;
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.xs,
+                    ),
+                    child: _buildQAAccordion(favorite, index == favorites.length - 1, ref),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -219,174 +305,273 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
         dividerColor: Colors.transparent,
       ),
       child: Container(
+        margin: const EdgeInsets.only(bottom: AppSpacing.sm),
         decoration: BoxDecoration(
-          border: isLast ? null : Border(
-            bottom: BorderSide(
-              color: AppColors.pointGray.withValues(alpha: 0.2),
-              width: 1,
-            ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+          border: Border.all(
+            color: AppColors.pointGray.withValues(alpha: 0.2),
+            width: 1,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.pointDark.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        child: ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
-          childrenPadding: const EdgeInsets.only(
-            left: AppSpacing.md,
-            right: AppSpacing.md,
-            bottom: AppSpacing.md,
-          ),
-          leading: Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: Colors.blue.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.help_outline,
-              color: Colors.blue,
-              size: 16,
-            ),
-          ),
-          title: Text(
-            favorite.question,
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointDark,
-              fontWeight: FontWeight.w600,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.xs),
-            child: Row(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.all(AppSpacing.md),
+            childrenPadding: EdgeInsets.zero,
+            expandedAlignment: Alignment.topLeft,
+            expandedCrossAxisAlignment: CrossAxisAlignment.start,
+            // 질문 부분
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.access_time,
-                  size: 12,
-                  color: AppColors.pointGray,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  _formatTime(favorite.createdAt),
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointGray,
-                  ),
-                ),
-                if (favorite.categoryName != null) ...[
-                  const SizedBox(width: AppSpacing.sm),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.pointBrown.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(AppRadius.small),
-                    ),
-                    child: Text(
-                      favorite.categoryName!,
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointBrown,
-                        fontSize: 10,
+                // 질문 헤더
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Icon(
+                        Icons.help_outline,
+                        color: Colors.blue,
+                        size: 16,
                       ),
                     ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          trailing: GestureDetector(
-            onTap: () {
-              _showDeleteDialog(favorite, ref);
-            },
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.delete_outline,
-                color: Colors.red,
-                size: 16,
-              ),
-            ),
-          ),
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: AppColors.pointBrown.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(4),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      '질문',
+                      style: AppFonts.bodySmall.copyWith(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    // 삭제 버튼
+                    GestureDetector(
+                      onTap: () => _showDeleteDialog(favorite, ref),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: AppColors.pointBrown.withValues(alpha: 0.2),
-                          shape: BoxShape.circle,
+                          color: Colors.red.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Icon(
-                          Icons.smart_toy,
-                          color: AppColors.pointBrown,
-                          size: 12,
+                          Icons.delete_outline,
+                          color: Colors.red,
+                          size: 16,
                         ),
                       ),
-                      const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        'AI回答',
-                        style: AppFonts.bodySmall.copyWith(
-                          color: AppColors.pointBrown,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                // 질문 내용
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(AppRadius.small),
+                    border: Border.all(
+                      color: Colors.blue.withValues(alpha: 0.2),
+                      width: 1,
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    favorite.answer,
+                  child: Text(
+                    favorite.question,
                     style: AppFonts.bodyMedium.copyWith(
                       color: AppColors.pointDark,
+                      fontWeight: FontWeight.w600,
                       height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton.icon(
-                        onPressed: () {
-                          _copyToClipboard(favorite.answer);
-                        },
-                        icon: const Icon(Icons.copy, size: 16),
-                        label: const Text('コピー'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: AppColors.pointBrown,
-                        ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                // 메타 정보
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.access_time,
+                      size: 14,
+                      color: AppColors.pointGray,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      _formatTime(favorite.createdAt),
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointGray,
                       ),
-                      TextButton.icon(
-                        onPressed: () {
-                          _shareQA(favorite);
-                        },
-                        icon: const Icon(Icons.share, size: 16),
-                        label: const Text('共有'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: AppColors.pointBrown,
+                    ),
+                    if (favorite.categoryName != null) ...[
+                      const SizedBox(width: AppSpacing.sm),
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.pointBrown.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(AppRadius.small),
+                          ),
+                          child: Text(
+                            favorite.categoryName!,
+                            style: AppFonts.bodySmall.copyWith(
+                              color: AppColors.pointBrown,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 11,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                     ],
-                  ),
-                ],
-              ),
+                    const Spacer(),
+                    // 펼치기/접기 안내
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '답변 보기',
+                          style: AppFonts.bodySmall.copyWith(
+                            color: AppColors.pointBrown,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(
+                          Icons.expand_more,
+                          size: 16,
+                          color: AppColors.pointBrown,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+            // 답변 부분
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.grey,
+                      width: 0.5,
+                    ),
+                  ),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.pointBrown.withValues(alpha: 0.03),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 답변 헤더
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: AppColors.pointBrown.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Icon(
+                              Icons.smart_toy,
+                              color: AppColors.pointBrown,
+                              size: 16,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            'AI 답변',
+                            style: AppFonts.bodyMedium.copyWith(
+                              color: AppColors.pointBrown,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      // 답변 내용
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(AppRadius.small),
+                          border: Border.all(
+                            color: AppColors.pointBrown.withValues(alpha: 0.2),
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          favorite.answer,
+                          style: AppFonts.bodyMedium.copyWith(
+                            color: AppColors.pointDark,
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      // 액션 버튼들
+                      Wrap(
+                        alignment: WrapAlignment.end,
+                        spacing: AppSpacing.sm,
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              _copyToClipboard(favorite.answer);
+                            },
+                            icon: const Icon(Icons.copy, size: 16),
+                            label: const Text('복사'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.pointBrown,
+                              side: BorderSide(
+                                color: AppColors.pointBrown.withValues(alpha: 0.3),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.md,
+                                vertical: AppSpacing.sm,
+                              ),
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              _shareQA(favorite);
+                            },
+                            icon: const Icon(Icons.share, size: 16),
+                            label: const Text('공유'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.pointBrown,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.md,
+                                vertical: AppSpacing.sm,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -546,4 +731,15 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
       return '${dateTime.month}/${dateTime.day}';
     }
   }
+
+  String _getLatestActivityText(List<AiFavoriteQaEntity> favorites) {
+    if (favorites.isEmpty) return '';
+    
+    // 최신 즐겨찾기 찾기
+    final latest = favorites.reduce((current, next) => 
+        current.createdAt.isAfter(next.createdAt) ? current : next);
+    
+    return '最新: ${_formatTime(latest.createdAt)}';
+  }
+
 }

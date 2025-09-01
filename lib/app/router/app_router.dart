@@ -6,7 +6,7 @@ import 'routes/routes.dart';
 ///
 /// 이 클래스는 앱의 모든 라우팅을 관리합니다.
 /// 각 라우트 그룹은 별도의 파일로 분리되어 있습니다:
-/// - splash_shell_routes.dart: 로고 시퀀스 → 온보딩 Shell 라우트 (최우선)
+/// - splash_shell_routes.dart: 스플래시 시퀀스 → 온보딩 Shell 라우트 (최우선)
 /// - auth_routes.dart: 인증 관련 라우트 (로그인, 회원가입)
 /// - shell_routes.dart: 메인 앱 Shell 라우트 (하단 네비게이션)
 /// - standalone_routes.dart: 독립적인 전체화면 라우트
@@ -63,7 +63,7 @@ class AppRouter {
   /// GoRouter 인스턴스를 생성합니다.
   ///
   /// 라우터 우선순위:
-  /// 1. SplashShellRoutes: 로고 시퀀스 → 온보딩 (최우선, 스킵 불가)
+  /// 1. SplashShellRoutes: 스플래시 시퀀스 → 온보딩 (최우선, 스킵 불가)
   /// 2. AuthRoutes: 인증 관련 라우트 (로그인, 회원가입)
   /// 3. ShellRoutes: 메인 앱 Shell 라우트 (하단 네비게이션)
   /// 4. StandaloneRoutes: 독립적인 전체화면 라우트
@@ -71,10 +71,10 @@ class AppRouter {
   /// [return] 구성된 GoRouter 인스턴스
   static GoRouter createRouter() {
     return GoRouter(
-      initialLocation: logoRoute,
+      initialLocation: splashRoute, // 스플래시 시퀀스로 시작
       debugLogDiagnostics: true,
       routes: [
-        // 1. Splash Shell 라우트 (로고 시퀀스 → 온보딩) - 최우선
+        // 1. Splash Shell 라우트 (스플래시 시퀀스 → 온보딩) - 최우선
         SplashShellRoutes.splashShellRoute,
 
         // 2. 인증 관련 라우트 (로그인, 회원가입)
