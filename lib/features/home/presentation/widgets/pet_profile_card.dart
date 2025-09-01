@@ -6,29 +6,41 @@ import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../../../pet_registor/data/providers/pet_providers.dart';
 
-class PetProfileCard extends ConsumerWidget {
+class PetProfileCard extends ConsumerStatefulWidget {
   const PetProfileCard({
     super.key,
-    this.petName = 'ペコ',
-    this.petImagePath = 'assets/images/dogs/poodle.jpg',
     this.activities = const ['○ 今日は散歩記録がありません', '○ 昼ごはんを食べました'],
   });
 
-  final String petName;
-  final String petImagePath;
   final List<String> activities;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PetProfileCard> createState() => _PetProfileCardState();
+}
+
+class _PetProfileCardState extends ConsumerState<PetProfileCard> {
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // Pet 리스트 관리 - Mockito를 사용한 실제 Pet provider에서 로드
     final petsAsync = ref.watch(petsNotifierProvider);
 
     return petsAsync.when(
       data: (petList) {
-        final currentPet = petList.isNotEmpty ? petList[0] : null;
-        final hasMultiplePets = petList.length > 1;
-
-        if (currentPet == null) {
+        if (petList.isEmpty) {
           return GestureDetector(
             onTap: () => context.push('/pet/register'),
             child: WhiteCard.panel(
@@ -50,100 +62,124 @@ class PetProfileCard extends ConsumerWidget {
           );
         }
 
-        return GestureDetector(
-          onTap: () => context.push(AppRouter.petProfileRoute),
-          child: WhiteCard.panel(
-            child: Row(
-              children: [
-                // 펫 아바타
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.pointBrown.withValues(alpha: 0.1),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Image.asset(
-                      currentPet.imagePath ?? 'assets/images/pets/default.jpg',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(
-                          Icons.pets,
-                          color: AppColors.pointBrown,
-                          size: 30,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
+        final hasMultiplePets = petList.length > 1;
 
-                // 펫 정보
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+        return WhiteCard.panel(
+          child: Column(
+            children: [
+              // ペット表示部分 (スワイプ対応)
+              SizedBox(
+                height: 100, // 固定 높이 설정
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    // 페이지 변경 시 추가 로직이 필요한 경우 여기에 구현
+                  },
+                  itemCount: petList.length,
+                  itemBuilder: (context, index) {
+                    final currentPet = petList[index];
+                    return GestureDetector(
+                      onTap: () => context.push(AppRouter.petProfileRoute),
+                      child: Row(
                         children: [
-                          Text(
-                            currentPet.name,
-                            style: AppFonts.fredoka(
-                              fontSize: AppFonts.lg,
-                              color: AppColors.pointDark,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
+                          // 펫 아바타
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.sm,
-                              vertical: AppSpacing.xs,
-                            ),
+                            width: 60,
+                            height: 60,
                             decoration: BoxDecoration(
+                              shape: BoxShape.circle,
                               color: AppColors.pointBrown.withValues(
-                                alpha: 0.2,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                AppRadius.small,
+                                alpha: 0.1,
                               ),
                             ),
-                            child: Text(
-                              currentPet.breed ?? currentPet.typeName,
-                              style: AppFonts.bodySmall.copyWith(
-                                color: AppColors.pointDark,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 10,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: Image.asset(
+                                currentPet.imagePath ??
+                                    'assets/images/pets/default.jpg',
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(
+                                    Icons.pets,
+                                    color: AppColors.pointBrown,
+                                    size: 30,
+                                  );
+                                },
                               ),
                             ),
                           ),
+                          const SizedBox(width: AppSpacing.md),
+
+                          // 펫 정보
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      currentPet.name,
+                                      style: AppFonts.fredoka(
+                                        fontSize: AppFonts.lg,
+                                        color: AppColors.pointDark,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppSpacing.sm),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: AppSpacing.sm,
+                                        vertical: AppSpacing.xs,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.pointBrown.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          AppRadius.small,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        currentPet.breed ?? currentPet.typeName,
+                                        style: AppFonts.bodySmall.copyWith(
+                                          color: AppColors.pointDark,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: AppSpacing.xs),
+                                ...widget.activities.map(
+                                  (activity) => Text(
+                                    activity,
+                                    style: AppFonts.bodySmall.copyWith(
+                                      color: AppColors.pointGray,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // 화살표 아이콘 (펫이 2마리 이상일 때 표시)
+                          if (hasMultiplePets) ...[
+                            const SizedBox(width: 8),
+                            const Icon(
+                              Icons.arrow_forward_ios,
+                              color: AppColors.pointGray,
+                              size: 16,
+                            ),
+                          ],
                         ],
                       ),
-                      const SizedBox(height: AppSpacing.xs),
-                      ...activities.map(
-                        (activity) => Text(
-                          activity,
-                          style: AppFonts.bodySmall.copyWith(
-                            color: AppColors.pointGray,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
-
-                // 화살표 아이콘 (펫이 2마리 이상일 때 표시)
-                if (hasMultiplePets) ...[
-                  const SizedBox(width: 8),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    color: AppColors.pointGray,
-                    size: 16,
-                  ),
-                ],
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
