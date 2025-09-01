@@ -117,14 +117,7 @@ class AiMockDataService {
 
   /// 채팅 히스토리 Mock 데이터 생성
   static List<Map<String, dynamic>> getChatHistoryMockData() {
-    return [
-      {
-        'id': '1',
-        'content': initialMessage,
-        'type': 'assistant',
-        'timestamp': DateTime.now().subtract(const Duration(minutes: 5)).toIso8601String(),
-      }
-    ];
+    return [];
   }
 
   /// AI 응답 Mock 데이터 생성
@@ -150,36 +143,17 @@ class AiMockDataService {
     };
   }
 
-  /// AI 채팅 기록 목 데이터
+  /// AI 채팅 기록 목 데이터 (빈 상태로 시작)
   static List<AiMessageEntity> getChatHistory() {
-    return [
-      AiMessageEntity(
-        id: '1',
-        content: initialMessage,
-        type: MessageType.assistant,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 10)),
-      ),
-      AiMessageEntity(
-        id: '2',
-        content: 'Max가 식사를 거부하고 있어요. 어떻게 해야 할까요?',
-        type: MessageType.user,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 8)),
-      ),
-      AiMessageEntity(
-        id: '3',
-        content: 'Max의 식사 거부는 여러 원인이 있을 수 있습니다. 먼저 건강 상태를 확인해보시고, 사료를 바꿔보거나 소량으로 나누어 주는 것을 시도해보세요.',
-        type: MessageType.assistant,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 7)),
-      ),
-    ];
+    return [];
   }
 
-  /// AI 채팅 세션 목 데이터
+  /// AI 채팅 세션 목 데이터 (일본어)
   static List<AiChatSessionEntity> getChatSessions() {
     return [
       AiChatSessionEntity(
         id: '1',
-        title: 'Max 식사 문제 상담',
+        title: 'ゆうくん食事問題相談',
         messages: getChatHistory(),
         createdAt: DateTime.now().subtract(const Duration(hours: 1)),
         updatedAt: DateTime.now().subtract(const Duration(minutes: 7)),
@@ -188,21 +162,30 @@ class AiMockDataService {
     ];
   }
 
-  /// AI 추천 질문 목 데이터 (간단한 형태)
+  /// AI 추천 질문 목 데이터 (일본語)
   static List<Map<String, dynamic>> getSuggestedQuestions() {
     return [
       {
         'id': '1',
-        'question': '반려동물이 식사를 거부할 때는 어떻게 해야 하나요?',
+        'question': 'ペットが食事を拒否する時はどうしたらいいですか？',
         'category': 'health',
       },
       {
         'id': '2',
-        'question': '산책 중 반려동물이 다른 강아지를 무서워해요',
+        'question': '散歩中にペットが他の犬を怖がります',
         'category': 'behavior',
       },
-      {'id': '3', 'question': '고양이의 적정 사료량은 얼마인가요?', 'category': 'feeding'},
+      {'id': '3', 'question': '猫の適正なフード量はどれくらいですか？', 'category': 'feeding'},
     ];
+  }
+
+  /// 즐겨찾기 QA Mock 데이터 생성 (하위 호환성을 위해 유지)
+  /// 
+  /// @deprecated Riverpod aiFavoriteMockDataProvider를 사용하세요.
+  static List<AiFavoriteQaEntity> getFavoriteQAsMockData() {
+    // 하위 호환성을 위해 빈 리스트 반환
+    // 실제로는 aiFavoriteMockDataProvider를 사용하세요
+    return [];
   }
 
   /// API 지연 시뮬레이션
