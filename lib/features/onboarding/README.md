@@ -76,7 +76,7 @@ lib/features/onboarding/
 ```txt
 onboarding/
 ├── onboarding.dart                    # 기능 export 파일
-├── README.md                          # 이 파일
+├── README.md                          # 이 문서
 ├── data/
 │   ├── data.dart                      # data 레이어 배럴
 │   ├── onboarding_providers.dart      # Riverpod 프로바이더
@@ -424,7 +424,7 @@ lib/features/onboarding/
 ```txt
 onboarding/
 ├── onboarding.dart                    # 機能exportファイル
-├── README.md                          # このファイル
+├── README.md                          # この文書
 ├── data/
 │   ├── data.dart                      # dataレイヤーバレル
 │   ├── onboarding_providers.dart      # Riverpodプロバイダー

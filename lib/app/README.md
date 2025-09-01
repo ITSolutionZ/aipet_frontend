@@ -1,4 +1,4 @@
-# App Module Architecture
+# App Module Architecture {#app-module-architecture}
 
 [한국어](#app-module-architecture) | [日本語](#app-module-architecture-1)
 
@@ -8,7 +8,7 @@
 
 ## 구조 개요
 
-```
+```txt
 lib/app/
 ├── [README.md](README.md)                           # 이 문서
 ├── [app.dart](app.dart)                           # 모듈 export 파일
@@ -18,22 +18,22 @@ lib/app/
 │   └── [app_config.dart](config/app_config.dart)          # 환경별 설정 클래스
 ├── [controllers/](controllers/)                       # 앱 레벨 컨트롤러들
 │   ├── [controllers.dart](controllers/controllers.dart)               # Export 파일
-│   └── [base_controller.dart](controllers/base_controller.dart)          # 기본 컨트롤러 클래스
+│   └── [base_controller.dart](controllers/base_controller.dart)          # 기본 컨트롤러
 ├── [providers/](providers/)                        # 앱 레벨 Riverpod 프로바이더들
 │   ├── [providers.dart](providers/providers.dart)               # Provider 배럴 파일
-│   ├── [app_initialization_provider.dart](providers/app_initialization_provider.dart)  # 앱 초기화 상태 관리
-│   ├── [app_state_provider.dart](providers/app_state_provider.dart)       # 글로벌 앱 상태 관리
+│   ├── [app_initialization_provider.dart](providers/app_initialization_provider.dart)
+│   ├── [app_state_provider.dart](providers/app_state_provider.dart)       # 상태
 │   └── [router_provider.dart](providers/router_provider.dart)          # 라우터 프로바이더
 └── [router/](router/)                           # 라우팅 시스템
     ├── [app_router.dart](router/app_router.dart)               # 메인 라우터 클래스
     └── [routes/](router/routes/)                       # 모듈별 라우트 정의
         ├── [routes.dart](router/routes/routes.dart)               # Export 파일
-        ├── [route_constants.dart](router/routes/route_constants.dart)      # 라우트 상수들
-        ├── [splash_shell_routes.dart](router/routes/splash_shell_routes.dart)  # 로고 시퀀스 라우트
-        ├── [auth_routes.dart](router/routes/auth_routes.dart)          # 인증 관련 라우트
-        ├── [shell_routes.dart](router/routes/shell_routes.dart)         # 메인 앱 Shell 라우트
-        ├── [pet_routes.dart](router/routes/pet_routes.dart)            # 펫 관련 라우트
-        └── [standalone_routes.dart](router/routes/standalone_routes.dart)    # 독립 전체화면 라우트
+        ├── [route_constants.dart](router/routes/route_constants.dart)      # 상수
+        ├── [splash_shell_routes.dart](router/routes/splash_shell_routes.dart)
+        ├── [auth_routes.dart](router/routes/auth_routes.dart)          # 인증
+        ├── [shell_routes.dart](router/routes/shell_routes.dart)         # 메인
+        ├── [pet_routes.dart](router/routes/pet_routes.dart)            # 펫
+        └── [standalone_routes.dart](router/routes/standalone_routes.dart)
 ```
 
 ## 주요 구성 요소
@@ -41,9 +41,15 @@ lib/app/
 ### 1. Bootstrap ([bootstrap.dart](bootstrap.dart))
 
 - **역할**: 앱의 진입점이자 최상위 위젯 관리
+- **주요 클래스**:
+  - **FirebaseManager**: Firebase 초기화 상태 관리 및 안전성 검사
+  - **AppBootstrap**: 앱 초기화 및 설정 관리
+  - **AIPetApp**: 메인 앱 위젯 (ConsumerStatefulWidget)
 - **기능**:
+  - Firebase 초기화 및 에러 처리
+  - 환경별 설정 초기화 (.env 파일 로드)
   - 앱 초기화 트리거
-  - 초기화 상태에 따른 UI 분기
+  - 초기화 상태에 따른 UI 분기 (로딩/에러/메인)
   - 메인 MaterialApp.router 설정
   - 테마 및 라우터 설정
 
@@ -51,22 +57,27 @@ lib/app/
 
 - **역할**: 환경별 설정값들을 중앙에서 관리
 - **지원 환경**:
-  - **Development**: 개발 환경 (디버그 모드 활성화)
+  - **Development**: 개발 환경 (디버그 모드 활성화, 상세 로깅)
   - **Staging**: 스테이징 환경 (프로덕션과 유사하지만 디버깅 기능 일부 활성화)
   - **Production**: 프로덕션 환경 (성능과 보안 최우선)
+- **주요 설정**:
+  - API 설정 (URL, 타임아웃, 재시도 횟수)
+  - 서비스 활성화 설정 (로깅, 분석, 크래시 리포팅)
+  - 성능 설정 (이미지 캐시, 백그라운드 동기화)
+  - 외부 API 키 (LINE, OpenAI, 날씨, Google Maps)
 
 ### 3. App Initialization Provider ([providers/app_initialization_provider.dart](providers/app_initialization_provider.dart))
 
 - **역할**: 앱 시작 시 필요한 모든 초기화 작업 관리
 - **초기화 단계**:
-  1. 기본 서비스 초기화 (에러 핸들러, 성능 모니터링 등)
-  2. 앱 설정 로드 (테마, 언어, 알림 설정 등)
-  3. 사용자 인증 상태 확인
-  4. 온보딩 완료 상태 확인
-  5. 네트워크 연결 확인
-  6. 앱 버전 확인
-  7. 필수 데이터 로드
-  8. 리소스 초기화 (폰트, 이미지 등)
+  1. **기본 서비스 초기화**: 에러 핸들러, 성능 모니터링, 사용자 경험, 알림 서비스
+  2. **앱 설정 로드**: 환경별 설정 및 사용자 설정
+  3. **사용자 인증 상태 확인**: Firebase Auth 상태 및 토큰 관리
+  4. **온보딩 완료 상태 확인**: 사용자 온보딩 진행 상태
+  5. **네트워크 연결 확인**: Connectivity Plus를 통한 연결 상태 확인
+  6. **앱 버전 확인**: Package Info Plus를 통한 버전 정보
+  7. **필수 데이터 로드**: 앱 실행에 필요한 기본 데이터
+  8. **리소스 초기화**: 폰트, 이미지, 로컬 저장소 등
 
 ### 4. Base Controller ([controllers/base_controller.dart](controllers/base_controller.dart))
 
@@ -75,11 +86,12 @@ lib/app/
   - 메모리 리크 방지 (StreamSubscription, Timer, ChangeNotifier 자동 정리)
   - 에러 처리 및 사용자 친화적 메시지 생성
   - 안전한 비동기 작업 실행 (타임아웃, 재시도 로직 포함)
+  - dispose() 메서드에서 리소스 정리
 
 ### 5. Router System ([router/](router/))
 
 - **모듈형 라우터 아키텍처**:
-  - **[SplashShellRoutes](router/routes/splash_shell_routes.dart)**: 로고 시퀀스 → 온보딩 (최우선, 스킵 불가)
+  - **[SplashShellRoutes](router/routes/splash_shell_routes.dart)**: 로고 → 온보딩 (최우선)
   - **[AuthRoutes](router/routes/auth_routes.dart)**: 로그인, 회원가입 등 인증 관련
   - **[ShellRoutes](router/routes/shell_routes.dart)**: 하단 네비게이션이 있는 메인 앱 화면들
   - **[PetRoutes](router/routes/pet_routes.dart)**: 펫 등록, 프로필, 건강 관련 라우트
@@ -93,6 +105,31 @@ lib/app/
 4. **Pet Routes**: 펫 등록 플로우, 펫 프로필 등 - 독립 화면
 5. **Standalone**: 기타 독립 전체화면 라우트
 
+## Firebase 통합
+
+### FirebaseManager 클래스
+
+```dart
+// Firebase 초기화 상태 관리
+class FirebaseManager {
+  static bool _isInitialized = false;
+  static String? _initializationError;
+
+  // 안전한 초기화
+  static Future<bool> initialize() async { ... }
+
+  // 사용 전 안전성 검사
+  static void ensureInitialized() { ... }
+}
+```
+
+### 주요 기능
+
+- **자동 초기화**: 앱 시작 시 Firebase 자동 초기화
+- **에러 처리**: 초기화 실패 시 앱 계속 실행 (Firebase 기능만 비활성화)
+- **상태 관리**: 전역 Firebase 초기화 상태 추적
+- **안전성**: Firebase 서비스 사용 전 초기화 상태 확인
+
 ## 개선 사항
 
 ### ✅ 완료된 개선사항
@@ -105,6 +142,8 @@ lib/app/
 6. **환경별 설정 관리**: 개발/스테이징/프로덕션 환경별 설정 분리
 7. **배럴 파일 구조**: Import 규칙 준수를 위한 배럴 파일 구현
 8. **문서화 개선**: 모든 클래스와 메서드에 상세한 한국어 문서화 주석 추가
+9. **Firebase 통합**: 안전한 Firebase 초기화 및 상태 관리
+10. **서비스 초기화**: 에러 핸들러, 성능 모니터링, 사용자 경험, 알림 서비스
 
 ### 🔄 추천 개선사항
 
@@ -191,12 +230,25 @@ if (config.isDebugMode) {
 }
 ```
 
+### 5. Firebase 사용
+
+```dart
+// Firebase 서비스 사용 전 안전성 검사
+FirebaseManager.ensureInitialized();
+
+// 초기화 상태 확인
+if (FirebaseManager.isInitialized) {
+  // Firebase 기능 사용
+}
+```
+
 ## 확장성 고려사항
 
 1. **모듈 추가**: 새로운 기능 모듈 추가 시 해당 라우트를 적절한 라우트 파일에 추가
 2. **미들웨어 확장**: 인증, 로깅, 분석 등 횡단 관심사 처리
 3. **환경별 설정**: 개발/스테이징/프로덕션 환경별 설정 분리 (✅ 완료)
 4. **성능 최적화**: 라우트별 지연 로딩 및 코드 분할 적용 가능
+5. **Firebase 확장**: 추가 Firebase 서비스 통합 (Cloud Firestore, Cloud Functions 등)
 
 이 구조는 확장 가능하고 유지보수가 용이하도록 설계되었으며, 팀 개발에 적합한 모듈형 아키텍처를 제공합니다.
 
@@ -208,13 +260,13 @@ if (config.isDebugMode) {
 
 ---
 
-# App Module Architecture
+## App Module Architecture {#app-module-architecture-1}
 
 アプリのコア構造と初期化ロジックを管理するモジュールです。
 
-## 構造概要
+### 構造概要
 
-```
+```txt
 lib/app/
 ├── [README.md](README.md)                           # このドキュメント
 ├── [app.dart](app.dart)                           # モジュール export ファイル
@@ -227,65 +279,77 @@ lib/app/
 │   └── [base_controller.dart](controllers/base_controller.dart)          # 基本コントローラークラス
 ├── [providers/](providers/)                        # アプリレベル Riverpod プロバイダー
 │   ├── [providers.dart](providers/providers.dart)               # Provider バレルファイル
-│   ├── [app_initialization_provider.dart](providers/app_initialization_provider.dart)  # アプリ初期化状態管理
-│   ├── [app_state_provider.dart](providers/app_state_provider.dart)       # グローバルアプリ状態管理
+│   ├── [app_initialization_provider.dart](providers/app_initialization_provider.dart)
+│   ├── [app_state_provider.dart](providers/app_state_provider.dart)       # 状態
 │   └── [router_provider.dart](providers/router_provider.dart)          # ルータープロバイダー
 └── [router/](router/)                           # ルーティングシステム
     ├── [app_router.dart](router/app_router.dart)               # メインルータークラス
     └── [routes/](router/routes/)                       # モジュール別ルート定義
         ├── [routes.dart](router/routes/routes.dart)               # Export ファイル
         ├── [route_constants.dart](router/routes/route_constants.dart)      # ルート定数
-        ├── [splash_shell_routes.dart](router/routes/splash_shell_routes.dart)  # ロゴシーケンスルート
-        ├── [auth_routes.dart](router/routes/auth_routes.dart)          # 認証関連ルート
-        ├── [shell_routes.dart](router/routes/shell_routes.dart)         # メインアプリ Shell ルート
-        ├── [pet_routes.dart](router/routes/pet_routes.dart)            # ペット関連ルート
-        └── [standalone_routes.dart](router/routes/standalone_routes.dart)    # 独立フルスクリーンルート
+        ├── [splash_shell_routes.dart](router/routes/splash_shell_routes.dart)
+        ├── [auth_routes.dart](router/routes/auth_routes.dart)          # 認証
+        ├── [shell_routes.dart](router/routes/shell_routes.dart)         # メイン
+        ├── [pet_routes.dart](router/routes/pet_routes.dart)            # ペット
+        └── [standalone_routes.dart](router/routes/standalone_routes.dart)
 ```
 
-## 主要構成要素
+### 主要構成要素
 
-### 1. Bootstrap ([bootstrap.dart](bootstrap.dart))
+#### 1. Bootstrap ([bootstrap.dart](bootstrap.dart)) {#bootstrap-japanese}
 
 - **役割**: アプリのエントリーポイントと最上位ウィジェット管理
+- **主要クラス**:
+  - **FirebaseManager**: Firebase 初期化状態管理と安全性チェック
+  - **AppBootstrap**: アプリ初期化と設定管理
+  - **AIPetApp**: メインアプリウィジェット (ConsumerStatefulWidget)
 - **機能**:
+  - Firebase 初期化とエラー処理
+  - 環境別設定初期化 (.env ファイル読み込み)
   - アプリ初期化トリガー
-  - 初期化状態に応じた UI 分岐
+  - 初期化状態に応じた UI 分岐 (ローディング/エラー/メイン)
   - メイン MaterialApp.router 設定
   - テーマとルーター設定
 
-### 2. App Configuration ([config/app_config.dart](config/app_config.dart))
+#### 2. App Configuration ([config/app_config.dart](config/app_config.dart)) {#app-configuration-japanese}
 
 - **役割**: 環境別設定値を中央で管理
 - **対応環境**:
-  - **Development**: 開発環境 (デバッグモード有効)
+  - **Development**: 開発環境 (デバッグモード有効、詳細ログ出力)
   - **Staging**: ステージング環境 (本番と類似だがデバッグ機能一部有効)
   - **Production**: 本番環境 (パフォーマンスとセキュリティ最優先)
+- **主要設定**:
+  - API 設定 (URL、タイムアウト、リトライ回数)
+  - サービス有効化設定 (ログ、分析、クラッシュレポート)
+  - パフォーマンス設定 (画像キャッシュ、バックグラウンド同期)
+  - 外部 API キー (LINE、OpenAI、天気、Google Maps)
 
-### 3. App Initialization Provider ([providers/app_initialization_provider.dart](providers/app_initialization_provider.dart))
+#### 3. App Initialization Provider ([providers/app_initialization_provider.dart](providers/app_initialization_provider.dart)) {#app-initialization-provider-japanese}
 
 - **役割**: アプリ起動時に必要な全ての初期化作業を管理
 - **初期化段階**:
-  1. 基本サービス初期化 (エラーハンドラー、パフォーマンス監視など)
-  2. アプリ設定読み込み (テーマ、言語、通知設定など)
-  3. ユーザー認証状態確認
-  4. オンボーディング完了状態確認
-  5. ネットワーク接続確認
-  6. アプリバージョン確認
-  7. 必須データ読み込み
-  8. リソース初期化 (フォント、画像など)
+  1. **基本サービス初期化**: エラーハンドラー、パフォーマンス監視、ユーザー体験、通知サービス
+  2. **アプリ設定読み込み**: 環境別設定とユーザー設定
+  3. **ユーザー認証状態確認**: Firebase Auth 状態とトークン管理
+  4. **オンボーディング完了状態確認**: ユーザーオンボーディング進行状態
+  5. **ネットワーク接続確認**: Connectivity Plus による接続状態確認
+  6. **アプリバージョン確認**: Package Info Plus によるバージョン情報
+  7. **必須データ読み込み**: アプリ実行に必要な基本データ
+  8. **リソース初期化**: フォント、画像、ローカルストレージなど
 
-### 4. Base Controller ([controllers/base_controller.dart](controllers/base_controller.dart))
+#### 4. Base Controller ([controllers/base_controller.dart](controllers/base_controller.dart)) {#base-controller-japanese}
 
 - **役割**: 全ての Controller の基本クラス
 - **機能**:
   - メモリリーク防止 (StreamSubscription、Timer、ChangeNotifier 自動クリーンアップ)
   - エラー処理とユーザーフレンドリーなメッセージ生成
   - 安全な非同期作業実行 (タイムアウト、リトライロジック含む)
+  - dispose() メソッドでリソースクリーンアップ
 
-### 5. Router System ([router/](router/))
+#### 5. Router System ([router/](router/)) {#router-system-japanese}
 
 - **モジュール型ルーターアーキテクチャ**:
-  - **[SplashShellRoutes](router/routes/splash_shell_routes.dart)**: ロゴシーケンス → オンボーディング (最優先、スキップ不可)
+  - **[SplashShellRoutes](router/routes/splash_shell_routes.dart)**: ロゴ → オンボーディング
   - **[AuthRoutes](router/routes/auth_routes.dart)**: ログイン、サインアップなど認証関連
   - **[ShellRoutes](router/routes/shell_routes.dart)**: 下部ナビゲーションがあるメインアプリ画面
   - **[PetRoutes](router/routes/pet_routes.dart)**: ペット登録、プロフィール、健康関連ルート
@@ -299,9 +363,34 @@ lib/app/
 4. **Pet Routes**: ペット登録フロー、ペットプロフィールなど - 独立画面
 5. **Standalone**: その他の独立フルスクリーンルート
 
-## 改善事項
+### Firebase 統合
 
-### ✅ 完了した改善事項
+#### FirebaseManager クラス
+
+```dart
+// Firebase初期化状態管理
+class FirebaseManager {
+  static bool _isInitialized = false;
+  static String? _initializationError;
+
+  // 安全な初期化
+  static Future<bool> initialize() async { ... }
+
+  // 使用前安全性チェック
+  static void ensureInitialized() { ... }
+}
+```
+
+#### 主要機能
+
+- **自動初期化**: アプリ起動時 Firebase 自動初期化
+- **エラー処理**: 初期化失敗時アプリ継続実行 (Firebase 機能のみ無効化)
+- **状態管理**: グローバル Firebase 初期化状態追跡
+- **安全性**: Firebase サービス使用前初期化状態確認
+
+### 改善事項
+
+#### ✅ 完了した改善事項
 
 1. **モジュール型ルーター構造**: 関心事別にルート分離
 2. **Shell Router 活用**: 下部ナビゲーション体系的管理
@@ -311,10 +400,12 @@ lib/app/
 6. **環境別設定管理**: 開発/ステージング/本番環境別設定分離
 7. **バレルファイル構造**: Import 規則遵守のためのバレルファイル実装
 8. **ドキュメント化改善**: 全てのクラスとメソッドに詳細な韓国語ドキュメント化コメント追加
+9. **Firebase 統合**: 安全な Firebase 初期化と状態管理
+10. **サービス初期化**: エラーハンドラー、パフォーマンス監視、ユーザー体験、通知サービス
 
-### 🔄 推奨改善事項
+#### 🔄 推奨改善事項
 
-#### 1. 依存性注入システム
+##### 1. 依存性注入システム
 
 ```dart
 // lib/app/di/
@@ -323,7 +414,7 @@ lib/app/
 └── module_registrar.dart    # モジュール別依存性登録
 ```
 
-#### 2. ミドルウェアシステム
+##### 2. ミドルウェアシステム
 
 ```dart
 // lib/app/middleware/
@@ -332,7 +423,7 @@ lib/app/
 └── analytics_middleware.dart # 分析ミドルウェア
 ```
 
-#### 3. アプリライフサイクル管理
+##### 3. アプリライフサイクル管理
 
 ```dart
 // lib/app/lifecycle/
@@ -340,9 +431,9 @@ lib/app/
 └── background_task_manager.dart # バックグラウンド作業管理
 ```
 
-## ベストプラクティス
+### ベストプラクティス
 
-### 1. ルーター使用方法
+#### 1. ルーター使用方法
 
 ```dart
 // ルート定数使用
@@ -355,7 +446,7 @@ context.go('/home/pet-profile');
 context.go('/scheduling/feeding-schedule');
 ```
 
-### 2. 初期化状態活用
+#### 2. 初期化状態活用
 
 ```dart
 // 初期化状態購読
@@ -372,7 +463,7 @@ if (!initState.isOnboardingCompleted) {
 }
 ```
 
-### 3. エラー処理
+#### 3. エラー処理
 
 ```dart
 // 初期化エラー処理
@@ -382,7 +473,7 @@ if (initState.error != null) {
 }
 ```
 
-### 4. 環境別設定使用
+#### 4. 環境別設定使用
 
 ```dart
 // 現在の環境設定取得
@@ -397,11 +488,24 @@ if (config.isDebugMode) {
 }
 ```
 
-## 拡張性考慮事項
+#### 5. Firebase 使用
+
+```dart
+// Firebaseサービス使用前安全性チェック
+FirebaseManager.ensureInitialized();
+
+// 初期化状態確認
+if (FirebaseManager.isInitialized) {
+  // Firebase機能使用
+}
+```
+
+### 拡張性考慮事項
 
 1. **モジュール追加**: 新しい機能モジュール追加時に該当ルートを適切なルートファイルに追加
 2. **ミドルウェア拡張**: 認証、ログ、分析など横断的関心事処理
 3. **環境別設定**: 開発/ステージング/本番環境別設定分離 (✅ 完了)
 4. **パフォーマンス最適化**: ルート別遅延読み込みとコード分割適用可能
+5. **Firebase 拡張**: 追加 Firebase サービス統合 (Cloud Firestore、Cloud Functions など)
 
 この構造は拡張可能で保守性が高く設計されており、チーム開発に適したモジュール型アーキテクチャを提供します。
