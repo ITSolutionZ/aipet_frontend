@@ -44,9 +44,7 @@ void main() {
         // Arrange & Act
         await tester.pumpWidget(
           const ProviderScope(
-            child: MaterialApp(
-              home: Scaffold(body: PetProfileCard(petName: '커스텀 펫')),
-            ),
+            child: MaterialApp(home: Scaffold(body: PetProfileCard())),
           ),
         );
         await tester.pumpAndSettle();
@@ -80,11 +78,7 @@ void main() {
         // Arrange & Act
         await tester.pumpWidget(
           const ProviderScope(
-            child: MaterialApp(
-              home: Scaffold(
-                body: PetProfileCard(petImagePath: 'assets/images/custom.jpg'),
-              ),
-            ),
+            child: MaterialApp(home: Scaffold(body: PetProfileCard())),
           ),
         );
         await tester.pumpAndSettle();
@@ -156,11 +150,7 @@ void main() {
         // Arrange & Act
         await tester.pumpWidget(
           const ProviderScope(
-            child: MaterialApp(
-              home: Scaffold(
-                body: PetProfileCard(petImagePath: 'invalid/path/image.jpg'),
-              ),
-            ),
+            child: MaterialApp(home: Scaffold(body: PetProfileCard())),
           ),
         );
         await tester.pumpAndSettle();

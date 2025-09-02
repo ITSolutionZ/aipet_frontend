@@ -25,7 +25,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     // 컨트롤러를 통해 탭 컨트롤러 초기화
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
-          .read(petProfileControllerProvider.notifier)
+          .read(petProfileNotifierProvider.notifier)
           .initializeTabController(this);
     });
   }
@@ -33,7 +33,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
   @override
   void dispose() {
     // 컨트롤러를 통해 탭 컨트롤러 정리
-    ref.read(petProfileControllerProvider.notifier).disposeTabController();
+    ref.read(petProfileNotifierProvider.notifier).disposeTabController();
     super.dispose();
   }
 
@@ -69,7 +69,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
                 const SizedBox(width: AppSpacing.xs),
                 Consumer(
                   builder: (context, ref, child) {
-                    final state = ref.watch(petProfileControllerProvider);
+                    final state = ref.watch(petProfileNotifierProvider);
                     return Text(
                       state.selectedPetName,
                       style: AppFonts.bodyMedium.copyWith(color: Colors.white),
@@ -93,7 +93,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
             color: AppColors.pointBrown,
             child: Consumer(
               builder: (context, ref, child) {
-                final state = ref.watch(petProfileControllerProvider);
+                final state = ref.watch(petProfileNotifierProvider);
                 return TabBar(
                   controller: state.tabController,
                   indicatorColor: Colors.yellow,
@@ -115,7 +115,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
           Expanded(
             child: Consumer(
               builder: (context, ref, child) {
-                final state = ref.watch(petProfileControllerProvider);
+                final state = ref.watch(petProfileNotifierProvider);
                 return TabBarView(
                   controller: state.tabController,
                   children: [

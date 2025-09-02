@@ -49,20 +49,63 @@ class WeatherData {
     final main = json['main'] as Map<String, dynamic>;
     final weather = (json['weather'] as List).first as Map<String, dynamic>;
     final wind = json['wind'] as Map<String, dynamic>? ?? {};
+    final weatherId = weather['id'] as int;
 
     return WeatherData(
       temperature: (main['temp'] as num).toDouble(),
       location: location,
-      weatherId: weather['id'] as int,
+      weatherId: weatherId,
       description: weather['description'] as String,
       feelsLike: (main['feels_like'] as num).toDouble(),
       humidity: main['humidity'] as int,
       windSpeed: (wind['speed'] as num?)?.toDouble() ?? 0.0,
       iconCode: weather['icon'] as String,
-      uvIndex: 0.0, // 기본 날씨 API에서는 UV 지수 제공하지 않음
+      uvIndex: _estimateUvIndex(weatherId), // 날씨 상황 기반 UV Index 추정
       visibility: json['visibility'] as int? ?? 10000,
       pressure: (main['pressure'] as num?)?.toDouble() ?? 1013.25,
     );
+  }
+
+  // 날씨 상황과 시간대를 고려한 UV Index 추정
+  static double _estimateUvIndex(int weatherId) {
+    final now = DateTime.now();
+    final hour = now.hour;
+
+    // 야간 (18시~6시): UV Index 0
+    if (hour < 6 || hour >= 18) {
+      return 0.0;
+    }
+
+    // 낮 시간대 기본 UV Index 계산 (위도 35.6도 도쿄 기준)
+    double baseUv;
+    if (hour >= 11 && hour <= 13) {
+      baseUv = 8.0; // 정오 시간대 최고
+    } else if (hour >= 10 && hour <= 14) {
+      baseUv = 6.0; // 오전/오후
+    } else if (hour >= 9 && hour <= 15) {
+      baseUv = 4.0; // 이른 오전/늦은 오후
+    } else {
+      baseUv = 2.0; // 아침/저녁
+    }
+
+    // 날씨 상황에 따른 UV Index 보정
+    if (weatherId >= 200 && weatherId < 300) {
+      return baseUv * 0.3; // 뇌우: 70% 감소
+    } else if (weatherId >= 300 && weatherId < 600) {
+      return baseUv * 0.4; // 비: 60% 감소
+    } else if (weatherId >= 600 && weatherId < 700) {
+      return baseUv * 0.2; // 눈: 80% 감소
+    } else if (weatherId >= 700 && weatherId < 800) {
+      return baseUv * 0.5; // 안개/먼지: 50% 감소
+    } else if (weatherId == 800) {
+      return baseUv; // 맑음: 그대로
+    } else if (weatherId >= 801 && weatherId <= 802) {
+      return baseUv * 0.8; // 약간 흐림: 20% 감소
+    } else if (weatherId >= 803 && weatherId <= 804) {
+      return baseUv * 0.6; // 많이 흐림: 40% 감소
+    }
+
+    return baseUv * 0.7; // 기본값
   }
 
   Map<String, dynamic> toJson() => {

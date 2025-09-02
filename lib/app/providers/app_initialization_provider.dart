@@ -204,7 +204,7 @@ class AppInitialization extends _$AppInitialization {
 
       // 온보딩 상태 로드 및 초기화
       final onboardingStateNotifier = ref.read(
-        onboardingStateNotifierProvider.notifier,
+        onboardingNotifierProvider.notifier,
       );
       final savedState = await onboardingRepository.loadOnboardingState();
       onboardingStateNotifier.state = savedState;

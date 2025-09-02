@@ -171,7 +171,15 @@ class ShellRoutes {
       GoRoute(
         path: RouteConstants.walkRoute,
         name: 'walk',
-        builder: (context, state) => const WalkListScreen(),
+        builder: (context, state) =>
+            const WalkListScreen(showBackButton: false),
+      ),
+
+      // 홈에서 산책 카드로 이동하는 라우트
+      GoRoute(
+        path: RouteConstants.walkFromHomeRoute,
+        name: 'walk-from-home',
+        builder: (context, state) => const WalkListScreen(showBackButton: true),
       ),
 
       // 캘린더 탭

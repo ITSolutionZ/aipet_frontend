@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// 앱 설정 관리 클래스
 ///
-/// 환경별 설정값들을 중앙에서 관리하고,
+/// 환경별 설정값들과 환경 변수를 중앙에서 관리하고,
 /// 런타임에 적절한 설정을 제공합니다.
 ///
 /// 개발, 스테이징, 프로덕션 환경별로 다른 설정을 제공하며,
@@ -71,6 +72,61 @@ abstract class AppConfig {
   /// Google Cloud Map Platform API 키
   String get googleMapsApiKey;
 
+  /// 환경 변수 로드 확인
+  bool get isEnvLoaded => dotenv.isInitialized;
+
+  /// 환경 변수 초기화
+  Future<void> loadEnv() async {
+    await dotenv.load();
+  }
+
+  /// 모든 필수 API 키가 설정되었는지 확인
+  bool get areApiKeysConfigured {
+    return googleMapsApiKey.isNotEmpty &&
+        openaiApiKey.isNotEmpty &&
+        weatherApiKey.isNotEmpty &&
+        lineChannelId.isNotEmpty;
+  }
+
+  /// API 키 설정 상태 로그 출력 (디버그용)
+  void logApiKeyStatus() {
+    if (isEnvLoaded) {
+      debugPrint('🔑 API Key Status:');
+      debugPrint('  Google Maps: ${googleMapsApiKey.isNotEmpty ? '✅' : '❌'}');
+      debugPrint('  OpenAI: ${openaiApiKey.isNotEmpty ? '✅' : '❌'}');
+      debugPrint('  Weather: ${weatherApiKey.isNotEmpty ? '✅' : '❌'}');
+      debugPrint('  LINE: ${lineChannelId.isNotEmpty ? '✅' : '❌'}');
+
+      // Google Maps API 키 특별 검사
+      if (googleMapsApiKey.isNotEmpty) {
+        debugPrint(
+          '  📍 Google Maps API Key: ${googleMapsApiKey.substring(0, 10)}...',
+        );
+      }
+    } else {
+      debugPrint('❌ Environment variables not loaded');
+    }
+  }
+
+  /// 특정 API 키가 유효한지 확인
+  bool isApiKeyValid(String apiKey, String serviceName) {
+    if (apiKey.isEmpty) {
+      debugPrint('❌ $serviceName API 키가 설정되지 않았습니다.');
+      return false;
+    }
+
+    if (apiKey.length < 10) {
+      debugPrint('❌ $serviceName API 키가 너무 짧습니다.');
+      return false;
+    }
+
+    return true;
+  }
+
+  /// Google Maps API 키 유효성 검사
+  bool get isGoogleMapsApiKeyValid =>
+      isApiKeyValid(googleMapsApiKey, 'Google Maps');
+
   /// 현재 설정된 앱 설정 인스턴스를 반환합니다.
   static AppConfig get current => _current;
   static AppConfig _current = DevelopmentConfig();
@@ -107,7 +163,7 @@ class DevelopmentConfig extends AppConfig {
   bool get enableCrashlytics => false;
 
   @override
-  int get apiTimeoutMs => 10000;
+  int get apiTimeoutMs => 30000;
 
   @override
   int get maxImageCacheSizeMB => 100;
@@ -117,75 +173,6 @@ class DevelopmentConfig extends AppConfig {
 
   @override
   int get versionCheckIntervalHours => 24;
-
-  @override
-  bool get defaultNotificationEnabled => true;
-
-  @override
-  double get locationAccuracyThreshold => 10.0;
-
-  @override
-  int get backgroundSyncIntervalMinutes => 30;
-
-  @override
-  int get defaultAnimationDurationMs => 300;
-
-  @override
-  int get networkRetryCount => 3;
-
-  @override
-  int get databaseVersion => 1;
-
-  @override
-  String get lineChannelId => dotenv.env['LINE_CHANNEL_ID'] ?? '';
-
-  @override
-  String get openaiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
-
-  @override
-  String get openaiModel => dotenv.env['OPENAI_MODEL'] ?? 'gpt-3.5-turbo';
-
-  @override
-  String get weatherApiKey => dotenv.env['WEATHER_API_KEY'] ?? '';
-
-  @override
-  String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
-}
-
-/// 스테이징 환경 설정
-///
-/// 스테이징 환경에서 사용되는 설정값들을 정의합니다.
-/// 프로덕션과 유사하지만 디버깅 기능이 일부 활성화됩니다.
-class StagingConfig extends AppConfig {
-  @override
-  String get apiBaseUrl => 'https://staging-api.aipet.com';
-
-  @override
-  String get environment => 'staging';
-
-  @override
-  bool get isDebugMode => true;
-
-  @override
-  bool get enableLogging => true;
-
-  @override
-  bool get enableAnalytics => true;
-
-  @override
-  bool get enableCrashlytics => true;
-
-  @override
-  int get apiTimeoutMs => 15000;
-
-  @override
-  int get maxImageCacheSizeMB => 150;
-
-  @override
-  int get offlineDataRetentionDays => 14;
-
-  @override
-  int get versionCheckIntervalHours => 12;
 
   @override
   bool get defaultNotificationEnabled => true;
@@ -212,7 +199,76 @@ class StagingConfig extends AppConfig {
   String get openaiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
 
   @override
-  String get openaiModel => dotenv.env['OPENAI_MODEL'] ?? 'gpt-3.5-turbo';
+  String get openaiModel => 'gpt-3.5-turbo';
+
+  @override
+  String get weatherApiKey => dotenv.env['WEATHER_API_KEY'] ?? '';
+
+  @override
+  String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
+}
+
+/// 스테이징 환경 설정
+///
+/// 스테이징 환경에서 사용되는 설정값들을 정의합니다.
+/// 프로덕션과 유사하지만 디버깅이 가능합니다.
+class StagingConfig extends AppConfig {
+  @override
+  String get apiBaseUrl => 'https://staging-api.aipet.com';
+
+  @override
+  String get environment => 'staging';
+
+  @override
+  bool get isDebugMode => false;
+
+  @override
+  bool get enableLogging => true;
+
+  @override
+  bool get enableAnalytics => true;
+
+  @override
+  bool get enableCrashlytics => false;
+
+  @override
+  int get apiTimeoutMs => 20000;
+
+  @override
+  int get maxImageCacheSizeMB => 200;
+
+  @override
+  int get offlineDataRetentionDays => 14;
+
+  @override
+  int get versionCheckIntervalHours => 12;
+
+  @override
+  bool get defaultNotificationEnabled => true;
+
+  @override
+  double get locationAccuracyThreshold => 5.0;
+
+  @override
+  int get backgroundSyncIntervalMinutes => 30;
+
+  @override
+  int get defaultAnimationDurationMs => 250;
+
+  @override
+  int get networkRetryCount => 2;
+
+  @override
+  int get databaseVersion => 1;
+
+  @override
+  String get lineChannelId => dotenv.env['LINE_CHANNEL_ID'] ?? '';
+
+  @override
+  String get openaiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
+
+  @override
+  String get openaiModel => 'gpt-4';
 
   @override
   String get weatherApiKey => dotenv.env['WEATHER_API_KEY'] ?? '';
@@ -224,7 +280,7 @@ class StagingConfig extends AppConfig {
 /// 프로덕션 환경 설정
 ///
 /// 프로덕션 환경에서 사용되는 설정값들을 정의합니다.
-/// 성능과 보안을 최우선으로 하는 설정이 적용됩니다.
+/// 최적화된 성능과 보안을 제공합니다.
 class ProductionConfig extends AppConfig {
   @override
   String get apiBaseUrl => 'https://api.aipet.com';
@@ -245,10 +301,10 @@ class ProductionConfig extends AppConfig {
   bool get enableCrashlytics => true;
 
   @override
-  int get apiTimeoutMs => 20000;
+  int get apiTimeoutMs => 15000;
 
   @override
-  int get maxImageCacheSizeMB => 200;
+  int get maxImageCacheSizeMB => 500;
 
   @override
   int get offlineDataRetentionDays => 30;
@@ -260,16 +316,16 @@ class ProductionConfig extends AppConfig {
   bool get defaultNotificationEnabled => true;
 
   @override
-  double get locationAccuracyThreshold => 5.0;
+  double get locationAccuracyThreshold => 3.0;
 
   @override
-  int get backgroundSyncIntervalMinutes => 10;
+  int get backgroundSyncIntervalMinutes => 60;
 
   @override
-  int get defaultAnimationDurationMs => 250;
+  int get defaultAnimationDurationMs => 200;
 
   @override
-  int get networkRetryCount => 5;
+  int get networkRetryCount => 1;
 
   @override
   int get databaseVersion => 1;
@@ -281,11 +337,80 @@ class ProductionConfig extends AppConfig {
   String get openaiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
 
   @override
-  String get openaiModel => dotenv.env['OPENAI_MODEL'] ?? 'gpt-4';
+  String get openaiModel => 'gpt-4';
 
   @override
   String get weatherApiKey => dotenv.env['WEATHER_API_KEY'] ?? '';
 
   @override
   String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
+}
+
+/// 테스트 환경 설정
+///
+/// 테스트 환경에서 사용되는 설정값들을 정의합니다.
+/// 빠른 응답과 테스트용 데이터를 제공합니다.
+class TestConfig extends AppConfig {
+  @override
+  String get apiBaseUrl => 'https://test-api.aipet.com';
+
+  @override
+  String get environment => 'test';
+
+  @override
+  bool get isDebugMode => true;
+
+  @override
+  bool get enableLogging => true;
+
+  @override
+  bool get enableAnalytics => false;
+
+  @override
+  bool get enableCrashlytics => false;
+
+  @override
+  int get apiTimeoutMs => 5000;
+
+  @override
+  int get maxImageCacheSizeMB => 50;
+
+  @override
+  int get offlineDataRetentionDays => 1;
+
+  @override
+  int get versionCheckIntervalHours => 1;
+
+  @override
+  bool get defaultNotificationEnabled => false;
+
+  @override
+  double get locationAccuracyThreshold => 20.0;
+
+  @override
+  int get backgroundSyncIntervalMinutes => 5;
+
+  @override
+  int get defaultAnimationDurationMs => 100;
+
+  @override
+  int get networkRetryCount => 1;
+
+  @override
+  int get databaseVersion => 1;
+
+  @override
+  String get lineChannelId => 'test_line_channel_id';
+
+  @override
+  String get openaiApiKey => 'test_openai_api_key';
+
+  @override
+  String get openaiModel => 'gpt-3.5-turbo';
+
+  @override
+  String get weatherApiKey => 'test_weather_api_key';
+
+  @override
+  String get googleMapsApiKey => 'test_google_maps_api_key';
 }
