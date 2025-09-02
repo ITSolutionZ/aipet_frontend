@@ -148,14 +148,10 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
     }
   }
 
-  /// 산책 기록 수정 다이얼로그 표시
+  /// 산책 기록 수정 바텀 시트 표시
   void _showEditWalkDialog(BuildContext context, WalkRecordEntity walkRecord) {
-    showDialog(
-      context: context,
-      builder: (context) =>
-          EditWalkDialog(walkRecord: walkRecord, controller: controller),
-    );
+    EditWalkBottomSheet.show(context, walkRecord, controller);
   }
 }
 
-// EditWalkDialog는 별도 파일에서 import됨
+// EditWalkBottomSheet는 별도 파일에서 import됨

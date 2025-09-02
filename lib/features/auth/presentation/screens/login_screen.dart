@@ -101,151 +101,154 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       backgroundColor: AppColors.pointOffWhite,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: AppSpacing.xl),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.xl,
+            vertical: AppSpacing.lg,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // 로고 섹션
+              const Column(
+                children: [
+                  SizedBox(height: AppSpacing.lg),
+                  AuthLogo(),
+                  SizedBox(height: AppSpacing.lg),
+                  AuthDivider(),
+                  SizedBox(height: AppSpacing.lg),
+                ],
+              ),
 
-                // 로고 영역
-                const AuthLogo(),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // 구분선
-                const AuthDivider(),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // 이메일 입력 필드
-                AuthInputField(
-                  label: 'メールアドレス',
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  prefixIcon: Icons.email_outlined,
-                  onChanged: _authController.updateEmail,
-                  validator: (value) {
-                    // 개발 모드에서는 유효성 검사 생략 (빈 값만 체크)
-                    if (value == null || value.isEmpty) {
-                      return 'メールアドレスを入力してください';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                // 패스워드 입력 필드
-                AuthPasswordField(
-                  label: 'パスワード',
-                  controller: _passwordController,
-                  isVisible: authState.isPasswordVisible,
-                  onToggleVisibility: _authController.togglePasswordVisibility,
-                  onChanged: (value) {
-                    // 패스워드는 AuthFormState에 저장하지 않음 (보안상 이유)
-                    // UI에서만 사용하고 검증 후 즉시 메모리에서 제거
-                  },
-                  validator: (value) {
-                    // 개발 모드에서는 유효성 검사 생략 (빈 값만 체크)
-                    if (value == null || value.isEmpty) {
-                      return 'パスワードを入力してください';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: AppSpacing.md),
-
-                // Remember Me & 패스워드 재설정
-                Row(
+              // 입력 섹션
+              Form(
+                key: _formKey,
+                child: Column(
                   children: [
-                    Checkbox(
-                      value: authState.rememberMe,
-                      onChanged: (_) => _authController.toggleRememberMe(),
-                      activeColor: AppColors.pointBrown,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    Text(
-                      'ログイン情報を記憶',
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointGray,
-                      ),
-                    ),
-                    const Spacer(),
-                    TextButton(
-                      onPressed: () {
-                        _showPasswordResetDialog(context);
+                    // 이메일 입력 필드
+                    AuthInputField(
+                      label: 'メールアドレス',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      prefixIcon: Icons.email_outlined,
+                      onChanged: _authController.updateEmail,
+                      validator: (value) {
+                        // 개발 모드에서는 유효성 검사 생략 (빈 값만 체크)
+                        if (value == null || value.isEmpty) {
+                          return 'メールアドレスを入力してください';
+                        }
+                        return null;
                       },
-                      child: Text(
-                        'パスワード再設定',
-                        style: AppFonts.bodySmall.copyWith(
-                          color: AppColors.pointBrown,
-                          decoration: TextDecoration.underline,
-                          decorationColor: AppColors.pointBrown,
+                    ),
+
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // 패스워드 입력 필드
+                    AuthPasswordField(
+                      label: 'パスワード',
+                      controller: _passwordController,
+                      isVisible: authState.isPasswordVisible,
+                      onToggleVisibility:
+                          _authController.togglePasswordVisibility,
+                      onChanged: (value) {
+                        // 패스워드는 AuthFormState에 저장하지 않음 (보안상 이유)
+                        // UI에서만 사용하고 검증 후 즉시 메모리에서 제거
+                      },
+                      validator: (value) {
+                        // 개발 모드에서는 유효성 검사 생략 (빈 값만 체크)
+                        if (value == null || value.isEmpty) {
+                          return 'パスワードを入力してください';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Remember Me & 패스워드 재설정
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: authState.rememberMe,
+                          onChanged: (_) => _authController.toggleRememberMe(),
+                          activeColor: AppColors.pointBrown,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                         ),
-                      ),
+                        Text(
+                          'ログイン情報を記憶',
+                          style: AppFonts.bodySmall.copyWith(
+                            color: AppColors.pointGray,
+                          ),
+                        ),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: () {
+                            _showPasswordResetDialog(context);
+                          },
+                          child: Text(
+                            'パスワード再設定',
+                            style: AppFonts.bodySmall.copyWith(
+                              color: AppColors.pointBrown,
+                              decoration: TextDecoration.underline,
+                              decorationColor: AppColors.pointBrown,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: AppSpacing.xl),
+
+                    // 로그인 버튼
+                    AuthButton(
+                      text: 'ログイン',
+                      isLoading: authState.isLoading,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          // 데모 앱이므로 바로 홈으로 이동
+                          context.go(AppRouter.homeRoute);
+                        }
+                      },
                     ),
                   ],
                 ),
+              ),
 
-                const SizedBox(height: AppSpacing.xl),
+              const SizedBox(height: AppSpacing.xl),
 
-                // 로그인 버튼
-                AuthButton(
-                  text: 'ログイン',
-                  isLoading: authState.isLoading,
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // 데모 앱이므로 바로 홈으로 이동
-                      context.go(AppRouter.homeRoute);
-                    }
-                  },
-                ),
+              // 소셜 로그인 섹션
+              Column(
+                children: [
+                  const AuthDivider(text: 'または'),
+                  const SizedBox(height: AppSpacing.xl),
 
-                const SizedBox(height: AppSpacing.xl),
-
-                // 또는 구분선
-                const AuthDivider(text: 'または'),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // 소셜 로그인 버튼들
-                Column(
-                  children: [
-                    SocialLoginButton(
-                      type: SocialLoginType.email,
-                      onPressed: () => context.go(AppRouter.signupRoute),
-                      isLoading: false,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    SocialLoginButton(
-                      type: SocialLoginType.google,
-                      onPressed: () =>
-                          context.go(AppRouter.homeRoute), // 데모 앱이므로 바로 홈으로 이동
-                      isLoading: false,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    SocialLoginButton(
-                      type: SocialLoginType.apple,
-                      onPressed: () =>
-                          context.go(AppRouter.homeRoute), // 데모 앱이므로 바로 홈으로 이동
-                      isLoading: false,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    SocialLoginButton(
-                      type: SocialLoginType.line,
-                      onPressed: () =>
-                          context.go(AppRouter.homeRoute), // 데모 앱이므로 바로 홈으로 이동
-                      isLoading: false,
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: AppSpacing.xl),
-              ],
-            ),
+                  SocialLoginButton(
+                    type: SocialLoginType.email,
+                    onPressed: () => context.go(AppRouter.signupRoute),
+                    isLoading: false,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  SocialLoginButton(
+                    type: SocialLoginType.google,
+                    onPressed: () => context.go(AppRouter.homeRoute),
+                    isLoading: false,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  SocialLoginButton(
+                    type: SocialLoginType.apple,
+                    onPressed: () => context.go(AppRouter.homeRoute),
+                    isLoading: false,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  SocialLoginButton(
+                    type: SocialLoginType.line,
+                    onPressed: () => context.go(AppRouter.homeRoute),
+                    isLoading: false,
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+                ],
+              ),
+            ],
           ),
         ),
       ),

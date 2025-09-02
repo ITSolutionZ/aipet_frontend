@@ -283,10 +283,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   }
 
   void _showStartWalkDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => StartWalkDialog(controller: _controller),
-    );
+    StartWalkBottomSheet.show(context, _controller);
   }
 
   void _showCurrentWalkDialog() {

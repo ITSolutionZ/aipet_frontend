@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/shared.dart';
-
 class AuthLogo extends StatelessWidget {
   const AuthLogo({
     super.key,
@@ -18,11 +16,20 @@ class AuthLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LogoWidget(
-      imagePath: imagePath,
+    return Container(
       width: width,
       height: height,
-      backgroundColor: backgroundColor,
+      decoration: BoxDecoration(color: backgroundColor),
+      child: ClipRRect(
+        child: Image.asset(
+          imagePath,
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) =>
+              const SizedBox(width: 200, height: 200),
+        ),
+      ),
     );
   }
 }

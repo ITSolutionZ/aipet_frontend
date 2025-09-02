@@ -14,6 +14,12 @@ void main() async {
   // 앱 부트스트랩 초기화
   await AppBootstrap.initialize();
 
+  // 디버그 모드 렌더링
+  // debugPaintBaselinesEnabled = true;
+  // debugPaintPointersEnabled = true;
+  // debugPaintLayerBordersEnabled = true;
+  // debugPaintBaselinesEnabled = true;
+  // debugPaintBaselinesEnabled = true;
   // 앱 실행
   runApp(ProviderScope(child: AppBootstrap.createApp()));
 }
