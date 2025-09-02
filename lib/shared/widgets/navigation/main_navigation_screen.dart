@@ -18,6 +18,11 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   int _getCurrentIndex(BuildContext context) {
     final String location = GoRouterState.of(context).matchedLocation;
 
+    // 홈에서 접근하는 라우트들은 선택 상태 없음
+    if (location == '/walk-from-home') {
+      return -1; // 선택된 탭 없음
+    }
+
     if (location.startsWith('/home')) {
       return 0;
     } else if (location.startsWith('/ai')) {

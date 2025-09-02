@@ -31,7 +31,7 @@ class FeedingSummaryCard extends ConsumerWidget {
     };
 
     return GestureDetector(
-      onTap: () => context.go(RouteConstants.feedingMainRoute),
+      onTap: () => context.go('${RouteConstants.feedingMainRoute}?showBackButton=true'),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
