@@ -5,6 +5,7 @@ import '../../../../shared/shared.dart';
 import '../../data/providers/walk_share_providers.dart';
 import '../../domain/entities/walk_record_entity.dart';
 import '../controllers/walk_controller.dart';
+import 'dialogs/edit_walk_bottom_sheet.dart';
 
 class WalkInfoBottomSheet extends ConsumerStatefulWidget {
   final WalkRecordEntity walkRecord;
@@ -383,163 +384,12 @@ class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
     }
   }
 
-  /// 산책 기록 수정 다이얼로그 표시
+  /// 산책 기록 수정 바텀 시트 표시
   void _showEditWalkDialog(
     BuildContext context,
     WidgetRef ref,
     WalkRecordEntity walkRecord,
   ) {
-    showDialog(
-      context: context,
-      builder: (context) => _EditWalkDialog(
-        walkRecord: walkRecord,
-        controller: WalkController(ref),
-      ),
-    );
-  }
-}
-
-/// 산책 기록 수정 다이얼로그
-class _EditWalkDialog extends StatefulWidget {
-  final WalkRecordEntity walkRecord;
-  final WalkController controller;
-
-  const _EditWalkDialog({required this.walkRecord, required this.controller});
-
-  @override
-  State<_EditWalkDialog> createState() => _EditWalkDialogState();
-}
-
-class _EditWalkDialogState extends State<_EditWalkDialog> {
-  final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _titleController;
-  late final TextEditingController _notesController;
-
-  @override
-  void initState() {
-    super.initState();
-    _titleController = TextEditingController(text: widget.walkRecord.title);
-    _notesController = TextEditingController(
-      text: widget.walkRecord.notes ?? '',
-    );
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _notesController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        '산책 기록 수정',
-        style: AppFonts.fredoka(
-          fontSize: AppFonts.lg,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: '散歩のタイトル',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'タイトルを入力してください。';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: AppSpacing.md),
-            TextFormField(
-              controller: _notesController,
-              decoration: const InputDecoration(
-                labelText: 'メモ',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: AppColors.pointOffWhite,
-                borderRadius: BorderRadius.circular(AppRadius.small),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('開始時間: ${widget.walkRecord.timeString}'),
-                  Text('経過時間: ${widget.walkRecord.formattedDuration}'),
-                  Text('距離: ${widget.walkRecord.formattedDistance}'),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('キャンセル'),
-        ),
-        ElevatedButton(
-          onPressed: _updateWalk,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.pointBrown,
-            foregroundColor: AppColors.pointOffWhite,
-          ),
-          child: const Text('更新'),
-        ),
-      ],
-    );
-  }
-
-  void _updateWalk() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        // 수정된 산책 기록 생성
-        final updatedWalkRecord = widget.walkRecord.copyWith(
-          title: _titleController.text,
-          notes: _notesController.text.isEmpty ? null : _notesController.text,
-          updatedAt: DateTime.now(),
-        );
-
-        // 컨트롤러를 통해 수정
-        final result = await widget.controller.updateWalkRecord(
-          updatedWalkRecord,
-        );
-
-        if (mounted) {
-          Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result.message),
-              backgroundColor: result.isSuccess
-                  ? AppColors.pointGreen
-                  : AppColors.pointPink,
-            ),
-          );
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('更新に失敗しました: $e'),
-              backgroundColor: AppColors.pointPink,
-            ),
-          );
-        }
-      }
-    }
+    EditWalkBottomSheet.show(context, walkRecord, WalkController(ref));
   }
 }
