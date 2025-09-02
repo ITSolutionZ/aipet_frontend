@@ -89,8 +89,8 @@ class FeedingMainScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigation(
-        selectedIndex: showBackButton ? -1 : 0, // 홈에서 접근 시 선택 없음, drawer에서 접근 시 홈 선택
+      bottomNavigationBar: showBackButton ? null : CustomBottomNavigation(
+        selectedIndex: 0, // drawer에서 접근 시 홈 선택
         onItemTapped: (index) {
           switch (index) {
             case 0:
