@@ -1,5 +1,5 @@
-export 'appointment_controller.dart';
-export 'health_summary_controller.dart';
-export 'home_controller.dart';
-export 'walk_summary_controller.dart';
+library;
+
+export 'home_dashboard_controller.dart';
+export 'home_notification_controller.dart';
 export 'weather_controller.dart';

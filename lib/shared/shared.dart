@@ -23,6 +23,8 @@ export 'utils/validation_utils.dart';
 export 'widgets/accessibility/accessibility_widgets.dart';
 // Animation widgets
 export 'widgets/animation/animation_widgets.dart';
+// Common widgets
+export 'widgets/common_app_bar.dart';
 // Pet management widgets
 export 'widgets/pet_status_selection_dialog.dart';
 // Responsive widgets

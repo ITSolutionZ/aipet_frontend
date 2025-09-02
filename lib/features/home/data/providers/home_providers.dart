@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../pet_registor/data/providers/pet_providers.dart';
+import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+
 part 'home_providers.g.dart';
 
 // 홈 상태 관리
@@ -33,6 +36,63 @@ class HomeStateData {
     return HomeStateData(
       selectedIndex: selectedIndex ?? this.selectedIndex,
       currentTime: currentTime ?? this.currentTime,
+    );
+  }
+}
+
+// 홈 화면에서 사용할 현재 선택된 펫 프로바이더
+@riverpod
+class HomeSelectedPetNotifier extends _$HomeSelectedPetNotifier {
+  @override
+  PetProfileEntity? build() {
+    // 기본적으로 첫 번째 펫을 선택
+    final petsAsync = ref.watch(petsNotifierProvider);
+    return petsAsync.when(
+      data: (pets) => pets.isNotEmpty ? pets.first : null,
+      loading: () => null,
+      error: (_, __) => null,
+    );
+  }
+
+  /// 펫 선택
+  void selectPet(PetProfileEntity pet) {
+    state = pet;
+  }
+
+  /// 다음 펫으로 이동
+  void nextPet() {
+    final petsAsync = ref.read(petsNotifierProvider);
+    petsAsync.when(
+      data: (pets) {
+        if (pets.isNotEmpty && state != null) {
+          final currentIndex = pets.indexWhere((p) => p.id == state!.id);
+          if (currentIndex != -1) {
+            final nextIndex = (currentIndex + 1) % pets.length;
+            state = pets[nextIndex];
+          }
+        }
+      },
+      loading: () {},
+      error: (_, __) {},
+    );
+  }
+
+  /// 이전 펫으로 이동
+  void previousPet() {
+    final petsAsync = ref.read(petsNotifierProvider);
+    petsAsync.when(
+      data: (pets) {
+        if (pets.isNotEmpty && state != null) {
+          final currentIndex = pets.indexWhere((p) => p.id == state!.id);
+          if (currentIndex != -1) {
+            final previousIndex =
+                (currentIndex - 1 + pets.length) % pets.length;
+            state = pets[previousIndex];
+          }
+        }
+      },
+      loading: () {},
+      error: (_, __) {},
     );
   }
 }

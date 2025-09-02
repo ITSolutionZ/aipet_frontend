@@ -16,8 +16,6 @@ class WalkDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
-  bool _isBottomSheetExpanded = false;
-
   @override
   void initState() {
     super.initState();
@@ -132,8 +130,12 @@ class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    color: Colors.grey[300],
-                    child: Icon(Icons.pets, color: Colors.grey[600], size: 12),
+                    color: AppColors.pointGray.withValues(alpha: 0.3),
+                    child: const Icon(
+                      Icons.pets,
+                      color: AppColors.pointGray,
+                      size: 12,
+                    ),
                   );
                 },
               ),
@@ -168,15 +170,7 @@ class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
             right: 0,
             child: Consumer(
               builder: (context, ref, child) {
-                return WalkInfoBottomSheet(
-                  walkRecord: widget.walkRecord,
-                  isExpanded: _isBottomSheetExpanded,
-                  onToggleExpanded: () {
-                    setState(() {
-                      _isBottomSheetExpanded = !_isBottomSheetExpanded;
-                    });
-                  },
-                );
+                return WalkInfoBottomSheet(walkRecord: widget.walkRecord);
               },
             ),
           ),

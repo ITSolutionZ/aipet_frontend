@@ -474,6 +474,7 @@ flutter analyze
 
 # 코드 포맷팅
 dart format lib/
+markdownlint README.md로 파일 린트 에러 수정
 
 # 테스트 실행
 flutter test

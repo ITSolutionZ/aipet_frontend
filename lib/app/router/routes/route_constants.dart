@@ -20,6 +20,7 @@ class RouteConstants {
   static const String schedulingRoute = '/scheduling';
   static const String aiRoute = '/ai';
   static const String walkRoute = '/walk';
+  static const String walkFromHomeRoute = '/walk-from-home';
   static const String calendarRoute = '/calendar';
   static const String settingsRoute = '/settings';
 

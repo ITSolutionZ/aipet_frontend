@@ -54,7 +54,7 @@ class HealthSectionWidget extends StatelessWidget {
           ),
           onTap: () {
             Navigator.of(context).pop(); // 드로어 닫기
-            context.go(AppRouter.homeRoute); // 홈 페이지로 이동
+            context.go(AppRouter.walkRoute); // 산책 페이지로 이동
           },
         ),
         ListTile(

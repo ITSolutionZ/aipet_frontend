@@ -41,5 +41,25 @@ final homeStateProvider =
     );
 
 typedef _$HomeState = AutoDisposeNotifier<HomeStateData>;
+String _$homeSelectedPetNotifierHash() =>
+    r'd27e1ccd2a5983e4fd95de70c34486c6fbf0a644';
+
+/// See also [HomeSelectedPetNotifier].
+@ProviderFor(HomeSelectedPetNotifier)
+final homeSelectedPetNotifierProvider =
+    AutoDisposeNotifierProvider<
+      HomeSelectedPetNotifier,
+      PetProfileEntity?
+    >.internal(
+      HomeSelectedPetNotifier.new,
+      name: r'homeSelectedPetNotifierProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$homeSelectedPetNotifierHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$HomeSelectedPetNotifier = AutoDisposeNotifier<PetProfileEntity?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

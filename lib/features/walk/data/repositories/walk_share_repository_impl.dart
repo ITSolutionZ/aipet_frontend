@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -45,10 +47,16 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       final content = _generateWalkRecordContent(walkRecord);
       await file.writeAsString(content, encoding: const Utf8Codec());
 
-      // TODO: 추후 API 연동 시 실제 이미지 생성 로직으로 교체
-      // 현재는 텍스트 파일로 저장하여 파일 시스템 접근 확인
+      // 실제 이미지 생성 및 저장
+      final imagePath = await _generateWalkRecordImage(
+        walkRecord,
+        imagesDir.path,
+      );
 
-      return WalkShareResult.success('산책 기록이 저장되었습니다', imagePath: file.path);
+      return WalkShareResult.success(
+        '산책 기록 이미지가 생성되었습니다',
+        imagePath: imagePath,
+      );
     } catch (e) {
       if (kDebugMode) {
         print('이미지 저장 실패: $e');
@@ -109,12 +117,93 @@ ${walkRecord.notes != null ? '메모: ${walkRecord.notes}' : ''}
     switch (status) {
       case WalkStatus.inProgress:
         return '散歩中';
-      case WalkStatus.completed:
-        return '完了';
       case WalkStatus.paused:
         return '一時停止';
+      case WalkStatus.completed:
+        return '完了';
       case WalkStatus.cancelled:
         return 'キャンセル';
     }
+  }
+
+  /// 산책 기록 이미지 생성
+  Future<String> _generateWalkRecordImage(
+    WalkRecordEntity walkRecord,
+    String directoryPath,
+  ) async {
+    // 이미지 파일명 생성
+    final fileName =
+        'walk_${walkRecord.id}_${DateTime.now().millisecondsSinceEpoch}.png';
+    final imagePath = '$directoryPath/$fileName';
+
+    // 이미지 생성
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+
+    // 배경 그리기
+    final paint = Paint()..color = const Color(0xFFF5F5F5);
+    canvas.drawRect(const Rect.fromLTWH(0, 0, 400, 600), paint);
+
+    // 제목 그리기
+    final titlePainter = TextPainter(
+      text: const TextSpan(
+        text: '🐕 AI Pet - 산책 기록',
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF333333),
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    titlePainter.layout();
+    titlePainter.paint(canvas, const Offset(20, 30));
+
+    // 정보 그리기
+    final infoTexts = [
+      '제목: ${walkRecord.title}',
+      '날짜: ${walkRecord.dateString}',
+      '시간: ${walkRecord.timeString}',
+      '경과: ${walkRecord.formattedDuration}',
+      '거리: ${walkRecord.formattedDistance}',
+      '상태: ${_getStatusText(walkRecord.status)}',
+      if (walkRecord.notes != null) '메모: ${walkRecord.notes}',
+    ];
+
+    double yOffset = 80;
+    for (final text in infoTexts) {
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: text,
+          style: const TextStyle(fontSize: 16, color: Color(0xFF666666)),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(canvas, Offset(20, yOffset));
+      yOffset += 30;
+    }
+
+    // 해시태그 그리기
+    final hashtagPainter = TextPainter(
+      text: const TextSpan(
+        text: '#AIペット #산책기록',
+        style: TextStyle(fontSize: 14, color: Color(0xFF999999)),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    hashtagPainter.layout();
+    hashtagPainter.paint(canvas, Offset(20, yOffset + 20));
+
+    // 이미지 완성 및 저장
+    final picture = recorder.endRecording();
+    final image = await picture.toImage(400, 600);
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final bytes = byteData!.buffer.asUint8List();
+
+    final imageFile = File(imagePath);
+    await imageFile.writeAsBytes(bytes);
+
+    return imagePath;
   }
 }
