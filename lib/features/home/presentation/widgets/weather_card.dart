@@ -27,11 +27,31 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
     super.initState();
     _controller = WeatherController(ref);
     _isDay = _controller.isDayTime();
-    // 앱 시작 시 한 번만 데이터 로드
-    _loadWeatherData(forceRefresh: false);
+    
+    // 캐시된 데이터가 있는지 먼저 확인
+    _checkCachedData();
+    
+    // 캐시된 데이터가 없거나 유효하지 않은 경우에만 API 호출
+    if (_weatherData == null) {
+      _loadWeatherData(forceRefresh: false);
+    }
   }
 
-  Future<void> _loadWeatherData({bool forceRefresh = false}) async {
+  /// 캐시된 데이터 확인
+  void _checkCachedData() {
+    final cachedData = _controller.cachedWeatherData;
+    if (cachedData != null) {
+      debugPrint('🔄 컨트롤러에서 캐시된 날씨 데이터 사용');
+      setState(() {
+        _weatherData = cachedData;
+        _isLoading = false;
+        _isDay = _controller.isDayTime();
+        _iconName = _getWeatherIconName(_weatherData!.weatherId, _isDay!);
+      });
+    }
+  }
+
+  Future<void> _loadWeatherData({bool forceRefresh = false, bool userTriggered = false}) async {
     // 강제 리프레시가 아니고 이미 데이터가 있으면 API 호출하지 않음
     if (!forceRefresh && _weatherData != null && !_isLoading) {
       debugPrint('🔄 캐시된 날씨 데이터 사용 (API 호출 생략)');
@@ -45,7 +65,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
       });
     }
 
-    final result = await _controller.getCurrentWeather();
+    final result = await _controller.getCurrentWeather(userTriggered: userTriggered);
 
     if (mounted) {
       setState(() {
@@ -163,7 +183,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
     }
 
     return GestureDetector(
-      onTap: _isLoading ? null : () => _loadWeatherData(forceRefresh: true),
+      onTap: _isLoading ? null : () => _loadWeatherData(userTriggered: true), // 사용자 탭으로 요청
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
