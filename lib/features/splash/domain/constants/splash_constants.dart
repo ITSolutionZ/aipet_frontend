@@ -6,8 +6,8 @@ class SplashConstants {
   const SplashConstants._();
 
   // 타이밍 상수
-  static const Duration logoDisplayDuration = Duration(seconds: 3);
-  static const Duration animationDuration = Duration(milliseconds: 3000);
+  static const Duration logoDisplayDuration = Duration(seconds: 2);
+  static const Duration animationDuration = Duration(milliseconds: 2000);
   static const Duration fadeAnimationDuration = Duration(milliseconds: 1000);
   static const Duration scaleAnimationDuration = Duration(milliseconds: 1000);
 

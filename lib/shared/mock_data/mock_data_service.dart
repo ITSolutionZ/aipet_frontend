@@ -661,31 +661,74 @@ abstract class MockDataService {
     };
   }
 
-  /// 오늘의 식사 상태 목 데이터
-  static List<Map<String, dynamic>> getMockTodayMeals() {
+  /// 오늘의 식사 상태 목 데이터 (펫별로 다른 데이터)
+  static List<Map<String, dynamic>> getMockTodayMeals({String? petId}) {
     final now = DateTime.now();
     final currentHour = now.hour;
+    final pets = getMockPets();
+    final currentPet = petId != null
+        ? pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first)
+        : pets.first;
 
-    return [
-      {
-        'mealType': '朝食',
-        'time': '08:00',
-        'status': currentHour >= 8 ? 'completed' : 'pending',
-        'amount': '100g',
-      },
-      {
-        'mealType': '昼食',
-        'time': '12:00',
-        'status': currentHour >= 12 ? 'completed' : 'pending',
-        'amount': '100g',
-      },
-      {
-        'mealType': '夕食',
-        'time': '18:00',
-        'status': currentHour >= 18 ? 'completed' : 'pending',
-        'amount': '100g',
-      },
-    ];
+    // 펫 타입에 따라 다른 식사 데이터
+    if (currentPet.type == 'dog') {
+      return [
+        {
+          'mealType': '朝食',
+          'time': '07:00',
+          'status': currentHour >= 7 ? 'completed' : 'pending',
+          'amount': '150g',
+        },
+        {
+          'mealType': '昼食',
+          'time': '12:00',
+          'status': currentHour >= 12 ? 'completed' : 'pending',
+          'amount': '150g',
+        },
+        {
+          'mealType': '夕食',
+          'time': '18:00',
+          'status': currentHour >= 18 ? 'completed' : 'pending',
+          'amount': '150g',
+        },
+      ];
+    } else if (currentPet.type == 'cat') {
+      return [
+        {
+          'mealType': '朝食',
+          'time': '08:30',
+          'status': currentHour >= 8 ? 'completed' : 'pending',
+          'amount': '80g',
+        },
+        {
+          'mealType': '夕食',
+          'time': '19:00',
+          'status': currentHour >= 19 ? 'completed' : 'pending',
+          'amount': '80g',
+        },
+      ];
+    } else {
+      return [
+        {
+          'mealType': '朝食',
+          'time': '08:00',
+          'status': currentHour >= 8 ? 'completed' : 'pending',
+          'amount': '100g',
+        },
+        {
+          'mealType': '昼食',
+          'time': '12:00',
+          'status': currentHour >= 12 ? 'completed' : 'pending',
+          'amount': '100g',
+        },
+        {
+          'mealType': '夕食',
+          'time': '18:00',
+          'status': currentHour >= 18 ? 'completed' : 'pending',
+          'amount': '100g',
+        },
+      ];
+    }
   }
 
   /// 레시피 목 데이터
@@ -978,37 +1021,105 @@ abstract class MockDataService {
     ];
   }
 
-  /// 체중 기록 목 데이터
-  static List<WeightRecordEntity> getMockWeightRecords() {
-    return [
-      WeightRecordEntity(
-        id: '1',
-        petId: 'pet1',
-        petName: '멍멍이',
-        weight: 5.2,
-        recordedDate: DateTime.now(),
-        notes: '정상 체중',
-        createdAt: DateTime.now(),
-      ),
-      WeightRecordEntity(
-        id: '2',
-        petId: 'pet1',
-        petName: '멍멍이',
-        weight: 5.0,
-        recordedDate: DateTime.now().subtract(const Duration(days: 30)),
-        notes: '약간 증가',
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
-      ),
-      WeightRecordEntity(
-        id: '3',
-        petId: 'pet1',
-        petName: '멍멍이',
-        weight: 4.8,
-        recordedDate: DateTime.now().subtract(const Duration(days: 60)),
-        notes: '정상 범위',
-        createdAt: DateTime.now().subtract(const Duration(days: 60)),
-      ),
-    ];
+  /// 체중 기록 목 데이터 (펫별로 다른 데이터)
+  static List<WeightRecordEntity> getMockWeightRecords({String? petId}) {
+    final pets = getMockPets();
+    final currentPet = petId != null
+        ? pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first)
+        : pets.first;
+
+    // 펫 타입에 따라 다른 체중 데이터
+    if (currentPet.type == 'dog') {
+      return [
+        WeightRecordEntity(
+          id: '1',
+          petId: currentPet.id,
+          petName: currentPet.name,
+          weight: 25.2,
+          recordedDate: DateTime.now(),
+          notes: '건강한 체중',
+          createdAt: DateTime.now(),
+        ),
+        WeightRecordEntity(
+          id: '2',
+          petId: currentPet.id,
+          petName: currentPet.name,
+          weight: 24.8,
+          recordedDate: DateTime.now().subtract(const Duration(days: 30)),
+          notes: '약간 증가',
+          createdAt: DateTime.now().subtract(const Duration(days: 30)),
+        ),
+        WeightRecordEntity(
+          id: '3',
+          petId: currentPet.id,
+          petName: currentPet.name,
+          weight: 24.5,
+          recordedDate: DateTime.now().subtract(const Duration(days: 60)),
+          notes: '정상 범위',
+          createdAt: DateTime.now().subtract(const Duration(days: 60)),
+        ),
+      ];
+    } else if (currentPet.type == 'cat') {
+      return [
+        WeightRecordEntity(
+          id: '1',
+          petId: currentPet.id,
+          petName: currentPet.name,
+          weight: 4.2,
+          recordedDate: DateTime.now(),
+          notes: '이상적인 체중',
+          createdAt: DateTime.now(),
+        ),
+        WeightRecordEntity(
+          id: '2',
+          petId: currentPet.id,
+          petName: currentPet.name,
+          weight: 4.0,
+          recordedDate: DateTime.now().subtract(const Duration(days: 30)),
+          notes: '약간 증가',
+          createdAt: DateTime.now().subtract(const Duration(days: 30)),
+        ),
+        WeightRecordEntity(
+          id: '3',
+          petId: currentPet.id,
+          petName: currentPet.name,
+          weight: 3.8,
+          recordedDate: DateTime.now().subtract(const Duration(days: 60)),
+          notes: '정상 범위',
+          createdAt: DateTime.now().subtract(const Duration(days: 60)),
+        ),
+      ];
+    } else {
+      return [
+        WeightRecordEntity(
+          id: '1',
+          petId: currentPet.id,
+          petName: currentPet.name,
+          weight: 5.2,
+          recordedDate: DateTime.now(),
+          notes: '정상 체중',
+          createdAt: DateTime.now(),
+        ),
+        WeightRecordEntity(
+          id: '2',
+          petId: currentPet.id,
+          petName: currentPet.name,
+          weight: 5.0,
+          recordedDate: DateTime.now().subtract(const Duration(days: 30)),
+          notes: '약간 증가',
+          createdAt: DateTime.now().subtract(const Duration(days: 30)),
+        ),
+        WeightRecordEntity(
+          id: '3',
+          petId: currentPet.id,
+          petName: currentPet.name,
+          weight: 4.8,
+          recordedDate: DateTime.now().subtract(const Duration(days: 60)),
+          notes: '정상 범위',
+          createdAt: DateTime.now().subtract(const Duration(days: 60)),
+        ),
+      ];
+    }
   }
 
   // ==================== Pet Profile ====================
@@ -1091,19 +1202,43 @@ abstract class MockDataService {
       totalPets: 2,
       healthyPets: 2,
       petsNeedingAttention: 0,
-      alerts: [],
+      alerts: [HealthAlert(petName: 'Max', message: '정기 건강검진이 필요합니다')],
     );
   }
 
-  /// 산책 요약 목 데이터
-  static WalkSummary getMockWalkSummary() {
-    return const WalkSummary(
-      todayWalks: 2,
-      todayDistance: 2.5,
-      todayDuration: Duration(minutes: 45),
-      weeklyGoal: 15,
-      weeklyProgress: 8,
-    );
+  /// 산책 요약 목 데이터 (펫별로 다른 데이터)
+  static WalkSummary getMockWalkSummary({String? petId}) {
+    final pets = getMockPets();
+    final currentPet = petId != null
+        ? pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first)
+        : pets.first;
+
+    // 펫 타입에 따라 다른 산책 데이터
+    if (currentPet.type == 'dog') {
+      return const WalkSummary(
+        todayWalks: 2,
+        todayDistance: 3.2,
+        todayDuration: Duration(minutes: 60),
+        weeklyGoal: 20,
+        weeklyProgress: 12,
+      );
+    } else if (currentPet.type == 'cat') {
+      return const WalkSummary(
+        todayWalks: 0,
+        todayDistance: 0.0,
+        todayDuration: Duration(minutes: 0),
+        weeklyGoal: 5,
+        weeklyProgress: 2,
+      );
+    } else {
+      return const WalkSummary(
+        todayWalks: 1,
+        todayDistance: 1.5,
+        todayDuration: Duration(minutes: 30),
+        weeklyGoal: 10,
+        weeklyProgress: 6,
+      );
+    }
   }
 
   // ==================== Facility ====================

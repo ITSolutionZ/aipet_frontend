@@ -27,7 +27,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     // 온보딩 시작 시 시청 횟수 증가
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(onboardingStateNotifierProvider.notifier).startOnboarding();
+      ref.read(onboardingNotifierProvider.notifier).startOnboarding();
     });
   }
 
@@ -42,7 +42,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _nextPage() {
-    final currentPage = ref.read(onboardingStateNotifierProvider).currentPage;
+    final currentPage = ref.read(onboardingNotifierProvider).currentPage;
     if (currentPage < OnboardingData.pages.length - 1) {
       _pageController.nextPage(
         duration: OnboardingConstants.pageTransitionDuration,
@@ -63,7 +63,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final onboardingState = ref.watch(onboardingStateNotifierProvider);
+    final onboardingState = ref.watch(onboardingNotifierProvider);
     final currentPage = OnboardingData.pages[onboardingState.currentPage];
 
     return Scaffold(

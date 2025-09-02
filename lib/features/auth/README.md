@@ -11,18 +11,19 @@
 
 ### 📋 목차 (Table of Contents)
 
-- [개요 (Overview)](#overview)
-- [아키텍처 (Architecture)](#architecture)
-- [주요 기능 (Key Features)](#key-features)
-- [디렉토리 구조 (Directory Structure)](#directory-structure)
-- [ID Token 데이터 플로우 (ID Token Data Flow)](#id-token-id-token-data-flow)
-- [보안 기능 (Security Features)](#security-features)
-- [사용 방법 (Usage)](#usage)
-- [설정 (Configuration)](#configuration)
+- [개요 (Overview)](#개요-overview)
+- [아키텍처 (Architecture)](#아키텍처-architecture)
+- [주요 기능 (Key Features)](#주요-기능-key-features)
+- [디렉토리 구조 (Directory Structure)](#디렉토리-구조-directory-structure)
+- [ID Token 데이터 플로우 (ID Token Data Flow)](#id-token-데이터-플로우-id-token-data-flow)
+- [보안 기능 (Security Features)](#보안-기능-security-features)
+- [사용 방법 (Usage)](#사용-방법-usage)
+- [설정 (Configuration)](#설정-configuration)
 
 ### 개요 (Overview)
 
-AI Pet 애플리케이션의 인증 기능을 담당하는 모듈입니다. Firebase Authentication을 기반으로 한 안전하고 확장 가능한 인증 시스템을 제공합니다.
+AI Pet 애플리케이션의 인증 기능을 담당하는 모듈입니다.
+Firebase Authentication을 기반으로 한 안전하고 확장 가능한 인증 시스템을 제공합니다.
 
 **주요 특징:**
 
@@ -37,7 +38,7 @@ AI Pet 애플리케이션의 인증 기능을 담당하는 모듈입니다. Fire
 ```txt
 lib/features/auth/
 ├── data/               # 데이터 계층
-├── domain/             # 도메인 계층 
+├── domain/             # 도메인 계층
 ├── presentation/       # 프레젠테이션 계층
 └── utils/              # 유틸리티
 ```
@@ -124,7 +125,7 @@ auth/
 
 #### 🔄 토큰 생명주기 관리
 
-**1단계: Firebase 인증**
+##### 1단계: Firebase 인증
 
 ```dart
 // 이메일/비밀번호 로그인
@@ -134,7 +135,7 @@ final credential = await _firebaseAuth.signInWithEmailAndPassword(
 );
 ```
 
-**2단계: ID Token 획득 및 캐싱**
+##### 2단계: ID Token 획득 및 캐싱
 
 ```dart
 // Firebase ID Token 가져오기 (자동 갱신 포함)
@@ -145,7 +146,7 @@ if (idToken != null) {
 }
 ```
 
-**3단계: 백엔드 인증 및 JWT 발급**
+##### 3단계: 백엔드 인증 및 JWT 발급
 
 ```dart
 // ID Token을 백엔드로 전송
@@ -159,7 +160,7 @@ final accessToken = backendData['accessToken'];
 final refreshToken = backendData['refreshToken'];
 ```
 
-**4단계: 자동 토큰 관리**
+##### 4단계: 자동 토큰 관리
 
 ```dart
 // 토큰 만료 5분 전 자동 갱신
@@ -285,18 +286,19 @@ dependencies:
 
 ### 📋 目次 (Table of Contents)
 
-- [概要 (Overview)](#overview-1)
-- [アーキテクチャ (Architecture)](#architecture-1)
-- [主要機能 (Key Features)](#key-features-1)
-- [ディレクトリ構造 (Directory Structure)](#directory-structure-1)
-- [ID Token データフロー (ID Token Data Flow)](#id-token-id-token-data-flow-1)
-- [セキュリティ機能 (Security Features)](#security-features-1)
-- [使用方法 (Usage)](#usage-1)
-- [設定 (Configuration)](#configuration-1)
+- [概要 (Overview)](#概要-overview)
+- [アーキテクチャ (Architecture)](#アーキテクチャ-architecture)
+- [主要機能 (Key Features)](#主要機能-key-features)
+- [ディレクトリ構造 (Directory Structure)](#ディレクトリ構造-directory-structure)
+- [ID Token データフロー (ID Token Data Flow)](#id-token-データフロー-id-token-data-flow)
+- [セキュリティ機能 (Security Features)](#セキュリティ機能-security-features)
+- [使用方法 (Usage)](#使用方法-usage)
+- [設定 (Configuration)](#設定-configuration)
 
 ### 概要 (Overview)
 
-AI Petアプリケーションの認証機能を担当するモジュールです。Firebase Authenticationをベースにした安全で拡張可能な認証システムを提供します。
+AI Pet アプリケーションの認証機能を担当するモジュールです。
+Firebase Authentication をベースにした安全で拡張可能な認証システムを提供します。
 
 **主な特徴:**
 
@@ -311,12 +313,12 @@ AI Petアプリケーションの認証機能を担当するモジュールで�
 ```txt
 lib/features/auth/
 ├── data/               # データ層
-├── domain/             # ドメイン層 
+├── domain/             # ドメイン層
 ├── presentation/       # プレゼンテーション層
 └── utils/              # ユーティリティ
 ```
 
-**Clean Architecture適用:**
+**Clean Architecture 適用:**
 
 - **Domain Layer**: ビジネスロジックとエンティティ定義
 - **Data Layer**: Firebase Auth およびトークンストレージ実装
@@ -328,20 +330,20 @@ lib/features/auth/
 
 - **メール/パスワード** ログインおよびサインアップ
 - **Google** ソーシャルログイン
-- **Apple** ソーシャルログイン (iOS専用)
+- **Apple** ソーシャルログイン (iOS 専用)
 - **LINE** ソーシャルログイン (予定)
 
 #### 🛡️ セキュリティ機能
 
 - **Firebase ID Token** 自動管理
 - **Secure Storage** - iOS Keychain/Android Keystore 活用
-- **トークン自動更新** - 期限切れ5分前に自動リフレッシュ
+- **トークン自動更新** - 期限切れ 5 分前に自動リフレッシュ
 - **エラー標準化** - ユーザーフレンドリーなメッセージ提供
 
 #### 📊 状態管理
 
 - **Riverpod** ベースの状態管理
-- **Form状態** リアルタイム検証
+- **Form 状態** リアルタイム検証
 - **ローディング/エラー状態** 自動処理
 
 ### ディレクトリ構造 (Directory Structure)
@@ -398,7 +400,7 @@ auth/
 
 #### 🔄 トークンライフサイクル管理
 
-**ステップ1: Firebase 認証**
+##### ステップ 1: Firebase 認証
 
 ```dart
 // メール/パスワードログイン
@@ -408,7 +410,7 @@ final credential = await _firebaseAuth.signInWithEmailAndPassword(
 );
 ```
 
-**ステップ2: ID Token 取得およびキャッシング**
+##### ステップ 2: ID Token 取得およびキャッシング
 
 ```dart
 // Firebase ID Token 取得 (自動リフレッシュ含む)
@@ -419,7 +421,7 @@ if (idToken != null) {
 }
 ```
 
-**ステップ3: バックエンド認証および JWT 発行**
+##### ステップ 3: バックエンド認証および JWT 発行
 
 ```dart
 // ID Token をバックエンドに送信
@@ -433,7 +435,7 @@ final accessToken = backendData['accessToken'];
 final refreshToken = backendData['refreshToken'];
 ```
 
-**ステップ4: 自動トークン管理**
+##### ステップ 4: 自動トークン管理
 
 ```dart
 // トークン期限切れ5分前に自動リフレッシュ
@@ -465,9 +467,9 @@ final value = await SecureStorageServiceV2.getString('key');
 
 #### 3. **自動リフレッシュ**
 
-- トークン期限切れ5分前に自動リフレッシュ
+- トークン期限切れ 5 分前に自動リフレッシュ
 - ネットワーク障害時の指数バックオフ再試行
-- Auth状態変更時の自動トークンクリア
+- Auth 状態変更時の自動トークンクリア
 
 ### 使用方法 (Usage)
 
@@ -533,4 +535,4 @@ dependencies:
 
 ---
 
-**© 2024 AI Pet. 프로덕션 레벨 인증 시스템 / Production-ready Authentication System**
+© 2024 AI Pet. 프로덕션 레벨 인증 시스템 / Production-ready Authentication System

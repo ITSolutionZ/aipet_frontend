@@ -184,6 +184,7 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
               onPressed: () async {
                 Navigator.pop(context);
                 await _controller.resetAllProgress();
+                // mounted 체크 후 BuildContext 사용
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../shared/shared.dart';
 import '../../data/models/weather_model.dart';
 import '../controllers/weather_controller.dart';
+import 'meteocons_icon.dart';
 
 class WeatherCard extends ConsumerStatefulWidget {
   const WeatherCard({super.key});
@@ -27,10 +27,17 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
     super.initState();
     _controller = WeatherController(ref);
     _isDay = _controller.isDayTime();
-    _loadWeatherData();
+    // 앱 시작 시 한 번만 데이터 로드
+    _loadWeatherData(forceRefresh: false);
   }
 
-  Future<void> _loadWeatherData() async {
+  Future<void> _loadWeatherData({bool forceRefresh = false}) async {
+    // 강제 리프레시가 아니고 이미 데이터가 있으면 API 호출하지 않음
+    if (!forceRefresh && _weatherData != null && !_isLoading) {
+      debugPrint('🔄 캐시된 날씨 데이터 사용 (API 호출 생략)');
+      return;
+    }
+
     if (mounted) {
       setState(() {
         _isLoading = true;
@@ -46,15 +53,12 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
         if (result.isSuccess && result.data != null) {
           _weatherData = result.data as WeatherData;
           debugPrint(
-            '🌡️ 날씨 데이터 받음: ${_weatherData!.location}, ${_weatherData!.temperature}°C',
+            '🌡️ 날씨 데이터 받음: ${_weatherData!.location}, ${_weatherData!.temperature}°C, UV: ${_weatherData!.uvIndex}, Wind: ${_weatherData!.windSpeed}m/s',
           );
 
           // 현재 시간 다시 확인 (API 호출 시점의 정확한 시간 사용)
           _isDay = _controller.isDayTime();
-          _iconName = _controller.getWeatherIconName(
-            _weatherData!.weatherId,
-            isDay: _isDay!,
-          );
+          _iconName = _getWeatherIconName(_weatherData!.weatherId, _isDay!);
 
           // 산책 조언 생성
           _generateWalkingAdvice();
@@ -70,6 +74,12 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
 
   /// 산책 조언 생성
   Future<void> _generateWalkingAdvice() async {
+    // 이미 조언이 있으면 생성하지 않음
+    if (_walkingAdvice != null) {
+      debugPrint('🔄 기존 산책 조언 사용 (생성 생략)');
+      return;
+    }
+
     try {
       final adviceResult = await _controller.generateWalkingAdvice();
       if (mounted && adviceResult.isSuccess) {
@@ -88,10 +98,31 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
     }
   }
 
-  /// UV 지수에 따른 MeteoconsIcon 이름 반환 (1~11 정확한 매칭)
+  /// 날씨 아이콘 이름 가져오기 (실제 assets 파일명과 매핑)
+  String _getWeatherIconName(int weatherId, bool isDay) {
+    // 날씨 ID 기반 아이콘 매핑
+    if (weatherId >= 200 && weatherId < 300) {
+      return 'thunderstorm';
+    } else if (weatherId >= 300 && weatherId < 600) {
+      return 'rain'; // 실제로는 drizzle.svg, rain.svg 등이 있음
+    } else if (weatherId >= 600 && weatherId < 700) {
+      return 'snow';
+    } else if (weatherId >= 700 && weatherId < 800) {
+      return isDay ? 'fog-day' : 'fog-night';
+    } else if (weatherId == 800) {
+      return isDay ? 'clear-day' : 'clear-night';
+    } else if (weatherId >= 801 && weatherId < 900) {
+      return isDay ? 'partly-cloudy-day' : 'partly-cloudy-night';
+    } else {
+      return 'cloudy'; // not-available 대신 cloudy 사용
+    }
+  }
+
+  /// UV 지수에 따른 MeteoconsIcon 이름 반환 (0~11 정확한 매칭)
   String _getUvIndexIcon(double uvIndex) {
-    final uvLevel = uvIndex.round().clamp(1, 11);
-    return 'uv-index-$uvLevel';
+    final uvLevel = uvIndex.round().clamp(0, 11);
+    debugPrint('☀️ UV Index: $uvIndex -> uv-index-$uvLevel');
+    return uvLevel == 0 ? 'uv-index' : 'uv-index-$uvLevel';
   }
 
   /// 풍속(m/s)을 Beaufort 스케일로 변환 (0-12)
@@ -114,13 +145,25 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
   /// Beaufort 스케일에 따른 wind 아이콘 이름 반환
   String _getWindIcon(double windSpeedMs) {
     final beaufortScale = _getBeaufortScale(windSpeedMs);
+    debugPrint(
+      '💨 Wind Speed: ${windSpeedMs}m/s -> Beaufort Scale: $beaufortScale -> wind-beaufort-$beaufortScale',
+    );
     return 'wind-beaufort-$beaufortScale';
   }
 
   @override
   Widget build(BuildContext context) {
+    // 아이콘 이름 디버그 로그
+    if (_weatherData != null && !_isLoading) {
+      final uvIconName = _getUvIndexIcon(_weatherData!.uvIndex);
+      final windIconName = _getWindIcon(_weatherData!.windSpeed);
+      debugPrint('🎯 Weather Card 아이콘 이름:');
+      debugPrint('  UV: ${_weatherData!.uvIndex} -> $uvIconName');
+      debugPrint('  Wind: ${_weatherData!.windSpeed}m/s -> $windIconName');
+    }
+
     return GestureDetector(
-      onTap: _isLoading ? null : _loadWeatherData,
+      onTap: _isLoading ? null : () => _loadWeatherData(forceRefresh: true),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
@@ -182,9 +225,11 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
                         : _errorMessage != null
                         ? '天気情報を取得できません'
                         : _walkingAdvice ?? '散歩情報を生成中...',
-                    style: AppTextStyles.caption.copyWith(
+                    style: AppTextStyles.body.copyWith(
                       color: AppColors.pointGray,
+                      fontSize: 13,
                     ),
+                    softWrap: true,
                   ),
                 ],
               ),
@@ -192,16 +237,16 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
 
             // 오른쪽: 날씨 아이콘
             Container(
-              width: 120,
-              height: 120,
+              width: 90,
+              height: 90,
               decoration: BoxDecoration(
                 color: AppColors.pointOffWhite.withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(60),
+                borderRadius: BorderRadius.circular(45),
               ),
               child: Center(
                 child: _isLoading
                     ? const CircularProgressIndicator()
-                    : MeteoconsIcon(name: _iconName ?? 'clear-day', size: 100),
+                    : MeteoconsIcon(name: _iconName ?? 'clear-day', size: 70),
               ),
             ),
           ],
@@ -211,68 +256,4 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
   }
 }
 
-class MeteoconsIcon extends ConsumerStatefulWidget {
-  const MeteoconsIcon({super.key, required this.name, this.size = 32});
-
-  final String name;
-  final double size;
-
-  @override
-  ConsumerState<MeteoconsIcon> createState() => _MeteoconsIconState();
-}
-
-class _MeteoconsIconState extends ConsumerState<MeteoconsIcon> {
-  late final WebViewController controller;
-  late final WeatherController _weatherController;
-  String? svgContent;
-
-  @override
-  void initState() {
-    super.initState();
-    _weatherController = WeatherController(ref);
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.transparent);
-    _loadSvgAndCreateHtml();
-  }
-
-  Future<void> _loadSvgAndCreateHtml() async {
-    try {
-      final result = await _weatherController.loadWeatherIcon(widget.name);
-
-      if (result.isSuccess) {
-        final svgString = result.data as String;
-        final html = _weatherController.generateWeatherIconHtml(
-          svgString,
-          widget.size,
-        );
-
-        await controller.loadHtmlString(html, baseUrl: 'about:blank');
-        if (mounted) {
-          setState(() {
-            svgContent = svgString;
-          });
-        }
-      } else {
-        _loadFallbackHtml();
-      }
-    } catch (e) {
-      debugPrint('Failed to load SVG: $e');
-      _loadFallbackHtml();
-    }
-  }
-
-  void _loadFallbackHtml() {
-    final fallbackHtml = _weatherController.generateFallbackHtml(widget.name);
-    controller.loadHtmlString(fallbackHtml, baseUrl: 'about:blank');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.size,
-      height: widget.size,
-      child: WebViewWidget(controller: controller),
-    );
-  }
-}
+// MeteoconsIcon은 별도 파일로 분리됨
