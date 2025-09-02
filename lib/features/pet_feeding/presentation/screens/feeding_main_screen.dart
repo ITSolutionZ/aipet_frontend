@@ -8,28 +8,18 @@ import '../../../../shared/shared.dart';
 /// 식사&급수 메인 페이지
 /// 드로워에서 "食事&給水" 메뉴를 탭했을 때 이동하는 페이지
 class FeedingMainScreen extends ConsumerWidget {
-  const FeedingMainScreen({super.key});
+  final bool showBackButton;
+
+  const FeedingMainScreen({super.key, this.showBackButton = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '食事&給水',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-      ),
+      drawer: showBackButton ? null : const AppDrawer(),
+      appBar: showBackButton
+          ? _buildBackAppBar()
+          : _buildDrawerAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -50,12 +40,9 @@ class FeedingMainScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            // 메뉴 그리드
+            // 메뉴 리스트
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: AppSpacing.md,
-                mainAxisSpacing: AppSpacing.md,
+              child: ListView(
                 children: [
                   _buildMenuCard(
                     context,
@@ -67,6 +54,7 @@ class FeedingMainScreen extends ConsumerWidget {
                       '${AppRouter.feedingScheduleRoute}?petId=default',
                     ),
                   ),
+                  const SizedBox(height: AppSpacing.md),
                   _buildMenuCard(
                     context,
                     icon: Icons.history,
@@ -75,6 +63,7 @@ class FeedingMainScreen extends ConsumerWidget {
                     color: AppColors.pointGreen,
                     onTap: () => context.go(AppRouter.feedingRecordsRoute),
                   ),
+                  const SizedBox(height: AppSpacing.md),
                   _buildMenuCard(
                     context,
                     icon: Icons.analytics,
@@ -85,6 +74,7 @@ class FeedingMainScreen extends ConsumerWidget {
                       '${AppRouter.feedingAnalysisRoute}?petId=default',
                     ),
                   ),
+                  const SizedBox(height: AppSpacing.md),
                   _buildMenuCard(
                     context,
                     icon: Icons.menu_book,
@@ -99,70 +89,42 @@ class FeedingMainScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: AppColors.pointBrown,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.md,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(
-                  context,
-                  icon: Icons.home,
-                  label: '홈',
-                  isSelected: false,
-                  onTap: () => context.go(AppRouter.homeRoute),
-                ),
-                _buildNavItem(
-                  context,
-                  icon: Icons.smart_toy,
-                  label: 'AI',
-                  isSelected: false,
-                  onTap: () => context.go(AppRouter.aiRoute),
-                ),
-                _buildNavItem(
-                  context,
-                  icon: Icons.calendar_today,
-                  label: '캘린더',
-                  isSelected: false,
-                  onTap: () => context.go(AppRouter.schedulingRoute),
-                ),
-                _buildNavItem(
-                  context,
-                  icon: Icons.notifications,
-                  label: '알람',
-                  isSelected: false,
-                  onTap: () => context.go(AppRouter.pushNotificationRoute),
-                ),
-                _buildNavItem(
-                  context,
-                  icon: Icons.settings,
-                  label: '설정',
-                  isSelected: false,
-                  onTap: () => context.go(AppRouter.settingsRoute),
-                ),
-              ],
-            ),
-          ),
-        ),
+      bottomNavigationBar: CustomBottomNavigation(
+        selectedIndex: showBackButton ? -1 : 0, // 홈에서 접근 시 선택 없음, drawer에서 접근 시 홈 선택
+        onItemTapped: (index) {
+          switch (index) {
+            case 0:
+              context.go('/home');
+              break;
+            case 1:
+              context.go('/ai');
+              break;
+            case 2:
+              context.go('/scheduling');
+              break;
+            case 3:
+              context.go('/settings/push-notification');
+              break;
+            case 4:
+              context.go('/settings');
+              break;
+          }
+        },
       ),
     );
   }
 
-  /// 메뉴 카드 위젯
+  /// 뒤로가기 버튼이 있는 AppBar (홈에서 접근 시)
+  PreferredSizeWidget _buildBackAppBar() {
+    return const BackAppBar(title: '食事&給水');
+  }
+
+  /// Drawer가 있는 AppBar (drawer에서 접근 시)
+  PreferredSizeWidget _buildDrawerAppBar() {
+    return const DrawerAppBar(title: '食事&給水');
+  }
+
+  /// 메뉴 카드 위젯 (세로 레이아웃)
   Widget _buildMenuCard(
     BuildContext context, {
     required IconData icon,
@@ -181,8 +143,7 @@ class FeedingMainScreen extends ConsumerWidget {
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Row(
             children: [
               // 아이콘
               Container(
@@ -194,26 +155,36 @@ class FeedingMainScreen extends ConsumerWidget {
                 ),
                 child: Icon(icon, color: color, size: 32),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const SizedBox(width: AppSpacing.lg),
 
-              // 제목
-              Text(
-                title,
-                style: AppFonts.titleSmall.copyWith(
-                  color: AppColors.pointDark,
-                  fontWeight: FontWeight.bold,
+              // 텍스트 영역
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppFonts.titleSmall.copyWith(
+                        color: AppColors.pointDark,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      subtitle,
+                      style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacing.xs),
 
-              // 부제목
-              Text(
-                subtitle,
-                style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              // 화살표 아이콘
+              const Icon(
+                Icons.arrow_forward_ios,
+                color: AppColors.pointGray,
+                size: 16,
               ),
             ],
           ),
@@ -222,44 +193,4 @@ class FeedingMainScreen extends ConsumerWidget {
     );
   }
 
-  /// 네비게이션 아이템 위젯
-  Widget _buildNavItem(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: isSelected ? Colors.yellow : Colors.white,
-            size: 24,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            label,
-            style: AppFonts.bodySmall.copyWith(
-              color: isSelected ? Colors.yellow : Colors.white,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-          if (isSelected)
-            Container(
-              margin: const EdgeInsets.only(top: AppSpacing.xs),
-              width: 6,
-              height: 6,
-              decoration: const BoxDecoration(
-                color: Colors.yellow,
-                shape: BoxShape.circle,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
 }
