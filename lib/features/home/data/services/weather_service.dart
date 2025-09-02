@@ -12,11 +12,30 @@ class WeatherService {
   static const String _oneCallUrl =
       'https://api.openweathermap.org/data/3.0/onecall';
   static const String _geocodingUrl = 'http://api.openweathermap.org/geo/1.0';
+  
+  // 캐시 관련 필드
+  static WeatherData? _cachedWeatherData;
+  static DateTime? _cacheTime;
+  static WeatherLocation? _cachedLocation;
+  static const Duration _cacheValidDuration = Duration(minutes: 10); // 10분간 캐시 유효
 
-  Future<WeatherData?> getCurrentWeather({WeatherLocation? location}) async {
+  Future<WeatherData?> getCurrentWeather({
+    WeatherLocation? location, 
+    bool userTriggered = false,
+  }) async {
     try {
       final weatherLocation = location ?? await _getCurrentLocation();
       if (weatherLocation == null) return null;
+
+      // 캐시 확인 (사용자가 탭한 경우 5분, 자동 로드는 10분)
+      final cacheValidDuration = userTriggered 
+          ? const Duration(minutes: 5) 
+          : _cacheValidDuration;
+          
+      if (_isCacheValid(weatherLocation, customDuration: cacheValidDuration)) {
+        debugPrint('✅ 캐시된 날씨 데이터 사용 (API 호출 생략) - ${userTriggered ? "탭으로 요청" : "자동 로드"}');
+        return _cachedWeatherData;
+      }
 
       final apiKey = AppConfig.current.weatherApiKey;
       if (apiKey.isEmpty) {
@@ -52,7 +71,9 @@ class WeatherService {
         debugPrint(
           '✅ One Call API 3.0 성공 - UV: ${data['current']['uvi']}, Wind: ${data['current']['wind_speed']}',
         );
-        return WeatherData.fromOneCallJson(data, weatherLocation.name);
+        final weatherData = WeatherData.fromOneCallJson(data, weatherLocation.name);
+        _updateCache(weatherData, weatherLocation);
+        return weatherData;
       } else {
         // 에러 발생 시 기본 API로 폴백 (One Call API 권한 없는 경우)
         debugPrint('❌ One Call API 에러: ${response.statusCode} - 기본 API로 폴백');
@@ -95,7 +116,9 @@ class WeatherService {
       final weatherId = (data['weather'] as List).first['id'] as int;
       final estimatedUV = _estimateUvIndex(weatherId);
       debugPrint('✅ 기본 API 성공 - Wind: ${windSpeed}m/s, UV: $estimatedUV (추정값)');
-      return WeatherData.fromJson(data, weatherLocation.name);
+      final weatherData = WeatherData.fromJson(data, weatherLocation.name);
+      _updateCache(weatherData, weatherLocation);
+      return weatherData;
     } else if (response.statusCode == 401) {
       // API 키 문제시 목업 데이터 사용
       debugPrint('❌ 기본 API 401 에러 - 목업 데이터 사용');
@@ -280,6 +303,50 @@ class WeatherService {
     }
 
     return baseUv * 0.7; // 기본값
+  }
+
+  /// 캐시가 유효한지 확인
+  bool _isCacheValid(WeatherLocation currentLocation, {Duration? customDuration}) {
+    if (_cachedWeatherData == null || _cacheTime == null || _cachedLocation == null) {
+      return false;
+    }
+
+    // 시간 체크 (기본 10분, 커스텀 시간 가능)
+    final validDuration = customDuration ?? _cacheValidDuration;
+    final now = DateTime.now();
+    if (now.difference(_cacheTime!).abs() > validDuration) {
+      debugPrint('⏰ 캐시 만료 (${now.difference(_cacheTime!).inMinutes}분 경과, 제한: ${validDuration.inMinutes}분)');
+      return false;
+    }
+
+    // 위치 체크 (같은 위치인지 확인, 0.01도 이내)
+    const locationThreshold = 0.01;
+    final latDiff = (currentLocation.latitude - _cachedLocation!.latitude).abs();
+    final lonDiff = (currentLocation.longitude - _cachedLocation!.longitude).abs();
+    
+    if (latDiff > locationThreshold || lonDiff > locationThreshold) {
+      debugPrint('📍 위치 변경으로 캐시 무효화');
+      return false;
+    }
+
+    debugPrint('✅ 캐시 유효 (${validDuration.inMinutes - now.difference(_cacheTime!).inMinutes}분 남음)');
+    return true;
+  }
+
+  /// 캐시 업데이트
+  void _updateCache(WeatherData weatherData, WeatherLocation location) {
+    _cachedWeatherData = weatherData;
+    _cacheTime = DateTime.now();
+    _cachedLocation = location;
+    debugPrint('💾 날씨 데이터 캐시 업데이트: ${location.name}');
+  }
+
+  /// 캐시 클리어 (필요한 경우)
+  static void clearCache() {
+    _cachedWeatherData = null;
+    _cacheTime = null;
+    _cachedLocation = null;
+    debugPrint('🗑️ 날씨 캐시 클리어');
   }
 
   /// API 실패 시 목업 날씨 데이터 반환

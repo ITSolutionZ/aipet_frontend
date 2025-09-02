@@ -22,6 +22,9 @@ class WeatherController extends BaseController {
   final WeatherService _weatherService = WeatherService();
   final OpenAIService _openAIService = OpenAIService();
   WeatherData? _currentWeatherData;
+  String? _cachedWalkingAdvice;
+  DateTime? _adviceCacheTime;
+  static const Duration _adviceCacheValidDuration = Duration(hours: 1); // 산책 조언 1시간 캐시
 
   // 아이콘 관련 메서드들은 WeatherIconController로 분리됨
 
@@ -33,9 +36,11 @@ class WeatherController extends BaseController {
   }
 
   /// 현재 날씨 데이터 가져오기
-  Future<WeatherResult> getCurrentWeather() async {
+  Future<WeatherResult> getCurrentWeather({bool userTriggered = false}) async {
     try {
-      final weatherData = await _weatherService.getCurrentWeather();
+      final weatherData = await _weatherService.getCurrentWeather(
+        userTriggered: userTriggered,
+      );
       if (weatherData != null) {
         _currentWeatherData = weatherData;
         return WeatherResult.success('날씨 정보를 가져왔습니다', weatherData);
@@ -59,6 +64,11 @@ class WeatherController extends BaseController {
     try {
       if (_currentWeatherData == null) {
         return WeatherResult.failure('날씨 데이터가 없습니다');
+      }
+
+      // 캐시된 조언 확인
+      if (_isAdviceCacheValid()) {
+        return WeatherResult.success('캐시된 산책 조언', _cachedWalkingAdvice!);
       }
 
       final weatherData = _currentWeatherData!;
@@ -103,6 +113,9 @@ UV指数: ${weatherData.uvIndex.toStringAsFixed(1)}
           ? cleanAdvice.substring(0, 15)
           : cleanAdvice;
 
+      // 조언 캐시 업데이트
+      _updateAdviceCache(shortAdvice);
+
       return WeatherResult.success('산책 조언을 생성했습니다', shortAdvice);
     } catch (e) {
       handleError(e);
@@ -133,5 +146,31 @@ UV指数: ${weatherData.uvIndex.toStringAsFixed(1)}
     } else {
       return WeatherResult.success('온도 기반 조언', '短時間の外出を');
     }
+  }
+
+  /// 산책 조언 캐시가 유효한지 확인
+  bool _isAdviceCacheValid() {
+    if (_cachedWalkingAdvice == null || _adviceCacheTime == null) {
+      return false;
+    }
+
+    final now = DateTime.now();
+    if (now.difference(_adviceCacheTime!).abs() > _adviceCacheValidDuration) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /// 산책 조언 캐시 업데이트
+  void _updateAdviceCache(String advice) {
+    _cachedWalkingAdvice = advice;
+    _adviceCacheTime = DateTime.now();
+  }
+
+  /// 캐시 클리어
+  void clearAdviceCache() {
+    _cachedWalkingAdvice = null;
+    _adviceCacheTime = null;
   }
 }
