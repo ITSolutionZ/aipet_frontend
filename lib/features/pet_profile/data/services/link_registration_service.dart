@@ -1,4 +1,4 @@
-import '../mock_data/mock_data_service.dart';
+import '../../../../shared/mock_data/mock_data_service.dart';
 
 /// 링크 등록 서비스
 ///

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/shared.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+import '../../../pet_registor/pet_registor.dart';
 
 /// AI 상담을 위한 펫 선택 위젯
 class AiPetSelection extends StatelessWidget {
@@ -45,12 +45,9 @@ class AiPetSelection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          
-          if (pets.isEmpty) 
-            _buildNoPetsCard()
-          else
-            _buildPetSelectionGrid(),
-          
+
+          if (pets.isEmpty) _buildNoPetsCard() else _buildPetSelectionGrid(),
+
           const SizedBox(height: AppSpacing.sm),
           _buildGeneralConsultationOption(),
         ],
@@ -119,7 +116,7 @@ class AiPetSelection extends StatelessWidget {
 
   Widget _buildPetChip(PetProfileEntity pet) {
     final isSelected = selectedPet?.id == pet.id;
-    
+
     return GestureDetector(
       onTap: () => onPetSelected(isSelected ? null : pet),
       child: Container(
@@ -131,18 +128,20 @@ class AiPetSelection extends StatelessWidget {
           color: isSelected ? AppColors.pointBrown : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(
-            color: isSelected 
-                ? AppColors.pointBrown 
-                : AppColors.pointBrown.withValues(alpha: 0.3),
+            color: isSelected
+                ? AppColors.pointBrown
+                : AiColors.selectedBorderColor,
             width: isSelected ? 2 : 1,
           ),
-          boxShadow: isSelected ? [
-            BoxShadow(
-              color: AppColors.pointBrown.withValues(alpha: 0.2),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ] : null,
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AiColors.shadowColor,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -173,7 +172,7 @@ class AiPetSelection extends StatelessWidget {
                 Text(
                   '${pet.typeName} • ${pet.age}歳',
                   style: AppFonts.bodySmall.copyWith(
-                    color: isSelected 
+                    color: isSelected
                         ? Colors.white.withValues(alpha: 0.9)
                         : AppColors.pointDark.withValues(alpha: 0.7),
                   ),
@@ -188,7 +187,7 @@ class AiPetSelection extends StatelessWidget {
 
   Widget _buildGeneralConsultationOption() {
     final isGeneralSelected = selectedPet == null;
-    
+
     return GestureDetector(
       onTap: () => onPetSelected(null),
       child: Container(
@@ -198,12 +197,14 @@ class AiPetSelection extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: isGeneralSelected ? AppColors.pointBrown.withValues(alpha: 0.1) : Colors.transparent,
+          color: isGeneralSelected
+              ? AiColors.petSelectionBackground
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
-            color: isGeneralSelected 
-                ? AppColors.pointBrown 
-                : AppColors.pointBrown.withValues(alpha: 0.2),
+            color: isGeneralSelected
+                ? AppColors.pointBrown
+                : AiColors.unselectedBorderColor,
             width: 1,
           ),
         ),
@@ -212,14 +213,20 @@ class AiPetSelection extends StatelessWidget {
             Icon(
               Icons.help_outline,
               size: 20,
-              color: isGeneralSelected ? AppColors.pointBrown : AppColors.pointDark.withValues(alpha: 0.7),
+              color: isGeneralSelected
+                  ? AppColors.pointBrown
+                  : AppColors.pointDark.withValues(alpha: 0.7),
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(
               '一般的なペット相談',
               style: AppFonts.bodySmall.copyWith(
-                color: isGeneralSelected ? AppColors.pointBrown : AppColors.pointDark.withValues(alpha: 0.8),
-                fontWeight: isGeneralSelected ? FontWeight.w600 : FontWeight.normal,
+                color: isGeneralSelected
+                    ? AppColors.pointBrown
+                    : AppColors.pointDark.withValues(alpha: 0.8),
+                fontWeight: isGeneralSelected
+                    ? FontWeight.w600
+                    : FontWeight.normal,
               ),
             ),
           ],

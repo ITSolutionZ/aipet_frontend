@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
-import '../../../pet_registor/data/providers/pet_providers.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+import '../../../pet_registor/pet_registor.dart';
 
 /// AI 메시지 버블 형태의 펫 선택 위젯
 class AiPetSelectionBubble extends ConsumerWidget {
@@ -34,16 +33,16 @@ class AiPetSelectionBubble extends ConsumerWidget {
             child: const Icon(Icons.smart_toy, color: Colors.white, size: 16),
           ),
           const SizedBox(width: AppSpacing.sm),
-          
+
           // 메시지 버블
           Flexible(
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(AppRadius.medium).copyWith(
-                  bottomLeft: Radius.zero,
-                ),
+                borderRadius: BorderRadius.circular(
+                  AppRadius.medium,
+                ).copyWith(bottomLeft: Radius.zero),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
@@ -65,7 +64,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  
+
                   Text(
                     'ペットに関連する内容をより具体的にご質問ください',
                     style: AppFonts.bodyMedium.copyWith(
@@ -74,7 +73,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  
+
                   Text(
                     '以下のような内容についてご質問ください：',
                     style: AppFonts.bodyMedium.copyWith(
@@ -83,16 +82,16 @@ class AiPetSelectionBubble extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  
+
                   // 질문 예시 목록
                   _buildQuestionExample('• ペットの健康と病気について'),
                   _buildQuestionExample('• フードと栄養管理'),
                   _buildQuestionExample('• 行動矯正とトレーニング'),
                   _buildQuestionExample('• グルーミングとケア'),
                   _buildQuestionExample('• ペット用品と環境'),
-                  
+
                   const SizedBox(height: AppSpacing.md),
-                  
+
                   // 펫 선택 질문
                   Text(
                     'どのペットについて相談しますか？',
@@ -102,21 +101,22 @@ class AiPetSelectionBubble extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  
+
                   // 펫 선택 위젯
                   Consumer(
                     builder: (context, ref, child) {
                       final petsAsync = ref.watch(petsNotifierProvider);
                       return petsAsync.when(
                         data: (pets) => _buildPetSelection(pets),
-                        loading: () => const Center(child: CircularProgressIndicator()),
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
                         error: (error, stack) => _buildPetSelection([]),
                       );
                     },
                   ),
-                  
+
                   const SizedBox(height: AppSpacing.sm),
-                  
+
                   // 타임스탬프
                   Text(
                     '今',
@@ -150,11 +150,11 @@ class AiPetSelectionBubble extends ConsumerWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (pets.isNotEmpty) 
+        if (pets.isNotEmpty)
           _buildPetSelectionGrid(pets)
         else
           _buildNoPetsCard(),
-        
+
         const SizedBox(height: AppSpacing.sm),
         _buildGeneralConsultationOption(),
       ],
@@ -207,7 +207,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
 
   Widget _buildPetChip(PetProfileEntity pet) {
     final isSelected = selectedPet?.id == pet.id;
-    
+
     return GestureDetector(
       onTap: () => onPetSelected(isSelected ? null : pet),
       child: Container(
@@ -219,18 +219,20 @@ class AiPetSelectionBubble extends ConsumerWidget {
           color: isSelected ? AppColors.pointBrown : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(
-            color: isSelected 
-                ? AppColors.pointBrown 
-                : AppColors.pointBrown.withValues(alpha: 0.3),
+            color: isSelected
+                ? AppColors.pointBrown
+                : AiColors.selectedBorderColor,
             width: isSelected ? 2 : 1,
           ),
-          boxShadow: isSelected ? [
-            BoxShadow(
-              color: AppColors.pointBrown.withValues(alpha: 0.2),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ] : null,
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AiColors.shadowColor,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -261,7 +263,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                 Text(
                   '${pet.typeName} • ${pet.age}歳',
                   style: AppFonts.bodySmall.copyWith(
-                    color: isSelected 
+                    color: isSelected
                         ? Colors.white.withValues(alpha: 0.9)
                         : AppColors.pointDark.withValues(alpha: 0.7),
                   ),
@@ -276,7 +278,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
 
   Widget _buildGeneralConsultationOption() {
     final isGeneralSelected = selectedPet == null;
-    
+
     return GestureDetector(
       onTap: () => onPetSelected(null),
       child: Container(
@@ -286,12 +288,14 @@ class AiPetSelectionBubble extends ConsumerWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: isGeneralSelected ? AppColors.pointBrown.withValues(alpha: 0.1) : Colors.transparent,
+          color: isGeneralSelected
+              ? AiColors.petSelectionBackground
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
-            color: isGeneralSelected 
-                ? AppColors.pointBrown 
-                : AppColors.pointBrown.withValues(alpha: 0.2),
+            color: isGeneralSelected
+                ? AppColors.pointBrown
+                : AiColors.unselectedBorderColor,
             width: 1,
           ),
         ),
@@ -300,14 +304,20 @@ class AiPetSelectionBubble extends ConsumerWidget {
             Icon(
               Icons.help_outline,
               size: 20,
-              color: isGeneralSelected ? AppColors.pointBrown : AppColors.pointDark.withValues(alpha: 0.7),
+              color: isGeneralSelected
+                  ? AppColors.pointBrown
+                  : AppColors.pointDark.withValues(alpha: 0.7),
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(
               '一般的なペット相談',
               style: AppFonts.bodySmall.copyWith(
-                color: isGeneralSelected ? AppColors.pointBrown : AppColors.pointDark.withValues(alpha: 0.8),
-                fontWeight: isGeneralSelected ? FontWeight.w600 : FontWeight.normal,
+                color: isGeneralSelected
+                    ? AppColors.pointBrown
+                    : AppColors.pointDark.withValues(alpha: 0.8),
+                fontWeight: isGeneralSelected
+                    ? FontWeight.w600
+                    : FontWeight.normal,
               ),
             ),
           ],

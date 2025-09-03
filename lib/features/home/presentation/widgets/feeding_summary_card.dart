@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../shared/shared.dart';
 import '../../../../app/router/routes/route_constants.dart';
 import '../../data/providers/home_providers.dart';
+import 'common_summary_card.dart';
 
 class FeedingSummaryCard extends ConsumerWidget {
   const FeedingSummaryCard({super.key});
@@ -22,8 +23,10 @@ class FeedingSummaryCard extends ConsumerWidget {
         .length;
     final totalMeals = todayMeals.length;
 
-    final nextMealInfo = MockDataService.getMockNextMealInfo(petId: currentPetId);
-    
+    final nextMealInfo = MockDataService.getMockNextMealInfo(
+      petId: currentPetId,
+    );
+
     final feedingData = {
       'completedMeals': completedMeals,
       'totalMeals': totalMeals,
@@ -32,74 +35,14 @@ class FeedingSummaryCard extends ConsumerWidget {
       'calories': MockDataService.getMockExpectedCalories(petId: currentPetId),
     };
 
-    return GestureDetector(
+    return CommonSummaryCard(
+      icon: Icons.restaurant,
+      iconColor: AppColors.pointBlue,
+      mainValue: '${feedingData['completedMeals']}',
+      unit: '/${feedingData['totalMeals']}',
       onTap: () =>
           context.go('${RouteConstants.feedingMainRoute}?showBackButton=true'),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.sm),
-        decoration: BoxDecoration(
-          color: AppColors.pureWhite,
-          borderRadius: BorderRadius.circular(AppSpacing.md),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // 상단 원형 아이콘
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.pointBlue.withValues(alpha: 0.3),
-                  width: 2,
-                ),
-                color: AppColors.pointBlue.withValues(alpha: 0.1),
-              ),
-              child: const Icon(
-                Icons.restaurant,
-                color: AppColors.pointBlue,
-                size: 24,
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // 메인 수치와 단위
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  '${feedingData['completedMeals']}',
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.pointDark,
-                  ),
-                ),
-                Text(
-                  '/${feedingData['totalMeals']}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.pointDark,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      subtitle: '今日の食事',
     );
   }
 }

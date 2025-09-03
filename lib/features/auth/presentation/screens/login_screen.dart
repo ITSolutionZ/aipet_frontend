@@ -73,25 +73,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
-          'パスワード再設定',
+          _passwordResetTitle,
           style: AppFonts.fredoka(
             fontSize: AppFonts.lg,
             fontWeight: FontWeight.bold,
           ),
         ),
         content: const Text(
-          'パスワード再設定機能は準備中です。\n\nFirebase Auth連携後に実装予定です。',
+          _passwordResetMessage,
           style: TextStyle(fontSize: 16),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+            child: const Text(_okButtonText),
           ),
         ],
       ),
     );
   }
+
+  // UI 텍스트 상수
+  static const String _passwordResetTitle = 'パスワード再設定';
+  static const String _passwordResetMessage =
+      'パスワード再設定機能は準備中です。\n\nFirebase Auth連携後に実装予定です。';
+  static const String _okButtonText = 'OK';
 
   @override
   Widget build(BuildContext context) {

@@ -4,46 +4,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+import '../../../pet_registor/pet_registor.dart';
 import '../../domain/domain.dart';
+import '../services/ai_mock_data_service_impl.dart';
 import '../services/openai_service.dart';
 
 class AiRepositoryImpl implements AiRepository {
-  final OpenAIService _openAIService = OpenAIService();
+  final OpenAIService _openAIService;
+  final AiMockDataServiceImpl _aiMockDataService;
   final Ref ref;
 
-  AiRepositoryImpl(this.ref);
+  AiRepositoryImpl({
+    required OpenAIService openAIService,
+    required AiMockDataServiceImpl aiMockDataService,
+    required this.ref,
+  })  : _openAIService = openAIService,
+        _aiMockDataService = aiMockDataService;
   @override
   Future<List<AiMessageEntity>> getChatHistory() async {
     // TODO: Replace with actual API call
     // final response = await _httpClient.get('/api/ai/chat/history');
     // return response.data.map((json) => AiMessageEntity.fromJson(json)).toList();
 
-    await AiMockDataService.simulateApiDelay();
-    final mockData = AiMockDataService.getChatHistoryMockData();
-
-    return mockData
-        .map(
-          (json) => AiMessageEntity(
-            id: json['id'] as String,
-            content: json['content'] as String,
-            type: _parseMessageType(json['type'] as String),
-            timestamp: DateTime.parse(json['timestamp'] as String),
-          ),
-        )
-        .toList();
+    await _aiMockDataService.simulateApiDelay();
+    return _aiMockDataService.getChatHistory();
   }
 
   @override
   Future<AiMessageEntity> sendMessage(String message) async {
     try {
-      // 디버그 로그 추가
-      debugPrint('🔄 API 호출 시작: $message');
+      // AI 로거를 사용한 API 호출 시작 로그
+      AiLogger.logApiStart(message);
 
       // 실제 OpenAI API 호출
       final response = await _openAIService.generateResponse(message);
 
-      debugPrint('✅ API 응답 성공: ${response.length > 50 ? response.substring(0, 50) : response}...');
+      // AI 로거를 사용한 응답 성공 로그
+      AiLogger.logApiSuccess(response);
 
       return AiMessageEntity(
         id: _generateId(),
@@ -52,17 +49,11 @@ class AiRepositoryImpl implements AiRepository {
         timestamp: DateTime.now(),
       );
     } catch (e) {
-      // 오류 로그 추가
-      debugPrint('❌ API 호출 실패: $e');
+      // AI 로거를 사용한 에러 로그
+      AiLogger.logApiError(e);
 
-      // API 호출 실패 시 에러 메시지 반환
-      return AiMessageEntity(
-        id: _generateId(),
-        content:
-            '申し訳ございません。現在サービスに一時的な問題が発生しています。しばらくしてから再度お試しください。\n\nエラー: ${e.toString()}',
-        type: MessageType.assistant,
-        timestamp: DateTime.now(),
-      );
+      // 공통 에러 메시지 생성
+      return _createErrorMessage(e);
     }
   }
 
@@ -72,9 +63,9 @@ class AiRepositoryImpl implements AiRepository {
     PetProfileEntity? petContext,
   }) async {
     try {
-      // 디버그 로그 추가
-      debugPrint('🔄 API 호출 시작 (펫 컨텍스트): $message');
-      debugPrint('   펫 정보: ${petContext?.name} (${petContext?.typeName})');
+      // AI 로거를 사용한 API 호출 시작 로그
+      AiLogger.logApiStart(message, context: '펫 컨텍스트');
+      AiLogger.logPetContext(petContext?.name, petContext?.typeName);
 
       // 펫 정보와 함께 OpenAI API 호출
       final response = await _openAIService.generateResponse(
@@ -82,7 +73,8 @@ class AiRepositoryImpl implements AiRepository {
         petContext: petContext,
       );
 
-      debugPrint('✅ API 응답 성공: ${response.length > 50 ? response.substring(0, 50) : response}...');
+      // AI 로거를 사용한 응답 성공 로그
+      AiLogger.logApiSuccess(response);
 
       return AiMessageEntity(
         id: _generateId(),
@@ -91,17 +83,11 @@ class AiRepositoryImpl implements AiRepository {
         timestamp: DateTime.now(),
       );
     } catch (e) {
-      // 오류 로그 추가
-      debugPrint('❌ API 호출 실패: $e');
+      // AI 로거를 사용한 에러 로그
+      AiLogger.logApiError(e);
 
-      // API 호출 실패 시 에러 메시지 반환
-      return AiMessageEntity(
-        id: _generateId(),
-        content:
-            '申し訳ございません。現在サービスに一時的な問題が発生しています。しばらくしてから再度お試しください。\n\nエラー: ${e.toString()}',
-        type: MessageType.assistant,
-        timestamp: DateTime.now(),
-      );
+      // 공통 에러 메시지 생성
+      return _createErrorMessage(e);
     }
   }
 
@@ -110,7 +96,7 @@ class AiRepositoryImpl implements AiRepository {
     // TODO: Replace with actual API call
     // await _httpClient.delete('/api/ai/chat/history');
 
-    await AiMockDataService.simulateApiDelay();
+    await MockHelper.simulateApiCall();
     // Mock implementation: no actual storage to clear
   }
 
@@ -120,7 +106,7 @@ class AiRepositoryImpl implements AiRepository {
     // final response = await _httpClient.get('/api/ai/chat/sessions');
     // return response.data.map((json) => AiChatSessionEntity.fromJson(json)).toList();
 
-    await AiMockDataService.simulateApiDelay();
+    await MockHelper.simulateApiCall();
     // Mock implementation: return empty list
     return [];
   }
@@ -137,7 +123,7 @@ class AiRepositoryImpl implements AiRepository {
     // });
     // return AiChatSessionEntity.fromJson(response.data);
 
-    await AiMockDataService.simulateApiDelay();
+    await MockHelper.simulateApiCall();
     final mockData = AiMockDataService.createChatSessionMockData(
       title,
       petId: petId,
@@ -159,7 +145,7 @@ class AiRepositoryImpl implements AiRepository {
     // TODO: Replace with actual API call
     // await _httpClient.delete('/api/ai/chat/sessions/$sessionId');
 
-    await AiMockDataService.simulateApiDelay();
+    await MockHelper.simulateApiCall();
     // Mock implementation: no actual storage to delete from
   }
 
@@ -169,7 +155,7 @@ class AiRepositoryImpl implements AiRepository {
     // final response = await _httpClient.get('/api/ai/suggested-questions');
     // return response.data.map((json) => AiSuggestedQuestionEntity.fromJson(json)).toList();
 
-    await AiMockDataService.simulateApiDelay();
+    await MockHelper.simulateApiCall();
 
     return AiMockDataService.suggestedQuestions
         .map(
@@ -184,19 +170,6 @@ class AiRepositoryImpl implements AiRepository {
         .toList();
   }
 
-  /// MessageType 문자열을 enum으로 파싱
-  MessageType _parseMessageType(String typeString) {
-    switch (typeString.toLowerCase()) {
-      case 'user':
-        return MessageType.user;
-      case 'assistant':
-        return MessageType.assistant;
-      case 'system':
-        return MessageType.system;
-      default:
-        return MessageType.assistant;
-    }
-  }
 
   @override
   Future<AiFavoriteEntity> addFavoriteMessage(
@@ -207,7 +180,7 @@ class AiRepositoryImpl implements AiRepository {
     String? userNote,
   }) async {
     // TODO: Replace with actual API call
-    await AiMockDataService.simulateApiDelay();
+    await MockHelper.simulateApiCall();
 
     return AiFavoriteEntity(
       id: _generateId(),
@@ -234,7 +207,7 @@ class AiRepositoryImpl implements AiRepository {
     String? category,
   }) async {
     // TODO: Replace with actual API call
-    await AiMockDataService.simulateApiDelay();
+    await MockHelper.simulateApiCall();
     // Mock implementation: return empty list
     return [];
   }
@@ -253,7 +226,7 @@ class AiRepositoryImpl implements AiRepository {
     String? petName,
   }) async {
     // TODO: Replace with actual API call
-    await AiMockDataService.simulateApiDelay();
+    await MockHelper.simulateApiCall();
 
     // Mock implementation: create a basic summary
     final summary = messages.length > 1
@@ -281,7 +254,7 @@ class AiRepositoryImpl implements AiRepository {
     String? category,
   }) async {
     // TODO: Replace with actual API call
-    await AiMockDataService.simulateApiDelay();
+    await MockHelper.simulateApiCall();
     // Mock implementation: return empty list
     return [];
   }
@@ -289,8 +262,18 @@ class AiRepositoryImpl implements AiRepository {
   @override
   Future<void> deleteChatSummary(String summaryId) async {
     // TODO: Replace with actual API call
-    await AiMockDataService.simulateApiDelay();
+    await MockHelper.simulateApiCall();
     // Mock implementation: no actual storage to delete from
+  }
+
+  /// 공통 에러 메시지 생성
+  AiMessageEntity _createErrorMessage(dynamic error) {
+    return AiMessageEntity(
+      id: _generateId(),
+      content: '${AiConstants.apiErrorMessage}${error.toString()}',
+      type: MessageType.assistant,
+      timestamp: DateTime.now(),
+    );
   }
 
   /// 고유 ID 생성
