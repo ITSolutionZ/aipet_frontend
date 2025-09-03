@@ -61,7 +61,7 @@ void main() {
           const ProviderScope(
             child: MaterialApp(
               home: Scaffold(
-                body: PetProfileCard(activities: ['커스텀 활동 1', '커스텀 활동 2']),
+                body: PetProfileCard(),
               ),
             ),
           ),

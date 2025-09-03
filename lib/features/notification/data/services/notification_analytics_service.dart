@@ -3,9 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import '../../features/notification/domain/entities/notification_model.dart';
-import '../../features/notification/domain/entities/notification_stats.dart';
-import 'secure_storage_service.dart';
+import '../../../../shared/shared.dart';
+import '../../domain/domain.dart';
 
 /// 알림 통계 분석 서비스
 class NotificationAnalyticsService {
@@ -162,9 +161,7 @@ class NotificationAnalyticsService {
   /// 모든 통계 가져오기
   Future<List<NotificationStats>> getStats() async {
     try {
-      final statsJson = await SecureStorageService.getStringUnencrypted(
-        _statsKey,
-      );
+      final statsJson = await SecureStorageService.getString(_statsKey);
       if (statsJson != null) {
         final List<dynamic> statsList = jsonDecode(statsJson);
         return statsList
@@ -251,9 +248,7 @@ class NotificationAnalyticsService {
   /// 분석 데이터 가져오기
   Future<NotificationAnalytics?> getAnalytics() async {
     try {
-      final analyticsJson = await SecureStorageService.getStringUnencrypted(
-        _analyticsKey,
-      );
+      final analyticsJson = await SecureStorageService.getString(_analyticsKey);
       if (analyticsJson != null) {
         final analyticsData = jsonDecode(analyticsJson);
         return NotificationAnalytics.fromJson(analyticsData);
@@ -269,7 +264,7 @@ class NotificationAnalyticsService {
   /// 사용자 참여도 데이터 가져오기
   Future<List<UserEngagement>> getUserEngagement() async {
     try {
-      final engagementJson = await SecureStorageService.getStringUnencrypted(
+      final engagementJson = await SecureStorageService.getString(
         _userEngagementKey,
       );
       if (engagementJson != null) {
@@ -405,7 +400,7 @@ class NotificationAnalyticsService {
   Future<void> _saveStats(List<NotificationStats> stats) async {
     try {
       final statsJson = jsonEncode(stats.map((s) => s.toJson()).toList());
-      await SecureStorageService.setStringUnencrypted(_statsKey, statsJson);
+      await SecureStorageService.setString(_statsKey, statsJson);
     } catch (e) {
       if (kDebugMode) {
         print('통계 저장 실패: $e');
@@ -417,10 +412,7 @@ class NotificationAnalyticsService {
   Future<void> _saveAnalytics(NotificationAnalytics analytics) async {
     try {
       final analyticsJson = jsonEncode(analytics.toJson());
-      await SecureStorageService.setStringUnencrypted(
-        _analyticsKey,
-        analyticsJson,
-      );
+      await SecureStorageService.setString(_analyticsKey, analyticsJson);
     } catch (e) {
       if (kDebugMode) {
         print('분석 데이터 저장 실패: $e');
@@ -434,10 +426,7 @@ class NotificationAnalyticsService {
       final engagementJson = jsonEncode(
         engagement.map((e) => e.toJson()).toList(),
       );
-      await SecureStorageService.setStringUnencrypted(
-        _userEngagementKey,
-        engagementJson,
-      );
+      await SecureStorageService.setString(_userEngagementKey, engagementJson);
     } catch (e) {
       if (kDebugMode) {
         print('사용자 참여도 저장 실패: $e');

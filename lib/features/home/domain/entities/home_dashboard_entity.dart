@@ -1,5 +1,4 @@
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../../data/models/weather_model.dart';
+import '../../../../features/pet_registor/domain/entities/pet_profile_entity.dart';
 
 // 예약 정보 요약
 class AppointmentSummary {
@@ -60,7 +59,7 @@ class WalkSummary {
 
 class HomeDashboardEntity {
   final String currentTime;
-  final WeatherData weather;
+  final dynamic weather; // WeatherData는 Data 레이어에서 정의되므로 dynamic으로 처리
   final List<PetProfileEntity> petProfiles;
   final List<AppointmentSummary> upcomingAppointments;
   final HealthSummary petHealthSummary;

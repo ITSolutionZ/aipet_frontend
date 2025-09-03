@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../../app/bootstrap.dart';
-import '../../../../shared/services/secure_storage_service_v2.dart';
+import '../../../../shared/services/secure_storage_service.dart';
 
 /// Firebase ID Token 관리 서비스
 /// 
@@ -106,7 +106,7 @@ class FirebaseTokenService {
   /// 토큰을 갱신해야 하는지 확인
   static Future<bool> _shouldRefreshToken() async {
     try {
-      final cachedExpires = await SecureStorageServiceV2.getString(_firebaseIdTokenExpiresKey);
+      final cachedExpires = await SecureStorageService.getString(_firebaseIdTokenExpiresKey);
       if (cachedExpires == null) return true;
       
       final expirationTime = DateTime.parse(cachedExpires);
@@ -133,8 +133,8 @@ class FirebaseTokenService {
       
       if (expirationTime != null) {
         await Future.wait([
-          SecureStorageServiceV2.setString(_firebaseIdTokenKey, idToken),
-          SecureStorageServiceV2.setString(
+          SecureStorageService.setString(_firebaseIdTokenKey, idToken),
+          SecureStorageService.setString(
             _firebaseIdTokenExpiresKey, 
             expirationTime.toIso8601String(),
           ),
@@ -150,8 +150,8 @@ class FirebaseTokenService {
   /// 캐시된 ID Token 가져오기
   static Future<String?> _getCachedIdToken() async {
     try {
-      final cachedToken = await SecureStorageServiceV2.getString(_firebaseIdTokenKey);
-      final cachedExpires = await SecureStorageServiceV2.getString(_firebaseIdTokenExpiresKey);
+      final cachedToken = await SecureStorageService.getString(_firebaseIdTokenKey);
+      final cachedExpires = await SecureStorageService.getString(_firebaseIdTokenExpiresKey);
       
       if (cachedToken == null || cachedExpires == null) {
         return null;
@@ -180,8 +180,8 @@ class FirebaseTokenService {
   static Future<void> clearCachedIdToken() async {
     try {
       await Future.wait([
-        SecureStorageServiceV2.remove(_firebaseIdTokenKey),
-        SecureStorageServiceV2.remove(_firebaseIdTokenExpiresKey),
+        SecureStorageService.remove(_firebaseIdTokenKey),
+        SecureStorageService.remove(_firebaseIdTokenExpiresKey),
       ]);
       
       if (kDebugMode) {

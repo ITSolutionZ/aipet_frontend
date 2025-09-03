@@ -299,7 +299,8 @@ class WeatherService {
     );
   }
 
-  // 날씨 상황과 시간대를 고려한 UV Index 추정
+  // 날씨 상황과 시간대를 고려한 UV Index 추정 (사용되지 않는 메서드)
+  // @deprecated - _estimateUvIndexForLocation으로 대체됨
   double _estimateUvIndex(int weatherId) {
     final now = DateTime.now();
     final hour = now.hour;

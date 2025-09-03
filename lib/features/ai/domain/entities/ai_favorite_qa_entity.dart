@@ -1,4 +1,4 @@
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+import '../../../pet_registor/pet_registor.dart';
 
 /// AI 즐겨찾기 질문-답변 쌍 엔티티
 class AiFavoriteQaEntity {

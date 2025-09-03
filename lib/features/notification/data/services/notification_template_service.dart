@@ -3,10 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import '../../features/notification/domain/entities/notification_model.dart';
-import '../../features/notification/domain/entities/notification_template.dart';
+import '../../../../shared/shared.dart';
+import '../../domain/domain.dart';
 import 'notification_service.dart';
-import 'secure_storage_service.dart';
 
 /// 알림 템플릿 서비스
 class NotificationTemplateService {
@@ -147,9 +146,7 @@ class NotificationTemplateService {
   /// 모든 템플릿 가져오기
   Future<List<NotificationTemplate>> getTemplates() async {
     try {
-      final templatesJson = await SecureStorageService.getStringUnencrypted(
-        _templatesKey,
-      );
+      final templatesJson = await SecureStorageService.getString(_templatesKey);
       if (templatesJson != null) {
         final List<dynamic> templatesList = jsonDecode(templatesJson);
         return templatesList
@@ -360,10 +357,7 @@ class NotificationTemplateService {
       final templatesJson = jsonEncode(
         templates.map((t) => t.toJson()).toList(),
       );
-      await SecureStorageService.setStringUnencrypted(
-        _templatesKey,
-        templatesJson,
-      );
+      await SecureStorageService.setString(_templatesKey, templatesJson);
     } catch (e) {
       if (kDebugMode) {
         print('템플릿 저장 실패: $e');

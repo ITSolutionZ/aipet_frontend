@@ -5,31 +5,27 @@ class AuthConstants {
   static const int maxPasswordLength = 128;
   static const int minUsernameLength = 2;
   static const int maxUsernameLength = 20;
-  
+
   // 토큰 관련
   static const Duration defaultTokenExpiry = Duration(hours: 24);
   static const Duration tokenRefreshThreshold = Duration(minutes: 5);
-  
+
   // API 타임아웃
   static const Duration apiTimeout = Duration(seconds: 30);
   static const Duration loginTimeout = Duration(seconds: 30);
-  
+
   // 재시도 관련
   static const int maxRetryAttempts = 3;
   static const Duration retryDelay = Duration(seconds: 1);
-  
+
   // UI 관련
   static const Duration loadingDebounce = Duration(milliseconds: 300);
   static const Duration errorDisplayDuration = Duration(seconds: 5);
-  
+
   // 저장소 키 (TokenStorageService에서 사용)
-  static const String accessTokenKey = 'access_token';
-  static const String refreshTokenKey = 'refresh_token';
-  static const String tokenExpiresAtKey = 'token_expires_at';
-  static const String tokenTypeKey = 'token_type';
-  static const String savedEmailKey = 'saved_email';
-  static const String rememberMeKey = 'remember_me';
-  
+  // 이 상수들은 AuthConfigConstants로 이동되었습니다.
+  // TokenStorageService에서 AuthConfigConstants를 직접 참조하도록 변경되었습니다.
+
   // 메시지
   static const Map<String, String> errorMessages = {
     'email_required': 'メールアドレスを入力してください',
@@ -45,20 +41,16 @@ class AuthConstants {
     'server_error': 'サーバーエラーが発生しました',
     'unknown_error': '予期しないエラーが発生しました',
   };
-  
+
   // 정규식 패턴
   static const String emailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
-  
+
   // 소셜 로그인 프로바이더
-  static const List<String> supportedProviders = [
-    'google',
-    'apple',
-    'line',
-  ];
-  
+  static const List<String> supportedProviders = ['google', 'apple', 'line'];
+
   // 파일 크기 제한 (프로필 이미지 등)
   static const int maxProfileImageSize = 5 * 1024 * 1024; // 5MB
-  
+
   // private constructor (유틸리티 클래스)
   const AuthConstants._();
 }

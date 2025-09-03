@@ -1,538 +1,238 @@
-# Auth Feature / 認証機能
+# Auth Feature - 인증 기능
 
-언어 선택 / Language Selection:
+## 📋 개요
 
-- [한국어](#한국어-korean)
-- [日本語](#日本語-japanese)
+Auth 기능은 AI Pet 앱의 사용자 인증을 담당합니다. Firebase Auth를 기반으로 하며, 개발 중에는 간단한 검증만 수행하여 빠른 개발이 가능합니다.
 
----
+## 🏗️ 아키텍처
 
-## 한국어 (Korean)
+### Clean Architecture 구조
 
-### 📋 목차 (Table of Contents)
-
-- [개요 (Overview)](#개요-overview)
-- [아키텍처 (Architecture)](#아키텍처-architecture)
-- [주요 기능 (Key Features)](#주요-기능-key-features)
-- [디렉토리 구조 (Directory Structure)](#디렉토리-구조-directory-structure)
-- [ID Token 데이터 플로우 (ID Token Data Flow)](#id-token-데이터-플로우-id-token-data-flow)
-- [보안 기능 (Security Features)](#보안-기능-security-features)
-- [사용 방법 (Usage)](#사용-방법-usage)
-- [설정 (Configuration)](#설정-configuration)
-
-### 개요 (Overview)
-
-AI Pet 애플리케이션의 인증 기능을 담당하는 모듈입니다.
-Firebase Authentication을 기반으로 한 안전하고 확장 가능한 인증 시스템을 제공합니다.
-
-**주요 특징:**
-
-- 🔐 Firebase Authentication 기반
-- 🛡️ 보안 토큰 관리 (iOS Keychain, Android Keystore)
-- 📱 다중 플랫폼 지원 (iOS, Android, Web)
-- 🔄 자동 토큰 갱신
-- 🎨 Clean Architecture 패턴 적용
-
-### 아키텍처 (Architecture)
-
-```txt
+```
 lib/features/auth/
-├── data/               # 데이터 계층
-├── domain/             # 도메인 계층
-├── presentation/       # 프레젠테이션 계층
-└── utils/              # 유틸리티
+├── domain/                    # 도메인 레이어
+│   ├── entities/             # 엔티티 (AuthUser, AuthResult)
+│   ├── repositories/         # 리포지토리 인터페이스
+│   └── result.dart          # Result 패턴 (Railway-oriented programming)
+├── data/                     # 데이터 레이어
+│   ├── repositories/         # 리포지토리 구현체
+│   ├── services/            # 인증 관련 서비스
+│   └── auth_providers.dart  # Riverpod 프로바이더
+└── presentation/             # 프레젠테이션 레이어
+    ├── screens/             # 인증 화면들
+    ├── widgets/             # 인증 관련 위젯들
+    └── controllers/         # 인증 컨트롤러
 ```
 
-**Clean Architecture 적용:**
+## 🔐 인증 방식
 
-- **Domain Layer**: 비즈니스 로직과 엔티티 정의
-- **Data Layer**: Firebase Auth 및 토큰 저장소 구현
-- **Presentation Layer**: UI 컨트롤러 및 화면 구성
+### 1. 이메일/비밀번호 로그인
 
-### 주요 기능 (Key Features)
+- **개발 모드**: 1문자 이상 입력 시 성공
+- **프로덕션 모드**: Firebase Auth 실제 검증
 
-#### 🔑 인증 방법
+### 2. 소셜 로그인
 
-- **이메일/비밀번호** 로그인 및 회원가입
-- **Google** 소셜 로그인
-- **Apple** 소셜 로그인 (iOS 전용)
-- **LINE** 소셜 로그인 (예정)
+- **Google**: Google Sign-In SDK 연동
+- **Apple**: Apple Sign-In SDK 연동
+- **LINE**: LINE Login SDK 연동
 
-#### 🛡️ 보안 기능
+### 3. 회원가입
 
-- **Firebase ID Token** 자동 관리
-- **Secure Storage** - iOS Keychain/Android Keystore 활용
-- **토큰 자동 갱신** - 만료 5분 전 자동 리프레시
-- **에러 표준화** - 사용자 친화적 메시지 제공
+- **개발 모드**: 1문자 이상 입력 시 성공
+- **프로덕션 모드**: Firebase Auth 실제 회원가입
 
-#### 📊 상태 관리
+## 🚀 주요 기능
 
-- **Riverpod** 기반 상태 관리
-- **Form 상태** 실시간 검증
-- **로딩/에러 상태** 자동 처리
-
-### 디렉토리 구조 (Directory Structure)
-
-```txt
-auth/
-├── auth.dart                        # 기능 export 파일
-├── data/
-│   ├── auth_providers.dart          # Riverpod 프로바이더
-│   ├── auth_service.dart           # 인증 서비스
-│   ├── repositories/
-│   │   ├── firebase_auth_repository.dart  # Firebase 구현체
-│   │   └── mock_auth_repository.dart     # Mock 구현체
-│   └── services/
-│       ├── firebase_token_service.dart    # Token 관리
-│       └── token_storage_service.dart     # 보안 저장소
-├── domain/
-│   ├── auth_constants.dart         # 상수 정의
-│   ├── auth_error.dart            # 에러 타입
-│   ├── auth_form_state.dart       # 폼 상태
-│   ├── auth_state.dart            # 인증 상태
-│   ├── auth_token.dart            # 토큰 모델
-│   ├── repositories/
-│   │   └── auth_repository.dart    # 추상 인터페이스
-│   └── result.dart                # Result 패턴
-├── presentation/
-│   ├── controllers/
-│   │   └── auth_controller.dart    # UI 컨트롤러
-│   ├── screens/
-│   │   ├── login_screen.dart       # 로그인 화면
-│   │   ├── signup_screen.dart      # 회원가입 화면
-│   │   └── welcome_screen.dart     # 웰컴 화면
-│   └── widgets/
-│       ├── auth_button.dart        # 인증 버튼
-│       ├── auth_input_field.dart   # 입력 필드
-│       ├── social_login_button.dart # 소셜 로그인 버튼
-│       └── ... (기타 위젯)
-└── utils/
-    └── auth_validator.dart         # 입력 검증
-```
-
-### ID Token 데이터 플로우 (ID Token Data Flow)
-
-이 애플리케이션은 Firebase ID Token을 중심으로 한 안전한 인증 데이터 플로우를 구현합니다.
-
-#### 📊 인증 플로우 다이어그램
-
-```txt
-[사용자] → [Firebase Auth] → [ID Token] → [백엔드 API] → [JWT Token]
-    ↓           ↓              ↓              ↓            ↓
-  로그인     Firebase      자동 갱신      토큰 검증    사용자 세션
-  요청       인증 완료      + 캐싱        + DB 조회    + 권한 관리
-```
-
-#### 🔄 토큰 생명주기 관리
-
-##### 1단계: Firebase 인증
+### 로그인/회원가입
 
 ```dart
-// 이메일/비밀번호 로그인
-final credential = await _firebaseAuth.signInWithEmailAndPassword(
+// AuthRepository를 통한 인증
+final authRepository = ref.read(authRepositoryProvider);
+final result = await authRepository.signInWithEmailAndPassword(email, password);
+
+if (result.isSuccess) {
+  // 로그인 성공
+  final user = result.user;
+  // 토큰 자동 저장
+} else {
+  // 로그인 실패
+  final errorMessage = result.message;
+}
+```
+
+### 토큰 관리
+
+- **자동 저장**: 로그인 성공 시 토큰 자동 저장
+- **자동 삭제**: 로그아웃 시 토큰 자동 삭제
+- **보안 저장**: SecureStorage를 통한 암호화 저장
+
+### Remember Me
+
+- **이메일 저장**: 사용자가 체크한 경우 이메일만 저장
+- **보안**: 패스워드는 저장하지 않음
+- **자동 로드**: 앱 재시작 시 저장된 이메일 자동 로드
+
+## 🔧 개발 모드 vs 프로덕션 모드
+
+### 개발 모드 (현재)
+
+```dart
+// 간단한 검증만 수행
+if (email.isEmpty || password.isEmpty) {
+  return AuthResult.failure('メールアドレスとパスワードを入力してください');
+}
+
+// Mock 사용자 생성
+final mockUser = AuthUser(
+  uid: 'dev_user_${DateTime.now().millisecondsSinceEpoch}',
   email: email,
-  password: password,
+  displayName: email.split('@')[0],
+  // ... 기타 필드
 );
 ```
 
-##### 2단계: ID Token 획득 및 캐싱
+### 프로덕션 모드 (향후)
 
 ```dart
-// Firebase ID Token 가져오기 (자동 갱신 포함)
-final idToken = await FirebaseTokenService.getCurrentIdToken();
-if (idToken != null) {
-  // iOS Keychain/Android Keystore에 안전하게 저장
-  await _cacheIdToken(idToken);
+// 실제 Firebase Auth 호출
+final credential = await _auth.signInWithEmailAndPassword(email, password);
+final user = credential.user;
+
+// 백엔드 API 호출
+final backendResponse = await HttpClientService.instance.post('/auth/login', {
+  'idToken': await FirebaseTokenService.getCurrentIdToken()
+});
+```
+
+## 📱 UI 컴포넌트
+
+### AuthFormState
+
+```dart
+class AuthFormState {
+  final String email;
+  final String password;
+  final String username;
+  final bool isPasswordVisible;
+  final bool isConfirmPasswordVisible;
+  final bool rememberMe;
+  final bool isLoading;
+  final String? error;
 }
 ```
 
-##### 3단계: 백엔드 인증 및 JWT 발급
+### 상태 관리
 
 ```dart
-// ID Token을 백엔드로 전송
-final backendResponse = await HttpClientService.instance.post(
-  '/auth/login',
-  data: {'idToken': idToken},
-);
+@riverpod
+class AuthFormStateNotifier extends _$AuthFormStateNotifier {
+  void updateEmail(String email) {
+    state = state.copyWith(email: email, error: null);
+  }
 
-// 백엔드에서 JWT Access/Refresh Token 발급
-final accessToken = backendData['accessToken'];
-final refreshToken = backendData['refreshToken'];
-```
+  void updatePassword(String password) {
+    state = state.copyWith(password: password, error: null);
+  }
 
-##### 4단계: 자동 토큰 관리
-
-```dart
-// 토큰 만료 5분 전 자동 갱신
-final shouldRefresh = await _shouldRefreshToken();
-if (shouldRefresh) {
-  final newToken = await user.getIdToken(true); // 강제 갱신
-}
-```
-
-#### 🛡️ 보안 계층 구조
-
-**Multi-Layer Security:**
-
-1. **Firebase Security Rules** - 서버측 검증
-2. **ID Token Verification** - 백엔드에서 토큰 무결성 확인
-3. **JWT Access Control** - API 엔드포인트별 권한 제어
-4. **Secure Storage** - 토큰의 안전한 로컬 저장
-
-**토큰 저장 전략:**
-
-- **Firebase ID Token**: Secure Storage (임시 캐싱)
-- **JWT Access Token**: HTTP Client 메모리 (자동 헤더 주입)
-- **JWT Refresh Token**: Secure Storage (장기간 보관)
-
-#### 📡 HTTP 요청 자동화
-
-```dart
-// HTTP Client가 자동으로 Authorization 헤더 추가
-options.headers['Authorization'] = 'Bearer ${token.accessToken}';
-
-// 401 에러 시 자동 토큰 갱신 및 재요청
-if (error.response?.statusCode == 401) {
-  final refreshed = await _handleTokenRefresh(error, handler);
-  if (refreshed) {
-    // 새 토큰으로 원래 요청 재시도
-    final retryResponse = await _dio.fetch(originalRequest);
+  Future<void> login() async {
+    // AuthRepository를 통한 로그인 처리
   }
 }
 ```
 
-### 보안 기능 (Security Features)
+## 🔄 의존성 주입
 
-#### 1. **토큰 관리**
-
-```dart
-// Firebase ID Token 자동 관리
-final idToken = await FirebaseTokenService.getCurrentIdToken();
-
-// 강제 토큰 갱신
-final refreshedToken = await FirebaseTokenService.refreshIdToken();
-```
-
-#### 2. **보안 저장소**
+### Repository 설정
 
 ```dart
-// iOS Keychain / Android Keystore 활용
-await SecureStorageServiceV2.setString('key', 'value');
-final value = await SecureStorageServiceV2.getString('key');
-```
-
-#### 3. **자동 갱신**
-
-- 토큰 만료 5분 전 자동 리프레시
-- 네트워크 실패 시 지수 백오프 재시도
-- Auth 상태 변경 시 자동 토큰 정리
-
-### 사용 방법 (Usage)
-
-#### 1. **로그인**
-
-```dart
-final authController = AuthController(ref);
-
-// 이메일 로그인
-final result = await authController.login();
-if (result.isSuccess) {
-  // 로그인 성공
-} else {
-  // 에러 처리
+@riverpod
+AuthRepository authRepository(Ref ref) {
+  return AuthRepositoryImpl(
+    firebaseRepository: FirebaseAuthRepositoryImpl(),
+    mockRepository: MockAuthRepositoryImpl(),
+    ref: ref,
+  );
 }
 ```
 
-#### 2. **소셜 로그인**
+### 서비스 주입
+
+- **SecureStorageServiceV2**: 토큰 보안 저장
+- **AuthConfigService**: 환경별 설정 관리
+- **AuthMockDataService**: Mock 데이터 관리
+
+## 🧪 테스트
+
+### Mock Repository
 
 ```dart
-// Google 로그인
-final repository = ref.read(authRepositoryProvider);
-final result = await repository.signInWithGoogle();
-```
-
-#### 3. **현재 사용자 확인**
-
-```dart
-final authState = ref.watch(authStateNotifierProvider);
-if (authState.isAuthenticated) {
-  final user = authState.user;
-  // 로그인된 사용자 정보 활용
+class MockAuthRepositoryImpl implements AuthRepository {
+  @override
+  Future<AuthResult> signInWithEmailAndPassword(
+    String email, String password,
+  ) async {
+    // Mock 데이터를 통한 테스트
+    final mockDataService = AuthMockDataServiceImpl();
+    return await mockDataService.mockLogin(email, password);
+  }
 }
 ```
 
-### 설정 (Configuration)
+### 테스트 실행
 
-#### Firebase 설정
+```bash
+# Auth 관련 테스트만 실행
+flutter test lib/features/auth/
 
-1. **iOS**: `ios/Runner/GoogleService-Info.plist`
-2. **Android**: `android/app/google-services.json`
-3. **Web**: `web/firebase-config.js` (필요시)
-
-#### 의존성
-
-```yaml
-dependencies:
-  firebase_auth: ^5.7.0
-  firebase_core: ^3.15.2
-  google_sign_in: ^6.3.0
-  flutter_secure_storage: ^9.2.4
-  flutter_riverpod: ^2.6.1
+# 전체 테스트 실행
+flutter test
 ```
+
+## 🚀 향후 계획
+
+### 1단계: 개발 모드 완성 ✅
+
+- [x] 간단한 검증 로직
+- [x] Mock 사용자 생성
+- [x] 토큰 자동 저장/삭제
+
+### 2단계: Firebase Auth 연동
+
+- [ ] 실제 Firebase Auth 호출
+- [ ] ID Token 관리
+- [ ] 백엔드 API 연동
+
+### 3단계: 보안 강화
+
+- [ ] 토큰 갱신 로직
+- [ ] 에러 처리 개선
+- [ ] 로깅 및 모니터링
+
+## 📚 관련 문서
+
+- [Firebase Auth 문서](https://firebase.flutter.dev/docs/auth/overview/)
+- [Riverpod 문서](https://riverpod.dev/)
+- [Clean Architecture 가이드](../README.md)
+
+## 🐛 문제 해결
+
+### 빌드 에러
+
+```bash
+# 코드 생성
+dart run build_runner build --delete-conflicting-outputs
+
+# 린트 검사
+flutter analyze lib/features/auth/
+```
+
+### 토큰 저장 실패
+
+- SecureStorage 권한 확인
+- 디바이스 보안 설정 확인
+- 로그 확인: `debugPrint('토큰 저장 실패: $e')`
 
 ---
 
-## 日本語 (Japanese)
-
-### 📋 目次 (Table of Contents)
-
-- [概要 (Overview)](#概要-overview)
-- [アーキテクチャ (Architecture)](#アーキテクチャ-architecture)
-- [主要機能 (Key Features)](#主要機能-key-features)
-- [ディレクトリ構造 (Directory Structure)](#ディレクトリ構造-directory-structure)
-- [ID Token データフロー (ID Token Data Flow)](#id-token-データフロー-id-token-data-flow)
-- [セキュリティ機能 (Security Features)](#セキュリティ機能-security-features)
-- [使用方法 (Usage)](#使用方法-usage)
-- [設定 (Configuration)](#設定-configuration)
-
-### 概要 (Overview)
-
-AI Pet アプリケーションの認証機能を担当するモジュールです。
-Firebase Authentication をベースにした安全で拡張可能な認証システムを提供します。
-
-**主な特徴:**
-
-- 🔐 Firebase Authentication ベース
-- 🛡️ セキュアトークン管理 (iOS Keychain, Android Keystore)
-- 📱 マルチプラットフォーム対応 (iOS, Android, Web)
-- 🔄 自動トークンリフレッシュ
-- 🎨 Clean Architecture パターン適用
-
-### アーキテクチャ (Architecture)
-
-```txt
-lib/features/auth/
-├── data/               # データ層
-├── domain/             # ドメイン層
-├── presentation/       # プレゼンテーション層
-└── utils/              # ユーティリティ
-```
-
-**Clean Architecture 適用:**
-
-- **Domain Layer**: ビジネスロジックとエンティティ定義
-- **Data Layer**: Firebase Auth およびトークンストレージ実装
-- **Presentation Layer**: UI コントローラーと画面構成
-
-### 主要機能 (Key Features)
-
-#### 🔑 認証方法
-
-- **メール/パスワード** ログインおよびサインアップ
-- **Google** ソーシャルログイン
-- **Apple** ソーシャルログイン (iOS 専用)
-- **LINE** ソーシャルログイン (予定)
-
-#### 🛡️ セキュリティ機能
-
-- **Firebase ID Token** 自動管理
-- **Secure Storage** - iOS Keychain/Android Keystore 活用
-- **トークン自動更新** - 期限切れ 5 分前に自動リフレッシュ
-- **エラー標準化** - ユーザーフレンドリーなメッセージ提供
-
-#### 📊 状態管理
-
-- **Riverpod** ベースの状態管理
-- **Form 状態** リアルタイム検証
-- **ローディング/エラー状態** 自動処理
-
-### ディレクトリ構造 (Directory Structure)
-
-```txt
-auth/
-├── auth.dart                        # 機能 export ファイル
-├── data/
-│   ├── auth_providers.dart          # Riverpod プロバイダー
-│   ├── auth_service.dart           # 認証サービス
-│   ├── repositories/
-│   │   ├── firebase_auth_repository.dart  # Firebase 実装
-│   │   └── mock_auth_repository.dart     # Mock 実装
-│   └── services/
-│       ├── firebase_token_service.dart    # Token 管理
-│       └── token_storage_service.dart     # セキュアストレージ
-├── domain/
-│   ├── auth_constants.dart         # 定数定義
-│   ├── auth_error.dart            # エラータイプ
-│   ├── auth_form_state.dart       # フォーム状態
-│   ├── auth_state.dart            # 認証状態
-│   ├── auth_token.dart            # トークンモデル
-│   ├── repositories/
-│   │   └── auth_repository.dart    # 抽象インターフェース
-│   └── result.dart                # Result パターン
-├── presentation/
-│   ├── controllers/
-│   │   └── auth_controller.dart    # UI コントローラー
-│   ├── screens/
-│   │   ├── login_screen.dart       # ログイン画面
-│   │   ├── signup_screen.dart      # サインアップ画面
-│   │   └── welcome_screen.dart     # ウェルカム画面
-│   └── widgets/
-│       ├── auth_button.dart        # 認証ボタン
-│       ├── auth_input_field.dart   # 入力フィールド
-│       ├── social_login_button.dart # ソーシャルログインボタン
-│       └── ... (その他のウィジェット)
-└── utils/
-    └── auth_validator.dart         # 入力検証
-```
-
-### ID Token データフロー (ID Token Data Flow)
-
-このアプリケーションは Firebase ID Token を中心とした安全な認証データフローを実装しています。
-
-#### 📊 認証フロー図
-
-```txt
-[ユーザー] → [Firebase Auth] → [ID Token] → [バックエンド API] → [JWT Token]
-     ↓           ↓              ↓              ↓              ↓
-   ログイン     Firebase       自動リフレッシュ   トークン検証     ユーザーセッション
-    要求        認証完了        + キャッシング    + DB 検索      + 権限管理
-```
-
-#### 🔄 トークンライフサイクル管理
-
-##### ステップ 1: Firebase 認証
-
-```dart
-// メール/パスワードログイン
-final credential = await _firebaseAuth.signInWithEmailAndPassword(
-  email: email,
-  password: password,
-);
-```
-
-##### ステップ 2: ID Token 取得およびキャッシング
-
-```dart
-// Firebase ID Token 取得 (自動リフレッシュ含む)
-final idToken = await FirebaseTokenService.getCurrentIdToken();
-if (idToken != null) {
-  // iOS Keychain/Android Keystore に安全に保存
-  await _cacheIdToken(idToken);
-}
-```
-
-##### ステップ 3: バックエンド認証および JWT 発行
-
-```dart
-// ID Token をバックエンドに送信
-final backendResponse = await HttpClientService.instance.post(
-  '/auth/login',
-  data: {'idToken': idToken},
-);
-
-// バックエンドから JWT Access/Refresh Token 発行
-final accessToken = backendData['accessToken'];
-final refreshToken = backendData['refreshToken'];
-```
-
-##### ステップ 4: 自動トークン管理
-
-```dart
-// トークン期限切れ5分前に自動リフレッシュ
-final shouldRefresh = await _shouldRefreshToken();
-if (shouldRefresh) {
-  final newToken = await user.getIdToken(true); // 強制リフレッシュ
-}
-```
-
-### セキュリティ機能 (Security Features)
-
-#### 1. **トークン管理**
-
-```dart
-// Firebase ID Token 自動管理
-final idToken = await FirebaseTokenService.getCurrentIdToken();
-
-// 強制トークンリフレッシュ
-final refreshedToken = await FirebaseTokenService.refreshIdToken();
-```
-
-#### 2. **セキュアストレージ**
-
-```dart
-// iOS Keychain / Android Keystore 活用
-await SecureStorageServiceV2.setString('key', 'value');
-final value = await SecureStorageServiceV2.getString('key');
-```
-
-#### 3. **自動リフレッシュ**
-
-- トークン期限切れ 5 分前に自動リフレッシュ
-- ネットワーク障害時の指数バックオフ再試行
-- Auth 状態変更時の自動トークンクリア
-
-### 使用方法 (Usage)
-
-#### 1. **ログイン**
-
-```dart
-final authController = AuthController(ref);
-
-// メールログイン
-final result = await authController.login();
-if (result.isSuccess) {
-  // ログイン成功
-} else {
-  // エラー処理
-}
-```
-
-#### 2. **ソーシャルログイン**
-
-```dart
-// Google ログイン
-final repository = ref.read(authRepositoryProvider);
-final result = await repository.signInWithGoogle();
-```
-
-#### 3. **現在のユーザー確認**
-
-```dart
-final authState = ref.watch(authStateNotifierProvider);
-if (authState.isAuthenticated) {
-  final user = authState.user;
-  // ログイン済みユーザー情報を活用
-}
-```
-
-### 設定 (Configuration)
-
-#### Firebase 設定
-
-1. **iOS**: `ios/Runner/GoogleService-Info.plist`
-2. **Android**: `android/app/google-services.json`
-3. **Web**: `web/firebase-config.js` (必要に応じて)
-
-#### 依存関係
-
-```yaml
-dependencies:
-  firebase_auth: ^5.7.0
-  firebase_core: ^3.15.2
-  google_sign_in: ^6.3.0
-  flutter_secure_storage: ^9.2.4
-  flutter_riverpod: ^2.6.1
-```
-
----
-
-## 📚 추가 리소스 / その他のリソース
-
-- [Firebase Auth 문서 / Firebase Auth ドキュメント](https://firebase.google.com/docs/auth)
-- [Flutter Secure Storage](https://pub.dev/packages/flutter_secure_storage)
-- [Riverpod 가이드 / Riverpod ガイド](https://riverpod.dev/)
-- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-
----
-
-© 2024 AI Pet. 프로덕션 레벨 인증 시스템 / Production-ready Authentication System
+**Auth 기능은 Firebase Auth를 기반으로 하며, 개발 중에는 빠른 개발을 위한 Mock 모드를 지원합니다.**
