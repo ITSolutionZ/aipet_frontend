@@ -35,11 +35,11 @@ class AppointmentSummaryCard extends ConsumerWidget {
     };
 
     return GestureDetector(
-      onTap: () => context.go(RouteConstants.calendarRoute),
+      onTap: () => context.go(RouteConstants.todayAppointmentsRoute),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
-          color: AppColors.pointOffWhite,
+          color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppSpacing.md),
           boxShadow: [
             BoxShadow(

@@ -219,24 +219,15 @@ class _AddFeedingRecordScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '食事記録追加',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: SoftGradientAppBar(
+        title: '食事記録追加',
         actions: [
           TextButton(
             onPressed: _saveRecord,
             child: Text(
               '保存',
               style: AppFonts.bodyMedium.copyWith(
-                color: Colors.white,
+                color: const Color(0xFF5B4034),
                 fontWeight: FontWeight.bold,
               ),
             ),

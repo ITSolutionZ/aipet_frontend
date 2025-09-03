@@ -34,8 +34,8 @@ class HomeRepositoryImpl implements HomeRepository {
     try {
       // OpenWeatherMap API 연동 (무료 API)
       const apiKey = 'YOUR_API_KEY'; // 실제 사용시 환경변수에서 가져오기
-      const city = 'Seoul';
-      const countryCode = 'KR';
+      const city = '東京都品川区';
+      const countryCode = 'JP';
 
       const url =
           'https://api.openweathermap.org/data/2.5/weather?q=$city,$countryCode&appid=$apiKey&units=metric&lang=ja';

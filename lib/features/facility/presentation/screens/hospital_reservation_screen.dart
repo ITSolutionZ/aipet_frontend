@@ -86,26 +86,8 @@ class _HospitalReservationScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.pointDark,
-            size: 20,
-          ),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'Hospital',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
+      appBar: const SoftGradientBackAppBar(
+        title: 'Hospital',
       ),
       body: Column(
         children: [

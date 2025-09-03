@@ -23,29 +23,8 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: Colors.amber.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.star, color: Colors.amber, size: 20),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              'お気に入り',
-              style: AppFonts.bodyMedium.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: SoftGradientAppBar(
+        title: 'お気に入り',
         actions: [
           if (favoriteQAs.isNotEmpty)
             IconButton(

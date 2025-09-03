@@ -77,6 +77,15 @@ class FeedingMainScreen extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.md),
                   _buildMenuCard(
                     context,
+                    icon: Icons.cookie,
+                    title: '間食・おやつ',
+                    subtitle: 'スナック管理',
+                    color: AppColors.pointPink,
+                    onTap: () => context.go('/snacks'), // 간식 관리 페이지
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  _buildMenuCard(
+                    context,
                     icon: Icons.menu_book,
                     title: 'レシピ',
                     subtitle: 'ペットフードレシピ',
@@ -116,12 +125,12 @@ class FeedingMainScreen extends ConsumerWidget {
 
   /// 뒤로가기 버튼이 있는 AppBar (홈에서 접근 시)
   PreferredSizeWidget _buildBackAppBar() {
-    return const BackAppBar(title: '食事&給水');
+    return const SoftGradientBackAppBar(title: '食事&給水');
   }
 
   /// Drawer가 있는 AppBar (drawer에서 접근 시)
   PreferredSizeWidget _buildDrawerAppBar() {
-    return const DrawerAppBar(title: '食事&給水');
+    return const SoftGradientDrawerAppBar(title: '食事&給水');
   }
 
   /// 메뉴 카드 위젯 (세로 레이아웃)
@@ -135,6 +144,7 @@ class FeedingMainScreen extends ConsumerWidget {
   }) {
     return Card(
       elevation: 4,
+      color: Colors.white, // 배경색 명시적으로 설정
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),

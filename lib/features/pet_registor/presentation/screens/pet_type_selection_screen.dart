@@ -29,14 +29,8 @@ class _PetTypeSelectionScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '펫 종류 선택',
-          style: AppFonts.titleMedium.copyWith(color: Colors.white),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: const SoftGradientAppBar(
+        title: '펫 종류 선택',
       ),
       body: SafeArea(
         child: Padding(

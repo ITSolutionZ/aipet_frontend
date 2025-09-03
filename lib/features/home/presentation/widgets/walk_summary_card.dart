@@ -22,7 +22,7 @@ class WalkSummaryCard extends ConsumerWidget {
       'todayWalks': walkSummary.todayWalks,
       'todayDistance': walkSummary.todayDistance,
       'weeklyProgress': walkSummary.weeklyProgress / walkSummary.weeklyGoal,
-      'nextWalkTime': '夕方',
+      'nextWalkTime': MockDataService.getMockNextWalkTime(petId: currentPetId),
     };
 
     return GestureDetector(
@@ -30,7 +30,7 @@ class WalkSummaryCard extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
-          color: AppColors.pointOffWhite,
+          color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppSpacing.md),
           boxShadow: [
             BoxShadow(

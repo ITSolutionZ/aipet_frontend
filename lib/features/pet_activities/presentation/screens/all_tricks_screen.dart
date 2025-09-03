@@ -77,26 +77,8 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.pointDark,
-            size: 20,
-          ),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'All Tricks',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
+      appBar: const SoftGradientBackAppBar(
+        title: 'All Tricks',
       ),
       body: allTricksState.when(
         data: (tricks) => _buildContent(tricks),

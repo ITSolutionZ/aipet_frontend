@@ -41,50 +41,40 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: const Text('ペットのプロフィール', style: TextStyle(color: Colors.white)),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        actions: [
-          // 펫 선택 드롭다운
-          Container(
-            margin: const EdgeInsets.only(right: AppSpacing.md),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CircleAvatar(
-                  radius: 12,
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.pets,
-                    size: 16,
-                    color: AppColors.pointBrown,
-                  ),
+      appBar: SoftGradientDrawerAppBar(
+        title: 'ペットのプロフィール',
+        selectedPetInfo: Container(
+          margin: const EdgeInsets.only(right: AppSpacing.md),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircleAvatar(
+                radius: 12,
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.pets,
+                  size: 16,
+                  color: AppColors.pointBrown,
                 ),
-                const SizedBox(width: AppSpacing.xs),
-                Consumer(
-                  builder: (context, ref, child) {
-                    final state = ref.watch(petProfileNotifierProvider);
-                    return Text(
-                      state.selectedPetName,
-                      style: AppFonts.bodyMedium.copyWith(color: Colors.white),
-                    );
-                  },
-                ),
-                const Icon(
-                  Icons.keyboard_arrow_down,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Consumer(
+                builder: (context, ref, child) {
+                  final state = ref.watch(petProfileNotifierProvider);
+                  return Text(
+                    state.selectedPetName,
+                    style: AppFonts.bodyMedium.copyWith(color: const Color(0xFF5B4034)),
+                  );
+                },
+              ),
+              const Icon(
+                Icons.keyboard_arrow_down,
+                color: Color(0xFF5B4034),
+                size: 20,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       body: Column(
         children: [

@@ -12,15 +12,17 @@ class WeatherService {
   static const String _oneCallUrl =
       'https://api.openweathermap.org/data/3.0/onecall';
   static const String _geocodingUrl = 'http://api.openweathermap.org/geo/1.0';
-  
+
   // 캐시 관련 필드
   static WeatherData? _cachedWeatherData;
   static DateTime? _cacheTime;
   static WeatherLocation? _cachedLocation;
-  static const Duration _cacheValidDuration = Duration(minutes: 10); // 10분간 캐시 유효
+  static const Duration _cacheValidDuration = Duration(
+    minutes: 10,
+  ); // 10분간 캐시 유효
 
   Future<WeatherData?> getCurrentWeather({
-    WeatherLocation? location, 
+    WeatherLocation? location,
     bool userTriggered = false,
   }) async {
     try {
@@ -28,12 +30,24 @@ class WeatherService {
       if (weatherLocation == null) return null;
 
       // 캐시 확인 (사용자가 탭한 경우 5분, 자동 로드는 10분)
-      final cacheValidDuration = userTriggered 
-          ? const Duration(minutes: 5) 
+      final cacheValidDuration = userTriggered
+          ? const Duration(minutes: 5)
           : _cacheValidDuration;
-          
-      if (_isCacheValid(weatherLocation, customDuration: cacheValidDuration)) {
-        debugPrint('✅ 캐시된 날씨 데이터 사용 (API 호출 생략) - ${userTriggered ? "탭으로 요청" : "자동 로드"}');
+
+      // 사용자가 탭한 경우 캐시 무시하고 강제 새로고침
+      if (userTriggered) {
+        debugPrint('👆 사용자 탭 감지 - 캐시 무시하고 강제 새로고침');
+        // 사용자 탭 시 캐시 완전 무시
+        _cachedWeatherData = null;
+        _cacheTime = null;
+        _cachedLocation = null;
+      } else if (_isCacheValid(
+        weatherLocation,
+        customDuration: cacheValidDuration,
+      )) {
+        debugPrint(
+          '✅ 캐시된 날씨 데이터 사용 (API 호출 생략) - ${userTriggered ? "탭으로 요청" : "자동 로드"}',
+        );
         return _cachedWeatherData;
       }
 
@@ -42,10 +56,11 @@ class WeatherService {
         throw Exception('Weather API key not found');
       }
 
-      debugPrint(
-        '🔑 API 키 상태: ${apiKey.isNotEmpty ? "존재함 (${apiKey.length}자)" : "없음"}',
-      );
+      debugPrint('🔑 API 키 상태: 존재함 (${apiKey.length}자)');
       debugPrint('🎯 API 키 검증을 위한 One Call API 3.0 시도 중...');
+      debugPrint(
+        '📍 API 키 첫 8자: ${apiKey.length > 8 ? apiKey.substring(0, 8) : 'too_short'}...',
+      );
 
       // One Call 3.0 API 사용
       final url = Uri.parse(
@@ -68,10 +83,20 @@ class WeatherService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
+        final current = data['current'] as Map<String, dynamic>;
+        final uvi = current['uvi'];
+
+        debugPrint('🌞 One Call API 3.0 응답 데이터:');
+        debugPrint('   전체 current 데이터: $current');
+        debugPrint('   UV Index (uvi): $uvi (타입: ${uvi.runtimeType})');
+
         debugPrint(
-          '✅ One Call API 3.0 성공 - UV: ${data['current']['uvi']}, Wind: ${data['current']['wind_speed']}',
+          '✅ One Call API 3.0 성공 - UV: $uvi, Wind: ${current['wind_speed']}',
         );
-        final weatherData = WeatherData.fromOneCallJson(data, weatherLocation.name);
+        final weatherData = WeatherData.fromOneCallJson(
+          data,
+          weatherLocation.name,
+        );
         _updateCache(weatherData, weatherLocation);
         return weatherData;
       } else {
@@ -114,8 +139,13 @@ class WeatherService {
       final wind = data['wind'] as Map<String, dynamic>? ?? {};
       final windSpeed = wind['speed'] ?? 0.0;
       final weatherId = (data['weather'] as List).first['id'] as int;
-      final estimatedUV = _estimateUvIndex(weatherId);
-      debugPrint('✅ 기본 API 성공 - Wind: ${windSpeed}m/s, UV: $estimatedUV (추정값)');
+      final estimatedUV = _estimateUvIndexForLocation(
+        weatherId,
+        weatherLocation,
+      );
+      debugPrint(
+        '✅ 기본 API 성공 - Wind: ${windSpeed}m/s, UV: $estimatedUV (도쿄 기준 추정값)',
+      );
       final weatherData = WeatherData.fromJson(data, weatherLocation.name);
       _updateCache(weatherData, weatherLocation);
       return weatherData;
@@ -230,6 +260,12 @@ class WeatherService {
           final state = location['state'] as String? ?? '';
           final country = location['country'] as String? ?? '';
 
+          // 일본이 아닌 경우 기본 위치 사용
+          if (country != 'JP' && country != 'Japan') {
+            debugPrint('⚠️ 위치가 일본이 아닙니다: $country. 기본 위치(도쿄 시나가와구) 사용');
+            return '東京都品川区';
+          }
+
           String locationName;
           if (state.isNotEmpty) {
             locationName = '$state $city';
@@ -306,8 +342,13 @@ class WeatherService {
   }
 
   /// 캐시가 유효한지 확인
-  bool _isCacheValid(WeatherLocation currentLocation, {Duration? customDuration}) {
-    if (_cachedWeatherData == null || _cacheTime == null || _cachedLocation == null) {
+  bool _isCacheValid(
+    WeatherLocation currentLocation, {
+    Duration? customDuration,
+  }) {
+    if (_cachedWeatherData == null ||
+        _cacheTime == null ||
+        _cachedLocation == null) {
       return false;
     }
 
@@ -315,21 +356,27 @@ class WeatherService {
     final validDuration = customDuration ?? _cacheValidDuration;
     final now = DateTime.now();
     if (now.difference(_cacheTime!).abs() > validDuration) {
-      debugPrint('⏰ 캐시 만료 (${now.difference(_cacheTime!).inMinutes}분 경과, 제한: ${validDuration.inMinutes}분)');
+      debugPrint(
+        '⏰ 캐시 만료 (${now.difference(_cacheTime!).inMinutes}분 경과, 제한: ${validDuration.inMinutes}분)',
+      );
       return false;
     }
 
     // 위치 체크 (같은 위치인지 확인, 0.01도 이내)
     const locationThreshold = 0.01;
-    final latDiff = (currentLocation.latitude - _cachedLocation!.latitude).abs();
-    final lonDiff = (currentLocation.longitude - _cachedLocation!.longitude).abs();
-    
+    final latDiff = (currentLocation.latitude - _cachedLocation!.latitude)
+        .abs();
+    final lonDiff = (currentLocation.longitude - _cachedLocation!.longitude)
+        .abs();
+
     if (latDiff > locationThreshold || lonDiff > locationThreshold) {
       debugPrint('📍 위치 변경으로 캐시 무효화');
       return false;
     }
 
-    debugPrint('✅ 캐시 유효 (${validDuration.inMinutes - now.difference(_cacheTime!).inMinutes}분 남음)');
+    debugPrint(
+      '✅ 캐시 유효 (${validDuration.inMinutes - now.difference(_cacheTime!).inMinutes}분 남음)',
+    );
     return true;
   }
 
@@ -379,9 +426,75 @@ class WeatherService {
       humidity: 65,
       windSpeed: 2.5,
       iconCode: mockWeatherInfo.iconCode,
-      uvIndex: _estimateUvIndex(800),
+      uvIndex: _estimateUvIndexForLocation(800, _getDefaultLocation()),
       visibility: 10000,
       pressure: 1013.25,
     );
+  }
+
+  /// 특정 위치에 대한 UV Index 추정 (도쿄 시나가와구 기준)
+  double _estimateUvIndexForLocation(int weatherId, WeatherLocation location) {
+    final now = DateTime.now();
+    final hour = now.hour;
+
+    // 야간 (18시~6시): UV Index 0
+    if (hour < 6 || hour >= 18) {
+      return 0.0;
+    }
+
+    // 도쿄 시나가와구의 실제 위도/경도
+    const tokyoLatitude = 35.6092;
+    const tokyoLongitude = 139.7301;
+
+    // 도쿄 시나가와구와 현재 위치의 위도/경도 차이
+    final latDiff = (location.latitude - tokyoLatitude).abs();
+    final lonDiff = (location.longitude - tokyoLongitude).abs();
+
+    // 위도/경도 차이에 따른 UV Index 보정 (위도 1도당 약 5% 변화)
+    final uvCorrection = 1.0 + (latDiff * 0.05);
+
+    // 낮 시간대 기본 UV Index 계산 (도쿄 기준)
+    double baseUv;
+    if (hour >= 11 && hour <= 13) {
+      baseUv = 8.0; // 정오 시간대 최고
+    } else if (hour >= 10 && hour <= 14) {
+      baseUv = 6.0; // 오전/오후
+    } else if (hour >= 9 && hour <= 15) {
+      baseUv = 4.0; // 이른 오전/늦은 오후
+    } else {
+      baseUv = 2.0; // 아침/저녁
+    }
+
+    // 날씨 상황에 따른 UV Index 보정
+    double weatherAdjustedUv;
+    if (weatherId >= 200 && weatherId < 300) {
+      weatherAdjustedUv = baseUv * 0.3; // 뇌우: 70% 감소
+    } else if (weatherId >= 300 && weatherId < 600) {
+      weatherAdjustedUv = baseUv * 0.4; // 비: 60% 감소
+    } else if (weatherId >= 600 && weatherId < 700) {
+      weatherAdjustedUv = baseUv * 0.2; // 눈: 80% 감소
+    } else if (weatherId >= 700 && weatherId < 800) {
+      weatherAdjustedUv = baseUv * 0.5; // 안개/먼지: 50% 감소
+    } else if (weatherId == 800) {
+      weatherAdjustedUv = baseUv; // 맑음: 그대로
+    } else if (weatherId >= 801 && weatherId <= 802) {
+      weatherAdjustedUv = baseUv * 0.8; // 약간 흐림: 20% 감소
+    } else if (weatherId >= 803 && weatherId <= 804) {
+      weatherAdjustedUv = baseUv * 0.6; // 많이 흐림: 40% 감소
+    } else {
+      weatherAdjustedUv = baseUv * 0.7; // 기본값
+    }
+
+    // 위치 보정 적용
+    final finalUv = weatherAdjustedUv * uvCorrection;
+
+    debugPrint(
+      '🌍 UV Index 계산 - 위치: ${location.name}, 위도: ${location.latitude}, 경도: ${location.longitude}',
+    );
+    debugPrint(
+      '   기본 UV: $baseUv, 날씨 보정: $weatherAdjustedUv, 위치 보정: $uvCorrection, 최종: ${finalUv.toStringAsFixed(1)}',
+    );
+
+    return finalUv.clamp(0.0, 11.0); // UV Index는 0-11 범위로 제한
   }
 }

@@ -77,13 +77,13 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
   /// 뒤로가기 버튼이 있는 AppBar (홈에서 접근 시)
   PreferredSizeWidget _buildBackAppBar() {
-    return const BackAppBar(title: '산책');
+    return const BackAppBar(title: '散歩');
   }
 
   /// Drawer가 있는 AppBar (drawer에서 접근 시)
   PreferredSizeWidget _buildDrawerAppBar(PetInfo? selectedPet) {
     return DrawerAppBar(
-      title: '산책',
+      title: '散歩',
       selectedPetInfo: selectedPet != null
           ? Row(
               children: [

@@ -59,29 +59,10 @@ class _FacilityDetailScreenRefactoredState
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Scaffold(
+      return const Scaffold(
         backgroundColor: AppColors.pointOffWhite,
-        appBar: AppBar(
-          backgroundColor: AppColors.pointBrown,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-              size: 20,
-            ),
-            onPressed: () => context.pop(),
-          ),
-          title: Text(
-            'View Contact',
-            style: AppFonts.fredoka(
-              fontSize: AppFonts.lg,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          centerTitle: true,
-        ),
-        body: const Center(
+        appBar: SoftGradientBackAppBar(title: 'View Contact'),
+        body: Center(
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
           ),
@@ -92,26 +73,7 @@ class _FacilityDetailScreenRefactoredState
     if (_facility == null) {
       return Scaffold(
         backgroundColor: AppColors.pointOffWhite,
-        appBar: AppBar(
-          backgroundColor: AppColors.pointBrown,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-              size: 20,
-            ),
-            onPressed: () => context.pop(),
-          ),
-          title: Text(
-            'View Contact',
-            style: AppFonts.fredoka(
-              fontSize: AppFonts.lg,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          centerTitle: true,
-        ),
+        appBar: const SoftGradientBackAppBar(title: 'View Contact'),
         body: _buildErrorState(),
       );
     }

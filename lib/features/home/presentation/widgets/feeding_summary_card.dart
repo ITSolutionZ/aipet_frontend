@@ -22,20 +22,23 @@ class FeedingSummaryCard extends ConsumerWidget {
         .length;
     final totalMeals = todayMeals.length;
 
+    final nextMealInfo = MockDataService.getMockNextMealInfo(petId: currentPetId);
+    
     final feedingData = {
       'completedMeals': completedMeals,
       'totalMeals': totalMeals,
-      'nextMeal': '夕食',
-      'nextMealTime': '18:00',
-      'calories': 320,
+      'nextMeal': nextMealInfo['nextMeal'],
+      'nextMealTime': nextMealInfo['nextMealTime'],
+      'calories': MockDataService.getMockExpectedCalories(petId: currentPetId),
     };
 
     return GestureDetector(
-      onTap: () => context.go('${RouteConstants.feedingMainRoute}?showBackButton=true'),
+      onTap: () =>
+          context.go('${RouteConstants.feedingMainRoute}?showBackButton=true'),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
-          color: AppColors.pointOffWhite,
+          color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppSpacing.md),
           boxShadow: [
             BoxShadow(

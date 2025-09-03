@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
@@ -62,6 +63,10 @@ class AppBootstrap {
   ///
   /// 환경별 설정을 초기화하고 앱 실행에 필요한 기본 설정을 로드합니다.
   static Future<void> initialize() async {
+    // 환경 변수 로드
+    await dotenv.load(fileName: '.env');
+    debugPrint('✅ Environment variables loaded from .env');
+
     // 환경별 설정 초기화
     _initializeAppConfig();
 
