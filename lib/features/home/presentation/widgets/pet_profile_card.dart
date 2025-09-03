@@ -8,12 +8,7 @@ import '../../../pet_registor/data/providers/pet_providers.dart';
 import '../../data/providers/home_providers.dart';
 
 class PetProfileCard extends ConsumerStatefulWidget {
-  const PetProfileCard({
-    super.key,
-    this.activities = const ['○ 今日は散歩記録がありません', '○ 昼ごはんを食べました'],
-  });
-
-  final List<String> activities;
+  const PetProfileCard({super.key});
 
   @override
   ConsumerState<PetProfileCard> createState() => _PetProfileCardState();
@@ -66,6 +61,9 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
         final hasMultiplePets = petList.length > 1;
 
         return WhiteCard.panel(
+          borderWidth: 1.5,
+          borderColor: Colors.white.withValues(alpha: 0.5),
+          elevation: 8,
           child: Column(
             children: [
               // ペット表示部分 (スワイプ対応)
@@ -163,7 +161,9 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                                   ],
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
-                                ...widget.activities.map(
+                                ...MockDataService.getMockPetActivities(
+                                  petId: currentPet.id,
+                                ).map(
                                   (activity) => Text(
                                     activity,
                                     style: AppFonts.bodySmall.copyWith(

@@ -29,18 +29,8 @@ class _DogBreedSelectionScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          'どんな子ですか？',
-          style: AppFonts.titleMedium.copyWith(color: Colors.white),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
+      appBar: const SoftGradientBackAppBar(
+        title: 'どんな子ですか？',
       ),
       body: SafeArea(
         child: Padding(

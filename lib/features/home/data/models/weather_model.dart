@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class WeatherData {
   final double temperature;
   final String location;
@@ -25,9 +27,36 @@ class WeatherData {
     required this.pressure,
   });
 
-  factory WeatherData.fromOneCallJson(Map<String, dynamic> json, String location) {
+  factory WeatherData.fromOneCallJson(
+    Map<String, dynamic> json,
+    String location,
+  ) {
     final current = json['current'] as Map<String, dynamic>;
     final weather = (current['weather'] as List).first as Map<String, dynamic>;
+
+    // UV Index 파싱 개선
+    final uvi = current['uvi'];
+    double uvIndex = 0.0;
+
+    debugPrint('🌞 One Call API UV Index 파싱 시작:');
+    debugPrint('   원본 uvi 데이터: $uvi (타입: ${uvi.runtimeType})');
+
+    if (uvi != null) {
+      if (uvi is num) {
+        uvIndex = uvi.toDouble();
+        debugPrint('   ✅ num 타입으로 파싱: $uvIndex');
+      } else if (uvi is String) {
+        uvIndex = double.tryParse(uvi) ?? 0.0;
+        debugPrint('   ✅ String 타입으로 파싱: $uvIndex');
+      } else {
+        debugPrint('   ⚠️ 예상치 못한 타입: ${uvi.runtimeType}');
+        uvIndex = 0.0;
+      }
+    } else {
+      debugPrint('   ❌ uvi 데이터가 null입니다');
+    }
+
+    debugPrint('   최종 UV Index: $uvIndex');
 
     return WeatherData(
       temperature: (current['temp'] as num).toDouble(),
@@ -38,7 +67,7 @@ class WeatherData {
       humidity: current['humidity'] as int,
       windSpeed: (current['wind_speed'] as num?)?.toDouble() ?? 0.0,
       iconCode: weather['icon'] as String,
-      uvIndex: (current['uvi'] as num?)?.toDouble() ?? 0.0,
+      uvIndex: uvIndex,
       visibility: current['visibility'] as int? ?? 10000,
       pressure: (current['pressure'] as num?)?.toDouble() ?? 1013.25,
     );
@@ -109,18 +138,18 @@ class WeatherData {
   }
 
   Map<String, dynamic> toJson() => {
-        'temperature': temperature,
-        'location': location,
-        'weather_id': weatherId,
-        'description': description,
-        'feels_like': feelsLike,
-        'humidity': humidity,
-        'wind_speed': windSpeed,
-        'icon_code': iconCode,
-        'uv_index': uvIndex,
-        'visibility': visibility,
-        'pressure': pressure,
-      };
+    'temperature': temperature,
+    'location': location,
+    'weather_id': weatherId,
+    'description': description,
+    'feels_like': feelsLike,
+    'humidity': humidity,
+    'wind_speed': windSpeed,
+    'icon_code': iconCode,
+    'uv_index': uvIndex,
+    'visibility': visibility,
+    'pressure': pressure,
+  };
 }
 
 class WeatherLocation {

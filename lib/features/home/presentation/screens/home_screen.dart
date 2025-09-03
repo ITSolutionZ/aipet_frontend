@@ -83,7 +83,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// 에러 스낵바 표시
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
+      SnackBar(content: Text(message), backgroundColor: AppColors.pointPink),
     );
   }
 
@@ -92,7 +92,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.blue,
+        backgroundColor: AppColors.pointBlue,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -103,29 +103,115 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: const AppDrawer(),
-      body: Column(
+      appBar: SoftGradientDrawerAppBar(
+        title: 'ホーム',
+        selectedPetInfo: Row(
+          children: [
+            _buildNotificationButton(),
+            const SizedBox(width: AppSpacing.xs),
+            _buildMenuButton(context),
+          ],
+        ),
+      ),
+      body: Column(children: [_buildMainContent()]),
+    );
+  }
+
+  Widget _buildNotificationButton() {
+    return IconButton(
+      onPressed: _handleNotificationTap,
+      icon: const Stack(
         children: [
-          HomeHeader(onNotificationTap: _handleNotificationTap),
-          _buildMainContent(),
+          Icon(
+            Icons.notifications_outlined,
+            color: AppColors.pointOffWhite,
+            size: 24,
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Icon(Icons.circle, color: AppColors.pointPink, size: 8),
+          ),
         ],
       ),
     );
   }
 
+  Widget _buildMenuButton(BuildContext context) {
+    return Builder(
+      builder: (context) => IconButton(
+        icon: const Icon(Icons.menu),
+        onPressed: () => Scaffold.of(context).openDrawer(),
+        tooltip: 'メニュー',
+      ),
+    );
+  }
+
   Widget _buildMainContent() {
-    return const Expanded(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PetProfileCard(),
-            SizedBox(height: AppSpacing.lg),
-            WeatherCard(),
-            SizedBox(height: AppSpacing.lg),
-            HomeSummaryGrid(),
-          ],
+    return Expanded(
+      child: Column(
+        children: [
+          const Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: AppSpacing.md),
+                  PetProfileCard(),
+                  SizedBox(height: AppSpacing.lg),
+                  WeatherCard(),
+                  SizedBox(height: AppSpacing.lg),
+                  HomeSummaryGrid(),
+                ],
+              ),
+            ),
+          ),
+          _buildNotificationCountBar(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationCountBar() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md,
+      ),
+      decoration: const BoxDecoration(
+        color: AppColors.pointBlue,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(AppRadius.large),
+          topRight: Radius.circular(AppRadius.large),
         ),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.notifications, color: Colors.white, size: 20),
+          const SizedBox(width: AppSpacing.sm),
+          Text(
+            '${NotificationMockData.unreadNotifications.length}件の通知があります',
+            style: AppFonts.bodyMedium.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const Spacer(),
+          TextButton(
+            onPressed: () {
+              context.go(RouteConstants.notificationListRoute);
+            },
+            child: Text(
+              '確認する',
+              style: AppFonts.bodyMedium.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

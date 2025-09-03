@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/shared.dart';
 import '../widgets/widgets.dart';
 
 /// 급여 기록 화면
@@ -22,17 +21,8 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '食事記録',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: const SoftGradientAppBar(
+        title: '食事記録',
       ),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),

@@ -56,26 +56,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.pointDark,
-            size: 20,
-          ),
-          onPressed: () => context.go(AppRouter.loginRoute),
-        ),
-        title: Text(
-          'User Profile',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
+      appBar: SoftGradientBackAppBar(
+        title: 'User Profile',
+        onBackPressed: () => context.go(AppRouter.loginRoute),
       ),
       body: SafeArea(
         child: SingleChildScrollView(

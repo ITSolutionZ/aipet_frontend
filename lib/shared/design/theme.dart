@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'color.dart';
 import 'text_styles.dart';
 
@@ -18,10 +19,19 @@ class AppTheme {
       onSurface: AppColors.pointDark,
       onError: Colors.white,
     ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.pointBrown,
-      foregroundColor: Colors.white,
-      elevation: 0,
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.transparent, // 새로운 그라데이션 AppBar는 투명 배경 사용
+      foregroundColor: const Color(0xFF5B4034), // 다크 브라운 텍스트
+      elevation: 1.0, // 가벼운 elevation
+      shadowColor: Colors.black.withValues(alpha: 0.08), // 가벼운 그림자
+      systemOverlayStyle: SystemUiOverlayStyle.dark, // 다크 상태바 아이콘
+      iconTheme: const IconThemeData(
+        color: Color(0xFF5B4034), // 다크 브라운 아이콘
+      ),
+      titleTextStyle: AppTextStyles.h1.copyWith(
+        color: const Color(0xFF5B4034),
+        fontWeight: FontWeight.w500,
+      ),
     ),
     cardTheme: const CardThemeData(
       color: AppColors.pointCream,

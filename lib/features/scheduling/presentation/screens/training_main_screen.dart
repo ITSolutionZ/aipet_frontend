@@ -9,10 +9,8 @@ class TrainingMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('学習・トレーニング'),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: const SoftGradientAppBar(
+        title: '学習・トレーニング',
       ),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),

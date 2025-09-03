@@ -21,22 +21,8 @@ class _FeedingAnalysisScreenState extends ConsumerState<FeedingAnalysisScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '食事管理',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown.withValues(alpha: 0.8),
-        foregroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
+      appBar: const SoftGradientAppBar(
+        title: '食事管理',
       ),
       body: SingleChildScrollView(
         child: Column(

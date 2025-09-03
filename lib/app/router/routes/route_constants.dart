@@ -81,4 +81,5 @@ class RouteConstants {
   static const String notificationListRoute = '/notifications';
   static const String notificationDetailRoute = '/notification-detail';
   static const String eventDetailRoute = '/event-detail';
+  static const String todayAppointmentsRoute = '/today-appointments';
 }

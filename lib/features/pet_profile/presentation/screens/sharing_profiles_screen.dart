@@ -47,39 +47,8 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.pointDark,
-            size: 20,
-          ),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'Sharing profiles',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          // 현재 선택된 펫 이름 표시
-          if (_pets.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.only(right: AppSpacing.md),
-              child: Text(
-                _pets.first.name,
-                style: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.pointDark.withValues(alpha: 0.7),
-                ),
-              ),
-            ),
-        ],
+      appBar: const SoftGradientBackAppBar(
+        title: 'Sharing profiles',
       ),
       body: Column(
         children: [

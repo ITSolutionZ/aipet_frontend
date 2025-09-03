@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
-import '../widgets/app_bar_widget.dart';
 import '../widgets/section_header_widget.dart';
 import '../widgets/settings_tile_widget.dart';
 
@@ -15,7 +14,29 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: const AppDrawer(),
-      appBar: const AppBarWidget(title: '設定', showProfileImage: true),
+      appBar: SoftGradientDrawerAppBar(
+        title: '設定',
+        selectedPetInfo: Container(
+          margin: const EdgeInsets.only(right: 16),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.asset(
+              'assets/images/placeholder.png',
+              width: 35,
+              height: 35,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: 35,
+                  height: 35,
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.person, size: 20),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
