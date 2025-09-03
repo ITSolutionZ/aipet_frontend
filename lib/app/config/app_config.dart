@@ -80,6 +80,9 @@ abstract class AppConfig {
     await dotenv.load();
   }
 
+  /// Mock 모드 여부 (개발 환경에서만 true)
+  bool get isMockMode => environment == 'development';
+
   /// 모든 필수 API 키가 설정되었는지 확인
   bool get areApiKeysConfigured {
     return googleMapsApiKey.isNotEmpty &&

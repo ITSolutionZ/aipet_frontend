@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../shared/shared.dart';
+import '../../data/services/notification_service.dart';
 
 /// 알림 시간 설정 컨트롤러
 class AlarmTimeSettingsController

@@ -1,4 +1,4 @@
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+import '../../../pet_registor/pet_registor.dart';
 import '../entities/entities.dart';
 
 abstract class AiRepository {
@@ -7,7 +7,7 @@ abstract class AiRepository {
 
   /// 메시지 전송하기
   Future<AiMessageEntity> sendMessage(String message);
-  
+
   /// 펫 정보와 함께 메시지 전송하기
   Future<AiMessageEntity> sendMessageWithPetContext(
     String message, {

@@ -1,6 +1,7 @@
 library;
 
 export 'appointment_summary_card.dart';
+export 'common_summary_card.dart';
 export 'feeding_summary_card.dart';
 export 'home_header.dart';
 export 'home_summary_grid.dart';

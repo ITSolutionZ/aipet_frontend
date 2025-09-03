@@ -2,13 +2,17 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../../../shared/mock_data/mock_data_service.dart';
-import '../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../domain/entities/home_dashboard_entity.dart';
-import '../domain/repositories/home_repository.dart';
+import '../../../../features/home/domain/entities/home_dashboard_entity.dart';
+import '../../../../features/home/domain/repositories/home_repository.dart';
+import '../../../../features/pet_registor/domain/entities/pet_profile_entity.dart';
+import '../../../../shared/mock_data/mock_data_service.dart';
 import 'models/weather_model.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
+  // 기본 설정 상수
+  static const String _defaultCity = '東京都品川区';
+  static const String _defaultCountryCode = 'JP';
+
   @override
   Future<HomeDashboardEntity> getDashboardData() async {
     // 실제 구현에서는 API 호출이나 로컬 데이터 소스에서 데이터를 가져옴
@@ -34,8 +38,8 @@ class HomeRepositoryImpl implements HomeRepository {
     try {
       // OpenWeatherMap API 연동 (무료 API)
       const apiKey = 'YOUR_API_KEY'; // 실제 사용시 환경변수에서 가져오기
-      const city = '東京都品川区';
-      const countryCode = 'JP';
+      const city = _defaultCity;
+      const countryCode = _defaultCountryCode;
 
       const url =
           'https://api.openweathermap.org/data/2.5/weather?q=$city,$countryCode&appid=$apiKey&units=metric&lang=ja';
@@ -91,28 +95,31 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<List<PetProfileEntity>> getPetProfiles() async {
     // Mock 데이터 사용 (실제 API 연동 전까지)
-    await Future.delayed(const Duration(milliseconds: 250));
+    await Future.delayed(_mockDelay);
     return MockDataService.getMockPets();
   }
 
   @override
   Future<WalkSummary> getWalkSummary() async {
     // Mock 데이터 사용
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future.delayed(_mockDelay);
     return MockDataService.getMockWalkSummary();
   }
 
   @override
   Future<HealthSummary> getPetHealthSummary() async {
     // Mock 데이터 사용
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future.delayed(_mockDelay);
     return MockDataService.getMockHealthSummary();
   }
 
   @override
   Future<List<AppointmentSummary>> getUpcomingAppointments() async {
     // Mock 데이터 사용
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future.delayed(_mockDelay);
     return MockDataService.getMockAppointments();
   }
+
+  // 개발 모드용 지연 시간 상수
+  static const Duration _mockDelay = Duration(milliseconds: 250);
 }

@@ -1,12 +1,24 @@
-import 'package:aipet_frontend/shared/services/secure_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../domain/auth_form_state.dart';
+import '../../../../features/auth/domain/domain.dart';
+import '../../../../shared/shared.dart';
+import 'repositories/auth_repository_impl.dart';
+import 'repositories/firebase_auth_repository.dart';
+import 'services/auth_config_service.dart';
 
 part 'auth_providers.g.dart';
+
+// Auth Repository 프로바이더
+@riverpod
+AuthRepository authRepository(Ref ref) {
+  return AuthRepositoryImpl(
+    firebaseRepository: FirebaseAuthRepositoryImpl(),
+    ref: ref,
+  );
+}
 
 // 홈 화면으로 이동하는 콜백을 위한 프로바이더
 @riverpod
@@ -44,6 +56,10 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
     state = state.copyWith(username: username, error: null);
   }
 
+  void updatePassword(String password) {
+    state = state.copyWith(password: password, error: null);
+  }
+
   void togglePasswordVisibility() {
     state = state.copyWith(isPasswordVisible: !state.isPasswordVisible);
   }
@@ -64,25 +80,32 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
   }
 
   Future<void> login() async {
-    // 개발 중이므로 아무 값이나 넣어도 로그인 성공
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      // TODO: 실제 로그인 API 호출
-      await Future.delayed(const Duration(seconds: 1)); // 임시 딜레이
+      // Auth Repository를 통한 로그인 처리
+      final authRepository = ref.read(authRepositoryProvider);
+      final result = await authRepository.signInWithEmailAndPassword(
+        state.email,
+        state.password,
+      );
 
-      // Remember Me가 체크되어 있으면 이메일만 저장
-      if (state.rememberMe) {
-        await _saveLoginCredentials();
-      }
+      if (result.isSuccess) {
+        // Remember Me가 체크되어 있으면 이메일만 저장
+        if (state.rememberMe) {
+          await _saveLoginCredentials();
+        }
 
-      // 로그인 성공 처리
-      state = state.copyWith(isLoading: false);
+        // 로그인 성공 처리
+        state = state.copyWith(isLoading: false);
 
-      // 홈 화면으로 이동
-      final navigationCallback = ref.read(navigationCallbackNotifierProvider);
-      if (navigationCallback != null) {
-        navigationCallback();
+        // 홈 화면으로 이동
+        final navigationCallback = ref.read(navigationCallbackNotifierProvider);
+        if (navigationCallback != null) {
+          navigationCallback();
+        }
+      } else {
+        state = state.copyWith(isLoading: false, error: result.message);
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: 'ログインに失敗しました');
@@ -94,8 +117,14 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
   Future<void> _saveLoginCredentials() async {
     try {
       // 보안상 이메일만 저장하고 패스워드는 저장하지 않음
-      await SecureStorageService.setString('saved_email', state.email);
-      await SecureStorageService.setBool('remember_me', true);
+      await SecureStorageService.setString(
+        AuthConfigConstants.savedEmailKey,
+        state.email,
+      );
+      await SecureStorageService.setString(
+        AuthConfigConstants.rememberMeKey,
+        'true',
+      );
       // 개발 모드에서만 디버그 출력
       debugPrint('Remember Me 이메일 저장 완료');
     } catch (e) {
@@ -108,11 +137,14 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
   // 저장된 Remember Me 정보 불러오기 (이메일만)
   Future<void> loadSavedCredentials() async {
     try {
-      final savedEmail = await SecureStorageService.getString('saved_email');
-      final rememberMe =
-          await SecureStorageService.getBool('remember_me') ?? false;
+      final savedEmail = await SecureStorageService.getString(
+        AuthConfigConstants.savedEmailKey,
+      );
+      final rememberMe = await SecureStorageService.getString(
+        AuthConfigConstants.rememberMeKey,
+      );
 
-      if (rememberMe && savedEmail != null) {
+      if (rememberMe == 'true' && savedEmail != null) {
         state = state.copyWith(
           email: savedEmail,
           rememberMe: true,
@@ -131,8 +163,8 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
   Future<void> clearSavedCredentials() async {
     try {
       // 저장된 데이터 삭제
-      await SecureStorageService.remove('saved_email');
-      await SecureStorageService.setBool('remember_me', false);
+      await SecureStorageService.remove(AuthConfigConstants.savedEmailKey);
+      await SecureStorageService.remove(AuthConfigConstants.rememberMeKey);
       state = state.copyWith(rememberMe: false);
       debugPrint('Remember Me 정보 삭제 완료');
     } catch (e) {

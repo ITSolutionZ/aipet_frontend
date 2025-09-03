@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../shared/services/link_registration_service.dart';
+import '../../data/services/link_registration_service.dart';
 import '../../../../shared/shared.dart';
 
 /// 링크 등록 화면

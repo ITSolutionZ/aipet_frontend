@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../shared/shared.dart';
 import '../../../../app/router/routes/route_constants.dart';
 import '../../data/providers/home_providers.dart';
+import 'common_summary_card.dart';
 
 class WeightSummaryCard extends ConsumerWidget {
   const WeightSummaryCard({super.key});
@@ -35,74 +36,15 @@ class WeightSummaryCard extends ConsumerWidget {
       'lastMeasurement': '昨日',
     };
 
-    return GestureDetector(
+    return CommonSummaryCard(
+      icon: Icons.monitor_weight,
+      iconColor: AppColors.pointBrown,
+      mainValue: '${weightData['currentWeight']}',
+      unit: 'kg',
       onTap: () => context.go(RouteConstants.weightTrackingRoute),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.sm),
-        decoration: BoxDecoration(
-          color: AppColors.pureWhite,
-          borderRadius: BorderRadius.circular(AppSpacing.md),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // 상단 원형 아이콘
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.pointBrown.withValues(alpha: 0.3),
-                  width: 2,
-                ),
-                color: AppColors.pointBrown.withValues(alpha: 0.1),
-              ),
-              child: const Icon(
-                Icons.monitor_weight,
-                color: AppColors.pointBrown,
-                size: 24,
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // 메인 수치와 단위
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  '${weightData['currentWeight']}',
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.pointDark,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                const Text(
-                  'kg',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.pointGray,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      subtitle: '現在の体重',
+      secondaryValue:
+          '${(weightData['weeklyChange'] as double) >= 0 ? '+' : ''}${(weightData['weeklyChange'] as double).toStringAsFixed(1)}kg',
     );
   }
 }

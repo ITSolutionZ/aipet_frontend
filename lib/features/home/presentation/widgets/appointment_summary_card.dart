@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../shared/shared.dart';
 import '../../../../app/router/routes/route_constants.dart';
 import '../../data/providers/home_providers.dart';
+import 'common_summary_card.dart';
 
 class AppointmentSummaryCard extends ConsumerWidget {
   const AppointmentSummaryCard({super.key});
@@ -30,78 +31,18 @@ class AppointmentSummaryCard extends ConsumerWidget {
     final appointmentData = {
       'upcomingCount': upcomingCount,
       'nextAppointment': _getNextAppointmentTime(now),
-      'nextType': '健康診断',
+      'nextType': MockDataService.getMockNextAppointmentType(petId: selectedPet?.id),
       'totalThisMonth': totalThisMonth,
     };
 
-    return GestureDetector(
+    return CommonSummaryCard(
+      icon: Icons.calendar_today,
+      iconColor: AppColors.pointBrown,
+      mainValue: '${appointmentData['upcomingCount']}',
+      unit: '件',
       onTap: () => context.go(RouteConstants.todayAppointmentsRoute),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.sm),
-        decoration: BoxDecoration(
-          color: AppColors.pureWhite,
-          borderRadius: BorderRadius.circular(AppSpacing.md),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // 상단 원형 아이콘
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.pointBrown.withValues(alpha: 0.3),
-                  width: 2,
-                ),
-                color: AppColors.pointBrown.withValues(alpha: 0.1),
-              ),
-              child: const Icon(
-                Icons.calendar_today,
-                color: AppColors.pointBrown,
-                size: 24,
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // 메인 수치와 단위
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  '${appointmentData['upcomingCount']}',
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.pointDark,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                const Text(
-                  '件',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.pointGray,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      subtitle: '予定の予約',
+      secondaryValue: '今月: ${appointmentData['totalThisMonth']}件',
     );
   }
 

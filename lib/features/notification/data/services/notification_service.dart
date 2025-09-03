@@ -6,9 +6,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../app/router/app_router.dart';
-import '../../features/notification/domain/entities/notification_model.dart';
-import '../shared.dart';
+import '../../../../app/router/app_router.dart';
+import '../../domain/entities/notification_model.dart';
+import '../../../../shared/shared.dart';
 
 /// 알림 서비스
 ///
@@ -546,7 +546,7 @@ class NotificationService {
   Future<void> saveNotificationSettings(NotificationSettings settings) async {
     try {
       final settingsJson = jsonEncode(settings.toJson());
-      await SecureStorageService.setStringUnencrypted(
+      await SecureStorageService.setString(
         _settingsKey,
         settingsJson,
       );

@@ -1,231 +1,175 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'encryption_service.dart';
-
-/// 보안 저장소 서비스
-///
-/// SharedPreferences를 암호화하여 민감한 데이터를 안전하게 저장합니다.
+/// 보안 저장소 서비스 (flutter_secure_storage 기반)
+/// 
+/// iOS: Keychain Services 사용
+/// Android: EncryptedSharedPreferences + Android Keystore 사용
 class SecureStorageService {
-  static SharedPreferences? _prefs;
+  static const FlutterSecureStorage _storage = FlutterSecureStorage(
+    aOptions: AndroidOptions(
+      encryptedSharedPreferences: true,
+      keyCipherAlgorithm: KeyCipherAlgorithm.RSA_ECB_PKCS1Padding,
+      storageCipherAlgorithm: StorageCipherAlgorithm.AES_GCM_NoPadding,
+    ),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+    ),
+  );
 
-  /// SharedPreferences 인스턴스를 초기화합니다.
-  static Future<void> initialize() async {
-    _prefs ??= await SharedPreferences.getInstance();
+  /// 문자열 데이터를 안전하게 저장합니다
+  static Future<void> setString(String key, String value) async {
+    try {
+      await _storage.write(key: key, value: value);
+      if (kDebugMode) {
+        debugPrint('✅ Secure storage write success: $key');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ Secure storage write failed: $key, error: $e');
+      }
+      rethrow;
+    }
   }
 
-  /// 암호화된 문자열을 저장합니다.
-  ///
-  /// [key] 저장할 키
-  /// [value] 저장할 값
-  ///
-  /// Returns 저장 성공 여부
-  static Future<bool> setString(String key, String value) async {
-    await initialize();
-    if (_prefs == null) return false;
-
-    return EncryptionService.encryptAndSave(key, value, _prefs!);
-  }
-
-  /// 암호화된 문자열을 불러옵니다.
-  ///
-  /// [key] 불러올 키
-  ///
-  /// Returns 불러온 값 또는 null
+  /// 문자열 데이터를 안전하게 불러옵니다
   static Future<String?> getString(String key) async {
-    await initialize();
-    if (_prefs == null) return null;
-
-    return EncryptionService.decryptAndLoad(key, _prefs!);
+    try {
+      final value = await _storage.read(key: key);
+      if (kDebugMode && value != null) {
+        debugPrint('✅ Secure storage read success: $key');
+      }
+      return value;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ Secure storage read failed: $key, error: $e');
+      }
+      return null;
+    }
   }
 
-  /// 암호화된 데이터를 삭제합니다.
-  ///
-  /// [key] 삭제할 키
-  ///
-  /// Returns 삭제 성공 여부
-  static Future<bool> remove(String key) async {
-    await initialize();
-    if (_prefs == null) return false;
-
-    return EncryptionService.deleteEncryptedData(key, _prefs!);
+  /// Boolean 값을 저장합니다
+  static Future<void> setBool(String key, bool value) async {
+    await setString(key, value.toString());
   }
 
-  /// 모든 암호화된 데이터를 삭제합니다.
-  ///
-  /// Returns 삭제 성공 여부
-  static Future<bool> clear() async {
-    await initialize();
-    if (_prefs == null) return false;
-
-    return EncryptionService.clearAllEncryptedData(_prefs!);
-  }
-
-  /// 키가 존재하는지 확인합니다.
-  ///
-  /// [key] 확인할 키
-  ///
-  /// Returns 존재 여부
-  static Future<bool> containsKey(String key) async {
-    await initialize();
-    if (_prefs == null) return false;
-
-    return EncryptionService.isEncrypted(key, _prefs!);
-  }
-
-  /// 모든 키를 가져옵니다.
-  ///
-  /// Returns 모든 키 목록
-  static Future<Set<String>> getKeys() async {
-    await initialize();
-    if (_prefs == null) return <String>{};
-
-    final allKeys = _prefs!.getKeys();
-    final encryptedKeys = allKeys.where(
-      (key) =>
-          key.startsWith('encryption_key_') &&
-          !key.endsWith('_key') &&
-          !key.endsWith('_iv'),
-    );
-
-    return encryptedKeys
-        .map((key) => key.replaceFirst('encryption_key_', ''))
-        .toSet();
-  }
-
-  /// 암호화되지 않은 일반 데이터 저장 (민감하지 않은 데이터용)
-  ///
-  /// [key] 저장할 키
-  /// [value] 저장할 값
-  ///
-  /// Returns 저장 성공 여부
-  static Future<bool> setStringUnencrypted(String key, String value) async {
-    await initialize();
-    if (_prefs == null) return false;
-
-    return _prefs!.setString(key, value);
-  }
-
-  /// 암호화되지 않은 일반 데이터 불러오기 (민감하지 않은 데이터용)
-  ///
-  /// [key] 불러올 키
-  ///
-  /// Returns 불러온 값 또는 null
-  static Future<String?> getStringUnencrypted(String key) async {
-    await initialize();
-    if (_prefs == null) return null;
-
-    return _prefs!.getString(key);
-  }
-
-  /// 암호화되지 않은 일반 데이터 삭제 (민감하지 않은 데이터용)
-  ///
-  /// [key] 삭제할 키
-  ///
-  /// Returns 삭제 성공 여부
-  static Future<bool> removeUnencrypted(String key) async {
-    await initialize();
-    if (_prefs == null) return false;
-
-    return _prefs!.remove(key);
-  }
-
-  /// Boolean 값 저장 (암호화되지 않음)
-  ///
-  /// [key] 저장할 키
-  /// [value] 저장할 값
-  ///
-  /// Returns 저장 성공 여부
-  static Future<bool> setBool(String key, bool value) async {
-    await initialize();
-    if (_prefs == null) return false;
-
-    return _prefs!.setBool(key, value);
-  }
-
-  /// Boolean 값 불러오기 (암호화되지 않음)
-  ///
-  /// [key] 불러올 키
-  ///
-  /// Returns 불러온 값 또는 null
+  /// Boolean 값을 불러옵니다
   static Future<bool?> getBool(String key) async {
-    await initialize();
-    if (_prefs == null) return null;
-
-    return _prefs!.getBool(key);
+    final value = await getString(key);
+    if (value == null) return null;
+    return value.toLowerCase() == 'true';
   }
 
-  /// Integer 값 저장 (암호화되지 않음)
-  ///
-  /// [key] 저장할 키
-  /// [value] 저장할 값
-  ///
-  /// Returns 저장 성공 여부
-  static Future<bool> setInt(String key, int value) async {
-    await initialize();
-    if (_prefs == null) return false;
-
-    return _prefs!.setInt(key, value);
+  /// Integer 값을 저장합니다
+  static Future<void> setInt(String key, int value) async {
+    await setString(key, value.toString());
   }
 
-  /// Integer 값 불러오기 (암호화되지 않음)
-  ///
-  /// [key] 불러올 키
-  ///
-  /// Returns 불러온 값 또는 null
+  /// Integer 값을 불러옵니다
   static Future<int?> getInt(String key) async {
-    await initialize();
-    if (_prefs == null) return null;
-
-    return _prefs!.getInt(key);
+    final value = await getString(key);
+    if (value == null) return null;
+    return int.tryParse(value);
   }
 
-  /// Double 값 저장 (암호화되지 않음)
-  ///
-  /// [key] 저장할 키
-  /// [value] 저장할 값
-  ///
-  /// Returns 저장 성공 여부
-  static Future<bool> setDouble(String key, double value) async {
-    await initialize();
-    if (_prefs == null) return false;
-
-    return _prefs!.setDouble(key, value);
+  /// 특정 키의 데이터를 삭제합니다
+  static Future<void> remove(String key) async {
+    try {
+      await _storage.delete(key: key);
+      if (kDebugMode) {
+        debugPrint('✅ Secure storage delete success: $key');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ Secure storage delete failed: $key, error: $e');
+      }
+      rethrow;
+    }
   }
 
-  /// Double 값 불러오기 (암호화되지 않음)
-  ///
-  /// [key] 불러올 키
-  ///
-  /// Returns 불러온 값 또는 null
-  static Future<double?> getDouble(String key) async {
-    await initialize();
-    if (_prefs == null) return null;
-
-    return _prefs!.getDouble(key);
+  /// 모든 데이터를 삭제합니다
+  static Future<void> clear() async {
+    try {
+      await _storage.deleteAll();
+      if (kDebugMode) {
+        debugPrint('✅ Secure storage clear all success');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ Secure storage clear all failed: $e');
+      }
+      rethrow;
+    }
   }
 
-  /// String 리스트 저장 (암호화되지 않음)
-  ///
-  /// [key] 저장할 키
-  /// [value] 저장할 값
-  ///
-  /// Returns 저장 성공 여부
-  static Future<bool> setStringList(String key, List<String> value) async {
-    await initialize();
-    if (_prefs == null) return false;
-
-    return _prefs!.setStringList(key, value);
+  /// 키가 존재하는지 확인합니다
+  static Future<bool> containsKey(String key) async {
+    try {
+      final value = await _storage.read(key: key);
+      return value != null;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ Secure storage contains key check failed: $key, error: $e');
+      }
+      return false;
+    }
   }
 
-  /// String 리스트 불러오기 (암호화되지 않음)
-  ///
-  /// [key] 불러올 키
-  ///
-  /// Returns 불러온 값 또는 null
-  static Future<List<String>?> getStringList(String key) async {
-    await initialize();
-    if (_prefs == null) return null;
+  /// 모든 키를 가져옵니다
+  static Future<Set<String>> getKeys() async {
+    try {
+      final allKeys = await _storage.readAll();
+      return allKeys.keys.toSet();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ Secure storage get keys failed: $e');
+      }
+      return <String>{};
+    }
+  }
 
-    return _prefs!.getStringList(key);
+  /// JSON 형태의 복잡한 데이터를 저장합니다
+  static Future<void> setJson(String key, Map<String, dynamic> value) async {
+    final jsonString = jsonEncode(value);
+    await setString(key, jsonString);
+  }
+
+  /// JSON 형태의 복잡한 데이터를 불러옵니다
+  static Future<Map<String, dynamic>?> getJson(String key) async {
+    final jsonString = await getString(key);
+    if (jsonString == null) return null;
+    
+    try {
+      return jsonDecode(jsonString) as Map<String, dynamic>;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ JSON decode failed for key: $key, error: $e');
+      }
+      return null;
+    }
+  }
+
+  /// 보안 수준 검증 (디버그용)
+  static Future<void> validateSecurityLevel() async {
+    if (kDebugMode) {
+      try {
+        // 테스트 데이터 저장/읽기
+        const testKey = 'security_test';
+        const testValue = 'test_secure_data_12345';
+        
+        await setString(testKey, testValue);
+        final retrievedValue = await getString(testKey);
+        await remove(testKey);
+        
+        if (retrievedValue == testValue) {
+          debugPrint('🔐 Secure Storage validation: PASSED');
+        } else {
+          debugPrint('⚠️  Secure Storage validation: FAILED - Data integrity issue');
+        }
+      } catch (e) {
+        debugPrint('⚠️  Secure Storage validation: FAILED - $e');
+      }
+    }
   }
 }

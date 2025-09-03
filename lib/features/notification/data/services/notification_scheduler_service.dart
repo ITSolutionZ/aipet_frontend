@@ -4,10 +4,9 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../features/notification/domain/entities/notification_model.dart';
-import '../../features/notification/domain/entities/notification_schedule.dart';
+import '../../../../shared/shared.dart';
+import '../../domain/domain.dart';
 import 'notification_service.dart';
-import 'secure_storage_service.dart';
 
 /// 알림 스케줄링 서비스
 class NotificationSchedulerService {
@@ -221,9 +220,7 @@ class NotificationSchedulerService {
   /// 모든 스케줄 가져오기
   Future<List<NotificationSchedule>> getSchedules() async {
     try {
-      final schedulesJson = await SecureStorageService.getStringUnencrypted(
-        _schedulesKey,
-      );
+      final schedulesJson = await SecureStorageService.getString(_schedulesKey);
       if (schedulesJson != null) {
         final List<dynamic> schedulesList = jsonDecode(schedulesJson);
         return schedulesList
@@ -285,10 +282,7 @@ class NotificationSchedulerService {
       final schedulesJson = jsonEncode(
         schedules.map((s) => s.toJson()).toList(),
       );
-      await SecureStorageService.setStringUnencrypted(
-        _schedulesKey,
-        schedulesJson,
-      );
+      await SecureStorageService.setString(_schedulesKey, schedulesJson);
     } catch (e) {
       if (kDebugMode) {
         print('스케줄 저장 실패: $e');
