@@ -192,24 +192,15 @@ class _FeedingScheduleEditScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '$_selectedMealTypeスケジュール編集',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: SoftGradientAppBar(
+        title: '$_selectedMealTypeスケジュール編集',
         actions: [
           TextButton(
             onPressed: _saveSchedule,
             child: Text(
               '保存',
               style: AppFonts.bodyMedium.copyWith(
-                color: Colors.white,
+                color: const Color(0xFF5B4034),
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -40,7 +40,7 @@ class WeightSummaryCard extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
-          color: AppColors.pointOffWhite,
+          color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppSpacing.md),
           boxShadow: [
             BoxShadow(

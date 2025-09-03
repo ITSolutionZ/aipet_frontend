@@ -8,6 +8,7 @@ import '../../../features/notification/presentation/screens/screens.dart';
 import '../../../features/pet_activities/pet_activities.dart';
 import '../../../features/pet_profile/presentation/presentation.dart';
 import '../../../features/scheduling/presentation/presentation.dart';
+import '../../../features/scheduling/presentation/screens/today_appointments_screen.dart';
 import '../../../features/settings/presentation/screens/screens.dart';
 import '../../../features/walk/presentation/screens/screens.dart';
 import '../../../shared/mock_data/mock_data_service.dart';
@@ -248,6 +249,13 @@ class ShellRoutes {
             ),
           ),
         ],
+      ),
+
+      // 오늘의 예약 독립 라우트
+      GoRoute(
+        path: RouteConstants.todayAppointmentsRoute,
+        name: 'today-appointments',
+        builder: (context, state) => const TodayAppointmentsScreen(),
       ),
     ],
   );

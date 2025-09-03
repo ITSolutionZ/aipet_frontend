@@ -380,18 +380,17 @@ class NotificationService {
     int limit = 50,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final notificationsJson = prefs.getStringList(_notificationsKey) ?? [];
+      // API 연계 전까지는 Mock 데이터 사용
+      List<NotificationModel> notifications =
+          NotificationMockData.notifications;
 
-      final notifications = notificationsJson
-          .map((json) => NotificationModel.fromJson(jsonDecode(json)))
-          .where((notification) {
-            if (status != null && notification.status != status) return false;
-            if (type != null && notification.type != type) return false;
-            if (notification.isExpired) return false;
-            return true;
-          })
-          .toList();
+      // 필터링 적용
+      notifications = notifications.where((notification) {
+        if (status != null && notification.status != status) return false;
+        if (type != null && notification.type != type) return false;
+        if (notification.isExpired) return false;
+        return true;
+      }).toList();
 
       // 최신순으로 정렬
       notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -485,8 +484,16 @@ class NotificationService {
 
       await prefs.setStringList(_notificationsKey, updatedNotifications);
 
-      // 로컬 알림도 취소
-      await _localNotifications.cancel(int.parse(notificationId));
+      // 로컬 알림도 취소 (ID가 숫자인 경우에만)
+      try {
+        final id = int.parse(notificationId);
+        await _localNotifications.cancel(id);
+      } catch (e) {
+        // ID가 숫자가 아닌 경우 (mock_data 등) 로컬 알림 취소 건너뛰기
+        if (kDebugMode) {
+          print('로컬 알림 취소 건너뛰기 (ID: $notificationId)');
+        }
+      }
     } catch (e) {
       if (kDebugMode) {
         print('알림 삭제 오류: $e');
@@ -525,18 +532,14 @@ class NotificationService {
   /// 알림 설정 가져오기
   Future<NotificationSettings> getNotificationSettings() async {
     try {
-      final settingsJson = await SecureStorageService.getStringUnencrypted(
-        _settingsKey,
-      );
-      if (settingsJson != null) {
-        return NotificationSettings.fromJson(jsonDecode(settingsJson));
-      }
+      // API 연계 전까지는 Mock 데이터 사용
+      return NotificationMockData.defaultSettings;
     } catch (e) {
       if (kDebugMode) {
         print('알림 설정 가져오기 오류: $e');
       }
+      return const NotificationSettings();
     }
-    return const NotificationSettings();
   }
 
   /// 알림 설정 저장

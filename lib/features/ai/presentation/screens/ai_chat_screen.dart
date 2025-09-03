@@ -183,39 +183,8 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.smart_toy, size: 20),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'AIアシスタント',
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (chatState.isTyping)
-                  Text(
-                    '入力中...',
-                    style: AppFonts.bodySmall.copyWith(color: Colors.white70),
-                  ),
-              ],
-            ),
-          ],
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: SoftGradientAppBar(
+        title: 'AIアシスタント',
         actions: [
           IconButton(
             onPressed: _navigateToFavoriteMessages,

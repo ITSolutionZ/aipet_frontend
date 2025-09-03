@@ -1021,105 +1021,82 @@ abstract class MockDataService {
     ];
   }
 
-  /// 체중 기록 목 데이터 (펫별로 다른 데이터)
+  /// 체중 기록 목 데이터 (펫별로 다른 데이터, 월별 추이 포함)
   static List<WeightRecordEntity> getMockWeightRecords({String? petId}) {
     final pets = getMockPets();
     final currentPet = petId != null
         ? pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first)
         : pets.first;
 
-    // 펫 타입에 따라 다른 체중 데이터
-    if (currentPet.type == 'dog') {
-      return [
-        WeightRecordEntity(
-          id: '1',
+    final now = DateTime.now();
+    final records = <WeightRecordEntity>[];
+    
+    // 펫 타입에 따른 기본 체중
+    final baseWeight = currentPet.type == 'dog' ? 25.0 : 
+                      currentPet.type == 'cat' ? 4.0 : 5.0;
+    
+    // 최근 2년 6개월간 체중 기록 생성 (30개월)
+    for (int monthsAgo = 0; monthsAgo < 30; monthsAgo++) {
+      final recordMonth = now.month - monthsAgo;
+      final recordYear = now.year + (recordMonth <= 0 ? (recordMonth ~/ 12) - 1 : (recordMonth - 1) ~/ 12);
+      final adjustedMonth = recordMonth <= 0 ? recordMonth + 12 * ((recordMonth.abs() ~/ 12) + 1) : ((recordMonth - 1) % 12) + 1;
+      
+      // 각 월에 1-4개의 기록 생성
+      final recordCount = (monthsAgo % 3) + 1; // 1-3개 기록
+      
+      for (int recordIndex = 0; recordIndex < recordCount; recordIndex++) {
+        // 월 내의 다양한 날짜
+        final day = recordIndex == 0 ? 15 : // 첫 기록은 15일
+                   recordIndex == 1 ? 5 :   // 두 번째는 5일
+                   recordIndex == 2 ? 25 :  // 세 번째는 25일
+                   10;                      // 네 번째는 10일
+        
+        final recordDate = DateTime(recordYear, adjustedMonth, day);
+        
+        // 계절적 변화와 점진적 변화 반영
+        final seasonalFactor = (adjustedMonth <= 3 || adjustedMonth >= 11) ? 0.1 : -0.05;
+        final trendFactor = monthsAgo * 0.015; // 과거로 갈수록 약간 가벼워짐
+        final dailyVariation = recordIndex * 0.05; // 월 내 일별 변화
+        final randomVariation = (monthsAgo % 4) * 0.1 - 0.15;
+        
+        final weight = baseWeight + seasonalFactor - trendFactor + dailyVariation + randomVariation;
+      
+        records.add(WeightRecordEntity(
+          id: 'weight_${recordDate.millisecondsSinceEpoch}_$recordIndex',
           petId: currentPet.id,
           petName: currentPet.name,
-          weight: 25.2,
-          recordedDate: DateTime.now(),
-          notes: '건강한 체중',
-          createdAt: DateTime.now(),
-        ),
-        WeightRecordEntity(
-          id: '2',
-          petId: currentPet.id,
-          petName: currentPet.name,
-          weight: 24.8,
-          recordedDate: DateTime.now().subtract(const Duration(days: 30)),
-          notes: '약간 증가',
-          createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        ),
-        WeightRecordEntity(
-          id: '3',
-          petId: currentPet.id,
-          petName: currentPet.name,
-          weight: 24.5,
-          recordedDate: DateTime.now().subtract(const Duration(days: 60)),
-          notes: '정상 범위',
-          createdAt: DateTime.now().subtract(const Duration(days: 60)),
-        ),
-      ];
-    } else if (currentPet.type == 'cat') {
-      return [
-        WeightRecordEntity(
-          id: '1',
-          petId: currentPet.id,
-          petName: currentPet.name,
-          weight: 4.2,
-          recordedDate: DateTime.now(),
-          notes: '이상적인 체중',
-          createdAt: DateTime.now(),
-        ),
-        WeightRecordEntity(
-          id: '2',
-          petId: currentPet.id,
-          petName: currentPet.name,
-          weight: 4.0,
-          recordedDate: DateTime.now().subtract(const Duration(days: 30)),
-          notes: '약간 증가',
-          createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        ),
-        WeightRecordEntity(
-          id: '3',
-          petId: currentPet.id,
-          petName: currentPet.name,
-          weight: 3.8,
-          recordedDate: DateTime.now().subtract(const Duration(days: 60)),
-          notes: '정상 범위',
-          createdAt: DateTime.now().subtract(const Duration(days: 60)),
-        ),
-      ];
-    } else {
-      return [
-        WeightRecordEntity(
-          id: '1',
-          petId: currentPet.id,
-          petName: currentPet.name,
-          weight: 5.2,
-          recordedDate: DateTime.now(),
-          notes: '정상 체중',
-          createdAt: DateTime.now(),
-        ),
-        WeightRecordEntity(
-          id: '2',
-          petId: currentPet.id,
-          petName: currentPet.name,
-          weight: 5.0,
-          recordedDate: DateTime.now().subtract(const Duration(days: 30)),
-          notes: '약간 증가',
-          createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        ),
-        WeightRecordEntity(
-          id: '3',
-          petId: currentPet.id,
-          petName: currentPet.name,
-          weight: 4.8,
-          recordedDate: DateTime.now().subtract(const Duration(days: 60)),
-          notes: '정상 범위',
-          createdAt: DateTime.now().subtract(const Duration(days: 60)),
-        ),
-      ];
+          weight: double.parse(weight.toStringAsFixed(1)),
+          recordedDate: recordDate,
+          notes: monthsAgo == 0 ? '最近記録' : 
+                 monthsAgo < 3 ? '正常範囲' : 
+                 recordIndex == 0 ? '定期健診' :
+                 recordIndex == 1 ? '自宅で測定' : '病院で測定',
+          createdAt: recordDate,
+        ));
+      }
     }
+    
+    // 작년 동월 데이터도 일부 추가 (비교용)
+    for (int month = 1; month <= 6; month++) {
+      final lastYearDate = DateTime(now.year - 1, month, 15);
+      final seasonalFactor = (month <= 3 || month >= 11) ? 0.05 : -0.1;
+      final weight = baseWeight * 0.95 + seasonalFactor;
+      
+      records.add(WeightRecordEntity(
+        id: 'weight_lastyear_${lastYearDate.millisecondsSinceEpoch}',
+        petId: currentPet.id,
+        petName: currentPet.name,
+        weight: double.parse(weight.toStringAsFixed(1)),
+        recordedDate: lastYearDate,
+        notes: '昨年記録',
+        createdAt: lastYearDate,
+      ));
+    }
+    
+    // 최신 순으로 정렬
+    records.sort((a, b) => b.recordedDate.compareTo(a.recordedDate));
+    
+    return records;
   }
 
   // ==================== Pet Profile ====================
@@ -1178,22 +1155,77 @@ abstract class MockDataService {
 
   /// 예약 정보 목 데이터
   static List<AppointmentSummary> getMockAppointments() {
+    final now = DateTime.now();
     return [
       AppointmentSummary(
         id: '1',
-        title: 'Max 건강검진',
-        scheduledTime: DateTime.now().add(const Duration(days: 1, hours: 10)),
-        type: '건강검진',
+        title: 'Max 健康診断',
+        scheduledTime: DateTime(now.year, now.month, now.day, 14, 0), // 오늘 14:00
+        type: '健康診断',
         petName: 'Max',
       ),
       AppointmentSummary(
         id: '2',
-        title: 'Luna 미용',
-        scheduledTime: DateTime.now().add(const Duration(days: 3, hours: 14)),
-        type: '미용',
+        title: 'Luna グルーミング',
+        scheduledTime: DateTime(now.year, now.month, now.day, 16, 30), // 오늘 16:30
+        type: 'グルーミング',
+        petName: 'Luna',
+      ),
+      AppointmentSummary(
+        id: '3',
+        title: 'Max 散歩訓練',
+        scheduledTime: DateTime(now.year, now.month, now.day + 1, 10, 0), // 내일 10:00
+        type: '訓練',
+        petName: 'Max',
+      ),
+      AppointmentSummary(
+        id: '4',
+        title: 'Luna ワクチン接種',
+        scheduledTime: DateTime(now.year, now.month, now.day + 2, 15, 0), // 모레 15:00
+        type: '医療',
         petName: 'Luna',
       ),
     ];
+  }
+
+  /// 오늘의 예약만 필터링해서 반환
+  static List<AppointmentSummary> getMockTodayAppointments() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    
+    return getMockAppointments().where((appointment) {
+      final appointmentDate = DateTime(
+        appointment.scheduledTime.year,
+        appointment.scheduledTime.month,
+        appointment.scheduledTime.day,
+      );
+      return appointmentDate.isAtSameMomentAs(today);
+    }).toList();
+  }
+
+  /// 특정 펫의 오늘의 예약만 필터링해서 반환
+  static List<AppointmentSummary> getMockTodayAppointmentsByPet({String? petId}) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    
+    // 펫 ID가 제공되지 않으면 모든 예약 반환
+    if (petId == null) {
+      return getMockTodayAppointments();
+    }
+    
+    // 펫 이름 가져오기
+    final pets = getMockPets();
+    final selectedPet = pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first);
+    
+    return getMockAppointments().where((appointment) {
+      final appointmentDate = DateTime(
+        appointment.scheduledTime.year,
+        appointment.scheduledTime.month,
+        appointment.scheduledTime.day,
+      );
+      return appointmentDate.isAtSameMomentAs(today) && 
+             appointment.petName == selectedPet.name;
+    }).toList();
   }
 
   /// 건강 요약 목 데이터
@@ -2059,6 +2091,91 @@ abstract class MockDataService {
     return 'unknown';
   }
 
+  /// 체중 차트용 데이터 (실제 체중 기록을 기반으로 계산)
+  static Map<String, dynamic> getMockWeightChartData({String? petId}) {
+    final pets = getMockPets();
+    final currentPet = petId != null
+        ? pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first)
+        : pets.first;
+
+    // 실제 체중 기록 가져오기
+    final weightRecords = getMockWeightRecords(petId: currentPet.id);
+    
+    final currentYearData = <String, double>{};
+    final lastYearData = <String, double>{};
+    final now = DateTime.now();
+
+    // 현재 연도와 작년 체중 기록 분류
+    final currentYearRecords = weightRecords.where((record) => 
+        record.recordedDate.year == now.year).toList();
+    final lastYearRecords = weightRecords.where((record) => 
+        record.recordedDate.year == now.year - 1).toList();
+
+    // 기본 체중 설정 (타입별)
+    final baseWeight = currentPet.type == 'dog' ? 25.0 : 
+                      currentPet.type == 'cat' ? 4.0 : 5.0;
+
+    // 현재 연도 월별 데이터 계산
+    for (int month = 1; month <= 12; month++) {
+      final monthRecords = currentYearRecords.where((record) =>
+          record.recordedDate.month == month).toList();
+      
+      if (monthRecords.isNotEmpty) {
+        // 해당 월의 평균 체중
+        final avgWeight = monthRecords.fold<double>(0.0, 
+            (sum, record) => sum + record.weight) / monthRecords.length;
+        currentYearData[month.toString()] = avgWeight;
+      } else {
+        // 데이터가 없는 경우 보간법 사용
+        final prevMonth = month - 1;
+        final nextMonth = month + 1;
+        
+        double interpolatedWeight = baseWeight;
+        if (prevMonth >= 1 && currentYearData.containsKey(prevMonth.toString())) {
+          interpolatedWeight = currentYearData[prevMonth.toString()]!;
+        } else if (nextMonth <= 12) {
+          final nextRecords = currentYearRecords.where((record) =>
+              record.recordedDate.month == nextMonth).toList();
+          if (nextRecords.isNotEmpty) {
+            interpolatedWeight = nextRecords.first.weight;
+          }
+        }
+        
+        currentYearData[month.toString()] = interpolatedWeight;
+      }
+    }
+
+    // 작년 연도 월별 데이터 계산
+    for (int month = 1; month <= 12; month++) {
+      final monthRecords = lastYearRecords.where((record) =>
+          record.recordedDate.month == month).toList();
+      
+      if (monthRecords.isNotEmpty) {
+        final avgWeight = monthRecords.fold<double>(0.0, 
+            (sum, record) => sum + record.weight) / monthRecords.length;
+        lastYearData[month.toString()] = avgWeight;
+      } else {
+        // 작년 데이터가 없는 경우 현재 체중보다 약간 낮게 설정
+        final currentMonthWeight = currentYearData[month.toString()] ?? baseWeight;
+        lastYearData[month.toString()] = currentMonthWeight * 0.95;
+      }
+    }
+
+    // 전체 데이터에서 최소/최대 체중 계산
+    final allWeights = [...currentYearData.values, ...lastYearData.values];
+    final minWeight = allWeights.reduce((a, b) => a < b ? a : b) - 0.5;
+    final maxWeight = allWeights.reduce((a, b) => a > b ? a : b) + 0.5;
+
+    return {
+      'currentYearData': currentYearData,
+      'lastYearData': lastYearData,
+      'minWeight': minWeight,
+      'maxWeight': maxWeight,
+      'petType': currentPet.type,
+      'petName': currentPet.name,
+    };
+  }
+
   // ==================== UI Constants ====================
 
   /// 월 이름 목 데이터 (차트용)
@@ -2116,5 +2233,111 @@ abstract class MockDataService {
   /// 라우터 기본 쿼리 파라미터
   static Map<String, String> getDefaultFeedingScheduleParams() {
     return {'mealType': '朝食', 'time': '08:00', 'amount': '100g', 'petId': '1'};
+  }
+
+  // ==================== Pet-specific Dashboard Data ====================
+  
+  /// 펫별 오늘의 활동 데이터
+  static List<String> getMockPetActivities({String? petId}) {
+    final pets = getMockPets();
+    final selectedPet = petId != null
+        ? pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first)
+        : pets.first;
+    
+    // 펫 타입과 이름에 따라 다른 활동 데이터
+    if (selectedPet.type == 'dog') {
+      if (selectedPet.name == 'Max') {
+        return [
+          '○ 今日は散歩記録がありません',
+          '○ 昼ごはんを食べました',
+        ];
+      } else {
+        return [
+          '○ 朝の散歩を完了しました',
+          '○ おやつを食べました',
+        ];
+      }
+    } else if (selectedPet.type == 'cat') {
+      return [
+        '○ 朝ごはんを食べました', 
+        '○ トイレを使用しました',
+      ];
+    } else {
+      return [
+        '○ 水を飲みました',
+        '○ 遊び時間を楽しみました',
+      ];
+    }
+  }
+
+  /// 펫별 다음 산책 시간 
+  static String getMockNextWalkTime({String? petId}) {
+    final pets = getMockPets();
+    final selectedPet = petId != null
+        ? pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first)
+        : pets.first;
+    
+    if (selectedPet.type == 'dog') {
+      return '夕方';
+    } else {
+      return '散歩不要';
+    }
+  }
+
+  /// 펫별 다음 식사 정보
+  static Map<String, String> getMockNextMealInfo({String? petId}) {
+    final pets = getMockPets();
+    final selectedPet = petId != null
+        ? pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first)
+        : pets.first;
+    
+    if (selectedPet.type == 'dog') {
+      return {
+        'nextMeal': '夕食',
+        'nextMealTime': '18:00',
+      };
+    } else if (selectedPet.type == 'cat') {
+      return {
+        'nextMeal': '夜食',
+        'nextMealTime': '20:00',
+      };
+    } else {
+      return {
+        'nextMeal': '간식',
+        'nextMealTime': '15:00',
+      };
+    }
+  }
+
+  /// 펫별 예상 칼로리 정보
+  static int getMockExpectedCalories({String? petId}) {
+    final pets = getMockPets();
+    final selectedPet = petId != null
+        ? pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first)
+        : pets.first;
+    
+    if (selectedPet.type == 'dog') {
+      return selectedPet.name == 'Max' ? 320 : 280;
+    } else if (selectedPet.type == 'cat') {
+      return 250;
+    } else {
+      return 150;
+    }
+  }
+
+  /// 펫별 다음 예약 유형
+  static String getMockNextAppointmentType({String? petId}) {
+    final pets = getMockPets();
+    final selectedPet = petId != null
+        ? pets.firstWhere((pet) => pet.id == petId, orElse: () => pets.first)
+        : pets.first;
+    
+    if (selectedPet.type == 'dog') {
+      return '健康診断';
+    } else if (selectedPet.type == 'cat') {
+      return 'ワクチン接種';
+    } else {
+      return 'メディカルチェック';
+    }
   }
 }
