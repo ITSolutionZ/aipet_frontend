@@ -1,4 +1,5 @@
-import '../../../../features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'pet_summary_entity.dart';
+import 'weather_entity.dart';
 
 // 예약 정보 요약
 class AppointmentSummary {
@@ -59,8 +60,8 @@ class WalkSummary {
 
 class HomeDashboardEntity {
   final String currentTime;
-  final dynamic weather; // WeatherData는 Data 레이어에서 정의되므로 dynamic으로 처리
-  final List<PetProfileEntity> petProfiles;
+  final WeatherEntity weather;
+  final List<PetSummaryEntity> petProfiles;
   final List<AppointmentSummary> upcomingAppointments;
   final HealthSummary petHealthSummary;
   final WalkSummary walkSummary;
@@ -75,17 +76,3 @@ class HomeDashboardEntity {
   });
 }
 
-// 기존 WeatherInfo 클래스 (하위 호환성을 위해 유지)
-class WeatherInfo {
-  final double temperature;
-  final String condition;
-  final String iconCode;
-  final String location;
-
-  const WeatherInfo({
-    required this.temperature,
-    required this.condition,
-    required this.iconCode,
-    required this.location,
-  });
-}
