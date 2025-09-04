@@ -6,7 +6,7 @@ part of 'auth_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authRepositoryHash() => r'489458f1575fbb92f1d6025f843b58865a99b57f';
+String _$authRepositoryHash() => r'0381c15cc98678f44ab56fe3cc2f2c054d089287';
 
 /// See also [authRepository].
 @ProviderFor(authRepository)
@@ -62,7 +62,7 @@ final navigationCallbackNotifierProvider =
 
 typedef _$NavigationCallbackNotifier = AutoDisposeNotifier<Function()?>;
 String _$authFormStateNotifierHash() =>
-    r'2c84690dce0df0eea13fe85a1c5dbde23ba7ee1d';
+    r'bac74baceb402f207e237fd65600c3eba0fb981a';
 
 /// See also [AuthFormStateNotifier].
 @ProviderFor(AuthFormStateNotifier)

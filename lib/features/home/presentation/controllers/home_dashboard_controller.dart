@@ -1,6 +1,6 @@
-import '../../../../app/controllers/base_controller.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/home/data/data.dart';
+import 'package:aipet_frontend/features/home/domain/domain.dart';
 
 class HomeDashboardResult {
   final bool isSuccess;
@@ -22,6 +22,10 @@ class HomeDashboardController extends BaseController {
   late final HomeRepository _repository = HomeRepositoryImpl();
   late final GetDashboardDataUseCase _getDashboardDataUseCase =
       GetDashboardDataUseCase(_repository);
+  late final GetPetSummaryUseCase _getPetSummaryUseCase =
+      GetPetSummaryUseCase(_repository);
+  late final GetWeatherDataUseCase _getWeatherDataUseCase =
+      GetWeatherDataUseCase(_repository);
 
   /// 홈 화면 초기화
   Future<HomeDashboardResult> initializeHome() async {
@@ -37,8 +41,8 @@ class HomeDashboardController extends BaseController {
   /// 펫 목록 확인
   Future<bool> hasPets() async {
     try {
-      final petProfiles = await _repository.getPetProfiles();
-      return petProfiles.isNotEmpty;
+      final petSummaries = await _getPetSummaryUseCase.call();
+      return petSummaries.isNotEmpty;
     } catch (error) {
       handleError(error);
       return false;
@@ -46,9 +50,14 @@ class HomeDashboardController extends BaseController {
   }
 
   /// 날씨 정보 로드
-  Future<HomeDashboardResult> loadWeatherInfo() async {
+  /// [userTriggered] 사용자가 직접 요청한 경우 true
+  Future<HomeDashboardResult> loadWeatherInfo({
+    bool userTriggered = false,
+  }) async {
     try {
-      final weather = await _repository.getCurrentWeather();
+      final weather = await _getWeatherDataUseCase.call(
+        userTriggered: userTriggered,
+      );
       return HomeDashboardResult.success('날씨 정보가 로드되었습니다', weather);
     } catch (error) {
       handleError(error);
@@ -93,13 +102,13 @@ class HomeDashboardController extends BaseController {
   Future<HomeDashboardResult> updateProfile() async {
     try {
       // 펫 프로필 정보를 다시 로드하여 최신 상태로 업데이트
-      final petProfiles = await _repository.getPetProfiles();
+      final petSummaries = await _getPetSummaryUseCase.call();
       final dashboardData = await _getDashboardDataUseCase.call();
 
       // 프로필 업데이트 성공 메시지와 함께 업데이트된 데이터 반환
       return HomeDashboardResult.success(
-        '프로필이 업데이트되었습니다 (${petProfiles.length}마리 펫 정보)',
-        {'pets': petProfiles, 'dashboard': dashboardData},
+        '프로필이 업데이트되었습니다 (${petSummaries.length}마리 펫 정보)',
+        {'pets': petSummaries, 'dashboard': dashboardData},
       );
     } catch (error) {
       handleError(error);
