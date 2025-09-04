@@ -146,4 +146,32 @@ class HomeMockService extends BaseMockService {
     
     return records;
   }
+
+  /// 건강 요약 정보 조회
+  static Map<String, dynamic> getMockHealthSummary({String? petId}) {
+    return {
+      'overall': 'good', // excellent, good, fair, poor
+      'lastCheckup': DateTime.now().subtract(const Duration(days: 45)),
+      'nextCheckup': DateTime.now().add(const Duration(days: 45)),
+      'vaccines': {
+        'upToDate': true,
+        'nextDue': DateTime.now().add(const Duration(days: 120)),
+      },
+      'weight': {
+        'current': petId == '2' ? 3.5 : (petId == '3' ? 4.2 : 15.8),
+        'target': petId == '2' ? 3.6 : (petId == '3' ? 4.3 : 16.0),
+        'trend': 'stable',
+      },
+      'activities': {
+        'walkToday': true,
+        'feedingOnTime': true,
+        'medicationTaken': petId == '3' ? true : null,
+      },
+      'alerts': [],
+      'recommendations': [
+        '정기적인 운동을 유지하세요',
+        '체중 관리에 주의하세요',
+      ],
+    };
+  }
 }

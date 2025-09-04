@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/mock_data/features/pet_health/pet_health_mock_service.dart';
 
 class CurrentWeightSummaryCard extends StatelessWidget {
   const CurrentWeightSummaryCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final weightRecords = MockDataService.getMockWeightRecords();
+    final weightRecords = PetHealthMockService.getMockWeightRecords();
 
     return Container(
       width: double.infinity,
@@ -56,7 +56,7 @@ class CurrentWeightSummaryCard extends StatelessWidget {
             children: [
               _buildWeightInfo(
                 '現在',
-                '${weightRecords.first.weight}kg',
+                '${weightRecords.first['weight']}kg',
                 AppColors.pointGreen,
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -88,11 +88,7 @@ class CurrentWeightSummaryCard extends StatelessWidget {
               color: color.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Icon(
-              _getIconForLabel(label),
-              color: color,
-              size: 20,
-            ),
+            child: Icon(_getIconForLabel(label), color: color, size: 20),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -121,7 +117,7 @@ class CurrentWeightSummaryCard extends StatelessWidget {
       ),
     );
   }
-  
+
   IconData _getIconForLabel(String label) {
     switch (label) {
       case '現在':

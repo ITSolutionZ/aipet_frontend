@@ -12,8 +12,25 @@ class BookingController extends StateNotifier<BookingState> {
 
   /// 시설 데이터 로드
   void _loadFacilityData() {
-    final facility = MockDataService.getMockFacilityById(state.facilityId);
-    state = state.copyWith(facility: facility);
+    final facilityData = FacilityMockService.getMockFacilityDetailById(state.facilityId);
+    if (facilityData != null) {
+      final facility = Facility(
+        id: facilityData['id'] as String,
+        name: facilityData['name'] as String,
+        description: facilityData['description'] as String,
+        address: facilityData['address'] as String,
+        phone: facilityData['phone'] as String,
+        email: facilityData['email'] as String,
+        type: facilityData['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
+        rating: (facilityData['rating'] as num).toDouble(),
+        reviewCount: facilityData['reviewCount'] as int,
+        imagePath: facilityData['imagePath'] as String,
+        isFavorite: facilityData['isFavorite'] as bool? ?? false,
+        hasHistory: facilityData['hasHistory'] as bool? ?? false,
+        lastVisit: facilityData['lastVisit'] as DateTime?,
+      );
+      state = state.copyWith(facility: facility);
+    }
   }
 
   /// 날짜 선택

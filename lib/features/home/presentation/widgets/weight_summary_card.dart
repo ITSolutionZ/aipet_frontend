@@ -17,15 +17,15 @@ class WeightSummaryCard extends ConsumerWidget {
     final currentPetId = selectedPet?.id ?? '1';
 
     // 선택된 펫에 따른 체중 데이터 가져오기
-    final weightRecords = MockDataService.getMockWeightRecords(
+    final weightRecords = PetHealthMockService.getMockWeightRecords(
       petId: currentPetId,
     );
 
     final currentWeight = weightRecords.isNotEmpty
-        ? weightRecords.first.weight
+        ? weightRecords.first['weight'] as double
         : 5.0;
     final previousWeight = weightRecords.length > 1
-        ? weightRecords[1].weight
+        ? weightRecords[1]['weight'] as double
         : currentWeight;
     final weeklyChange = currentWeight - previousWeight;
 

@@ -285,7 +285,7 @@ class _LinkRegistrationScreenState extends State<LinkRegistrationScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    ...MockDataService.getMockExampleLinks().map(
+                    ...PetMockService.getMockExampleLinks().map(
                       (link) => Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                         child: Text(

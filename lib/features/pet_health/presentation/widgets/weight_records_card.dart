@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/mock_data/features/pet_health/pet_health_mock_service.dart';
 
 class WeightRecordsCard extends StatefulWidget {
   const WeightRecordsCard({super.key});
@@ -16,10 +16,10 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
 
   @override
   Widget build(BuildContext context) {
-    final weightRecords = MockDataService.getMockWeightRecords();
+    final weightRecords = PetHealthMockService.getMockWeightRecords();
     final availableYears = _getAvailableYears(weightRecords);
     final filteredRecords = weightRecords.where((record) => 
-        record.recordedDate.year == _selectedYear).toList();
+        (record['recordedDate'] as DateTime).year == _selectedYear).toList();
     final groupedRecords = _groupRecordsByMonth(filteredRecords);
     
     // 첫 번째(최신) 월을 기본으로 열어놓기
@@ -120,7 +120,7 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
   List<int> _getAvailableYears(List<dynamic> records) {
     final Set<int> years = {};
     for (final record in records) {
-      years.add((record.recordedDate as DateTime).year);
+      years.add((record['recordedDate'] as DateTime).year);
     }
     final yearsList = years.toList()..sort((a, b) => b.compareTo(a)); // 최신년도부터
     return yearsList;
@@ -130,7 +130,7 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
     final Map<String, List<dynamic>> grouped = {};
     
     for (final record in records) {
-      final date = record.recordedDate as DateTime;
+      final date = record['recordedDate'] as DateTime;
       final monthKey = '${date.year}年 ${date.month}月';
       
       if (!grouped.containsKey(monthKey)) {
@@ -245,7 +245,7 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
   Widget _buildWeightRecordItem(dynamic record, int index, List<dynamic> weightRecords) {
     final isLatest = index == 0;
     final change = index < weightRecords.length - 1
-        ? record.weight - weightRecords[index + 1].weight
+        ? (record['weight'] as double) - (weightRecords[index + 1]['weight'] as double)
         : 0.0;
     final changeText = change > 0
         ? '+${change.toStringAsFixed(1)}kg'
@@ -289,7 +289,7 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${record.weight}kg',
+                  '${record['weight']}kg',
                   style: AppFonts.bodyLarge.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.pointDark,
@@ -297,12 +297,12 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  _formatDate(record.recordedDate),
+                  _formatDate(record['recordedDate'] as DateTime),
                   style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                 ),
-                if (record.notes != null && record.notes!.isNotEmpty)
+                if (record['notes'] != null && (record['notes'] as String).isNotEmpty)
                   Text(
-                    record.notes!,
+                    record['notes'] as String,
                     style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                   ),
               ],

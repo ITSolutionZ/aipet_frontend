@@ -28,7 +28,22 @@ class _HospitalReservationScreenState
   @override
   void initState() {
     super.initState();
-    _facilities = MockDataService.getMockHospitalFacilities();
+    final facilitiesData = FacilityMockService.getMockHospitalFacilities();
+    _facilities = facilitiesData.map((data) => Facility(
+      id: data['id'] as String,
+      name: data['name'] as String,
+      description: data['description'] as String,
+      address: data['address'] as String,
+      phone: data['phone'] as String,
+      email: data['email'] as String,
+      type: data['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
+      rating: (data['rating'] as num).toDouble(),
+      reviewCount: data['reviewCount'] as int,
+      imagePath: data['imagePath'] as String,
+      isFavorite: data['isFavorite'] as bool? ?? false,
+      hasHistory: data['hasHistory'] as bool? ?? false,
+      lastVisit: data['lastVisit'] as DateTime?,
+    )).toList();
   }
 
   @override

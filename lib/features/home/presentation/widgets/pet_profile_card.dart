@@ -145,7 +145,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                                         ),
                                       ),
                                       child: Text(
-                                        MockDataService.getPetGenderByName(
+                                        PetMockService.getPetGenderByName(
                                                   currentPet.name,
                                                 ) ==
                                                 'male'
@@ -161,11 +161,11 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                                   ],
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
-                                ...MockDataService.getMockPetActivities(
+                                ...HomeMockService.getMockPetActivities(
                                   petId: currentPet.id,
                                 ).map(
                                   (activity) => Text(
-                                    activity,
+                                    activity['name'] as String,
                                     style: AppFonts.bodySmall.copyWith(
                                       color: AppColors.pointGray,
                                     ),

@@ -7,8 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../app/router/app_router.dart';
-import '../../domain/entities/notification_model.dart';
 import '../../../../shared/shared.dart';
+import '../../domain/entities/notification_model.dart';
 
 /// 알림 서비스
 ///
@@ -382,7 +382,7 @@ class NotificationService {
     try {
       // API 연계 전까지는 Mock 데이터 사용
       List<NotificationModel> notifications =
-          NotificationMockData.notifications;
+          NotificationMockService.getMockNotifications();
 
       // 필터링 적용
       notifications = notifications.where((notification) {
@@ -533,7 +533,7 @@ class NotificationService {
   Future<NotificationSettings> getNotificationSettings() async {
     try {
       // API 연계 전까지는 Mock 데이터 사용
-      return NotificationMockData.defaultSettings;
+      return NotificationMockService.getMockNotificationSettings();
     } catch (e) {
       if (kDebugMode) {
         print('알림 설정 가져오기 오류: $e');

@@ -1,7 +1,9 @@
 import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/mock_data/mock_data_service.dart';
+import 'package:aipet_frontend/shared/mock_data/features/home/home_mock_service.dart';
+import 'package:aipet_frontend/shared/mock_data/features/pet/pet_mock_service.dart';
 
 import '../mappers/pet_mapper.dart';
 import '../mappers/weather_mapper.dart';
@@ -62,16 +64,16 @@ class HomeRepositoryImpl implements HomeRepository {
 
   /// Mock 날씨 엔티티 (API 실패시 fallback)
   WeatherEntity _getMockWeatherEntity() {
-    final mockWeatherInfo = MockDataService.getMockWeatherInfo();
+    final mockWeatherInfo = HomeMockService.getMockWeatherInfo();
     return WeatherEntity(
-      temperature: mockWeatherInfo.temperature,
-      location: mockWeatherInfo.location,
+      temperature: mockWeatherInfo['temperature'] as double,
+      location: mockWeatherInfo['location'] as String,
       weatherId: 800, // 맑음
-      description: mockWeatherInfo.condition,
-      feelsLike: mockWeatherInfo.temperature + 2.0,
+      description: mockWeatherInfo['condition'] as String,
+      feelsLike: (mockWeatherInfo['temperature'] as double) + 2.0,
       humidity: 65,
       windSpeed: 2.5,
-      iconCode: mockWeatherInfo.iconCode,
+      iconCode: mockWeatherInfo['iconCode'] as String,
       uvIndex: 5.0,
       visibility: 10000,
       pressure: 1013.25,
@@ -82,7 +84,8 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<List<PetSummaryEntity>> getPetSummaries() async {
     // Mock 데이터에서 PetProfileEntity 리스트를 가져온 후 PetSummaryEntity로 변환
-    final petProfiles = MockDataService.getMockPets();
+    final petProfilesData = PetMockService.getMockPets();
+    final petProfiles = petProfilesData.cast<PetProfileEntity>();
     return PetMapper.toSummaryEntityList(petProfiles);
   }
 
@@ -90,28 +93,55 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<List<PetProfileEntity>> getPetProfiles() async {
     // Mock 데이터 사용 (실제 API 연동 전까지)
     await Future.delayed(_mockDelay);
-    return MockDataService.getMockPets();
+    final petProfilesData = PetMockService.getMockPets();
+    return petProfilesData.cast<PetProfileEntity>();
   }
 
   @override
   Future<WalkSummary> getWalkSummary() async {
     // Mock 데이터 사용
     await Future.delayed(_mockDelay);
-    return MockDataService.getMockWalkSummary();
+    final walkSummaryData = HomeMockService.getMockWalkSummary();
+    return WalkSummary(
+      todayWalks: walkSummaryData['todayWalks'] as int,
+      todayDistance: walkSummaryData['todayDistance'] as double,
+      todayDuration: Duration(minutes: walkSummaryData['todayDuration'] as int),
+      weeklyGoal: walkSummaryData['weeklyGoal'] as double,
+      weeklyProgress: walkSummaryData['weeklyProgress'] as double,
+    );
   }
 
   @override
   Future<HealthSummary> getPetHealthSummary() async {
     // Mock 데이터 사용
     await Future.delayed(_mockDelay);
-    return MockDataService.getMockHealthSummary();
+    final healthSummaryData = HomeMockService.getMockHealthSummary();
+    final alertsData = healthSummaryData['alerts'] as List<Map<String, dynamic>>;
+    final alerts = alertsData.map((alert) => HealthAlert(
+      petName: alert['petName'] as String,
+      message: alert['message'] as String,
+    )).toList();
+    
+    return HealthSummary(
+      totalPets: healthSummaryData['totalPets'] as int,
+      healthyPets: healthSummaryData['healthyPets'] as int,
+      petsNeedingAttention: healthSummaryData['petsNeedingAttention'] as int,
+      alerts: alerts,
+    );
   }
 
   @override
   Future<List<AppointmentSummary>> getUpcomingAppointments() async {
     // Mock 데이터 사용
     await Future.delayed(_mockDelay);
-    return MockDataService.getMockAppointments();
+    final appointmentsData = PetMockService.getMockAppointments();
+    return appointmentsData.map((data) => AppointmentSummary(
+      id: data['id'] as String,
+      title: data['title'] as String,
+      scheduledTime: data['scheduledTime'] as DateTime,
+      type: data['type'] as String,
+      petName: data['petName'] as String,
+    )).toList();
   }
 
   // 개발 모드용 지연 시간 상수

@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../app/config/app_config.dart';
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/mock_data/features/home/home_mock_service.dart';
 import '../models/weather_model.dart';
 import 'weather_cache_service.dart';
 
@@ -328,13 +328,13 @@ class WeatherService {
   /// API 실패 시 목업 날씨 데이터 반환
   WeatherData _getMockWeatherData(String locationName) {
     // 중앙화된 mock_data_service에서 목업 데이터 가져오기
-    final mockWeatherInfo = MockDataService.getMockWeatherInfo();
+    final mockWeatherInfo = HomeMockService.getMockWeatherInfo();
 
     // 시간대에 따른 온도 시뮬레이션 (기존 로직 유지)
     final now = DateTime.now();
     final hour = now.hour;
 
-    double temperature = mockWeatherInfo.temperature;
+    double temperature = mockWeatherInfo['temperature'] as double;
     if (hour >= 6 && hour < 12) {
       temperature = 18.0 + (hour - 6) * 1.5; // 아침: 18-27도
     } else if (hour >= 12 && hour < 18) {
@@ -350,11 +350,11 @@ class WeatherService {
       temperature: temperature,
       location: locationName,
       weatherId: 800, // 맑음
-      description: mockWeatherInfo.condition,
+      description: mockWeatherInfo['condition'] as String,
       feelsLike: temperature + 2.0,
       humidity: 65,
       windSpeed: 2.5,
-      iconCode: mockWeatherInfo.iconCode,
+      iconCode: mockWeatherInfo['iconCode'] as String,
       uvIndex: _estimateUvIndexForLocation(800, _getDefaultLocation()),
       visibility: 10000,
       pressure: 1013.25,
