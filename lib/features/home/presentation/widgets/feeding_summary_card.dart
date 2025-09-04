@@ -17,13 +17,13 @@ class FeedingSummaryCard extends ConsumerWidget {
     final currentPetId = selectedPet?.id ?? '1';
 
     // 선택된 펫에 따른 식사 데이터 가져오기
-    final todayMeals = MockDataService.getMockTodayMeals(petId: currentPetId);
+    final todayMeals = HomeMockService.getMockTodayMeals(petId: currentPetId);
     final completedMeals = todayMeals
         .where((meal) => meal['status'] == 'completed')
         .length;
     final totalMeals = todayMeals.length;
 
-    final nextMealInfo = MockDataService.getMockNextMealInfo(
+    final nextMealInfo = HomeMockService.getMockNextMealInfo(
       petId: currentPetId,
     );
 
@@ -32,7 +32,7 @@ class FeedingSummaryCard extends ConsumerWidget {
       'totalMeals': totalMeals,
       'nextMeal': nextMealInfo['nextMeal'],
       'nextMealTime': nextMealInfo['nextMealTime'],
-      'calories': MockDataService.getMockExpectedCalories(petId: currentPetId),
+      'calories': HomeMockService.getMockExpectedCalories(petId: currentPetId),
     };
 
     return CommonSummaryCard(

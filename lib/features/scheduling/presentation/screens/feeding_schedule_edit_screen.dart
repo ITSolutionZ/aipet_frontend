@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
+import '../../../../shared/mock_data/features/pet/pet_mock_service.dart';
+import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart';
 import '../widgets/widgets.dart';
 
 /// 급여 스케줄 편집 페이지
@@ -60,17 +62,17 @@ class _FeedingScheduleEditScreenState
 
   /// 펫 정보 및 사이즈 가이드 로드
   void _loadPetInfo() {
-    final petSizes = MockDataService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     _selectedPetInfo = petSizes[_selectedPetId];
 
     if (_selectedPetInfo != null) {
       final size = _selectedPetInfo!['size'] as String;
-      final sizeGuide = MockDataService.getPetSizeFeedingGuide();
+      final sizeGuide = SchedulingMockService.getPetSizeFeedingGuide();
       _petSizeGuide = sizeGuide[size];
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = MockDataService.getPetCurrentStatus(_selectedPetId);
+    final currentStatus = PetMockService.getPetCurrentStatus(_selectedPetId);
     if (currentStatus != null) {
       _selectedStatuses = List<String>.from(
         currentStatus['selectedStatuses'] ?? [],
@@ -92,7 +94,7 @@ class _FeedingScheduleEditScreenState
 
   /// 펫 선택 처리
   void _onPetSelected(String petId) {
-    final petSizes = MockDataService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     setState(() {
       _selectedPetId = petId;
       _selectedPetInfo = petSizes[petId];
@@ -119,7 +121,7 @@ class _FeedingScheduleEditScreenState
                   _statusValues = statusValues;
 
                   // MockDataService에 상태 업데이트
-                  MockDataService.updatePetStatus(
+                  PetMockService.updatePetStatus(
                     petId,
                     selectedStatuses,
                     statusValues,
@@ -182,7 +184,7 @@ class _FeedingScheduleEditScreenState
   /// 목업 데이터 업데이트
   void _updateMockData(String mealType, String time, String amount) {
     // MockDataService의 데이터를 실제로 업데이트
-    MockDataService.updateFeedingSchedule(mealType, time, amount);
+    SchedulingMockService.updateFeedingSchedule(mealType, time, amount);
 
     // 변경사항을 사용자에게 알림
     developer.log('목업 데이터 업데이트: $mealType - $time - $amount');

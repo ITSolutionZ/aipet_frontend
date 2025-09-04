@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/mock_data/features/pet_health/pet_health_mock_service.dart';
 
 class WeightChartCard extends StatefulWidget {
   const WeightChartCard({super.key});
@@ -18,7 +18,7 @@ class _WeightChartCardState extends State<WeightChartCard> {
 
   @override
   Widget build(BuildContext context) {
-    final weightRecords = MockDataService.getMockWeightRecords();
+    final weightRecords = PetHealthMockService.getMockWeightRecords();
 
     return Container(
       width: double.infinity,
@@ -122,7 +122,7 @@ class _WeightChartCardState extends State<WeightChartCard> {
 
   Widget _buildWeightChart(List<dynamic> weightRecords, int monthOffset) {
     // Mock 데이터에서 차트 데이터 가져오기
-    final chartData = MockDataService.getMockWeightChartData();
+    final chartData = PetHealthMockService.getMockWeightChartData();
     final currentYearData = <FlSpot>[];
     final lastYearBarData = <BarChartGroupData>[];
 

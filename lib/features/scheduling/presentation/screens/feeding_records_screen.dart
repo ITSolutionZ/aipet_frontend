@@ -16,8 +16,8 @@ class FeedingRecordsScreen extends ConsumerStatefulWidget {
 class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
   @override
   Widget build(BuildContext context) {
-    final feedingRecords = MockDataService.getMockFeedingRecordsForRecords();
-    final statistics = MockDataService.getMockFeedingStatisticsForRecords();
+    final feedingRecords = SchedulingMockService.getMockFeedingRecordsForRecords();
+    final statistics = SchedulingMockService.getMockFeedingStatisticsForRecords();
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,

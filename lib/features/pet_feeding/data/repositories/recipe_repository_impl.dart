@@ -1,26 +1,29 @@
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/mock_data/features/pet_feeding/pet_feeding_mock_service.dart';
 import '../../domain/entities/recipe_entity.dart';
 import '../../domain/repositories/recipe_repository.dart';
+
+// Mock 데이터 사용 여부
+const bool _isEnabled = true;
 
 class RecipeRepositoryImpl implements RecipeRepository {
   // 메모리 기반 저장소 (MockDataService의 데이터로 초기화)
   late final List<RecipeEntity> _recipes;
 
   RecipeRepositoryImpl() {
-    // MockDataService에서 초기 데이터 로드
-    _recipes = List.from(MockDataService.getMockRecipes()).map((recipe) {
+    // PetFeedingMockService에서 초기 데이터 로드
+    _recipes = List.from(PetFeedingMockService.getMockRecipes()).map((recipe) {
       return RecipeEntity(
-        id: recipe.id,
-        name: recipe.name,
-        image: recipe.image,
-        description: recipe.description,
-        cookingTime: recipe.cookingTime,
-        difficulty: recipe.difficulty,
-        ingredients: recipe.ingredients,
-        instructions: recipe.instructions,
-        servings: recipe.servings,
-        rating: recipe.rating,
-        isFavorite: recipe.isFavorite,
+        id: recipe['id'],
+        name: recipe['name'],
+        image: recipe['image'],
+        description: recipe['description'],
+        cookingTime: recipe['cookingTime'],
+        difficulty: recipe['difficulty'],
+        ingredients: List<String>.from(recipe['ingredients']),
+        instructions: List<String>.from(recipe['instructions']),
+        servings: recipe['servings'],
+        rating: recipe['rating'].toDouble(),
+        isFavorite: recipe['isFavorite'],
         userId: null, // 기본 목업 데이터는 사용자 ID 없음
         createdAt: DateTime.now().subtract(const Duration(days: 30)),
         updatedAt: DateTime.now(),
@@ -32,7 +35,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<List<RecipeEntity>> getAllRecipes() async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       return List.from(_recipes);
     }
 
@@ -43,7 +46,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<List<RecipeEntity>> getUserRecipes(String userId) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       return _recipes.where((recipe) => recipe.userId == userId).toList();
     }
 
@@ -54,7 +57,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<RecipeEntity?> getRecipeById(String id) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       try {
         return _recipes.firstWhere((recipe) => recipe.id == id);
       } catch (e) {
@@ -69,7 +72,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<RecipeEntity> createRecipe(RecipeEntity recipe) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       // 유효성 검사
       if (recipe.name.isEmpty || recipe.description.isEmpty) {
         throw Exception('레시피 이름과 설명은 필수입니다.');
@@ -92,7 +95,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<RecipeEntity> updateRecipe(RecipeEntity recipe) async {
     await Future.delayed(const Duration(milliseconds: 400));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       // 유효성 검사
       if (recipe.name.isEmpty || recipe.description.isEmpty) {
         throw Exception('레시피 이름과 설명은 필수입니다.');
@@ -114,7 +117,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<void> deleteRecipe(String id) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       _recipes.removeWhere((recipe) => recipe.id == id);
       return;
     }
@@ -126,7 +129,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<List<RecipeEntity>> getRecipesByDifficulty(String difficulty) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       return _recipes
           .where(
             (recipe) =>
@@ -142,7 +145,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<List<RecipeEntity>> getFavoriteRecipes(String userId) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       return _recipes.where((recipe) => recipe.isFavorite).toList();
     }
 
@@ -153,7 +156,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<List<RecipeEntity>> searchRecipes(String query) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       if (query.isEmpty) return List.from(_recipes);
 
       return _recipes.where((recipe) {
@@ -173,7 +176,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<List<RecipeEntity>> getTopRatedRecipes({int limit = 5}) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       final recipes = List<RecipeEntity>.from(_recipes);
       recipes.sort((a, b) => b.rating.compareTo(a.rating));
       return recipes.take(limit).toList();
@@ -186,7 +189,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<List<RecipeEntity>> getQuickRecipes() async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       return _recipes.where((recipe) {
         final time = int.tryParse(recipe.cookingTime.split(' ').first) ?? 0;
         return time <= 30;
@@ -200,7 +203,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<void> toggleFavorite(String recipeId, String userId) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       final index = _recipes.indexWhere((recipe) => recipe.id == recipeId);
       if (index != -1) {
         final recipe = _recipes[index];
@@ -219,7 +222,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<void> updateRating(String recipeId, double rating) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (MockDataService.isEnabled) {
+    if (_isEnabled) {
       final index = _recipes.indexWhere((recipe) => recipe.id == recipeId);
       if (index != -1) {
         final recipe = _recipes[index];

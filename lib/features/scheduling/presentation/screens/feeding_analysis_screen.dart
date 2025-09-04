@@ -17,7 +17,7 @@ class FeedingAnalysisScreen extends ConsumerStatefulWidget {
 class _FeedingAnalysisScreenState extends ConsumerState<FeedingAnalysisScreen> {
   @override
   Widget build(BuildContext context) {
-    final analysisData = MockDataService.getMockFeedingAnalysisData();
+    final analysisData = SchedulingMockService.getMockFeedingAnalysisData();
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -268,7 +268,7 @@ class _FeedingAnalysisScreenState extends ConsumerState<FeedingAnalysisScreen> {
   }
 
   Widget _buildFeedingChart() {
-    final analysisData = MockDataService.getMockFeedingAnalysisData();
+    final analysisData = SchedulingMockService.getMockFeedingAnalysisData();
 
     // 오늘부터 1개월까지의 날짜 데이터 생성
     final now = DateTime.now();

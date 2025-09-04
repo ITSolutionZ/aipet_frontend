@@ -17,13 +17,13 @@ class WalkSummaryCard extends ConsumerWidget {
     final currentPetId = selectedPet?.id ?? '1';
 
     // 선택된 펫에 따른 산책 데이터 가져오기
-    final walkSummary = MockDataService.getMockWalkSummary(petId: currentPetId);
+    final walkSummary = HomeMockService.getMockWalkSummary(petId: currentPetId);
 
     final walkData = {
-      'todayWalks': walkSummary.todayWalks,
-      'todayDistance': walkSummary.todayDistance,
-      'weeklyProgress': walkSummary.weeklyProgress / walkSummary.weeklyGoal,
-      'nextWalkTime': MockDataService.getMockNextWalkTime(petId: currentPetId),
+      'todayWalks': walkSummary['todayWalks'],
+      'todayDistance': walkSummary['todayDistance'],
+      'weeklyProgress': (walkSummary['weeklyProgress'] as double) / (walkSummary['weeklyGoal'] as double),
+      'nextWalkTime': HomeMockService.getMockNextWalkTime(petId: currentPetId),
     };
 
     return CommonSummaryCard(

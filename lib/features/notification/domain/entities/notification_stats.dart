@@ -1,4 +1,4 @@
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/mock_data/features/notification/notification_mock_service.dart';
 import 'notification_model.dart';
 
 /// 알림 통계 타입
@@ -380,35 +380,34 @@ class NotificationStatsFactory {
     int days = 30,
     int notificationsPerDay = 5,
   }) {
-    if (MockDataService.isEnabled) {
-      final mockData = MockDataService.getMockNotificationStats(
+    try {
+      final mockData = NotificationMockService.getMockNotificationStats(
         days: days,
-        notificationsPerDay: notificationsPerDay,
       );
 
       return mockData
           .map(
             (data) => NotificationStats(
-              id: data['id'] as String,
-              title: data['title'] as String,
-              type: NotificationType.reminder, // 기본값
-              date: DateTime.parse(data['date'] as String),
-              sentCount: data['sentCount'] as int,
-              openedCount: data['openedCount'] as int,
-              clickedCount: data['clickedCount'] as int,
-              dismissedCount: 0,
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              title: 'Mock Notification',
+              type: NotificationType.general,
+              date: data['date'] as DateTime,
+              sentCount: data['total'] as int,
+              openedCount: data['read'] as int,
+              clickedCount: (data['read'] as int) ~/ 2,
+              dismissedCount: (data['total'] as int) - (data['read'] as int),
               failedCount: 0,
-              openRate: data['openRate'] as double,
-              clickRate: data['clickRate'] as double,
-              dismissRate: 0.0,
+              openRate: data['read'] / data['total'],
+              clickRate: (data['read'] / 2) / data['total'],
+              dismissRate: ((data['total'] as int) - (data['read'] as int)) / data['total'],
               failureRate: 0.0,
               metadata: {},
             ),
           )
           .toList();
+    } catch (e) {
+      return [];
     }
-
-    return [];
   }
 
   /// 모의 사용자 참여도 데이터 생성
@@ -416,30 +415,33 @@ class NotificationStatsFactory {
     int days = 30,
     int users = 5,
   }) {
-    if (MockDataService.isEnabled) {
-      final mockData = MockDataService.getMockUserEngagement(
+    try {
+      final mockData = NotificationMockService.getMockUserEngagement(
         days: days,
-        users: users,
       );
 
       return mockData
           .map(
             (data) => UserEngagement(
-              userId: data['userId'] as String,
-              date: DateTime.parse(data['date'] as String),
-              totalNotifications: data['totalNotifications'] as int,
-              openedNotifications: data['openedNotifications'] as int,
-              clickedNotifications: 0,
-              dismissedNotifications: 0,
-              engagementByType: {},
+              userId: 'user_${DateTime.now().millisecondsSinceEpoch}',
+              date: data['date'] as DateTime,
+              totalNotifications: data['notificationsReceived'] as int,
+              openedNotifications: data['notificationsRead'] as int,
+              clickedNotifications: data['actionsCompleted'] as int,
+              dismissedNotifications: (data['notificationsReceived'] as int) - (data['notificationsRead'] as int),
+              engagementByType: {
+                NotificationType.feeding: 2,
+                NotificationType.health: 1,
+                NotificationType.general: 1,
+              },
               preferredTimeSlots: ['09:00', '12:00', '18:00'],
-              overallEngagementRate: data['engagementRate'] as double,
+              overallEngagementRate: (data['notificationsRead'] as int) / (data['notificationsReceived'] as int),
             ),
           )
           .toList();
+    } catch (e) {
+      return [];
     }
-
-    return [];
   }
 
   /// 통계 요약 생성

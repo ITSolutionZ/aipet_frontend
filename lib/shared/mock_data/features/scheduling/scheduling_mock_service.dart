@@ -302,4 +302,194 @@ class SchedulingMockService extends BaseMockService {
     
     return progress;
   }
+  
+  // ==================== 급식 관리 추가 기능 ====================
+  
+  /// 펫 크기별 급식량 가이드
+  static Map<String, Map<String, dynamic>> getMockPetSizesAndFeedingAmounts() {
+    return {
+      'small': {
+        'weight': '1-10kg',
+        'dailyAmount': '100-200g',
+        'feedingTimes': 3,
+        'caloriesPerKg': 50,
+      },
+      'medium': {
+        'weight': '10-25kg',
+        'dailyAmount': '200-400g', 
+        'feedingTimes': 2,
+        'caloriesPerKg': 40,
+      },
+      'large': {
+        'weight': '25kg+',
+        'dailyAmount': '400-600g',
+        'feedingTimes': 2,
+        'caloriesPerKg': 35,
+      },
+    };
+  }
+  
+  /// 펫 크기별 급식 가이드
+  static Map<String, dynamic> getPetSizeFeedingGuide() {
+    return {
+      'guidelines': [
+        '하루 2-3회 나누어 급식',
+        '일정한 시간에 규칙적으로',
+        '신선한 물을 항상 제공',
+        '체중 변화 주기적으로 체크',
+      ],
+      'portions': getMockPetSizesAndFeedingAmounts(),
+      'tips': [
+        '급식량은 펫의 활동량에 따라 조절',
+        '간식은 하루 칼로리의 10% 이내',
+        '새로운 사료 변경 시 점진적으로',
+      ],
+    };
+  }
+  
+  /// 급식 기록 추가
+  static void addMockFeedingRecord(Map<String, dynamic> record) {
+    // Mock implementation - 실제로는 데이터베이스에 저장
+    print('Feeding record added: ${record['petName']} - ${record['amount']}g');
+  }
+  
+  /// 급식 스케줄 업데이트
+  static void updateFeedingSchedule(String mealType, String time, String amount) {
+    // Mock implementation
+    print('Feeding schedule updated: $mealType at $time, amount: $amount');
+  }
+  
+  /// 기본 급식 스케줄 파라미터
+  static Map<String, dynamic> getDefaultFeedingScheduleParams() {
+    return {
+      'defaultMealTimes': ['08:00', '18:00'],
+      'defaultAmounts': ['150g', '150g'],
+      'mealTypes': ['아침식사', '저녁식사'],
+      'foodTypes': ['건사료', '습식사료', '자연식'],
+    };
+  }
+  
+  /// 급식 기록 목록 (Records 화면용)
+  static List<Map<String, dynamic>> getMockFeedingRecordsForRecords() {
+    return [
+      {
+        'id': MockHelper.generateId(),
+        'petId': '1',
+        'petName': 'MAX',
+        'date': DateTime.now().subtract(const Duration(days: 0)),
+        'mealType': '아침식사',
+        'amount': '300g',
+        'foodType': '건사료',
+        'completed': true,
+        'calories': 450,
+      },
+      {
+        'id': MockHelper.generateId(),
+        'petId': '1',
+        'petName': 'MAX',
+        'date': DateTime.now().subtract(const Duration(days: 1)),
+        'mealType': '저녁식사',
+        'amount': '300g',
+        'foodType': '건사료',
+        'completed': true,
+        'calories': 450,
+      },
+      {
+        'id': MockHelper.generateId(),
+        'petId': '2',
+        'petName': 'LUNA',
+        'date': DateTime.now().subtract(const Duration(days: 0)),
+        'mealType': '아침식사',
+        'amount': '150g',
+        'foodType': '습식사료',
+        'completed': true,
+        'calories': 200,
+      },
+    ];
+  }
+  
+  /// 급식 스케줄 목록 (Schedule 화면용)
+  static List<Map<String, dynamic>> getMockFeedingSchedulesForSchedule() {
+    return [
+      {
+        'id': MockHelper.generateId(),
+        'petId': '1',
+        'petName': 'MAX',
+        'mealType': '아침식사',
+        'time': '08:00',
+        'amount': '300g',
+        'foodType': '건사료',
+        'isActive': true,
+        'repeatDays': [1, 2, 3, 4, 5, 6, 7],
+      },
+      {
+        'id': MockHelper.generateId(),
+        'petId': '1',
+        'petName': 'MAX', 
+        'mealType': '저녁식사',
+        'time': '18:00',
+        'amount': '300g',
+        'foodType': '건사료',
+        'isActive': true,
+        'repeatDays': [1, 2, 3, 4, 5, 6, 7],
+      },
+    ];
+  }
+  
+  /// 급식 분석 데이터
+  static Map<String, dynamic> getMockFeedingAnalysisData() {
+    return {
+      'weeklyStats': {
+        'totalMeals': 14,
+        'missedMeals': 1,
+        'averageAmount': '275g',
+        'consistency': 92.8, // 일정성 점수
+      },
+      'monthlyTrend': [
+        {'week': 1, 'meals': 13, 'amount': 3850},
+        {'week': 2, 'meals': 14, 'amount': 4200},
+        {'week': 3, 'meals': 12, 'amount': 3600},
+        {'week': 4, 'meals': 14, 'amount': 4200},
+      ],
+      'recommendations': [
+        '급식 시간을 더 일정하게 유지해보세요',
+        '주말에도 규칙적인 급식 시간을 지켜주세요',
+        '현재 급식량이 적절합니다',
+      ],
+      'nutritionBalance': {
+        'protein': 85, // 퍼센트
+        'fat': 78,
+        'carbs': 92,
+        'vitamins': 88,
+      },
+    };
+  }
+  
+  /// 급식 통계 (Records 화면용)  
+  static Map<String, dynamic> getMockFeedingStatistics() {
+    return {
+      'thisWeek': {
+        'totalMeals': 12,
+        'plannedMeals': 14,
+        'successRate': 85.7,
+        'averageAmount': '280g',
+      },
+      'lastWeek': {
+        'totalMeals': 13,
+        'plannedMeals': 14, 
+        'successRate': 92.9,
+        'averageAmount': '275g',
+      },
+      'monthlyAverage': {
+        'mealsPerDay': 1.8,
+        'consistencyScore': 88.5,
+        'preferredTime': '18:30',
+      },
+      'trends': {
+        'weeklyChange': -7.2, // 퍼센트 변화
+        'monthlyChange': 3.1,
+        'direction': 'stable',
+      },
+    };
+  }
 }
