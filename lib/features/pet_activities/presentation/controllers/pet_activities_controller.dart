@@ -11,19 +11,59 @@ class PetActivitiesController extends StateNotifier<PetActivitiesState> {
 
   /// 트릭 목록 로드
   void loadTricks() {
-    final tricks = MockDataService.getMockTricks();
+    final mockTricks = PetActivitiesMockService.getMockTricks();
+    final tricks = mockTricks
+        .map(
+          (trickData) => TrickEntity(
+            id: trickData['id'] as String,
+            name: trickData['name'] as String,
+            petId: trickData['petId'] as String?,
+            progress: trickData['progress'] as int?,
+            imagePath: trickData['imagePath'] as String,
+            isCompleted: trickData['isCompleted'] as bool,
+            difficulty: trickData['difficulty'] as String?,
+            youtubeUrl: trickData['videoUrl'] as String?,
+            description: trickData['description'] as String?,
+            createdAt: trickData['createdAt'] as DateTime,
+            date: trickData['completedAt'] as DateTime?,
+          ),
+        )
+        .toList();
     state = state.copyWith(tricks: tricks);
   }
 
   /// 비디오 북마크 로드
   void loadVideoBookmarks() {
-    final bookmarks = MockDataService.getMockVideoBookmarks();
+    final mockBookmarks = PetActivitiesMockService.getMockVideoBookmarks();
+    final bookmarks = mockBookmarks
+        .map(
+          (bookmarkData) => VideoBookmarkEntity(
+            id: bookmarkData['id'] as String,
+            videoId: bookmarkData['videoId'] as String,
+            youtubeVideoId: bookmarkData['youtubeVideoId'] as String,
+            positionSec: bookmarkData['positionSec'] as int,
+            label: bookmarkData['label'] as String?,
+            description: bookmarkData['description'] as String?,
+            createdAt: bookmarkData['createdAt'] as DateTime,
+          ),
+        )
+        .toList();
     state = state.copyWith(videoBookmarks: bookmarks);
   }
 
   /// 비디오 진행률 로드
   void loadVideoProgress() {
-    final progress = MockDataService.getMockVideoProgress();
+    final mockProgress = PetActivitiesMockService.getMockVideoProgress();
+    final progress = mockProgress.map(
+      (key, value) => MapEntry(
+        key,
+        VideoProgressEntity(
+          videoId: value['videoId'] as String,
+          lastPositionSec: value['lastPositionSec'] as int,
+          updatedAt: value['updatedAt'] as DateTime,
+        ),
+      ),
+    );
     state = state.copyWith(videoProgress: progress);
   }
 

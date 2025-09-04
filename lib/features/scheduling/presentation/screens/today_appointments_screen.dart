@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/mock_data/features/pet/pet_mock_service.dart';
 import '../../../../shared/widgets/soft_gradient_app_bar.dart';
 import '../../../home/data/providers/home_providers.dart';
 import '../../../home/domain/entities/home_dashboard_entity.dart';
@@ -15,10 +15,10 @@ class TodayAppointmentsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // 현재 선택된 펫 정보 가져오기
     final selectedPet = ref.watch(homeSelectedPetNotifierProvider);
-    final todayAppointments = MockDataService.getMockTodayAppointmentsByPet(
+    final todayAppointments = PetMockService.getMockTodayAppointmentsByPet(
       petId: selectedPet?.id,
     );
-    
+
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientBackAppBar(title: '今日の予約'),
@@ -102,9 +102,9 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: AppSpacing.xl),
-            
+
             // 예약 목록
             if (todayAppointments.isEmpty)
               _buildEmptyState()
@@ -114,7 +114,10 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                   itemCount: todayAppointments.length,
                   itemBuilder: (context, index) {
                     final appointment = todayAppointments[index];
-                    return _buildAppointmentCard(appointment, context);
+                    return _buildAppointmentCard(
+                      appointment as AppointmentSummary,
+                      context,
+                    );
                   },
                 ),
               ),
@@ -154,9 +157,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.sm),
             Text(
               'ゆっくりペットと過ごす日ですね',
-              style: AppFonts.bodyMedium.copyWith(
-                color: AppColors.pointGray,
-              ),
+              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
             ),
           ],
         ),
@@ -164,14 +165,17 @@ class TodayAppointmentsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildAppointmentCard(AppointmentSummary appointment, BuildContext context) {
+  Widget _buildAppointmentCard(
+    AppointmentSummary appointment,
+    BuildContext context,
+  ) {
     final now = DateTime.now();
     final isPast = appointment.scheduledTime.isBefore(now);
-    
+
     Color statusColor;
     String statusText;
     IconData statusIcon;
-    
+
     if (isPast) {
       statusColor = AppColors.pointGray;
       statusText = '完了';
@@ -210,7 +214,9 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: _getTypeColor(appointment.type).withValues(alpha: 0.1),
+                    color: _getTypeColor(
+                      appointment.type,
+                    ).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppRadius.medium),
                   ),
                   child: Icon(
@@ -252,11 +258,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        statusIcon,
-                        size: 14,
-                        color: statusColor,
-                      ),
+                      Icon(statusIcon, size: 14, color: statusColor),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
                         statusText,
@@ -270,9 +272,9 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: AppSpacing.md),
-            
+
             // 예약 제목과 펫 이름
             Text(
               appointment.title,
@@ -284,11 +286,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.xs),
             Row(
               children: [
-                const Icon(
-                  Icons.pets,
-                  size: 16,
-                  color: AppColors.pointGray,
-                ),
+                const Icon(Icons.pets, size: 16, color: AppColors.pointGray),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   appointment.petName,

@@ -22,7 +22,7 @@ class _PetTypeSelectionScreenState
   @override
   void initState() {
     super.initState();
-    _petTypes = MockDataService.getMockPetTypes();
+    _petTypes = PetMockService.getMockPetTypes();
   }
 
   @override

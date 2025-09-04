@@ -192,7 +192,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const Icon(Icons.notifications, color: Colors.white, size: 20),
           const SizedBox(width: AppSpacing.sm),
           Text(
-            '${NotificationMockData.unreadNotifications.length}件の通知があります',
+            '${NotificationMockService.getMockNotifications().length}件の通知があります',
             style: AppFonts.bodyMedium.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w500,

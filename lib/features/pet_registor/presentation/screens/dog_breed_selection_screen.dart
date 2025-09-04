@@ -22,7 +22,7 @@ class _DogBreedSelectionScreenState
   @override
   void initState() {
     super.initState();
-    _dogBreeds = MockDataService.getMockDogBreeds();
+    _dogBreeds = PetMockService.getMockDogBreeds();
   }
 
   @override

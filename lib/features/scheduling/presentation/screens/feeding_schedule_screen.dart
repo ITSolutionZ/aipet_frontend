@@ -30,8 +30,8 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
 
   void _loadMockData() {
     setState(() {
-      _todayMeals = MockDataService.getMockTodayMealsForSchedule();
-      _scheduleItems = MockDataService.getMockFeedingSchedulesForSchedule();
+      _todayMeals = SchedulingMockService.getMockTodayMealsForSchedule();
+      _scheduleItems = SchedulingMockService.getMockFeedingSchedulesForSchedule();
     });
   }
 

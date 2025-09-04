@@ -103,6 +103,22 @@ class NotificationMockService extends BaseMockService {
       vibrationEnabled: true,
     );
   }
+
+  /// 알림 설정 조회 (단일 메소드)
+  static NotificationSettings getNotificationSettings() {
+    return getMockNotificationSettings();
+  }
+
+  /// 알림 설정 업데이트
+  static NotificationSettings updateNotificationSettings({
+    bool? soundEnabled,
+    bool? vibrationEnabled,
+  }) {
+    return NotificationSettings(
+      soundEnabled: soundEnabled ?? true,
+      vibrationEnabled: vibrationEnabled ?? true,
+    );
+  }
   
   // ==================== 통계 데이터 ====================
   

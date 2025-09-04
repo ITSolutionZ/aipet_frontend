@@ -29,7 +29,42 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
   void initState() {
     super.initState();
     // 목업 데이터 서비스에서 시설 데이터 가져오기
-    _facility = MockDataService.getMockFacilityDetailById(widget.facilityId);
+    final facilityData = FacilityMockService.getMockFacilityDetailById(widget.facilityId);
+    if (facilityData != null) {
+      _facility = Facility(
+        id: facilityData['id'] as String,
+        name: facilityData['name'] as String,
+        description: facilityData['description'] as String,
+        address: facilityData['address'] as String,
+        phone: facilityData['phone'] as String,
+        email: facilityData['email'] as String,
+        type: facilityData['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
+        rating: (facilityData['rating'] as num).toDouble(),
+        reviewCount: facilityData['reviewCount'] as int,
+        imagePath: facilityData['imagePath'] as String,
+        isFavorite: facilityData['isFavorite'] as bool? ?? false,
+        hasHistory: facilityData['hasHistory'] as bool? ?? false,
+        lastVisit: facilityData['lastVisit'] as DateTime?,
+      );
+    } else {
+      // 기본값으로 첫 번째 병원 시설 사용
+      final defaultData = FacilityMockService.getMockHospitalFacilities().first;
+      _facility = Facility(
+        id: defaultData['id'] as String,
+        name: defaultData['name'] as String,
+        description: defaultData['description'] as String,
+        address: defaultData['address'] as String,
+        phone: defaultData['phone'] as String,
+        email: defaultData['email'] as String,
+        type: defaultData['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
+        rating: (defaultData['rating'] as num).toDouble(),
+        reviewCount: defaultData['reviewCount'] as int,
+        imagePath: defaultData['imagePath'] as String,
+        isFavorite: defaultData['isFavorite'] as bool? ?? false,
+        hasHistory: defaultData['hasHistory'] as bool? ?? false,
+        lastVisit: defaultData['lastVisit'] as DateTime?,
+      );
+    }
   }
 
   void _addToContacts() {

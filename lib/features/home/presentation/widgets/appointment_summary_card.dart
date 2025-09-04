@@ -31,7 +31,7 @@ class AppointmentSummaryCard extends ConsumerWidget {
     final appointmentData = {
       'upcomingCount': upcomingCount,
       'nextAppointment': _getNextAppointmentTime(now),
-      'nextType': MockDataService.getMockNextAppointmentType(petId: selectedPet?.id),
+      'nextType': HomeMockService.getMockNextAppointmentType(petId: selectedPet?.id),
       'totalThisMonth': totalThisMonth,
     };
 
