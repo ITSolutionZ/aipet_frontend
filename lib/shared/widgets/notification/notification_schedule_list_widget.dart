@@ -6,7 +6,6 @@ import '../../design/color.dart';
 import '../../design/font.dart';
 import '../../design/radius.dart';
 import '../../design/spacing.dart';
-import '../../mock_data/mock_data_service.dart';
 
 /// 알림 스케줄 목록 위젯
 class NotificationScheduleListWidget extends StatefulWidget {
@@ -161,7 +160,7 @@ class _NotificationScheduleListWidgetState
 
   /// 요일 텍스트 생성
   String _getWeekDaysText(List<int> weekDays) {
-    final dayNames = MockDataService.getMockDayNames();
+    final dayNames = ['월', '화', '수', '목', '금', '토', '일'];
     final selectedDays = weekDays.map((day) => dayNames[day - 1]).toList();
     return selectedDays.join(', ');
   }

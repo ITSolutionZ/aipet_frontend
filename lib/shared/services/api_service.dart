@@ -1,6 +1,8 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
-import '../mock_data/mock_data.dart';
+
+import '../mock_data/features/auth/auth.dart';
 
 /// 백엔드 API 통신을 담당하는 서비스
 class ApiService {
@@ -20,13 +22,9 @@ class ApiService {
       }
 
       final uri = Uri.parse('$baseUrl$endpoint');
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          ...?headers,
-        },
-      ).timeout(timeout);
+      final response = await http
+          .get(uri, headers: {'Content-Type': 'application/json', ...?headers})
+          .timeout(timeout);
 
       return _handleResponse(response, fromJson);
     } catch (e) {
@@ -48,14 +46,13 @@ class ApiService {
       }
 
       final uri = Uri.parse('$baseUrl$endpoint');
-      final response = await http.post(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          ...?headers,
-        },
-        body: body != null ? json.encode(body) : null,
-      ).timeout(timeout);
+      final response = await http
+          .post(
+            uri,
+            headers: {'Content-Type': 'application/json', ...?headers},
+            body: body != null ? json.encode(body) : null,
+          )
+          .timeout(timeout);
 
       return _handleResponse(response, fromJson);
     } catch (e) {
@@ -77,14 +74,13 @@ class ApiService {
       }
 
       final uri = Uri.parse('$baseUrl$endpoint');
-      final response = await http.put(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          ...?headers,
-        },
-        body: body != null ? json.encode(body) : null,
-      ).timeout(timeout);
+      final response = await http
+          .put(
+            uri,
+            headers: {'Content-Type': 'application/json', ...?headers},
+            body: body != null ? json.encode(body) : null,
+          )
+          .timeout(timeout);
 
       return _handleResponse(response, fromJson);
     } catch (e) {
@@ -105,13 +101,12 @@ class ApiService {
       }
 
       final uri = Uri.parse('$baseUrl$endpoint');
-      final response = await http.delete(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          ...?headers,
-        },
-      ).timeout(timeout);
+      final response = await http
+          .delete(
+            uri,
+            headers: {'Content-Type': 'application/json', ...?headers},
+          )
+          .timeout(timeout);
 
       return _handleResponse(response, fromJson);
     } catch (e) {
@@ -141,7 +136,8 @@ class ApiService {
   }
 
   // Mock 데이터 사용 여부 (개발 환경에서는 true)
-  static bool get _useMockData => const bool.fromEnvironment('USE_MOCK_DATA', defaultValue: true);
+  static bool get _useMockData =>
+      const bool.fromEnvironment('USE_MOCK_DATA', defaultValue: true);
 
   /// Mock GET 응답
   static Future<ApiResponse<T>> _getMockResponse<T>(
@@ -149,7 +145,7 @@ class ApiService {
     T Function(Map<String, dynamic>)? fromJson,
   ) async {
     await Future.delayed(const Duration(milliseconds: 500)); // 네트워크 지연 시뮬레이션
-    
+
     // Mock 데이터 반환 로직
     final mockData = await _getMockDataForEndpoint(endpoint);
     if (mockData == null) {
@@ -170,7 +166,7 @@ class ApiService {
     T Function(Map<String, dynamic>)? fromJson,
   ) async {
     await Future.delayed(const Duration(milliseconds: 800)); // 네트워크 지연 시뮬레이션
-    
+
     final mockData = await _postMockDataForEndpoint(endpoint, body);
     if (mockData == null) {
       return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $endpoint');
@@ -190,7 +186,7 @@ class ApiService {
     T Function(Map<String, dynamic>)? fromJson,
   ) async {
     await Future.delayed(const Duration(milliseconds: 600));
-    
+
     final mockData = await _putMockDataForEndpoint(endpoint, body);
     if (mockData == null) {
       return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $endpoint');
@@ -209,7 +205,7 @@ class ApiService {
     T Function(Map<String, dynamic>)? fromJson,
   ) async {
     await Future.delayed(const Duration(milliseconds: 400));
-    
+
     final mockData = await _deleteMockDataForEndpoint(endpoint);
     if (mockData == null) {
       return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $endpoint');
@@ -223,13 +219,15 @@ class ApiService {
   }
 
   /// GET 엔드포인트별 Mock 데이터
-  static Future<Map<String, dynamic>?> _getMockDataForEndpoint(String endpoint) async {
+  static Future<Map<String, dynamic>?> _getMockDataForEndpoint(
+    String endpoint,
+  ) async {
     // AuthMockData의 메서드들을 활용
     switch (endpoint) {
       case '/auth/me':
         final userData = await AuthMockData.mockGetCurrentUser();
         return userData != null ? {'user': userData} : null;
-      
+
       default:
         return null;
     }
@@ -237,7 +235,7 @@ class ApiService {
 
   /// POST 엔드포인트별 Mock 데이터
   static Future<Map<String, dynamic>?> _postMockDataForEndpoint(
-    String endpoint, 
+    String endpoint,
     Map<String, dynamic>? body,
   ) async {
     switch (endpoint) {
@@ -246,13 +244,13 @@ class ApiService {
           return AuthMockData.mockBackendLogin(body!['idToken'] as String);
         }
         return null;
-      
+
       case '/auth/register':
         if (body?['idToken'] != null) {
           return AuthMockData.mockBackendRegister(body!['idToken'] as String);
         }
         return null;
-      
+
       default:
         return null;
     }
@@ -268,7 +266,9 @@ class ApiService {
   }
 
   /// DELETE 엔드포인트별 Mock 데이터
-  static Future<Map<String, dynamic>?> _deleteMockDataForEndpoint(String endpoint) async {
+  static Future<Map<String, dynamic>?> _deleteMockDataForEndpoint(
+    String endpoint,
+  ) async {
     // DELETE 요청에 대한 Mock 데이터
     return {'message': 'Deleted successfully'};
   }
@@ -280,14 +280,10 @@ class ApiResponse<T> {
   final String? error;
   final int? statusCode;
 
-  const ApiResponse._({
-    this.data,
-    this.error,
-    this.statusCode,
-  });
+  const ApiResponse._({this.data, this.error, this.statusCode});
 
   factory ApiResponse.success(T data) => ApiResponse._(data: data);
-  factory ApiResponse.error(String error, {int? statusCode}) => 
+  factory ApiResponse.error(String error, {int? statusCode}) =>
       ApiResponse._(error: error, statusCode: statusCode);
 
   bool get isSuccess => error == null;
