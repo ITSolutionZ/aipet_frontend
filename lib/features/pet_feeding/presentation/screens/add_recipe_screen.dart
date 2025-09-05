@@ -113,7 +113,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                       labelText: '난이도 *',
                       border: OutlineInputBorder(),
                     ),
-                    items: ['Easy', 'Medium', 'Hard'].map((difficulty) {
+                    items: RecipeDifficultyMockData.getDifficultyLevels().map((difficulty) {
                       return DropdownMenuItem(
                         value: difficulty,
                         child: Text(difficulty),

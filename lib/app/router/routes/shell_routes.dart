@@ -8,11 +8,10 @@ import '../../../features/notification/presentation/screens/screens.dart';
 import '../../../features/pet_activities/pet_activities.dart';
 import '../../../features/pet_profile/presentation/presentation.dart';
 import '../../../features/scheduling/presentation/presentation.dart';
-import '../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart';
 import '../../../features/scheduling/presentation/screens/today_appointments_screen.dart';
 import '../../../features/settings/presentation/screens/screens.dart';
 import '../../../features/walk/presentation/screens/screens.dart';
-import '../../../shared/mock_data/mock_data_service.dart';
+import '../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart';
 import '../../../shared/widgets/navigation/main_navigation_screen.dart';
 import 'route_constants.dart';
 

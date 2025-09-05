@@ -18,16 +18,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   final TextEditingController _noteController = TextEditingController();
 
   // 시간 슬롯
-  final List<String> _timeSlots = [
-    '09:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-  ];
+  List<String> get _timeSlots => BookingMockData.getDefaultTimeSlots();
 
   @override
   void initState() {

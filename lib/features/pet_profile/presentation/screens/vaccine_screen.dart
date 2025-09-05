@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../shared/shared.dart';
 
@@ -16,75 +15,8 @@ class VaccineScreen extends ConsumerStatefulWidget {
 class _VaccineScreenState extends ConsumerState<VaccineScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  // 임시 백신 데이터
-  final Map<String, List<Map<String, dynamic>>> _vaccineData = {
-    '2023': [
-      {
-        'name': 'Nobivac Parvo-C',
-        'date': '11.03.2023',
-        'doctor': 'dr. Martha Roth',
-        'lot': 'A583D01',
-        'expiryDate': '07-2026',
-        'vaccinationDate': '18.05.2023',
-        'validUntil': '18.09.2025',
-        'notes': 'No bad reactions',
-      },
-    ],
-    '2022': [
-      {
-        'name': 'Nobivac Parvo-C',
-        'date': '13.03.2022',
-        'doctor': 'dr. Martha Roth',
-        'lot': 'B492E02',
-        'expiryDate': '06-2025',
-        'vaccinationDate': '13.03.2022',
-        'validUntil': '13.07.2024',
-        'notes': 'Normal reaction',
-      },
-      {
-        'name': 'Rabisin',
-        'date': '20.08.2022',
-        'doctor': 'dr. Martha Roth',
-        'lot': 'C301F03',
-        'expiryDate': '08-2025',
-        'vaccinationDate': '20.08.2022',
-        'validUntil': '20.12.2024',
-        'notes': 'No adverse effects',
-      },
-      {
-        'name': 'Nobivac KV',
-        'date': '08.06.2022',
-        'doctor': 'dr. Martha Roth',
-        'lot': 'D210G04',
-        'expiryDate': '05-2025',
-        'vaccinationDate': '08.06.2022',
-        'validUntil': '08.10.2024',
-        'notes': 'Good response',
-      },
-    ],
-    '2021': [
-      {
-        'name': 'Nobivac Parvo-C',
-        'date': '13.03.2021',
-        'doctor': 'dr. Martha Roth',
-        'lot': 'E129H05',
-        'expiryDate': '03-2024',
-        'vaccinationDate': '13.03.2021',
-        'validUntil': '13.07.2023',
-        'notes': 'Initial vaccination',
-      },
-      {
-        'name': 'Rabisin',
-        'date': '15.09.2021',
-        'doctor': 'dr. Martha Roth',
-        'lot': 'F038I06',
-        'expiryDate': '09-2024',
-        'vaccinationDate': '15.09.2021',
-        'validUntil': '15.01.2024',
-        'notes': 'Booster shot',
-      },
-    ],
-  };
+  Map<String, List<Map<String, dynamic>>> get _vaccineData =>
+      VaccineMockData.getVaccineData();
 
   @override
   void dispose() {
@@ -106,16 +38,14 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
               const CircleAvatar(
                 radius: 12,
                 backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.pets,
-                  size: 16,
-                  color: AppColors.pointBrown,
-                ),
+                child: Icon(Icons.pets, size: 16, color: AppColors.pointBrown),
               ),
               const SizedBox(width: AppSpacing.xs),
               Text(
                 'Maxi',
-                style: AppFonts.bodyMedium.copyWith(color: const Color(0xFF5B4034)),
+                style: AppFonts.bodyMedium.copyWith(
+                  color: const Color(0xFF5B4034),
+                ),
               ),
               const Icon(
                 Icons.keyboard_arrow_down,

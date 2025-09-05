@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/services/link_registration_service.dart';
 import '../../../../shared/shared.dart';
+import '../../data/services/link_registration_service.dart';
 
 /// 링크 등록 화면
 ///
@@ -166,9 +166,7 @@ class _LinkRegistrationScreenState extends State<LinkRegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientBackAppBar(
-        title: 'リンクで登録',
-      ),
+      appBar: const SoftGradientBackAppBar(title: 'リンクで登録'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Form(
