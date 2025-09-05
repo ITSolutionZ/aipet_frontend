@@ -42,7 +42,6 @@ class FeedingSummaryCard extends ConsumerWidget {
       unit: '/${feedingData['totalMeals']}',
       onTap: () =>
           context.go('${RouteConstants.feedingMainRoute}?showBackButton=true'),
-      subtitle: '今日の食事',
     );
   }
 }

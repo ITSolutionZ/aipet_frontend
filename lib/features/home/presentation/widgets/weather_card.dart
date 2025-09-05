@@ -82,7 +82,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
       setState(() {
         _isLoading = false;
         if (result.isSuccess && result.data != null) {
-          _weatherData = result.data as WeatherData;
+          _weatherData = result.data as WeatherData?;
           debugPrint(
             '🌡️ 날씨 데이터 받음: ${_weatherData!.location}, ${_weatherData!.temperature}°C, UV: ${_weatherData!.uvIndex}, Wind: ${_weatherData!.windSpeed}m/s',
           );
@@ -115,7 +115,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
       final adviceResult = await _controller.generateWalkingAdvice();
       if (mounted && adviceResult.isSuccess) {
         setState(() {
-          _walkingAdvice = adviceResult.data as String?;
+          _walkingAdvice = adviceResult.data?.toString();
         });
       }
     } catch (e) {

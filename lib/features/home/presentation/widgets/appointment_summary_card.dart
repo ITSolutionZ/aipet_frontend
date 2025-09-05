@@ -41,7 +41,6 @@ class AppointmentSummaryCard extends ConsumerWidget {
       mainValue: '${appointmentData['upcomingCount']}',
       unit: '件',
       onTap: () => context.go(RouteConstants.todayAppointmentsRoute),
-      subtitle: '予定の予約',
       secondaryValue: '今月: ${appointmentData['totalThisMonth']}件',
     );
   }
