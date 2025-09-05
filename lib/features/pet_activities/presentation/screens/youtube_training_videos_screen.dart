@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../shared/shared.dart';
@@ -96,9 +95,7 @@ class _YouTubeTrainingVideosScreenState
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientBackAppBar(
-        title: 'Training Videos',
-      ),
+      appBar: const SoftGradientBackAppBar(title: 'Training Videos'),
       body: Column(
         children: [
           // 검색 바
@@ -109,7 +106,7 @@ class _YouTubeTrainingVideosScreenState
 
           // Add Video 버튼
           _buildAddVideoButton(),
-          
+
           // 비디오 목록
           Expanded(
             child: videosState.when(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/domain.dart';
 import '../../../../shared/mock_data/features/ai/ai_mock_data.dart';
 import '../../../../shared/services/mock_data_service.dart';
+import '../../domain/domain.dart';
 
 /// AI Mock 데이터 서비스 구현체
 ///
