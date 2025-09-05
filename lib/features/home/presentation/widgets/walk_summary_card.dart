@@ -22,7 +22,7 @@ class WalkSummaryCard extends ConsumerWidget {
     final walkData = {
       'todayWalks': walkSummary['todayWalks'],
       'todayDistance': walkSummary['todayDistance'],
-      'weeklyProgress': (walkSummary['weeklyProgress'] as double) / (walkSummary['weeklyGoal'] as double),
+      'weeklyProgress': (walkSummary['weeklyProgress'] as double? ?? 0.0) / (walkSummary['weeklyGoal'] as double? ?? 1.0),
       'nextWalkTime': HomeMockService.getMockNextWalkTime(petId: currentPetId),
     };
 
@@ -32,7 +32,6 @@ class WalkSummaryCard extends ConsumerWidget {
       mainValue: '${walkData['todayDistance']}',
       unit: 'km',
       onTap: () => context.go(RouteConstants.walkFromHomeRoute),
-      subtitle: '今日の散歩',
     );
   }
 }

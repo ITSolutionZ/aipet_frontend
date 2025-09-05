@@ -37,7 +37,7 @@ class HomeSummaryGrid extends StatelessWidget {
       crossAxisCount: 2,
       crossAxisSpacing: AppSpacing.sm,
       mainAxisSpacing: AppSpacing.sm,
-      childAspectRatio: 1.3,
+      childAspectRatio: 1.1,
       children: const [
         WalkSummaryCard(),
         FeedingSummaryCard(),
