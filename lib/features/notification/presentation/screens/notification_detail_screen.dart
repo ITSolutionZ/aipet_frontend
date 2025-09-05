@@ -1,9 +1,9 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/design/design.dart';
 import '../../data/providers/notification_providers.dart';
 import '../../domain/entities/entities.dart';
 import '../controllers/notification_ui_controller.dart';
@@ -83,57 +83,25 @@ class _NotificationDetailScreenState
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Scaffold(
+      return const Scaffold(
         backgroundColor: AppColors.pointOffWhite,
-        appBar: AppBar(
-          title: const Text('通知詳細'),
-          backgroundColor: AppColors.pointBrown,
-          foregroundColor: Colors.white,
-        ),
-        body: const Center(child: CircularProgressIndicator()),
+        appBar: SoftGradientBackAppBar(title: '通知詳細'),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
     final notification = _notification;
     if (notification == null) {
-      return Scaffold(
+      return const Scaffold(
         backgroundColor: AppColors.pointOffWhite,
-        appBar: AppBar(
-          title: const Text('通知詳細'),
-          backgroundColor: AppColors.pointBrown,
-          foregroundColor: Colors.white,
-        ),
-        body: const Center(child: Text('通知を見つけることができませんでした。')),
+        appBar: SoftGradientBackAppBar(title: '通知詳細'),
+        body: Center(child: Text('通知を見つけることができませんでした。')),
       );
     }
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '通知詳細',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-        actions: [
-          if (notification.actionUrl != null)
-            TextButton(
-              onPressed: () => _handleAction(notification),
-              child: Text(
-                '直接アクセス',
-                style: AppFonts.bodyMedium.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-        ],
-      ),
+      appBar: const SoftGradientBackAppBar(title: '通知詳細'),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,8 +282,10 @@ class _NotificationDetailScreenState
                             icon: const Icon(Icons.delete_outline),
                             label: const Text('通知を削除'),
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.red,
-                              side: const BorderSide(color: Colors.red),
+                              foregroundColor: AppColors.pointPink,
+                              side: const BorderSide(
+                                color: AppColors.pointPink,
+                              ),
                               padding: const EdgeInsets.symmetric(
                                 vertical: AppSpacing.md,
                               ),

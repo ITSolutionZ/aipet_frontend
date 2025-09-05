@@ -3,6 +3,7 @@
 class AuthFormState {
   final String email;
   final String username;
+  final String password; // 로그인용 패스워드 필드 추가
   final bool isPasswordVisible;
   final bool isConfirmPasswordVisible;
   final bool rememberMe;
@@ -12,6 +13,7 @@ class AuthFormState {
   const AuthFormState({
     this.email = '',
     this.username = '',
+    this.password = '', // 기본값 추가
     this.isPasswordVisible = false,
     this.isConfirmPasswordVisible = false,
     this.rememberMe = false,
@@ -22,6 +24,7 @@ class AuthFormState {
   AuthFormState copyWith({
     String? email,
     String? username,
+    String? password,
     bool? isPasswordVisible,
     bool? isConfirmPasswordVisible,
     bool? rememberMe,
@@ -31,6 +34,7 @@ class AuthFormState {
     return AuthFormState(
       email: email ?? this.email,
       username: username ?? this.username,
+      password: password ?? this.password,
       isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
       isConfirmPasswordVisible:
           isConfirmPasswordVisible ?? this.isConfirmPasswordVisible,
@@ -46,6 +50,7 @@ class AuthFormState {
     return other is AuthFormState &&
         other.email == email &&
         other.username == username &&
+        other.password == password &&
         other.isPasswordVisible == isPasswordVisible &&
         other.isConfirmPasswordVisible == isConfirmPasswordVisible &&
         other.rememberMe == rememberMe &&
@@ -57,6 +62,7 @@ class AuthFormState {
   int get hashCode {
     return email.hashCode ^
         username.hashCode ^
+        password.hashCode ^
         isPasswordVisible.hashCode ^
         isConfirmPasswordVisible.hashCode ^
         rememberMe.hashCode ^

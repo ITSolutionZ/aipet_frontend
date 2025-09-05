@@ -18,16 +18,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   final TextEditingController _noteController = TextEditingController();
 
   // 시간 슬롯
-  final List<String> _timeSlots = [
-    '09:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-  ];
+  List<String> get _timeSlots => BookingMockData.getDefaultTimeSlots();
 
   @override
   void initState() {
@@ -71,7 +62,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     final error = ref.read(bookingControllerProvider(widget.facilityId)).error;
     if (error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error), backgroundColor: Colors.red),
+        SnackBar(content: Text(error), backgroundColor: AppColors.pointPink),
       );
       return;
     }
@@ -151,57 +142,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
         return Scaffold(
           backgroundColor: AppColors.pointOffWhite,
-          appBar: AppBar(
-            backgroundColor: AppColors.pointOffWhite,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: AppColors.pointDark,
-                size: 20,
-              ),
-              onPressed: () => context.pop(),
-            ),
-            title: Text(
-              'Book a date',
-              style: AppFonts.fredoka(
-                fontSize: AppFonts.lg,
-                color: AppColors.pointDark,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            centerTitle: true,
-            actions: [
-              // 펫 선택 (Maxi)
-              Row(
-                children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.pointBrown,
-                    ),
-                    child: const Icon(
-                      Icons.pets,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    'Maxi',
-                    style: AppFonts.fredoka(
-                      fontSize: AppFonts.sm,
-                      color: AppColors.pointDark,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                ],
-              ),
-            ],
-          ),
+          appBar: const SoftGradientBackAppBar(title: 'Book a date'),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(

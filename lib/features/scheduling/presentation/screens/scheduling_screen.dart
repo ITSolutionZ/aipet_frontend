@@ -20,10 +20,8 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('スケジュール管理'),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: const SoftGradientAppBar(
+        title: 'スケジュール管理',
       ),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),

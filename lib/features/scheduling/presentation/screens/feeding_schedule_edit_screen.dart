@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
+import '../../../../shared/mock_data/features/pet/pet_mock_service.dart';
+import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart';
 import '../widgets/widgets.dart';
 
 /// 급여 스케줄 편집 페이지
@@ -60,28 +62,23 @@ class _FeedingScheduleEditScreenState
 
   /// 펫 정보 및 사이즈 가이드 로드
   void _loadPetInfo() {
-    final petSizes = MockDataService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     _selectedPetInfo = petSizes[_selectedPetId];
 
     if (_selectedPetInfo != null) {
       final size = _selectedPetInfo!['size'] as String;
-      final sizeGuide = MockDataService.getPetSizeFeedingGuide();
+      final sizeGuide = SchedulingMockService.getPetSizeFeedingGuide();
       _petSizeGuide = sizeGuide[size];
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = MockDataService.getPetCurrentStatus(_selectedPetId);
-    if (currentStatus != null) {
-      _selectedStatuses = List<String>.from(
-        currentStatus['selectedStatuses'] ?? [],
-      );
-      _statusValues = Map<String, String>.from(currentStatus);
-      _statusValues.remove('selectedStatuses');
-      _statusValues.remove('lastUpdated');
-    } else {
-      _selectedStatuses = [];
-      _statusValues = {};
-    }
+    final currentStatus = PetMockService.getPetCurrentStatus(_selectedPetId);
+    _selectedStatuses = List<String>.from(
+      currentStatus['selectedStatuses'] ?? [],
+    );
+    _statusValues = Map<String, String>.from(currentStatus);
+    _statusValues.remove('selectedStatuses');
+    _statusValues.remove('lastUpdated');
   }
 
   @override
@@ -92,7 +89,7 @@ class _FeedingScheduleEditScreenState
 
   /// 펫 선택 처리
   void _onPetSelected(String petId) {
-    final petSizes = MockDataService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     setState(() {
       _selectedPetId = petId;
       _selectedPetInfo = petSizes[petId];
@@ -119,7 +116,7 @@ class _FeedingScheduleEditScreenState
                   _statusValues = statusValues;
 
                   // MockDataService에 상태 업데이트
-                  MockDataService.updatePetStatus(
+                  PetMockService.updatePetStatus(
                     petId,
                     selectedStatuses,
                     statusValues,
@@ -182,7 +179,7 @@ class _FeedingScheduleEditScreenState
   /// 목업 데이터 업데이트
   void _updateMockData(String mealType, String time, String amount) {
     // MockDataService의 데이터를 실제로 업데이트
-    MockDataService.updateFeedingSchedule(mealType, time, amount);
+    SchedulingMockService.updateFeedingSchedule(mealType, time, amount);
 
     // 변경사항을 사용자에게 알림
     developer.log('목업 데이터 업데이트: $mealType - $time - $amount');
@@ -192,24 +189,15 @@ class _FeedingScheduleEditScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '$_selectedMealTypeスケジュール編集',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: SoftGradientAppBar(
+        title: '$_selectedMealTypeスケジュール編集',
         actions: [
           TextButton(
             onPressed: _saveSchedule,
             child: Text(
               '保存',
               style: AppFonts.bodyMedium.copyWith(
-                color: Colors.white,
+                color: const Color(0xFF5B4034),
                 fontWeight: FontWeight.bold,
               ),
             ),

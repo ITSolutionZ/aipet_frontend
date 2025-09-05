@@ -5,14 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../../../pet_registor/data/providers/pet_providers.dart';
+import '../../data/providers/home_providers.dart';
 
 class PetProfileCard extends ConsumerStatefulWidget {
-  const PetProfileCard({
-    super.key,
-    this.activities = const ['○ 今日は散歩記録がありません', '○ 昼ごはんを食べました'],
-  });
-
-  final List<String> activities;
+  const PetProfileCard({super.key});
 
   @override
   ConsumerState<PetProfileCard> createState() => _PetProfileCardState();
@@ -25,6 +21,23 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
   void initState() {
     super.initState();
     _pageController = PageController();
+  }
+
+  /// 마이크로칩 등록 체크 및 모달 표시
+  void _checkMicrochipRegistration(List<dynamic> pets) {
+    if (pets.isNotEmpty) {
+      final firstPet = pets.first;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        MicrochipReminderService.showReminderIfNeeded(
+          context,
+          firstPet,
+          onRegisterTap: () {
+            // 마이크로칩 등록 화면으로 이동
+            context.push('/pet/microchip-register');
+          },
+        );
+      });
+    }
   }
 
   @override
@@ -40,21 +53,24 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
 
     return petsAsync.when(
       data: (petList) {
+        // 마이크로칩 등록 체크
+        _checkMicrochipRegistration(petList);
+        
         if (petList.isEmpty) {
           return GestureDetector(
             onTap: () => context.push('/pet/register'),
-            child: WhiteCard.panel(
+            child: const WhiteCard.panel(
               child: Column(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.add_circle_outline,
                     size: 48,
-                    color: Colors.grey,
+                    color: AppColors.pointGray,
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     'ペットを登録してください',
-                    style: TextStyle(color: Colors.grey[600]),
+                    style: TextStyle(color: AppColors.pointGray),
                   ),
                 ],
               ),
@@ -65,6 +81,9 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
         final hasMultiplePets = petList.length > 1;
 
         return WhiteCard.panel(
+          borderWidth: 1.5,
+          borderColor: Colors.white.withValues(alpha: 0.5),
+          elevation: 8,
           child: Column(
             children: [
               // ペット表示部分 (スワイプ対応)
@@ -73,7 +92,12 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                 child: PageView.builder(
                   controller: _pageController,
                   onPageChanged: (index) {
-                    // 페이지 변경 시 추가 로직이 필요한 경우 여기에 구현
+                    // 페이지 변경 시 홈 선택된 펫 프로바이더 업데이트
+                    if (index < petList.length) {
+                      ref
+                          .read(homeSelectedPetNotifierProvider.notifier)
+                          .selectPet(petList[index]);
+                    }
                   },
                   itemCount: petList.length,
                   itemBuilder: (context, index) {
@@ -141,7 +165,12 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                                         ),
                                       ),
                                       child: Text(
-                                        currentPet.breed ?? currentPet.typeName,
+                                        PetMockService.getPetGenderByName(
+                                                  currentPet.name,
+                                                ) ==
+                                                'male'
+                                            ? 'オス'
+                                            : 'メス',
                                         style: AppFonts.bodySmall.copyWith(
                                           color: AppColors.pointDark,
                                           fontWeight: FontWeight.w500,
@@ -152,9 +181,11 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                                   ],
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
-                                ...widget.activities.map(
+                                ...HomeMockService.getMockPetActivities(
+                                  petId: currentPet.id,
+                                ).map(
                                   (activity) => Text(
-                                    activity,
+                                    activity['label']?.toString() ?? '',
                                     style: AppFonts.bodySmall.copyWith(
                                       color: AppColors.pointGray,
                                     ),
@@ -211,7 +242,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                     height: 16,
                     width: 100,
                     decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color: AppColors.pointGray.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
@@ -220,7 +251,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                     height: 12,
                     width: 150,
                     decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color: AppColors.pointGray.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
@@ -242,7 +273,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
               ),
               child: const Icon(
                 Icons.error_outline,
-                color: Colors.red,
+                color: AppColors.pointPink,
                 size: 30,
               ),
             ),
@@ -254,7 +285,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                   Text(
                     'ペット情報の読み込みに失敗しました',
                     style: AppFonts.bodyMedium.copyWith(
-                      color: Colors.red,
+                      color: AppColors.pointPink,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

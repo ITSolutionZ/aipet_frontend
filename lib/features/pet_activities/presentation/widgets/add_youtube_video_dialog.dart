@@ -52,7 +52,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
 
       // 제목이 비어있다면 자동으로 채우기
       if (_titleController.text.trim().isEmpty) {
-        _titleController.text = MockDataService.getDefaultVideoTitle(videoId);
+        _titleController.text = PetActivitiesMockService.getDefaultVideoTitle(videoId);
       }
 
       if (mounted) {

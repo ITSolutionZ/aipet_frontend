@@ -1,37 +1,7 @@
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+import 'pet_summary_entity.dart';
+import 'weather_entity.dart';
 
-class HomeDashboardEntity {
-  final String currentTime;
-  final WeatherInfo weather;
-  final List<AppointmentSummary> upcomingAppointments;
-  final HealthSummary petHealthSummary;
-  final WalkSummary walkSummary;
-  final List<PetProfileEntity> petProfiles;
-
-  const HomeDashboardEntity({
-    required this.currentTime,
-    required this.weather,
-    required this.upcomingAppointments,
-    required this.petHealthSummary,
-    required this.walkSummary,
-    required this.petProfiles,
-  });
-}
-
-class WeatherInfo {
-  final double temperature;
-  final String condition;
-  final String iconCode;
-  final String location;
-
-  const WeatherInfo({
-    required this.temperature,
-    required this.condition,
-    required this.iconCode,
-    required this.location,
-  });
-}
-
+// 예약 정보 요약
 class AppointmentSummary {
   final String id;
   final String title;
@@ -48,6 +18,7 @@ class AppointmentSummary {
   });
 }
 
+// 건강 상태 요약
 class HealthSummary {
   final int totalPets;
   final int healthyPets;
@@ -62,26 +33,21 @@ class HealthSummary {
   });
 }
 
+// 건강 알림
 class HealthAlert {
   final String petName;
   final String message;
-  final AlertSeverity severity;
 
-  const HealthAlert({
-    required this.petName,
-    required this.message,
-    required this.severity,
-  });
+  const HealthAlert({required this.petName, required this.message});
 }
 
-enum AlertSeverity { low, medium, high }
-
+// 산책 요약
 class WalkSummary {
   final int todayWalks;
   final double todayDistance;
   final Duration todayDuration;
-  final int weeklyGoal;
-  final int weeklyProgress;
+  final double weeklyGoal;
+  final double weeklyProgress;
 
   const WalkSummary({
     required this.todayWalks,
@@ -92,5 +58,21 @@ class WalkSummary {
   });
 }
 
-// PetProfile 클래스 제거 - PetProfileEntity 사용
-// HealthStatus enum은 PetProfileEntity로 이동
+class HomeDashboardEntity {
+  final String currentTime;
+  final WeatherEntity weather;
+  final List<PetSummaryEntity> petProfiles;
+  final List<AppointmentSummary> upcomingAppointments;
+  final HealthSummary petHealthSummary;
+  final WalkSummary walkSummary;
+
+  const HomeDashboardEntity({
+    required this.currentTime,
+    required this.weather,
+    required this.petProfiles,
+    required this.upcomingAppointments,
+    required this.petHealthSummary,
+    required this.walkSummary,
+  });
+}
+

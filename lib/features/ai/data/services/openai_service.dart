@@ -1,13 +1,14 @@
 import 'package:dio/dio.dart';
+
 import '../../../../app/config/app_config.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+import '../../../pet_registor/pet_registor.dart';
 import 'pet_content_filter_service.dart';
 
 /// OpenAI API와 통신하는 서비스
 class OpenAIService {
   late final Dio _dio;
   final PetContentFilterService _contentFilter = PetContentFilterService();
-  
+
   OpenAIService() {
     _dio = Dio();
     _dio.options.baseUrl = 'https://api.openai.com/v1';
@@ -15,9 +16,12 @@ class OpenAIService {
   }
 
   /// OpenAI ChatGPT API를 사용하여 메시지에 대한 응답 생성
-  Future<String> generateResponse(String message, {PetProfileEntity? petContext}) async {
+  Future<String> generateResponse(
+    String message, {
+    PetProfileEntity? petContext,
+  }) async {
     final apiKey = AppConfig.current.openaiApiKey;
-    
+
     if (apiKey.isEmpty) {
       throw Exception('OpenAI API key is not configured');
     }
@@ -26,7 +30,7 @@ class OpenAIService {
     if (petContext == null) {
       final validationResult = await _contentFilter.validatePetContent(message);
       if (!validationResult.isValid) {
-      return '''申し訳ございません。私はペット専門のAIアシスタントです。🐶🐱
+        return '''申し訳ございません。私はペット専門のAIアシスタントです。🐶🐱
 
 ${_translateReasonToJapanese(validationResult.reason)}
 
@@ -45,22 +49,12 @@ ${_translateReasonToJapanese(validationResult.reason)}
     try {
       final response = await _dio.post(
         '/chat/completions',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $apiKey',
-          },
-        ),
+        options: Options(headers: {'Authorization': 'Bearer $apiKey'}),
         data: {
           'model': 'gpt-3.5-turbo',
           'messages': [
-            {
-              'role': 'system',
-              'content': _buildSystemPrompt(petContext)
-            },
-            {
-              'role': 'user',
-              'content': message,
-            }
+            {'role': 'system', 'content': _buildSystemPrompt(petContext)},
+            {'role': 'user', 'content': message},
           ],
           'max_tokens': 1000,
           'temperature': 0.7,
@@ -85,7 +79,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
       throw Exception('Unexpected error: $e');
     }
   }
-  
+
   /// 検証理由を日本語に翻訳 (필터 서비스와 동일한 메시지)
   String _translateReasonToJapanese(String reason) {
     switch (reason) {
@@ -105,7 +99,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
         return 'ペットに関連する内容を含めてご質問ください';
     }
   }
-  
+
   /// システムプロンプトを構築
   String _buildSystemPrompt(PetProfileEntity? petContext) {
     String basePrompt = '''あなたはペット専門のAIアシスタントです。
@@ -115,27 +109,31 @@ ${_translateReasonToJapanese(validationResult.reason)}
 
 重要：ペットに関係のない質問（政治、経済、エンターテイメント、ゲーム、料理など）には答えず、
 "ペットに関する質問のみお答えできます"と回答してください。''';
-    
+
     if (petContext != null) {
       final age = petContext.age;
-      final breedInfo = petContext.breed != null ? '（品種：${petContext.breed}）' : '';
+      final breedInfo = petContext.breed != null
+          ? '（品種：${petContext.breed}）'
+          : '';
       final birthYear = petContext.birthDate.year;
       final birthMonth = petContext.birthDate.month;
       final birthDay = petContext.birthDate.day;
       final createdYear = petContext.createdAt.year;
       final createdMonth = petContext.createdAt.month;
       final createdDay = petContext.createdAt.day;
-      
+
       // 추가 정보가 있는 경우 포함
       String additionalDetails = '';
-      if (petContext.additionalInfo != null && petContext.additionalInfo!.isNotEmpty) {
+      if (petContext.additionalInfo != null &&
+          petContext.additionalInfo!.isNotEmpty) {
         additionalDetails = '\n・追加情報：';
         petContext.additionalInfo!.forEach((key, value) {
           additionalDetails += '\n  - $key: $value';
         });
       }
-      
-      basePrompt += '''
+
+      basePrompt +=
+          '''
 
 【相談対象のペット情報】
 ・名前：${petContext.name}
@@ -157,7 +155,7 @@ ${petContext.name}の年齢（$age歳）、種類（${petContext.typeName}）に
 初回の挨拶では、ペット専門アシスタントとして親しみやすく挨拶してください。
 ペット全般に関する基本的なアドバイスを提供し、より具体的な相談のためにペット情報の登録をお勧めしてください。''';
     }
-    
+
     return basePrompt;
   }
 }

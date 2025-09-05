@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../shared/services/link_registration_service.dart';
 import '../../../../shared/shared.dart';
+import '../../data/services/link_registration_service.dart';
 
 /// 링크 등록 화면
 ///
@@ -166,27 +166,7 @@ class _LinkRegistrationScreenState extends State<LinkRegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.pointDark,
-            size: 20,
-          ),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'リンクで登録',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
+      appBar: const SoftGradientBackAppBar(title: 'リンクで登録'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Form(
@@ -303,7 +283,7 @@ class _LinkRegistrationScreenState extends State<LinkRegistrationScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    ...MockDataService.getMockExampleLinks().map(
+                    ...PetMockService.getMockExampleLinks().map(
                       (link) => Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                         child: Text(

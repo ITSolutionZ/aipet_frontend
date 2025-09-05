@@ -11,8 +11,8 @@ class LogoWidget extends StatelessWidget {
   const LogoWidget({
     super.key,
     required this.imagePath,
-    this.width = 196,
-    this.height = 130,
+    this.width = 300,
+    this.height = 300,
     this.backgroundColor,
   });
 
@@ -25,11 +25,11 @@ class LogoWidget extends StatelessWidget {
       child: ClipRRect(
         child: Image.asset(
           imagePath,
-          width: width - 8,
-          height: height - 8,
+          width: width,
+          height: height,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) =>
-              SizedBox(width: width - 16, height: height - 16),
+              SizedBox(width: width, height: height),
         ),
       ),
     );

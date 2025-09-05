@@ -4,12 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../shared/shared.dart';
 import '../../../../app/router/routes/route_constants.dart';
-import '../controllers/home_controller.dart';
-import '../widgets/appointment_card.dart';
-import '../widgets/health_summary_section.dart';
-import '../widgets/pet_profile_card.dart';
-import '../widgets/walk_summary_section.dart';
-import '../widgets/weather_card.dart';
+import '../controllers/controllers.dart';
+import '../widgets/widgets.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -19,12 +15,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  late HomeController _homeController;
+  late HomeDashboardController _dashboardController;
+  late HomeNotificationController _notificationController;
 
   @override
   void initState() {
     super.initState();
-    _homeController = HomeController(ref);
+    _dashboardController = HomeDashboardController(ref);
+    _notificationController = HomeNotificationController(ref);
 
     // 화면이 로드된 후 펫 목록을 확인하여 리다이렉트
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -35,16 +33,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// 펫 목록을 확인하고 홈 화면 초기화
   Future<void> _checkPetsAndRedirect() async {
     try {
-      final hasPets = await _homeController.hasPets();
-      if (!hasPets && mounted) {
-        // 펫이 없어도 홈 화면 유지 (펫 등록 유도 UI 표시)
-        await _initializeHomeScreen();
-      } else {
-        // 펫이 있으면 홈 화면 초기화
-        await _initializeHomeScreen();
-      }
+      await _dashboardController.hasPets();
+      await _initializeHomeScreen();
     } catch (error) {
-      // 에러 발생시 기본적으로 홈 화면 유지 (목업 데이터는 항상 펫이 있음)
       await _initializeHomeScreen();
     }
   }
@@ -52,21 +43,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// 홈 화면 초기화
   Future<void> _initializeHomeScreen() async {
     try {
-      final result = await _homeController.initializeHome();
+      final result = await _dashboardController.initializeHome();
       if (mounted && !result.isSuccess) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message), backgroundColor: Colors.red),
-        );
+        _showErrorSnackBar(result.message);
       }
     } catch (error) {
-      // 초기화 실패시 에러 메시지 표시
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('홈 화면을 불러오는 중 오류가 발생했습니다.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        _showErrorSnackBar('홈 화면을 불러오는 중 오류가 발생했습니다.');
       }
     }
   }
@@ -74,34 +57,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// 알림 아이콘 탭 처리
   Future<void> _handleNotificationTap() async {
     try {
-      final notificationResult = await _homeController.handleNotification();
+      final notificationResult = await _notificationController
+          .handleNotification();
       if (mounted) {
-        if (notificationResult.isSuccess && notificationResult.data != null) {
-          final notifications = notificationResult.data as List<String>;
-          if (notifications.isNotEmpty) {
-            // 알림이 있으면 스낵바로 표시
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(notificationResult.message),
-                backgroundColor: Colors.blue,
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          }
-        }
-        // 알림 목록으로 이동
+        _handleNotificationResult(notificationResult);
         context.go(RouteConstants.notificationListRoute);
       }
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('알림을 확인하는 중 오류가 발생했습니다.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        _showErrorSnackBar('알림을 확인하는 중 오류가 발생했습니다.');
       }
     }
+  }
+
+  /// 알림 결과 처리
+  void _handleNotificationResult(dynamic notificationResult) {
+    if (notificationResult.isSuccess && notificationResult.data != null) {
+      final notifications = notificationResult.data as List<String>;
+      if (notifications.isNotEmpty) {
+        _showSuccessSnackBar(notificationResult.message);
+      }
+    }
+  }
+
+  /// 에러 스낵바 표시
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: AppColors.pointPink),
+    );
+  }
+
+  /// 성공 스낵바 표시
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.pointBlue,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -109,126 +103,111 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: const AppDrawer(),
-      body: Column(
+      appBar: SoftGradientDrawerAppBar(
+        title: 'ホーム',
+        selectedPetInfo: Row(
+          children: [
+            _buildNotificationButton(),
+            const SizedBox(width: AppSpacing.xs),
+            _buildMenuButton(context),
+          ],
+        ),
+      ),
+      body: Column(children: [_buildMainContent()]),
+    );
+  }
+
+  Widget _buildNotificationButton() {
+    return IconButton(
+      onPressed: _handleNotificationTap,
+      icon: const Stack(
         children: [
-          // 상단 헤더
-          Container(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + AppSpacing.sm,
-              left: AppSpacing.lg,
-              right: AppSpacing.lg,
-              bottom: AppSpacing.sm,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.pointBrown.withValues(alpha: 0.8),
-            ),
-            child: Row(
-              children: [
-                // 햄버거 메뉴
-                Builder(
-                  builder: (context) => GestureDetector(
-                    onTap: () => Scaffold.of(context).openDrawer(),
-                    child: const Icon(
-                      Icons.menu,
-                      size: 24,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                // 제목
-                const Text(
-                  'ホーム',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Fredoka',
-                  ),
-                ),
-
-                const Spacer(),
-
-                // 알림 아이콘
-                IconButton(
-                  onPressed: () {
-                    _handleNotificationTap();
-                  },
-                  icon: const Stack(
-                    children: [
-                      Icon(
-                        Icons.notifications_outlined,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                      // 알림 배지 (실제로는 알림 개수에 따라 동적으로 표시)
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: Icon(Icons.circle, color: Colors.red, size: 8),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(width: 8),
-
-                // 프로필 아바타
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(
-                      'assets/images/placeholder.png',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[300],
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.grey[600],
-                            size: 16,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          Icon(
+            Icons.notifications_outlined,
+            color: AppColors.pointOffWhite,
+            size: 24,
           ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Icon(Icons.circle, color: AppColors.pointPink, size: 8),
+          ),
+        ],
+      ),
+    );
+  }
 
-          // 메인 콘텐츠
+  Widget _buildMenuButton(BuildContext context) {
+    return Builder(
+      builder: (context) => IconButton(
+        icon: const Icon(Icons.menu),
+        onPressed: () => Scaffold.of(context).openDrawer(),
+        tooltip: 'メニュー',
+      ),
+    );
+  }
+
+  Widget _buildMainContent() {
+    return Expanded(
+      child: Column(
+        children: [
           const Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 펫 프로필 카드
+                  SizedBox(height: AppSpacing.md),
                   PetProfileCard(),
                   SizedBox(height: AppSpacing.lg),
-
-                  // 날씨 카드
                   WeatherCard(),
                   SizedBox(height: AppSpacing.lg),
-
-                  // 산책 요약 섹션
-                  WalkSummarySection(),
-                  SizedBox(height: AppSpacing.lg),
-
-                  // 예약 카드
-                  AppointmentCard(),
-                  SizedBox(height: AppSpacing.lg),
-
-                  // 건강 요약 섹션
-                  HealthSummarySection(),
+                  HomeSummaryGrid(),
                 ],
+              ),
+            ),
+          ),
+          _buildNotificationCountBar(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationCountBar() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md,
+      ),
+      decoration: const BoxDecoration(
+        color: AppColors.pointBlue,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(AppRadius.large),
+          topRight: Radius.circular(AppRadius.large),
+        ),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.notifications, color: Colors.white, size: 20),
+          const SizedBox(width: AppSpacing.sm),
+          Text(
+            '${NotificationMockService.getMockNotifications().length}件の通知があります',
+            style: AppFonts.bodyMedium.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const Spacer(),
+          TextButton(
+            onPressed: () {
+              context.go(RouteConstants.notificationListRoute);
+            },
+            child: Text(
+              '確認する',
+              style: AppFonts.bodyMedium.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),

@@ -20,7 +20,7 @@ class PetSelectionGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final petSizes = MockDataService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
 
     return Card(
       child: Padding(

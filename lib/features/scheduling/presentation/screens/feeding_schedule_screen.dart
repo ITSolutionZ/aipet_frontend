@@ -30,8 +30,8 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
 
   void _loadMockData() {
     setState(() {
-      _todayMeals = MockDataService.getMockTodayMealsForSchedule();
-      _scheduleItems = MockDataService.getMockFeedingSchedulesForSchedule();
+      _todayMeals = SchedulingMockService.getMockTodayMealsForSchedule();
+      _scheduleItems = SchedulingMockService.getMockFeedingSchedulesForSchedule();
     });
   }
 
@@ -50,17 +50,8 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '$petNameの食事スケジュール',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: SoftGradientAppBar(
+        title: '$petNameの食事スケジュール',
       ),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),

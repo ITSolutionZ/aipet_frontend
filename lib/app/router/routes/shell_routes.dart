@@ -8,9 +8,10 @@ import '../../../features/notification/presentation/screens/screens.dart';
 import '../../../features/pet_activities/pet_activities.dart';
 import '../../../features/pet_profile/presentation/presentation.dart';
 import '../../../features/scheduling/presentation/presentation.dart';
+import '../../../features/scheduling/presentation/screens/today_appointments_screen.dart';
 import '../../../features/settings/presentation/screens/screens.dart';
 import '../../../features/walk/presentation/screens/screens.dart';
-import '../../../shared/mock_data/mock_data_service.dart';
+import '../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart';
 import '../../../shared/widgets/navigation/main_navigation_screen.dart';
 import 'route_constants.dart';
 
@@ -103,7 +104,7 @@ class ShellRoutes {
                 name: 'feeding-schedule-edit',
                 builder: (context, state) {
                   final defaults =
-                      MockDataService.getDefaultFeedingScheduleParams();
+                      SchedulingMockService.getDefaultFeedingScheduleParams();
                   final mealType =
                       state.uri.queryParameters['mealType'] ??
                       defaults['mealType']!;
@@ -171,7 +172,15 @@ class ShellRoutes {
       GoRoute(
         path: RouteConstants.walkRoute,
         name: 'walk',
-        builder: (context, state) => const WalkListScreen(),
+        builder: (context, state) =>
+            const WalkListScreen(showBackButton: false),
+      ),
+
+      // 홈에서 산책 카드로 이동하는 라우트
+      GoRoute(
+        path: RouteConstants.walkFromHomeRoute,
+        name: 'walk-from-home',
+        builder: (context, state) => const WalkListScreen(showBackButton: true),
       ),
 
       // 캘린더 탭
@@ -240,6 +249,13 @@ class ShellRoutes {
             ),
           ),
         ],
+      ),
+
+      // 오늘의 예약 독립 라우트
+      GoRoute(
+        path: RouteConstants.todayAppointmentsRoute,
+        name: 'today-appointments',
+        builder: (context, state) => const TodayAppointmentsScreen(),
       ),
     ],
   );

@@ -37,6 +37,8 @@ dependencies:
   connectivity_plus: ^6.0.5
   flutter_dotenv: ^5.1.0
   geolocator: ^13.0.1
+  google_maps_flutter: ^2.8.0
+  location: ^6.0.0
 
   mockito: ^5.4.4
 
@@ -64,6 +66,8 @@ flutter:
     - assets/images/dogs/
     - assets/images/onboarding/
     - assets/images/etc/
+
+    - assets/images/modal/
     - assets/images/medications/
     - assets/images/textures/
     - assets/images/walks/

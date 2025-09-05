@@ -42,21 +42,8 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '새 레시피 추가',
-          style: AppFonts.titleMedium.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
+      appBar: const SoftGradientBackAppBar(
+        title: '새 레시피 추가',
       ),
       body: Form(
         key: _formKey,
@@ -126,7 +113,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                       labelText: '난이도 *',
                       border: OutlineInputBorder(),
                     ),
-                    items: ['Easy', 'Medium', 'Hard'].map((difficulty) {
+                    items: RecipeDifficultyMockData.getDifficultyLevels().map((difficulty) {
                       return DropdownMenuItem(
                         value: difficulty,
                         child: Text(difficulty),

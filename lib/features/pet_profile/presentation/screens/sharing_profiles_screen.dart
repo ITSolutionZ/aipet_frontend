@@ -29,8 +29,26 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen> {
   }
 
   void _loadPets() {
-    // MockDataService에서 펫 데이터 로드
-    _pets = MockDataService.getMockPets();
+    // PetMockService에서 펫 데이터 로드
+    final petMaps = PetMockService.getMockPets();
+    _pets = petMaps.map((petData) => PetProfileEntity(
+      id: petData['id'] as String,
+      name: petData['name'] as String,
+      type: petData['type'] as String,
+      breed: petData['breed'] as String?,
+      birthDate: petData['birthDate'] as DateTime? ?? DateTime.now(),
+      imagePath: petData['imagePath'] as String?,
+      ownerId: 'user_1', // 기본값 설정
+      createdAt: petData['createdAt'] as DateTime? ?? DateTime.now(),
+      updatedAt: petData['updatedAt'] as DateTime? ?? DateTime.now(),
+      isActive: true,
+      additionalInfo: {
+        'gender': petData['gender'],
+        'weight': petData['weight'],
+        'isNeutered': petData['isNeutered'],
+        'description': petData['description'],
+      },
+    )).toList();
     setState(() {});
   }
 
@@ -39,47 +57,16 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen> {
   }
 
   String _getGenderString(PetProfileEntity pet) {
-    // MockDataService를 통한 성별 판단
-    return MockDataService.getPetGenderByName(pet.name);
+    // additionalInfo에서 성별 조회
+    return pet.additionalInfo?['gender'] ?? 'unknown';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.pointDark,
-            size: 20,
-          ),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'Sharing profiles',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          // 현재 선택된 펫 이름 표시
-          if (_pets.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.only(right: AppSpacing.md),
-              child: Text(
-                _pets.first.name,
-                style: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.pointDark.withValues(alpha: 0.7),
-                ),
-              ),
-            ),
-        ],
+      appBar: const SoftGradientBackAppBar(
+        title: 'Sharing profiles',
       ),
       body: Column(
         children: [
@@ -227,7 +214,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen> {
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    '${pet.type} | ${pet.breed}',
+                    '${pet.type}${pet.breed != null ? ' | ${pet.breed}' : ''}',
                     style: AppFonts.bodySmall.copyWith(
                       color: AppColors.pointDark.withValues(alpha: 0.7),
                     ),
@@ -391,7 +378,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen> {
           '''
 🐾 ${pet.name}의 프로필을 공유합니다!
 
-반려동물: ${pet.type} (${pet.breed})
+반려동물: ${pet.type}${pet.breed != null ? ' (${pet.breed})' : ''}
 성별: ${_getGenderString(pet) == 'male' ? '남' : '여'}
 
 프로필 확인: $shareLink

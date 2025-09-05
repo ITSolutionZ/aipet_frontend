@@ -9,10 +9,8 @@ class WateringMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('給水管理'),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: const SoftGradientAppBar(
+        title: '給水管理',
       ),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),

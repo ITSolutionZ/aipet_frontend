@@ -28,7 +28,22 @@ class _GroomingReservationScreenState
   @override
   void initState() {
     super.initState();
-    _facilities = MockDataService.getMockGroomingFacilities();
+    final facilitiesData = FacilityMockService.getMockGroomingFacilities();
+    _facilities = facilitiesData.map((data) => Facility(
+      id: data['id'] as String,
+      name: data['name'] as String,
+      description: data['description'] as String,
+      address: data['address'] as String,
+      phone: data['phone'] as String,
+      email: data['email'] as String,
+      type: data['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
+      rating: (data['rating'] as num).toDouble(),
+      reviewCount: data['reviewCount'] as int,
+      imagePath: data['imagePath'] as String,
+      isFavorite: data['isFavorite'] as bool? ?? false,
+      hasHistory: data['hasHistory'] as bool? ?? false,
+      lastVisit: data['lastVisit'] as DateTime?,
+    )).toList();
   }
 
   @override
@@ -86,26 +101,8 @@ class _GroomingReservationScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.pointDark,
-            size: 20,
-          ),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'トリミング',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
+      appBar: const SoftGradientBackAppBar(
+        title: 'トリミング',
       ),
       body: Column(
         children: [

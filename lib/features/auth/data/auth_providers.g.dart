@@ -6,6 +6,23 @@ part of 'auth_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$authRepositoryHash() => r'0381c15cc98678f44ab56fe3cc2f2c054d089287';
+
+/// See also [authRepository].
+@ProviderFor(authRepository)
+final authRepositoryProvider = AutoDisposeProvider<AuthRepository>.internal(
+  authRepository,
+  name: r'authRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$authRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AuthRepositoryRef = AutoDisposeProviderRef<AuthRepository>;
 String _$sharedPreferencesHash() => r'364aac3bb9ea43f11efcaa8108aaed93f291e0b8';
 
 /// See also [sharedPreferences].
@@ -45,7 +62,7 @@ final navigationCallbackNotifierProvider =
 
 typedef _$NavigationCallbackNotifier = AutoDisposeNotifier<Function()?>;
 String _$authFormStateNotifierHash() =>
-    r'a15018124b3f92a3af108534d44b5f262089dbe4';
+    r'bac74baceb402f207e237fd65600c3eba0fb981a';
 
 /// See also [AuthFormStateNotifier].
 @ProviderFor(AuthFormStateNotifier)

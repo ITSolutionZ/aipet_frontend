@@ -3,6 +3,14 @@ import 'dart:math' as math;
 import '../../domain/entities/walk_location_entity.dart';
 import '../../domain/services/walk_route_service.dart';
 
+/// 디코딩 결과를 담는 클래스
+class _DecodeResult {
+  final int value;
+  final int index;
+
+  const _DecodeResult(this.value, this.index);
+}
+
 /// 산책 경로 서비스 구현체
 class WalkRouteServiceImpl implements WalkRouteService {
   @override
@@ -36,49 +44,102 @@ class WalkRouteServiceImpl implements WalkRouteService {
 
   @override
   String encodePolyline(List<WalkLocation> route) {
-    // TODO: Google Maps Polyline 인코딩 구현
-    // 현재는 목업으로 빈 문자열 반환
     if (route.isEmpty) return '';
 
-    // 간단한 목업 인코딩 (실제로는 Google Maps Polyline 알고리즘 사용)
-    final points = route
-        .map(
-          (location) =>
-              '${location.latitude.toStringAsFixed(6)},${location.longitude.toStringAsFixed(6)}',
-        )
-        .join('|');
+    // Google Maps Polyline 인코딩 알고리즘 구현
+    final encoded = StringBuffer();
+    int prevLat = 0;
+    int prevLng = 0;
 
-    return points;
+    for (final location in route) {
+      // 위도와 경도를 정수로 변환 (소수점 5자리까지 정밀도)
+      final lat = (location.latitude * 1e5).round();
+      final lng = (location.longitude * 1e5).round();
+
+      // 차이값 계산
+      final deltaLat = lat - prevLat;
+      final deltaLng = lng - prevLng;
+
+      // 인코딩
+      _encodeNumber(deltaLat, encoded);
+      _encodeNumber(deltaLng, encoded);
+
+      prevLat = lat;
+      prevLng = lng;
+    }
+
+    return encoded.toString();
+  }
+
+  /// Google Maps Polyline 인코딩 알고리즘
+  void _encodeNumber(int value, StringBuffer encoded) {
+    // 부호 비트 처리
+    int v = value << 1;
+    if (value < 0) {
+      v = ~v;
+    }
+
+    // 5비트씩 나누어 인코딩
+    while (v >= 0x20) {
+      encoded.writeCharCode(((v & 0x1f) | 0x20) + 63);
+      v >>= 5;
+    }
+    encoded.writeCharCode(v + 63);
   }
 
   @override
   List<WalkLocation> decodePolyline(String encodedPolyline) {
-    // TODO: Google Maps Polyline 디코딩 구현
-    // 현재는 목업으로 빈 리스트 반환
     if (encodedPolyline.isEmpty) return [];
 
-    // 간단한 목업 디코딩
-    final points = encodedPolyline.split('|');
+    // Google Maps Polyline 디코딩 알고리즘 구현
     final locations = <WalkLocation>[];
+    int index = 0;
+    int lat = 0;
+    int lng = 0;
     final now = DateTime.now();
 
-    for (int i = 0; i < points.length; i++) {
-      final coords = points[i].split(',');
-      if (coords.length == 2) {
-        final lat = double.tryParse(coords[0]) ?? 0.0;
-        final lng = double.tryParse(coords[1]) ?? 0.0;
+    while (index < encodedPolyline.length) {
+      // 위도 디코딩
+      final deltaLat = _decodeNumber(encodedPolyline, index);
+      index = deltaLat.index;
+      lat += deltaLat.value;
 
-        locations.add(
-          WalkLocation(
-            latitude: lat,
-            longitude: lng,
-            timestamp: now.add(Duration(minutes: i)),
-          ),
-        );
-      }
+      // 경도 디코딩
+      final deltaLng = _decodeNumber(encodedPolyline, index);
+      index = deltaLng.index;
+      lng += deltaLng.value;
+
+      // 정밀도 복원 (소수점 5자리)
+      final latitude = lat / 1e5;
+      final longitude = lng / 1e5;
+
+      locations.add(
+        WalkLocation(
+          latitude: latitude,
+          longitude: longitude,
+          timestamp: now.add(Duration(minutes: locations.length)),
+        ),
+      );
     }
 
     return locations;
+  }
+
+  /// Google Maps Polyline 디코딩 알고리즘
+  _DecodeResult _decodeNumber(String encoded, int index) {
+    int result = 0;
+    int shift = 0;
+    int byte;
+
+    do {
+      byte = encoded.codeUnitAt(index++) - 63;
+      result |= (byte & 0x1f) << shift;
+      shift += 5;
+    } while (byte >= 0x20);
+
+    // 부호 비트 처리
+    final value = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+    return _DecodeResult(value, index);
   }
 
   @override

@@ -184,6 +184,7 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
               onPressed: () async {
                 Navigator.pop(context);
                 await _controller.resetAllProgress();
+                // mounted 체크 후 BuildContext 사용
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -214,43 +215,8 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.pointDark,
-            size: 20,
-          ),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'Pet Profile',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          // 펫 프로필 이미지 (Maxi)
-          Container(
-            margin: const EdgeInsets.only(right: AppSpacing.md),
-            child: const CircleAvatar(
-              radius: 16,
-              backgroundImage: AssetImage('assets/images/dogs/shiba.png'),
-              backgroundColor: AppColors.pointBrown,
-            ),
-          ),
-          // Changed: 교육 영상 아이콘 버튼 추가
-          IconButton(
-            icon: const Icon(Icons.ondemand_video, color: AppColors.pointDark),
-            tooltip: 'Training videos',
-            onPressed: _openTrainingVideos,
-          ),
-        ],
+      appBar: const SoftGradientBackAppBar(
+        title: 'Pet Profile',
       ),
       body: tricksState.when(
         data: (tricks) => _buildContent(tricks),
@@ -286,6 +252,8 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
           // Changed: 유튜브 교육 영상 관리 버튼 추가
           const SizedBox(height: AppSpacing.lg),
           _buildTrainingVideosButton(),
+          const SizedBox(height: AppSpacing.lg),
+          _buildPetProfileButton(),
         ],
       ),
     );
@@ -442,6 +410,35 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildPetProfileButton() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.pointBrown.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+      ),
+      child: Row(
+        children: [
+          const CircleAvatar(
+            radius: 20,
+            backgroundImage: AssetImage('assets/images/dogs/shiba.png'),
+            backgroundColor: AppColors.pointBrown,
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Text(
+            'Maxi',
+            style: AppFonts.fredoka(
+              fontSize: AppFonts.lg,
+              color: AppColors.pointDark,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
