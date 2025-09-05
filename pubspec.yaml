@@ -66,6 +66,8 @@ flutter:
     - assets/images/dogs/
     - assets/images/onboarding/
     - assets/images/etc/
+
+    - assets/images/modal/
     - assets/images/medications/
     - assets/images/textures/
     - assets/images/walks/

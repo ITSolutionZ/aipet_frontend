@@ -23,6 +23,23 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
     _pageController = PageController();
   }
 
+  /// 마이크로칩 등록 체크 및 모달 표시
+  void _checkMicrochipRegistration(List<dynamic> pets) {
+    if (pets.isNotEmpty) {
+      final firstPet = pets.first;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        MicrochipReminderService.showReminderIfNeeded(
+          context,
+          firstPet,
+          onRegisterTap: () {
+            // 마이크로칩 등록 화면으로 이동
+            context.push('/pet/microchip-register');
+          },
+        );
+      });
+    }
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -36,6 +53,9 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
 
     return petsAsync.when(
       data: (petList) {
+        // 마이크로칩 등록 체크
+        _checkMicrochipRegistration(petList);
+        
         if (petList.isEmpty) {
           return GestureDetector(
             onTap: () => context.push('/pet/register'),
@@ -165,7 +185,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                                   petId: currentPet.id,
                                 ).map(
                                   (activity) => Text(
-                                    activity['name'] as String,
+                                    activity['label']?.toString() ?? '',
                                     style: AppFonts.bodySmall.copyWith(
                                       color: AppColors.pointGray,
                                     ),

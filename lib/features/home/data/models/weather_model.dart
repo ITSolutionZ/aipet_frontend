@@ -31,8 +31,11 @@ class WeatherData {
     Map<String, dynamic> json,
     String location,
   ) {
-    final current = json['current'] as Map<String, dynamic>;
-    final weather = (current['weather'] as List).first as Map<String, dynamic>;
+    final current = json['current'] as Map<String, dynamic>? ?? {};
+    final weatherList = current['weather'] as List? ?? [];
+    final weather = weatherList.isNotEmpty 
+        ? weatherList.first as Map<String, dynamic>? ?? {}
+        : <String, dynamic>{};
 
     // UV Index 파싱 개선
     final uvi = current['uvi'];
@@ -59,14 +62,14 @@ class WeatherData {
     debugPrint('   최종 UV Index: $uvIndex');
 
     return WeatherData(
-      temperature: (current['temp'] as num).toDouble(),
+      temperature: (current['temp'] as num?)?.toDouble() ?? 0.0,
       location: location,
-      weatherId: weather['id'] as int,
-      description: weather['description'] as String,
-      feelsLike: (current['feels_like'] as num).toDouble(),
-      humidity: current['humidity'] as int,
+      weatherId: weather['id'] as int? ?? 800,
+      description: weather['description'] as String? ?? 'Clear sky',
+      feelsLike: (current['feels_like'] as num?)?.toDouble() ?? 0.0,
+      humidity: current['humidity'] as int? ?? 0,
       windSpeed: (current['wind_speed'] as num?)?.toDouble() ?? 0.0,
-      iconCode: weather['icon'] as String,
+      iconCode: weather['icon'] as String? ?? '01d',
       uvIndex: uvIndex,
       visibility: current['visibility'] as int? ?? 10000,
       pressure: (current['pressure'] as num?)?.toDouble() ?? 1013.25,
@@ -75,20 +78,23 @@ class WeatherData {
 
   // 기존 JSON 형식 지원 (폴백용)
   factory WeatherData.fromJson(Map<String, dynamic> json, String location) {
-    final main = json['main'] as Map<String, dynamic>;
-    final weather = (json['weather'] as List).first as Map<String, dynamic>;
+    final main = json['main'] as Map<String, dynamic>? ?? {};
+    final weatherList = json['weather'] as List? ?? [];
+    final weather = weatherList.isNotEmpty 
+        ? weatherList.first as Map<String, dynamic>? ?? {}
+        : <String, dynamic>{};
     final wind = json['wind'] as Map<String, dynamic>? ?? {};
-    final weatherId = weather['id'] as int;
+    final weatherId = weather['id'] as int? ?? 800;
 
     return WeatherData(
-      temperature: (main['temp'] as num).toDouble(),
+      temperature: (main['temp'] as num?)?.toDouble() ?? 0.0,
       location: location,
       weatherId: weatherId,
-      description: weather['description'] as String,
-      feelsLike: (main['feels_like'] as num).toDouble(),
-      humidity: main['humidity'] as int,
+      description: weather['description'] as String? ?? 'Clear sky',
+      feelsLike: (main['feels_like'] as num?)?.toDouble() ?? 0.0,
+      humidity: main['humidity'] as int? ?? 0,
       windSpeed: (wind['speed'] as num?)?.toDouble() ?? 0.0,
-      iconCode: weather['icon'] as String,
+      iconCode: weather['icon'] as String? ?? '01d',
       uvIndex: _estimateUvIndex(weatherId), // 날씨 상황 기반 UV Index 추정
       visibility: json['visibility'] as int? ?? 10000,
       pressure: (main['pressure'] as num?)?.toDouble() ?? 1013.25,

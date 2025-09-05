@@ -90,18 +90,6 @@ class CommonSummaryCard extends StatelessWidget {
               ],
             ),
 
-            // 부제목 (있는 경우)
-            if (subtitle != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                subtitle!,
-                style: AppFonts.bodySmall.copyWith(
-                  color: AppColors.pointGray,
-                  fontSize: 12,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
 
             // 보조 값 (있는 경우)
             if (secondaryValue != null) ...[

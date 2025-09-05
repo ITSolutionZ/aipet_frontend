@@ -10,6 +10,7 @@ export 'services/encryption_service.dart';
 export 'services/error_handler_service.dart';
 export 'services/error_service.dart' hide ErrorSeverity;
 export 'services/image_cache_service.dart';
+export 'services/microchip_reminder_service.dart';
 export 'services/performance_monitor_service.dart';
 export 'services/performance_optimizer_service.dart';
 export 'services/secure_storage_service.dart';
@@ -26,6 +27,8 @@ export 'widgets/accessibility/accessibility_widgets.dart';
 export 'widgets/animation/animation_widgets.dart';
 // Common widgets
 export 'widgets/common_app_bar.dart';
+// Modal widgets
+export 'widgets/modals/microchip_registration_modal.dart';
 // Pet management widgets
 export 'widgets/pet_status_selection_dialog.dart';
 // Responsive widgets

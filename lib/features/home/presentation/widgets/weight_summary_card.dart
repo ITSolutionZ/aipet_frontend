@@ -42,7 +42,6 @@ class WeightSummaryCard extends ConsumerWidget {
       mainValue: '${weightData['currentWeight']}',
       unit: 'kg',
       onTap: () => context.go(RouteConstants.weightTrackingRoute),
-      subtitle: '現在の体重',
       secondaryValue:
           '${(weightData['weeklyChange'] as double) >= 0 ? '+' : ''}${(weightData['weeklyChange'] as double).toStringAsFixed(1)}kg',
     );
