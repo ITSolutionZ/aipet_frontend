@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
+import '../../domain/domain.dart';
 
 /// 펫 급여 컨트롤러
 class PetFeedingController extends StateNotifier<PetFeedingState> {
@@ -8,7 +9,29 @@ class PetFeedingController extends StateNotifier<PetFeedingState> {
 
   /// 급여 기록 로드
   void loadFeedingRecords(String petId) {
-    final records = MockDataService.getMockFeedingRecords();
+    final mockRecords = PetFeedingMockService.getMockFeedingRecords(
+      petId: petId,
+    );
+    final records = mockRecords
+        .map(
+          (recordData) => FeedingRecordEntity(
+            id: recordData['id'] as String,
+            petId: recordData['petId'] as String,
+            petName: '펫', // Mock 데이터에 petName이 없으므로 기본값 사용
+            fedTime: recordData['feedTime'] as DateTime,
+            amount:
+                double.tryParse(
+                  (recordData['amount'] as String).replaceAll('g', ''),
+                ) ??
+                0.0,
+            foodType: recordData['foodType'] as String,
+            foodBrand: recordData['foodBrand'] as String,
+            status: FeedingStatus.completed, // Mock 데이터에 status가 없으므로 기본값 사용
+            notes: recordData['notes'] as String,
+            createdAt: recordData['feedTime'] as DateTime,
+          ),
+        )
+        .toList();
     final petRecords = records
         .where((record) => record.petId == petId)
         .toList();

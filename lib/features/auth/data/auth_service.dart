@@ -1,21 +1,17 @@
-import '../domain/auth_error.dart';
-import '../domain/auth_token.dart';
-import '../domain/repositories/auth_repository.dart';
-import '../domain/result.dart';
+import '../../../../features/auth/domain/auth_error.dart';
+import '../../../../features/auth/domain/auth_token.dart';
+import '../../../../features/auth/domain/repositories/auth_repository.dart';
+import '../../../../features/auth/domain/result.dart';
 import 'repositories/firebase_auth_repository.dart';
-import 'repositories/mock_auth_repository.dart';
 import 'services/token_storage_service.dart';
 
 /// 인증 관련 비즈니스 로직을 담당하는 서비스
 /// Repository와 Storage를 조합하여 실제 인증 플로우 관리
 class AuthService {
   final AuthRepository _repository;
-  
-  AuthService({
-    AuthRepository? repository,
-    bool useMockAuth = false,
-  }) : _repository = repository ?? 
-         (useMockAuth ? MockAuthRepositoryImpl() : FirebaseAuthRepositoryImpl());
+
+  AuthService({AuthRepository? repository})
+    : _repository = repository ?? FirebaseAuthRepositoryImpl();
 
   /// 이메일/비밀번호 로그인
   Future<Result<AuthUser>> signInWithEmailAndPassword(
@@ -23,16 +19,17 @@ class AuthService {
     String password,
   ) async {
     try {
-      final result = await _repository.signInWithEmailAndPassword(email, password);
-      
+      final result = await _repository.signInWithEmailAndPassword(
+        email,
+        password,
+      );
+
       if (result.isSuccess && result.user != null) {
         // 백엔드 토큰 저장
         await _saveBackendTokenFromUser(result.user!);
         return Result.success(result.user!);
       } else {
-        return Result.failure(
-          AuthenticationError(result.message),
-        );
+        return Result.failure(AuthenticationError(result.message));
       }
     } catch (e) {
       return Result.fromError(e);
@@ -45,16 +42,17 @@ class AuthService {
     String password,
   ) async {
     try {
-      final result = await _repository.createUserWithEmailAndPassword(email, password);
-      
+      final result = await _repository.createUserWithEmailAndPassword(
+        email,
+        password,
+      );
+
       if (result.isSuccess && result.user != null) {
         // 백엔드 토큰 저장
         await _saveBackendTokenFromUser(result.user!);
         return Result.success(result.user!);
       } else {
-        return Result.failure(
-          AuthenticationError(result.message),
-        );
+        return Result.failure(AuthenticationError(result.message));
       }
     } catch (e) {
       return Result.fromError(e);
@@ -65,7 +63,7 @@ class AuthService {
   Future<Result<AuthUser>> signInWithProvider(String provider) async {
     try {
       AuthResult result;
-      
+
       switch (provider.toLowerCase()) {
         case 'google':
           result = await _repository.signInWithGoogle();
@@ -84,15 +82,13 @@ class AuthService {
             ),
           );
       }
-      
+
       if (result.isSuccess && result.user != null) {
         // 백엔드 토큰 저장
         await _saveBackendTokenFromUser(result.user!);
         return Result.success(result.user!);
       } else {
-        return Result.failure(
-          AuthenticationError(result.message),
-        );
+        return Result.failure(AuthenticationError(result.message));
       }
     } catch (e) {
       return Result.fromError(e);
@@ -150,7 +146,7 @@ class AuthService {
         refreshToken: customData['refreshToken'] as String,
         expiresAt: DateTime.parse(customData['expiresAt'] as String),
       );
-      
+
       // TokenStorage에 저장
       await TokenStorageService.saveToken(token);
     }

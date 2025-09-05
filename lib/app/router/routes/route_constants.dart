@@ -20,6 +20,7 @@ class RouteConstants {
   static const String schedulingRoute = '/scheduling';
   static const String aiRoute = '/ai';
   static const String walkRoute = '/walk';
+  static const String walkFromHomeRoute = '/walk-from-home';
   static const String calendarRoute = '/calendar';
   static const String settingsRoute = '/settings';
 
@@ -80,4 +81,5 @@ class RouteConstants {
   static const String notificationListRoute = '/notifications';
   static const String notificationDetailRoute = '/notification-detail';
   static const String eventDetailRoute = '/event-detail';
+  static const String todayAppointmentsRoute = '/today-appointments';
 }

@@ -23,29 +23,8 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Column(
-          children: [
-            const Text(
-              'Pet Profile',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            Text(
-              'Recipes',
-              style: AppFonts.titleMedium.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
+      appBar: SoftGradientAppBar(
+        title: 'Recipes',
         actions: [
           // 펫 선택 드롭다운
           Container(
@@ -65,11 +44,11 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   'Maxi',
-                  style: AppFonts.bodyMedium.copyWith(color: Colors.white),
+                  style: AppFonts.bodyMedium.copyWith(color: const Color(0xFF5B4034)),
                 ),
                 const Icon(
                   Icons.keyboard_arrow_down,
-                  color: Colors.white,
+                  color: Color(0xFF5B4034),
                   size: 20,
                 ),
               ],

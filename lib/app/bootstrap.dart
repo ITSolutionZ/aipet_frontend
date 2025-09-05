@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 import '../features/auth/data/services/firebase_token_service.dart';
 import '../firebase_options.dart';
@@ -14,15 +15,15 @@ import 'providers/providers.dart';
 class FirebaseManager {
   static bool _isInitialized = false;
   static String? _initializationError;
-  
+
   static bool get isInitialized => _isInitialized;
   static String? get initializationError => _initializationError;
-  
+
   static Future<bool> initialize() async {
     if (_isInitialized) {
       return true; // 이미 초기화됨
     }
-    
+
     try {
       debugPrint('🚀 Attempting Firebase initialization with options...');
       await Firebase.initializeApp(
@@ -41,14 +42,14 @@ class FirebaseManager {
       return false;
     }
   }
-  
+
   /// Firebase 서비스 사용 전 안전성 검사
   static void ensureInitialized() {
     if (!_isInitialized) {
       throw StateError(
         'Firebase is not initialized. '
         'Error: ${_initializationError ?? "Unknown error"}. '
-        'Call FirebaseManager.initialize() first.'
+        'Call FirebaseManager.initialize() first.',
       );
     }
   }
@@ -62,11 +63,23 @@ class AppBootstrap {
   ///
   /// 환경별 설정을 초기화하고 앱 실행에 필요한 기본 설정을 로드합니다.
   static Future<void> initialize() async {
-    // .env 파일 로드
+    // 환경 변수 로드
     await dotenv.load(fileName: '.env');
-    
+    debugPrint('✅ Environment variables loaded from .env');
+
     // 환경별 설정 초기화
     _initializeAppConfig();
+
+    // 환경 변수 로드 및 API 키 검증
+    await AppConfig.current.loadEnv();
+
+    // API 키 설정 상태 로그 출력
+    AppConfig.current.logApiKeyStatus();
+
+    // Google Maps API 키 유효성 검사
+    if (!AppConfig.current.isGoogleMapsApiKeyValid) {
+      debugPrint('⚠️  Google Maps API 키가 유효하지 않습니다. 지도 기능이 작동하지 않을 수 있습니다.');
+    }
 
     // Firebase 초기화 (옵션, 설정 파일이 있는 경우에만)
     final isFirebaseInitialized = await FirebaseManager.initialize();
@@ -173,14 +186,14 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // 브랜드 로딩 애니메이션
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              Text(
-                'アプリを初期化しています...',
-                style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
+              // Lottie 로딩 애니메이션
+              SizedBox(
+                width: 200,
+                height: 200,
+                child: Lottie.asset(
+                  'assets/lottie/loading.json',
+                  fit: BoxFit.contain,
+                ),
               ),
             ],
           ),
@@ -212,7 +225,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  'アプリ初期化中にエラーが発生しました',
+                  '앱 초기화 중 오류가 발생했습니다',
                   style: AppFonts.titleMedium.copyWith(
                     color: AppColors.pointDark,
                     fontWeight: FontWeight.bold,
@@ -241,7 +254,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
                       vertical: AppSpacing.md,
                     ),
                   ),
-                  child: const Text('再試行'),
+                  child: const Text('다시 시도'),
                 ),
               ],
             ),

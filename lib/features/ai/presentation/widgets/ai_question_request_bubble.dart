@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/shared.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+import '../../../pet_registor/pet_registor.dart';
 import '../../domain/entities/ai_category_entity.dart';
 
 /// AI 메시지 버블 형태의 질문 요청 위젯
@@ -35,16 +35,16 @@ class AiQuestionRequestBubble extends StatelessWidget {
             child: const Icon(Icons.smart_toy, color: Colors.white, size: 16),
           ),
           const SizedBox(width: AppSpacing.sm),
-          
+
           // 메시지 버블
           Flexible(
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(AppRadius.medium).copyWith(
-                  bottomLeft: Radius.zero,
-                ),
+                borderRadius: BorderRadius.circular(
+                  AppRadius.medium,
+                ).copyWith(bottomLeft: Radius.zero),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
@@ -67,7 +67,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  
+
                   Text(
                     '${selectedPet?.name ?? 'ペット'}の状況を具体的に教えてください。より正確なアドバイスを提供します。',
                     style: AppFonts.bodyMedium.copyWith(
@@ -76,12 +76,12 @@ class AiQuestionRequestBubble extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  
+
                   // 질문 예시들
                   _buildQuestionExamples(),
-                  
+
                   const SizedBox(height: AppSpacing.sm),
-                  
+
                   // 타임스탬프
                   Text(
                     '今',
@@ -100,7 +100,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
 
   Widget _buildQuestionExamples() {
     List<String> examples = [];
-    
+
     // 카테고리별 질문 예시
     switch (selectedCategory?.id) {
       case 'health':
@@ -139,7 +139,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
           '✂️ 毛づくりのマニュアル',
         ];
     }
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: examples.map((example) {
@@ -163,17 +163,22 @@ class AiQuestionRequestBubble extends StatelessWidget {
 
   Widget _buildSuggestedQuestion(String question) {
     // 아이콘을 제거하여 실제 질문 텍스트만 추출
-    final questionText = question.replaceAll(RegExp(r'^[🍽️🚶💊✂️🎯🚫🏠]+\s*'), '');
-    
+    final questionText = question.replaceAll(
+      RegExp(r'^[🍽️🚶💊✂️🎯🚫🏠]+\s*'),
+      '',
+    );
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.xs),
       child: InkWell(
-        onTap: onQuestionTap != null ? () {
-          // 펫 이름을 포함한 완전한 질문으로 만들기
-          final petName = selectedPet?.name ?? 'ペット';
-          final fullQuestion = '$petNameの$questionText';
-          onQuestionTap!(fullQuestion);
-        } : null,
+        onTap: onQuestionTap != null
+            ? () {
+                // 펫 이름을 포함한 완전한 질문으로 만들기
+                final petName = selectedPet?.name ?? 'ペット';
+                final fullQuestion = '$petNameの$questionText';
+                onQuestionTap!(fullQuestion);
+              }
+            : null,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Container(
           width: double.infinity,
@@ -182,20 +187,20 @@ class AiQuestionRequestBubble extends StatelessWidget {
             vertical: AppSpacing.xs,
           ),
           decoration: BoxDecoration(
-            color: onQuestionTap != null 
-                ? AppColors.pointBrown.withValues(alpha: 0.1)
+            color: onQuestionTap != null
+                ? AiColors.questionRequestBackground
                 : AppColors.pointBrown.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(AppRadius.medium),
             border: Border.all(
               color: onQuestionTap != null
-                  ? AppColors.pointBrown.withValues(alpha: 0.2)
+                  ? AiColors.unselectedBorderColor
                   : AppColors.pointBrown.withValues(alpha: 0.1),
             ),
           ),
           child: Text(
             question,
             style: AppFonts.bodySmall.copyWith(
-              color: onQuestionTap != null 
+              color: onQuestionTap != null
                   ? AppColors.pointBrown
                   : AppColors.pointDark,
             ),

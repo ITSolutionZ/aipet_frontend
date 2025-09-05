@@ -1,22 +1,17 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
-import '../../../../app/bootstrap.dart';
-import '../../../../shared/constants/error_codes.dart';
-import '../../../../shared/services/http_client_service.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../services/firebase_token_service.dart';
 
 /// Firebase Auth 실제 구현체
 class FirebaseAuthRepositoryImpl implements AuthRepository {
-  FirebaseAuth? _firebaseAuth;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-  
-  /// Firebase Auth 인스턴스를 안전하게 가져옵니다.
-  FirebaseAuth get _auth {
-    FirebaseManager.ensureInitialized();
-    return _firebaseAuth ??= FirebaseAuth.instance;
-  }
+  // Firebase Auth 인스턴스는 현재 테스트 모드에서 사용하지 않음
+  // 향후 실제 Firebase Auth 연동 시 활성화
+  // FirebaseAuth? _firebaseAuth;
+
+  // Firebase Auth 인스턴스는 현재 테스트 모드에서 사용하지 않음
+  // 향후 실제 Firebase Auth 연동 시 활성화
+  // FirebaseAuth get _auth {
+  //   FirebaseManager.ensureInitialized();
+  //   return _firebaseAuth ??= FirebaseAuth.instance;
+  // }
 
   @override
   Future<AuthResult> signInWithEmailAndPassword(
@@ -24,73 +19,37 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
     String password,
   ) async {
     try {
-      // 1단계: Firebase Auth로 로그인
-      final credential = await _auth.signInWithEmailAndPassword(
+      // 테스트 모드: 간단한 검증만 수행 (1문자 이상이면 통과)
+      if (email.isEmpty || password.isEmpty) {
+        return AuthResult.failure('メールアドレスとパスワードを入力してください');
+      }
+
+      // 테스트 모드: Firebase Auth 호출 없이 Mock 사용자 생성
+      final mockUser = AuthUser(
+        uid: 'test_user_${DateTime.now().millisecondsSinceEpoch}',
         email: email,
-        password: password,
-      );
-
-      final user = credential.user;
-      if (user == null) {
-        return AuthResult.failure('Firebase 인증에 실패했습니다');
-      }
-
-      // 2단계: Firebase ID Token 가져오기 (자동 갱신 포함)
-      final idToken = await FirebaseTokenService.getCurrentIdToken();
-      if (idToken == null) {
-        return AuthResult.failure('Firebase ID Token을 가져올 수 없습니다');
-      }
-
-      // 3단계: ID Token을 백엔드로 전송하여 로그인 처리
-      final backendResponse = await HttpClientService.instance.post<Map<String, dynamic>>(
-        '/auth/login',
-        data: {'idToken': idToken},
-        fromJson: (json) => json,
-      );
-
-      if (backendResponse.isError) {
-        return AuthResult.failure(
-          backendResponse.error ?? '백엔드 로그인에 실패했습니다',
-        );
-      }
-
-      final backendData = backendResponse.data!;
-      if (backendData['success'] != true) {
-        return AuthResult.failure(
-          backendData['message'] ?? '로그인에 실패했습니다',
-          errorCode: backendData['errorCode'],
-        );
-      }
-
-      // 4단계: 백엔드에서 받은 사용자 정보로 AuthUser 생성
-      final userData = backendData['user'] as Map<String, dynamic>;
-      final authUser = AuthUser(
-        uid: userData['id'] as String,
-        email: userData['email'] as String,
-        displayName: userData['displayName'] as String,
-        photoURL: userData['photoUrl'] as String?,
-        isEmailVerified: userData['isEmailVerified'] as bool,
-        creationTime: DateTime.parse(userData['createdAt'] as String),
-        lastSignInTime: DateTime.parse(userData['lastLoginAt'] as String),
-        // 백엔드 토큰 정보 추가
+        displayName: email.split('@')[0],
+        isEmailVerified: true,
+        creationTime: DateTime.now(),
+        lastSignInTime: DateTime.now(),
+        // 테스트용 Mock 토큰 정보
         customData: {
-          'accessToken': backendData['accessToken'],
-          'refreshToken': backendData['refreshToken'],
-          'expiresAt': backendData['expiresAt'],
-          'firebaseUid': userData['firebaseUid'],
+          'accessToken':
+              'test_access_token_${DateTime.now().millisecondsSinceEpoch}',
+          'refreshToken':
+              'test_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+          'expiresAt': DateTime.now()
+              .add(const Duration(hours: 24))
+              .toIso8601String(),
+          'firebaseUid':
+              'test_firebase_uid_${DateTime.now().millisecondsSinceEpoch}',
+          'isTestMode': true,
         },
       );
 
-      return AuthResult.success(
-        backendData['message'] as String,
-        user: authUser,
-      );
-    } on FirebaseAuthException catch (e) {
-      final errorCode = ErrorCodes.mapFirebaseAuthError(e.code);
-      final errorMessage = ErrorCodes.getErrorMessage(errorCode);
-      return AuthResult.failure(errorMessage, errorCode: errorCode);
+      return AuthResult.success('테스트 모드: 로그인 성공', user: mockUser);
     } catch (e) {
-      return AuthResult.failure('ログインに失敗しました: $e');
+      return AuthResult.failure('로그인에 실패했습니다: $e');
     }
   }
 
@@ -100,155 +59,73 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
     String password,
   ) async {
     try {
-      // 1단계: Firebase Auth로 회원가입
-      final credential = await _auth.createUserWithEmailAndPassword(
+      // 테스트 모드: 간단한 검증만 수행 (1문자 이상이면 통과)
+      if (email.isEmpty || password.isEmpty) {
+        return AuthResult.failure('メールアドレスとパスワードを入力してください');
+      }
+
+      // 테스트 모드: Firebase Auth 호출 없이 Mock 사용자 생성
+      final mockUser = AuthUser(
+        uid: 'test_new_user_${DateTime.now().millisecondsSinceEpoch}',
         email: email,
-        password: password,
-      );
-
-      final user = credential.user;
-      if (user == null) {
-        return AuthResult.failure('Firebase 회원가입에 실패했습니다');
-      }
-
-      // 2단계: Firebase ID Token 가져오기 (자동 갱신 포함)
-      final idToken = await FirebaseTokenService.getCurrentIdToken();
-      if (idToken == null) {
-        return AuthResult.failure('Firebase ID Token을 가져올 수 없습니다');
-      }
-
-      // 3단계: ID Token을 백엔드로 전송하여 회원가입 처리
-      final backendResponse = await HttpClientService.instance.post<Map<String, dynamic>>(
-        '/auth/register',
-        data: {'idToken': idToken},
-        fromJson: (json) => json,
-      );
-
-      if (backendResponse.isError) {
-        return AuthResult.failure(
-          backendResponse.error ?? '백엔드 회원가입에 실패했습니다',
-        );
-      }
-
-      final backendData = backendResponse.data!;
-      if (backendData['success'] != true) {
-        return AuthResult.failure(
-          backendData['message'] ?? '회원가입에 실패했습니다',
-          errorCode: backendData['errorCode'],
-        );
-      }
-
-      // 4단계: 백엔드에서 받은 사용자 정보로 AuthUser 생성
-      final userData = backendData['user'] as Map<String, dynamic>;
-      final authUser = AuthUser(
-        uid: userData['id'] as String,
-        email: userData['email'] as String,
-        displayName: userData['displayName'] as String,
-        photoURL: userData['photoUrl'] as String?,
-        isEmailVerified: userData['isEmailVerified'] as bool,
-        creationTime: DateTime.parse(userData['createdAt'] as String),
-        lastSignInTime: DateTime.parse(userData['lastLoginAt'] as String),
+        displayName: email.split('@')[0],
+        isEmailVerified: false, // 새 사용자는 이메일 인증 필요
+        creationTime: DateTime.now(),
+        lastSignInTime: DateTime.now(),
+        // 테스트용 Mock 토큰 정보
         customData: {
-          'accessToken': backendData['accessToken'],
-          'refreshToken': backendData['refreshToken'],
-          'expiresAt': backendData['expiresAt'],
-          'firebaseUid': userData['firebaseUid'],
-          'isNewUser': userData['isNewUser'] ?? true,
+          'accessToken':
+              'test_access_token_${DateTime.now().millisecondsSinceEpoch}',
+          'refreshToken':
+              'test_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+          'expiresAt': DateTime.now()
+              .add(const Duration(hours: 24))
+              .toIso8601String(),
+          'firebaseUid':
+              'test_firebase_uid_${DateTime.now().millisecondsSinceEpoch}',
+          'isNewUser': true,
+          'isTestMode': true,
         },
       );
 
-      return AuthResult.success(
-        backendData['message'] as String,
-        user: authUser,
-      );
-    } on FirebaseAuthException catch (e) {
-      final errorCode = ErrorCodes.mapFirebaseAuthError(e.code);
-      final errorMessage = ErrorCodes.getErrorMessage(errorCode);
-      return AuthResult.failure(errorMessage, errorCode: errorCode);
+      return AuthResult.success('테스트 모드: 회원가입 성공', user: mockUser);
     } catch (e) {
-      return AuthResult.failure('会員登録に失敗しました: $e');
+      return AuthResult.failure('회원가입에 실패했습니다: $e');
     }
   }
 
   @override
   Future<AuthResult> signInWithGoogle() async {
     try {
-      // 1단계: Google Sign-In
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        return AuthResult.failure('Google ログインがキャンセルされました');
-      }
+      // 개발 중: 간단한 검증만 수행
+      // 실제 Google Sign-In은 나중에 구현
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      // 2단계: Firebase Auth로 로그인
-      final userCredential = await _auth.signInWithCredential(credential);
-      final user = userCredential.user;
-
-      if (user == null) {
-        return AuthResult.failure('Google Firebase 로그인에 실패했습니다');
-      }
-
-      // 3단계: Firebase ID Token 가져오기 (자동 갱신 포함)
-      final idToken = await FirebaseTokenService.getCurrentIdToken();
-      if (idToken == null) {
-        return AuthResult.failure('Firebase ID Token을 가져올 수 없습니다');
-      }
-
-      // 4단계: ID Token을 백엔드로 전송
-      final endpoint = userCredential.additionalUserInfo?.isNewUser == true 
-          ? '/auth/register' 
-          : '/auth/login';
-      
-      final backendResponse = await HttpClientService.instance.post<Map<String, dynamic>>(
-        endpoint,
-        data: {'idToken': idToken},
-        fromJson: (json) => json,
-      );
-
-      if (backendResponse.isError) {
-        return AuthResult.failure(
-          backendResponse.error ?? '백엔드 Google 로그인에 실패했습니다',
-        );
-      }
-
-      final backendData = backendResponse.data!;
-      if (backendData['success'] != true) {
-        return AuthResult.failure(
-          backendData['message'] ?? 'Google 로그인에 실패했습니다',
-          errorCode: backendData['errorCode'],
-        );
-      }
-
-      // 5단계: 백엔드에서 받은 사용자 정보로 AuthUser 생성
-      final userData = backendData['user'] as Map<String, dynamic>;
-      final authUser = AuthUser(
-        uid: userData['id'] as String,
-        email: userData['email'] as String,
-        displayName: userData['displayName'] as String,
-        photoURL: userData['photoUrl'] as String?,
-        isEmailVerified: userData['isEmailVerified'] as bool,
-        creationTime: DateTime.parse(userData['createdAt'] as String),
-        lastSignInTime: DateTime.parse(userData['lastLoginAt'] as String),
+      // 개발용 Mock Google 사용자 생성
+      final mockUser = AuthUser(
+        uid: 'dev_google_user_${DateTime.now().millisecondsSinceEpoch}',
+        email: 'dev_google_${DateTime.now().millisecondsSinceEpoch}@gmail.com',
+        displayName: 'Google Dev User',
+        photoURL: 'https://via.placeholder.com/150/4285f4/ffffff?text=G',
+        isEmailVerified: true,
+        creationTime: DateTime.now(),
+        lastSignInTime: DateTime.now(),
+        // 개발용 Mock 토큰 정보
         customData: {
-          'accessToken': backendData['accessToken'],
-          'refreshToken': backendData['refreshToken'],
-          'expiresAt': backendData['expiresAt'],
-          'firebaseUid': userData['firebaseUid'],
+          'accessToken':
+              'dev_google_access_token_${DateTime.now().millisecondsSinceEpoch}',
+          'refreshToken':
+              'dev_google_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+          'expiresAt': DateTime.now()
+              .add(const Duration(hours: 24))
+              .toIso8601String(),
+          'firebaseUid':
+              'dev_google_firebase_uid_${DateTime.now().millisecondsSinceEpoch}',
           'provider': 'google',
+          'isDevMode': true,
         },
       );
 
-      return AuthResult.success(
-        backendData['message'] as String,
-        user: authUser,
-      );
+      return AuthResult.success('開発モード: Google ログイン成功', user: mockUser);
     } catch (e) {
       return AuthResult.failure('Google ログインに失敗しました: $e');
     }
@@ -257,18 +134,36 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
   @override
   Future<AuthResult> signInWithApple() async {
     try {
-      final appleProvider = AppleAuthProvider();
-      final userCredential = await _auth.signInWithProvider(appleProvider);
-      final user = userCredential.user;
+      // 개발 중: 간단한 검증만 수행
+      // 실제 Apple Sign-In은 나중에 구현
 
-      if (user == null) {
-        return AuthResult.failure('Apple ログインに失敗しました');
-      }
-
-      return AuthResult.success(
-        'Apple ログインが完了しました',
-        user: _mapFirebaseUserToAuthUser(user),
+      // 개발용 Mock Apple 사용자 생성
+      final mockUser = AuthUser(
+        uid: 'dev_apple_user_${DateTime.now().millisecondsSinceEpoch}',
+        email:
+            'dev_apple_${DateTime.now().millisecondsSinceEpoch}@privaterelay.appleid.com',
+        displayName: 'Apple Dev User',
+        photoURL: 'https://via.placeholder.com/150/000000/ffffff?text=A',
+        isEmailVerified: true,
+        creationTime: DateTime.now(),
+        lastSignInTime: DateTime.now(),
+        // 개발용 Mock 토큰 정보
+        customData: {
+          'accessToken':
+              'dev_apple_access_token_${DateTime.now().millisecondsSinceEpoch}',
+          'refreshToken':
+              'dev_apple_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+          'expiresAt': DateTime.now()
+              .add(const Duration(hours: 24))
+              .toIso8601String(),
+          'firebaseUid':
+              'dev_apple_firebase_uid_${DateTime.now().millisecondsSinceEpoch}',
+          'provider': 'apple',
+          'isDevMode': true,
+        },
       );
+
+      return AuthResult.success('開発モード: Apple ログイン成功', user: mockUser);
     } catch (e) {
       return AuthResult.failure('Apple ログインに失敗しました');
     }
@@ -276,42 +171,88 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthResult> signInWithLine() async {
-    // LINE 로그인은 별도 SDK 필요
-    return AuthResult.failure('LINE ログインは現在サポートされていません');
+    try {
+      // 개발 중: 간단한 검증만 수행
+      // 실제 LINE Sign-In은 나중에 구현
+
+      // 개발용 Mock LINE 사용자 생성
+      final mockUser = AuthUser(
+        uid: 'dev_line_user_${DateTime.now().millisecondsSinceEpoch}',
+        email: 'dev_line_${DateTime.now().millisecondsSinceEpoch}@line.me',
+        displayName: 'LINE Dev User',
+        photoURL: 'https://via.placeholder.com/150/00c300/ffffff?text=L',
+        isEmailVerified: true,
+        creationTime: DateTime.now(),
+        lastSignInTime: DateTime.now(),
+        // 개발용 Mock 토큰 정보
+        customData: {
+          'accessToken':
+              'dev_line_access_token_${DateTime.now().millisecondsSinceEpoch}',
+          'refreshToken':
+              'dev_line_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+          'expiresAt': DateTime.now()
+              .add(const Duration(hours: 24))
+              .toIso8601String(),
+          'firebaseUid':
+              'dev_line_firebase_uid_${DateTime.now().millisecondsSinceEpoch}',
+          'provider': 'line',
+          'isDevMode': true,
+        },
+      );
+
+      return AuthResult.success('開発モード: LINE ログイン成功', user: mockUser);
+    } catch (e) {
+      return AuthResult.failure('LINE ログインに失敗しました');
+    }
   }
 
   @override
   Future<void> signOut() async {
-    await Future.wait([
-      _auth.signOut(),
-      _googleSignIn.signOut(),
-    ]);
+    try {
+      // 개발 중: 간단한 로그아웃 처리
+      // 실제 Firebase Auth 로그아웃은 나중에 구현
+      await Future.delayed(_mockDelay);
+    } catch (e) {
+      // 로그아웃 실패는 무시
+    }
   }
+
+  // 개발 모드용 지연 시간 상수
+  static const Duration _mockDelay = Duration(milliseconds: 500);
 
   @override
   Future<AuthUser?> getCurrentUser() async {
-    final user = _auth.currentUser;
-    if (user == null) return null;
-    
-    return _mapFirebaseUserToAuthUser(user);
+    try {
+      // 개발 중: Mock 사용자 정보 반환
+      // 실제 Firebase Auth 사용자 정보는 나중에 구현
+      return null; // 개발 중에는 항상 null 반환
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
   Future<void> sendPasswordResetEmail(String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
-    } on FirebaseAuthException catch (e) {
-      final errorCode = ErrorCodes.mapFirebaseAuthError(e.code);
-      final errorMessage = ErrorCodes.getErrorMessage(errorCode);
-      throw Exception(errorMessage);
+      // 개발 중: 간단한 비밀번호 재설정 처리
+      // 실제 Firebase Auth 비밀번호 재설정은 나중에 구현
+      if (email.isEmpty) {
+        throw Exception('メールアドレスを入力してください');
+      }
+      await Future.delayed(_mockDelay);
+    } catch (e) {
+      throw Exception('パスワードリセットに失敗しました');
     }
   }
 
   @override
   Future<void> sendEmailVerification() async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      await user.sendEmailVerification();
+    try {
+      // 개발 중: 간단한 이메일 인증 처리
+      // 실제 Firebase Auth 이메일 인증은 나중에 구현
+      await Future.delayed(_mockDelay);
+    } catch (e) {
+      // 이메일 인증 실패는 무시
     }
   }
 
@@ -320,31 +261,37 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
     String? displayName,
     String? photoURL,
   }) async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      await user.updateDisplayName(displayName);
-      await user.updatePhotoURL(photoURL);
+    try {
+      // 개발 중: 간단한 프로필 업데이트 처리
+      // 실제 Firebase Auth 프로필 업데이트는 나중에 구현
+      await Future.delayed(_mockDelay);
+    } catch (e) {
+      // 프로필 업데이트 실패는 무시
     }
   }
 
   @override
   Future<void> deleteAccount() async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      await user.delete();
+    try {
+      // 개발 중: 간단한 계정 삭제 처리
+      // 실제 Firebase Auth 계정 삭제는 나중에 구현
+      await Future.delayed(_mockDelay);
+    } catch (e) {
+      // 계정 삭제 실패는 무시
     }
   }
 
-  AuthUser _mapFirebaseUserToAuthUser(User firebaseUser) {
-    return AuthUser(
-      uid: firebaseUser.uid,
-      email: firebaseUser.email ?? '',
-      displayName: firebaseUser.displayName ?? '',
-      photoURL: firebaseUser.photoURL,
-      isEmailVerified: firebaseUser.emailVerified,
-      creationTime: firebaseUser.metadata.creationTime ?? DateTime.now(),
-      lastSignInTime: firebaseUser.metadata.lastSignInTime ?? DateTime.now(),
-    );
-  }
-
+  // Firebase 사용자 매핑 메서드는 현재 테스트 모드에서 사용하지 않음
+  // 향후 실제 Firebase Auth 연동 시 활성화
+  // AuthUser _mapFirebaseUserToAuthUser(User firebaseUser) {
+  //   return AuthUser(
+  //     uid: firebaseUser.uid,
+  //     email: firebaseUser.email ?? '',
+  //     displayName: firebaseUser.displayName ?? '',
+  //     photoURL: firebaseUser.photoURL,
+  //     isEmailVerified: firebaseUser.emailVerified,
+  //     creationTime: firebaseUser.metadata.creationTime ?? DateTime.now(),
+  //     lastSignInTime: firebaseUser.metadata.lastSignInTime ?? DateTime.now(),
+  //   );
+  // }
 }

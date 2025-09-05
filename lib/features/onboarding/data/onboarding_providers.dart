@@ -7,7 +7,7 @@ import 'repositories/onboarding_repository_impl.dart';
 part 'onboarding_providers.g.dart';
 
 @riverpod
-class OnboardingStateNotifier extends _$OnboardingStateNotifier {
+class OnboardingNotifier extends _$OnboardingNotifier {
   @override
   OnboardingState build() => const OnboardingState();
 

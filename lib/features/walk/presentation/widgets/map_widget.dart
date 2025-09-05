@@ -1,206 +1,260 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../shared/shared.dart';
 import '../../data/walk_providers.dart';
 import '../../domain/entities/walk_record_entity.dart';
 
-class MapWidget extends StatelessWidget {
+class MapWidget extends StatefulWidget {
   final List<WalkRecordEntity> walkRecords;
   final PetInfo? selectedPet;
 
   const MapWidget({super.key, required this.walkRecords, this.selectedPet});
 
   @override
+  State<MapWidget> createState() => _MapWidgetState();
+}
+
+class _MapWidgetState extends State<MapWidget> {
+  GoogleMapController? _mapController;
+  Position? _currentPosition;
+  final Set<Marker> _markers = {};
+  final Set<Polyline> _polylines = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+    _setupMarkersAndPolylines();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      // 위치 권한 확인
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        return;
+      }
+
+      // 현재 위치 가져오기
+      final Position position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+
+      setState(() {
+        _currentPosition = position;
+      });
+
+      // 지도 컨트롤러가 준비되면 카메라 이동
+      if (_mapController != null) {
+        await _mapController!.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(position.latitude, position.longitude),
+              zoom: 15.0,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('위치 가져오기 실패: $e');
+    }
+  }
+
+  void _setupMarkersAndPolylines() {
+    _markers.clear();
+    _polylines.clear();
+
+    // 현재 위치 마커 추가
+    if (_currentPosition != null) {
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('current_location'),
+          position: LatLng(
+            _currentPosition!.latitude,
+            _currentPosition!.longitude,
+          ),
+          infoWindow: const InfoWindow(title: '現在地'),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        ),
+      );
+    }
+
+    // 산책 기록에서 마커와 경로 추가
+    for (int i = 0; i < widget.walkRecords.length; i++) {
+      final walkRecord = widget.walkRecords[i];
+      if (walkRecord.route.isNotEmpty) {
+        // 시작점 마커
+        if (walkRecord.route.first.latitude != 0 &&
+            walkRecord.route.first.longitude != 0) {
+          _markers.add(
+            Marker(
+              markerId: MarkerId('walk_start_$i'),
+              position: LatLng(
+                walkRecord.route.first.latitude,
+                walkRecord.route.first.longitude,
+              ),
+              infoWindow: InfoWindow(
+                title: '${walkRecord.title} 開始',
+                snippet: '${walkRecord.duration?.inMinutes ?? 0}分',
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen,
+              ),
+            ),
+          );
+        }
+
+        // 종료점 마커
+        if (walkRecord.route.last.latitude != 0 &&
+            walkRecord.route.last.longitude != 0) {
+          _markers.add(
+            Marker(
+              markerId: MarkerId('walk_end_$i'),
+              position: LatLng(
+                walkRecord.route.last.latitude,
+                walkRecord.route.last.longitude,
+              ),
+              infoWindow: InfoWindow(
+                title: '${walkRecord.title} 終了',
+                snippet:
+                    '${walkRecord.distance?.toStringAsFixed(1) ?? '0.0'}km',
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed,
+              ),
+            ),
+          );
+        }
+
+        // 경로 폴리라인 추가
+        if (walkRecord.route.length > 1) {
+          final points = walkRecord.route
+              .where((point) => point.latitude != 0 && point.longitude != 0)
+              .map((point) => LatLng(point.latitude, point.longitude))
+              .toList();
+
+          if (points.length > 1) {
+            _polylines.add(
+              Polyline(
+                polylineId: PolylineId('walk_route_$i'),
+                points: points,
+                color: AppColors.pointBrown,
+                width: 3,
+                geodesic: true,
+              ),
+            );
+          }
+        }
+      }
+    }
+
+    // 선택된 펫 마커 추가 (현재 위치 근처)
+    if (widget.selectedPet != null && _currentPosition != null) {
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('selected_pet'),
+          position: LatLng(
+            _currentPosition!.latitude + 0.001, // 약간 오프셋
+            _currentPosition!.longitude + 0.001,
+          ),
+          infoWindow: InfoWindow(title: widget.selectedPet!.name),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueViolet,
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[200],
         borderRadius: BorderRadius.circular(AppRadius.medium),
         border: Border.all(color: Colors.grey[300]!, width: 1),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        child: Stack(
+        child: _currentPosition == null
+            ? _buildLoadingState()
+            : GoogleMap(
+                onMapCreated: (GoogleMapController controller) {
+                  _mapController = controller;
+                  _setupMarkersAndPolylines();
+
+                  // 초기 카메라 위치 설정
+                  controller.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                        target: LatLng(
+                          _currentPosition!.latitude,
+                          _currentPosition!.longitude,
+                        ),
+                        zoom: 15.0,
+                      ),
+                    ),
+                  );
+                },
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(
+                    _currentPosition!.latitude,
+                    _currentPosition!.longitude,
+                  ),
+                  zoom: 15.0,
+                ),
+                markers: _markers,
+                polylines: _polylines,
+                myLocationEnabled: true,
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                mapToolbarEnabled: false,
+                compassEnabled: true,
+                onCameraMove: (CameraPosition position) {
+                  // 카메라 이동 시 추가 로직 (필요시)
+                },
+              ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Container(
+      color: Colors.grey[100],
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 지도 배경 (스타일화된 지도)
-            _buildMapBackground(),
-
-            // 산책 경로 표시
-            _buildWalkRoutes(),
-
-            // 반려동물 위치 마커
-            _buildPetMarker(),
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
+            ),
+            SizedBox(height: AppSpacing.md),
+            Text(
+              '地図を読み込み中...',
+              style: TextStyle(color: AppColors.pointGray, fontSize: 14),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMapBackground() {
-    return Container(
-      decoration: BoxDecoration(color: Colors.grey[100]),
-      child: CustomPaint(painter: MapBackgroundPainter(), size: Size.infinite),
-    );
-  }
-
-  Widget _buildWalkRoutes() {
-    if (walkRecords.isEmpty) return const SizedBox.shrink();
-
-    return CustomPaint(
-      painter: WalkRoutePainter(walkRecords: walkRecords),
-      size: Size.infinite,
-    );
-  }
-
-  Widget _buildPetMarker() {
-    if (selectedPet == null) return const SizedBox.shrink();
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Positioned(
-          left: constraints.maxWidth * 0.4,
-          top: constraints.maxHeight * 0.15,
-          child: Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: Image.asset(
-                selectedPet!.imagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey[300],
-                    child: Icon(Icons.pets, color: Colors.grey[600], size: 30),
-                  );
-                },
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class MapBackgroundPainter extends CustomPainter {
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.grey[300]!
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    // 도로/경로 그리기
-    final path = Path();
-
-    // 수평 도로들
-    for (int i = 1; i <= 4; i++) {
-      final y = size.height * (i * 0.2);
-      path.moveTo(0, y);
-      path.lineTo(size.width, y);
-    }
-
-    // 수직 도로들
-    for (int i = 1; i <= 3; i++) {
-      final x = size.width * (i * 0.25);
-      path.moveTo(x, 0);
-      path.lineTo(x, size.height);
-    }
-
-    canvas.drawPath(path, paint);
-
-    // 건물/지역 표시
-    final buildingPaint = Paint()
-      ..color = Colors.grey[400]!
-      ..style = PaintingStyle.fill;
-
-    // 몇 개의 건물 표시
-    final buildings = [
-      Rect.fromLTWH(size.width * 0.1, size.height * 0.1, 40, 30),
-      Rect.fromLTWH(size.width * 0.7, size.height * 0.3, 50, 35),
-      Rect.fromLTWH(size.width * 0.2, size.height * 0.6, 45, 25),
-      Rect.fromLTWH(size.width * 0.6, size.height * 0.7, 35, 40),
-    ];
-
-    for (final building in buildings) {
-      canvas.drawRect(building, buildingPaint);
+  void didUpdateWidget(MapWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.walkRecords != widget.walkRecords ||
+        oldWidget.selectedPet != widget.selectedPet) {
+      _setupMarkersAndPolylines();
     }
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class WalkRoutePainter extends CustomPainter {
-  final List<WalkRecordEntity> walkRecords;
-
-  WalkRoutePainter({required this.walkRecords});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (walkRecords.isEmpty) return;
-
-    // 최근 산책 경로만 표시
-    final recentWalk = walkRecords.first;
-    if (recentWalk.route.length < 2) return;
-
-    final paint = Paint()
-      ..color = AppColors.pointBrown
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final path = Path();
-
-    // 경로 그리기
-    for (int i = 0; i < recentWalk.route.length; i++) {
-      final x = size.width * (0.3 + (i * 0.1));
-      final y = size.height * (0.4 + (i * 0.05 * (i % 2 == 0 ? 1 : -1)));
-
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-    }
-
-    canvas.drawPath(path, paint);
-
-    final startX = size.width * 0.3;
-    final startY = size.height * 0.4;
-    final endX = size.width * (0.3 + (recentWalk.route.length - 1) * 0.1);
-    final endY =
-        size.height *
-        (0.4 +
-            (recentWalk.route.length - 1) *
-                0.05 *
-                ((recentWalk.route.length - 1) % 2 == 0 ? 1 : -1));
-
-    // 시작점 (초록색)
-    final startPaint = Paint()
-      ..color = Colors.green
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(startX, startY), 6, startPaint);
-
-    // 끝점 (빨간색)
-    final endPaint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(endX, endY), 6, endPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

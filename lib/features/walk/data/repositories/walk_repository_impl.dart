@@ -1,4 +1,4 @@
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/shared.dart';
 import '../../domain/entities/walk_record_entity.dart';
 import '../../domain/repositories/walk_repository.dart';
 
@@ -28,8 +28,30 @@ class WalkRepositoryImpl implements WalkRepository {
 
   /// 초기 목업 데이터 로드
   void _loadInitialMockData() {
-    if (!_isInitialized && MockDataService.isEnabled) {
-      _walkRecords.addAll(MockDataService.getMockWalkRecords());
+    if (!_isInitialized && WalkMockService.isEnabled) {
+      _walkRecords.addAll(
+        WalkMockService.getMockWalkRecords().map(
+          (recordData) => WalkRecordEntity(
+            id: recordData['id'] as String,
+            petId: recordData['petId'] as String,
+            petName: recordData['petName'] as String,
+            startTime: recordData['startTime'] as DateTime,
+            endTime: recordData['endTime'] as DateTime,
+            duration: recordData['duration'] as Duration,
+            distance: recordData['distance'] as double,
+            notes: recordData['notes'] as String,
+            status: recordData['status'] as WalkStatus,
+            createdAt: recordData['createdAt'] as DateTime,
+            updatedAt: recordData['updatedAt'] as DateTime,
+            title: recordData['title'] as String,
+            route: [],
+            petImage: recordData['petImage'] as String,
+            ownerName: recordData['ownerName'] as String,
+            ownerAvatar: recordData['ownerAvatar'] as String,
+            ownerId: recordData['ownerId'] as String,
+          ),
+        ),
+      );
       _isInitialized = true;
     }
   }

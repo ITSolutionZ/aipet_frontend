@@ -25,25 +25,22 @@ final onboardingRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef OnboardingRepositoryRef = AutoDisposeProviderRef<OnboardingRepository>;
-String _$onboardingStateNotifierHash() =>
-    r'eabe55dfde997cf70a07e82e079e9d3dae75f92b';
+String _$onboardingNotifierHash() =>
+    r'af1f9d8f1330a4774f803899e83394e5dca16849';
 
-/// See also [OnboardingStateNotifier].
-@ProviderFor(OnboardingStateNotifier)
-final onboardingStateNotifierProvider =
-    AutoDisposeNotifierProvider<
-      OnboardingStateNotifier,
-      OnboardingState
-    >.internal(
-      OnboardingStateNotifier.new,
-      name: r'onboardingStateNotifierProvider',
+/// See also [OnboardingNotifier].
+@ProviderFor(OnboardingNotifier)
+final onboardingNotifierProvider =
+    AutoDisposeNotifierProvider<OnboardingNotifier, OnboardingState>.internal(
+      OnboardingNotifier.new,
+      name: r'onboardingNotifierProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$onboardingStateNotifierHash,
+          : _$onboardingNotifierHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$OnboardingStateNotifier = AutoDisposeNotifier<OnboardingState>;
+typedef _$OnboardingNotifier = AutoDisposeNotifier<OnboardingState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

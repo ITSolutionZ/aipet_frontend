@@ -63,7 +63,10 @@ class PetRoutes {
     GoRoute(
       path: RouteConstants.feedingMainRoute,
       name: 'feeding-main',
-      builder: (context, state) => const FeedingMainScreen(),
+      builder: (context, state) {
+        final showBackButton = state.uri.queryParameters['showBackButton'] == 'true';
+        return FeedingMainScreen(showBackButton: showBackButton);
+      },
     ),
     GoRoute(
       path: RouteConstants.recipesRoute,

@@ -11,6 +11,7 @@ class AppColors {
   static const Color pointOffWhite = Color(0xFFF0E9E0);
   static const Color pointDark = Color(0xFF44433C);
   static const Color pointCream = Color(0xFFF7F0E8);
+  static const Color pureWhite = Color(0xFFFFFFFF);
 
   // Tone and Manner Colors
   static const Color toneOffWhite = Color(0xFFF0F0E5);

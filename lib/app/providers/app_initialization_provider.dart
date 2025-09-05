@@ -4,9 +4,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/notification/data/services/notification_service.dart';
 import '../../features/onboarding/data/data.dart';
 import '../../shared/services/error_handler_service.dart';
-import '../../shared/services/notification_service.dart';
 import '../../shared/services/performance_monitor_service.dart';
 import '../../shared/services/user_experience_service.dart';
 
@@ -204,7 +204,7 @@ class AppInitialization extends _$AppInitialization {
 
       // 온보딩 상태 로드 및 초기화
       final onboardingStateNotifier = ref.read(
-        onboardingStateNotifierProvider.notifier,
+        onboardingNotifierProvider.notifier,
       );
       final savedState = await onboardingRepository.loadOnboardingState();
       onboardingStateNotifier.state = savedState;

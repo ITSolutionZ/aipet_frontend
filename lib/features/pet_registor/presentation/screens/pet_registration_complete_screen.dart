@@ -15,15 +15,10 @@ class _PetRegistrationCompleteScreenState
     extends ConsumerState<PetRegistrationCompleteScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: const Text('登録完了'),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-      ),
-      body: const Center(
+      appBar: SoftGradientAppBar(title: '登録完了'),
+      body: Center(
         child: Text('Pet Registration Complete Screen - Coming Soon'),
       ),
     );

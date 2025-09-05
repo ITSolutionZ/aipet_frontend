@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../shared/shared.dart';
@@ -96,33 +95,7 @@ class _YouTubeTrainingVideosScreenState
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.pointDark,
-            size: 20,
-          ),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'Training Videos',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add, color: AppColors.pointDark),
-            onPressed: _addVideo,
-          ),
-        ],
-      ),
+      appBar: const SoftGradientBackAppBar(title: 'Training Videos'),
       body: Column(
         children: [
           // 검색 바
@@ -130,6 +103,9 @@ class _YouTubeTrainingVideosScreenState
 
           // 태그 필터
           _buildTagFilter(),
+
+          // Add Video 버튼
+          _buildAddVideoButton(),
 
           // 비디오 목록
           Expanded(
@@ -339,5 +315,25 @@ class _YouTubeTrainingVideosScreenState
       await _controller.deleteVideo(video.id);
       _loadVideos();
     }
+  }
+
+  Widget _buildAddVideoButton() {
+    return Container(
+      margin: const EdgeInsets.all(AppSpacing.md),
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: _addVideo,
+        icon: const Icon(Icons.add),
+        label: const Text('Add New Video'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.pointBlue,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.md),
+          ),
+        ),
+      ),
+    );
   }
 }

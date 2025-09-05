@@ -8,8 +8,8 @@ class PetHealthController extends StateNotifier<PetHealthState> {
 
   /// 건강 기록 로드
   void loadHealthRecords(String petId) {
-    // MockDataService에서 사용 가능한 메서드 사용
-    final healthData = MockDataService.getMockHealthData();
+    // SchedulingMockService에서 사용 가능한 메서드 사용
+    final healthData = SchedulingMockService.getMockHealthData();
 
     state = state.copyWith(petId: petId, healthRecords: [healthData]);
   }

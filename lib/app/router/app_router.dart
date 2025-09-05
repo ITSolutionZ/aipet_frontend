@@ -24,6 +24,7 @@ class AppRouter {
   static const String schedulingRoute = RouteConstants.schedulingRoute;
   static const String aiRoute = RouteConstants.aiRoute;
   static const String walkRoute = RouteConstants.walkRoute;
+  static const String walkFromHomeRoute = RouteConstants.walkFromHomeRoute;
   static const String calendarRoute = RouteConstants.calendarRoute;
   static const String settingsRoute = RouteConstants.settingsRoute;
 

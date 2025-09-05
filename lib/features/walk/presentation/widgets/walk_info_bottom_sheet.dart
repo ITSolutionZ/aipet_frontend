@@ -5,23 +5,35 @@ import '../../../../shared/shared.dart';
 import '../../data/providers/walk_share_providers.dart';
 import '../../domain/entities/walk_record_entity.dart';
 import '../controllers/walk_controller.dart';
+import 'dialogs/edit_walk_bottom_sheet.dart';
 
-class WalkInfoBottomSheet extends ConsumerWidget {
+class WalkInfoBottomSheet extends ConsumerStatefulWidget {
   final WalkRecordEntity walkRecord;
-  final bool isExpanded;
-  final VoidCallback onToggleExpanded;
 
-  const WalkInfoBottomSheet({
-    super.key,
-    required this.walkRecord,
-    required this.isExpanded,
-    required this.onToggleExpanded,
-  });
+  const WalkInfoBottomSheet({super.key, required this.walkRecord});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WalkInfoBottomSheet> createState() =>
+      _WalkInfoBottomSheetState();
+}
+
+class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
+  bool _isExpanded = false;
+  late WalkRecordEntity walkRecord;
+
+  @override
+  void initState() {
+    super.initState();
+    walkRecord = widget.walkRecord;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      height: isExpanded ? 300 : 200,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.6,
+        minHeight: 200,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.only(
@@ -37,6 +49,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
         ],
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // 드래그 핸들
           _buildDragHandle(),
@@ -44,8 +57,15 @@ class WalkInfoBottomSheet extends ConsumerWidget {
           // 헤더
           _buildHeader(),
 
-          // 정보 내용
-          Expanded(child: _buildContent(context, ref)),
+          // 정보 내용 (스크롤 가능)
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+              child: Consumer(
+                builder: (context, ref, child) => _buildContent(context, ref),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -57,7 +77,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
       width: 40,
       height: 4,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: AppColors.pointGray.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(2),
       ),
     );
@@ -86,10 +106,10 @@ class WalkInfoBottomSheet extends ConsumerWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    color: Colors.grey[300],
-                    child: Icon(
+                    color: AppColors.pointGray.withValues(alpha: 0.3),
+                    child: const Icon(
                       Icons.person,
-                      color: Colors.grey[600],
+                      color: AppColors.pointGray,
                       size: 24,
                     ),
                   );
@@ -135,9 +155,13 @@ class WalkInfoBottomSheet extends ConsumerWidget {
 
           // 확장/축소 버튼
           IconButton(
-            onPressed: onToggleExpanded,
+            onPressed: () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            },
             icon: Icon(
-              isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+              _isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
               color: AppColors.pointGray,
               size: 24,
             ),
@@ -151,6 +175,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // 주요 정보
           _buildInfoRow('開始時間', walkRecord.timeString),
@@ -159,9 +184,9 @@ class WalkInfoBottomSheet extends ConsumerWidget {
           const SizedBox(height: AppSpacing.md),
           _buildInfoRow('時間', walkRecord.formattedDuration),
 
-          if (isExpanded) ...[
+          if (_isExpanded) ...[
             const SizedBox(height: AppSpacing.lg),
-            Divider(color: Colors.grey[300]),
+            Divider(color: AppColors.pointGray.withValues(alpha: 0.3)),
             const SizedBox(height: AppSpacing.md),
 
             // 추가 정보
@@ -201,7 +226,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
                     label: const Text('編集'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.pointBrown,
-                      foregroundColor: Colors.white,
+                      foregroundColor: AppColors.pointOffWhite,
                     ),
                   ),
                 ),
@@ -235,13 +260,13 @@ class WalkInfoBottomSheet extends ConsumerWidget {
   String _getStatusText(WalkStatus status) {
     switch (status) {
       case WalkStatus.inProgress:
-        return '진행 중';
+        return '散歩中';
       case WalkStatus.completed:
-        return '완료';
+        return '完了';
       case WalkStatus.paused:
-        return '일시정지';
+        return '一時停止';
       case WalkStatus.cancelled:
-        return '취소';
+        return 'キャンセル';
     }
   }
 
@@ -256,13 +281,13 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('공유'),
+        title: const Text('共有'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
               leading: const Icon(Icons.copy),
-              title: const Text('텍스트 복사'),
+              title: const Text('テキストをコピー'),
               onTap: () {
                 Navigator.of(context).pop();
                 _copyToClipboard(context, ref, shareText);
@@ -270,7 +295,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
             ),
             ListTile(
               leading: const Icon(Icons.image),
-              title: const Text('이미지로 저장'),
+              title: const Text('画像を保存'),
               onTap: () {
                 Navigator.of(context).pop();
                 _saveAsImage(context, ref, walkRecord);
@@ -278,7 +303,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
             ),
             ListTile(
               leading: const Icon(Icons.share),
-              title: const Text('시스템 공유'),
+              title: const Text('システム共有'),
               onTap: () {
                 Navigator.of(context).pop();
                 _systemShare(context, ref, shareText);
@@ -289,7 +314,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('취소'),
+            child: const Text('キャンセル'),
           ),
         ],
       ),
@@ -309,7 +334,9 @@ class WalkInfoBottomSheet extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: result.isSuccess ? Colors.green : Colors.red,
+          backgroundColor: result.isSuccess
+              ? AppColors.pointGreen
+              : AppColors.pointPink,
         ),
       );
     }
@@ -328,7 +355,9 @@ class WalkInfoBottomSheet extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: result.isSuccess ? Colors.green : Colors.red,
+          backgroundColor: result.isSuccess
+              ? AppColors.pointGreen
+              : AppColors.pointPink,
         ),
       );
     }
@@ -341,173 +370,26 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     String text,
   ) async {
     final useCase = ref.read(systemShareUseCaseProvider);
-    final result = await useCase(text, subject: '산책 기록 공유');
+    final result = await useCase(text, subject: '散歩記録を共有');
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: result.isSuccess ? Colors.green : Colors.red,
+          backgroundColor: result.isSuccess
+              ? AppColors.pointGreen
+              : AppColors.pointPink,
         ),
       );
     }
   }
 
-  /// 산책 기록 수정 다이얼로그 표시
+  /// 산책 기록 수정 바텀 시트 표시
   void _showEditWalkDialog(
     BuildContext context,
     WidgetRef ref,
     WalkRecordEntity walkRecord,
   ) {
-    showDialog(
-      context: context,
-      builder: (context) => _EditWalkDialog(
-        walkRecord: walkRecord,
-        controller: WalkController(ref),
-      ),
-    );
-  }
-}
-
-/// 산책 기록 수정 다이얼로그
-class _EditWalkDialog extends StatefulWidget {
-  final WalkRecordEntity walkRecord;
-  final WalkController controller;
-
-  const _EditWalkDialog({required this.walkRecord, required this.controller});
-
-  @override
-  State<_EditWalkDialog> createState() => _EditWalkDialogState();
-}
-
-class _EditWalkDialogState extends State<_EditWalkDialog> {
-  final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _titleController;
-  late final TextEditingController _notesController;
-
-  @override
-  void initState() {
-    super.initState();
-    _titleController = TextEditingController(text: widget.walkRecord.title);
-    _notesController = TextEditingController(
-      text: widget.walkRecord.notes ?? '',
-    );
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _notesController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        '산책 기록 수정',
-        style: AppFonts.fredoka(
-          fontSize: AppFonts.lg,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: '散歩のタイトル',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'タイトルを入力してください。';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: AppSpacing.md),
-            TextFormField(
-              controller: _notesController,
-              decoration: const InputDecoration(
-                labelText: 'メモ',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: AppColors.pointOffWhite,
-                borderRadius: BorderRadius.circular(AppRadius.small),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('開始時間: ${widget.walkRecord.timeString}'),
-                  Text('経過時間: ${widget.walkRecord.formattedDuration}'),
-                  Text('距離: ${widget.walkRecord.formattedDistance}'),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('キャンセル'),
-        ),
-        ElevatedButton(
-          onPressed: _updateWalk,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.pointBrown,
-            foregroundColor: Colors.white,
-          ),
-          child: const Text('更新'),
-        ),
-      ],
-    );
-  }
-
-  void _updateWalk() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        // 수정된 산책 기록 생성
-        final updatedWalkRecord = widget.walkRecord.copyWith(
-          title: _titleController.text,
-          notes: _notesController.text.isEmpty ? null : _notesController.text,
-          updatedAt: DateTime.now(),
-        );
-
-        // 컨트롤러를 통해 수정
-        final result = await widget.controller.updateWalkRecord(
-          updatedWalkRecord,
-        );
-
-        if (mounted) {
-          Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result.message),
-              backgroundColor: result.isSuccess ? Colors.green : Colors.red,
-            ),
-          );
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('更新に失敗しました: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    }
+    EditWalkBottomSheet.show(context, walkRecord, WalkController(ref));
   }
 }
