@@ -18,10 +18,14 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
   Widget build(BuildContext context) {
     final weightRecords = PetHealthMockService.getMockWeightRecords();
     final availableYears = _getAvailableYears(weightRecords);
-    final filteredRecords = weightRecords.where((record) => 
-        (record['recordedDate'] as DateTime).year == _selectedYear).toList();
+    final filteredRecords = weightRecords
+        .where(
+          (record) =>
+              (record['recordedDate'] as DateTime).year == _selectedYear,
+        )
+        .toList();
     final groupedRecords = _groupRecordsByMonth(filteredRecords);
-    
+
     // 첫 번째(최신) 월을 기본으로 열어놓기
     if (_expandedMonths.isEmpty && groupedRecords.isNotEmpty) {
       _expandedMonths.add(groupedRecords.keys.first);
@@ -89,11 +93,17 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
                           });
                         }
                       },
-                      selectedColor: AppColors.pointBrown.withValues(alpha: 0.2),
+                      selectedColor: AppColors.pointBrown.withValues(
+                        alpha: 0.2,
+                      ),
                       checkmarkColor: AppColors.pointBrown,
                       labelStyle: TextStyle(
-                        color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected
+                            ? AppColors.pointBrown
+                            : AppColors.pointGray,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
                   );
@@ -108,7 +118,7 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
               final monthKey = entry.key;
               final monthRecords = entry.value;
               final isExpanded = _expandedMonths.contains(monthKey);
-              
+
               return _buildMonthAccordion(monthKey, monthRecords, isExpanded);
             }).toList(),
           ),
@@ -128,17 +138,17 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
 
   Map<String, List<dynamic>> _groupRecordsByMonth(List<dynamic> records) {
     final Map<String, List<dynamic>> grouped = {};
-    
+
     for (final record in records) {
       final date = record['recordedDate'] as DateTime;
       final monthKey = '${date.year}年 ${date.month}月';
-      
+
       if (!grouped.containsKey(monthKey)) {
         grouped[monthKey] = [];
       }
       grouped[monthKey]!.add(record);
     }
-    
+
     // 월별로 정렬 (최신 월부터)
     final sortedEntries = grouped.entries.toList()
       ..sort((a, b) {
@@ -152,14 +162,20 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
         );
         return bDate.compareTo(aDate);
       });
-    
+
     return Map.fromEntries(sortedEntries);
   }
 
-  Widget _buildMonthAccordion(String monthKey, List<dynamic> monthRecords, bool isExpanded) {
+  Widget _buildMonthAccordion(
+    String monthKey,
+    List<dynamic> monthRecords,
+    bool isExpanded,
+  ) {
     final recordCount = monthRecords.length;
-    final avgWeight = monthRecords.map((r) => r.weight as double).reduce((a, b) => a + b) / recordCount;
-    
+    final avgWeight =
+        monthRecords.map((r) => r.weight as double).reduce((a, b) => a + b) /
+        recordCount;
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       decoration: BoxDecoration(
@@ -212,7 +228,7 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
                         ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          '${recordCount}件の記録 • 平均 ${avgWeight.toStringAsFixed(1)}kg',
+                          '$recordCount件の記録 • 平均 ${avgWeight.toStringAsFixed(1)}kg',
                           style: AppFonts.bodySmall.copyWith(
                             color: AppColors.pointGray,
                           ),
@@ -242,10 +258,15 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
     );
   }
 
-  Widget _buildWeightRecordItem(dynamic record, int index, List<dynamic> weightRecords) {
+  Widget _buildWeightRecordItem(
+    dynamic record,
+    int index,
+    List<dynamic> weightRecords,
+  ) {
     final isLatest = index == 0;
     final change = index < weightRecords.length - 1
-        ? (record['weight'] as double) - (weightRecords[index + 1]['weight'] as double)
+        ? (record['weight'] as double) -
+              (weightRecords[index + 1]['weight'] as double)
         : 0.0;
     final changeText = change > 0
         ? '+${change.toStringAsFixed(1)}kg'
@@ -298,12 +319,17 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   _formatDate(record['recordedDate'] as DateTime),
-                  style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray,
+                  ),
                 ),
-                if (record['notes'] != null && (record['notes'] as String).isNotEmpty)
+                if (record['notes'] != null &&
+                    (record['notes'] as String).isNotEmpty)
                   Text(
                     record['notes'] as String,
-                    style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.pointGray,
+                    ),
                   ),
               ],
             ),

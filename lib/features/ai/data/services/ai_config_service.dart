@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import '../../../../app/config/app_config.dart';
+import '../../../../shared/mock_data/features/ai/ai_config_mock_data.dart';
 import '../../domain/domain.dart';
 
 /// AI 기능 환경별 설정 서비스
@@ -56,47 +55,19 @@ class AiConfigService {
 
   // Private methods for Mock data
   static List<AiCategoryEntity> _getMockCategories() {
-    // 임시로 하드코딩된 데이터 반환 (향후 MockDataService로 이동 예정)
-    return [
-      const AiCategoryEntity(
-        id: 'health',
-        name: '健康',
-        description: '病気、怪我、健康管理について',
-        icon: Icons.medical_services,
-        color: Colors.red,
-      ),
-      // ... 기타 카테고리
-    ];
+    return AiConfigMockData.getMockCategories();
   }
 
   static List<AiSuggestedQuestionEntity> _getMockSuggestedQuestions() {
-    // 임시로 하드코딩된 데이터 반환 (향후 MockDataService로 이동 예정)
-    return [
-      const AiSuggestedQuestionEntity(
-        id: '1',
-        question: 'ペットが食事を拒否する時はどうしたらいいですか？',
-        category: 'health',
-        icon: Icons.restaurant,
-      ),
-      // ... 기타 질문
-    ];
+    return AiConfigMockData.getMockSuggestedQuestions();
   }
 
   static Map<String, String> _getMockResponseTemplates() {
-    return {
-      'food': '🍽️ お腹の調子が悪い理由はたくさんあります...',
-      'exercise': '🚶‍♂️ ペットの散歩ガイド...',
-      'vaccination': '💉 ペットの予防接種スケジュール...',
-      'default': 'ペットについての質問ですね! 🐾...',
-    };
+    return AiConfigMockData.getMockResponseTemplates();
   }
 
   static Map<String, List<String>> _getMockKeywordMapping() {
-    return {
-      'food': ['食事', '食事量', '食事量が少ない', 'お腹'],
-      'exercise': ['散歩', '運動', '時間'],
-      'vaccination': ['接種', 'ワクチン', '予防接種'],
-    };
+    return AiConfigMockData.getMockKeywordMapping();
   }
 
   // Private methods for API calls (향후 구현)

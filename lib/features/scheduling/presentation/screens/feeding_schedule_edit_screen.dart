@@ -73,17 +73,12 @@ class _FeedingScheduleEditScreenState
 
     // 펫 현재 상태 로드
     final currentStatus = PetMockService.getPetCurrentStatus(_selectedPetId);
-    if (currentStatus != null) {
-      _selectedStatuses = List<String>.from(
-        currentStatus['selectedStatuses'] ?? [],
-      );
-      _statusValues = Map<String, String>.from(currentStatus);
-      _statusValues.remove('selectedStatuses');
-      _statusValues.remove('lastUpdated');
-    } else {
-      _selectedStatuses = [];
-      _statusValues = {};
-    }
+    _selectedStatuses = List<String>.from(
+      currentStatus['selectedStatuses'] ?? [],
+    );
+    _statusValues = Map<String, String>.from(currentStatus);
+    _statusValues.remove('selectedStatuses');
+    _statusValues.remove('lastUpdated');
   }
 
   @override

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../shared/shared.dart';
 
@@ -17,9 +16,7 @@ class _LearnTrickScreenState extends ConsumerState<LearnTrickScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientBackAppBar(
-        title: '新しいトリックを学ぶ',
-      ),
+      appBar: const SoftGradientBackAppBar(title: '新しいトリックを学ぶ'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(

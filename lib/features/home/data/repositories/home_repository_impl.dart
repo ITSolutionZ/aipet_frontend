@@ -1,5 +1,4 @@
 import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/mock_data/features/home/home_mock_service.dart';
@@ -11,7 +10,6 @@ import '../models/weather_model.dart';
 import '../services/weather_service.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
-
   final WeatherService _weatherService = WeatherService();
 
   @override
@@ -45,16 +43,16 @@ class HomeRepositoryImpl implements HomeRepository {
       if (location != null) {
         weatherLocation = WeatherMapper.toDataLocation(location);
       }
-      
+
       final weatherData = await _weatherService.getCurrentWeather(
         location: weatherLocation,
         userTriggered: userTriggered,
       );
-      
+
       if (weatherData != null) {
         return WeatherMapper.toEntity(weatherData);
       }
-      
+
       return null;
     } catch (e) {
       // 에러 발생시 null 반환
@@ -79,7 +77,6 @@ class HomeRepositoryImpl implements HomeRepository {
       pressure: 1013.25,
     );
   }
-
 
   @override
   Future<List<PetSummaryEntity>> getPetSummaries() async {
@@ -116,12 +113,17 @@ class HomeRepositoryImpl implements HomeRepository {
     // Mock 데이터 사용
     await Future.delayed(_mockDelay);
     final healthSummaryData = HomeMockService.getMockHealthSummary();
-    final alertsData = healthSummaryData['alerts'] as List<Map<String, dynamic>>;
-    final alerts = alertsData.map((alert) => HealthAlert(
-      petName: alert['petName'] as String,
-      message: alert['message'] as String,
-    )).toList();
-    
+    final alertsData =
+        healthSummaryData['alerts'] as List<Map<String, dynamic>>;
+    final alerts = alertsData
+        .map(
+          (alert) => HealthAlert(
+            petName: alert['petName'] as String,
+            message: alert['message'] as String,
+          ),
+        )
+        .toList();
+
     return HealthSummary(
       totalPets: healthSummaryData['totalPets'] as int,
       healthyPets: healthSummaryData['healthyPets'] as int,
@@ -135,13 +137,17 @@ class HomeRepositoryImpl implements HomeRepository {
     // Mock 데이터 사용
     await Future.delayed(_mockDelay);
     final appointmentsData = PetMockService.getMockAppointments();
-    return appointmentsData.map((data) => AppointmentSummary(
-      id: data['id'] as String,
-      title: data['title'] as String,
-      scheduledTime: data['scheduledTime'] as DateTime,
-      type: data['type'] as String,
-      petName: data['petName'] as String,
-    )).toList();
+    return appointmentsData
+        .map(
+          (data) => AppointmentSummary(
+            id: data['id'] as String,
+            title: data['title'] as String,
+            scheduledTime: data['scheduledTime'] as DateTime,
+            type: data['type'] as String,
+            petName: data['petName'] as String,
+          ),
+        )
+        .toList();
   }
 
   // 개발 모드용 지연 시간 상수
