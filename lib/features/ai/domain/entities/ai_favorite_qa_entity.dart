@@ -1,4 +1,4 @@
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+import '../../../pet_registor/pet_registor.dart';
 
 /// AI 즐겨찾기 질문-답변 쌍 엔티티
 class AiFavoriteQaEntity {
@@ -39,11 +39,18 @@ class AiFavoriteQaEntity {
 
   /// JSON에서 생성 (향후 구현 예정)
   factory AiFavoriteQaEntity.fromJson(Map<String, dynamic> json) {
+    // petId가 있으면 mock 데이터에서 펫을 찾아서 복원
+    PetProfileEntity? pet;
+    if (json['petId'] != null) {
+      // Mock 데이터에서 펫을 찾는 로직 (실제로는 repository에서 조회)
+      // pet = MockDataService.findPetById(json['petId']);
+    }
+
     return AiFavoriteQaEntity(
       id: json['id'] as String,
       question: json['question'] as String,
       answer: json['answer'] as String,
-      pet: null, // TODO: PetProfileEntity 복원 로직 필요
+      pet: pet,
       categoryId: json['categoryId'] as String?,
       categoryName: json['categoryName'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),

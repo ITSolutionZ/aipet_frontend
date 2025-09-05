@@ -40,7 +40,7 @@ class MealTypeDropdown extends StatelessWidget {
                   vertical: AppSpacing.sm,
                 ),
               ),
-              items: ['朝食', '昼食', '夕食', 'おやつ'].map((String value) {
+              items: MealTypesMockData.getMealTypes().map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),

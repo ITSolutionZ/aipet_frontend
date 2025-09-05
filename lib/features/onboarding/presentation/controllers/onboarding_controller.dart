@@ -29,19 +29,19 @@ class OnboardingController extends BaseController {
       RestartOnboardingUseCase(ref.read(onboardingRepositoryProvider));
 
   void nextPage() {
-    ref.read(onboardingStateNotifierProvider.notifier).nextPage();
+    ref.read(onboardingNotifierProvider.notifier).nextPage();
   }
 
   void previousPage() {
-    ref.read(onboardingStateNotifierProvider.notifier).previousPage();
+    ref.read(onboardingNotifierProvider.notifier).previousPage();
   }
 
   void goToPage(int page) {
-    ref.read(onboardingStateNotifierProvider.notifier).goToPage(page);
+    ref.read(onboardingNotifierProvider.notifier).goToPage(page);
   }
 
   void completeOnboarding() {
-    ref.read(onboardingStateNotifierProvider.notifier).completeOnboarding();
+    ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
   }
 
   /// 온보딩 데이터 로드

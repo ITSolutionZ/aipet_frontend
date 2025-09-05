@@ -1,12 +1,14 @@
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../entities/home_dashboard_entity.dart';
+import '../entities/entities.dart';
 
+/// 홈 대시보드 데이터 Repository 인터페이스
 abstract class HomeRepository {
   Future<HomeDashboardEntity> getDashboardData();
-  Future<WeatherInfo> getCurrentWeather();
-  Future<List<AppointmentSummary>> getUpcomingAppointments();
-  Future<HealthSummary> getPetHealthSummary();
+  Future<WeatherEntity?> getCurrentWeather({
+    WeatherLocationEntity? location,
+    bool userTriggered = false,
+  });
+  Future<List<PetSummaryEntity>> getPetSummaries();
   Future<WalkSummary> getWalkSummary();
-  Future<List<PetProfileEntity>> getPetProfiles();
-  Stream<String> getCurrentTimeStream();
+  Future<HealthSummary> getPetHealthSummary();
+  Future<List<AppointmentSummary>> getUpcomingAppointments();
 }

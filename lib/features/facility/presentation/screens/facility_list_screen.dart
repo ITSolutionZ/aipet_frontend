@@ -138,10 +138,19 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: const Text('近くの施設'),
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
+      appBar: SoftGradientAppBar(
+        title: '近くの施設',
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          color: AppColors.pointDark,
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/home');
+            }
+          },
+        ),
         actions: [
           PopupMenuButton<String>(
             onSelected: _onSortChanged,
@@ -150,9 +159,8 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
               const PopupMenuItem(value: 'rating', child: Text('評価順')),
               const PopupMenuItem(value: 'name', child: Text('名前順')),
             ],
-            child: const Icon(Icons.sort),
+            child: const Icon(Icons.sort, color: Color(0xFF5B4034)),
           ),
-          const SizedBox(width: 8),
         ],
       ),
       body: Column(

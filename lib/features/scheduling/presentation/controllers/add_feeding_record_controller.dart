@@ -17,7 +17,7 @@ class AddFeedingRecordController extends StateNotifier<AddFeedingRecordState> {
 
     if (selectedPetInfo != null) {
       final size = selectedPetInfo['size'] as String;
-      final sizeGuide = MockDataService.getPetSizeFeedingGuide();
+      final sizeGuide = MockDataService.getPetSizeFeedingGuide(petId);
       petSizeGuide = sizeGuide[size];
     }
 
@@ -26,14 +26,12 @@ class AddFeedingRecordController extends StateNotifier<AddFeedingRecordState> {
     List<String> selectedStatuses = [];
     Map<String, String> statusValues = {};
 
-    if (currentStatus != null) {
-      selectedStatuses = List<String>.from(
-        currentStatus['selectedStatuses'] ?? [],
-      );
-      statusValues = Map<String, String>.from(currentStatus);
-      statusValues.remove('selectedStatuses');
-      statusValues.remove('lastUpdated');
-    }
+    selectedStatuses = List<String>.from(
+      currentStatus['selectedStatuses'] ?? [],
+    );
+    statusValues = Map<String, String>.from(currentStatus);
+    statusValues.remove('selectedStatuses');
+    statusValues.remove('lastUpdated');
 
     state = state.copyWith(
       selectedPetId: petId,

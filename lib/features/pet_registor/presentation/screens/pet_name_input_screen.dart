@@ -41,18 +41,8 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '名前を教えてくだい',
-          style: AppFonts.titleMedium.copyWith(color: Colors.white),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
+      appBar: const SoftGradientBackAppBar(
+        title: '名前を教えてくだい',
       ),
       body: SafeArea(
         child: Padding(

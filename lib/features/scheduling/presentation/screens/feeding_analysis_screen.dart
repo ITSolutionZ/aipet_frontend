@@ -17,26 +17,12 @@ class FeedingAnalysisScreen extends ConsumerStatefulWidget {
 class _FeedingAnalysisScreenState extends ConsumerState<FeedingAnalysisScreen> {
   @override
   Widget build(BuildContext context) {
-    final analysisData = MockDataService.getMockFeedingAnalysisData();
+    final analysisData = SchedulingMockService.getMockFeedingAnalysisData();
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '食事管理',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown.withValues(alpha: 0.8),
-        foregroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
+      appBar: const SoftGradientAppBar(
+        title: '食事管理',
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -282,7 +268,7 @@ class _FeedingAnalysisScreenState extends ConsumerState<FeedingAnalysisScreen> {
   }
 
   Widget _buildFeedingChart() {
-    final analysisData = MockDataService.getMockFeedingAnalysisData();
+    final analysisData = SchedulingMockService.getMockFeedingAnalysisData();
 
     // 오늘부터 1개월까지의 날짜 데이터 생성
     final now = DateTime.now();

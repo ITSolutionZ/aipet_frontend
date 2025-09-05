@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../shared/mock_data/mock_data_service.dart';
+import '../../../shared/mock_data/features/facility/facility_mock_service.dart';
 import '../domain/facility.dart';
 import '../domain/repositories/facility_repository.dart';
 import 'facility_repository_impl.dart';
@@ -10,7 +10,24 @@ part 'facility_providers.g.dart';
 @riverpod
 class FacilityListNotifier extends _$FacilityListNotifier {
   @override
-  List<Facility> build() => MockDataService.getMockFacilities();
+  List<Facility> build() {
+    final facilitiesData = FacilityMockService.getMockFacilities();
+    return facilitiesData.map((data) => Facility(
+      id: data['id'] as String,
+      name: data['name'] as String,
+      description: data['description'] as String,
+      address: data['address'] as String,
+      phone: data['phone'] as String,
+      email: data['email'] as String,
+      type: data['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
+      rating: (data['rating'] as num).toDouble(),
+      reviewCount: data['reviewCount'] as int,
+      imagePath: data['imagePath'] as String,
+      isFavorite: data['isFavorite'] as bool? ?? false,
+      hasHistory: data['hasHistory'] as bool? ?? false,
+      lastVisit: data['lastVisit'] as DateTime?,
+    )).toList();
+  }
 
   void toggleFavorite(String facilityId) {
     state = state.map((facility) {

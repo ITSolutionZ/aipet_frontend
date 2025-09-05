@@ -30,7 +30,7 @@ class FeedingScheduleEditController
 
     if (selectedPetInfo != null) {
       final size = selectedPetInfo['size'] as String;
-      final sizeGuide = MockDataService.getPetSizeFeedingGuide();
+      final sizeGuide = MockDataService.getPetSizeFeedingGuide(state.petId);
       petSizeGuide = sizeGuide[size];
     }
 
@@ -39,14 +39,12 @@ class FeedingScheduleEditController
     List<String> selectedStatuses = [];
     Map<String, String> statusValues = {};
 
-    if (currentStatus != null) {
-      selectedStatuses = List<String>.from(
-        currentStatus['selectedStatuses'] ?? [],
-      );
-      statusValues = Map<String, String>.from(currentStatus);
-      statusValues.remove('selectedStatuses');
-      statusValues.remove('lastUpdated');
-    }
+    selectedStatuses = List<String>.from(
+      currentStatus['selectedStatuses'] ?? [],
+    );
+    statusValues = Map<String, String>.from(currentStatus);
+    statusValues.remove('selectedStatuses');
+    statusValues.remove('lastUpdated');
 
     state = state.copyWith(
       selectedPetInfo: selectedPetInfo,

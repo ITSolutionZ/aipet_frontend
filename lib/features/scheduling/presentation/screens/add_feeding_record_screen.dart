@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
+import '../../../../shared/mock_data/features/pet/pet_mock_service.dart';
+import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart';
 import '../controllers/controllers.dart';
 import '../widgets/widgets.dart';
 
@@ -51,28 +53,23 @@ class _AddFeedingRecordScreenState
 
   /// 펫 정보 및 사이즈 가이드 로드
   void _loadPetInfo() {
-    final petSizes = MockDataService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     _selectedPetInfo = petSizes[_selectedPetId];
 
     if (_selectedPetInfo != null) {
       final size = _selectedPetInfo!['size'] as String;
-      final sizeGuide = MockDataService.getPetSizeFeedingGuide();
+      final sizeGuide = SchedulingMockService.getPetSizeFeedingGuide();
       _petSizeGuide = sizeGuide[size];
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = MockDataService.getPetCurrentStatus(_selectedPetId);
-    if (currentStatus != null) {
-      _selectedStatuses = List<String>.from(
-        currentStatus['selectedStatuses'] ?? [],
-      );
-      _statusValues = Map<String, String>.from(currentStatus);
-      _statusValues.remove('selectedStatuses');
-      _statusValues.remove('lastUpdated');
-    } else {
-      _selectedStatuses = [];
-      _statusValues = {};
-    }
+    final currentStatus = PetMockService.getPetCurrentStatus(_selectedPetId);
+    _selectedStatuses = List<String>.from(
+      currentStatus['selectedStatuses'] ?? [],
+    );
+    _statusValues = Map<String, String>.from(currentStatus);
+    _statusValues.remove('selectedStatuses');
+    _statusValues.remove('lastUpdated');
   }
 
   /// 날짜 선택
@@ -168,7 +165,7 @@ class _AddFeedingRecordScreenState
     };
 
     // MockDataService에 기록 추가
-    MockDataService.addMockFeedingRecord(newRecord);
+    SchedulingMockService.addMockFeedingRecord(newRecord);
 
     // 추가된 기록 확인
     developer.log('새로운 급여 기록이 목업 데이터에 추가되었습니다: $newRecord');
@@ -176,7 +173,7 @@ class _AddFeedingRecordScreenState
 
   /// 펫 선택 처리
   void _onPetSelected(String petId) {
-    final petSizes = MockDataService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     setState(() {
       _selectedPetId = petId;
       _selectedPetInfo = petSizes[petId];
@@ -203,7 +200,7 @@ class _AddFeedingRecordScreenState
                   _statusValues = statusValues;
 
                   // MockDataService에 상태 업데이트
-                  MockDataService.updatePetStatus(
+                  PetMockService.updatePetStatus(
                     petId,
                     selectedStatuses,
                     statusValues,
@@ -219,24 +216,15 @@ class _AddFeedingRecordScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: Text(
-          '食事記録追加',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: SoftGradientAppBar(
+        title: '食事記録追加',
         actions: [
           TextButton(
             onPressed: _saveRecord,
             child: Text(
               '保存',
               style: AppFonts.bodyMedium.copyWith(
-                color: Colors.white,
+                color: const Color(0xFF5B4034),
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -1,266 +1,298 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../shared/shared.dart';
 import '../../domain/entities/walk_record_entity.dart';
 
-class WalkDetailMapWidget extends StatelessWidget {
+class WalkDetailMapWidget extends StatefulWidget {
   final WalkRecordEntity walkRecord;
 
   const WalkDetailMapWidget({super.key, required this.walkRecord});
 
   @override
+  State<WalkDetailMapWidget> createState() => _WalkDetailMapWidgetState();
+}
+
+class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
+  GoogleMapController? _mapController;
+  Position? _currentPosition;
+  final Set<Marker> _markers = {};
+  final Set<Polyline> _polylines = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+    _setupWalkDetailMap();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      // 위치 권한 확인
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        return;
+      }
+
+      // 현재 위치 가져오기
+      final Position position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+
+      setState(() {
+        _currentPosition = position;
+      });
+
+      // 지도 컨트롤러가 준비되면 카메라 이동
+      if (_mapController != null) {
+        await _mapController!.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(position.latitude, position.longitude),
+              zoom: 16.0,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('위치 가져오기 실패: $e');
+      // 기본 위치 사용 (도쿄 시나가와구)
+      setState(() {
+        _currentPosition = Position(
+          latitude: 35.6092,
+          longitude: 139.7301,
+          timestamp: DateTime.now(),
+          accuracy: 0,
+          altitude: 0,
+          heading: 0,
+          speed: 0,
+          speedAccuracy: 0,
+          altitudeAccuracy: 0,
+          headingAccuracy: 0,
+        );
+      });
+    }
+  }
+
+  void _setupWalkDetailMap() {
+    _markers.clear();
+    _polylines.clear();
+
+    // 산책 경로가 있는 경우 실제 경로 사용
+    if (widget.walkRecord.route.isNotEmpty) {
+      _setupWalkRoute();
+    } else {
+      // 산책 경로가 없는 경우 샘플 경로 생성
+      _setupSampleWalkRoute();
+    }
+  }
+
+  void _setupWalkRoute() {
+    final route = widget.walkRecord.route;
+    if (route.length < 2) return;
+
+    // 시작점 마커 (공원)
+    if (route.first.latitude != 0 && route.first.longitude != 0) {
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('walk_start'),
+          position: LatLng(route.first.latitude, route.first.longitude),
+          infoWindow: InfoWindow(
+            title: '${widget.walkRecord.title} 開始',
+            snippet: '${widget.walkRecord.duration?.inMinutes ?? 0}分',
+          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
+        ),
+      );
+    }
+
+    // 종료점 마커 (집)
+    if (route.last.latitude != 0 && route.last.longitude != 0) {
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('walk_end'),
+          position: LatLng(route.last.latitude, route.last.longitude),
+          infoWindow: InfoWindow(
+            title: '${widget.walkRecord.title} 終了',
+            snippet:
+                '${widget.walkRecord.distance?.toStringAsFixed(1) ?? '0.0'}km',
+          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        ),
+      );
+    }
+
+    // 경로 폴리라인
+    if (route.length > 1) {
+      final points = route
+          .where((point) => point.latitude != 0 && point.longitude != 0)
+          .map((point) => LatLng(point.latitude, point.longitude))
+          .toList();
+
+      if (points.length > 1) {
+        _polylines.add(
+          Polyline(
+            polylineId: const PolylineId('walk_route'),
+            points: points,
+            color: AppColors.pointBrown,
+            width: 4,
+            geodesic: true,
+          ),
+        );
+      }
+    }
+  }
+
+  void _setupSampleWalkRoute() {
+    // 샘플 경로 생성 (도쿄 시나가와구 근처)
+    const baseLat = 35.6092;
+    const baseLng = 139.7301;
+
+    // 공원 (시작점)
+    const parkLat = baseLat + 0.002;
+    const parkLng = baseLng - 0.001;
+
+    // 병원 (중간점)
+    const hospitalLat = baseLat + 0.001;
+    const hospitalLng = baseLng + 0.002;
+
+    // 집 (종료점)
+    const homeLat = baseLat - 0.001;
+    const homeLng = baseLng + 0.001;
+
+    // 마커 추가
+    _markers.add(
+      Marker(
+        markerId: const MarkerId('park'),
+        position: const LatLng(parkLat, parkLng),
+        infoWindow: const InfoWindow(title: '공원', snippet: '산책 시작점'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      ),
+    );
+
+    _markers.add(
+      Marker(
+        markerId: const MarkerId('hospital'),
+        position: const LatLng(hospitalLat, hospitalLng),
+        infoWindow: const InfoWindow(title: '병원', snippet: '중간 경유지'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      ),
+    );
+
+    _markers.add(
+      Marker(
+        markerId: const MarkerId('home'),
+        position: const LatLng(homeLat, homeLng),
+        infoWindow: const InfoWindow(title: '집', snippet: '산책 종료점'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      ),
+    );
+
+    // 샘플 경로 폴리라인
+    _polylines.add(
+      const Polyline(
+        polylineId: PolylineId('sample_route'),
+        points: [
+          LatLng(parkLat, parkLng),
+          LatLng(hospitalLat, hospitalLng),
+          LatLng(homeLat, homeLng),
+        ],
+        color: AppColors.pointBrown,
+        width: 4,
+        geodesic: true,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[200],
         borderRadius: BorderRadius.circular(AppRadius.medium),
         border: Border.all(color: Colors.grey[300]!, width: 1),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        child: Stack(
-          children: [
-            // 지도 배경
-            _buildMapBackground(),
+        child: _currentPosition == null
+            ? _buildLoadingState()
+            : GoogleMap(
+                onMapCreated: (GoogleMapController controller) {
+                  _mapController = controller;
+                  _setupWalkDetailMap();
 
-            // 산책 경로
-            _buildWalkRoute(),
-
-            // 위치 핀들
-            _buildLocationPins(),
-          ],
-        ),
+                  // 초기 카메라 위치 설정
+                  controller.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                        target: LatLng(
+                          _currentPosition!.latitude,
+                          _currentPosition!.longitude,
+                        ),
+                        zoom: 16.0,
+                      ),
+                    ),
+                  );
+                },
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(
+                    _currentPosition!.latitude,
+                    _currentPosition!.longitude,
+                  ),
+                  zoom: 16.0,
+                ),
+                markers: _markers,
+                polylines: _polylines,
+                myLocationEnabled: true,
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                mapToolbarEnabled: false,
+                compassEnabled: true,
+                onCameraMove: (CameraPosition position) {
+                  // 카메라 이동 시 추가 로직 (필요시)
+                },
+              ),
       ),
     );
   }
 
-  Widget _buildMapBackground() {
+  Widget _buildLoadingState() {
     return Container(
-      decoration: BoxDecoration(color: Colors.grey[100]),
-      child: CustomPaint(
-        painter: WalkDetailMapBackgroundPainter(),
-        size: Size.infinite,
+      color: Colors.grey[100],
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
+            ),
+            SizedBox(height: AppSpacing.md),
+            Text(
+              '地図を読み込み中...',
+              style: TextStyle(color: AppColors.pointGray, fontSize: 14),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildWalkRoute() {
-    if (walkRecord.route.length < 2) return const SizedBox.shrink();
-
-    return CustomPaint(
-      painter: WalkDetailRoutePainter(walkRecord: walkRecord),
-      size: Size.infinite,
-    );
-  }
-
-  Widget _buildLocationPins() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Stack(
-          children: [
-            // 시작점 (공원) - 초록색 핀
-            Positioned(
-              left: constraints.maxWidth * 0.2,
-              top: constraints.maxHeight * 0.15,
-              child: _buildLocationPin(
-                color: Colors.green,
-                icon: Icons.park,
-                label: '공원',
-              ),
-            ),
-
-            // 중간 지점 (병원) - 흰색 핀
-            Positioned(
-              left: constraints.maxWidth * 0.6,
-              top: constraints.maxHeight * 0.4,
-              child: _buildLocationPin(
-                color: Colors.white,
-                icon: Icons.medical_services,
-                label: '병원',
-                textColor: Colors.blue,
-              ),
-            ),
-
-            // 끝점 (집) - 파란색 핀
-            Positioned(
-              left: constraints.maxWidth * 0.7,
-              top: constraints.maxHeight * 0.7,
-              child: _buildLocationPin(
-                color: Colors.blue,
-                icon: Icons.home,
-                label: '집',
-                textColor: Colors.white,
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildLocationPin({
-    required Color color,
-    required IconData icon,
-    required String label,
-    Color textColor = Colors.white,
-  }) {
-    return Column(
-      children: [
-        // 핀 아이콘
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Icon(icon, color: textColor, size: 20),
-        ),
-        const SizedBox(height: 4),
-        // 라벨
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 2,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
-          child: Text(
-            label,
-            style: AppFonts.bodySmall.copyWith(
-              color: AppColors.pointDark,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class WalkDetailMapBackgroundPainter extends CustomPainter {
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.grey[300]!
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    // 도로/경로 그리기
-    final path = Path();
-
-    // 수평 도로들
-    for (int i = 1; i <= 5; i++) {
-      final y = size.height * (i * 0.15);
-      path.moveTo(0, y);
-      path.lineTo(size.width, y);
-    }
-
-    // 수직 도로들
-    for (int i = 1; i <= 4; i++) {
-      final x = size.width * (i * 0.2);
-      path.moveTo(x, 0);
-      path.lineTo(x, size.height);
-    }
-
-    canvas.drawPath(path, paint);
-
-    // 건물/지역 표시
-    final buildingPaint = Paint()
-      ..color = Colors.grey[400]!
-      ..style = PaintingStyle.fill;
-
-    // 건물들 표시
-    final buildings = [
-      Rect.fromLTWH(size.width * 0.05, size.height * 0.05, 60, 40),
-      Rect.fromLTWH(size.width * 0.75, size.height * 0.25, 70, 50),
-      Rect.fromLTWH(size.width * 0.15, size.height * 0.55, 55, 35),
-      Rect.fromLTWH(size.width * 0.65, size.height * 0.65, 45, 45),
-      Rect.fromLTWH(size.width * 0.35, size.height * 0.35, 50, 30),
-    ];
-
-    for (final building in buildings) {
-      canvas.drawRect(building, buildingPaint);
-    }
-
-    // 공원 영역 표시 (초록색)
-    final parkPaint = Paint()
-      ..color = Colors.green.withValues(alpha: 0.2)
-      ..style = PaintingStyle.fill;
-
-    final parkRect = Rect.fromLTWH(
-      size.width * 0.1,
-      size.height * 0.05,
-      80,
-      60,
-    );
-    canvas.drawRect(parkRect, parkPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class WalkDetailRoutePainter extends CustomPainter {
-  final WalkRecordEntity walkRecord;
-
-  WalkDetailRoutePainter({required this.walkRecord});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (walkRecord.route.length < 2) return;
-
-    // 파란색 경로 그리기
-    final paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 4
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final path = Path();
-
-    // 실제 경로 대신 이미지와 유사한 경로 그리기
-    final points = [
-      Offset(size.width * 0.25, size.height * 0.2), // 시작점 (공원)
-      Offset(size.width * 0.35, size.height * 0.25),
-      Offset(size.width * 0.45, size.height * 0.3),
-      Offset(size.width * 0.55, size.height * 0.35),
-      Offset(size.width * 0.65, size.height * 0.45), // 중간점 (병원)
-      Offset(size.width * 0.7, size.height * 0.55),
-      Offset(size.width * 0.75, size.height * 0.65),
-      Offset(size.width * 0.8, size.height * 0.75), // 끝점 (집)
-    ];
-
-    path.moveTo(points[0].dx, points[0].dy);
-    for (int i = 1; i < points.length; i++) {
-      path.lineTo(points[i].dx, points[i].dy);
-    }
-
-    canvas.drawPath(path, paint);
-
-    // 경로 위에 작은 점들 표시
-    final dotPaint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.fill;
-
-    for (final point in points) {
-      canvas.drawCircle(point, 3, dotPaint);
+  void didUpdateWidget(WalkDetailMapWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.walkRecord != widget.walkRecord) {
+      _setupWalkDetailMap();
     }
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

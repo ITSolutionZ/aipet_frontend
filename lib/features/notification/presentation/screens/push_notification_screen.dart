@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
+import '../../data/services/notification_service.dart';
 import '../../domain/entities/entities.dart';
 import '../controllers/notification_ui_controller.dart';
 import '../widgets/alarm_toggle_widget.dart';
@@ -84,14 +85,18 @@ class _PushNotificationScreenState
         typeSettings: newTypeSettings,
       );
 
+      // context를 미리 저장
+      final navigatorContext = context;
+
       // UI 컨트롤러를 통해 설정 저장 (UI 피드백 포함)
       await _uiController.saveNotificationSettingsWithFeedback(
-        context,
+        navigatorContext,
         newSettings,
       );
 
+      // mounted 체크 후 BuildContext 사용
       if (mounted) {
-        Navigator.of(context).pop();
+        Navigator.of(navigatorContext).pop();
       }
     } catch (e) {
       if (kDebugMode) {

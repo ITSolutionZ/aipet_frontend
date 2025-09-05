@@ -11,7 +11,7 @@ class FeedingAnalysisController extends StateNotifier<FeedingAnalysisState> {
 
   /// 분석 데이터 로드
   void _loadAnalysisData() {
-    final analysisData = MockDataService.getMockFeedingAnalysisData();
+    final analysisData = SchedulingMockService.getMockFeedingAnalysisData();
     state = state.copyWith(analysisData: analysisData);
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes/route_constants.dart';
+import '../../../features/notification/data/services/notification_service.dart';
 import '../../../features/notification/domain/entities/entities.dart';
 import '../../shared.dart';
 
