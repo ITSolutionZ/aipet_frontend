@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../shared/mock_data/features/ai/ai_chat_messages_mock_data.dart';
 import '../../../../shared/mock_data/features/ai/ai_mock_data.dart';
 import '../../../../shared/services/mock_data_service.dart';
 import '../../domain/domain.dart';
@@ -15,11 +16,7 @@ class AiMockDataServiceImpl implements MockDataService {
 
   @override
   Future<List<AiMessageEntity>> getChatHistory() async {
-    // Mock 데이터에서 채팅 히스토리 반환
-    // TODO: AiMessageEntity.fromJson 구현 후 사용
-    // final mockData = AiMockDataService.getChatHistoryMockData();
-    // return mockData.map((json) => AiMessageEntity.fromJson(json)).toList();
-    return []; // 임시로 빈 리스트 반환
+    return AiChatMessagesMockData.getChatHistory();
   }
 
   @override

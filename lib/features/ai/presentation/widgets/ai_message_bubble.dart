@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
+import '../../../settings/data/providers/settings_providers.dart';
+import '../../../settings/domain/entities/user_profile_entity.dart';
 import '../../domain/entities/ai_message_entity.dart';
 
 /// AI 채팅 메시지 버블 위젯
-class AiMessageBubble extends StatelessWidget {
+class AiMessageBubble extends ConsumerWidget {
   final AiMessageEntity message;
   final Function(AiMessageEntity)? onFavoriteToggle;
   final bool isFavorite;
@@ -17,8 +22,9 @@ class AiMessageBubble extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isUser = message.isUser;
+    final userProfileAsync = ref.watch(userProfileNotifierProvider);
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -35,7 +41,12 @@ class AiMessageBubble extends StatelessWidget {
                 color: AppColors.pointBrown,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.smart_toy, color: Colors.white, size: 16),
+              child: Image.asset(
+                'assets/icons/logo_notinclude_text.png',
+                width: 20,
+                height: 20,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(width: AppSpacing.sm),
           ],
@@ -73,33 +84,33 @@ class AiMessageBubble extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // 메시지 내용
+                    Text(
+                      message.content,
+                      style: AppFonts.bodyMedium.copyWith(
+                        color: isUser ? Colors.white : AppColors.pointDark,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    
+                    // 하단 메타 정보 (시간, 즐겨찾기 등)
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: Text(
-                            message.content,
-                            style: AppFonts.bodyMedium.copyWith(
-                              color: isUser ? Colors.white : AppColors.pointDark,
-                              height: 1.4,
-                            ),
+                        Text(
+                          _formatTime(message.timestamp),
+                          style: AppFonts.bodySmall.copyWith(
+                            color: isUser ? Colors.white70 : AppColors.pointGray,
                           ),
                         ),
-                        if (isFavorite && !isUser) ...[
-                          const SizedBox(width: AppSpacing.xs),
+                        if (isFavorite && !isUser)
                           const Icon(
                             Icons.star,
                             color: Colors.amber,
                             size: 16,
                           ),
-                        ],
                       ],
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      _formatTime(message.timestamp),
-                      style: AppFonts.bodySmall.copyWith(
-                        color: isUser ? Colors.white70 : AppColors.pointGray,
-                      ),
                     ),
                   ],
                 ),
@@ -108,18 +119,7 @@ class AiMessageBubble extends StatelessWidget {
           ),
           if (isUser) ...[
             const SizedBox(width: AppSpacing.sm),
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: AppColors.pointGray.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.person,
-                color: AppColors.pointGray,
-                size: 16,
-              ),
-            ),
+            _buildUserAvatar(userProfileAsync),
           ],
         ],
       ),
@@ -175,6 +175,52 @@ class AiMessageBubble extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUserAvatar(AsyncValue<UserProfileEntity> userProfileAsync) {
+    return Container(
+      padding: const EdgeInsets.all(2), // 이미지 주변에 여백
+      decoration: BoxDecoration(
+        color: AppColors.pointGray.withValues(alpha: 0.2),
+        shape: BoxShape.circle,
+      ),
+      child: ClipOval(
+        child: SizedBox(
+          width: 28, // 16에서 28로 증가
+          height: 28,
+          child: userProfileAsync.when(
+            data: (userProfile) {
+              if (userProfile.avatarPath != null && userProfile.avatarPath!.isNotEmpty) {
+                final file = File(userProfile.avatarPath!);
+                if (file.existsSync()) {
+                  return Image.file(
+                    file,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return _buildDefaultUserIcon();
+                    },
+                  );
+                }
+              }
+              return _buildDefaultUserIcon();
+            },
+            loading: () => _buildDefaultUserIcon(),
+            error: (_, __) => _buildDefaultUserIcon(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDefaultUserIcon() {
+    return Container(
+      color: AppColors.pointGray.withValues(alpha: 0.3),
+      child: const Icon(
+        Icons.person,
+        color: AppColors.pointGray,
+        size: 20, // 16에서 20으로 증가
       ),
     );
   }

@@ -29,6 +29,12 @@ abstract class AiRepository {
   /// 추천 질문 가져오기
   Future<List<AiSuggestedQuestionEntity>> getSuggestedQuestions();
 
+  /// 펫 정보 기반 맞춤형 추천 질문 가져오기
+  Future<List<AiSuggestedQuestionEntity>> getPersonalizedSuggestedQuestions({
+    String? category,
+    PetProfileEntity? pet,
+  });
+
   /// 즐겨찾기 메시지 추가
   Future<AiFavoriteEntity> addFavoriteMessage(
     AiMessageEntity message,
@@ -66,4 +72,23 @@ abstract class AiRepository {
 
   /// 채팅 요약 삭제
   Future<void> deleteChatSummary(String summaryId);
+
+  /// 채팅 히스토리 저장
+  Future<void> saveChatHistory(AiChatHistoryEntity chatHistory);
+
+  /// AI를 사용하여 채팅 요약 생성
+  Future<AiChatSummary> generateChatSummary({
+    required List<String> userMessages,
+    required String petName,
+    required String category,
+  });
+
+  /// 채팅 히스토리 목록 가져오기 (최대 30개, 최근 순)
+  Future<List<AiChatHistoryEntity>> getChatHistories({
+    int limit = 30,
+    bool onlyManualSaved = false,
+  });
+
+  /// 채팅 히스토리 삭제
+  Future<void> deleteChatHistory(String historyId);
 }

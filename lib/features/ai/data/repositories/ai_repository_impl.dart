@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
@@ -153,6 +154,21 @@ class AiRepositoryImpl implements AiRepository {
     return _aiMockDataService.getSuggestedQuestions();
   }
 
+  /// 펫 정보 기반 맞춤형 추천 질문 가져오기
+  @override
+  Future<List<AiSuggestedQuestionEntity>> getPersonalizedSuggestedQuestions({
+    String? category,
+    PetProfileEntity? pet,
+  }) async {
+    await MockHelper.simulateApiCall();
+    
+    return AiConfigMockData.getPersonalizedQuestions(
+      category: category,
+      petType: pet?.type,
+      petAge: pet?.age,
+    );
+  }
+
   @override
   Future<AiFavoriteEntity> addFavoriteMessage(
     AiMessageEntity message,
@@ -246,6 +262,54 @@ class AiRepositoryImpl implements AiRepository {
   @override
   Future<void> deleteChatSummary(String summaryId) async {
     // 실제 API 호출로 채팅 요약 삭제
+    await MockHelper.simulateApiCall();
+    // 실제 구현에서는 서버 API나 로컬 저장소에서 삭제
+  }
+
+  @override
+  Future<void> saveChatHistory(AiChatHistoryEntity chatHistory) async {
+    // 실제 API 호출로 채팅 히스토리 저장
+    await MockHelper.simulateApiCall();
+    // 실제 구현에서는 서버 API나 로컬 저장소에 저장
+    debugPrint('채팅 히스토리 저장: ${chatHistory.title}');
+  }
+
+  @override
+  Future<AiChatSummary> generateChatSummary({
+    required List<String> userMessages,
+    required String petName,
+    required String category,
+  }) async {
+    // 실제 ChatGPT API 호출로 요약 생성
+    await MockHelper.simulateApiCall();
+    
+    // Mock 요약 생성
+    final combinedMessages = userMessages.join(' ');
+    final title = combinedMessages.length > 20 
+        ? '${combinedMessages.substring(0, 20)}...' 
+        : combinedMessages;
+        
+    return AiChatSummary(
+      title: title.isNotEmpty ? title : '$petNameの$category相談',
+      content: '$petNameの$categoryについて相談した内容',
+    );
+  }
+
+  @override
+  Future<List<AiChatHistoryEntity>> getChatHistories({
+    int limit = 30,
+    bool onlyManualSaved = false,
+  }) async {
+    // 실제 API 호출로 채팅 히스토리 목록 가져오기
+    await MockHelper.simulateApiCall();
+    // 실제 구현에서는 서버 API나 로컬 저장소에서 데이터 가져오기
+    // 최대 30개, 최근 순으로 정렬하여 반환
+    return [];
+  }
+
+  @override
+  Future<void> deleteChatHistory(String historyId) async {
+    // 실제 API 호출로 채팅 히스토리 삭제
     await MockHelper.simulateApiCall();
     // 실제 구현에서는 서버 API나 로컬 저장소에서 삭제
   }

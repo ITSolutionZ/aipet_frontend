@@ -32,7 +32,12 @@ class AiQuestionRequestBubble extends StatelessWidget {
               color: AppColors.pointBrown,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.smart_toy, color: Colors.white, size: 16),
+            child: Image.asset(
+              'assets/icons/logo_notinclude_text.png',
+              width: 20,
+              height: 20,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(width: AppSpacing.sm),
 
@@ -59,7 +64,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
                 children: [
                   // AI 메시지 텍스트
                   Text(
-                    '${selectedCategory?.name}について、どのような内容でしょうか？',
+                    _getCategorySpecificTitle(),
                     style: AppFonts.titleMedium.copyWith(
                       color: AppColors.pointDark,
                       fontWeight: FontWeight.bold,
@@ -69,7 +74,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
                   const SizedBox(height: AppSpacing.sm),
 
                   Text(
-                    '${selectedPet?.name ?? 'ペット'}の状況を具体的に教えてください。より正確なアドバイスを提供します。',
+                    _getCategorySpecificMessage(),
                     style: AppFonts.bodyMedium.copyWith(
                       color: AppColors.pointGray,
                       height: 1.4,
@@ -98,46 +103,158 @@ class AiQuestionRequestBubble extends StatelessWidget {
     );
   }
 
+  String _getCategorySpecificTitle() {
+    final petName = selectedPet?.name ?? 'ペット';
+    
+    switch (selectedCategory?.id) {
+      case 'health':
+        return '$petNameの健康について、どのような症状や心配事がありますか？';
+      case 'food':
+        return '$petNameの食事について、具体的にどんなことが気になりますか？';
+      case 'behavior':
+        return '$petNameの行動について、どのようなお悩みがありますか？';
+      case 'grooming':
+        return '$petNameのグルーミングについて、何かお困りのことはありますか？';
+      case 'toilet':
+        return '$petNameのトイレについて、どのような問題がありますか？';
+      case 'recipe':
+        return '$petNameの手作りレシピについて、何を知りたいですか？';
+      case 'general':
+        return '$petNameについて、何かご質問はありますか？';
+      case 'others':
+        return '$petNameについて、他に気になることはありますか？';
+      default:
+        return '${selectedCategory?.name ?? 'ペット'}について、どのような内容でしょうか？';
+    }
+  }
+
+  String _getCategorySpecificMessage() {
+    final petName = selectedPet?.name ?? 'ペット';
+    final petAge = selectedPet != null ? '${selectedPet!.age}歳の' : '';
+    final petType = selectedPet?.typeName ?? 'ペット';
+    
+    switch (selectedCategory?.id) {
+      case 'health':
+        return '$petAge$petTypeの$petNameの状況を詳しく教えてください。症状、期間、食欲の変化なども含めて説明していただけると、より正確なアドバイスができます。';
+      case 'food':
+        return '$petAge$petTypeの$petNameの体重や活動量も考慮して、最適な食事プランをご提案します。現在の食事状況を教えてください。';
+      case 'behavior':
+        return '$petAge$petTypeの$petNameの行動の詳細（いつ、どこで、どのような状況で起こるか）を教えてください。';
+      case 'grooming':
+        return '$petAge$petTypeの$petNameの毛質や皮膚の状態、現在のお手入れ方法を教えてください。';
+      case 'toilet':
+        return '$petAge$petTypeの$petNameの現在のトイレ状況と、具体的な問題を教えてください。';
+      case 'recipe':
+        return '$petAge$petTypeの$petNameに適した手作り料理のレシピをご提案します。好みやアレルギーがあれば教えてください。';
+      default:
+        return '$petNameの状況を具体的に教えてください。より正確なアドバイスを提供します。';
+    }
+  }
+
   Widget _buildQuestionExamples() {
     List<String> examples = [];
+
+    // 디버그: 선택된 카테고리 확인
+    debugPrint('Selected Category ID: ${selectedCategory?.id}');
+    debugPrint('Selected Category Name: ${selectedCategory?.name}');
 
     // 카테고리별 질문 예시
     switch (selectedCategory?.id) {
       case 'health':
         examples = [
           '💡 こんなコトを聞いてみてください',
-          '🍽️ お腹の調子が悪い',
-          '🚶 散歩の時間はどれくらいかかりますか？',
-          '💊 予防接種のスケジュールが気になります',
-          '✂️ 毛づくりのマニュアル',
+          '🏥 最近元気がないのですが',
+          '🌡️ 体温が高いような気がします',
+          '💊 ワクチンの接種時期について',
+          '⚖️ 体重管理のアドバイスを',
+          '🩺 定期検診の頻度を教えて',
         ];
         break;
       case 'food':
         examples = [
           '💡 こんなコトを聞いてみてください',
-          '🍽️ 適切なフードの量を教えて',
-          '⏰ 食事の時間について',
+          '🍽️ 適切な食事量を教えて',
+          '⏰ 食事の回数と時間帯について',
           '🚫 食べてはいけないものは？',
-          '💊 サプリメントについて',
+          '🥕 手作りフードのレシピを',
+          '💊 サプリメントは必要ですか？',
         ];
         break;
-      case 'training':
+      case 'behavior':
         examples = [
           '💡 こんなコトを聞いてみてください',
           '🎯 基本的なしつけ方法',
-          '🚫 無駄吠えをやめさせたい',
+          '🔊 無駄吠えをやめさせたい',
           '🚶 散歩時の問題行動',
-          '🏠 室内でのマナー',
+          '🏠 室内でのマナーについて',
+          '😰 分離不安の対処法',
+        ];
+        break;
+      case 'grooming':
+        examples = [
+          '💡 こんなコトを聞いてみてください',
+          '✂️ 毛玉の取り方を教えて',
+          '🛁 お風呂の入れ方と頻度',
+          '💅 爪切りのタイミング',
+          '👂 耳掃除のやり方',
+          '🦷 歯磨きのコツを教えて',
+        ];
+        break;
+      case 'toilet':
+        examples = [
+          '💡 こんなコトを聞いてみてください',
+          '🏠 トイレトレーニングのコツ',
+          '💩 うんちの状態が気になります',
+          '🚫 粗相をやめさせたい',
+          '📍 トイレの場所を覚えない',
+          '⏰ トイレのタイミングについて',
+        ];
+        break;
+      case 'recipe':
+        examples = [
+          '💡 こんなコトを聞いてみてください',
+          '🥘 簡単な手作りレシピを',
+          '🥗 野菜を使ったメニュー',
+          '🍖 お肉を使った料理',
+          '🎂 特別な日のご飯',
+          '🍼 子犬・子猫用の食事',
+        ];
+        break;
+      case 'general':
+        examples = [
+          '💡 こんなコトを聞いてみてください',
+          '🐾 新しいペットを迎える準備',
+          '🛡️ ペット保険について',
+          '🌡️ 季節ごとのケア方法',
+          '👨‍⚕️ 良い獣医師の選び方',
+          '📚 初心者向けのアドバイス',
+        ];
+        break;
+      case 'others':
+        examples = [
+          '💡 こんなコトを聞いてみてください',
+          '✈️ 旅行時のペットケア',
+          '👴 高齢ペットのケア方法',
+          '🏠 引っ越し時の注意点',
+          '👶 赤ちゃんとペットの共生',
+          '🎉 ストレス発散方法',
         ];
         break;
       default:
         examples = [
           '💡 こんなコトを聞いてみてください',
-          '🍽️ お腹の調子が悪い',
-          '🚶 散歩の時間はどれくらいかかりますか？',
-          '💊 予防接種のスケジュールが気になります',
-          '✂️ 毛づくりのマニュアル',
+          '🏥 健康に関する心配事',
+          '🍽️ 食事についてのアドバイス',
+          '🎯 しつけや行動の相談',
+          '✂️ お手入れの方法',
+          '❓ その他気になることは？',
         ];
+    }
+
+    // 디버그: examples 배열 확인
+    debugPrint('Examples count: ${examples.length}');
+    for (int i = 0; i < examples.length; i++) {
+      debugPrint('Example $i: ${examples[i]}');
     }
 
     return Column(
@@ -162,47 +279,65 @@ class AiQuestionRequestBubble extends StatelessWidget {
   }
 
   Widget _buildSuggestedQuestion(String question) {
-    // 아이콘을 제거하여 실제 질문 텍스트만 추출
+    // 디버그: 질문 텍스트 확인
+    debugPrint('Building question widget for: "$question"');
+    
+    // 이모지를 제거하여 실제 질문 텍스트만 추출 (전송용)
     final questionText = question.replaceAll(
-      RegExp(r'^[🍽️🚶💊✂️🎯🚫🏠]+\s*'),
+      RegExp(r'^[🍽️🚶💊✂️🎯🚫🏠🏥🌡️💡⚖️🩺⏰🎯🔊🛁💅👂🦷💩📍🥘🥗🍖🎂🍼🐾🛡️📚✈️👴👶🎉❓]+\s*'),
       '',
     );
 
+    debugPrint('Cleaned question text: "$questionText"');
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.xs),
-      child: InkWell(
-        onTap: onQuestionTap != null
-            ? () {
-                // 펫 이름을 포함한 완전한 질문으로 만들기
-                final petName = selectedPet?.name ?? 'ペット';
-                final fullQuestion = '$petNameの$questionText';
-                onQuestionTap!(fullQuestion);
-              }
-            : null,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm,
-            vertical: AppSpacing.xs,
-          ),
-          decoration: BoxDecoration(
-            color: onQuestionTap != null
-                ? AiColors.questionRequestBackground
-                : AppColors.pointBrown.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-            border: Border.all(
-              color: onQuestionTap != null
-                  ? AiColors.unselectedBorderColor
-                  : AppColors.pointBrown.withValues(alpha: 0.1),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onQuestionTap != null
+              ? () {
+                  // 펫 이름을 포함한 완전한 질문으로 만들기 (이모지 포함된 원본 사용)
+                  final petName = selectedPet?.name ?? 'ペット';
+                  final fullQuestion = '$petNameの$question';
+                  debugPrint('Sending question: "$fullQuestion"');
+                  onQuestionTap!(fullQuestion);
+                }
+              : null,
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
             ),
-          ),
-          child: Text(
-            question,
-            style: AppFonts.bodySmall.copyWith(
-              color: onQuestionTap != null
-                  ? AppColors.pointBrown
-                  : AppColors.pointDark,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+              border: Border.all(
+                color: AppColors.pointBrown.withValues(alpha: 0.3),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    question, // 이모지 포함된 원본 질문 표시
+                    style: AppFonts.bodyMedium.copyWith(
+                      color: AppColors.pointDark,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
