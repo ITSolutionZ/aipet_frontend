@@ -472,10 +472,11 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                               color: AiColors.favoriteBackground,
                               borderRadius: BorderRadius.circular(6),
                             ),
-                            child: const Icon(
-                              Icons.smart_toy,
+                            child: Image.asset(
+                              'assets/icons/logo_notinclude_text.png',
+                              width: 20,
+                              height: 20,
                               color: AppColors.pointBrown,
-                              size: 16,
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
