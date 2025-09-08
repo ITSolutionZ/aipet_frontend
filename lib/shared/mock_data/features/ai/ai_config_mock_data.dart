@@ -50,23 +50,12 @@ class AiConfigMockData {
   /// AI 추천 질문 Mock 데이터
   static List<AiSuggestedQuestionEntity> getMockSuggestedQuestions() {
     return [
+      // 건강 관련 질문들
       const AiSuggestedQuestionEntity(
         id: '1',
         question: 'ペットが食事を拒否する時はどうしたらいいですか？',
         category: 'health',
         icon: Icons.restaurant,
-      ),
-      const AiSuggestedQuestionEntity(
-        id: '2',
-        question: '散歩の適切な時間はどのくらいですか？',
-        category: 'exercise',
-        icon: Icons.access_time,
-      ),
-      const AiSuggestedQuestionEntity(
-        id: '3',
-        question: 'ペットが夜泣きをやめないのですが？',
-        category: 'behavior',
-        icon: Icons.bedtime,
       ),
       const AiSuggestedQuestionEntity(
         id: '4',
@@ -75,28 +64,110 @@ class AiConfigMockData {
         icon: Icons.medical_services,
       ),
       const AiSuggestedQuestionEntity(
-        id: '5',
-        question: 'ペットの毛玉を取る方法は？',
-        category: 'grooming',
-        icon: Icons.content_cut,
+        id: '9',
+        question: '体重管理はどのように行えばいいですか？',
+        category: 'health',
+        icon: Icons.monitor_weight,
       ),
+      const AiSuggestedQuestionEntity(
+        id: '10',
+        question: '定期健康診断の頻度はどのくらいですか？',
+        category: 'health',
+        icon: Icons.health_and_safety,
+      ),
+
+      // 식사 관련 질문들
       const AiSuggestedQuestionEntity(
         id: '6',
         question: '適切な食事量を教えてください',
-        category: 'feeding',
+        category: 'food',
         icon: Icons.scale,
       ),
       const AiSuggestedQuestionEntity(
-        id: '7',
-        question: '雨の日の室内遊びのアイデアは？',
-        category: 'exercise',
-        icon: Icons.home,
+        id: '11',
+        question: '手作りフードのレシピを教えて',
+        category: 'food',
+        icon: Icons.restaurant_menu,
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '12',
+        question: 'おやつの与え方と注意点は？',
+        category: 'food',
+        icon: Icons.cookie,
+      ),
+
+      // 행동 관련 질문들
+      const AiSuggestedQuestionEntity(
+        id: '3',
+        question: 'ペットが夜泣きをやめないのですが？',
+        category: 'behavior',
+        icon: Icons.bedtime,
       ),
       const AiSuggestedQuestionEntity(
         id: '8',
         question: 'ペットが他の動物を怖がります',
         category: 'behavior',
         icon: Icons.psychology,
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '13',
+        question: '無駄吠えをやめさせる方法は？',
+        category: 'behavior',
+        icon: Icons.volume_off,
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '14',
+        question: 'トイレトレーニングのコツを教えて',
+        category: 'toilet',
+        icon: Icons.home,
+      ),
+
+      // 그루밍 관련 질문들
+      const AiSuggestedQuestionEntity(
+        id: '5',
+        question: 'ペットの毛玉を取る方法は？',
+        category: 'grooming',
+        icon: Icons.content_cut,
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '15',
+        question: 'お風呂の入れ方と頻度は？',
+        category: 'grooming',
+        icon: Icons.bathtub,
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '16',
+        question: '爪切りのタイミングと方法は？',
+        category: 'grooming',
+        icon: Icons.content_cut,
+      ),
+
+      // 일반 상담 질문들
+      const AiSuggestedQuestionEntity(
+        id: '17',
+        question: '新しいペットを迎える準備は？',
+        category: 'general',
+        icon: Icons.pets,
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '18',
+        question: 'ペット保険について教えて',
+        category: 'general',
+        icon: Icons.shield,
+      ),
+
+      // 기타 질문들
+      const AiSuggestedQuestionEntity(
+        id: '19',
+        question: '旅行時のペットケアはどうしたら？',
+        category: 'others',
+        icon: Icons.travel_explore,
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '20',
+        question: '高齢ペットのケア方法は？',
+        category: 'others',
+        icon: Icons.elderly,
       ),
     ];
   }
@@ -180,6 +251,93 @@ class AiConfigMockData {
   static List<AiSuggestedQuestionEntity> getQuestionsByCategory(String category) {
     final allQuestions = getMockSuggestedQuestions();
     return allQuestions.where((q) => q.category == category).toList();
+  }
+
+  /// 펫 정보 기반 맞춤형 추천 질문 조회
+  static List<AiSuggestedQuestionEntity> getPersonalizedQuestions({
+    String? category,
+    String? petType,
+    int? petAge,
+  }) {
+    var questions = category != null 
+        ? getQuestionsByCategory(category)
+        : getMockSuggestedQuestions();
+
+    // 펫 타입별 필터링
+    if (petType != null) {
+      final typeLowerCase = petType.toLowerCase();
+      
+      // 강아지 전용 질문들
+      if (typeLowerCase == 'dog') {
+        questions = questions.where((q) => 
+          !q.question.contains('猫') && // 고양이 관련 제외
+          !q.question.contains('ネコ') && 
+          !q.question.contains('キャット')
+        ).toList();
+        
+        // 강아지 특화 질문 우선 순위
+        questions.sort((a, b) {
+          final aDogSpecific = a.question.contains('散歩') || 
+                              a.question.contains('吠え') ||
+                              a.question.contains('トイレトレーニング');
+          final bDogSpecific = b.question.contains('散歩') || 
+                              b.question.contains('吠え') ||
+                              b.question.contains('トイレトレーニング');
+          
+          if (aDogSpecific && !bDogSpecific) return -1;
+          if (!aDogSpecific && bDogSpecific) return 1;
+          return 0;
+        });
+      }
+      
+      // 고양이 전용 질문들
+      else if (typeLowerCase == 'cat') {
+        questions = questions.where((q) => 
+          !q.question.contains('散歩') && // 산책 관련 제외
+          !q.question.contains('吠え') // 짖기 관련 제외
+        ).toList();
+      }
+    }
+
+    // 나이별 필터링
+    if (petAge != null) {
+      // 고령 펫 (7세 이상)
+      if (petAge >= 7) {
+        // 고령 관련 질문 우선 순위
+        questions.sort((a, b) {
+          final aAgeSpecific = a.question.contains('高齢') || 
+                              a.question.contains('体重管理') ||
+                              a.question.contains('健康診断');
+          final bAgeSpecific = b.question.contains('高齢') || 
+                              b.question.contains('体重管理') ||
+                              b.question.contains('健康診断');
+          
+          if (aAgeSpecific && !bAgeSpecific) return -1;
+          if (!aAgeSpecific && bAgeSpecific) return 1;
+          return 0;
+        });
+      }
+      
+      // 어린 펫 (1세 미만)
+      else if (petAge < 1) {
+        // 새끼 관련 질문 우선 순위
+        questions.sort((a, b) {
+          final aPuppySpecific = a.question.contains('新しいペット') || 
+                                 a.question.contains('トレーニング') ||
+                                 a.question.contains('ワクチン');
+          final bPuppySpecific = b.question.contains('新しいペット') || 
+                                 b.question.contains('トレーニング') ||
+                                 b.question.contains('ワクチン');
+          
+          if (aPuppySpecific && !bPuppySpecific) return -1;
+          if (!aPuppySpecific && bPuppySpecific) return 1;
+          return 0;
+        });
+      }
+    }
+
+    // 최대 6개까지만 반환
+    return questions.take(6).toList();
   }
 
   /// 키워드로 응답 템플릿 찾기

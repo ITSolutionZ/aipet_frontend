@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/shared.dart';
+import '../../data/services/ai_category_service.dart';
 import '../../domain/entities/ai_category_entity.dart';
 
 /// AI 메시지 버블 형태의 카테고리 선택 위젯
@@ -29,7 +30,12 @@ class AiCategorySelectionBubble extends StatelessWidget {
               color: AppColors.pointBrown,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.smart_toy, color: Colors.white, size: 16),
+            child: Image.asset(
+              'assets/icons/logo_notinclude_text.png',
+              width: 20,
+              height: 20,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(width: AppSpacing.sm),
           
@@ -99,7 +105,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
     return Wrap(
       spacing: AppSpacing.sm,
       runSpacing: AppSpacing.sm,
-      children: AiCategoryEntity.defaultCategories.map((category) {
+      children: AiCategoryService.getDefaultCategories().map((category) {
         return _buildCategoryChip(category);
       }).toList(),
     );

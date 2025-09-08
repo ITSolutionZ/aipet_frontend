@@ -8,14 +8,50 @@ import 'pet_content_filter_service.dart';
 class OpenAIService {
   late final Dio _dio;
   final PetContentFilterService _contentFilter = PetContentFilterService();
+  
+  // API 안정성을 위한 설정
+  static const int _maxRetries = 3;
+  static const Duration _connectTimeout = Duration(seconds: 30);
+  static const Duration _receiveTimeout = Duration(seconds: 60);
 
   OpenAIService() {
     _dio = Dio();
     _dio.options.baseUrl = 'https://api.openai.com/v1';
     _dio.options.headers['Content-Type'] = 'application/json';
+    _dio.options.connectTimeout = _connectTimeout;
+    _dio.options.receiveTimeout = _receiveTimeout;
+    
+    // 인터셉터 추가로 요청/응답 로깅 및 에러 처리 개선
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          // API 키 확인
+          if (!options.headers.containsKey('Authorization')) {
+            final apiKey = AppConfig.current.openaiApiKey;
+            if (apiKey.isNotEmpty) {
+              options.headers['Authorization'] = 'Bearer $apiKey';
+            }
+          }
+          handler.next(options);
+        },
+        onError: (error, handler) {
+          // 상세한 에러 정보 로깅 (프로덕션에서는 실제 로깅 프레임워크 사용)
+          // TODO: Replace with proper logging framework in production
+          // ignore: avoid_print
+          print('OpenAI API Error: ${error.message}');
+          if (error.response != null) {
+            // ignore: avoid_print
+            print('Status: ${error.response?.statusCode}');
+            // ignore: avoid_print
+            print('Data: ${error.response?.data}');
+          }
+          handler.next(error);
+        },
+      ),
+    );
   }
 
-  /// OpenAI ChatGPT API를 사용하여 메시지에 대한 응답 생성
+  /// OpenAI ChatGPT API를 사용하여 메시지에 대한 응답 생성 (재시도 로직 포함)
   Future<String> generateResponse(
     String message, {
     PetProfileEntity? petContext,
@@ -30,7 +66,7 @@ class OpenAIService {
     if (petContext == null) {
       final validationResult = await _contentFilter.validatePetContent(message);
       if (!validationResult.isValid) {
-        return '''申し訳ございません。私はペット専門のAIアシスタントです。🐶🐱
+        return '''こんにちは！私はペット専門のAIアシスタントです。🐶🐱
 
 ${_translateReasonToJapanese(validationResult.reason)}
 
@@ -46,7 +82,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
       }
     }
 
-    try {
+    return _executeWithRetry(() async {
       final response = await _dio.post(
         '/chat/completions',
         options: Options(headers: {'Authorization': 'Bearer $apiKey'}),
@@ -67,16 +103,83 @@ ${_translateReasonToJapanese(validationResult.reason)}
       } else {
         throw Exception('No response from OpenAI API');
       }
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
-        throw Exception('Invalid OpenAI API key');
-      } else if (e.response?.statusCode == 429) {
-        throw Exception('API rate limit exceeded. Please try again later.');
-      } else {
-        throw Exception('Failed to get response from OpenAI: ${e.message}');
+    });
+  }
+
+  /// 재시도 로직이 포함된 API 호출 실행
+  Future<T> _executeWithRetry<T>(Future<T> Function() apiCall) async {
+    int retryCount = 0;
+    late Exception lastException;
+
+    while (retryCount < _maxRetries) {
+      try {
+        return await apiCall();
+      } on DioException catch (e) {
+        lastException = _handleDioException(e);
+        
+        // 재시도하지 않을 에러들
+        if (e.response?.statusCode == 401 || // Invalid API key
+            e.response?.statusCode == 403 || // Forbidden
+            e.response?.statusCode == 400) { // Bad request
+          throw lastException;
+        }
+        
+        // 429(Rate limit) 또는 5xx 서버 에러의 경우 재시도
+        final statusCode = e.response?.statusCode;
+        if (statusCode == 429 || (statusCode != null && statusCode >= 500)) {
+          retryCount++;
+          if (retryCount < _maxRetries) {
+            final delay = Duration(seconds: retryCount * 2); // 지수 백오프
+            // TODO: Replace with proper logging framework in production
+            // ignore: avoid_print
+            print('Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$_maxRetries)');
+            await Future.delayed(delay);
+            continue;
+          }
+        }
+        
+        throw lastException;
+      } catch (e) {
+        lastException = Exception('Unexpected error: $e');
+        retryCount++;
+        if (retryCount < _maxRetries) {
+          final delay = Duration(seconds: retryCount * 2);
+          // TODO: Replace with proper logging framework in production
+          // ignore: avoid_print
+          print('Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$_maxRetries)');
+          await Future.delayed(delay);
+          continue;
+        }
+        throw lastException;
       }
-    } catch (e) {
-      throw Exception('Unexpected error: $e');
+    }
+    
+    throw lastException;
+  }
+
+  /// Dio 예외를 사용자 친화적인 메시지로 변환
+  Exception _handleDioException(DioException e) {
+    switch (e.response?.statusCode) {
+      case 401:
+        return Exception('OpenAI API key가 유효하지 않습니다. 설정을 확인해주세요.');
+      case 429:
+        return Exception('API 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.');
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        return Exception('OpenAI 서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      case null:
+        if (e.type == DioExceptionType.connectionTimeout) {
+          return Exception('연결 시간이 초과되었습니다. 네트워크 연결을 확인해주세요.');
+        } else if (e.type == DioExceptionType.receiveTimeout) {
+          return Exception('응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.');
+        } else if (e.type == DioExceptionType.connectionError) {
+          return Exception('네트워크 연결에 문제가 있습니다. 인터넷 연결을 확인해주세요.');
+        }
+        return Exception('네트워크 오류가 발생했습니다: ${e.message}');
+      default:
+        return Exception('OpenAI API 오류 (${e.response?.statusCode}): ${e.message}');
     }
   }
 
