@@ -30,7 +30,12 @@ class AiPetSelectionBubble extends ConsumerWidget {
               color: AppColors.pointBrown,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.smart_toy, color: Colors.white, size: 16),
+            child: Image.asset(
+              'assets/icons/logo_notinclude_text.png',
+              width: 20,
+              height: 20,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(width: AppSpacing.sm),
 
@@ -57,7 +62,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                 children: [
                   // AI 메시지 텍스트
                   Text(
-                    '申し訳ございません。私はペット専門のAIアシスタントです。🐶 🐱',
+                    'こんにちは！私はペット専門のAIアシスタントです。🐶 🐱',
                     style: AppFonts.bodyMedium.copyWith(
                       color: AppColors.pointDark,
                       height: 1.4,
