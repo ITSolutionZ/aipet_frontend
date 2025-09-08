@@ -1,5 +1,6 @@
 export 'ai_category_selection.dart';
 export 'ai_category_selection_bubble.dart';
+export 'ai_follow_up_questions_bubble.dart';
 export 'ai_message_bubble.dart';
 export 'ai_message_input.dart';
 export 'ai_pet_selection.dart';

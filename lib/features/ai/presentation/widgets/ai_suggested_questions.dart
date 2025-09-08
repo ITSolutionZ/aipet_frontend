@@ -16,6 +16,12 @@ class AiSuggestedQuestions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 디버그: 질문 목록 확인
+    debugPrint('AiSuggestedQuestions: Building with ${questions.length} questions');
+    for (int i = 0; i < questions.length; i++) {
+      debugPrint('Question $i: "${questions[i].question}" (icon: ${questions[i].icon})');
+    }
+    
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
@@ -34,7 +40,10 @@ class AiSuggestedQuestions extends StatelessWidget {
             runSpacing: AppSpacing.sm,
             children: questions.map((question) {
               return GestureDetector(
-                onTap: () => onQuestionTap(question.question),
+                onTap: () {
+                  debugPrint('Question tapped: "${question.question}"');
+                  onQuestionTap(question.question);
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
@@ -45,6 +54,7 @@ class AiSuggestedQuestions extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadius.large),
                     border: Border.all(
                       color: AppColors.pointBrown.withValues(alpha: 0.3),
+                      width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -63,10 +73,15 @@ class AiSuggestedQuestions extends StatelessWidget {
                         color: AppColors.pointBrown,
                       ),
                       const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        question.question,
-                        style: AppFonts.bodySmall.copyWith(
-                          color: AppColors.pointDark,
+                      Flexible(
+                        child: Text(
+                          question.question.isEmpty ? 'No question text' : question.question,
+                          style: AppFonts.bodyMedium.copyWith(
+                            color: AppColors.pointDark,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
