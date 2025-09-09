@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 
 import '../../../../shared/shared.dart';
 import '../../domain/domain.dart';
+import '../../notification.dart';
+import 'notification_stats_factory.dart' as data_factory;
 
 /// 알림 통계 분석 서비스
 class NotificationAnalyticsService {
@@ -57,14 +59,15 @@ class NotificationAnalyticsService {
   /// 모의 데이터 생성
   Future<void> _createMockData() async {
     try {
-      // 모의 통계 데이터 생성
-      final mockStats = NotificationStatsFactory.generateMockStats();
+      // 모의 통계 데이터 생성 (데이터 레이어의 팩토리 사용)
+      final mockStats =
+          data_factory.NotificationStatsFactory.generateMockStats();
       await _saveStats(mockStats);
       _statsController.add(mockStats);
 
       // 모의 사용자 참여도 데이터 생성
       final mockUserEngagement =
-          NotificationStatsFactory.generateMockUserEngagement();
+          data_factory.NotificationStatsFactory.generateMockUserEngagement();
       await _saveUserEngagement(mockUserEngagement);
       _userEngagementController.add(mockUserEngagement);
 
@@ -227,7 +230,7 @@ class NotificationAnalyticsService {
       }
 
       // 요약 생성
-      final summary = NotificationStatsFactory.generateSummary(stats);
+      final summary = _generateSummary(stats);
 
       return NotificationAnalytics(
         id: 'analytics_${now.millisecondsSinceEpoch}',
@@ -357,12 +360,8 @@ class NotificationAnalyticsService {
           )
           .toList();
 
-      final recentSummary = NotificationStatsFactory.generateSummary(
-        recentStats,
-      );
-      final previousSummary = NotificationStatsFactory.generateSummary(
-        previousStats,
-      );
+      final recentSummary = _generateSummary(recentStats);
+      final previousSummary = _generateSummary(previousStats);
 
       return {
         'recent': recentSummary,
@@ -394,6 +393,30 @@ class NotificationAnalyticsService {
   double _calculateChange(double current, double previous) {
     if (previous == 0.0) return current > 0.0 ? 100.0 : 0.0;
     return ((current - previous) / previous) * 100.0;
+  }
+
+  /// 통계 요약 생성 (data layer에서 구현)
+  Map<String, double> _generateSummary(List<NotificationStats> stats) {
+    if (stats.isEmpty) return {};
+
+    final totalSent = stats.fold<int>(0, (sum, stat) => sum + stat.sentCount);
+    final totalOpened = stats.fold<int>(0, (sum, stat) => sum + stat.openedCount);
+    final totalClicked = stats.fold<int>(0, (sum, stat) => sum + stat.clickedCount);
+    final totalDismissed = stats.fold<int>(0, (sum, stat) => sum + stat.dismissedCount);
+    
+    final openRate = totalSent > 0 ? (totalOpened / totalSent) * 100 : 0.0;
+    final clickRate = totalOpened > 0 ? (totalClicked / totalOpened) * 100 : 0.0;
+    final engagementRate = totalSent > 0 ? ((totalOpened + totalClicked) / totalSent) * 100 : 0.0;
+
+    return {
+      'totalSent': totalSent.toDouble(),
+      'totalOpened': totalOpened.toDouble(),
+      'totalClicked': totalClicked.toDouble(),
+      'totalDismissed': totalDismissed.toDouble(),
+      'averageOpenRate': openRate,
+      'averageClickRate': clickRate,
+      'totalEngagementRate': engagementRate,
+    };
   }
 
   /// 통계 저장

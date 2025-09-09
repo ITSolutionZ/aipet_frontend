@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/services/notification_service.dart';
+import '../../data/providers/notification_controller_providers.dart';
+import '../../domain/usecases/usecases.dart';
 
 /// 알림 시간 설정 컨트롤러
 class AlarmTimeSettingsController
     extends StateNotifier<AlarmTimeSettingsState> {
-  AlarmTimeSettingsController() : super(const AlarmTimeSettingsState());
+  final GetNotificationSettingsUseCase _getNotificationSettingsUseCase;
+  
+  AlarmTimeSettingsController(this._getNotificationSettingsUseCase) : super(const AlarmTimeSettingsState());
 
   /// 알림 시간 로드
   Future<void> loadAlarmTimes() async {
     try {
-      final notificationService = NotificationService();
-      await notificationService.getNotificationSettings();
+      await _getNotificationSettingsUseCase();
 
       // SharedPreferences에서 저장된 시간 정보 로드
       final prefs = await SharedPreferences.getInstance();
@@ -142,5 +144,7 @@ final alarmTimeSettingsControllerProvider =
     StateNotifierProvider<AlarmTimeSettingsController, AlarmTimeSettingsState>((
       ref,
     ) {
-      return AlarmTimeSettingsController();
+      return AlarmTimeSettingsController(
+        ref.read(getNotificationSettingsUseCaseProvider),
+      );
     });

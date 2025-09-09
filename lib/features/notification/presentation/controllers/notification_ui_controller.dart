@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/controllers/base_controller.dart';
+import '../../data/providers/notification_controller_providers.dart';
 import 'notification_controller.dart';
 
 /// 알림 UI 컨트롤러 - UI 로직 처리
 class NotificationUIController extends BaseController {
   NotificationUIController(super.ref);
 
-  NotificationController get _notificationController =>
-      NotificationController(ref);
+  NotificationController get _notificationController => NotificationController(
+    ref,
+    ref.read(getNotificationsUseCaseProvider),
+    ref.read(getNotificationByIdUseCaseProvider),
+    ref.read(markNotificationAsReadUseCaseProvider),
+    ref.read(deleteNotificationUseCaseProvider),
+    ref.read(getNotificationSettingsUseCaseProvider),
+    ref.read(saveNotificationSettingsUseCaseProvider),
+    ref.read(requestNotificationPermissionUseCaseProvider),
+    ref.read(testNotificationUseCaseProvider),
+  );
 
   /// 알림 목록 가져오기 (UI 피드백 포함)
   Future<List<dynamic>> getNotificationsWithFeedback(
@@ -172,11 +183,11 @@ class NotificationUIController extends BaseController {
             content: const Text('このアラーム通知を削除しますか？'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
+                onPressed: () => context.pop(false),
                 child: const Text('キャンセル'),
               ),
               TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () => context.pop(true),
                 style: TextButton.styleFrom(foregroundColor: Colors.red),
                 child: const Text('削除'),
               ),
@@ -195,11 +206,11 @@ class NotificationUIController extends BaseController {
             content: const Text('アラーム通知を受け取るには許可が必要です。許可しますか？'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
+                onPressed: () => context.pop(false),
                 child: const Text('拒否'),
               ),
               TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () => context.pop(true),
                 child: const Text('許可'),
               ),
             ],

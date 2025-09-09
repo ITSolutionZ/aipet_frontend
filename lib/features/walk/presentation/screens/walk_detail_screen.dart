@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/shared.dart';
 import '../../domain/entities/walk_record_entity.dart';
@@ -46,7 +47,7 @@ class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
         children: [
           // 뒤로가기 버튼
           IconButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             icon: const Icon(
               Icons.arrow_back_ios,
               color: AppColors.pointDark,

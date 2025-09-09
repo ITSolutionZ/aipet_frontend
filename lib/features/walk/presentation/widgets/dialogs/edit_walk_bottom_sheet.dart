@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../shared/shared.dart';
 import '../../../walk.dart';
@@ -236,7 +237,7 @@ class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
                 children: [
                   Expanded(
                     child: TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => context.pop(),
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           vertical: AppSpacing.md,
@@ -534,15 +535,17 @@ class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
             children: [
               _buildCoManagerOption(null, '記録者のみ', Icons.person, '自分だけの記録'),
               const SizedBox(height: AppSpacing.sm),
-              ...coManagers.map((manager) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                    child: _buildCoManagerOption(
-                      manager['id'] as String,
-                      manager['name'] as String,
-                      Icons.people,
-                      '${manager['avatar']} 共同管理',
-                    ),
-                  )),
+              ...coManagers.map(
+                (manager) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: _buildCoManagerOption(
+                    manager['id'] as String,
+                    manager['name'] as String,
+                    Icons.people,
+                    '${manager['avatar']} 共同管理',
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -567,7 +570,9 @@ class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.pointGreen.withValues(alpha: 0.1) : Colors.white,
+          color: isSelected
+              ? AppColors.pointGreen.withValues(alpha: 0.1)
+              : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
             color: isSelected ? AppColors.pointGreen : Colors.grey[300]!,
@@ -598,7 +603,9 @@ class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
                     style: AppFonts.fredoka(
                       fontSize: AppFonts.baseSize,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? AppColors.pointGreen : Colors.grey[800],
+                      color: isSelected
+                          ? AppColors.pointGreen
+                          : Colors.grey[800],
                     ),
                   ),
                   Text(
@@ -655,7 +662,7 @@ class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
         await widget.controller.updateWalkRecord(updatedWalkRecord);
 
         if (mounted) {
-          Navigator.of(context).pop();
+          context.pop();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('散歩記録が更新されました'),

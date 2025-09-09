@@ -82,7 +82,9 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<List<PetSummaryEntity>> getPetSummaries() async {
     // Mock 데이터에서 PetProfileEntity 리스트를 가져온 후 PetSummaryEntity로 변환
     final petProfilesData = PetMockService.getMockPets();
-    final petProfiles = petProfilesData.cast<PetProfileEntity>();
+    final petProfiles = petProfilesData
+        .map((petData) => _convertMockDataToPetProfileEntity(petData))
+        .toList();
     return PetMapper.toSummaryEntityList(petProfiles);
   }
 
@@ -91,7 +93,9 @@ class HomeRepositoryImpl implements HomeRepository {
     // Mock 데이터 사용 (실제 API 연동 전까지)
     await Future.delayed(_mockDelay);
     final petProfilesData = PetMockService.getMockPets();
-    return petProfilesData.cast<PetProfileEntity>();
+    return petProfilesData
+        .map((petData) => _convertMockDataToPetProfileEntity(petData))
+        .toList();
   }
 
   @override
@@ -152,4 +156,23 @@ class HomeRepositoryImpl implements HomeRepository {
 
   // 개발 모드용 지연 시간 상수
   static const Duration _mockDelay = Duration(milliseconds: 250);
+
+  /// PetMockService의 Map 데이터를 PetProfileEntity로 변환
+  PetProfileEntity _convertMockDataToPetProfileEntity(
+    Map<String, dynamic> petData,
+  ) {
+    return PetProfileEntity(
+      id: petData['id'] as String,
+      name: petData['name'] as String,
+      type: petData['typeName'] as String, // typeName을 type으로 매핑
+      breed: petData['breed'] as String?,
+      birthDate: DateTime.parse(petData['birthDate'] as String),
+      imagePath: null, // Mock 데이터에 이미지 경로가 없으므로 null
+      ownerId: 'user1', // Mock 데이터에 ownerId가 없으므로 기본값 사용
+      createdAt: DateTime.parse(petData['createdAt'] as String),
+      updatedAt: DateTime.now(), // Mock 데이터에 updatedAt이 없으므로 현재 시간 사용
+      isActive: true, // 기본값으로 활성 상태
+      additionalInfo: petData['additionalInfo'] as Map<String, dynamic>?,
+    );
+  }
 }
