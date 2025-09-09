@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/shared.dart';
+import '../../shared.dart';
 
-class NotificationSettingsTileWidget extends StatelessWidget {
+/// 설정 타일 컴포넌트 (범용)
+class SettingsTileComponent extends StatelessWidget {
   final String title;
+  final IconData? icon;
   final VoidCallback onTap;
 
-  const NotificationSettingsTileWidget({
+  const SettingsTileComponent({
     super.key,
     required this.title,
     required this.onTap,
+    this.icon,
   });
 
   @override
@@ -16,6 +19,7 @@ class NotificationSettingsTileWidget extends StatelessWidget {
     return GlassCard(
       onTap: onTap,
       child: ListTile(
+        leading: icon != null ? Icon(icon) : null,
         title: Text(
           title,
           style: const TextStyle(

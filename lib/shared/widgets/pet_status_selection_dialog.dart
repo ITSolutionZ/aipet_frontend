@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../design/color.dart';
 import '../design/font.dart';
@@ -240,7 +241,7 @@ class _PetStatusSelectionDialogState extends State<PetStatusSelectionDialog> {
               children: [
                 Expanded(
                   child: TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => context.pop(),
                     child: Text(
                       '戻る',
                       style: AppFonts.bodyMedium.copyWith(
@@ -253,7 +254,7 @@ class _PetStatusSelectionDialogState extends State<PetStatusSelectionDialog> {
                   child: ElevatedButton(
                     onPressed: () {
                       widget.onStatusUpdated(_selectedStatuses, _statusValues);
-                      Navigator.of(context).pop();
+                      context.pop();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.pointBrown,

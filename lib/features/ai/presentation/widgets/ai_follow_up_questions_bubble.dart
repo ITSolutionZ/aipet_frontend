@@ -104,7 +104,7 @@ class AiFollowUpQuestionsBubble extends StatelessWidget {
   }
 
   Widget _buildFollowUpQuestions() {
-    List<String> questions = _getFollowUpQuestions();
+    final List<String> questions = _getFollowUpQuestions();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +117,7 @@ class AiFollowUpQuestionsBubble extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        ...questions.map((question) => _buildQuestionButton(question)).toList(),
+        ...questions.map((question) => _buildQuestionButton(question)),
       ],
     );
   }
@@ -126,35 +126,15 @@ class AiFollowUpQuestionsBubble extends StatelessWidget {
     // 카테고리별 후속 질문 생성
     switch (selectedCategory?.id) {
       case 'health':
-        return [
-          '🏥 定期検診の頻度について',
-          '💊 予防接種のスケジュール',
-          '⚖️ 適正体重の維持方法',
-        ];
+        return ['🏥 定期検診の頻度について', '💊 予防接種のスケジュール', '⚖️ 適正体重の維持方法'];
       case 'food':
-        return [
-          '🍽️ おやつの適切な量',
-          '🥗 手作りフードのレシピ',
-          '⏰ 食事の回数と時間',
-        ];
+        return ['🍽️ おやつの適切な量', '🥗 手作りフードのレシピ', '⏰ 食事の回数と時間'];
       case 'behavior':
-        return [
-          '🎯 基本的なしつけ方法',
-          '🏠 室内でのマナー',
-          '😰 ストレス解消法',
-        ];
+        return ['🎯 基本的なしつけ方法', '🏠 室内でのマナー', '😰 ストレス解消法'];
       case 'grooming':
-        return [
-          '✂️ 毛玉予防のコツ',
-          '🛁 シャンプーの頻度',
-          '💅 爪切りの注意点',
-        ];
+        return ['✂️ 毛玉予防のコツ', '🛁 シャンプーの頻度', '💅 爪切りの注意点'];
       default:
-        return [
-          '🏥 健康管理について',
-          '🍽️ 食事の相談',
-          '🎯 しつけのアドバイス',
-        ];
+        return ['🏥 健康管理について', '🍽️ 食事の相談', '🎯 しつけのアドバイス'];
     }
   }
 

@@ -23,8 +23,12 @@ class AppRouter {
   static const String welcomeRoute = RouteConstants.welcomeRoute;
   static const String schedulingRoute = RouteConstants.schedulingRoute;
   static const String aiRoute = RouteConstants.aiRoute;
+  static const String aiFavoriteMessagesRoute =
+      RouteConstants.aiFavoriteMessagesRoute;
+  static const String aiChatHistoryRoute = RouteConstants.aiChatHistoryRoute;
   static const String walkRoute = RouteConstants.walkRoute;
   static const String walkFromHomeRoute = RouteConstants.walkFromHomeRoute;
+  static const String walkDetailRoute = RouteConstants.walkDetailRoute;
   static const String calendarRoute = RouteConstants.calendarRoute;
   static const String settingsRoute = RouteConstants.settingsRoute;
 

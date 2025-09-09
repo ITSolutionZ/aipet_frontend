@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../shared/shared.dart';
-import '../widgets/app_bar_widget.dart';
 import '../widgets/form_field_widget.dart';
 import '../widgets/profile_header_widget.dart';
 
@@ -75,7 +74,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: const AppDrawer(),
-      appBar: const AppBarWidget(title: 'プロフィール編集'),
+      appBar: const SoftGradientDrawerAppBar(title: 'プロフィール編集'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Form(

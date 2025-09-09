@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../shared/shared.dart';
 import '../../controllers/walk_controller.dart';
@@ -8,10 +9,7 @@ class StartWalkBottomSheet extends StatefulWidget {
 
   const StartWalkBottomSheet({super.key, required this.controller});
 
-  static Future<void> show(
-    BuildContext context,
-    WalkController controller,
-  ) {
+  static Future<void> show(BuildContext context, WalkController controller) {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -164,7 +162,12 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
                         children: [
                           _buildPetOption('pet1', 'Maxi', Icons.pets, '元気な柴犬'),
                           const SizedBox(height: AppSpacing.sm),
-                          _buildPetOption('pet2', 'Luna', Icons.pets, '優しいゴールデン'),
+                          _buildPetOption(
+                            'pet2',
+                            'Luna',
+                            Icons.pets,
+                            '優しいゴールデン',
+                          ),
                         ],
                       ),
                     ),
@@ -177,7 +180,9 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
                       decoration: BoxDecoration(
                         color: AppColors.pointGreen.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppRadius.medium),
-                        border: Border.all(color: AppColors.pointGreen.withValues(alpha: 0.2)),
+                        border: Border.all(
+                          color: AppColors.pointGreen.withValues(alpha: 0.2),
+                        ),
                       ),
                       child: Column(
                         children: [
@@ -267,9 +272,11 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
                 children: [
                   Expanded(
                     child: TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => context.pop(),
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.lg,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppRadius.medium),
                         ),
@@ -291,7 +298,9 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.pointBlue,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.lg,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppRadius.medium),
                         ),
@@ -322,9 +331,14 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
     );
   }
 
-  Widget _buildPetOption(String petId, String name, IconData icon, String description) {
+  Widget _buildPetOption(
+    String petId,
+    String name,
+    IconData icon,
+    String description,
+  ) {
     final isSelected = _selectedPetId == petId;
-    
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -334,7 +348,9 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.pointBlue.withValues(alpha: 0.1) : Colors.white,
+          color: isSelected
+              ? AppColors.pointBlue.withValues(alpha: 0.1)
+              : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
             color: isSelected ? AppColors.pointBlue : Colors.grey[300]!,
@@ -365,7 +381,9 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
                     style: AppFonts.fredoka(
                       fontSize: AppFonts.baseSize,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? AppColors.pointBlue : Colors.grey[800],
+                      color: isSelected
+                          ? AppColors.pointBlue
+                          : Colors.grey[800],
                     ),
                   ),
                   Text(
@@ -400,7 +418,7 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
       );
 
       if (result.isSuccess && mounted) {
-        Navigator.of(context).pop();
+        context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(

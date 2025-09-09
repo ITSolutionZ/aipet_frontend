@@ -3,9 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
 import '../controllers/alarm_time_settings_controller.dart';
-import '../widgets/notification_app_bar_widget.dart';
-import '../widgets/notification_save_button_widget.dart';
-import '../widgets/notification_section_header_widget.dart';
 
 class AlarmTimeSettingsScreen extends ConsumerStatefulWidget {
   const AlarmTimeSettingsScreen({super.key});
@@ -66,14 +63,14 @@ class _AlarmTimeSettingsScreenState
         if (state.isLoading) {
           return const Scaffold(
             backgroundColor: AppColors.pointOffWhite,
-            appBar: NotificationAppBarWidget(title: '알림 시간 설정'),
+            appBar: SoftGradientDrawerAppBar(title: 'アラーム時間設定'),
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
         return Scaffold(
           backgroundColor: AppColors.pointOffWhite,
-          appBar: const NotificationAppBarWidget(title: '알림 시간 설정'),
+          appBar: const SoftGradientDrawerAppBar(title: 'アラーム時間設定'),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
@@ -81,34 +78,30 @@ class _AlarmTimeSettingsScreenState
               children: [
                 const SizedBox(height: AppSpacing.md),
 
-                const NotificationSectionHeaderWidget(title: '식사 알림 시간'),
+                const SectionHeaderComponent(title: '食事アラーム時間'),
 
                 const SizedBox(height: AppSpacing.lg),
 
                 _buildTimeSettingTile(
-                  title: '아침 식사',
-                  subtitle: '아침 식사 알림 시간',
+                  title: '朝食',
+                  subtitle: '朝食アラーム時間',
                   time: state.morningTime,
-                  onTap: () => _selectTime(
-                    context,
-                    '아침 식사 시간',
-                    state.morningTime,
-                    (time) {
-                      ref
-                          .read(alarmTimeSettingsControllerProvider.notifier)
-                          .selectTime('morning', time);
-                    },
-                  ),
+                  onTap: () =>
+                      _selectTime(context, '朝食時間', state.morningTime, (time) {
+                        ref
+                            .read(alarmTimeSettingsControllerProvider.notifier)
+                            .selectTime('morning', time);
+                      }),
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
 
                 _buildTimeSettingTile(
-                  title: '점심 식사',
-                  subtitle: '점심 식사 알림 시간',
+                  title: '昼食',
+                  subtitle: '昼食アラーム時間',
                   time: state.lunchTime,
                   onTap: () =>
-                      _selectTime(context, '점심 식사 시간', state.lunchTime, (time) {
+                      _selectTime(context, '昼食時間', state.lunchTime, (time) {
                         ref
                             .read(alarmTimeSettingsControllerProvider.notifier)
                             .selectTime('lunch', time);
@@ -118,33 +111,29 @@ class _AlarmTimeSettingsScreenState
                 const SizedBox(height: AppSpacing.lg),
 
                 _buildTimeSettingTile(
-                  title: '저녁 식사',
-                  subtitle: '저녁 식사 알림 시간',
+                  title: '夕食',
+                  subtitle: '夕食アラーム時間',
                   time: state.dinnerTime,
-                  onTap: () => _selectTime(
-                    context,
-                    '저녁 식사 시간',
-                    state.dinnerTime,
-                    (time) {
-                      ref
-                          .read(alarmTimeSettingsControllerProvider.notifier)
-                          .selectTime('dinner', time);
-                    },
-                  ),
+                  onTap: () =>
+                      _selectTime(context, '夕食時間', state.dinnerTime, (time) {
+                        ref
+                            .read(alarmTimeSettingsControllerProvider.notifier)
+                            .selectTime('dinner', time);
+                      }),
                 ),
 
                 const SizedBox(height: AppSpacing.xl * 2),
 
-                const NotificationSectionHeaderWidget(title: '산책 알림 시간'),
+                const SectionHeaderComponent(title: '散歩アラーム時間'),
 
                 const SizedBox(height: AppSpacing.lg),
 
                 _buildTimeSettingTile(
-                  title: '산책 시간',
-                  subtitle: '산책 알림 시간',
+                  title: '散歩時間',
+                  subtitle: '散歩アラーム時間',
                   time: state.walkTime,
                   onTap: () =>
-                      _selectTime(context, '산책 시간', state.walkTime, (time) {
+                      _selectTime(context, '散歩時間', state.walkTime, (time) {
                         ref
                             .read(alarmTimeSettingsControllerProvider.notifier)
                             .selectTime('walk', time);
@@ -153,8 +142,8 @@ class _AlarmTimeSettingsScreenState
 
                 const SizedBox(height: AppSpacing.xl * 3),
 
-                NotificationSaveButtonWidget(
-                  text: '저장',
+                SaveButtonComponent(
+                  text: '保存',
                   onPressed: () {
                     ref
                         .read(alarmTimeSettingsControllerProvider.notifier)
