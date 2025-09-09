@@ -5,14 +5,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
-import '../../data/services/notification_service.dart';
+import '../../data/providers/notification_controller_providers.dart';
 import '../../domain/entities/entities.dart';
+import '../components/forms/alarm_toggle_component.dart';
 import '../controllers/notification_ui_controller.dart';
-import '../widgets/alarm_toggle_widget.dart';
-import '../widgets/notification_app_bar_widget.dart';
-import '../widgets/notification_save_button_widget.dart';
-import '../widgets/notification_section_header_widget.dart';
-import '../widgets/notification_settings_tile_widget.dart';
+// SectionHeader와 SettingsTile은 shared/widgets에서 가져옴 (이미 shared.dart에 포함됨)
 
 class PushNotificationScreen extends ConsumerStatefulWidget {
   const PushNotificationScreen({super.key});
@@ -46,8 +43,8 @@ class _PushNotificationScreenState
   /// 알림 설정 로드
   Future<void> _loadNotificationSettings() async {
     try {
-      final notificationService = NotificationService();
-      final settings = await notificationService.getNotificationSettings();
+      final useCase = ref.read(getNotificationSettingsUseCaseProvider);
+      final settings = await useCase();
 
       setState(() {
         _foodAlarmEnabled = settings.isTypeEnabled(NotificationType.feeding);
@@ -67,10 +64,15 @@ class _PushNotificationScreenState
 
   /// 알림 설정 저장
   Future<void> _saveNotificationSettings() async {
+    if (!mounted) return;
+
     try {
-      final notificationService = NotificationService();
-      final currentSettings = await notificationService
-          .getNotificationSettings();
+      final getSettingsUseCase = ref.read(
+        getNotificationSettingsUseCaseProvider,
+      );
+      final currentSettings = await getSettingsUseCase();
+
+      if (!mounted) return;
 
       // 새로운 타입 설정 생성
       final newTypeSettings = Map<NotificationType, bool>.from(
@@ -85,22 +87,30 @@ class _PushNotificationScreenState
         typeSettings: newTypeSettings,
       );
 
-      // context를 미리 저장
-      final navigatorContext = context;
+      if (!mounted) return;
 
       // UI 컨트롤러를 통해 설정 저장 (UI 피드백 포함)
       await _uiController.saveNotificationSettingsWithFeedback(
-        navigatorContext,
+        context,
         newSettings,
       );
 
-      // mounted 체크 후 BuildContext 사용
+      // mounted 체크 후 네비게이션
       if (mounted) {
-        Navigator.of(navigatorContext).pop();
+        context.pop();
       }
     } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('設定の保存に失敗しました: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
       if (kDebugMode) {
-        print('알림 설정 저장 실패: $e');
+        debugPrint('알림 설정 저장 실패: $e');
       }
     }
   }
@@ -110,7 +120,7 @@ class _PushNotificationScreenState
     if (_isLoading) {
       return const Scaffold(
         backgroundColor: AppColors.pointOffWhite,
-        appBar: NotificationAppBarWidget(title: 'プッシュ通知'),
+        appBar: SoftGradientDrawerAppBar(title: 'プッシュ通知'),
         body: Center(child: CircularProgressIndicator()),
       );
     }
@@ -118,19 +128,51 @@ class _PushNotificationScreenState
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: const AppDrawer(),
-      appBar: const NotificationAppBarWidget(title: 'プッシュ通知'),
+      appBar: const SoftGradientDrawerAppBar(title: 'プッシュ通知'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: AppSpacing.sm),
+
+            // 페이지 설명 추가
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              margin: const EdgeInsets.only(bottom: AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.pointBrown.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(AppRadius.medium),
+                border: Border.all(
+                  color: AppColors.pointBrown.withValues(alpha: 0.1),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.info_outline,
+                    color: AppColors.pointBrown,
+                    size: 20,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      'アラームをオンにすると、設定した時間にお知らせを受け取ることができます',
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointBrown,
+                        height: 1.3,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SectionHeaderComponent(title: 'アラーム種類'),
+
             const SizedBox(height: AppSpacing.md),
 
-            const NotificationSectionHeaderWidget(title: 'アラーム種類'),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            AlarmToggleWidget(
+            AlarmToggleComponent(
               title: '食事アラーム',
               subtitle: '食事給与時間をお知らせいたします',
               value: _foodAlarmEnabled,
@@ -143,7 +185,7 @@ class _PushNotificationScreenState
 
             const SizedBox(height: AppSpacing.lg),
 
-            AlarmToggleWidget(
+            AlarmToggleComponent(
               title: '散歩アラーム',
               subtitle: '決めた時間に散歩時間をわかるように',
               value: _walkAlarmEnabled,
@@ -156,7 +198,7 @@ class _PushNotificationScreenState
 
             const SizedBox(height: AppSpacing.lg),
 
-            AlarmToggleWidget(
+            AlarmToggleComponent(
               title: 'システムアラーム',
               subtitle: '予約などをお知らせいたします',
               value: _systemAlarmEnabled,
@@ -169,11 +211,11 @@ class _PushNotificationScreenState
 
             const SizedBox(height: AppSpacing.xl * 2),
 
-            const NotificationSectionHeaderWidget(title: '詳細設定'),
+            const SectionHeaderComponent(title: '詳細設定'),
 
             const SizedBox(height: AppSpacing.lg),
 
-            NotificationSettingsTileWidget(
+            SettingsTileComponent(
               title: 'アラーム時間設定',
               onTap: () {
                 context.go(AppRouter.alarmTimeSettingsRoute);
@@ -182,7 +224,7 @@ class _PushNotificationScreenState
 
             const SizedBox(height: AppSpacing.xl * 3),
 
-            NotificationSaveButtonWidget(
+            SaveButtonComponent(
               text: '修正完了',
               onPressed: _saveNotificationSettings,
             ),

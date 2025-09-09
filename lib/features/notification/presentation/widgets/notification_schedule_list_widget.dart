@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../features/notification/domain/entities/notification_model.dart';
-import '../../../features/notification/domain/entities/notification_schedule.dart';
-import '../../design/color.dart';
-import '../../design/font.dart';
-import '../../design/radius.dart';
-import '../../design/spacing.dart';
+import '../../../../shared/shared.dart';
+import '../../domain/entities/notification_model.dart';
+import '../../domain/entities/notification_schedule.dart';
 
 /// 알림 스케줄 목록 위젯
 class NotificationScheduleListWidget extends StatefulWidget {
@@ -310,7 +307,7 @@ class _NotificationScheduleListWidgetState
         ),
         const SizedBox(width: AppSpacing.xs),
         Text(
-          isEnabled ? '활성' : '비활성',
+          isEnabled ? 'オン' : 'オフ',
           style: AppFonts.caption.copyWith(
             color: isEnabled ? AppColors.pointGreen : AppColors.pointGray,
             fontWeight: FontWeight.w500,
@@ -319,7 +316,7 @@ class _NotificationScheduleListWidgetState
         ...[
           const SizedBox(width: AppSpacing.sm),
           Text(
-            '다음: ${_formatNextTrigger(nextTrigger)}',
+            '次: ${_formatNextTrigger(nextTrigger)}',
             style: AppFonts.caption.copyWith(color: AppColors.pointGray),
           ),
         ],
@@ -346,15 +343,15 @@ class _NotificationScheduleListWidgetState
   String _getScheduleTypeText(ScheduleType type) {
     switch (type) {
       case ScheduleType.once:
-        return '한 번';
+        return '一回';
       case ScheduleType.daily:
-        return '매일';
+        return '毎日';
       case ScheduleType.weekly:
-        return '매주';
+        return '毎週';
       case ScheduleType.monthly:
-        return '매월';
+        return '毎月';
       case ScheduleType.custom:
-        return '사용자';
+        return 'カスタム';
     }
   }
 }

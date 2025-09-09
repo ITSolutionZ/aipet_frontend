@@ -112,13 +112,14 @@ class AiChatNotifier extends _$AiChatNotifier {
       // AI 응답 메시지 추가
       final aiMessage = AiMessageEntity(
         id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
-        content: '${pet.name}についてですね！🐕\n\nどのような内容でお困りですか？カテゴリを選択してください：\n\n• 健康 - 病気、怪我、健康管理\n• 食事 - フード、栄養、給餌\n• 行動 - しつけ、問題行動\n• グルーミング - お手入れ、毛づくろい\n• その他',
+        content:
+            '${pet.name}についてですね！🐕\n\nどのような内容でお困りですか？カテゴリを選択してください：\n\n• 健康 - 病気、怪我、健康管理\n• 食事 - フード、栄養、給餌\n• 行動 - しつけ、問題行動\n• グルーミング - お手入れ、毛づくろい\n• その他',
         type: MessageType.assistant,
         timestamp: DateTime.now().add(const Duration(milliseconds: 500)),
       );
 
       final updatedMessages = [...state.messages, userMessage, aiMessage];
-      
+
       state = state.copyWith(
         selectedPet: pet,
         hasPetSelected: true,
@@ -143,7 +144,8 @@ class AiChatNotifier extends _$AiChatNotifier {
     final petName = state.selectedPet?.name ?? 'ペット';
     final aiMessage = AiMessageEntity(
       id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
-      content: '${petName}の${category.name}について、どのような症状や心配事がありますか？\n\n${petName}の状況を詳しく教えてください。症状、期間、食欲の変化なども含めて説明していただけると、より正確なアドバイスができます。',
+      content:
+          '$petNameの${category.name}について、どのような症状や心配事がありますか？\n\n$petNameの状況を詳しく教えてください。症状、期間、食欲の変化なども含めて説明していただけると、より正確なアドバイスができます。',
       type: MessageType.assistant,
       timestamp: DateTime.now().add(const Duration(milliseconds: 500)),
     );
@@ -159,14 +161,13 @@ class AiChatNotifier extends _$AiChatNotifier {
     // 카테고리별 맞춤 추천 질문 업데이트
     try {
       final repository = ref.read(aiRepositoryProvider);
-      final personalizedQuestions = await repository.getPersonalizedSuggestedQuestions(
-        category: category.id,
-        pet: state.selectedPet,
-      );
+      final personalizedQuestions = await repository
+          .getPersonalizedSuggestedQuestions(
+            category: category.id,
+            pet: state.selectedPet,
+          );
 
-      state = state.copyWith(
-        suggestedQuestions: personalizedQuestions,
-      );
+      state = state.copyWith(suggestedQuestions: personalizedQuestions);
     } catch (e) {
       // 에러 발생 시 기본 추천 질문 유지
       AiLogger.logApiError(e);
@@ -239,12 +240,9 @@ class AiChatNotifier extends _$AiChatNotifier {
     );
 
     final updatedMessages = [...state.messages, userMessage];
-    
+
     // 사용자 메시지를 추가하고 타이핑 상태 시작
-    state = state.copyWith(
-      messages: updatedMessages,
-      isTyping: true,
-    );
+    state = state.copyWith(messages: updatedMessages, isTyping: true);
 
     try {
       // Repository를 통해 AI 응답 받기 (펫 정보 포함)
@@ -252,7 +250,7 @@ class AiChatNotifier extends _$AiChatNotifier {
         content.trim(),
         petContext: state.selectedPet,
       );
-      
+
       // 현재 메시지 목록에 AI 응답 추가 (중복 방지)
       final finalMessages = [...state.messages, aiResponse];
 
@@ -297,7 +295,7 @@ class AiChatNotifier extends _$AiChatNotifier {
     try {
       // AI를 사용하여 채팅 내용을 요약
       final summary = await _generateChatSummary();
-      
+
       // 채팅 히스토리 생성
       final chatHistory = AiChatHistoryEntity(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -313,7 +311,6 @@ class AiChatNotifier extends _$AiChatNotifier {
 
       // 히스토리에 저장
       await repository.saveChatHistory(chatHistory);
-      
     } catch (error) {
       debugPrint('채팅 저장 실패: $error');
     }
@@ -322,7 +319,7 @@ class AiChatNotifier extends _$AiChatNotifier {
   /// AI를 사용하여 채팅 요약 생성
   Future<AiChatSummary> _generateChatSummary() async {
     final repository = ref.read(aiRepositoryProvider);
-    
+
     // 사용자 메시지만 추출하여 요약 요청
     final userMessages = state.messages
         .where((m) => m.isUser)
@@ -345,13 +342,14 @@ class AiChatNotifier extends _$AiChatNotifier {
     } catch (error) {
       // AI 요약 실패 시 기본 요약 생성
       final firstMessage = userMessages.first;
-      final title = firstMessage.length > 20 
-          ? '${firstMessage.substring(0, 20)}...' 
+      final title = firstMessage.length > 20
+          ? '${firstMessage.substring(0, 20)}...'
           : firstMessage;
-          
+
       return AiChatSummary(
         title: title,
-        content: '${state.selectedPet?.name ?? 'ペット'}の${state.selectedCategory?.name ?? '相談'}について',
+        content:
+            '${state.selectedPet?.name ?? 'ペット'}の${state.selectedCategory?.name ?? '相談'}について',
       );
     }
   }

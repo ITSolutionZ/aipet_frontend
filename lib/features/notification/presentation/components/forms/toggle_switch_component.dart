@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/shared.dart';
+import '../../../../../shared/shared.dart';
 
-class AlarmToggleWidget extends StatelessWidget {
+/// 순수 UI 전용 토글 스위치 위젯
+class ToggleSwitchUI extends StatelessWidget {
   final String title;
   final String subtitle;
+  final IconData icon;
   final bool value;
   final ValueChanged<bool> onChanged;
 
-  const AlarmToggleWidget({
+  const ToggleSwitchUI({
     super.key,
     required this.title,
     required this.subtitle,
+    required this.icon,
     required this.value,
     required this.onChanged,
   });
@@ -20,35 +23,52 @@ class AlarmToggleWidget extends StatelessWidget {
     return GlassCard(
       child: Row(
         children: [
+          // 아이콘
+          Container(
+            width: 48,
+            height: 48,
+            margin: const EdgeInsets.only(right: AppSpacing.md),
+            decoration: BoxDecoration(
+              color: AppColors.pointBrown.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+            ),
+            child: Icon(
+              icon,
+              color: AppColors.pointBrown,
+              size: 24,
+            ),
+          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: AppFonts.titleMedium.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    color: AppColors.pointDark,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   subtitle,
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointGray,
+                    height: 1.3,
+                  ),
                 ),
               ],
             ),
           ),
           Transform.scale(
-            scale: 1.2,
+            scale: 1.1,
             child: Switch(
               value: value,
               onChanged: onChanged,
               activeColor: Colors.white,
               activeTrackColor: AppColors.pointBrown,
               inactiveThumbColor: Colors.white,
-              inactiveTrackColor: Colors.grey[300],
+              inactiveTrackColor: AppColors.pointGray.withValues(alpha: 0.3),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ),
