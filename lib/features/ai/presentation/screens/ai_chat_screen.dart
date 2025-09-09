@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../controllers/ai_chat_controller.dart';
 import '../widgets/widgets.dart';
-import 'ai_chat_history_list_screen.dart';
-import 'ai_favorite_messages_screen.dart';
 
 class AiChatScreen extends ConsumerStatefulWidget {
   const AiChatScreen({super.key});
@@ -14,7 +14,7 @@ class AiChatScreen extends ConsumerStatefulWidget {
   ConsumerState<AiChatScreen> createState() => _AiChatScreenState();
 }
 
-class _AiChatScreenState extends ConsumerState<AiChatScreen> 
+class _AiChatScreenState extends ConsumerState<AiChatScreen>
     with WidgetsBindingObserver {
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
@@ -51,7 +51,9 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
     final chatState = ref.read(aiChatNotifierProvider);
     if (chatState.messages.isNotEmpty) {
       try {
-        await ref.read(aiChatNotifierProvider.notifier).saveCurrentChatToHistory(isManualSave: false);
+        await ref
+            .read(aiChatNotifierProvider.notifier)
+            .saveCurrentChatToHistory(isManualSave: false);
       } catch (error) {
         // 백그라운드 저장 실패는 로그만 남기고 UI에는 표시하지 않음
         debugPrint('백그라운드 채팅 저장 실패: $error');
@@ -94,39 +96,37 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
     final chatState = ref.read(aiChatNotifierProvider);
     if (chatState.messages.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('保存する会話がありません')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('保存する会話がありません')));
       }
       return;
     }
 
     try {
-      await ref.read(aiChatNotifierProvider.notifier).saveCurrentChatToHistory(isManualSave: true);
+      await ref
+          .read(aiChatNotifierProvider.notifier)
+          .saveCurrentChatToHistory(isManualSave: true);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('会話を保存しました')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('会話を保存しました')));
       }
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('保存に失敗しました: $error')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('保存に失敗しました: $error')));
       }
     }
   }
 
   void _navigateToFavoriteMessages() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const AiFavoriteMessagesScreen()),
-    );
+    context.push(AppRouter.aiFavoriteMessagesRoute);
   }
 
   void _navigateToChatHistory() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const AiChatHistoryListScreen()),
-    );
+    context.push(AppRouter.aiChatHistoryRoute);
   }
 
   Widget _buildDateSeparator(DateTime date) {
@@ -171,8 +171,6 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
       ),
     );
   }
-
-
 
   int _getTotalItemCount(AiChatState chatState) {
     int count = 0;

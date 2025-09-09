@@ -37,7 +37,7 @@ class HealthSectionWidget extends StatelessWidget {
             style: TextStyle(color: Colors.white, fontSize: 14),
           ),
           onTap: () {
-            Navigator.of(context).pop(); // 드로어 닫기
+            context.pop(); // 드로어 닫기
             // 식사&급수 메인 페이지로 이동
             context.push(AppRouter.feedingMainRoute);
           },
@@ -53,7 +53,7 @@ class HealthSectionWidget extends StatelessWidget {
             style: TextStyle(color: Colors.white, fontSize: 14),
           ),
           onTap: () {
-            Navigator.of(context).pop(); // 드로어 닫기
+            context.pop(); // 드로어 닫기
             context.go(AppRouter.walkRoute); // 산책 페이지로 이동
           },
         ),
@@ -68,7 +68,7 @@ class HealthSectionWidget extends StatelessWidget {
             style: TextStyle(color: Colors.white, fontSize: 14),
           ),
           onTap: () {
-            Navigator.of(context).pop(); // 드로어 닫기
+            context.pop(); // 드로어 닫기
             context.push(AppRouter.hospitalReservationRoute); // 병원 예약 페이지로 이동
           },
         ),
@@ -79,7 +79,7 @@ class HealthSectionWidget extends StatelessWidget {
             style: TextStyle(color: Colors.white, fontSize: 14),
           ),
           onTap: () {
-            Navigator.of(context).pop(); // 드로어 닫기
+            context.pop(); // 드로어 닫기
             context.push(AppRouter.groomingReservationRoute); // 트리밍 예약 페이지로 이동
           },
         ),

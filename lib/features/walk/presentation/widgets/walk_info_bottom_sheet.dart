@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/shared.dart';
 import '../../data/providers/walk_share_providers.dart';
@@ -289,7 +290,7 @@ class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
               leading: const Icon(Icons.copy),
               title: const Text('テキストをコピー'),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 _copyToClipboard(context, ref, shareText);
               },
             ),
@@ -297,7 +298,7 @@ class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
               leading: const Icon(Icons.image),
               title: const Text('画像を保存'),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 _saveAsImage(context, ref, walkRecord);
               },
             ),
@@ -305,7 +306,7 @@ class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
               leading: const Icon(Icons.share),
               title: const Text('システム共有'),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 _systemShare(context, ref, shareText);
               },
             ),
@@ -313,7 +314,7 @@ class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('キャンセル'),
           ),
         ],

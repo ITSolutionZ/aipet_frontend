@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/presentation/controllers/ai_chat_controller.dart';
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_history_list_screen.dart';
 import 'package:aipet_frontend/shared/mock_data/features/ai/ai_chat_history_mock_data.dart';

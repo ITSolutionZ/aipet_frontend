@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/shared.dart';
+import '../../shared.dart';
 
-class NotificationSaveButtonWidget extends StatelessWidget {
+class SaveButtonComponent extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  const NotificationSaveButtonWidget({
+  const SaveButtonComponent({
     super.key,
     required this.text,
     required this.onPressed,

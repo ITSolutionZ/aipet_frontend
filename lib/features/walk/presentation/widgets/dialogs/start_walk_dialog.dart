@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../shared/shared.dart';
 import '../../controllers/walk_controller.dart';
@@ -74,10 +75,7 @@ class _StartWalkDialogState extends State<StartWalkDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('キャンセル'),
-        ),
+        TextButton(onPressed: () => context.pop(), child: const Text('キャンセル')),
         ElevatedButton(onPressed: _startWalk, child: const Text('はじめ')),
       ],
     );
@@ -93,7 +91,7 @@ class _StartWalkDialogState extends State<StartWalkDialog> {
       );
 
       if (result.isSuccess && mounted) {
-        Navigator.of(context).pop();
+        context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result.message),
