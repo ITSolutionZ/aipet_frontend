@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../shared/shared.dart';
 import '../../../walk.dart';
@@ -25,7 +26,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
             leading: const Icon(Icons.edit),
             title: const Text('編集'),
             onTap: () {
-              Navigator.of(context).pop();
+              context.pop();
               _showEditWalkDialog(context, walkRecord);
             },
           ),
@@ -33,7 +34,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
             leading: const Icon(Icons.share),
             title: const Text('共有'),
             onTap: () {
-              Navigator.of(context).pop();
+              context.pop();
               _showShareDialog(context, ref, walkRecord);
             },
           ),
@@ -44,7 +45,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
               style: TextStyle(color: AppColors.pointPink),
             ),
             onTap: () {
-              Navigator.of(context).pop();
+              context.pop();
               controller.deleteWalkRecord(walkRecord.id);
             },
           ),
@@ -74,7 +75,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
               leading: const Icon(Icons.copy),
               title: const Text('テキストをコピー'),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 _copyToClipboard(context, shareText);
               },
             ),
@@ -82,7 +83,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
               leading: const Icon(Icons.image),
               title: const Text('画像を保存'),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 _saveAsImage(context, walkRecord);
               },
             ),
@@ -90,7 +91,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
               leading: const Icon(Icons.share),
               title: const Text('システム共有'),
               onTap: () {
-                Navigator.of(context).pop();
+                context.pop();
                 _systemShare(context, shareText);
               },
             ),
@@ -98,7 +99,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('キャンセル'),
           ),
         ],

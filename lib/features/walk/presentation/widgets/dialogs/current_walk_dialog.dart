@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../shared/shared.dart';
 import '../../../walk.dart';
@@ -35,14 +36,14 @@ class CurrentWalkDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            context.pop();
             controller.pauseCurrentWalk();
           },
           child: const Text('一時停止'),
         ),
         ElevatedButton(
           onPressed: () async {
-            Navigator.of(context).pop();
+            context.pop();
             await controller.endCurrentWalk();
           },
           child: const Text('終了'),

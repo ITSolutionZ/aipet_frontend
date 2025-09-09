@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../features/ai/presentation/screens/ai_chat_history_list_screen.dart';
 import '../../../features/ai/presentation/screens/ai_chat_screen.dart';
+import '../../../features/ai/presentation/screens/ai_favorite_messages_screen.dart';
 import '../../../features/facility/presentation/screens/screens.dart';
 import '../../../features/home/presentation/presentation.dart';
 import '../../../features/notification/presentation/screens/screens.dart';
@@ -10,6 +12,7 @@ import '../../../features/pet_profile/presentation/presentation.dart';
 import '../../../features/scheduling/presentation/presentation.dart';
 import '../../../features/scheduling/presentation/screens/today_appointments_screen.dart';
 import '../../../features/settings/presentation/screens/screens.dart';
+import '../../../features/walk/domain/entities/walk_record_entity.dart';
 import '../../../features/walk/presentation/screens/screens.dart';
 import '../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart';
 import '../../../shared/widgets/navigation/main_navigation_screen.dart';
@@ -166,6 +169,20 @@ class ShellRoutes {
         path: RouteConstants.aiRoute,
         name: 'ai',
         builder: (context, state) => const AiChatScreen(),
+        routes: [
+          // AI 즐겨찾기 메시지
+          GoRoute(
+            path: 'favorite-messages',
+            name: 'ai-favorite-messages',
+            builder: (context, state) => const AiFavoriteMessagesScreen(),
+          ),
+          // AI 채팅 히스토리
+          GoRoute(
+            path: 'chat-history',
+            name: 'ai-chat-history',
+            builder: (context, state) => const AiChatHistoryListScreen(),
+          ),
+        ],
       ),
 
       // 산책 탭
@@ -174,6 +191,22 @@ class ShellRoutes {
         name: 'walk',
         builder: (context, state) =>
             const WalkListScreen(showBackButton: false),
+        routes: [
+          // 산책 상세 화면
+          GoRoute(
+            path: 'detail',
+            name: 'walk-detail',
+            builder: (context, state) {
+              final walkRecord = state.extra as WalkRecordEntity?;
+              if (walkRecord == null) {
+                return const Scaffold(
+                  body: Center(child: Text('산책 기록을 찾을 수 없습니다.')),
+                );
+              }
+              return WalkDetailScreen(walkRecord: walkRecord);
+            },
+          ),
+        ],
       ),
 
       // 홈에서 산책 카드로 이동하는 라우트

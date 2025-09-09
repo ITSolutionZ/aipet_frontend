@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+
 import '../../../../shared/shared.dart';
-import '../widgets/app_bar_widget.dart';
 
 class AccountDeleteScreen extends StatelessWidget {
   const AccountDeleteScreen({super.key});
@@ -10,7 +10,7 @@ class AccountDeleteScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: const AppDrawer(),
-      appBar: const AppBarWidget(title: 'アカウント削除'),
+      appBar: const SoftGradientDrawerAppBar(title: 'アカウント削除'),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
