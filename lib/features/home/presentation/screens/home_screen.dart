@@ -27,6 +27,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // 화면이 로드된 후 펫 목록을 확인하여 리다이렉트
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkPetsAndRedirect();
+      _showInitialNotificationSnackBar();
     });
   }
 
@@ -61,6 +62,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           .handleNotification();
       if (mounted) {
         _handleNotificationResult(notificationResult);
+        _showNotificationSnackBar();
         context.go(RouteConstants.notificationListRoute);
       }
     } catch (error) {
@@ -96,6 +98,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         duration: const Duration(seconds: 2),
       ),
     );
+  }
+
+  /// 알림 스낵바 표시
+  void _showNotificationSnackBar() {
+    final notificationCount =
+        NotificationMockService.getMockNotifications().length;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.notifications, color: Colors.white, size: 20),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                '$notificationCount件の通知があります',
+                style: AppFonts.bodyMedium.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.pointBlue,
+        duration: const Duration(seconds: 3),
+        action: SnackBarAction(
+          label: '確認する',
+          textColor: Colors.white,
+          onPressed: () {
+            context.go(RouteConstants.notificationListRoute);
+          },
+        ),
+      ),
+    );
+  }
+
+  /// 초기 알림 스낵바 표시 (알림이 있을 때만)
+  void _showInitialNotificationSnackBar() {
+    final notificationCount =
+        NotificationMockService.getMockNotifications().length;
+
+    // 알림이 있을 때만 스낵바 표시
+    if (notificationCount > 0) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          _showNotificationSnackBar();
+        }
+      });
+    }
   }
 
   @override
@@ -148,70 +200,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildMainContent() {
-    return Expanded(
-      child: Column(
-        children: [
-          const Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: AppSpacing.md),
-                  PetProfileCard(),
-                  SizedBox(height: AppSpacing.lg),
-                  WeatherCard(),
-                  SizedBox(height: AppSpacing.lg),
-                  HomeSummaryGrid(),
-                ],
-              ),
-            ),
-          ),
-          _buildNotificationCountBar(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNotificationCountBar() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.md,
-      ),
-      decoration: const BoxDecoration(
-        color: AppColors.pointBlue,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(AppRadius.large),
-          topRight: Radius.circular(AppRadius.large),
+    return const Expanded(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: AppSpacing.md),
+            PetProfileCard(),
+            SizedBox(height: AppSpacing.lg),
+            WeatherCard(),
+            SizedBox(height: AppSpacing.lg),
+            HomeSummaryGrid(),
+          ],
         ),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.notifications, color: Colors.white, size: 20),
-          const SizedBox(width: AppSpacing.sm),
-          Text(
-            '${NotificationMockService.getMockNotifications().length}件の通知があります',
-            style: AppFonts.bodyMedium.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const Spacer(),
-          TextButton(
-            onPressed: () {
-              context.go(RouteConstants.notificationListRoute);
-            },
-            child: Text(
-              '確認する',
-              style: AppFonts.bodyMedium.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

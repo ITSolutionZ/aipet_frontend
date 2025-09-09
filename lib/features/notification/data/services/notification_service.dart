@@ -514,6 +514,11 @@ class NotificationService {
     }
   }
 
+  /// 알림을 읽음으로 표시
+  Future<void> markNotificationAsRead(String notificationId) async {
+    await _markAsRead(notificationId);
+  }
+
   /// 읽지 않은 알림 개수 가져오기
   Future<int> getUnreadCount() async {
     try {

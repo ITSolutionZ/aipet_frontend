@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../../data/walk_providers.dart';
 import '../../domain/entities/walk_record_entity.dart';
@@ -8,7 +10,6 @@ import '../controllers/walk_controller.dart';
 import '../widgets/dialogs/dialogs.dart';
 import '../widgets/map_widget.dart';
 import '../widgets/walk_record_card_widget.dart';
-import 'walk_detail_screen.dart';
 
 class WalkListScreen extends ConsumerStatefulWidget {
   final bool showBackButton;
@@ -298,11 +299,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   }
 
   void _showWalkDetails(WalkRecordEntity walkRecord) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => WalkDetailScreen(walkRecord: walkRecord),
-      ),
-    );
+    context.push(AppRouter.walkDetailRoute, extra: walkRecord);
   }
 
   void _showWalkOptions(WalkRecordEntity walkRecord) {

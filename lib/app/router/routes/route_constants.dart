@@ -19,8 +19,11 @@ class RouteConstants {
   static const String homeRoute = '/home';
   static const String schedulingRoute = '/scheduling';
   static const String aiRoute = '/ai';
+  static const String aiFavoriteMessagesRoute = '/ai/favorite-messages';
+  static const String aiChatHistoryRoute = '/ai/chat-history';
   static const String walkRoute = '/walk';
   static const String walkFromHomeRoute = '/walk-from-home';
+  static const String walkDetailRoute = '/walk/detail';
   static const String calendarRoute = '/calendar';
   static const String settingsRoute = '/settings';
 

@@ -2,10 +2,9 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/shared.dart';
-import '../../../../shared/mock_data/features/pet/pet_mock_service.dart';
-import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart';
 import '../controllers/controllers.dart';
 import '../widgets/widgets.dart';
 
@@ -137,7 +136,7 @@ class _AddFeedingRecordScreenState
         ),
       );
 
-      Navigator.of(context).pop({
+      context.pop({
         'date': _selectedDate,
         'time': _selectedTime,
         'mealType': _selectedMealType,

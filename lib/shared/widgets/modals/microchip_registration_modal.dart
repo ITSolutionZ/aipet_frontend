@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../shared.dart';
 
@@ -47,9 +48,7 @@ class MicrochipRegistrationModal extends StatelessWidget {
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-          ),
+          decoration: const BoxDecoration(color: Colors.white),
           child: Column(
             children: [
               // 마이크로칩 이미지 - 전체 크기로 표시 (확장)
@@ -87,7 +86,7 @@ class MicrochipRegistrationModal extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          context.pop();
                           onRegisterTap?.call();
                         },
                         style: ElevatedButton.styleFrom(
@@ -98,7 +97,9 @@ class MicrochipRegistrationModal extends StatelessWidget {
                           ),
                           elevation: 2,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadius.medium),
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.medium,
+                            ),
                           ),
                         ),
                         child: Text(
@@ -117,7 +118,7 @@ class MicrochipRegistrationModal extends StatelessWidget {
                       width: double.infinity,
                       child: OutlinedButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          context.pop();
                           onRemindLater?.call();
                         },
                         style: OutlinedButton.styleFrom(
@@ -130,7 +131,9 @@ class MicrochipRegistrationModal extends StatelessWidget {
                             vertical: AppSpacing.md,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadius.medium),
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.medium,
+                            ),
                           ),
                         ),
                         child: Text(
@@ -148,11 +151,13 @@ class MicrochipRegistrationModal extends StatelessWidget {
                     // 1주일 후 다시 보기 버튼
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        context.pop();
                         onDismiss?.call();
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor: AppColors.pointGray.withValues(alpha: 0.7),
+                        foregroundColor: AppColors.pointGray.withValues(
+                          alpha: 0.7,
+                        ),
                         padding: const EdgeInsets.symmetric(
                           vertical: AppSpacing.xs,
                         ),

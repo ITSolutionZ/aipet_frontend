@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../widgets/widgets.dart';
 
@@ -16,14 +18,14 @@ class FeedingRecordsScreen extends ConsumerStatefulWidget {
 class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
   @override
   Widget build(BuildContext context) {
-    final feedingRecords = SchedulingMockService.getMockFeedingRecordsForRecords();
-    final statistics = SchedulingMockService.getMockFeedingStatisticsForRecords();
+    final feedingRecords =
+        SchedulingMockService.getMockFeedingRecordsForRecords();
+    final statistics =
+        SchedulingMockService.getMockFeedingStatisticsForRecords();
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientAppBar(
-        title: '食事記録',
-      ),
+      appBar: const SoftGradientAppBar(title: '食事記録'),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -60,7 +62,7 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed('/add-feeding-record');
+          context.push(AppRouter.addFeedingRecordRoute);
         },
         backgroundColor: AppColors.pointBrown,
         foregroundColor: Colors.white,

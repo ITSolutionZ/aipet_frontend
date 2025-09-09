@@ -1,16 +1,34 @@
 import '../../../../app/controllers/base_controller.dart';
-import '../../data/providers/notification_providers.dart';
 import '../../domain/entities/entities.dart';
+import '../../domain/usecases/usecases.dart';
 
-/// 알림 컨트롤러 - 비즈니스 로직 처리
+/// 알림 컨트롤러 - UseCase를 통한 클린 아키텍처 구현
 class NotificationController extends BaseController {
-  NotificationController(super.ref);
+  final GetNotificationsUseCase _getNotificationsUseCase;
+  final GetNotificationByIdUseCase _getNotificationByIdUseCase;
+  final MarkNotificationAsReadUseCase _markAsReadUseCase;
+  final DeleteNotificationUseCase _deleteNotificationUseCase;
+  final GetNotificationSettingsUseCase _getSettingsUseCase;
+  final SaveNotificationSettingsUseCase _saveSettingsUseCase;
+  final RequestNotificationPermissionUseCase _requestPermissionUseCase;
+  final TestNotificationUseCase _testNotificationUseCase;
+
+  NotificationController(
+    super.ref,
+    this._getNotificationsUseCase,
+    this._getNotificationByIdUseCase,
+    this._markAsReadUseCase,
+    this._deleteNotificationUseCase,
+    this._getSettingsUseCase,
+    this._saveSettingsUseCase,
+    this._requestPermissionUseCase,
+    this._testNotificationUseCase,
+  );
 
   /// 알림 목록 가져오기
   Future<List<NotificationModel>> getNotifications() async {
     try {
-      final notifier = ref.read(notificationsNotifierProvider.notifier);
-      return await notifier.build();
+      return await _getNotificationsUseCase.call();
     } catch (error) {
       handleError(error);
       return [];
@@ -20,8 +38,8 @@ class NotificationController extends BaseController {
   /// 알림 새로고침
   Future<void> refreshNotifications() async {
     try {
-      final notifier = ref.read(notificationsNotifierProvider.notifier);
-      await notifier.refresh();
+      // 새로고침은 단순히 다시 가져오기
+      await _getNotificationsUseCase.call();
     } catch (error) {
       handleError(error);
     }
@@ -30,8 +48,7 @@ class NotificationController extends BaseController {
   /// 알림 읽음 처리
   Future<void> markAsRead(String id) async {
     try {
-      final notifier = ref.read(notificationsNotifierProvider.notifier);
-      await notifier.markAsRead(id);
+      await _markAsReadUseCase.call(id);
     } catch (error) {
       handleError(error);
     }
@@ -40,8 +57,7 @@ class NotificationController extends BaseController {
   /// 알림 삭제
   Future<void> deleteNotification(String id) async {
     try {
-      final notifier = ref.read(notificationsNotifierProvider.notifier);
-      await notifier.deleteNotification(id);
+      await _deleteNotificationUseCase.call(id);
     } catch (error) {
       handleError(error);
     }
@@ -50,7 +66,7 @@ class NotificationController extends BaseController {
   /// 개별 알림 가져오기
   Future<NotificationModel?> getNotificationById(String id) async {
     try {
-      return await ref.read(notificationByIdProvider(id).future);
+      return await _getNotificationByIdUseCase.call(id);
     } catch (error) {
       handleError(error);
       return null;
@@ -60,7 +76,8 @@ class NotificationController extends BaseController {
   /// 읽지 않은 알림 개수 가져오기
   Future<int> getUnreadCount() async {
     try {
-      return await ref.read(unreadNotificationCountProvider.future);
+      final notifications = await _getNotificationsUseCase.call();
+      return notifications.where((n) => n.status == NotificationStatus.unread).length;
     } catch (error) {
       handleError(error);
       return 0;
@@ -70,8 +87,7 @@ class NotificationController extends BaseController {
   /// 알림 설정 가져오기
   Future<NotificationSettings?> getNotificationSettings() async {
     try {
-      final notifier = ref.read(notificationSettingsNotifierProvider.notifier);
-      return await notifier.build();
+      return await _getSettingsUseCase.call();
     } catch (error) {
       handleError(error);
       return null;
@@ -81,8 +97,7 @@ class NotificationController extends BaseController {
   /// 알림 설정 저장
   Future<void> saveNotificationSettings(NotificationSettings settings) async {
     try {
-      final notifier = ref.read(notificationSettingsNotifierProvider.notifier);
-      await notifier.saveSettings(settings);
+      await _saveSettingsUseCase.call(settings);
     } catch (error) {
       handleError(error);
     }
@@ -91,8 +106,7 @@ class NotificationController extends BaseController {
   /// 알림 권한 요청
   Future<bool> requestNotificationPermission() async {
     try {
-      final notifier = ref.read(notificationSettingsNotifierProvider.notifier);
-      return await notifier.requestPermission();
+      return await _requestPermissionUseCase.call();
     } catch (error) {
       handleError(error);
       return false;
@@ -102,8 +116,7 @@ class NotificationController extends BaseController {
   /// 테스트 알림 전송
   Future<void> sendTestNotification() async {
     try {
-      final notifier = ref.read(notificationSettingsNotifierProvider.notifier);
-      await notifier.sendTestNotification();
+      await _testNotificationUseCase.call();
     } catch (error) {
       handleError(error);
     }

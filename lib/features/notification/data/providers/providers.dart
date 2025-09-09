@@ -1,1 +1,1 @@
-export 'notification_providers.dart';
+export 'notification_controller_providers.dart';

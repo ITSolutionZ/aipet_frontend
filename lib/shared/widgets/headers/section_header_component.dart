@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
-class NotificationSectionHeaderWidget extends StatelessWidget {
+/// 섹션 헤더 컴포넌트 (범용)
+class SectionHeaderComponent extends StatelessWidget {
   final String title;
+  final TextStyle? style;
 
-  const NotificationSectionHeaderWidget({super.key, required this.title});
+  const SectionHeaderComponent({
+    super.key, 
+    required this.title,
+    this.style,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: const TextStyle(
+      style: style ?? const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
         color: Colors.black87,
