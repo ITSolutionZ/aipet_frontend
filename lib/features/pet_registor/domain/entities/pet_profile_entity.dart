@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 /// 펫 프로필 엔티티
 class PetProfileEntity {
   final String id;
@@ -67,25 +65,6 @@ class PetProfileEntity {
     return age;
   }
 
-  /// 펫 타입에 따른 아이콘
-  IconData get typeIcon {
-    switch (type.toLowerCase()) {
-      case 'dog':
-        return Icons.pets;
-      case 'cat':
-        return Icons.pets;
-      case 'bird':
-        return Icons.flutter_dash;
-      case 'hamster':
-        return Icons.pets;
-      case 'rabbit':
-        return Icons.pets;
-      case 'turtle':
-        return Icons.pets;
-      default:
-        return Icons.pets;
-    }
-  }
 
   /// 펫 타입 일본어명
   String get typeName {
@@ -104,6 +83,26 @@ class PetProfileEntity {
         return '亀';
       default:
         return 'ペット';
+    }
+  }
+
+  /// 펫 타입 아이콘
+  String get typeIcon {
+    switch (type.toLowerCase()) {
+      case 'dog':
+        return '🐕';
+      case 'cat':
+        return '🐱';
+      case 'bird':
+        return '🐦';
+      case 'hamster':
+        return '🐹';
+      case 'rabbit':
+        return '🐰';
+      case 'turtle':
+        return '🐢';
+      default:
+        return '🐾';
     }
   }
 

@@ -1,3 +1,4 @@
+export 'cat_breed_selection_screen.dart';
 export 'dog_breed_selection_screen.dart';
 export 'pet_anniversary_screen.dart';
 export 'pet_anniversary_summary_screen.dart';

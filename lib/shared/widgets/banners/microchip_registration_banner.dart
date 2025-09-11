@@ -6,15 +6,158 @@ import '../../design/design.dart';
 class MicrochipRegistrationBanner extends StatelessWidget {
   final VoidCallback? onRegisterTap;
   final VoidCallback? onDismiss;
+  final String? petType;
+  final bool isModal;
 
   const MicrochipRegistrationBanner({
     super.key,
     this.onRegisterTap,
     this.onDismiss,
+    this.petType,
+    this.isModal = false,
   });
+
+  /// 모달로 표시하는 정적 메서드
+  static Future<void> showModal(
+    BuildContext context, {
+    String? petType,
+    VoidCallback? onRegisterTap,
+    VoidCallback? onDismiss,
+  }) {
+    // 마이크로칩 의무는 개와 고양이만 해당하므로, 다른 동물일 때는 모달을 표시하지 않음
+    if (petType != 'dog' && petType != 'cat') {
+      return Future.value();
+    }
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return MicrochipRegistrationBanner(
+          petType: petType,
+          onRegisterTap: onRegisterTap,
+          onDismiss: onDismiss,
+          isModal: true,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    // 마이크로칩 의무는 개와 고양이만 해당하므로, 다른 동물일 때는 표시하지 않음
+    if (!_shouldShowMicrochipBanner()) {
+      return const SizedBox.shrink();
+    }
+
+    if (isModal) {
+      return _buildModalContent(context);
+    } else {
+      return _buildBannerContent();
+    }
+  }
+
+  /// 모달 콘텐츠 빌드
+  Widget _buildModalContent(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.zero,
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(color: Colors.white),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // 상단 이미지 섹션
+              Expanded(
+                flex: 2,
+                child: Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(),
+                  child: Image.asset(
+                    _getMicrochipImagePath(),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: AppColors.pointOffWhite,
+                        child: const Icon(
+                          Icons.pets,
+                          size: 60,
+                          color: AppColors.pointBrown,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+
+              // 하단 버튼 섹션
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // 등록 버튼
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: onRegisterTap,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.pointBrown,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.medium,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            '登録する',
+                            style: AppFonts.titleMedium.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // 닫기 버튼
+                      if (onDismiss != null) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        Center(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              onDismiss?.call();
+                            },
+                            child: Text(
+                              '後で',
+                              style: AppFonts.bodyMedium.copyWith(
+                                color: AppColors.pointGray,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 배너 콘텐츠 빌드
+  Widget _buildBannerContent() {
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
@@ -49,7 +192,7 @@ class MicrochipRegistrationBanner extends StatelessWidget {
                 topRight: Radius.circular(AppRadius.large),
               ),
               child: Image.asset(
-                'assets/images/modal/microchip2.png',
+                _getMicrochipImagePath(),
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
@@ -65,65 +208,11 @@ class MicrochipRegistrationBanner extends StatelessWidget {
             ),
           ),
 
-          // 하단 콘텐츠 섹션
+          // 하단 버튼 섹션
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 제목
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.sm,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.pointOffWhite,
-                    borderRadius: BorderRadius.circular(AppRadius.medium),
-                  ),
-                  child: Text(
-                    'うちの子のIDは',
-                    style: AppFonts.fredoka(
-                      fontSize: AppFonts.xl,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.pointDark,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: AppSpacing.sm),
-
-                // 부제목
-                Text(
-                  '小さなチップで大きな安心を',
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: AppColors.pointGray,
-                    fontSize: 14,
-                  ),
-                ),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                // 마이크로칩 필요 이유
-                Text(
-                  'マイクロチップが必要な理由3つ',
-                  style: AppFonts.titleMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.pointDark,
-                  ),
-                ),
-
-                const SizedBox(height: AppSpacing.md),
-
-                // 이유 목록
-                _buildReasonItem('迷子になったら、素早く家族を探せます'),
-                const SizedBox(height: AppSpacing.sm),
-                _buildReasonItem('ワクチンや、健康情報がスムーズに獣医にも'),
-                const SizedBox(height: AppSpacing.sm),
-                _buildReasonItem('小さなサイズでうちの子が気になることはない'),
-
-                const SizedBox(height: AppSpacing.lg),
-
                 // 등록 버튼
                 SizedBox(
                   width: double.infinity,
@@ -172,25 +261,22 @@ class MicrochipRegistrationBanner extends StatelessWidget {
     );
   }
 
-  Widget _buildReasonItem(String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 4),
-          child: const Icon(Icons.pets, size: 16, color: AppColors.pointBrown),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: Text(
-            text,
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointDark,
-              height: 1.4,
-            ),
-          ),
-        ),
-      ],
-    );
+  /// 마이크로칩 배너를 표시해야 하는지 확인
+  bool _shouldShowMicrochipBanner() {
+    // 마이크로칩 의무는 개와 고양이만 해당
+    return petType == 'dog' || petType == 'cat';
+  }
+
+  /// 펫 타입에 따른 마이크로칩 이미지 경로 반환
+  String _getMicrochipImagePath() {
+    switch (petType) {
+      case 'dog':
+        return 'assets/images/modal/microchip_dog.png';
+      case 'cat':
+        return 'assets/images/modal/microchip_cat.png';
+      default:
+        // 이 경우는 더 이상 발생하지 않음 (개/고양이만 표시)
+        return 'assets/images/modal/microchip_dog.png';
+    }
   }
 }

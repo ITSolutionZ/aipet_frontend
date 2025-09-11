@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/entities.dart';
 import '../../../../shared/services/date_format_service.dart';
 import '../../data/services/notification_icon_service.dart';
+import '../../domain/entities/entities.dart';
 import '../components/cards/notification_card_component.dart';
 
 /// 알림 아이템 위젯 (UI와 로직 분리된 깨끗한 버전)
@@ -23,9 +23,13 @@ class NotificationItemWidget extends StatelessWidget {
     return NotificationCardComponent(
       title: notification.title,
       body: notification.body,
-      formattedTime: DateFormatService.formatRelativeTime(notification.createdAt),
+      formattedTime: DateFormatService.formatRelativeTime(
+        notification.createdAt,
+      ),
       icon: NotificationIconService.getNotificationIcon(notification.type),
-      iconColor: NotificationIconService.getNotificationColor(notification.type),
+      iconColor: NotificationIconService.getNotificationColor(
+        notification.type,
+      ),
       isUnread: notification.isUnread,
       onTap: onTap,
       onDismiss: onDismiss,

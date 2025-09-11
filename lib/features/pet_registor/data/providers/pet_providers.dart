@@ -32,10 +32,11 @@ class PetsNotifier extends _$PetsNotifier {
   }
 
   /// 펫 생성
-  Future<void> createPet(PetProfileEntity pet) async {
+  Future<PetProfileEntity> createPet(PetProfileEntity pet) async {
     final repository = ref.read(petRepositoryProvider);
-    await repository.createPet(pet);
+    final createdPet = await repository.createPet(pet);
     await refresh();
+    return createdPet;
   }
 
   /// 펫 업데이트
