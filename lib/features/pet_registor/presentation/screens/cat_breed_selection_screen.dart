@@ -29,45 +29,90 @@ class _CatBreedSelectionScreenState
   /// 고양이 품종 데이터 생성
   List<Map<String, dynamic>> _getCatBreedsData() {
     return [
-      {
-        'breed': 'maine_coon',
-        'name': 'メインクーン',
-        'imagePath': 'assets/images/cats/maine_coon.png',
-      },
-      {
-        'breed': 'persian',
-        'name': 'ペルシャ',
-        'imagePath': 'assets/images/cats/persian.png',
-      },
-      {
-        'breed': 'british_shorthair',
-        'name': 'ブリティッシュショートヘア',
-        'imagePath': 'assets/images/cats/british_shorthair.png',
-      },
+      // 人気の猫種（日本でよく飼われる品種）
       {
         'breed': 'scottish_fold',
         'name': 'スコティッシュフォールド',
         'imagePath': 'assets/images/cats/scottish_fold.png',
-      },
-      {
-        'breed': 'ragdoll',
-        'name': 'ラグドール',
-        'imagePath': 'assets/images/cats/ragdoll.png',
+        'description': '垂れ耳が特徴的な愛らしい猫',
       },
       {
         'breed': 'american_shorthair',
         'name': 'アメリカンショートヘア',
-        'imagePath': 'assets/images/cats/american_shorthair.png',
+        'imagePath': 'assets/images/cats/american_shothair.png',
+        'description': '丈夫で飼いやすい人気品種',
       },
       {
         'breed': 'russian_blue',
         'name': 'ロシアンブルー',
-        'imagePath': 'assets/images/cats/russian_blue.png',
+        'imagePath': 'assets/images/cats/russian.png',
+        'description': '美しいグレーの被毛が特徴',
+      },
+      {
+        'breed': 'british_shorthair',
+        'name': 'ブリティッシュショートヘア',
+        'imagePath': 'assets/images/cats/britsh_shothair.png',
+        'description': '丸顔で愛嬌のある表情',
+      },
+      {
+        'breed': 'persian',
+        'name': 'ペルシャ',
+        'imagePath': 'assets/images/cats/perisan.png',
+        'description': '長毛で優雅な外見',
+      },
+      {
+        'breed': 'maine_coon',
+        'name': 'メインクーン',
+        'imagePath': 'assets/images/cats/Maine Coon.png',
+        'description': '世界最大級の大型猫',
+      },
+      {
+        'breed': 'ragdoll',
+        'name': 'ラグドール',
+        'imagePath': 'assets/images/cats/Ragdoll.png',
+        'description': '大型で穏やかな性格',
+      },
+      {
+        'breed': 'norwegian_forest',
+        'name': 'ノルウェージャンフォレストキャット',
+        'imagePath': 'assets/images/cats/norway_forest.png',
+        'description': '厚い被毛の森の猫',
+      },
+      {
+        'breed': 'abyssinian',
+        'name': 'アビシニアン',
+        'imagePath': 'assets/images/cats/Abyssinian.png',
+        'description': '活発で好奇心旺盛',
+      },
+      {
+        'breed': 'bengal',
+        'name': 'ベンガル',
+        'imagePath': 'assets/images/cats/bengal.png',
+        'description': 'ワイルドな斑点模様',
+      },
+      {
+        'breed': 'munchkin',
+        'name': 'マンチカン',
+        'imagePath': 'assets/images/cats/Munchkin.png',
+        'description': '短い足が愛らしい',
+      },
+      {
+        'breed': 'siamese',
+        'name': 'シャム',
+        'imagePath': 'assets/images/cats/Siamese.png',
+        'description': 'ポイントカラーが美しい',
       },
       {
         'breed': 'mixed',
-        'name': 'ミックス',
+        'name': 'ミックス（雑種）',
         'imagePath': 'assets/images/cats/mixed.png',
+        'description': '個性豊かな愛らしい子',
+      },
+      {
+        'breed': 'other',
+        'name': 'その他の品種',
+        'imagePath': 'assets/images/cats/mixed.png',
+        'description': 'カスタム品種を入力',
       },
     ];
   }
@@ -141,7 +186,7 @@ class _CatBreedSelectionScreenState
 
                 // 고양이 품종 선택 카드들
                 SizedBox(
-                  height: 500,
+                  height: 600,
                   child: GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -207,8 +252,10 @@ class _CatBreedSelectionScreenState
                                     ),
                                     child: Image.asset(
                                       catBreed['imagePath'],
-                                      scale: 0.6,
                                       fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      alignment: const Alignment(0, -0.2), // 얼굴이 보이도록 상단 쪽으로 정렬
                                       errorBuilder:
                                           (context, error, stackTrace) {
                                             return const Icon(
@@ -221,17 +268,36 @@ class _CatBreedSelectionScreenState
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: AppSpacing.sm),
+                              const SizedBox(height: AppSpacing.xs),
                               // 품종 이름
                               Text(
                                 catBreed['name'],
-                                style: AppFonts.bodyMedium.copyWith(
+                                style: AppFonts.bodySmall.copyWith(
                                   color: AppColors.pointDark,
                                   fontWeight: FontWeight.w600,
                                 ),
                                 textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: AppSpacing.sm),
+                              // 품종 설명
+                              if (catBreed['description'] != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: AppSpacing.xs,
+                                  ),
+                                  child: Text(
+                                    catBreed['description'],
+                                    style: AppFonts.bodySmall.copyWith(
+                                      color: AppColors.pointGray,
+                                      fontSize: 10,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              const SizedBox(height: AppSpacing.xs),
                             ],
                           ),
                         ),

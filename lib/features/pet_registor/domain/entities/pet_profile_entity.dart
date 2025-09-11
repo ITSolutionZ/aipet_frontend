@@ -1,4 +1,4 @@
-/// 펫 프로필 엔티티
+/// ペットプロフィールエンティティ
 class PetProfileEntity {
   final String id;
   final String name;
@@ -64,7 +64,6 @@ class PetProfileEntity {
     }
     return age;
   }
-
 
   /// 펫 타입 일본어명
   String get typeName {

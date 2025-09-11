@@ -55,3 +55,4 @@ app.*.map.json
 *.freezed.dart
 *.gr.dart
 *.config.dart
+PR_DESCRIPTION_JA.md

@@ -69,7 +69,7 @@ class _GenericBreedSelectionScreenState<T>
     });
 
     // 커스텀 품종 선택시 자동 포커스
-    if (_selectedBreed == 'custom') {
+    if (_selectedBreed == 'custom' || _selectedBreed == 'other') {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _focusNode.requestFocus();
       });
@@ -88,7 +88,7 @@ class _GenericBreedSelectionScreenState<T>
       registrationNotifier.selectCatBreed(_selectedBreed ?? '');
     }
 
-    if (_selectedBreed == 'custom' && _customBreed != null) {
+    if ((_selectedBreed == 'custom' || _selectedBreed == 'other') && _customBreed != null) {
       registrationNotifier.setCustomBreed(_customBreed!);
     }
   }
@@ -97,9 +97,14 @@ class _GenericBreedSelectionScreenState<T>
   void _onBreedSelected(String breed) {
     setState(() {
       _selectedBreed = breed;
-      if (breed != 'custom') {
+      if (breed != 'custom' && breed != 'other') {
         _customBreed = null;
         _customController.clear();
+        _focusNode.unfocus();
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _focusNode.requestFocus();
+        });
       }
     });
     _saveToGlobalState();
@@ -116,7 +121,7 @@ class _GenericBreedSelectionScreenState<T>
   /// 다음 단계로 이동 가능한지 확인
   bool _canProceed() {
     if (_selectedBreed == null) return false;
-    if (_selectedBreed == 'custom') {
+    if (_selectedBreed == 'custom' || _selectedBreed == 'other') {
       return _customBreed != null && _customBreed!.trim().isNotEmpty;
     }
     return true;
@@ -174,7 +179,7 @@ class _GenericBreedSelectionScreenState<T>
                     ),
 
                     // 커스텀 품종 입력
-                    if (_selectedBreed == 'custom') ...[
+                    if (_selectedBreed == 'custom' || _selectedBreed == 'other') ...[
                       const SizedBox(height: AppSpacing.lg),
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -197,8 +202,15 @@ class _GenericBreedSelectionScreenState<T>
                           controller: _customController,
                           focusNode: _focusNode,
                           decoration: const InputDecoration(
-                            hintText: '品種を入力してください',
+                            hintText: '品種名を入力してください（例：ミックス、雑種など）',
+                            hintStyle: TextStyle(
+                              color: AppColors.pointGray,
+                              fontSize: 14,
+                            ),
                             border: InputBorder.none,
+                          ),
+                          style: AppFonts.bodyMedium.copyWith(
+                            color: AppColors.pointDark,
                           ),
                           onChanged: _onCustomBreedChanged,
                         ),
@@ -288,7 +300,7 @@ class _GenericBreedSelectionScreenState<T>
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            // 강아지 이미지 (하단)
+            // 강아지/고양이 이미지 (하단, 얼굴 중심)
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.sm),
@@ -296,8 +308,9 @@ class _GenericBreedSelectionScreenState<T>
                   borderRadius: BorderRadius.circular(AppRadius.small),
                   child: Image.asset(
                     imagePath,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.cover, // cover로 카드를 가득 채우되
                     width: double.infinity,
+                    alignment: const Alignment(0, -0.3), // 얼굴이 보이도록 상단 쪽으로 정렬
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
                         color: AppColors.pointGray.withValues(alpha: 0.2),
