@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
+import '../../../home/data/providers/home_providers.dart';
 import '../widgets/section_header_widget.dart';
 import '../widgets/settings_tile_widget.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: const AppDrawer(),
@@ -104,7 +106,12 @@ class SettingsScreen extends StatelessWidget {
             icon: Icons.pets,
             title: 'ペット情報編集',
             backgroundColor: const Color(0xFFA88B5A),
-            onTap: () => context.push(AppRouter.petProfileRoute),
+            onTap: () {
+              // 현재 선택된 펫의 ID를 가져오거나 기본값 사용
+              final selectedPet = ref.read(homeSelectedPetNotifierProvider);
+              final petId = selectedPet?.id ?? 'default';
+              context.push('${AppRouter.petProfileRoute}?petId=$petId');
+            },
           ),
           SettingsTileWidget(
             icon: Icons.lock,

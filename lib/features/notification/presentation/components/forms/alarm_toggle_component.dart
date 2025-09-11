@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../data/services/notification_icon_service.dart';
+
 import '../../../../../shared/shared.dart';
+import '../../../data/services/notification_icon_service.dart';
 
 class AlarmToggleComponent extends StatelessWidget {
   final String title;
@@ -26,5 +27,4 @@ class AlarmToggleComponent extends StatelessWidget {
       onChanged: onChanged,
     );
   }
-
 }

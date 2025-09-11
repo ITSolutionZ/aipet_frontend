@@ -30,12 +30,12 @@ class PetRepositoryImpl implements PetRepository {
     await Future.delayed(const Duration(milliseconds: 300));
 
     final newPet = pet.copyWith(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
 
-    return newPet;
+    // Mock 데이터에 실제로 추가
+    return PetMockData.addPet(newPet);
   }
 
   @override
@@ -45,14 +45,25 @@ class PetRepositoryImpl implements PetRepository {
 
     final updatedPet = pet.copyWith(updatedAt: DateTime.now());
 
-    return updatedPet;
+    // Mock 데이터에서 실제로 업데이트
+    final result = PetMockData.updatePet(updatedPet);
+    if (result == null) {
+      throw Exception('펫을 찾을 수 없습니다: ${pet.id}');
+    }
+
+    return result;
   }
 
   @override
   Future<void> deletePet(String id) async {
     // 시뮬레이션된 삭제 로직
     await Future.delayed(const Duration(milliseconds: 200));
-    // 실제로는 데이터베이스에서 삭제
+    
+    // Mock 데이터에서 실제로 삭제
+    final success = PetMockData.deletePet(id);
+    if (!success) {
+      throw Exception('펫을 찾을 수 없습니다: $id');
+    }
   }
 
   @override

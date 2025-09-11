@@ -175,7 +175,7 @@ class _PetByIdProviderElement
   String get id => (origin as PetByIdProvider).id;
 }
 
-String _$petsNotifierHash() => r'be487b3e5e5c9a369cb5c70e3847e4fe471241f6';
+String _$petsNotifierHash() => r'95aba362d5a61c76f2e88d5b060652b65417f177';
 
 /// 모든 펫 목록 프로바이더
 ///

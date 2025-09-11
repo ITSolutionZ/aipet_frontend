@@ -103,7 +103,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                   itemBuilder: (context, index) {
                     final currentPet = petList[index];
                     return GestureDetector(
-                      onTap: () => context.push(AppRouter.petProfileRoute),
+                      onTap: () => context.push('${AppRouter.petProfileRoute}?petId=${currentPet.id}'),
                       child: Row(
                         children: [
                           // 펫 아바타

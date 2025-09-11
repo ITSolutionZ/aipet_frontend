@@ -15,7 +15,8 @@ class ErrorCodes {
   static const String httpConflict = 'HTTP_409_CONFLICT';
   static const String httpUnprocessableEntity = 'HTTP_422_UNPROCESSABLE_ENTITY';
   static const String httpTooManyRequests = 'HTTP_429_TOO_MANY_REQUESTS';
-  static const String httpInternalServerError = 'HTTP_500_INTERNAL_SERVER_ERROR';
+  static const String httpInternalServerError =
+      'HTTP_500_INTERNAL_SERVER_ERROR';
   static const String httpBadGateway = 'HTTP_502_BAD_GATEWAY';
   static const String httpServiceUnavailable = 'HTTP_503_SERVICE_UNAVAILABLE';
   static const String httpGatewayTimeout = 'HTTP_504_GATEWAY_TIMEOUT';
@@ -23,13 +24,16 @@ class ErrorCodes {
   // === Firebase Auth 관련 에러 ===
   static const String firebaseUserNotFound = 'FIREBASE_USER_NOT_FOUND';
   static const String firebaseWrongPassword = 'FIREBASE_WRONG_PASSWORD';
-  static const String firebaseEmailAlreadyInUse = 'FIREBASE_EMAIL_ALREADY_IN_USE';
+  static const String firebaseEmailAlreadyInUse =
+      'FIREBASE_EMAIL_ALREADY_IN_USE';
   static const String firebaseWeakPassword = 'FIREBASE_WEAK_PASSWORD';
   static const String firebaseInvalidEmail = 'FIREBASE_INVALID_EMAIL';
   static const String firebaseUserDisabled = 'FIREBASE_USER_DISABLED';
   static const String firebaseTooManyRequests = 'FIREBASE_TOO_MANY_REQUESTS';
-  static const String firebaseOperationNotAllowed = 'FIREBASE_OPERATION_NOT_ALLOWED';
-  static const String firebaseNetworkRequestFailed = 'FIREBASE_NETWORK_REQUEST_FAILED';
+  static const String firebaseOperationNotAllowed =
+      'FIREBASE_OPERATION_NOT_ALLOWED';
+  static const String firebaseNetworkRequestFailed =
+      'FIREBASE_NETWORK_REQUEST_FAILED';
   static const String firebaseUnknownError = 'FIREBASE_UNKNOWN_ERROR';
 
   // === 인증 관련 에러 ===
@@ -44,11 +48,14 @@ class ErrorCodes {
 
   // === 유효성 검사 관련 에러 ===
   static const String validationEmailInvalid = 'VALIDATION_EMAIL_INVALID';
-  static const String validationPasswordTooShort = 'VALIDATION_PASSWORD_TOO_SHORT';
-  static const String validationPasswordTooWeak = 'VALIDATION_PASSWORD_TOO_WEAK';
+  static const String validationPasswordTooShort =
+      'VALIDATION_PASSWORD_TOO_SHORT';
+  static const String validationPasswordTooWeak =
+      'VALIDATION_PASSWORD_TOO_WEAK';
   static const String validationFieldRequired = 'VALIDATION_FIELD_REQUIRED';
   static const String validationFieldTooLong = 'VALIDATION_FIELD_TOO_LONG';
-  static const String validationFieldInvalidFormat = 'VALIDATION_FIELD_INVALID_FORMAT';
+  static const String validationFieldInvalidFormat =
+      'VALIDATION_FIELD_INVALID_FORMAT';
 
   // === 저장소 관련 에러 ===
   static const String storageWriteFailed = 'STORAGE_WRITE_FAILED';
@@ -70,148 +77,152 @@ class ErrorCodes {
   static const String dataSyncFailed = 'DATA_SYNC_FAILED';
 
   // === 권한 관련 에러 ===
-  static const String permissionCameraNotGranted = 'PERMISSION_CAMERA_NOT_GRANTED';
-  static const String permissionLocationNotGranted = 'PERMISSION_LOCATION_NOT_GRANTED';
-  static const String permissionStorageNotGranted = 'PERMISSION_STORAGE_NOT_GRANTED';
-  static const String permissionNotificationNotGranted = 'PERMISSION_NOTIFICATION_NOT_GRANTED';
+  static const String permissionCameraNotGranted =
+      'PERMISSION_CAMERA_NOT_GRANTED';
+  static const String permissionLocationNotGranted =
+      'PERMISSION_LOCATION_NOT_GRANTED';
+  static const String permissionStorageNotGranted =
+      'PERMISSION_STORAGE_NOT_GRANTED';
+  static const String permissionNotificationNotGranted =
+      'PERMISSION_NOTIFICATION_NOT_GRANTED';
 
   /// 에러 코드에 대응하는 사용자 친화적인 메시지를 반환
   static String getErrorMessage(String errorCode) {
     switch (errorCode) {
       // === 네트워크 관련 에러 ===
       case networkConnectionTimeout:
-        return '연결 시간이 초과되었습니다. 네트워크 상태를 확인해주세요.';
+        return 'リクエストの時間が超過しました。ネットワークの状態を確認してください。';
       case networkReceiveTimeout:
-        return '응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.';
+        return '応答時間が超過しました。しばらくしてから再度お試しください。';
       case networkSendTimeout:
-        return '요청 전송 시간이 초과되었습니다.';
+        return 'リクエスト送信時間が超過しました。';
       case networkConnectionError:
-        return '네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.';
+        return 'ネットワーク接続に失敗しました。インターネット接続を確認してください。';
       case networkUnknownError:
-        return '알 수 없는 네트워크 오류가 발생했습니다.';
+        return '不明なネットワークエラーが発生しました。';
 
       // === HTTP 상태 코드 관련 에러 ===
       case httpBadRequest:
-        return '잘못된 요청입니다.';
+        return '不正なリクエストです。';
       case httpUnauthorized:
-        return '인증이 필요합니다. 다시 로그인해주세요.';
+        return '認証が必要です。再度ログインしてください。';
       case httpForbidden:
-        return '접근 권한이 없습니다.';
+        return 'アクセス権限がありません。';
       case httpNotFound:
-        return '요청한 데이터를 찾을 수 없습니다.';
+        return '要求されたデータが見つかりません。';
       case httpConflict:
-        return '요청이 충돌했습니다.';
+        return 'リクエストが競合しました。';
       case httpUnprocessableEntity:
-        return '처리할 수 없는 요청입니다.';
+        return '処理できないリクエストです。';
       case httpTooManyRequests:
-        return '너무 많은 요청을 보냈습니다. 잠시 후 다시 시도해주세요.';
+        return '多くのリクエストを送信しました。しばらくしてから再度お試しください。';
       case httpInternalServerError:
-        return '서버 내부 오류가 발생했습니다.';
+        return 'サーバー内部エラーが発生しました。';
       case httpBadGateway:
-        return '서버 연결에 문제가 있습니다.';
+        return 'サーバー接続に問題があります。';
       case httpServiceUnavailable:
-        return '서비스를 일시적으로 사용할 수 없습니다.';
+        return 'サービスは一時的に使用できません。';
       case httpGatewayTimeout:
-        return '서버 응답 시간이 초과되었습니다.';
+        return 'サーバー応答時間が超過しました。';
 
       // === Firebase Auth 관련 에러 ===
       case firebaseUserNotFound:
-        return '등록되지 않은 이메일입니다.';
+        return '登録されていないメールです。';
       case firebaseWrongPassword:
-        return '비밀번호가 올바르지 않습니다.';
+        return 'パスワードが正しくありません。';
       case firebaseEmailAlreadyInUse:
-        return '이미 사용 중인 이메일 주소입니다.';
+        return 'すでに使用中のメールアドレスです。';
       case firebaseWeakPassword:
-        return '비밀번호가 너무 간단합니다. 더 복잡한 비밀번호를 사용해주세요.';
+        return 'パスワードが簡単すぎます。より複雑なパスワードを使用してください。';
       case firebaseInvalidEmail:
-        return '올바르지 않은 이메일 형식입니다.';
+        return '無効なメールアドレス形式です。';
       case firebaseUserDisabled:
-        return '비활성화된 계정입니다. 관리자에게 문의해주세요.';
+        return '無効なアカウントです。管理者にお問い合わせください。';
       case firebaseTooManyRequests:
-        return '너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.';
+        return '多くの試行がありました。しばらくしてから再度お試しください。';
       case firebaseOperationNotAllowed:
-        return '허용되지 않은 작업입니다.';
+        return '許可されていない操作です。';
       case firebaseNetworkRequestFailed:
-        return '네트워크 연결을 확인해주세요.';
+        return 'ネットワーク接続を確認してください。';
       case firebaseUnknownError:
-        return '알 수 없는 인증 오류가 발생했습니다.';
+        return '不明な認証エラーが発生しました。';
 
       // === 인증 관련 에러 ===
       case authTokenExpired:
-        return '로그인이 만료되었습니다. 다시 로그인해주세요.';
+        return 'ログインが期限切れです。再度ログインしてください。';
       case authTokenInvalid:
-        return '인증 정보가 올바르지 않습니다.';
+        return '認証情報が正しくありません。';
       case authTokenMissing:
-        return '인증이 필요합니다.';
+        return '認証が必要です。';
       case authTokenRefreshFailed:
-        return '인증 정보 갱신에 실패했습니다. 다시 로그인해주세요.';
+        return '認証情報の更新に失敗しました。再度ログインしてください。';
       case authLoginRequired:
-        return '로그인이 필요한 서비스입니다.';
+        return 'ログインが必要なサービスです。';
       case authPermissionDenied:
-        return '접근 권한이 없습니다.';
+        return 'アクセス権限がありません。';
       case authAccountLocked:
-        return '계정이 잠겨있습니다. 관리자에게 문의해주세요.';
+        return 'アカウントがロックされています。管理者にお問い合わせください。';
       case authEmailNotVerified:
-        return '이메일 인증이 필요합니다.';
+        return 'メール認証が必要です。';
 
       // === 유효성 검사 관련 에러 ===
       case validationEmailInvalid:
-        return '올바른 이메일 주소를 입력해주세요.';
+        return '正しいメールアドレスを入力してください。';
       case validationPasswordTooShort:
-        return '비밀번호는 최소 6자 이상이어야 합니다.';
+        return 'パスワードは最低6文字以上でなければなりません。';
       case validationPasswordTooWeak:
-        return '더 강한 비밀번호를 사용해주세요.';
+        return 'より強力なパスワードを使用してください。';
       case validationFieldRequired:
-        return '필수 입력 항목입니다.';
+        return '必須入力項目です。';
       case validationFieldTooLong:
-        return '입력된 내용이 너무 깁니다.';
+        return '入力された内容が長すぎます。';
       case validationFieldInvalidFormat:
-        return '올바르지 않은 형식입니다.';
+        return '無効な形式です。';
 
       // === 저장소 관련 에러 ===
       case storageWriteFailed:
-        return '데이터 저장에 실패했습니다.';
+        return 'データの保存に失敗しました。';
       case storageReadFailed:
-        return '데이터 읽기에 실패했습니다.';
+        return 'データの読み取りに失敗しました。';
       case storageDeleteFailed:
-        return '데이터 삭제에 실패했습니다.';
+        return 'データの削除に失敗しました。';
       case storageNotFound:
-        return '저장된 데이터를 찾을 수 없습니다.';
+        return '保存されたデータが見つかりません。';
       case storagePermissionDenied:
-        return '저장소 접근 권한이 없습니다.';
+        return 'ストレージへのアクセス権限がありません。';
 
       // === 일반적인 앱 에러 ===
       case appInitializationFailed:
-        return '앱 초기화에 실패했습니다.';
+        return 'アプリの初期化に失敗しました。';
       case appFeatureNotSupported:
-        return '지원되지 않는 기능입니다.';
+        return 'サポートされていない機能です。';
       case appVersionTooOld:
-        return '앱 업데이트가 필요합니다.';
+        return 'アプリの更新が必要です。';
       case appMaintenanceMode:
-        return '현재 서비스 점검 중입니다.';
+        return '現在、サービスのメンテナンス中です。';
 
       // === 데이터 관련 에러 ===
       case dataParsingFailed:
-        return '데이터 처리 중 오류가 발생했습니다.';
+        return 'データ処理中にエラーが発生しました。';
       case dataCorrupted:
-        return '손상된 데이터입니다.';
+        return '破損したデータです。';
       case dataNotFound:
-        return '데이터를 찾을 수 없습니다.';
+        return 'データが見つかりません。';
       case dataSyncFailed:
-        return '데이터 동기화에 실패했습니다.';
+        return 'データ同期に失敗しました。';
 
       // === 권한 관련 에러 ===
       case permissionCameraNotGranted:
-        return '카메라 권한이 필요합니다.';
+        return 'カメラの権限が必要です。';
       case permissionLocationNotGranted:
-        return '위치 권한이 필요합니다.';
+        return '位置情報の権限が必要です。';
       case permissionStorageNotGranted:
-        return '저장소 권한이 필요합니다.';
+        return 'ストレージの権限が必要です。';
       case permissionNotificationNotGranted:
-        return '알림 권한이 필요합니다.';
+        return '通知の権限が必要です。';
 
       default:
-        return '알 수 없는 오류가 발생했습니다.';
+        return '不明なエラーが発生しました。';
     }
   }
 
