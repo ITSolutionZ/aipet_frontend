@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/app_router.dart';
 import '../../../app/router/routes/route_constants.dart';
+import '../../../features/pet_registor/data/providers/providers.dart';
 
-class PetSectionWidget extends StatelessWidget {
+class PetSectionWidget extends ConsumerWidget {
   const PetSectionWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -31,17 +33,62 @@ class PetSectionWidget extends StatelessWidget {
           ),
         ),
         // 펫 목록
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              _buildPetAvatar('ぺこ', 'assets/images/dogs/poodle.jpg'),
-              const SizedBox(width: 12),
-              _buildPetAvatar('チョコ', 'assets/images/dogs/poodle.jpg'),
-              const SizedBox(width: 12),
-              _buildAddPetButton(context),
-            ],
-          ),
+        Consumer(
+          builder: (context, ref, child) {
+            final petsAsync = ref.watch(petsNotifierProvider);
+            
+            return petsAsync.when(
+              data: (pets) {
+                final children = <Widget>[];
+                
+                // 최대 3개까지만 표시
+                final displayPets = pets.take(3).toList();
+                
+                for (int i = 0; i < displayPets.length; i++) {
+                  final pet = displayPets[i];
+                  children.add(
+                    _buildPetAvatar(pet.name, pet.imagePath ?? 'assets/images/pets/default.png'),
+                  );
+                  if (i < displayPets.length - 1) {
+                    children.add(const SizedBox(width: 12));
+                  }
+                }
+                
+                // 펫 추가 버튼 (3개 미만일 때만)
+                if (pets.length < 3) {
+                  if (children.isNotEmpty) {
+                    children.add(const SizedBox(width: 12));
+                  }
+                  children.add(_buildAddPetButton(context));
+                }
+                
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(children: children),
+                );
+              },
+              loading: () => const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ],
+                ),
+              ),
+              error: (error, stack) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    _buildAddPetButton(context),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
         const SizedBox(height: 16),
         // 구분선

@@ -23,7 +23,7 @@ class AiPetSelection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         boxShadow: [
           BoxShadow(
@@ -94,7 +94,7 @@ class AiPetSelection extends StatelessWidget {
               label: const Text('ペットを登録する'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBrown,
-                foregroundColor: Colors.white,
+                foregroundColor: AppColors.pureWhite,
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
@@ -125,7 +125,7 @@ class AiPetSelection extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.pointBrown : Colors.white,
+          color: isSelected ? AppColors.pointBrown : AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(
             color: isSelected
@@ -153,9 +153,9 @@ class AiPetSelection extends StatelessWidget {
               )
             else
               Icon(
-                pet.typeIcon,
+                pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
                 size: 20,
-                color: isSelected ? Colors.white : AppColors.pointBrown,
+                color: isSelected ? AppColors.pureWhite : AppColors.pointBrown,
               ),
             const SizedBox(width: AppSpacing.xs),
             Column(
@@ -165,7 +165,9 @@ class AiPetSelection extends StatelessWidget {
                 Text(
                   pet.name,
                   style: AppFonts.bodySmall.copyWith(
-                    color: isSelected ? Colors.white : AppColors.pointDark,
+                    color: isSelected
+                        ? AppColors.pureWhite
+                        : AppColors.pointDark,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -173,7 +175,7 @@ class AiPetSelection extends StatelessWidget {
                   '${pet.typeName} • ${pet.age}歳',
                   style: AppFonts.bodySmall.copyWith(
                     color: isSelected
-                        ? Colors.white.withValues(alpha: 0.9)
+                        ? AppColors.pureWhite.withValues(alpha: 0.9)
                         : AppColors.pointDark.withValues(alpha: 0.7),
                   ),
                 ),
