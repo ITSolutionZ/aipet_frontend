@@ -91,32 +91,38 @@ class _PetTypeSelectionScreenState
       {
         'type': 'dog',
         'imagePath': 'assets/images/pet_selector/dog.png',
-        'color': AppColors.pointPink,
+        'color': const Color(0xFFE91E63), // 핑크 - 개 전용
+        'isSpecial': true,
       },
       {
         'type': 'cat',
         'imagePath': 'assets/images/pet_selector/cat.png',
-        'color': AppColors.pointPink,
+        'color': const Color(0xFF9C27B0), // 퍼플 - 고양이 전용
+        'isSpecial': true,
       },
       {
         'type': 'rabbit',
         'imagePath': 'assets/images/pet_selector/rabbit.png',
-        'color': AppColors.pointPink,
+        'color': const Color(0xFF4CAF50), // 그린 - 토끼
+        'isSpecial': false,
       },
       {
         'type': 'hamster',
         'imagePath': 'assets/images/pet_selector/hamster.png',
-        'color': AppColors.pointPink,
+        'color': const Color(0xFFFF9800), // 오렌지 - 햄스터
+        'isSpecial': false,
       },
       {
         'type': 'bird',
         'imagePath': 'assets/images/pet_selector/bird.png',
-        'color': AppColors.pointPink,
+        'color': const Color(0xFF2196F3), // 블루 - 새
+        'isSpecial': false,
       },
       {
         'type': 'turtle',
         'imagePath': 'assets/images/pet_selector/turtle.png',
-        'color': AppColors.pointPink,
+        'color': const Color(0xFF607D8B), // 블루그레이 - 거북이
+        'isSpecial': false,
       },
     ];
   }
@@ -165,14 +171,14 @@ class _PetTypeSelectionScreenState
 
                     // 펫 종류 선택 카드들
                     SizedBox(
-                      height: 400, // 고정 높이 설정
+                      height: 420, // 텍스트 제거로 높이 조정
                       child: GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               crossAxisSpacing: AppSpacing.md,
                               mainAxisSpacing: AppSpacing.md,
-                              childAspectRatio: 1.0, // 정사각형으로 변경
+                              childAspectRatio: 1.0, // 정사각형으로 복원
                             ),
                         itemCount: _petTypes.length,
                         itemBuilder: (context, index) {
@@ -185,6 +191,7 @@ class _PetTypeSelectionScreenState
                             imagePath: petType['imagePath'],
                             color: petType['color'],
                             isSelected: isSelected,
+                            petType: petType['type'], // 펫 타입 추가
                             onTap: () {
                               petRegistrationNotifier.selectPetType(
                                 petType['type'],
