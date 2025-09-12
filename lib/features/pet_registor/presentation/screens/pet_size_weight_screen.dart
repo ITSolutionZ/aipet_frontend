@@ -243,11 +243,11 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                     ),
                   ),
                 ),
-              // 표시용 Text
+              // 표시용 Text (크기 축소)
               Text(
                 _weight.toStringAsFixed(1),
                 style: const TextStyle(
-                  fontSize: 48,
+                  fontSize: 36,
                   fontWeight: FontWeight.bold,
                   color: AppColors.pointBrown,
                 ),
@@ -297,7 +297,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
             }
           },
           child: Container(
-            height: 80, // 더 넓은 터치 영역
+            height: 60, // 터치 영역 축소
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Stack(
               children: [
@@ -309,10 +309,10 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
 
                   return Positioned(
                     left: position - 1, // 틱 중심 맞춤
-                    top: 18,
+                    top: 12,
                     child: Container(
                       width: 2,
-                      height: 24,
+                      height: 18,
                       decoration: BoxDecoration(
                         color: AppColors.pointGray.withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(1),
@@ -321,12 +321,12 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                   );
                 }),
 
-                // 슬라이더 썸 - 시안과 동일한 둥근 사각형 스타일
+                // 슬라이더 썸 - 시안과 동일한 둥근 사각형 스타일 (크기 축소)
                 Positioned(
-                  top: 10,
+                  top: 6,
                   left: () {
                     final screenWidth = MediaQuery.of(context).size.width - 32;
-                    const thumbWidth = 40.0;
+                    const thumbWidth = 32.0;
                     final normalizedPosition = (_weight - 0.5) / (50.0 - 0.5);
                     final rawLeft =
                         normalizedPosition * screenWidth - (thumbWidth / 2);
@@ -335,8 +335,8 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                     return rawLeft.clamp(0.0, screenWidth - thumbWidth);
                   }(),
                   child: Container(
-                    width: 40,
-                    height: 40,
+                    width: 32,
+                    height: 32,
                     decoration: BoxDecoration(
                       color: AppColors.pointBrown,
                       borderRadius: BorderRadius.circular(8),
@@ -353,26 +353,26 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            width: 2,
-                            height: 16,
+                            width: 1.5,
+                            height: 12,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
-                          const SizedBox(width: 3),
+                          const SizedBox(width: 2),
                           Container(
-                            width: 2,
-                            height: 16,
+                            width: 1.5,
+                            height: 12,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
-                          const SizedBox(width: 3),
+                          const SizedBox(width: 2),
                           Container(
-                            width: 2,
-                            height: 16,
+                            width: 1.5,
+                            height: 12,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(1),
@@ -409,16 +409,16 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // 스크롤 가능한 상단 영역
+            // 상단 영역 (스크롤 제거)
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // 프로그레스바
                     const PetRegistrationProgressBar(currentStep: 4),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.md),
 
                     // 제목
                     Consumer(
@@ -430,7 +430,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
 
                         return Text(
                           '$petNameのサイズと体重は？',
-                          style: AppFonts.titleLarge.copyWith(
+                          style: AppFonts.titleMedium.copyWith(
                             color: AppColors.pointBrown,
                             fontWeight: FontWeight.bold,
                           ),
@@ -438,22 +438,22 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                         );
                       },
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.md),
 
                     // 펫 이미지
                     PetImageDisplay(
                       imagePath: _getPetImagePath(),
-                      width: 120,
-                      height: 120,
+                      width: 100,
+                      height: 100,
                       badge: _isNeutered
                           ? Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
+                                horizontal: 6,
+                                vertical: 3,
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.green,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
                                 '去勢',
@@ -465,7 +465,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                             )
                           : null,
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.md),
 
                     // 사이즈 선택 버튼들
                     Row(
@@ -512,13 +512,13 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.md),
 
-                    // 체중 표시 (중앙)
+                    // 체중 표시 (중앙) - 크기 축소
                     _buildWeightDisplay(),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.sm),
 
-                    // 체중 슬라이더
+                    // 체중 슬라이더 - 크기 축소
                     _buildWeightSlider(),
                   ],
                 ),
@@ -527,7 +527,10 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
 
             // 하단 고정 버튼 영역
             Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.md,
+              ),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
