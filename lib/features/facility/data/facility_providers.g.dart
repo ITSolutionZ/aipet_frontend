@@ -7,7 +7,7 @@ part of 'facility_providers.dart';
 // **************************************************************************
 
 String _$facilityListNotifierHash() =>
-    r'7fd53f61e59f388842db74903da92898f4eb911e';
+    r'60b26f10314a5c1df8647b9bd124aa02e9c3741d';
 
 /// See also [FacilityListNotifier].
 @ProviderFor(FacilityListNotifier)

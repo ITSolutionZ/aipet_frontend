@@ -69,6 +69,7 @@ class RouteConstants {
   // ===== PET REGISTRATION FLOW =====
   static const String petTypeSelectionRoute = '/pet-type-selection';
   static const String dogBreedSelectionRoute = '/dog-breed-selection';
+  static const String catBreedSelectionRoute = '/cat-breed-selection';
   static const String petNameInputRoute = '/pet-name-input';
   static const String petSizeWeightRoute = '/pet-size-weight';
   static const String petAnniversaryRoute = '/pet-anniversary';

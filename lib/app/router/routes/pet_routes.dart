@@ -24,6 +24,11 @@ class PetRoutes {
       builder: (context, state) => const DogBreedSelectionScreen(),
     ),
     GoRoute(
+      path: RouteConstants.catBreedSelectionRoute,
+      name: 'cat-breed-selection',
+      builder: (context, state) => const CatBreedSelectionScreen(),
+    ),
+    GoRoute(
       path: RouteConstants.petNameInputRoute,
       name: 'pet-name-input',
       builder: (context, state) => const PetNameInputScreen(),
@@ -64,7 +69,8 @@ class PetRoutes {
       path: RouteConstants.feedingMainRoute,
       name: 'feeding-main',
       builder: (context, state) {
-        final showBackButton = state.uri.queryParameters['showBackButton'] == 'true';
+        final showBackButton =
+            state.uri.queryParameters['showBackButton'] == 'true';
         return FeedingMainScreen(showBackButton: showBackButton);
       },
     ),
