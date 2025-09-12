@@ -1,5 +1,3 @@
-import 'dart:io';
-
 /// 펫 등록 데이터 엔티티
 /// Data Layer에서 Domain Layer로 이동하여 의존성 방향 수정
 class PetRegistrationDataEntity {
@@ -15,7 +13,7 @@ class PetRegistrationDataEntity {
   final DateTime? petArrivalDate;
   final String? petGender;
   final bool? isNeutered;
-  final File? petImage;
+  final String? petImagePath;
   final String? customDefaultImagePath;
   final String? microchipNumber;
 
@@ -32,7 +30,7 @@ class PetRegistrationDataEntity {
     this.petArrivalDate,
     this.petGender,
     this.isNeutered,
-    this.petImage,
+    this.petImagePath,
     this.customDefaultImagePath,
     this.microchipNumber,
   });
@@ -50,7 +48,7 @@ class PetRegistrationDataEntity {
     DateTime? petArrivalDate,
     String? petGender,
     bool? isNeutered,
-    File? petImage,
+    String? petImagePath,
     String? customDefaultImagePath,
     String? microchipNumber,
   }) {
@@ -67,7 +65,7 @@ class PetRegistrationDataEntity {
       petArrivalDate: petArrivalDate ?? this.petArrivalDate,
       petGender: petGender ?? this.petGender,
       isNeutered: isNeutered ?? this.isNeutered,
-      petImage: petImage ?? this.petImage,
+      petImagePath: petImagePath ?? this.petImagePath,
       customDefaultImagePath: customDefaultImagePath ?? this.customDefaultImagePath,
       microchipNumber: microchipNumber ?? this.microchipNumber,
     );

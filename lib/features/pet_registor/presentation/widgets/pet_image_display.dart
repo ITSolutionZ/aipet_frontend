@@ -6,7 +6,7 @@ import '../../../../shared/shared.dart';
 
 class PetImageDisplay extends StatelessWidget {
   final String? imagePath;
-  final File? imageFile;
+  final dynamic imageFile; // String 또는 File을 받을 수 있도록 변경
   final double width;
   final double height;
   final bool showUploadIcon;
@@ -75,24 +75,51 @@ class PetImageDisplay extends StatelessWidget {
 
   Widget _buildImage() {
     if (imageFile != null) {
-      return Image.file(
-        imageFile!,
-        width: width,
-        height: height,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => _buildDefaultImage(),
-      );
-    } else if (imagePath != null) {
-      return Image.asset(
-        imagePath!,
-        width: width,
-        height: height,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => _buildDefaultImage(),
-      );
-    } else {
-      return _buildDefaultImage();
+      // imageFile이 실제로 File 타입인지 확인하고 처리
+      if (imageFile is File) {
+        return Image.file(
+          imageFile!,
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildDefaultImage(),
+        );
+      } else if (imageFile is String) {
+        // String 경로가 전달된 경우 File로 변환
+        return Image.file(
+          File(imageFile as String),
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildDefaultImage(),
+        );
+      }
     }
+    
+    if (imagePath != null) {
+      // 먼저 파일 경로인지 확인
+      if (imagePath!.startsWith('/') || imagePath!.contains('\\')) {
+        // 절대 경로인 경우 File로 처리
+        return Image.file(
+          File(imagePath!),
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildDefaultImage(),
+        );
+      } else {
+        // Asset 경로인 경우
+        return Image.asset(
+          imagePath!,
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildDefaultImage(),
+        );
+      }
+    }
+    
+    return _buildDefaultImage();
   }
 
   Widget _buildDefaultImage() {

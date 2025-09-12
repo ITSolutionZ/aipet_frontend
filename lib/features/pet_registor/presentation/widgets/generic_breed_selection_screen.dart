@@ -88,7 +88,8 @@ class _GenericBreedSelectionScreenState<T>
       registrationNotifier.selectCatBreed(_selectedBreed ?? '');
     }
 
-    if ((_selectedBreed == 'custom' || _selectedBreed == 'other') && _customBreed != null) {
+    if ((_selectedBreed == 'custom' || _selectedBreed == 'other') &&
+        _customBreed != null) {
       registrationNotifier.setCustomBreed(_customBreed!);
     }
   }
@@ -179,7 +180,8 @@ class _GenericBreedSelectionScreenState<T>
                     ),
 
                     // 커스텀 품종 입력
-                    if (_selectedBreed == 'custom' || _selectedBreed == 'other') ...[
+                    if (_selectedBreed == 'custom' ||
+                        _selectedBreed == 'other') ...[
                       const SizedBox(height: AppSpacing.lg),
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.lg),

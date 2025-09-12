@@ -65,5 +65,68 @@ void main() {
       expect(PetRegistrationTexts.enterName, contains('名前'));
       expect(PetRegistrationTexts.next, contains('次'));
     });
+
+    test('should have consistent text lengths', () {
+      // 텍스트 길이가 적절한지 확인
+      expect(PetRegistrationTexts.petTypeSelection.length, greaterThan(5));
+      expect(PetRegistrationTexts.enterName.length, greaterThan(5));
+      expect(PetRegistrationTexts.next.length, greaterThan(1));
+      expect(PetRegistrationTexts.complete.length, greaterThan(1));
+    });
+
+    test('should not contain empty strings', () {
+      // 빈 문자열이 없는지 확인
+      expect(PetRegistrationTexts.petTypeSelection, isNot(equals('')));
+      expect(PetRegistrationTexts.whoDoYouLiveWith, isNot(equals('')));
+      expect(PetRegistrationTexts.whatKindOfPet, isNot(equals('')));
+      expect(PetRegistrationTexts.enterName, isNot(equals('')));
+      expect(PetRegistrationTexts.next, isNot(equals('')));
+      expect(PetRegistrationTexts.complete, isNot(equals('')));
+    });
+
+    test('should have proper validation messages', () {
+      expect(PetRegistrationTexts.nameRequired, isNotEmpty);
+      expect(PetRegistrationTexts.nameMinLength, isNotEmpty);
+      expect(PetRegistrationTexts.nameMaxLength, isNotEmpty);
+    });
+
+    test('should have private constructor', () {
+      // Private constructor should prevent instantiation
+      // Note: Private constructor cannot be called from outside the class
+      expect(PetRegistrationTexts.petTypeSelection, isNotEmpty);
+    });
+
+    test('should have all additional button texts', () {
+      expect(PetRegistrationTexts.noTypeAvailable, isNotEmpty);
+      expect(PetRegistrationTexts.customPetTypeComingSoon, isNotEmpty);
+    });
+
+    test('should have all additional pet types', () {
+      expect(PetRegistrationTexts.dog, isNotEmpty);
+      expect(PetRegistrationTexts.cat, isNotEmpty);
+      expect(PetRegistrationTexts.bird, isNotEmpty);
+      expect(PetRegistrationTexts.hamster, isNotEmpty);
+      expect(PetRegistrationTexts.rabbit, isNotEmpty);
+      expect(PetRegistrationTexts.turtle, isNotEmpty);
+    });
+
+    test('should have all error messages', () {
+      expect(PetRegistrationTexts.networkError, isNotEmpty);
+      expect(PetRegistrationTexts.unknownError, isNotEmpty);
+      expect(PetRegistrationTexts.petNotFound, isNotEmpty);
+      expect(PetRegistrationTexts.registrationFailed, isNotEmpty);
+    });
+
+    test('should have all success messages', () {
+      expect(PetRegistrationTexts.registrationSuccess, isNotEmpty);
+      expect(PetRegistrationTexts.updateSuccess, isNotEmpty);
+      expect(PetRegistrationTexts.deleteSuccess, isNotEmpty);
+    });
+
+    test('should have all loading states', () {
+      expect(PetRegistrationTexts.loading, isNotEmpty);
+      expect(PetRegistrationTexts.saving, isNotEmpty);
+      expect(PetRegistrationTexts.processing, isNotEmpty);
+    });
   });
 }

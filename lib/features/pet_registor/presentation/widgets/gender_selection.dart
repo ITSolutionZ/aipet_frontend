@@ -14,22 +14,26 @@ class GenderSelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _buildGenderButton(
-          gender: 'male',
-          symbol: '♂',
-          label: 'オス',
-          isSelected: selectedGender == 'male',
-        ),
-        const SizedBox(width: AppSpacing.md),
-        _buildGenderButton(
-          gender: 'female',
-          symbol: '♀',
-          label: 'メス',
-          isSelected: selectedGender == 'female',
-        ),
-      ],
+    return Semantics(
+      label: 'ペットの性別選択',
+      hint: '性別を選択してください。オスまたはメスを選べます。',
+      child: Row(
+        children: [
+          _buildGenderButton(
+            gender: 'male',
+            symbol: '♂',
+            label: 'オス',
+            isSelected: selectedGender == 'male',
+          ),
+          const SizedBox(width: AppSpacing.md),
+          _buildGenderButton(
+            gender: 'female',
+            symbol: '♀',
+            label: 'メス',
+            isSelected: selectedGender == 'female',
+          ),
+        ],
+      ),
     );
   }
 
@@ -40,9 +44,14 @@ class GenderSelection extends StatelessWidget {
     required bool isSelected,
   }) {
     return Expanded(
-      child: GestureDetector(
-        onTap: () => onGenderChanged(gender),
-        child: Container(
+      child: Semantics(
+        label: '$labelを選択',
+        hint: isSelected ? '選択されています' : 'タップして選択',
+        button: true,
+        selected: isSelected,
+        child: GestureDetector(
+          onTap: () => onGenderChanged(gender),
+          child: Container(
           height: 50,
           decoration: BoxDecoration(
             color: isSelected ? AppColors.pointBrown : Colors.white,
@@ -75,6 +84,7 @@ class GenderSelection extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
             ),
           ),
         ),
