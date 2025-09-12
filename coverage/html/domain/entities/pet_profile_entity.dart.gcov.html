@@ -4,7 +4,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>LCOV - lcov.info - domain/entities/pet_profile_entity.dart</title>
+  <title>LCOV - AI Pet Frontend - Test Coverage Report - domain/entities/pet_profile_entity.dart</title>
   <link rel="stylesheet" type="text/css" href="../../gcov.css">
 </head>
 
@@ -28,7 +28,7 @@
           </tr>
           <tr>
             <td class="headerItem">Test:</td>
-            <td class="headerValue">lcov.info</td>
+            <td class="headerValue">AI Pet Frontend - Test Coverage Report</td>
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntryHi">100.0&nbsp;%</td>
@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Test Date:</td>
-            <td class="headerValue">2025-09-12 17:18:46</td>
+            <td class="headerValue">2025-09-12 17:53:02</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntryHi">-</td>
@@ -74,7 +74,7 @@
 <span id="L12"><span class="lineNum">      12</span>              :   final bool isActive;</span>
 <span id="L13"><span class="lineNum">      13</span>              :   final Map&lt;String, dynamic&gt;? additionalInfo;</span>
 <span id="L14"><span class="lineNum">      14</span>              : </span>
-<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">           6 :   const PetProfileEntity({</span></span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">           8 :   const PetProfileEntity({</span></span>
 <span id="L16"><span class="lineNum">      16</span>              :     required this.id,</span>
 <span id="L17"><span class="lineNum">      17</span>              :     required this.name,</span>
 <span id="L18"><span class="lineNum">      18</span>              :     required this.type,</span>
@@ -88,7 +88,7 @@
 <span id="L26"><span class="lineNum">      26</span>              :     this.additionalInfo,</span>
 <span id="L27"><span class="lineNum">      27</span>              :   });</span>
 <span id="L28"><span class="lineNum">      28</span>              : </span>
-<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">           3 :   PetProfileEntity copyWith({</span></span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">           4 :   PetProfileEntity copyWith({</span></span>
 <span id="L30"><span class="lineNum">      30</span>              :     String? id,</span>
 <span id="L31"><span class="lineNum">      31</span>              :     String? name,</span>
 <span id="L32"><span class="lineNum">      32</span>              :     String? type,</span>
@@ -101,18 +101,18 @@
 <span id="L39"><span class="lineNum">      39</span>              :     bool? isActive,</span>
 <span id="L40"><span class="lineNum">      40</span>              :     Map&lt;String, dynamic&gt;? additionalInfo,</span>
 <span id="L41"><span class="lineNum">      41</span>              :   }) {</span>
-<span id="L42"><span class="lineNum">      42</span> <span class="tlaGNC">           3 :     return PetProfileEntity(</span></span>
-<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">           3 :       id: id ?? this.id,</span></span>
-<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">           3 :       name: name ?? this.name,</span></span>
-<span id="L45"><span class="lineNum">      45</span> <span class="tlaGNC">           3 :       type: type ?? this.type,</span></span>
-<span id="L46"><span class="lineNum">      46</span> <span class="tlaGNC">           3 :       breed: breed ?? this.breed,</span></span>
-<span id="L47"><span class="lineNum">      47</span> <span class="tlaGNC">           3 :       birthDate: birthDate ?? this.birthDate,</span></span>
-<span id="L48"><span class="lineNum">      48</span> <span class="tlaGNC">           3 :       imagePath: imagePath ?? this.imagePath,</span></span>
-<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">           3 :       ownerId: ownerId ?? this.ownerId,</span></span>
-<span id="L50"><span class="lineNum">      50</span> <span class="tlaGNC">           3 :       createdAt: createdAt ?? this.createdAt,</span></span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaGNC">           4 :     return PetProfileEntity(</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">           4 :       id: id ?? this.id,</span></span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">           4 :       name: name ?? this.name,</span></span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaGNC">           4 :       type: type ?? this.type,</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaGNC">           4 :       breed: breed ?? this.breed,</span></span>
+<span id="L47"><span class="lineNum">      47</span> <span class="tlaGNC">           4 :       birthDate: birthDate ?? this.birthDate,</span></span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaGNC">           4 :       imagePath: imagePath ?? this.imagePath,</span></span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">           4 :       ownerId: ownerId ?? this.ownerId,</span></span>
+<span id="L50"><span class="lineNum">      50</span> <span class="tlaGNC">           4 :       createdAt: createdAt ?? this.createdAt,</span></span>
 <span id="L51"><span class="lineNum">      51</span> <span class="tlaGNC">           3 :       updatedAt: updatedAt ?? this.updatedAt,</span></span>
-<span id="L52"><span class="lineNum">      52</span> <span class="tlaGNC">           3 :       isActive: isActive ?? this.isActive,</span></span>
-<span id="L53"><span class="lineNum">      53</span> <span class="tlaGNC">           3 :       additionalInfo: additionalInfo ?? this.additionalInfo,</span></span>
+<span id="L52"><span class="lineNum">      52</span> <span class="tlaGNC">           4 :       isActive: isActive ?? this.isActive,</span></span>
+<span id="L53"><span class="lineNum">      53</span> <span class="tlaGNC">           4 :       additionalInfo: additionalInfo ?? this.additionalInfo,</span></span>
 <span id="L54"><span class="lineNum">      54</span>              :     );</span>
 <span id="L55"><span class="lineNum">      55</span>              :   }</span>
 <span id="L56"><span class="lineNum">      56</span>              : </span>
@@ -167,7 +167,7 @@
 <span id="L105"><span class="lineNum">     105</span>              :     }</span>
 <span id="L106"><span class="lineNum">     106</span>              :   }</span>
 <span id="L107"><span class="lineNum">     107</span>              : </span>
-<span id="L108"><span class="lineNum">     108</span> <span class="tlaGNC">           4 :   @override</span></span>
+<span id="L108"><span class="lineNum">     108</span> <span class="tlaGNC">           5 :   @override</span></span>
 <span id="L109"><span class="lineNum">     109</span>              :   bool operator ==(Object other) =&gt;</span>
 <span id="L110"><span class="lineNum">     110</span>              :       identical(this, other) ||</span>
 <span id="L111"><span class="lineNum">     111</span> <span class="tlaGNC">           2 :       other is PetProfileEntity &amp;&amp;</span></span>

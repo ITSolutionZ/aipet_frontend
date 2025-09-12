@@ -4,7 +4,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>LCOV - lcov.info - data/repositories/pet_repository_impl.dart</title>
+  <title>LCOV - AI Pet Frontend - Test Coverage Report - data/repositories/pet_repository_impl.dart</title>
   <link rel="stylesheet" type="text/css" href="../../gcov.css">
 </head>
 
@@ -28,7 +28,7 @@
           </tr>
           <tr>
             <td class="headerItem">Test:</td>
-            <td class="headerValue">lcov.info</td>
+            <td class="headerValue">AI Pet Frontend - Test Coverage Report</td>
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntryHi">100.0&nbsp;%</td>
@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Test Date:</td>
-            <td class="headerValue">2025-09-12 17:18:46</td>
+            <td class="headerValue">2025-09-12 17:53:02</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntryHi">-</td>
@@ -68,19 +68,19 @@
 <span id="L6"><span class="lineNum">       6</span>              : class PetRepositoryImpl implements PetRepository {</span>
 <span id="L7"><span class="lineNum">       7</span>              :   // TODO: 실제 데이터 소스 구현 (API, 로컬 DB 등)</span>
 <span id="L8"><span class="lineNum">       8</span>              : </span>
-<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">           1 :   @override</span></span>
+<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">           2 :   @override</span></span>
 <span id="L10"><span class="lineNum">      10</span>              :   Future&lt;List&lt;PetProfileEntity&gt;&gt; getAllPets() async {</span>
 <span id="L11"><span class="lineNum">      11</span>              :     // 시뮬레이션된 데이터</span>
-<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">           1 :     await Future.delayed(const Duration(milliseconds: 500));</span></span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">           2 :     await Future.delayed(const Duration(milliseconds: 500));</span></span>
 <span id="L13"><span class="lineNum">      13</span>              : </span>
-<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">           1 :     return PetMockData.getMockPets();</span></span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">           2 :     return PetMockData.getMockPets();</span></span>
 <span id="L15"><span class="lineNum">      15</span>              :   }</span>
 <span id="L16"><span class="lineNum">      16</span>              : </span>
-<span id="L17"><span class="lineNum">      17</span> <span class="tlaGNC">           1 :   @override</span></span>
+<span id="L17"><span class="lineNum">      17</span> <span class="tlaGNC">           2 :   @override</span></span>
 <span id="L18"><span class="lineNum">      18</span>              :   Future&lt;PetProfileEntity?&gt; getPetById(String id) async {</span>
-<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">           1 :     final pets = await getAllPets();</span></span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">           2 :     final pets = await getAllPets();</span></span>
 <span id="L20"><span class="lineNum">      20</span>              :     try {</span>
-<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">           4 :       return pets.firstWhere((pet) =&gt; pet.id == id);</span></span>
+<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">           8 :       return pets.firstWhere((pet) =&gt; pet.id == id);</span></span>
 <span id="L22"><span class="lineNum">      22</span>              :     } catch (e) {</span>
 <span id="L23"><span class="lineNum">      23</span>              :       return null;</span>
 <span id="L24"><span class="lineNum">      24</span>              :     }</span>
@@ -100,15 +100,15 @@
 <span id="L38"><span class="lineNum">      38</span> <span class="tlaGNC">           1 :     return PetMockData.addPet(newPet);</span></span>
 <span id="L39"><span class="lineNum">      39</span>              :   }</span>
 <span id="L40"><span class="lineNum">      40</span>              : </span>
-<span id="L41"><span class="lineNum">      41</span> <span class="tlaGNC">           1 :   @override</span></span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaGNC">           2 :   @override</span></span>
 <span id="L42"><span class="lineNum">      42</span>              :   Future&lt;PetProfileEntity&gt; updatePet(PetProfileEntity pet) async {</span>
 <span id="L43"><span class="lineNum">      43</span>              :     // 시뮬레이션된 업데이트 로직</span>
-<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">           1 :     await Future.delayed(const Duration(milliseconds: 200));</span></span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">           2 :     await Future.delayed(const Duration(milliseconds: 200));</span></span>
 <span id="L45"><span class="lineNum">      45</span>              : </span>
-<span id="L46"><span class="lineNum">      46</span> <span class="tlaGNC">           2 :     final updatedPet = pet.copyWith(updatedAt: DateTime.now());</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaGNC">           4 :     final updatedPet = pet.copyWith(updatedAt: DateTime.now());</span></span>
 <span id="L47"><span class="lineNum">      47</span>              : </span>
 <span id="L48"><span class="lineNum">      48</span>              :     // Mock 데이터에서 실제로 업데이트</span>
-<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">           1 :     final result = PetMockData.updatePet(updatedPet);</span></span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">           2 :     final result = PetMockData.updatePet(updatedPet);</span></span>
 <span id="L50"><span class="lineNum">      50</span>              :     if (result == null) {</span>
 <span id="L51"><span class="lineNum">      51</span> <span class="tlaGNC">           3 :       throw Exception('펫을 찾을 수 없습니다: ${pet.id}');</span></span>
 <span id="L52"><span class="lineNum">      52</span>              :     }</span>
@@ -116,13 +116,13 @@
 <span id="L54"><span class="lineNum">      54</span>              :     return result;</span>
 <span id="L55"><span class="lineNum">      55</span>              :   }</span>
 <span id="L56"><span class="lineNum">      56</span>              : </span>
-<span id="L57"><span class="lineNum">      57</span> <span class="tlaGNC">           1 :   @override</span></span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaGNC">           2 :   @override</span></span>
 <span id="L58"><span class="lineNum">      58</span>              :   Future&lt;void&gt; deletePet(String id) async {</span>
 <span id="L59"><span class="lineNum">      59</span>              :     // 시뮬레이션된 삭제 로직</span>
-<span id="L60"><span class="lineNum">      60</span> <span class="tlaGNC">           1 :     await Future.delayed(const Duration(milliseconds: 200));</span></span>
+<span id="L60"><span class="lineNum">      60</span> <span class="tlaGNC">           2 :     await Future.delayed(const Duration(milliseconds: 200));</span></span>
 <span id="L61"><span class="lineNum">      61</span>              :     </span>
 <span id="L62"><span class="lineNum">      62</span>              :     // Mock 데이터에서 실제로 삭제</span>
-<span id="L63"><span class="lineNum">      63</span> <span class="tlaGNC">           1 :     final success = PetMockData.deletePet(id);</span></span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaGNC">           2 :     final success = PetMockData.deletePet(id);</span></span>
 <span id="L64"><span class="lineNum">      64</span>              :     if (!success) {</span>
 <span id="L65"><span class="lineNum">      65</span> <span class="tlaGNC">           2 :       throw Exception('펫을 찾을 수 없습니다: $id');</span></span>
 <span id="L66"><span class="lineNum">      66</span>              :     }</span>
