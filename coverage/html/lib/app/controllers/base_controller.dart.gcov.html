@@ -1,0 +1,290 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - AI Pet Frontend - Full Project Test Coverage Report - lib/app/controllers/base_controller.dart</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory lib/app/controllers">lib/app/controllers</a> - base_controller.dart</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">AI Pet Frontend - Full Project Test Coverage Report</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">18.6&nbsp;%</td>
+            <td class="headerCovTableEntry">59</td>
+            <td class="headerCovTableEntry">11</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2025-09-12 18:09:19</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : import 'dart:async';</span>
+<span id="L2"><span class="lineNum">       2</span>              : </span>
+<span id="L3"><span class="lineNum">       3</span>              : import 'package:flutter/foundation.dart';</span>
+<span id="L4"><span class="lineNum">       4</span>              : import 'package:flutter_riverpod/flutter_riverpod.dart';</span>
+<span id="L5"><span class="lineNum">       5</span>              : </span>
+<span id="L6"><span class="lineNum">       6</span>              : import '../../shared/services/error_service.dart';</span>
+<span id="L7"><span class="lineNum">       7</span>              : </span>
+<span id="L8"><span class="lineNum">       8</span>              : /// 모든 Controller의 기본 클래스</span>
+<span id="L9"><span class="lineNum">       9</span>              : ///</span>
+<span id="L10"><span class="lineNum">      10</span>              : /// Clean Architecture 원칙에 따라 UI 로직을 분리하고 메모리 리크를 방지합니다.</span>
+<span id="L11"><span class="lineNum">      11</span>              : /// 모든 Controller는 이 클래스를 상속받아야 하며, 공통 기능을 제공합니다.</span>
+<span id="L12"><span class="lineNum">      12</span>              : abstract class BaseController {</span>
+<span id="L13"><span class="lineNum">      13</span>              :   final WidgetRef ref;</span>
+<span id="L14"><span class="lineNum">      14</span>              :   final ErrorService _errorService;</span>
+<span id="L15"><span class="lineNum">      15</span>              : </span>
+<span id="L16"><span class="lineNum">      16</span>              :   bool _disposed = false;</span>
+<span id="L17"><span class="lineNum">      17</span>              : </span>
+<span id="L18"><span class="lineNum">      18</span>              :   // 메모리 리크를 방지하기위해 StreamController 등 리소스를 추적</span>
+<span id="L19"><span class="lineNum">      19</span>              :   final List&lt;StreamSubscription&gt; _subscriptions = [];</span>
+<span id="L20"><span class="lineNum">      20</span>              :   final List&lt;Timer&gt; _timers = [];</span>
+<span id="L21"><span class="lineNum">      21</span>              :   final List&lt;ChangeNotifier&gt; _notifiers = [];</span>
+<span id="L22"><span class="lineNum">      22</span>              : </span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">           2 :   BaseController(this.ref, {ErrorService? errorService})</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">           2 :     : _errorService = errorService ?? ErrorService();</span></span>
+<span id="L25"><span class="lineNum">      25</span>              : </span>
+<span id="L26"><span class="lineNum">      26</span>              :   /// 에러를 처리합니다.</span>
+<span id="L27"><span class="lineNum">      27</span>              :   ///</span>
+<span id="L28"><span class="lineNum">      28</span>              :   /// 비즈니스 로직만 처리하고 UI는 분리하여 처리합니다.</span>
+<span id="L29"><span class="lineNum">      29</span>              :   ///</span>
+<span id="L30"><span class="lineNum">      30</span>              :   /// [error] 처리할 에러 객체</span>
+<span id="L31"><span class="lineNum">      31</span>              :   /// [stackTrace] 스택 트레이스 (선택사항)</span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaUNC">           0 :   void handleError(Object error, [StackTrace? stackTrace]) {</span></span>
+<span id="L33"><span class="lineNum">      33</span> <span class="tlaUNC">           0 :     _errorService.handleError(error, stackTrace);</span></span>
+<span id="L34"><span class="lineNum">      34</span>              :   }</span>
+<span id="L35"><span class="lineNum">      35</span>              : </span>
+<span id="L36"><span class="lineNum">      36</span>              :   /// 심각도별 에러를 처리합니다.</span>
+<span id="L37"><span class="lineNum">      37</span>              :   ///</span>
+<span id="L38"><span class="lineNum">      38</span>              :   /// 에러의 심각도에 따라 적절한 처리 방식을 선택합니다.</span>
+<span id="L39"><span class="lineNum">      39</span>              :   ///</span>
+<span id="L40"><span class="lineNum">      40</span>              :   /// [error] 처리할 에러 객체</span>
+<span id="L41"><span class="lineNum">      41</span>              :   /// [severity] 에러 심각도</span>
+<span id="L42"><span class="lineNum">      42</span>              :   /// [stackTrace] 스택 트레이스 (선택사항)</span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaUNC">           0 :   void handleErrorWithSeverity(</span></span>
+<span id="L44"><span class="lineNum">      44</span>              :     Object error,</span>
+<span id="L45"><span class="lineNum">      45</span>              :     ErrorSeverity severity, [</span>
+<span id="L46"><span class="lineNum">      46</span>              :     StackTrace? stackTrace,</span>
+<span id="L47"><span class="lineNum">      47</span>              :   ]) {</span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaUNC">           0 :     _errorService.handleErrorWithSeverity(error, severity, stackTrace);</span></span>
+<span id="L49"><span class="lineNum">      49</span>              :   }</span>
+<span id="L50"><span class="lineNum">      50</span>              : </span>
+<span id="L51"><span class="lineNum">      51</span>              :   /// 사용자에게 보여줄 친화적인 에러 메시지를 생성합니다.</span>
+<span id="L52"><span class="lineNum">      52</span>              :   ///</span>
+<span id="L53"><span class="lineNum">      53</span>              :   /// 기술적인 에러 메시지를 사용자가 이해할 수 있는 형태로 변환합니다.</span>
+<span id="L54"><span class="lineNum">      54</span>              :   ///</span>
+<span id="L55"><span class="lineNum">      55</span>              :   /// [error] 원본 에러 객체</span>
+<span id="L56"><span class="lineNum">      56</span>              :   /// [return] 사용자 친화적인 에러 메시지</span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaUNC">           0 :   String getUserFriendlyErrorMessage(Object error) {</span></span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaUNC">           0 :     return _errorService.getUserFriendlyMessage(error);</span></span>
+<span id="L59"><span class="lineNum">      59</span>              :   }</span>
+<span id="L60"><span class="lineNum">      60</span>              : </span>
+<span id="L61"><span class="lineNum">      61</span>              :   /// Controller가 이미 dispose되었는지 확인합니다.</span>
+<span id="L62"><span class="lineNum">      62</span> <span class="tlaUNC">           0 :   bool get isDisposed =&gt; _disposed;</span></span>
+<span id="L63"><span class="lineNum">      63</span>              : </span>
+<span id="L64"><span class="lineNum">      64</span>              :   /// dispose 전에 호출되는 검증 메서드입니다.</span>
+<span id="L65"><span class="lineNum">      65</span>              :   ///</span>
+<span id="L66"><span class="lineNum">      66</span>              :   /// Controller가 이미 dispose된 상태에서 메서드를 호출하려고 할 때 에러를 발생시킵니다.</span>
+<span id="L67"><span class="lineNum">      67</span> <span class="tlaUNC">           0 :   void _checkDisposed() {</span></span>
+<span id="L68"><span class="lineNum">      68</span> <span class="tlaUNC">           0 :     if (_disposed) {</span></span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaUNC">           0 :       throw StateError('Controller가 이미 dispose되었습니다');</span></span>
+<span id="L70"><span class="lineNum">      70</span>              :     }</span>
+<span id="L71"><span class="lineNum">      71</span>              :   }</span>
+<span id="L72"><span class="lineNum">      72</span>              : </span>
+<span id="L73"><span class="lineNum">      73</span>              :   /// StreamSubscription을 등록하여 자동으로 dispose될 수 있도록 합니다.</span>
+<span id="L74"><span class="lineNum">      74</span>              :   ///</span>
+<span id="L75"><span class="lineNum">      75</span>              :   /// [subscription] 등록할 StreamSubscription</span>
+<span id="L76"><span class="lineNum">      76</span> <span class="tlaUNC">           0 :   void addSubscription(StreamSubscription subscription) {</span></span>
+<span id="L77"><span class="lineNum">      77</span> <span class="tlaUNC">           0 :     _checkDisposed();</span></span>
+<span id="L78"><span class="lineNum">      78</span> <span class="tlaUNC">           0 :     _subscriptions.add(subscription);</span></span>
+<span id="L79"><span class="lineNum">      79</span>              :   }</span>
+<span id="L80"><span class="lineNum">      80</span>              : </span>
+<span id="L81"><span class="lineNum">      81</span>              :   /// Timer를 등록하여 자동으로 dispose될 수 있도록 합니다.</span>
+<span id="L82"><span class="lineNum">      82</span>              :   ///</span>
+<span id="L83"><span class="lineNum">      83</span>              :   /// [timer] 등록할 Timer</span>
+<span id="L84"><span class="lineNum">      84</span> <span class="tlaUNC">           0 :   void addTimer(Timer timer) {</span></span>
+<span id="L85"><span class="lineNum">      85</span> <span class="tlaUNC">           0 :     _checkDisposed();</span></span>
+<span id="L86"><span class="lineNum">      86</span> <span class="tlaUNC">           0 :     _timers.add(timer);</span></span>
+<span id="L87"><span class="lineNum">      87</span>              :   }</span>
+<span id="L88"><span class="lineNum">      88</span>              : </span>
+<span id="L89"><span class="lineNum">      89</span>              :   /// ChangeNotifier를 등록하여 자동으로 dispose될 수 있도록 합니다.</span>
+<span id="L90"><span class="lineNum">      90</span>              :   ///</span>
+<span id="L91"><span class="lineNum">      91</span>              :   /// [notifier] 등록할 ChangeNotifier</span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaUNC">           0 :   void addNotifier(ChangeNotifier notifier) {</span></span>
+<span id="L93"><span class="lineNum">      93</span> <span class="tlaUNC">           0 :     _checkDisposed();</span></span>
+<span id="L94"><span class="lineNum">      94</span> <span class="tlaUNC">           0 :     _notifiers.add(notifier);</span></span>
+<span id="L95"><span class="lineNum">      95</span>              :   }</span>
+<span id="L96"><span class="lineNum">      96</span>              : </span>
+<span id="L97"><span class="lineNum">      97</span>              :   /// 지연된 작업을 실행합니다.</span>
+<span id="L98"><span class="lineNum">      98</span>              :   ///</span>
+<span id="L99"><span class="lineNum">      99</span>              :   /// [task] 실행할 작업</span>
+<span id="L100"><span class="lineNum">     100</span>              :   /// [delay] 지연 시간</span>
+<span id="L101"><span class="lineNum">     101</span>              :   /// [return] 생성된 Timer</span>
+<span id="L102"><span class="lineNum">     102</span> <span class="tlaUNC">           0 :   Timer scheduleTask(VoidCallback task, Duration delay) {</span></span>
+<span id="L103"><span class="lineNum">     103</span> <span class="tlaUNC">           0 :     _checkDisposed();</span></span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaUNC">           0 :     final timer = Timer(delay, task);</span></span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaUNC">           0 :     addTimer(timer);</span></span>
+<span id="L106"><span class="lineNum">     106</span>              :     return timer;</span>
+<span id="L107"><span class="lineNum">     107</span>              :   }</span>
+<span id="L108"><span class="lineNum">     108</span>              : </span>
+<span id="L109"><span class="lineNum">     109</span>              :   /// 주기적 작업을 실행합니다.</span>
+<span id="L110"><span class="lineNum">     110</span>              :   ///</span>
+<span id="L111"><span class="lineNum">     111</span>              :   /// [task] 실행할 작업</span>
+<span id="L112"><span class="lineNum">     112</span>              :   /// [period] 실행 주기</span>
+<span id="L113"><span class="lineNum">     113</span>              :   /// [return] 생성된 Timer</span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaUNC">           0 :   Timer schedulePeriodicTask(VoidCallback task, Duration period) {</span></span>
+<span id="L115"><span class="lineNum">     115</span> <span class="tlaUNC">           0 :     _checkDisposed();</span></span>
+<span id="L116"><span class="lineNum">     116</span> <span class="tlaUNC">           0 :     final timer = Timer.periodic(period, (_) =&gt; task());</span></span>
+<span id="L117"><span class="lineNum">     117</span> <span class="tlaUNC">           0 :     addTimer(timer);</span></span>
+<span id="L118"><span class="lineNum">     118</span>              :     return timer;</span>
+<span id="L119"><span class="lineNum">     119</span>              :   }</span>
+<span id="L120"><span class="lineNum">     120</span>              : </span>
+<span id="L121"><span class="lineNum">     121</span>              :   /// 리소스를 정리합니다.</span>
+<span id="L122"><span class="lineNum">     122</span>              :   ///</span>
+<span id="L123"><span class="lineNum">     123</span>              :   /// 반드시 override하여 호출해야 하며, 모든 등록된 리소스를 해제합니다.</span>
+<span id="L124"><span class="lineNum">     124</span> <span class="tlaGNC">           2 :   void dispose() {</span></span>
+<span id="L125"><span class="lineNum">     125</span> <span class="tlaGNC">           2 :     if (_disposed) return;</span></span>
+<span id="L126"><span class="lineNum">     126</span>              : </span>
+<span id="L127"><span class="lineNum">     127</span>              :     // 모든 구독 취소</span>
+<span id="L128"><span class="lineNum">     128</span> <span class="tlaGNC">           2 :     for (final subscription in _subscriptions) {</span></span>
+<span id="L129"><span class="lineNum">     129</span> <span class="tlaUNC">           0 :       subscription.cancel();</span></span>
+<span id="L130"><span class="lineNum">     130</span>              :     }</span>
+<span id="L131"><span class="lineNum">     131</span> <span class="tlaGNC">           4 :     _subscriptions.clear();</span></span>
+<span id="L132"><span class="lineNum">     132</span>              : </span>
+<span id="L133"><span class="lineNum">     133</span>              :     // 모든 타이머 취소</span>
+<span id="L134"><span class="lineNum">     134</span> <span class="tlaGNC">           2 :     for (final timer in _timers) {</span></span>
+<span id="L135"><span class="lineNum">     135</span> <span class="tlaUNC">           0 :       timer.cancel();</span></span>
+<span id="L136"><span class="lineNum">     136</span>              :     }</span>
+<span id="L137"><span class="lineNum">     137</span> <span class="tlaGNC">           4 :     _timers.clear();</span></span>
+<span id="L138"><span class="lineNum">     138</span>              : </span>
+<span id="L139"><span class="lineNum">     139</span>              :     // 모든 ChangeNotifier dispose</span>
+<span id="L140"><span class="lineNum">     140</span> <span class="tlaGNC">           2 :     for (final notifier in _notifiers) {</span></span>
+<span id="L141"><span class="lineNum">     141</span> <span class="tlaUNC">           0 :       notifier.dispose();</span></span>
+<span id="L142"><span class="lineNum">     142</span>              :     }</span>
+<span id="L143"><span class="lineNum">     143</span> <span class="tlaGNC">           4 :     _notifiers.clear();</span></span>
+<span id="L144"><span class="lineNum">     144</span>              : </span>
+<span id="L145"><span class="lineNum">     145</span> <span class="tlaGNC">           2 :     _disposed = true;</span></span>
+<span id="L146"><span class="lineNum">     146</span>              :   }</span>
+<span id="L147"><span class="lineNum">     147</span>              : </span>
+<span id="L148"><span class="lineNum">     148</span>              :   /// 안전한 비동기 작업 실행</span>
+<span id="L149"><span class="lineNum">     149</span>              :   /// 에러가 발생하면 자동으로 처리하고 사용자 친화적인 메시지를 반환합니다</span>
+<span id="L150"><span class="lineNum">     150</span> <span class="tlaUNC">           0 :   Future&lt;T?&gt; safeExecute&lt;T&gt;(</span></span>
+<span id="L151"><span class="lineNum">     151</span>              :     Future&lt;T&gt; Function() action, {</span>
+<span id="L152"><span class="lineNum">     152</span>              :     String? errorMessage,</span>
+<span id="L153"><span class="lineNum">     153</span>              :   }) async {</span>
+<span id="L154"><span class="lineNum">     154</span>              :     try {</span>
+<span id="L155"><span class="lineNum">     155</span> <span class="tlaUNC">           0 :       return await action();</span></span>
+<span id="L156"><span class="lineNum">     156</span>              :     } catch (error, stackTrace) {</span>
+<span id="L157"><span class="lineNum">     157</span>              :       final errorToHandle = errorMessage != null</span>
+<span id="L158"><span class="lineNum">     158</span>              :           ? '$errorMessage: $error'</span>
+<span id="L159"><span class="lineNum">     159</span> <span class="tlaUNC">           0 :           : error;</span></span>
+<span id="L160"><span class="lineNum">     160</span> <span class="tlaUNC">           0 :       handleError(errorToHandle, stackTrace);</span></span>
+<span id="L161"><span class="lineNum">     161</span>              :       return null;</span>
+<span id="L162"><span class="lineNum">     162</span>              :     }</span>
+<span id="L163"><span class="lineNum">     163</span>              :   }</span>
+<span id="L164"><span class="lineNum">     164</span>              : </span>
+<span id="L165"><span class="lineNum">     165</span>              :   /// 타임아웃이 있는 안전한 비동기 작업 실행</span>
+<span id="L166"><span class="lineNum">     166</span> <span class="tlaUNC">           0 :   Future&lt;T?&gt; safeExecuteWithTimeout&lt;T&gt;(</span></span>
+<span id="L167"><span class="lineNum">     167</span>              :     Future&lt;T&gt; Function() action, {</span>
+<span id="L168"><span class="lineNum">     168</span>              :     Duration timeout = const Duration(seconds: 30),</span>
+<span id="L169"><span class="lineNum">     169</span>              :     String? errorMessage,</span>
+<span id="L170"><span class="lineNum">     170</span>              :   }) async {</span>
+<span id="L171"><span class="lineNum">     171</span>              :     try {</span>
+<span id="L172"><span class="lineNum">     172</span> <span class="tlaUNC">           0 :       return await action().timeout(timeout);</span></span>
+<span id="L173"><span class="lineNum">     173</span>              :     } catch (error, stackTrace) {</span>
+<span id="L174"><span class="lineNum">     174</span>              :       String errorToHandle;</span>
+<span id="L175"><span class="lineNum">     175</span> <span class="tlaUNC">           0 :       if (error is TimeoutException) {</span></span>
+<span id="L176"><span class="lineNum">     176</span>              :         errorToHandle = errorMessage != null</span>
+<span id="L177"><span class="lineNum">     177</span>              :             ? '$errorMessage: 操作がタイムアウトしました'</span>
+<span id="L178"><span class="lineNum">     178</span> <span class="tlaUNC">           0 :             : '操作がタイムアウトしました';</span></span>
+<span id="L179"><span class="lineNum">     179</span>              :       } else {</span>
+<span id="L180"><span class="lineNum">     180</span>              :         errorToHandle = errorMessage != null</span>
+<span id="L181"><span class="lineNum">     181</span>              :             ? '$errorMessage: $error'</span>
+<span id="L182"><span class="lineNum">     182</span> <span class="tlaUNC">           0 :             : error.toString();</span></span>
+<span id="L183"><span class="lineNum">     183</span>              :       }</span>
+<span id="L184"><span class="lineNum">     184</span> <span class="tlaUNC">           0 :       handleError(errorToHandle, stackTrace);</span></span>
+<span id="L185"><span class="lineNum">     185</span>              :       return null;</span>
+<span id="L186"><span class="lineNum">     186</span>              :     }</span>
+<span id="L187"><span class="lineNum">     187</span>              :   }</span>
+<span id="L188"><span class="lineNum">     188</span>              : </span>
+<span id="L189"><span class="lineNum">     189</span>              :   /// 재시도 로직이 있는 안전한 비동기 작업 실행</span>
+<span id="L190"><span class="lineNum">     190</span> <span class="tlaUNC">           0 :   Future&lt;T?&gt; safeExecuteWithRetry&lt;T&gt;(</span></span>
+<span id="L191"><span class="lineNum">     191</span>              :     Future&lt;T&gt; Function() action, {</span>
+<span id="L192"><span class="lineNum">     192</span>              :     int maxRetries = 3,</span>
+<span id="L193"><span class="lineNum">     193</span>              :     Duration retryDelay = const Duration(seconds: 1),</span>
+<span id="L194"><span class="lineNum">     194</span>              :     String? errorMessage,</span>
+<span id="L195"><span class="lineNum">     195</span>              :   }) async {</span>
+<span id="L196"><span class="lineNum">     196</span>              :     int attempts = 0;</span>
+<span id="L197"><span class="lineNum">     197</span> <span class="tlaUNC">           0 :     while (attempts &lt; maxRetries) {</span></span>
+<span id="L198"><span class="lineNum">     198</span>              :       try {</span>
+<span id="L199"><span class="lineNum">     199</span> <span class="tlaUNC">           0 :         return await action();</span></span>
+<span id="L200"><span class="lineNum">     200</span>              :       } catch (error, stackTrace) {</span>
+<span id="L201"><span class="lineNum">     201</span> <span class="tlaUNC">           0 :         attempts++;</span></span>
+<span id="L202"><span class="lineNum">     202</span> <span class="tlaUNC">           0 :         if (attempts &gt;= maxRetries) {</span></span>
+<span id="L203"><span class="lineNum">     203</span>              :           final errorToHandle = errorMessage != null</span>
+<span id="L204"><span class="lineNum">     204</span>              :               ? '$errorMessage: $error (再試行 $maxRetries回失敗)'</span>
+<span id="L205"><span class="lineNum">     205</span> <span class="tlaUNC">           0 :               : '$error (再試行 $maxRetries回失敗)';</span></span>
+<span id="L206"><span class="lineNum">     206</span> <span class="tlaUNC">           0 :           handleError(errorToHandle, stackTrace);</span></span>
+<span id="L207"><span class="lineNum">     207</span>              :           return null;</span>
+<span id="L208"><span class="lineNum">     208</span>              :         }</span>
+<span id="L209"><span class="lineNum">     209</span> <span class="tlaUNC">           0 :         await Future.delayed(retryDelay * attempts);</span></span>
+<span id="L210"><span class="lineNum">     210</span>              :       }</span>
+<span id="L211"><span class="lineNum">     211</span>              :     }</span>
+<span id="L212"><span class="lineNum">     212</span>              :     return null;</span>
+<span id="L213"><span class="lineNum">     213</span>              :   }</span>
+<span id="L214"><span class="lineNum">     214</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.3.2-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>
