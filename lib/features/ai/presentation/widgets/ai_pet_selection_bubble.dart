@@ -249,7 +249,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
               )
             else
               Icon(
-                pet.typeIcon,
+                pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
                 size: 20,
                 color: isSelected ? Colors.white : AppColors.pointBrown,
               ),

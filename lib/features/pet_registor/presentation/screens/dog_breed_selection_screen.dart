@@ -1,174 +1,115 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/shared.dart';
+import '../widgets/generic_breed_selection_screen.dart';
 
-class DogBreedSelectionScreen extends ConsumerStatefulWidget {
+class DogBreedSelectionScreen extends ConsumerWidget {
   const DogBreedSelectionScreen({super.key});
 
+  /// 강아지 품종 데이터 (일본에서 인기 있는 순서대로)
+  static const List<Map<String, dynamic>> _dogBreedData = [
+    // 일본에서 가장 인기 있는 소형견들
+    {
+      'key': 'poodle',
+      'name': 'プードル',
+      'image': 'assets/images/dogs/poodle.png',
+      'description': '지능적이고 털이 잘 안 빠짐'
+    },
+    {
+      'key': 'chiwawa',
+      'name': 'チワワ',
+      'image': 'assets/images/dogs/chiwawa.png',
+      'description': '세계에서 가장 작은 견종'
+    },
+    {
+      'key': 'pomeranian',
+      'name': 'ポメラニアン',
+      'image': 'assets/images/dogs/pomeranian.png',
+      'description': '털북숭이 작은 스피츠'
+    },
+    {
+      'key': 'shiba',
+      'name': 'しば犬',
+      'image': 'assets/images/dogs/shiba.png',
+      'description': '일본의 대표적인 견종'
+    },
+    {
+      'key': 'dachshund',
+      'name': 'ダックスフント',
+      'image': 'assets/images/dogs/dachshund.png',
+      'description': '긴 몸과 짧은 다리가 특징'
+    },
+    {
+      'key': 'maltese',
+      'name': 'マルチーズ',
+      'image': 'assets/images/dogs/maltese.png',
+      'description': '하얀 털이 아름다운 소형견'
+    },
+    {
+      'key': 'yorkshire_terrier',
+      'name': 'ヨークシャーテリア',
+      'image': 'assets/images/dogs/yorkshire_terrie.png',
+      'description': '실크같은 털의 작은 테리어'
+    },
+    {
+      'key': 'shih_tzu',
+      'name': 'シーズー',
+      'image': 'assets/images/dogs/shih_tzu.png',
+      'description': '친근하고 온순한 성격'
+    },
+    {
+      'key': 'french_bulldog',
+      'name': 'フレンチブルドッグ',
+      'image': 'assets/images/dogs/french_bulldog.png',
+      'description': '독특한 박쥐 귀를 가진 견종'
+    },
+    {
+      'key': 'pug',
+      'name': 'パグ',
+      'image': 'assets/images/dogs/pug.png',
+      'description': '주름진 얼굴이 매력적'
+    },
+    {
+      'key': 'golden_retriever',
+      'name': 'ゴールデンレトリバー',
+      'image': 'assets/images/dogs/golden_retriever.png',
+      'description': '온순하고 지능적인 대형견'
+    },
+    {
+      'key': 'labrador_retriever',
+      'name': 'ラブラドールレトリバー',
+      'image': 'assets/images/dogs/labrador_retriever.png',
+      'description': '활발하고 친근한 성격'
+    },
+    {
+      'key': 'miniature_schnauzer',
+      'name': 'ミニチュアシュナウザー',
+      'image': 'assets/images/dogs/miniature_schnauzer.png',
+      'description': '수염이 특징적인 견종'
+    },
+    {
+      'key': 'mixed',
+      'name': 'ミックス（雑種）',
+      'image': 'assets/images/dogs/mixed.png',
+      'description': '개성 넘치는 믹스견'
+    },
+    {
+      'key': 'other',
+      'name': 'その他の犬種',
+      'image': 'assets/images/dogs/mixed.png',
+      'description': '다른 품종을 입력하세요'
+    },
+  ];
+
   @override
-  ConsumerState<DogBreedSelectionScreen> createState() =>
-      _DogBreedSelectionScreenState();
-}
-
-class _DogBreedSelectionScreenState
-    extends ConsumerState<DogBreedSelectionScreen> {
-  String? _selectedBreed;
-
-  late final List<Map<String, dynamic>> _dogBreeds;
-
-  @override
-  void initState() {
-    super.initState();
-    _dogBreeds = PetMockService.getMockDogBreeds();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientBackAppBar(
-        title: 'どんな子ですか？',
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            children: [
-              // 품종 목록 (3x2 그리드)
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: AppSpacing.md,
-                    mainAxisSpacing: AppSpacing.md,
-                    childAspectRatio: 0.8,
-                  ),
-                  itemCount: _dogBreeds.length,
-                  itemBuilder: (context, index) {
-                    final breed = _dogBreeds[index];
-                    final isSelected = _selectedBreed == breed['breed'];
-
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedBreed = breed['breed'];
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(AppRadius.medium),
-                          border: Border.all(
-                            color: isSelected
-                                ? AppColors.pointBrown
-                                : Colors.grey.withValues(alpha: 0.3),
-                            width: isSelected ? 2 : 1,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // 품종 이미지 (임시로 아이콘 사용)
-                            Expanded(
-                              flex: 3,
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(
-                                    AppRadius.small,
-                                  ),
-                                ),
-                                child: const Icon(
-                                  Icons.pets,
-                                  size: 30,
-                                  color: AppColors.pointBrown,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-
-                            // 품종 이름
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                breed['name'],
-                                style: AppFonts.bodyMedium.copyWith(
-                                  color: AppColors.pointDark,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-
-                            // 선택 표시
-                            if (isSelected) ...[
-                              Container(
-                                width: 20,
-                                height: 20,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.pointBrown,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 14,
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              // 다음 버튼
-              const SizedBox(height: AppSpacing.lg),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _selectedBreed != null
-                      ? () {
-                          // 다음 단계로 이동
-                          context.go(RouteConstants.petNameInputRoute);
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.pointBrown,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.lg,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.large),
-                    ),
-                  ),
-                  child: Text(
-                    '次へ',
-                    style: AppFonts.fredoka(
-                      fontSize: AppFonts.lg,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const GenericBreedSelectionScreen<String>(
+      petType: 'dog',
+      title: 'どんな子ですか？',
+      breedData: _dogBreedData,
+      routeAfterSelection: RouteConstants.petNameInputRoute,
+      previousRoute: RouteConstants.petTypeSelectionRoute,
     );
   }
 }

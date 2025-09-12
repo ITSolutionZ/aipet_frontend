@@ -39,6 +39,7 @@ dependencies:
   geolocator: ^13.0.1
   google_maps_flutter: ^2.8.0
   location: ^6.0.0
+  image_picker: ^1.0.7
 
   mockito: ^5.4.4
 
@@ -63,6 +64,7 @@ flutter:
     - assets/images/activities/
     - assets/images/backgrounds/
     - assets/images/cats/
+    - assets/images/pet_selector/
     - assets/images/dogs/
     - assets/images/onboarding/
     - assets/images/etc/
