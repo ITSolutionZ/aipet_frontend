@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
 
 part 'pet_profile_controller.g.dart';
 
 /// 펫 프로필 상태
 class PetProfileState {
   final TabController? tabController;
-  final String selectedPetName;
+  final PetProfileEntity? selectedPet;
 
-  const PetProfileState({this.tabController, this.selectedPetName = 'ポチ'});
+  const PetProfileState({this.tabController, this.selectedPet});
 
   PetProfileState copyWith({
     TabController? tabController,
-    String? selectedPetName,
+    PetProfileEntity? selectedPet,
   }) {
     return PetProfileState(
       tabController: tabController ?? this.tabController,
-      selectedPetName: selectedPetName ?? this.selectedPetName,
+      selectedPet: selectedPet ?? this.selectedPet,
     );
   }
+  
+  String get selectedPetName => selectedPet?.name ?? 'Unknown Pet';
 }
 
 /// 펫 프로필 컨트롤러 (최신 @riverpod 패턴)
@@ -39,8 +42,8 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   }
 
   /// 펫 선택
-  void selectPet(String petName) {
-    state = state.copyWith(selectedPetName: petName);
+  void selectPet(PetProfileEntity pet) {
+    state = state.copyWith(selectedPet: pet);
   }
 
   /// 탭 변경

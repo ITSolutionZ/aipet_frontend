@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../../../features/pet_registor/domain/entities/pet_profile_entity.dart';
@@ -7,39 +9,93 @@ import '../../base/mock_data_constants.dart';
 ///
 /// 펫 프로필, 등록, 기본 정보와 관련된 Mock 데이터를 제공합니다.
 class PetMockData {
+  /// 펫 목록 저장소 (메모리 내)
+  static final List<PetProfileEntity> _pets = [
+    PetProfileEntity(
+      id: '1',
+      name: 'マックス',
+      type: 'dog',
+      breed: 'ゴールデンレトリバー',
+      birthDate: DateTime(2020, 3, 15),
+      imagePath: MockDataConstants.defaultPetImages['dog']!,
+      ownerId: 'user1',
+      createdAt: DateTime.now().subtract(const Duration(days: 30)),
+      updatedAt: DateTime.now(),
+      isActive: true,
+      additionalInfo: {
+        'gender': 'male',
+        'size': 'medium',
+        'weight': 15.8,
+        'isNeutered': false,
+        'petAnniversary': DateTime(2020, 3, 15),
+        'petBirthday': DateTime(2020, 3, 15),
+        'petArrivalDate': DateTime(2020, 3, 15),
+        'petGender': 'male',
+        'isNeutered': false,
+        'petImage': File('assets/images/pets/dog.png'),
+      },
+    ),
+    PetProfileEntity(
+      id: '2',
+      name: 'ルナ',
+      type: 'cat',
+      breed: 'ペルシャ',
+      birthDate: DateTime(2021, 7, 22),
+      imagePath: MockDataConstants.defaultPetImages['cat']!,
+      ownerId: 'user1',
+      createdAt: DateTime.now().subtract(const Duration(days: 15)),
+      updatedAt: DateTime.now(),
+      isActive: true,
+      additionalInfo: {
+        'gender': 'female',
+        'size': 'small',
+        'weight': 3.5,
+        'isNeutered': false,
+        'petAnniversary': DateTime(2021, 7, 22),
+        'petBirthday': DateTime(2021, 7, 22),
+        'petArrivalDate': DateTime(2021, 7, 22),
+        'petGender': 'female',
+        'isNeutered': false,
+        'petImage': File('assets/images/pets/cat.png'),
+      },
+    ),
+  ];
+
   /// 펫 목록 Mock 데이터
   static List<PetProfileEntity> getMockPets() {
-    return [
-      PetProfileEntity(
-        id: '1',
-        name: 'マックス',
-        type: 'dog',
-        breed: 'ゴールデンレトリバー',
-        birthDate: DateTime(2020, 3, 15),
-        imagePath: MockDataConstants.defaultPetImages['dog']!,
-        ownerId: 'user1',
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        updatedAt: DateTime.now(),
-      ),
-      PetProfileEntity(
-        id: '2',
-        name: 'ルナ',
-        type: 'cat',
-        breed: 'ペルシャ',
-        birthDate: DateTime(2021, 7, 22),
-        imagePath: MockDataConstants.defaultPetImages['cat']!,
-        ownerId: 'user1',
-        createdAt: DateTime.now().subtract(const Duration(days: 15)),
-        updatedAt: DateTime.now(),
-      ),
-    ];
+    return List.from(_pets);
+  }
+
+  /// 새 펫 추가
+  static PetProfileEntity addPet(PetProfileEntity pet) {
+    _pets.add(pet);
+    return pet;
+  }
+
+  /// 펫 업데이트
+  static PetProfileEntity? updatePet(PetProfileEntity updatedPet) {
+    final index = _pets.indexWhere((pet) => pet.id == updatedPet.id);
+    if (index != -1) {
+      _pets[index] = updatedPet;
+      return updatedPet;
+    }
+    return null;
+  }
+
+  /// 펫 삭제
+  static bool deletePet(String id) {
+    final index = _pets.indexWhere((pet) => pet.id == id);
+    if (index != -1) {
+      _pets.removeAt(index);
+      return true;
+    }
+    return false;
   }
 
   /// 특정 펫 Mock 데이터
   static PetProfileEntity? getMockPetById(String id) {
-    final pets = getMockPets();
     try {
-      return pets.firstWhere((pet) => pet.id == id);
+      return _pets.firstWhere((pet) => pet.id == id);
     } catch (e) {
       return null;
     }
