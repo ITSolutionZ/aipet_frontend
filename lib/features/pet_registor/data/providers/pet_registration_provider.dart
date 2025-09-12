@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/pet_registration_data_entity.dart';
-import '../services/pet_validation_utils.dart';
+import '../../domain/services/pet_validation_utils.dart';
 
 part 'pet_registration_provider.g.dart';
 
@@ -74,8 +72,8 @@ class PetRegistrationState extends _$PetRegistrationState {
   }
 
   /// 펫 이미지 설정
-  void setPetImage(File? image) {
-    state = state.copyWith(petImage: image);
+  void setPetImagePath(String? imagePath) {
+    state = state.copyWith(petImagePath: imagePath);
   }
 
   /// 커스텀 기본 이미지 경로 설정
@@ -109,7 +107,7 @@ class PetRegistrationData extends PetRegistrationDataEntity {
     super.petArrivalDate,
     super.petGender,
     super.isNeutered,
-    super.petImage,
+    super.petImagePath,
     super.microchipNumber,
     super.customDefaultImagePath,
   });
@@ -128,7 +126,7 @@ class PetRegistrationData extends PetRegistrationDataEntity {
     DateTime? petArrivalDate,
     String? petGender,
     bool? isNeutered,
-    File? petImage,
+    String? petImagePath,
     String? microchipNumber,
     String? customDefaultImagePath,
   }) {
@@ -145,7 +143,7 @@ class PetRegistrationData extends PetRegistrationDataEntity {
       petBirthday: petBirthday ?? this.petBirthday,
       petArrivalDate: petArrivalDate ?? this.petArrivalDate,
       isNeutered: isNeutered ?? this.isNeutered,
-      petImage: petImage ?? this.petImage,
+      petImagePath: petImagePath ?? this.petImagePath,
       microchipNumber: microchipNumber ?? this.microchipNumber,
       customDefaultImagePath:
           customDefaultImagePath ?? this.customDefaultImagePath,

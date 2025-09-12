@@ -6,14 +6,14 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../shared/shared.dart';
 
 class PetImagePicker extends StatelessWidget {
-  final File? selectedImage;
+  final String? selectedImagePath;
   final String? defaultImagePath;
-  final Function(File?) onImageChanged;
+  final Function(String?) onImageChanged;
   final Function(String)? onDefaultImageChanged;
 
   const PetImagePicker({
     super.key,
-    this.selectedImage,
+    this.selectedImagePath,
     this.defaultImagePath,
     required this.onImageChanged,
     this.onDefaultImageChanged,
@@ -45,9 +45,9 @@ class PetImagePicker extends StatelessWidget {
   }
 
   Widget _buildImageContent() {
-    if (selectedImage != null) {
+    if (selectedImagePath != null) {
       return Image.file(
-        selectedImage!,
+        File(selectedImagePath!),
         width: 120,
         height: 120,
         fit: BoxFit.cover,
@@ -131,7 +131,7 @@ class PetImagePicker extends StatelessWidget {
                   _showDefaultImageSelection(context);
                 },
               ),
-              if (selectedImage != null)
+              if (selectedImagePath != null)
                 ListTile(
                   leading: const Icon(Icons.delete),
                   title: const Text('이미지 삭제'),
@@ -158,7 +158,7 @@ class PetImagePicker extends StatelessWidget {
       );
 
       if (image != null) {
-        onImageChanged(File(image.path));
+        onImageChanged(image.path);
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -191,7 +191,7 @@ class PetImagePicker extends StatelessWidget {
       );
 
       if (image != null) {
-        onImageChanged(File(image.path));
+        onImageChanged(image.path);
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

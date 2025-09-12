@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +22,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
   bool _isValid = false;
   String? _selectedGender;
   bool _isNeutered = false;
-  File? _selectedImage;
+  String? _selectedImagePath;
 
   @override
   void initState() {
@@ -69,8 +67,8 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
       if (registrationState.microchipNumber != null) {
         _microchipController.text = registrationState.microchipNumber!;
       }
-      if (registrationState.petImage != null) {
-        _selectedImage = registrationState.petImage;
+      if (registrationState.petImagePath != null) {
+        _selectedImagePath = registrationState.petImagePath;
       }
     });
   }
@@ -85,7 +83,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
       gender: _selectedGender,
       isNeutered: _isNeutered,
     );
-    registrationNotifier.setPetImage(_selectedImage);
+    registrationNotifier.setPetImagePath(_selectedImagePath);
     registrationNotifier.setMicrochipNumber(_microchipController.text.trim());
   }
 
@@ -140,11 +138,11 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
 
                     // 펫 이미지
                     PetImagePicker(
-                      selectedImage: _selectedImage,
+                      selectedImagePath: _selectedImagePath,
                       defaultImagePath: _getDefaultImagePath(),
-                      onImageChanged: (image) {
+                      onImageChanged: (imagePath) {
                         setState(() {
-                          _selectedImage = image;
+                          _selectedImagePath = imagePath;
                         });
                         _saveData();
                       },

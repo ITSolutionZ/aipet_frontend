@@ -163,8 +163,8 @@ class _PetAnniversarySummaryScreenState
 
                         // 펫 이미지
                         PetImageDisplay(
-                          imageFile: registrationState.petImage,
-                          imagePath: registrationState.petImage == null
+                          imageFile: registrationState.petImagePath,
+                          imagePath: registrationState.petImagePath == null
                               ? _getPetImagePath()
                               : null,
                           width: 200,
