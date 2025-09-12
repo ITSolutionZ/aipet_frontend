@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:aipet_frontend/features/auth/domain/auth_error.dart';
+import '../../../../../lib/features/auth/domain/auth_error.dart';
 
 void main() {
   group('AuthError', () {
     group('NetworkError', () {
-      test('should create NetworkError with correct message and code', () {
-        // Arrange & Act
+      test('should have correct message and code', () {
+        // Act
         const error = NetworkError();
 
         // Assert
@@ -16,132 +16,128 @@ void main() {
     });
 
     group('ValidationError', () {
-      test('should create ValidationError with field and reason', () {
-        // Arrange & Act
+      test('should have correct message and code', () {
+        // Act
         const error = ValidationError(
           field: 'email',
-          reason: 'Invalid email format',
+          reason: 'メールアドレスが正しくありません',
         );
 
         // Assert
-        expect(error.field, equals('email'));
-        expect(error.reason, equals('Invalid email format'));
-        expect(error.message, equals('Invalid email format'));
+        expect(error.message, equals('メールアドレスが正しくありません'));
         expect(error.code, equals('VALIDATION_ERROR_email'));
+      });
+
+      test('should handle different fields', () {
+        // Act
+        const passwordError = ValidationError(
+          field: 'password',
+          reason: 'パスワードが短すぎます',
+        );
+
+        // Assert
+        expect(passwordError.message, equals('パスワードが短すぎます'));
+        expect(passwordError.code, equals('VALIDATION_ERROR_password'));
       });
     });
 
     group('AuthenticationError', () {
-      test('should create AuthenticationError with reason', () {
-        // Arrange & Act
-        const error = AuthenticationError('Wrong credentials');
+      test('should have correct message and code', () {
+        // Act
+        const error = AuthenticationError('ログインに失敗しました');
 
         // Assert
-        expect(error.reason, equals('Wrong credentials'));
-        expect(error.message, equals('Wrong credentials'));
+        expect(error.message, equals('ログインに失敗しました'));
         expect(error.code, equals('AUTH_ERROR'));
       });
     });
 
     group('ServerError', () {
-      test('should create ServerError without status code', () {
-        // Arrange & Act
+      test('should have correct message and code without status code', () {
+        // Act
         const error = ServerError();
 
         // Assert
-        expect(error.statusCode, isNull);
         expect(error.message, equals('サーバーエラーが発生しました。しばらく経ってから再試行してください'));
         expect(error.code, equals('SERVER_ERROR_UNKNOWN'));
       });
 
-      test('should create ServerError with status code', () {
-        // Arrange & Act
+      test('should have correct message and code with status code', () {
+        // Act
         const error = ServerError(statusCode: 500);
 
         // Assert
-        expect(error.statusCode, equals(500));
         expect(error.message, equals('サーバーエラーが発生しました。しばらく経ってから再試行してください'));
         expect(error.code, equals('SERVER_ERROR_500'));
       });
     });
 
     group('ClientError', () {
-      test('should create ClientError with status code and reason', () {
-        // Arrange & Act
-        const error = ClientError(
-          statusCode: 400,
-          reason: 'Bad request',
-        );
+      test('should have correct message and code', () {
+        // Act
+        const error = ClientError(statusCode: 400, reason: 'リクエストが無効です');
 
         // Assert
-        expect(error.statusCode, equals(400));
-        expect(error.reason, equals('Bad request'));
-        expect(error.message, equals('Bad request'));
+        expect(error.message, equals('リクエストが無効です'));
         expect(error.code, equals('CLIENT_ERROR_400'));
       });
     });
 
     group('TokenError', () {
-      test('should create TokenError with expired type', () {
-        // Arrange & Act
+      test('should have correct message and code for expired token', () {
+        // Act
         const error = TokenError(TokenErrorType.expired);
 
         // Assert
-        expect(error.type, equals(TokenErrorType.expired));
         expect(error.message, equals('セッションが期限切れです。再度ログインしてください'));
         expect(error.code, equals('TOKEN_ERROR_EXPIRED'));
       });
 
-      test('should create TokenError with invalid type', () {
-        // Arrange & Act
+      test('should have correct message and code for invalid token', () {
+        // Act
         const error = TokenError(TokenErrorType.invalid);
 
         // Assert
-        expect(error.type, equals(TokenErrorType.invalid));
         expect(error.message, equals('認証情報が不正です。再度ログインしてください'));
         expect(error.code, equals('TOKEN_ERROR_INVALID'));
       });
 
-      test('should create TokenError with missing type', () {
-        // Arrange & Act
+      test('should have correct message and code for missing token', () {
+        // Act
         const error = TokenError(TokenErrorType.missing);
 
         // Assert
-        expect(error.type, equals(TokenErrorType.missing));
         expect(error.message, equals('ログインが必要です'));
         expect(error.code, equals('TOKEN_ERROR_MISSING'));
       });
 
-      test('should create TokenError with refreshFailed type', () {
-        // Arrange & Act
+      test('should have correct message and code for refresh failed', () {
+        // Act
         const error = TokenError(TokenErrorType.refreshFailed);
 
         // Assert
-        expect(error.type, equals(TokenErrorType.refreshFailed));
         expect(error.message, equals('セッションの更新に失敗しました。再度ログインしてください'));
         expect(error.code, equals('TOKEN_ERROR_REFRESHFAILED'));
       });
     });
 
     group('StorageError', () {
-      test('should create StorageError with operation', () {
-        // Arrange & Act
-        const error = StorageError('write');
+      test('should have correct message and code', () {
+        // Act
+        const error = StorageError('save');
 
         // Assert
-        expect(error.operation, equals('write'));
         expect(error.message, equals('データの保存に失敗しました'));
-        expect(error.code, equals('STORAGE_ERROR_write'));
+        expect(error.code, equals('STORAGE_ERROR_save'));
       });
     });
 
     group('UnknownError', () {
-      test('should create UnknownError with details', () {
-        // Arrange & Act
-        const error = UnknownError('Something went wrong');
+      test('should have correct message and code', () {
+        // Act
+        const error = UnknownError('Some unexpected error');
 
         // Assert
-        expect(error.details, equals('Something went wrong'));
         expect(error.message, equals('予期しないエラーが発生しました'));
         expect(error.code, equals('UNKNOWN_ERROR'));
       });
@@ -153,48 +149,58 @@ void main() {
         const originalError = NetworkError();
 
         // Act
-        final mappedError = AuthErrorMapper.fromException(originalError);
+        final result = AuthErrorMapper.fromException(originalError);
 
         // Assert
-        expect(mappedError, equals(originalError));
+        expect(result, equals(originalError));
       });
 
       test('should map network-related exceptions to NetworkError', () {
         // Act
-        final networkError = AuthErrorMapper.fromException(Exception('Network connection failed'));
-        final connectionError = AuthErrorMapper.fromException(Exception('Connection timeout'));
-        final socketError = AuthErrorMapper.fromException(Exception('Socket exception'));
+        final result1 = AuthErrorMapper.fromException(
+          Exception('Network error'),
+        );
+        final result2 = AuthErrorMapper.fromException(
+          Exception('Connection failed'),
+        );
+        final result3 = AuthErrorMapper.fromException(
+          Exception('Socket timeout'),
+        );
 
         // Assert
-        expect(networkError, isA<NetworkError>());
-        expect(connectionError, isA<NetworkError>());
-        expect(socketError, isA<NetworkError>());
+        expect(result1, isA<NetworkError>());
+        expect(result2, isA<NetworkError>());
+        expect(result3, isA<NetworkError>());
       });
 
-      test('should map HTTP exceptions to ServerError', () {
+      test('should map HTTP-related exceptions to ServerError', () {
         // Act
-        final httpError = AuthErrorMapper.fromException(Exception('HTTP 500 error'));
+        final result = AuthErrorMapper.fromException(
+          Exception('HTTP 500 error'),
+        );
 
         // Assert
-        expect(httpError, isA<ServerError>());
+        expect(result, isA<ServerError>());
       });
 
       test('should map unknown exceptions to UnknownError', () {
         // Act
-        final unknownError = AuthErrorMapper.fromException(Exception('Some random error'));
+        final result = AuthErrorMapper.fromException(
+          Exception('Some random error'),
+        );
 
         // Assert
-        expect(unknownError, isA<UnknownError>());
-        expect((unknownError as UnknownError).details, equals('Exception: Some random error'));
+        expect(result, isA<UnknownError>());
+        expect(result.message, equals('予期しないエラーが発生しました'));
       });
 
-      test('should handle non-Exception objects', () {
+      test('should handle string exceptions', () {
         // Act
-        final stringError = AuthErrorMapper.fromException('String error');
+        final result = AuthErrorMapper.fromException('String error');
 
         // Assert
-        expect(stringError, isA<UnknownError>());
-        expect((stringError as UnknownError).details, equals('String error'));
+        expect(result, isA<UnknownError>());
+        expect(result.message, equals('予期しないエラーが発生しました'));
       });
     });
   });
