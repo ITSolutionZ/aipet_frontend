@@ -1,5 +1,4 @@
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -46,13 +45,13 @@ void main() {
     });
 
     test('should return correct type icon for different pet types', () {
-      expect(testPet.typeIcon, Icons.pets);
+      expect(testPet.typeIcon, '🐕');
 
       final catPet = testPet.copyWith(type: 'cat');
-      expect(catPet.typeIcon, Icons.pets);
+      expect(catPet.typeIcon, '🐱');
 
       final birdPet = testPet.copyWith(type: 'bird');
-      expect(birdPet.typeIcon, Icons.flutter_dash);
+      expect(birdPet.typeIcon, '🐦');
     });
 
     test('should return correct Japanese type name', () {

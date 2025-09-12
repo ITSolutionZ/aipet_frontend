@@ -79,9 +79,9 @@ class PetRegistrationConverter {
 
   /// 이미지 경로 생성
   static String _getImagePath(PetRegistrationDataEntity data) {
-    if (data.petImage != null) {
-      // 실제 이미지가 있는 경우 (현재는 File 객체이므로 경로만 반환)
-      return data.petImage!.path;
+    if (data.petImagePath != null && data.petImagePath!.isNotEmpty) {
+      // 실제 이미지가 있는 경우 (String 경로 반환)
+      return data.petImagePath!;
     }
 
     // 기본 이미지 경로 반환

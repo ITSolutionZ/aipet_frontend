@@ -14,20 +14,27 @@ class PetRegistrationProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 4,
-      decoration: BoxDecoration(
-        color: AppColors.pointGray.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(2),
-      ),
-      child: FractionallySizedBox(
-        alignment: Alignment.centerLeft,
-        widthFactor: currentStep / totalSteps,
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.pointPink,
-            borderRadius: BorderRadius.circular(2),
+    final progressPercentage = ((currentStep / totalSteps) * 100).round();
+    
+    return Semantics(
+      label: 'ペット登録の進行状況',
+      hint: 'ステップ$currentStepの$totalSteps、$progressPercentage%完了',
+      value: '$progressPercentage%',
+      child: Container(
+        width: double.infinity,
+        height: 4,
+        decoration: BoxDecoration(
+          color: AppColors.pointGray.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(2),
+        ),
+        child: FractionallySizedBox(
+          alignment: Alignment.centerLeft,
+          widthFactor: currentStep / totalSteps,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.pointPink,
+              borderRadius: BorderRadius.circular(2),
+            ),
           ),
         ),
       ),

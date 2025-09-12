@@ -226,7 +226,9 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                       onChanged: (value) {
                         // 실시간으로 입력값 반영
                         final newWeight = double.tryParse(value.trim());
-                        if (newWeight != null && newWeight >= 0.5 && newWeight <= 50.0) {
+                        if (newWeight != null &&
+                            newWeight >= 0.5 &&
+                            newWeight <= 50.0) {
                           setState(() {
                             _weight = newWeight;
                             _updateSizeBasedOnWeight();
