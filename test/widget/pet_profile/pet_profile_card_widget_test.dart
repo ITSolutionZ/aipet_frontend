@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/pet_profile_card.dart';
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('PetProfileCard Widget Tests', () {
@@ -10,10 +9,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: PetProfileCard(
-              label: '테스트 라벨',
-              value: '테스트 값',
-            ),
+            body: PetProfileCard(label: '테스트 라벨', value: '테스트 값'),
           ),
         ),
       );
@@ -41,7 +37,7 @@ void main() {
 
     testWidgets('onTap이 설정되면 탭 이벤트가 동작해야 함', (tester) async {
       bool tapped = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -155,10 +151,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: PetProfileHeader(
-              name: 'テストペット',
-              typeAndBreed: '犬 | 柴犬',
-            ),
+            body: PetProfileHeader(name: 'テストペット', typeAndBreed: '犬 | 柴犬'),
           ),
         ),
       );
@@ -171,10 +164,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: PetProfileHeader(
-              name: 'テストペット',
-              typeAndBreed: '犬 | 柴犬',
-            ),
+            body: PetProfileHeader(name: 'テストペット', typeAndBreed: '犬 | 柴犬'),
           ),
         ),
       );

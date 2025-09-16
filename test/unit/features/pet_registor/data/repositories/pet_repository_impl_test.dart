@@ -1,9 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:aipet_frontend/features/pet_registor/data/repositories/pet_repository_impl.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart';
 import 'package:aipet_frontend/shared/mock_data/features/pet/pet_mock_data.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('PetRepositoryImpl', () {
@@ -56,7 +55,10 @@ void main() {
 
         // Assert
         stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, greaterThanOrEqualTo(400)); // Allow some margin
+        expect(
+          stopwatch.elapsedMilliseconds,
+          greaterThanOrEqualTo(400),
+        ); // Allow some margin
       });
     });
 
@@ -128,7 +130,7 @@ void main() {
         expect(result.breed, equals('Labrador'));
         expect(result.birthDate, equals(DateTime(2022, 1, 1)));
         expect(result.ownerId, equals('owner-123'));
-        
+
         // Check that timestamps were updated
         expect(result.createdAt.isAfter(beforeCreation), isTrue);
         expect(result.updatedAt.isAfter(beforeCreation), isTrue);
@@ -172,7 +174,10 @@ void main() {
 
         // Assert
         stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, greaterThanOrEqualTo(250)); // Allow some margin
+        expect(
+          stopwatch.elapsedMilliseconds,
+          greaterThanOrEqualTo(250),
+        ); // Allow some margin
       });
     });
 
@@ -206,7 +211,10 @@ void main() {
         expect(result.name, equals('Updated Name'));
         expect(result.breed, equals('Updated Breed'));
         expect(result.updatedAt.isAfter(beforeUpdate), isTrue);
-        expect(result.createdAt, equals(DateTime(2023, 1, 1))); // Should remain same
+        expect(
+          result.createdAt,
+          equals(DateTime(2023, 1, 1)),
+        ); // Should remain same
       });
 
       test('should throw exception when pet does not exist', () async {
@@ -222,10 +230,7 @@ void main() {
         );
 
         // Act & Assert
-        expect(
-          () => repository.updatePet(nonExistentPet),
-          throwsException,
-        );
+        expect(() => repository.updatePet(nonExistentPet), throwsException);
       });
     });
 
@@ -257,10 +262,7 @@ void main() {
 
       test('should throw exception when pet does not exist', () async {
         // Act & Assert
-        expect(
-          () => repository.deletePet('non-existent-id'),
-          throwsException,
-        );
+        expect(() => repository.deletePet('non-existent-id'), throwsException);
       });
     });
 
@@ -276,17 +278,23 @@ void main() {
         );
 
         // Act & Assert
-        expect(() => repository.saveTemporaryPetData(tempData), returnsNormally);
+        expect(
+          () => repository.saveTemporaryPetData(tempData),
+          returnsNormally,
+        );
         await repository.saveTemporaryPetData(tempData);
       });
 
-      test('getTemporaryPetData should return null (mock implementation)', () async {
-        // Act
-        final result = await repository.getTemporaryPetData();
+      test(
+        'getTemporaryPetData should return null (mock implementation)',
+        () async {
+          // Act
+          final result = await repository.getTemporaryPetData();
 
-        // Assert
-        expect(result, isNull);
-      });
+          // Assert
+          expect(result, isNull);
+        },
+      );
 
       test('clearTemporaryPetData should complete without error', () async {
         // Act & Assert
