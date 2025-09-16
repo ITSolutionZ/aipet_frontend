@@ -2,421 +2,241 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
+import '../widgets/widgets.dart';
 
 class VaccineScreen extends ConsumerStatefulWidget {
   final String petId;
 
-  const VaccineScreen({super.key, required this.petId});
+  const VaccineScreen({
+    super.key,
+    required this.petId,
+  });
 
   @override
-  ConsumerState<VaccineScreen> createState() => _VaccineScreenState();
+  ConsumerState<VaccineScreen> createState() =>
+      _VaccineScreenState();
 }
 
-class _VaccineScreenState extends ConsumerState<VaccineScreen> {
-  final TextEditingController _searchController = TextEditingController();
-
-  Map<String, List<Map<String, dynamic>>> get _vaccineData =>
-      VaccineMockData.getVaccineData();
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
+class _VaccineScreenState
+    extends ConsumerState<VaccineScreen> {
+  
+  // Mock 백신 데이터 (실제 구현에서는 Provider에서 가져올 것)
+  final List<Map<String, dynamic>> _vaccines = [
+    {
+      'name': '狂犬病ワクチン',
+      'description': '狂犬病を予防するための必須ワクチン',
+      'isCompleted': true,
+      'lastDate': '2024年3月15日',
+      'nextDue': '2025年3月15日',
+      'interval': '年1回',
+      'veterinarian': {
+        'name': '田中獣医師',
+        'clinic': 'ペットクリニック田中',
+      },
+    },
+    {
+      'name': '混合ワクチン（5種）',
+      'description': 'ジステンパー、パルボウイルスなど5種混合',
+      'isCompleted': true,
+      'lastDate': '2024年2月10日',
+      'nextDue': '2025年2月10日',
+      'interval': '年1回',
+      'veterinarian': {
+        'name': '田中獣医師',
+        'clinic': 'ペットクリニック田中',
+      },
+    },
+    {
+      'name': 'フィラリア予防薬',
+      'description': 'フィラリア症を予防するための薬剤',
+      'isCompleted': false,
+      'lastDate': '2024年5月1日',
+      'nextDue': '2024年6月1日',
+      'interval': '月1回（4-11月）',
+      'veterinarian': {
+        'name': '田中獣医師',
+        'clinic': 'ペットクリニック田中',
+      },
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: SoftGradientDrawerAppBar(
-        title: 'Vaccines',
-        selectedPetInfo: Container(
-          margin: const EdgeInsets.only(right: AppSpacing.md),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircleAvatar(
-                radius: 12,
-                backgroundColor: Colors.white,
-                child: Icon(Icons.pets, size: 16, color: AppColors.pointBrown),
-              ),
-              const SizedBox(width: AppSpacing.xs),
-              Text(
-                'Maxi',
-                style: AppFonts.bodyMedium.copyWith(
-                  color: const Color(0xFF5B4034),
-                ),
-              ),
-              const Icon(
-                Icons.keyboard_arrow_down,
-                color: Color(0xFF5B4034),
-                size: 20,
-              ),
-            ],
-          ),
-        ),
+      appBar: const SoftGradientDrawerAppBar(
+        title: 'ワクチン記録',
       ),
-      body: Column(
-        children: [
-          // 검색 및 필터 영역
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Row(
-              children: [
-                // 검색 바
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Search by vaccine type',
-                        hintStyle: AppFonts.bodyMedium.copyWith(
-                          color: Colors.grey.withValues(alpha: 0.5),
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: AppColors.pointBrown,
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-
-                // 필터 버튼
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: AppColors.pointBlue,
-                    borderRadius: BorderRadius.circular(AppRadius.medium),
-                  ),
-                  child: const Icon(
-                    Icons.filter_list,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // 백신 목록
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              itemCount: _vaccineData.length,
-              itemBuilder: (context, index) {
-                final year = _vaccineData.keys.elementAt(index);
-                final vaccines = _vaccineData[year]!;
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 연도 제목
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.md,
-                      ),
-                      child: Text(
-                        year,
-                        style: AppFonts.titleMedium.copyWith(
-                          color: AppColors.pointDark,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-
-                    // 해당 연도의 백신들
-                    ...vaccines.map((vaccine) => _buildVaccineCard(vaccine)),
-
-                    const SizedBox(height: AppSpacing.md),
-                  ],
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // 새 백신 추가
-        },
-        backgroundColor: AppColors.pointBlue,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
-    );
-  }
-
-  Widget _buildVaccineCard(Map<String, dynamic> vaccine) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ListTile(
-        onTap: () {
-          _showVaccineDetailModal(vaccine);
-        },
-        title: Text(
-          vaccine['name'],
-          style: AppFonts.titleMedium.copyWith(
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        subtitle: Row(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
-            const SizedBox(width: AppSpacing.xs),
+            // 헤더 정보
+            _buildHeaderCard(),
+            const SizedBox(height: AppSpacing.lg),
+
+            // 백신 목록
             Text(
-              vaccine['date'],
-              style: AppFonts.bodyMedium.copyWith(color: Colors.grey),
+              'ワクチン記録',
+              style: AppFonts.titleLarge.copyWith(
+                color: AppColors.pointDark,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            const SizedBox(width: AppSpacing.md),
-            Text(
-              vaccine['doctor'],
-              style: AppFonts.bodyMedium.copyWith(color: Colors.grey),
+            const SizedBox(height: AppSpacing.md),
+
+            // 백신 카드들
+            ..._vaccines.map((vaccine) => VaccineCard(
+                  vaccine: vaccine,
+                  onTap: () => _showVaccineDetailModal(vaccine),
+                )),
+
+            const SizedBox(height: AppSpacing.xl),
+
+            // 새 백신 추가 버튼
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: _showAddVaccineDialog,
+                icon: const Icon(Icons.add),
+                label: const Text('新しいワクチン記録を追加'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.pointBrown,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.large),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
-        trailing: const Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: Colors.grey,
-        ),
       ),
     );
   }
 
-  void _showVaccineDetailModal(Map<String, dynamic> vaccine) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.7,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  Widget _buildHeaderCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.pointGreen.withValues(alpha: 0.1),
+            AppColors.pointBlue.withValues(alpha: 0.1),
+          ],
         ),
-        child: Column(
-          children: [
-            // 드래그 핸들
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(AppRadius.large),
+        border: Border.all(
+          color: AppColors.pointGreen.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: AppColors.pointGreen.withValues(alpha: 0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.medical_services,
+                  color: AppColors.pointGreen,
+                  size: 28,
+                ),
               ),
-            ),
-
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 백신 이름
                     Text(
-                      vaccine['name'],
-                      style: AppFonts.titleLarge.copyWith(
-                        color: AppColors.pointDark,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: AppSpacing.xl),
-
-                    // 상세 정보
-                    _buildDetailSection('Details', [
-                      _buildDetailRow('Lot', vaccine['lot']),
-                      _buildDetailRow('Expiry Date', vaccine['expiryDate']),
-                    ]),
-
-                    const SizedBox(height: AppSpacing.lg),
-
-                    // 날짜 정보
-                    _buildDetailSection('Date', [
-                      _buildDetailRow(
-                        'Vaccination date',
-                        vaccine['vaccinationDate'],
-                      ),
-                      _buildDetailRow('Valid until', vaccine['validUntil']),
-                    ]),
-
-                    const SizedBox(height: AppSpacing.lg),
-
-                    // 수의사 정보
-                    Text(
-                      'Veterinarian',
+                      'ワクチン管理',
                       style: AppFonts.titleMedium.copyWith(
                         color: AppColors.pointDark,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
-                    _buildVeterinarianCard(),
-
-                    const SizedBox(height: AppSpacing.lg),
-
-                    // 노트
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
-                      'Notes',
-                      style: AppFonts.titleMedium.copyWith(
-                        color: AppColors.pointDark,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      vaccine['notes'],
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointDark.withValues(alpha: 0.8),
+                      '愛犬の健康を守るワクチン記録を管理',
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointDark.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-
-            // 완료 버튼
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.pointBlue,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.lg,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.large),
-                    ),
-                  ),
-                  child: Text(
-                    'Done',
-                    style: AppFonts.fredoka(
-                      fontSize: AppFonts.lg,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          
+          // 통계 정보
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatItem('完了', '${_vaccines.where((v) => v['isCompleted'] == true).length}'),
               ),
-            ),
-          ],
-        ),
+              Expanded(
+                child: _buildStatItem('予定', '${_vaccines.where((v) => v['isCompleted'] == false).length}'),
+              ),
+              Expanded(
+                child: _buildStatItem('総数', '${_vaccines.length}'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildDetailSection(String title, List<Widget> children) {
+  Widget _buildStatItem(String label, String value) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title,
-          style: AppFonts.titleMedium.copyWith(
-            color: AppColors.pointDark,
+          value,
+          style: AppFonts.titleLarge.copyWith(
+            color: AppColors.pointGreen,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
-        ...children,
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          label,
+          style: AppFonts.bodySmall.copyWith(
+            color: AppColors.pointDark.withValues(alpha: 0.7),
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointDark.withValues(alpha: 0.7),
-            ),
-          ),
-          Text(
-            value,
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointDark,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
+  void _showVaccineDetailModal(Map<String, dynamic> vaccine) {
+    showDialog(
+      context: context,
+      builder: (context) => VaccineDetailModal(vaccine: vaccine),
     );
   }
 
-  Widget _buildVeterinarianCard() {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: Colors.grey.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-      ),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 25,
-            backgroundColor: AppColors.pointBlue,
-            child: Icon(Icons.person, color: Colors.white, size: 30),
+  void _showAddVaccineDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('新しいワクチン記録'),
+        content: const Text('ワクチン追加機能は開発中です。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('閉じる'),
           ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Martha Roth',
-                  style: AppFonts.titleMedium.copyWith(
-                    color: AppColors.pointDark,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Veterinary Specialist',
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: AppColors.pointDark.withValues(alpha: 0.7),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // 서명 (임시로 아이콘 사용)
-          const Icon(Icons.edit, color: AppColors.pointBlue, size: 24),
         ],
       ),
     );
