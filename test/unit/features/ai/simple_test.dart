@@ -91,7 +91,7 @@ void main() {
       // Act
       final hasEmoji = specialText.contains('🎉');
       final hasSpecialChars = specialText.contains('!@#');
-      final textLength = specialText.length;
+      const textLength = specialText.length;
 
       // Assert
       expect(hasEmoji, isTrue);
@@ -102,7 +102,7 @@ void main() {
     test('should handle null safety', () {
       // Arrange
       String? nullableString;
-      String nonNullableString = 'test';
+      final String nonNullableString = 'test';
 
       // Act
       final isNull = nullableString == null;
@@ -137,9 +137,9 @@ void main() {
       const hasData = true;
 
       // Act
-      final allTrue = isActive && hasData;
-      final anyTrue = isActive || isCompleted;
-      final allFalse = !isActive && !isCompleted;
+      const allTrue = isActive && hasData;
+      const anyTrue = isActive || isCompleted;
+      const allFalse = !isActive && !isCompleted;
 
       // Assert
       expect(allTrue, isTrue);
@@ -154,9 +154,9 @@ void main() {
       const temperature = 0.7;
 
       // Act
-      final isHighConfidence = confidence > 0.9;
-      final isEvenCount = messageCount % 2 == 0;
-      final isLowTemperature = temperature < 1.0;
+      const isHighConfidence = confidence > 0.9;
+      const isEvenCount = messageCount % 2 == 0;
+      const isLowTemperature = temperature < 1.0;
       final roundedConfidence = (confidence * 100).round();
 
       // Assert
