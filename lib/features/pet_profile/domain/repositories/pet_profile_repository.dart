@@ -1,4 +1,4 @@
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
+import '../entities/pet_profile_entity.dart';
 
 abstract class PetProfileRepository {
   /// 펫 프로필 상세 정보 가져오기

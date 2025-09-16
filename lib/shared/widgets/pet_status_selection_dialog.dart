@@ -5,7 +5,7 @@ import '../design/color.dart';
 import '../design/font.dart';
 import '../design/radius.dart';
 import '../design/spacing.dart';
-import '../mock_data/features/pet/pet_mock_service.dart';
+import '../mock_data/features/pet/pet_mock_data.dart';
 
 /// 펫 상태 선택 다이얼로그
 class PetStatusSelectionDialog extends StatefulWidget {
@@ -40,7 +40,7 @@ class _PetStatusSelectionDialogState extends State<PetStatusSelectionDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final statusOptions = PetMockService.getPetStatusOptions();
+    final statusOptions = PetMockData.getPetStatusOptions();
 
     return Dialog(
       child: Container(

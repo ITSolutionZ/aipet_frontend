@@ -316,12 +316,29 @@ class PetProfileScreen extends ConsumerWidget {
 - **이미지 업로드**: 실제 이미지 저장소 연동 필요
 - **테스트 커버리지**: 9개 스크린 중 1개만 위젯 테스트 존재
 
+#### Pet Profile 기능 현황
+
+- **아키텍처**: ✅ Clean Architecture 완전 준수 (Domain/Data/Presentation)
+- **상태관리**: ✅ Riverpod + Code Generation 패턴 적용
+- **UI/Logic 분리**: ⚠️ 1,641라인 메가 클래스 - 위젯 분리 필요
+- **테스트 커버리지**: ✅ Controller 단위 테스트 완료, ⚠️ Repository/Screen 테스트 부족
+- **코드 재사용성**: ⚠️ 하드코딩된 UI 컴포넌트, 공통 위젯 분리 필요
+- **DRY 원칙**: ❌ 중복 코드 다수 (카드 위젯, 편집 필드 등)
+
+**주요 위반사항:**
+1. `PetProfileScreen` 1,641라인 - 단일 책임 원칙 위반
+2. UI 컴포넌트 하드코딩 - 재사용성 부족
+3. 편집 로직이 Screen에 직접 구현 - 관심사 분리 미흡
+4. 배럴 파일 의존성 - `pet_registor` Entity 재사용
+
 #### 개발 우선순위
 
-1. **Critical**: 데이터 영속성 구현 (`PetRepositoryImpl`)
-2. **High**: 테스트 커버리지 확대 (특히 Use Case 테스트)
-3. **Medium**: 이미지 관리 시스템 구축
-4. **Low**: UI/UX 개선 (로딩 상태, 에러 핸들링)
+1. **Critical**: Pet Profile 코드 리팩토링 (UI/Logic 분리, 위젯 분할)
+2. **Critical**: 데이터 영속성 구현 (`PetRepositoryImpl`)
+3. **High**: 테스트 커버리지 확대 (95% 목표)
+4. **High**: 공통 위젯 추출 및 재사용성 개선
+5. **Medium**: 이미지 관리 시스템 구축
+6. **Low**: UI/UX 개선 (로딩 상태, 에러 핸들링)
 
 ## 🚀 배포 가이드
 

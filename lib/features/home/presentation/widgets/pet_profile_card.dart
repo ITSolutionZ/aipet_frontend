@@ -165,7 +165,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                                         ),
                                       ),
                                       child: Text(
-                                        PetMockService.getPetGenderByName(
+                                        PetMockData.getPetGenderByName(
                                                   currentPet.name,
                                                 ) ==
                                                 'male'
