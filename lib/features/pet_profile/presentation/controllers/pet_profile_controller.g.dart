@@ -7,9 +7,9 @@ part of 'pet_profile_controller.dart';
 // **************************************************************************
 
 String _$petProfileNotifierHash() =>
-    r'c845332b603aee409ea84703cec9ed3b072f6b79';
+    r'2c4f72e7983a014bb2c67049f17a3aeda52006e0';
 
-/// 펫 프로필 컨트롤러 (최신 @riverpod 패턴)
+/// 펫 프로필 컨트롤러 (Clean Architecture 적용)
 ///
 /// Copied from [PetProfileNotifier].
 @ProviderFor(PetProfileNotifier)
