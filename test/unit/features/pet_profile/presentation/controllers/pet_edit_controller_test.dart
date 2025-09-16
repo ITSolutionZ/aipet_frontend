@@ -1,10 +1,9 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mockito/mockito.dart';
-
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_edit_controller.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 
 import '../../../pet_registor/domain/usecases/get_pet_by_id_usecase_test.mocks.dart';
 
@@ -22,7 +21,7 @@ void main() {
 
     test('copyWith가 올바르게 동작해야 함', () {
       const initialState = PetEditState();
-      
+
       final newState = initialState.copyWith(
         isEditMode: true,
         selectedImagePath: 'test/path',
@@ -63,9 +62,7 @@ void main() {
     setUp(() {
       mockRepository = MockPetRepository();
       container = ProviderContainer(
-        overrides: [
-          petRepositoryProvider.overrideWithValue(mockRepository),
-        ],
+        overrides: [petRepositoryProvider.overrideWithValue(mockRepository)],
       );
     });
 
@@ -83,9 +80,9 @@ void main() {
 
     test('startEdit이 편집 모드를 활성화하고 값들을 설정해야 함', () {
       final notifier = container.read(petEditNotifierProvider.notifier);
-      
+
       notifier.startEdit(testPet);
-      
+
       final state = container.read(petEditNotifierProvider);
       expect(state.isEditMode, isTrue);
       expect(state.editingValues['name'], equals('テストペット'));
@@ -98,10 +95,10 @@ void main() {
 
     test('cancelEdit이 상태를 초기화해야 함', () {
       final notifier = container.read(petEditNotifierProvider.notifier);
-      
+
       notifier.startEdit(testPet);
       notifier.cancelEdit();
-      
+
       final state = container.read(petEditNotifierProvider);
       expect(state.isEditMode, isFalse);
       expect(state.editingValues, isEmpty);
@@ -110,44 +107,44 @@ void main() {
 
     test('updateEditingValue가 편집 값을 업데이트해야 함', () {
       final notifier = container.read(petEditNotifierProvider.notifier);
-      
+
       notifier.startEdit(testPet);
       notifier.updateEditingValue('name', '새로운 이름');
-      
+
       final state = container.read(petEditNotifierProvider);
       expect(state.editingValues['name'], equals('새로운 이름'));
     });
 
     test('selectImage가 이미지 경로를 설정해야 함', () {
       final notifier = container.read(petEditNotifierProvider.notifier);
-      
+
       notifier.selectImage('new/image/path');
-      
+
       final state = container.read(petEditNotifierProvider);
       expect(state.selectedImagePath, equals('new/image/path'));
     });
 
     test('saveChanges가 성공적으로 펫을 업데이트해야 함', () async {
       when(mockRepository.updatePet(any)).thenAnswer((_) async => testPet);
-      
+
       final notifier = container.read(petEditNotifierProvider.notifier);
       notifier.startEdit(testPet);
       notifier.updateEditingValue('name', '업데이트된 이름');
-      
+
       final result = await notifier.saveChanges(testPet);
-      
+
       expect(result, isTrue);
       verify(mockRepository.updatePet(any)).called(1);
     });
 
     test('saveChanges가 실패할 때 에러 메시지를 설정해야 함', () async {
       when(mockRepository.updatePet(any)).thenThrow(Exception('Update failed'));
-      
+
       final notifier = container.read(petEditNotifierProvider.notifier);
       notifier.startEdit(testPet);
-      
+
       final result = await notifier.saveChanges(testPet);
-      
+
       expect(result, isFalse);
       final state = container.read(petEditNotifierProvider);
       expect(state.errorMessage, contains('アップデート中にエラーが発生しました'));
@@ -156,25 +153,25 @@ void main() {
     test('로딩 중일 때 saveChanges가 false를 반환해야 함', () async {
       final notifier = container.read(petEditNotifierProvider.notifier);
       notifier.startEdit(testPet);
-      
+
       // 상태를 로딩으로 수동 설정
       final currentState = container.read(petEditNotifierProvider);
       notifier.state = currentState.copyWith(isLoading: true);
-      
+
       final result = await notifier.saveChanges(testPet);
-      
+
       expect(result, isFalse);
     });
 
     test('편집 값이 비어있을 때 기본값을 사용해야 함', () async {
       when(mockRepository.updatePet(any)).thenAnswer((_) async => testPet);
-      
+
       final notifier = container.read(petEditNotifierProvider.notifier);
       notifier.startEdit(testPet);
       notifier.updateEditingValue('name', ''); // 빈 이름 설정
-      
+
       await notifier.saveChanges(testPet);
-      
+
       final captured = verify(mockRepository.updatePet(captureAny)).captured;
       final updatedPet = captured.first as PetProfileEntity;
       expect(updatedPet.name, equals(testPet.name)); // 원래 이름 유지
@@ -182,13 +179,13 @@ void main() {
 
     test('선택된 이미지가 있을 때 이미지 경로가 업데이트되어야 함', () async {
       when(mockRepository.updatePet(any)).thenAnswer((_) async => testPet);
-      
+
       final notifier = container.read(petEditNotifierProvider.notifier);
       notifier.startEdit(testPet);
       notifier.selectImage('new/image/path');
-      
+
       await notifier.saveChanges(testPet);
-      
+
       final captured = verify(mockRepository.updatePet(captureAny)).captured;
       final updatedPet = captured.first as PetProfileEntity;
       expect(updatedPet.imagePath, equals('new/image/path'));
@@ -196,13 +193,13 @@ void main() {
 
     test('숫자 타입 편집 값이 올바르게 처리되어야 함', () async {
       when(mockRepository.updatePet(any)).thenAnswer((_) async => testPet);
-      
+
       final notifier = container.read(petEditNotifierProvider.notifier);
       notifier.startEdit(testPet);
       notifier.updateEditingValue('weight', 15.5);
-      
+
       await notifier.saveChanges(testPet);
-      
+
       final captured = verify(mockRepository.updatePet(captureAny)).captured;
       final updatedPet = captured.first as PetProfileEntity;
       expect(updatedPet.additionalInfo!['weight'], equals(15.5));
@@ -210,13 +207,13 @@ void main() {
 
     test('null 값이 설정되었을 때 해당 필드가 포함되지 않아야 함', () async {
       when(mockRepository.updatePet(any)).thenAnswer((_) async => testPet);
-      
+
       final notifier = container.read(petEditNotifierProvider.notifier);
       notifier.startEdit(testPet);
       notifier.updateEditingValue('gender', null);
-      
+
       await notifier.saveChanges(testPet);
-      
+
       final captured = verify(mockRepository.updatePet(captureAny)).captured;
       final updatedPet = captured.first as PetProfileEntity;
       // gender가 null이므로 기존 값이 유지되어야 함

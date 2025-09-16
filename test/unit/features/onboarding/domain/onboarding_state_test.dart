@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/features/onboarding/domain/onboarding_state.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import '../../../../../lib/features/onboarding/domain/onboarding_state.dart';
 
 void main() {
   group('OnboardingState', () {
