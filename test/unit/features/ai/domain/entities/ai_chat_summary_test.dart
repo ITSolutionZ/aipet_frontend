@@ -7,7 +7,7 @@ void main() {
     late AiChatSummary testSummary;
 
     setUp(() {
-      testSummary = AiChatSummary(
+      testSummary = const AiChatSummary(
         title: 'ペットの健康相談',
         content: 'ペットの健康管理について相談し、定期的な健康診断と適切な食事の重要性について学びました。',
       );
@@ -16,7 +16,7 @@ void main() {
     group('constructor', () {
       test('should create summary with all parameters', () {
         // Act
-        final summary = AiChatSummary(title: 'テストタイトル', content: 'テストコンテンツ');
+        const summary = AiChatSummary(title: 'テストタイトル', content: 'テストコンテンツ');
 
         // Assert
         expect(summary.title, equals('テストタイトル'));
@@ -131,7 +131,7 @@ void main() {
     group('equality and hashCode', () {
       test('should be equal when title and content are same', () {
         // Arrange
-        final sameSummary = AiChatSummary(
+        const sameSummary = AiChatSummary(
           title: 'ペットの健康相談',
           content: 'ペットの健康管理について相談し、定期的な健康診断と適切な食事の重要性について学びました。',
         );
