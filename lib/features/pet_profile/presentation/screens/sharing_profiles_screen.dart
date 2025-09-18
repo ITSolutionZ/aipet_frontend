@@ -143,7 +143,7 @@ class _SharingProfilesScreenState
 
   void _showQRCodeModal(PetProfileEntity pet) {
     final qrData = 'pet_profile:${pet.id}:${pet.name}';
-    
+
     showDialog(
       context: context,
       builder: (context) => QRCodeModal(
