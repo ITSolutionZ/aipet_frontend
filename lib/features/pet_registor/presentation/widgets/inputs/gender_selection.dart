@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/shared.dart';
+import '../../../../../shared/shared.dart';
 
 class GenderSelection extends StatelessWidget {
   final String? selectedGender;

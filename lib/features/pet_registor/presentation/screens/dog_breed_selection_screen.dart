@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/router/routes/route_constants.dart';
-import '../widgets/generic_breed_selection_screen.dart';
+import '../widgets/screens/generic_breed_selection_screen.dart';
 
 class DogBreedSelectionScreen extends ConsumerWidget {
   const DogBreedSelectionScreen({super.key});

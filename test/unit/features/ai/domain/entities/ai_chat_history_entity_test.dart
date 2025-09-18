@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../../../lib/features/ai/domain/entities/ai_category_entity.dart';
-import '../../../../../lib/features/ai/domain/entities/ai_chat_history_entity.dart';
-import '../../../../../lib/features/ai/domain/entities/ai_message_entity.dart';
-import '../../../../../lib/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_history_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 
 void main() {
   group('AiChatHistoryEntity', () {
