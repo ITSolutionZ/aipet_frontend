@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../../../lib/features/ai/domain/entities/ai_chat_summary.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart';
 
 void main() {
   group('AiChatSummary', () {

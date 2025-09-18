@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../../../lib/features/auth/domain/auth_token.dart';
+import 'package:aipet_frontend/features/auth/domain/auth_token.dart';
 
 void main() {
   group('AuthToken', () {
