@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/shared.dart';
+import '../../../../../shared/shared.dart';
 
 /// 펫 타입 선택 카드 위젯
 ///

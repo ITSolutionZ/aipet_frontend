@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/shared/design/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:aipet_frontend/shared/design/color.dart';
 
 void main() {
   group('AppColors', () {
@@ -152,8 +153,8 @@ void main() {
     group('Color Operations', () {
       test('should support color operations', () {
         // Arrange
-        const color1 = AppColors.pointGreen;
-        const color2 = AppColors.pointBlue;
+        final color1 = AppColors.pointGreen;
+        final color2 = AppColors.pointBlue;
 
         // Act
         final mixedColor = Color.lerp(color1, color2, 0.5);
@@ -168,7 +169,7 @@ void main() {
 
       test('should support color with opacity', () {
         // Arrange
-        const baseColor = AppColors.pointGreen;
+        final baseColor = AppColors.pointGreen;
 
         // Act
         final transparentColor = baseColor.withOpacity(0.5);
@@ -182,7 +183,7 @@ void main() {
 
       test('should support color with alpha', () {
         // Arrange
-        const baseColor = AppColors.pointBlue;
+        final baseColor = AppColors.pointBlue;
 
         // Act
         final alphaColor = baseColor.withAlpha(128);

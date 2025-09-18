@@ -1,23 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../../../lib/features/home/domain/entities/pet_summary_entity.dart';
+import 'package:aipet_frontend/features/home/domain/entities/pet_summary_entity.dart';
+import 'package:aipet_frontend/shared/mock_data/test/test_data_helper.dart';
 
 void main() {
   group('PetSummaryEntity', () {
     late PetSummaryEntity testPet;
 
     setUp(() {
-      testPet = PetSummaryEntity(
-        id: 'pet-1',
-        name: 'テストペット',
-        typeName: 'dog',
-        breed: '柴犬',
-        age: 3,
-        birthDate: DateTime(2021, 1, 1),
-        createdAt: DateTime(2021, 1, 1),
-        profileImageUrl: '/path/to/image.jpg',
-        additionalInfo: {'color': 'brown', 'weight': 10.5},
-      );
+      testPet = TestDataHelper.petSummary;
     });
 
     group('constructor', () {

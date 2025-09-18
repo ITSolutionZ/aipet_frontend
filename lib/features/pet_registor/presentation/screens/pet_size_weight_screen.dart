@@ -183,214 +183,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
     return 'assets/images/pets/default.png';
   }
 
-  /// 체중 표시 (화면 중앙)
-  Widget _buildWeightDisplay() {
-    return Container(
-      width: double.infinity,
-      alignment: Alignment.center,
-      child: GestureDetector(
-        onTap: () {
-          // 포커스를 주어 키보드 표시
-          if (_weightController != null && _weightFocusNode != null) {
-            _weightController!.text = _weight.toStringAsFixed(1);
-            _weightController!.selection = TextSelection(
-              baseOffset: 0,
-              extentOffset: _weightController!.text.length,
-            );
-            _weightFocusNode!.requestFocus();
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // 숨겨진 TextField (화면 밖에 위치)
-              if (_weightController != null && _weightFocusNode != null)
-                Positioned(
-                  left: -1000,
-                  child: SizedBox(
-                    width: 1,
-                    height: 1,
-                    child: TextField(
-                      controller: _weightController,
-                      focusNode: _weightFocusNode,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 1),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (value) {
-                        // 실시간으로 입력값 반영
-                        final newWeight = double.tryParse(value.trim());
-                        if (newWeight != null &&
-                            newWeight >= 0.5 &&
-                            newWeight <= 50.0) {
-                          setState(() {
-                            _weight = newWeight;
-                            _updateSizeBasedOnWeight();
-                          });
-                          _saveToGlobalState();
-                        }
-                      },
-                      onSubmitted: (value) {
-                        _onWeightChanged();
-                        _weightFocusNode?.unfocus();
-                      },
-                    ),
-                  ),
-                ),
-              // 표시용 Text (크기 축소)
-              Text(
-                _weight.toStringAsFixed(1),
-                style: const TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.pointBrown,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
-  /// 체중 슬라이더 생성
-  Widget _buildWeightSlider() {
-    return Column(
-      children: [
-        // 무한 스크롤 슬라이더
-        GestureDetector(
-          onPanUpdate: (details) {
-            final RenderBox box = context.findRenderObject() as RenderBox;
-            final localPosition = box.globalToLocal(details.globalPosition);
-            final width = MediaQuery.of(context).size.width - 32;
-
-            // 슬라이더 영역 내에서의 상대적 위치 계산
-            final relativeX = localPosition.dx - 16; // 패딩 오프셋
-            final normalizedX = (relativeX / width).clamp(
-              0.0,
-              1.0,
-            ); // 0.0 ~ 1.0 사이의 값으로 제한
-
-            // 0.5kg ~ 50.0kg 범위로 변환
-            final newWeight = (0.5 + normalizedX * (50.0 - 0.5)).clamp(
-              0.5,
-              50.0,
-            );
-
-            if ((newWeight - _weight).abs() > 0.05) {
-              // 0.05kg 이상 차이날 때만 업데이트
-              setState(() {
-                _weight = newWeight;
-                _updateSizeBasedOnWeight();
-                // TextField와 동기화
-                if (_weightController != null && !_weightFocusNode!.hasFocus) {
-                  _weightController!.text = _weight.toStringAsFixed(1);
-                }
-              });
-              _saveToGlobalState();
-            }
-          },
-          child: Container(
-            height: 60, // 터치 영역 축소
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Stack(
-              children: [
-                // 틱 마크들 - 시안과 동일하게 균등한 높이
-                ...List.generate(15, (index) {
-                  // 화면 너비를 15개로 균등하게 나누어 배치
-                  final screenWidth = MediaQuery.of(context).size.width - 32;
-                  final position = (screenWidth / 14) * index; // 14개 간격으로 15개 틱
-
-                  return Positioned(
-                    left: position - 1, // 틱 중심 맞춤
-                    top: 12,
-                    child: Container(
-                      width: 2,
-                      height: 18,
-                      decoration: BoxDecoration(
-                        color: AppColors.pointGray.withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(1),
-                      ),
-                    ),
-                  );
-                }),
-
-                // 슬라이더 썸 - 시안과 동일한 둥근 사각형 스타일 (크기 축소)
-                Positioned(
-                  top: 6,
-                  left: () {
-                    final screenWidth = MediaQuery.of(context).size.width - 32;
-                    const thumbWidth = 32.0;
-                    final normalizedPosition = (_weight - 0.5) / (50.0 - 0.5);
-                    final rawLeft =
-                        normalizedPosition * screenWidth - (thumbWidth / 2);
-
-                    // 화면 경계 내에서 슬라이더가 움직이도록 제한
-                    return rawLeft.clamp(0.0, screenWidth - thumbWidth);
-                  }(),
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: AppColors.pointBrown,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.pointBrown.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 1.5,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(1),
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          Container(
-                            width: 1.5,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(1),
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          Container(
-                            width: 1.5,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(1),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -468,58 +261,46 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                     const SizedBox(height: AppSpacing.md),
 
                     // 사이즈 선택 버튼들
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        PetSizeSelectionCard(
-                          size: 'small',
-                          label: 'Small',
-                          weightRange: '14kg以下',
-                          icon: Icons.pets,
-                          isSelected: _selectedSize == 'small',
-                          onTap: () {
-                            setState(() {
-                              _selectedSize = 'small';
-                            });
-                            _updateWeightBasedOnSize();
-                          },
-                        ),
-                        PetSizeSelectionCard(
-                          size: 'medium',
-                          label: 'Medium',
-                          weightRange: '14-25kg',
-                          icon: Icons.pets,
-                          isSelected: _selectedSize == 'medium',
-                          onTap: () {
-                            setState(() {
-                              _selectedSize = 'medium';
-                            });
-                            _updateWeightBasedOnSize();
-                          },
-                        ),
-                        PetSizeSelectionCard(
-                          size: 'large',
-                          label: 'Large',
-                          weightRange: '25kg以上',
-                          icon: Icons.pets,
-                          isSelected: _selectedSize == 'large',
-                          onTap: () {
-                            setState(() {
-                              _selectedSize = 'large';
-                            });
-                            _updateWeightBasedOnSize();
-                          },
-                        ),
-                      ],
+                    PetSizeSelectionGroupWidget(
+                      selectedSize: _selectedSize,
+                      onSizeSelected: (size) {
+                        setState(() {
+                          _selectedSize = size;
+                        });
+                        _updateWeightBasedOnSize();
+                      },
                     ),
                     const SizedBox(height: AppSpacing.md),
 
                     // 체중 표시 (중앙) - 크기 축소
-                    _buildWeightDisplay(),
+                    WeightDisplayWidget(
+                      weight: _weight,
+                      weightController: _weightController,
+                      weightFocusNode: _weightFocusNode,
+                      onWeightChanged: (newWeight) {
+                        setState(() {
+                          _weight = newWeight;
+                          _updateSizeBasedOnWeight();
+                        });
+                        _saveToGlobalState();
+                      },
+                    ),
                     const SizedBox(height: AppSpacing.sm),
 
                     // 체중 슬라이더 - 크기 축소
-                    _buildWeightSlider(),
+                    WeightSliderWidget(
+                      weight: _weight,
+                      onWeightChanged: (newWeight) {
+                        setState(() {
+                          _weight = newWeight;
+                          _updateSizeBasedOnWeight();
+                          if (_weightController != null && !_weightFocusNode!.hasFocus) {
+                            _weightController!.text = _weight.toStringAsFixed(1);
+                          }
+                        });
+                        _saveToGlobalState();
+                      },
+                    ),
                   ],
                 ),
               ),

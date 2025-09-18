@@ -1,5 +1,6 @@
-import 'package:aipet_frontend/features/auth/domain/auth_error.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:aipet_frontend/features/auth/domain/auth_error.dart';
 
 void main() {
   group('AuthError', () {
