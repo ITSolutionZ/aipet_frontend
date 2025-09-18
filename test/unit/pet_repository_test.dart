@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import 'package:aipet_frontend/features/pet_registor/data/repositories/pet_repository_impl.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:aipet_frontend/shared/mock_data/test/test_data_helper.dart';
 
 void main() {
   late PetRepositoryImpl repository;
@@ -137,6 +139,9 @@ void main() {
             type: 'cat',
             breed: 'Test Breed',
             birthDate: DateTime(2022, 1, 1),
+            age: 2,
+            gender: 'female',
+            weight: 4.5,
             imagePath: 'assets/images/test.jpg',
             ownerId: 'user1',
             createdAt: DateTime.now(),

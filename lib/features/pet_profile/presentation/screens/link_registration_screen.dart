@@ -283,7 +283,7 @@ class _LinkRegistrationScreenState extends State<LinkRegistrationScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    ...PetMockData.getMockExampleLinks().map(
+                    ...['https://example.com/mydog', 'https://petagram.com/fluffy', 'https://instagram.com/my_cat_photos'].map(
                       (link) => Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                         child: Text(

@@ -133,44 +133,29 @@ class HomeRepositoryImpl implements HomeRepository {
 
   @override
   Future<List<AppointmentSummary>> getUpcomingAppointments() async {
-    // Mock 데이터 사용
+    // Mock 데이터 사용 - HomeMockService로 변경
     await Future.delayed(_mockDelay);
-    final appointmentsData = PetMockData.getMockAppointments();
-    return appointmentsData
-        .map(
-          (data) => AppointmentSummary(
-            id: data['id'] as String,
-            title: data['title'] as String,
-            scheduledTime: data['scheduledTime'] as DateTime,
-            type: data['type'] as String,
-            petName: data['petName'] as String,
-          ),
-        )
-        .toList();
+
+    // 임시로 Mock 데이터 생성
+    return [
+      AppointmentSummary(
+        id: 'app-1',
+        title: '健康診断',
+        scheduledTime: DateTime.now().add(const Duration(days: 3)),
+        type: 'health_check',
+        petName: 'マックス',
+      ),
+      AppointmentSummary(
+        id: 'app-2',
+        title: '予防接種',
+        scheduledTime: DateTime.now().add(const Duration(days: 7)),
+        type: 'vaccination',
+        petName: 'ルナ',
+      ),
+    ];
   }
 
   // 개발 모드용 지연 시간 상수
   static const Duration _mockDelay = Duration(milliseconds: 250);
 
-  /// PetMockService의 Map 데이터를 PetProfileEntity로 변환
-  PetProfileEntity _convertMockDataToPetProfileEntity(
-    Map<String, dynamic> petData,
-  ) {
-    return PetProfileEntity(
-      id: petData['id'] as String,
-      name: petData['name'] as String,
-      type: petData['typeName'] as String, // typeName을 type으로 매핑
-      breed: petData['breed'] as String?,
-      birthDate: DateTime.parse(petData['birthDate'] as String),
-      age: petData['age'] as int? ?? 0,
-      gender: petData['gender'] as String? ?? 'unknown',
-      weight: (petData['weight'] as num?)?.toDouble() ?? 0.0,
-      imagePath: null, // Mock 데이터에 이미지 경로가 없으므로 null
-      ownerId: 'user1', // Mock 데이터에 ownerId가 없으므로 기본값 사용
-      createdAt: DateTime.parse(petData['createdAt'] as String),
-      updatedAt: DateTime.now(), // Mock 데이터에 updatedAt이 없으므로 현재 시간 사용
-      isActive: true, // 기본값으로 활성 상태
-      additionalInfo: petData['additionalInfo'] as Map<String, dynamic>?,
-    );
-  }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../pet_registor/domain/entities/pet_profile_entity.dart'
+    as pet_registor_entity;
 import '../../data/providers/pet_profile_providers.dart';
-import '../../domain/entities/pet_profile_entity.dart';
 import '../../domain/usecases/get_pet_profile_usecase.dart';
 import '../constants/pet_profile_constants.dart';
 
@@ -11,7 +12,7 @@ part 'pet_profile_controller.g.dart';
 /// 펫 프로필 상태
 class PetProfileState {
   final TabController? tabController;
-  final PetProfileEntity? selectedPet;
+  final pet_registor_entity.PetProfileEntity? selectedPet;
   final bool isLoading;
   final String? errorMessage;
 
@@ -24,7 +25,7 @@ class PetProfileState {
 
   PetProfileState copyWith({
     TabController? tabController,
-    PetProfileEntity? selectedPet,
+    pet_registor_entity.PetProfileEntity? selectedPet,
     bool? isLoading,
     String? errorMessage,
   }) {
@@ -44,14 +45,30 @@ class PetProfileState {
 /// 펫 프로필 컨트롤러 (Clean Architecture 적용)
 @riverpod
 class PetProfileNotifier extends _$PetProfileNotifier {
-  GetPetProfileUseCase get _getPetProfileUseCase => ref.read(getPetProfileUseCaseProvider);
+  GetPetProfileUseCase get _getPetProfileUseCase =>
+      ref.read(getPetProfileUseCaseProvider);
 
   @override
   PetProfileState build() => const PetProfileState();
 
-  /// 탭 컨트롤러 설정
+  /// 탭 컨트롤러 초기화
+  void initializeTabController(TabController tabController) {
+    state = state.copyWith(tabController: tabController);
+  }
+
+  /// 탭 컨트롤러 설정 (기존 호환성)
   void setTabController(TabController tabController) {
     state = state.copyWith(tabController: tabController);
+  }
+
+  /// 탭 컨트롤러 해제
+  void disposeTabController() {
+    state = state.copyWith(tabController: null);
+  }
+
+  /// 펫 선택
+  void selectPet(pet_registor_entity.PetProfileEntity pet) {
+    state = state.copyWith(selectedPet: pet);
   }
 
   /// 펫 프로필 로드
@@ -59,10 +76,7 @@ class PetProfileNotifier extends _$PetProfileNotifier {
     required String petId,
     required String requesterId,
   }) async {
-    state = state.copyWith(
-      isLoading: true,
-      errorMessage: null,
-    );
+    state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
       final result = await _getPetProfileUseCase.execute(
@@ -73,7 +87,7 @@ class PetProfileNotifier extends _$PetProfileNotifier {
       switch (result) {
         case GetPetProfileSuccess():
           state = state.copyWith(
-            selectedPet: result.profile,
+            selectedPet: result.profile as pet_registor_entity.PetProfileEntity,
             isLoading: false,
           );
 
@@ -104,7 +118,7 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   }
 
   /// 펫 프로필 직접 설정 (기존 호환성용)
-  void setPetProfile(PetProfileEntity pet) {
+  void setPetProfile(pet_registor_entity.PetProfileEntity pet) {
     state = state.copyWith(selectedPet: pet);
   }
 
@@ -112,10 +126,7 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   Future<void> refreshProfile(String requesterId) async {
     final currentPet = state.selectedPet;
     if (currentPet != null) {
-      await loadPetProfile(
-        petId: currentPet.id,
-        requesterId: requesterId,
-      );
+      await loadPetProfile(petId: currentPet.id, requesterId: requesterId);
     }
   }
 
@@ -151,12 +162,14 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   /// 편집 권한 확인
   bool canEditProfile(String userId) {
     final pet = state.selectedPet;
-    return pet?.canBeEditedBy(userId) ?? false;
+    // 펫의 오너와 같은 경우 편집 가능
+    return pet?.ownerId == userId;
   }
 
   /// 공유 가능 여부 확인
   bool get canShareProfile {
-    return state.selectedPet?.isShareable ?? false;
+    // 펫이 활성화된 경우 공유 가능
+    return state.selectedPet?.isActive ?? false;
   }
 
   /// 프로필 타입 아이콘
@@ -173,13 +186,13 @@ class PetProfileNotifier extends _$PetProfileNotifier {
 
   /// 공개 수준 표시명
   String get visibilityLevelName {
-    final level = state.selectedPet?.visibilityLevel.name ?? 'private';
-    return VisibilityLevelConstants.getName(level);
+    // pet_registor 엔티티에는 visibilityLevel이 없으므로 기본값 사용
+    return 'Private';
   }
 
   /// 공개 수준 아이콘
   IconData get visibilityLevelIcon {
-    final level = state.selectedPet?.visibilityLevel.name ?? 'private';
-    return VisibilityLevelConstants.getIcon(level);
+    // pet_registor 엔티티에는 visibilityLevel이 없으므로 기본 아이콘 사용
+    return Icons.lock;
   }
 }
