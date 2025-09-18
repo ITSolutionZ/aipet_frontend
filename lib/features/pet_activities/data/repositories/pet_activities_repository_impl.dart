@@ -1,4 +1,5 @@
 import '../../../../shared/mock_data/mock_data_service.dart';
+// TODO: 추후 PetActivitiesMockService로 마이그레이션 필요
 import '../../domain/entities/trick_entity.dart';
 import '../../domain/entities/video_bookmark_entity.dart';
 import '../../domain/entities/video_progress_entity.dart';
@@ -13,7 +14,7 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
   late final List<YouTubeVideoEntity> _youtubeVideos;
 
   PetActivitiesRepositoryImpl() {
-    // MockDataService에서 초기 데이터 로드
+    // MockDataService에서 초기 데이터 로드 (deprecated - 추후 마이그레이션 필요)
     _bookmarks = List.from(MockDataService.getMockVideoBookmarks());
     _progress = Map.from(MockDataService.getMockVideoProgress());
     _tricks = List.from(MockDataService.getMockTricks());

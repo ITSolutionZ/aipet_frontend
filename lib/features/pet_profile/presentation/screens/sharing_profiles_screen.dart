@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/shared.dart';
-import '../../../pet_registor/data/providers/pet_providers.dart';
 import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../widgets/widgets.dart';
+import '../widgets/sharing_widgets.dart';
 
 class SharingProfilesScreen extends ConsumerStatefulWidget {
   const SharingProfilesScreen({super.key});
@@ -14,8 +13,7 @@ class SharingProfilesScreen extends ConsumerStatefulWidget {
       _SharingProfilesScreenState();
 }
 
-class _SharingProfilesScreenState
-    extends ConsumerState<SharingProfilesScreen>
+class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<PetProfileEntity> _pets = [];
@@ -77,13 +75,7 @@ class _SharingProfilesScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-<<<<<<< HEAD
-      appBar: const SoftGradientDrawerAppBar(
-        title: 'プロフィール共有',
-      ),
-=======
-      appBar: const SoftGradientBackAppBar(title: 'Sharing profiles'),
->>>>>>> feature/pet-registor_seperating
+      appBar: const SoftGradientDrawerAppBar(title: 'プロフィール共有'),
       body: Column(
         children: [
           _buildTabControl(),
@@ -91,13 +83,8 @@ class _SharingProfilesScreenState
             child: TabBarView(
               controller: _tabController,
               children: [
-                GenerateCodeTab(
-                  pets: _pets,
-                  onPetTap: _showQRCodeModal,
-                ),
-                ScanCodeTab(
-                  onCodeScanned: _handleScannedCode,
-                ),
+                GenerateCodeTab(pets: _pets, onPetTap: _showQRCodeModal),
+                ScanCodeTab(onCodeScanned: _handleScannedCode),
               ],
             ),
           ),
@@ -146,10 +133,7 @@ class _SharingProfilesScreenState
 
     showDialog(
       context: context,
-      builder: (context) => QRCodeModal(
-        pet: pet,
-        qrData: qrData,
-      ),
+      builder: (context) => QRCodeModal(pet: pet, qrData: qrData),
     );
   }
 

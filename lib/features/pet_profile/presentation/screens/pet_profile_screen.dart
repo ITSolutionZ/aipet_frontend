@@ -25,23 +25,23 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     with SingleTickerProviderStateMixin {
   // 편집 모드 상태
   bool _isEditMode = false;
-  
+
   // 편집을 위한 컨트롤러들
   late TextEditingController _nameController;
   late TextEditingController _appearanceController;
   late TextEditingController _weightController;
   late TextEditingController _microchipController;
-  
+
   // 편집 가능한 값들
   String? _editingGender;
   String? _editingSize;
   double? _editingWeight;
   String? _selectedImagePath;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // 컨트롤러 초기화
     _nameController = TextEditingController();
     _appearanceController = TextEditingController();
@@ -49,9 +49,10 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     _microchipController = TextEditingController();
     // 컨트롤러를 통해 탭 컨트롤러 초기화
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final tabController = TabController(length: 4, vsync: this);
       ref
           .read(petProfileNotifierProvider.notifier)
-          .initializeTabController(this);
+          .initializeTabController(tabController);
     });
   }
 
@@ -168,9 +169,12 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
                     editingSize: _editingSize,
                     editingWeight: _editingWeight,
                     onImageSourceSelection: _showImageSourceSelection,
-                    onGenderChanged: (value) => setState(() => _editingGender = value),
-                    onSizeChanged: (value) => setState(() => _editingSize = value),
-                    onWeightChanged: (value) => setState(() => _editingWeight = value),
+                    onGenderChanged: (value) =>
+                        setState(() => _editingGender = value),
+                    onSizeChanged: (value) =>
+                        setState(() => _editingSize = value),
+                    onWeightChanged: (value) =>
+                        setState(() => _editingWeight = value),
                   ); // TabController가 없을 때는 기본 탭만 표시
                 }
                 return TabBarView(
@@ -187,9 +191,12 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
                       editingSize: _editingSize,
                       editingWeight: _editingWeight,
                       onImageSourceSelection: _showImageSourceSelection,
-                      onGenderChanged: (value) => setState(() => _editingGender = value),
-                      onSizeChanged: (value) => setState(() => _editingSize = value),
-                      onWeightChanged: (value) => setState(() => _editingWeight = value),
+                      onGenderChanged: (value) =>
+                          setState(() => _editingGender = value),
+                      onSizeChanged: (value) =>
+                          setState(() => _editingSize = value),
+                      onWeightChanged: (value) =>
+                          setState(() => _editingWeight = value),
                     ),
                     _buildHealthTab(),
                     _buildNutritionTab(),
@@ -216,7 +223,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
   /// 편집 시작
   void _startEdit(PetProfileEntity? pet) {
     if (pet == null) return;
-    
+
     setState(() {
       _isEditMode = true;
       // 현재 값들을 편집 필드에 설정
@@ -254,7 +261,9 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     try {
       // 업데이트된 펫 프로필 생성
       final updatedPet = pet.copyWith(
-        name: _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : pet.name,
+        name: _nameController.text.trim().isNotEmpty
+            ? _nameController.text.trim()
+            : pet.name,
         imagePath: _selectedImagePath ?? pet.imagePath,
         additionalInfo: {
           ...?pet.additionalInfo,
@@ -270,7 +279,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
 
       // 펫 정보 업데이트
       await ref.read(petsNotifierProvider.notifier).updatePet(updatedPet);
-      
+
       // 성공 메시지 표시
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -309,9 +318,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
           children: [
             Text(
               '프로필 사진 변경',
-              style: AppFonts.titleMedium.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.md),
             Row(
@@ -380,33 +387,33 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
 
   /// 갤러리에서 이미지 선택 (시뮬레이션)
   void _selectImageFromGallery() {
-    // 실제 구현에서는 image_picker를 사용하지만, 
+    // 실제 구현에서는 image_picker를 사용하지만,
     // 여기서는 시뮬레이션을 위해 기본 이미지 중 하나를 선택
     final availableImages = [
       'assets/images/dogs/pomeranian.png',
       'assets/images/dogs/dachshund.png',
     ];
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('사진 선택'),
+        title: const Text('写真選択'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: availableImages.map((imagePath) => 
-            ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage(imagePath),
-              ),
-              title: Text(imagePath.split('/').last.split('.').first),
-              onTap: () {
-                setState(() {
-                  _selectedImagePath = imagePath;
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ).toList(),
+          children: availableImages
+              .map(
+                (imagePath) => ListTile(
+                  leading: CircleAvatar(backgroundImage: AssetImage(imagePath)),
+                  title: Text(imagePath.split('/').last.split('.').first),
+                  onTap: () {
+                    setState(() {
+                      _selectedImagePath = imagePath;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              )
+              .toList(),
         ),
       ),
     );
@@ -443,7 +450,8 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
                       CircleAvatar(
                         radius: 50,
                         backgroundColor: Colors.grey.withValues(alpha: 0.2),
-                        backgroundImage: (_selectedImagePath ?? pet.imagePath) != null
+                        backgroundImage:
+                            (_selectedImagePath ?? pet.imagePath) != null
                             ? AssetImage(_selectedImagePath ?? pet.imagePath!)
                             : null,
                         child: (_selectedImagePath ?? pet.imagePath) == null
@@ -503,7 +511,9 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
                                   ),
                                   decoration: const InputDecoration(
                                     border: UnderlineInputBorder(),
-                                    contentPadding: EdgeInsets.symmetric(vertical: 8),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
                                   ),
                                 ),
                               )
@@ -589,19 +599,25 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
               const SizedBox(height: AppSpacing.md),
               _buildEditableAttributeCard(
                 '性別',
-                _getGenderString(_isEditMode ? _editingGender : pet.additionalInfo?['gender']),
+                _getGenderString(
+                  _isEditMode ? _editingGender : pet.additionalInfo?['gender'],
+                ),
                 type: 'gender',
               ),
               const SizedBox(height: AppSpacing.sm),
               _buildEditableAttributeCard(
                 'サイズ',
-                _getSizeString(_isEditMode ? _editingSize : pet.additionalInfo?['size']),
+                _getSizeString(
+                  _isEditMode ? _editingSize : pet.additionalInfo?['size'],
+                ),
                 type: 'size',
               ),
               const SizedBox(height: AppSpacing.sm),
               _buildEditableAttributeCard(
                 '体重',
-                _getWeightString(_isEditMode ? _editingWeight : pet.additionalInfo?['weight']),
+                _getWeightString(
+                  _isEditMode ? _editingWeight : pet.additionalInfo?['weight'],
+                ),
                 type: 'weight',
               ),
 
@@ -769,7 +785,11 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     });
   }
 
-  Widget _buildEditableAttributeCard(String label, String value, {required String type}) {
+  Widget _buildEditableAttributeCard(
+    String label,
+    String value, {
+    required String type,
+  }) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
@@ -864,10 +884,10 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
   }
 
   Widget _buildMicrochipCard(PetProfileEntity pet) {
-    final microchipId = _isEditMode 
-        ? _microchipController.text 
+    final microchipId = _isEditMode
+        ? _microchipController.text
         : pet.additionalInfo?['microchipId'] ?? '';
-    
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
@@ -931,8 +951,8 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
                   Text(
                     microchipId.isEmpty ? '未登録' : microchipId,
                     style: AppFonts.bodyMedium.copyWith(
-                      color: microchipId.isEmpty 
-                          ? AppColors.pointGray 
+                      color: microchipId.isEmpty
+                          ? AppColors.pointGray
                           : AppColors.pointDark,
                       fontWeight: FontWeight.w600,
                     ),
@@ -1490,7 +1510,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
           // 배울 수 있는 트릭 섹션
           if (availableTricks.isNotEmpty) ...[
             Text(
-              '다음에 배울 트릭',
+              '次に学ぶトリック',
               style: AppFonts.titleMedium.copyWith(
                 color: AppColors.pointDark,
                 fontWeight: FontWeight.bold,
@@ -1510,7 +1530,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
             child: ElevatedButton.icon(
               onPressed: () => context.push('/training-videos'),
               icon: const Icon(Icons.ondemand_video),
-              label: const Text('교육 영상 보기'),
+              label: const Text('教育動画を見る'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBlue,
                 foregroundColor: Colors.white,
@@ -1551,8 +1571,8 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
         ),
         subtitle: Text(
           isLearned
-              ? '완료! (${trick.progress ?? 0}%)'
-              : trick.description ?? '설명 없음',
+              ? '完了！(${trick.progress ?? 0}%)'
+              : trick.description ?? '説明なし',
           style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
         ),
         trailing: isLearned

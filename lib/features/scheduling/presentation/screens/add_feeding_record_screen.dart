@@ -62,7 +62,7 @@ class _AddFeedingRecordScreenState
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = PetMockData.getPetCurrentStatus(_selectedPetId);
+    final currentStatus = PetMockService.getPetCurrentStatus(_selectedPetId);
     _selectedStatuses = List<String>.from(
       currentStatus['selectedStatuses'] ?? [],
     );
@@ -199,7 +199,7 @@ class _AddFeedingRecordScreenState
                   _statusValues = statusValues;
 
                   // MockDataService에 상태 업데이트
-                  PetMockData.updatePetStatus(
+                  PetMockService.updatePetStatus(
                     petId,
                     selectedStatuses,
                     statusValues,
