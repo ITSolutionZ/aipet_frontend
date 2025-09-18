@@ -3,9 +3,7 @@ import '../../../features/ai/domain/entities/ai_chat_history_entity.dart';
 import '../../../features/ai/domain/entities/ai_chat_summary.dart';
 import '../../../features/ai/domain/entities/ai_favorite_qa_entity.dart';
 import '../../../features/ai/domain/entities/ai_message_entity.dart';
-import '../../../features/home/domain/entities/home_dashboard_entity.dart';
-import '../../../features/home/domain/entities/pet_summary_entity.dart';
-import '../../../features/home/domain/entities/weather_entity.dart';
+import '../../../features/home/domain/entities/entities.dart';
 import '../../../features/pet_registor/domain/entities/pet_profile_entity.dart';
 
 /// 테스트 전용 Mock 데이터 서비스
@@ -13,7 +11,6 @@ import '../../../features/pet_registor/domain/entities/pet_profile_entity.dart';
 /// 모든 엔티티의 Mock 인스턴스를 제공하며,
 /// 테스트에서 일관되게 사용할 수 있는 표준화된 테스트 데이터를 제공합니다.
 class TestMockService {
-
   // ==================== AI Feature Mock Data ====================
 
   /// Mock AiChatSummary 생성
@@ -75,14 +72,16 @@ class TestMockService {
     bool? isManualSaved,
     int? messageCount,
   }) {
-    final testMessages = messages ?? [
-      createMockAiMessageEntity(id: 'msg-1', content: 'こんにちは'),
-      createMockAiMessageEntity(
-        id: 'msg-2',
-        content: 'こんにちは！どのようなことでお手伝いできますか？',
-        type: MessageType.assistant,
-      ),
-    ];
+    final testMessages =
+        messages ??
+        [
+          createMockAiMessageEntity(id: 'msg-1', content: 'こんにちは'),
+          createMockAiMessageEntity(
+            id: 'msg-2',
+            content: 'こんにちは！どのようなことでお手伝いできますか？',
+            type: MessageType.assistant,
+          ),
+        ];
 
     return AiChatHistoryEntity(
       id: id ?? 'chat-1',
@@ -207,10 +206,7 @@ class TestMockService {
   }
 
   /// Mock HealthAlert 생성
-  static HealthAlert createMockHealthAlert({
-    String? petName,
-    String? message,
-  }) {
+  static HealthAlert createMockHealthAlert({String? petName, String? message}) {
     return HealthAlert(
       petName: petName ?? 'テストペット',
       message: message ?? 'ワクチン接種が必要です',
@@ -228,10 +224,12 @@ class TestMockService {
       totalPets: totalPets ?? 5,
       healthyPets: healthyPets ?? 3,
       petsNeedingAttention: petsNeedingAttention ?? 2,
-      alerts: alerts ?? [
-        createMockHealthAlert(petName: 'ペット1', message: '健康診断が必要です'),
-        createMockHealthAlert(petName: 'ペット2', message: 'ワクチン接種が必要です'),
-      ],
+      alerts:
+          alerts ??
+          [
+            createMockHealthAlert(petName: 'ペット1', message: '健康診断が必要です'),
+            createMockHealthAlert(petName: 'ペット2', message: 'ワクチン接種が必要です'),
+          ],
     );
   }
 
@@ -264,23 +262,24 @@ class TestMockService {
     return HomeDashboardEntity(
       currentTime: currentTime ?? '2024-01-01T10:00:00Z',
       weather: weather ?? createMockWeatherEntity(),
-      petProfiles: petProfiles ?? [
-        createMockPetSummaryEntity(
-          id: 'pet-1',
-          name: 'テストペット1',
-          typeName: 'dog',
-          breed: '柴犬',
-        ),
-        createMockPetSummaryEntity(
-          id: 'pet-2',
-          name: 'テストペット2',
-          typeName: 'cat',
-          breed: 'アメリカンショートヘア',
-        ),
-      ],
-      upcomingAppointments: upcomingAppointments ?? [
-        createMockAppointmentSummary(),
-      ],
+      petProfiles:
+          petProfiles ??
+          [
+            createMockPetSummaryEntity(
+              id: 'pet-1',
+              name: 'テストペット1',
+              typeName: 'dog',
+              breed: '柴犬',
+            ),
+            createMockPetSummaryEntity(
+              id: 'pet-2',
+              name: 'テストペット2',
+              typeName: 'cat',
+              breed: 'アメリカンショートヘア',
+            ),
+          ],
+      upcomingAppointments:
+          upcomingAppointments ?? [createMockAppointmentSummary()],
       petHealthSummary: petHealthSummary ?? createMockHealthSummary(),
       walkSummary: walkSummary ?? createMockWalkSummary(),
     );
@@ -295,6 +294,9 @@ class TestMockService {
     String? type,
     String? breed,
     DateTime? birthDate,
+    int? age,
+    String? gender,
+    double? weight,
     String? ownerId,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -308,16 +310,17 @@ class TestMockService {
       type: type ?? 'dog',
       breed: breed ?? 'ゴールデンレトリバー',
       birthDate: birthDate ?? DateTime(2020, 1, 1),
+      age: age ?? 4,
+      gender: gender ?? 'male',
+      weight: weight ?? 15.8,
       ownerId: ownerId ?? 'owner-1',
       createdAt: createdAt ?? DateTime(2020, 1, 1),
       updatedAt: updatedAt ?? DateTime(2020, 1, 1),
       imagePath: imagePath ?? '/path/to/image.jpg',
       isActive: isActive ?? true,
-      additionalInfo: additionalInfo ?? {
-        'gender': 'male',
-        'weight': 15.8,
-        'isNeutered': false,
-      },
+      additionalInfo:
+          additionalInfo ??
+          {'gender': 'male', 'weight': 15.8, 'isNeutered': false},
     );
   }
 
@@ -356,10 +359,7 @@ class TestMockService {
   /// 여러 Mock HealthAlert 생성
   static List<HealthAlert> createMockHealthAlertList({int count = 5}) {
     return List.generate(count, (index) {
-      return createMockHealthAlert(
-        petName: 'ペット$index',
-        message: 'アラート$index',
-      );
+      return createMockHealthAlert(petName: 'ペット$index', message: 'アラート$index');
     });
   }
 }
