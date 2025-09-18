@@ -11,14 +11,18 @@ class PetRegistrationConverter {
       throw ArgumentError('필수 정보가 누락되었습니다 (이름, 펫 타입)');
     }
 
-    final birthDate = data.petBirthday ?? DateTime.now().subtract(const Duration(days: 365));
-    
+    final birthDate =
+        data.petBirthday ?? DateTime.now().subtract(const Duration(days: 365));
+
     return PetProfileEntity(
       id: (++_idCounter).toString(),
       name: data.petName!,
       type: data.selectedPetType!,
       breed: _getBreedString(data),
       birthDate: birthDate,
+      age: _calculateAge(birthDate),
+      gender: data.petGender ?? 'unknown',
+      weight: data.petWeight ?? 0.0,
       imagePath: _getImagePath(data),
       ownerId: 'current_user',
       createdAt: DateTime.now(),
@@ -86,8 +90,8 @@ class PetRegistrationConverter {
 
     // 기본 이미지 경로 반환
     final petType = data.selectedPetType;
-    final breed = data.selectedPetType == 'dog' 
-        ? data.selectedDogBreed 
+    final breed = data.selectedPetType == 'dog'
+        ? data.selectedDogBreed
         : data.selectedCatBreed;
 
     if (petType == 'dog') {
@@ -117,18 +121,20 @@ class PetRegistrationConverter {
   /// 등록 데이터 유효성 검사
   static bool isValidForRegistration(PetRegistrationDataEntity data) {
     return data.petName?.isNotEmpty == true &&
-           data.selectedPetType?.isNotEmpty == true;
+        data.selectedPetType?.isNotEmpty == true;
   }
 
   /// 등록 완료 여부 확인
   static bool isRegistrationComplete(PetRegistrationDataEntity data) {
     return data.petName?.isNotEmpty == true &&
-           data.selectedPetType?.isNotEmpty == true &&
-           data.petBirthday != null;
+        data.selectedPetType?.isNotEmpty == true &&
+        data.petBirthday != null;
   }
 
   /// 추가 정보 빌드
-  static Map<String, dynamic> _buildAdditionalInfo(PetRegistrationDataEntity data) {
+  static Map<String, dynamic> _buildAdditionalInfo(
+    PetRegistrationDataEntity data,
+  ) {
     final additionalInfo = <String, dynamic>{};
 
     if (data.petArrivalDate != null) {
@@ -156,5 +162,16 @@ class PetRegistrationConverter {
     }
 
     return additionalInfo;
+  }
+
+  /// 생년월일로부터 나이 계산
+  static int _calculateAge(DateTime birthDate) {
+    final now = DateTime.now();
+    int age = now.year - birthDate.year;
+    if (now.month < birthDate.month ||
+        (now.month == birthDate.month && now.day < birthDate.day)) {
+      age--;
+    }
+    return age;
   }
 }
