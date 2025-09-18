@@ -1,71 +1,28 @@
+import 'package:aipet_frontend/features/pet_profile/data/repositories/pet_profile_repository_impl.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
-
-import '../../../../../lib/features/pet_profile/data/repositories/pet_profile_repository_impl.dart';
-import '../../../../../lib/features/pet_profile/domain/repositories/pet_profile_repository.dart';
-import '../../../../../lib/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import '../../../../../lib/shared/mock_data/mock_data_service.dart';
 
 void main() {
   group('PetProfileRepositoryImpl', () {
     late PetProfileRepositoryImpl repository;
-    late List<PetProfileEntity> mockProfiles;
 
     setUp(() {
-      mockProfiles = [
-        PetProfileEntity(
-          id: 'pet-1',
-          name: 'テストペット1',
-          type: 'dog',
-          breed: '柴犬',
-          age: 3,
-          gender: 'male',
-          weight: 12.5,
-          imagePath: 'image1.jpg',
-          ownerId: 'owner-1',
-          createdAt: DateTime(2023, 1, 1),
-          updatedAt: DateTime(2023, 12, 1),
-          additionalInfo: {
-            'microchipNumber': '123456789012345',
-            'isPublic': true,
-            'familyManagers': ['user-1'],
-          },
-        ),
-        PetProfileEntity(
-          id: 'pet-2',
-          name: 'テストペット2',
-          type: 'cat',
-          breed: 'アメリカンショートヘア',
-          age: 2,
-          gender: 'female',
-          weight: 4.2,
-          imagePath: 'image2.jpg',
-          ownerId: 'owner-2',
-          createdAt: DateTime(2023, 2, 1),
-          updatedAt: DateTime(2023, 12, 1),
-          additionalInfo: {
-            'microchipNumber': '987654321098765',
-            'isPublic': false,
-            'familyManagers': ['user-2'],
-          },
-        ),
-      ];
-
       repository = PetProfileRepositoryImpl();
+      // Repository now loads mock data automatically from PetMockService
+      // Available mock pets: '1' (MAX), '2' (LUNA), '3' (MOMO)
     });
 
     group('getPetProfile', () {
       test('should return pet profile when pet exists', () async {
-        // Act
-        final result = await repository.getPetProfile('pet-1');
+        // Act - Using mock data from PetMockService (id: '1', name: 'MAX')
+        final result = await repository.getPetProfile('1');
 
         // Assert
         expect(result, isNotNull);
-        expect(result.id, equals('pet-1'));
-        expect(result.name, equals('テストペット1'));
+        expect(result.id, equals('1'));
+        expect(result.name, equals('MAX'));
         expect(result.type, equals('dog'));
-        expect(result.breed, equals('柴犬'));
+        expect(result.breed, equals('Golden Retriever'));
       });
 
       test('should throw exception when pet not found', () async {
@@ -77,22 +34,27 @@ void main() {
       });
 
       test('should work with MockDataService enabled', () async {
-        // Act
-        final result = await repository.getPetProfile('pet-1');
+        // Act - Test another mock pet (id: '2', name: 'LUNA')
+        final result = await repository.getPetProfile('2');
 
         // Assert
         expect(result, isNotNull);
-        expect(result.id, equals('pet-1'));
+        expect(result.id, equals('2'));
+        expect(result.name, equals('LUNA'));
       });
     });
 
     group('updatePetProfile', () {
       test('should update and return pet profile', () async {
-        // Arrange
-        final updatedPet = mockProfiles[0].copyWith(
-          name: '更新されたペット',
-          weight: 13.0,
+        // Arrange - Get existing pet and update it
+        final existingPet = await repository.getPetProfile('1');
+        final updatedPet = existingPet.copyWith(
+          name: '更新されたMAX',
           updatedAt: DateTime(2023, 12, 2),
+          additionalInfo: {
+            ...existingPet.additionalInfo ?? {},
+            'weight': 20.0,
+          },
         );
 
         // Act
@@ -100,8 +62,8 @@ void main() {
 
         // Assert
         expect(result, equals(updatedPet));
-        expect(result.name, equals('更新されたペット'));
-        expect(result.weight, equals(13.0));
+        expect(result.name, equals('更新されたMAX'));
+        expect(result.additionalInfo?['weight'], equals(20.0));
       });
 
       test('should throw exception when pet not found for update', () async {
@@ -111,13 +73,15 @@ void main() {
           name: 'Non Existent Pet',
           type: 'dog',
           breed: 'Unknown',
-          age: 1,
-          gender: 'male',
-          weight: 10.0,
+          birthDate: DateTime(2022, 1, 1),
           imagePath: 'image.jpg',
           ownerId: 'owner-1',
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
+          additionalInfo: {
+            'weight': 10.0,
+            'gender': 'male',
+          },
         );
 
         // Act & Assert
@@ -128,10 +92,14 @@ void main() {
       });
 
       test('should update pet profile successfully', () async {
-        // Arrange
-        final updatedPet = mockProfiles[0].copyWith(
-          name: '更新されたペット',
-          weight: 13.0,
+        // Arrange - Get existing pet and update name
+        final existingPet = await repository.getPetProfile('2');
+        final updatedPet = existingPet.copyWith(
+          name: '更新されたLUNA',
+          additionalInfo: {
+            ...existingPet.additionalInfo ?? {},
+            'weight': 4.0,
+          },
         );
 
         // Act
@@ -139,7 +107,7 @@ void main() {
 
         // Assert
         expect(result, equals(updatedPet));
-        expect(result.name, equals('更新されたペット'));
+        expect(result.name, equals('更新されたLUNA'));
       });
     });
 
@@ -149,11 +117,11 @@ void main() {
         const imagePath = 'path/to/image.jpg';
 
         // Act
-        final result = await repository.uploadPetImage('pet-1', imagePath);
+        final result = await repository.uploadPetImage('1', imagePath);
 
         // Assert
         expect(result, isNotNull);
-        expect(result, contains('https://example.com/images/pet-1/'));
+        expect(result, contains('https://example.com/images/1/'));
         expect(result, contains('.jpg'));
       });
 
@@ -170,15 +138,15 @@ void main() {
 
         // Assert
         expect(result1, isNot(equals(result2)));
-        expect(result1, contains('pet-1'));
-        expect(result2, contains('pet-2'));
+        expect(result1, contains('1'));
+        expect(result2, contains('2'));
       });
     });
 
     group('updateSharingSettings', () {
       test('should update sharing settings to public', () async {
         // Act
-        await repository.updateSharingSettings('pet-1', true);
+        await repository.updateSharingSettings('1', true);
 
         // Assert - 성공적으로 실행되면 예외가 발생하지 않음
         expect(true, isTrue);
@@ -186,7 +154,7 @@ void main() {
 
       test('should update sharing settings to private', () async {
         // Act
-        await repository.updateSharingSettings('pet-1', false);
+        await repository.updateSharingSettings('2', false);
 
         // Assert - 성공적으로 실행되면 예외가 발생하지 않음
         expect(true, isTrue);
@@ -202,9 +170,9 @@ void main() {
 
       test('should handle multiple sharing setting updates', () async {
         // Act
-        await repository.updateSharingSettings('pet-1', true);
-        await repository.updateSharingSettings('pet-1', false);
-        await repository.updateSharingSettings('pet-1', true);
+        await repository.updateSharingSettings('1', true);
+        await repository.updateSharingSettings('1', false);
+        await repository.updateSharingSettings('1', true);
 
         // Assert - 성공적으로 실행되면 예외가 발생하지 않음
         expect(true, isTrue);
@@ -217,7 +185,7 @@ void main() {
         const userId = 'new-manager-1';
 
         // Act
-        await repository.addFamilyManager('pet-1', userId);
+        await repository.addFamilyManager('1', userId);
 
         // Assert - 성공적으로 실행되면 예외가 발생하지 않음
         expect(true, isTrue);
@@ -228,7 +196,7 @@ void main() {
         const userId = 'user-1'; // 이미 존재하는 매니저
 
         // Act
-        await repository.addFamilyManager('pet-1', userId);
+        await repository.addFamilyManager('1', userId);
 
         // Assert - 성공적으로 실행되면 예외가 발생하지 않음
         expect(true, isTrue);
@@ -244,9 +212,9 @@ void main() {
 
       test('should handle adding multiple family managers', () async {
         // Act
-        await repository.addFamilyManager('pet-1', 'manager-1');
-        await repository.addFamilyManager('pet-1', 'manager-2');
-        await repository.addFamilyManager('pet-1', 'manager-3');
+        await repository.addFamilyManager('1', 'manager-1');
+        await repository.addFamilyManager('1', 'manager-2');
+        await repository.addFamilyManager('1', 'manager-3');
 
         // Assert - 성공적으로 실행되면 예외가 발생하지 않음
         expect(true, isTrue);
@@ -259,7 +227,7 @@ void main() {
         const userId = 'user-1';
 
         // Act
-        await repository.removeFamilyManager('pet-1', userId);
+        await repository.removeFamilyManager('1', userId);
 
         // Assert - 성공적으로 실행되면 예외가 발생하지 않음
         expect(true, isTrue);
@@ -270,7 +238,7 @@ void main() {
         const userId = 'non-existent-manager';
 
         // Act
-        await repository.removeFamilyManager('pet-1', userId);
+        await repository.removeFamilyManager('1', userId);
 
         // Assert - 성공적으로 실행되면 예외가 발생하지 않음
         expect(true, isTrue);
@@ -286,9 +254,9 @@ void main() {
 
       test('should handle removing multiple family managers', () async {
         // Act
-        await repository.removeFamilyManager('pet-1', 'user-1');
-        await repository.removeFamilyManager('pet-1', 'user-2');
-        await repository.removeFamilyManager('pet-1', 'non-existent-user');
+        await repository.removeFamilyManager('1', 'user-1');
+        await repository.removeFamilyManager('1', 'user-2');
+        await repository.removeFamilyManager('1', 'non-existent-user');
 
         // Assert - 성공적으로 실행되면 예외가 발생하지 않음
         expect(true, isTrue);
