@@ -1,26 +1,24 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../../../lib/features/ai/domain/entities/ai_chat_summary.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart';
+import 'package:aipet_frontend/shared/mock_data/test/test_data_helper.dart';
 
 void main() {
   group('AiChatSummary', () {
     late AiChatSummary testSummary;
 
     setUp(() {
-      testSummary = AiChatSummary(
-        title: 'ペットの健康相談',
-        content: 'ペットの健康管理について相談し、定期的な健康診断と適切な食事の重要性について学びました。',
-      );
+      testSummary = TestDataHelper.aiChatSummary;
     });
 
     group('constructor', () {
       test('should create summary with all parameters', () {
         // Act
-        final summary = AiChatSummary(title: 'テストタイトル', content: 'テストコンテンツ');
+        final summary = TestDataHelper.aiChatSummary;
 
         // Assert
-        expect(summary.title, equals('テストタイトル'));
-        expect(summary.content, equals('テストコンテンツ'));
+        expect(summary.title, equals('ペットの健康相談'));
+        expect(summary.content, equals('ペットの健康管理について相談し、定期的な健康診断と適切な食事の重要性について学びました。'));
       });
     });
 
@@ -131,7 +129,7 @@ void main() {
     group('equality and hashCode', () {
       test('should be equal when title and content are same', () {
         // Arrange
-        final sameSummary = AiChatSummary(
+        const sameSummary = AiChatSummary(
           title: 'ペットの健康相談',
           content: 'ペットの健康管理について相談し、定期的な健康診断と適切な食事の重要性について学びました。',
         );

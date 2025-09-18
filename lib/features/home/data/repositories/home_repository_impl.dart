@@ -152,4 +152,25 @@ class HomeRepositoryImpl implements HomeRepository {
   // 개발 모드용 지연 시간 상수
   static const Duration _mockDelay = Duration(milliseconds: 250);
 
+  /// PetMockService의 Map 데이터를 PetProfileEntity로 변환
+  PetProfileEntity _convertMockDataToPetProfileEntity(
+    Map<String, dynamic> petData,
+  ) {
+    return PetProfileEntity(
+      id: petData['id'] as String,
+      name: petData['name'] as String,
+      type: petData['typeName'] as String, // typeName을 type으로 매핑
+      breed: petData['breed'] as String?,
+      birthDate: DateTime.parse(petData['birthDate'] as String),
+      age: petData['age'] as int? ?? 0,
+      gender: petData['gender'] as String? ?? 'unknown',
+      weight: (petData['weight'] as num?)?.toDouble() ?? 0.0,
+      imagePath: null, // Mock 데이터에 이미지 경로가 없으므로 null
+      ownerId: 'user1', // Mock 데이터에 ownerId가 없으므로 기본값 사용
+      createdAt: DateTime.parse(petData['createdAt'] as String),
+      updatedAt: DateTime.now(), // Mock 데이터에 updatedAt이 없으므로 현재 시간 사용
+      isActive: true, // 기본값으로 활성 상태
+      additionalInfo: petData['additionalInfo'] as Map<String, dynamic>?,
+    );
+  }
 }

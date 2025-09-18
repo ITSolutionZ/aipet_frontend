@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/router/routes/route_constants.dart';
-import '../widgets/generic_breed_selection_screen.dart';
+import '../widgets/screens/generic_breed_selection_screen.dart';
 
 class CatBreedSelectionScreen extends StatelessWidget {
   const CatBreedSelectionScreen({super.key});

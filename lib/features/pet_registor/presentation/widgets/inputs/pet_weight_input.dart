@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../shared/shared.dart';
+import '../../../../../shared/shared.dart';
 
 /// 펫 체중 입력 위젯
 class PetWeightInput extends StatefulWidget {

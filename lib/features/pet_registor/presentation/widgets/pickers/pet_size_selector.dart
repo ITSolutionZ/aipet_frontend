@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/shared.dart';
+import '../../../../../shared/shared.dart';
 
 /// 펫 크기 선택 위젯
 class PetSizeSelector extends StatelessWidget {

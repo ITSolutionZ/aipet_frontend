@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../../../lib/features/home/domain/entities/weather_entity.dart';
+import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
 
 void main() {
   group('WeatherEntity', () {

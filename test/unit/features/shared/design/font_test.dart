@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/shared/design/font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:aipet_frontend/shared/design/font.dart';
 
 void main() {
   setUpAll(() {
@@ -27,10 +28,10 @@ void main() {
 
       test('should support font size operations', () {
         // Act
-        const sum = AppFonts.sm + AppFonts.xs;
-        const difference = AppFonts.lg - AppFonts.sm;
-        const product = AppFonts.baseSize * 2;
-        const quotient = AppFonts.xl / 2;
+        final sum = AppFonts.sm + AppFonts.xs;
+        final difference = AppFonts.lg - AppFonts.sm;
+        final product = AppFonts.baseSize * 2;
+        final quotient = AppFonts.xl / 2;
 
         // Assert
         expect(sum, equals(22.0));
@@ -50,8 +51,8 @@ void main() {
 
       test('should handle decimal font size', () {
         // Act
-        const half = AppFonts.baseSize / 2;
-        const quarter = AppFonts.sm / 4;
+        final half = AppFonts.baseSize / 2;
+        final quarter = AppFonts.sm / 4;
 
         // Assert
         expect(half, equals(7.0));
@@ -78,7 +79,7 @@ void main() {
 
       test('should handle font size calculations', () {
         // Act
-        const total =
+        final total =
             AppFonts.xs +
             AppFonts.sm +
             AppFonts.baseSize +
@@ -95,7 +96,7 @@ void main() {
     group('font size edge cases', () {
       test('should handle zero font size', () {
         // Act
-        const zeroSize = 0.0;
+        final zeroSize = 0.0;
         final textStyle = TextStyle(fontSize: zeroSize);
 
         // Assert
@@ -104,7 +105,7 @@ void main() {
 
       test('should handle large font size', () {
         // Act
-        const largeSize = 100.0;
+        final largeSize = 100.0;
         final textStyle = TextStyle(fontSize: largeSize);
 
         // Assert
@@ -113,7 +114,7 @@ void main() {
 
       test('should handle decimal font size', () {
         // Act
-        const decimalSize = 14.5;
+        final decimalSize = 14.5;
         final textStyle = TextStyle(fontSize: decimalSize);
 
         // Assert
@@ -124,7 +125,7 @@ void main() {
     group('font weight edge cases', () {
       test('should handle minimum font weight', () {
         // Act
-        const minWeight = FontWeight.w100;
+        final minWeight = FontWeight.w100;
         final textStyle = TextStyle(fontWeight: minWeight);
 
         // Assert
@@ -133,7 +134,7 @@ void main() {
 
       test('should handle maximum font weight', () {
         // Act
-        const maxWeight = FontWeight.w900;
+        final maxWeight = FontWeight.w900;
         final textStyle = TextStyle(fontWeight: maxWeight);
 
         // Assert
@@ -144,7 +145,7 @@ void main() {
     group('color edge cases', () {
       test('should handle null color', () {
         // Act
-        const textStyle = TextStyle(color: null);
+        final textStyle = TextStyle(color: null);
 
         // Assert
         expect(textStyle.color, isNull);
@@ -152,7 +153,7 @@ void main() {
 
       test('should handle specific color', () {
         // Act
-        const specificColor = Colors.red;
+        final specificColor = Colors.red;
         final textStyle = TextStyle(color: specificColor);
 
         // Assert
@@ -163,7 +164,7 @@ void main() {
     group('text style combinations', () {
       test('should create text style with multiple parameters', () {
         // Act
-        const textStyle = TextStyle(
+        final textStyle = TextStyle(
           fontSize: AppFonts.xl,
           fontWeight: FontWeight.w700,
           color: Colors.blue,
@@ -177,7 +178,7 @@ void main() {
 
       test('should create text style with default parameters', () {
         // Act
-        const textStyle = TextStyle();
+        final textStyle = TextStyle();
 
         // Assert
         expect(textStyle.fontSize, isNull);
@@ -189,7 +190,7 @@ void main() {
     group('font size arithmetic', () {
       test('should support addition', () {
         // Act
-        const sum = AppFonts.sm + AppFonts.xs;
+        final sum = AppFonts.sm + AppFonts.xs;
 
         // Assert
         expect(sum, equals(22.0));
@@ -197,7 +198,7 @@ void main() {
 
       test('should support subtraction', () {
         // Act
-        const difference = AppFonts.lg - AppFonts.sm;
+        final difference = AppFonts.lg - AppFonts.sm;
 
         // Assert
         expect(difference, equals(4.0));
@@ -205,7 +206,7 @@ void main() {
 
       test('should support multiplication', () {
         // Act
-        const product = AppFonts.baseSize * 2;
+        final product = AppFonts.baseSize * 2;
 
         // Assert
         expect(product, equals(28.0));
@@ -213,7 +214,7 @@ void main() {
 
       test('should support division', () {
         // Act
-        const quotient = AppFonts.xl / 2;
+        final quotient = AppFonts.xl / 2;
 
         // Assert
         expect(quotient, equals(9.0));
@@ -274,7 +275,7 @@ void main() {
     group('font size calculations', () {
       test('should calculate total of all sizes', () {
         // Act
-        const total =
+        final total =
             AppFonts.xs +
             AppFonts.sm +
             AppFonts.baseSize +
@@ -294,7 +295,7 @@ void main() {
 
       test('should calculate average of all sizes', () {
         // Act
-        const total =
+        final total =
             AppFonts.xs +
             AppFonts.sm +
             AppFonts.baseSize +

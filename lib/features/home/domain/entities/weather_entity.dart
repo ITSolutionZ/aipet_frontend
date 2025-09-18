@@ -1,32 +1,27 @@
-/// Domain layer의 날씨 엔티티
-/// 
-/// Data layer의 WeatherData와 독립적으로 동작하는 도메인 모델
-class WeatherEntity {
-  final double temperature;
-  final String location;
-  final int weatherId;
-  final String description;
-  final double feelsLike;
-  final int humidity;
-  final double windSpeed;
-  final String iconCode;
-  final double uvIndex;
-  final int visibility;
-  final double pressure;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const WeatherEntity({
-    required this.temperature,
-    required this.location,
-    required this.weatherId,
-    required this.description,
-    required this.feelsLike,
-    required this.humidity,
-    required this.windSpeed,
-    required this.iconCode,
-    required this.uvIndex,
-    required this.visibility,
-    required this.pressure,
-  });
+part 'weather_entity.freezed.dart';
+
+/// Domain layer의 날씨 엔티티
+///
+/// Data layer의 WeatherData와 독립적으로 동작하는 도메인 모델
+@freezed
+class WeatherEntity with _$WeatherEntity {
+  const factory WeatherEntity({
+    required double temperature,
+    required String location,
+    required int weatherId,
+    required String description,
+    required double feelsLike,
+    required int humidity,
+    required double windSpeed,
+    required String iconCode,
+    required double uvIndex,
+    required int visibility,
+    required double pressure,
+  }) = _WeatherEntity;
+
+  const WeatherEntity._();
 
   /// 날씨 상태 판별 메서드들
   bool get isSunny => weatherId == 800;
@@ -50,14 +45,11 @@ class WeatherEntity {
 }
 
 /// 날씨 위치 엔티티
-class WeatherLocationEntity {
-  final double latitude;
-  final double longitude;
-  final String name;
-
-  const WeatherLocationEntity({
-    required this.latitude,
-    required this.longitude,
-    required this.name,
-  });
+@freezed
+class WeatherLocationEntity with _$WeatherLocationEntity {
+  const factory WeatherLocationEntity({
+    required double latitude,
+    required double longitude,
+    required String name,
+  }) = _WeatherLocationEntity;
 }

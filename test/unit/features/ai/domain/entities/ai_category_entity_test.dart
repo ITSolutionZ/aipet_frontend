@@ -1,50 +1,30 @@
+import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import '../../../../../lib/features/ai/domain/entities/ai_category_entity.dart';
 
 void main() {
   group('AiCategoryEntity', () {
     late AiCategoryEntity testCategory;
 
     setUp(() {
-      testCategory = AiCategoryEntity(
+      testCategory = const AiCategoryEntity(
         id: 'health',
         name: '健康管理',
         description: 'ペットの健康に関する質問',
         icon: Icons.health_and_safety,
         color: Colors.red,
-        order: 1,
-        isActive: true,
-        keywords: ['健康', '病気', '症状', '治療'],
-        subcategories: [
-          AiCategoryEntity(
-            id: 'vaccination',
-            name: 'ワクチン',
-            description: 'ワクチン接種に関する質問',
-            icon: Icons.vaccines,
-            color: Colors.orange,
-            order: 1,
-            isActive: true,
-            keywords: ['ワクチン', '接種', '予防'],
-          ),
-        ],
       );
     });
 
     group('constructor', () {
-      test('should create category with all parameters', () {
+      test('should create category with all required parameters', () {
         // Act
-        final category = AiCategoryEntity(
+        const category = AiCategoryEntity(
           id: 'test-category',
           name: 'テストカテゴリ',
           description: 'テスト用のカテゴリ',
           icon: Icons.pets,
           color: Colors.blue,
-          order: 5,
-          isActive: true,
-          keywords: ['テスト', 'カテゴリ'],
-          subcategories: [],
         );
 
         // Assert
@@ -53,224 +33,63 @@ void main() {
         expect(category.description, equals('テスト用のカテゴリ'));
         expect(category.icon, equals(Icons.pets));
         expect(category.color, equals(Colors.blue));
-        expect(category.order, equals(5));
-        expect(category.isActive, isTrue);
-        expect(category.keywords, equals(['テスト', 'カテゴリ']));
-        expect(category.subcategories, isEmpty);
       });
 
-      test('should create category with required parameters only', () {
+      test('should create category with different values', () {
         // Act
-        final category = AiCategoryEntity(
-          id: 'simple-category',
-          name: 'シンプルカテゴリ',
-          description: 'シンプルなカテゴリ',
-          icon: Icons.star,
+        const category = AiCategoryEntity(
+          id: 'nutrition',
+          name: '栄養管理',
+          description: 'ペットの栄養に関する質問',
+          icon: Icons.restaurant,
           color: Colors.green,
-          order: 1,
-          isActive: true,
         );
 
         // Assert
-        expect(category.id, equals('simple-category'));
-        expect(category.name, equals('シンプルカテゴリ'));
-        expect(category.description, equals('シンプルなカテゴリ'));
-        expect(category.icon, equals(Icons.star));
+        expect(category.id, equals('nutrition'));
+        expect(category.name, equals('栄養管理'));
+        expect(category.description, equals('ペットの栄養に関する質問'));
+        expect(category.icon, equals(Icons.restaurant));
         expect(category.color, equals(Colors.green));
-        expect(category.order, equals(1));
-        expect(category.isActive, isTrue);
-        expect(category.keywords, isNull);
-        expect(category.subcategories, isNull);
       });
     });
 
-    group('copyWith', () {
-      test('should update only provided fields', () {
-        // Act
-        final updatedCategory = testCategory.copyWith(
-          name: 'Updated Name',
-          isActive: false,
-        );
-
+    group('properties', () {
+      test('should have correct property values', () {
         // Assert
-        expect(updatedCategory.id, equals('health')); // unchanged
-        expect(updatedCategory.name, equals('Updated Name'));
-        expect(
-          updatedCategory.description,
-          equals('ペットの健康に関する質問'),
-        ); // unchanged
-        expect(
-          updatedCategory.icon,
-          equals(Icons.health_and_safety),
-        ); // unchanged
-        expect(updatedCategory.color, equals(Colors.red)); // unchanged
-        expect(updatedCategory.order, equals(1)); // unchanged
-        expect(updatedCategory.isActive, isFalse);
-        expect(
-          updatedCategory.keywords,
-          equals(['健康', '病気', '症状', '治療']),
-        ); // unchanged
-        expect(updatedCategory.subcategories, isNotNull); // unchanged
+        expect(testCategory.id, equals('health'));
+        expect(testCategory.name, equals('健康管理'));
+        expect(testCategory.description, equals('ペットの健康に関する質問'));
+        expect(testCategory.icon, equals(Icons.health_and_safety));
+        expect(testCategory.color, equals(Colors.red));
       });
 
-      test('should keep original values when null provided', () {
-        // Act
-        final updatedCategory = testCategory.copyWith();
-
-        // Assert
-        expect(updatedCategory.id, equals(testCategory.id));
-        expect(updatedCategory.name, equals(testCategory.name));
-        expect(updatedCategory.description, equals(testCategory.description));
-        expect(updatedCategory.icon, equals(testCategory.icon));
-        expect(updatedCategory.color, equals(testCategory.color));
-        expect(updatedCategory.order, equals(testCategory.order));
-        expect(updatedCategory.isActive, equals(testCategory.isActive));
-        expect(updatedCategory.keywords, equals(testCategory.keywords));
-        expect(
-          updatedCategory.subcategories,
-          equals(testCategory.subcategories),
-        );
-      });
-    });
-
-    group('hasSubcategories', () {
-      test('should return true when subcategories exist', () {
-        // Assert
-        expect(testCategory.hasSubcategories, isTrue);
-      });
-
-      test('should return false when no subcategories', () {
+      test('should maintain immutability', () {
         // Arrange
-        final categoryWithoutSubs = testCategory.copyWith(subcategories: []);
+        const originalId = 'health';
+        const originalName = '健康管理';
+        const originalDescription = 'ペットの健康に関する質問';
+        const originalIcon = Icons.health_and_safety;
+        const originalColor = Colors.red;
 
-        // Assert
-        expect(categoryWithoutSubs.hasSubcategories, isFalse);
-      });
-
-      test('should return false when subcategories is null', () {
-        // Arrange
-        final categoryWithoutSubs = testCategory.copyWith(subcategories: null);
-
-        // Assert
-        expect(categoryWithoutSubs.hasSubcategories, isFalse);
-      });
-    });
-
-    group('subcategoryCount', () {
-      test('should return correct count when subcategories exist', () {
-        // Assert
-        expect(testCategory.subcategoryCount, equals(1));
-      });
-
-      test('should return zero when no subcategories', () {
-        // Arrange
-        final categoryWithoutSubs = testCategory.copyWith(subcategories: []);
-
-        // Assert
-        expect(categoryWithoutSubs.subcategoryCount, equals(0));
-      });
-
-      test('should return zero when subcategories is null', () {
-        // Arrange
-        final categoryWithoutSubs = testCategory.copyWith(subcategories: null);
-
-        // Assert
-        expect(categoryWithoutSubs.subcategoryCount, equals(0));
-      });
-    });
-
-    group('activeSubcategories', () {
-      test('should return only active subcategories', () {
-        // Arrange
-        final categoryWithMixedSubs = testCategory.copyWith(
-          subcategories: [
-            AiCategoryEntity(
-              id: 'active-sub',
-              name: 'Active Sub',
-              description: 'Active subcategory',
-              icon: Icons.star,
-              color: Colors.blue,
-              order: 1,
-              isActive: true,
-            ),
-            AiCategoryEntity(
-              id: 'inactive-sub',
-              name: 'Inactive Sub',
-              description: 'Inactive subcategory',
-              icon: Icons.star,
-              color: Colors.red,
-              order: 2,
-              isActive: false,
-            ),
-          ],
-        );
-
-        // Act
-        final activeSubs = categoryWithMixedSubs.activeSubcategories;
-
-        // Assert
-        expect(activeSubs, hasLength(1));
-        expect(activeSubs.first.id, equals('active-sub'));
-      });
-
-      test('should return empty list when no active subcategories', () {
-        // Arrange
-        final categoryWithInactiveSubs = testCategory.copyWith(
-          subcategories: [
-            AiCategoryEntity(
-              id: 'inactive-sub',
-              name: 'Inactive Sub',
-              description: 'Inactive subcategory',
-              icon: Icons.star,
-              color: Colors.red,
-              order: 1,
-              isActive: false,
-            ),
-          ],
-        );
-
-        // Act
-        final activeSubs = categoryWithInactiveSubs.activeSubcategories;
-
-        // Assert
-        expect(activeSubs, isEmpty);
+        // Assert - properties should remain unchanged
+        expect(testCategory.id, equals(originalId));
+        expect(testCategory.name, equals(originalName));
+        expect(testCategory.description, equals(originalDescription));
+        expect(testCategory.icon, equals(originalIcon));
+        expect(testCategory.color, equals(originalColor));
       });
     });
 
     group('edge cases', () {
-      test('should handle empty keywords list', () {
-        // Act
-        final categoryWithEmptyKeywords = testCategory.copyWith(keywords: []);
-
-        // Assert
-        expect(categoryWithEmptyKeywords.keywords, isEmpty);
-      });
-
-      test('should handle many keywords', () {
-        // Arrange
-        final manyKeywords = List.generate(100, (index) => 'keyword$index');
-
-        // Act
-        final categoryWithManyKeywords = testCategory.copyWith(
-          keywords: manyKeywords,
-        );
-
-        // Assert
-        expect(categoryWithManyKeywords.keywords, hasLength(100));
-        expect(categoryWithManyKeywords.keywords!.first, equals('keyword0'));
-        expect(categoryWithManyKeywords.keywords!.last, equals('keyword99'));
-      });
-
       test('should handle special characters in name and description', () {
         // Act
-        final specialCategory = AiCategoryEntity(
+        const specialCategory = AiCategoryEntity(
           id: 'special',
           name: 'スペシャルカテゴリ🎉',
           description: '特殊文字を含むカテゴリ: !@#\$%^&*()',
           icon: Icons.star,
           color: Colors.purple,
-          order: 1,
-          isActive: true,
         );
 
         // Assert
@@ -278,64 +97,104 @@ void main() {
         expect(specialCategory.description, equals('特殊文字を含むカテゴリ: !@#\$%^&*()'));
       });
 
-      test('should handle negative order', () {
+      test('should handle empty strings', () {
         // Act
-        final negativeOrderCategory = testCategory.copyWith(order: -1);
+        const emptyCategory = AiCategoryEntity(
+          id: '',
+          name: '',
+          description: '',
+          icon: Icons.star,
+          color: Colors.grey,
+        );
 
         // Assert
-        expect(negativeOrderCategory.order, equals(-1));
+        expect(emptyCategory.id, equals(''));
+        expect(emptyCategory.name, equals(''));
+        expect(emptyCategory.description, equals(''));
+        expect(emptyCategory.icon, equals(Icons.star));
+        expect(emptyCategory.color, equals(Colors.grey));
       });
 
-      test('should handle zero order', () {
+      test('should handle long strings', () {
+        // Arrange
+        const longId = 'very-long-category-id-that-exceeds-normal-length';
+        const longName = 'とても長いカテゴリ名前で通常の長さを超えています';
+        const longDescription = 'とても長い説明文でペットの健康に関する詳細な情報を含んでいます。'
+            'これは通常の説明文よりもはるかに長く、複数の文章で構成されています。';
+
         // Act
-        final zeroOrderCategory = testCategory.copyWith(order: 0);
+        const longCategory = AiCategoryEntity(
+          id: longId,
+          name: longName,
+          description: longDescription,
+          icon: Icons.description,
+          color: Colors.amber,
+        );
 
         // Assert
-        expect(zeroOrderCategory.order, equals(0));
+        expect(longCategory.id, equals(longId));
+        expect(longCategory.name, equals(longName));
+        expect(longCategory.description, equals(longDescription));
       });
     });
 
-    group('equality and hashCode', () {
+    group('equality', () {
       test('should be equal when all properties are same', () {
         // Arrange
-        final sameCategory = AiCategoryEntity(
+        const sameCategory = AiCategoryEntity(
           id: 'health',
           name: '健康管理',
           description: 'ペットの健康に関する質問',
           icon: Icons.health_and_safety,
           color: Colors.red,
-          order: 1,
-          isActive: true,
-          keywords: ['健康', '病気', '症状', '治療'],
         );
 
-        // Assert
-        expect(testCategory, equals(sameCategory));
-        expect(testCategory.hashCode, equals(sameCategory.hashCode));
+        // Assert - Note: Dart objects without explicit equality override use identity equality
+        expect(testCategory.id, equals(sameCategory.id));
+        expect(testCategory.name, equals(sameCategory.name));
+        expect(testCategory.description, equals(sameCategory.description));
+        expect(testCategory.icon, equals(sameCategory.icon));
+        expect(testCategory.color, equals(sameCategory.color));
       });
 
-      test('should not be equal when properties differ', () {
+      test('should have different properties when values differ', () {
         // Arrange
-        final differentCategory = testCategory.copyWith(name: 'Different Name');
+        const differentCategory = AiCategoryEntity(
+          id: 'nutrition',
+          name: '栄養管理',
+          description: 'ペットの栄養に関する質問',
+          icon: Icons.restaurant,
+          color: Colors.green,
+        );
 
         // Assert
-        expect(testCategory, isNot(equals(differentCategory)));
-        expect(
-          testCategory.hashCode,
-          isNot(equals(differentCategory.hashCode)),
-        );
+        expect(testCategory.id, isNot(equals(differentCategory.id)));
+        expect(testCategory.name, isNot(equals(differentCategory.name)));
+        expect(testCategory.description, isNot(equals(differentCategory.description)));
+        expect(testCategory.icon, isNot(equals(differentCategory.icon)));
+        expect(testCategory.color, isNot(equals(differentCategory.color)));
       });
     });
 
-    group('toString', () {
-      test('should return meaningful string representation', () {
-        // Act
-        final stringRepresentation = testCategory.toString();
-
+    group('type validation', () {
+      test('should be of correct type', () {
         // Assert
-        expect(stringRepresentation, contains('AiCategoryEntity'));
-        expect(stringRepresentation, contains('health'));
-        expect(stringRepresentation, contains('健康管理'));
+        expect(testCategory, isA<AiCategoryEntity>());
+        expect(testCategory.id, isA<String>());
+        expect(testCategory.name, isA<String>());
+        expect(testCategory.description, isA<String>());
+        expect(testCategory.icon, isA<IconData>());
+        expect(testCategory.color, isA<Color>());
+      });
+    });
+
+    group('defaultCategories deprecation', () {
+      test('should throw UnimplementedError when accessing defaultCategories', () {
+        // Assert
+        expect(
+          () => AiCategoryEntity.defaultCategories,
+          throwsA(isA<UnimplementedError>()),
+        );
       });
     });
   });
