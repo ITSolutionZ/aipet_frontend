@@ -1,10 +1,9 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/usecases/create_pet_usecase.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import 'create_pet_usecase_test.mocks.dart';
 
@@ -20,30 +19,34 @@ void main() {
     });
 
     group('call', () {
-      test('should return PetProfileEntity when repository call succeeds', () async {
-        // Arrange
-        final petEntity = PetProfileEntity(
-          id: 'test-id',
-          name: 'Test Pet',
-          type: 'dog',
-          breed: 'Golden Retriever',
-          birthDate: DateTime(2020, 1, 1),
-          imagePath: 'path/to/image.jpg',
-          ownerId: 'owner-123',
-          createdAt: DateTime(2023, 1, 1),
-          updatedAt: DateTime(2023, 1, 1),
-        );
+      test(
+        'should return PetProfileEntity when repository call succeeds',
+        () async {
+          // Arrange
+          final petEntity = PetProfileEntity(
+            id: 'test-id',
+            name: 'Test Pet',
+            type: 'dog',
+            breed: 'Golden Retriever',
+            birthDate: DateTime(2020, 1, 1),
+            imagePath: 'path/to/image.jpg',
+            ownerId: 'owner-123',
+            createdAt: DateTime(2023, 1, 1),
+            updatedAt: DateTime(2023, 1, 1),
+          );
 
-        when(mockRepository.createPet(petEntity))
-            .thenAnswer((_) async => petEntity);
+          when(
+            mockRepository.createPet(petEntity),
+          ).thenAnswer((_) async => petEntity);
 
-        // Act
-        final result = await useCase.call(petEntity);
+          // Act
+          final result = await useCase.call(petEntity);
 
-        // Assert
-        expect(result, equals(petEntity));
-        verify(mockRepository.createPet(petEntity)).called(1);
-      });
+          // Assert
+          expect(result, equals(petEntity));
+          verify(mockRepository.createPet(petEntity)).called(1);
+        },
+      );
 
       test('should throw exception when repository fails', () async {
         // Arrange
@@ -59,14 +62,12 @@ void main() {
           updatedAt: DateTime(2023, 1, 1),
         );
 
-        when(mockRepository.createPet(petEntity))
-            .thenThrow(Exception('Failed to create pet'));
+        when(
+          mockRepository.createPet(petEntity),
+        ).thenThrow(Exception('Failed to create pet'));
 
         // Act & Assert
-        expect(
-          () => useCase.call(petEntity),
-          throwsException,
-        );
+        expect(() => useCase.call(petEntity), throwsException);
         verify(mockRepository.createPet(petEntity)).called(1);
       });
 
@@ -84,8 +85,9 @@ void main() {
           updatedAt: DateTime(2023, 6, 1),
         );
 
-        when(mockRepository.createPet(petEntity))
-            .thenAnswer((_) async => petEntity);
+        when(
+          mockRepository.createPet(petEntity),
+        ).thenAnswer((_) async => petEntity);
 
         // Act
         await useCase.call(petEntity);

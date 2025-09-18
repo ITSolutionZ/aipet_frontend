@@ -24,9 +24,9 @@ void main() {
       const windSpeed = 5.0;
 
       // Act
-      final isGoodTemp = temperature >= 10 && temperature <= 30;
-      final isHighHumidity = humidity > 50;
-      final isCalmWind = windSpeed < 10.0;
+      const isGoodTemp = temperature >= 10 && temperature <= 30;
+      const isHighHumidity = humidity > 50;
+      const isCalmWind = windSpeed < 10.0;
 
       // Assert
       expect(isGoodTemp, isTrue);
@@ -81,8 +81,8 @@ void main() {
       const isGoodForWalk = true;
 
       // Act
-      final allGood = isSunny && !isRainy && isGoodForWalk;
-      final anyBad = isRainy || !isGoodForWalk;
+      const allGood = isSunny && !isRainy && isGoodForWalk;
+      const anyBad = isRainy || !isGoodForWalk;
 
       // Assert
       expect(allGood, isTrue);
@@ -145,7 +145,7 @@ void main() {
       // Act
       final hasEmoji = specialText.contains('🎉');
       final hasSpecialChars = specialText.contains('!@#');
-      final textLength = specialText.length;
+      const textLength = specialText.length;
 
       // Assert
       expect(hasEmoji, isTrue);
@@ -156,12 +156,12 @@ void main() {
     test('should handle null safety', () {
       // Arrange
       String? nullableString;
-      String nonNullableString = 'test';
+      const String nonNullableString = 'test';
 
       // Act
       final isNull = nullableString == null;
-      final isNotNull = nonNullableString != null;
-      final nonNullLength = nonNullableString.length;
+      const isNotNull = nonNullableString != null;
+      const nonNullLength = nonNullableString.length;
 
       // Assert
       expect(isNull, isTrue);

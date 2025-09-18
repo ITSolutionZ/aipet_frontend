@@ -1,6 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('PetProfileEntity', () {
@@ -92,7 +91,7 @@ void main() {
         expect(copy.createdAt, equals(DateTime(2023, 1, 1)));
         expect(copy.updatedAt, equals(DateTime(2023, 1, 1)));
         expect(copy.isActive, isFalse);
-        
+
         // Original should remain unchanged
         expect(original.name, equals('Original Pet'));
         expect(original.breed, isNull);
@@ -169,14 +168,21 @@ void main() {
           id: 'test-id',
           name: 'Pet Before Birthday',
           type: 'dog',
-          birthDate: DateTime(now.year - 2, now.month + 1, now.day), // Birthday next month
+          birthDate: DateTime(
+            now.year - 2,
+            now.month + 1,
+            now.day,
+          ), // Birthday next month
           ownerId: 'owner-123',
           createdAt: now,
           updatedAt: now,
         );
 
         // Act & Assert
-        expect(pet.age, equals(1)); // Should be 1, not 2, since birthday hasn't occurred
+        expect(
+          pet.age,
+          equals(1),
+        ); // Should be 1, not 2, since birthday hasn't occurred
       });
     });
 
@@ -203,7 +209,11 @@ void main() {
             updatedAt: DateTime(2023, 1, 1),
           );
 
-          expect(pet.typeName, equals(entry.value), reason: 'Type ${entry.key} should return ${entry.value}');
+          expect(
+            pet.typeName,
+            equals(entry.value),
+            reason: 'Type ${entry.key} should return ${entry.value}',
+          );
         }
       });
 
@@ -245,7 +255,11 @@ void main() {
             updatedAt: DateTime(2023, 1, 1),
           );
 
-          expect(pet.typeIcon, equals(entry.value), reason: 'Type ${entry.key} should return ${entry.value}');
+          expect(
+            pet.typeIcon,
+            equals(entry.value),
+            reason: 'Type ${entry.key} should return ${entry.value}',
+          );
         }
       });
     });

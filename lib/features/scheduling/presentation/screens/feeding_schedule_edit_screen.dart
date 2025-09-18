@@ -71,7 +71,7 @@ class _FeedingScheduleEditScreenState
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = PetMockService.getPetCurrentStatus(_selectedPetId);
+    final currentStatus = PetMockData.getPetCurrentStatus(_selectedPetId);
     _selectedStatuses = List<String>.from(
       currentStatus['selectedStatuses'] ?? [],
     );
@@ -115,7 +115,7 @@ class _FeedingScheduleEditScreenState
                   _statusValues = statusValues;
 
                   // MockDataService에 상태 업데이트
-                  PetMockService.updatePetStatus(
+                  PetMockData.updatePetStatus(
                     petId,
                     selectedStatuses,
                     statusValues,
