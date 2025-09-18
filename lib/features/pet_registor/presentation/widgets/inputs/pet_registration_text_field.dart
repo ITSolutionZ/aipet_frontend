@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../shared/shared.dart';
+import '../../../../../shared/shared.dart';
 
 /// 펫 등록용 공통 텍스트 필드 위젯
 /// 일관된 스타일과 검증 로직 제공

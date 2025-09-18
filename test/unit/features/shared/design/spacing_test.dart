@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../../../lib/shared/design/spacing.dart';
+import 'package:aipet_frontend/shared/design/spacing.dart';
 
 void main() {
   group('AppSpacing', () {

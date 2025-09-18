@@ -10,6 +10,7 @@ import '../../../pet_activities/domain/entities/trick_entity.dart';
 import '../../../pet_registor/data/providers/pet_providers.dart';
 import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
 import '../controllers/controllers.dart';
+import '../widgets/widgets.dart';
 
 class PetProfileScreen extends ConsumerStatefulWidget {
   final String petId;
@@ -121,46 +122,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: SoftGradientDrawerAppBar(
-        title: 'ペットのプロフィール',
-        selectedPetInfo: Container(
-          margin: const EdgeInsets.only(right: AppSpacing.md),
-          child: GestureDetector(
-            onTap: () => _showPetSelectionModal(context),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircleAvatar(
-                  radius: 12,
-                  backgroundColor: Colors.white,
-                  backgroundImage: pet.imagePath != null
-                      ? AssetImage(pet.imagePath!)
-                      : null,
-                  child: pet.imagePath == null
-                      ? const Icon(
-                          Icons.pets,
-                          size: 16,
-                          color: AppColors.pointBrown,
-                        )
-                      : null,
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  pet.name ?? 'Unknown Pet',
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: const Color(0xFF5B4034),
-                  ),
-                ),
-                const Icon(
-                  Icons.keyboard_arrow_down,
-                  color: Color(0xFF5B4034),
-                  size: 20,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      appBar: ProfileAppBar(pet: pet),
       body: Column(
         children: [
           // 탭 바
@@ -195,12 +157,40 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
               builder: (context, ref, child) {
                 final state = ref.watch(petProfileNotifierProvider);
                 if (state.tabController == null) {
-                  return _buildAboutTab(); // TabController가 없을 때는 기본 탭만 표시
+                  return AboutTabWidget(
+                    isEditMode: _isEditMode,
+                    nameController: _nameController,
+                    appearanceController: _appearanceController,
+                    microchipController: _microchipController,
+                    weightController: _weightController,
+                    selectedImagePath: _selectedImagePath,
+                    editingGender: _editingGender,
+                    editingSize: _editingSize,
+                    editingWeight: _editingWeight,
+                    onImageSourceSelection: _showImageSourceSelection,
+                    onGenderChanged: (value) => setState(() => _editingGender = value),
+                    onSizeChanged: (value) => setState(() => _editingSize = value),
+                    onWeightChanged: (value) => setState(() => _editingWeight = value),
+                  ); // TabController가 없을 때는 기본 탭만 표시
                 }
                 return TabBarView(
                   controller: state.tabController,
                   children: [
-                    _buildAboutTab(),
+                    AboutTabWidget(
+                      isEditMode: _isEditMode,
+                      nameController: _nameController,
+                      appearanceController: _appearanceController,
+                      microchipController: _microchipController,
+                      weightController: _weightController,
+                      selectedImagePath: _selectedImagePath,
+                      editingGender: _editingGender,
+                      editingSize: _editingSize,
+                      editingWeight: _editingWeight,
+                      onImageSourceSelection: _showImageSourceSelection,
+                      onGenderChanged: (value) => setState(() => _editingGender = value),
+                      onSizeChanged: (value) => setState(() => _editingSize = value),
+                      onWeightChanged: (value) => setState(() => _editingWeight = value),
+                    ),
                     _buildHealthTab(),
                     _buildNutritionTab(),
                     _buildActivityTab(),
@@ -213,75 +203,12 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: _isEditMode 
-          ? Row(
-              children: [
-                // 취소 버튼
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _cancelEdit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.pointGray,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.large),
-                      ),
-                    ),
-                    child: Text(
-                      'キャンセル',
-                      style: AppFonts.fredoka(
-                        fontSize: AppFonts.lg,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                // 저장 버튼
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => _saveChanges(pet),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.pointBrown,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.large),
-                      ),
-                    ),
-                    child: Text(
-                      '完了',
-                      style: AppFonts.fredoka(
-                        fontSize: AppFonts.lg,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => _startEdit(pet),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.pointBrown,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.large),
-                  ),
-                ),
-                child: Text(
-                  '編集',
-                  style: AppFonts.fredoka(
-                    fontSize: AppFonts.lg,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
+        child: ProfileEditButtons(
+          isEditMode: _isEditMode,
+          onEdit: () => _startEdit(pet),
+          onSave: () => _saveChanges(pet),
+          onCancel: _cancelEdit,
+        ),
       ),
     );
   }

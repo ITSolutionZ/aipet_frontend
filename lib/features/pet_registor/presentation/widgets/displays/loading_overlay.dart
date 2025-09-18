@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/shared.dart';
+import '../../../../../shared/shared.dart';
 
 /// 로딩 오버레이 위젯
 /// 전체 화면을 덮는 반투명 로딩 인디케이터

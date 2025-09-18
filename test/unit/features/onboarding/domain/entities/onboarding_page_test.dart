@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../../../lib/features/onboarding/domain/entities/onboarding_page.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/onboarding_page.dart';
 
 void main() {
   group('OnboardingPage', () {

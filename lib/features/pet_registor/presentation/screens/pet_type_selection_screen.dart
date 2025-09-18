@@ -4,11 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/routes/route_constants.dart';
 import '../../../../shared/shared.dart';
-import '../../data/providers/microchip_service_provider.dart';
 import '../../data/providers/pet_registration_provider.dart';
 import '../constants/pet_registration_texts.dart';
-import '../widgets/next_button.dart';
-import '../widgets/pet_type_card.dart';
+import '../widgets/widgets.dart';
 
 class PetTypeSelectionScreen extends ConsumerStatefulWidget {
   const PetTypeSelectionScreen({super.key});
@@ -22,43 +20,6 @@ class _PetTypeSelectionScreenState
     extends ConsumerState<PetTypeSelectionScreen> {
   bool _showMicrochipBanner = false;
 
-  late final List<Map<String, dynamic>> _petTypes;
-
-  @override
-  void initState() {
-    super.initState();
-    _petTypes = _getPetTypesData();
-  }
-
-  /// 마이크로칩 모달 표시
-  Widget _showMicrochipModal(String? petType) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      MicrochipRegistrationBanner.showModal(
-        context,
-        petType: petType,
-        onRegisterTap: () async {
-          try {
-            final microchipService = ref.read(microchipServiceProvider);
-            await microchipService.openRegistrationSite();
-          } catch (e) {
-            // URL을 열 수 없는 경우 에러 처리
-            if (mounted) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('URLが開けません')));
-            }
-          }
-        },
-        onDismiss: () {
-          // 모달 닫기 기능
-          setState(() {
-            _showMicrochipBanner = false;
-          });
-        },
-      );
-    });
-    return const SizedBox.shrink();
-  }
 
   /// 7단계 프로그레스바 생성
   Widget _buildProgressBar() {
@@ -85,47 +46,6 @@ class _PetTypeSelectionScreenState
     );
   }
 
-  /// 펫 타입 데이터 생성
-  List<Map<String, dynamic>> _getPetTypesData() {
-    return [
-      {
-        'type': 'dog',
-        'imagePath': 'assets/images/pet_selector/dog.png',
-        'color': const Color(0xFFE91E63), // 핑크 - 개 전용
-        'isSpecial': true,
-      },
-      {
-        'type': 'cat',
-        'imagePath': 'assets/images/pet_selector/cat.png',
-        'color': const Color(0xFF9C27B0), // 퍼플 - 고양이 전용
-        'isSpecial': true,
-      },
-      {
-        'type': 'rabbit',
-        'imagePath': 'assets/images/pet_selector/rabbit.png',
-        'color': const Color(0xFF4CAF50), // 그린 - 토끼
-        'isSpecial': false,
-      },
-      {
-        'type': 'hamster',
-        'imagePath': 'assets/images/pet_selector/hamster.png',
-        'color': const Color(0xFFFF9800), // 오렌지 - 햄스터
-        'isSpecial': false,
-      },
-      {
-        'type': 'bird',
-        'imagePath': 'assets/images/pet_selector/bird.png',
-        'color': const Color(0xFF2196F3), // 블루 - 새
-        'isSpecial': false,
-      },
-      {
-        'type': 'turtle',
-        'imagePath': 'assets/images/pet_selector/turtle.png',
-        'color': const Color(0xFF607D8B), // 블루그레이 - 거북이
-        'isSpecial': false,
-      },
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,8 +63,15 @@ class _PetTypeSelectionScreenState
         child: Column(
           children: [
             // 마이크로칩 등록 모달 (개, 고양이 선택 시에만 표시)
-            if (_showMicrochipBanner)
-              _showMicrochipModal(petRegistrationState.selectedPetType),
+            MicrochipModalHandlerWidget(
+              petType: petRegistrationState.selectedPetType,
+              showModal: _showMicrochipBanner,
+              onDismiss: () {
+                setState(() {
+                  _showMicrochipBanner = false;
+                });
+              },
+            ),
 
             // 스크롤 가능한 상단 영역
             Expanded(
@@ -170,81 +97,16 @@ class _PetTypeSelectionScreenState
                     const SizedBox(height: AppSpacing.xl),
 
                     // 펫 종류 선택 카드들
-                    SizedBox(
-                      height: 420, // 텍스트 제거로 높이 조정
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: AppSpacing.md,
-                              mainAxisSpacing: AppSpacing.md,
-                              childAspectRatio: 1.0, // 정사각형으로 복원
-                            ),
-                        itemCount: _petTypes.length,
-                        itemBuilder: (context, index) {
-                          final petType = _petTypes[index];
-                          final isSelected =
-                              petRegistrationState.selectedPetType ==
-                              petType['type'];
+                    PetTypeGridWidget(
+                      selectedPetType: petRegistrationState.selectedPetType,
+                      onPetTypeSelected: (petType) {
+                        petRegistrationNotifier.selectPetType(petType);
 
-                          return PetTypeCard(
-                            imagePath: petType['imagePath'],
-                            color: petType['color'],
-                            isSelected: isSelected,
-                            petType: petType['type'], // 펫 타입 추가
-                            onTap: () {
-                              petRegistrationNotifier.selectPetType(
-                                petType['type'],
-                              );
-
-                              setState(() {
-                                // 개나 고양이를 선택했을 때만 마이크로칩 배너 표시
-                                _showMicrochipBanner =
-                                    (petType['type'] == 'dog' ||
-                                    petType['type'] == 'cat');
-                              });
-                            },
-                          );
-                        },
-                      ),
-                    ),
-
-                    // 종류가 없다 버튼
-                    const SizedBox(height: AppSpacing.lg),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          // 종류가 없는 경우 처리 (예: 커스텀 입력 화면으로 이동)
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                PetRegistrationTexts.customPetTypeComingSoon,
-                              ),
-                            ),
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppSpacing.md,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.medium,
-                            ),
-                          ),
-                          side: BorderSide(
-                            color: AppColors.pointGray.withValues(alpha: 0.5),
-                          ),
-                        ),
-                        child: Text(
-                          PetRegistrationTexts.noTypeAvailable,
-                          style: AppFonts.titleMedium.copyWith(
-                            color: AppColors.pointGray,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                        setState(() {
+                          _showMicrochipBanner =
+                              (petType == 'dog' || petType == 'cat');
+                        });
+                      },
                     ),
                   ],
                 ),

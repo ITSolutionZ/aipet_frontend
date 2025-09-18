@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../../../lib/shared/design/color.dart';
+import 'package:aipet_frontend/shared/design/color.dart';
 
 void main() {
   group('AppColors', () {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/shared.dart';
-import '../constants/pet_registration_texts.dart';
+import '../../../../../shared/shared.dart';
+import '../../constants/pet_registration_texts.dart';
 
 /// 다음 버튼 위젯
 ///
