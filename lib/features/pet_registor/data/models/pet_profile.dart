@@ -6,6 +6,9 @@ class PetProfile {
   final String type;
   final String? breed;
   final DateTime birthDate;
+  final int age;
+  final String gender;
+  final double weight;
   final String? imagePath;
   final String ownerId;
   final DateTime createdAt;
@@ -19,6 +22,9 @@ class PetProfile {
     required this.type,
     this.breed,
     required this.birthDate,
+    required this.age,
+    required this.gender,
+    required this.weight,
     this.imagePath,
     required this.ownerId,
     required this.createdAt,
@@ -34,6 +40,9 @@ class PetProfile {
       type: entity.type,
       breed: entity.breed,
       birthDate: entity.birthDate,
+      age: entity.age,
+      gender: entity.gender,
+      weight: entity.weight,
       imagePath: entity.imagePath,
       ownerId: entity.ownerId,
       createdAt: entity.createdAt,
@@ -50,6 +59,9 @@ class PetProfile {
       type: type,
       breed: breed,
       birthDate: birthDate,
+      age: age,
+      gender: gender,
+      weight: weight,
       imagePath: imagePath,
       ownerId: ownerId,
       createdAt: createdAt,
@@ -65,6 +77,9 @@ class PetProfile {
     String? type,
     String? breed,
     DateTime? birthDate,
+    int? age,
+    String? gender,
+    double? weight,
     String? imagePath,
     String? ownerId,
     DateTime? createdAt,
@@ -78,6 +93,9 @@ class PetProfile {
       type: type ?? this.type,
       breed: breed ?? this.breed,
       birthDate: birthDate ?? this.birthDate,
+      age: age ?? this.age,
+      gender: gender ?? this.gender,
+      weight: weight ?? this.weight,
       imagePath: imagePath ?? this.imagePath,
       ownerId: ownerId ?? this.ownerId,
       createdAt: createdAt ?? this.createdAt,
@@ -110,6 +128,9 @@ class PetProfile {
       type: json['type'] as String,
       breed: json['breed'] as String?,
       birthDate: DateTime.parse(json['birthDate'] as String),
+      age: json['age'] as int,
+      gender: json['gender'] as String,
+      weight: json['weight'] as double,
       imagePath: json['imagePath'] as String?,
       ownerId: json['ownerId'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),

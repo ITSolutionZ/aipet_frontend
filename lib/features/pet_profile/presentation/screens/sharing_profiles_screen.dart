@@ -31,24 +31,31 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen> {
   void _loadPets() {
     // PetMockService에서 펫 데이터 로드
     final petMaps = PetMockService.getMockPets();
-    _pets = petMaps.map((petData) => PetProfileEntity(
-      id: petData['id'] as String,
-      name: petData['name'] as String,
-      type: petData['type'] as String,
-      breed: petData['breed'] as String?,
-      birthDate: petData['birthDate'] as DateTime? ?? DateTime.now(),
-      imagePath: petData['imagePath'] as String?,
-      ownerId: 'user_1', // 기본값 설정
-      createdAt: petData['createdAt'] as DateTime? ?? DateTime.now(),
-      updatedAt: petData['updatedAt'] as DateTime? ?? DateTime.now(),
-      isActive: true,
-      additionalInfo: {
-        'gender': petData['gender'],
-        'weight': petData['weight'],
-        'isNeutered': petData['isNeutered'],
-        'description': petData['description'],
-      },
-    )).toList();
+    _pets = petMaps
+        .map(
+          (petData) => PetProfileEntity(
+            id: petData['id'] as String,
+            name: petData['name'] as String,
+            type: petData['type'] as String,
+            breed: petData['breed'] as String?,
+            birthDate: petData['birthDate'] as DateTime? ?? DateTime.now(),
+            age: petData['age'] as int? ?? 0,
+            gender: petData['gender'] as String? ?? 'unknown',
+            weight: (petData['weight'] as num?)?.toDouble() ?? 0.0,
+            imagePath: petData['imagePath'] as String?,
+            ownerId: 'user_1', // 기본값 설정
+            createdAt: petData['createdAt'] as DateTime? ?? DateTime.now(),
+            updatedAt: petData['updatedAt'] as DateTime? ?? DateTime.now(),
+            isActive: true,
+            additionalInfo: {
+              'gender': petData['gender'],
+              'weight': petData['weight'],
+              'isNeutered': petData['isNeutered'],
+              'description': petData['description'],
+            },
+          ),
+        )
+        .toList();
     setState(() {});
   }
 
@@ -65,9 +72,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientBackAppBar(
-        title: 'Sharing profiles',
-      ),
+      appBar: const SoftGradientBackAppBar(title: 'Sharing profiles'),
       body: Column(
         children: [
           // 탭 컨트롤
