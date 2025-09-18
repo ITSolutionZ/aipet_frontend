@@ -47,5 +47,8 @@ export 'features/scheduling/meal_types_mock_data.dart';
 export 'features/scheduling/scheduling_mock_service.dart';
 // ==================== Walk Feature ====================
 export 'features/walk/walk_mock_service.dart';
+// ==================== Test Services ====================
+export 'test/test_mock_service.dart';
+export 'test/test_data_helper.dart';
 // ==================== Legacy Service (deprecated) ====================
 export 'mock_data_service.dart';
