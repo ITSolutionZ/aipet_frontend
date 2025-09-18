@@ -1,91 +1,70 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AiFavoriteQaEntity', () {
     late AiFavoriteQaEntity testFavoriteQa;
+    late PetProfileEntity testPet;
+    final testDateTime = DateTime(2024, 1, 1, 12, 0);
+    final testOriginalTimestamp = DateTime(2024, 1, 1, 10, 0);
 
     setUp(() {
+      testPet = PetProfileEntity(
+        id: 'pet-1',
+        name: 'テストペット',
+        type: 'dog',
+        breed: 'ゴールデンレトリバー',
+        birthDate: DateTime(2020, 1, 1),
+        ownerId: 'owner-1',
+        createdAt: DateTime(2020, 1, 1),
+        updatedAt: DateTime(2020, 1, 1),
+      );
+
       testFavoriteQa = AiFavoriteQaEntity(
-        id: 'favorite-1',
-        question: 'ペットの健康管理について教えて',
-        answer: 'ペットの健康管理は定期的な健康診断と適切な食事が重要です。',
-        category: 'health',
-        petId: 'pet-123',
-        petName: 'テストペット',
-        createdAt: DateTime(2024, 1, 1, 12, 0, 0),
-        updatedAt: DateTime(2024, 1, 2, 12, 0, 0),
-        tags: ['健康', '管理', 'アドバイス'],
-        isShared: true,
-        sharedAt: DateTime(2024, 1, 1, 15, 0, 0),
-        sharedWith: ['user-1', 'user-2'],
-        metadata: {'source': 'ai_chat', 'confidence': 0.95},
+        id: 'fav-qa-1',
+        question: '犬の健康について教えて',
+        answer: '犬の健康を保つためには...',
+        pet: testPet,
+        categoryId: 'health',
+        categoryName: '健康管理',
+        createdAt: testDateTime,
+        originalTimestamp: testOriginalTimestamp,
       );
     });
 
     group('constructor', () {
-      test('should create favorite QA with all parameters', () {
-        // Act
-        final favoriteQa = AiFavoriteQaEntity(
-          id: 'test-favorite',
-          question: 'テスト質問',
-          answer: 'テスト回答',
-          category: 'test-category',
-          petId: 'test-pet',
-          petName: 'テストペット',
-          createdAt: DateTime(2024, 1, 1),
-          updatedAt: DateTime(2024, 1, 2),
-          tags: ['タグ1', 'タグ2'],
-          isShared: false,
-          sharedAt: DateTime(2024, 1, 3),
-          sharedWith: ['user1'],
-          metadata: {'key': 'value'},
-        );
-
+      test('should create AiFavoriteQaEntity with all parameters', () {
         // Assert
-        expect(favoriteQa.id, equals('test-favorite'));
-        expect(favoriteQa.question, equals('テスト質問'));
-        expect(favoriteQa.answer, equals('テスト回答'));
-        expect(favoriteQa.category, equals('test-category'));
-        expect(favoriteQa.petId, equals('test-pet'));
-        expect(favoriteQa.petName, equals('テストペット'));
-        expect(favoriteQa.createdAt, equals(DateTime(2024, 1, 1)));
-        expect(favoriteQa.updatedAt, equals(DateTime(2024, 1, 2)));
-        expect(favoriteQa.tags, equals(['タグ1', 'タグ2']));
-        expect(favoriteQa.isShared, isFalse);
-        expect(favoriteQa.sharedAt, equals(DateTime(2024, 1, 3)));
-        expect(favoriteQa.sharedWith, equals(['user1']));
-        expect(favoriteQa.metadata, equals({'key': 'value'}));
+        expect(testFavoriteQa.id, equals('fav-qa-1'));
+        expect(testFavoriteQa.question, equals('犬の健康について教えて'));
+        expect(testFavoriteQa.answer, equals('犬の健康を保つためには...'));
+        expect(testFavoriteQa.pet, equals(testPet));
+        expect(testFavoriteQa.categoryId, equals('health'));
+        expect(testFavoriteQa.categoryName, equals('健康管理'));
+        expect(testFavoriteQa.createdAt, equals(testDateTime));
+        expect(testFavoriteQa.originalTimestamp, equals(testOriginalTimestamp));
       });
 
-      test('should create favorite QA with required parameters only', () {
+      test('should create AiFavoriteQaEntity with minimal required parameters', () {
         // Act
-        final favoriteQa = AiFavoriteQaEntity(
-          id: 'simple-favorite',
-          question: 'シンプル質問',
-          answer: 'シンプル回答',
-          category: 'simple-category',
-          petId: 'simple-pet',
-          petName: 'シンプルペット',
-          createdAt: DateTime(2024, 1, 1),
-          updatedAt: DateTime(2024, 1, 2),
+        final minimalFavoriteQa = AiFavoriteQaEntity(
+          id: 'fav-qa-2',
+          question: 'テスト質問',
+          answer: 'テスト回答',
+          createdAt: testDateTime,
+          originalTimestamp: testOriginalTimestamp,
         );
 
         // Assert
-        expect(favoriteQa.id, equals('simple-favorite'));
-        expect(favoriteQa.question, equals('シンプル質問'));
-        expect(favoriteQa.answer, equals('シンプル回答'));
-        expect(favoriteQa.category, equals('simple-category'));
-        expect(favoriteQa.petId, equals('simple-pet'));
-        expect(favoriteQa.petName, equals('シンプルペット'));
-        expect(favoriteQa.createdAt, equals(DateTime(2024, 1, 1)));
-        expect(favoriteQa.updatedAt, equals(DateTime(2024, 1, 2)));
-        expect(favoriteQa.tags, isNull);
-        expect(favoriteQa.isShared, isFalse);
-        expect(favoriteQa.sharedAt, isNull);
-        expect(favoriteQa.sharedWith, isNull);
-        expect(favoriteQa.metadata, isNull);
+        expect(minimalFavoriteQa.id, equals('fav-qa-2'));
+        expect(minimalFavoriteQa.question, equals('テスト質問'));
+        expect(minimalFavoriteQa.answer, equals('テスト回答'));
+        expect(minimalFavoriteQa.pet, isNull);
+        expect(minimalFavoriteQa.categoryId, isNull);
+        expect(minimalFavoriteQa.categoryName, isNull);
+        expect(minimalFavoriteQa.createdAt, equals(testDateTime));
+        expect(minimalFavoriteQa.originalTimestamp, equals(testOriginalTimestamp));
       });
     });
 
@@ -93,63 +72,96 @@ void main() {
       test('should update only provided fields', () {
         // Act
         final updatedFavoriteQa = testFavoriteQa.copyWith(
-          question: 'Updated Question',
-          isShared: false,
-          tags: ['Updated', 'Tags'],
+          question: '更新された質問',
+          categoryName: '更新されたカテゴリ',
         );
 
         // Assert
-        expect(updatedFavoriteQa.id, equals('favorite-1')); // unchanged
-        expect(updatedFavoriteQa.question, equals('Updated Question'));
-        expect(
-          updatedFavoriteQa.answer,
-          equals('ペットの健康管理は定期的な健康診断と適切な食事が重要です。'),
-        ); // unchanged
-        expect(updatedFavoriteQa.category, equals('health')); // unchanged
-        expect(updatedFavoriteQa.petId, equals('pet-123')); // unchanged
-        expect(updatedFavoriteQa.petName, equals('テストペット')); // unchanged
-        expect(
-          updatedFavoriteQa.createdAt,
-          equals(DateTime(2024, 1, 1, 12, 0, 0)),
-        ); // unchanged
-        expect(
-          updatedFavoriteQa.updatedAt,
-          equals(DateTime(2024, 1, 2, 12, 0, 0)),
-        ); // unchanged
-        expect(updatedFavoriteQa.tags, equals(['Updated', 'Tags']));
-        expect(updatedFavoriteQa.isShared, isFalse);
-        expect(
-          updatedFavoriteQa.sharedAt,
-          equals(DateTime(2024, 1, 1, 15, 0, 0)),
-        ); // unchanged
-        expect(
-          updatedFavoriteQa.sharedWith,
-          equals(['user-1', 'user-2']),
-        ); // unchanged
-        expect(
-          updatedFavoriteQa.metadata,
-          equals({'source': 'ai_chat', 'confidence': 0.95}),
-        ); // unchanged
+        expect(updatedFavoriteQa.id, equals('fav-qa-1')); // unchanged
+        expect(updatedFavoriteQa.question, equals('更新された質問'));
+        expect(updatedFavoriteQa.answer, equals('犬の健康を保つためには...')); // unchanged
+        expect(updatedFavoriteQa.pet, equals(testPet)); // unchanged
+        expect(updatedFavoriteQa.categoryId, equals('health')); // unchanged
+        expect(updatedFavoriteQa.categoryName, equals('更新されたカテゴリ'));
+        expect(updatedFavoriteQa.createdAt, equals(testDateTime)); // unchanged
+        expect(updatedFavoriteQa.originalTimestamp, equals(testOriginalTimestamp)); // unchanged
       });
 
-      test('should keep original values when null provided', () {
+      test('should keep original values when no parameters provided', () {
         // Act
-        final updatedFavoriteQa = testFavoriteQa.copyWith();
+        final copiedFavoriteQa = testFavoriteQa.copyWith();
 
         // Assert
-        expect(updatedFavoriteQa.id, equals(testFavoriteQa.id));
-        expect(updatedFavoriteQa.question, equals(testFavoriteQa.question));
-        expect(updatedFavoriteQa.answer, equals(testFavoriteQa.answer));
-        expect(updatedFavoriteQa.category, equals(testFavoriteQa.category));
-        expect(updatedFavoriteQa.petId, equals(testFavoriteQa.petId));
-        expect(updatedFavoriteQa.petName, equals(testFavoriteQa.petName));
-        expect(updatedFavoriteQa.createdAt, equals(testFavoriteQa.createdAt));
-        expect(updatedFavoriteQa.updatedAt, equals(testFavoriteQa.updatedAt));
-        expect(updatedFavoriteQa.tags, equals(testFavoriteQa.tags));
-        expect(updatedFavoriteQa.isShared, equals(testFavoriteQa.isShared));
-        expect(updatedFavoriteQa.sharedAt, equals(testFavoriteQa.sharedAt));
-        expect(updatedFavoriteQa.sharedWith, equals(testFavoriteQa.sharedWith));
-        expect(updatedFavoriteQa.metadata, equals(testFavoriteQa.metadata));
+        expect(copiedFavoriteQa.id, equals(testFavoriteQa.id));
+        expect(copiedFavoriteQa.question, equals(testFavoriteQa.question));
+        expect(copiedFavoriteQa.answer, equals(testFavoriteQa.answer));
+        expect(copiedFavoriteQa.pet, equals(testFavoriteQa.pet));
+        expect(copiedFavoriteQa.categoryId, equals(testFavoriteQa.categoryId));
+        expect(copiedFavoriteQa.categoryName, equals(testFavoriteQa.categoryName));
+        expect(copiedFavoriteQa.createdAt, equals(testFavoriteQa.createdAt));
+        expect(copiedFavoriteQa.originalTimestamp, equals(testFavoriteQa.originalTimestamp));
+      });
+    });
+
+    group('petGroupKey', () {
+      test('should return pet-based key when pet exists', () {
+        // Act
+        final groupKey = testFavoriteQa.petGroupKey;
+
+        // Assert
+        expect(groupKey, equals('pet-1_テストペット'));
+      });
+
+      test('should return general key when pet is null', () {
+        // Arrange
+        final noPetFavoriteQa = testFavoriteQa.copyWith(pet: null);
+
+        // Act
+        final groupKey = noPetFavoriteQa.petGroupKey;
+
+        // Assert
+        expect(groupKey, equals('general_一般的なペット相談'));
+      });
+    });
+
+    group('petDisplayName', () {
+      test('should return formatted pet name when pet exists', () {
+        // Act
+        final displayName = testFavoriteQa.petDisplayName;
+
+        // Assert
+        expect(displayName, equals('テストペット (ゴールデンレトリバー)'));
+      });
+
+      test('should return general name when pet is null', () {
+        // Arrange
+        final noPetFavoriteQa = testFavoriteQa.copyWith(pet: null);
+
+        // Act
+        final displayName = noPetFavoriteQa.petDisplayName;
+
+        // Assert
+        expect(displayName, equals('一般的なペット相談'));
+      });
+
+      test('should handle pet without breed', () {
+        // Arrange
+        final petWithoutBreed = PetProfileEntity(
+          id: 'pet-2',
+          name: '品種なしペット',
+          type: 'cat',
+          birthDate: DateTime(2021, 1, 1),
+          ownerId: 'owner-1',
+          createdAt: DateTime(2021, 1, 1),
+          updatedAt: DateTime(2021, 1, 1),
+        );
+        final favoriteQaWithCat = testFavoriteQa.copyWith(pet: petWithoutBreed);
+
+        // Act
+        final displayName = favoriteQaWithCat.petDisplayName;
+
+        // Assert
+        expect(displayName, equals('品種なしペット (cat)'));
       });
     });
 
@@ -159,330 +171,67 @@ void main() {
         final json = testFavoriteQa.toJson();
 
         // Assert
-        expect(json['id'], equals('favorite-1'));
-        expect(json['question'], equals('ペットの健康管理について教えて'));
-        expect(json['answer'], equals('ペットの健康管理は定期的な健康診断と適切な食事が重要です。'));
-        expect(json['category'], equals('health'));
-        expect(json['petId'], equals('pet-123'));
+        expect(json['id'], equals('fav-qa-1'));
+        expect(json['question'], equals('犬の健康について教えて'));
+        expect(json['answer'], equals('犬の健康を保つためには...'));
+        expect(json['petId'], equals('pet-1'));
         expect(json['petName'], equals('テストペット'));
-        expect(json['createdAt'], equals('2024-01-01T12:00:00.000'));
-        expect(json['updatedAt'], equals('2024-01-02T12:00:00.000'));
-        expect(json['tags'], equals(['健康', '管理', 'アドバイス']));
-        expect(json['isShared'], isTrue);
-        expect(json['sharedAt'], equals('2024-01-01T15:00:00.000'));
-        expect(json['sharedWith'], equals(['user-1', 'user-2']));
-        expect(
-          json['metadata'],
-          equals({'source': 'ai_chat', 'confidence': 0.95}),
-        );
+        expect(json['categoryId'], equals('health'));
+        expect(json['categoryName'], equals('健康管理'));
+        expect(json['createdAt'], equals(testDateTime.toIso8601String()));
+        expect(json['originalTimestamp'], equals(testOriginalTimestamp.toIso8601String()));
       });
 
-      test('should convert to JSON with null fields', () {
+      test('should handle null pet in JSON conversion', () {
         // Arrange
-        final favoriteQaWithNulls = testFavoriteQa.copyWith(
-          tags: null,
-          sharedAt: null,
-          sharedWith: null,
-          metadata: null,
-        );
+        final noPetFavoriteQa = testFavoriteQa.copyWith(pet: null);
 
         // Act
-        final json = favoriteQaWithNulls.toJson();
+        final json = noPetFavoriteQa.toJson();
 
         // Assert
-        expect(json['tags'], isNull);
-        expect(json['sharedAt'], isNull);
-        expect(json['sharedWith'], isNull);
-        expect(json['metadata'], isNull);
+        expect(json['petId'], isNull);
+        expect(json['petName'], isNull);
       });
     });
 
     group('fromJson', () {
-      test('should create from JSON with all fields', () {
+      test('should create entity from JSON without pet', () {
         // Arrange
         final json = {
-          'id': 'json-favorite',
+          'id': 'fav-qa-2',
           'question': 'JSON質問',
           'answer': 'JSON回答',
-          'category': 'json-category',
-          'petId': 'json-pet',
-          'petName': 'JSONペット',
-          'createdAt': '2024-01-01T10:00:00.000',
-          'updatedAt': '2024-01-02T10:00:00.000',
-          'tags': ['JSON', 'タグ'],
-          'isShared': true,
-          'sharedAt': '2024-01-01T14:00:00.000',
-          'sharedWith': ['json-user'],
-          'metadata': {'json': 'data'},
+          'categoryId': 'nutrition',
+          'categoryName': '栄養管理',
+          'createdAt': testDateTime.toIso8601String(),
+          'originalTimestamp': testOriginalTimestamp.toIso8601String(),
         };
 
         // Act
         final favoriteQa = AiFavoriteQaEntity.fromJson(json);
 
         // Assert
-        expect(favoriteQa.id, equals('json-favorite'));
+        expect(favoriteQa.id, equals('fav-qa-2'));
         expect(favoriteQa.question, equals('JSON質問'));
         expect(favoriteQa.answer, equals('JSON回答'));
-        expect(favoriteQa.category, equals('json-category'));
-        expect(favoriteQa.petId, equals('json-pet'));
-        expect(favoriteQa.petName, equals('JSONペット'));
-        expect(favoriteQa.createdAt, equals(DateTime(2024, 1, 1, 10, 0, 0)));
-        expect(favoriteQa.updatedAt, equals(DateTime(2024, 1, 2, 10, 0, 0)));
-        expect(favoriteQa.tags, equals(['JSON', 'タグ']));
-        expect(favoriteQa.isShared, isTrue);
-        expect(favoriteQa.sharedAt, equals(DateTime(2024, 1, 1, 14, 0, 0)));
-        expect(favoriteQa.sharedWith, equals(['json-user']));
-        expect(favoriteQa.metadata, equals({'json': 'data'}));
-      });
-
-      test('should create from JSON with null fields', () {
-        // Arrange
-        final json = {
-          'id': 'null-favorite',
-          'question': 'Null質問',
-          'answer': 'Null回答',
-          'category': 'null-category',
-          'petId': 'null-pet',
-          'petName': 'Nullペット',
-          'createdAt': '2024-01-01T10:00:00.000',
-          'updatedAt': '2024-01-02T10:00:00.000',
-          'tags': null,
-          'isShared': false,
-          'sharedAt': null,
-          'sharedWith': null,
-          'metadata': null,
-        };
-
-        // Act
-        final favoriteQa = AiFavoriteQaEntity.fromJson(json);
-
-        // Assert
-        expect(favoriteQa.tags, isNull);
-        expect(favoriteQa.isShared, isFalse);
-        expect(favoriteQa.sharedAt, isNull);
-        expect(favoriteQa.sharedWith, isNull);
-        expect(favoriteQa.metadata, isNull);
-      });
-    });
-
-    group('utility getters', () {
-      test('petGroupKey should return correct key', () {
-        // Act
-        final groupKey = testFavoriteQa.petGroupKey;
-
-        // Assert
-        expect(groupKey, equals('pet-123'));
-      });
-
-      test('petDisplayName should return pet name or default', () {
-        // Act
-        final displayName = testFavoriteQa.petDisplayName;
-
-        // Assert
-        expect(displayName, equals('テストペット'));
-      });
-
-      test('petDisplayName should return default when petName is null', () {
-        // Arrange
-        final favoriteQaWithoutPetName = testFavoriteQa.copyWith(petName: null);
-
-        // Act
-        final displayName = favoriteQaWithoutPetName.petDisplayName;
-
-        // Assert
-        expect(displayName, equals('ペット'));
-      });
-
-      test('hasTags should return true when tags exist', () {
-        // Assert
-        expect(testFavoriteQa.hasTags, isTrue);
-      });
-
-      test('hasTags should return false when no tags', () {
-        // Arrange
-        final favoriteQaWithoutTags = testFavoriteQa.copyWith(tags: null);
-
-        // Act
-        final hasTags = favoriteQaWithoutTags.hasTags;
-
-        // Assert
-        expect(hasTags, isFalse);
-      });
-
-      test('hasTags should return false when empty tags', () {
-        // Arrange
-        final favoriteQaWithEmptyTags = testFavoriteQa.copyWith(tags: []);
-
-        // Act
-        final hasTags = favoriteQaWithEmptyTags.hasTags;
-
-        // Assert
-        expect(hasTags, isFalse);
-      });
-
-      test('isRecentlyCreated should return true for recent creation', () {
-        // Arrange
-        final recentFavoriteQa = testFavoriteQa.copyWith(
-          createdAt: DateTime.now().subtract(const Duration(hours: 1)),
-        );
-
-        // Act
-        final isRecent = recentFavoriteQa.isRecentlyCreated;
-
-        // Assert
-        expect(isRecent, isTrue);
-      });
-
-      test('isRecentlyCreated should return false for old creation', () {
-        // Arrange
-        final oldFavoriteQa = testFavoriteQa.copyWith(
-          createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        );
-
-        // Act
-        final isRecent = oldFavoriteQa.isRecentlyCreated;
-
-        // Assert
-        expect(isRecent, isFalse);
-      });
-
-      test('isRecentlyUpdated should return true for recent update', () {
-        // Arrange
-        final recentlyUpdatedFavoriteQa = testFavoriteQa.copyWith(
-          updatedAt: DateTime.now().subtract(const Duration(hours: 1)),
-        );
-
-        // Act
-        final isRecent = recentlyUpdatedFavoriteQa.isRecentlyUpdated;
-
-        // Assert
-        expect(isRecent, isTrue);
-      });
-
-      test('isRecentlyUpdated should return false for old update', () {
-        // Arrange
-        final oldUpdatedFavoriteQa = testFavoriteQa.copyWith(
-          updatedAt: DateTime.now().subtract(const Duration(days: 30)),
-        );
-
-        // Act
-        final isRecent = oldUpdatedFavoriteQa.isRecentlyUpdated;
-
-        // Assert
-        expect(isRecent, isFalse);
-      });
-    });
-
-    group('edge cases', () {
-      test('should handle empty question and answer', () {
-        // Act
-        final emptyFavoriteQa = testFavoriteQa.copyWith(
-          question: '',
-          answer: '',
-        );
-
-        // Assert
-        expect(emptyFavoriteQa.question, equals(''));
-        expect(emptyFavoriteQa.answer, equals(''));
-      });
-
-      test('should handle very long question and answer', () {
-        // Arrange
-        final longText = 'A' * 1000;
-
-        // Act
-        final longFavoriteQa = testFavoriteQa.copyWith(
-          question: longText,
-          answer: longText,
-        );
-
-        // Assert
-        expect(longFavoriteQa.question, equals(longText));
-        expect(longFavoriteQa.answer, equals(longText));
-        expect(longFavoriteQa.question.length, equals(1000));
-        expect(longFavoriteQa.answer.length, equals(1000));
-      });
-
-      test('should handle special characters in text fields', () {
-        // Arrange
-        const specialText = 'スペシャル文字: !@#\$%^&*()🎉🚀';
-
-        // Act
-        final specialFavoriteQa = testFavoriteQa.copyWith(
-          question: specialText,
-          answer: specialText,
-        );
-
-        // Assert
-        expect(specialFavoriteQa.question, equals(specialText));
-        expect(specialFavoriteQa.answer, equals(specialText));
-      });
-
-      test('should handle many tags', () {
-        // Arrange
-        final manyTags = List.generate(50, (index) => 'tag$index');
-
-        // Act
-        final manyTagsFavoriteQa = testFavoriteQa.copyWith(tags: manyTags);
-
-        // Assert
-        expect(manyTagsFavoriteQa.tags, hasLength(50));
-        expect(manyTagsFavoriteQa.tags!.first, equals('tag0'));
-        expect(manyTagsFavoriteQa.tags!.last, equals('tag49'));
-      });
-
-      test('should handle many shared users', () {
-        // Arrange
-        final manyUsers = List.generate(100, (index) => 'user$index');
-
-        // Act
-        final manyUsersFavoriteQa = testFavoriteQa.copyWith(
-          sharedWith: manyUsers,
-        );
-
-        // Assert
-        expect(manyUsersFavoriteQa.sharedWith, hasLength(100));
-        expect(manyUsersFavoriteQa.sharedWith!.first, equals('user0'));
-        expect(manyUsersFavoriteQa.sharedWith!.last, equals('user99'));
-      });
-
-      test('should handle complex metadata', () {
-        // Arrange
-        final complexMetadata = {
-          'nested': {'key': 'value'},
-          'list': [1, 2, 3],
-          'boolean': true,
-          'number': 42.5,
-          'nullValue': null,
-        };
-
-        // Act
-        final complexFavoriteQa = testFavoriteQa.copyWith(
-          metadata: complexMetadata,
-        );
-
-        // Assert
-        expect(complexFavoriteQa.metadata, equals(complexMetadata));
+        expect(favoriteQa.pet, isNull);
+        expect(favoriteQa.categoryId, equals('nutrition'));
+        expect(favoriteQa.categoryName, equals('栄養管理'));
+        expect(favoriteQa.createdAt, equals(testDateTime));
+        expect(favoriteQa.originalTimestamp, equals(testOriginalTimestamp));
       });
     });
 
     group('equality and hashCode', () {
-      test('should be equal when all properties are same', () {
+      test('should be equal when ids are same', () {
         // Arrange
         final sameFavoriteQa = AiFavoriteQaEntity(
-          id: 'favorite-1',
-          question: 'ペットの健康管理について教えて',
-          answer: 'ペットの健康管理は定期的な健康診断と適切な食事が重要です。',
-          category: 'health',
-          petId: 'pet-123',
-          petName: 'テストペット',
-          createdAt: DateTime(2024, 1, 1, 12, 0, 0),
-          updatedAt: DateTime(2024, 1, 2, 12, 0, 0),
-          tags: ['健康', '管理', 'アドバイス'],
-          isShared: true,
-          sharedAt: DateTime(2024, 1, 1, 15, 0, 0),
-          sharedWith: ['user-1', 'user-2'],
-          metadata: {'source': 'ai_chat', 'confidence': 0.95},
+          id: 'fav-qa-1', // same id
+          question: '異なる質問',
+          answer: '異なる回答',
+          createdAt: DateTime(2023, 1, 1),
+          originalTimestamp: DateTime(2023, 1, 1),
         );
 
         // Assert
@@ -490,18 +239,13 @@ void main() {
         expect(testFavoriteQa.hashCode, equals(sameFavoriteQa.hashCode));
       });
 
-      test('should not be equal when properties differ', () {
+      test('should not be equal when ids are different', () {
         // Arrange
-        final differentFavoriteQa = testFavoriteQa.copyWith(
-          question: 'Different Question',
-        );
+        final differentFavoriteQa = testFavoriteQa.copyWith(id: 'different-id');
 
         // Assert
         expect(testFavoriteQa, isNot(equals(differentFavoriteQa)));
-        expect(
-          testFavoriteQa.hashCode,
-          isNot(equals(differentFavoriteQa.hashCode)),
-        );
+        expect(testFavoriteQa.hashCode, isNot(equals(differentFavoriteQa.hashCode)));
       });
     });
 
@@ -512,8 +256,23 @@ void main() {
 
         // Assert
         expect(stringRepresentation, contains('AiFavoriteQaEntity'));
-        expect(stringRepresentation, contains('favorite-1'));
-        expect(stringRepresentation, contains('ペットの健康管理について教えて'));
+        expect(stringRepresentation, contains('fav-qa-1'));
+        expect(stringRepresentation, contains('犬の健康について教えて'));
+        expect(stringRepresentation, contains('テストペット'));
+      });
+
+      test('should handle long questions in toString', () {
+        // Arrange
+        const longQuestion = 'とても長い質問で20文字を超える内容を含んでいます。これはどのように表示されるでしょうか？';
+        final longQuestionFavoriteQa = testFavoriteQa.copyWith(question: longQuestion);
+
+        // Act
+        final stringRepresentation = longQuestionFavoriteQa.toString();
+
+        // Assert
+        expect(stringRepresentation, contains('AiFavoriteQaEntity'));
+        expect(stringRepresentation, contains('とても長い質問で20文字を超える内容を含んでい'));
+        expect(stringRepresentation, contains('...'));
       });
     });
   });

@@ -1,8 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
 import 'package:aipet_frontend/features/home/domain/entities/pet_summary_entity.dart';
 import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AppointmentSummary', () {
@@ -94,9 +93,9 @@ void main() {
     late List<HealthAlert> testAlerts;
 
     setUp(() {
-      testAlerts = [
-        const HealthAlert(petName: 'ペット1', message: '健康診断が必要です'),
-        const HealthAlert(petName: 'ペット2', message: 'ワクチン接種が必要です'),
+      testAlerts = const [
+        HealthAlert(petName: 'ペット1', message: '健康診断が必要です'),
+        HealthAlert(petName: 'ペット2', message: 'ワクチン接種が必要です'),
       ];
 
       testHealthSummary = HealthSummary(
@@ -110,7 +109,7 @@ void main() {
     group('constructor', () {
       test('should create health summary with all parameters', () {
         // Act
-        final healthSummary = HealthSummary(
+        const healthSummary = HealthSummary(
           totalPets: 10,
           healthyPets: 8,
           petsNeedingAttention: 2,
@@ -128,7 +127,7 @@ void main() {
     group('edge cases', () {
       test('should handle zero pets', () {
         // Act
-        final healthSummary = HealthSummary(
+        const healthSummary = HealthSummary(
           totalPets: 0,
           healthyPets: 0,
           petsNeedingAttention: 0,
@@ -168,10 +167,10 @@ void main() {
     late WalkSummary testWalkSummary;
 
     setUp(() {
-      testWalkSummary = WalkSummary(
+      testWalkSummary = const WalkSummary(
         todayWalks: 3,
         todayDistance: 2.5,
-        todayDuration: const Duration(hours: 1, minutes: 30),
+        todayDuration: Duration(hours: 1, minutes: 30),
         weeklyGoal: 20.0,
         weeklyProgress: 15.0,
       );
@@ -180,10 +179,10 @@ void main() {
     group('constructor', () {
       test('should create walk summary with all parameters', () {
         // Act
-        final walkSummary = WalkSummary(
+        const walkSummary = WalkSummary(
           todayWalks: 5,
           todayDistance: 3.0,
-          todayDuration: const Duration(hours: 2),
+          todayDuration: Duration(hours: 2),
           weeklyGoal: 25.0,
           weeklyProgress: 20.0,
         );
@@ -200,7 +199,7 @@ void main() {
     group('edge cases', () {
       test('should handle zero walks', () {
         // Act
-        final walkSummary = WalkSummary(
+        const walkSummary = WalkSummary(
           todayWalks: 0,
           todayDistance: 0.0,
           todayDuration: Duration.zero,
@@ -216,10 +215,10 @@ void main() {
 
       test('should handle very long duration', () {
         // Act
-        final walkSummary = WalkSummary(
+        const walkSummary = WalkSummary(
           todayWalks: 1,
           todayDistance: 10.0,
-          todayDuration: const Duration(hours: 8),
+          todayDuration: Duration(hours: 8),
           weeklyGoal: 50.0,
           weeklyProgress: 10.0,
         );
@@ -231,10 +230,10 @@ void main() {
 
       test('should handle negative values', () {
         // Act
-        final walkSummary = WalkSummary(
+        const walkSummary = WalkSummary(
           todayWalks: -1,
           todayDistance: -1.0,
-          todayDuration: const Duration(hours: -1),
+          todayDuration: Duration(hours: -1),
           weeklyGoal: -10.0,
           weeklyProgress: -5.0,
         );
@@ -257,7 +256,7 @@ void main() {
     late WalkSummary testWalkSummary;
 
     setUp(() {
-      testWeather = WeatherEntity(
+      testWeather = const WeatherEntity(
         temperature: 25.0,
         location: '東京',
         weatherId: 800,
@@ -304,17 +303,17 @@ void main() {
         ),
       ];
 
-      testHealthSummary = HealthSummary(
+      testHealthSummary = const HealthSummary(
         totalPets: 2,
         healthyPets: 1,
         petsNeedingAttention: 1,
-        alerts: [const HealthAlert(petName: 'テストペット1', message: 'ワクチン接種が必要です')],
+        alerts: [HealthAlert(petName: 'テストペット1', message: 'ワクチン接種が必要です')],
       );
 
-      testWalkSummary = WalkSummary(
+      testWalkSummary = const WalkSummary(
         todayWalks: 2,
         todayDistance: 1.5,
-        todayDuration: const Duration(minutes: 45),
+        todayDuration: Duration(minutes: 45),
         weeklyGoal: 10.0,
         weeklyProgress: 6.0,
       );
@@ -359,13 +358,13 @@ void main() {
           weather: testWeather,
           petProfiles: [],
           upcomingAppointments: [],
-          petHealthSummary: HealthSummary(
+          petHealthSummary: const HealthSummary(
             totalPets: 0,
             healthyPets: 0,
             petsNeedingAttention: 0,
             alerts: [],
           ),
-          walkSummary: WalkSummary(
+          walkSummary: const WalkSummary(
             todayWalks: 0,
             todayDistance: 0.0,
             todayDuration: Duration.zero,
