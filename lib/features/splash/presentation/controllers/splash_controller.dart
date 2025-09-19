@@ -24,7 +24,10 @@ class SplashController extends BaseController {
       return result;
     } catch (error) {
       handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
+      return failure(
+        'ルート決定に失敗しました',
+        error is Exception ? error : Exception(error.toString()),
+      );
     }
   }
 
@@ -35,7 +38,10 @@ class SplashController extends BaseController {
       return result;
     } catch (error) {
       handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
+      return failure(
+        '設定読み込みに失敗しました',
+        error is Exception ? error : Exception(error.toString()),
+      );
     }
   }
 }

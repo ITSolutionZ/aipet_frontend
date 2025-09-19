@@ -20,7 +20,6 @@ class PetRegistrationConverter {
       type: data.selectedPetType!,
       breed: _getBreedString(data),
       birthDate: birthDate,
-      age: _calculateAge(birthDate),
       gender: data.petGender ?? 'unknown',
       weight: data.petWeight ?? 0.0,
       imagePath: _getImagePath(data),
@@ -162,16 +161,5 @@ class PetRegistrationConverter {
     }
 
     return additionalInfo;
-  }
-
-  /// 생년월일로부터 나이 계산
-  static int _calculateAge(DateTime birthDate) {
-    final now = DateTime.now();
-    int age = now.year - birthDate.year;
-    if (now.month < birthDate.month ||
-        (now.month == birthDate.month && now.day < birthDate.day)) {
-      age--;
-    }
-    return age;
   }
 }

@@ -29,15 +29,15 @@ class PetValidationUtils {
 
   /// 펫 이름 유효성 검증 (shared 유틸리티 사용)
   static bool isValidPetName(String? name) =>
-      ValidationUtilsEnhanced.isValidPetName(name);
+      ValidationUtils.isValidPetName(name);
 
   /// 체중 유효성 검증 (shared 유틸리티 사용)
   static bool isValidWeight(double? weight) =>
-      ValidationUtilsEnhanced.isValidWeight(weight);
+      ValidationUtils.isValidWeight(weight);
 
   /// 마이크로칩 번호 유효성 검증 (shared 유틸리티 사용)
   static bool isValidMicrochipNumber(String? number) =>
-      ValidationUtilsEnhanced.isValidMicrochipNumber(number);
+      ValidationUtils.isValidMicrochipNumber(number);
 }
 
 /// PetValidationService의 기본 구현체
@@ -118,16 +118,16 @@ class PetValidationServiceImpl implements PetValidationService {
 
   @override
   bool isValidPetName(String? name) {
-    return ValidationUtilsEnhanced.isValidPetName(name);
+    return ValidationUtils.isValidPetName(name);
   }
 
   @override
   bool isValidWeight(double? weight) {
-    return ValidationUtilsEnhanced.isValidWeight(weight);
+    return ValidationUtils.isValidWeight(weight);
   }
 
   @override
   bool isValidMicrochipNumber(String? number) {
-    return ValidationUtilsEnhanced.isValidMicrochipNumber(number);
+    return ValidationUtils.isValidMicrochipNumber(number);
   }
 }

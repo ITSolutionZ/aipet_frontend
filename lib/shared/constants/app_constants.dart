@@ -169,4 +169,82 @@ class AppConstants {
   /// 로딩 표시 지연
   static const Duration loadingDebounce = Duration(milliseconds: 300);
   static const Duration minimumLoadingDuration = Duration(milliseconds: 500);
+
+  // ========== 온보딩 관련 상수 ==========
+
+  /// 페이지 전환 애니메이션
+  static const Duration pageTransitionDuration = Duration(milliseconds: 300);
+  static const Curve pageTransitionCurve = Curves.easeInOut;
+
+  /// 버튼 투명도
+  static const double skipButtonOpacity = 0.3;
+  static const double buttonBackgroundOpacity = 0.8;
+
+  /// 로고 크기
+  static const double logoWidth = 100.0;
+  static const double logoHeight = 70.0;
+
+  /// 아이콘 크기
+  static const double pageIndicatorIconSize = 20.0;
+  static const double nextButtonIconSize = 20.0;
+
+  /// 텍스트 설정
+  static const double descriptionLineHeight = 1.4;
+  static const int descriptionMaxLines = 4;
+
+  /// 그림자 설정
+  static const double bottomSheetShadowOpacity = 0.1;
+  static const double bottomSheetShadowBlurRadius = 10.0;
+  static const Offset bottomSheetShadowOffset = Offset(0, -2);
+
+  /// Fallback 설정
+  static const double fallbackBackgroundOpacity = 0.1;
+  static const double fallbackIconOpacity = 0.3;
+
+  // ========== 스플래시 관련 상수 ==========
+
+  /// 스플래시 타이밍
+  static const Duration splashLogoDisplayDuration = Duration(seconds: 2);
+  static const Duration splashAnimationDuration = Duration(milliseconds: 2000);
+  static const Duration splashFadeAnimationDuration = Duration(
+    milliseconds: 1000,
+  );
+  static const Duration splashScaleAnimationDuration = Duration(
+    milliseconds: 1000,
+  );
+
+  /// 스플래시 이미지 경로
+  static const String splashCompanyLogoPath = 'assets/icons/itz.png';
+  static const String splashAppLogoPath = 'assets/icons/aipet_logo.png';
+  static const String splashLoadingLottiePath = 'assets/lottie/loading.json';
+
+  /// 스플래시 크기
+  static const double splashAppLogoSize = 300.0;
+  static const double splashCompanyLogoWidth = 80.0;
+  static const double splashCompanyLogoHeight = 50.0;
+  static const double splashLoadingLottieSize = 200.0;
+
+  /// 스플래시 애니메이션
+  static const double splashFadeStart = 0.0;
+  static const double splashFadeEnd = 1.0;
+  static const double splashScaleStart = 0.5;
+  static const double splashScaleEnd = 1.0;
+  static const double splashLogoRadius = 20.0;
+
+  /// 스플래시 애니메이션 인터벌
+  static const Interval splashFadeInterval = Interval(
+    0.0,
+    0.33,
+    curve: Curves.easeIn,
+  );
+  static const Interval splashScaleInterval = Interval(
+    0.0,
+    0.33,
+    curve: Curves.elasticOut,
+  );
+
+  /// 스플래시 색상 투명도
+  static const int splashGradientAlpha1 = 23;
+  static const int splashGradientAlpha2 = 10;
+  static const int splashBorderAlpha = 22;
 }

@@ -1,3 +1,4 @@
+import '../../../../shared/domain/result.dart';
 import '../entities/schedule_entity.dart';
 import '../repositories/schedule_repository.dart';
 
@@ -7,14 +8,19 @@ class CreateScheduleUseCase {
 
   CreateScheduleUseCase(this.repository);
 
-  Future<ScheduleEntity> call(ScheduleEntity schedule) async {
-    // 스케줄 충돌 확인
-    final hasConflict = await repository.hasScheduleConflict(schedule);
-    if (hasConflict) {
-      throw Exception('スケジュールの時間が重複しています。');
-    }
+  Future<Result<ScheduleEntity>> call(ScheduleEntity schedule) async {
+    try {
+      // 스케줄 충돌 확인
+      final hasConflict = await repository.hasScheduleConflict(schedule);
+      if (hasConflict) {
+        return Result.failure('スケジュールの時間が重複しています。');
+      }
 
-    return repository.createSchedule(schedule);
+      final createdSchedule = await repository.createSchedule(schedule);
+      return Result.success('스케줄이 생성되었습니다', createdSchedule);
+    } catch (error) {
+      return Result.failure('스케줄 생성 실패: $error');
+    }
   }
 }
 
@@ -24,14 +30,19 @@ class UpdateScheduleUseCase {
 
   UpdateScheduleUseCase(this.repository);
 
-  Future<ScheduleEntity> call(ScheduleEntity schedule) async {
-    // 스케줄 충돌 확인 (자신 제외)
-    final hasConflict = await repository.hasScheduleConflict(schedule);
-    if (hasConflict) {
-      throw Exception('スケジュールの時間が重複しています。');
-    }
+  Future<Result<ScheduleEntity>> call(ScheduleEntity schedule) async {
+    try {
+      // 스케줄 충돌 확인 (자신 제외)
+      final hasConflict = await repository.hasScheduleConflict(schedule);
+      if (hasConflict) {
+        return Result.failure('スケジュールの時間が重複しています。');
+      }
 
-    return repository.updateSchedule(schedule);
+      final updatedSchedule = await repository.updateSchedule(schedule);
+      return Result.success('스케줄이 업데이트되었습니다', updatedSchedule);
+    } catch (error) {
+      return Result.failure('스케줄 업데이트 실패: $error');
+    }
   }
 }
 

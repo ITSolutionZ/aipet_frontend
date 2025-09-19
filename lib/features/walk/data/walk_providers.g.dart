@@ -6,6 +6,50 @@ part of 'walk_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$walkRepositoryHash() => r'23150736b318e48e42c1292230e1d72c61f0b043';
+
+/// WalkRepository 프로바이더 (Mockito 버전)
+///
+/// Google Maps API는 실제 사용하되, 나머지 로직은 Mockito를 통해 테스트 가능
+///
+/// Copied from [walkRepository].
+@ProviderFor(walkRepository)
+final walkRepositoryProvider = AutoDisposeProvider<WalkRepository>.internal(
+  walkRepository,
+  name: r'walkRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$walkRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef WalkRepositoryRef = AutoDisposeProviderRef<WalkRepository>;
+String _$legacyWalkRepositoryHash() =>
+    r'dddc96496f1c1fc9f3cdfdc55af6dd5647e371a3';
+
+/// Legacy WalkRepository 프로바이더 (기존 구현체)
+///
+/// 필요시 기존 구현체로 되돌릴 수 있도록 유지
+///
+/// Copied from [legacyWalkRepository].
+@ProviderFor(legacyWalkRepository)
+final legacyWalkRepositoryProvider =
+    AutoDisposeProvider<WalkRepository>.internal(
+      legacyWalkRepository,
+      name: r'legacyWalkRepositoryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$legacyWalkRepositoryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef LegacyWalkRepositoryRef = AutoDisposeProviderRef<WalkRepository>;
 String _$walkRecordsNotifierHash() =>
     r'a2fb2196272bf426dc82877cc39119c3894b8324';
 

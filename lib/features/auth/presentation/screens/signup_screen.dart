@@ -6,11 +6,8 @@ import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../../data/auth_providers.dart';
 import '../controllers/auth_controller.dart';
-import '../widgets/auth_button.dart';
 import '../widgets/auth_divider.dart';
-import '../widgets/auth_input_field.dart';
 import '../widgets/auth_logo.dart';
-import '../widgets/auth_password_field.dart';
 import '../widgets/error_message.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
@@ -92,89 +89,81 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const SizedBox(height: AppSpacing.xl),
 
                 // 이메일 입력 필드
-                AuthInputField(
+                CommonInputField(
                   label: 'メールアドレス ※必須',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   prefixIcon: Icons.email_outlined,
-                  labelColor: AppColors.pointBrown,
+                  required: true,
                   onChanged: _authController.updateEmail,
                   validator: (value) {
-                    // 개발 모드에서는 유효성 검사 생략 (빈 값만 체크)
-                    if (value == null || value.isEmpty) {
-                      return 'メールアドレスを入力してください';
-                    }
-                    return null;
+                    // 공통 ValidationService 사용
+                    final result = ValidationService.validateEmail(value ?? '');
+                    return result.isSuccess ? null : result.message;
                   },
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
 
                 // 패스워드 입력 필드
-                AuthPasswordField(
+                CommonInputField(
                   label: 'パスワード ※必須',
                   controller: _passwordController,
-                  isVisible: authState.isPasswordVisible,
-                  labelColor: AppColors.pointBrown,
-                  onToggleVisibility: _authController.togglePasswordVisibility,
+                  obscureText: !authState.isPasswordVisible,
+                  prefixIcon: Icons.lock_outline,
+                  suffixIcon: authState.isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  onSuffixIconTap: _authController.togglePasswordVisibility,
+                  required: true,
                   onChanged: (value) {
                     // 패스워드는 AuthFormState에 저장하지 않음 (보안상 이유)
                     // UI에서만 사용하고 검증 후 즉시 메모리에서 제거
                   },
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'パスワードを入力してください';
-                    }
-
-                    // 개발 모드에서는 유효성 검사 생략
-
-                    return null;
+                    // 공통 ValidationService 사용
+                    final result = ValidationService.validatePassword(value ?? '');
+                    return result.isSuccess ? null : result.message;
                   },
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
 
                 // 패스워드 재입력 필드
-                AuthPasswordField(
+                CommonInputField(
                   label: 'パスワード再入力 ※必須',
                   controller: _confirmPasswordController,
-                  isVisible: authState.isConfirmPasswordVisible,
-                  labelColor: AppColors.pointBrown,
-                  onToggleVisibility:
-                      _authController.toggleConfirmPasswordVisibility,
+                  obscureText: !authState.isConfirmPasswordVisible,
+                  prefixIcon: Icons.lock_outline,
+                  suffixIcon: authState.isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  onSuffixIconTap: _authController.toggleConfirmPasswordVisibility,
+                  required: true,
                   onChanged: (value) {
                     // 패스워드는 AuthFormState에 저장하지 않음 (보안상 이유)
                     // UI에서만 사용하고 검증 후 즉시 메모리에서 제거
                   },
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'パスワードを再入力してください';
-                    }
-                    if (value != _passwordController.text) {
-                      return 'パスワードが一致しません';
-                    }
-                    return null;
+                    // 공통 ValidationService 사용
+                    final result = ValidationService.validateConfirmPassword(
+                      _passwordController.text,
+                      value ?? '',
+                    );
+                    return result.isSuccess ? null : result.message;
                   },
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
 
                 // 사용자명 입력 필드
-                AuthInputField(
+                CommonInputField(
                   label: 'ユーザ名 ※必須',
                   controller: _usernameController,
                   keyboardType: TextInputType.text,
                   prefixIcon: Icons.person_outline,
-                  labelColor: AppColors.pointBrown,
+                  required: true,
                   onChanged: _authController.updateUsername,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'ユーザ名を入力してください';
-                    }
-
-                    // 개발 모드에서는 유효성 검사 생략
-
-                    return null;
+                    // 공통 ValidationService 사용
+                    final result = ValidationService.validateUsername(value ?? '');
+                    return result.isSuccess ? null : result.message;
                   },
                 ),
 
@@ -188,10 +177,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   const SizedBox(height: AppSpacing.lg),
 
                 // 회원가입 버튼
-                AuthButton(
+                CommonButton(
                   text: 'SIGN UP',
                   isLoading: authState.isLoading,
-                  backgroundColor: AppColors.pointBrown,
+                  type: ButtonType.primary,
+                  size: ButtonSize.large,
+                  width: double.infinity,
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       // 데모 앱이므로 바로 홈으로 이동

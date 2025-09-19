@@ -1,17 +1,5 @@
+import '../../../../../app/controllers/base_controller.dart';
 import '../../../../../shared/shared.dart';
-
-class FeedingScheduleResult {
-  final bool isSuccess;
-  final String message;
-  final dynamic data;
-
-  const FeedingScheduleResult._(this.isSuccess, this.message, this.data);
-
-  factory FeedingScheduleResult.success(String message, [dynamic data]) =>
-      FeedingScheduleResult._(true, message, data);
-  factory FeedingScheduleResult.failure(String message) =>
-      FeedingScheduleResult._(false, message, null);
-}
 
 class MealStatus {
   final String meal;
@@ -57,54 +45,56 @@ class ScheduleItem {
   }
 }
 
-class FeedingScheduleController {
-  FeedingScheduleController();
+class FeedingScheduleController extends BaseController {
+  FeedingScheduleController(super.ref);
 
   /// 펫 정보 로드
-  Future<FeedingScheduleResult> loadPetInfo(String petId) async {
-    try {
-      final pet = MockDataService.getMockPetById(petId);
-      if (pet == null) {
-        return FeedingScheduleResult.failure('펫 정보를 찾을 수 없습니다');
-      }
-      return FeedingScheduleResult.success('펫 정보가 로드되었습니다', pet);
-    } catch (error) {
-      return FeedingScheduleResult.failure('펫 정보 로드 실패: $error');
-    }
+  Future<Result<Map<String, dynamic>>> loadPetInfo(String petId) async {
+    return wrapAsync(
+      () async {
+        final pet = MockDataService.getMockPetById(petId);
+        if (pet == null) {
+          throw Exception('펫 정보를 찾을 수 없습니다');
+        }
+        return pet;
+      },
+      successMessage: '펫 정보가 로드되었습니다',
+      failureMessage: '펫 정보 로드 실패',
+    );
   }
 
   /// 오늘의 급여 상태 로드
-  Future<FeedingScheduleResult> loadTodayMealStatus() async {
-    try {
-      // Mock data for today's meal status
-      final now = DateTime.now();
+  Future<Result<List<MealStatus>>> loadTodayMealStatus() async {
+    return wrapAsync(
+      () async {
+        // Mock data for today's meal status
+        final now = DateTime.now();
 
-      final mealStatuses = [
-        MealStatus(
-          meal: '朝',
-          time: '08:00',
-          isCompleted: now.hour > 8 || (now.hour == 8 && now.minute > 30),
-        ),
-        MealStatus(
-          meal: '昼',
-          time: '12:00',
-          isCompleted: now.hour > 12 || (now.hour == 12 && now.minute > 30),
-        ),
-        MealStatus(
-          meal: '夜',
-          time: '18:00',
-          isCompleted: now.hour > 18 || (now.hour == 18 && now.minute > 30),
-        ),
-      ];
-
-      return FeedingScheduleResult.success('급여 상태가 로드되었습니다', mealStatuses);
-    } catch (error) {
-      return FeedingScheduleResult.failure('급여 상태 로드 실패: $error');
-    }
+        return [
+          MealStatus(
+            meal: '朝',
+            time: '08:00',
+            isCompleted: now.hour > 8 || (now.hour == 8 && now.minute > 30),
+          ),
+          MealStatus(
+            meal: '昼',
+            time: '12:00',
+            isCompleted: now.hour > 12 || (now.hour == 12 && now.minute > 30),
+          ),
+          MealStatus(
+            meal: '夜',
+            time: '18:00',
+            isCompleted: now.hour > 18 || (now.hour == 18 && now.minute > 30),
+          ),
+        ];
+      },
+      successMessage: '급여 상태가 로드되었습니다',
+      failureMessage: '급여 상태 로드 실패',
+    );
   }
 
   /// 스케줄 설정 로드
-  Future<FeedingScheduleResult> loadScheduleSettings(String petId) async {
+  Future<Result<List<ScheduleItem>>> loadScheduleSettings(String petId) async {
     try {
       // Mock data for schedule settings
       final scheduleItems = [
@@ -131,25 +121,25 @@ class FeedingScheduleController {
         ),
       ];
 
-      return FeedingScheduleResult.success('스케줄 설정이 로드되었습니다', scheduleItems);
+      return Result.success('스케줄 설정이 로드되었습니다', scheduleItems);
     } catch (error) {
-      return FeedingScheduleResult.failure('스케줄 설정 로드 실패: $error');
+      return Result.failure('스케줄 설정 로드 실패: $error');
     }
   }
 
   /// 스케줄 항목 업데이트
-  Future<FeedingScheduleResult> updateScheduleItem(ScheduleItem item) async {
+  Future<Result<ScheduleItem>> updateScheduleItem(ScheduleItem item) async {
     try {
       // Mock update logic - 실제로는 repository를 통해 저장
       await Future.delayed(const Duration(milliseconds: 500));
-      return FeedingScheduleResult.success('스케줄이 업데이트되었습니다', item);
+      return Result.success('스케줄이 업데이트되었습니다', item);
     } catch (error) {
-      return FeedingScheduleResult.failure('스케줄 업데이트 실패: $error');
+      return Result.failure('스케줄 업데이트 실패: $error');
     }
   }
 
   /// 급여 기록 추가
-  Future<FeedingScheduleResult> addFeedingRecord({
+  Future<Result<Map<String, dynamic>>> addFeedingRecord({
     required String petId,
     required String meal,
     required String amount,
@@ -166,9 +156,9 @@ class FeedingScheduleController {
         'timestamp': DateTime.now(),
       };
 
-      return FeedingScheduleResult.success('급여 기록이 추가되었습니다', record);
+      return Result.success('급여 기록이 추가되었습니다', record);
     } catch (error) {
-      return FeedingScheduleResult.failure('급여 기록 추가 실패: $error');
+      return Result.failure('급여 기록 추가 실패: $error');
     }
   }
 

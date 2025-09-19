@@ -10,7 +10,7 @@ class ManageSplashSequenceUseCase {
   const ManageSplashSequenceUseCase(this.repository);
 
   /// 스플래시 시퀀스 실행 - 무조건 순차적 진행
-  /// 1단계: 초기화 (Lottie 애니메이션) → 2단계: 로딩 1.5초 → 3단계: 회사로고 2초 → 4단계: 앱로고 2초 → 5단계: 완료
+  /// 1단계: 초기화 (Lottie 애니메이션) → 2단계: 로딩 1.5초 → 3단계: 앱로고 2초 (회사로고 포함) → 4단계: 완료
   Stream<Result<SplashState>> execute() async* {
     try {
       // 1단계: 초기화 (로딩 애니메이션 준비)
@@ -28,16 +28,7 @@ class ManageSplashSequenceUseCase {
       // 로딩 애니메이션 1.5초 대기
       await Future.delayed(const Duration(milliseconds: 1500));
 
-      // 3단계: 회사 로고 표시 - 무조건 2초간 표시
-      yield Result.success(
-        'ITZ会社ロゴ表示中...',
-        SplashState.companyLogo(SplashConstants.companyLogoPath),
-      );
-
-      // 회사 로고 2초 대기 (조건 없음, 무조건 대기)
-      await Future.delayed(SplashConstants.logoDisplayDuration);
-
-      // 4단계: 앱 로고 표시 - 무조건 2초간 표시
+      // 3단계: 앱 로고 표시 - 무조건 2초간 표시 (회사 로고 포함)
       yield Result.success(
         'AI Petアプリロゴ表示中...',
         SplashState.appLogo(SplashConstants.appLogoPath),
@@ -46,7 +37,7 @@ class ManageSplashSequenceUseCase {
       // 앱 로고 2초 대기 (조건 없음, 무조건 대기)
       await Future.delayed(SplashConstants.logoDisplayDuration);
 
-      // 5단계: 완료 - 온보딩으로 이동 준비
+      // 4단계: 완료 - 온보딩으로 이동 준비
       yield Result.success(
         'スプラッシュシーケンス完了 - オンボーディングへ移動',
         SplashState.completed(),
@@ -60,14 +51,7 @@ class ManageSplashSequenceUseCase {
       );
       await Future.delayed(const Duration(milliseconds: 1500));
 
-      // 회사 로고 2초
-      yield Result.success(
-        'ITZ会社ロゴ表示中... (エラー復旧)',
-        SplashState.companyLogo(SplashConstants.companyLogoPath),
-      );
-      await Future.delayed(SplashConstants.logoDisplayDuration);
-
-      // 앱 로고 2초
+      // 앱 로고 2초 (회사 로고 포함)
       yield Result.success(
         'AI Petアプリロゴ表示中... (エラー復旧)',
         SplashState.appLogo(SplashConstants.appLogoPath),

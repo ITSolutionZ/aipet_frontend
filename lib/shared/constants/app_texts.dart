@@ -31,6 +31,51 @@ class AppTexts {
   static const String yes = 'はい';
   static const String no = 'いいえ';
 
+  // ========== 온보딩 관련 텍스트 ==========
+
+  /// 온보딩 버튼
+  static const String nextButton = '次へ';
+  static const String startButton = '始める';
+  static const String skipButton = 'Skip';
+
+  // ========== 스케줄링 관련 텍스트 ==========
+
+  /// 스케줄링 메뉴
+  static const String feedingSchedule = '食事スケジュール';
+  static const String feedingRecords = '食事記録';
+  static const String feedingAnalysis = '食事分析';
+  static const String healthManagement = '健康管理';
+  static const String training = '学習';
+  static const String watering = '給水';
+
+  /// 스케줄링 설명
+  static const String feedingScheduleDescription = 'ペットの食事時間と量を管理します';
+  static const String feedingRecordsDescription = 'これまでの食事記録を確認できます';
+  static const String feedingAnalysisDescription = '食事パターンと健康状態を分析します';
+  static const String healthManagementDescription = 'ワクチンと健康診断を管理します';
+  static const String trainingDescription = 'トレーニング';
+  static const String wateringDescription = '水分補給';
+
+  /// 급여 관련
+  static const String morningMeal = '朝食';
+  static const String lunchMeal = '昼食';
+  static const String dinnerMeal = '夕食';
+  static const String addFeedingRecord = '食事記録を追加';
+  static const String feedingRecordSaved = '食事記録を保存しました';
+  static const String feedingRecordAdded = '食事記録が追加されました';
+  static const String feedingRecordUpdated = '食事記録が更新されました';
+  static const String feedingRecordDeleted = '食事記録が削除されました';
+
+  /// 알림 관련
+  static const String alarmSettings = 'アラーム設定';
+  static const String alarmEnabled = 'アラームを有効にしました';
+  static const String alarmDisabled = 'アラームを無効にしました';
+  static const String scheduleNotification = 'スケジュール通知を受け取りますか？';
+  static const String morningMealTime = '朝食の時間です';
+  static const String morningMealOverdue = 'ペットの朝食時間が過ぎました';
+  static const String healthCheckupTime = '健康診断の時期です';
+  static const String healthCheckupOverdue = '前回の健康診断から90日が経過しました';
+
   // ========== 상태 메시지 ==========
 
   /// 로딩 상태
@@ -113,6 +158,7 @@ class AppTexts {
   /// 파일 다운로드
   static const String fileDownloadSuccess = 'ファイルがダウンロードされました';
   static const String fileDownloadFailed = 'ファイルのダウンロードに失敗しました';
+  static const String fileSizeExceeded = 'ファイルサイズが制限を超えています';
 
   // ========== 인증 관련 메시지 ==========
 

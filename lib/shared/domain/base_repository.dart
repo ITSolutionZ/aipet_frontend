@@ -1,4 +1,4 @@
-import '../utils/result_utils.dart';
+import 'result.dart';
 
 /// Repository 기본 인터페이스
 abstract class BaseRepository<T, ID> {

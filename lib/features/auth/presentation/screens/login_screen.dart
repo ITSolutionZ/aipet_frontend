@@ -6,11 +6,8 @@ import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../../data/auth_providers.dart';
 import '../controllers/auth_controller.dart';
-import '../widgets/auth_button.dart';
 import '../widgets/auth_divider.dart';
-import '../widgets/auth_input_field.dart';
 import '../widgets/auth_logo.dart';
-import '../widgets/auth_password_field.dart';
 import '../widgets/social_login_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -131,40 +128,37 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Column(
                   children: [
                     // 이메일 입력 필드
-                    AuthInputField(
+                    CommonInputField(
                       label: 'メールアドレス',
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       prefixIcon: Icons.email_outlined,
                       onChanged: _authController.updateEmail,
                       validator: (value) {
-                        // 개발 모드에서는 유효성 검사 생략 (빈 값만 체크)
-                        if (value == null || value.isEmpty) {
-                          return 'メールアドレスを入力してください';
-                        }
-                        return null;
+                        // 공통 ValidationService 사용
+                        final result = ValidationService.validateEmail(value ?? '');
+                        return result.isSuccess ? null : result.message;
                       },
                     ),
 
                     const SizedBox(height: AppSpacing.lg),
 
                     // 패스워드 입력 필드
-                    AuthPasswordField(
+                    CommonInputField(
                       label: 'パスワード',
                       controller: _passwordController,
-                      isVisible: authState.isPasswordVisible,
-                      onToggleVisibility:
-                          _authController.togglePasswordVisibility,
+                      obscureText: !authState.isPasswordVisible,
+                      prefixIcon: Icons.lock_outline,
+                      suffixIcon: authState.isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      onSuffixIconTap: _authController.togglePasswordVisibility,
                       onChanged: (value) {
                         // 패스워드는 AuthFormState에 저장하지 않음 (보안상 이유)
                         // UI에서만 사용하고 검증 후 즉시 메모리에서 제거
                       },
                       validator: (value) {
-                        // 개발 모드에서는 유효성 검사 생략 (빈 값만 체크)
-                        if (value == null || value.isEmpty) {
-                          return 'パスワードを入力してください';
-                        }
-                        return null;
+                        // 공통 ValidationService 사용
+                        final result = ValidationService.validatePassword(value ?? '');
+                        return result.isSuccess ? null : result.message;
                       },
                     ),
 
@@ -206,9 +200,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const SizedBox(height: AppSpacing.xl),
 
                     // 로그인 버튼
-                    AuthButton(
+                    CommonButton(
                       text: 'ログイン',
                       isLoading: authState.isLoading,
+                      type: ButtonType.primary,
+                      size: ButtonSize.large,
+                      width: double.infinity,
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // 데모 앱이므로 바로 홈으로 이동

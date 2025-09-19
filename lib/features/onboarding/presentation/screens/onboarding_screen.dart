@@ -98,7 +98,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       Positioned(
                         top: MediaQuery.of(context).padding.top + AppSpacing.md,
                         right: AppSpacing.md,
-                        child: OnboardingSkipButton(
+                        child: ActionButton.secondary(
+                          isEnabled: true,
+                          text: OnboardingConstants.skipButtonText,
                           onPressed: _completeOnboarding,
                         ),
                       ),

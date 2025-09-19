@@ -1,9 +1,8 @@
-import '../../../../app/controllers/base_controller.dart';
 import '../../../../shared/shared.dart';
 import '../../data/providers/usecase_providers.dart';
 import '../../domain/domain.dart';
 
-class PetCoreController extends BaseController {
+class PetCoreController extends CrudController<PetProfileEntity> {
   PetCoreController(super.ref);
 
   // UseCase 인스턴스 - Dependency Injection 사용
@@ -23,8 +22,8 @@ class PetCoreController extends BaseController {
     deletePetUseCaseProvider,
   );
 
-  /// 모든 펫 목록 가져오기
-  Future<Result<List<PetProfileEntity>>> getAllPets() async {
+  @override
+  Future<Result<List<PetProfileEntity>>> getAll() async {
     try {
       final result = await _getAllPetsUseCase.call();
       if (result.isSuccess) {
@@ -38,8 +37,8 @@ class PetCoreController extends BaseController {
     }
   }
 
-  /// ID로 펫 가져오기
-  Future<Result<PetProfileEntity>> getPetById(String id) async {
+  @override
+  Future<Result<PetProfileEntity>> getById(String id) async {
     try {
       final result = await _getPetByIdUseCase.call(id);
       if (result.isSuccess) {
@@ -56,8 +55,8 @@ class PetCoreController extends BaseController {
     }
   }
 
-  /// 펫 생성
-  Future<Result<PetProfileEntity>> createPet(PetProfileEntity pet) async {
+  @override
+  Future<Result<PetProfileEntity>> create(PetProfileEntity pet) async {
     try {
       final result = await _createPetUseCase.call(pet);
       if (result.isSuccess) {
@@ -71,8 +70,8 @@ class PetCoreController extends BaseController {
     }
   }
 
-  /// 펫 업데이트
-  Future<Result<PetProfileEntity>> updatePet(PetProfileEntity pet) async {
+  @override
+  Future<Result<PetProfileEntity>> update(PetProfileEntity pet) async {
     try {
       final result = await _updatePetUseCase.call(pet);
       if (result.isSuccess) {
@@ -86,8 +85,8 @@ class PetCoreController extends BaseController {
     }
   }
 
-  /// 펫 삭제
-  Future<Result<void>> deletePet(String id) async {
+  @override
+  Future<Result<void>> delete(String id) async {
     try {
       final result = await _deletePetUseCase.call(id);
       if (result.isSuccess) {

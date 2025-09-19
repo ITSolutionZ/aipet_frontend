@@ -4,12 +4,23 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../domain/entities/pet_profile_entity.dart';
 import '../../domain/repositories/pet_repository.dart';
 import '../repositories/pet_repository_impl.dart';
+import '../repositories/pet_repository_mockito_impl.dart';
 
 part 'pet_providers.g.dart';
 
-/// PetRepository 프로바이더
+/// PetRepository 프로바이더 (Mockito 버전)
+///
+/// Mockito를 사용하여 테스트 가능성을 높입니다.
 @riverpod
 PetRepository petRepository(Ref ref) {
+  return PetRepositoryMockitoImpl();
+}
+
+/// Legacy PetRepository 프로바이더 (기존 구현체)
+///
+/// 필요시 기존 구현체로 되돌릴 수 있도록 유지
+@riverpod
+PetRepository legacyPetRepository(Ref ref) {
   return PetRepositoryImpl();
 }
 

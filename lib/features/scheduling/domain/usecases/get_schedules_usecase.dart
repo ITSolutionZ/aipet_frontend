@@ -1,3 +1,4 @@
+import '../../../../shared/domain/result.dart';
 import '../entities/schedule_entity.dart';
 import '../repositories/schedule_repository.dart';
 
@@ -7,8 +8,13 @@ class GetAllSchedulesUseCase {
 
   GetAllSchedulesUseCase(this.repository);
 
-  Future<List<ScheduleEntity>> call() async {
-    return repository.getAllSchedules();
+  Future<Result<List<ScheduleEntity>>> call() async {
+    try {
+      final schedules = await repository.getAllSchedules();
+      return Result.success('스케줄 목록을 가져왔습니다', schedules);
+    } catch (error) {
+      return Result.failure('스케줄 목록 로드 실패: $error');
+    }
   }
 }
 
@@ -18,8 +24,13 @@ class GetSchedulesByPetIdUseCase {
 
   GetSchedulesByPetIdUseCase(this.repository);
 
-  Future<List<ScheduleEntity>> call(String petId) async {
-    return repository.getSchedulesByPetId(petId);
+  Future<Result<List<ScheduleEntity>>> call(String petId) async {
+    try {
+      final schedules = await repository.getSchedulesByPetId(petId);
+      return Result.success('펫의 스케줄을 가져왔습니다', schedules);
+    } catch (error) {
+      return Result.failure('펫의 스케줄 로드 실패: $error');
+    }
   }
 }
 

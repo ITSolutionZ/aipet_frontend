@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
+import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import '../../../../shared/shared.dart';
 import '../widgets/widgets.dart';
 
@@ -19,9 +21,9 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
   @override
   Widget build(BuildContext context) {
     final feedingRecords =
-        SchedulingMockService.getMockFeedingRecordsForRecords();
-    final statistics =
-        SchedulingMockService.getMockFeedingStatisticsForRecords();
+        SchedulingMock.SchedulingMockService.getMockFeedingRecordsForRecords();
+    final statistics = SchedulingMock
+        .SchedulingMockService.getMockFeedingStatisticsForRecords();
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,

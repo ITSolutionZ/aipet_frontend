@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../constants/app_constants.dart';
 import '../constants/app_texts.dart';
-import 'result_utils.dart';
+import '../domain/result.dart';
 
 /// API 호출 관련 공통 유틸리티
 class ApiUtils {

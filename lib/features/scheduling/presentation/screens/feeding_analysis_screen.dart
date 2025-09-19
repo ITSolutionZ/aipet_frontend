@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import '../../../../shared/shared.dart';
 
 /// 급여 분석 화면
@@ -17,13 +19,12 @@ class FeedingAnalysisScreen extends ConsumerStatefulWidget {
 class _FeedingAnalysisScreenState extends ConsumerState<FeedingAnalysisScreen> {
   @override
   Widget build(BuildContext context) {
-    final analysisData = SchedulingMockService.getMockFeedingAnalysisData();
+    final analysisData =
+        SchedulingMock.SchedulingMockService.getMockFeedingAnalysisData();
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientAppBar(
-        title: '食事管理',
-      ),
+      appBar: const SoftGradientAppBar(title: '食事管理'),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -268,7 +269,8 @@ class _FeedingAnalysisScreenState extends ConsumerState<FeedingAnalysisScreen> {
   }
 
   Widget _buildFeedingChart() {
-    final analysisData = SchedulingMockService.getMockFeedingAnalysisData();
+    final analysisData =
+        SchedulingMock.SchedulingMockService.getMockFeedingAnalysisData();
 
     // 오늘부터 1개월까지의 날짜 데이터 생성
     final now = DateTime.now();

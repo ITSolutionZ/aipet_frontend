@@ -1,4 +1,4 @@
-import '../utils/result_utils.dart';
+import 'result.dart';
 
 /// UseCase 기본 클래스 - 공통 패턴 제공
 abstract class BaseUseCase<T, P> {

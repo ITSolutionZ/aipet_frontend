@@ -1,14 +1,34 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../domain/entities/walk_location_entity.dart';
 import '../domain/entities/walk_record_entity.dart';
+import '../domain/repositories/walk_repository.dart';
 import '../domain/services/walk_tracking_optimizer.dart' as optimizer;
+import 'repositories/walk_repository_impl.dart';
+import 'repositories/walk_repository_mockito_impl.dart';
 
 part 'walk_providers.g.dart';
+
+/// WalkRepository 프로바이더 (Mockito 버전)
+///
+/// Google Maps API는 실제 사용하되, 나머지 로직은 Mockito를 통해 테스트 가능
+@riverpod
+WalkRepository walkRepository(WidgetRef ref) {
+  return WalkRepositoryMockitoImpl();
+}
+
+/// Legacy WalkRepository 프로바이더 (기존 구현체)
+///
+/// 필요시 기존 구현체로 되돌릴 수 있도록 유지
+@riverpod
+WalkRepository legacyWalkRepository(WidgetRef ref) {
+  return WalkRepositoryImpl();
+}
 
 // 산책 기록 목록 관리
 @riverpod
@@ -134,38 +154,48 @@ class LocationTrackingNotifier extends _$LocationTrackingNotifier {
       state = true;
 
       // 위치 스트림 시작
-      _positionSubscription = Geolocator.getPositionStream(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          distanceFilter: 5, // 5미터마다 업데이트
-        ),
-      ).listen((Position position) {
-        // 현재 진행 중인 산책에 위치 추가
-        final currentWalk = ref.read(currentWalkNotifierProvider);
-        if (currentWalk != null && currentWalk.status == WalkStatus.inProgress) {
-          final location = WalkLocation(
-            latitude: position.latitude,
-            longitude: position.longitude,
-            timestamp: DateTime.now(),
-            altitude: position.altitude,
-            accuracy: position.accuracy,
-            speed: position.speed,
-            heading: position.heading,
-          );
+      _positionSubscription =
+          Geolocator.getPositionStream(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+              distanceFilter: 5, // 5미터마다 업데이트
+            ),
+          ).listen((Position position) {
+            // 현재 진행 중인 산책에 위치 추가
+            final currentWalk = ref.read(currentWalkNotifierProvider);
+            if (currentWalk != null &&
+                currentWalk.status == WalkStatus.inProgress) {
+              final location = WalkLocation(
+                latitude: position.latitude,
+                longitude: position.longitude,
+                timestamp: DateTime.now(),
+                altitude: position.altitude,
+                accuracy: position.accuracy,
+                speed: position.speed,
+                heading: position.heading,
+              );
 
-          // 성능 최적화: 유효하고 필요한 위치만 추가
-          if (optimizer.WalkTrackingOptimizer.shouldAddLocation(location, currentWalk.route)) {
-            // 위치 평활화 적용
-            final smoothedLocation = optimizer.WalkTrackingOptimizer.smoothLocation(
-              location,
-              currentWalk.route.takeLast(3),
-            );
+              // 성능 최적화: 유효하고 필요한 위치만 추가
+              if (optimizer.WalkTrackingOptimizer.shouldAddLocation(
+                location,
+                currentWalk.route,
+              )) {
+                // 위치 평활화 적용
+                final smoothedLocation =
+                    optimizer.WalkTrackingOptimizer.smoothLocation(
+                      location,
+                      currentWalk.route.takeLast(3),
+                    );
 
-            ref.read(currentWalkNotifierProvider.notifier).addLocationToCurrentWalk(smoothedLocation);
-            ref.read(currentLocationNotifierProvider.notifier).updateLocation(smoothedLocation);
-          }
-        }
-      });
+                ref
+                    .read(currentWalkNotifierProvider.notifier)
+                    .addLocationToCurrentWalk(smoothedLocation);
+                ref
+                    .read(currentLocationNotifierProvider.notifier)
+                    .updateLocation(smoothedLocation);
+              }
+            }
+          });
     } catch (e) {
       state = false;
       rethrow;
@@ -178,7 +208,6 @@ class LocationTrackingNotifier extends _$LocationTrackingNotifier {
     _positionSubscription = null;
     state = false;
   }
-
 }
 
 // 현재 위치 관리
@@ -242,9 +271,12 @@ class WalkStatsNotifier extends _$WalkStatsNotifier {
     final deltaLat = (to.latitude - from.latitude) * (3.14159265359 / 180);
     final deltaLng = (to.longitude - from.longitude) * (3.14159265359 / 180);
 
-    final a = math.sin(deltaLat / 2) * math.sin(deltaLat / 2) +
-        math.cos(lat1Rad) * math.cos(lat2Rad) *
-        math.sin(deltaLng / 2) * math.sin(deltaLng / 2);
+    final a =
+        math.sin(deltaLat / 2) * math.sin(deltaLat / 2) +
+        math.cos(lat1Rad) *
+            math.cos(lat2Rad) *
+            math.sin(deltaLng / 2) *
+            math.sin(deltaLng / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
     return earthRadius * c / 1000; // km 단위로 반환

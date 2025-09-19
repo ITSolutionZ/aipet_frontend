@@ -4,10 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/routes/route_constants.dart';
 import '../../../../shared/shared.dart';
-import '../../data/providers/providers.dart';
-import '../constants/pet_registration_texts.dart';
+import '../../pet_registor.dart';
 import '../utils/pet_image_utils.dart';
-import '../widgets/widgets.dart';
 
 class PetNameInputScreen extends ConsumerStatefulWidget {
   const PetNameInputScreen({super.key});

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/mock_data.dart';
+import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import '../../../../shared/widgets/soft_gradient_app_bar.dart';
 import '../../../home/data/providers/home_providers.dart';
 import '../../../home/domain/entities/home_dashboard_entity.dart';
@@ -15,9 +16,8 @@ class TodayAppointmentsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // 현재 선택된 펫 정보 가져오기
     final selectedPet = ref.watch(homeSelectedPetNotifierProvider);
-    final todayAppointments = PetMockService.getMockTodayAppointmentsByPet(
-      petId: selectedPet?.id,
-    );
+    final todayAppointments =
+        SchedulingMock.SchedulingMockService.getMockTodayMealsForSchedule();
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
