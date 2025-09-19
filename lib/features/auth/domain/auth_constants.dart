@@ -1,45 +1,49 @@
-/// 인증 관련 상수 정의
+import '../../../shared/shared.dart';
+
+/// 인증 관련 상수 정의 (공통 상수 사용)
 class AuthConstants {
-  // 유효성 검사 관련
-  static const int minPasswordLength = 6;
-  static const int maxPasswordLength = 128;
-  static const int minUsernameLength = 2;
-  static const int maxUsernameLength = 20;
+  // 유효성 검사 관련 (공통 상수 사용)
+  static const int minPasswordLength = AppConstants.minPasswordLength;
+  static const int maxPasswordLength = AppConstants.maxPasswordLength;
+  static const int minUsernameLength = AppConstants.minUsernameLength;
+  static const int maxUsernameLength = AppConstants.maxUsernameLength;
 
-  // 토큰 관련
-  static const Duration defaultTokenExpiry = Duration(hours: 24);
-  static const Duration tokenRefreshThreshold = Duration(minutes: 5);
+  // 토큰 관련 (공통 상수 사용)
+  static const Duration defaultTokenExpiry = AppConstants.defaultTokenExpiry;
+  static const Duration tokenRefreshThreshold =
+      AppConstants.tokenRefreshThreshold;
 
-  // API 타임아웃
-  static const Duration apiTimeout = Duration(seconds: 30);
-  static const Duration loginTimeout = Duration(seconds: 30);
+  // API 타임아웃 (공통 상수 사용)
+  static const Duration apiTimeout = AppConstants.apiTimeout;
+  static const Duration loginTimeout = AppConstants.apiTimeout;
 
-  // 재시도 관련
-  static const int maxRetryAttempts = 3;
-  static const Duration retryDelay = Duration(seconds: 1);
+  // 재시도 관련 (공통 상수 사용)
+  static const int maxRetryAttempts = AppConstants.maxRetryAttempts;
+  static const Duration retryDelay = AppConstants.retryDelay;
 
-  // UI 관련
-  static const Duration loadingDebounce = Duration(milliseconds: 300);
-  static const Duration errorDisplayDuration = Duration(seconds: 5);
+  // UI 관련 (공통 상수 사용)
+  static const Duration loadingDebounce = AppConstants.loadingDebounce;
+  static const Duration errorDisplayDuration =
+      AppConstants.errorDisplayDuration;
 
   // 저장소 키 (TokenStorageService에서 사용)
   // 이 상수들은 AuthConfigConstants로 이동되었습니다.
   // TokenStorageService에서 AuthConfigConstants를 직접 참조하도록 변경되었습니다.
 
-  // 메시지
+  // 메시지 (공통 텍스트 사용)
   static const Map<String, String> errorMessages = {
-    'email_required': 'メールアドレスを入力してください',
-    'email_invalid': '正しいメールアドレスを入力してください',
-    'password_required': 'パスワードを入力してください',
-    'password_too_short': 'パスワードは6文字以上である必要があります',
-    'password_mismatch': 'パスワードが一致しません',
-    'username_required': 'ユーザー名を入力してください',
-    'username_too_short': 'ユーザー名は2文字以上である必要があります',
-    'login_failed': 'ログインに失敗しました',
-    'signup_failed': '会員登録に失敗しました',
-    'network_error': 'インターネット接続を確認してください',
-    'server_error': 'サーバーエラーが発生しました',
-    'unknown_error': '予期しないエラーが発生しました',
+    'email_required': AppTexts.requiredField,
+    'email_invalid': AppTexts.invalidEmail,
+    'password_required': AppTexts.requiredField,
+    'password_too_short': AppTexts.invalidPassword,
+    'password_mismatch': AppTexts.passwordMismatch,
+    'username_required': AppTexts.requiredField,
+    'username_too_short': AppTexts.tooShort,
+    'login_failed': AppTexts.loginFailed,
+    'signup_failed': AppTexts.signupFailed,
+    'network_error': AppTexts.networkError,
+    'server_error': AppTexts.serverError,
+    'unknown_error': AppTexts.unknownError,
   };
 
   // 정규식 패턴

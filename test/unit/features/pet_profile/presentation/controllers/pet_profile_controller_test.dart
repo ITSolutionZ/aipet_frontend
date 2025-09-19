@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_controller.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('PetProfileState', () {
@@ -25,10 +24,11 @@ void main() {
         name: 'テストペット',
         type: 'dog',
         breed: '柴犬',
+        birthDate: DateTime(2021, 1, 1),
         age: 3,
         gender: 'male',
         weight: 12.5,
-        imagePath: 'image.jpg',
+        imagePath: 'test.jpg',
         ownerId: 'owner-1',
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
@@ -38,337 +38,179 @@ void main() {
       final state = PetProfileState(
         tabController: tabController,
         selectedPet: pet,
+        isLoading: true,
+        errorMessage: 'Test error',
       );
 
       // Assert
       expect(state.tabController, equals(tabController));
       expect(state.selectedPet, equals(pet));
       expect(state.selectedPetName, equals('テストペット'));
+      expect(state.isLoading, isTrue);
+      expect(state.errorMessage, equals('Test error'));
     });
 
-    test('copyWith should update only provided fields', () {
+    test('should handle null selectedPet correctly', () {
       // Arrange
-      final tabController1 = TabController(length: 4, vsync: const TestVSync());
-      final tabController2 = TabController(length: 4, vsync: const TestVSync());
       final pet1 = PetProfileEntity(
         id: 'pet-1',
         name: 'ペット1',
-        type: 'dog',
-        breed: '柴犬',
-        age: 3,
-        gender: 'male',
-        weight: 12.5,
-        imagePath: 'image1.jpg',
+        type: 'cat',
+        breed: 'Persian',
+        birthDate: DateTime(2020, 5, 15),
+        age: 4,
+        gender: 'female',
+        weight: 4.2,
+        imagePath: 'cat1.jpg',
         ownerId: 'owner-1',
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
+
       final pet2 = PetProfileEntity(
         id: 'pet-2',
         name: 'ペット2',
-        type: 'cat',
-        breed: 'アメリカンショートヘア',
-        age: 2,
-        gender: 'female',
-        weight: 4.2,
-        imagePath: 'image2.jpg',
+        type: 'dog',
+        breed: 'Labrador',
+        birthDate: DateTime(2019, 3, 10),
+        age: 5,
+        gender: 'male',
+        weight: 25.0,
+        imagePath: 'dog1.jpg',
         ownerId: 'owner-2',
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      final state = PetProfileState(
-        tabController: tabController1,
-        selectedPet: pet1,
-      );
+      // Act & Assert
+      final state1 = PetProfileState(selectedPet: pet1);
+      expect(state1.selectedPetName, equals('ペット1'));
 
-      // Act
-      final updatedState = state.copyWith(
-        tabController: tabController2,
-        selectedPet: pet2,
-      );
+      final state2 = PetProfileState(selectedPet: pet2);
+      expect(state2.selectedPetName, equals('ペット2'));
 
-      // Assert
-      expect(updatedState.tabController, equals(tabController2));
-      expect(updatedState.selectedPet, equals(pet2));
-      expect(updatedState.selectedPetName, equals('ペット2'));
-    });
-
-    test('copyWith should keep existing values when null provided', () {
-      // Arrange
-      final tabController = TabController(length: 4, vsync: const TestVSync());
-      final pet = PetProfileEntity(
-        id: 'test-pet',
-        name: 'テストペット',
-        type: 'dog',
-        breed: '柴犬',
-        age: 3,
-        gender: 'male',
-        weight: 12.5,
-        imagePath: 'image.jpg',
-        ownerId: 'owner-1',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      final state = PetProfileState(
-        tabController: tabController,
-        selectedPet: pet,
-      );
-
-      // Act
-      final updatedState = state.copyWith();
-
-      // Assert
-      expect(updatedState.tabController, equals(tabController));
-      expect(updatedState.selectedPet, equals(pet));
-    });
-
-    test('selectedPetName should return pet name when pet is selected', () {
-      // Arrange
-      final pet = PetProfileEntity(
-        id: 'test-pet',
-        name: 'テストペット',
-        type: 'dog',
-        breed: '柴犬',
-        age: 3,
-        gender: 'male',
-        weight: 12.5,
-        imagePath: 'image.jpg',
-        ownerId: 'owner-1',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      const state = PetProfileState(selectedPet: pet);
-
-      // Act
-      const petName = state.selectedPetName;
-
-      // Assert
-      expect(petName, equals('テストペット'));
-    });
-
-    test('selectedPetName should return Unknown Pet when no pet selected', () {
-      // Arrange
-      const state = PetProfileState();
-
-      // Act
-      const petName = state.selectedPetName;
-
-      // Assert
-      expect(petName, equals('Unknown Pet'));
+      const state3 = PetProfileState(selectedPet: null);
+      expect(state3.selectedPetName, equals('Unknown Pet'));
     });
   });
 
   group('PetProfileNotifier', () {
-    testWidgets('should initialize with default state', (tester) async {
-      // Arrange
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: Consumer(
-                builder: (context, ref, child) {
-                  final state = ref.watch(petProfileNotifierProvider);
-                  return Text('TabController: ${state.tabController != null}');
-                },
-              ),
-            ),
-          ),
-        ),
-      );
+    late ProviderContainer container;
 
-      // Assert
-      expect(find.text('TabController: false'), findsOneWidget);
+    setUp(() {
+      container = ProviderContainer();
     });
 
-    testWidgets('should initialize tab controller', (tester) async {
-      // Arrange
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: Consumer(
-                builder: (context, ref, child) {
-                  final notifier = ref.read(
-                    petProfileNotifierProvider.notifier,
-                  );
-                  notifier.initializeTabController(tester);
-                  final state = ref.watch(petProfileNotifierProvider);
-                  return Text('TabController: ${state.tabController != null}');
-                },
-              ),
-            ),
-          ),
-        ),
-      );
-
-      // Act
-      await tester.pump();
-
-      // Assert
-      expect(find.text('TabController: true'), findsOneWidget);
+    tearDown(() {
+      container.dispose();
     });
 
-    testWidgets('should select pet', (tester) async {
-      // Arrange
-      final pet = PetProfileEntity(
-        id: 'test-pet',
-        name: 'テストペット',
-        type: 'dog',
-        breed: '柴犬',
-        age: 3,
-        gender: 'male',
-        weight: 12.5,
-        imagePath: 'image.jpg',
-        ownerId: 'owner-1',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: Consumer(
-                builder: (context, ref, child) {
-                  final notifier = ref.read(
-                    petProfileNotifierProvider.notifier,
-                  );
-                  notifier.selectPet(pet);
-                  final state = ref.watch(petProfileNotifierProvider);
-                  return Text('Pet: ${state.selectedPet?.name ?? 'None'}');
-                },
-              ),
-            ),
-          ),
-        ),
-      );
-
+    test('should initialize with default state', () {
       // Act
-      await tester.pump();
+      final notifier = container.read(petProfileNotifierProvider.notifier);
 
       // Assert
-      expect(find.text('Pet: テストペット'), findsOneWidget);
+      expect(notifier.state.tabController, isNull);
+      expect(notifier.state.selectedPet, isNull);
+      expect(notifier.state.isLoading, isFalse);
+      expect(notifier.state.errorMessage, isNull);
     });
 
-    testWidgets('should handle tab change when no tab controller', (
-      tester,
-    ) async {
+    test('should load pet profile successfully', () async {
       // Arrange
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: Consumer(
-                builder: (context, ref, child) {
-                  final notifier = ref.read(
-                    petProfileNotifierProvider.notifier,
-                  );
-                  notifier.changeTab(1); // TabController가 없어도 예외가 발생하지 않아야 함
-                  final state = ref.watch(petProfileNotifierProvider);
-                  return Text('TabController: ${state.tabController != null}');
-                },
-              ),
-            ),
-          ),
-        ),
-      );
+      final notifier = container.read(petProfileNotifierProvider.notifier);
+      const petId = '1';
+      const requesterId = 'user1';
 
       // Act
-      await tester.pump();
+      final result = await notifier.loadPetProfile(
+        petId: petId,
+        requesterId: requesterId,
+      );
 
       // Assert
-      expect(find.text('TabController: false'), findsOneWidget);
+      if (result.isSuccess) {
+        expect(notifier.state.selectedPet, isNotNull);
+        expect(notifier.state.selectedPet!.id, equals(petId));
+        expect(notifier.state.isLoading, isFalse);
+        expect(notifier.state.errorMessage, isNull);
+      } else {
+        // If it fails, let's see what the error is
+        print('Load pet profile failed: ${result.message}');
+        expect(result.isSuccess, isTrue); // This will show the actual error
+      }
     });
 
-    testWidgets('should dispose tab controller', (tester) async {
+    test('should handle load pet profile error', () async {
       // Arrange
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: Consumer(
-                builder: (context, ref, child) {
-                  final notifier = ref.read(
-                    petProfileNotifierProvider.notifier,
-                  );
-                  notifier.initializeTabController(tester);
-                  notifier.disposeTabController();
-                  final state = ref.watch(petProfileNotifierProvider);
-                  return Text('TabController: ${state.tabController != null}');
-                },
-              ),
-            ),
-          ),
-        ),
-      );
+      final notifier = container.read(petProfileNotifierProvider.notifier);
+      const petId = 'non-existent';
+      const requesterId = 'user1';
 
       // Act
-      await tester.pump();
+      final result = await notifier.loadPetProfile(
+        petId: petId,
+        requesterId: requesterId,
+      );
 
       // Assert
-      expect(find.text('TabController: true'), findsOneWidget);
+      expect(result.isSuccess, isFalse);
+      expect(notifier.state.selectedPet, isNull);
+      expect(notifier.state.isLoading, isFalse);
+      expect(notifier.state.errorMessage, isNotNull);
     });
 
-    testWidgets('should update pet and maintain tab controller', (
-      tester,
-    ) async {
+    test('should refresh profile successfully', () async {
       // Arrange
-      final pet1 = PetProfileEntity(
-        id: 'pet-1',
-        name: 'ペット1',
-        type: 'dog',
-        breed: '柴犬',
-        age: 3,
-        gender: 'male',
-        weight: 12.5,
-        imagePath: 'image1.jpg',
-        ownerId: 'owner-1',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-      final pet2 = PetProfileEntity(
-        id: 'pet-2',
-        name: 'ペット2',
-        type: 'cat',
-        breed: 'アメリカンショートヘア',
-        age: 2,
-        gender: 'female',
-        weight: 4.2,
-        imagePath: 'image2.jpg',
-        ownerId: 'owner-2',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+      final notifier = container.read(petProfileNotifierProvider.notifier);
+      const petId = '1';
+      const requesterId = 'user1';
 
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: Consumer(
-                builder: (context, ref, child) {
-                  final notifier = ref.read(
-                    petProfileNotifierProvider.notifier,
-                  );
-                  notifier.initializeTabController(tester);
-                  notifier.selectPet(pet1);
-                  notifier.selectPet(pet2);
-                  final state = ref.watch(petProfileNotifierProvider);
-                  return Text('Pet: ${state.selectedPet?.name ?? 'None'}');
-                },
-              ),
-            ),
-          ),
-        ),
-      );
+      // First load a pet
+      await notifier.loadPetProfile(petId: petId, requesterId: requesterId);
 
       // Act
-      await tester.pump();
+      final result = await notifier.refreshProfile(requesterId);
 
       // Assert
-      expect(find.text('Pet: ペット2'), findsOneWidget);
+      expect(result.isSuccess, isTrue);
+      expect(notifier.state.selectedPet, isNotNull);
+    });
+
+    test('should handle refresh when no pet selected', () async {
+      // Arrange
+      final notifier = container.read(petProfileNotifierProvider.notifier);
+
+      // Act
+      final result = await notifier.refreshProfile('owner-1');
+
+      // Assert
+      expect(result.isSuccess, isFalse);
+      expect(result.message, contains('No pet selected'));
+    });
+
+    test('should initialize tab controller', () {
+      // Arrange
+      final notifier = container.read(petProfileNotifierProvider.notifier);
+      final tabController = TabController(length: 4, vsync: const TestVSync());
+
+      // Act
+      notifier.initializeTabController(tabController);
+
+      // Assert
+      expect(notifier.state.tabController, equals(tabController));
+    });
+
+    test('should clear error message', () {
+      // Arrange
+      final notifier = container.read(petProfileNotifierProvider.notifier);
+      notifier.state = notifier.state.copyWith(errorMessage: 'Test error');
+
+      // Act
+      notifier.clearError();
+
+      // Assert
+      expect(notifier.state.errorMessage, isNull);
     });
   });
 }

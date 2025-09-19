@@ -1,3 +1,4 @@
+import '../../../../../shared/shared.dart';
 import '../entities/pet_registration_data_entity.dart';
 import 'pet_validation_service.dart';
 
@@ -26,15 +27,17 @@ class PetValidationUtils {
   static String? getCurrentBreed(PetRegistrationDataEntity data) =>
       _service.getCurrentBreed(data);
 
-  /// 펫 이름 유효성 검증
-  static bool isValidPetName(String? name) => _service.isValidPetName(name);
+  /// 펫 이름 유효성 검증 (shared 유틸리티 사용)
+  static bool isValidPetName(String? name) =>
+      ValidationUtilsEnhanced.isValidPetName(name);
 
-  /// 체중 유효성 검증
-  static bool isValidWeight(double? weight) => _service.isValidWeight(weight);
+  /// 체중 유효성 검증 (shared 유틸리티 사용)
+  static bool isValidWeight(double? weight) =>
+      ValidationUtilsEnhanced.isValidWeight(weight);
 
-  /// 마이크로칩 번호 유효성 검증
+  /// 마이크로칩 번호 유효성 검증 (shared 유틸리티 사용)
   static bool isValidMicrochipNumber(String? number) =>
-      _service.isValidMicrochipNumber(number);
+      ValidationUtilsEnhanced.isValidMicrochipNumber(number);
 }
 
 /// PetValidationService의 기본 구현체
@@ -115,21 +118,16 @@ class PetValidationServiceImpl implements PetValidationService {
 
   @override
   bool isValidPetName(String? name) {
-    if (name == null || name.trim().isEmpty) return false;
-    final trimmedName = name.trim();
-    if (trimmedName.isEmpty || trimmedName.length > 50) return false;
-    return true;
+    return ValidationUtilsEnhanced.isValidPetName(name);
   }
 
   @override
   bool isValidWeight(double? weight) {
-    if (weight == null) return false;
-    return weight > 0.0 && weight <= 100.0; // 0kg 초과 100kg 이하
+    return ValidationUtilsEnhanced.isValidWeight(weight);
   }
 
   @override
   bool isValidMicrochipNumber(String? number) {
-    if (number == null || number.isEmpty) return true; // 선택사항이므로 빈 값 허용
-    return number.length == 15 && RegExp(r'^[0-9]+$').hasMatch(number);
+    return ValidationUtilsEnhanced.isValidMicrochipNumber(number);
   }
 }

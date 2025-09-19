@@ -6,11 +6,12 @@
 import 'dart:async' as _i4;
 
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
-    as _i2;
-import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart'
     as _i5;
+import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart'
+    as _i6;
 import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart'
     as _i3;
+import 'package:aipet_frontend/shared/shared.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -27,9 +28,8 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakePetProfileEntity_0 extends _i1.SmartFake
-    implements _i2.PetProfileEntity {
-  _FakePetProfileEntity_0(Object parent, Invocation parentInvocation)
+class _FakeResult_0<T> extends _i1.SmartFake implements _i2.Result<T> {
+  _FakeResult_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -42,60 +42,74 @@ class MockPetRepository extends _i1.Mock implements _i3.PetRepository {
   }
 
   @override
-  _i4.Future<List<_i2.PetProfileEntity>> getAllPets() =>
+  _i4.Future<_i2.Result<List<_i5.PetProfileEntity>>> getAllPets() =>
       (super.noSuchMethod(
             Invocation.method(#getAllPets, []),
-            returnValue: _i4.Future<List<_i2.PetProfileEntity>>.value(
-              <_i2.PetProfileEntity>[],
-            ),
+            returnValue:
+                _i4.Future<_i2.Result<List<_i5.PetProfileEntity>>>.value(
+                  _FakeResult_0<List<_i5.PetProfileEntity>>(
+                    this,
+                    Invocation.method(#getAllPets, []),
+                  ),
+                ),
           )
-          as _i4.Future<List<_i2.PetProfileEntity>>);
+          as _i4.Future<_i2.Result<List<_i5.PetProfileEntity>>>);
 
   @override
-  _i4.Future<_i2.PetProfileEntity?> getPetById(String? id) =>
+  _i4.Future<_i2.Result<_i5.PetProfileEntity?>> getPetById(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#getPetById, [id]),
-            returnValue: _i4.Future<_i2.PetProfileEntity?>.value(),
+            returnValue: _i4.Future<_i2.Result<_i5.PetProfileEntity?>>.value(
+              _FakeResult_0<_i5.PetProfileEntity?>(
+                this,
+                Invocation.method(#getPetById, [id]),
+              ),
+            ),
           )
-          as _i4.Future<_i2.PetProfileEntity?>);
+          as _i4.Future<_i2.Result<_i5.PetProfileEntity?>>);
 
   @override
-  _i4.Future<_i2.PetProfileEntity> createPet(_i2.PetProfileEntity? pet) =>
+  _i4.Future<_i2.Result<_i5.PetProfileEntity>> createPet(
+    _i5.PetProfileEntity? pet,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#createPet, [pet]),
-            returnValue: _i4.Future<_i2.PetProfileEntity>.value(
-              _FakePetProfileEntity_0(
+            returnValue: _i4.Future<_i2.Result<_i5.PetProfileEntity>>.value(
+              _FakeResult_0<_i5.PetProfileEntity>(
                 this,
                 Invocation.method(#createPet, [pet]),
               ),
             ),
           )
-          as _i4.Future<_i2.PetProfileEntity>);
+          as _i4.Future<_i2.Result<_i5.PetProfileEntity>>);
 
   @override
-  _i4.Future<_i2.PetProfileEntity> updatePet(_i2.PetProfileEntity? pet) =>
+  _i4.Future<_i2.Result<_i5.PetProfileEntity>> updatePet(
+    _i5.PetProfileEntity? pet,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#updatePet, [pet]),
-            returnValue: _i4.Future<_i2.PetProfileEntity>.value(
-              _FakePetProfileEntity_0(
+            returnValue: _i4.Future<_i2.Result<_i5.PetProfileEntity>>.value(
+              _FakeResult_0<_i5.PetProfileEntity>(
                 this,
                 Invocation.method(#updatePet, [pet]),
               ),
             ),
           )
-          as _i4.Future<_i2.PetProfileEntity>);
+          as _i4.Future<_i2.Result<_i5.PetProfileEntity>>);
 
   @override
-  _i4.Future<void> deletePet(String? id) =>
+  _i4.Future<_i2.Result<void>> deletePet(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deletePet, [id]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i4.Future<_i2.Result<void>>.value(
+              _FakeResult_0<void>(this, Invocation.method(#deletePet, [id])),
+            ),
           )
-          as _i4.Future<void>);
+          as _i4.Future<_i2.Result<void>>);
 
   @override
-  _i4.Future<void> saveTemporaryPetData(_i5.TemporaryPetDataEntity? data) =>
+  _i4.Future<void> saveTemporaryPetData(_i6.TemporaryPetDataEntity? data) =>
       (super.noSuchMethod(
             Invocation.method(#saveTemporaryPetData, [data]),
             returnValue: _i4.Future<void>.value(),
@@ -104,12 +118,12 @@ class MockPetRepository extends _i1.Mock implements _i3.PetRepository {
           as _i4.Future<void>);
 
   @override
-  _i4.Future<_i5.TemporaryPetDataEntity?> getTemporaryPetData() =>
+  _i4.Future<_i6.TemporaryPetDataEntity?> getTemporaryPetData() =>
       (super.noSuchMethod(
             Invocation.method(#getTemporaryPetData, []),
-            returnValue: _i4.Future<_i5.TemporaryPetDataEntity?>.value(),
+            returnValue: _i4.Future<_i6.TemporaryPetDataEntity?>.value(),
           )
-          as _i4.Future<_i5.TemporaryPetDataEntity?>);
+          as _i4.Future<_i6.TemporaryPetDataEntity?>);
 
   @override
   _i4.Future<void> clearTemporaryPetData() =>

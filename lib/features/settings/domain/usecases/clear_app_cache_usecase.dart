@@ -1,3 +1,4 @@
+import '../../../../shared/shared.dart';
 import '../repositories/settings_repository.dart';
 
 class ClearAppCacheUseCase {
@@ -5,7 +6,12 @@ class ClearAppCacheUseCase {
 
   ClearAppCacheUseCase(this.repository);
 
-  Future<bool> call() async {
-    return repository.clearAppCache();
+  Future<Result<void>> call() async {
+    final result = await repository.clearAppCache();
+    if (result.isSuccess) {
+      return Result.success(result.message);
+    } else {
+      return Result.failure(result.message);
+    }
   }
 }

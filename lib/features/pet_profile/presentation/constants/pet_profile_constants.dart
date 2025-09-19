@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
 
+import '../../../../shared/shared.dart';
+
 /// Pet Profile UI Constants
 ///
-/// Pet Profile 기능의 UI 관련 상수들
+/// Pet Profile 기능의 UI 관련 상수들 (공통 상수 사용)
 
 class PetProfileConstants {
   PetProfileConstants._();
 
-  // UI Dimensions
-  static const double profileImageSize = 120.0;
-  static const double profileImageRadius = 60.0;
-  static const double cardElevation = 4.0;
-  static const double buttonHeight = 48.0;
-  static const double iconSize = 24.0;
+  // UI Dimensions (공통 상수 사용)
+  static const double profileImageSize = AppConstants.profileImageSize;
+  static const double profileImageRadius = AppConstants.profileImageRadius;
+  static const double cardElevation = AppConstants.defaultCardElevation;
+  static const double buttonHeight = AppConstants.defaultButtonHeight;
+  static const double iconSize = AppConstants.defaultIconSize;
 
-  // Spacing
-  static const EdgeInsets defaultPadding = EdgeInsets.all(16.0);
-  static const EdgeInsets cardPadding = EdgeInsets.all(12.0);
-  static const EdgeInsets buttonPadding = EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0);
-  static const double defaultSpacing = 16.0;
-  static const double smallSpacing = 8.0;
-  static const double largeSpacing = 24.0;
+  // Spacing (공통 상수 사용)
+  static const EdgeInsets defaultPadding = AppConstants.defaultPadding;
+  static const EdgeInsets cardPadding = AppConstants.cardPadding;
+  static const EdgeInsets buttonPadding = AppConstants.buttonPadding;
+  static const double defaultSpacing = AppConstants.spacingMD;
+  static const double smallSpacing = AppConstants.spacingSM;
+  static const double largeSpacing = AppConstants.spacingLG;
 
-  // Animation Durations
-  static const Duration defaultAnimation = Duration(milliseconds: 300);
-  static const Duration fastAnimation = Duration(milliseconds: 150);
-  static const Duration slowAnimation = Duration(milliseconds: 500);
+  // Animation Durations (공통 상수 사용)
+  static const Duration defaultAnimation = AppConstants.defaultAnimation;
+  static const Duration fastAnimation = AppConstants.fastAnimation;
+  static const Duration slowAnimation = AppConstants.slowAnimation;
 
   // Text Styles Keys
   static const String profileNameStyle = 'profileName';
@@ -33,19 +35,19 @@ class PetProfileConstants {
   static const String sectionHeaderStyle = 'sectionHeader';
   static const String bodyTextStyle = 'bodyText';
 
-  // Form Validation
-  static const int maxNameLength = 50;
-  static const int minNameLength = 1;
-  static const double maxWeight = 200.0;
-  static const double minWeight = 0.1;
+  // Form Validation (공통 상수 사용)
+  static const int maxNameLength = AppConstants.maxNameLength;
+  static const int minNameLength = AppConstants.minNameLength;
+  static const double maxWeight = AppConstants.maxWeight;
+  static const double minWeight = AppConstants.minWeight;
 
-  // Share Settings
-  static const int maxFamilyManagers = 5;
-  static const Duration defaultLinkExpiry = Duration(days: 30);
+  // Share Settings (공통 상수 사용)
+  static const int maxFamilyManagers = AppConstants.maxFamilyManagers;
+  static const Duration defaultLinkExpiry = AppConstants.defaultLinkExpiry;
 
-  // Image Upload
-  static const int maxImageSizeMB = 5;
-  static const List<String> allowedImageTypes = ['.jpg', '.jpeg', '.png'];
+  // Image Upload (공통 상수 사용)
+  static const int maxImageSizeMB = AppConstants.maxImageSizeMB;
+  static const List<String> allowedImageTypes = AppConstants.allowedImageTypes;
 
   // Tab Names (Japanese)
   static const String basicInfoTab = '基本情報';
@@ -147,6 +149,8 @@ class VisibilityLevelConstants {
     'public': Icons.public,
   };
 
-  static String getName(String level) => levelNames[level.toLowerCase()] ?? '非公開';
-  static IconData getIcon(String level) => levelIcons[level.toLowerCase()] ?? Icons.lock;
+  static String getName(String level) =>
+      levelNames[level.toLowerCase()] ?? '非公開';
+  static IconData getIcon(String level) =>
+      levelIcons[level.toLowerCase()] ?? Icons.lock;
 }

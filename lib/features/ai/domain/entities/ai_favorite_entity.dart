@@ -53,4 +53,8 @@ class AiFavoriteEntity {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  String toString() =>
+      'AiFavoriteEntity(id: $id, category: $category, petName: $petName)';
 }

@@ -5,6 +5,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../shared/shared.dart';
 import '../../data/walk_providers.dart';
 import '../../domain/entities/walk_record_entity.dart';
+import 'map/walk_map_camera_controller.dart';
+import 'map/walk_map_marker_builder.dart';
+import 'map/walk_map_polyline_builder.dart';
 
 class MapWidget extends StatefulWidget {
   final List<WalkRecordEntity> walkRecords;
@@ -57,13 +60,9 @@ class _MapWidgetState extends State<MapWidget> {
 
       // 지도 컨트롤러가 준비되면 카메라 이동
       if (_mapController != null) {
-        await _mapController!.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(position.latitude, position.longitude),
-              zoom: 15.0,
-            ),
-          ),
+        await WalkMapCameraController.moveToCurrentLocation(
+          _mapController!,
+          position,
         );
       }
     } catch (e) {
@@ -72,109 +71,20 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   void _setupMarkersAndPolylines() {
+    // 마커 생성
     _markers.clear();
+    _markers.addAll(WalkMapMarkerBuilder.buildAllMarkers(
+      walkRecords: widget.walkRecords,
+      currentPosition: _currentPosition,
+      selectedPet: widget.selectedPet,
+    ));
+
+    // 폴리라인 생성
     _polylines.clear();
-
-    // 현재 위치 마커 추가
-    if (_currentPosition != null) {
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('current_location'),
-          position: LatLng(
-            _currentPosition!.latitude,
-            _currentPosition!.longitude,
-          ),
-          infoWindow: const InfoWindow(title: '現在地'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-        ),
-      );
-    }
-
-    // 산책 기록에서 마커와 경로 추가
-    for (int i = 0; i < widget.walkRecords.length; i++) {
-      final walkRecord = widget.walkRecords[i];
-      if (walkRecord.route.isNotEmpty) {
-        // 시작점 마커
-        if (walkRecord.route.first.latitude != 0 &&
-            walkRecord.route.first.longitude != 0) {
-          _markers.add(
-            Marker(
-              markerId: MarkerId('walk_start_$i'),
-              position: LatLng(
-                walkRecord.route.first.latitude,
-                walkRecord.route.first.longitude,
-              ),
-              infoWindow: InfoWindow(
-                title: '${walkRecord.title} 開始',
-                snippet: '${walkRecord.duration?.inMinutes ?? 0}分',
-              ),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen,
-              ),
-            ),
-          );
-        }
-
-        // 종료점 마커
-        if (walkRecord.route.last.latitude != 0 &&
-            walkRecord.route.last.longitude != 0) {
-          _markers.add(
-            Marker(
-              markerId: MarkerId('walk_end_$i'),
-              position: LatLng(
-                walkRecord.route.last.latitude,
-                walkRecord.route.last.longitude,
-              ),
-              infoWindow: InfoWindow(
-                title: '${walkRecord.title} 終了',
-                snippet:
-                    '${walkRecord.distance?.toStringAsFixed(1) ?? '0.0'}km',
-              ),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed,
-              ),
-            ),
-          );
-        }
-
-        // 경로 폴리라인 추가
-        if (walkRecord.route.length > 1) {
-          final points = walkRecord.route
-              .where((point) => point.latitude != 0 && point.longitude != 0)
-              .map((point) => LatLng(point.latitude, point.longitude))
-              .toList();
-
-          if (points.length > 1) {
-            _polylines.add(
-              Polyline(
-                polylineId: PolylineId('walk_route_$i'),
-                points: points,
-                color: AppColors.pointBrown,
-                width: 3,
-                geodesic: true,
-              ),
-            );
-          }
-        }
-      }
-    }
-
-    // 선택된 펫 마커 추가 (현재 위치 근처)
-    if (widget.selectedPet != null && _currentPosition != null) {
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('selected_pet'),
-          position: LatLng(
-            _currentPosition!.latitude + 0.001, // 약간 오프셋
-            _currentPosition!.longitude + 0.001,
-          ),
-          infoWindow: InfoWindow(title: widget.selectedPet!.name),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueViolet,
-          ),
-        ),
-      );
-    }
+    _polylines.addAll(WalkMapPolylineBuilder.buildAllPolylines(
+      widget.walkRecords,
+      defaultColor: AppColors.pointBrown,
+    ));
   }
 
   @override
@@ -194,23 +104,15 @@ class _MapWidgetState extends State<MapWidget> {
                   _setupMarkersAndPolylines();
 
                   // 초기 카메라 위치 설정
-                  controller.animateCamera(
-                    CameraUpdate.newCameraPosition(
-                      CameraPosition(
-                        target: LatLng(
-                          _currentPosition!.latitude,
-                          _currentPosition!.longitude,
-                        ),
-                        zoom: 15.0,
-                      ),
-                    ),
+                  WalkMapCameraController.moveToCurrentLocation(
+                    controller,
+                    _currentPosition!,
                   );
                 },
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(
-                    _currentPosition!.latitude,
-                    _currentPosition!.longitude,
-                  ),
+                initialCameraPosition:
+                    WalkMapCameraController.createDefaultCameraPosition(
+                  latitude: _currentPosition!.latitude,
+                  longitude: _currentPosition!.longitude,
                   zoom: 15.0,
                 ),
                 markers: _markers,

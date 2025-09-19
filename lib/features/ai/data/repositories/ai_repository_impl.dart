@@ -30,7 +30,7 @@ class AiRepositoryImpl implements AiRepository {
   }
 
   @override
-  Future<AiMessageEntity> sendMessage(String message) async {
+  Future<Result<AiMessageEntity>> sendMessage(String message) async {
     try {
       // AI 로거를 사용한 API 호출 시작 로그
       AiLogger.logApiStart(message);
@@ -41,23 +41,27 @@ class AiRepositoryImpl implements AiRepository {
       // AI 로거를 사용한 응답 성공 로그
       AiLogger.logApiSuccess(response);
 
-      return AiMessageEntity(
+      final aiMessage = AiMessageEntity(
         id: _generateId(),
         content: response,
         type: MessageType.assistant,
         timestamp: DateTime.now(),
       );
+
+      return Result.success('AI応答を生成しました', aiMessage);
     } catch (e) {
       // AI 로거를 사용한 에러 로그
       AiLogger.logApiError(e);
 
-      // 공통 에러 메시지 생성
-      return _createErrorMessage(e);
+      return Result.failure(
+        'AI応答の生成に失敗しました: ${e.toString()}',
+        e is Exception ? e : Exception(e.toString()),
+      );
     }
   }
 
   @override
-  Future<AiMessageEntity> sendMessageWithPetContext(
+  Future<Result<AiMessageEntity>> sendMessageWithPetContext(
     String message, {
     PetProfileEntity? petContext,
   }) async {
@@ -75,18 +79,22 @@ class AiRepositoryImpl implements AiRepository {
       // AI 로거를 사용한 응답 성공 로그
       AiLogger.logApiSuccess(response);
 
-      return AiMessageEntity(
+      final aiMessage = AiMessageEntity(
         id: _generateId(),
         content: response,
         type: MessageType.assistant,
         timestamp: DateTime.now(),
       );
+
+      return Result.success('ペット情報を含むAI応答を生成しました', aiMessage);
     } catch (e) {
       // AI 로거를 사용한 에러 로그
       AiLogger.logApiError(e);
 
-      // 공통 에러 메시지 생성
-      return _createErrorMessage(e);
+      return Result.failure(
+        'AI応答の生成に失敗しました: ${e.toString()}',
+        e is Exception ? e : Exception(e.toString()),
+      );
     }
   }
 
@@ -161,7 +169,7 @@ class AiRepositoryImpl implements AiRepository {
     PetProfileEntity? pet,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     return AiConfigMockData.getPersonalizedQuestions(
       category: category,
       petType: pet?.type,
@@ -282,13 +290,13 @@ class AiRepositoryImpl implements AiRepository {
   }) async {
     // 실제 ChatGPT API 호출로 요약 생성
     await MockHelper.simulateApiCall();
-    
+
     // Mock 요약 생성
     final combinedMessages = userMessages.join(' ');
-    final title = combinedMessages.length > 20 
-        ? '${combinedMessages.substring(0, 20)}...' 
+    final title = combinedMessages.length > 20
+        ? '${combinedMessages.substring(0, 20)}...'
         : combinedMessages;
-        
+
     return AiChatSummary(
       title: title.isNotEmpty ? title : '$petNameの$category相談',
       content: '$petNameの$categoryについて相談した内容',
@@ -312,16 +320,6 @@ class AiRepositoryImpl implements AiRepository {
     // 실제 API 호출로 채팅 히스토리 삭제
     await MockHelper.simulateApiCall();
     // 실제 구현에서는 서버 API나 로컬 저장소에서 삭제
-  }
-
-  /// 공통 에러 메시지 생성
-  AiMessageEntity _createErrorMessage(dynamic error) {
-    return AiMessageEntity(
-      id: _generateId(),
-      content: '${AiConstants.apiErrorMessage}${error.toString()}',
-      type: MessageType.assistant,
-      timestamp: DateTime.now(),
-    );
   }
 
   /// 고유 ID 생성

@@ -1,19 +1,7 @@
 import '../../../../app/controllers/base_controller.dart';
+import '../../../../shared/shared.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
-
-class SettingsResult {
-  final bool isSuccess;
-  final String message;
-  final dynamic data;
-
-  const SettingsResult._(this.isSuccess, this.message, this.data);
-
-  factory SettingsResult.success(String message, [dynamic data]) =>
-      SettingsResult._(true, message, data);
-  factory SettingsResult.failure(String message) =>
-      SettingsResult._(false, message, null);
-}
 
 class SettingsController extends BaseController {
   SettingsController(super.ref);
@@ -44,45 +32,50 @@ class SettingsController extends BaseController {
   );
 
   /// 사용자 프로필 로드
-  Future<SettingsResult> loadUserProfile() async {
+  Future<Result<UserProfileEntity>> loadUserProfile() async {
     try {
-      final profile = await _getUserProfileUseCase.call();
-      return SettingsResult.success('사용자 프로필을 로드했습니다', profile);
+      final result = await _getUserProfileUseCase.call();
+      if (result.isSuccess) {
+        return Result.success(result.message, result.data);
+      } else {
+        return Result.failure(result.message);
+      }
     } catch (error) {
       handleError(error);
-      return SettingsResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 프로필 업데이트
-  Future<SettingsResult> updateProfile(UserProfileEntity profile) async {
+  Future<Result<UserProfileEntity>> updateProfile(
+    UserProfileEntity profile,
+  ) async {
     try {
-      final success = await _updateUserProfileUseCase.call(profile);
-
-      if (success) {
-        return SettingsResult.success('프로필이 업데이트되었습니다');
+      final result = await _updateUserProfileUseCase.call(profile);
+      if (result.isSuccess) {
+        return Result.success(result.message, result.data);
       } else {
-        return SettingsResult.failure('프로필 업데이트에 실패했습니다');
+        return Result.failure(result.message);
       }
     } catch (error) {
       handleError(error);
-      return SettingsResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 비밀번호 변경
-  Future<SettingsResult> changePassword({
+  Future<Result<void>> changePassword({
     required String currentPassword,
     required String newPassword,
     required String confirmPassword,
   }) async {
     try {
       if (newPassword != confirmPassword) {
-        return SettingsResult.failure('새 비밀번호가 일치하지 않습니다');
+        return Result.failure('새 비밀번호가 일치하지 않습니다');
       }
 
       if (newPassword.length < 6) {
-        return SettingsResult.failure('새 비밀번호는 6자 이상이어야 합니다');
+        return Result.failure('새 비밀번호는 6자 이상이어야 합니다');
       }
 
       final request = PasswordChangeRequest(
@@ -91,107 +84,107 @@ class SettingsController extends BaseController {
         confirmPassword: confirmPassword,
       );
 
-      final success = await _changePasswordUseCase.call(request);
-
-      if (success) {
-        return SettingsResult.success('비밀번호가 변경되었습니다');
+      final result = await _changePasswordUseCase.call(request);
+      if (result.isSuccess) {
+        return Result.success(result.message);
       } else {
-        return SettingsResult.failure('비밀번호 변경에 실패했습니다');
+        return Result.failure(result.message);
       }
     } catch (error) {
       handleError(error);
-      return SettingsResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 계정 삭제
-  Future<SettingsResult> deleteAccount() async {
+  Future<Result<void>> deleteAccount() async {
     try {
-      final success = await _deleteAccountUseCase.call();
-
-      if (success) {
-        return SettingsResult.success('계정이 삭제되었습니다');
+      final result = await _deleteAccountUseCase.call();
+      if (result.isSuccess) {
+        return Result.success(result.message);
       } else {
-        return SettingsResult.failure('계정 삭제에 실패했습니다');
+        return Result.failure(result.message);
       }
     } catch (error) {
       handleError(error);
-      return SettingsResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 앱 설정 로드
-  Future<SettingsResult> loadAppSettings() async {
+  Future<Result<AppSettingsEntity>> loadAppSettings() async {
     try {
-      final settings = await _getAppSettingsUseCase.call();
-      return SettingsResult.success('앱 설정을 로드했습니다', settings);
+      final result = await _getAppSettingsUseCase.call();
+      if (result.isSuccess) {
+        return Result.success(result.message, result.data);
+      } else {
+        return Result.failure(result.message);
+      }
     } catch (error) {
       handleError(error);
-      return SettingsResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 앱 설정 저장
-  Future<SettingsResult> saveAppSettings(AppSettingsEntity settings) async {
+  Future<Result<AppSettingsEntity>> saveAppSettings(
+    AppSettingsEntity settings,
+  ) async {
     try {
-      final success = await _saveAppSettingsUseCase.call(settings);
-
-      if (success) {
-        return SettingsResult.success('앱 설정이 저장되었습니다');
+      final result = await _saveAppSettingsUseCase.call(settings);
+      if (result.isSuccess) {
+        return Result.success(result.message, result.data);
       } else {
-        return SettingsResult.failure('앱 설정 저장에 실패했습니다');
+        return Result.failure(result.message);
       }
     } catch (error) {
       handleError(error);
-      return SettingsResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 앱 데이터 내보내기
-  Future<SettingsResult> exportAppData() async {
+  Future<Result<DataExportResult>> exportAppData() async {
     try {
       final result = await _exportAppDataUseCase.call();
-
-      if (result.success) {
-        return SettingsResult.success('앱 데이터가 내보내졌습니다', result);
+      if (result.isSuccess) {
+        return Result.success(result.message, result.data);
       } else {
-        return SettingsResult.failure(result.errorMessage ?? '내보내기에 실패했습니다');
+        return Result.failure(result.message);
       }
     } catch (error) {
       handleError(error);
-      return SettingsResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 앱 데이터 가져오기
-  Future<SettingsResult> importAppData(String filePath) async {
+  Future<Result<void>> importAppData(String filePath) async {
     try {
-      final success = await _importAppDataUseCase.call(filePath);
-
-      if (success) {
-        return SettingsResult.success('앱 데이터가 가져와졌습니다');
+      final result = await _importAppDataUseCase.call(filePath);
+      if (result.isSuccess) {
+        return Result.success(result.message);
       } else {
-        return SettingsResult.failure('앱 데이터 가져오기에 실패했습니다');
+        return Result.failure(result.message);
       }
     } catch (error) {
       handleError(error);
-      return SettingsResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 앱 캐시 정리
-  Future<SettingsResult> clearAppCache() async {
+  Future<Result<void>> clearAppCache() async {
     try {
-      final success = await _clearAppCacheUseCase.call();
-
-      if (success) {
-        return SettingsResult.success('캐시가 정리되었습니다');
+      final result = await _clearAppCacheUseCase.call();
+      if (result.isSuccess) {
+        return Result.success(result.message);
       } else {
-        return SettingsResult.failure('캐시 정리에 실패했습니다');
+        return Result.failure(result.message);
       }
     } catch (error) {
       handleError(error);
-      return SettingsResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 }

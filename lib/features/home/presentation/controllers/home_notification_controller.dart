@@ -1,19 +1,7 @@
 import '../../../../app/controllers/base_controller.dart';
+import '../../../../shared/shared.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
-
-class HomeNotificationResult {
-  final bool isSuccess;
-  final String message;
-  final dynamic data;
-
-  const HomeNotificationResult._(this.isSuccess, this.message, this.data);
-
-  factory HomeNotificationResult.success(String message, [dynamic data]) =>
-      HomeNotificationResult._(true, message, data);
-  factory HomeNotificationResult.failure(String message) =>
-      HomeNotificationResult._(false, message, null);
-}
 
 class HomeNotificationController extends BaseController {
   HomeNotificationController(super.ref);
@@ -24,7 +12,7 @@ class HomeNotificationController extends BaseController {
       GetDashboardDataUseCase(_repository);
 
   /// 알림 처리
-  Future<HomeNotificationResult> handleNotification() async {
+  Future<Result<List<String>>> handleNotification() async {
     try {
       final notifications = <String>[];
 
@@ -84,22 +72,15 @@ class HomeNotificationController extends BaseController {
         );
       }
 
-      return HomeNotificationResult.success(
-        notifications.isEmpty
-            ? '新しい通知はありません'
-            : '${notifications.length}件の通知があります',
-        notifications,
-      );
+      return Result.success('通知が処理されました', notifications);
     } catch (error) {
       handleError(error);
-      return HomeNotificationResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 시간 포맷팅 헬퍼 메서드
   String _formatTime(DateTime dateTime) {
-    final hour = dateTime.hour.toString().padLeft(2, '0');
-    final minute = dateTime.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
+    return DateTimeUtils.formatTime(dateTime);
   }
 }

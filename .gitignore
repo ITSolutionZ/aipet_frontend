@@ -27,10 +27,10 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 
-# Environment variables (환경 변수)
-.env
-.env.local
-.env.*.local
+# Environment variables (환경 변수, 배포시 제외)
+# .env
+# .env.local
+# .env.*.local
 
 .dart_tool/
 .flutter-plugins

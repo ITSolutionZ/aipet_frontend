@@ -1,6 +1,7 @@
+import '../../../../shared/shared.dart';
 import '../entities/splash_entity.dart';
 
 abstract class SplashRepository {
-  Future<SplashEntity> getSplashConfig();
-  Future<void> initializeApp();
+  Future<Result<SplashEntity>> getSplashConfig();
+  Future<Result<void>> initializeApp();
 }

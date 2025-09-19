@@ -130,46 +130,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
   }
 
   Widget _buildDateSeparator(DateTime date) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(const Duration(days: 1));
-    final messageDate = DateTime(date.year, date.month, date.day);
-
-    String dateText;
-    if (messageDate.isAtSameMomentAs(today)) {
-      dateText = '今日';
-    } else if (messageDate.isAtSameMomentAs(yesterday)) {
-      dateText = '昨日';
-    } else {
-      dateText = '${date.month}月${date.day}日';
-    }
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-      child: Row(
-        children: [
-          const Expanded(child: Divider()),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.pointGray.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(AppRadius.large),
-            ),
-            child: Text(
-              dateText,
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointGray,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          const Expanded(child: Divider()),
-        ],
-      ),
-    );
+    return DateSeparatorWidget(date: date);
   }
 
   int _getTotalItemCount(AiChatState chatState) {

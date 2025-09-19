@@ -23,7 +23,7 @@ final splashRepositoryProvider = AutoDisposeProvider<SplashRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SplashRepositoryRef = AutoDisposeProviderRef<SplashRepository>;
-String _$splashConfigHash() => r'bcf6346c8c25a10f44de83069c25e96e9aec1787';
+String _$splashConfigHash() => r'a91cec33c055f797a52f84c13f9aa6f7ad739319';
 
 /// See also [splashConfig].
 @ProviderFor(splashConfig)

@@ -4,7 +4,10 @@ export 'banners/microchip_registration_banner.dart';
 export 'buttons/action_button.dart';
 export 'buttons/action_buttons_component.dart';
 export 'buttons/save_button_component.dart';
+export 'cards/generic_info_card.dart';
 export 'cards/info_card_component.dart';
+export 'common/confirmation_dialog_component.dart';
+export 'common/date_separator_widget.dart';
 // filter_chips_component는 notification 도메인 전용으로 되돌림
 export 'common_app_bar.dart';
 export 'displays/image_display.dart';
@@ -23,3 +26,9 @@ export 'performance/performance_monitor_widget.dart';
 export 'soft_gradient_app_bar.dart';
 export 'soft_gradient_sliver_app_bar.dart';
 export 'tiles/settings_tile_component.dart';
+// Walk widgets
+export 'walk/walk_co_manager_selector.dart';
+export 'walk/walk_detail_info_card.dart';
+export 'walk/walk_form_fields.dart';
+export 'walk/walk_info_widgets.dart';
+export 'walk/walk_pet_tag.dart';

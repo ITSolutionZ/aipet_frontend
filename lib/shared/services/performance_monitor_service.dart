@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
@@ -21,16 +22,27 @@ class PerformanceMonitorService {
 
   /// 성능 모니터링 시작
   void startMonitoring({Duration interval = const Duration(seconds: 5)}) {
-    if (_monitoringTimer != null) {
-      _monitoringTimer!.cancel();
-    }
+    // 테스트 환경에서는 성능 모니터링을 비활성화
+    if (kDebugMode && !_isTestEnvironment()) {
+      if (_monitoringTimer != null) {
+        _monitoringTimer!.cancel();
+      }
 
-    _monitoringTimer = Timer.periodic(interval, (timer) {
-      _collectMetrics();
-    });
+      _monitoringTimer = Timer.periodic(interval, (timer) {
+        _collectMetrics();
+      });
 
-    if (kDebugMode) {
       print('성능 모니터링 시작됨 (간격: ${interval.inSeconds}초)');
+    }
+  }
+
+  /// 테스트 환경인지 확인
+  bool _isTestEnvironment() {
+    try {
+      // Flutter 테스트 환경에서는 이 값이 true
+      return Platform.environment.containsKey('FLUTTER_TEST');
+    } catch (e) {
+      return false;
     }
   }
 

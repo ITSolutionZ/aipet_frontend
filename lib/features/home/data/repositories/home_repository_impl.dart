@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
@@ -112,8 +113,8 @@ class HomeRepositoryImpl implements HomeRepository {
     // Mock 데이터 사용
     await Future.delayed(_mockDelay);
     final healthSummaryData = HomeMockService.getMockHealthSummary();
-    final alertsData =
-        healthSummaryData['alerts'] as List<Map<String, dynamic>>;
+    final alertsData = (healthSummaryData['alerts'] as List)
+        .cast<Map<String, dynamic>>();
     final alerts = alertsData
         .map(
           (alert) => HealthAlert(
@@ -156,6 +157,7 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   // 개발 모드용 지연 시간 상수
-  static const Duration _mockDelay = Duration(milliseconds: 250);
-
+  static Duration get _mockDelay => AppConfig.current.environment == 'test'
+      ? const Duration(milliseconds: 1)
+      : const Duration(milliseconds: 250);
 }

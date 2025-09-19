@@ -1,3 +1,18 @@
+/// 검증 에러 타입
+enum ValidationError {
+  required,
+  invalidEmail,
+  invalidPassword,
+  invalidName,
+  invalidPhone,
+  tooShort,
+  tooLong,
+  invalidNumber,
+  invalidPositiveNumber,
+  invalidDate,
+  invalidUrl,
+}
+
 /// 입력 검증을 위한 공통 유틸리티 클래스
 class ValidationUtils {
   ValidationUtils._();
@@ -146,48 +161,6 @@ class ValidationUtils {
   }
 }
 
-/// 검증 에러 타입
-enum ValidationError {
-  required,
-  invalidEmail,
-  invalidPassword,
-  invalidName,
-  invalidPhone,
-  tooShort,
-  tooLong,
-  invalidNumber,
-  invalidPositiveNumber,
-  invalidDate,
-  invalidUrl,
-}
+// ValidationError enum은 validation_utils_enhanced.dart로 이동됨
 
-/// 검증 결과 클래스
-class ValidationResult {
-  final bool isValid;
-  final List<ValidationError> errors;
-
-  const ValidationResult({required this.isValid, this.errors = const []});
-
-  /// 성공 결과 생성
-  factory ValidationResult.success() {
-    return const ValidationResult(isValid: true);
-  }
-
-  /// 실패 결과 생성
-  factory ValidationResult.failure(List<ValidationError> errors) {
-    return ValidationResult(isValid: false, errors: errors);
-  }
-
-  /// 에러 메시지 목록 반환
-  List<String> get errorMessages {
-    return errors
-        .map((error) => ValidationUtils.getErrorMessage(error))
-        .toList();
-  }
-
-  /// 첫 번째 에러 메시지 반환
-  String? get firstErrorMessage {
-    if (errors.isEmpty) return null;
-    return ValidationUtils.getErrorMessage(errors.first);
-  }
-}
+// ValidationResult 클래스는 validation_utils_enhanced.dart로 이동됨

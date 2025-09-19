@@ -62,15 +62,6 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
     setState(() {});
   }
 
-  String _generateShareLink(PetProfileEntity pet) {
-    return 'https://aipet.app/share/${pet.name.toLowerCase()}-${pet.id}';
-  }
-
-  String _getGenderString(PetProfileEntity pet) {
-    // additionalInfo에서 성별 조회
-    return pet.additionalInfo?['gender'] ?? 'unknown';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

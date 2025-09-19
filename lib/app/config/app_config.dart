@@ -403,17 +403,17 @@ class TestConfig extends AppConfig {
   int get databaseVersion => 1;
 
   @override
-  String get lineChannelId => 'test_line_channel_id';
+  String get lineChannelId => '';
 
   @override
-  String get openaiApiKey => 'test_openai_api_key';
+  String get openaiApiKey => '';
 
   @override
   String get openaiModel => 'gpt-3.5-turbo';
 
   @override
-  String get weatherApiKey => 'test_weather_api_key';
+  String get weatherApiKey => '';
 
   @override
-  String get googleMapsApiKey => 'test_google_maps_api_key';
+  String get googleMapsApiKey => '';
 }

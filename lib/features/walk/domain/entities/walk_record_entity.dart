@@ -1,3 +1,6 @@
+import '../../../../../shared/shared.dart';
+import 'walk_location_entity.dart';
+
 class WalkRecordEntity {
   final String id;
   final String title;
@@ -78,42 +81,19 @@ class WalkRecordEntity {
   }
 
   /// 산책 시간 문자열 반환
-  String get timeString {
-    final hour = startTime.hour.toString().padLeft(2, '0');
-    final minute = startTime.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
+  String get timeString => DateTimeUtils.formatTime(startTime);
 
   /// 산책 날짜 문자열 반환
-  String get dateString {
-    final day = startTime.day.toString().padLeft(2, '0');
-    final month = startTime.month.toString().padLeft(2, '0');
-    final year = startTime.year.toString();
-    return '$day.$month.$year';
-  }
+  String get dateString => DateTimeUtils.formatDate(startTime);
 
   /// 전체 날짜 시간 문자열 반환
-  String get fullDateTimeString {
-    return '$dateString | $timeString';
-  }
+  String get fullDateTimeString => DateTimeUtils.formatDateTime(startTime);
 
   /// 산책 시간 포맷팅
-  String get formattedDuration {
-    if (duration == null) return '--:--';
-    final hours = duration!.inHours;
-    final minutes = duration!.inMinutes % 60;
-    if (hours > 0) {
-      return '${hours}h ${minutes}m';
-    } else {
-      return '${minutes}m';
-    }
-  }
+  String get formattedDuration => DateTimeUtils.formatDurationSafe(duration);
 
   /// 거리 포맷팅
-  String get formattedDistance {
-    if (distance == null) return '-- km';
-    return '${distance!.toStringAsFixed(1)} km';
-  }
+  String get formattedDistance => DateTimeUtils.formatDistance(distance);
 }
 
 enum WalkStatus {
@@ -121,36 +101,4 @@ enum WalkStatus {
   completed, // 완료
   paused, // 일시정지
   cancelled, // 취소
-}
-
-class WalkLocation {
-  final double latitude;
-  final double longitude;
-  final DateTime timestamp;
-  final double? altitude;
-  final double? accuracy;
-
-  const WalkLocation({
-    required this.latitude,
-    required this.longitude,
-    required this.timestamp,
-    this.altitude,
-    this.accuracy,
-  });
-
-  WalkLocation copyWith({
-    double? latitude,
-    double? longitude,
-    DateTime? timestamp,
-    double? altitude,
-    double? accuracy,
-  }) {
-    return WalkLocation(
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
-      timestamp: timestamp ?? this.timestamp,
-      altitude: altitude ?? this.altitude,
-      accuracy: accuracy ?? this.accuracy,
-    );
-  }
 }
