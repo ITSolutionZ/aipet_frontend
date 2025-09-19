@@ -1,19 +1,7 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/features/home/data/data.dart';
 import 'package:aipet_frontend/features/home/domain/domain.dart';
-
-class HomeDashboardResult {
-  final bool isSuccess;
-  final String message;
-  final dynamic data;
-
-  const HomeDashboardResult._(this.isSuccess, this.message, this.data);
-
-  factory HomeDashboardResult.success(String message, [dynamic data]) =>
-      HomeDashboardResult._(true, message, data);
-  factory HomeDashboardResult.failure(String message) =>
-      HomeDashboardResult._(false, message, null);
-}
+import 'package:aipet_frontend/shared/shared.dart';
 
 class HomeDashboardController extends BaseController {
   HomeDashboardController(super.ref);
@@ -22,97 +10,100 @@ class HomeDashboardController extends BaseController {
   late final HomeRepository _repository = HomeRepositoryImpl();
   late final GetDashboardDataUseCase _getDashboardDataUseCase =
       GetDashboardDataUseCase(_repository);
-  late final GetPetSummaryUseCase _getPetSummaryUseCase =
-      GetPetSummaryUseCase(_repository);
+  late final GetPetSummaryUseCase _getPetSummaryUseCase = GetPetSummaryUseCase(
+    _repository,
+  );
   late final GetWeatherDataUseCase _getWeatherDataUseCase =
       GetWeatherDataUseCase(_repository);
 
   /// 홈 화면 초기화
-  Future<HomeDashboardResult> initializeHome() async {
+  Future<Result<HomeDashboardEntity>> initializeHome() async {
     try {
       final dashboardData = await _getDashboardDataUseCase.call();
-      return HomeDashboardResult.success('홈 화면이 로드되었습니다', dashboardData);
+      return Result.success('ホーム画面がロードされました', dashboardData);
     } catch (error) {
       handleError(error);
-      return HomeDashboardResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 펫 목록 확인
-  Future<bool> hasPets() async {
+  Future<Result<bool>> hasPets() async {
     try {
       final petSummaries = await _getPetSummaryUseCase.call();
-      return petSummaries.isNotEmpty;
+      return Result.success('ペットリストの確認が完了しました', petSummaries.isNotEmpty);
     } catch (error) {
       handleError(error);
-      return false;
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 날씨 정보 로드
   /// [userTriggered] 사용자가 직접 요청한 경우 true
-  Future<HomeDashboardResult> loadWeatherInfo({
+  Future<Result<WeatherEntity>> loadWeatherInfo({
     bool userTriggered = false,
   }) async {
     try {
       final weather = await _getWeatherDataUseCase.call(
         userTriggered: userTriggered,
       );
-      return HomeDashboardResult.success('날씨 정보가 로드되었습니다', weather);
+      return Result.success('天気情報がロードされました', weather);
     } catch (error) {
       handleError(error);
-      return HomeDashboardResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 산책 정보 로드
-  Future<HomeDashboardResult> loadWalkInfo() async {
+  Future<Result<WalkSummary>> loadWalkInfo() async {
     try {
       final walkSummary = await _repository.getWalkSummary();
-      return HomeDashboardResult.success('산책 정보가 로드되었습니다', walkSummary);
+      return Result.success('散歩情報がロードされました', walkSummary);
     } catch (error) {
       handleError(error);
-      return HomeDashboardResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 건강 정보 로드
-  Future<HomeDashboardResult> loadHealthInfo() async {
+  Future<Result<HealthSummary>> loadHealthInfo() async {
     try {
       final healthSummary = await _repository.getPetHealthSummary();
-      return HomeDashboardResult.success('건강 정보가 로드되었습니다', healthSummary);
+      return Result.success('健康情報がロードされました', healthSummary);
     } catch (error) {
       handleError(error);
-      return HomeDashboardResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 예약 정보 로드
-  Future<HomeDashboardResult> loadAppointmentInfo() async {
+  Future<Result<List<AppointmentSummary>>> loadAppointmentInfo() async {
     try {
       final appointments = await _repository.getUpcomingAppointments();
-      return HomeDashboardResult.success('예약 정보가 로드되었습니다', appointments);
+      return Result.success('予約情報がロードされました', appointments);
     } catch (error) {
       handleError(error);
-      return HomeDashboardResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
   /// 프로필 업데이트
-  Future<HomeDashboardResult> updateProfile() async {
+  Future<Result<Map<String, dynamic>>> updateProfile() async {
     try {
       // 펫 프로필 정보를 다시 로드하여 최신 상태로 업데이트
       final petSummaries = await _getPetSummaryUseCase.call();
       final dashboardData = await _getDashboardDataUseCase.call();
 
-      // 프로필 업데이트 성공 메시지와 함께 업데이트된 데이터 반환
-      return HomeDashboardResult.success(
-        '프로필이 업데이트되었습니다 (${petSummaries.length}마리 펫 정보)',
-        {'pets': petSummaries, 'dashboard': dashboardData},
-      );
+      final result = {
+        'pets': petSummaries,
+        'dashboard': dashboardData,
+        'petCount': petSummaries.length,
+      };
+
+      return Result.success('プロフィールが更新されました', result);
     } catch (error) {
       handleError(error);
-      return HomeDashboardResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 }

@@ -6,9 +6,10 @@
 import 'dart:async' as _i4;
 
 import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart'
-    as _i2;
+    as _i5;
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart'
     as _i3;
+import 'package:aipet_frontend/shared/shared.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -25,21 +26,8 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeUserProfileEntity_0 extends _i1.SmartFake
-    implements _i2.UserProfileEntity {
-  _FakeUserProfileEntity_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeAppSettingsEntity_1 extends _i1.SmartFake
-    implements _i2.AppSettingsEntity {
-  _FakeAppSettingsEntity_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeDataExportResult_2 extends _i1.SmartFake
-    implements _i2.DataExportResult {
-  _FakeDataExportResult_2(Object parent, Invocation parentInvocation)
+class _FakeResult_0<T> extends _i1.SmartFake implements _i2.Result<T> {
+  _FakeResult_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -53,97 +41,129 @@ class MockSettingsRepository extends _i1.Mock
   }
 
   @override
-  _i4.Future<_i2.UserProfileEntity> getUserProfile() =>
+  _i4.Future<_i2.Result<_i5.UserProfileEntity>> getUserProfile() =>
       (super.noSuchMethod(
             Invocation.method(#getUserProfile, []),
-            returnValue: _i4.Future<_i2.UserProfileEntity>.value(
-              _FakeUserProfileEntity_0(
+            returnValue: _i4.Future<_i2.Result<_i5.UserProfileEntity>>.value(
+              _FakeResult_0<_i5.UserProfileEntity>(
                 this,
                 Invocation.method(#getUserProfile, []),
               ),
             ),
           )
-          as _i4.Future<_i2.UserProfileEntity>);
+          as _i4.Future<_i2.Result<_i5.UserProfileEntity>>);
 
   @override
-  _i4.Future<bool> updateUserProfile(_i2.UserProfileEntity? profile) =>
+  _i4.Future<_i2.Result<_i5.UserProfileEntity>> updateUserProfile(
+    _i5.UserProfileEntity? profile,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#updateUserProfile, [profile]),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i4.Future<_i2.Result<_i5.UserProfileEntity>>.value(
+              _FakeResult_0<_i5.UserProfileEntity>(
+                this,
+                Invocation.method(#updateUserProfile, [profile]),
+              ),
+            ),
           )
-          as _i4.Future<bool>);
+          as _i4.Future<_i2.Result<_i5.UserProfileEntity>>);
 
   @override
-  _i4.Future<bool> changePassword(_i2.PasswordChangeRequest? request) =>
+  _i4.Future<_i2.Result<void>> changePassword(
+    _i5.PasswordChangeRequest? request,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#changePassword, [request]),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i4.Future<_i2.Result<void>>.value(
+              _FakeResult_0<void>(
+                this,
+                Invocation.method(#changePassword, [request]),
+              ),
+            ),
           )
-          as _i4.Future<bool>);
+          as _i4.Future<_i2.Result<void>>);
 
   @override
-  _i4.Future<bool> deleteAccount() =>
+  _i4.Future<_i2.Result<void>> deleteAccount() =>
       (super.noSuchMethod(
             Invocation.method(#deleteAccount, []),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i4.Future<_i2.Result<void>>.value(
+              _FakeResult_0<void>(this, Invocation.method(#deleteAccount, [])),
+            ),
           )
-          as _i4.Future<bool>);
+          as _i4.Future<_i2.Result<void>>);
 
   @override
-  _i4.Future<_i2.AppSettingsEntity> getAppSettings() =>
+  _i4.Future<_i2.Result<_i5.AppSettingsEntity>> getAppSettings() =>
       (super.noSuchMethod(
             Invocation.method(#getAppSettings, []),
-            returnValue: _i4.Future<_i2.AppSettingsEntity>.value(
-              _FakeAppSettingsEntity_1(
+            returnValue: _i4.Future<_i2.Result<_i5.AppSettingsEntity>>.value(
+              _FakeResult_0<_i5.AppSettingsEntity>(
                 this,
                 Invocation.method(#getAppSettings, []),
               ),
             ),
           )
-          as _i4.Future<_i2.AppSettingsEntity>);
+          as _i4.Future<_i2.Result<_i5.AppSettingsEntity>>);
 
   @override
-  _i4.Future<bool> saveAppSettings(_i2.AppSettingsEntity? settings) =>
+  _i4.Future<_i2.Result<_i5.AppSettingsEntity>> saveAppSettings(
+    _i5.AppSettingsEntity? settings,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#saveAppSettings, [settings]),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i4.Future<_i2.Result<_i5.AppSettingsEntity>>.value(
+              _FakeResult_0<_i5.AppSettingsEntity>(
+                this,
+                Invocation.method(#saveAppSettings, [settings]),
+              ),
+            ),
           )
-          as _i4.Future<bool>);
+          as _i4.Future<_i2.Result<_i5.AppSettingsEntity>>);
 
   @override
-  _i4.Future<_i2.DataExportResult> exportAppData() =>
+  _i4.Future<_i2.Result<_i5.DataExportResult>> exportAppData() =>
       (super.noSuchMethod(
             Invocation.method(#exportAppData, []),
-            returnValue: _i4.Future<_i2.DataExportResult>.value(
-              _FakeDataExportResult_2(
+            returnValue: _i4.Future<_i2.Result<_i5.DataExportResult>>.value(
+              _FakeResult_0<_i5.DataExportResult>(
                 this,
                 Invocation.method(#exportAppData, []),
               ),
             ),
           )
-          as _i4.Future<_i2.DataExportResult>);
+          as _i4.Future<_i2.Result<_i5.DataExportResult>>);
 
   @override
-  _i4.Future<bool> importAppData(String? filePath) =>
+  _i4.Future<_i2.Result<void>> importAppData(String? filePath) =>
       (super.noSuchMethod(
             Invocation.method(#importAppData, [filePath]),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i4.Future<_i2.Result<void>>.value(
+              _FakeResult_0<void>(
+                this,
+                Invocation.method(#importAppData, [filePath]),
+              ),
+            ),
           )
-          as _i4.Future<bool>);
+          as _i4.Future<_i2.Result<void>>);
 
   @override
-  _i4.Future<bool> clearAppCache() =>
+  _i4.Future<_i2.Result<void>> clearAppCache() =>
       (super.noSuchMethod(
             Invocation.method(#clearAppCache, []),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i4.Future<_i2.Result<void>>.value(
+              _FakeResult_0<void>(this, Invocation.method(#clearAppCache, [])),
+            ),
           )
-          as _i4.Future<bool>);
+          as _i4.Future<_i2.Result<void>>);
 
   @override
-  _i4.Future<int> getCacheSize() =>
+  _i4.Future<_i2.Result<int>> getCacheSize() =>
       (super.noSuchMethod(
             Invocation.method(#getCacheSize, []),
-            returnValue: _i4.Future<int>.value(0),
+            returnValue: _i4.Future<_i2.Result<int>>.value(
+              _FakeResult_0<int>(this, Invocation.method(#getCacheSize, [])),
+            ),
           )
-          as _i4.Future<int>);
+          as _i4.Future<_i2.Result<int>>);
 }

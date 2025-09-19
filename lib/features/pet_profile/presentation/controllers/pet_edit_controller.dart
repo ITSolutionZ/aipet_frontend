@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../shared/shared.dart';
 import '../../data/providers/pet_profile_providers.dart';
 import '../../domain/entities/pet_profile_entity.dart';
 import '../../domain/usecases/update_pet_profile_usecase.dart';
@@ -45,17 +46,15 @@ class PetEditState {
 
   /// 에러/성공 메시지 클리어
   PetEditState clearMessages() {
-    return copyWith(
-      errorMessage: null,
-      successMessage: null,
-    );
+    return copyWith(errorMessage: null, successMessage: null);
   }
 }
 
 /// 펫 편집 컨트롤러
 @riverpod
 class PetEditNotifier extends _$PetEditNotifier {
-  UpdatePetProfileUseCase get _updateUseCase => ref.read(updatePetProfileUseCaseProvider);
+  UpdatePetProfileUseCase get _updateUseCase =>
+      ref.read(updatePetProfileUseCaseProvider);
 
   @override
   PetEditState build() => const PetEditState();
@@ -88,27 +87,24 @@ class PetEditNotifier extends _$PetEditNotifier {
     final updatedValues = Map<String, dynamic>.from(state.editingValues);
     updatedValues[key] = value;
 
-    state = state.copyWith(
-      editingValues: updatedValues,
-      errorMessage: null,
-    );
+    state = state.copyWith(editingValues: updatedValues, errorMessage: null);
   }
 
   /// 이미지 선택
   void selectImage(String imagePath) {
-    state = state.copyWith(
-      selectedImagePath: imagePath,
-      errorMessage: null,
-    );
+    state = state.copyWith(selectedImagePath: imagePath, errorMessage: null);
   }
 
   /// 변경사항 저장
-  Future<bool> saveChanges(PetProfileEntity originalPet, String currentUserId) async {
+  Future<Result<bool>> saveChanges(
+    PetProfileEntity originalPet,
+    String currentUserId,
+  ) async {
     // 입력 유효성 검증
     final validationError = _validateInput();
     if (validationError != null) {
       state = state.copyWith(errorMessage: validationError);
-      return false;
+      return Result.failure(validationError);
     }
 
     state = state.copyWith(isLoading: true, errorMessage: null);
@@ -123,44 +119,23 @@ class PetEditNotifier extends _$PetEditNotifier {
         userId: currentUserId,
       );
 
-      // 결과 처리
-      switch (result) {
-        case UpdatePetProfileSuccess():
-          state = state.copyWith(
-            isLoading: false,
-            isEditMode: false,
-            successMessage: PetProfileConstants.saveSuccess,
-          );
-          return true;
-
-        case UpdatePetProfileAccessDenied():
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: PetProfileConstants.accessDeniedMessage,
-          );
-          return false;
-
-        case UpdatePetProfileValidationError():
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: result.message,
-          );
-          return false;
-
-        case UpdatePetProfileNotFound():
-        case UpdatePetProfileError():
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: PetProfileConstants.saveError,
-          );
-          return false;
+      if (result.isSuccess) {
+        state = state.copyWith(
+          isLoading: false,
+          isEditMode: false,
+          successMessage: PetProfileConstants.saveSuccess,
+        );
+        return Result.success('Pet profile updated successfully', true);
+      } else {
+        state = state.copyWith(isLoading: false, errorMessage: result.message);
+        return Result.failure(result.message);
       }
     } catch (error) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: '${PetProfileConstants.saveError}: $error',
       );
-      return false;
+      return Result.failure('Failed to save pet profile: $error');
     }
   }
 
@@ -203,15 +178,17 @@ class PetEditNotifier extends _$PetEditNotifier {
     final weight = weightStr.isNotEmpty ? double.tryParse(weightStr) : null;
 
     // 건강 정보 업데이트
-    final updatedHealthInfo = originalPet.healthInfo?.copyWith(
-      weight: weight,
-      currentMedication: values['currentMedication'] as String?,
-      veterinarianNotes: values['veterinarianNotes'] as String?,
-    ) ?? HealthInfo(
-      weight: weight,
-      currentMedication: values['currentMedication'] as String?,
-      veterinarianNotes: values['veterinarianNotes'] as String?,
-    );
+    final updatedHealthInfo =
+        originalPet.healthInfo?.copyWith(
+          weight: weight,
+          currentMedication: values['currentMedication'] as String?,
+          veterinarianNotes: values['veterinarianNotes'] as String?,
+        ) ??
+        HealthInfo(
+          weight: weight,
+          currentMedication: values['currentMedication'] as String?,
+          veterinarianNotes: values['veterinarianNotes'] as String?,
+        );
 
     return originalPet.copyWith(
       name: values['name'] as String,
@@ -229,7 +206,8 @@ class PetEditNotifier extends _$PetEditNotifier {
   }
 
   /// 편집된 값이 있는지 확인
-  bool get hasUnsavedChanges => state.editingValues.isNotEmpty && state.isEditMode;
+  bool get hasUnsavedChanges =>
+      state.editingValues.isNotEmpty && state.isEditMode;
 
   /// 현재 편집 중인 이름
   String get editingName => state.editingValues['name'] as String? ?? '';

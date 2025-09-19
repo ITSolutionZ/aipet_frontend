@@ -1,3 +1,4 @@
+import '../../../../shared/shared.dart';
 import '../entities/pet_profile_entity.dart';
 import '../exceptions/pet_profile_exceptions.dart';
 import '../repositories/pet_profile_repository.dart';
@@ -10,16 +11,13 @@ class UpdatePetProfileUseCase {
   final PetProfileRepository _repository;
   final PetProfileDomainService _domainService;
 
-  UpdatePetProfileUseCase(
-    this._repository,
-    this._domainService,
-  );
+  UpdatePetProfileUseCase(this._repository, this._domainService);
 
   /// 펫 프로필 업데이트
   ///
   /// [profile] 업데이트할 프로필 정보
   /// [userId] 업데이트 요청자 ID
-  Future<UpdatePetProfileResult> execute({
+  Future<Result<PetProfileEntity>> execute({
     required PetProfileEntity profile,
     required String userId,
   }) async {
@@ -29,7 +27,7 @@ class UpdatePetProfileUseCase {
 
       // 2. 업데이트 권한 확인
       if (!_domainService.canEditProfile(existingProfile, userId)) {
-        return UpdatePetProfileResult.accessDenied(
+        return Result.failure(
           'User $userId does not have permission to edit this profile',
         );
       }
@@ -37,22 +35,25 @@ class UpdatePetProfileUseCase {
       // 3. 비즈니스 규칙 검증
       final validationResult = _validateProfileUpdate(existingProfile, profile);
       if (validationResult != null) {
-        return UpdatePetProfileResult.validationError(validationResult);
+        return Result.failure(validationResult);
       }
 
       // 4. 프로필 업데이트 실행
       final updatedProfile = await _repository.updatePetProfile(profile);
 
-      return UpdatePetProfileResult.success(updatedProfile);
+      return Result.success('Pet profile updated successfully', updatedProfile);
     } on ProfileNotFoundException {
-      return UpdatePetProfileResult.notFound('Pet profile not found: ${profile.id}');
+      return Result.failure('Pet profile not found: ${profile.id}');
     } catch (error) {
-      return UpdatePetProfileResult.error('Failed to update pet profile: $error');
+      return Result.failure('Failed to update pet profile: $error');
     }
   }
 
   /// 프로필 업데이트 유효성 검증
-  String? _validateProfileUpdate(PetProfileEntity existing, PetProfileEntity updated) {
+  String? _validateProfileUpdate(
+    PetProfileEntity existing,
+    PetProfileEntity updated,
+  ) {
     // 기본 정보 검증
     if (updated.name.trim().isEmpty) {
       return 'Pet name cannot be empty';
@@ -99,40 +100,3 @@ class UpdatePetProfileUseCase {
     return null;
   }
 }
-
-/// Update Pet Profile 결과
-sealed class UpdatePetProfileResult {
-  const UpdatePetProfileResult();
-
-  const factory UpdatePetProfileResult.success(PetProfileEntity profile) = UpdatePetProfileSuccess;
-  const factory UpdatePetProfileResult.notFound(String message) = UpdatePetProfileNotFound;
-  const factory UpdatePetProfileResult.accessDenied(String message) = UpdatePetProfileAccessDenied;
-  const factory UpdatePetProfileResult.validationError(String message) = UpdatePetProfileValidationError;
-  const factory UpdatePetProfileResult.error(String message) = UpdatePetProfileError;
-}
-
-class UpdatePetProfileSuccess extends UpdatePetProfileResult {
-  final PetProfileEntity profile;
-  const UpdatePetProfileSuccess(this.profile);
-}
-
-class UpdatePetProfileNotFound extends UpdatePetProfileResult {
-  final String message;
-  const UpdatePetProfileNotFound(this.message);
-}
-
-class UpdatePetProfileAccessDenied extends UpdatePetProfileResult {
-  final String message;
-  const UpdatePetProfileAccessDenied(this.message);
-}
-
-class UpdatePetProfileValidationError extends UpdatePetProfileResult {
-  final String message;
-  const UpdatePetProfileValidationError(this.message);
-}
-
-class UpdatePetProfileError extends UpdatePetProfileResult {
-  final String message;
-  const UpdatePetProfileError(this.message);
-}
-

@@ -47,7 +47,12 @@ class UserProfileNotifier extends _$UserProfileNotifier {
   @override
   Future<UserProfileEntity> build() async {
     final useCase = ref.watch(getUserProfileUseCaseProvider);
-    return useCase();
+    final result = await useCase();
+    if (result.isSuccess) {
+      return result.data!;
+    } else {
+      throw Exception(result.message);
+    }
   }
 
   /// 프로필 새로고침
@@ -55,18 +60,25 @@ class UserProfileNotifier extends _$UserProfileNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final useCase = ref.read(getUserProfileUseCaseProvider);
-      return useCase();
+      final result = await useCase();
+      if (result.isSuccess) {
+        return result.data!;
+      } else {
+        throw Exception(result.message);
+      }
     });
   }
 
   /// 프로필 업데이트
   Future<bool> updateProfile(UserProfileEntity profile) async {
     final useCase = ref.read(updateUserProfileUseCaseProvider);
-    final success = await useCase(profile);
-    if (success) {
+    final result = await useCase(profile);
+    if (result.isSuccess) {
       await refresh();
+      return true;
+    } else {
+      return false;
     }
-    return success;
   }
 }
 
@@ -76,7 +88,12 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   @override
   Future<AppSettingsEntity> build() async {
     final useCase = ref.watch(getAppSettingsUseCaseProvider);
-    return useCase();
+    final result = await useCase();
+    if (result.isSuccess) {
+      return result.data!;
+    } else {
+      throw Exception(result.message);
+    }
   }
 
   /// 설정 새로고침
@@ -84,17 +101,24 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final useCase = ref.read(getAppSettingsUseCaseProvider);
-      return useCase();
+      final result = await useCase();
+      if (result.isSuccess) {
+        return result.data!;
+      } else {
+        throw Exception(result.message);
+      }
     });
   }
 
   /// 설정 저장
   Future<bool> saveSettings(AppSettingsEntity settings) async {
     final useCase = ref.read(saveAppSettingsUseCaseProvider);
-    final success = await useCase(settings);
-    if (success) {
+    final result = await useCase(settings);
+    if (result.isSuccess) {
       state = AsyncValue.data(settings);
+      return true;
+    } else {
+      return false;
     }
-    return success;
   }
 }

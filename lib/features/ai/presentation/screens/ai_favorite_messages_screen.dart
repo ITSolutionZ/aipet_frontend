@@ -607,47 +607,11 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
   }
 
   void _showClearAllDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
+    ConfirmationDialogComponent.showClear(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            const Icon(Icons.warning, color: Colors.orange),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              '確認',
-              style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark),
-            ),
-          ],
-        ),
-        content: Text(
-          '全てのお気に入りを削除しますか？\nこの操作は取り消せません。',
-          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'キャンセル',
-              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _clearAllFavorites(ref);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(
-              '削除する',
-              style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
+      title: 'お気に入りクリア',
+      message: '全てのお気に入りを削除しますか？\nこの操作は取り消せません。',
+      onConfirm: () => _clearAllFavorites(ref),
     );
   }
 

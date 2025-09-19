@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../shared/shared.dart';
+import '../../../../app/config/app_config.dart';
 import '../../../../app/router/routes/route_constants.dart';
 import '../controllers/controllers.dart';
 import '../widgets/widgets.dart';
@@ -34,8 +35,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// 펫 목록을 확인하고 홈 화면 초기화
   Future<void> _checkPetsAndRedirect() async {
     try {
-      await _dashboardController.hasPets();
-      await _initializeHomeScreen();
+      final result = await _dashboardController.hasPets();
+      if (result.isSuccess && result.data == true) {
+        await _initializeHomeScreen();
+      } else {
+        await _initializeHomeScreen();
+      }
     } catch (error) {
       await _initializeHomeScreen();
     }
@@ -50,7 +55,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     } catch (error) {
       if (mounted) {
-        _showErrorSnackBar('홈 화면을 불러오는 중 오류가 발생했습니다.');
+        _showErrorSnackBar('ホーム画面を読み込む中にエラーが発生しました。');
       }
     }
   }
@@ -58,27 +63,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// 알림 아이콘 탭 처리
   Future<void> _handleNotificationTap() async {
     try {
-      final notificationResult = await _notificationController
-          .handleNotification();
+      final result = await _notificationController.handleNotification();
       if (mounted) {
-        _handleNotificationResult(notificationResult);
-        _showNotificationSnackBar();
-        context.go(RouteConstants.notificationListRoute);
+        if (result.isSuccess) {
+          _handleNotificationResult(result.data ?? []);
+          _showNotificationSnackBar();
+          context.go(RouteConstants.notificationListRoute);
+        } else {
+          _showErrorSnackBar(result.message);
+        }
       }
     } catch (error) {
       if (mounted) {
-        _showErrorSnackBar('알림을 확인하는 중 오류가 발생했습니다.');
+        _showErrorSnackBar('通知を確認する中にエラーが発生しました。');
       }
     }
   }
 
   /// 알림 결과 처리
-  void _handleNotificationResult(dynamic notificationResult) {
-    if (notificationResult.isSuccess && notificationResult.data != null) {
-      final notifications = notificationResult.data as List<String>;
-      if (notifications.isNotEmpty) {
-        _showSuccessSnackBar(notificationResult.message);
-      }
+  void _handleNotificationResult(List<String> notifications) {
+    if (notifications.isNotEmpty) {
+      _showSuccessSnackBar('${notifications.length}件の通知があります');
     }
   }
 
@@ -142,11 +147,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     // 알림이 있을 때만 스낵바 표시
     if (notificationCount > 0) {
-      Future.delayed(const Duration(milliseconds: 500), () {
+      if (AppConfig.current.environment == 'test') {
+        // 테스트 환경에서는 즉시 실행
         if (mounted) {
           _showNotificationSnackBar();
         }
-      });
+      } else {
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) {
+            _showNotificationSnackBar();
+          }
+        });
+      }
     }
   }
 

@@ -18,8 +18,18 @@ PetRepository petRepository(Ref ref) {
 class PetsNotifier extends _$PetsNotifier {
   @override
   Future<List<PetProfileEntity>> build() async {
-    final repository = ref.watch(petRepositoryProvider);
-    return repository.getAllPets();
+    try {
+      final repository = ref.read(petRepositoryProvider);
+      final result = await repository.getAllPets();
+      if (result.isSuccess) {
+        return result.data ?? [];
+      } else {
+        throw Exception(result.message);
+      }
+    } catch (e) {
+      print('Error in PetsNotifier.build(): $e');
+      rethrow;
+    }
   }
 
   /// 펫 목록 새로고침
@@ -27,30 +37,47 @@ class PetsNotifier extends _$PetsNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final repository = ref.read(petRepositoryProvider);
-      return repository.getAllPets();
+      final result = await repository.getAllPets();
+      if (result.isSuccess) {
+        return result.data ?? [];
+      } else {
+        throw Exception(result.message);
+      }
     });
   }
 
   /// 펫 생성
   Future<PetProfileEntity> createPet(PetProfileEntity pet) async {
     final repository = ref.read(petRepositoryProvider);
-    final createdPet = await repository.createPet(pet);
-    await refresh();
-    return createdPet;
+    final result = await repository.createPet(pet);
+    if (result.isSuccess) {
+      await refresh();
+      return result.data!;
+    } else {
+      throw Exception(result.message);
+    }
   }
 
   /// 펫 업데이트
   Future<void> updatePet(PetProfileEntity pet) async {
     final repository = ref.read(petRepositoryProvider);
-    await repository.updatePet(pet);
-    await refresh();
+    final result = await repository.updatePet(pet);
+    if (result.isSuccess) {
+      await refresh();
+    } else {
+      throw Exception(result.message);
+    }
   }
 
   /// 펫 삭제
   Future<void> deletePet(String id) async {
     final repository = ref.read(petRepositoryProvider);
-    await repository.deletePet(id);
-    await refresh();
+    final result = await repository.deletePet(id);
+    if (result.isSuccess) {
+      await refresh();
+    } else {
+      throw Exception(result.message);
+    }
   }
 }
 
@@ -58,7 +85,12 @@ class PetsNotifier extends _$PetsNotifier {
 @riverpod
 Future<PetProfileEntity?> petById(Ref ref, String id) async {
   final repository = ref.watch(petRepositoryProvider);
-  return repository.getPetById(id);
+  final result = await repository.getPetById(id);
+  if (result.isSuccess) {
+    return result.data;
+  } else {
+    throw Exception(result.message);
+  }
 }
 
 /// 현재 선택된 펫 프로바이더

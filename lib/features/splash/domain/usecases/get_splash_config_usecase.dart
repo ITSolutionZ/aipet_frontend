@@ -1,3 +1,4 @@
+import '../../../../shared/shared.dart';
 import '../entities/splash_entity.dart';
 import '../repositories/splash_repository.dart';
 
@@ -6,7 +7,12 @@ class GetSplashConfigUseCase {
 
   GetSplashConfigUseCase(this.repository);
 
-  Future<SplashEntity> call() async {
-    return repository.getSplashConfig();
+  Future<Result<SplashEntity>> call() async {
+    try {
+      final result = await repository.getSplashConfig();
+      return result;
+    } catch (error) {
+      return Result.failure('スプラッシュ設定の取得に失敗しました: ${error.toString()}');
+    }
   }
 }

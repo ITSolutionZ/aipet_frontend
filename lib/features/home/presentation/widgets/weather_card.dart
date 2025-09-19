@@ -82,7 +82,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
       setState(() {
         _isLoading = false;
         if (result.isSuccess && result.data != null) {
-          _weatherData = result.data as WeatherData?;
+          _weatherData = result.data;
           debugPrint(
             '🌡️ 날씨 데이터 받음: ${_weatherData!.location}, ${_weatherData!.temperature}°C, UV: ${_weatherData!.uvIndex}, Wind: ${_weatherData!.windSpeed}m/s',
           );

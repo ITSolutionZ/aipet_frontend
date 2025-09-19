@@ -1,20 +1,8 @@
 import '../../../../app/controllers/base_controller.dart';
+import '../../../../shared/shared.dart';
 import '../../../ai/data/services/openai_service.dart';
 import '../../data/models/weather_model.dart';
 import '../../data/services/weather_service.dart';
-
-class WeatherResult {
-  final bool isSuccess;
-  final String message;
-  final dynamic data;
-
-  const WeatherResult._(this.isSuccess, this.message, this.data);
-
-  factory WeatherResult.success(String message, [dynamic data]) =>
-      WeatherResult._(true, message, data);
-  factory WeatherResult.failure(String message) =>
-      WeatherResult._(false, message, null);
-}
 
 class WeatherController extends BaseController {
   WeatherController(super.ref);
@@ -24,7 +12,9 @@ class WeatherController extends BaseController {
   WeatherData? _currentWeatherData;
   String? _cachedWalkingAdvice;
   DateTime? _adviceCacheTime;
-  static const Duration _adviceCacheValidDuration = Duration(hours: 1); // 산책 조언 1시간 캐시
+  static const Duration _adviceCacheValidDuration = Duration(
+    hours: 1,
+  ); // 산책 조언 1시간 캐시
 
   // 아이콘 관련 메서드들은 WeatherIconController로 분리됨
 
@@ -36,20 +26,22 @@ class WeatherController extends BaseController {
   }
 
   /// 현재 날씨 데이터 가져오기
-  Future<WeatherResult> getCurrentWeather({bool userTriggered = false}) async {
+  Future<Result<WeatherData>> getCurrentWeather({
+    bool userTriggered = false,
+  }) async {
     try {
       final weatherData = await _weatherService.getCurrentWeather(
         userTriggered: userTriggered,
       );
       if (weatherData != null) {
         _currentWeatherData = weatherData;
-        return WeatherResult.success('날씨 정보를 가져왔습니다', weatherData);
+        return Result.success('天気情報を取得しました', weatherData);
       } else {
-        return WeatherResult.failure('날씨 정보를 가져올 수 없습니다');
+        return Result.failure('天気情報を取得できません');
       }
-    } catch (e) {
-      handleError(e);
-      return WeatherResult.failure('날씨 정보를 가져오는 중 오류가 발생했습니다: $e');
+    } catch (error) {
+      handleError(error);
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
@@ -60,15 +52,15 @@ class WeatherController extends BaseController {
   bool get hasWeatherData => _currentWeatherData != null;
 
   /// 날씨 기반 산책 조언 생성
-  Future<WeatherResult> generateWalkingAdvice() async {
+  Future<Result<String>> generateWalkingAdvice() async {
     try {
       if (_currentWeatherData == null) {
-        return WeatherResult.failure('날씨 데이터가 없습니다');
+        return Result.failure('天気データがありません');
       }
 
       // 캐시된 조언 확인
       if (_isAdviceCacheValid()) {
-        return WeatherResult.success('캐시된 산책 조언', _cachedWalkingAdvice!);
+        return Result.success('キャッシュされた散歩アドバイス', _cachedWalkingAdvice!);
       }
 
       final weatherData = _currentWeatherData!;
@@ -116,7 +108,7 @@ UV指数: ${weatherData.uvIndex.toStringAsFixed(1)}
       // 조언 캐시 업데이트
       _updateAdviceCache(shortAdvice);
 
-      return WeatherResult.success('산책 조언을 생성했습니다', shortAdvice);
+      return Result.success('散歩アドバイスを生成しました', shortAdvice);
     } catch (e) {
       handleError(e);
       // 폴백: 온도 기반 간단한 조언
@@ -125,26 +117,26 @@ UV指数: ${weatherData.uvIndex.toStringAsFixed(1)}
   }
 
   /// OpenAI 실패 시 사용할 폴백 조언
-  WeatherResult _getFallbackWalkingAdvice() {
+  Result<String> _getFallbackWalkingAdvice() {
     if (_currentWeatherData == null) {
-      return WeatherResult.success('기본 조언', '今日も散歩を楽しもう');
+      return Result.success('基本アドバイス', '今日も散歩を楽しもう');
     }
 
     final temp = _currentWeatherData!.temperature;
 
     // 온도 기반 조언
     if (temp >= 30.0) {
-      return WeatherResult.success('온도 기반 조언', '暑いので短時間で');
+      return Result.success('温度ベースアドバイス', '暑いので短時間で');
     } else if (temp >= 25.0) {
-      return WeatherResult.success('온도 기반 조언', '日陰を選んで散歩');
+      return Result.success('温度ベースアドバイス', '日陰を選んで散歩');
     } else if (temp >= 20.0) {
-      return WeatherResult.success('온도 기반 조언', '今日は散歩に最適です');
+      return Result.success('温度ベースアドバイス', '今日は散歩に最適です');
     } else if (temp >= 10.0) {
-      return WeatherResult.success('온도 기반 조언', '軽い運動がおすすめ');
+      return Result.success('温度ベースアドバイス', '軽い運動がおすすめ');
     } else if (temp >= 0.0) {
-      return WeatherResult.success('온도 기반 조언', '防寒対策をしっかり');
+      return Result.success('温度ベースアドバイス', '防寒対策をしっかり');
     } else {
-      return WeatherResult.success('온도 기반 조언', '短時間の外出を');
+      return Result.success('温度ベースアドバイス', '短時間の外出を');
     }
   }
 

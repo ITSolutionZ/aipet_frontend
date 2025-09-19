@@ -106,7 +106,7 @@ final saveAppSettingsUseCaseProvider =
 typedef SaveAppSettingsUseCaseRef =
     AutoDisposeProviderRef<SaveAppSettingsUseCase>;
 String _$userProfileNotifierHash() =>
-    r'77d96d2a9fb29f6c7a25c9d99f5c05947b9a7ab6';
+    r'5bf479cd8f48e614cb0a40f9dfe8fecd90c4c213';
 
 /// See also [UserProfileNotifier].
 @ProviderFor(UserProfileNotifier)
@@ -126,7 +126,7 @@ final userProfileNotifierProvider =
 
 typedef _$UserProfileNotifier = AutoDisposeAsyncNotifier<UserProfileEntity>;
 String _$appSettingsNotifierHash() =>
-    r'1ad6f35fef39a68babb768c41e02e25adb830b9d';
+    r'd4c77001dd10cc1b81c53e3b25e9b5c8b5878409';
 
 /// See also [AppSettingsNotifier].
 @ProviderFor(AppSettingsNotifier)

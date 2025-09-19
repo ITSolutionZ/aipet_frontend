@@ -7,7 +7,7 @@ void main() {
     late WeatherEntity testWeather;
 
     setUp(() {
-      testWeather = WeatherEntity(
+      testWeather = const WeatherEntity(
         temperature: 25.0,
         location: '東京',
         weatherId: 800,
@@ -25,7 +25,7 @@ void main() {
     group('constructor', () {
       test('should create weather with all parameters', () {
         // Act
-        final weather = WeatherEntity(
+        const weather = WeatherEntity(
           temperature: 20.0,
           location: '大阪',
           weatherId: 801,
@@ -378,7 +378,7 @@ void main() {
     group('equality and hashCode', () {
       test('should be equal when all properties are same', () {
         // Arrange
-        final sameWeather = WeatherEntity(
+        const sameWeather = WeatherEntity(
           temperature: 25.0,
           location: '東京',
           weatherId: 800,
@@ -430,7 +430,7 @@ void main() {
     late WeatherLocationEntity testLocation;
 
     setUp(() {
-      testLocation = WeatherLocationEntity(
+      testLocation = const WeatherLocationEntity(
         latitude: 35.6762,
         longitude: 139.6503,
         name: '東京',
@@ -440,7 +440,7 @@ void main() {
     group('constructor', () {
       test('should create location with all parameters', () {
         // Act
-        final location = WeatherLocationEntity(
+        const location = WeatherLocationEntity(
           latitude: 34.6937,
           longitude: 135.5023,
           name: '大阪',
@@ -509,7 +509,7 @@ void main() {
     group('equality and hashCode', () {
       test('should be equal when all properties are same', () {
         // Arrange
-        final sameLocation = WeatherLocationEntity(
+        const sameLocation = WeatherLocationEntity(
           latitude: 35.6762,
           longitude: 139.6503,
           name: '東京',

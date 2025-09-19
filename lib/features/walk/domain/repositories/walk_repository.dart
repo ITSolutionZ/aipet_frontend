@@ -1,4 +1,5 @@
 import '../entities/walk_record_entity.dart';
+import '../entities/walk_statistics_entity.dart';
 
 /// 산책 기록 리포지토리 인터페이스
 abstract class WalkRepository {
@@ -41,26 +42,5 @@ abstract class WalkRepository {
     String? petId,
     DateTime? startDate,
     DateTime? endDate,
-  });
-}
-
-/// 산책 통계 데이터
-class WalkStatistics {
-  final int totalWalks;
-  final Duration totalDuration;
-  final double totalDistance;
-  final double averageDistance;
-  final Duration averageDuration;
-  final int completedWalks;
-  final int cancelledWalks;
-
-  const WalkStatistics({
-    required this.totalWalks,
-    required this.totalDuration,
-    required this.totalDistance,
-    required this.averageDistance,
-    required this.averageDuration,
-    required this.completedWalks,
-    required this.cancelledWalks,
   });
 }

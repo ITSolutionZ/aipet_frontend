@@ -1,4 +1,4 @@
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../../shared/shared.dart';
 
 class FeedingScheduleResult {
   final bool isSuccess;
@@ -258,23 +258,6 @@ class FeedingScheduleController {
       return '급여 일정이 없습니다';
     }
 
-    final now = DateTime.now();
-    final difference = nextMealTime.difference(now);
-
-    if (difference.inMinutes <= 0) {
-      return '급여 시간입니다!';
-    } else if (difference.inMinutes <= 15) {
-      return '${difference.inMinutes}분 후 급여 시간입니다';
-    } else if (difference.inHours < 1) {
-      return '${difference.inMinutes}분 후 급여 예정';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours}시간 ${difference.inMinutes % 60}분 후 급여 예정';
-    } else {
-      return '내일 ${_formatTime(nextMealTime)} 급여 예정';
-    }
-  }
-
-  String _formatTime(DateTime dateTime) {
-    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatTimeDifference(nextMealTime);
   }
 }

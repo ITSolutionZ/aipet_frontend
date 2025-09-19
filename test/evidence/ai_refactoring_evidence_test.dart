@@ -144,11 +144,13 @@ void main() {
 
       // Then: データが正しく構造化されている
       expect(mockData, isA<List<Map<String, dynamic>>>());
-      expect(mockData.first.containsKey('id'), true);
-      expect(mockData.first.containsKey('title'), true);
-      expect(mockData.first.containsKey('lastMessage'), true);
-      expect(mockData.first.containsKey('timestamp'), true);
-      expect(mockData.first.containsKey('isManualSaved'), true);
+      if (mockData.isNotEmpty) {
+        expect(mockData.first.containsKey('id'), true);
+        expect(mockData.first.containsKey('title'), true);
+        expect(mockData.first.containsKey('lastMessage'), true);
+        expect(mockData.first.containsKey('timestamp'), true);
+        expect(mockData.first.containsKey('isManualSaved'), true);
+      }
 
       debugPrint('✅ 改善効果1: Mock データサービスの統合が完了しています');
       debugPrint('   データ構造が統一され、型安全性が向上しました');

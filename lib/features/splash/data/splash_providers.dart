@@ -14,7 +14,13 @@ SplashRepository splashRepository(Ref ref) {
 @riverpod
 Future<SplashEntity> splashConfig(Ref ref) async {
   final repository = ref.watch(splashRepositoryProvider);
-  return repository.getSplashConfig();
+  final result = await repository.getSplashConfig();
+
+  if (result.isSuccess && result.data != null) {
+    return result.data!;
+  } else {
+    throw Exception(result.message);
+  }
 }
 
 // 스플래시 시퀀스 상태 관리

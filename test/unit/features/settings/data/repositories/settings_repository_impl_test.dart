@@ -1,11 +1,16 @@
+import 'dart:convert';
+
 import 'package:aipet_frontend/features/settings/data/repositories/settings_repository_impl.dart';
 import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   late SettingsRepositoryImpl repository;
 
-  setUp(() {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
     repository = SettingsRepositoryImpl();
   });
 
@@ -15,10 +20,12 @@ void main() {
       final result = await repository.getUserProfile();
 
       // Assert
-      expect(result, isA<UserProfileEntity>());
-      expect(result.id, equals('user-1'));
-      expect(result.name, equals('田中太郎'));
-      expect(result.email, equals('tanaka@example.com'));
+      expect(result, isA<Result<UserProfileEntity>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data, isA<UserProfileEntity>());
+      expect(result.data!.id, equals('user-1'));
+      expect(result.data!.name, equals('田中太郎'));
+      expect(result.data!.email, equals('tanaka@example.com'));
     });
 
     test('should return app settings when getAppSettings is called', () async {
@@ -26,16 +33,18 @@ void main() {
       final result = await repository.getAppSettings();
 
       // Assert
-      expect(result, isA<AppSettingsEntity>());
-      expect(result.language, equals('ja'));
-      expect(result.theme, equals(ThemeMode.light));
-      expect(result.notificationsEnabled, isTrue);
-      expect(result.autoBackup, isTrue);
-      expect(result.biometricLogin, isFalse);
-      expect(result.syncFrequency, equals(DataSyncFrequency.daily));
+      expect(result, isA<Result<AppSettingsEntity>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data, isA<AppSettingsEntity>());
+      expect(result.data!.language, equals('ja'));
+      expect(result.data!.theme, equals(ThemeMode.light));
+      expect(result.data!.notificationsEnabled, isTrue);
+      expect(result.data!.autoBackup, isTrue);
+      expect(result.data!.biometricLogin, isFalse);
+      expect(result.data!.syncFrequency, equals(DataSyncFrequency.daily));
     });
 
-    test('should return true when updateUserProfile is called', () async {
+    test('should return success when updateUserProfile is called', () async {
       // Arrange
       final userProfile = UserProfileEntity(
         id: 'user-1',
@@ -50,10 +59,12 @@ void main() {
       final result = await repository.updateUserProfile(userProfile);
 
       // Assert
-      expect(result, isTrue);
+      expect(result, isA<Result<UserProfileEntity>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data, isA<UserProfileEntity>());
     });
 
-    test('should return true when saveAppSettings is called', () async {
+    test('should return success when saveAppSettings is called', () async {
       // Arrange
       const appSettings = AppSettingsEntity(
         language: 'ja',
@@ -68,11 +79,13 @@ void main() {
       final result = await repository.saveAppSettings(appSettings);
 
       // Assert
-      expect(result, isTrue);
+      expect(result, isA<Result<AppSettingsEntity>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data, isA<AppSettingsEntity>());
     });
 
     test(
-      'should return true when changePassword is called with valid request',
+      'should return success when changePassword is called with valid request',
       () async {
         // Arrange
         const request = PasswordChangeRequest(
@@ -85,12 +98,13 @@ void main() {
         final result = await repository.changePassword(request);
 
         // Assert
-        expect(result, isTrue);
+        expect(result, isA<Result<void>>());
+        expect(result.isSuccess, isTrue);
       },
     );
 
     test(
-      'should return false when changePassword is called with invalid request',
+      'should return failure when changePassword is called with invalid request',
       () async {
         // Arrange
         const request = PasswordChangeRequest(
@@ -103,16 +117,19 @@ void main() {
         final result = await repository.changePassword(request);
 
         // Assert
-        expect(result, isFalse);
+        expect(result, isA<Result<void>>());
+        expect(result.isSuccess, isFalse);
+        expect(result.message, contains('無効なパスワード変更リクエストです'));
       },
     );
 
-    test('should return true when deleteAccount is called', () async {
+    test('should return success when deleteAccount is called', () async {
       // Act
       final result = await repository.deleteAccount();
 
       // Assert
-      expect(result, isTrue);
+      expect(result, isA<Result<void>>());
+      expect(result.isSuccess, isTrue);
     });
 
     test('should return export result when exportAppData is called', () async {
@@ -120,29 +137,55 @@ void main() {
       final result = await repository.exportAppData();
 
       // Assert
-      expect(result, isA<DataExportResult>());
-      expect(result.success, isTrue);
-      expect(result.filePath, isNotNull);
-      expect(result.exportedAt, isA<DateTime>());
+      expect(result, isA<Result<DataExportResult>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data, isA<DataExportResult>());
+      expect(result.data!.success, isTrue);
+      expect(result.data!.filePath, isNotNull);
+      expect(result.data!.exportedAt, isA<DateTime>());
     });
 
-    test('should return true when importAppData is called', () async {
+    test('should return success when importAppData is called', () async {
       // Arrange
       const filePath = '/path/to/data.json';
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        'exported_data',
+        jsonEncode({
+          'userProfile': jsonEncode({
+            'id': 'user-1',
+            'name': '田中太郎',
+            'email': 'tanaka@example.com',
+            'avatarPath': 'assets/images/avatars/default.png',
+            'createdAt': DateTime.now().toIso8601String(),
+            'lastLoginAt': DateTime.now().toIso8601String(),
+          }),
+          'appSettings': jsonEncode({
+            'language': 'ja',
+            'theme': 'light',
+            'notificationsEnabled': true,
+            'autoBackup': true,
+            'biometricLogin': false,
+            'syncFrequency': 'daily',
+          }),
+        }),
+      );
 
       // Act
       final result = await repository.importAppData(filePath);
 
       // Assert
-      expect(result, isTrue);
+      expect(result, isA<Result<void>>());
+      expect(result.isSuccess, isTrue);
     });
 
-    test('should return true when clearAppCache is called', () async {
+    test('should return success when clearAppCache is called', () async {
       // Act
       final result = await repository.clearAppCache();
 
       // Assert
-      expect(result, isTrue);
+      expect(result, isA<Result<void>>());
+      expect(result.isSuccess, isTrue);
     });
 
     test('should return cache size when getCacheSize is called', () async {
@@ -150,8 +193,10 @@ void main() {
       final result = await repository.getCacheSize();
 
       // Assert
-      expect(result, isA<int>());
-      expect(result, equals(1024 * 1024 * 5)); // 5MB
+      expect(result, isA<Result<int>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data, isA<int>());
+      expect(result.data, equals(1024 * 1024 * 5)); // 5MB
     });
   });
 }

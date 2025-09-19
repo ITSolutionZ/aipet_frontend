@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/usecases/get_all_pets_usecase.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -20,7 +21,7 @@ void main() {
 
     group('call', () {
       test(
-        'should return list of PetProfileEntity when repository returns pets',
+        'should return Result<List<PetProfileEntity>> when repository returns pets',
         () async {
           // Arrange
           final expectedPets = [
@@ -30,6 +31,9 @@ void main() {
               type: 'dog',
               breed: 'Golden Retriever',
               birthDate: DateTime(2020, 1, 1),
+              age: 3,
+              gender: 'male',
+              weight: 25.0,
               imagePath: 'path/to/dog.jpg',
               ownerId: 'owner-123',
               createdAt: DateTime(2023, 1, 1),
@@ -41,6 +45,9 @@ void main() {
               type: 'cat',
               breed: 'Persian',
               birthDate: DateTime(2021, 5, 15),
+              age: 2,
+              gender: 'female',
+              weight: 4.5,
               imagePath: 'path/to/cat.jpg',
               ownerId: 'owner-123',
               createdAt: DateTime(2023, 1, 1),
@@ -48,42 +55,51 @@ void main() {
             ),
           ];
 
-          when(
-            mockRepository.getAllPets(),
-          ).thenAnswer((_) async => expectedPets);
+          when(mockRepository.getAllPets()).thenAnswer(
+            (_) async => Result.success('ペット一覧を取得しました', expectedPets),
+          );
 
           // Act
           final result = await useCase.call();
 
           // Assert
-          expect(result, equals(expectedPets));
-          expect(result.length, equals(2));
+          expect(result.isSuccess, isTrue);
+          expect(result.data, equals(expectedPets));
+          expect(result.data!.length, equals(2));
+          expect(result.message, equals('ペット一覧を取得しました'));
           verify(mockRepository.getAllPets()).called(1);
         },
       );
 
-      test('should return empty list when no pets exist', () async {
+      test('should return Result with empty list when no pets exist', () async {
         // Arrange
-        when(
-          mockRepository.getAllPets(),
-        ).thenAnswer((_) async => <PetProfileEntity>[]);
+        when(mockRepository.getAllPets()).thenAnswer(
+          (_) async => Result.success('ペット一覧を取得しました', <PetProfileEntity>[]),
+        );
 
         // Act
         final result = await useCase.call();
 
         // Assert
-        expect(result, isEmpty);
+        expect(result.isSuccess, isTrue);
+        expect(result.data, isEmpty);
+        expect(result.message, equals('ペット一覧を取得しました'));
         verify(mockRepository.getAllPets()).called(1);
       });
 
-      test('should throw exception when repository fails', () async {
+      test('should return Result.failure when repository fails', () async {
         // Arrange
         when(
           mockRepository.getAllPets(),
-        ).thenThrow(Exception('Failed to get pets'));
+        ).thenAnswer((_) async => Result.failure('Failed to get pets'));
 
-        // Act & Assert
-        expect(() => useCase.call(), throwsException);
+        // Act
+        final result = await useCase.call();
+
+        // Assert
+        expect(result.isSuccess, isFalse);
+        expect(result.message, contains('Failed to get pets'));
+        expect(result.data, isNull);
         verify(mockRepository.getAllPets()).called(1);
       });
     });

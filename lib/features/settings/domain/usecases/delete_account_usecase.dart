@@ -1,3 +1,4 @@
+import '../../../../shared/shared.dart';
 import '../repositories/settings_repository.dart';
 
 class DeleteAccountUseCase {
@@ -5,7 +6,12 @@ class DeleteAccountUseCase {
 
   DeleteAccountUseCase(this.repository);
 
-  Future<bool> call() async {
-    return repository.deleteAccount();
+  Future<Result<void>> call() async {
+    final result = await repository.deleteAccount();
+    if (result.isSuccess) {
+      return Result.success(result.message);
+    } else {
+      return Result.failure(result.message);
+    }
   }
 }

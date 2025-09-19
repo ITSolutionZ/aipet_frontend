@@ -25,7 +25,7 @@ final petRepositoryProvider = AutoDisposeProvider<PetRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef PetRepositoryRef = AutoDisposeProviderRef<PetRepository>;
-String _$petByIdHash() => r'c1d1b5647625501c81892013f967e6a73222903f';
+String _$petByIdHash() => r'583ba5753df81acfe9a66f4874b148469ddfebd8';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -175,7 +175,7 @@ class _PetByIdProviderElement
   String get id => (origin as PetByIdProvider).id;
 }
 
-String _$petsNotifierHash() => r'95aba362d5a61c76f2e88d5b060652b65417f177';
+String _$petsNotifierHash() => r'ff70fe5f88374a95ae579bd0cb0128561ebb3794';
 
 /// 모든 펫 목록 프로바이더
 ///

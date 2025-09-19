@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/pet_registor/data/repositories/pet_repository_impl.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart';
-import 'package:aipet_frontend/shared/mock_data/features/pet/pet_mock_data.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -21,6 +21,9 @@ void main() {
           type: 'dog',
           breed: 'Golden Retriever',
           birthDate: DateTime(2020, 1, 1),
+          age: 3,
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -31,9 +34,11 @@ void main() {
         final result = await repository.getAllPets();
 
         // Assert
-        expect(result, isA<List<PetProfileEntity>>());
-        expect(result.isNotEmpty, isTrue);
-        expect(result.any((pet) => pet.id == 'test-id'), isTrue);
+        expect(result, isA<Result<List<PetProfileEntity>>>());
+        expect(result.isSuccess, isTrue);
+        expect(result.data, isNotNull);
+        expect(result.data!.isNotEmpty, isTrue);
+        expect(result.data!.any((pet) => pet.id == 'test-id'), isTrue);
       });
 
       test('should return list from mock data', () async {
@@ -41,9 +46,11 @@ void main() {
         final result = await repository.getAllPets();
 
         // Assert
-        expect(result, isA<List<PetProfileEntity>>());
+        expect(result, isA<Result<List<PetProfileEntity>>>());
+        expect(result.isSuccess, isTrue);
+        expect(result.data, isNotNull);
         // Mock data has default pets, so list should not be empty
-        expect(result.isNotEmpty, isTrue);
+        expect(result.data!.isNotEmpty, isTrue);
       });
 
       test('should simulate delay', () async {
@@ -71,6 +78,9 @@ void main() {
           type: 'cat',
           breed: 'Persian',
           birthDate: DateTime(2021, 1, 1),
+          age: 2,
+          gender: 'female',
+          weight: 4.5,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -81,10 +91,12 @@ void main() {
         final result = await repository.getPetById('existing-id');
 
         // Assert
-        expect(result, isNotNull);
-        expect(result!.id, equals('existing-id'));
-        expect(result.name, equals('Existing Pet'));
-        expect(result.type, equals('cat'));
+        expect(result, isA<Result<PetProfileEntity?>>());
+        expect(result.isSuccess, isTrue);
+        expect(result.data, isNotNull);
+        expect(result.data!.id, equals('existing-id'));
+        expect(result.data!.name, equals('Existing Pet'));
+        expect(result.data!.type, equals('cat'));
       });
 
       test('should return null when pet does not exist', () async {
@@ -92,7 +104,9 @@ void main() {
         final result = await repository.getPetById('non-existent-id');
 
         // Assert
-        expect(result, isNull);
+        expect(result, isA<Result<PetProfileEntity?>>());
+        expect(result.isSuccess, isTrue);
+        expect(result.data, isNull);
       });
 
       test('should return null when pets list is empty', () async {
@@ -100,7 +114,9 @@ void main() {
         final result = await repository.getPetById('any-id');
 
         // Assert
-        expect(result, isNull);
+        expect(result, isA<Result<PetProfileEntity?>>());
+        expect(result.isSuccess, isTrue);
+        expect(result.data, isNull);
       });
     });
 
@@ -113,6 +129,9 @@ void main() {
           type: 'dog',
           breed: 'Labrador',
           birthDate: DateTime(2022, 1, 1),
+          age: 1,
+          gender: 'male',
+          weight: 30.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2022, 1, 1), // Old timestamp
           updatedAt: DateTime(2022, 1, 1), // Old timestamp
@@ -124,16 +143,19 @@ void main() {
         final result = await repository.createPet(petToCreate);
 
         // Assert
-        expect(result.id, equals('new-id'));
-        expect(result.name, equals('New Pet'));
-        expect(result.type, equals('dog'));
-        expect(result.breed, equals('Labrador'));
-        expect(result.birthDate, equals(DateTime(2022, 1, 1)));
-        expect(result.ownerId, equals('owner-123'));
+        expect(result, isA<Result<PetProfileEntity>>());
+        expect(result.isSuccess, isTrue);
+        expect(result.data, isNotNull);
+        expect(result.data!.id, equals('new-id'));
+        expect(result.data!.name, equals('New Pet'));
+        expect(result.data!.type, equals('dog'));
+        expect(result.data!.breed, equals('Labrador'));
+        expect(result.data!.birthDate, equals(DateTime(2022, 1, 1)));
+        expect(result.data!.ownerId, equals('owner-123'));
 
         // Check that timestamps were updated
-        expect(result.createdAt.isAfter(beforeCreation), isTrue);
-        expect(result.updatedAt.isAfter(beforeCreation), isTrue);
+        expect(result.data!.createdAt.isAfter(beforeCreation), isTrue);
+        expect(result.data!.updatedAt.isAfter(beforeCreation), isTrue);
       });
 
       test('should add pet to mock data', () async {
@@ -143,6 +165,9 @@ void main() {
           name: 'Added Pet',
           type: 'bird',
           birthDate: DateTime(2022, 1, 1),
+          age: 1,
+          gender: 'female',
+          weight: 0.5,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -152,8 +177,10 @@ void main() {
         await repository.createPet(petToCreate);
 
         // Assert
-        final allPets = await repository.getAllPets();
-        expect(allPets.any((pet) => pet.id == 'added-pet'), isTrue);
+        final allPetsResult = await repository.getAllPets();
+        expect(allPetsResult.isSuccess, isTrue);
+        expect(allPetsResult.data, isNotNull);
+        expect(allPetsResult.data!.any((pet) => pet.id == 'added-pet'), isTrue);
       });
 
       test('should simulate delay', () async {
@@ -163,6 +190,9 @@ void main() {
           name: 'Delay Test Pet',
           type: 'hamster',
           birthDate: DateTime(2022, 1, 1),
+          age: 1,
+          gender: 'male',
+          weight: 0.1,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -190,6 +220,9 @@ void main() {
           type: 'dog',
           breed: 'Original Breed',
           birthDate: DateTime(2020, 1, 1),
+          age: 3,
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -207,12 +240,15 @@ void main() {
         final result = await repository.updatePet(updatedPet);
 
         // Assert
-        expect(result.id, equals('update-id'));
-        expect(result.name, equals('Updated Name'));
-        expect(result.breed, equals('Updated Breed'));
-        expect(result.updatedAt.isAfter(beforeUpdate), isTrue);
+        expect(result, isA<Result<PetProfileEntity>>());
+        expect(result.isSuccess, isTrue);
+        expect(result.data, isNotNull);
+        expect(result.data!.id, equals('update-id'));
+        expect(result.data!.name, equals('Updated Name'));
+        expect(result.data!.breed, equals('Updated Breed'));
+        expect(result.data!.updatedAt.isAfter(beforeUpdate), isTrue);
         expect(
-          result.createdAt,
+          result.data!.createdAt,
           equals(DateTime(2023, 1, 1)),
         ); // Should remain same
       });
@@ -224,13 +260,19 @@ void main() {
           name: 'Non Existent',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
+          age: 3,
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
         );
 
         // Act & Assert
-        expect(() => repository.updatePet(nonExistentPet), throwsException);
+        final result = await repository.updatePet(nonExistentPet);
+        expect(result, isA<Result<PetProfileEntity>>());
+        expect(result.isSuccess, isFalse);
+        expect(result.message, contains('펫을 찾을 수 없습니다'));
       });
     });
 
@@ -242,6 +284,9 @@ void main() {
           name: 'Pet To Delete',
           type: 'cat',
           birthDate: DateTime(2020, 1, 1),
+          age: 3,
+          gender: 'female',
+          weight: 4.5,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -250,19 +295,25 @@ void main() {
 
         // Verify pet exists before deletion
         final beforeDeletion = await repository.getPetById('delete-me');
-        expect(beforeDeletion, isNotNull);
+        expect(beforeDeletion.isSuccess, isTrue);
+        expect(beforeDeletion.data, isNotNull);
 
         // Act
-        await repository.deletePet('delete-me');
+        final deleteResult = await repository.deletePet('delete-me');
+        expect(deleteResult.isSuccess, isTrue);
 
         // Assert
         final afterDeletion = await repository.getPetById('delete-me');
-        expect(afterDeletion, isNull);
+        expect(afterDeletion.isSuccess, isTrue);
+        expect(afterDeletion.data, isNull);
       });
 
       test('should throw exception when pet does not exist', () async {
         // Act & Assert
-        expect(() => repository.deletePet('non-existent-id'), throwsException);
+        final result = await repository.deletePet('non-existent-id');
+        expect(result, isA<Result<void>>());
+        expect(result.isSuccess, isFalse);
+        expect(result.message, contains('펫을 찾을 수 없습니다'));
       });
     });
 

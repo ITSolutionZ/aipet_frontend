@@ -1,3 +1,4 @@
+import '../../../../shared/shared.dart';
 import '../../../pet_registor/pet_registor.dart';
 import '../entities/entities.dart';
 
@@ -6,10 +7,10 @@ abstract class AiRepository {
   Future<List<AiMessageEntity>> getChatHistory();
 
   /// 메시지 전송하기
-  Future<AiMessageEntity> sendMessage(String message);
+  Future<Result<AiMessageEntity>> sendMessage(String message);
 
   /// 펫 정보와 함께 메시지 전송하기
-  Future<AiMessageEntity> sendMessageWithPetContext(
+  Future<Result<AiMessageEntity>> sendMessageWithPetContext(
     String message, {
     PetProfileEntity? petContext,
   });

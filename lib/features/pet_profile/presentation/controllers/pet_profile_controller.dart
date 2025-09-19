@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../shared/shared.dart';
 import '../../../pet_registor/domain/entities/pet_profile_entity.dart'
     as pet_registor_entity;
 import '../../data/providers/pet_profile_providers.dart';
@@ -72,7 +73,7 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   }
 
   /// 펫 프로필 로드
-  Future<void> loadPetProfile({
+  Future<Result<void>> loadPetProfile({
     required String petId,
     required String requesterId,
   }) async {
@@ -84,36 +85,22 @@ class PetProfileNotifier extends _$PetProfileNotifier {
         requesterId: requesterId,
       );
 
-      switch (result) {
-        case GetPetProfileSuccess():
-          state = state.copyWith(
-            selectedPet: result.profile as pet_registor_entity.PetProfileEntity,
-            isLoading: false,
-          );
-
-        case GetPetProfileNotFound():
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: '${PetProfileConstants.loadError}: Profile not found',
-          );
-
-        case GetPetProfileAccessDenied():
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: PetProfileConstants.accessDeniedMessage,
-          );
-
-        case GetPetProfileError():
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: '${PetProfileConstants.loadError}: ${result.message}',
-          );
+      if (result.isSuccess) {
+        state = state.copyWith(
+          selectedPet: result.data as pet_registor_entity.PetProfileEntity,
+          isLoading: false,
+        );
+        return Result.success('Pet profile loaded successfully');
+      } else {
+        state = state.copyWith(isLoading: false, errorMessage: result.message);
+        return Result.failure(result.message);
       }
     } catch (error) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: '${PetProfileConstants.loadError}: $error',
       );
+      return Result.failure('Failed to load pet profile: $error');
     }
   }
 
@@ -123,11 +110,12 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   }
 
   /// 프로필 새로고침
-  Future<void> refreshProfile(String requesterId) async {
+  Future<Result<void>> refreshProfile(String requesterId) async {
     final currentPet = state.selectedPet;
     if (currentPet != null) {
-      await loadPetProfile(petId: currentPet.id, requesterId: requesterId);
+      return loadPetProfile(petId: currentPet.id, requesterId: requesterId);
     }
+    return Result.failure('No pet selected for refresh');
   }
 
   /// 에러 메시지 클리어

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
+import '../../../../shared/shared.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
 import '../controllers/controllers.dart';
@@ -36,21 +37,27 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(
-      begin: SplashConstants.fadeStart,
-      end: SplashConstants.fadeEnd,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: SplashConstants.fadeInterval,
-    ));
+    _fadeAnimation =
+        Tween<double>(
+          begin: SplashConstants.fadeStart,
+          end: SplashConstants.fadeEnd,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: SplashConstants.fadeInterval,
+          ),
+        );
 
-    _scaleAnimation = Tween<double>(
-      begin: SplashConstants.scaleStart,
-      end: SplashConstants.scaleEnd,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: SplashConstants.scaleInterval,
-    ));
+    _scaleAnimation =
+        Tween<double>(
+          begin: SplashConstants.scaleStart,
+          end: SplashConstants.scaleEnd,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: SplashConstants.scaleInterval,
+          ),
+        );
   }
 
   void _startSplashSequence() {
@@ -62,11 +69,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   void _listenToSplashSequence() {
     _controller.startSplashSequence().listen(
-      (result) {
+      (Result<SplashState> result) {
         if (result.isSuccess && result.data != null) {
           // 상태 업데이트
-          ref.read(splashSequenceNotifierProvider.notifier).updateState(result.data!);
-          
+          ref
+              .read(splashSequenceNotifierProvider.notifier)
+              .updateState(result.data!);
+
           // 완료 시 다음 화면으로 이동
           if (result.data!.isCompleted) {
             _navigateToNext();
@@ -82,7 +91,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   Future<void> _navigateToNext() async {
     if (!mounted) return;
-    
+
     // 스플래시 완료 후 무조건 온보딩으로 이동
     // 다른 조건이나 분기 로직 없음
     context.go(AppRouter.onboardingRoute);
@@ -104,7 +113,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   Widget _buildContent() {
     final splashState = ref.watch(splashSequenceNotifierProvider);
-    
+
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
@@ -112,9 +121,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           opacity: _fadeAnimation,
           child: ScaleTransition(
             scale: _scaleAnimation,
-            child: SplashLogoWidget(
-              splashState: splashState,
-            ),
+            child: SplashLogoWidget(splashState: splashState),
           ),
         );
       },

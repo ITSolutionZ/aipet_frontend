@@ -1,8 +1,7 @@
 import '../../../../app/controllers/base_controller.dart';
+import '../../../../shared/shared.dart';
 import '../../data/auth_providers.dart';
-import '../../domain/auth_error.dart';
 import '../../domain/auth_form_state.dart';
-import '../../domain/result.dart';
 import '../../utils/auth_validator.dart';
 
 /// 인증 작업 결과 (Result 패턴 사용)
@@ -43,14 +42,8 @@ class AuthController extends BaseController {
     try {
       // 유효성 검사
       final validationResult = validateLoginData();
-      if (validationResult.isFailure) {
-        final error = validationResult.errorOrNull;
-        return Result.failure(
-          ValidationError(
-            field: 'login',
-            reason: error?.message ?? 'Validation failed',
-          ),
-        );
+      if (!validationResult.isSuccess) {
+        return Result.failure(validationResult.message);
       }
 
       // TODO: 실제 로그인 API 호출
@@ -58,7 +51,7 @@ class AuthController extends BaseController {
       return Result.success('ログインが完了しました。');
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return Result.fromError(error);
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
@@ -67,14 +60,8 @@ class AuthController extends BaseController {
     try {
       // 유효성 검사
       final validationResult = validateSignupData();
-      if (validationResult.isFailure) {
-        final error = validationResult.errorOrNull;
-        return Result.failure(
-          ValidationError(
-            field: 'signup',
-            reason: error?.message ?? 'Validation failed',
-          ),
-        );
+      if (!validationResult.isSuccess) {
+        return Result.failure(validationResult.message);
       }
 
       // TODO: 실제 회원가입 API 호출
@@ -82,7 +69,7 @@ class AuthController extends BaseController {
       return Result.success('会員登録が完了しました。');
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return Result.fromError(error);
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
@@ -94,7 +81,7 @@ class AuthController extends BaseController {
       return Result.success('$provider ログインが完了しました。');
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return Result.fromError(error);
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
@@ -137,7 +124,7 @@ class AuthController extends BaseController {
       return Result.success('ログアウトが完了しました。');
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return Result.fromError(error);
+      return Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
@@ -148,15 +135,13 @@ class AuthController extends BaseController {
     // 이메일 검증
     final emailError = AuthValidator.getEmailErrorMessage(state.email);
     if (emailError != null) {
-      return Result.failure(
-        ValidationError(field: 'email', reason: emailError),
-      );
+      return Result.failure(emailError);
     }
 
     // 비밀번호 검증은 UI에서 직접 처리 (AuthFormState에는 패스워드 없음)
     // 실제 검증은 TextFormField의 validator에서 수행
 
-    return Result.success(null);
+    return Result.success('유효성 검사가 완료되었습니다');
   }
 
   /// 회원가입 데이터 유효성 검사 (UI 로직 분리)
@@ -166,23 +151,19 @@ class AuthController extends BaseController {
     // 이메일 검증
     final emailError = AuthValidator.getEmailErrorMessage(state.email);
     if (emailError != null) {
-      return Result.failure(
-        ValidationError(field: 'email', reason: emailError),
-      );
+      return Result.failure(emailError);
     }
 
     // 사용자명 검증
     final usernameError = AuthValidator.getUsernameErrorMessage(state.username);
     if (usernameError != null) {
-      return Result.failure(
-        ValidationError(field: 'username', reason: usernameError),
-      );
+      return Result.failure(usernameError);
     }
 
     // 비밀번호 검증은 UI에서 직접 처리 (AuthFormState에는 패스워드 없음)
     // 실제 검증은 TextFormField의 validator에서 수행
 
-    return Result.success(null);
+    return Result.success('유효성 검사가 완료되었습니다');
   }
 
   /// 에러 메시지 초기화

@@ -246,19 +246,23 @@ class AiChatNotifier extends _$AiChatNotifier {
 
     try {
       // Repository를 통해 AI 응답 받기 (펫 정보 포함)
-      final aiResponse = await repository.sendMessageWithPetContext(
+      final result = await repository.sendMessageWithPetContext(
         content.trim(),
         petContext: state.selectedPet,
       );
 
-      // 현재 메시지 목록에 AI 응답 추가 (중복 방지)
-      final finalMessages = [...state.messages, aiResponse];
+      if (result.isSuccess && result.data != null) {
+        // 현재 메시지 목록에 AI 응답 추가 (중복 방지)
+        final finalMessages = [...state.messages, result.data!];
 
-      state = state.copyWith(
-        messages: finalMessages,
-        isTyping: false,
-        error: null,
-      );
+        state = state.copyWith(
+          messages: finalMessages,
+          isTyping: false,
+          error: null,
+        );
+      } else {
+        state = state.copyWith(isTyping: false, error: result.message);
+      }
     } catch (error) {
       state = state.copyWith(isTyping: false, error: error.toString());
     }
@@ -393,11 +397,19 @@ class AiChatController extends BaseController {
   }
 
   /// 초기 데이터 로드
-  Future<void> initializeChat() async {
-    await safeExecute(() async {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
-      await notifier.initializeChat();
-    }, errorMessage: 'チャット初期化に失敗しました');
+  Future<Result<void>> initializeChat() async {
+    final result = await safeExecuteWithTimeout(
+      () async {
+        final notifier = ref.read(aiChatNotifierProvider.notifier);
+        await notifier.initializeChat();
+      },
+      timeout: const Duration(seconds: 10),
+      errorMessage: 'チャット初期化',
+    );
+
+    return result != null
+        ? Result.success('チャットが初期化されました')
+        : Result.failure('チャット初期化に失敗しました');
   }
 
   /// 펫 선택
@@ -407,21 +419,31 @@ class AiChatController extends BaseController {
   }
 
   /// 메시지 전송
-  Future<void> sendMessage(String content) async {
-    if (content.trim().isEmpty) return;
+  Future<Result<void>> sendMessage(String content) async {
+    if (content.trim().isEmpty) {
+      return Result.failure('メッセージが空です');
+    }
 
-    await safeExecute(() async {
+    try {
       final notifier = ref.read(aiChatNotifierProvider.notifier);
       await notifier.sendMessage(content);
-    }, errorMessage: 'メッセージの送信に失敗しました');
+      return Result.success('メッセージが送信されました');
+    } catch (error) {
+      handleError(error);
+      return Result.failure(getUserFriendlyErrorMessage(error));
+    }
   }
 
   /// 채팅 기록 초기화
-  Future<void> clearChatHistory() async {
-    await safeExecute(() async {
+  Future<Result<void>> clearChatHistory() async {
+    try {
       final notifier = ref.read(aiChatNotifierProvider.notifier);
       await notifier.clearChatHistory();
-    }, errorMessage: 'チャット履歴のクリアに失敗しました');
+      return Result.success('チャット履歴がクリアされました');
+    } catch (error) {
+      handleError(error);
+      return Result.failure(getUserFriendlyErrorMessage(error));
+    }
   }
 
   /// 현재 메시지 목록 가져오기
@@ -469,18 +491,26 @@ class AiChatController extends BaseController {
   }
 
   /// 현재 채팅을 히스토리에 수동 저장
-  Future<void> saveCurrentChatManually() async {
-    await safeExecute(() async {
+  Future<Result<void>> saveCurrentChatManually() async {
+    try {
       final notifier = ref.read(aiChatNotifierProvider.notifier);
       await notifier.saveCurrentChatToHistory(isManualSave: true);
-    }, errorMessage: 'チャット履歴の保存に失敗しました');
+      return Result.success('チャット履歴が保存されました');
+    } catch (error) {
+      handleError(error);
+      return Result.failure(getUserFriendlyErrorMessage(error));
+    }
   }
 
   /// 현재 채팅을 히스토리에 자동 저장 (탭 전환시)
-  Future<void> saveCurrentChatOnTabSwitch() async {
-    await safeExecute(() async {
+  Future<Result<void>> saveCurrentChatOnTabSwitch() async {
+    try {
       final notifier = ref.read(aiChatNotifierProvider.notifier);
       await notifier.saveCurrentChatToHistory(isManualSave: false);
-    }, errorMessage: null); // 탭 전환시에는 에러 메시지를 보여주지 않음
+      return Result.success('チャット履歴が自動保存されました');
+    } catch (error) {
+      handleError(error);
+      return Result.failure(getUserFriendlyErrorMessage(error));
+    }
   }
 }

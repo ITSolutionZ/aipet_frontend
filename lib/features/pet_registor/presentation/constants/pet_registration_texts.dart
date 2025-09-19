@@ -1,3 +1,5 @@
+import '../../../../shared/shared.dart';
+
 /// 펫 등록 관련 UI 텍스트 상수
 ///
 /// 일본어 UI 텍스트를 중앙 관리하여 일관성과 유지보수성을 향상시킵니다.
@@ -12,20 +14,20 @@ class PetRegistrationTexts {
   static const String petSizeWeight = 'ペットのサイズと体重は？';
   static const String registrationComplete = '登録完了';
 
-  // 버튼 텍스트
-  static const String next = '次へ';
-  static const String back = '戻る';
-  static const String complete = '完了';
-  static const String cancel = 'キャンセル';
-  static const String save = '保存';
+  // 버튼 텍스트 (공통 텍스트 사용)
+  static const String next = AppTexts.next;
+  static const String back = AppTexts.back;
+  static const String complete = AppTexts.complete;
+  static const String cancel = AppTexts.cancel;
+  static const String save = AppTexts.save;
   static const String noTypeAvailable = '種類がない';
   static const String customPetTypeComingSoon = 'カスタムペットタイプの機能は準備中です';
 
-  // 입력 필드 관련
+  // 입력 필드 관련 (공통 텍스트 사용)
   static const String nameHint = 'ペットの名前を入力してください';
-  static const String nameRequired = '名前を入力してください';
-  static const String nameMinLength = '名前は2文字以上で入力してください';
-  static const String nameMaxLength = '名前は20文字以内で入力してください';
+  static const String nameRequired = AppTexts.requiredField;
+  static const String nameMinLength = AppTexts.tooShort;
+  static const String nameMaxLength = AppTexts.tooLong;
 
   // 펫 타입
   static const String dog = '犬';
@@ -35,21 +37,21 @@ class PetRegistrationTexts {
   static const String rabbit = 'うさぎ';
   static const String turtle = '亀';
 
-  // 에러 메시지
-  static const String networkError = 'ネットワークエラーが発生しました';
-  static const String unknownError = '予期しないエラーが発生しました';
-  static const String petNotFound = 'ペットが見つかりません';
-  static const String registrationFailed = '登録に失敗しました';
+  // 에러 메시지 (공통 텍스트 사용)
+  static const String networkError = AppTexts.networkError;
+  static const String unknownError = AppTexts.unknownError;
+  static const String petNotFound = AppTexts.petNotFound;
+  static const String registrationFailed = 'ペットの登録に失敗しました';
 
-  // 성공 메시지
-  static const String registrationSuccess = 'ペットの登録が完了しました';
-  static const String updateSuccess = 'ペット情報が更新されました';
-  static const String deleteSuccess = 'ペットが削除されました';
+  // 성공 메시지 (공통 텍스트 사용)
+  static const String registrationSuccess = AppTexts.petRegistered;
+  static const String updateSuccess = AppTexts.petUpdated;
+  static const String deleteSuccess = AppTexts.petDeleted;
 
-  // 진행 상태
-  static const String loading = '読み込み中...';
-  static const String saving = '保存中...';
-  static const String processing = '処理中...';
+  // 진행 상태 (공통 텍스트 사용)
+  static const String loading = AppTexts.loading;
+  static const String saving = AppTexts.saving;
+  static const String processing = AppTexts.processing;
 
   // Private constructor to prevent instantiation
   PetRegistrationTexts._();

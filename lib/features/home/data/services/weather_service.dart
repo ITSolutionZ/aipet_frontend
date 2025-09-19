@@ -16,7 +16,9 @@ class WeatherService {
 
   // Request debouncing 필드 - API 스팸 방지
   static DateTime? _lastRequestTime;
-  static const Duration _debounceInterval = Duration(seconds: 5); // 5초 간격으로 요청 제한
+  static const Duration _debounceInterval = Duration(
+    seconds: 5,
+  ); // 5초 간격으로 요청 제한
 
   Future<WeatherData?> getCurrentWeather({
     WeatherLocation? location,
@@ -37,13 +39,13 @@ class WeatherService {
         );
         if (cachedData != null) return cachedData;
       }
-      
+
       // 캐시된 데이터 확인
       final cachedData = await WeatherCacheService.getCached(
         location: weatherLocation,
         userTriggered: userTriggered,
       );
-      
+
       if (cachedData != null) {
         debugPrint('✅ Using cached weather data (API call skipped)');
         return cachedData;
@@ -51,6 +53,11 @@ class WeatherService {
 
       final apiKey = AppConfig.current.weatherApiKey;
       if (apiKey.isEmpty) {
+        // 테스트 환경에서는 Mock 데이터 사용
+        if (AppConfig.current.environment == 'test') {
+          debugPrint('🧪 테스트 환경 - Mock 날씨 데이터 사용');
+          return _getMockWeatherData(weatherLocation.name);
+        }
         throw Exception('Weather API key not found');
       }
 
@@ -95,13 +102,13 @@ class WeatherService {
           data,
           weatherLocation.name,
         );
-        
+
         // 새로운 캐시 서비스를 통한 캐시 저장
         await WeatherCacheService.setCached(
           weatherData: weatherData,
           location: weatherLocation,
         );
-        
+
         _lastRequestTime = DateTime.now();
         return weatherData;
       } else {
@@ -152,13 +159,13 @@ class WeatherService {
         '✅ 기본 API 성공 - Wind: ${windSpeed}m/s, UV: $estimatedUV (도쿄 기준 추정값)',
       );
       final weatherData = WeatherData.fromJson(data, weatherLocation.name);
-      
+
       // 캐시 저장
       await WeatherCacheService.setCached(
         weatherData: weatherData,
         location: weatherLocation,
       );
-      
+
       _lastRequestTime = DateTime.now();
       return weatherData;
     } else if (response.statusCode == 401) {
@@ -171,6 +178,12 @@ class WeatherService {
   }
 
   Future<WeatherLocation?> _getCurrentLocation() async {
+    // 테스트 환경에서는 바로 기본 위치 사용
+    if (AppConfig.current.environment == 'test') {
+      debugPrint('🧪 테스트 환경 - 기본 위치(도쿄) 사용');
+      return _getDefaultLocation();
+    }
+
     try {
       // 실제 GPS 위치를 먼저 시도
       debugPrint('🌍 실제 GPS 위치 취득 시도 중...');
@@ -314,7 +327,7 @@ class WeatherService {
   /// Request debouncing 확인
   bool _shouldDebounceRequest() {
     if (_lastRequestTime == null) return false;
-    
+
     final timeSinceLastRequest = DateTime.now().difference(_lastRequestTime!);
     return timeSinceLastRequest < _debounceInterval;
   }

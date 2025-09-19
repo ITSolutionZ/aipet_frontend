@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../shared/services/pet_registration_error_handler.dart';
+import '../../../../shared/shared.dart';
 import '../../data/providers/providers.dart';
 
 part 'pet_name_input_controller.g.dart';
@@ -186,9 +186,7 @@ class PetNameInputController extends _$PetNameInputController {
       state = state.copyWith(isLoading: false);
       return true;
     } catch (error) {
-      final errorMessage = PetRegistrationErrorHandler.getUserFriendlyMessage(
-        error,
-      );
+      final errorMessage = ErrorService().getUserFriendlyMessage(error);
       state = state.copyWith(isLoading: false, errorMessage: errorMessage);
       return false;
     }

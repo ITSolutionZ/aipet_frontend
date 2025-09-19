@@ -120,19 +120,10 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    TextFormField(
+                    WalkFormFields.buildTitleField(
                       controller: _titleController,
-                      decoration: InputDecoration(
-                        hintText: '例：朝の散歩、公園散歩',
-                        prefixIcon: const Icon(Icons.edit_note),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.medium),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[50],
-                      ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null || value.trim().isEmpty) {
                           return 'タイトルを入力してください。';
                         }
                         return null;
@@ -267,66 +258,54 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
 
               const SizedBox(height: AppSpacing.xl),
 
-              // 버튼 섹션
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () => context.pop(),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.lg,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.medium),
-                        ),
-                      ),
-                      child: Text(
-                        'キャンセル',
-                        style: AppFonts.base(
-                          fontSize: AppFonts.baseSize,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: _startWalk,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.pointBlue,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.lg,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.medium),
-                        ),
-                        elevation: 2,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.play_arrow, size: 20),
-                          const SizedBox(width: AppSpacing.sm),
-                          Text(
-                            '散歩を始める',
-                            style: AppFonts.fredoka(
-                              fontSize: AppFonts.baseSize,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // 버튼 섹션 - ActionButtonsComponent 사용
+              _buildActionButtons(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Container(
+      margin: EdgeInsets.zero,
+      child: Row(
+        children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: () => context.pop(),
+              icon: const Icon(Icons.close),
+              label: const Text('キャンセル'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.pointGray,
+                side: const BorderSide(color: AppColors.pointGray),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.medium),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            flex: 2,
+            child: ElevatedButton.icon(
+              onPressed: _startWalk,
+              icon: const Icon(Icons.play_arrow),
+              label: const Text('散歩を始める'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.pointBlue,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.medium),
+                ),
+                elevation: 2,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

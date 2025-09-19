@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/usecases/create_pet_usecase.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -20,7 +21,7 @@ void main() {
 
     group('call', () {
       test(
-        'should return PetProfileEntity when repository call succeeds',
+        'should return Result<PetProfileEntity> when repository call succeeds',
         () async {
           // Arrange
           final petEntity = PetProfileEntity(
@@ -29,6 +30,9 @@ void main() {
             type: 'dog',
             breed: 'Golden Retriever',
             birthDate: DateTime(2020, 1, 1),
+            age: 3,
+            gender: 'male',
+            weight: 25.0,
             imagePath: 'path/to/image.jpg',
             ownerId: 'owner-123',
             createdAt: DateTime(2023, 1, 1),
@@ -37,18 +41,20 @@ void main() {
 
           when(
             mockRepository.createPet(petEntity),
-          ).thenAnswer((_) async => petEntity);
+          ).thenAnswer((_) async => Result.success('ペットを作成しました', petEntity));
 
           // Act
           final result = await useCase.call(petEntity);
 
           // Assert
-          expect(result, equals(petEntity));
+          expect(result.isSuccess, isTrue);
+          expect(result.data, equals(petEntity));
+          expect(result.message, equals('ペットを作成しました'));
           verify(mockRepository.createPet(petEntity)).called(1);
         },
       );
 
-      test('should throw exception when repository fails', () async {
+      test('should return Result.failure when repository fails', () async {
         // Arrange
         final petEntity = PetProfileEntity(
           id: 'test-id',
@@ -56,6 +62,9 @@ void main() {
           type: 'dog',
           breed: 'Golden Retriever',
           birthDate: DateTime(2020, 1, 1),
+          age: 3,
+          gender: 'male',
+          weight: 25.0,
           imagePath: 'path/to/image.jpg',
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
@@ -64,10 +73,15 @@ void main() {
 
         when(
           mockRepository.createPet(petEntity),
-        ).thenThrow(Exception('Failed to create pet'));
+        ).thenAnswer((_) async => Result.failure('Failed to create pet'));
 
-        // Act & Assert
-        expect(() => useCase.call(petEntity), throwsException);
+        // Act
+        final result = await useCase.call(petEntity);
+
+        // Assert
+        expect(result.isSuccess, isFalse);
+        expect(result.message, contains('Failed to create pet'));
+        expect(result.data, isNull);
         verify(mockRepository.createPet(petEntity)).called(1);
       });
 
@@ -79,6 +93,9 @@ void main() {
           type: 'cat',
           breed: 'Persian',
           birthDate: DateTime(2021, 5, 15),
+          age: 2,
+          gender: 'female',
+          weight: 4.5,
           imagePath: 'path/to/cat.jpg',
           ownerId: 'owner-456',
           createdAt: DateTime(2023, 6, 1),
@@ -87,7 +104,7 @@ void main() {
 
         when(
           mockRepository.createPet(petEntity),
-        ).thenAnswer((_) async => petEntity);
+        ).thenAnswer((_) async => Result.success('ペットを作成しました', petEntity));
 
         // Act
         await useCase.call(petEntity);

@@ -1,5 +1,7 @@
 import '../../../../shared/shared.dart';
+import '../../domain/entities/walk_location_entity.dart';
 import '../../domain/entities/walk_record_entity.dart';
+import '../../domain/entities/walk_statistics_entity.dart';
 import '../../domain/repositories/walk_repository.dart';
 
 /// 산책 기록 관리 리포지토리 구현체
@@ -295,12 +297,6 @@ class WalkRepositoryImpl implements WalkRepository {
     }
 
     final totalWalks = records.length;
-    final completedWalks = records
-        .where((r) => r.status == WalkStatus.completed)
-        .length;
-    final cancelledWalks = records
-        .where((r) => r.status == WalkStatus.cancelled)
-        .length;
 
     final totalDuration = records
         .where((r) => r.duration != null)
@@ -315,14 +311,20 @@ class WalkRepositoryImpl implements WalkRepository {
         ? Duration(milliseconds: totalDuration.inMilliseconds ~/ totalWalks)
         : Duration.zero;
 
+    // 가장 최근 산책 날짜 찾기
+    final lastWalkDate = records.isNotEmpty
+        ? records
+            .map((r) => r.startTime)
+            .reduce((a, b) => a.isAfter(b) ? a : b)
+        : null;
+
     return WalkStatistics(
       totalWalks: totalWalks,
-      totalDuration: totalDuration,
       totalDistance: totalDistance,
+      totalDuration: totalDuration,
       averageDistance: averageDistance,
       averageDuration: averageDuration,
-      completedWalks: completedWalks,
-      cancelledWalks: cancelledWalks,
+      lastWalkDate: lastWalkDate,
     );
   }
 

@@ -1,3 +1,4 @@
+import '../../../../shared/shared.dart';
 import '../repositories/settings_repository.dart';
 
 class ImportAppDataUseCase {
@@ -5,7 +6,12 @@ class ImportAppDataUseCase {
 
   ImportAppDataUseCase(this.repository);
 
-  Future<bool> call(String filePath) async {
-    return repository.importAppData(filePath);
+  Future<Result<void>> call(String filePath) async {
+    final result = await repository.importAppData(filePath);
+    if (result.isSuccess) {
+      return Result.success(result.message);
+    } else {
+      return Result.failure(result.message);
+    }
   }
 }

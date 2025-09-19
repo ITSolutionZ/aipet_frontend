@@ -34,7 +34,6 @@ class PetMockData {
         'petBirthday': DateTime(2020, 3, 15),
         'petArrivalDate': DateTime(2020, 3, 15),
         'petGender': 'male',
-        'isNeutered': false,
         'petImage': File('assets/images/pets/dog.png'),
       },
     ),
@@ -61,7 +60,6 @@ class PetMockData {
         'petBirthday': DateTime(2021, 7, 22),
         'petArrivalDate': DateTime(2021, 7, 22),
         'petGender': 'female',
-        'isNeutered': false,
         'petImage': File('assets/images/pets/cat.png'),
       },
     ),
@@ -74,8 +72,13 @@ class PetMockData {
 
   /// 새 펫 추가
   static PetProfileEntity addPet(PetProfileEntity pet) {
-    _pets.add(pet);
-    return pet;
+    // ID가 비어있으면 새 ID 생성
+    final petWithId = pet.id.isEmpty
+        ? pet.copyWith(id: (_pets.length + 1).toString())
+        : pet;
+
+    _pets.add(petWithId);
+    return petWithId;
   }
 
   /// 펫 업데이트
