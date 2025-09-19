@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../shared/shared.dart';
+import '../../../../shared/services/error_service.dart';
 import '../../data/providers/providers.dart';
 
 part 'pet_name_input_controller.g.dart';

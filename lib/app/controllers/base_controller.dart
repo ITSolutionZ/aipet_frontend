@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/services/error_service.dart';
+import '../../shared/shared.dart';
 
 /// 모든 Controller의 기본 클래스
 ///
@@ -42,7 +43,7 @@ abstract class BaseController {
   /// [stackTrace] 스택 트레이스 (선택사항)
   void handleErrorWithSeverity(
     Object error,
-    ErrorSeverity severity, [
+    dynamic severity, [
     StackTrace? stackTrace,
   ]) {
     _errorService.handleErrorWithSeverity(error, severity, stackTrace);
@@ -211,4 +212,132 @@ abstract class BaseController {
     }
     return null;
   }
+
+  // ========== Result 패턴 헬퍼 메서드들 ==========
+
+  /// 성공 결과 생성 헬퍼
+  Result<T> success<T>(String message, T data) {
+    return Result.success(message, data);
+  }
+
+  /// 실패 결과 생성 헬퍼
+  Result<T> failure<T>(String message, [Exception? error]) {
+    return Result.failure(message, error);
+  }
+
+  /// 비동기 작업을 Result로 래핑
+  Future<Result<T>> wrapAsync<T>(
+    Future<T> Function() asyncFunction, {
+    String? successMessage,
+    String? failureMessage,
+  }) async {
+    try {
+      final data = await asyncFunction();
+      return Result.success(successMessage ?? '操作が完了しました', data);
+    } catch (e) {
+      return Result.failure(
+        failureMessage ?? '操作に失敗しました: ${e.toString()}',
+        e is Exception ? e : Exception(e.toString()),
+      );
+    }
+  }
+
+  /// 동기 작업을 Result로 래핑
+  Result<T> wrapSync<T>(
+    T Function() syncFunction, {
+    String? successMessage,
+    String? failureMessage,
+  }) {
+    try {
+      final data = syncFunction();
+      return Result.success(successMessage ?? '操作が完了しました', data);
+    } catch (e) {
+      return Result.failure(
+        failureMessage ?? '操作に失敗しました: ${e.toString()}',
+        e is Exception ? e : Exception(e.toString()),
+      );
+    }
+  }
+
+  /// 조건부 성공/실패 Result 생성
+  Result<T> conditional<T>(
+    bool condition,
+    T data, {
+    String? successMessage,
+    String? failureMessage,
+  }) {
+    if (condition) {
+      return Result.success(successMessage ?? '操作が完了しました', data);
+    } else {
+      return Result.failure(failureMessage ?? '条件が満たされていません');
+    }
+  }
+
+  /// null 체크 후 Result 생성
+  Result<T> fromNullable<T>(
+    T? data, {
+    String? successMessage,
+    String? failureMessage,
+  }) {
+    if (data != null) {
+      return Result.success(successMessage ?? 'データが見つかりました', data);
+    } else {
+      return Result.failure(failureMessage ?? 'データが見つかりませんでした');
+    }
+  }
+
+  // ========== 공통 성공/실패 메시지들 ==========
+
+  /// 공통 성공 메시지들
+  Result<T> successSaved<T>(T data) => success(AppTexts.saved, data);
+  Result<T> successUpdated<T>(T data) => success(AppTexts.updated, data);
+  Result<T> successDeleted<T>(T data) => success(AppTexts.deleted, data);
+  Result<T> successAdded<T>(T data) => success(AppTexts.added, data);
+  Result<T> successCompleted<T>(T data) => success(AppTexts.completed, data);
+
+  /// 공통 실패 메시지들
+  Result<T> failureSave<T>([Exception? error]) =>
+      failure(AppTexts.error, error);
+  Result<T> failureUpdate<T>([Exception? error]) =>
+      failure(AppTexts.error, error);
+  Result<T> failureDelete<T>([Exception? error]) =>
+      failure(AppTexts.error, error);
+  Result<T> failureAdd<T>([Exception? error]) => failure(AppTexts.error, error);
+  Result<T> failureLoad<T>([Exception? error]) =>
+      failure(AppTexts.error, error);
+
+  /// 네트워크 관련 Result 생성
+  Result<T> networkError<T>([Exception? error]) =>
+      failure(AppTexts.networkError, error);
+  Result<T> serverError<T>([Exception? error]) =>
+      failure(AppTexts.serverError, error);
+  Result<T> timeoutError<T>([Exception? error]) =>
+      failure(AppTexts.timeoutError, error);
+  Result<T> connectionError<T>([Exception? error]) =>
+      failure(AppTexts.connectionError, error);
+
+  /// 검증 관련 Result 생성
+  Result<T> validationError<T>(String message) => failure(message);
+  Result<T> requiredFieldError<T>(String fieldName) =>
+      failure('$fieldName${AppTexts.requiredField}');
+  Result<T> invalidFormatError<T>(String fieldName) =>
+      failure('$fieldName${AppTexts.invalidFormat}');
+
+  /// 권한 관련 Result 생성
+  Result<T> permissionError<T>([Exception? error]) =>
+      failure(AppTexts.permissionError, error);
+  Result<T> unauthorizedError<T>([Exception? error]) =>
+      failure(AppTexts.unauthorizedError, error);
+  Result<T> forbiddenError<T>([Exception? error]) =>
+      failure(AppTexts.forbiddenError, error);
+
+  /// 파일 관련 Result 생성
+  Result<T> fileUploadError<T>([Exception? error]) =>
+      failure(AppTexts.fileUploadFailed, error);
+  Result<T> fileDownloadError<T>([Exception? error]) =>
+      failure(AppTexts.fileDownloadFailed, error);
+  Result<T> fileNotFoundError<T>([Exception? error]) =>
+      failure(AppTexts.fileNotFound, error);
+  Result<T> fileSizeError<T>([Exception? error]) =>
+      failure(AppTexts.fileSizeExceeded, error);
 }

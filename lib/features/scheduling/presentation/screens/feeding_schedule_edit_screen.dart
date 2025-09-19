@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import '../../../../shared/shared.dart';
 import '../widgets/widgets.dart';
 
@@ -61,17 +63,19 @@ class _FeedingScheduleEditScreenState
 
   /// 펫 정보 및 사이즈 가이드 로드
   void _loadPetInfo() {
-    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes =
+        SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     _selectedPetInfo = petSizes[_selectedPetId];
 
     if (_selectedPetInfo != null) {
       final size = _selectedPetInfo!['size'] as String;
-      final sizeGuide = SchedulingMockService.getPetSizeFeedingGuide();
+      final sizeGuide =
+          SchedulingMock.SchedulingMockService.getPetSizeFeedingGuide();
       _petSizeGuide = sizeGuide[size];
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = PetMockService.getPetCurrentStatus(_selectedPetId);
+    final currentStatus = MockDataService.getPetCurrentStatus(_selectedPetId);
     _selectedStatuses = List<String>.from(
       currentStatus['selectedStatuses'] ?? [],
     );
@@ -88,7 +92,8 @@ class _FeedingScheduleEditScreenState
 
   /// 펫 선택 처리
   void _onPetSelected(String petId) {
-    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes =
+        SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     setState(() {
       _selectedPetId = petId;
       _selectedPetInfo = petSizes[petId];
@@ -115,11 +120,7 @@ class _FeedingScheduleEditScreenState
                   _statusValues = statusValues;
 
                   // MockDataService에 상태 업데이트
-                  PetMockService.updatePetStatus(
-                    petId,
-                    selectedStatuses,
-                    statusValues,
-                  );
+                  MockDataService.updatePetStatus(petId, statusValues);
                 });
               },
         );
@@ -178,7 +179,11 @@ class _FeedingScheduleEditScreenState
   /// 목업 데이터 업데이트
   void _updateMockData(String mealType, String time, String amount) {
     // MockDataService의 데이터를 실제로 업데이트
-    SchedulingMockService.updateFeedingSchedule(mealType, time, amount);
+    SchedulingMock.SchedulingMockService.updateFeedingSchedule(
+      mealType,
+      time,
+      amount,
+    );
 
     // 변경사항을 사용자에게 알림
     developer.log('목업 데이터 업데이트: $mealType - $time - $amount');

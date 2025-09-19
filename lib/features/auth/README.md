@@ -8,7 +8,7 @@ Auth 기능은 AI Pet 앱의 사용자 인증을 담당합니다. Firebase Auth�
 
 ### Clean Architecture 구조
 
-```
+```txt
 lib/features/auth/
 ├── domain/                    # 도메인 레이어
 │   ├── entities/             # 엔티티 (AuthUser, AuthResult)

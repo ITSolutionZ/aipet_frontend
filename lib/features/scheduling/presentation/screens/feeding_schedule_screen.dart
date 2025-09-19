@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
+import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import '../../../../shared/shared.dart';
 import '../widgets/widgets.dart';
 
@@ -30,8 +32,10 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
 
   void _loadMockData() {
     setState(() {
-      _todayMeals = SchedulingMockService.getMockTodayMealsForSchedule();
-      _scheduleItems = SchedulingMockService.getMockFeedingSchedulesForSchedule();
+      _todayMeals =
+          SchedulingMock.SchedulingMockService.getMockTodayMealsForSchedule();
+      _scheduleItems = SchedulingMock
+          .SchedulingMockService.getMockFeedingSchedulesForSchedule();
     });
   }
 
@@ -50,9 +54,7 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: SoftGradientAppBar(
-        title: '$petNameの食事スケジュール',
-      ),
+      appBar: SoftGradientAppBar(title: '$petNameの食事スケジュール'),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(

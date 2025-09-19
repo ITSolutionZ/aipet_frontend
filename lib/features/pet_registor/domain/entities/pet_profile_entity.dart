@@ -11,7 +11,6 @@ class PetProfileEntity with _$PetProfileEntity {
     required String type, // 'dog', 'cat', 'bird', 'hamster', 'rabbit', 'turtle'
     String? breed,
     required DateTime birthDate,
-    required int age,
     required String gender,
     required double weight,
     String? imagePath,
@@ -25,7 +24,7 @@ class PetProfileEntity with _$PetProfileEntity {
   const PetProfileEntity._();
 
   /// 펫 나이 계산 (생년월일 기준)
-  int get calculatedAge {
+  int get age {
     final now = DateTime.now();
     int calculatedAge = now.year - birthDate.year;
     if (now.month < birthDate.month ||

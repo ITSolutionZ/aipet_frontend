@@ -1,83 +1,70 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../app/controllers/base_controller.dart';
 import '../../../../shared/design/design.dart';
+import '../../../../shared/domain/result.dart';
 import '../../../../shared/mock_data/mock_data_service.dart';
 
-class FeedingRecordsResult {
-  final bool isSuccess;
-  final String message;
-  final dynamic data;
-
-  const FeedingRecordsResult._(this.isSuccess, this.message, this.data);
-
-  factory FeedingRecordsResult.success(String message, [dynamic data]) =>
-      FeedingRecordsResult._(true, message, data);
-  factory FeedingRecordsResult.failure(String message) =>
-      FeedingRecordsResult._(false, message, null);
-}
-
-class FeedingRecordsController {
-  FeedingRecordsController();
+class FeedingRecordsController extends BaseController {
+  FeedingRecordsController(super.ref);
 
   /// 급여 기록 데이터 로드
-  Future<FeedingRecordsResult> loadFeedingRecords() async {
-    try {
-      final feedingRecords = MockDataService.getMockFeedingRecords();
-      return FeedingRecordsResult.success('급여 기록이 로드되었습니다', feedingRecords);
-    } catch (error) {
-      return FeedingRecordsResult.failure('급여 기록 로드 실패: $error');
-    }
+  Future<Result<List<dynamic>>> loadFeedingRecords() async {
+    return wrapAsync(
+      () async => MockDataService.getMockFeedingRecords(),
+      successMessage: '급여 기록이 로드되었습니다',
+      failureMessage: '급여 기록 로드 실패',
+    );
   }
 
   /// 급여 통계 데이터 로드
-  Future<FeedingRecordsResult> loadFeedingStatistics() async {
-    try {
-      final statistics = MockDataService.getMockFeedingStatistics();
-      return FeedingRecordsResult.success('급여 통계가 로드되었습니다', statistics);
-    } catch (error) {
-      return FeedingRecordsResult.failure('급여 통계 로드 실패: $error');
-    }
+  Future<Result<Map<String, dynamic>>> loadFeedingStatistics() async {
+    return wrapAsync(
+      () async => MockDataService.getMockFeedingStatistics(),
+      successMessage: '급여 통계가 로드되었습니다',
+      failureMessage: '급여 통계 로드 실패',
+    );
   }
 
   /// 차트 데이터 생성
-  FeedingRecordsResult generateChartData(List<dynamic> feedingRecords) {
-    try {
-      final now = DateTime.now();
-      final chartData = <FlSpot>[];
-      final targetData = <FlSpot>[];
+  Result<Map<String, dynamic>> generateChartData(List<dynamic> feedingRecords) {
+    return wrapSync(
+      () {
+        final now = DateTime.now();
+        final chartData = <FlSpot>[];
+        final targetData = <FlSpot>[];
 
-      for (int i = 6; i >= 0; i--) {
-        final date = DateTime(now.year, now.month, now.day - i);
+        for (int i = 6; i >= 0; i--) {
+          final date = DateTime(now.year, now.month, now.day - i);
 
-        final dayRecords = feedingRecords.where((record) {
-          final recordDate = DateTime(
-            record.fedTime.year,
-            record.fedTime.month,
-            record.fedTime.day,
+          final dayRecords = feedingRecords.where((record) {
+            final recordDate = DateTime(
+              record.fedTime.year,
+              record.fedTime.month,
+              record.fedTime.day,
+            );
+            return recordDate.year == date.year &&
+                recordDate.month == date.month &&
+                recordDate.day == date.day;
+          }).toList();
+
+          final actualAmount = dayRecords.fold<double>(
+            0.0,
+            (sum, record) => sum + record.amount,
           );
-          return recordDate.year == date.year &&
-              recordDate.month == date.month &&
-              recordDate.day == date.day;
-        }).toList();
 
-        final actualAmount = dayRecords.fold<double>(
-          0.0,
-          (sum, record) => sum + record.amount,
-        );
+          const targetAmount = 300.0; // 목표량
 
-        const targetAmount = 300.0; // 목표량
+          chartData.add(FlSpot((6 - i).toDouble(), actualAmount));
+          targetData.add(FlSpot((6 - i).toDouble(), targetAmount));
+        }
 
-        chartData.add(FlSpot((6 - i).toDouble(), actualAmount));
-        targetData.add(FlSpot((6 - i).toDouble(), targetAmount));
-      }
-
-      final data = {'chartData': chartData, 'targetData': targetData};
-
-      return FeedingRecordsResult.success('차트 데이터가 생성되었습니다', data);
-    } catch (error) {
-      return FeedingRecordsResult.failure('차트 데이터 생성 실패: $error');
-    }
+        return {'chartData': chartData, 'targetData': targetData};
+      },
+      successMessage: '차트 데이터가 생성되었습니다',
+      failureMessage: '차트 데이터 생성 실패',
+    );
   }
 
   /// 차트 위젯 생성
@@ -282,7 +269,7 @@ class FeedingRecordsController {
   }
 
   /// 새 급여 기록 추가
-  Future<FeedingRecordsResult> addFeedingRecord({
+  Future<Result<Map<String, dynamic>>> addFeedingRecord({
     required String petName,
     required String foodType,
     required String foodBrand,
@@ -303,25 +290,25 @@ class FeedingRecordsController {
         'status': 'completed',
       };
 
-      return FeedingRecordsResult.success('급여 기록이 추가되었습니다', record);
+      return Result.success('급여 기록이 추가되었습니다', record);
     } catch (error) {
-      return FeedingRecordsResult.failure('급여 기록 추가 실패: $error');
+      return Result.failure('급여 기록 추가 실패: $error');
     }
   }
 
   /// 급여 기록 삭제
-  Future<FeedingRecordsResult> deleteFeedingRecord(String recordId) async {
+  Future<Result<void>> deleteFeedingRecord(String recordId) async {
     try {
       // Mock delete logic
       await Future.delayed(const Duration(milliseconds: 300));
-      return FeedingRecordsResult.success('급여 기록이 삭제되었습니다');
+      return Result.success('급여 기록이 삭제되었습니다');
     } catch (error) {
-      return FeedingRecordsResult.failure('급여 기록 삭제 실패: $error');
+      return Result.failure('급여 기록 삭제 실패: $error');
     }
   }
 
   /// 급여 기록 수정
-  Future<FeedingRecordsResult> updateFeedingRecord({
+  Future<Result<Map<String, dynamic>>> updateFeedingRecord({
     required String recordId,
     required String petName,
     required String foodType,
@@ -343,9 +330,9 @@ class FeedingRecordsController {
         'status': 'completed',
       };
 
-      return FeedingRecordsResult.success('급여 기록이 수정되었습니다', updatedRecord);
+      return Result.success('급여 기록이 수정되었습니다', updatedRecord);
     } catch (error) {
-      return FeedingRecordsResult.failure('급여 기록 수정 실패: $error');
+      return Result.failure('급여 기록 수정 실패: $error');
     }
   }
 

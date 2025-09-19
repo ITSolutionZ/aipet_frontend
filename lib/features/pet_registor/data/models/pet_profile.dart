@@ -6,7 +6,6 @@ class PetProfile {
   final String type;
   final String? breed;
   final DateTime birthDate;
-  final int age;
   final String gender;
   final double weight;
   final String? imagePath;
@@ -22,7 +21,6 @@ class PetProfile {
     required this.type,
     this.breed,
     required this.birthDate,
-    required this.age,
     required this.gender,
     required this.weight,
     this.imagePath,
@@ -40,7 +38,6 @@ class PetProfile {
       type: entity.type,
       breed: entity.breed,
       birthDate: entity.birthDate,
-      age: entity.age,
       gender: entity.gender,
       weight: entity.weight,
       imagePath: entity.imagePath,
@@ -59,7 +56,6 @@ class PetProfile {
       type: type,
       breed: breed,
       birthDate: birthDate,
-      age: age,
       gender: gender,
       weight: weight,
       imagePath: imagePath,
@@ -77,7 +73,6 @@ class PetProfile {
     String? type,
     String? breed,
     DateTime? birthDate,
-    int? age,
     String? gender,
     double? weight,
     String? imagePath,
@@ -93,7 +88,6 @@ class PetProfile {
       type: type ?? this.type,
       breed: breed ?? this.breed,
       birthDate: birthDate ?? this.birthDate,
-      age: age ?? this.age,
       gender: gender ?? this.gender,
       weight: weight ?? this.weight,
       imagePath: imagePath ?? this.imagePath,
@@ -112,6 +106,8 @@ class PetProfile {
       'type': type,
       'breed': breed,
       'birthDate': birthDate.toIso8601String(),
+      'gender': gender,
+      'weight': weight,
       'imagePath': imagePath,
       'ownerId': ownerId,
       'createdAt': createdAt.toIso8601String(),
@@ -128,7 +124,6 @@ class PetProfile {
       type: json['type'] as String,
       breed: json['breed'] as String?,
       birthDate: DateTime.parse(json['birthDate'] as String),
-      age: json['age'] as int,
       gender: json['gender'] as String,
       weight: json['weight'] as double,
       imagePath: json['imagePath'] as String?,

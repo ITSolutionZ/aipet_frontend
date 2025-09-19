@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/router/routes/route_constants.dart';
 import '../../../../shared/shared.dart';
 import '../../data/providers/home_providers.dart';
-import 'common_summary_card.dart';
 
 class AppointmentSummaryCard extends ConsumerWidget {
   const AppointmentSummaryCard({super.key});
@@ -17,13 +16,17 @@ class AppointmentSummaryCard extends ConsumerWidget {
     final now = DateTime.now();
 
     // 펫 타입에 따라 다른 예약 수
-    final upcomingCount = AppointmentMockData.getUpcomingCountByPetType(selectedPet?.type);
-    final totalThisMonth = AppointmentMockData.getMonthlyCountByPetType(selectedPet?.type);
+    final upcomingCount = AppointmentMockData.getUpcomingCountByPetType(
+      selectedPet?.type,
+    );
+    final totalThisMonth = AppointmentMockData.getMonthlyCountByPetType(
+      selectedPet?.type,
+    );
 
     final appointmentData = {
       'upcomingCount': upcomingCount,
       'nextAppointment': AppointmentMockData.getNextAppointmentTime(now),
-      'nextType': HomeMockService.getMockNextAppointmentType(petId: selectedPet?.id),
+      'nextType': HomeMockService.getMockNextAppointmentType(),
       'totalThisMonth': totalThisMonth,
     };
 
@@ -36,5 +39,4 @@ class AppointmentSummaryCard extends ConsumerWidget {
       secondaryValue: '今月: ${appointmentData['totalThisMonth']}件',
     );
   }
-
 }

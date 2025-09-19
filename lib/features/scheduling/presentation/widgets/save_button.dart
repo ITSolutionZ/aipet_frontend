@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../shared/shared.dart';
 
-/// 저장 버튼 위젯
+/// 저장 버튼 위젯 (ActionButton으로 대체됨)
+@Deprecated('Use ActionButton.primary instead')
 class SaveButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
@@ -21,35 +22,11 @@ class SaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppColors.pointBrown,
-          foregroundColor: textColor ?? Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-          ),
-        ),
-        child: isLoading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-            : Text(
-                text,
-                style: AppFonts.titleMedium.copyWith(
-                  color: textColor ?? Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-      ),
+    return ActionButton.primary(
+      text: text,
+      onPressed: isLoading ? null : onPressed,
+      isLoading: isLoading,
+      isEnabled: !isLoading,
     );
   }
 }

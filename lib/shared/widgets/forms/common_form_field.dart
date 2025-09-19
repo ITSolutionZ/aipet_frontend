@@ -1,0 +1,331 @@
+import 'package:flutter/material.dart';
+
+import '../../design/design.dart';
+
+/// 공통 폼 필드 위젯
+///
+/// 모든 feature에서 공통으로 사용되는 폼 필드 패턴을 제공합니다.
+class CommonFormField extends StatefulWidget {
+  const CommonFormField({
+    super.key,
+    required this.label,
+    this.hint,
+    this.initialValue,
+    this.onChanged,
+    this.validator,
+    this.keyboardType,
+    this.textInputAction,
+    this.obscureText = false,
+    this.maxLines = 1,
+    this.maxLength,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.enabled = true,
+    this.readOnly = false,
+    this.autofocus = false,
+    this.controller,
+    this.focusNode,
+    this.onSubmitted,
+    this.onTap,
+    this.decoration,
+  });
+
+  final String label;
+  final String? hint;
+  final String? initialValue;
+  final ValueChanged<String>? onChanged;
+  final FormFieldValidator<String>? validator;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final bool obscureText;
+  final int? maxLines;
+  final int? maxLength;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final bool enabled;
+  final bool readOnly;
+  final bool autofocus;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final ValueChanged<String>? onSubmitted;
+  final VoidCallback? onTap;
+  final InputDecoration? decoration;
+
+  @override
+  State<CommonFormField> createState() => _CommonFormFieldState();
+}
+
+class _CommonFormFieldState extends State<CommonFormField> {
+  late TextEditingController _controller;
+  late FocusNode _focusNode;
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        widget.controller ?? TextEditingController(text: widget.initialValue);
+    _focusNode = widget.focusNode ?? FocusNode();
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 라벨
+        Text(
+          widget.label,
+          style: AppFonts.bodyMedium.copyWith(
+            color: AppColors.pointDark,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+
+        // 입력 필드
+        TextFormField(
+          controller: _controller,
+          focusNode: _focusNode,
+          onChanged: widget.onChanged,
+          validator: widget.validator,
+          keyboardType: widget.keyboardType,
+          textInputAction: widget.textInputAction,
+          obscureText: widget.obscureText,
+          maxLines: widget.maxLines,
+          maxLength: widget.maxLength,
+          enabled: widget.enabled,
+          readOnly: widget.readOnly,
+          autofocus: widget.autofocus,
+          onFieldSubmitted: widget.onSubmitted,
+          onTap: widget.onTap,
+          decoration: _buildDecoration(),
+        ),
+      ],
+    );
+  }
+
+  InputDecoration _buildDecoration() {
+    final baseDecoration = InputDecoration(
+      hintText: widget.hint,
+      prefixIcon: widget.prefixIcon,
+      suffixIcon: widget.suffixIcon,
+      counterText: '', // maxLength 카운터 숨기기
+      filled: true,
+      fillColor: widget.enabled ? AppColors.pureWhite : AppColors.pointOffWhite,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        borderSide: BorderSide(
+          color: AppColors.pointOffWhite.withValues(alpha: 0.3),
+          width: 1.0,
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        borderSide: BorderSide(
+          color: AppColors.pointOffWhite.withValues(alpha: 0.3),
+          width: 1.0,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        borderSide: const BorderSide(color: AppColors.pointBrown, width: 2.0),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        borderSide: const BorderSide(color: AppColors.pointPink, width: 1.0),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        borderSide: const BorderSide(color: AppColors.pointPink, width: 2.0),
+      ),
+      disabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        borderSide: BorderSide(
+          color: AppColors.pointOffWhite.withValues(alpha: 0.1),
+          width: 1.0,
+        ),
+      ),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+    );
+
+    // 커스텀 데코레이션이 있으면 병합
+    if (widget.decoration != null) {
+      return baseDecoration.copyWith(
+        hintText: widget.decoration!.hintText ?? baseDecoration.hintText,
+        prefixIcon: widget.decoration!.prefixIcon ?? baseDecoration.prefixIcon,
+        suffixIcon: widget.decoration!.suffixIcon ?? baseDecoration.suffixIcon,
+        errorText: widget.decoration!.errorText,
+        helperText: widget.decoration!.helperText,
+      );
+    }
+
+    return baseDecoration;
+  }
+}
+
+/// 비밀번호 입력 필드
+class PasswordFormField extends StatefulWidget {
+  const PasswordFormField({
+    super.key,
+    required this.label,
+    this.hint,
+    this.initialValue,
+    this.onChanged,
+    this.validator,
+    this.textInputAction,
+    this.enabled = true,
+    this.controller,
+    this.focusNode,
+    this.onSubmitted,
+  });
+
+  final String label;
+  final String? hint;
+  final String? initialValue;
+  final ValueChanged<String>? onChanged;
+  final FormFieldValidator<String>? validator;
+  final TextInputAction? textInputAction;
+  final bool enabled;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final ValueChanged<String>? onSubmitted;
+
+  @override
+  State<PasswordFormField> createState() => _PasswordFormFieldState();
+}
+
+class _PasswordFormFieldState extends State<PasswordFormField> {
+  bool _obscureText = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonFormField(
+      label: widget.label,
+      hint: widget.hint,
+      initialValue: widget.initialValue,
+      onChanged: widget.onChanged,
+      validator: widget.validator,
+      textInputAction: widget.textInputAction,
+      enabled: widget.enabled,
+      controller: widget.controller,
+      focusNode: widget.focusNode,
+      onSubmitted: widget.onSubmitted,
+      obscureText: _obscureText,
+      suffixIcon: IconButton(
+        icon: Icon(
+          _obscureText ? Icons.visibility_off : Icons.visibility,
+          color: AppColors.pointDark.withValues(alpha: 0.6),
+        ),
+        onPressed: () {
+          setState(() {
+            _obscureText = !_obscureText;
+          });
+        },
+      ),
+    );
+  }
+}
+
+/// 이메일 입력 필드
+class EmailFormField extends StatelessWidget {
+  const EmailFormField({
+    super.key,
+    required this.label,
+    this.hint,
+    this.initialValue,
+    this.onChanged,
+    this.validator,
+    this.textInputAction,
+    this.enabled = true,
+    this.controller,
+    this.focusNode,
+    this.onSubmitted,
+  });
+
+  final String label;
+  final String? hint;
+  final String? initialValue;
+  final ValueChanged<String>? onChanged;
+  final FormFieldValidator<String>? validator;
+  final TextInputAction? textInputAction;
+  final bool enabled;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final ValueChanged<String>? onSubmitted;
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonFormField(
+      label: label,
+      hint: hint ?? 'メールアドレスを入力してください',
+      initialValue: initialValue,
+      onChanged: onChanged,
+      validator: validator,
+      textInputAction: textInputAction,
+      enabled: enabled,
+      controller: controller,
+      focusNode: focusNode,
+      onSubmitted: onSubmitted,
+      keyboardType: TextInputType.emailAddress,
+      prefixIcon: const Icon(Icons.email_outlined, color: AppColors.pointBrown),
+    );
+  }
+}
+
+/// 사용자명 입력 필드
+class UsernameFormField extends StatelessWidget {
+  const UsernameFormField({
+    super.key,
+    required this.label,
+    this.hint,
+    this.initialValue,
+    this.onChanged,
+    this.validator,
+    this.textInputAction,
+    this.enabled = true,
+    this.controller,
+    this.focusNode,
+    this.onSubmitted,
+  });
+
+  final String label;
+  final String? hint;
+  final String? initialValue;
+  final ValueChanged<String>? onChanged;
+  final FormFieldValidator<String>? validator;
+  final TextInputAction? textInputAction;
+  final bool enabled;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final ValueChanged<String>? onSubmitted;
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonFormField(
+      label: label,
+      hint: hint ?? 'ユーザー名を入力してください',
+      initialValue: initialValue,
+      onChanged: onChanged,
+      validator: validator,
+      textInputAction: textInputAction,
+      enabled: enabled,
+      controller: controller,
+      focusNode: focusNode,
+      onSubmitted: onSubmitted,
+      prefixIcon: const Icon(Icons.person_outline, color: AppColors.pointBrown),
+    );
+  }
+}

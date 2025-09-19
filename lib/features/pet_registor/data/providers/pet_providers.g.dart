@@ -6,9 +6,11 @@ part of 'pet_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$petRepositoryHash() => r'38ea50ee2d0fe13c8dab0425a788dcc6a7d8a9c0';
+String _$petRepositoryHash() => r'c82d3f0df7db3005bfb32223bf7ae85a28a5da23';
 
-/// PetRepository 프로바이더
+/// PetRepository 프로바이더 (Mockito 버전)
+///
+/// Mockito를 사용하여 테스트 가능성을 높입니다.
 ///
 /// Copied from [petRepository].
 @ProviderFor(petRepository)
@@ -25,6 +27,28 @@ final petRepositoryProvider = AutoDisposeProvider<PetRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef PetRepositoryRef = AutoDisposeProviderRef<PetRepository>;
+String _$legacyPetRepositoryHash() =>
+    r'c2c24e6e25668c11c4781db2faaf859f4003911b';
+
+/// Legacy PetRepository 프로바이더 (기존 구현체)
+///
+/// 필요시 기존 구현체로 되돌릴 수 있도록 유지
+///
+/// Copied from [legacyPetRepository].
+@ProviderFor(legacyPetRepository)
+final legacyPetRepositoryProvider = AutoDisposeProvider<PetRepository>.internal(
+  legacyPetRepository,
+  name: r'legacyPetRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$legacyPetRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef LegacyPetRepositoryRef = AutoDisposeProviderRef<PetRepository>;
 String _$petByIdHash() => r'583ba5753df81acfe9a66f4874b148469ddfebd8';
 
 /// Copied from Dart SDK

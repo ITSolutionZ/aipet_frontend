@@ -8,7 +8,7 @@ AI 챗봇 기능은 사용자가 펫 관련 질문을 하고 AI로부터 답변�
 
 ### Clean Architecture 구조
 
-```
+```txt
 lib/features/ai/
 ├── data/                           # Data Layer
 │   ├── providers/                  # Riverpod Providers
@@ -127,7 +127,7 @@ class AiConfigService {
 
 ### Shared Services
 
-```
+```txt
 lib/shared/services/
 ├── ai_category_service.dart         # AI 카테고리 데이터 관리
 ├── ai_config_service.dart           # AI 환경별 설정 관리
@@ -177,6 +177,7 @@ AiRepository aiRepository(Ref ref) {
    ```
 
 2. **실제 API 모드 (향후)**:
+
    ```dart
    // AiConfigService.isMockMode = false
    final response = await _httpClient.get('/api/ai/chat/history');

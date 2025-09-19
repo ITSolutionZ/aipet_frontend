@@ -55,7 +55,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
       data: (petList) {
         // 마이크로칩 등록 체크
         _checkMicrochipRegistration(petList);
-        
+
         if (petList.isEmpty) {
           return GestureDetector(
             onTap: () => context.push('/pet/register'),
@@ -103,7 +103,9 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                   itemBuilder: (context, index) {
                     final currentPet = petList[index];
                     return GestureDetector(
-                      onTap: () => context.push('${AppRouter.petProfileRoute}?petId=${currentPet.id}'),
+                      onTap: () => context.push(
+                        '${AppRouter.petProfileRoute}?petId=${currentPet.id}',
+                      ),
                       child: Row(
                         children: [
                           // 펫 아바타
@@ -181,9 +183,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                                   ],
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
-                                ...HomeMockService.getMockPetActivities(
-                                  petId: currentPet.id,
-                                ).map(
+                                ...HomeMockService.getMockPetActivities().map(
                                   (activity) => Text(
                                     activity['label']?.toString() ?? '',
                                     style: AppFonts.bodySmall.copyWith(

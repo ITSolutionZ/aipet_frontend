@@ -7,7 +7,7 @@ part of 'ai_favorite_mock_data.dart';
 // **************************************************************************
 
 String _$aiFavoriteMockDataHash() =>
-    r'd417c5cfb6042cff33836a83a52e72d18859a070';
+    r'29120d1049d466313f3c15e8ebfc1089728b861d';
 
 /// AI 즐겨찾기 QA Mock 데이터 프로바이더
 ///

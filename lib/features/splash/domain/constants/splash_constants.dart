@@ -1,51 +1,46 @@
 import 'package:flutter/material.dart';
 
+import '../../../../shared/shared.dart';
+
 /// 스플래시 관련 상수 정의
 class SplashConstants {
   // 생성자 비활성화
   const SplashConstants._();
 
-  // 타이밍 상수
-  static const Duration logoDisplayDuration = Duration(seconds: 2);
-  static const Duration animationDuration = Duration(milliseconds: 2000);
-  static const Duration fadeAnimationDuration = Duration(milliseconds: 1000);
-  static const Duration scaleAnimationDuration = Duration(milliseconds: 1000);
+  // 타이밍 상수 (AppConstants에서 가져옴)
+  static Duration get logoDisplayDuration =>
+      AppConstants.splashLogoDisplayDuration;
+  static Duration get animationDuration => AppConstants.splashAnimationDuration;
+  static Duration get fadeAnimationDuration =>
+      AppConstants.splashFadeAnimationDuration;
+  static Duration get scaleAnimationDuration =>
+      AppConstants.splashScaleAnimationDuration;
 
-  // 이미지 경로
-  static const String companyLogoPath = 'assets/icons/itz.png';
-  static const String appLogoPath = 'assets/icons/aipet_logo.png';
+  // 이미지 경로 (AppConstants에서 가져옴)
+  static String get companyLogoPath => AppConstants.splashCompanyLogoPath;
+  static String get appLogoPath => AppConstants.splashAppLogoPath;
+  static String get loadingLottiePath => AppConstants.splashLoadingLottiePath;
 
-  // Lottie 애니메이션 경로
-  static const String loadingLottiePath = 'assets/lottie/loading.json';
+  // 크기 상수 (AppConstants에서 가져옴)
+  static double get companyLogoWidth => AppConstants.splashCompanyLogoWidth;
+  static double get companyLogoHeight => AppConstants.splashCompanyLogoHeight;
+  static double get appLogoSize => AppConstants.splashAppLogoSize;
+  static double get loadingLottieSize => AppConstants.splashLoadingLottieSize;
 
-  // 크기 상수
-  static const double companyLogoWidth = 196.0;
-  static const double companyLogoHeight = 130.0;
-  static const double appLogoSize = 300.0;
-  static const double loadingLottieSize = 200.0;
-
-  // 애니메이션 상수
-  static const double fadeStart = 0.0;
-  static const double fadeEnd = 1.0;
-  static const double scaleStart = 0.5;
-  static const double scaleEnd = 1.0;
-  static const double logoRadius = 20.0;
+  // 애니메이션 상수 (AppConstants에서 가져옴)
+  static double get fadeStart => AppConstants.splashFadeStart;
+  static double get fadeEnd => AppConstants.splashFadeEnd;
+  static double get scaleStart => AppConstants.splashScaleStart;
+  static double get scaleEnd => AppConstants.splashScaleEnd;
+  static double get logoRadius => AppConstants.splashLogoRadius;
   static const double companyLogoRadius = 8.0;
 
-  // 애니메이션 인터벌
-  static const Interval fadeInterval = Interval(
-    0.0,
-    0.33,
-    curve: Curves.easeIn,
-  );
-  static const Interval scaleInterval = Interval(
-    0.0,
-    0.33,
-    curve: Curves.elasticOut,
-  );
+  // 애니메이션 인터벌 (AppConstants에서 가져옴)
+  static Interval get fadeInterval => AppConstants.splashFadeInterval;
+  static Interval get scaleInterval => AppConstants.splashScaleInterval;
 
-  // 색상 투명도
-  static const int gradientAlpha1 = 23;
-  static const int gradientAlpha2 = 10;
-  static const int borderAlpha = 22;
+  // 색상 투명도 (AppConstants에서 가져옴)
+  static int get gradientAlpha1 => AppConstants.splashGradientAlpha1;
+  static int get gradientAlpha2 => AppConstants.splashGradientAlpha2;
+  static int get borderAlpha => AppConstants.splashBorderAlpha;
 }

@@ -16,7 +16,6 @@ export 'drawer/drawer.dart';
 export 'feedback/feedback.dart';
 export 'forms/toggle_switch_component.dart';
 export 'headers/section_header_component.dart';
-export 'input/input.dart';
 export 'inputs/app_text_field.dart';
 export 'inputs/weight_input.dart';
 export 'layout/layout.dart';

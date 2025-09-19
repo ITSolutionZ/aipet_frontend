@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
+import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
 import 'package:mockito/annotations.dart';
-
-import '../../../features/ai/domain/repositories/ai_repository.dart';
-import '../../../features/home/domain/repositories/home_repository.dart';
-import '../../../features/pet_registor/domain/repositories/pet_repository.dart';
 
 /// Mockito 어노테이션을 사용하여 Mock 클래스 생성을 위한 설정
 ///

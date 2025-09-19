@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import '../../../../shared/shared.dart';
 
 /// 급여 스케줄 편집 컨트롤러
@@ -24,13 +26,15 @@ class FeedingScheduleEditController
 
   /// 펫 정보 및 사이즈 가이드 로드
   void _loadPetInfo() {
-    final petSizes = MockDataService.getMockPetSizesAndFeedingAmounts();
+    final petSizes =
+        SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     final selectedPetInfo = petSizes[state.petId];
     Map<String, dynamic>? petSizeGuide;
 
     if (selectedPetInfo != null) {
       final size = selectedPetInfo['size'] as String;
-      final sizeGuide = MockDataService.getPetSizeFeedingGuide(state.petId);
+      final sizeGuide =
+          SchedulingMock.SchedulingMockService.getPetSizeFeedingGuide();
       petSizeGuide = sizeGuide[size];
     }
 
@@ -82,7 +86,7 @@ class FeedingScheduleEditController
     Map<String, String> statusValues,
   ) {
     // MockDataService에 상태 업데이트
-    MockDataService.updatePetStatus(petId, selectedStatuses, statusValues);
+    MockDataService.updatePetStatus(petId, statusValues);
 
     state = state.copyWith(
       selectedStatuses: selectedStatuses,

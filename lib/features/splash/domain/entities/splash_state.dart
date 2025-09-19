@@ -4,8 +4,7 @@ import '../constants/splash_constants.dart';
 enum SplashPhase {
   initializing,
   loading, // 로딩 애니메이션 표시
-  companyLogo,
-  appLogo,
+  appLogo, // 앱 로고 표시 (회사 로고 포함)
   completed,
 }
 
@@ -28,45 +27,36 @@ class SplashState {
     phase: SplashPhase.initializing,
     imagePath: '',
     currentStep: 0,
-    totalSteps: 3, // 로딩 단계 추가로 총 3단계
+    totalSteps: 2, // 로딩 + 앱로고 단계로 총 2단계
     progress: 0.0,
   );
 
-  factory SplashState.loading() => const SplashState(
+  factory SplashState.loading() => SplashState(
     phase: SplashPhase.loading,
     imagePath: SplashConstants.loadingLottiePath,
     currentStep: 1,
-    totalSteps: 3,
-    progress: 0.33,
-  );
-
-  factory SplashState.companyLogo(String imagePath) => SplashState(
-    phase: SplashPhase.companyLogo,
-    imagePath: imagePath,
-    currentStep: 2,
-    totalSteps: 3,
-    progress: 0.67,
+    totalSteps: 2,
+    progress: 0.5,
   );
 
   factory SplashState.appLogo(String imagePath) => SplashState(
     phase: SplashPhase.appLogo,
     imagePath: imagePath,
-    currentStep: 3,
-    totalSteps: 3,
+    currentStep: 2,
+    totalSteps: 2,
     progress: 1.0,
   );
 
   factory SplashState.completed() => const SplashState(
     phase: SplashPhase.completed,
     imagePath: '',
-    currentStep: 3,
-    totalSteps: 3,
+    currentStep: 2,
+    totalSteps: 2,
     progress: 1.0,
   );
 
   bool get isCompleted => phase == SplashPhase.completed;
   bool get isLoading => phase == SplashPhase.loading;
-  bool get isCompanyLogo => phase == SplashPhase.companyLogo;
   bool get isAppLogo => phase == SplashPhase.appLogo;
   bool get isInitializing => phase == SplashPhase.initializing;
 

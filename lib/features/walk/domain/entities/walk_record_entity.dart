@@ -94,6 +94,44 @@ class WalkRecordEntity {
 
   /// 거리 포맷팅
   String get formattedDistance => DateTimeUtils.formatDistance(distance);
+
+  /// JSON에서 WalkRecordEntity 생성
+  factory WalkRecordEntity.fromJson(Map<String, dynamic> json) {
+    return WalkRecordEntity(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      startTime: DateTime.parse(json['startTime'] as String),
+      endTime: json['endTime'] != null
+          ? DateTime.parse(json['endTime'] as String)
+          : null,
+      duration: json['duration'] != null
+          ? Duration(milliseconds: json['duration'] as int)
+          : null,
+      distance: (json['distance'] as num?)?.toDouble(),
+      route:
+          (json['route'] as List<dynamic>?)
+              ?.map((e) => WalkLocation.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      petId: json['petId'] as String?,
+      petName: json['petName'] as String?,
+      petImage: json['petImage'] as String?,
+      ownerId: json['ownerId'] as String?,
+      ownerName: json['ownerName'] as String?,
+      ownerAvatar: json['ownerAvatar'] as String?,
+      status: WalkStatus.values.firstWhere(
+        (e) => e.name == json['status'],
+        orElse: () => WalkStatus.completed,
+      ),
+      notes: json['notes'] as String?,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
+    );
+  }
 }
 
 enum WalkStatus {

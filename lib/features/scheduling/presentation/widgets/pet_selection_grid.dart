@@ -39,9 +39,10 @@ class PetSelectionGrid extends StatelessWidget {
             Wrap(
               spacing: AppSpacing.sm,
               runSpacing: AppSpacing.sm,
-              children: petSizes.entries.map((entry) {
-                final petId = entry.key;
+              children: petSizes.asMap().entries.map((entry) {
+                final index = entry.key;
                 final petInfo = entry.value;
+                final petId = petInfo['id'] ?? index.toString();
                 final isSelected = petId == selectedPetId;
 
                 return PetSelectionCard(

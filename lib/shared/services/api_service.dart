@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../mock_data/features/auth/auth.dart';
+import 'http_client_service.dart';
 
 /// 백엔드 API 통신을 담당하는 서비스
 class ApiService {
@@ -274,18 +275,4 @@ class ApiService {
   }
 }
 
-/// API 응답을 래핑하는 클래스
-class ApiResponse<T> {
-  final T? data;
-  final String? error;
-  final int? statusCode;
-
-  const ApiResponse._({this.data, this.error, this.statusCode});
-
-  factory ApiResponse.success(T data) => ApiResponse._(data: data);
-  factory ApiResponse.error(String error, {int? statusCode}) =>
-      ApiResponse._(error: error, statusCode: statusCode);
-
-  bool get isSuccess => error == null;
-  bool get isError => error != null;
-}
+// ApiResponse 클래스는 http_client_service.dart에서 정의됨

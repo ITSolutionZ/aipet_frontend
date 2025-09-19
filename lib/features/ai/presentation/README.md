@@ -1200,7 +1200,7 @@ lib/features/ai/presentation/
 
 ### 主要コンポーネント (Key Components)
 
-#### 1. **AI Chat Controller (`controllers/ai_chat_controller.dart`)**
+#### 1. **AI Chat Controller (コントローラー)**
 
 **状態管理とビジネスロジック:**
 
@@ -1432,7 +1432,7 @@ class AiChatController extends BaseController {
 - **非同期処理**: メッセージ送信と AI 応答生成
 - **状態更新**: UI 状態の反応型更新
 
-#### 2. **AI Chat Screen (`screens/ai_chat_screen.dart`)**
+#### 2. **AI Chat Screen (チャット画面)**
 
 **メインチャット画面:**
 
@@ -1636,7 +1636,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
 }
 ```
 
-#### 3. **AI Message Bubble (`widgets/ai_message_bubble.dart`)**
+#### 3. **AI Message Bubble (メッセージバブル)**
 
 **メッセージバブルコンポーネント:**
 

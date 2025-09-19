@@ -1,8 +1,6 @@
-import '../../../../app/controllers/base_controller.dart';
 import '../../../../shared/shared.dart';
 import '../../data/auth_providers.dart';
 import '../../domain/auth_form_state.dart';
-import '../../utils/auth_validator.dart';
 
 /// 인증 작업 결과 (Result 패턴 사용)
 typedef AuthControllerResult = Result<String>;
@@ -10,10 +8,30 @@ typedef AuthControllerResult = Result<String>;
 /// 인증 유효성 검사 결과 (Result 패턴 사용)
 typedef AuthValidationResult = Result<void>;
 
-class AuthController extends BaseController {
+class AuthController extends FormController<AuthFormState> {
   AuthController(super.ref);
 
   AuthFormState get currentState => ref.read(authFormStateNotifierProvider);
+
+  @override
+  AuthFormState get formData => currentState;
+
+  @override
+  bool get isFormValid {
+    final state = currentState;
+    return state.email.isNotEmpty &&
+        state.username.isNotEmpty &&
+        state.error == null;
+  }
+
+  @override
+  bool get canSubmit => isFormValid && !currentState.isLoading;
+
+  @override
+  void initializeForm() {
+    // 폼 초기화 로직
+    ref.read(authFormStateNotifierProvider.notifier).resetState();
+  }
 
   void updateEmail(String email) {
     ref.read(authFormStateNotifierProvider.notifier).updateEmail(email);
@@ -132,10 +150,10 @@ class AuthController extends BaseController {
   AuthValidationResult validateLoginData() {
     final state = currentState;
 
-    // 이메일 검증
-    final emailError = AuthValidator.getEmailErrorMessage(state.email);
-    if (emailError != null) {
-      return Result.failure(emailError);
+    // 이메일 검증 (공통 ValidationService 사용)
+    final emailResult = ValidationService.validateEmail(state.email);
+    if (!emailResult.isSuccess) {
+      return Result.failure(emailResult.message);
     }
 
     // 비밀번호 검증은 UI에서 직접 처리 (AuthFormState에는 패스워드 없음)
@@ -148,16 +166,16 @@ class AuthController extends BaseController {
   AuthValidationResult validateSignupData() {
     final state = currentState;
 
-    // 이메일 검증
-    final emailError = AuthValidator.getEmailErrorMessage(state.email);
-    if (emailError != null) {
-      return Result.failure(emailError);
+    // 이메일 검증 (공통 ValidationService 사용)
+    final emailResult = ValidationService.validateEmail(state.email);
+    if (!emailResult.isSuccess) {
+      return Result.failure(emailResult.message);
     }
 
-    // 사용자명 검증
-    final usernameError = AuthValidator.getUsernameErrorMessage(state.username);
-    if (usernameError != null) {
-      return Result.failure(usernameError);
+    // 사용자명 검증 (공통 ValidationService 사용)
+    final usernameResult = ValidationService.validateUsername(state.username);
+    if (!usernameResult.isSuccess) {
+      return Result.failure(usernameResult.message);
     }
 
     // 비밀번호 검증은 UI에서 직접 처리 (AuthFormState에는 패스워드 없음)
@@ -169,5 +187,21 @@ class AuthController extends BaseController {
   /// 에러 메시지 초기화
   void clearError() {
     ref.read(authFormStateNotifierProvider.notifier).clearError();
+  }
+
+  @override
+  void resetForm() {
+    ref.read(authFormStateNotifierProvider.notifier).resetState();
+  }
+
+  @override
+  Future<Result<void>> submitForm() async {
+    // 로그인 폼 제출 (기본 동작)
+    final result = await login();
+    if (result.isSuccess) {
+      return Result.success(result.message);
+    } else {
+      return Result.failure(result.message);
+    }
   }
 }

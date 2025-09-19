@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/shared.dart';
+import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 
 /// 펫 건강 컨트롤러
 class PetHealthController extends StateNotifier<PetHealthState> {
@@ -9,7 +10,8 @@ class PetHealthController extends StateNotifier<PetHealthState> {
   /// 건강 기록 로드
   void loadHealthRecords(String petId) {
     // SchedulingMockService에서 사용 가능한 메서드 사용
-    final healthData = SchedulingMockService.getMockHealthData();
+    final healthData =
+        SchedulingMock.SchedulingMockService.getMockHealthDataByPet(petId);
 
     state = state.copyWith(petId: petId, healthRecords: [healthData]);
   }

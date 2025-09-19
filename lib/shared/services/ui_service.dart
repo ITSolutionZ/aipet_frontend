@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'error_service.dart';
+import 'common_error_service.dart';
 
 /// UI 관련 기능을 제공하는 서비스 (Static methods로 context 의존성 제거)
 class UiService {
@@ -58,6 +58,30 @@ class UiService {
     );
   }
 
+  /// 사용자 친화적인 에러 메시지 생성
+  static String _getUserFriendlyMessage(dynamic error) {
+    final errorString = error.toString().toLowerCase();
+
+    if (errorString.contains('network') || errorString.contains('connection')) {
+      return 'ネットワーク接続を確認してください';
+    } else if (errorString.contains('timeout')) {
+      return 'タイムアウトが発生しました';
+    } else if (errorString.contains('unauthorized') ||
+        errorString.contains('401')) {
+      return '認証が必要です';
+    } else if (errorString.contains('forbidden') ||
+        errorString.contains('403')) {
+      return 'アクセスが拒否されました';
+    } else if (errorString.contains('not found') ||
+        errorString.contains('404')) {
+      return 'リソースが見つかりません';
+    } else if (errorString.contains('server') || errorString.contains('500')) {
+      return 'サーバーエラーが発生しました';
+    } else {
+      return '予期しないエラーが発生しました';
+    }
+  }
+
   /// 에러 심각도별 메시지 표시
   static void showErrorWithSeverity(
     BuildContext context,
@@ -67,8 +91,7 @@ class UiService {
   }) {
     if (!context.mounted) return;
 
-    final errorService = ErrorService();
-    final message = errorService.getUserFriendlyMessage(error);
+    final message = _getUserFriendlyMessage(error);
 
     Color backgroundColor;
     Duration duration;
