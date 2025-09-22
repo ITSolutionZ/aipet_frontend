@@ -277,7 +277,7 @@ class _FeedingScheduleEditScreenState
                     ActionButton.primary(
                       text: '保存',
                       onPressed: _saveSchedule,
-                      isEnabled: true,
+                      enabled: true,
                     ),
                   ],
                 ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../shared/shared.dart';
 import 'meal_status_widget.dart';
 
-class TodayMealsCard extends CommonCard {
+class TodayMealsCard extends StatelessWidget {
   final List<Map<String, dynamic>> todayMeals;
 
   const TodayMealsCard({super.key, required this.todayMeals});
@@ -15,7 +15,13 @@ class TodayMealsCard extends CommonCard {
   }
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: _buildContent(context),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../shared/shared.dart';
 
 /// 급여 가이드 카드 위젯
-class FeedingGuideCard extends CommonCard {
+class FeedingGuideCard extends StatelessWidget {
   final Map<String, dynamic> petInfo;
   final Map<String, dynamic> sizeGuide;
 
@@ -14,7 +14,13 @@ class FeedingGuideCard extends CommonCard {
   });
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: _buildContent(context),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

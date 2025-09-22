@@ -72,5 +72,17 @@
 	<string>This app needs location access to display maps and track pet walks.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs location access to display maps and track pet walks in the background.</string>
+	<!-- LINE OAuth Callback -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>aipet</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>aipet</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

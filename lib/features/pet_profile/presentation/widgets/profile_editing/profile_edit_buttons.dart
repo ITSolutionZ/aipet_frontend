@@ -27,7 +27,7 @@ class ProfileEditButtons extends StatelessWidget {
           // キャンセルボタン
           Expanded(
             child: ActionButton.outlined(
-              isEnabled: !isLoading,
+              enabled: !isLoading,
               onPressed: onCancel,
               text: 'キャンセル',
             ),
@@ -36,7 +36,7 @@ class ProfileEditButtons extends StatelessWidget {
           // 保存ボタン
           Expanded(
             child: ActionButton.primary(
-              isEnabled: !isLoading,
+              enabled: !isLoading,
               onPressed: onSave,
               text: '保存',
               isLoading: isLoading,
@@ -46,10 +46,10 @@ class ProfileEditButtons extends StatelessWidget {
       );
     } else {
       return ActionButton.primary(
-        isEnabled: true,
+        enabled: true,
         onPressed: onEdit,
         text: '編集',
-        icon: const Icon(
+        leading: const Icon(
           Icons.edit,
           color: Colors.white,
           size: 20,

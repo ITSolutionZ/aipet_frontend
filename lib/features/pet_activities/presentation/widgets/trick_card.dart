@@ -6,19 +6,27 @@ import '../../domain/entities/trick_entity.dart';
 /// 트릭 카드 위젯
 ///
 /// 개별 트릭의 정보를 보여주는 카드 위젯입니다.
-class TrickCard extends CommonCard {
+class TrickCard extends StatelessWidget {
   final TrickEntity trick;
+  final VoidCallback? onTap;
   final VoidCallback? onStartLearning;
 
   const TrickCard({
     super.key,
     required this.trick,
-    super.onTap,
+    this.onTap,
     this.onStartLearning,
   });
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
+    return AppCard(
+      onTap: onTap,
+      child: _buildContent(context),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
     return Row(
       children: [
         // 트릭 이미지

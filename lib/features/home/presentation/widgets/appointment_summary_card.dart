@@ -1,42 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/routes/route_constants.dart';
 import '../../../../shared/shared.dart';
 import '../../data/providers/home_providers.dart';
 
-class AppointmentSummaryCard extends ConsumerWidget {
+/// 📅 예약 요약 카드
+///
+/// 다가오는 예약 수와 이번 달 예약 현황을 표시
+class AppointmentSummaryCard extends HomeSummaryCardBase {
   const AppointmentSummaryCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 현재 선택된 펫 정보 가져오기
-    final selectedPet = ref.watch(homeSelectedPetNotifierProvider);
-    final now = DateTime.now();
+  String get cardTitle => '予約';
 
-    // 펫 타입에 따라 다른 예약 수
+  @override
+  IconData get cardIcon => Icons.calendar_today;
+
+  @override
+  Color get cardIconColor => AppColors.pointBrown;
+
+  @override
+  String get routePath => RouteConstants.todayAppointmentsRoute;
+
+  @override
+  String? getValue(BuildContext context, WidgetRef ref) {
+    final selectedPet = ref.watch(homeSelectedPetNotifierProvider);
     final upcomingCount = AppointmentMockData.getUpcomingCountByPetType(
       selectedPet?.type,
     );
+    return upcomingCount.toString();
+  }
+
+  @override
+  String? getUnit(BuildContext context, WidgetRef ref) => '件';
+
+  @override
+  String? getSubtitle(BuildContext context, WidgetRef ref) {
+    final selectedPet = ref.watch(homeSelectedPetNotifierProvider);
     final totalThisMonth = AppointmentMockData.getMonthlyCountByPetType(
       selectedPet?.type,
     );
+    return '今月: $totalThisMonth件';
+  }
 
-    final appointmentData = {
-      'upcomingCount': upcomingCount,
-      'nextAppointment': AppointmentMockData.getNextAppointmentTime(now),
-      'nextType': HomeMockService.getMockNextAppointmentType(),
-      'totalThisMonth': totalThisMonth,
-    };
-
-    return CommonSummaryCard(
-      icon: Icons.calendar_today,
-      iconColor: AppColors.pointBrown,
-      mainValue: '${appointmentData['upcomingCount']}',
-      unit: '件',
-      onTap: () => context.go(RouteConstants.todayAppointmentsRoute),
-      secondaryValue: '今月: ${appointmentData['totalThisMonth']}件',
+  @override
+  String? getSemanticLabel(BuildContext context, WidgetRef ref) {
+    final selectedPet = ref.watch(homeSelectedPetNotifierProvider);
+    final upcomingCount = AppointmentMockData.getUpcomingCountByPetType(
+      selectedPet?.type,
     );
+    return '予約状況: 今後の予約$upcomingCount件';
   }
 }

@@ -7,7 +7,7 @@ import '../../../../features/auth/domain/domain.dart';
 import '../../../../shared/shared.dart';
 import '../../../../shared/testing/mock_config.dart';
 import 'repositories/auth_repository_impl.dart';
-import 'repositories/firebase_auth_repository.dart';
+import 'repositories/firebase_auth_real_impl.dart';
 import 'services/auth_config_service.dart';
 
 part 'auth_providers.g.dart';
@@ -20,8 +20,9 @@ AuthRepository authRepository(Ref ref) {
     return _createMockAuthRepository();
   }
 
+  // 실제 Firebase Auth 구현체 사용
   return AuthRepositoryImpl(
-    firebaseRepository: FirebaseAuthRepositoryImpl(),
+    firebaseRepository: FirebaseAuthRealImpl(),
     ref: ref,
   );
 }
@@ -34,7 +35,7 @@ AuthRepository _createMockAuthRepository() {
 
   throw UnimplementedError(
     'Mockito Auth Repository 구현체가 아직 준비되지 않았습니다. '
-    'MockConfig.shouldUseMock을 false로 설정하거나 Mockito 구현체를 완성하세요.'
+    'MockConfig.shouldUseMock을 false로 설정하거나 Mockito 구현체를 완성하세요.',
   );
 }
 

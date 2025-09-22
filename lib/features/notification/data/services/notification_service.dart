@@ -381,10 +381,7 @@ class NotificationService {
   }) async {
     try {
       // API 연계 전까지는 Mock 데이터 사용
-      final mockData = NotificationMockService.getMockNotifications();
-      List<NotificationModel> notifications = mockData
-          .map((data) => NotificationModel.fromJson(data))
-          .toList();
+      List<NotificationModel> notifications = NotificationMockService.getMockNotifications();
 
       // 필터링 적용
       notifications = notifications.where((notification) {
@@ -540,8 +537,7 @@ class NotificationService {
   Future<NotificationSettings> getNotificationSettings() async {
     try {
       // API 연계 전까지는 Mock 데이터 사용
-      final mockData = NotificationMockService.getMockNotificationSettings();
-      return NotificationSettings.fromJson(mockData);
+      return NotificationMockService.getMockNotificationSettings();
     } catch (e) {
       if (kDebugMode) {
         print('알림 설정 가져오기 오류: $e');
