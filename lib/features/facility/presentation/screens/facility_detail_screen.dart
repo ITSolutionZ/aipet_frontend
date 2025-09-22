@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../../domain/facility.dart';
+import '../controllers/facility_detail_controller.dart';
 import '../widgets/facility_availability_section.dart';
 import '../widgets/facility_contact_section.dart';
 import '../widgets/facility_detail_header.dart';
@@ -22,222 +22,258 @@ class FacilityDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
-  // 더미 데이터 - 실제로는 facilityId로 조회
-  late Facility _facility;
+  late FacilityDetailController _controller;
+  Facility? _facility;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // 목업 데이터 서비스에서 시설 데이터 가져오기
-    final facilityData = FacilityMockService.getMockFacilityDetailById(widget.facilityId);
-    if (facilityData != null) {
-      _facility = Facility(
-        id: facilityData['id'] as String,
-        name: facilityData['name'] as String,
-        description: facilityData['description'] as String,
-        address: facilityData['address'] as String,
-        phone: facilityData['phone'] as String,
-        email: facilityData['email'] as String,
-        type: facilityData['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
-        rating: (facilityData['rating'] as num).toDouble(),
-        reviewCount: facilityData['reviewCount'] as int,
-        imagePath: facilityData['imagePath'] as String,
-        isFavorite: facilityData['isFavorite'] as bool? ?? false,
-        hasHistory: facilityData['hasHistory'] as bool? ?? false,
-        lastVisit: facilityData['lastVisit'] as DateTime?,
-      );
-    } else {
-      // 기본값으로 첫 번째 병원 시설 사용
-      final defaultData = FacilityMockService.getMockHospitalFacilities().first;
-      _facility = Facility(
-        id: defaultData['id'] as String,
-        name: defaultData['name'] as String,
-        description: defaultData['description'] as String,
-        address: defaultData['address'] as String,
-        phone: defaultData['phone'] as String,
-        email: defaultData['email'] as String,
-        type: defaultData['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
-        rating: (defaultData['rating'] as num).toDouble(),
-        reviewCount: defaultData['reviewCount'] as int,
-        imagePath: defaultData['imagePath'] as String,
-        isFavorite: defaultData['isFavorite'] as bool? ?? false,
-        hasHistory: defaultData['hasHistory'] as bool? ?? false,
-        lastVisit: defaultData['lastVisit'] as DateTime?,
-      );
-    }
+    _controller = FacilityDetailController(ref, context);
+    _loadFacilityData();
   }
 
-  void _addToContacts() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            '연락처 추가',
-            style: AppFonts.fredoka(
-              fontSize: AppFonts.lg,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('次の連絡先を追加しますか？'),
-              const SizedBox(height: AppSpacing.md),
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(AppRadius.small),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _facility.name,
-                      style: AppFonts.bodyLarge.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text('電話: ${_facility.phone}'),
-                    Text('メール: ${_facility.email}'),
-                    Text('住所: ${_facility.address}'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('キャンセル'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${_facility.name}が連絡先に追加されました。'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              child: const Text('追加'),
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> _loadFacilityData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final facility = await _controller.loadFacilityById(widget.facilityId);
+      if (mounted) {
+        setState(() {
+          _facility = facility;
+          _isLoading = false;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: AppColors.pointOffWhite,
+        appBar: SoftGradientBackAppBar(title: '連絡先を表示'),
+        body: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
+          ),
+        ),
+      );
+    }
+
+    if (_facility == null) {
+      return Scaffold(
+        backgroundColor: AppColors.pointOffWhite,
+        appBar: const SoftGradientBackAppBar(title: '連絡先を表示'),
+        body: _buildErrorState(),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      body: CustomScrollView(
-        slivers: [
-          // 헤더 (배경 이미지와 시설 정보)
-          SliverAppBar(
-            expandedHeight: 300,
-            pinned: true,
-            backgroundColor: AppColors.pointBrown,
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-                size: 20,
-              ),
-              onPressed: () => context.pop(),
-            ),
-            title: Text(
-              '連絡先を表示',
+      body: CustomScrollView(slivers: [_buildSliverAppBar(), _buildContent()]),
+    );
+  }
+
+  Widget _buildSliverAppBar() {
+    return SliverAppBar(
+      expandedHeight: 300,
+      pinned: true,
+      backgroundColor: AppColors.pointBrown,
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios,
+          color: AppColors.pureWhite,
+          size: 20,
+        ),
+        onPressed: () => context.pop(),
+      ),
+      title: Text(
+        '連絡先を表示',
+        style: AppFonts.fredoka(
+          fontSize: AppFonts.lg,
+          color: AppColors.pureWhite,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      centerTitle: true,
+      actions: [
+        IconButton(
+          icon: Icon(
+            _facility!.isFavorite ? Icons.favorite : Icons.favorite_border,
+            color: AppColors.pureWhite,
+          ),
+          onPressed: () => _controller.handleFavoriteToggle(_facility!.id),
+        ),
+      ],
+      flexibleSpace: FlexibleSpaceBar(
+        background: FacilityDetailHeader(facility: _facility!),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildContactSection(),
+            const SizedBox(height: AppSpacing.xl),
+            _buildLocationSection(),
+            const SizedBox(height: AppSpacing.xl),
+            _buildAvailabilitySection(),
+            const SizedBox(height: AppSpacing.xl),
+            _buildServicesSection(),
+            const SizedBox(height: AppSpacing.xl),
+            _buildActionButtons(),
+            const SizedBox(height: AppSpacing.xl),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContactSection() {
+    return Card(
+      elevation: 1,
+      color: AppColors.pureWhite,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: FacilityContactSection(facility: _facility!),
+      ),
+    );
+  }
+
+  Widget _buildLocationSection() {
+    return Card(
+      elevation: 1,
+      color: AppColors.pureWhite,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: FacilityLocationSection(facility: _facility!),
+      ),
+    );
+  }
+
+  Widget _buildAvailabilitySection() {
+    return Card(
+      elevation: 1,
+      color: AppColors.pureWhite,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: FacilityAvailabilitySection(facility: _facility!),
+      ),
+    );
+  }
+
+  Widget _buildServicesSection() {
+    return Card(
+      elevation: 1,
+      color: AppColors.pureWhite,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: FacilityServicesSection(facility: _facility!),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Column(
+      children: [
+        // 예약 버튼
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: () => _controller.handleBooking(_facility!),
+            icon: const Icon(Icons.calendar_today, color: AppColors.pureWhite),
+            label: Text(
+              '日付を予約',
               style: AppFonts.fredoka(
                 fontSize: AppFonts.lg,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+                color: AppColors.pureWhite,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            centerTitle: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: FacilityDetailHeader(facility: _facility),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.pointBlue,
+              foregroundColor: AppColors.pureWhite,
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.medium),
+              ),
             ),
           ),
+        ),
 
-          // 상세 정보
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 연락처 섹션
-                  FacilityContactSection(facility: _facility),
-                  const SizedBox(height: AppSpacing.xl),
+        const SizedBox(height: AppSpacing.md),
 
-                  // 위치 섹션
-                  FacilityLocationSection(facility: _facility),
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // 영업시간 섹션
-                  FacilityAvailabilitySection(facility: _facility),
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // 서비스 섹션
-                  FacilityServicesSection(facility: _facility),
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // 예약 버튼
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.push(
-                          '${AppRouter.bookingRoute}/${_facility.id}',
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.lg,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.medium),
-                        ),
-                      ),
-                      child: Text(
-                        '日付を予約',
-                        style: AppFonts.fredoka(
-                          fontSize: AppFonts.lg,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: AppSpacing.md),
-
-                  // 연락처 추가 버튼
-                  Center(
-                    child: TextButton.icon(
-                      onPressed: () => _addToContacts(),
-                      icon: const Icon(Icons.add, color: Colors.grey, size: 16),
-                      label: Text(
-                        '+ 連絡先に追加',
-                        style: AppFonts.bodyMedium.copyWith(
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: AppSpacing.xl),
-                ],
+        // 연락처 추가 버튼
+        Center(
+          child: TextButton.icon(
+            onPressed: () => _controller.handleAddToContacts(_facility!),
+            icon: const Icon(Icons.add, color: AppColors.pointBrown, size: 16),
+            label: Text(
+              '連絡先に追加',
+              style: AppFonts.bodyMedium.copyWith(
+                color: AppColors.pointBrown.withValues(alpha: 0.7),
               ),
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: AppColors.pointBrown.withValues(alpha: 0.3),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            '施設情報を読み込めませんでした',
+            style: AppFonts.titleMedium.copyWith(
+              color: AppColors.pointBrown.withValues(alpha: 0.6),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'しばらくしてから再度試してください',
+            style: AppFonts.bodyMedium.copyWith(
+              color: AppColors.pointBrown.withValues(alpha: 0.4),
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: _loadFacilityData,
+            child: const Text('再度試す'),
           ),
         ],
       ),

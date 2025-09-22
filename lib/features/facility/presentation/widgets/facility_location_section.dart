@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/shared.dart';
 import '../../domain/facility.dart';
+import 'facility_google_map_widget.dart';
 
 class FacilityLocationSection extends StatelessWidget {
   final Facility facility;
@@ -46,84 +48,23 @@ class FacilityLocationSection extends StatelessWidget {
 
         const SizedBox(height: AppSpacing.md),
 
-        // 지도 (플레이스홀더)
-        Container(
-          width: double.infinity,
-          height: 150,
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-          ),
-          child: Stack(
-            children: [
-              // 지도 배경
-              Container(
-                width: double.infinity,
-                height: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                ),
-                child: Center(
-                  child: Icon(Icons.map, size: 48, color: Colors.grey[400]),
-                ),
-              ),
-
-              // 위치 핀
-              Positioned(
-                top: 50,
-                left: 50,
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.purple,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    facility.type == FacilityType.grooming
-                        ? Icons.content_cut
-                        : Icons.local_hospital,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
-
-              // 전체화면 버튼
-              Positioned(
-                top: AppSpacing.sm,
-                right: AppSpacing.sm,
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.open_in_full,
-                    color: Colors.grey[600],
-                    size: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
+        // Google Maps 지도
+        FacilityGoogleMapWidget(
+          facility: facility,
+          onMapTap: () {
+            // 전체화면 지도로 이동
+            context.pushNamed(
+              'facility-fullscreen-map',
+              queryParameters: {'facilityId': facility.id},
+            );
+          },
+          onFacilityTap: (selectedFacility) {
+            // 선택된 시설 상세 화면으로 이동
+            context.pushNamed(
+              'facility-detail',
+              queryParameters: {'facilityId': selectedFacility.id},
+            );
+          },
         ),
       ],
     );

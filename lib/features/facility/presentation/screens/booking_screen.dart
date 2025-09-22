@@ -21,15 +21,6 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   List<String> get _timeSlots => BookingMockData.getDefaultTimeSlots();
 
   @override
-  void initState() {
-    super.initState();
-    // 컨트롤러를 통해 시설 데이터 로드
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(bookingControllerProvider(widget.facilityId).notifier);
-    });
-  }
-
-  @override
   void dispose() {
     _noteController.dispose();
     super.dispose();
@@ -142,7 +133,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
         return Scaffold(
           backgroundColor: AppColors.pointOffWhite,
-          appBar: const SoftGradientBackAppBar(title: 'Book a date'),
+          appBar: const SoftGradientBackAppBar(title: '予約'),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
@@ -266,7 +257,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                             ),
                             const SizedBox(height: AppSpacing.sm),
                             Text(
-                              '${state.facility!.reviewCount} reviews',
+                              '${state.facility!.reviewCount}件のレビュー',
                               style: AppFonts.bodyMedium.copyWith(
                                 color: Colors.white,
                               ),

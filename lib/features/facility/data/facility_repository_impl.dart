@@ -1,4 +1,4 @@
-import '../../../shared/mock_data/features/facility/facility_mock_service.dart';
+import '../../../shared/testing/mock_data/features/facility/facility_mock_service.dart';
 import '../domain/facility.dart';
 import '../domain/repositories/facility_repository.dart';
 
