@@ -5,12 +5,16 @@ import '../../../../shared/shared.dart';
 class SearchBarWidget extends StatelessWidget {
   final TextEditingController controller;
   final Function(String) onChanged;
+  final VoidCallback? onSearch;
+  final VoidCallback? onClear;
   final String hintText;
 
   const SearchBarWidget({
     super.key,
     required this.controller,
     required this.onChanged,
+    this.onSearch,
+    this.onClear,
     required this.hintText,
   });
 
@@ -35,6 +39,15 @@ class SearchBarWidget extends StatelessWidget {
           hintText: hintText,
           hintStyle: AppFonts.bodyMedium.copyWith(color: Colors.grey[400]),
           prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+          suffixIcon: controller.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear, color: Colors.grey),
+                  onPressed: () {
+                    controller.clear();
+                    onClear?.call();
+                  },
+                )
+              : null,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppRadius.medium),
             borderSide: BorderSide.none,

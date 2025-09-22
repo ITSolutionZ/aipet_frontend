@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../shared/mock_data/features/facility/facility_mock_service.dart';
+import '../../../shared/testing/mock_data/features/facility/facility_mock_service.dart';
 import '../domain/facility.dart';
 import '../domain/repositories/facility_repository.dart';
 import 'facility_repository_impl.dart';
