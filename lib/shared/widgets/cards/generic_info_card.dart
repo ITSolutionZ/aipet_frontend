@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../design/design.dart';
-import '../layout/card.dart';
+import '../../shared.dart';
 
 /// 범용 정보 카드 컴포넌트
 /// 다양한 정보를 표시할 수 있는 유연한 카드 위젯
@@ -47,10 +46,10 @@ class GenericInfoCard extends StatelessWidget {
     this.padding,
     this.showChevron = false,
   }) : leading = _buildAvatar(
-          avatarUrl: avatarUrl,
-          placeholderAsset: placeholderAsset,
-          placeholderIcon: placeholderIcon,
-        );
+         avatarUrl: avatarUrl,
+         placeholderAsset: placeholderAsset,
+         placeholderIcon: placeholderIcon,
+       );
 
   /// 아이콘이 있는 카드
   GenericInfoCard.withIcon({
@@ -68,10 +67,10 @@ class GenericInfoCard extends StatelessWidget {
     this.padding,
     this.showChevron = false,
   }) : leading = _buildIcon(
-          icon: icon,
-          iconColor: iconColor,
-          backgroundColor: iconBackgroundColor,
-        );
+         icon: icon,
+         iconColor: iconColor,
+         backgroundColor: iconBackgroundColor,
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +112,9 @@ class GenericInfoCard extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: (badgeColor ?? AppColors.pointBlue)
                                   .withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(AppRadius.small),
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.small,
+                              ),
                             ),
                             child: Text(
                               badge!,
@@ -185,14 +186,14 @@ class GenericInfoCard extends StatelessWidget {
                 },
               )
             : placeholderAsset != null
-                ? Image.asset(
-                    placeholderAsset,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return _buildAvatarPlaceholder(placeholderIcon, size);
-                    },
-                  )
-                : _buildAvatarPlaceholder(placeholderIcon, size),
+            ? Image.asset(
+                placeholderAsset,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return _buildAvatarPlaceholder(placeholderIcon, size);
+                },
+              )
+            : _buildAvatarPlaceholder(placeholderIcon, size),
       ),
     );
   }
@@ -201,11 +202,7 @@ class GenericInfoCard extends StatelessWidget {
   static Widget _buildAvatarPlaceholder(IconData icon, double size) {
     return Container(
       color: Colors.grey[300],
-      child: Icon(
-        icon,
-        color: Colors.grey[600],
-        size: size * 0.5,
-      ),
+      child: Icon(icon, color: Colors.grey[600], size: size * 0.5),
     );
   }
 
@@ -220,7 +217,8 @@ class GenericInfoCard extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: backgroundColor ??
+        color:
+            backgroundColor ??
             (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(size / 2),
       ),

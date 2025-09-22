@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../design/design.dart';
+import '../../shared.dart';
 
 /// 산책 공동 관리자 선택 위젯
 class WalkCoManagerSelector extends StatefulWidget {

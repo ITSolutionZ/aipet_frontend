@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
     as SchedulingMock;
 import '../../../../shared/widgets/soft_gradient_app_bar.dart';
 import '../../../home/data/providers/home_providers.dart';

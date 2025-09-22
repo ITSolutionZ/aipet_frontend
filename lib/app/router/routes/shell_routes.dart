@@ -4,17 +4,18 @@ import 'package:go_router/go_router.dart';
 import '../../../features/ai/presentation/screens/ai_chat_history_list_screen.dart';
 import '../../../features/ai/presentation/screens/ai_chat_screen.dart';
 import '../../../features/ai/presentation/screens/ai_favorite_messages_screen.dart';
-import '../../../features/facility/presentation/screens/screens.dart';
+import '../../../features/facility/domain/facility.dart';
+import '../../../features/facility/presentation/screens/facility_screens.dart';
 import '../../../features/home/presentation/presentation.dart';
-import '../../../features/notification/presentation/screens/screens.dart';
+import '../../../features/notification/presentation/screens/notification_screens.dart';
 import '../../../features/pet_activities/pet_activities.dart';
 import '../../../features/pet_profile/presentation/presentation.dart';
 import '../../../features/scheduling/presentation/presentation.dart';
 import '../../../features/scheduling/presentation/screens/today_appointments_screen.dart';
-import '../../../features/settings/presentation/screens/screens.dart';
+import '../../../features/settings/presentation/screens/settings_screens.dart';
 import '../../../features/walk/domain/entities/walk_record_entity.dart';
-import '../../../features/walk/presentation/screens/screens.dart';
-import '../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart';
+import '../../../features/walk/presentation/screens/walk_screens.dart';
+import '../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart';
 import '../../../shared/widgets/navigation/main_navigation_screen.dart';
 import 'route_constants.dart';
 
@@ -155,6 +156,69 @@ class ShellRoutes {
             path: 'watering',
             name: 'watering',
             builder: (context, state) => const WateringMainScreen(),
+            routes: [
+              GoRoute(
+                path: 'schedule',
+                name: 'watering-schedule',
+                builder: (context, state) => const WateringScheduleScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    name: 'watering-schedule-edit',
+                    builder: (context, state) {
+                      final mealType =
+                          state.uri.queryParameters['mealType'] ?? '朝の給水';
+                      final time = state.uri.queryParameters['time'] ?? '08:00';
+                      final amount =
+                          state.uri.queryParameters['amount'] ?? '200ml';
+                      return WateringScheduleEditScreen(
+                        mealType: mealType,
+                        currentTime: time,
+                        currentAmount: amount,
+                      );
+                    },
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'records',
+                name: 'watering-records',
+                builder: (context, state) => const WateringRecordsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'add',
+                    name: 'add-watering-record',
+                    builder: (context, state) =>
+                        const AddWateringRecordScreen(),
+                  ),
+                  GoRoute(
+                    path: 'edit',
+                    name: 'edit-watering-record',
+                    builder: (context, state) {
+                      // TODO: 실제 record 데이터를 전달하는 방식으로 개선 필요
+                      final mockRecord = {
+                        'date': '2024-01-15',
+                        'time': '08:30',
+                        'amount': '200ml',
+                        'type': '定期的な給水',
+                        'notes': 'いつも通り完食',
+                      };
+                      return EditWateringRecordScreen(record: mockRecord);
+                    },
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'analysis',
+                name: 'watering-analysis',
+                builder: (context, state) => const WateringAnalysisScreen(),
+              ),
+              GoRoute(
+                path: 'settings',
+                name: 'watering-settings',
+                builder: (context, state) => const WateringSettingsScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: 'health',
@@ -238,6 +302,29 @@ class ShellRoutes {
             builder: (context, state) {
               final facilityId = state.uri.queryParameters['facilityId'] ?? '1';
               return FacilityDetailScreen(facilityId: facilityId);
+            },
+          ),
+          GoRoute(
+            path: 'facility-fullscreen-map',
+            name: 'facility-fullscreen-map',
+            builder: (context, state) {
+              final facilityId = state.uri.queryParameters['facilityId'] ?? '1';
+              // TODO: 실제 시설 데이터로 교체 필요
+              final mockFacility = Facility(
+                id: facilityId,
+                name: 'Shinny Fur Saloon',
+                description: '전문적인 펫 트리밍 서비스',
+                address: '70 North Street',
+                phone: '079 1234 7777',
+                email: 'contactshinnyfur@gmail.com',
+                type: FacilityType.grooming,
+                rating: 4.6,
+                reviewCount: 230,
+                imagePath: 'assets/images/placeholder.png',
+                isFavorite: false,
+                hasHistory: false,
+              );
+              return FacilityFullscreenMapScreen(facility: mockFacility);
             },
           ),
           GoRoute(

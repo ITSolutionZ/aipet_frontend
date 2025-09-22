@@ -102,7 +102,7 @@ class _LinkRegistrationScreenState extends State<LinkRegistrationScreen> {
               child: const Icon(Icons.check, color: Colors.white, size: 20),
             ),
             const SizedBox(width: AppSpacing.md),
-            const Text('등록 성공'),
+            const Text('登録成功'),
           ],
         ),
         content: const Text('ペットプロフィールが正常に追加されました。\nペットの情報を確認できます。'),

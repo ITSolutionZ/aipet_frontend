@@ -2,8 +2,8 @@ import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/mock_data/features/home/home_mock_service.dart';
-import 'package:aipet_frontend/shared/mock_data/features/pet/pet_mock_data.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/home/home_mock_service.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_data.dart';
 
 import '../mappers/pet_mapper.dart';
 import '../mappers/weather_mapper.dart';

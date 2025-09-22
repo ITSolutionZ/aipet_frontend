@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../features/auth/domain/domain.dart';
 import '../../../../shared/shared.dart';
+import '../../../../shared/testing/mock_config.dart';
 import 'repositories/auth_repository_impl.dart';
 import 'repositories/firebase_auth_repository.dart';
 import 'services/auth_config_service.dart';
@@ -14,9 +15,26 @@ part 'auth_providers.g.dart';
 // Auth Repository 프로바이더
 @riverpod
 AuthRepository authRepository(Ref ref) {
+  if (MockConfig.shouldUseMock) {
+    // Mockito Mock 구현체 사용
+    return _createMockAuthRepository();
+  }
+
   return AuthRepositoryImpl(
     firebaseRepository: FirebaseAuthRepositoryImpl(),
     ref: ref,
+  );
+}
+
+/// Mock Repository 생성 (향후 Mockito 폴더에서 import)
+AuthRepository _createMockAuthRepository() {
+  // TODO: Mockito 구현체로 교체 예정
+  // import '../../../shared/testing/mock_data/mockito/repositories/auth_repository_mockito_impl.dart';
+  // return AuthRepositoryMockitoImpl();
+
+  throw UnimplementedError(
+    'Mockito Auth Repository 구현체가 아직 준비되지 않았습니다. '
+    'MockConfig.shouldUseMock을 false로 설정하거나 Mockito 구현체를 완성하세요.'
   );
 }
 
@@ -77,6 +95,15 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
   /// 인증 상태 초기화
   void resetState() {
     state = const AuthFormState();
+  }
+
+  /// TODO: 개발 완료 후 삭제할 임시 로그인 성공 처리
+  /// 현재는 아무 입력값이나 넣어도 로그인 성공으로 처리
+  void handleTempLoginSuccess() {
+    debugPrint('🚨 AuthFormStateNotifier: 임시 로그인 성공 처리');
+
+    // 로딩 상태 해제 및 에러 초기화
+    state = state.copyWith(isLoading: false, error: null);
   }
 
   Future<void> login() async {

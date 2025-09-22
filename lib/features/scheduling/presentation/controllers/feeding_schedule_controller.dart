@@ -53,9 +53,6 @@ class FeedingScheduleController extends BaseController {
     return wrapAsync(
       () async {
         final pet = MockDataService.getMockPetById(petId);
-        if (pet == null) {
-          throw Exception('펫 정보를 찾을 수 없습니다');
-        }
         return pet;
       },
       successMessage: '펫 정보가 로드되었습니다',

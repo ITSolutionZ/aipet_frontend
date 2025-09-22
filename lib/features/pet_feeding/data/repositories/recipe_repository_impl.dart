@@ -1,4 +1,4 @@
-import '../../../../shared/mock_data/features/pet_feeding/pet_feeding_mock_service.dart';
+import '../../../../shared/testing/mock_data/features/pet_feeding/pet_feeding_mock_service.dart';
 import '../../domain/entities/recipe_entity.dart';
 import '../../domain/repositories/recipe_repository.dart';
 

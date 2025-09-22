@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../app/config/app_config.dart';
-import '../../../../shared/mock_data/features/home/home_mock_service.dart';
+import '../../../../shared/testing/mock_data/features/home/home_mock_service.dart';
 import '../models/weather_model.dart';
 import 'weather_cache_service.dart';
 

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../controllers/ai_chat_controller.dart';
-import '../widgets/widgets.dart';
+import '../widgets/ai_widgets.dart';
 
 class AiChatScreen extends ConsumerStatefulWidget {
   const AiChatScreen({super.key});
@@ -298,7 +298,8 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: SoftGradientAppBar(
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
         title: 'AIアシスタント',
         leading: IconButton(
           onPressed: _navigateToChatHistory,

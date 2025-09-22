@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../design/design.dart';
+import '../../shared.dart';
 
 /// 범용 체중 입력 위젯
 class WeightInput extends StatefulWidget {
@@ -62,16 +62,16 @@ class _WeightInputState extends State<WeightInput> {
     final text = _controller.text.trim();
     if (text.isNotEmpty) {
       final newWeight = double.tryParse(text);
-      if (newWeight != null && newWeight >= widget.minWeight && newWeight <= widget.maxWeight) {
+      if (newWeight != null &&
+          newWeight >= widget.minWeight &&
+          newWeight <= widget.maxWeight) {
         widget.onWeightChanged(newWeight);
       } else {
         _controller.text = widget.weight.toStringAsFixed(1);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${widget.minWeight}${widget.unit} ~ ${widget.maxWeight}${widget.unit} 사이의 값을 입력해주세요'),
-              duration: const Duration(seconds: 2),
-            ),
+          UiService.showWarning(
+            context,
+            '${widget.minWeight}${widget.unit} ~ ${widget.maxWeight}${widget.unit} 사이의 값을 입력해주세요',
           );
         }
       }
@@ -91,7 +91,7 @@ class _WeightInputState extends State<WeightInput> {
             borderRadius: BorderRadius.circular(AppRadius.medium),
             border: Border.all(
               color: widget.errorText != null
-                  ? Colors.red
+                  ? AppColors.pointPink
                   : AppColors.pointGray.withValues(alpha: 0.3),
             ),
             boxShadow: [
@@ -143,9 +143,7 @@ class _WeightInputState extends State<WeightInput> {
           const SizedBox(height: AppSpacing.xs),
           Text(
             widget.errorText!,
-            style: AppFonts.bodySmall.copyWith(
-              color: Colors.red,
-            ),
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointPink),
           ),
         ],
       ],

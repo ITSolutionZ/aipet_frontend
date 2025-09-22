@@ -24,7 +24,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       appBar: SoftGradientAppBar(
-        title: 'Recipes',
+        title: 'レシピ',
         actions: [
           // 펫 선택 드롭다운
           Container(
@@ -79,7 +79,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: AppSpacing.md),
               Text(
-                '레시피를 불러오는데 실패했습니다',
+                'レシピの読み込みに失敗しました',
                 style: AppFonts.bodyLarge.copyWith(color: Colors.red),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -87,7 +87,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
                 onPressed: () {
                   ref.read(recipesNotifierProvider.notifier).refresh();
                 },
-                child: const Text('다시 시도'),
+                child: const Text('再試行'),
               ),
             ],
           ),
@@ -104,7 +104,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
             },
             icon: const Icon(Icons.add, color: Colors.white),
             label: Text(
-              'Add recipe',
+              'レシピを追加',
               style: AppFonts.fredoka(
                 fontSize: AppFonts.lg,
                 fontWeight: FontWeight.w600,
@@ -268,16 +268,16 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('설명: ${recipe.description}'),
+            Text('説明: ${recipe.description}'),
             const SizedBox(height: AppSpacing.sm),
-            Text('조리시간: ${recipe.cookingTime}'),
+            Text('調理時間: ${recipe.cookingTime}'),
             const SizedBox(height: AppSpacing.sm),
-            Text('난이도: ${recipe.difficulty}'),
+            Text('難易度: ${recipe.difficulty}'),
             const SizedBox(height: AppSpacing.sm),
-            Text('평점: ${recipe.rating}'),
+            Text('評価: ${recipe.rating}'),
             if (recipe.ingredients.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm),
-              const Text('재료:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text('材料:', style: TextStyle(fontWeight: FontWeight.bold)),
               ...recipe.ingredients.map((ingredient) => Text('• $ingredient')),
             ],
           ],
@@ -285,7 +285,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('닫기'),
+            child: const Text('閉じる'),
           ),
           TextButton(
             onPressed: () {
@@ -293,7 +293,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
               _deleteRecipe(recipe.id);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('삭제'),
+            child: const Text('削除'),
           ),
         ],
       ),
@@ -304,12 +304,12 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('레시피 삭제'),
-        content: const Text('이 레시피를 삭제하시겠습니까?'),
+        title: const Text('レシピを削除'),
+        content: const Text('このレシピを削除しますか？'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('취소'),
+            child: const Text('キャンセル'),
           ),
           TextButton(
             onPressed: () {
@@ -317,7 +317,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
               ref.read(recipesNotifierProvider.notifier).deleteRecipe(recipeId);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('삭제'),
+            child: const Text('削除'),
           ),
         ],
       ),

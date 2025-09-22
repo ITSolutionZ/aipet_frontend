@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/app_constants.dart';
-import '../../constants/app_texts.dart';
+import '../../core/constants/app_constants.dart';
+import '../../core/constants/app_texts.dart';
 
 /// 공통 화면 패턴들을 제공하는 위젯들
 class CommonScreenPatterns {

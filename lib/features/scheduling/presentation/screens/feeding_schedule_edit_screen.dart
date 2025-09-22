@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
     as SchedulingMock;
+import '../../../../shared/testing/mock_data/features/pet/pet_mock_service.dart'
+    as pet_feature_mock;
 import '../../../../shared/shared.dart';
-import '../widgets/widgets.dart';
+import '../widgets/scheduling_widgets.dart';
 
 /// 급여 스케줄 편집 페이지
 class FeedingScheduleEditScreen extends ConsumerStatefulWidget {
@@ -39,10 +41,12 @@ class _FeedingScheduleEditScreenState
   late Map<String, dynamic>? _petSizeGuide;
   late List<String> _selectedStatuses;
   late Map<String, String> _statusValues;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     _selectedMealType = widget.mealType;
     _selectedPetId = widget.petId;
 
@@ -87,6 +91,7 @@ class _FeedingScheduleEditScreenState
   @override
   void dispose() {
     _amountController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -106,10 +111,13 @@ class _FeedingScheduleEditScreenState
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final statusOptions =
+            pet_feature_mock.PetMockService.getPetStatusOptions();
         return PetStatusSelectionDialog(
           petInfo: petInfo,
           selectedStatuses: List<String>.from(_selectedStatuses),
           statusValues: Map<String, String>.from(_statusValues),
+          statusOptions: statusOptions,
           onStatusUpdated:
               (
                 List<String> selectedStatuses,
@@ -193,7 +201,8 @@ class _FeedingScheduleEditScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: SoftGradientAppBar(
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
         title: '$_selectedMealTypeスケジュール編集',
         actions: [
           TextButton(
@@ -208,11 +217,16 @@ class _FeedingScheduleEditScreenState
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
             // 펫 선택 그리드
             PetSelectionGrid(
               selectedPetId: _selectedPetId,
@@ -258,11 +272,19 @@ class _FeedingScheduleEditScreenState
                 sizeGuide: _petSizeGuide!,
               ),
 
-            const Spacer(),
+                    const SizedBox(height: AppSpacing.lg),
 
-            SaveButton(onPressed: _saveSchedule),
-          ],
-        ),
+                    ActionButton.primary(
+                      text: '保存',
+                      onPressed: _saveSchedule,
+                      isEnabled: true,
+                    ),
+                  ],
+                ),
+              ]),
+            ),
+          ),
+        ],
       ),
     );
   }

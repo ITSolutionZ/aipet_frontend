@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
     as SchedulingMock;
 
 /// 급여 분석 컨트롤러

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/router/routes/route_constants.dart';
 import '../../../../shared/shared.dart';
 import '../../data/providers/providers.dart';
-import '../widgets/widgets.dart';
+import '../widgets/pet_registor_widgets.dart';
 
 class PetAnniversarySummaryScreen extends ConsumerStatefulWidget {
   const PetAnniversarySummaryScreen({super.key});
@@ -17,6 +17,19 @@ class PetAnniversarySummaryScreen extends ConsumerStatefulWidget {
 
 class _PetAnniversarySummaryScreenState
     extends ConsumerState<PetAnniversarySummaryScreen> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
   /// 선택된 펫 이미지 경로 가져오기
   String _getPetImagePath() {
     final registrationState = ref.read(petRegistrationStateProvider);
@@ -128,7 +141,8 @@ class _PetAnniversarySummaryScreenState
 
         return Scaffold(
           backgroundColor: AppColors.pureWhite,
-          appBar: SoftGradientAppBar(
+          appBar: DynamicAppBarStyles.brown(
+            scrollController: _scrollController,
             title: '登録確認',
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios),
@@ -141,11 +155,16 @@ class _PetAnniversarySummaryScreenState
             child: Column(
               children: [
                 Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.all(AppSpacing.lg),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate([
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
                         // 프로그레스바
                         _buildProgressBar(),
                         const SizedBox(height: AppSpacing.lg),
@@ -242,8 +261,12 @@ class _PetAnniversarySummaryScreenState
                           onTap: () =>
                               context.go(RouteConstants.petSizeWeightRoute),
                         ),
-                      ],
-                    ),
+                              ],
+                            ),
+                          ]),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 

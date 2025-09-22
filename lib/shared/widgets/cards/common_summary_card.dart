@@ -1,414 +1,161 @@
 import 'package:flutter/material.dart';
 
-import '../../design/design.dart';
+import '../../ui/components/app_card.dart';
 
-/// 공통 요약 카드 위젯
-///
-/// 모든 feature에서 공통으로 사용되는 요약 카드 패턴을 제공합니다.
+/// ⚠️ DEPRECATED: 기존 API 호환성을 위해 유지됨
+/// 새로운 코드에서는 AppCard.summary()를 직접 사용하세요.
+
+@Deprecated('Use AppCard.summary() instead')
 class CommonSummaryCard extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final String? value;
+  final String? unit;
+  final Widget? icon;
+  final Color? iconColor;
+  final Widget? leading;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+  final bool isLoading;
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final double? borderRadius;
+  final String? semanticLabel;
+
   const CommonSummaryCard({
     super.key,
-    required this.icon,
-    required this.iconColor,
-    required this.mainValue,
-    required this.unit,
-    this.onTap,
+    required this.title,
     this.subtitle,
-    this.secondaryValue,
+    this.value,
+    this.unit,
+    this.icon,
+    this.iconColor,
+    this.leading,
+    this.trailing,
+    this.onTap,
     this.isLoading = false,
-    this.errorMessage,
+    this.backgroundColor,
+    this.borderColor,
+    this.padding,
+    this.margin,
+    this.borderRadius,
+    this.semanticLabel,
   });
-
-  final IconData icon;
-  final Color iconColor;
-  final String mainValue;
-  final String unit;
-  final VoidCallback? onTap;
-  final String? subtitle;
-  final String? secondaryValue;
-  final bool isLoading;
-  final String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return AppCard.summary(
+      title: title,
+      subtitle: subtitle,
+      value: value,
+      unit: unit,
+      icon: icon,
+      iconColor: iconColor,
+      leading: leading,
+      trailing: trailing,
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.sm),
-        decoration: BoxDecoration(
-          color: AppColors.pureWhite,
-          borderRadius: BorderRadius.circular(AppSpacing.md),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 아이콘
-            _buildIcon(),
-            const SizedBox(height: AppSpacing.xs),
-
-            // 메인 값
-            _buildMainValue(),
-
-            // 서브타이틀
-            if (subtitle != null) ...[
-              const SizedBox(height: AppSpacing.xs),
-              _buildSubtitle(),
-            ],
-
-            // 보조 값
-            if (secondaryValue != null) ...[
-              const SizedBox(height: AppSpacing.xs),
-              _buildSecondaryValue(),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildIcon() {
-    if (isLoading) {
-      return SizedBox(
-        width: 24,
-        height: 24,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(iconColor),
-        ),
-      );
-    }
-
-    if (errorMessage != null) {
-      return const Icon(
-        Icons.error_outline,
-        color: AppColors.pointPink,
-        size: 24,
-      );
-    }
-
-    return Icon(icon, color: iconColor, size: 24);
-  }
-
-  Widget _buildMainValue() {
-    if (isLoading) {
-      return Container(
-        width: 60,
-        height: 20,
-        decoration: BoxDecoration(
-          color: AppColors.pointOffWhite.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(4),
-        ),
-      );
-    }
-
-    if (errorMessage != null) {
-      return Text(
-        '--',
-        style: AppFonts.titleMedium.copyWith(
-          color: AppColors.pointPink,
-          fontWeight: FontWeight.bold,
-        ),
-      );
-    }
-
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: mainValue,
-            style: AppFonts.titleMedium.copyWith(
-              color: AppColors.pointDark,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          TextSpan(
-            text: ' $unit',
-            style: AppFonts.bodySmall.copyWith(
-              color: AppColors.pointDark.withValues(alpha: 0.7),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSubtitle() {
-    if (isLoading) {
-      return Container(
-        width: 80,
-        height: 12,
-        decoration: BoxDecoration(
-          color: AppColors.pointOffWhite.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(4),
-        ),
-      );
-    }
-
-    return Text(
-      subtitle!,
-      style: AppFonts.bodySmall.copyWith(
-        color: AppColors.pointDark.withValues(alpha: 0.7),
-      ),
-      textAlign: TextAlign.center,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-    );
-  }
-
-  Widget _buildSecondaryValue() {
-    if (isLoading) {
-      return Container(
-        width: 60,
-        height: 12,
-        decoration: BoxDecoration(
-          color: AppColors.pointOffWhite.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(4),
-        ),
-      );
-    }
-
-    return Text(
-      secondaryValue!,
-      style: AppFonts.bodySmall.copyWith(
-        color: AppColors.pointBrown,
-        fontWeight: FontWeight.w500,
-      ),
-      textAlign: TextAlign.center,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
+      isLoading: isLoading,
+      backgroundColor: backgroundColor,
+      borderColor: borderColor,
+      padding: padding,
+      margin: margin,
+      borderRadius: borderRadius,
+      semanticLabel: semanticLabel,
     );
   }
 }
 
-/// 통계 카드 위젯
+@Deprecated('Use AppCard.metric() instead')
 class StatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final String? unit;
+  final String? change;
+  final bool? isPositiveChange;
+  final Widget? icon;
+  final Color? iconColor;
+  final VoidCallback? onTap;
+  final bool isLoading;
+  final Color? backgroundColor;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final double? borderRadius;
+
   const StatCard({
     super.key,
     required this.title,
     required this.value,
-    this.subtitle,
-    this.trend,
+    this.unit,
+    this.change,
+    this.isPositiveChange,
+    this.icon,
+    this.iconColor,
     this.onTap,
     this.isLoading = false,
-    this.errorMessage,
+    this.backgroundColor,
+    this.padding,
+    this.margin,
+    this.borderRadius,
   });
-
-  final String title;
-  final String value;
-  final String? subtitle;
-  final Widget? trend;
-  final VoidCallback? onTap;
-  final bool isLoading;
-  final String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return AppCard.metric(
+      title: title,
+      value: value,
+      unit: unit,
+      change: change,
+      isPositiveChange: isPositiveChange,
+      icon: icon,
+      iconColor: iconColor,
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: AppColors.pureWhite,
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 제목
-            Text(
-              title,
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointDark.withValues(alpha: 0.7),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-
-            // 값과 트렌드
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(child: _buildValue()),
-                if (trend != null) ...[
-                  const SizedBox(width: AppSpacing.sm),
-                  trend!,
-                ],
-              ],
-            ),
-
-            // 서브타이틀
-            if (subtitle != null) ...[
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                subtitle!,
-                style: AppFonts.bodySmall.copyWith(
-                  color: AppColors.pointDark.withValues(alpha: 0.5),
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildValue() {
-    if (isLoading) {
-      return Container(
-        width: 80,
-        height: 24,
-        decoration: BoxDecoration(
-          color: AppColors.pointOffWhite.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(4),
-        ),
-      );
-    }
-
-    if (errorMessage != null) {
-      return Text(
-        '--',
-        style: AppFonts.titleLarge.copyWith(
-          color: AppColors.pointPink,
-          fontWeight: FontWeight.bold,
-        ),
-      );
-    }
-
-    return Text(
-      value,
-      style: AppFonts.titleLarge.copyWith(
-        color: AppColors.pointDark,
-        fontWeight: FontWeight.bold,
-      ),
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
+      backgroundColor: backgroundColor,
+      padding: padding,
+      margin: margin,
+      borderRadius: borderRadius,
     );
   }
 }
 
-/// 액션 카드 위젯
+@Deprecated('Use AppCard.button() instead')
 class ActionCard extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final Widget? icon;
+  final Color? iconColor;
+  final VoidCallback onTap;
+  final Color? backgroundColor;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final double? borderRadius;
+
   const ActionCard({
     super.key,
     required this.title,
-    required this.description,
-    required this.icon,
+    this.subtitle,
+    this.icon,
+    this.iconColor,
     required this.onTap,
-    this.isLoading = false,
-    this.isEnabled = true,
+    this.backgroundColor,
+    this.padding,
+    this.margin,
+    this.borderRadius,
   });
-
-  final String title;
-  final String description;
-  final IconData icon;
-  final VoidCallback onTap;
-  final bool isLoading;
-  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: isEnabled && !isLoading ? onTap : null,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: isEnabled ? AppColors.pureWhite : AppColors.pointOffWhite,
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(
-            color: isEnabled
-                ? AppColors.pointOffWhite.withValues(alpha: 0.3)
-                : AppColors.pointOffWhite.withValues(alpha: 0.1),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            // 아이콘
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: isEnabled
-                    ? AppColors.pointBrown.withValues(alpha: 0.1)
-                    : AppColors.pointOffWhite.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppRadius.small),
-              ),
-              child: isLoading
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          isEnabled
-                              ? AppColors.pointBrown
-                              : AppColors.pointOffWhite,
-                        ),
-                      ),
-                    )
-                  : Icon(
-                      icon,
-                      color: isEnabled
-                          ? AppColors.pointBrown
-                          : AppColors.pointOffWhite,
-                      size: 20,
-                    ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-
-            // 텍스트
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: isEnabled
-                          ? AppColors.pointDark
-                          : AppColors.pointOffWhite,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    description,
-                    style: AppFonts.bodySmall.copyWith(
-                      color: isEnabled
-                          ? AppColors.pointDark.withValues(alpha: 0.7)
-                          : AppColors.pointOffWhite,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-
-            // 화살표
-            if (isEnabled && !isLoading)
-              const Icon(
-                Icons.arrow_forward_ios,
-                color: AppColors.pointOffWhite,
-                size: 16,
-              ),
-          ],
-        ),
-      ),
+    return AppCard.button(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      iconColor: iconColor,
+      onTap: onTap,
+      backgroundColor: backgroundColor,
+      padding: padding,
+      margin: margin,
+      borderRadius: borderRadius,
     );
   }
 }

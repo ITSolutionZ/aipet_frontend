@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/controllers/base_controller.dart';
-import '../../../../shared/constants/app_texts.dart';
+import '../../../../shared/core/constants/app_texts.dart';
 import '../../../../shared/design/design.dart';
-import '../../../../shared/domain/result.dart';
+import '../../../../shared/core/domain/result.dart';
 
 class ScheduleCardData {
   final String title;

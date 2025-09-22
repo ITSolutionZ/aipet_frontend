@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:aipet_frontend/shared/design/spacing.dart';
+import 'package:aipet_frontend/shared/design/tokens/spacing.dart';
 
 void main() {
   group('AppSpacing', () {
@@ -53,10 +53,10 @@ void main() {
     group('spacing operations', () {
       test('should support arithmetic operations', () {
         // Act
-        final sum = AppSpacing.sm + AppSpacing.xs;
-        final difference = AppSpacing.lg - AppSpacing.md;
-        final product = AppSpacing.md * 2;
-        final quotient = AppSpacing.xl / 2;
+        const sum = AppSpacing.sm + AppSpacing.xs;
+        const difference = AppSpacing.lg - AppSpacing.md;
+        const product = AppSpacing.md * 2;
+        const quotient = AppSpacing.xl / 2;
 
         // Assert
         expect(sum, equals(12.0));
@@ -87,7 +87,7 @@ void main() {
     group('spacing edge cases', () {
       test('should handle zero values', () {
         // Act
-        final zero = AppSpacing.xs - AppSpacing.xs;
+        const zero = AppSpacing.xs - AppSpacing.xs;
 
         // Assert
         expect(zero, equals(0.0));
@@ -95,7 +95,7 @@ void main() {
 
       test('should handle negative values', () {
         // Act
-        final negative = AppSpacing.xs - AppSpacing.sm;
+        const negative = AppSpacing.xs - AppSpacing.sm;
 
         // Assert
         expect(negative, equals(-4.0));
@@ -104,7 +104,7 @@ void main() {
 
       test('should handle large values', () {
         // Act
-        final large = AppSpacing.xl * 10;
+        const large = AppSpacing.xl * 10;
 
         // Assert
         expect(large, equals(320.0));
@@ -113,8 +113,8 @@ void main() {
 
       test('should handle decimal operations', () {
         // Act
-        final half = AppSpacing.md / 2;
-        final quarter = AppSpacing.sm / 4;
+        const half = AppSpacing.md / 2;
+        const quarter = AppSpacing.sm / 4;
 
         // Assert
         expect(half, equals(8.0));
@@ -154,8 +154,8 @@ void main() {
     group('spacing usage examples', () {
       test('should work with EdgeInsets', () {
         // Act
-        final padding = EdgeInsets.all(AppSpacing.md);
-        final margin = EdgeInsets.symmetric(
+        const padding = EdgeInsets.all(AppSpacing.md);
+        const margin = EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.sm,
         );
@@ -173,8 +173,8 @@ void main() {
 
       test('should work with SizedBox', () {
         // Act
-        final width = AppSpacing.xl;
-        final height = AppSpacing.lg;
+        const width = AppSpacing.xl;
+        const height = AppSpacing.lg;
 
         // Assert
         expect(width, equals(32.0));

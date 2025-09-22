@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../design/design.dart';
+import '../../shared.dart';
 
 /// 산책 정보 표시 위젯들
 class WalkInfoWidgets {
@@ -42,7 +42,9 @@ class WalkInfoWidgets {
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.xs),
                       decoration: BoxDecoration(
-                        color: (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
+                        color: (iconColor ?? AppColors.pointBlue).withValues(
+                          alpha: 0.1,
+                        ),
                         borderRadius: BorderRadius.circular(AppRadius.small),
                       ),
                       child: Icon(
@@ -96,17 +98,11 @@ class WalkInfoWidgets {
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 20,
-            color: iconColor ?? AppColors.pointGray,
-          ),
+          Icon(icon, size: 20, color: iconColor ?? AppColors.pointGray),
           const SizedBox(width: AppSpacing.sm),
           Text(
             label,
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointGray,
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
           ),
           const Spacer(),
           Text(
@@ -136,10 +132,7 @@ class WalkInfoWidgets {
       decoration: BoxDecoration(
         color: backgroundColor ?? color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Text(
         status,
@@ -174,9 +167,7 @@ class WalkInfoWidgets {
             ),
             Text(
               '${(progress * 100).toInt()}%',
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointGray,
-              ),
+              style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
             ),
           ],
         ),
@@ -184,15 +175,14 @@ class WalkInfoWidgets {
           const SizedBox(height: AppSpacing.xs),
           Text(
             subtitle,
-            style: AppFonts.bodySmall.copyWith(
-              color: AppColors.pointGray,
-            ),
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
           ),
         ],
         const SizedBox(height: AppSpacing.sm),
         LinearProgressIndicator(
           value: progress.clamp(0.0, 1.0),
-          backgroundColor: backgroundColor ?? AppColors.pointGray.withValues(alpha: 0.2),
+          backgroundColor:
+              backgroundColor ?? AppColors.pointGray.withValues(alpha: 0.2),
           valueColor: AlwaysStoppedAnimation<Color>(
             progressColor ?? AppColors.pointBlue,
           ),
@@ -227,7 +217,9 @@ class WalkInfoWidgets {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
+                color: (iconColor ?? AppColors.pointBlue).withValues(
+                  alpha: 0.1,
+                ),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: iconColor ?? AppColors.pointBlue,

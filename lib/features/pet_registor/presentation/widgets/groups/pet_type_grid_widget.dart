@@ -76,7 +76,7 @@ class PetTypeGridWidget extends StatelessWidget {
 
               return PetTypeCard(
                 imagePath: petType['imagePath'],
-                color: petType['color'],
+                selectionColor: petType['color'],
                 isSelected: isSelected,
                 petType: petType['type'],
                 onTap: () => onPetTypeSelected(petType['type']),
@@ -90,9 +90,7 @@ class PetTypeGridWidget extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('カスタムペットタイプは近日公開予定です'),
-                ),
+                const SnackBar(content: Text('カスタムペットタイプは近日公開予定です')),
               );
             },
             style: OutlinedButton.styleFrom(

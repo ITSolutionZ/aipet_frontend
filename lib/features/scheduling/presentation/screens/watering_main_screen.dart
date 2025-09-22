@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/shared.dart';
 
@@ -9,9 +10,7 @@ class WateringMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SoftGradientAppBar(
-        title: '給水管理',
-      ),
+      appBar: const SoftGradientAppBar(title: '給水管理'),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -35,10 +34,7 @@ class WateringMainScreen extends StatelessWidget {
                     subtitle: '定期的な給水',
                     color: AppColors.tonePeach,
                     onTap: () {
-                      // TODO: 급수 스케줄 페이지로 이동
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('給水スケジュール - Coming Soon')),
-                      );
+                      context.pushNamed('watering-schedule');
                     },
                   ),
                   _buildMenuCard(
@@ -47,10 +43,7 @@ class WateringMainScreen extends StatelessWidget {
                     subtitle: '給水履歴',
                     color: AppColors.pointBlue,
                     onTap: () {
-                      // TODO: 급수 기록 페이지로 이동
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('給水記録 - Coming Soon')),
-                      );
+                      context.pushNamed('watering-records');
                     },
                   ),
                   _buildMenuCard(
@@ -59,10 +52,7 @@ class WateringMainScreen extends StatelessWidget {
                     subtitle: '水分摂取量',
                     color: AppColors.pointGreen,
                     onTap: () {
-                      // TODO: 급수 분석 페이지로 이동
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('給水分析 - Coming Soon')),
-                      );
+                      context.pushNamed('watering-analysis');
                     },
                   ),
                   _buildMenuCard(
@@ -71,10 +61,7 @@ class WateringMainScreen extends StatelessWidget {
                     subtitle: '給水器の設定',
                     color: AppColors.pointBrown,
                     onTap: () {
-                      // TODO: 급수 설정 페이지로 이동
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('給水設定 - Coming Soon')),
-                      );
+                      context.pushNamed('watering-settings');
                     },
                   ),
                 ],

@@ -1,4 +1,4 @@
-import '../../../../shared/domain/result.dart';
+import '../../../../shared/core/domain/result.dart';
 import '../entities/schedule_entity.dart';
 import '../repositories/schedule_repository.dart';
 

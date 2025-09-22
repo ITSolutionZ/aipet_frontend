@@ -424,26 +424,34 @@ class AiChatController extends BaseController {
       return Result.failure('メッセージが空です');
     }
 
-    try {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
-      await notifier.sendMessage(content);
-      return Result.success('メッセージが送信されました');
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    final result = await safeExecuteWithTimeout(
+      () async {
+        final notifier = ref.read(aiChatNotifierProvider.notifier);
+        await notifier.sendMessage(content);
+      },
+      timeout: const Duration(seconds: 30),
+      errorMessage: 'メッセージ送信',
+    );
+
+    return result != null
+        ? Result.success('メッセージが送信されました')
+        : Result.failure('メッセージの送信に失敗しました');
   }
 
   /// 채팅 기록 초기화
   Future<Result<void>> clearChatHistory() async {
-    try {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
-      await notifier.clearChatHistory();
-      return Result.success('チャット履歴がクリアされました');
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    final result = await safeExecuteWithRetry(
+      () async {
+        final notifier = ref.read(aiChatNotifierProvider.notifier);
+        await notifier.clearChatHistory();
+      },
+      maxRetries: 2,
+      errorMessage: 'チャット履歴クリア',
+    );
+
+    return result != null
+        ? Result.success('チャット履歴がクリアされました')
+        : Result.failure('チャット履歴のクリアに失敗しました');
   }
 
   /// 현재 메시지 목록 가져오기
@@ -492,25 +500,32 @@ class AiChatController extends BaseController {
 
   /// 현재 채팅을 히스토리에 수동 저장
   Future<Result<void>> saveCurrentChatManually() async {
-    try {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
-      await notifier.saveCurrentChatToHistory(isManualSave: true);
-      return Result.success('チャット履歴が保存されました');
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    final result = await safeExecuteWithTimeout(
+      () async {
+        final notifier = ref.read(aiChatNotifierProvider.notifier);
+        await notifier.saveCurrentChatToHistory(isManualSave: true);
+      },
+      timeout: const Duration(seconds: 15),
+      errorMessage: 'チャット履歴保存',
+    );
+
+    return result != null
+        ? Result.success('チャット履歴が保存されました')
+        : Result.failure('チャット履歴の保存に失敗しました');
   }
 
   /// 현재 채팅을 히스토리에 자동 저장 (탭 전환시)
   Future<Result<void>> saveCurrentChatOnTabSwitch() async {
-    try {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
-      await notifier.saveCurrentChatToHistory(isManualSave: false);
-      return Result.success('チャット履歴が自動保存されました');
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    final result = await safeExecute(
+      () async {
+        final notifier = ref.read(aiChatNotifierProvider.notifier);
+        await notifier.saveCurrentChatToHistory(isManualSave: false);
+      },
+      errorMessage: 'チャット履歴自動保存',
+    );
+
+    return result != null
+        ? Result.success('チャット履歴が自動保存されました')
+        : Result.failure('チャット履歴の自動保存に失敗しました');
   }
 }

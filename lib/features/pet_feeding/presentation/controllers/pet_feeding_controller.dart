@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/mock_data/features/pet_feeding/pet_feeding_mock_service.dart'
+import '../../../../shared/testing/mock_data/features/pet_feeding/pet_feeding_mock_service.dart'
     as PetFeedingMock;
 import '../../domain/domain.dart';
 

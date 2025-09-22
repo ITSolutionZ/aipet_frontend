@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../design/design.dart';
+import '../../shared.dart';
 
 /// 산책 기록의 반려동물 태그 위젯
 class WalkPetTag extends StatelessWidget {
@@ -8,12 +8,7 @@ class WalkPetTag extends StatelessWidget {
   final Color? color;
   final IconData? icon;
 
-  const WalkPetTag({
-    super.key,
-    required this.petName,
-    this.color,
-    this.icon,
-  });
+  const WalkPetTag({super.key, required this.petName, this.color, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +27,7 @@ class WalkPetTag extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            tagIcon,
-            size: 16,
-            color: tagColor,
-          ),
+          Icon(tagIcon, size: 16, color: tagColor),
           const SizedBox(width: AppSpacing.sm),
           Text(
             '$petNameとの散歩',

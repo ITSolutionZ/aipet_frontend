@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/services/date_format_service.dart';
+import '../../../../shared/core/services/date_format_service.dart';
 import '../../data/services/notification_icon_service.dart';
 import '../../domain/entities/entities.dart';
 import '../components/cards/notification_card_component.dart';

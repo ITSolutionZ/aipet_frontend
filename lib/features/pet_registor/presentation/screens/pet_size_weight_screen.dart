@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/router/routes/route_constants.dart';
 import '../../../../shared/shared.dart';
 import '../../data/providers/providers.dart';
-import '../widgets/widgets.dart';
+import '../widgets/pet_registor_widgets.dart';
 
 class PetSizeWeightScreen extends ConsumerStatefulWidget {
   const PetSizeWeightScreen({super.key});
@@ -23,10 +23,12 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
   // 체중 입력을 위한 컨트롤러와 포커스 노드
   TextEditingController? _weightController;
   FocusNode? _weightFocusNode;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
 
     // 컨트롤러와 포커스 노드 초기화
     _weightController = TextEditingController(text: _weight.toStringAsFixed(1));
@@ -49,6 +51,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
   void dispose() {
     _weightController?.dispose();
     _weightFocusNode?.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -189,7 +192,8 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pureWhite,
-      appBar: SoftGradientAppBar(
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
         title: 'ペットのサイズと体重は？',
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
@@ -204,11 +208,16 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
           children: [
             // 상단 영역 (스크롤 제거)
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
                     // 프로그레스바
                     const PetRegistrationProgressBar(currentStep: 4),
                     const SizedBox(height: AppSpacing.md),
@@ -301,8 +310,12 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                         _saveToGlobalState();
                       },
                     ),
-                  ],
-                ),
+                          ],
+                        ),
+                      ]),
+                    ),
+                  ),
+                ],
               ),
             ),
 

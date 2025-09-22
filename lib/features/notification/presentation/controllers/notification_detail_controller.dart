@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/services/date_format_service.dart';
+import '../../../../shared/core/services/date_format_service.dart';
 import '../../domain/entities/entities.dart';
 import '../../domain/usecases/usecases.dart';
 import 'notification_ui_controller.dart';

@@ -1,9 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:aipet_frontend/features/walk/data/walk_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Walk Providers Tests', () {
@@ -105,8 +104,10 @@ void main() {
 
       test('should get recent walk records with limit', () {
         final notifier = container.read(walkRecordsNotifierProvider.notifier);
-        final records = List.generate(15, (index) =>
-          _createMockWalkRecord('$index', 'Walk $index'));
+        final records = List.generate(
+          15,
+          (index) => _createMockWalkRecord('$index', 'Walk $index'),
+        );
 
         notifier.setWalkRecords(records);
         final recentRecords = notifier.getRecentWalkRecords(limit: 5);
@@ -123,8 +124,11 @@ void main() {
 
       test('should start walk correctly', () {
         final notifier = container.read(currentWalkNotifierProvider.notifier);
-        final walkRecord = _createMockWalkRecord('1', 'Current Walk',
-          status: WalkStatus.inProgress);
+        final walkRecord = _createMockWalkRecord(
+          '1',
+          'Current Walk',
+          status: WalkStatus.inProgress,
+        );
 
         notifier.startWalk(walkRecord);
         final state = container.read(currentWalkNotifierProvider);
@@ -160,8 +164,11 @@ void main() {
 
       test('should pause walk correctly', () {
         final notifier = container.read(currentWalkNotifierProvider.notifier);
-        final walkRecord = _createMockWalkRecord('1', 'Pausing Walk',
-          status: WalkStatus.inProgress);
+        final walkRecord = _createMockWalkRecord(
+          '1',
+          'Pausing Walk',
+          status: WalkStatus.inProgress,
+        );
 
         notifier.startWalk(walkRecord);
         notifier.pauseWalk();
@@ -172,8 +179,11 @@ void main() {
 
       test('should resume walk correctly', () {
         final notifier = container.read(currentWalkNotifierProvider.notifier);
-        final walkRecord = _createMockWalkRecord('1', 'Resuming Walk',
-          status: WalkStatus.paused);
+        final walkRecord = _createMockWalkRecord(
+          '1',
+          'Resuming Walk',
+          status: WalkStatus.paused,
+        );
 
         notifier.startWalk(walkRecord);
         notifier.resumeWalk();
@@ -184,7 +194,11 @@ void main() {
 
       test('should add location to current walk', () {
         final notifier = container.read(currentWalkNotifierProvider.notifier);
-        final walkRecord = _createMockWalkRecord('1', 'Location Walk', route: []);
+        final walkRecord = _createMockWalkRecord(
+          '1',
+          'Location Walk',
+          route: [],
+        );
         final location = WalkLocation(
           latitude: 35.6762,
           longitude: 139.6503,
@@ -218,7 +232,11 @@ void main() {
 
       test('should set selected pet correctly', () {
         final notifier = container.read(selectedPetNotifierProvider.notifier);
-        const pet = PetInfo(id: 'pet1', name: 'Buddy', imagePath: 'path/to/buddy.jpg');
+        const pet = PetInfo(
+          id: 'pet1',
+          name: 'Buddy',
+          imagePath: 'path/to/buddy.jpg',
+        );
 
         notifier.setSelectedPet(pet);
         final state = container.read(selectedPetNotifierProvider);
@@ -230,7 +248,11 @@ void main() {
 
       test('should clear selected pet', () {
         final notifier = container.read(selectedPetNotifierProvider.notifier);
-        const pet = PetInfo(id: 'pet1', name: 'Buddy', imagePath: 'path/to/buddy.jpg');
+        const pet = PetInfo(
+          id: 'pet1',
+          name: 'Buddy',
+          imagePath: 'path/to/buddy.jpg',
+        );
 
         notifier.setSelectedPet(pet);
         notifier.setSelectedPet(null);
@@ -282,10 +304,22 @@ void main() {
 
       test('should calculate stats correctly for walk with route', () {
         final notifier = container.read(walkStatsNotifierProvider.notifier);
-        final walkRecord = _createMockWalkRecord('1', 'Stats Walk', route: [
-          WalkLocation(latitude: 35.6762, longitude: 139.6503, timestamp: DateTime.now()),
-          WalkLocation(latitude: 35.6763, longitude: 139.6504, timestamp: DateTime.now()),
-        ]);
+        final walkRecord = _createMockWalkRecord(
+          '1',
+          'Stats Walk',
+          route: [
+            WalkLocation(
+              latitude: 35.6762,
+              longitude: 139.6503,
+              timestamp: DateTime.now(),
+            ),
+            WalkLocation(
+              latitude: 35.6763,
+              longitude: 139.6504,
+              timestamp: DateTime.now(),
+            ),
+          ],
+        );
 
         notifier.updateStats(walkRecord);
         final state = container.read(walkStatsNotifierProvider);
@@ -294,19 +328,30 @@ void main() {
         expect(state.steps, equals(2));
       });
 
-      test('should not calculate stats for walk with insufficient route points', () {
-        final notifier = container.read(walkStatsNotifierProvider.notifier);
-        final walkRecord = _createMockWalkRecord('1', 'Single Point Walk', route: [
-          WalkLocation(latitude: 35.6762, longitude: 139.6503, timestamp: DateTime.now()),
-        ]);
+      test(
+        'should not calculate stats for walk with insufficient route points',
+        () {
+          final notifier = container.read(walkStatsNotifierProvider.notifier);
+          final walkRecord = _createMockWalkRecord(
+            '1',
+            'Single Point Walk',
+            route: [
+              WalkLocation(
+                latitude: 35.6762,
+                longitude: 139.6503,
+                timestamp: DateTime.now(),
+              ),
+            ],
+          );
 
-        notifier.updateStats(walkRecord);
-        final state = container.read(walkStatsNotifierProvider);
+          notifier.updateStats(walkRecord);
+          final state = container.read(walkStatsNotifierProvider);
 
-        // Should remain at initial state
-        expect(state.distance, equals(0.0));
-        expect(state.steps, equals(0));
-      });
+          // Should remain at initial state
+          expect(state.distance, equals(0.0));
+          expect(state.steps, equals(0));
+        },
+      );
     });
   });
 }
@@ -326,10 +371,20 @@ WalkRecordEntity _createMockWalkRecord(
     endTime: DateTime.now(),
     distance: 2.5,
     duration: const Duration(minutes: 30),
-    route: route ?? [
-      WalkLocation(latitude: 35.6762, longitude: 139.6503, timestamp: DateTime.now()),
-      WalkLocation(latitude: 35.6763, longitude: 139.6504, timestamp: DateTime.now()),
-    ],
+    route:
+        route ??
+        [
+          WalkLocation(
+            latitude: 35.6762,
+            longitude: 139.6503,
+            timestamp: DateTime.now(),
+          ),
+          WalkLocation(
+            latitude: 35.6763,
+            longitude: 139.6504,
+            timestamp: DateTime.now(),
+          ),
+        ],
     petId: petId ?? 'default_pet',
     petName: 'Test Pet',
     petImage: 'assets/images/test_pet.jpg',

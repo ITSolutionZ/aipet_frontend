@@ -171,15 +171,15 @@ class LearnNextTrickCard extends StatelessWidget {
     switch (difficulty?.toLowerCase()) {
       case 'easy':
       case 'beginner':
-        return 'Beginner';
+        return '初級';
       case 'medium':
       case 'intermediate':
-        return 'Intermediate';
+        return '中級';
       case 'hard':
       case 'advanced':
-        return 'Advanced';
+        return '上級';
       default:
-        return 'Beginner';
+        return '初級';
     }
   }
 }

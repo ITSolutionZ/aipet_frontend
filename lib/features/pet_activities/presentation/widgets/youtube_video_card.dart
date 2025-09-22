@@ -166,7 +166,7 @@ class YouTubeVideoCard extends StatelessWidget {
             Icon(Icons.video_library, size: 48, color: AppColors.pointBrown),
             SizedBox(height: AppSpacing.xs),
             Text(
-              'YouTube Video',
+              'YouTube動画',
               style: TextStyle(
                 color: AppColors.pointBrown,
                 fontWeight: FontWeight.w500,
@@ -190,14 +190,14 @@ class YouTubeVideoCard extends StatelessWidget {
               size: 20,
               color: AppColors.pointBlue,
             ),
-            tooltip: 'Bookmarks',
+            tooltip: 'ブックマーク',
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
           ),
         if (onDeleteTap != null)
           IconButton(
             onPressed: onDeleteTap,
             icon: const Icon(Icons.delete_outline, size: 20, color: Colors.red),
-            tooltip: 'Delete',
+            tooltip: '削除',
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
           ),
       ],

@@ -52,7 +52,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         });
       }
     } catch (e) {
-      debugPrint('로그인 정보 불러오기 중 에러 발생: $e');
+      LoggerService.error('로그인 정보 불러오기 실패', error: e);
       // 에러가 발생해도 앱은 정상적으로 작동하도록 함
     }
   }
@@ -66,27 +66,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   /// 패스워드 재설정 다이얼로그 표시
   void _showPasswordResetDialog(BuildContext context) {
-    showDialog(
+    CommonDialogPatterns.showStandardDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          _passwordResetTitle,
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: const Text(
-          _passwordResetMessage,
-          style: TextStyle(fontSize: 16),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text(_okButtonText),
-          ),
-        ],
+      title: _passwordResetTitle,
+      content: const Text(
+        _passwordResetMessage,
+        style: TextStyle(fontSize: 16),
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text(_okButtonText),
+        ),
+      ],
     );
   }
 
@@ -136,7 +128,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       onChanged: _authController.updateEmail,
                       validator: (value) {
                         // 공통 ValidationService 사용
-                        final result = ValidationService.validateEmail(value ?? '');
+                        final result = ValidationService.validateEmail(
+                          value ?? '',
+                        );
                         return result.isSuccess ? null : result.message;
                       },
                     ),
@@ -149,7 +143,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       controller: _passwordController,
                       obscureText: !authState.isPasswordVisible,
                       prefixIcon: Icons.lock_outline,
-                      suffixIcon: authState.isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      suffixIcon: authState.isPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       onSuffixIconTap: _authController.togglePasswordVisibility,
                       onChanged: (value) {
                         // 패스워드는 AuthFormState에 저장하지 않음 (보안상 이유)
@@ -157,7 +153,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       },
                       validator: (value) {
                         // 공통 ValidationService 사용
-                        final result = ValidationService.validatePassword(value ?? '');
+                        final result = ValidationService.validatePassword(
+                          value ?? '',
+                        );
                         return result.isSuccess ? null : result.message;
                       },
                     ),
@@ -208,7 +206,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       width: double.infinity,
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          // 데모 앱이므로 바로 홈으로 이동
+                          // TODO: 개발 완료 후 삭제할 임시 로그인 우회 로직
+                          // 현재는 아무 입력값이나 넣어도 로그인 성공 처리
+                          LoggerService.warning(
+                            '임시 로그인 우회 실행',
+                            data: {'email': _emailController.text},
+                          );
+
+                          // 임시로 성공 처리 후 홈으로 이동
+                          _authController.handleTempLoginSuccess();
                           context.go(AppRouter.homeRoute);
                         }
                       },
@@ -227,25 +233,44 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                   SocialLoginButton(
                     type: SocialLoginType.email,
-                    onPressed: () => context.go(AppRouter.signupRoute),
+                    onPressed: () {
+                      // TODO: 개발 완료 후 실제 회원가입 화면으로 이동
+                      LoggerService.warning('임시 소셜 로그인 우회: 이메일 회원가입');
+                      context.go(AppRouter.signupRoute);
+                    },
                     isLoading: false,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   SocialLoginButton(
                     type: SocialLoginType.google,
-                    onPressed: () => context.go(AppRouter.homeRoute),
+                    onPressed: () {
+                      // TODO: 개발 완료 후 삭제할 임시 로그인 우회
+                      LoggerService.warning('임시 소셜 로그인 우회: Google');
+                      _authController.handleTempLoginSuccess();
+                      context.go(AppRouter.homeRoute);
+                    },
                     isLoading: false,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   SocialLoginButton(
                     type: SocialLoginType.apple,
-                    onPressed: () => context.go(AppRouter.homeRoute),
+                    onPressed: () {
+                      // TODO: 개발 완료 후 삭제할 임시 로그인 우회
+                      LoggerService.warning('임시 소셜 로그인 우회: Apple');
+                      _authController.handleTempLoginSuccess();
+                      context.go(AppRouter.homeRoute);
+                    },
                     isLoading: false,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   SocialLoginButton(
                     type: SocialLoginType.line,
-                    onPressed: () => context.go(AppRouter.homeRoute),
+                    onPressed: () {
+                      // TODO: 개발 완료 후 삭제할 임시 로그인 우회
+                      LoggerService.warning('임시 소셜 로그인 우회: LINE');
+                      _authController.handleTempLoginSuccess();
+                      context.go(AppRouter.homeRoute);
+                    },
                     isLoading: false,
                   ),
                   const SizedBox(height: AppSpacing.xl),

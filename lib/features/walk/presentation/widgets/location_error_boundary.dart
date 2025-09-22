@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../shared/shared.dart';
 import '../../domain/services/walk_error_handler.dart';
 
 /// 위치 서비스 에러 경계 위젯
@@ -61,15 +62,15 @@ class LocationErrorBoundary extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
+                  color: AppColors.pointBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue.shade200),
+                  border: Border.all(color: AppColors.pointBlue.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: [
                     const Icon(
                       Icons.lightbulb_outline,
-                      color: Colors.blue,
+                      color: AppColors.pointBlue,
                       size: 20,
                     ),
                     const SizedBox(width: 8),
@@ -78,7 +79,7 @@ class LocationErrorBoundary extends ConsumerWidget {
                         userAction,
                         style: const TextStyle(
                           fontSize: 14,
-                          color: Colors.blue,
+                          color: AppColors.pointBlue,
                         ),
                       ),
                     ),
@@ -89,25 +90,31 @@ class LocationErrorBoundary extends ConsumerWidget {
           ),
           actions: [
             if (severity != WalkErrorSeverity.critical)
-              TextButton(
+              CommonButton(
+                text: 'キャンセル',
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('キャンセル'),
+                type: ButtonType.secondary,
+                size: ButtonSize.small,
               ),
             if (onSettings != null && _shouldShowSettingsButton(error))
-              ElevatedButton(
+              CommonButton(
+                text: '設定を開く',
                 onPressed: () {
                   Navigator.of(context).pop();
                   onSettings();
                 },
-                child: const Text('設定を開く'),
+                type: ButtonType.primary,
+                size: ButtonSize.small,
               ),
             if (onRetry != null && severity != WalkErrorSeverity.critical)
-              ElevatedButton(
+              CommonButton(
+                text: '再試行',
                 onPressed: () {
                   Navigator.of(context).pop();
                   onRetry();
                 },
-                child: const Text('再試行'),
+                type: ButtonType.primary,
+                size: ButtonSize.small,
               ),
           ],
         );
@@ -130,37 +137,33 @@ class LocationErrorBoundary extends ConsumerWidget {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(
-              _getErrorIcon(severity),
-              color: Colors.white,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                errorMessage,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: _getErrorColor(severity),
-        duration: Duration(
-          seconds: severity == WalkErrorSeverity.high ? 8 : 5,
-        ),
+    if (severity == WalkErrorSeverity.high) {
+      SnackBarService.showError(
+        context,
+        errorMessage,
+        duration: const Duration(seconds: 8),
         action: onRetry != null
             ? SnackBarAction(
                 label: '再試行',
-                textColor: Colors.white,
+                textColor: AppColors.pureWhite,
                 onPressed: onRetry,
               )
             : null,
-      ),
-    );
+      );
+    } else {
+      SnackBarService.showWarning(
+        context,
+        errorMessage,
+        duration: const Duration(seconds: 5),
+        action: onRetry != null
+            ? SnackBarAction(
+                label: '再試行',
+                textColor: AppColors.pureWhite,
+                onPressed: onRetry,
+              )
+            : null,
+      );
+    }
   }
 
   /// 위치 에러 인라인 위젯

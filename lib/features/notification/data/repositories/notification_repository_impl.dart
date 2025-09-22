@@ -1,4 +1,4 @@
-import '../../../../shared/mock_data/features/notification/notification_mock_service.dart';
+import '../../../../shared/testing/mock_data/features/notification/notification_mock_service.dart';
 import '../../domain/entities/entities.dart';
 import '../../domain/repositories/notification_repository.dart';
 

@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/services/user_experience_service.dart';
+import 'package:aipet_frontend/shared/core/services/user_experience_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

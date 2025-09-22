@@ -88,39 +88,21 @@ class TricksController extends BaseController {
   /// 성공 메시지를 표시합니다.
   void showSuccess(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: AppColors.pointGreen,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      UiService.showSuccess(context, message);
     }
   }
 
   /// 경고 메시지를 표시합니다.
   void showWarning(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: AppColors.pointBrown,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      UiService.showWarning(context, message);
     }
   }
 
   /// 정보 메시지를 표시합니다.
   void showInfo(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: AppColors.pointBlue,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      UiService.showInfo(context, message);
     }
   }
 }

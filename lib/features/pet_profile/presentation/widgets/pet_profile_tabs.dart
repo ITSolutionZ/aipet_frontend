@@ -281,7 +281,7 @@ class ActivityTab extends ConsumerWidget {
       data: (tricks) => _buildActivityContent(context, tricks),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) =>
-          Center(child: Text('活動データを不러오는 중 오류가 발생했습니다: $error')),
+          Center(child: Text('活動データの読み込み中にエラーが発生しました: $error')),
     );
   }
 
@@ -296,7 +296,7 @@ class ActivityTab extends ConsumerWidget {
         children: [
           if (learnedTricks.isNotEmpty) ...[
             Text(
-              '배운 트릭',
+              '習得したトリック',
               style: AppFonts.titleMedium.copyWith(
                 color: AppColors.pointDark,
                 fontWeight: FontWeight.bold,
@@ -309,7 +309,7 @@ class ActivityTab extends ConsumerWidget {
 
           if (availableTricks.isNotEmpty) ...[
             Text(
-              '다음에 배울 트릭',
+              '次に習得するトリック',
               style: AppFonts.titleMedium.copyWith(
                 color: AppColors.pointDark,
                 fontWeight: FontWeight.bold,
@@ -328,7 +328,7 @@ class ActivityTab extends ConsumerWidget {
                 // 교육 영상 페이지로 이동
               },
               icon: const Icon(Icons.ondemand_video),
-              label: const Text('교육 영상 보기'),
+              label: const Text('教育動画を見る'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBlue,
                 foregroundColor: Colors.white,
@@ -369,8 +369,8 @@ class ActivityTab extends ConsumerWidget {
         ),
         subtitle: Text(
           isLearned
-              ? '완료! (${trick.progress ?? 0}%)'
-              : trick.description ?? '설명 없음',
+              ? '完了! (${trick.progress ?? 0}%)'
+              : trick.description ?? '説明なし',
           style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
         ),
         trailing: isLearned

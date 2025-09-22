@@ -4,9 +4,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../features/auth/data/services/firebase_token_service.dart';
+import '../features/auth/data/services/token_storage_auth_token_repository.dart';
 import '../firebase_options.dart';
+import '../shared/core/services/http_client_service.dart';
 import '../shared/shared.dart';
 import 'config/config.dart';
 import 'providers/providers.dart';
@@ -63,18 +66,24 @@ class AppBootstrap {
   ///
   /// 환경별 설정을 초기화하고 앱 실행에 필요한 기본 설정을 로드합니다.
   static Future<void> initialize() async {
-    // 환경 변수 로드
+    // 환경 변수 로드 (Sentry 초기화 전에 먼저 로드)
     await dotenv.load(fileName: '.env');
     debugPrint('✅ Environment variables loaded from .env');
 
     // 환경별 설정 초기화
     _initializeAppConfig();
 
+    // Sentry 초기화 (에러 추적 및 성능 모니터링)
+    await _initializeSentry();
+
     // 환경 변수 로드 및 API 키 검증
     await AppConfig.current.loadEnv();
 
     // API 키 설정 상태 로그 출력
     AppConfig.current.logApiKeyStatus();
+
+    // 공통 HTTP 클라이언트에 토큰 저장소 연결
+    HttpClientService.tokenRepository = const TokenStorageAuthTokenRepository();
 
     // Google Maps API 키 유효성 검사
     if (!AppConfig.current.isGoogleMapsApiKeyValid) {
@@ -105,6 +114,53 @@ class AppBootstrap {
     .then((_) => debugPrint('✅ Firebase initialized with options'))
     .catchError((e) => debugPrint('🔥 Firebase init(with options) failed: $e'));
     */
+  }
+
+  /// Sentry 초기화
+  ///
+  /// 에러 추적 및 성능 모니터링을 위한 Sentry를 초기화합니다.
+  static Future<void> _initializeSentry() async {
+    try {
+      // Sentry Flutter 9.x에서는 SentryFlutter.init() 사용
+      await SentryFlutter.init(
+        (options) {
+          // DSN은 환경 변수에서 가져오거나 기본값 사용
+          final dsn =
+              dotenv.env['SENTRY_DSN'] ??
+              'https://your-sentry-dsn@sentry.io/project-id';
+          options.dsn = dsn;
+
+          // 환경별 설정
+          options.environment = AppConfig.current.environment;
+
+          // 디버그 모드 설정
+          options.debug = AppConfig.current.isDebugMode;
+
+          // 릴리즈 추적 설정
+          options.release = 'aipet_frontend@1.0.0+1';
+
+          // 샘플링 설정 (성능 모니터링) - 프로파일링 충돌 방지를 위해 낮게 설정
+          options.tracesSampleRate = AppConfig.current.isDebugMode ? 0.1 : 0.05;
+
+          // Flutter 특화 설정
+          options.attachStacktrace = true;
+
+          // 프로파일링 비활성화 (크래시 방지)
+          options.profilesSampleRate = 0.0;
+
+          // ANR (Application Not Responding) 감지 비활성화
+          options.enableAutoNativeBreadcrumbs = false;
+
+          // 네이티브 크래시 모니터링만 활성화
+          options.enableAutoSessionTracking = false;
+        },
+        appRunner: () {}, // 빈 함수 (이미 앱이 실행 중이므로)
+      );
+      debugPrint('✅ Sentry initialized successfully (profiling disabled)');
+    } catch (e) {
+      debugPrint('⚠️ Sentry initialization failed: $e');
+      // Sentry 초기화 실패해도 앱은 계속 실행
+    }
   }
 
   /// 환경별 앱 설정을 초기화합니다.

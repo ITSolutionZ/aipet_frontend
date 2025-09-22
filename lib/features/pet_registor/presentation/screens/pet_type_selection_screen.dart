@@ -6,7 +6,7 @@ import '../../../../app/router/routes/route_constants.dart';
 import '../../../../shared/shared.dart';
 import '../../data/providers/pet_registration_provider.dart';
 import '../constants/pet_registration_texts.dart';
-import '../widgets/widgets.dart';
+import '../widgets/pet_registor_widgets.dart';
 
 class PetTypeSelectionScreen extends ConsumerStatefulWidget {
   const PetTypeSelectionScreen({super.key});

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../shared/services/error_service.dart';
+import '../../shared/core/services/error_service.dart';
 import '../../shared/shared.dart';
 
 /// 모든 Controller의 기본 클래스

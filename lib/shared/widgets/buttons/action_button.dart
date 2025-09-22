@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../design/design.dart';
+import '../../shared.dart';
 
 /// 범용 액션 버튼 위젯
 /// 다양한 상황에서 재사용 가능한 버튼 컴포넌트
@@ -50,11 +50,11 @@ class ActionButton extends StatelessWidget {
     this.padding,
     this.borderRadius,
     this.isLoading = false,
-  })  : backgroundColor = null,
-        foregroundColor = null,
-        disabledBackgroundColor = null,
-        disabledForegroundColor = null,
-        variant = ActionButtonVariant.primary;
+  }) : backgroundColor = null,
+       foregroundColor = null,
+       disabledBackgroundColor = null,
+       disabledForegroundColor = null,
+       variant = ActionButtonVariant.primary;
 
   /// 보조 액션 버튼 (Secondary)
   const ActionButton.secondary({
@@ -68,11 +68,11 @@ class ActionButton extends StatelessWidget {
     this.padding,
     this.borderRadius,
     this.isLoading = false,
-  })  : backgroundColor = null,
-        foregroundColor = null,
-        disabledBackgroundColor = null,
-        disabledForegroundColor = null,
-        variant = ActionButtonVariant.secondary;
+  }) : backgroundColor = null,
+       foregroundColor = null,
+       disabledBackgroundColor = null,
+       disabledForegroundColor = null,
+       variant = ActionButtonVariant.secondary;
 
   /// 아웃라인 버튼 (Outlined)
   const ActionButton.outlined({
@@ -86,25 +86,32 @@ class ActionButton extends StatelessWidget {
     this.padding,
     this.borderRadius,
     this.isLoading = false,
-  })  : backgroundColor = null,
-        foregroundColor = null,
-        disabledBackgroundColor = null,
-        disabledForegroundColor = null,
-        variant = ActionButtonVariant.outlined;
+  }) : backgroundColor = null,
+       foregroundColor = null,
+       disabledBackgroundColor = null,
+       disabledForegroundColor = null,
+       variant = ActionButtonVariant.outlined;
 
   @override
   Widget build(BuildContext context) {
     final effectiveWidth = width ?? double.infinity;
     final effectiveHeight = height ?? 48.0;
-    final effectivePadding = padding ?? const EdgeInsets.symmetric(
-      horizontal: AppSpacing.lg,
-      vertical: AppSpacing.sm,
-    );
-    final effectiveBorderRadius = borderRadius ?? BorderRadius.circular(AppRadius.medium);
+    final effectivePadding =
+        padding ??
+        const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.sm,
+        );
+    final effectiveBorderRadius =
+        borderRadius ?? BorderRadius.circular(AppRadius.medium);
 
     final colors = _getColors();
-    final currentBackgroundColor = isEnabled ? colors.backgroundColor : colors.disabledBackgroundColor;
-    final currentForegroundColor = isEnabled ? colors.foregroundColor : colors.disabledForegroundColor;
+    final currentBackgroundColor = isEnabled
+        ? colors.backgroundColor
+        : colors.disabledBackgroundColor;
+    final currentForegroundColor = isEnabled
+        ? colors.foregroundColor
+        : colors.disabledForegroundColor;
 
     return SizedBox(
       width: effectiveWidth,
@@ -119,7 +126,9 @@ class ActionButton extends StatelessWidget {
             borderRadius: effectiveBorderRadius,
             side: variant == ActionButtonVariant.outlined
                 ? BorderSide(
-                    color: isEnabled ? AppColors.pointBrown : AppColors.pointGray,
+                    color: isEnabled
+                        ? AppColors.pointBrown
+                        : AppColors.pointGray,
                     width: 1,
                   )
                 : BorderSide.none,
@@ -133,7 +142,9 @@ class ActionButton extends StatelessWidget {
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(currentForegroundColor),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    currentForegroundColor,
+                  ),
                 ),
               )
             : Row(
@@ -166,32 +177,37 @@ class ActionButton extends StatelessWidget {
         return _ButtonColors(
           backgroundColor: backgroundColor ?? AppColors.pointBrown,
           foregroundColor: foregroundColor ?? AppColors.pureWhite,
-          disabledBackgroundColor: disabledBackgroundColor ?? AppColors.pointPink.withValues(alpha: 0.3),
-          disabledForegroundColor: disabledForegroundColor ?? AppColors.pointGray,
+          disabledBackgroundColor:
+              disabledBackgroundColor ??
+              AppColors.pointPink.withValues(alpha: 0.3),
+          disabledForegroundColor:
+              disabledForegroundColor ?? AppColors.pointGray,
         );
       case ActionButtonVariant.secondary:
         return _ButtonColors(
-          backgroundColor: backgroundColor ?? AppColors.pointPink.withValues(alpha: 0.1),
+          backgroundColor:
+              backgroundColor ?? AppColors.pointPink.withValues(alpha: 0.1),
           foregroundColor: foregroundColor ?? AppColors.pointBrown,
-          disabledBackgroundColor: disabledBackgroundColor ?? AppColors.pointGray.withValues(alpha: 0.1),
-          disabledForegroundColor: disabledForegroundColor ?? AppColors.pointGray,
+          disabledBackgroundColor:
+              disabledBackgroundColor ??
+              AppColors.pointGray.withValues(alpha: 0.1),
+          disabledForegroundColor:
+              disabledForegroundColor ?? AppColors.pointGray,
         );
       case ActionButtonVariant.outlined:
         return _ButtonColors(
           backgroundColor: backgroundColor ?? Colors.transparent,
           foregroundColor: foregroundColor ?? AppColors.pointBrown,
-          disabledBackgroundColor: disabledBackgroundColor ?? Colors.transparent,
-          disabledForegroundColor: disabledForegroundColor ?? AppColors.pointGray,
+          disabledBackgroundColor:
+              disabledBackgroundColor ?? Colors.transparent,
+          disabledForegroundColor:
+              disabledForegroundColor ?? AppColors.pointGray,
         );
     }
   }
 }
 
-enum ActionButtonVariant {
-  primary,
-  secondary,
-  outlined,
-}
+enum ActionButtonVariant { primary, secondary, outlined }
 
 class _ButtonColors {
   final Color backgroundColor;
