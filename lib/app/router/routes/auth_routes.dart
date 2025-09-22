@@ -24,5 +24,10 @@ class AuthRoutes {
       name: 'welcome',
       builder: (context, state) => const WelcomeScreen(),
     ),
+    GoRoute(
+      path: RouteConstants.tokenExchangeRoute,
+      name: 'tokenExchange',
+      builder: (context, state) => const EnhancedExchangeTokenButton(),
+    ),
   ];
 }

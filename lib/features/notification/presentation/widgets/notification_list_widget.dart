@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/services/date_format_service.dart';
+import '../../../../shared/core/services/date_format_service.dart';
 import '../../../../shared/shared.dart';
-import '../../data/services/notification_service.dart';
+import '../../data/services/notification_service.dart' as local;
 import '../../domain/entities/entities.dart';
 
 /// 알림 목록 위젯
@@ -62,7 +62,7 @@ class _NotificationListWidgetState
     });
 
     try {
-      final notificationService = NotificationService();
+      final notificationService = local.NotificationService();
       final notifications = await notificationService.getNotifications(
         status: widget.filterStatus,
         type: widget.filterType,
@@ -95,7 +95,7 @@ class _NotificationListWidgetState
         }
       });
 
-      final notificationService = NotificationService();
+      final notificationService = local.NotificationService();
       await notificationService.markNotificationAsRead(notification.id);
 
       // 읽음 처리 콜백 호출
@@ -150,7 +150,7 @@ class _NotificationListWidgetState
         _notifications.removeWhere((n) => n.id == notification.id);
       });
 
-      final notificationService = NotificationService();
+      final notificationService = local.NotificationService();
       await notificationService.deleteNotification(notification.id);
 
       // 삭제 완료 메시지 표시

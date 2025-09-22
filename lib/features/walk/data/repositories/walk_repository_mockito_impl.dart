@@ -1,4 +1,4 @@
-import '../../../../shared/mock_data/walk_mock_service.dart';
+import '../../../../shared/testing/mock_data/features/walk/walk_mock_service.dart';
 import '../../domain/entities/walk_record_entity.dart';
 import '../../domain/entities/walk_statistics_entity.dart';
 import '../../domain/repositories/walk_repository.dart';

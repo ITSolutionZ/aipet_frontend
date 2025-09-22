@@ -6,12 +6,12 @@ part of 'ai_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$aiRepositoryHash() => r'8d387388718ea643310496d7de5dbaa243cb53c8';
+String _$aiRepositoryHash() => r'a048a52df17233708185a483d680728613ee3c47';
 
 /// AI Repository Provider
 ///
-/// 실제 API 연계 시점에는 AiRepositoryImpl을 실제 API 구현체로 교체하면 됩니다.
-/// Mockito 버전을 사용하여 테스트 가능성을 높입니다.
+/// 환경에 따라 Mock/Real Repository를 자동으로 전환합니다.
+/// MockConfig.shouldUseMock 값에 따라 결정됩니다.
 ///
 /// Copied from [aiRepository].
 @ProviderFor(aiRepository)

@@ -12,6 +12,12 @@ abstract class AppConfig {
   /// API 베이스 URL
   String get apiBaseUrl;
 
+  /// 환경변수에서 API URL 가져오기 // Changed
+  static String get apiBaseUrlFromEnv => const String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://localhost:3000',
+  );
+
   /// 앱 환경 (development, staging, production)
   String get environment;
 
@@ -71,6 +77,12 @@ abstract class AppConfig {
 
   /// Google Cloud Map Platform API 키
   String get googleMapsApiKey;
+
+  /// Firebase Auth 로그인 엔드포인트
+  String get firebaseAuthLoginEndpoint => '/api/firebase-auth/login';
+
+  /// 전체 Firebase Auth 로그인 URL
+  String get firebaseAuthLoginUrl => apiBaseUrl + firebaseAuthLoginEndpoint;
 
   /// 환경 변수 로드 확인
   bool get isEnvLoaded => dotenv.isInitialized;
@@ -148,7 +160,7 @@ abstract class AppConfig {
 /// 디버그 모드가 활성화되고 로깅이 상세하게 출력됩니다.
 class DevelopmentConfig extends AppConfig {
   @override
-  String get apiBaseUrl => 'https://dev-api.aipet.com';
+  String get apiBaseUrl => AppConfig.apiBaseUrlFromEnv; // Changed
 
   @override
   String get environment => 'development';

@@ -26,7 +26,7 @@ class AiRepositoryImpl implements AiRepository {
     // 현재는 로컬 저장소나 서버에서 히스토리를 가져와야 하지만,
     // 실제 구현에서는 SharedPreferences나 서버 API를 사용
     await _aiMockDataService.simulateApiDelay();
-    return _aiMockDataService.getChatHistory();
+    return _aiMockDataService.getChatHistoryEntities();
   }
 
   @override
@@ -114,7 +114,7 @@ class AiRepositoryImpl implements AiRepository {
     // return response.data.map((json) => AiChatSessionEntity.fromJson(json)).toList();
 
     await MockHelper.simulateApiCall();
-    return _aiMockDataService.getChatSessions();
+    return _aiMockDataService.getChatSessionEntities();
   }
 
   @override
@@ -159,7 +159,7 @@ class AiRepositoryImpl implements AiRepository {
   Future<List<AiSuggestedQuestionEntity>> getSuggestedQuestions() async {
     // 실제 API 호출로 추천 질문 가져오기
     await MockHelper.simulateApiCall();
-    return _aiMockDataService.getSuggestedQuestions();
+    return _aiMockDataService.getSuggestedQuestionEntities();
   }
 
   /// 펫 정보 기반 맞춤형 추천 질문 가져오기

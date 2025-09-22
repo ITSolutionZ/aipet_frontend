@@ -1,6 +1,6 @@
 library;
 
-export '../../../../shared/domain/result.dart';
+export '../../../../shared/core/domain/result.dart';
 export 'auth_constants.dart';
 export 'auth_error.dart';
 export 'auth_form_state.dart';

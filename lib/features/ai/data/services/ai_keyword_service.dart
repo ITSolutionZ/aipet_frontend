@@ -1,4 +1,4 @@
-import '../../../../shared/mock_data/features/ai/ai_keywords_mock_data.dart';
+import '../../../../shared/testing/mock_data/features/ai/ai_keywords_mock_data.dart';
 
 /// AI 키워드 데이터 관리 서비스
 ///

@@ -18,7 +18,7 @@ part 'walk_providers.g.dart';
 ///
 /// Google Maps API는 실제 사용하되, 나머지 로직은 Mockito를 통해 테스트 가능
 @riverpod
-WalkRepository walkRepository(WidgetRef ref) {
+WalkRepository walkRepository(Ref ref) {
   return WalkRepositoryMockitoImpl();
 }
 
@@ -26,7 +26,7 @@ WalkRepository walkRepository(WidgetRef ref) {
 ///
 /// 필요시 기존 구현체로 되돌릴 수 있도록 유지
 @riverpod
-WalkRepository legacyWalkRepository(WidgetRef ref) {
+WalkRepository legacyWalkRepository(Ref ref) {
   return WalkRepositoryImpl();
 }
 

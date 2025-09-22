@@ -6,90 +6,75 @@ import '../../domain/entities/trick_entity.dart';
 /// 트릭 카드 위젯
 ///
 /// 개별 트릭의 정보를 보여주는 카드 위젯입니다.
-class TrickCard extends StatelessWidget {
+class TrickCard extends CommonCard {
   final TrickEntity trick;
-  final VoidCallback? onTap;
   final VoidCallback? onStartLearning;
 
   const TrickCard({
     super.key,
     required this.trick,
-    this.onTap,
+    super.onTap,
     this.onStartLearning,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
+  Widget buildContent(BuildContext context) {
+    return Row(
+      children: [
+        // 트릭 이미지
+        _buildTrickImage(),
+        const SizedBox(width: AppSpacing.md),
+
+        // 트릭 정보
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 트릭 이미지
-              _buildTrickImage(),
-              const SizedBox(width: AppSpacing.md),
-
-              // 트릭 정보
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 트릭 이름
-                    Text(
-                      trick.name,
-                      style: AppFonts.titleMedium.copyWith(
-                        color: AppColors.pointDark,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    const SizedBox(height: AppSpacing.xs),
-
-                    // 설명 (있는 경우)
-                    if (trick.description?.isNotEmpty == true) ...[
-                      Text(
-                        trick.description!,
-                        style: AppFonts.bodySmall.copyWith(
-                          color: AppColors.pointDark.withValues(alpha: 0.7),
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                    ],
-
-                    // 난이도와 진행도
-                    Row(
-                      children: [
-                        // 난이도 태그
-                        _buildDifficultyChip(),
-                        const Spacer(),
-                        // 진행도 (학습 중인 경우)
-                        if (trick.progress != null) _buildProgressIndicator(),
-                      ],
-                    ),
-                  ],
+              // 트릭 이름
+              Text(
+                trick.name,
+                style: AppFonts.titleMedium.copyWith(
+                  color: AppColors.pointDark,
+                  fontWeight: FontWeight.bold,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
 
-              const SizedBox(width: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.xs),
 
-              // 액션 버튼
-              _buildActionButton(),
+              // 설명 (있는 경우)
+              if (trick.description?.isNotEmpty == true) ...[
+                Text(
+                  trick.description!,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointDark.withValues(alpha: 0.7),
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+              ],
+
+              // 난이도와 진행도
+              Row(
+                children: [
+                  // 난이도 태그
+                  _buildDifficultyChip(),
+                  const Spacer(),
+                  // 진행도 (학습 중인 경우)
+                  if (trick.progress != null) _buildProgressIndicator(),
+                ],
+              ),
             ],
           ),
         ),
-      ),
+
+        const SizedBox(width: AppSpacing.sm),
+
+        // 액션 버튼
+        _buildActionButton(),
+      ],
     );
   }
 
@@ -197,7 +182,7 @@ class TrickCard extends StatelessWidget {
         color: AppColors.pointBlue,
         size: 28,
       ),
-      tooltip: isLearning ? 'Continue learning' : 'Start learning',
+      tooltip: isLearning ? '学習を継続' : '学習を開始',
     );
   }
 

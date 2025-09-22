@@ -10,10 +10,10 @@ import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_rep
 // Walk Feature (Google Maps는 실제 API 사용)
 import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
 import 'package:aipet_frontend/features/walk/domain/services/walk_route_service.dart';
-import 'package:aipet_frontend/shared/services/common_error_service.dart';
-import 'package:aipet_frontend/shared/services/ui_service.dart';
+import 'package:aipet_frontend/shared/core/services/common_error_service.dart';
+import 'package:aipet_frontend/shared/core/services/ui_service.dart';
 // Shared Services
-import 'package:aipet_frontend/shared/services/validation_service.dart';
+import 'package:aipet_frontend/shared/core/services/validation_service.dart';
 import 'package:mockito/annotations.dart';
 
 /// Mockito 어노테이션을 사용하여 Mock 클래스 생성을 위한 설정

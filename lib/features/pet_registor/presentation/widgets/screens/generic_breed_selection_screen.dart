@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 // import '../../../../app/router/routes/route_constants.dart';
 import '../../../../../shared/shared.dart';
 import '../../../data/providers/providers.dart';
-import '../widgets.dart';
+import '../pet_registor_widgets.dart';
 
 /// 제네릭 품종 선택 화면
 /// DRY 원칙을 위해 강아지/고양이 품종 선택을 통합한 재사용 가능한 위젯

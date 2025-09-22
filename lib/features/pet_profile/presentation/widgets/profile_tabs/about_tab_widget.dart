@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../shared/shared.dart';
 import '../../../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../../controllers/controllers.dart';
+import '../../controllers/pet_profile_controllers.dart';
 import '../profile_cards/caretaker_card.dart';
 import '../profile_cards/date_card.dart';
 import '../profile_cards/editable_attribute_card.dart';

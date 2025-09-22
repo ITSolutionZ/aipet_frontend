@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/utils/loading_state.dart';
+import 'package:aipet_frontend/shared/core/utils/loading_state.dart';
 import 'package:aipet_frontend/shared/widgets/feedback/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

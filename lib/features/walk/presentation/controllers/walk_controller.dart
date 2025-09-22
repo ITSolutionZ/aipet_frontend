@@ -1,3 +1,6 @@
+import 'package:aipet_frontend/shared/core/utils/geo_utils.dart';
+
+import '../../../../app/controllers/base_controller.dart';
 import '../../../../shared/shared.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
@@ -6,7 +9,7 @@ import '../../domain/usecases/update_walk_record_usecase.dart';
 /// 산책 작업 결과 (shared의 Result 패턴 사용)
 typedef WalkResult<T> = Result<T>;
 
-class WalkController extends CrudController<WalkRecordEntity> {
+class WalkController extends BaseController {
   WalkController(super.ref);
 
   // Repository 및 UseCase 인스턴스
@@ -20,69 +23,73 @@ class WalkController extends CrudController<WalkRecordEntity> {
   late final UpdateWalkRecordUseCase _updateWalkRecordUseCase =
       UpdateWalkRecordUseCase(_repository);
 
-  @override
+  /// 모든 산책 기록 조회
   Future<Result<List<WalkRecordEntity>>> getAll() async {
-    try {
-      final walkRecords = await _getAllWalkRecordsUseCase();
-      ref
-          .read(walkRecordsNotifierProvider.notifier)
-          .setWalkRecords(walkRecords);
-      return Result.success('散歩記録が読み込まれました', walkRecords);
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return Result.failure('散歩記録の読み込みに失敗しました: ${error.toString()}');
-    }
+    return wrapAsync(
+      () async {
+        final walkRecords = await _getAllWalkRecordsUseCase();
+        ref
+            .read(walkRecordsNotifierProvider.notifier)
+            .setWalkRecords(walkRecords);
+        return walkRecords;
+      },
+      successMessage: '散歩記録が読み込まれました',
+      failureMessage: '散歩記録の読み込みに失敗しました',
+    );
   }
 
-  @override
+  /// ID로 산책 기록 조회
   Future<Result<WalkRecordEntity>> getById(String id) async {
-    try {
-      final walkRecord = await _repository.getWalkRecordById(id);
-      if (walkRecord != null) {
-        return Result.success('散歩記録を取得しました', walkRecord);
-      } else {
-        return Result.failure('散歩記録が見つかりません');
-      }
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return Result.failure('散歩記録の取得に失敗しました: ${error.toString()}');
-    }
+    return wrapAsync(
+      () async {
+        final walkRecord = await _repository.getWalkRecordById(id);
+        if (walkRecord != null) {
+          return walkRecord;
+        } else {
+          throw Exception('散歩記録が見つかりません');
+        }
+      },
+      successMessage: '散歩記録を取得しました',
+      failureMessage: '散歩記録の取得に失敗しました',
+    );
   }
 
-  @override
+  /// 새 산책 기록 생성
   Future<Result<WalkRecordEntity>> create(WalkRecordEntity item) async {
-    try {
-      final newWalk = await _startWalkUseCase(item);
-      ref.read(walkRecordsNotifierProvider.notifier).addWalkRecord(newWalk);
-      return Result.success('散歩が開始されました', newWalk);
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return Result.failure('散歩開始に失敗しました: ${error.toString()}');
-    }
+    return wrapAsync(
+      () async {
+        final newWalk = await _startWalkUseCase(item);
+        ref.read(walkRecordsNotifierProvider.notifier).addWalkRecord(newWalk);
+        return newWalk;
+      },
+      successMessage: '散歩が開始されました',
+      failureMessage: '散歩開始に失敗しました',
+    );
   }
 
-  @override
+  /// 산책 기록 업데이트
   Future<Result<WalkRecordEntity>> update(WalkRecordEntity item) async {
-    try {
-      await _updateWalkRecordUseCase(item);
-      ref.read(walkRecordsNotifierProvider.notifier).updateWalkRecord(item);
-      return Result.success('散歩記録が更新されました', item);
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return Result.failure('散歩記録の更新に失敗しました: ${error.toString()}');
-    }
+    return wrapAsync(
+      () async {
+        await _updateWalkRecordUseCase(item);
+        ref.read(walkRecordsNotifierProvider.notifier).updateWalkRecord(item);
+        return item;
+      },
+      successMessage: '散歩記録が更新されました',
+      failureMessage: '散歩記録の更新に失敗しました',
+    );
   }
 
-  @override
+  /// 산책 기록 삭제
   Future<Result<void>> delete(String id) async {
-    try {
-      await _repository.deleteWalkRecord(id);
-      ref.read(walkRecordsNotifierProvider.notifier).removeWalkRecord(id);
-      return Result.success('散歩記録が削除されました', null);
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return Result.failure('散歩記録の削除に失敗しました: ${error.toString()}');
-    }
+    return wrapAsync(
+      () async {
+        await _repository.deleteWalkRecord(id);
+        ref.read(walkRecordsNotifierProvider.notifier).removeWalkRecord(id);
+      },
+      successMessage: '散歩記録が削除されました',
+      failureMessage: '散歩記録の削除に失敗しました',
+    );
   }
 
   /// 산책 기록 목록 로드
@@ -128,6 +135,7 @@ class WalkController extends CrudController<WalkRecordEntity> {
   void _startLocationTrackingWithRecovery() {
     safeExecute(() async {
       await ref.read(locationTrackingNotifierProvider.notifier).startTracking();
+      return true;
     }, errorMessage: '位置追跡開始');
   }
 
@@ -194,24 +202,26 @@ class WalkController extends CrudController<WalkRecordEntity> {
 
   /// 산책 일시정지
   WalkResult pauseCurrentWalk() {
-    try {
-      ref.read(currentWalkNotifierProvider.notifier).pauseWalk();
-      return WalkResult.success('散歩が一時停止されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
-    }
+    return wrapSync(
+      () {
+        ref.read(currentWalkNotifierProvider.notifier).pauseWalk();
+        return true;
+      },
+      successMessage: '散歩が一時停止されました',
+      failureMessage: '散歩 일시정지에 실패했습니다',
+    );
   }
 
   /// 산책 재개
   WalkResult resumeCurrentWalk() {
-    try {
-      ref.read(currentWalkNotifierProvider.notifier).resumeWalk();
-      return WalkResult.success('散歩が再開されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
-    }
+    return wrapSync(
+      () {
+        ref.read(currentWalkNotifierProvider.notifier).resumeWalk();
+        return true;
+      },
+      successMessage: '散歩が再開されました',
+      failureMessage: '散歩 재개에 실패했습니다',
+    );
   }
 
   /// 산책 기록 삭제
@@ -234,24 +244,26 @@ class WalkController extends CrudController<WalkRecordEntity> {
 
   /// 선택된 반려동물 설정
   WalkResult setSelectedPet(PetInfo pet) {
-    try {
-      ref.read(selectedPetNotifierProvider.notifier).setSelectedPet(pet);
-      return WalkResult.success('ペットが選択されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
-    }
+    return wrapSync(
+      () {
+        ref.read(selectedPetNotifierProvider.notifier).setSelectedPet(pet);
+        return true;
+      },
+      successMessage: 'ペットが選択されました',
+      failureMessage: 'ペット選択に失敗しました',
+    );
   }
 
   /// 지도 확장 상태 토글
   WalkResult toggleMapExpanded() {
-    try {
-      ref.read(mapExpandedNotifierProvider.notifier).toggleExpanded();
-      return WalkResult.success('地図の拡大状態が変更されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
-    }
+    return wrapSync(
+      () {
+        ref.read(mapExpandedNotifierProvider.notifier).toggleExpanded();
+        return true;
+      },
+      successMessage: '地図の拡大状態が変更されました',
+      failureMessage: '지도 상태 변경에 실패했습니다',
+    );
   }
 
   /// 현재 진행 중인 산책 가져오기
@@ -290,15 +302,16 @@ class WalkController extends CrudController<WalkRecordEntity> {
 
   /// 위치 정보 추가
   WalkResult addLocationToCurrentWalk(WalkLocation location) {
-    try {
-      ref
-          .read(currentWalkNotifierProvider.notifier)
-          .addLocationToCurrentWalk(location);
-      return WalkResult.success('位置情報が追加されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
-    }
+    return wrapSync(
+      () {
+        ref
+            .read(currentWalkNotifierProvider.notifier)
+            .addLocationToCurrentWalk(location);
+        return true;
+      },
+      successMessage: '位置情報が追加されました',
+      failureMessage: '위치 정보 추가에 실패했습니다',
+    );
   }
 
   /// 거리 계산 (Haversine 공식 사용)

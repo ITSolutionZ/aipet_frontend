@@ -11,7 +11,6 @@ void main() {
           name: 'Test Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
-          age: 3,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -41,7 +40,6 @@ void main() {
           type: 'dog',
           breed: 'Golden Retriever',
           birthDate: DateTime(2020, 1, 1),
-          age: 3,
           gender: 'male',
           weight: 25.0,
           imagePath: 'path/to/image.jpg',
@@ -75,7 +73,6 @@ void main() {
           name: 'Original Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
-          age: 3,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -114,7 +111,6 @@ void main() {
           name: 'Original Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
-          age: 3,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -137,7 +133,7 @@ void main() {
       });
     });
 
-    group('calculatedAge getter', () {
+    group('age getter', () {
       test('should calculate age correctly for pet born this year', () {
         // Arrange
         final now = DateTime.now();
@@ -146,7 +142,6 @@ void main() {
           name: 'Young Pet',
           type: 'dog',
           birthDate: DateTime(now.year, 1, 1),
-          age: 0,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -155,8 +150,8 @@ void main() {
         );
 
         // Act & Assert
-        expect(pet.calculatedAge, isA<int>());
-        expect(pet.calculatedAge, greaterThanOrEqualTo(0));
+        expect(pet.age, isA<int>());
+        expect(pet.age, greaterThanOrEqualTo(0));
       });
 
       test('should calculate age correctly for pet born last year', () {
@@ -167,7 +162,6 @@ void main() {
           name: 'One Year Old Pet',
           type: 'dog',
           birthDate: DateTime(now.year - 1, now.month, now.day),
-          age: 1,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -176,7 +170,7 @@ void main() {
         );
 
         // Act & Assert
-        expect(pet.calculatedAge, equals(1));
+        expect(pet.age, equals(1));
       });
 
       test('should calculate age correctly before birthday', () {
@@ -191,7 +185,6 @@ void main() {
             now.month + 1,
             now.day,
           ), // Birthday next month
-          age: 1,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -201,7 +194,7 @@ void main() {
 
         // Act & Assert
         expect(
-          pet.calculatedAge,
+          pet.age,
           equals(1),
         ); // Should be 1, not 2, since birthday hasn't occurred
       });
@@ -225,7 +218,6 @@ void main() {
             name: 'Test Pet',
             type: entry.key,
             birthDate: DateTime(2020, 1, 1),
-            age: 3,
             gender: 'male',
             weight: 25.0,
             ownerId: 'owner-123',
@@ -247,7 +239,6 @@ void main() {
           name: 'Test Pet',
           type: 'DOG',
           birthDate: DateTime(2020, 1, 1),
-          age: 3,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -277,7 +268,6 @@ void main() {
             name: 'Test Pet',
             type: entry.key,
             birthDate: DateTime(2020, 1, 1),
-            age: 3,
             gender: 'male',
             weight: 25.0,
             ownerId: 'owner-123',
@@ -302,7 +292,6 @@ void main() {
           name: 'Same Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
-          age: 3,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -315,7 +304,6 @@ void main() {
           name: 'Same Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
-          age: 3,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -335,7 +323,6 @@ void main() {
           name: 'Same Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
-          age: 3,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -348,7 +335,6 @@ void main() {
           name: 'Same Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
-          age: 3,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',
@@ -371,7 +357,6 @@ void main() {
           type: 'dog',
           breed: 'Golden Retriever',
           birthDate: DateTime(2020, 1, 1),
-          age: 3,
           gender: 'male',
           weight: 25.0,
           ownerId: 'owner-123',

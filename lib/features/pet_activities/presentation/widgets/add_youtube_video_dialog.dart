@@ -38,7 +38,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
 
     final videoId = YouTubeVideoEntity.extractVideoId(url);
     if (videoId == null) {
-      _showError('유효하지 않은 YouTube URL입니다.');
+      _showError('無効なYouTube URLです。');
       return;
     }
 
@@ -58,12 +58,10 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('유효한 YouTube URL입니다!')));
+        UiService.showSuccess(context, '有効なYouTube URLです！');
       }
     } catch (error) {
-      _showError('YouTube 비디오 정보를 가져올 수 없습니다.');
+      _showError('YouTubeビデオ情報を取得できませんでした。');
     } finally {
       setState(() {
         _isLoading = false;
@@ -88,9 +86,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
-    );
+    UiService.showError(context, message);
   }
 
   void _submit() {
@@ -100,7 +96,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
     final videoId = YouTubeVideoEntity.extractVideoId(url);
 
     if (videoId == null) {
-      _showError('유효하지 않은 YouTube URL입니다.');
+      _showError('無効なYouTube URLです。');
       return;
     }
 
@@ -115,7 +111,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('YouTube 비디오 추가'),
+      title: const Text('YouTubeビデオを追加'),
       contentPadding: const EdgeInsets.all(AppSpacing.lg),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
@@ -152,7 +148,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('취소'),
+          child: const Text('キャンセル'),
         ),
         ElevatedButton(
           onPressed: _isLoading ? null : _submit,
@@ -162,7 +158,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('추가'),
+              : const Text('追加'),
         ),
       ],
     );
@@ -189,11 +185,11 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
           ),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'YouTube URL을 입력해주세요.';
+              return 'YouTube URLを入力してください。';
             }
             final videoId = YouTubeVideoEntity.extractVideoId(value.trim());
             if (videoId == null) {
-              return '유효하지 않은 YouTube URL입니다.';
+              return '無効なYouTube URLです。';
             }
             return null;
           },
@@ -216,12 +212,12 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('제목 *', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('タイトル *', style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: _titleController,
           decoration: const InputDecoration(
-            hintText: '비디오 제목을 입력하세요',
+            hintText: 'ビデオタイトルを入力してください',
             border: OutlineInputBorder(),
             contentPadding: EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
@@ -230,7 +226,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
           ),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return '제목을 입력해주세요.';
+              return 'タイトルを入力してください。';
             }
             return null;
           },

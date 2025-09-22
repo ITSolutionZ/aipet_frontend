@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../../app/bootstrap.dart';
-import '../../../../shared/services/secure_storage_service.dart';
+import '../../../../shared/core/services/secure_storage_service.dart';
 
 /// Firebase ID Token 관리 서비스
 /// 

@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
-import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
     as SchedulingMock;
 import '../../../../shared/shared.dart';
-import '../widgets/widgets.dart';
+import '../widgets/scheduling_widgets.dart';
 
 /// 급여 스케줄 화면
 class FeedingScheduleScreen extends ConsumerStatefulWidget {
@@ -23,10 +23,12 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
   String petName = 'Max';
   List<Map<String, dynamic>>? _todayMeals;
   List<Map<String, dynamic>>? _scheduleItems;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     _loadMockData();
   }
 
@@ -46,6 +48,12 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
     _loadMockData();
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _handleAddFeedingRecord() {
     context.go(AppRouter.addFeedingRecordRoute);
   }
@@ -54,12 +62,20 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: SoftGradientAppBar(title: '$petNameの食事スケジュール'),
-      body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
+        title: '$petNameの食事スケジュール',
+      ),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
             // 오늘의 급여 요약
             if (_todayMeals != null) TodayMealsCard(todayMeals: _todayMeals!),
             const SizedBox(height: AppSpacing.lg),
@@ -73,38 +89,38 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            Expanded(
-              child: _scheduleItems != null
-                  ? ListView.builder(
-                      itemCount: _scheduleItems!.length,
-                      itemBuilder: (context, index) {
-                        final item = _scheduleItems![index];
-                        return ScheduleItemWidget(
+                    // 스케줄 목록
+                    if (_scheduleItems != null)
+                      ...(_scheduleItems!.map((item) =>
+                        ScheduleItemWidget(
                           meal: item['mealType'],
                           time: item['time'],
                           amount: item['amount'],
-                        );
-                      },
-                    )
-                  : const SizedBox.shrink(),
-            ),
+                        )
+                      )),
 
-            // 급여 기록 추가 버튼
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _handleAddFeedingRecord,
-                icon: const Icon(Icons.add),
-                label: const Text('食事記録を追加'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.pointBrown,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // 급여 기록 추가 버튼
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _handleAddFeedingRecord,
+                        icon: const Icon(Icons.add),
+                        label: const Text('食事記録を追加'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.pointBrown,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+              ]),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

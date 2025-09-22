@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../design/design.dart';
+import '../../shared.dart';
 
 /// 마이크로칩 등록 배너 위젯
 class MicrochipRegistrationBanner extends StatelessWidget {

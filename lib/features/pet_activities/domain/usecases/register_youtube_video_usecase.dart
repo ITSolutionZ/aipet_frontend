@@ -1,4 +1,4 @@
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/testing/mock_data/mock_data_service.dart';
 import '../entities/youtube_video_entity.dart';
 import '../repositories/pet_activities_repository.dart';
 

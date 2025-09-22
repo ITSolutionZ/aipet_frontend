@@ -1,9 +1,12 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:aipet_frontend/shared/design/color.dart';
-
 void main() {
+  setUpAll(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+  });
+
   group('AppColors', () {
     group('Point Colors', () {
       test('should have correct point colors', () {
@@ -89,10 +92,10 @@ void main() {
     group('Color Properties', () {
       test('should have correct alpha values', () {
         // Assert
-        expect(AppColors.pureWhite.alpha, equals(255));
-        expect(AppColors.pointDark.alpha, equals(255));
-        expect(AppColors.toneOffWhite.alpha, equals(255));
-        expect(AppColors.toneDeepOlive.alpha, equals(255));
+        expect((AppColors.pureWhite.a * 255.0).round() & 0xff, equals(255));
+        expect((AppColors.pointDark.a * 255.0).round() & 0xff, equals(255));
+        expect((AppColors.toneOffWhite.a * 255.0).round() & 0xff, equals(255));
+        expect((AppColors.toneDeepOlive.a * 255.0).round() & 0xff, equals(255));
       });
 
       test('should have correct red values', () {
@@ -153,8 +156,8 @@ void main() {
     group('Color Operations', () {
       test('should support color operations', () {
         // Arrange
-        final color1 = AppColors.pointGreen;
-        final color2 = AppColors.pointBlue;
+        const color1 = AppColors.pointGreen;
+        const color2 = AppColors.pointBlue;
 
         // Act
         final mixedColor = Color.lerp(color1, color2, 0.5);
@@ -164,18 +167,21 @@ void main() {
         expect(mixedColor!.red, isA<int>());
         expect(mixedColor.green, isA<int>());
         expect(mixedColor.blue, isA<int>());
-        expect(mixedColor.alpha, isA<int>());
+        expect((mixedColor.a * 255.0).round() & 0xff, isA<int>());
       });
 
       test('should support color with opacity', () {
         // Arrange
-        final baseColor = AppColors.pointGreen;
+        const baseColor = AppColors.pointGreen;
 
         // Act
         final transparentColor = baseColor.withOpacity(0.5);
 
         // Assert
-        expect(transparentColor.alpha, equals(128)); // 255 * 0.5
+        expect(
+          (transparentColor.a * 255.0).round() & 0xff,
+          equals(128),
+        ); // 255 * 0.5
         expect(transparentColor.red, equals(baseColor.red));
         expect(transparentColor.green, equals(baseColor.green));
         expect(transparentColor.blue, equals(baseColor.blue));
@@ -183,13 +189,13 @@ void main() {
 
       test('should support color with alpha', () {
         // Arrange
-        final baseColor = AppColors.pointBlue;
+        const baseColor = AppColors.pointBlue;
 
         // Act
         final alphaColor = baseColor.withAlpha(128);
 
         // Assert
-        expect(alphaColor.alpha, equals(128));
+        expect((alphaColor.a * 255.0).round() & 0xff, equals(128));
         expect(alphaColor.red, equals(baseColor.red));
         expect(alphaColor.green, equals(baseColor.green));
         expect(alphaColor.blue, equals(baseColor.blue));

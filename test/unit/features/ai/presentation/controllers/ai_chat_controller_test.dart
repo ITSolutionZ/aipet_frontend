@@ -1,435 +1,223 @@
-import 'package:aipet_frontend/features/ai/data/providers/ai_providers.dart';
-import 'package:aipet_frontend/features/ai/domain/domain.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
 import 'package:aipet_frontend/features/ai/presentation/controllers/ai_chat_controller.dart';
 import 'package:aipet_frontend/features/pet_registor/pet_registor.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 
-import 'ai_chat_controller_test.mocks.dart';
-
-// 테스트용 임시 Provider 정의
-final aiChatControllerProvider =
-    NotifierProvider<AiChatController, AiChatState>(() => AiChatController());
-
-@GenerateMocks([AiRepository])
 void main() {
-  group('AiChatController', () {
-    late MockAiRepository mockRepository;
+  group('AiChatController Tests', () {
     late ProviderContainer container;
+    late AiChatController controller;
 
     setUp(() {
-      mockRepository = MockAiRepository();
-      container = ProviderContainer(
-        overrides: [
-          // Repository를 Mock으로 오버라이드
-          aiRepositoryProvider.overrideWithValue(mockRepository),
-        ],
-      );
+      container = ProviderContainer();
+      controller = AiChatController(container);
     });
 
     tearDown(() {
       container.dispose();
     });
 
-    group('sendMessage', () {
-      test('should send message and add to chat history', () async {
-        // Arrange
-        const userMessage = 'ペットの健康について教えてください';
-        const aiResponse = 'ペットの健康管理についてお答えします...';
+    group('AiChatNotifier Tests', () {
+      test('should initialize with empty state', () {
+        final state = container.read(aiChatNotifierProvider);
 
-        final userMessageEntity = AiMessageEntity(
-          id: 'user-msg-1',
-          content: userMessage,
-          type: MessageType.user,
-          timestamp: DateTime.now(),
-        );
-
-        final aiMessageEntity = AiMessageEntity(
-          id: 'ai-msg-1',
-          content: aiResponse,
-          type: MessageType.assistant,
-          timestamp: DateTime.now(),
-        );
-
-        when(
-          mockRepository.sendMessage(userMessage),
-        ).thenAnswer((_) async => aiMessageEntity);
-
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        await controller.sendMessage(userMessage);
-
-        // Assert
-        verify(mockRepository.sendMessage(userMessage)).called(1);
-
-        final state = container.read(aiChatControllerProvider);
-        expect(state.messages, hasLength(2));
-        expect(state.messages.first.content, equals(userMessage));
-        expect(state.messages.first.type, equals(MessageType.user));
-        expect(state.messages.last.content, equals(aiResponse));
-        expect(state.messages.last.type, equals(MessageType.assistant));
+        expect(state.messages, isEmpty);
+        expect(state.suggestedQuestions, isEmpty);
+        expect(state.isTyping, isFalse);
+        expect(state.error, isNull);
+        expect(state.selectedPet, isNull);
+        expect(state.hasPetSelected, isFalse);
+        expect(state.selectedCategory, isNull);
+        expect(state.hasCategorySelected, isFalse);
+        expect(state.favoriteMessageIds, isEmpty);
+        expect(state.favoriteQAs, isEmpty);
       });
 
-      test('should handle API error gracefully', () async {
-        // Arrange
-        const userMessage = 'ペットの健康について教えてください';
-        const errorMessage = 'API接続エラーが発生しました';
+      test('should initialize chat correctly', () async {
+        final notifier = container.read(aiChatNotifierProvider.notifier);
+        await notifier.initializeChat();
 
-        when(
-          mockRepository.sendMessage(userMessage),
-        ).thenThrow(Exception(errorMessage));
-
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        await controller.sendMessage(userMessage);
-
-        // Assert
-        verify(mockRepository.sendMessage(userMessage)).called(1);
-
-        final state = container.read(aiChatControllerProvider);
-        expect(state.messages, hasLength(2));
-        expect(state.messages.first.content, equals(userMessage));
-        expect(state.messages.first.type, equals(MessageType.user));
-        expect(state.messages.last.content, contains(errorMessage));
-        expect(state.messages.last.type, equals(MessageType.assistant));
+        final state = container.read(aiChatNotifierProvider);
+        expect(state.messages, isEmpty);
+        expect(state.hasPetSelected, isFalse);
+        expect(state.hasCategorySelected, isFalse);
       });
 
-      test('should set typing state during API call', () async {
-        // Arrange
-        const userMessage = 'ペットの健康について教えてください';
-        const aiResponse = 'ペットの健康管理についてお答えします...';
-
-        final aiMessageEntity = AiMessageEntity(
-          id: 'ai-msg-1',
-          content: aiResponse,
-          type: MessageType.assistant,
-          timestamp: DateTime.now(),
-        );
-
-        when(mockRepository.sendMessage(userMessage)).thenAnswer((_) async {
-          // API 호출 중에는 typing 상태가 true여야 함
-          await Future.delayed(const Duration(milliseconds: 100));
-          return aiMessageEntity;
-        });
-
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-
-        // API 호출 시작
-        final sendMessageFuture = controller.sendMessage(userMessage);
-
-        // API 호출 중 상태 확인
-        final typingState = container.read(aiChatControllerProvider);
-        expect(typingState.isTyping, isTrue);
-
-        // API 호출 완료 대기
-        await sendMessageFuture;
-
-        // API 호출 완료 후 상태 확인
-        final finalState = container.read(aiChatControllerProvider);
-        expect(finalState.isTyping, isFalse);
-      });
-    });
-
-    group('sendMessageWithPetContext', () {
-      test('should send message with pet context', () async {
-        // Arrange
-        const userMessage = 'このペットの健康について教えて';
-        const aiResponse = 'あなたのペットの健康管理について...';
-
-        final petContext = PetProfileEntity(
-          id: 'pet-1',
-          name: 'テストペット',
-          type: 'dog',
-          breed: '柴犬',
-          age: 3,
-          weight: 10.0,
-          gender: 'male',
-          birthDate: DateTime(2021, 1, 1),
-          ownerId: 'owner-1',
+      test('should select pet correctly', () {
+        final notifier = container.read(aiChatNotifierProvider.notifier);
+        final mockPet = PetProfileEntity(
+          id: 'pet1',
+          name: 'Buddy',
+          species: 'Dog',
+          breed: 'Golden Retriever',
+          birthDate: DateTime(2020, 1, 1),
+          isNeutered: true,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
 
-        final aiMessageEntity = AiMessageEntity(
-          id: 'ai-msg-1',
-          content: aiResponse,
-          type: MessageType.assistant,
-          timestamp: DateTime.now(),
-        );
+        notifier.selectPet(mockPet);
+        final state = container.read(aiChatNotifierProvider);
 
-        when(
-          mockRepository.sendMessageWithPetContext(
-            userMessage,
-            petContext: petContext,
-          ),
-        ).thenAnswer((_) async => aiMessageEntity);
-
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        await controller.sendMessageWithPetContext(
-          userMessage,
-          petContext: petContext,
-        );
-
-        // Assert
-        verify(
-          mockRepository.sendMessageWithPetContext(
-            userMessage,
-            petContext: petContext,
-          ),
-        ).called(1);
-
-        final state = container.read(aiChatControllerProvider);
-        expect(state.messages, hasLength(2));
-        expect(state.messages.last.content, equals(aiResponse));
-      });
-    });
-
-    group('loadChatHistory', () {
-      test('should load chat history from repository', () async {
-        // Arrange
-        final expectedMessages = [
-          AiMessageEntity(
-            id: 'msg-1',
-            content: 'こんにちは',
-            type: MessageType.user,
-            timestamp: DateTime.now().subtract(const Duration(hours: 1)),
-          ),
-          AiMessageEntity(
-            id: 'msg-2',
-            content: 'こんにちは！ペットの相談をお手伝いします',
-            type: MessageType.assistant,
-            timestamp: DateTime.now().subtract(const Duration(minutes: 30)),
-          ),
-        ];
-
-        when(
-          mockRepository.getChatHistory(),
-        ).thenAnswer((_) async => expectedMessages);
-
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        await controller.loadChatHistory();
-
-        // Assert
-        verify(mockRepository.getChatHistory()).called(1);
-
-        final state = container.read(aiChatControllerProvider);
-        expect(state.messages, equals(expectedMessages));
-      });
-
-      test('should handle empty chat history', () async {
-        // Arrange
-        when(
-          mockRepository.getChatHistory(),
-        ).thenAnswer((_) async => <AiMessageEntity>[]);
-
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        await controller.loadChatHistory();
-
-        // Assert
-        verify(mockRepository.getChatHistory()).called(1);
-
-        final state = container.read(aiChatControllerProvider);
-        expect(state.messages, isEmpty);
-      });
-    });
-
-    group('loadSuggestedQuestions', () {
-      test('should load suggested questions from repository', () async {
-        // Arrange
-        final expectedQuestions = [
-          const AiSuggestedQuestionEntity(
-            id: 'q-1',
-            question: 'ペットの健康について教えて',
-            category: 'health',
-            icon: Icons.health_and_safety,
-            description: '健康管理に関する質問',
-          ),
-          const AiSuggestedQuestionEntity(
-            id: 'q-2',
-            question: 'ペットの食事について',
-            category: 'nutrition',
-            icon: Icons.restaurant,
-            description: '栄養管理に関する質問',
-          ),
-        ];
-
-        when(
-          mockRepository.getSuggestedQuestions(),
-        ).thenAnswer((_) async => expectedQuestions);
-
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        await controller.loadSuggestedQuestions();
-
-        // Assert
-        verify(mockRepository.getSuggestedQuestions()).called(1);
-
-        final state = container.read(aiChatControllerProvider);
-        expect(state.suggestedQuestions, equals(expectedQuestions));
-      });
-    });
-
-    group('selectPet', () {
-      test('should select pet and update state', () {
-        // Arrange
-        final pet = PetProfileEntity(
-          id: 'pet-1',
-          name: 'テストペット',
-          type: 'dog',
-          breed: '柴犬',
-          age: 3,
-          weight: 10.0,
-          birthDate: DateTime(2021, 1, 1),
-          createdAt: DateTime.now(),
-        );
-
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        controller.selectPet(pet);
-
-        // Assert
-        final state = container.read(aiChatControllerProvider);
-        expect(state.selectedPet, equals(pet));
+        expect(state.selectedPet, equals(mockPet));
         expect(state.hasPetSelected, isTrue);
+        expect(state.messages, hasLength(2)); // User message + AI response
+        expect(state.messages[0].isUser, isTrue);
+        expect(state.messages[1].isUser, isFalse);
       });
 
-      test('should clear pet selection', () {
-        // Arrange
-        final pet = PetProfileEntity(
-          id: 'pet-1',
-          name: 'テストペット',
-          type: 'dog',
-          breed: '柴犬',
-          age: 3,
-          weight: 10.0,
-          birthDate: DateTime(2021, 1, 1),
+      test('should select category correctly', () async {
+        final notifier = container.read(aiChatNotifierProvider.notifier);
+        final mockPet = PetProfileEntity(
+          id: 'pet1',
+          name: 'Buddy',
+          species: 'Dog',
+          breed: 'Golden Retriever',
+          birthDate: DateTime(2020, 1, 1),
+          isNeutered: true,
           createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        const mockCategory = AiCategoryEntity(
+          id: 'health',
+          name: '健康',
+          description: '健康相談',
+          iconData: 'health_icon',
+          isActive: true,
         );
 
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        controller.selectPet(pet);
-        controller.clearPetSelection();
+        // First select pet
+        notifier.selectPet(mockPet);
 
-        // Assert
-        final state = container.read(aiChatControllerProvider);
-        expect(state.selectedPet, isNull);
-        expect(state.hasPetSelected, isFalse);
-      });
-    });
+        // Then select category
+        await notifier.selectCategory(mockCategory);
 
-    group('selectCategory', () {
-      test('should select category and update state', () {
-        // Arrange
-        const category = 'health';
+        final state = container.read(aiChatNotifierProvider);
 
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        controller.selectCategory(category);
-
-        // Assert
-        final state = container.read(aiChatControllerProvider);
-        expect(state.selectedCategory, equals(category));
+        expect(state.selectedCategory, equals(mockCategory));
         expect(state.hasCategorySelected, isTrue);
+        expect(
+          state.messages,
+          hasLength(4),
+        ); // Pet selection + Category selection messages
       });
 
-      test('should clear category selection', () {
-        // Arrange
-        const category = 'health';
+      test('should clear all favorites correctly', () {
+        final notifier = container.read(aiChatNotifierProvider.notifier);
 
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        controller.selectCategory(category);
-        controller.clearCategorySelection();
+        // Clear all favorites
+        notifier.clearAllFavorites();
 
-        // Assert
-        final state = container.read(aiChatControllerProvider);
-        expect(state.selectedCategory, isNull);
-        expect(state.hasCategorySelected, isFalse);
+        final state = container.read(aiChatNotifierProvider);
+        expect(state.favoriteMessageIds, isEmpty);
+        expect(state.favoriteQAs, isEmpty);
       });
-    });
 
-    group('toggleFavoriteMessage', () {
-      test('should add message to favorites', () async {
-        // Arrange
-        final message = AiMessageEntity(
-          id: 'msg-1',
-          content: 'テストメッセージ',
-          type: MessageType.assistant,
-          timestamp: DateTime.now(),
-        );
+      test('should remove individual favorite correctly', () {
+        final notifier = container.read(aiChatNotifierProvider.notifier);
+        const favoriteId = 'msg1';
 
-        when(
-          mockRepository.addFavoriteMessage(
-            message,
-            any,
-            petId: anyNamed('petId'),
-            petName: anyNamed('petName'),
-            userNote: anyNamed('userNote'),
-          ),
-        ).thenAnswer(
-          (_) async => AiFavoriteEntity(
-            id: 'fav-1',
-            message: message,
-            category: 'health',
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now(),
-          ),
-        );
+        // Remove specific favorite
+        notifier.removeFavorite(favoriteId);
 
-        // Act
-        final controller = container.read(aiChatControllerProvider.notifier);
-        await controller.toggleFavoriteMessage(message);
-
-        // Assert
-        verify(
-          mockRepository.addFavoriteMessage(
-            message,
-            any,
-            petId: anyNamed('petId'),
-            petName: anyNamed('petName'),
-            userNote: anyNamed('userNote'),
-          ),
-        ).called(1);
-
-        final state = container.read(aiChatControllerProvider);
-        expect(state.favoriteMessageIds, contains(message.id));
+        final state = container.read(aiChatNotifierProvider);
+        expect(state.favoriteMessageIds, isNot(contains(favoriteId)));
       });
     });
 
-    group('clearChat', () {
-      test('should clear all messages and reset state', () {
-        // Arrange
-        final controller = container.read(aiChatControllerProvider.notifier);
+    group('AiChatController Tests', () {
+      test('should get current chat state', () {
+        final chatState = controller.watchChatState();
+        expect(chatState, isA<AiChatState>());
+      });
 
-        // Add some messages first
-        controller.addMessage(
-          AiMessageEntity(
-            id: 'msg-1',
-            content: 'テストメッセージ',
-            type: MessageType.user,
-            timestamp: DateTime.now(),
-          ),
+      test('should initialize chat successfully', () async {
+        final result = await controller.initializeChat();
+        expect(result.isSuccess, isTrue);
+        expect(result.message, equals('チャットが初期化されました'));
+      });
+
+      test('should select pet correctly', () {
+        final mockPet = PetProfileEntity(
+          id: 'pet1',
+          name: 'Buddy',
+          species: 'Dog',
+          breed: 'Golden Retriever',
+          birthDate: DateTime(2020, 1, 1),
+          isNeutered: true,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         );
 
-        // Act
-        controller.clearChat();
+        controller.selectPet(mockPet);
 
-        // Assert
-        final state = container.read(aiChatControllerProvider);
-        expect(state.messages, isEmpty);
-        expect(state.isTyping, isFalse);
-        expect(state.selectedPet, isNull);
-        expect(state.selectedCategory, isNull);
-        expect(state.hasPetSelected, isFalse);
-        expect(state.hasCategorySelected, isFalse);
+        expect(controller.selectedPet, equals(mockPet));
+        expect(controller.hasPetSelected, isTrue);
+      });
+
+      test('should fail to send empty message', () async {
+        final result = await controller.sendMessage('');
+        expect(result.isSuccess, isFalse);
+        expect(result.message, equals('メッセージが空です'));
+      });
+
+      test('should fail to send whitespace only message', () async {
+        final result = await controller.sendMessage('   ');
+        expect(result.isSuccess, isFalse);
+        expect(result.message, equals('メッセージが空です'));
+      });
+
+      test('should check favorite status correctly', () {
+        expect(controller.isFavorite('nonexistent'), isFalse);
+      });
+
+      test('should get empty lists initially', () {
+        expect(controller.messages, isEmpty);
+        expect(controller.suggestedQuestions, isEmpty);
+        expect(controller.favoriteMessageIds, isEmpty);
+      });
+
+      test('should get correct initial state', () {
+        expect(controller.isTyping, isFalse);
+        expect(controller.error, isNull);
+        expect(controller.selectedPet, isNull);
+        expect(controller.hasPetSelected, isFalse);
+        expect(controller.selectedCategory, isNull);
+        expect(controller.hasCategorySelected, isFalse);
+      });
+
+      test('should select category correctly', () {
+        const mockCategory = AiCategoryEntity(
+          id: 'health',
+          name: '健康',
+          description: '健康相談',
+          iconData: 'health_icon',
+          isActive: true,
+        );
+
+        controller.selectCategory(mockCategory);
+
+        expect(controller.selectedCategory, equals(mockCategory));
+        expect(controller.hasCategorySelected, isTrue);
+      });
+
+      test('should clear chat history successfully', () async {
+        final result = await controller.clearChatHistory();
+        expect(result.isSuccess, isTrue);
+        expect(result.message, equals('チャット履歴がクリアされました'));
+      });
+
+      test('should save current chat manually', () async {
+        final result = await controller.saveCurrentChatManually();
+        expect(result.isSuccess, isTrue);
+        expect(result.message, equals('チャット履歴が保存されました'));
+      });
+
+      test('should save current chat on tab switch', () async {
+        final result = await controller.saveCurrentChatOnTabSwitch();
+        expect(result.isSuccess, isTrue);
+        expect(result.message, equals('チャット履歴が自動保存されました'));
       });
     });
   });

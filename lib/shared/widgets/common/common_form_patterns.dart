@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../constants/app_constants.dart';
-import '../../constants/app_texts.dart';
+import '../../core/constants/app_constants.dart';
+import '../../core/constants/app_texts.dart';
 
 /// 공통 폼 패턴들을 제공하는 위젯들
 class CommonFormPatterns {
@@ -415,10 +415,10 @@ class CommonFormPatterns {
       return AppTexts.invalidFormat;
     }
     if (min != null && number < min) {
-      return '${min}以上で入力してください';
+      return '$min以上で入力してください';
     }
     if (max != null && number > max) {
-      return '${max}以下で入力してください';
+      return '$max以下で入力してください';
     }
     return null;
   }

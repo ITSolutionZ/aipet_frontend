@@ -1,6 +1,9 @@
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
+import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
+import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
 import 'package:mockito/annotations.dart';
 
 /// Mockito 어노테이션을 사용하여 Mock 클래스 생성을 위한 설정
@@ -10,10 +13,15 @@ import 'package:mockito/annotations.dart';
 /// flutter packages pub run build_runner build --delete-conflicting-outputs
 /// ```
 @GenerateMocks([
-  // Repository Mocks (가장 중요 - 테스트에서 실제로 사용됨)
+  // Core Repositories
   AiRepository,
+  AuthRepository,
   HomeRepository,
   PetRepository,
+
+  // Services
+  HttpClientService,
+  SecureStorageService,
 ])
 void main() {
   // Mock 클래스 생성을 위한 더미 main 함수

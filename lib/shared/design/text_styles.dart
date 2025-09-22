@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'font.dart';
+import 'tokens/tokens.dart';
 
 class AppTextStyles {
   static final h1 = AppFonts.point(fontSize: 32, fontWeight: FontWeight.w600);

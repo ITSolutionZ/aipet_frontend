@@ -102,7 +102,7 @@ void main() {
     test('should handle null safety', () {
       // Arrange
       String? nullableString;
-      final String nonNullableString = 'test';
+      const String nonNullableString = 'test';
 
       // Act
       final isNull = nullableString == null;

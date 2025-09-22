@@ -1,4 +1,4 @@
-import '../../../../shared/mock_data/features/notification/notification_mock_service.dart';
+import '../../../../shared/testing/mock_data/features/notification/notification_mock_service.dart';
 import '../../domain/entities/entities.dart';
 
 /// 통계 팩토리 (데이터 레이어에서 Mock 데이터 생성)

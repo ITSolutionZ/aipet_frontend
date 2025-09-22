@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../shared/shared.dart';
-import 'widgets.dart';
+import 'home_widgets.dart';
 
 class HomeSummaryGrid extends StatelessWidget {
   const HomeSummaryGrid({super.key});

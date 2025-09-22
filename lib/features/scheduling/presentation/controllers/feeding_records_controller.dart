@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/controllers/base_controller.dart';
 import '../../../../shared/design/design.dart';
-import '../../../../shared/domain/result.dart';
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/core/domain/result.dart';
+import '../../../../shared/testing/mock_data/mock_data_service.dart';
 
 class FeedingRecordsController extends BaseController {
   FeedingRecordsController(super.ref);

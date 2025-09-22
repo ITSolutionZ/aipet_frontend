@@ -6,8 +6,8 @@ import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
-import '../controllers/controllers.dart';
-import '../widgets/widgets.dart';
+import '../controllers/splash_controllers.dart';
+import '../widgets/splash_widgets.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});

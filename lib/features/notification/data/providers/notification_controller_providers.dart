@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/repositories/notification_repository.dart';
 import '../../domain/usecases/usecases.dart';
-import '../../presentation/controllers/controllers.dart';
+import '../../presentation/controllers/notification_controllers.dart';
 import '../repositories/notification_repository_impl.dart';
 
 // Repository Provider

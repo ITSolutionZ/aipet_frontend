@@ -5,13 +5,13 @@ import 'package:flutter/foundation.dart';
 
 import '../../../../shared/shared.dart';
 import '../../domain/domain.dart';
-import 'notification_service.dart';
+import 'notification_service.dart' as local;
 
 /// 알림 템플릿 서비스
 class NotificationTemplateService {
   static const String _templatesKey = 'notification_templates';
 
-  final NotificationService _notificationService;
+  final local.NotificationService _notificationService;
   bool _isInitialized = false;
 
   // 템플릿 스트림

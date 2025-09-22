@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../design/design.dart';
+import '../../shared.dart';
 
 /// 공통 버튼 위젯
 ///

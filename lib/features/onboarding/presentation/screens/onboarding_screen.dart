@@ -6,8 +6,8 @@ import '../../../../app/router/app_router.dart';
 import '../../../../shared/shared.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
-import '../controllers/controllers.dart';
-import '../widgets/widgets.dart';
+import '../controllers/onboarding_controllers.dart';
+import '../widgets/onboarding_widgets.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});

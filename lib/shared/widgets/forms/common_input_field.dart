@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../design/design.dart';
+import '../../shared.dart';
 
 /// 공통 입력 필드 위젯
 ///

@@ -43,7 +43,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientBackAppBar(
-        title: '새 레시피 추가',
+        title: '新しいレシピを追加',
       ),
       body: Form(
         key: _formKey,
@@ -51,19 +51,16 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
           padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
             // 기본 정보 섹션
-            _buildSectionTitle('기본 정보'),
+            _buildSectionTitle('基本情報'),
             const SizedBox(height: AppSpacing.md),
 
             // 레시피 이름
-            TextFormField(
+            CommonFormPatterns.buildTextField(
               controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: '레시피 이름 *',
-                border: OutlineInputBorder(),
-              ),
+              label: 'レシピ名 *',
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return '레시피 이름을 입력해주세요';
+                  return 'レシピ名を入力してください';
                 }
                 return null;
               },
@@ -71,16 +68,13 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
             const SizedBox(height: AppSpacing.md),
 
             // 레시피 설명
-            TextFormField(
+            CommonFormPatterns.buildTextField(
               controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: '레시피 설명 *',
-                border: OutlineInputBorder(),
-              ),
+              label: 'レシピの説明 *',
               maxLines: 3,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return '레시피 설명을 입력해주세요';
+                  return 'レシピの説明を入力してください';
                 }
                 return null;
               },
@@ -91,15 +85,12 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
             Row(
               children: [
                 Expanded(
-                  child: TextFormField(
+                  child: CommonFormPatterns.buildTextField(
                     controller: _cookingTimeController,
-                    decoration: const InputDecoration(
-                      labelText: '조리 시간 (예: 30 min) *',
-                      border: OutlineInputBorder(),
-                    ),
+                    label: '調理時間 (例: 30分) *',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return '조리 시간을 입력해주세요';
+                        return '調理時間を入力してください';
                       }
                       return null;
                     },
@@ -107,18 +98,11 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
-                  child: DropdownButtonFormField<String>(
+                  child: CommonFormPatterns.buildDropdownField<String>(
+                    label: '難易度 *',
+                    items: RecipeDifficultyMockData.getDifficultyLevels(),
+                    itemBuilder: (difficulty) => difficulty,
                     value: _selectedDifficulty,
-                    decoration: const InputDecoration(
-                      labelText: '난이도 *',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: RecipeDifficultyMockData.getDifficultyLevels().map((difficulty) {
-                      return DropdownMenuItem(
-                        value: difficulty,
-                        child: Text(difficulty),
-                      );
-                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedDifficulty = value!;
@@ -131,36 +115,31 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
             const SizedBox(height: AppSpacing.md),
 
             // 인분 수
-            TextFormField(
+            CommonFormPatterns.buildNumberField(
               controller: _servingsController,
-              decoration: const InputDecoration(
-                labelText: '인분 수',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
+              label: '人数分',
+              min: 1,
+              max: 20,
             ),
             const SizedBox(height: AppSpacing.lg),
 
             // 재료 섹션
-            _buildSectionTitle('재료'),
+            _buildSectionTitle('材料'),
             const SizedBox(height: AppSpacing.md),
 
             // 재료 추가
             Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: CommonFormPatterns.buildTextField(
                     controller: _ingredientController,
-                    decoration: const InputDecoration(
-                      labelText: '재료 추가',
-                      border: OutlineInputBorder(),
-                    ),
+                    label: '材料を追加',
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 ElevatedButton(
                   onPressed: _addIngredient,
-                  child: const Text('추가'),
+                  child: const Text('追加'),
                 ),
               ],
             ),
@@ -179,7 +158,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '재료 목록',
+                      '材料リスト',
                       style: AppFonts.bodyMedium.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -206,26 +185,23 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
             ],
 
             // 조리 방법 섹션
-            _buildSectionTitle('조리 방법'),
+            _buildSectionTitle('調理手順'),
             const SizedBox(height: AppSpacing.md),
 
             // 조리 방법 추가
             Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: CommonFormPatterns.buildTextField(
                     controller: _instructionController,
-                    decoration: const InputDecoration(
-                      labelText: '조리 단계 추가',
-                      border: OutlineInputBorder(),
-                    ),
+                    label: '調理手順を追加',
                     maxLines: 2,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 ElevatedButton(
                   onPressed: _addInstruction,
-                  child: const Text('추가'),
+                  child: const Text('追加'),
                 ),
               ],
             ),
@@ -244,7 +220,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '조리 단계',
+                      '調理手順',
                       style: AppFonts.bodyMedium.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -295,7 +271,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                   ),
                 ),
                 child: Text(
-                  '레시피 저장',
+                  'レシピを保存',
                   style: AppFonts.fredoka(
                     fontSize: AppFonts.lg,
                     fontWeight: FontWeight.w600,
@@ -378,22 +354,12 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
       await ref.read(recipesNotifierProvider.notifier).createRecipe(recipe);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('레시피가 성공적으로 저장되었습니다!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        UiService.showSuccess(context, 'レシピが正常に保存されました！');
         context.pop();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('레시피 저장에 실패했습니다: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        UiService.showError(context, 'レシピの保存に失敗しました: $e');
       }
     }
   }

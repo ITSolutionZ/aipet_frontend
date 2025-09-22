@@ -87,17 +87,17 @@ class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('북마크 삭제'),
-        content: Text('북마크 "${bookmark.displayLabel}"을(를) 삭제하시겠습니까?'),
+        title: const Text('ブックマークを削除'),
+        content: Text('ブックマーク"${bookmark.displayLabel}"を削除しますか？'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('취소'),
+            child: const Text('キャンセル'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('삭제'),
+            child: const Text('削除'),
           ),
         ],
       ),
@@ -154,7 +154,7 @@ class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
             child: Row(
               children: [
                 const Text(
-                  'Bookmarks',
+                  'ブックマーク',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),

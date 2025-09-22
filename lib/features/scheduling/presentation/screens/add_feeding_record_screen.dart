@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../shared/mock_data/features/scheduling/scheduling_mock_service.dart'
+import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
     as SchedulingMock;
+import '../../../../shared/testing/mock_data/features/pet/pet_mock_service.dart'
+    as pet_feature_mock;
 import '../../../../shared/shared.dart';
-import '../controllers/controllers.dart';
-import '../widgets/widgets.dart';
+import '../controllers/scheduling_controllers.dart';
+import '../widgets/scheduling_widgets.dart';
 
 /// 급여 기록 추가 페이지
 class AddFeedingRecordScreen extends ConsumerStatefulWidget {
@@ -25,6 +27,7 @@ class _AddFeedingRecordScreenState
   final _mealController = TextEditingController();
   final _amountController = TextEditingController();
   final _noteController = TextEditingController();
+  late ScrollController _scrollController;
 
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
@@ -38,6 +41,7 @@ class _AddFeedingRecordScreenState
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     // 컨트롤러를 통해 초기 펫 정보 로드
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(addFeedingRecordControllerProvider.notifier).loadPetInfo('1');
@@ -49,6 +53,7 @@ class _AddFeedingRecordScreenState
     _mealController.dispose();
     _amountController.dispose();
     _noteController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -133,12 +138,7 @@ class _AddFeedingRecordScreenState
       // 목업 데이터에 새로운 기록 추가
       _addMockFeedingRecord();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('食事記録を保存しました'),
-          backgroundColor: AppColors.pointGreen,
-        ),
-      );
+      UINotificationService.showSuccess('食事記録を保存しました');
 
       context.pop({
         'date': _selectedDate,
@@ -190,10 +190,13 @@ class _AddFeedingRecordScreenState
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final statusOptions =
+            pet_feature_mock.PetMockService.getPetStatusOptions();
         return PetStatusSelectionDialog(
           petInfo: petInfo,
           selectedStatuses: List<String>.from(_selectedStatuses),
           statusValues: Map<String, String>.from(_statusValues),
+          statusOptions: statusOptions,
           onStatusUpdated:
               (
                 List<String> selectedStatuses,
@@ -216,7 +219,8 @@ class _AddFeedingRecordScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: SoftGradientAppBar(
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
         title: '食事記録追加',
         actions: [
           TextButton(
@@ -233,11 +237,16 @@ class _AddFeedingRecordScreenState
       ),
       body: Form(
         key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
               // 펫 선택 그리드
               PetSelectionGrid(
                 selectedPetId: _selectedPetId,
@@ -310,12 +319,20 @@ class _AddFeedingRecordScreenState
                   sizeGuide: _petSizeGuide!,
                 ),
 
-              const Spacer(),
+                      const SizedBox(height: AppSpacing.lg),
 
-              // 저장 버튼
-              SaveButton(onPressed: _saveRecord),
-            ],
-          ),
+                      // 저장 버튼
+                      ActionButton.primary(
+                        text: '保存',
+                        onPressed: _saveRecord,
+                        isEnabled: true,
+                      ),
+                    ],
+                  ),
+                ]),
+              ),
+            ),
+          ],
         ),
       ),
     );

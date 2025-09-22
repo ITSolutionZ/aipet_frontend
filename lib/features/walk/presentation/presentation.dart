@@ -1,5 +1,5 @@
 library;
 
-export 'controllers/controllers.dart';
-export 'screens/screens.dart';
-export 'widgets/widgets.dart';
+export 'controllers/walk_controllers.dart';
+export 'screens/walk_screens.dart';
+export 'widgets/walk_widgets.dart';

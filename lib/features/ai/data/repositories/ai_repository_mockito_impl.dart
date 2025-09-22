@@ -58,7 +58,11 @@ class AiRepositoryMockitoImpl implements AiRepository {
   }) async {
     try {
       // AI 로거를 사용한 API 호출 시작 로그 (펫 컨텍스트 포함)
-      AiLogger.logApiStartWithPet(message, petContext);
+      AiLogger.logApiStartWithPet(
+        message,
+        petName: petContext?.name,
+        petType: petContext?.typeName,
+      );
 
       // 실제 OpenAI API 호출 (펫 컨텍스트 포함)
       final response = await _openAIService.generateResponse(

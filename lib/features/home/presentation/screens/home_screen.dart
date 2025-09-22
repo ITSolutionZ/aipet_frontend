@@ -5,8 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../../shared/shared.dart';
 import '../../../../app/config/app_config.dart';
 import '../../../../app/router/routes/route_constants.dart';
-import '../controllers/controllers.dart';
-import '../widgets/widgets.dart';
+import '../controllers/home_dashboard_controller.dart';
+import '../controllers/home_notification_controller.dart';
+import '../widgets/home_widgets.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -18,12 +19,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   late HomeDashboardController _dashboardController;
   late HomeNotificationController _notificationController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
     _dashboardController = HomeDashboardController(ref);
     _notificationController = HomeNotificationController(ref);
+    _scrollController = ScrollController();
 
     // 화면이 로드된 후 펫 목록을 확인하여 리다이렉트
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -140,6 +143,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   /// 초기 알림 스낵바 표시 (알림이 있을 때만)
   void _showInitialNotificationSnackBar() {
     final notificationCount =
@@ -167,17 +176,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: const AppDrawer(),
-      appBar: SoftGradientDrawerAppBar(
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
         title: 'ホーム',
-        selectedPetInfo: Row(
-          children: [
-            _buildNotificationButton(),
-            const SizedBox(width: AppSpacing.xs),
-            _buildMenuButton(context),
-          ],
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            tooltip: 'メニュー',
+          ),
         ),
+        actions: [_buildNotificationButton()],
       ),
-      body: Column(children: [_buildMainContent()]),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: const [
+          SliverPadding(
+            padding: EdgeInsets.all(AppSpacing.lg),
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: AppSpacing.md),
+                  PetProfileCard(),
+                  SizedBox(height: AppSpacing.lg),
+                  WeatherCard(),
+                  SizedBox(height: AppSpacing.lg),
+                  HomeSummaryGrid(),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -197,35 +228,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Icon(Icons.circle, color: AppColors.pointPink, size: 8),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildMenuButton(BuildContext context) {
-    return Builder(
-      builder: (context) => IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () => Scaffold.of(context).openDrawer(),
-        tooltip: 'メニュー',
-      ),
-    );
-  }
-
-  Widget _buildMainContent() {
-    return const Expanded(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: AppSpacing.md),
-            PetProfileCard(),
-            SizedBox(height: AppSpacing.lg),
-            WeatherCard(),
-            SizedBox(height: AppSpacing.lg),
-            HomeSummaryGrid(),
-          ],
-        ),
       ),
     );
   }

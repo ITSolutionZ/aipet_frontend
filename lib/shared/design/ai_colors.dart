@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'color.dart';
+import 'tokens/tokens.dart';
 
 /// AI 기능 전용 색상 상수들
 class AiColors {

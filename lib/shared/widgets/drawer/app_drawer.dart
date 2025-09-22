@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/shared.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pet_section_widget.dart';
 
 class AppDrawer extends ConsumerWidget {
   const AppDrawer({super.key});

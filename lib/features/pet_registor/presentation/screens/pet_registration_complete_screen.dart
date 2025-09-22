@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../shared/shared.dart';
 import '../../data/providers/providers.dart';
 import '../../domain/utils/pet_registration_converter.dart';
-import '../widgets/widgets.dart';
+import '../widgets/pet_registor_widgets.dart';
 
 class PetRegistrationCompleteScreen extends ConsumerStatefulWidget {
   const PetRegistrationCompleteScreen({super.key});

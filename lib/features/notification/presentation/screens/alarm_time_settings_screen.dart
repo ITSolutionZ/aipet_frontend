@@ -142,8 +142,9 @@ class _AlarmTimeSettingsScreenState
 
                 const SizedBox(height: AppSpacing.xl * 3),
 
-                SaveButtonComponent(
+                ActionButton.primary(
                   text: '保存',
+                  enabled: true,
                   onPressed: () {
                     ref
                         .read(alarmTimeSettingsControllerProvider.notifier)

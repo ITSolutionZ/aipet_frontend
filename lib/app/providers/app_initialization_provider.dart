@@ -6,9 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/notification/data/services/notification_service.dart';
 import '../../features/onboarding/data/data.dart';
-import '../../shared/services/error_handler_service.dart';
-import '../../shared/services/performance_monitor_service.dart';
-import '../../shared/services/user_experience_service.dart';
+import '../../shared/core/services/error_handler_service.dart';
+import '../../shared/core/services/performance_monitor_service.dart';
+import '../../shared/core/services/user_experience_service.dart';
 
 part 'app_initialization_provider.g.dart';
 

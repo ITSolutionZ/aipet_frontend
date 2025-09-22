@@ -6,14 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../shared/shared.dart';
 import '../../domain/domain.dart';
-import 'notification_service.dart';
+import 'notification_service.dart' as local;
 
 /// 알림 스케줄링 서비스
 class NotificationSchedulerService {
   static const String _schedulesKey = 'notification_schedules';
   static const String _schedulerEnabledKey = 'scheduler_enabled';
 
-  final NotificationService _notificationService;
+  final local.NotificationService _notificationService;
   Timer? _schedulerTimer;
   bool _isInitialized = false;
   bool _isEnabled = true;

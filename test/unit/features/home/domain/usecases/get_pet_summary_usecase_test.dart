@@ -1,11 +1,11 @@
 import 'package:aipet_frontend/features/home/domain/entities/pet_summary_entity.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
 import 'package:aipet_frontend/features/home/domain/usecases/get_pet_summary_usecase.dart';
-import '../../../test_helper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
+import '../../../test_helper.dart';
 import 'get_pet_summary_usecase_test.mocks.dart';
 
 @GenerateMocks([HomeRepository])

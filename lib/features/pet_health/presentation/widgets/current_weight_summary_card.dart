@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/features/pet_health/pet_health_mock_service.dart';
+import '../../../../shared/testing/mock_data/features/pet_health/pet_health_mock_service.dart';
 
 class CurrentWeightSummaryCard extends StatelessWidget {
   const CurrentWeightSummaryCard({super.key});

@@ -1,4 +1,4 @@
-import '../../../../shared/mock_data/mock_data_service.dart';
+import '../../../../shared/testing/mock_data/mock_data_service.dart';
 // TODO: 추후 PetActivitiesMockService로 마이그레이션 필요
 import '../../domain/entities/trick_entity.dart';
 import '../../domain/entities/video_bookmark_entity.dart';

@@ -1,7 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AiFavoriteEntity', () {

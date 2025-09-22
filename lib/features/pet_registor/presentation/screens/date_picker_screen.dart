@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/shared.dart';
-import '../widgets/widgets.dart';
+import '../widgets/pet_registor_widgets.dart';
 
 class DatePickerScreen extends StatefulWidget {
   final DateTime? selectedBirthday;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../design/design.dart';
+import '../../shared.dart';
 
 /// 범용 텍스트 필드 위젯
 /// 일관된 스타일과 검증 로직 제공
@@ -75,7 +75,6 @@ class _AppTextFieldState extends State<AppTextField> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Semantics(
@@ -97,9 +96,7 @@ class _AppTextFieldState extends State<AppTextField> {
                     ? [
                         const TextSpan(
                           text: ' *',
-                          style: TextStyle(
-                            color: Colors.red,
-                          ),
+                          style: TextStyle(color: Colors.red),
                         ),
                       ]
                     : null,
@@ -119,8 +116,8 @@ class _AppTextFieldState extends State<AppTextField> {
                 color: widget.errorText != null
                     ? Colors.red
                     : _focusNode.hasFocus
-                        ? AppColors.pointBrown
-                        : AppColors.pointGray.withValues(alpha: 0.3),
+                    ? AppColors.pointBrown
+                    : AppColors.pointGray.withValues(alpha: 0.3),
                 width: _focusNode.hasFocus ? 2 : 1,
               ),
               boxShadow: widget.enabled
@@ -175,9 +172,7 @@ class _AppTextFieldState extends State<AppTextField> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               widget.errorText!,
-              style: AppFonts.bodySmall.copyWith(
-                color: Colors.red,
-              ),
+              style: AppFonts.bodySmall.copyWith(color: Colors.red),
             ),
           ],
 
@@ -188,9 +183,7 @@ class _AppTextFieldState extends State<AppTextField> {
               alignment: Alignment.centerRight,
               child: Text(
                 '${widget.controller.text.length}/${widget.maxLength}',
-                style: AppFonts.bodySmall.copyWith(
-                  color: AppColors.pointGray,
-                ),
+                style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
               ),
             ),
           ],

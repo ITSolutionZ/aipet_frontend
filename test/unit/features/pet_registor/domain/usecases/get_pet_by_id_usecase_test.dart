@@ -31,7 +31,6 @@ void main() {
             type: 'dog',
             breed: 'Golden Retriever',
             birthDate: DateTime(2020, 1, 1),
-            age: 3,
             gender: 'male',
             weight: 25.0,
             imagePath: 'path/to/image.jpg',
