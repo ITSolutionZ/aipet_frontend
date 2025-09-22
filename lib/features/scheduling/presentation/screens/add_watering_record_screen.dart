@@ -254,7 +254,7 @@ class _AddWateringRecordScreenState
       };
 
       // Mock 저장 로직 (실제로는 API 호출)
-      print('급수 기록 저장: $record');
+      // REMOVED_SECURITY_RISK: print('급수 기록 저장: $record');
 
       // 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(

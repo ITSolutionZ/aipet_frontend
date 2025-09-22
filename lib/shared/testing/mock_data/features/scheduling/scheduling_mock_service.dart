@@ -350,13 +350,13 @@ class SchedulingMockService extends BaseMockService {
   /// 급식 기록 추가
   static void addMockFeedingRecord(Map<String, dynamic> record) {
     // Mock implementation - 실제로는 데이터베이스에 저장
-    print('Feeding record added: ${record['petName']} - ${record['amount']}g');
+    // REMOVED_SECURITY_RISK: print('Feeding record added: ${record['petName']} - ${record['amount']}g');
   }
   
   /// 급식 스케줄 업데이트
   static void updateFeedingSchedule(String mealType, String time, String amount) {
     // Mock implementation
-    print('Feeding schedule updated: $mealType at $time, amount: $amount');
+    // REMOVED_SECURITY_RISK: print('Feeding schedule updated: $mealType at $time, amount: $amount');
   }
   
   /// 기본 급식 스케줄 파라미터

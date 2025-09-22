@@ -9,7 +9,7 @@ import '../../../features/facility/presentation/screens/facility_screens.dart';
 import '../../../features/home/presentation/presentation.dart';
 import '../../../features/notification/presentation/screens/notification_screens.dart';
 import '../../../features/pet_activities/pet_activities.dart';
-import '../../../features/pet_profile/presentation/presentation.dart';
+import '../../../features/pet_profile/presentation/screens/pet_profile_screen_refactored.dart';
 import '../../../features/scheduling/presentation/presentation.dart';
 import '../../../features/scheduling/presentation/screens/today_appointments_screen.dart';
 import '../../../features/settings/presentation/screens/settings_screens.dart';
@@ -62,7 +62,7 @@ class ShellRoutes {
             builder: (context, state) {
               // 쿼리 파라미터에서 petId 추출
               final petId = state.uri.queryParameters['petId'] ?? 'default';
-              return PetProfileScreen(petId: petId);
+              return PetProfileScreenRefactored(petId: petId);
             },
           ),
           GoRoute(

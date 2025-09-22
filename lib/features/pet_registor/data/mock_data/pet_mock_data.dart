@@ -1,30 +1,46 @@
-/// 펫 Mock 데이터
+import '../../../shared/testing/mock_data/features/pet/pet_mock_service.dart';
+
+/// ⚠️ DEPRECATED: 중복 Mock 데이터 클래스
 ///
-/// 펫 등록 관련 Mock 데이터를 제공합니다.
+/// 이 클래스는 중앙화된 PetMockService로 대체되었습니다.
+/// 새로운 코드에서는 PetMockService를 직접 사용하세요.
+///
+/// 마이그레이션 예시:
+/// ```dart
+/// // Before (DEPRECATED)
+/// PetMockData.getDogBreeds()
+///
+/// // After (RECOMMENDED)
+/// PetMockService.getMockDogBreeds()
+/// ```
+@Deprecated('Use PetMockService instead')
 class PetMockData {
   /// Mock 강아지 품종 데이터
+  @Deprecated('Use PetMockService.getMockDogBreeds() instead')
   static List<Map<String, dynamic>> getDogBreeds() {
-    return [
-      {'id': 'shiba', 'name': '柴犬', 'size': 'medium'},
-      {'id': 'golden_retriever', 'name': 'ゴールデンレトリバー', 'size': 'large'},
-      {'id': 'chihuahua', 'name': 'チワワ', 'size': 'small'},
-      {'id': 'poodle', 'name': 'プードル', 'size': 'medium'},
-      {'id': 'custom', 'name': 'その他', 'size': 'unknown'},
-    ];
+    return PetMockService.getMockDogBreeds()
+        .map((breed) => {
+              'id': breed['id'],
+              'name': breed['koreanName'],
+              'size': breed['size'],
+            })
+        .toList();
   }
 
   /// Mock 고양이 품종 데이터
+  @Deprecated('Use PetMockService.getCatBreeds() instead')
   static List<Map<String, dynamic>> getCatBreeds() {
-    return [
-      {'id': 'american_shorthair', 'name': 'アメリカンショートヘア', 'size': 'medium'},
-      {'id': 'persian', 'name': 'ペルシャ', 'size': 'medium'},
-      {'id': 'maine_coon', 'name': 'メインクーン', 'size': 'large'},
-      {'id': 'british_shorthair', 'name': 'ブリティッシュショートヘア', 'size': 'medium'},
-      {'id': 'custom', 'name': 'その他', 'size': 'unknown'},
-    ];
+    return PetMockService.getCatBreeds()
+        .map((breed) => {
+              'id': breed.toLowerCase().replaceAll(' ', '_'),
+              'name': breed,
+              'size': 'medium',
+            })
+        .toList();
   }
 
   /// Mock 펫 크기 데이터
+  @Deprecated('Use PetMockService.getPetStatusOptions() instead')
   static List<Map<String, dynamic>> getPetSizes() {
     return [
       {'id': 'small', 'name': '小型', 'minWeight': 1.0, 'maxWeight': 10.0},
@@ -34,6 +50,7 @@ class PetMockData {
   }
 
   /// Mock 성별 데이터
+  @Deprecated('Use PetMockService.getMockPetTypes() instead')
   static List<Map<String, dynamic>> getGenders() {
     return [
       {'id': 'male', 'name': 'オス'},
@@ -42,44 +59,8 @@ class PetMockData {
   }
 
   /// Mock 펫 데이터 반환
+  @Deprecated('Use PetMockService.getMockPets() instead')
   static List<Map<String, dynamic>> getMockPets() {
-    return [
-      {
-        'id': 'pet-1',
-        'name': 'Maxi',
-        'type': 'dog',
-        'breed': '柴犬',
-        'weight': 15.5,
-        'gender': 'male',
-        'birthDate': DateTime.now()
-            .subtract(const Duration(days: 1095))
-            .toIso8601String(),
-        'imagePath': 'assets/images/dogs/shiba.png',
-        'ownerId': 'user-1',
-        'isActive': true,
-        'createdAt': DateTime.now()
-            .subtract(const Duration(days: 365))
-            .toIso8601String(),
-        'updatedAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'id': 'pet-2',
-        'name': 'Luna',
-        'type': 'cat',
-        'breed': 'アメリカンショートヘア',
-        'weight': 4.2,
-        'gender': 'female',
-        'birthDate': DateTime.now()
-            .subtract(const Duration(days: 730))
-            .toIso8601String(),
-        'imagePath': 'assets/images/cats/american_shorthair.png',
-        'ownerId': 'user-1',
-        'isActive': true,
-        'createdAt': DateTime.now()
-            .subtract(const Duration(days: 200))
-            .toIso8601String(),
-        'updatedAt': DateTime.now().toIso8601String(),
-      },
-    ];
+    return PetMockService.getMockPets();
   }
 }

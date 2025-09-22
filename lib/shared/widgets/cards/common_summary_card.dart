@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../ui/components/app_card.dart';
+import '../../ui/components/cards/cards.dart';
 
 /// ⚠️ DEPRECATED: 기존 API 호환성을 위해 유지됨
-/// 새로운 코드에서는 AppCard.summary()를 직접 사용하세요.
+/// 새로운 코드에서는 SummaryCard.basic() 또는 SummaryCard.withValue()를 사용하세요.
 
-@Deprecated('Use AppCard.summary() instead')
+@Deprecated('Use SummaryCard.basic() or SummaryCard.withValue() instead')
 class CommonSummaryCard extends StatelessWidget {
   final String title;
   final String? subtitle;
@@ -46,28 +46,38 @@ class CommonSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.summary(
-      title: title,
-      subtitle: subtitle,
-      value: value,
-      unit: unit,
-      icon: icon,
-      iconColor: iconColor,
-      leading: leading,
-      trailing: trailing,
-      onTap: onTap,
-      isLoading: isLoading,
-      backgroundColor: backgroundColor,
-      borderColor: borderColor,
-      padding: padding,
-      margin: margin,
-      borderRadius: borderRadius,
-      semanticLabel: semanticLabel,
-    );
+    if (isLoading) {
+      return SummaryCard.loading(
+        title: title,
+        subtitle: subtitle,
+        icon: icon,
+        semanticLabel: semanticLabel,
+      );
+    } else if (value != null) {
+      return SummaryCard.withValue(
+        title: title,
+        subtitle: subtitle,
+        value: value!,
+        unit: unit,
+        icon: icon,
+        iconColor: iconColor,
+        trailing: trailing,
+        onTap: onTap,
+        semanticLabel: semanticLabel,
+      );
+    } else {
+      return SummaryCard.basic(
+        title: title,
+        subtitle: subtitle,
+        icon: icon,
+        onTap: onTap,
+        semanticLabel: semanticLabel,
+      );
+    }
   }
 }
 
-@Deprecated('Use AppCard.metric() instead')
+@Deprecated('Use MetricCard.simple() or MetricCard.withChange() instead')
 class StatCard extends StatelessWidget {
   final String title;
   final String value;
@@ -102,24 +112,30 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.metric(
-      title: title,
-      value: value,
-      unit: unit,
-      change: change,
-      isPositiveChange: isPositiveChange,
-      icon: icon,
-      iconColor: iconColor,
-      onTap: onTap,
-      backgroundColor: backgroundColor,
-      padding: padding,
-      margin: margin,
-      borderRadius: borderRadius,
-    );
+    if (change != null) {
+      return MetricCard.withChange(
+        title: title,
+        value: value,
+        change: change!,
+        isPositiveChange: isPositiveChange ?? true,
+        unit: unit,
+        icon: icon,
+        iconColor: iconColor,
+        onTap: onTap,
+      );
+    } else {
+      return MetricCard.simple(
+        title: title,
+        value: value,
+        unit: unit,
+        icon: icon,
+        onTap: onTap,
+      );
+    }
   }
 }
 
-@Deprecated('Use AppCard.button() instead')
+@Deprecated('Use ButtonCard.primary() or ButtonCard.secondary() instead')
 class ActionCard extends StatelessWidget {
   final String title;
   final String? subtitle;
@@ -146,16 +162,11 @@ class ActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.button(
+    return ButtonCard.primary(
       title: title,
       subtitle: subtitle,
       icon: icon,
-      iconColor: iconColor,
       onTap: onTap,
-      backgroundColor: backgroundColor,
-      padding: padding,
-      margin: margin,
-      borderRadius: borderRadius,
     );
   }
 }

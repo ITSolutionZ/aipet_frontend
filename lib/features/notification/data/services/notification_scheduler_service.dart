@@ -42,11 +42,11 @@ class NotificationSchedulerService {
 
       _isInitialized = true;
       if (kDebugMode) {
-        print('알림 스케줄러 초기화 완료');
+        // REMOVED_SECURITY_RISK: print('알림 스케줄러 초기화 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('알림 스케줄러 초기화 실패: $e');
+        // REMOVED_SECURITY_RISK: print('알림 스케줄러 초기화 실패: $e');
       }
     }
   }
@@ -61,7 +61,7 @@ class NotificationSchedulerService {
     });
 
     if (kDebugMode) {
-      print('알림 스케줄러 시작됨');
+      // REMOVED_SECURITY_RISK: print('알림 스케줄러 시작됨');
     }
   }
 
@@ -71,7 +71,7 @@ class NotificationSchedulerService {
     _schedulerTimer = null;
 
     if (kDebugMode) {
-      print('알림 스케줄러 중지됨');
+      // REMOVED_SECURITY_RISK: print('알림 스케줄러 중지됨');
     }
   }
 
@@ -95,7 +95,7 @@ class NotificationSchedulerService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 확인 중 오류: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 확인 중 오류: $e');
       }
     }
   }
@@ -128,11 +128,11 @@ class NotificationSchedulerService {
       await updateSchedule(updatedSchedule);
 
       if (kDebugMode) {
-        print('스케줄 실행됨: ${schedule.title}');
+        // REMOVED_SECURITY_RISK: print('스케줄 실행됨: ${schedule.title}');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 실행 실패: ${schedule.title}, 오류: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 실행 실패: ${schedule.title}, 오류: $e');
       }
     }
   }
@@ -146,11 +146,11 @@ class NotificationSchedulerService {
       _schedulesController.add(schedules);
 
       if (kDebugMode) {
-        print('스케줄 추가됨: ${schedule.title}');
+        // REMOVED_SECURITY_RISK: print('스케줄 추가됨: ${schedule.title}');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 추가 실패: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 추가 실패: $e');
       }
     }
   }
@@ -167,12 +167,12 @@ class NotificationSchedulerService {
         _schedulesController.add(schedules);
 
         if (kDebugMode) {
-          print('스케줄 업데이트됨: ${schedule.title}');
+          // REMOVED_SECURITY_RISK: print('스케줄 업데이트됨: ${schedule.title}');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 업데이트 실패: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 업데이트 실패: $e');
       }
     }
   }
@@ -186,11 +186,11 @@ class NotificationSchedulerService {
       _schedulesController.add(schedules);
 
       if (kDebugMode) {
-        print('스케줄 삭제됨: $scheduleId');
+        // REMOVED_SECURITY_RISK: print('스케줄 삭제됨: $scheduleId');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 삭제 실패: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 삭제 실패: $e');
       }
     }
   }
@@ -207,12 +207,12 @@ class NotificationSchedulerService {
         _schedulesController.add(schedules);
 
         if (kDebugMode) {
-          print('스케줄 상태 변경됨: $scheduleId, 활성화: $isActive');
+          // REMOVED_SECURITY_RISK: print('스케줄 상태 변경됨: $scheduleId, 활성화: $isActive');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 상태 변경 실패: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 상태 변경 실패: $e');
       }
     }
   }
@@ -229,7 +229,7 @@ class NotificationSchedulerService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 로드 실패: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 로드 실패: $e');
       }
     }
     return [];
@@ -264,11 +264,11 @@ class NotificationSchedulerService {
       }
 
       if (kDebugMode) {
-        print('스케줄러 ${enabled ? '활성화' : '비활성화'}됨');
+        // REMOVED_SECURITY_RISK: print('스케줄러 ${enabled ? '활성화' : '비활성화'}됨');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄러 상태 변경 실패: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄러 상태 변경 실패: $e');
       }
     }
   }
@@ -285,7 +285,7 @@ class NotificationSchedulerService {
       await SecureStorageService.setString(_schedulesKey, schedulesJson);
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 저장 실패: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 저장 실패: $e');
       }
     }
   }
@@ -297,11 +297,11 @@ class NotificationSchedulerService {
       _schedulesController.add([]);
 
       if (kDebugMode) {
-        print('모든 스케줄 삭제됨');
+        // REMOVED_SECURITY_RISK: print('모든 스케줄 삭제됨');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 삭제 실패: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 삭제 실패: $e');
       }
     }
   }
@@ -324,12 +324,12 @@ class NotificationSchedulerService {
         _schedulesController.add(validSchedules);
 
         if (kDebugMode) {
-          print('만료된 스케줄 정리됨: ${schedules.length - validSchedules.length}개');
+          // REMOVED_SECURITY_RISK: print('만료된 스케줄 정리됨: ${schedules.length - validSchedules.length}개');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 정리 실패: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 정리 실패: $e');
       }
     }
   }
@@ -355,7 +355,7 @@ class NotificationSchedulerService {
       };
     } catch (e) {
       if (kDebugMode) {
-        print('스케줄 통계 가져오기 실패: $e');
+        // REMOVED_SECURITY_RISK: print('스케줄 통계 가져오기 실패: $e');
       }
       return {};
     }

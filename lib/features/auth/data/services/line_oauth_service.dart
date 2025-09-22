@@ -25,7 +25,7 @@ class LineOAuthService {
   /// LINE OAuth 로그인 시작
   Future<Result<LineUserInfo>> loginWithLine() async {
     try {
-      print('LINE OAuth 로그인 시작');
+      // REMOVED_SECURITY_RISK: print('LINE OAuth 로그인 시작');
 
       // 1. State 파라미터 생성 (CSRF 보호)
       final state = _generateState();
@@ -54,10 +54,10 @@ class LineOAuthService {
         return Result.failure(profileResult.message);
       }
 
-      print('LINE OAuth 로그인 성공');
+      // REMOVED_SECURITY_RISK: print('LINE OAuth 로그인 성공');
       return Result.success('LINEログインが完了しました', profileResult.data!);
     } catch (e) {
-      print('LINE OAuth 로그인 실패: $e');
+      // REMOVED_SECURITY_RISK: print('LINE OAuth 로그인 실패: $e');
       return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
     }
   }
@@ -109,7 +109,7 @@ class LineOAuthService {
       final uri = Uri.parse(callbackUrl);
       return uri.queryParameters['code'];
     } catch (e) {
-      print('인증 코드 추출 실패: $e');
+      // REMOVED_SECURITY_RISK: print('인증 코드 추출 실패: $e');
       return null;
     }
   }
@@ -137,11 +137,11 @@ class LineOAuthService {
         final tokenInfo = LineTokenInfo.fromJson(data);
         return Result.success('토큰 획득 성공', tokenInfo);
       } else {
-        print('토큰 요청 실패: ${response.statusCode} - ${response.body}');
+        // REMOVED_SECURITY_RISK: print('토큰 요청 실패: ${response.statusCode} - ${response.body}');
         return Result.failure('LINE トークンの取得に失敗しました');
       }
     } catch (e) {
-      print('토큰 요청 중 오류: $e');
+      // REMOVED_SECURITY_RISK: print('토큰 요청 중 오류: $e');
       return Result.failure('LINE トークンの取得に失敗しました: ${e.toString()}');
     }
   }
@@ -161,11 +161,11 @@ class LineOAuthService {
         final userInfo = LineUserInfo.fromJson(data);
         return Result.success('프로필 정보 획득 성공', userInfo);
       } else {
-        print('프로필 요청 실패: ${response.statusCode} - ${response.body}');
+        // REMOVED_SECURITY_RISK: print('프로필 요청 실패: ${response.statusCode} - ${response.body}');
         return Result.failure('LINE プロフィールの取得に失敗しました');
       }
     } catch (e) {
-      print('프로필 요청 중 오류: $e');
+      // REMOVED_SECURITY_RISK: print('프로필 요청 중 오류: $e');
       return Result.failure('LINE プロフィールの取得に失敗しました: ${e.toString()}');
     }
   }

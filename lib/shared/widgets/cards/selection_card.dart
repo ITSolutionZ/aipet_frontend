@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../ui/components/app_card.dart';
+import '../../ui/components/cards/cards.dart';
 
 /// ⚠️ DEPRECATED: 기존 API 호환성을 위해 유지됨
-/// 새로운 코드에서는 AppCard.selection()을 직접 사용하세요.
+/// 새로운 코드에서는 SelectionCard.option()을 직접 사용하세요.
 
-@Deprecated('Use AppCard.selection() instead')
-class SelectionCard extends StatelessWidget {
+@Deprecated('Use SelectionCard.option() instead')
+class LegacySelectionCard extends StatelessWidget {
   final Widget child;
   final String? title;
   final String? subtitle;
@@ -22,7 +22,7 @@ class SelectionCard extends StatelessWidget {
   final double? borderRadius;
   final String? semanticLabel;
 
-  const SelectionCard({
+  const LegacySelectionCard({
     super.key,
     required this.child,
     this.title,
@@ -42,26 +42,30 @@ class SelectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.selection(
-      child: child,
-      title: title,
-      subtitle: subtitle,
-      icon: icon,
-      iconColor: iconColor,
-      onTap: onTap,
-      isSelected: isSelected,
-      selectedColor: selectedColor,
-      backgroundColor: backgroundColor,
-      borderColor: borderColor,
-      padding: padding,
-      margin: margin,
-      borderRadius: borderRadius,
-      semanticLabel: semanticLabel,
-    );
+    if (title != null || subtitle != null) {
+      return SelectionCard.option(
+        title: title!,
+        subtitle: subtitle,
+        icon: icon,
+        iconColor: iconColor,
+        isSelected: isSelected,
+        selectedColor: selectedColor,
+        onTap: onTap,
+        semanticLabel: semanticLabel,
+      );
+    } else {
+      return SelectionCard(
+        isSelected: isSelected,
+        selectedColor: selectedColor,
+        onTap: onTap,
+        semanticLabel: semanticLabel,
+        child: child,
+      );
+    }
   }
 }
 
-@Deprecated('Use AppCard.selection() instead')
+@Deprecated('Use SelectionCard.option() instead')
 class MediaCard extends StatelessWidget {
   final Widget child;
   final String? title;
@@ -94,17 +98,21 @@ class MediaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.selection(
-      child: child,
-      title: title,
-      subtitle: subtitle,
-      onTap: onTap,
-      isSelected: isSelected,
-      selectedColor: selectedColor,
-      backgroundColor: backgroundColor,
-      padding: padding,
-      margin: margin,
-      borderRadius: borderRadius,
-    );
+    if (title != null || subtitle != null) {
+      return SelectionCard.option(
+        title: title!,
+        subtitle: subtitle,
+        isSelected: isSelected,
+        selectedColor: selectedColor,
+        onTap: onTap,
+      );
+    } else {
+      return SelectionCard(
+        isSelected: isSelected,
+        selectedColor: selectedColor,
+        onTap: onTap,
+        child: child,
+      );
+    }
   }
 }

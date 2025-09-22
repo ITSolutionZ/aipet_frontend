@@ -20,7 +20,7 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       return WalkShareResult.success('텍스트가 클립보드에 복사되었습니다');
     } catch (e) {
       if (kDebugMode) {
-        print('클립보드 복사 실패: $e');
+        // REMOVED_SECURITY_RISK: print('클립보드 복사 실패: $e');
       }
       return WalkShareResult.failure('클립보드 복사에 실패했습니다');
     }
@@ -59,7 +59,7 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       );
     } catch (e) {
       if (kDebugMode) {
-        print('이미지 저장 실패: $e');
+        // REMOVED_SECURITY_RISK: print('이미지 저장 실패: $e');
       }
       return WalkShareResult.failure('이미지 저장에 실패했습니다');
     }
@@ -72,7 +72,7 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       return WalkShareResult.success('시스템 공유가 실행되었습니다');
     } catch (e) {
       if (kDebugMode) {
-        print('시스템 공유 실패: $e');
+        // REMOVED_SECURITY_RISK: print('시스템 공유 실패: $e');
       }
       return WalkShareResult.failure('시스템 공유에 실패했습니다');
     }

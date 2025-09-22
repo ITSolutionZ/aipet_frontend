@@ -54,7 +54,7 @@ class _PushNotificationScreenState
       });
     } catch (e) {
       if (kDebugMode) {
-        print('알림 설정 로드 실패: $e');
+        // REMOVED_SECURITY_RISK: print('알림 설정 로드 실패: $e');
       }
       setState(() {
         _isLoading = false;

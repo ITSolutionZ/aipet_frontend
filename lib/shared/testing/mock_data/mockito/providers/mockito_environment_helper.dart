@@ -13,10 +13,10 @@ class MockitoEnvironmentHelper {
 
   /// 환경 정보 디버그 출력
   static void logEnvironmentInfo() {
-    print('🎭 Mockito Environment Info:');
-    print('   Environment: ${currentEnvironment.name}');
-    print('   Use Mock: $shouldUseMock');
-    print('   Build Mode: ${_getBuildMode()}');
+    // REMOVED_SECURITY_RISK: print('🎭 Mockito Environment Info:');
+    // REMOVED_SECURITY_RISK: print('   Environment: ${currentEnvironment.name}');
+    // REMOVED_SECURITY_RISK: print('   Use Mock: $shouldUseMock');
+    // REMOVED_SECURITY_RISK: print('   Build Mode: ${_getBuildMode()}');
   }
 
   /// 빌드 모드 확인
@@ -46,18 +46,18 @@ class MockitoEnvironmentHelper {
   /// 개발자용 Mock 강제 활성화
   static void forceMockMode() {
     MockConfig.setUseMock(true);
-    print('🎭 Mockito: Mock mode forced ON');
+    // REMOVED_SECURITY_RISK: print('🎭 Mockito: Mock mode forced ON');
   }
 
   /// 개발자용 Real API 강제 활성화
   static void forceRealMode() {
     MockConfig.setUseMock(false);
-    print('🎭 Mockito: Real API mode forced ON');
+    // REMOVED_SECURITY_RISK: print('🎭 Mockito: Real API mode forced ON');
   }
 
   /// 테스트용 환경 리셋
   static void resetForTesting() {
     MockConfig.reset();
-    print('🎭 Mockito: Environment reset for testing');
+    // REMOVED_SECURITY_RISK: print('🎭 Mockito: Environment reset for testing');
   }
 }
