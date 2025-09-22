@@ -363,7 +363,7 @@ class _EditWateringRecordScreenState
       };
 
       // Mock 저장 로직 (실제로는 API 호출)
-      print('급수 기록 업데이트: $updatedRecord');
+      // REMOVED_SECURITY_RISK: print('급수 기록 업데이트: $updatedRecord');
 
       // 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
@@ -396,7 +396,7 @@ class _EditWateringRecordScreenState
                 Navigator.of(context).pop();
 
                 // TODO: 실제 삭제 로직 구현
-                print('급수 기록 삭제: ${widget.record}');
+                // REMOVED_SECURITY_RISK: print('급수 기록 삭제: ${widget.record}');
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

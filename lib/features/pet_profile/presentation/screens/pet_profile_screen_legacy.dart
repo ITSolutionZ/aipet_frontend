@@ -12,12 +12,17 @@ import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
 import '../controllers/pet_profile_controllers.dart';
 import '../widgets/pet_profile_widgets.dart';
 
-/// ⚠️ DEPRECATED: 이 클래스는 더 이상 사용되지 않습니다.
-/// 대신 PetProfileScreenRefactored를 사용하세요.
+/// 🚨 CRITICAL: 메가 파일 - 즉시 사용 중단 필요
 ///
-/// 이유: 1,229라인의 메가 클래스로 단일 책임 원칙 위반
-/// 대체: pet_profile_screen_refactored.dart
-@Deprecated('Use PetProfileScreenRefactored instead')
+/// 이 파일은 1,236라인의 메가 클래스로 다음 문제들을 가지고 있습니다:
+/// - 단일 책임 원칙 심각 위반 (SRP Violation)
+/// - 유지보수 불가능한 구조
+/// - 성능 저하 요인
+/// - 테스트 불가능
+///
+/// ✅ 대체 구현: PetProfileScreenRefactored 사용
+/// ❌ 이 클래스는 2025년 12월 31일 삭제 예정
+@Deprecated('CRITICAL: Use PetProfileScreenRefactored - This mega file violates SRP and will be deleted Dec 31, 2025')
 class PetProfileScreen extends ConsumerStatefulWidget {
   final String petId;
 

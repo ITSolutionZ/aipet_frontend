@@ -46,7 +46,7 @@ class UserExperienceService {
     }
 
     if (kDebugMode) {
-      print('사용자 경험 서비스 초기화 시작');
+      // REMOVED_SECURITY_RISK: print('사용자 경험 서비스 초기화 시작');
     }
 
     try {
@@ -59,11 +59,11 @@ class UserExperienceService {
       }
 
       if (kDebugMode) {
-        print('사용자 경험 서비스 초기화 완료');
+        // REMOVED_SECURITY_RISK: print('사용자 경험 서비스 초기화 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('사용자 경험 서비스 초기화 실패: $e');
+        // REMOVED_SECURITY_RISK: print('사용자 경험 서비스 초기화 실패: $e');
       }
     }
   }
@@ -88,7 +88,7 @@ class UserExperienceService {
   void _startPerformanceMonitoring() {
     // 페이지 로드 시간, 인터랙션 응답 시간 모니터링
     if (kDebugMode) {
-      print('성능 모니터링 시작');
+      // REMOVED_SECURITY_RISK: print('성능 모니터링 시작');
     }
   }
 
@@ -139,7 +139,7 @@ class UserExperienceService {
     _screenVisitCount[screenName] = (_screenVisitCount[screenName] ?? 0) + 1;
 
     if (kDebugMode) {
-      print('화면 방문: $screenName (총 ${_screenVisitCount[screenName]}회)');
+      // REMOVED_SECURITY_RISK: print('화면 방문: $screenName (총 ${_screenVisitCount[screenName]}회)');
     }
   }
 
@@ -149,7 +149,7 @@ class UserExperienceService {
         (_screenTimeSpent[screenName] ?? Duration.zero) + timeSpent;
 
     if (kDebugMode) {
-      print('화면 체류 시간: $screenName (${timeSpent.inSeconds}초)');
+      // REMOVED_SECURITY_RISK: print('화면 체류 시간: $screenName (${timeSpent.inSeconds}초)');
     }
   }
 
@@ -169,7 +169,7 @@ class UserExperienceService {
     }
 
     if (kDebugMode) {
-      print('사용자 액션: $action');
+      // REMOVED_SECURITY_RISK: print('사용자 액션: $action');
     }
   }
 
@@ -183,7 +183,7 @@ class UserExperienceService {
     }
 
     if (kDebugMode) {
-      print('페이지 로드 시간: $pageName (${loadTime.toStringAsFixed(2)}ms)');
+      // REMOVED_SECURITY_RISK: print('페이지 로드 시간: $pageName (${loadTime.toStringAsFixed(2)}ms)');
     }
   }
 
@@ -197,7 +197,7 @@ class UserExperienceService {
     }
 
     if (kDebugMode) {
-      print('인터랙션 응답 시간: $interaction (${responseTime.toStringAsFixed(2)}ms)');
+      // REMOVED_SECURITY_RISK: print('인터랙션 응답 시간: $interaction (${responseTime.toStringAsFixed(2)}ms)');
     }
   }
 
@@ -344,7 +344,7 @@ class UserExperienceService {
     _isAnalyticsEnabled = enabled;
 
     if (kDebugMode) {
-      print('사용자 분석 ${enabled ? '활성화' : '비활성화'}');
+      // REMOVED_SECURITY_RISK: print('사용자 분석 ${enabled ? '활성화' : '비활성화'}');
     }
   }
 
@@ -353,7 +353,7 @@ class UserExperienceService {
     _isPerformanceTrackingEnabled = enabled;
 
     if (kDebugMode) {
-      print('성능 추적 ${enabled ? '활성화' : '비활성화'}');
+      // REMOVED_SECURITY_RISK: print('성능 추적 ${enabled ? '활성화' : '비활성화'}');
     }
   }
 
@@ -366,7 +366,7 @@ class UserExperienceService {
     _interactionResponseTimes.clear();
 
     if (kDebugMode) {
-      print('사용자 데이터 정리 완료');
+      // REMOVED_SECURITY_RISK: print('사용자 데이터 정리 완료');
     }
   }
 
@@ -381,7 +381,7 @@ class UserExperienceService {
     _interactionResponseTimes.clear();
 
     if (kDebugMode) {
-      print('사용자 경험 서비스 정리 완료');
+      // REMOVED_SECURITY_RISK: print('사용자 경험 서비스 정리 완료');
     }
   }
 }

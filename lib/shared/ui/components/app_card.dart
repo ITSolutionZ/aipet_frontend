@@ -2,12 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../../design/tokens/tokens.dart';
 
-/// 🎯 통합 Card 시스템
+/// ⚠️ DEPRECATED: 통합 Card 시스템
 ///
-/// 기존 8개+ Card 클래스를 대체하는 하나의 통합 Card
-/// - InfoCard, MetricCard, SelectionCard, CommonCard 등 기능 통합
-/// - 기존 API 완전 호환성 유지
-/// - 중복 코드 1,200+ 줄 제거
+/// 🚨 이 831라인 메가 컴포넌트는 단일 책임 원칙 위반으로 인해 분리되었습니다.
+///
+/// 새로운 전용 컴포넌트를 사용하세요:
+/// - InfoCard: `/shared/ui/components/cards/info_card.dart`
+/// - MetricCard: `/shared/ui/components/cards/metric_card.dart`
+/// - SelectionCard: `/shared/ui/components/cards/selection_card.dart`
+/// - ButtonCard: `/shared/ui/components/cards/button_card.dart`
+/// - SummaryCard: `/shared/ui/components/cards/summary_card.dart`
+/// - ContainerCard: `/shared/ui/components/cards/container_card.dart`
+///
+/// 마이그레이션 가이드:
+/// ```dart
+/// // OLD (DEPRECATED)
+/// AppCard.info(title: 'Title', subtitle: 'Subtitle')
+///
+/// // NEW (RECOMMENDED)
+/// InfoCard.basic(child: Text('Content'))
+/// ```
 enum CardVariant {
   /// 정보 표시용 카드 (기존 InfoCard)
   info,

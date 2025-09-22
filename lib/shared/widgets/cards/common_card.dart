@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 
-import '../../ui/components/app_card.dart';
+import '../../ui/components/cards/cards.dart';
 
 /// ⚠️ DEPRECATED: 기존 API 호환성을 위해 유지됨
-/// 새로운 코드에서는 AppCard를 직접 사용하세요.
+/// 새로운 코드에서는 전문화된 카드 컴포넌트를 직접 사용하세요.
 ///
 /// 마이그레이션 예시:
 /// ```dart
-/// // Before
+/// // Before (DEPRECATED)
 /// InfoCard(title: "제목", subtitle: "부제목", icon: Icons.info)
 ///
-/// // After
-/// AppCard.info(title: "제목", subtitle: "부제목", icon: Icons.info)
+/// // After (RECOMMENDED)
+/// InfoCard.basic(child: Text("내용"))
+/// MetricCard.simple(title: "제목", value: "값")
+/// ButtonCard.primary(title: "버튼", onTap: () {})
 /// ```
 
-@Deprecated('Use AppCard instead')
+@Deprecated('Use specialized card components instead')
 abstract class CommonCard extends StatelessWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
@@ -54,87 +56,110 @@ abstract class CommonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return ContainerCard(
       onTap: onTap,
       padding: padding,
       margin: margin,
       backgroundColor: backgroundColor,
       borderRadius: borderRadius,
-      width: width,
-      height: height,
-      isLoading: isLoading,
+      elevation: elevation ?? 2,
       isEnabled: !isDisabled,
-      isSelected: isSelected,
       semanticLabel: semanticLabel,
-      elevation: _getCardElevation(),
       child: buildContent(context),
     );
   }
-
-  CardElevation _getCardElevation() {
-    if (elevation == null) return CardElevation.low;
-    if (elevation! <= 2) return CardElevation.none;
-    if (elevation! <= 4) return CardElevation.low;
-    if (elevation! <= 8) return CardElevation.medium;
-    return CardElevation.high;
-  }
 }
 
-@Deprecated('Use AppCard.info() instead')
-class InfoCard extends CommonCard {
+@Deprecated('Use InfoCard.basic() instead')
+class LegacyInfoCard extends StatelessWidget {
   final String title;
   final String? subtitle;
   final Widget? icon;
   final Color? iconColor;
   final Widget? trailing;
+  final VoidCallback? onTap;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final Color? backgroundColor;
+  final double? borderRadius;
+  final String? semanticLabel;
 
-  const InfoCard({
+  const LegacyInfoCard({
     super.key,
     required this.title,
     this.subtitle,
     this.icon,
     this.iconColor,
     this.trailing,
-    super.onTap,
-    super.padding,
-    super.margin,
-    super.backgroundColor,
-    super.borderRadius,
-    super.elevation,
-    super.width,
-    super.height,
-    super.isLoading,
-    super.isDisabled,
-    super.isSelected,
-    super.semanticLabel,
+    this.onTap,
+    this.padding,
+    this.margin,
+    this.backgroundColor,
+    this.borderRadius,
+    this.semanticLabel,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.info(
-      title: title,
-      subtitle: subtitle,
-      icon: icon,
-      iconColor: iconColor,
-      trailing: trailing,
+    return InfoCard(
       onTap: onTap,
-      padding: padding,
-      margin: margin,
-      backgroundColor: backgroundColor,
-      borderRadius: borderRadius,
       semanticLabel: semanticLabel,
+      child: Row(
+        children: [
+          if (icon != null) ...[
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: (iconColor ?? Colors.blue).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: IconTheme(
+                data: IconThemeData(
+                  color: iconColor ?? Colors.blue,
+                  size: 24,
+                ),
+                child: icon!,
+              ),
+            ),
+            const SizedBox(width: 12),
+          ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle!,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          if (trailing != null) ...[
+            const SizedBox(width: 12),
+            trailing!,
+          ],
+        ],
+      ),
     );
-  }
-
-  @override
-  Widget buildContent(BuildContext context) {
-    // This method won't be called since we override build()
-    return const SizedBox.shrink();
   }
 }
 
-@Deprecated('Use AppCard.metric() instead')
-class MetricCard extends CommonCard {
+@Deprecated('Use MetricCard.simple() or MetricCard.withChange() instead')
+class LegacyMetricCard extends StatelessWidget {
   final String title;
   final String value;
   final String? unit;
@@ -142,8 +167,10 @@ class MetricCard extends CommonCard {
   final bool? isPositiveChange;
   final Widget? icon;
   final Color? iconColor;
+  final VoidCallback? onTap;
+  final String? semanticLabel;
 
-  const MetricCard({
+  const LegacyMetricCard({
     super.key,
     required this.title,
     required this.value,
@@ -152,91 +179,67 @@ class MetricCard extends CommonCard {
     this.isPositiveChange,
     this.icon,
     this.iconColor,
-    super.onTap,
-    super.padding,
-    super.margin,
-    super.backgroundColor,
-    super.borderRadius,
-    super.elevation,
-    super.width,
-    super.height,
-    super.isLoading,
-    super.isDisabled,
-    super.isSelected,
-    super.semanticLabel,
+    this.onTap,
+    this.semanticLabel,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.metric(
-      title: title,
-      value: value,
-      unit: unit,
-      change: change,
-      isPositiveChange: isPositiveChange,
-      icon: icon,
-      iconColor: iconColor,
-      onTap: onTap,
-      padding: padding,
-      margin: margin,
-      backgroundColor: backgroundColor,
-      borderRadius: borderRadius,
-      semanticLabel: semanticLabel,
-    );
-  }
-
-  @override
-  Widget buildContent(BuildContext context) {
-    // This method won't be called since we override build()
-    return const SizedBox.shrink();
+    if (change != null) {
+      return MetricCard.withChange(
+        title: title,
+        value: value,
+        change: change!,
+        isPositiveChange: isPositiveChange ?? true,
+        unit: unit,
+        icon: icon,
+        iconColor: iconColor,
+        onTap: onTap,
+        semanticLabel: semanticLabel,
+      );
+    } else {
+      return MetricCard.simple(
+        title: title,
+        value: value,
+        unit: unit,
+        icon: icon,
+        onTap: onTap,
+        semanticLabel: semanticLabel,
+      );
+    }
   }
 }
 
-@Deprecated('Use AppCard.button() instead')
-class ButtonCard extends CommonCard {
+@Deprecated('Use ButtonCard.primary() or ButtonCard.secondary() instead')
+class LegacyButtonCard extends StatelessWidget {
   final String title;
   final String? subtitle;
   final Widget? icon;
   final Color? iconColor;
+  final VoidCallback onTap;
+  final bool isEnabled;
+  final String? semanticLabel;
 
-  const ButtonCard({
+  const LegacyButtonCard({
     super.key,
     required this.title,
     this.subtitle,
     this.icon,
     this.iconColor,
-    required VoidCallback super.onTap,
-    super.padding,
-    super.margin,
-    super.backgroundColor,
-    super.borderRadius,
-    super.elevation,
-    super.width,
-    super.height,
-    super.isLoading,
-    super.isDisabled,
-    super.semanticLabel,
+    required this.onTap,
+    this.isEnabled = true,
+    this.semanticLabel,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.button(
+    return ButtonCard.primary(
       title: title,
       subtitle: subtitle,
       icon: icon,
-      iconColor: iconColor,
-      onTap: onTap!,
-      padding: padding,
-      margin: margin,
-      backgroundColor: backgroundColor,
-      borderRadius: borderRadius,
+      onTap: onTap,
+      isEnabled: isEnabled,
       semanticLabel: semanticLabel,
     );
-  }
-
-  @override
-  Widget buildContent(BuildContext context) {
-    // This method won't be called since we override build()
-    return const SizedBox.shrink();
   }
 }

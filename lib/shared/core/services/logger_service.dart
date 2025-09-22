@@ -228,7 +228,7 @@ class LoggerService {
 
 /// 레거시 print 구문 대체를 위한 확장 메서드
 extension LegacyLoggingMigration on String {
-  /// print() 대신 사용할 수 있는 확장 메서드
+  /// // REMOVED_SECURITY_RISK: print() 대신 사용할 수 있는 확장 메서드
   void logInfo() => LoggerService.info(this);
   void logWarning() => LoggerService.warning(this);
   void logError() => LoggerService.error(this);

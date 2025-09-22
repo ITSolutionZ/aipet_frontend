@@ -37,17 +37,17 @@ class AuthRepositoryImpl implements AuthRepository {
       await SecureStorage.saveServerJWTWithExpiry(serverJWT, expiry);
 
       if (kDebugMode) {
-        print('💾 토큰 만료 시간: ${expiry.toIso8601String()}');
+        // REMOVED_SECURITY_RISK: print('💾 토큰 만료 시간: ${expiry.toIso8601String()}');
       }
 
       if (kDebugMode) {
-        print('✅ 서버 JWT 교환 성공');
+        // REMOVED_SECURITY_RISK: print('✅ 서버 JWT 교환 성공');
       }
 
       return serverJWT;
     } on DioException catch (e) {
       if (kDebugMode) {
-        print('❌ 서버 JWT 교환 실패: ${e.message}');
+        // REMOVED_SECURITY_RISK: print('❌ 서버 JWT 교환 실패: ${e.message}');
       }
 
       switch (e.response?.statusCode) {
@@ -72,7 +72,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ 예상치 못한 오류: $e');
+        // REMOVED_SECURITY_RISK: print('❌ 예상치 못한 오류: $e');
       }
       throw Exception('토큰 교환 중 오류가 발생했습니다');
     }
@@ -84,7 +84,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final user = _firebaseAuth.currentUser;
       if (user == null) {
         if (kDebugMode) {
-          print('⚠️ Firebase 사용자가 로그인되지 않음');
+          // REMOVED_SECURITY_RISK: print('⚠️ Firebase 사용자가 로그인되지 않음');
         }
         return null;
       }
@@ -93,13 +93,13 @@ class AuthRepositoryImpl implements AuthRepository {
       final idToken = await user.getIdToken(true);
 
       if (kDebugMode) {
-        print('✅ Firebase ID 토큰 획득 성공');
+        // REMOVED_SECURITY_RISK: print('✅ Firebase ID 토큰 획득 성공');
       }
 
       return idToken;
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Firebase ID 토큰 획득 실패: $e');
+        // REMOVED_SECURITY_RISK: print('❌ Firebase ID 토큰 획득 실패: $e');
       }
       throw Exception('Firebase ID 토큰을 가져올 수 없습니다');
     }
@@ -134,7 +134,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return true;
     } catch (e) {
       if (kDebugMode) {
-        print('❌ 인증 상태 확인 실패: $e');
+        // REMOVED_SECURITY_RISK: print('❌ 인증 상태 확인 실패: $e');
       }
       return false;
     }

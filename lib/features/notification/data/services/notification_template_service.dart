@@ -36,11 +36,11 @@ class NotificationTemplateService {
 
       _isInitialized = true;
       if (kDebugMode) {
-        print('알림 템플릿 서비스 초기화 완료');
+        // REMOVED_SECURITY_RISK: print('알림 템플릿 서비스 초기화 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('알림 템플릿 서비스 초기화 실패: $e');
+        // REMOVED_SECURITY_RISK: print('알림 템플릿 서비스 초기화 실패: $e');
       }
     }
   }
@@ -54,11 +54,11 @@ class NotificationTemplateService {
       _templatesController.add(defaultTemplates);
 
       if (kDebugMode) {
-        print('기본 템플릿 생성 완료: ${defaultTemplates.length}개');
+        // REMOVED_SECURITY_RISK: print('기본 템플릿 생성 완료: ${defaultTemplates.length}개');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('기본 템플릿 생성 실패: $e');
+        // REMOVED_SECURITY_RISK: print('기본 템플릿 생성 실패: $e');
       }
     }
   }
@@ -72,11 +72,11 @@ class NotificationTemplateService {
       _templatesController.add(templates);
 
       if (kDebugMode) {
-        print('템플릿 추가됨: ${template.name}');
+        // REMOVED_SECURITY_RISK: print('템플릿 추가됨: ${template.name}');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 추가 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 추가 실패: $e');
       }
     }
   }
@@ -93,12 +93,12 @@ class NotificationTemplateService {
         _templatesController.add(templates);
 
         if (kDebugMode) {
-          print('템플릿 업데이트됨: ${template.name}');
+          // REMOVED_SECURITY_RISK: print('템플릿 업데이트됨: ${template.name}');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 업데이트 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 업데이트 실패: $e');
       }
     }
   }
@@ -112,11 +112,11 @@ class NotificationTemplateService {
       _templatesController.add(templates);
 
       if (kDebugMode) {
-        print('템플릿 삭제됨: $templateId');
+        // REMOVED_SECURITY_RISK: print('템플릿 삭제됨: $templateId');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 삭제 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 삭제 실패: $e');
       }
     }
   }
@@ -133,12 +133,12 @@ class NotificationTemplateService {
         _templatesController.add(templates);
 
         if (kDebugMode) {
-          print('템플릿 상태 변경됨: $templateId, 활성화: $isActive');
+          // REMOVED_SECURITY_RISK: print('템플릿 상태 변경됨: $templateId, 활성화: $isActive');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 상태 변경 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 상태 변경 실패: $e');
       }
     }
   }
@@ -155,7 +155,7 @@ class NotificationTemplateService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 로드 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 로드 실패: $e');
       }
     }
     return [];
@@ -199,7 +199,7 @@ class NotificationTemplateService {
 
       if (!template.isActive) {
         if (kDebugMode) {
-          print('비활성화된 템플릿: $templateId');
+          // REMOVED_SECURITY_RISK: print('비활성화된 템플릿: $templateId');
         }
         return;
       }
@@ -225,11 +225,11 @@ class NotificationTemplateService {
       await updateTemplate(updatedTemplate);
 
       if (kDebugMode) {
-        print('템플릿으로 알림 발송됨: ${template.name}');
+        // REMOVED_SECURITY_RISK: print('템플릿으로 알림 발송됨: ${template.name}');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 알림 발송 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 알림 발송 실패: $e');
       }
     }
   }
@@ -272,11 +272,11 @@ class NotificationTemplateService {
       await addTemplate(duplicatedTemplate);
 
       if (kDebugMode) {
-        print('템플릿 복제됨: ${originalTemplate.name}');
+        // REMOVED_SECURITY_RISK: print('템플릿 복제됨: ${originalTemplate.name}');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 복제 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 복제 실패: $e');
       }
     }
   }
@@ -310,7 +310,7 @@ class NotificationTemplateService {
       };
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 통계 가져오기 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 통계 가져오기 실패: $e');
       }
       return {};
     }
@@ -329,7 +329,7 @@ class NotificationTemplateService {
       }).toList();
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 검색 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 검색 실패: $e');
       }
       return [];
     }
@@ -342,11 +342,11 @@ class NotificationTemplateService {
       _templatesController.add([]);
 
       if (kDebugMode) {
-        print('모든 템플릿 삭제됨');
+        // REMOVED_SECURITY_RISK: print('모든 템플릿 삭제됨');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 삭제 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 삭제 실패: $e');
       }
     }
   }
@@ -360,7 +360,7 @@ class NotificationTemplateService {
       await SecureStorageService.setString(_templatesKey, templatesJson);
     } catch (e) {
       if (kDebugMode) {
-        print('템플릿 저장 실패: $e');
+        // REMOVED_SECURITY_RISK: print('템플릿 저장 실패: $e');
       }
     }
   }

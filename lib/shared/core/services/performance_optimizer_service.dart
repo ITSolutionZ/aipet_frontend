@@ -25,7 +25,7 @@ class PerformanceOptimizerService {
   /// 서비스 초기화
   Future<void> initialize() async {
     if (kDebugMode) {
-      print('성능 최적화 서비스 초기화 시작');
+      // REMOVED_SECURITY_RISK: print('성능 최적화 서비스 초기화 시작');
     }
 
     try {
@@ -39,11 +39,11 @@ class PerformanceOptimizerService {
       _optimizeAnimations();
 
       if (kDebugMode) {
-        print('성능 최적화 서비스 초기화 완료');
+        // REMOVED_SECURITY_RISK: print('성능 최적화 서비스 초기화 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('성능 최적화 서비스 초기화 실패: $e');
+        // REMOVED_SECURITY_RISK: print('성능 최적화 서비스 초기화 실패: $e');
       }
     }
   }
@@ -75,11 +75,11 @@ class PerformanceOptimizerService {
       }
 
       if (kDebugMode) {
-        print('현재 메모리 사용량: ${(memoryUsage * 100).toStringAsFixed(1)}%');
+        // REMOVED_SECURITY_RISK: print('현재 메모리 사용량: ${(memoryUsage * 100).toStringAsFixed(1)}%');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('메모리 사용량 확인 실패: $e');
+        // REMOVED_SECURITY_RISK: print('메모리 사용량 확인 실패: $e');
       }
     }
   }
@@ -94,7 +94,7 @@ class PerformanceOptimizerService {
   /// 메모리 최적화 수행
   void _performMemoryOptimization() {
     if (kDebugMode) {
-      print('메모리 최적화 수행 중...');
+      // REMOVED_SECURITY_RISK: print('메모리 최적화 수행 중...');
     }
 
     try {
@@ -108,11 +108,11 @@ class PerformanceOptimizerService {
       _releaseUnusedResources();
 
       if (kDebugMode) {
-        print('메모리 최적화 완료');
+        // REMOVED_SECURITY_RISK: print('메모리 최적화 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('메모리 최적화 실패: $e');
+        // REMOVED_SECURITY_RISK: print('메모리 최적화 실패: $e');
       }
     }
   }
@@ -125,11 +125,11 @@ class PerformanceOptimizerService {
       PaintingBinding.instance.imageCache.maximumSizeBytes = _maxImageCacheSize;
 
       if (kDebugMode) {
-        print('이미지 캐시 최적화 완료');
+        // REMOVED_SECURITY_RISK: print('이미지 캐시 최적화 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('이미지 캐시 최적화 실패: $e');
+        // REMOVED_SECURITY_RISK: print('이미지 캐시 최적화 실패: $e');
       }
     }
   }
@@ -141,11 +141,11 @@ class PerformanceOptimizerService {
       PaintingBinding.instance.imageCache.clearLiveImages();
 
       if (kDebugMode) {
-        print('이미지 캐시 정리 완료');
+        // REMOVED_SECURITY_RISK: print('이미지 캐시 정리 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('이미지 캐시 정리 실패: $e');
+        // REMOVED_SECURITY_RISK: print('이미지 캐시 정리 실패: $e');
       }
     }
   }
@@ -160,11 +160,11 @@ class PerformanceOptimizerService {
       _isAnimationOptimized = true;
 
       if (kDebugMode) {
-        print('애니메이션 최적화 완료');
+        // REMOVED_SECURITY_RISK: print('애니메이션 최적화 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('애니메이션 최적화 실패: $e');
+        // REMOVED_SECURITY_RISK: print('애니메이션 최적화 실패: $e');
       }
     }
   }
@@ -175,11 +175,11 @@ class PerformanceOptimizerService {
       // Dart 가비지 컬렉션 요청
       // 실제 구현에서는 플랫폼별 GC API 사용
       if (kDebugMode) {
-        print('가비지 컬렉션 요청됨');
+        // REMOVED_SECURITY_RISK: print('가비지 컬렉션 요청됨');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('가비지 컬렉션 요청 실패: $e');
+        // REMOVED_SECURITY_RISK: print('가비지 컬렉션 요청 실패: $e');
       }
     }
   }
@@ -190,11 +190,11 @@ class PerformanceOptimizerService {
       // 불필요한 리소스 해제 로직
       // 예: 파일 핸들, 네트워크 연결 등
       if (kDebugMode) {
-        print('불필요한 리소스 해제 완료');
+        // REMOVED_SECURITY_RISK: print('불필요한 리소스 해제 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('리소스 해제 실패: $e');
+        // REMOVED_SECURITY_RISK: print('리소스 해제 실패: $e');
       }
     }
   }
@@ -246,7 +246,7 @@ class PerformanceOptimizerService {
   /// 수동 메모리 최적화 실행
   Future<void> performManualOptimization() async {
     if (kDebugMode) {
-      print('수동 메모리 최적화 시작');
+      // REMOVED_SECURITY_RISK: print('수동 메모리 최적화 시작');
     }
 
     try {
@@ -256,11 +256,11 @@ class PerformanceOptimizerService {
       await _performAdditionalOptimizations();
 
       if (kDebugMode) {
-        print('수동 메모리 최적화 완료');
+        // REMOVED_SECURITY_RISK: print('수동 메모리 최적화 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('수동 메모리 최적화 실패: $e');
+        // REMOVED_SECURITY_RISK: print('수동 메모리 최적화 실패: $e');
       }
     }
   }
@@ -276,7 +276,7 @@ class PerformanceOptimizerService {
       ]);
     } catch (e) {
       if (kDebugMode) {
-        print('추가 최적화 작업 실패: $e');
+        // REMOVED_SECURITY_RISK: print('추가 최적화 작업 실패: $e');
       }
     }
   }
@@ -305,7 +305,7 @@ class PerformanceOptimizerService {
     _memoryUsageHistory.clear();
 
     if (kDebugMode) {
-      print('성능 최적화 서비스 정리 완료');
+      // REMOVED_SECURITY_RISK: print('성능 최적화 서비스 정리 완료');
     }
   }
 }

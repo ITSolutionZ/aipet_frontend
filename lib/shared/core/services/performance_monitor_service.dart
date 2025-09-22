@@ -32,7 +32,7 @@ class PerformanceMonitorService {
         _collectMetrics();
       });
 
-      print('성능 모니터링 시작됨 (간격: ${interval.inSeconds}초)');
+      // REMOVED_SECURITY_RISK: print('성능 모니터링 시작됨 (간격: ${interval.inSeconds}초)');
     }
   }
 
@@ -52,7 +52,7 @@ class PerformanceMonitorService {
     _monitoringTimer = null;
 
     if (kDebugMode) {
-      print('성능 모니터링 중지됨');
+      // REMOVED_SECURITY_RISK: print('성능 모니터링 중지됨');
     }
   }
 
@@ -79,7 +79,7 @@ class PerformanceMonitorService {
       _metricController.add(metric);
     } catch (e) {
       if (kDebugMode) {
-        print('메트릭 스트림 추가 실패: $e');
+        // REMOVED_SECURITY_RISK: print('메트릭 스트림 추가 실패: $e');
       }
     }
 
@@ -87,7 +87,7 @@ class PerformanceMonitorService {
     _detectPerformanceIssues(metric);
 
     if (kDebugMode) {
-      // print('성능 메트릭 수집: ${metric.toString()}');
+      // // REMOVED_SECURITY_RISK: print('성능 메트릭 수집: ${metric.toString()}');
     }
   }
 
@@ -100,7 +100,7 @@ class PerformanceMonitorService {
           (DateTime.now().millisecondsSinceEpoch % 20); // 50-70MB 시뮬레이션
     } catch (e) {
       if (kDebugMode) {
-        print('메모리 사용량 측정 실패: $e');
+        // REMOVED_SECURITY_RISK: print('메모리 사용량 측정 실패: $e');
       }
     }
     return 0.0;
@@ -122,7 +122,7 @@ class PerformanceMonitorService {
           (DateTime.now().millisecondsSinceEpoch % 10); // 55-65fps 시뮬레이션
     } catch (e) {
       if (kDebugMode) {
-        print('프레임 레이트 측정 실패: $e');
+        // REMOVED_SECURITY_RISK: print('프레임 레이트 측정 실패: $e');
       }
     }
     return 60.0;
@@ -174,7 +174,7 @@ class PerformanceMonitorService {
   /// 성능 이슈 리포트
   void _reportPerformanceIssue(PerformanceIssue issue) {
     if (kDebugMode) {
-      print('🚨 성능 이슈 감지: ${issue.message}');
+      // REMOVED_SECURITY_RISK: print('🚨 성능 이슈 감지: ${issue.message}');
     }
 
     // 성능 이슈 스트림으로 전송
@@ -182,7 +182,7 @@ class PerformanceMonitorService {
       _issueController.add(issue);
     } catch (e) {
       if (kDebugMode) {
-        print('이슈 스트림 추가 실패: $e');
+        // REMOVED_SECURITY_RISK: print('이슈 스트림 추가 실패: $e');
       }
     }
   }

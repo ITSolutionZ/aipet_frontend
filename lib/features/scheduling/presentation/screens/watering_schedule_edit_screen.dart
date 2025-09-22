@@ -265,7 +265,7 @@ class _WateringScheduleEditScreenState
       };
 
       // Mock 저장 로직 (실제로는 API 호출)
-      print('급수 스케줄 업데이트: $updatedSchedule');
+      // REMOVED_SECURITY_RISK: print('급수 스케줄 업데이트: $updatedSchedule');
 
       // 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(

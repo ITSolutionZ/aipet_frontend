@@ -108,7 +108,7 @@ class _NotificationListWidgetState
       widget.onNotificationTap?.call();
     } catch (e) {
       if (kDebugMode) {
-        print('通知既読処理エラー: $e');
+        // REMOVED_SECURITY_RISK: print('通知既読処理エラー: $e');
       }
     }
   }
@@ -146,7 +146,7 @@ class _NotificationListWidgetState
       widget.onNotificationDelete?.call();
     } catch (e) {
       if (kDebugMode) {
-        print('通知削除エラー: $e');
+        // REMOVED_SECURITY_RISK: print('通知削除エラー: $e');
       }
     }
   }

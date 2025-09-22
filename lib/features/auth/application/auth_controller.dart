@@ -85,7 +85,7 @@ class AuthController extends StateNotifier<TokenExchangeState> {
 
     try {
       if (kDebugMode) {
-        print('🔄 서버 토큰 교환 시작');
+        // REMOVED_SECURITY_RISK: print('🔄 서버 토큰 교환 시작');
       }
 
       // Firebase 로그인 상태 확인 및 최신 idToken 획득
@@ -100,14 +100,14 @@ class AuthController extends StateNotifier<TokenExchangeState> {
       state = TokenExchangeState.success(serverJWT);
 
       if (kDebugMode) {
-        print('✅ 서버 토큰 교환 완료');
+        // REMOVED_SECURITY_RISK: print('✅ 서버 토큰 교환 완료');
       }
     } catch (e) {
       final errorMessage = e.toString().replaceFirst('Exception: ', '');
       state = TokenExchangeState.error(errorMessage);
 
       if (kDebugMode) {
-        print('❌ 서버 토큰 교환 실패: $errorMessage');
+        // REMOVED_SECURITY_RISK: print('❌ 서버 토큰 교환 실패: $errorMessage');
       }
     }
   }

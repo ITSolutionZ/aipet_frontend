@@ -38,7 +38,7 @@ class PetsNotifier extends _$PetsNotifier {
         throw Exception(result.message);
       }
     } catch (e) {
-      print('Error in PetsNotifier.build(): $e');
+      // REMOVED_SECURITY_RISK: print('Error in PetsNotifier.build(): $e');
       rethrow;
     }
   }

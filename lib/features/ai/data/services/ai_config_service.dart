@@ -22,7 +22,7 @@ class AiConfigService {
       _dataService.logInfo('AiConfigService initialized successfully');
     } catch (e) {
       // ignore: avoid_print
-      print('[AI_CONFIG_ERROR] Failed to initialize service: $e');
+      // REMOVED_SECURITY_RISK: print('[AI_CONFIG_ERROR] Failed to initialize service: $e');
       rethrow;
     }
   }

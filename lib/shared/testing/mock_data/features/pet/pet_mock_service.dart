@@ -344,7 +344,7 @@ class PetMockService extends BaseMockService {
   /// 펫 상태 업데이트
   static void updatePetStatus(String petId, List<String> selectedStatuses, Map<String, String> statusValues) {
     // Mock implementation - 실제로는 데이터베이스나 로컬 스토리지에 저장
-    print('Pet $petId status updated: $selectedStatuses, $statusValues');
+    // REMOVED_SECURITY_RISK: print('Pet $petId status updated: $selectedStatuses, $statusValues');
   }
   
   // ==================== 링크 등록 관련 ====================

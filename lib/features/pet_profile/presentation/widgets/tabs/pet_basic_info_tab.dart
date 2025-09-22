@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../shared/shared.dart';
+import '../../../../../shared/ui/components/components.dart';
 import '../../../../pet_registor/domain/entities/pet_profile_entity.dart';
 
 class PetBasicInfoTab extends ConsumerStatefulWidget {
@@ -231,28 +232,14 @@ class _PetBasicInfoTabState extends ConsumerState<PetBasicInfoTab> {
   }
 
   Widget _buildActionButtons() {
-    return Row(
-      children: [
-        if (widget.isEditMode) ...[
-          Expanded(
-            child: OutlinedButton(
-              onPressed: _cancelEdit,
-              child: const Text('キャンセル'),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-        ],
-        Expanded(
-          child: ElevatedButton(
-            onPressed: widget.isEditMode ? _saveChanges : widget.onToggleEdit,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.pointBrown,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(widget.isEditMode ? '保存' : '編集'),
-          ),
-        ),
-      ],
+    return ActionButtonGroup.toggle(
+      isEditMode: widget.isEditMode,
+      onEdit: widget.onToggleEdit,
+      onSave: _saveChanges,
+      onCancel: _cancelEdit,
+      editLabel: '編集',
+      saveLabel: '保存',
+      cancelLabel: 'キャンセル',
     );
   }
 
