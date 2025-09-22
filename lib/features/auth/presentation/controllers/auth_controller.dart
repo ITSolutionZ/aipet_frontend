@@ -8,6 +8,7 @@ import '../../domain/usecases/get_current_user_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/signup_usecase.dart';
+import '../../domain/usecases/social_login_usecase.dart';
 
 /// 인증 작업 결과 (Result 패턴 사용)
 typedef AuthControllerResult = Result<String>;
@@ -20,6 +21,7 @@ class AuthController extends FormController<AuthFormState> {
   late final SignupUseCase _signupUseCase;
   late final LogoutUseCase _logoutUseCase;
   late final GetCurrentUserUseCase _getCurrentUserUseCase;
+  late final SocialLoginUseCase _socialLoginUseCase;
 
   AuthController(super.ref) {
     final repository = ref.read(authRepositoryProvider);
@@ -27,6 +29,7 @@ class AuthController extends FormController<AuthFormState> {
     _signupUseCase = SignupUseCase(repository);
     _logoutUseCase = LogoutUseCase(repository);
     _getCurrentUserUseCase = GetCurrentUserUseCase(repository);
+    _socialLoginUseCase = SocialLoginUseCase(repository);
   }
 
   AuthFormState get currentState => ref.read(authFormStateNotifierProvider);
@@ -147,7 +150,7 @@ class AuthController extends FormController<AuthFormState> {
   /// Google 로그인 처리
   Future<AuthControllerResult> loginWithGoogle() async {
     try {
-      final result = await _loginUseCase.loginWithGoogle();
+      final result = await _socialLoginUseCase.loginWithGoogle();
 
       if (result.isSuccess) {
         return Result.success(result.message);
@@ -163,7 +166,7 @@ class AuthController extends FormController<AuthFormState> {
   /// Apple 로그인 처리
   Future<AuthControllerResult> loginWithApple() async {
     try {
-      final result = await _loginUseCase.loginWithApple();
+      final result = await _socialLoginUseCase.loginWithApple();
 
       if (result.isSuccess) {
         return Result.success(result.message);
@@ -179,7 +182,7 @@ class AuthController extends FormController<AuthFormState> {
   /// LINE 로그인 처리
   Future<AuthControllerResult> loginWithLine() async {
     try {
-      final result = await _loginUseCase.loginWithLine();
+      final result = await _socialLoginUseCase.loginWithLine();
 
       if (result.isSuccess) {
         return Result.success(result.message);

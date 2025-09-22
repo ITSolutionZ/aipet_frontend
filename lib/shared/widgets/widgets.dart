@@ -4,6 +4,8 @@ library;
 export 'accessibility/accessibility_widgets.dart';
 // Animation widgets
 export 'animation/animation_widgets.dart';
+// App bars
+export 'app_bars/dynamic_scroll_app_bar.dart';
 // Banners
 export 'banners/microchip_registration_banner.dart';
 // Buttons
@@ -11,6 +13,7 @@ export 'buttons/action_button.dart';
 export 'buttons/action_buttons_component.dart';
 export 'buttons/common_button.dart';
 // Cards
+export 'cards/base_summary_card.dart';
 export 'cards/common_card.dart';
 export 'cards/common_summary_card.dart';
 export 'cards/generic_info_card.dart';
@@ -21,6 +24,8 @@ export 'common/common_form_patterns.dart';
 export 'common/common_screen_patterns.dart';
 export 'common/confirmation_dialog_component.dart';
 export 'common/date_separator_widget.dart';
+// Common app bar
+export 'common_app_bar.dart';
 // Displays
 export 'displays/image_display.dart';
 export 'displays/progress_bar.dart';
@@ -48,10 +53,6 @@ export 'navigation/navigation.dart';
 export 'performance/performance_monitor_widget.dart';
 // Responsive
 export 'responsive/responsive_widgets.dart';
-// App bars
-export 'app_bars/dynamic_scroll_app_bar.dart';
-// Common app bar
-export 'common_app_bar.dart';
 export 'soft_gradient_app_bar.dart';
 export 'soft_gradient_sliver_app_bar.dart';
 // Tiles

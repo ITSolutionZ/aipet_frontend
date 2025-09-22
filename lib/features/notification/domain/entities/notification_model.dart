@@ -446,7 +446,7 @@ class NotificationSettings {
 
   @override
   String toString() {
-    return 'NotificationSettings(enabled: $enabled, typeSettings: $typeSettings)';
+    return 'NotificationSettings(isEnabled: $enabled, typeSettings: $typeSettings)';
   }
 }
 
@@ -519,6 +519,6 @@ class QuietTimeSettings {
 
   @override
   String toString() {
-    return 'QuietTimeSettings(enabled: $enabled, startTime: $startTime, endTime: $endTime, days: $days)';
+    return 'QuietTimeSettings(isEnabled: $enabled, startTime: $startTime, endTime: $endTime, days: $days)';
   }
 }

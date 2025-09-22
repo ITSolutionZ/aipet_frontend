@@ -227,7 +227,7 @@ class _PushNotificationScreenState
             ActionButton.primary(
               text: '修正完了',
               onPressed: _saveNotificationSettings,
-              isEnabled: true,
+              enabled: true,
             ),
 
             const SizedBox(height: AppSpacing.xl),

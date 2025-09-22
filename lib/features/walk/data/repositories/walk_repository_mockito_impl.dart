@@ -47,7 +47,7 @@ class WalkRepositoryMockitoImpl implements WalkRepository {
     DateTime? endDate,
   }) async {
     await Future.delayed(const Duration(milliseconds: 400));
-    final mockData = WalkMockService.getMockWalkStatistics();
+    final mockData = WalkMockService.getMockWeeklyWalkStats(petId: petId);
     return WalkStatistics.fromJson(mockData);
   }
 

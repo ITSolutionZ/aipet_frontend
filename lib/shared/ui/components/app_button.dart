@@ -539,6 +539,42 @@ class AppButton extends StatelessWidget {
       tooltip: tooltip,
     );
   }
+
+  /// Outlined button factory (outlined variant)
+  factory AppButton.outlined({
+    required String text,
+    VoidCallback? onPressed,
+    ButtonSize size = ButtonSize.medium,
+    bool isLoading = false,
+    bool enabled = true,
+    Widget? leading,
+    Widget? trailing,
+    Color? backgroundColor,
+    Color? foregroundColor,
+    Color? borderColor,
+    EdgeInsetsGeometry? padding,
+    TextStyle? textStyle,
+    String? semanticLabel,
+    String? tooltip,
+  }) {
+    return AppButton(
+      text: text,
+      onPressed: onPressed,
+      variant: ButtonVariant.outlined,
+      size: size,
+      isLoading: isLoading,
+      enabled: enabled,
+      leading: leading,
+      trailing: trailing,
+      backgroundColor: backgroundColor,
+      foregroundColor: foregroundColor,
+      borderColor: borderColor,
+      padding: padding,
+      textStyle: textStyle,
+      semanticLabel: semanticLabel,
+      tooltip: tooltip,
+    );
+  }
 }
 
 // === 기존 API 완전 호환을 위한 typedef들 ===
