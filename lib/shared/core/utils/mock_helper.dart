@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../../testing/mock_data/features/ai/ai_mock_data.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/ai/ai_mock_data.dart';
 
 /// Mock 데이터 호출을 위한 헬퍼 유틸리티
 class MockHelper {
@@ -16,6 +16,6 @@ class MockHelper {
   static String generateId() {
     final random = Random();
     return DateTime.now().millisecondsSinceEpoch.toString() +
-           random.nextInt(10000).toString().padLeft(4, '0');
+        random.nextInt(10000).toString().padLeft(4, '0');
   }
 }

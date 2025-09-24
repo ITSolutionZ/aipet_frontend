@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/shared/core/services/error_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../../../shared/core/services/error_service.dart';
-import '../../data/providers/providers.dart';
 
 part 'pet_name_input_controller.g.dart';
 

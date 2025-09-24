@@ -13,11 +13,9 @@ class TokenRefreshInterceptor extends Interceptor {
   final Dio _dio;
   bool _isRefreshing = false;
 
-  TokenRefreshInterceptor({
-    FirebaseAuth? firebaseAuth,
-    required Dio dio,
-  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _dio = dio;
+  TokenRefreshInterceptor({FirebaseAuth? firebaseAuth, required Dio dio})
+    : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+      _dio = dio;
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {

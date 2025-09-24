@@ -1,4 +1,4 @@
-import '../repositories/recipe_repository.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/repositories/recipe_repository.dart';
 
 class DeleteRecipeUseCase {
   final RecipeRepository _repository;

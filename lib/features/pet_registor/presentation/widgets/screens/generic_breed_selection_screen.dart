@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/data/providers/providers.dart';
+import 'package:aipet_frontend/shared/pet_registor_widgets.dart';
+// import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-// import '../../../../app/router/routes/route_constants.dart';
-import '../../../../../shared/shared.dart';
-import '../../../data/providers/providers.dart';
-import '../pet_registor_widgets.dart';
 
 /// 제네릭 품종 선택 화면
 /// DRY 원칙을 위해 강아지/고양이 품종 선택을 통합한 재사용 가능한 위젯

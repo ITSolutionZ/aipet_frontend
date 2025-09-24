@@ -1,14 +1,13 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
 import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/mappers/pet_mapper.dart';
+import 'package:aipet_frontend/shared/mappers/weather_mapper.dart';
+import 'package:aipet_frontend/shared/services/weather_service.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/home/home_mock_service.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_data.dart';
-
-import '../mappers/pet_mapper.dart';
-import '../mappers/weather_mapper.dart';
-import '../models/weather_model.dart';
-import '../services/weather_service.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final WeatherService _weatherService = WeatherService();
@@ -81,17 +80,18 @@ class HomeRepositoryImpl implements HomeRepository {
 
   @override
   Future<List<PetSummaryEntity>> getPetSummaries() async {
-    // 통합된 PetMockData에서 PetProfileEntity 리스트를 직접 가져옴
+    // 통합된 PetMockService에서 PetProfileEntity 리스트를 직접 가져옴
     await Future.delayed(_mockDelay);
-    final petProfiles = PetMockData.getMockPets();
-    return PetMapper.toSummaryEntityList(petProfiles);
+    final petProfiles = PetMockService.getMockPetProfiles();
+    return PetMapper.toSummaryEntityListFromMaps(petProfiles);
   }
 
   // 기존 호환성을 위해 유지
   Future<List<PetProfileEntity>> getPetProfiles() async {
-    // 통합된 PetMockData 사용 (실제 API 연동 전까지)
+    // 통합된 PetMockService 사용 (실제 API 연동 전까지)
     await Future.delayed(_mockDelay);
-    return PetMockData.getMockPets();
+    final petMockData = PetMockService.getMockPetProfiles();
+    return PetMapper.fromMapList(petMockData);
   }
 
   @override

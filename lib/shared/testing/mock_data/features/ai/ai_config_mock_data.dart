@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/features/ai/ai.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../features/ai/ai.dart';
 
 /// AI 설정 관련 Mock 데이터 서비스
 ///
@@ -248,7 +247,9 @@ class AiConfigMockData {
   }
 
   /// 카테고리별 추천 질문 조회
-  static List<AiSuggestedQuestionEntity> getQuestionsByCategory(String category) {
+  static List<AiSuggestedQuestionEntity> getQuestionsByCategory(
+    String category,
+  ) {
     final allQuestions = getMockSuggestedQuestions();
     return allQuestions.where((q) => q.category == category).toList();
   }
@@ -269,33 +270,40 @@ class AiConfigMockData {
 
       // 강아지 전용 질문들
       if (typeLowerCase == 'dog') {
-        questions = questions.where((q) =>
-          !q.question.contains('猫') && // 고양이 관련 제외
-          !q.question.contains('ネコ') &&
-          !q.question.contains('キャット')
-        ).toList();
+        questions = questions
+            .where(
+              (q) =>
+                  !q.question.contains('猫') && // 고양이 관련 제외
+                  !q.question.contains('ネコ') &&
+                  !q.question.contains('キャット'),
+            )
+            .toList();
 
         // 강아지 특화 질문 우선 순위
         questions.sort((a, b) {
-          final aDogSpecific = a.question.contains('散歩') ||
-                              a.question.contains('吠え') ||
-                              a.question.contains('トイレトレーニング');
-          final bDogSpecific = b.question.contains('散歩') ||
-                              b.question.contains('吠え') ||
-                              b.question.contains('トイレトレーニング');
+          final aDogSpecific =
+              a.question.contains('散歩') ||
+              a.question.contains('吠え') ||
+              a.question.contains('トイレトレーニング');
+          final bDogSpecific =
+              b.question.contains('散歩') ||
+              b.question.contains('吠え') ||
+              b.question.contains('トイレトレーニング');
 
           if (aDogSpecific && !bDogSpecific) return -1;
           if (!aDogSpecific && bDogSpecific) return 1;
           return 0;
         });
       }
-
       // 고양이 전용 질문들
       else if (typeLowerCase == 'cat') {
-        questions = questions.where((q) =>
-          !q.question.contains('散歩') && // 산책 관련 제외
-          !q.question.contains('吠え') // 짖기 관련 제외
-        ).toList();
+        questions = questions
+            .where(
+              (q) =>
+                  !q.question.contains('散歩') && // 산책 관련 제외
+                  !q.question.contains('吠え'), // 짖기 관련 제외
+            )
+            .toList();
       }
     }
 
@@ -305,29 +313,32 @@ class AiConfigMockData {
       if (petAge >= 7) {
         // 고령 관련 질문 우선 순위
         questions.sort((a, b) {
-          final aAgeSpecific = a.question.contains('高齢') ||
-                              a.question.contains('体重管理') ||
-                              a.question.contains('健康診断');
-          final bAgeSpecific = b.question.contains('高齢') ||
-                              b.question.contains('体重管理') ||
-                              b.question.contains('健康診断');
+          final aAgeSpecific =
+              a.question.contains('高齢') ||
+              a.question.contains('体重管理') ||
+              a.question.contains('健康診断');
+          final bAgeSpecific =
+              b.question.contains('高齢') ||
+              b.question.contains('体重管理') ||
+              b.question.contains('健康診断');
 
           if (aAgeSpecific && !bAgeSpecific) return -1;
           if (!aAgeSpecific && bAgeSpecific) return 1;
           return 0;
         });
       }
-
       // 어린 펫 (1세 미만)
       else if (petAge < 1) {
         // 새끼 관련 질문 우선 순위
         questions.sort((a, b) {
-          final aPuppySpecific = a.question.contains('新しいペット') ||
-                                 a.question.contains('トレーニング') ||
-                                 a.question.contains('ワクチン');
-          final bPuppySpecific = b.question.contains('新しいペット') ||
-                                 b.question.contains('トレーニング') ||
-                                 b.question.contains('ワクチン');
+          final aPuppySpecific =
+              a.question.contains('新しいペット') ||
+              a.question.contains('トレーニング') ||
+              a.question.contains('ワクチン');
+          final bPuppySpecific =
+              b.question.contains('新しいペット') ||
+              b.question.contains('トレーニング') ||
+              b.question.contains('ワクチン');
 
           if (aPuppySpecific && !bPuppySpecific) return -1;
           if (!aPuppySpecific && bPuppySpecific) return 1;

@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/ai_category_entity.dart';
 
 class AiCategorySelection extends StatelessWidget {
   final List<AiCategoryEntity> categories;
@@ -32,9 +31,7 @@ class AiCategorySelection extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             '相談内容のカテゴリを選択してください',
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointGray,
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
           ),
           const SizedBox(height: AppSpacing.lg),
           _buildCategoryGrid(categories),
@@ -69,11 +66,11 @@ class AiCategorySelection extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: isSelected 
+          color: isSelected
               ? category.color.withValues(alpha: 0.1)
               : Colors.white,
           border: Border.all(
-            color: isSelected 
+            color: isSelected
                 ? category.color
                 : AppColors.pointGray.withValues(alpha: 0.3),
             width: isSelected ? 2.0 : 1.0,
@@ -104,11 +101,7 @@ class AiCategorySelection extends StatelessWidget {
                 color: category.color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppRadius.small),
               ),
-              child: Icon(
-                category.icon,
-                color: category.color,
-                size: 20,
-              ),
+              child: Icon(category.icon, color: category.color, size: 20),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
@@ -119,11 +112,9 @@ class AiCategorySelection extends StatelessWidget {
                   Text(
                     category.name,
                     style: AppFonts.bodyMedium.copyWith(
-                      color: isSelected 
-                          ? category.color
-                          : AppColors.pointDark,
-                      fontWeight: isSelected 
-                          ? FontWeight.bold 
+                      color: isSelected ? category.color : AppColors.pointDark,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
                           : FontWeight.w500,
                     ),
                     overflow: TextOverflow.ellipsis,

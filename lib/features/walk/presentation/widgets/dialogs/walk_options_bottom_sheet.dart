@@ -1,14 +1,13 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-
-import '../../../../../shared/shared.dart';
-import '../../../walk.dart';
 
 class WalkOptionsBottomSheet extends ConsumerWidget {
   final WalkRecordEntity walkRecord;

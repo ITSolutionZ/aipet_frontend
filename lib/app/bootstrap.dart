@@ -1,3 +1,8 @@
+import 'package:aipet_frontend/features/auth/data/services/firebase_token_service.dart';
+import 'package:aipet_frontend/features/auth/data/services/token_storage_auth_token_repository.dart';
+import 'package:aipet_frontend/firebase_options.dart';
+import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -6,11 +11,6 @@ import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import '../features/auth/data/services/firebase_token_service.dart';
-import '../features/auth/data/services/token_storage_auth_token_repository.dart';
-import '../firebase_options.dart';
-import '../shared/core/services/http_client_service.dart';
-import '../shared/shared.dart';
 import 'config/config.dart';
 import 'providers/providers.dart';
 
@@ -194,25 +194,19 @@ class AppBootstrap {
 /// 메인 앱 위젯
 ///
 /// 앱의 최상위 위젯으로, 초기화 상태에 따라 적절한 UI를 표시합니다.
-class AIPetApp extends ConsumerStatefulWidget {
+class AIPetApp extends ConsumerWidget {
   const AIPetApp({super.key});
 
-  @override
-  ConsumerState<AIPetApp> createState() => _AIPetAppState();
-}
-
-class _AIPetAppState extends ConsumerState<AIPetApp> {
-  @override
-  void initState() {
-    super.initState();
-    // 앱 초기화 수행
+  void _initializeAppIfNeeded(WidgetRef ref) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(appInitializationProvider.notifier).initialize();
     });
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    _initializeAppIfNeeded(ref);
+
     final router = ref.watch(routerProvider);
     final initializationState = ref.watch(appInitializationProvider);
 
@@ -222,7 +216,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
     }
 
     if (initializationState.error != null) {
-      return _buildErrorApp(initializationState.error!);
+      return _buildErrorApp(initializationState.error!, ref);
     }
 
     return _buildMainApp(router);
@@ -261,7 +255,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
   /// 에러 상태 앱 UI를 구성합니다.
   ///
   /// 앱 초기화 중 오류가 발생했을 때 표시되는 에러 화면을 반환합니다.
-  Widget _buildErrorApp(String error) {
+  Widget _buildErrorApp(String error, WidgetRef ref) {
     return MaterialApp(
       title: 'AI Pet',
       debugShowCheckedModeBanner: false,
@@ -310,7 +304,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
                       vertical: AppSpacing.md,
                     ),
                   ),
-                  child: const Text('다시 시도'),
+                  child: const Text('リフレッシュ'),
                 ),
               ],
             ),

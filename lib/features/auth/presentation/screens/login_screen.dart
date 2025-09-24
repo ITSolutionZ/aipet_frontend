@@ -1,15 +1,15 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/auth/data/auth_providers.dart';
+import 'package:aipet_frontend/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:aipet_frontend/features/auth/presentation/widgets/auth_widgets.dart';
+import 'package:aipet_frontend/features/auth/presentation/widgets/error_message.dart'
+    as auth_error;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../data/auth_providers.dart';
-import '../controllers/auth_controller.dart';
-import '../widgets/auth_divider.dart';
-import '../widgets/auth_logo.dart';
-import '../widgets/social_login_button.dart';
-
+/// 로그인 화면
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -18,43 +18,19 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  late AuthController _authController;
+  bool _isPasswordVisible = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _authController = AuthController(ref);
-
-    // 홈 화면으로 이동하는 콜백 설정
+    // 저장된 로그인 정보 불러오기
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(navigationCallbackNotifierProvider.notifier)
-          .setNavigationCallback(() => context.go(AppRouter.homeRoute));
-
-      // 저장된 로그인 정보 불러오기
-      _loadSavedCredentials();
+      ref.read(authFormStateNotifierProvider.notifier).loadSavedCredentials();
     });
-  }
-
-  Future<void> _loadSavedCredentials() async {
-    try {
-      await _authController.loadSavedCredentials();
-
-      // 저장된 정보가 있으면 텍스트 컨트롤러 업데이트
-      final authState = ref.read(authFormStateNotifierProvider);
-      if (authState.rememberMe) {
-        setState(() {
-          _emailController.text = authState.email;
-          // 패스워드는 저장하지 않으므로 컨트롤러에 설정하지 않음
-        });
-      }
-    } catch (e) {
-      LoggerService.error('로그인 정보 불러오기 실패', error: e);
-      // 에러가 발생해도 앱은 정상적으로 작동하도록 함
-    }
   }
 
   @override
@@ -64,222 +40,469 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  /// 패스워드 재설정 다이얼로그 표시
-  void _showPasswordResetDialog(BuildContext context) {
-    CommonDialogPatterns.showStandardDialog(
-      context: context,
-      title: _passwordResetTitle,
-      content: const Text(
-        _passwordResetMessage,
-        style: TextStyle(fontSize: 16),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text(_okButtonText),
-        ),
-      ],
-    );
-  }
-
-  // UI 텍스트 상수
-  static const String _passwordResetTitle = 'パスワード再設定';
-  static const String _passwordResetMessage =
-      'パスワード再設定機能は準備中です。\n\nFirebase Auth連携後に実装予定です。';
-  static const String _okButtonText = 'OK';
-
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authFormStateNotifierProvider);
 
+    // 저장된 이메일이 있으면 컨트롤러에 설정
+    if (authState.email.isNotEmpty && _emailController.text.isEmpty) {
+      _emailController.text = authState.email;
+    }
+
     return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.xl,
-            vertical: AppSpacing.lg,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // 로고 섹션
-              const Column(
-                children: [
-                  SizedBox(height: AppSpacing.lg),
-                  AuthLogo(),
-                  SizedBox(height: AppSpacing.lg),
-                  AuthDivider(),
-                  SizedBox(height: AppSpacing.lg),
-                ],
-              ),
-
-              // 입력 섹션
-              Form(
-                key: _formKey,
-                child: Column(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 로고 섹션
+                const Column(
                   children: [
-                    // 이메일 입력 필드
-                    CommonInputField(
-                      label: 'メールアドレス',
+                    SizedBox(height: AppSpacing.lg),
+                    AuthLogo(),
+                    SizedBox(height: AppSpacing.lg),
+                    Divider(),
+                    SizedBox(height: AppSpacing.lg),
+                  ],
+                ),
+
+                // 입력 섹션
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 이메일 입력
+                    Text(
+                      'メールアドレス',
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      prefixIcon: Icons.email_outlined,
-                      onChanged: _authController.updateEmail,
+                      enabled: !_isLoading,
+                      decoration: const InputDecoration(
+                        hintText: 'メールアドレスを入力してください',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.email_outlined),
+                      ),
                       validator: (value) {
-                        // 공통 ValidationService 사용
-                        final result = ValidationService.validateEmail(
-                          value ?? '',
-                        );
-                        return result.isSuccess ? null : result.message;
+                        if (value == null || value.isEmpty) {
+                          return 'メールアドレスを入力してください';
+                        }
+                        if (!_isValidEmail(value)) {
+                          return '有効なメールアドレスを入力してください';
+                        }
+                        return null;
                       },
-                    ),
-
-                    const SizedBox(height: AppSpacing.lg),
-
-                    // 패스워드 입력 필드
-                    CommonInputField(
-                      label: 'パスワード',
-                      controller: _passwordController,
-                      obscureText: !authState.isPasswordVisible,
-                      prefixIcon: Icons.lock_outline,
-                      suffixIcon: authState.isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      onSuffixIconTap: _authController.togglePasswordVisibility,
                       onChanged: (value) {
-                        // 패스워드는 AuthFormState에 저장하지 않음 (보안상 이유)
-                        // UI에서만 사용하고 검증 후 즉시 메모리에서 제거
-                      },
-                      validator: (value) {
-                        // 공통 ValidationService 사용
-                        final result = ValidationService.validatePassword(
-                          value ?? '',
-                        );
-                        return result.isSuccess ? null : result.message;
+                        ref
+                            .read(authFormStateNotifierProvider.notifier)
+                            .updateEmail(value);
                       },
                     ),
-
                     const SizedBox(height: AppSpacing.md),
 
-                    // Remember Me & 패스워드 재설정
+                    // 패스워드 입력
+                    Text(
+                      'パスワード',
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: !_isPasswordVisible,
+                      enabled: !_isLoading,
+                      decoration: InputDecoration(
+                        hintText: 'パスワードを入力してください',
+                        border: const OutlineInputBorder(),
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'パスワードを入力してください';
+                        }
+                        if (value.length < 6) {
+                          return 'パスワードは6文字以上で入力してください';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Remember Me 체크박스
                     Row(
                       children: [
                         Checkbox(
                           value: authState.rememberMe,
-                          onChanged: (_) => _authController.toggleRememberMe(),
-                          activeColor: AppColors.pointBrown,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
+                          onChanged: _isLoading
+                              ? null
+                              : (value) {
+                                  ref
+                                      .read(
+                                        authFormStateNotifierProvider.notifier,
+                                      )
+                                      .toggleRememberMe();
+                                },
                         ),
-                        Text(
-                          'ログイン情報を記憶',
-                          style: AppFonts.bodySmall.copyWith(
-                            color: AppColors.pointGray,
+                        const Text('ログイン情報を保存'),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // 에러 메시지 표시
+                    if (authState.error != null) ...[
+                      auth_error.ErrorMessage(
+                        message: authState.error!,
+                        type: auth_error.ErrorType.error,
+                        onDismiss: () {
+                          ref
+                              .read(authFormStateNotifierProvider.notifier)
+                              .clearError();
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                    ],
+
+                    // 로그인 버튼
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _handleLogin,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.pointBlue,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        const Spacer(),
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                'ログイン',
+                                style: AppFonts.bodyMedium.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+
+                    // 소셜 로그인 섹션
+                    const AuthDivider(text: 'または'),
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Google 로그인 버튼
+                    SocialLoginButton(
+                      onPressed: _isLoading ? null : () => _handleGoogleLogin(),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.login),
+                          SizedBox(width: AppSpacing.sm),
+                          Text('Googleでログイン'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+
+                    // Apple 로그인 버튼
+                    SocialLoginButton(
+                      onPressed: _isLoading ? null : () => _handleAppleLogin(),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.apple),
+                          SizedBox(width: AppSpacing.sm),
+                          Text('Appleでログイン'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+
+                    // LINE 로그인 버튼
+                    SocialLoginButton(
+                      onPressed: _isLoading ? null : () => _handleLineLogin(),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.chat),
+                          SizedBox(width: AppSpacing.sm),
+                          Text('LINEでログイン'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // 회원가입 링크
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'アカウントをお持ちでない方は',
+                          style: AppFonts.bodySmall.copyWith(
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
                         TextButton(
-                          onPressed: () {
-                            _showPasswordResetDialog(context);
-                          },
+                          onPressed: _isLoading
+                              ? null
+                              : () {
+                                  context.go(AppRouter.signupRoute);
+                                },
                           child: Text(
-                            'パスワード再設定',
+                            '新規登録',
                             style: AppFonts.bodySmall.copyWith(
-                              color: AppColors.pointBrown,
-                              decoration: TextDecoration.underline,
-                              decorationColor: AppColors.pointBrown,
+                              color: AppColors.pointBlue,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                       ],
                     ),
-
-                    const SizedBox(height: AppSpacing.xl),
-
-                    // 로그인 버튼
-                    CommonButton(
-                      text: 'ログイン',
-                      isLoading: authState.isLoading,
-                      type: ButtonType.primary,
-                      size: ButtonSize.large,
-                      width: double.infinity,
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          // TODO: 개발 완료 후 삭제할 임시 로그인 우회 로직
-                          // 현재는 아무 입력값이나 넣어도 로그인 성공 처리
-                          LoggerService.warning(
-                            '임시 로그인 우회 실행',
-                            data: {'email': _emailController.text},
-                          );
-
-                          // 임시로 성공 처리 후 홈으로 이동
-                          _authController.handleTempLoginSuccess();
-                          context.go(AppRouter.homeRoute);
-                        }
-                      },
-                    ),
                   ],
                 ),
-              ),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // 소셜 로그인 섹션
-              Column(
-                children: [
-                  const AuthDivider(text: 'または'),
-                  const SizedBox(height: AppSpacing.xl),
-
-                  SocialLoginButton(
-                    type: SocialLoginType.email,
-                    onPressed: () {
-                      // TODO: 개발 완료 후 실제 회원가입 화면으로 이동
-                      LoggerService.warning('임시 소셜 로그인 우회: 이메일 회원가입');
-                      context.go(AppRouter.signupRoute);
-                    },
-                    isLoading: false,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  SocialLoginButton(
-                    type: SocialLoginType.google,
-                    onPressed: () {
-                      // TODO: 개발 완료 후 삭제할 임시 로그인 우회
-                      LoggerService.warning('임시 소셜 로그인 우회: Google');
-                      _authController.handleTempLoginSuccess();
-                      context.go(AppRouter.homeRoute);
-                    },
-                    isLoading: false,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  SocialLoginButton(
-                    type: SocialLoginType.apple,
-                    onPressed: () {
-                      // TODO: 개발 완료 후 삭제할 임시 로그인 우회
-                      LoggerService.warning('임시 소셜 로그인 우회: Apple');
-                      _authController.handleTempLoginSuccess();
-                      context.go(AppRouter.homeRoute);
-                    },
-                    isLoading: false,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  SocialLoginButton(
-                    type: SocialLoginType.line,
-                    onPressed: () {
-                      // TODO: 개발 완료 후 삭제할 임시 로그인 우회
-                      LoggerService.warning('임시 소셜 로그인 우회: LINE');
-                      _authController.handleTempLoginSuccess();
-                      context.go(AppRouter.homeRoute);
-                    },
-                    isLoading: false,
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  /// 이메일/패스워드 로그인 처리
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authController = AuthController(ref);
+      final result = await authController.login(
+        password: _passwordController.text,
+      );
+
+      if (result.isSuccess) {
+        // 로그인 성공
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+          context.go(AppRouter.homeRoute);
+        }
+      } else {
+        // 로그인 실패
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('ログインに失敗しました: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  /// Google 로그인 처리
+  Future<void> _handleGoogleLogin() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authController = AuthController(ref);
+      final result = await authController.loginWithGoogle();
+
+      if (result.isSuccess) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+          context.go(AppRouter.homeRoute);
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Googleログインに失敗しました: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  /// Apple 로그인 처리
+  Future<void> _handleAppleLogin() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authController = AuthController(ref);
+      final result = await authController.loginWithApple();
+
+      if (result.isSuccess) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+          context.go(AppRouter.homeRoute);
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Appleログインに失敗しました: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  /// LINE 로그인 처리
+  Future<void> _handleLineLogin() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authController = AuthController(ref);
+      final result = await authController.loginWithLine();
+
+      if (result.isSuccess) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+          context.go(AppRouter.homeRoute);
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('LINEログインに失敗しました: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  /// 이메일 유효성 검사
+  bool _isValidEmail(String email) {
+    return RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    ).hasMatch(email);
   }
 }

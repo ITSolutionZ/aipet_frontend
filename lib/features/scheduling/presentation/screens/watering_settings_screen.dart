@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 급수 설정 화면
 class WateringSettingsScreen extends ConsumerStatefulWidget {
@@ -214,7 +213,7 @@ class _WateringSettingsScreenState
                 color: AppColors.pointGreen,
               ),
             ),
-            const Divider(),
+            const const const Divider(),
             ListTile(
               leading: const Icon(Icons.settings, color: AppColors.pointGray),
               title: const Text('給水器を再設定'),
@@ -264,7 +263,7 @@ class _WateringSettingsScreenState
                 context.pushNamed('watering-schedule');
               },
             ),
-            const Divider(),
+            const const const Divider(),
             ListTile(
               leading: const Icon(Icons.analytics, color: AppColors.pointGray),
               title: const Text('データエクスポート'),
@@ -274,7 +273,7 @@ class _WateringSettingsScreenState
                 _showExportDataDialog();
               },
             ),
-            const Divider(),
+            const const const Divider(),
             ListTile(
               leading: const Icon(Icons.restore, color: AppColors.pointGray),
               title: const Text('設定をリセット'),

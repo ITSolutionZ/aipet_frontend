@@ -1,42 +1,64 @@
+import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/app/services/dio_client.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/config/app_config.dart';
-import '../../../app/services/dio_client.dart';
+/// API 연결 상태 데이터 클래스
+class ApiConnectionState {
+  final bool isChecking;
+  final String status;
+  final Color statusColor;
+  final String? errorMessage;
 
-/// API 연결 상태 확인 위젯
-class ApiConnectionChecker extends StatefulWidget {
-  const ApiConnectionChecker({super.key});
+  const ApiConnectionState({
+    required this.isChecking,
+    required this.status,
+    required this.statusColor,
+    this.errorMessage,
+  });
 
-  @override
-  State<ApiConnectionChecker> createState() => _ApiConnectionCheckerState();
+  ApiConnectionState copyWith({
+    bool? isChecking,
+    String? status,
+    Color? statusColor,
+    String? errorMessage,
+  }) {
+    return ApiConnectionState(
+      isChecking: isChecking ?? this.isChecking,
+      status: status ?? this.status,
+      statusColor: statusColor ?? this.statusColor,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 }
 
-class _ApiConnectionCheckerState extends State<ApiConnectionChecker> {
-  bool _isChecking = false;
-  String _status = 'Unknown';
-  Color _statusColor = Colors.grey;
-  String? _errorMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkApiConnection();
+/// API 연결 상태 관리 Notifier
+class ApiConnectionNotifier extends StateNotifier<ApiConnectionState> {
+  ApiConnectionNotifier()
+    : super(
+        const ApiConnectionState(
+          isChecking: false,
+          status: 'Unknown',
+          statusColor: Colors.grey,
+        ),
+      ) {
+    // 위젯이 빌드될 때 자동으로 연결 확인
+    Future.microtask(() => checkApiConnection());
   }
 
-  Future<void> _checkApiConnection() async {
-    if (_isChecking) return;
+  Future<void> checkApiConnection() async {
+    if (state.isChecking) return;
 
-    setState(() {
-      _isChecking = true;
-      _status = 'Checking...';
-      _statusColor = Colors.orange;
-      _errorMessage = null;
-    });
+    state = state.copyWith(
+      isChecking: true,
+      status: 'Checking...',
+      statusColor: Colors.orange,
+      errorMessage: null,
+    );
 
     try {
       final dio = DioClient.instance;
-      final baseUrl = AppConfig.current.apiBaseUrl;
 
       // 1. 기본 연결 확인
       final response = await dio.get(
@@ -48,16 +70,16 @@ class _ApiConnectionCheckerState extends State<ApiConnectionChecker> {
       );
 
       if (response.statusCode == 200) {
-        setState(() {
-          _status = 'Connected ✅';
-          _statusColor = Colors.green;
-        });
+        state = state.copyWith(
+          status: 'Connected ✅',
+          statusColor: Colors.green,
+        );
       } else {
-        setState(() {
-          _status = 'Unexpected Response';
-          _statusColor = Colors.orange;
-          _errorMessage = 'Status: ${response.statusCode}';
-        });
+        state = state.copyWith(
+          status: 'Unexpected Response',
+          statusColor: Colors.orange,
+          errorMessage: 'Status: ${response.statusCode}',
+        );
       }
     } catch (e) {
       if (e is DioException) {
@@ -65,42 +87,46 @@ class _ApiConnectionCheckerState extends State<ApiConnectionChecker> {
           case DioExceptionType.connectionTimeout:
           case DioExceptionType.receiveTimeout:
           case DioExceptionType.sendTimeout:
-            setState(() {
-              _status = 'Timeout ⏱️';
-              _statusColor = Colors.orange;
-              _errorMessage = 'Server response timeout';
-            });
+            state = state.copyWith(
+              status: 'Timeout ⏱️',
+              statusColor: Colors.orange,
+              errorMessage: 'Server response timeout',
+            );
             break;
           case DioExceptionType.connectionError:
-            setState(() {
-              _status = 'Connection Failed ❌';
-              _statusColor = Colors.red;
-              _errorMessage = 'Cannot reach server';
-            });
+            state = state.copyWith(
+              status: 'Connection Failed ❌',
+              statusColor: Colors.red,
+              errorMessage: 'Cannot reach server',
+            );
             break;
           default:
-            setState(() {
-              _status = 'Server Error 🚫';
-              _statusColor = Colors.red;
-              _errorMessage = 'HTTP ${e.response?.statusCode ?? 'Unknown'}';
-            });
+            state = state.copyWith(
+              status: 'Server Error 🚫',
+              statusColor: Colors.red,
+              errorMessage: 'HTTP ${e.response?.statusCode ?? 'Unknown'}',
+            );
         }
       } else {
-        setState(() {
-          _status = 'Error ❌';
-          _statusColor = Colors.red;
-          _errorMessage = e.toString();
-        });
+        state = state.copyWith(
+          status: 'Error ❌',
+          statusColor: Colors.red,
+          errorMessage: e.toString(),
+        );
       }
     } finally {
-      setState(() {
-        _isChecking = false;
-      });
+      state = state.copyWith(isChecking: false);
     }
   }
+}
+
+/// API 연결 상태 확인 위젯
+class ApiConnectionChecker extends ConsumerWidget {
+  const ApiConnectionChecker({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final connectionState = ref.watch(apiConnectionProvider);
     final baseUrl = AppConfig.current.apiBaseUrl;
 
     return Card(
@@ -112,21 +138,14 @@ class _ApiConnectionCheckerState extends State<ApiConnectionChecker> {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.api,
-                  color: _statusColor,
-                  size: 24,
-                ),
+                Icon(Icons.api, color: connectionState.statusColor, size: 24),
                 const SizedBox(width: 12),
                 const Text(
                   'API 연결 상태',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
-                if (_isChecking)
+                if (connectionState.isChecking)
                   const SizedBox(
                     width: 16,
                     height: 16,
@@ -135,7 +154,9 @@ class _ApiConnectionCheckerState extends State<ApiConnectionChecker> {
                 else
                   IconButton(
                     icon: const Icon(Icons.refresh),
-                    onPressed: _checkApiConnection,
+                    onPressed: () => ref
+                        .read(apiConnectionProvider.notifier)
+                        .checkApiConnection(),
                     tooltip: '다시 확인',
                   ),
               ],
@@ -145,9 +166,11 @@ class _ApiConnectionCheckerState extends State<ApiConnectionChecker> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: _statusColor.withValues(alpha: 0.1),
+                color: connectionState.statusColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _statusColor.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: connectionState.statusColor.withValues(alpha: 0.3),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,17 +184,17 @@ class _ApiConnectionCheckerState extends State<ApiConnectionChecker> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Status: $_status',
+                    'Status: ${connectionState.status}',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: _statusColor,
+                      color: connectionState.statusColor,
                     ),
                   ),
-                  if (_errorMessage != null) ...[
+                  if (connectionState.errorMessage != null) ...[
                     const SizedBox(height: 4),
                     Text(
-                      'Error: $_errorMessage',
+                      'Error: ${connectionState.errorMessage}',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.red.shade700,
@@ -196,3 +219,9 @@ class _ApiConnectionCheckerState extends State<ApiConnectionChecker> {
     );
   }
 }
+
+/// API 연결 상태 Provider
+final apiConnectionProvider =
+    StateNotifierProvider<ApiConnectionNotifier, ApiConnectionState>(
+      (ref) => ApiConnectionNotifier(),
+    );

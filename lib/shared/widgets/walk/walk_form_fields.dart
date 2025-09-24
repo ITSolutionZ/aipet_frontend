@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/widgets/common/common_form_patterns.dart';
 import 'package:flutter/material.dart';
-
-import '../common/common_form_patterns.dart';
 
 /// 산책 관련 폼 필드 컴포넌트들
 class WalkFormFields {

@@ -109,18 +109,30 @@ class AiKeywordsMockData {
   /// 동물 종류별 키워드 조회
   static List<String> getAnimalTypeKeywords(String animalType) {
     final allKeywords = getPetKeywords();
-    
+
     switch (animalType.toLowerCase()) {
       case 'dog':
-        return allKeywords.where((keyword) => 
-          keyword.contains('犬') || keyword.contains('いぬ') || 
-          keyword.contains('ワンちゃん') || keyword.contains('dog') || 
-          keyword.contains('puppy')).toList();
+        return allKeywords
+            .where(
+              (keyword) =>
+                  keyword.contains('犬') ||
+                  keyword.contains('いぬ') ||
+                  keyword.contains('ワンちゃん') ||
+                  keyword.contains('dog') ||
+                  keyword.contains('puppy'),
+            )
+            .toList();
       case 'cat':
-        return allKeywords.where((keyword) => 
-          keyword.contains('猫') || keyword.contains('ねこ') || 
-          keyword.contains('ニャンコ') || keyword.contains('cat') || 
-          keyword.contains('kitty')).toList();
+        return allKeywords
+            .where(
+              (keyword) =>
+                  keyword.contains('猫') ||
+                  keyword.contains('ねこ') ||
+                  keyword.contains('ニャンコ') ||
+                  keyword.contains('cat') ||
+                  keyword.contains('kitty'),
+            )
+            .toList();
       default:
         return allKeywords;
     }
@@ -129,21 +141,40 @@ class AiKeywordsMockData {
   /// 카테고리별 키워드 조회
   static List<String> getKeywordsByCategory(String category) {
     final allKeywords = getPetKeywords();
-    
+
     switch (category.toLowerCase()) {
       case 'health':
-        return allKeywords.where((keyword) => 
-          keyword.contains('病気') || keyword.contains('病院') || 
-          keyword.contains('獣医') || keyword.contains('ワクチン') || 
-          keyword.contains('sick') || keyword.contains('vet')).toList();
+        return allKeywords
+            .where(
+              (keyword) =>
+                  keyword.contains('病気') ||
+                  keyword.contains('病院') ||
+                  keyword.contains('獣医') ||
+                  keyword.contains('ワクチン') ||
+                  keyword.contains('sick') ||
+                  keyword.contains('vet'),
+            )
+            .toList();
       case 'food':
-        return allKeywords.where((keyword) => 
-          keyword.contains('フード') || keyword.contains('えさ') || 
-          keyword.contains('おやつ') || keyword.contains('food')).toList();
+        return allKeywords
+            .where(
+              (keyword) =>
+                  keyword.contains('フード') ||
+                  keyword.contains('えさ') ||
+                  keyword.contains('おやつ') ||
+                  keyword.contains('food'),
+            )
+            .toList();
       case 'behavior':
-        return allKeywords.where((keyword) => 
-          keyword.contains('しつけ') || keyword.contains('訓練') || 
-          keyword.contains('吠える') || keyword.contains('training')).toList();
+        return allKeywords
+            .where(
+              (keyword) =>
+                  keyword.contains('しつけ') ||
+                  keyword.contains('訓練') ||
+                  keyword.contains('吠える') ||
+                  keyword.contains('training'),
+            )
+            .toList();
       default:
         return allKeywords;
     }

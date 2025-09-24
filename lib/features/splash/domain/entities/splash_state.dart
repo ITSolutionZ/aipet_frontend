@@ -1,4 +1,4 @@
-import '../constants/splash_constants.dart';
+import 'package:aipet_frontend/shared/constants/splash_constants.dart';
 
 /// 스플래시 화면 상태를 나타내는 클래스
 enum SplashPhase {

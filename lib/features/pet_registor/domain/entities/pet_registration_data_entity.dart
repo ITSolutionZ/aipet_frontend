@@ -66,7 +66,8 @@ class PetRegistrationDataEntity {
       petGender: petGender ?? this.petGender,
       isNeutered: isNeutered ?? this.isNeutered,
       petImagePath: petImagePath ?? this.petImagePath,
-      customDefaultImagePath: customDefaultImagePath ?? this.customDefaultImagePath,
+      customDefaultImagePath:
+          customDefaultImagePath ?? this.customDefaultImagePath,
       microchipNumber: microchipNumber ?? this.microchipNumber,
     );
   }
@@ -91,7 +92,8 @@ class PetRegistrationDataEntity {
           petBirthday == other.petBirthday;
 
   @override
-  int get hashCode => selectedPetType.hashCode ^ petName.hashCode ^ petBirthday.hashCode;
+  int get hashCode =>
+      selectedPetType.hashCode ^ petName.hashCode ^ petBirthday.hashCode;
 
   @override
   String toString() {

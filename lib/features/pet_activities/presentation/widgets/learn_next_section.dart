@@ -1,8 +1,8 @@
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/entities/trick_entity.dart';
 import 'learn_next_trick_card.dart';
 
 /// 다음 학습 트릭 섹션

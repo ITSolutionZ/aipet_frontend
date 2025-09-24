@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/onboarding/domain/entities/pet_registration_data_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/services/pet_validation_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../domain/entities/pet_registration_data_entity.dart';
-import '../../domain/services/pet_validation_utils.dart';
 
 part 'pet_registration_provider.g.dart';
 

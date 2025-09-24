@@ -1,8 +1,8 @@
-import '../../../../app/config/app_config.dart';
-import '../../../../shared/shared.dart';
-import '../../domain/entities/pet_profile_entity.dart';
-import '../../domain/entities/temporary_pet_data_entity.dart';
-import '../../domain/repositories/pet_repository.dart';
+import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 class PetRepositoryImpl implements PetRepository {
   // TODO: 실제 데이터 소스 구현 (API, 로컬 DB 등)
@@ -18,7 +18,32 @@ class PetRepositoryImpl implements PetRepository {
         await Future.delayed(const Duration(milliseconds: 500));
       }
 
-      final pets = PetMockData.getMockPets();
+      final petsData = PetMockService.getMockPetProfiles();
+      final pets = petsData
+          .map(
+            (petData) => PetProfileEntity(
+              id: petData['id']?.toString() ?? '',
+              name: petData['name']?.toString() ?? '',
+              type: petData['typeName']?.toString() ?? 'dog',
+              breed: petData['breed']?.toString(),
+              birthDate: petData['birthDate'] != null
+                  ? DateTime.tryParse(petData['birthDate'].toString()) ??
+                        DateTime.now()
+                  : DateTime.now(),
+              gender: petData['gender']?.toString() ?? 'unknown',
+              weight: (petData['weight'] as num?)?.toDouble() ?? 0.0,
+              imagePath: petData['imagePath']?.toString(),
+              ownerId: petData['ownerId']?.toString() ?? 'unknown',
+              createdAt: petData['createdAt'] != null
+                  ? DateTime.tryParse(petData['createdAt'].toString()) ??
+                        DateTime.now()
+                  : DateTime.now(),
+              updatedAt: DateTime.now(),
+              additionalInfo:
+                  petData['additionalInfo'] as Map<String, dynamic>? ?? {},
+            ),
+          )
+          .toList();
       return Result.success('펫 목록을 성공적으로 조회했습니다', pets);
     } catch (error) {
       return Result.failure('펫 목록 조회에 실패했습니다: ${error.toString()}');
@@ -60,8 +85,9 @@ class PetRepositoryImpl implements PetRepository {
         updatedAt: DateTime.now(),
       );
 
-      // Mock 데이터에 실제로 추가
-      final createdPet = PetMockData.addPet(newPet);
+      // Mock 데이터 처리 - 임시 구현
+      // TODO: 실제 API 연동 또는 로컬 DB 저장 로직으로 교체 필요
+      final createdPet = newPet;
       return Result.success('펫이 성공적으로 생성되었습니다', createdPet);
     } catch (error) {
       return Result.failure('펫 생성에 실패했습니다: ${error.toString()}');
@@ -80,13 +106,9 @@ class PetRepositoryImpl implements PetRepository {
 
       final updatedPet = pet.copyWith(updatedAt: DateTime.now());
 
-      // Mock 데이터에서 실제로 업데이트
-      final result = PetMockData.updatePet(updatedPet);
-      if (result == null) {
-        return Result.failure('펫을 찾을 수 없습니다: ${pet.id}');
-      }
-
-      return Result.success('펫 정보가 성공적으로 업데이트되었습니다', result);
+      // Mock 업데이트 처리 - 임시 구현
+      // TODO: 실제 API 업데이트 또는 로컬 DB 업데이트 로직으로 교체 필요
+      return Result.success('펫 정보가 성공적으로 업데이트되었습니다', updatedPet);
     } catch (error) {
       return Result.failure('펫 업데이트에 실패했습니다: ${error.toString()}');
     }
@@ -102,11 +124,8 @@ class PetRepositoryImpl implements PetRepository {
         await Future.delayed(const Duration(milliseconds: 200));
       }
 
-      // Mock 데이터에서 실제로 삭제
-      final success = PetMockData.deletePet(id);
-      if (!success) {
-        return Result.failure('펫을 찾을 수 없습니다: $id');
-      }
+      // Mock 삭제 처리 - 임시 구현
+      // TODO: 실제 API 삭제 또는 로컬 DB 삭제 로직으로 교체 필요
 
       return Result.success('펫이 성공적으로 삭제되었습니다', null);
     } catch (error) {

@@ -1,12 +1,146 @@
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pet_registor_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/shared.dart';
-import '../widgets/pet_registor_widgets.dart';
+final datePickerProvider =
+    StateNotifierProvider.family<
+      DatePickerController,
+      DatePickerState,
+      DatePickerParams
+    >((ref, params) => DatePickerController(params));
 
-class DatePickerScreen extends StatefulWidget {
+class DatePickerParams {
   final DateTime? selectedBirthday;
   final DateTime? selectedArrivalDate;
-  final String initialTab; // 'birthday' or 'arrival'
+  final String initialTab;
+  final Function(DateTime, String) onDateSelected;
+
+  const DatePickerParams({
+    this.selectedBirthday,
+    this.selectedArrivalDate,
+    required this.initialTab,
+    required this.onDateSelected,
+  });
+}
+
+class DatePickerState {
+  final TabController? tabController;
+  final DateTime? currentBirthday;
+  final DateTime? currentArrivalDate;
+  final int selectedYear;
+  final int selectedMonth;
+  final String currentTab;
+
+  const DatePickerState({
+    this.tabController,
+    this.currentBirthday,
+    this.currentArrivalDate,
+    required this.selectedYear,
+    required this.selectedMonth,
+    required this.currentTab,
+  });
+
+  DatePickerState copyWith({
+    TabController? tabController,
+    DateTime? currentBirthday,
+    DateTime? currentArrivalDate,
+    int? selectedYear,
+    int? selectedMonth,
+    String? currentTab,
+  }) {
+    return DatePickerState(
+      tabController: tabController ?? this.tabController,
+      currentBirthday: currentBirthday ?? this.currentBirthday,
+      currentArrivalDate: currentArrivalDate ?? this.currentArrivalDate,
+      selectedYear: selectedYear ?? this.selectedYear,
+      selectedMonth: selectedMonth ?? this.selectedMonth,
+      currentTab: currentTab ?? this.currentTab,
+    );
+  }
+}
+
+class DatePickerController extends StateNotifier<DatePickerState> {
+  final DatePickerParams params;
+
+  DatePickerController(this.params)
+    : super(
+        DatePickerState(
+          selectedYear: DateTime.now().year,
+          selectedMonth: DateTime.now().month,
+          currentTab: params.initialTab,
+        ),
+      );
+
+  void initialize(TickerProvider vsync) {
+    final tabController = TabController(
+      length: 2,
+      vsync: vsync,
+      initialIndex: params.initialTab == 'birthday' ? 0 : 1,
+    );
+
+    final currentDate = getCurrentSelectedDate();
+    final year = currentDate?.year ?? DateTime.now().year;
+    final month = currentDate?.month ?? DateTime.now().month;
+
+    state = state.copyWith(
+      tabController: tabController,
+      currentBirthday: params.selectedBirthday,
+      currentArrivalDate: params.selectedArrivalDate,
+      selectedYear: year,
+      selectedMonth: month,
+    );
+
+    tabController.addListener(onTabChanged);
+  }
+
+  void onTabChanged() {
+    final tabController = state.tabController;
+    if (tabController != null && !tabController.indexIsChanging) {
+      final currentTab = tabController.index == 0 ? 'birthday' : 'arrival';
+      final currentDate = getCurrentSelectedDate();
+
+      state = state.copyWith(
+        currentTab: currentTab,
+        selectedYear: currentDate?.year ?? state.selectedYear,
+        selectedMonth: currentDate?.month ?? state.selectedMonth,
+      );
+    }
+  }
+
+  DateTime? getCurrentSelectedDate() {
+    return state.currentTab == 'birthday'
+        ? state.currentBirthday
+        : state.currentArrivalDate;
+  }
+
+  void updateYear(int year) {
+    state = state.copyWith(selectedYear: year);
+  }
+
+  void updateMonth(int month) {
+    state = state.copyWith(selectedMonth: month);
+  }
+
+  void updateDate(DateTime date) {
+    if (state.currentTab == 'birthday') {
+      state = state.copyWith(currentBirthday: date);
+    } else {
+      state = state.copyWith(currentArrivalDate: date);
+    }
+  }
+
+  @override
+  void dispose() {
+    state.tabController?.dispose();
+    super.dispose();
+  }
+}
+
+class DatePickerScreen extends ConsumerStatefulWidget {
+  final DateTime? selectedBirthday;
+  final DateTime? selectedArrivalDate;
+  final String initialTab;
   final Function(DateTime, String) onDateSelected;
 
   const DatePickerScreen({
@@ -18,72 +152,33 @@ class DatePickerScreen extends StatefulWidget {
   });
 
   @override
-  State<DatePickerScreen> createState() => _DatePickerScreenState();
+  ConsumerState<DatePickerScreen> createState() => _DatePickerScreenState();
 }
 
-class _DatePickerScreenState extends State<DatePickerScreen>
+class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
     with TickerProviderStateMixin {
-  late TabController _tabController;
-  DateTime? _currentBirthday;
-  DateTime? _currentArrivalDate;
-  int _selectedYear = DateTime.now().year;
-  int _selectedMonth = DateTime.now().month;
-  String _currentTab = 'birthday';
+  late DatePickerParams params;
 
   @override
   void initState() {
     super.initState();
-
-    _tabController = TabController(
-      length: 2,
-      vsync: this,
-      initialIndex: widget.initialTab == 'birthday' ? 0 : 1,
+    params = DatePickerParams(
+      selectedBirthday: widget.selectedBirthday,
+      selectedArrivalDate: widget.selectedArrivalDate,
+      initialTab: widget.initialTab,
+      onDateSelected: widget.onDateSelected,
     );
 
-    _currentTab = widget.initialTab;
-    _currentBirthday = widget.selectedBirthday;
-    _currentArrivalDate = widget.selectedArrivalDate;
-
-    // 현재 선택된 날짜에 따라 년도/월 설정
-    final currentDate = _getCurrentSelectedDate();
-    if (currentDate != null) {
-      _selectedYear = currentDate.year;
-      _selectedMonth = currentDate.month;
-    }
-
-    // 탭 변경 리스너 추가
-    _tabController.addListener(_onTabChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final controller = ref.read(datePickerProvider(params).notifier);
+      controller.initialize(this);
+    });
   }
-
-  void _onTabChanged() {
-    if (!_tabController.indexIsChanging) {
-      setState(() {
-        _currentTab = _tabController.index == 0 ? 'birthday' : 'arrival';
-
-        // 탭이 변경될 때 해당 탭의 선택된 날짜로 년도/월 업데이트
-        final currentDate = _getCurrentSelectedDate();
-        if (currentDate != null) {
-          _selectedYear = currentDate.year;
-          _selectedMonth = currentDate.month;
-        }
-      });
-    }
-  }
-
-  DateTime? _getCurrentSelectedDate() {
-    return _currentTab == 'birthday' ? _currentBirthday : _currentArrivalDate;
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
+    final controller = ref.read(datePickerProvider(params).notifier);
+    final state = ref.watch(datePickerProvider(params));
     return Scaffold(
       backgroundColor: AppColors.pureWhite,
       appBar: SoftGradientAppBar(
@@ -98,7 +193,10 @@ class _DatePickerScreenState extends State<DatePickerScreen>
           children: [
             // 프로그레스바
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.md,
+              ),
               child: Container(
                 width: double.infinity,
                 height: 6,
@@ -120,7 +218,8 @@ class _DatePickerScreenState extends State<DatePickerScreen>
             ),
 
             // 탭바
-            DateTabBarWidget(tabController: _tabController),
+            if (state.tabController != null)
+              DateTabBarWidget(tabController: state.tabController!),
 
             // 스크롤 가능한 콘텐츠 영역
             Expanded(
@@ -130,38 +229,24 @@ class _DatePickerScreenState extends State<DatePickerScreen>
 
                   // 연도/월 선택
                   YearMonthSelectorWidget(
-                    selectedYear: _selectedYear,
-                    selectedMonth: _selectedMonth,
-                    onYearChanged: (year) {
-                      setState(() {
-                        _selectedYear = year;
-                      });
-                    },
-                    onMonthChanged: (month) {
-                      setState(() {
-                        _selectedMonth = month;
-                      });
-                    },
+                    selectedYear: state.selectedYear,
+                    selectedMonth: state.selectedMonth,
+                    onYearChanged: controller.updateYear,
+                    onMonthChanged: controller.updateMonth,
                   ),
                   const SizedBox(height: AppSpacing.md),
 
                   // 달력
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                      ),
                       child: CustomCalendarWidget(
-                        selectedYear: _selectedYear,
-                        selectedMonth: _selectedMonth,
-                        selectedDate: _getCurrentSelectedDate(),
-                        onDateSelected: (date) {
-                          setState(() {
-                            if (_currentTab == 'birthday') {
-                              _currentBirthday = date;
-                            } else {
-                              _currentArrivalDate = date;
-                            }
-                          });
-                        },
+                        selectedYear: state.selectedYear,
+                        selectedMonth: state.selectedMonth,
+                        selectedDate: controller.getCurrentSelectedDate(),
+                        onDateSelected: controller.updateDate,
                       ),
                     ),
                   ),
@@ -186,11 +271,14 @@ class _DatePickerScreenState extends State<DatePickerScreen>
                 child: ElevatedButton(
                   onPressed: () {
                     // 생일과 입양일을 모두 저장
-                    if (_currentBirthday != null) {
-                      widget.onDateSelected(_currentBirthday!, 'birthday');
+                    if (state.currentBirthday != null) {
+                      widget.onDateSelected(state.currentBirthday!, 'birthday');
                     }
-                    if (_currentArrivalDate != null) {
-                      widget.onDateSelected(_currentArrivalDate!, 'arrival');
+                    if (state.currentArrivalDate != null) {
+                      widget.onDateSelected(
+                        state.currentArrivalDate!,
+                        'arrival',
+                      );
                     }
 
                     Navigator.pop(context);
@@ -198,7 +286,9 @@ class _DatePickerScreenState extends State<DatePickerScreen>
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: AppColors.pureWhite,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.lg,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.medium),
                     ),

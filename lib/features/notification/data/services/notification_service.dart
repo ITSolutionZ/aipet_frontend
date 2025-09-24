@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../domain/entities/notification_model.dart';
 
 /// 알림 서비스
 ///
@@ -57,9 +56,7 @@ class NotificationService {
       onDidReceiveNotificationResponse: _onNotificationTapped,
     );
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('알림 서비스 초기화 완료');
-    }
+    if (kDebugMode) {}
   }
 
   /// 알림 생성
@@ -78,17 +75,13 @@ class NotificationService {
     // 알림 설정 확인
     final settings = await getNotificationSettings();
     if (!settings.isTypeEnabled(type)) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('알림 타입이 비활성화됨: $type');
-      }
+      if (kDebugMode) {}
       return;
     }
 
     // 조용한 시간 확인
     if (settings.isQuietTime) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('조용한 시간 중이므로 알림을 표시하지 않음');
-      }
+      if (kDebugMode) {}
       return;
     }
 
@@ -115,9 +108,7 @@ class NotificationService {
     // 스트림으로 알림 전송
     _notificationController.add(notification);
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('알림 생성됨: ${notification.title}');
-    }
+    if (kDebugMode) {}
   }
 
   /// 로컬 알림 표시
@@ -182,9 +173,7 @@ class NotificationService {
           _handleNotificationAction(notification, response.actionId!);
         }
       } catch (e) {
-        if (kDebugMode) {
-          // REMOVED_SECURITY_RISK: print('알림 탭 처리 오류: $e');
-        }
+        if (kDebugMode) {}
       }
     }
   }
@@ -200,9 +189,7 @@ class NotificationService {
           const NotificationAction(id: 'default', title: '기본', type: 'default'),
     );
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('알림 액션 실행: ${action?.title} (${action?.type})');
-    }
+    if (kDebugMode) {}
 
     // 액션 타입별 처리 로직
     switch (action?.type) {
@@ -381,7 +368,8 @@ class NotificationService {
   }) async {
     try {
       // API 연계 전까지는 Mock 데이터 사용
-      List<NotificationModel> notifications = NotificationMockService.getMockNotifications();
+      List<NotificationModel> notifications =
+          NotificationMockService.getMockNotifications();
 
       // 필터링 적용
       notifications = notifications.where((notification) {
@@ -396,9 +384,7 @@ class NotificationService {
 
       return notifications.take(limit).toList();
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('알림 목록 가져오기 오류: $e');
-      }
+      if (kDebugMode) {}
       return [];
     }
   }
@@ -431,9 +417,7 @@ class NotificationService {
 
       await prefs.setStringList(_notificationsKey, notificationsJson);
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('알림 저장 오류: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -457,9 +441,7 @@ class NotificationService {
 
       await prefs.setStringList(_notificationsKey, updatedNotifications);
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('알림 읽음 처리 오류: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -489,14 +471,10 @@ class NotificationService {
         await _localNotifications.cancel(id);
       } catch (e) {
         // ID가 숫자가 아닌 경우 (mock_data 등) 로컬 알림 취소 건너뛰기
-        if (kDebugMode) {
-          // REMOVED_SECURITY_RISK: print('로컬 알림 취소 건너뛰기 (ID: $notificationId)');
-        }
+        if (kDebugMode) {}
       }
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('알림 삭제 오류: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -507,9 +485,7 @@ class NotificationService {
       await prefs.remove(_notificationsKey);
       await _localNotifications.cancelAll();
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('모든 알림 삭제 오류: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -526,9 +502,7 @@ class NotificationService {
       );
       return notifications.length;
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('읽지 않은 알림 개수 가져오기 오류: $e');
-      }
+      if (kDebugMode) {}
       return 0;
     }
   }
@@ -539,9 +513,7 @@ class NotificationService {
       // API 연계 전까지는 Mock 데이터 사용
       return NotificationMockService.getMockNotificationSettings();
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('알림 설정 가져오기 오류: $e');
-      }
+      if (kDebugMode) {}
       return const NotificationSettings();
     }
   }
@@ -552,9 +524,7 @@ class NotificationService {
       final settingsJson = jsonEncode(settings.toJson());
       await SecureStorageService.setString(_settingsKey, settingsJson);
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('알림 설정 저장 오류: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 

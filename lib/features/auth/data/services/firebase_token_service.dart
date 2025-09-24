@@ -1,26 +1,38 @@
+import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../../app/bootstrap.dart';
-import '../../../../shared/core/services/secure_storage_service.dart';
-
 /// Firebase ID Token 관리 서비스
-/// 
+///
 /// Firebase ID Token의 자동 갱신, 검증, 저장을 담당합니다.
 class FirebaseTokenService {
   static const String _firebaseIdTokenKey = 'firebase_id_token';
   static const String _firebaseIdTokenExpiresKey = 'firebase_id_token_expires';
-  
+
   static FirebaseAuth? _firebaseAuthInstance;
-  
+
   static FirebaseAuth get _firebaseAuth {
-    FirebaseManager.ensureInitialized();
     return _firebaseAuthInstance ??= FirebaseAuth.instance;
   }
 
   /// Firebase가 초기화되어 있는지 확인
+  ///
+  /// Firebase 앱이 제대로 초기화되었는지 확인합니다.
+  /// 초기화되지 않은 경우 토큰 관련 작업을 수행하지 않습니다.
+  ///
+  /// Returns: Firebase 초기화 여부
   static bool get _isFirebaseInitialized {
-    return FirebaseManager.isInitialized;
+    try {
+      // Firebase 앱 목록이 비어있지 않으면 초기화된 것으로 간주
+      return Firebase.apps.isNotEmpty;
+    } catch (e) {
+      // Firebase 초기화 실패 시 false 반환
+      if (kDebugMode) {
+        debugPrint('Firebase 초기화 상태 확인 실패: $e');
+      }
+      return false;
+    }
   }
 
   /// 현재 유효한 Firebase ID Token 가져오기 (자동 갱신 포함)
@@ -43,17 +55,19 @@ class FirebaseTokenService {
 
       // forceRefresh가 true이거나 토큰이 곧 만료될 경우 강제 갱신
       final shouldForceRefresh = forceRefresh || await _shouldRefreshToken();
-      
+
       final idToken = await user.getIdToken(shouldForceRefresh);
-      
+
       if (idToken != null) {
         // 새 토큰을 안전하게 저장
         await _cacheIdToken(idToken);
-        
+
         if (kDebugMode) {
-          debugPrint('Firebase ID Token 가져오기 성공${shouldForceRefresh ? ' (갱신됨)' : ''}');
+          debugPrint(
+            'Firebase ID Token 가져오기 성공${shouldForceRefresh ? ' (갱신됨)' : ''}',
+          );
         }
-        
+
         return idToken;
       } else {
         return null;
@@ -62,7 +76,7 @@ class FirebaseTokenService {
       if (kDebugMode) {
         debugPrint('Firebase ID Token 가져오기 실패: $e');
       }
-      
+
       // Firebase 토큰 가져오기 실패 시 캐시된 토큰 시도
       return _getCachedIdToken();
     }
@@ -89,9 +103,9 @@ class FirebaseTokenService {
       // 토큰 만료 확인
       final tokenResult = await user.getIdTokenResult();
       final expirationTime = tokenResult.expirationTime;
-      
+
       if (expirationTime == null) return false;
-      
+
       // 현재 시간보다 5분 이상 남아있으면 유효
       final fiveMinutesFromNow = DateTime.now().add(const Duration(minutes: 5));
       return expirationTime.isAfter(fiveMinutesFromNow);
@@ -106,12 +120,14 @@ class FirebaseTokenService {
   /// 토큰을 갱신해야 하는지 확인
   static Future<bool> _shouldRefreshToken() async {
     try {
-      final cachedExpires = await SecureStorageService.getString(_firebaseIdTokenExpiresKey);
+      final cachedExpires = await SecureStorageService.getString(
+        _firebaseIdTokenExpiresKey,
+      );
       if (cachedExpires == null) return true;
-      
+
       final expirationTime = DateTime.parse(cachedExpires);
       final fiveMinutesFromNow = DateTime.now().add(const Duration(minutes: 5));
-      
+
       return expirationTime.isBefore(fiveMinutesFromNow);
     } catch (e) {
       if (kDebugMode) {
@@ -130,12 +146,12 @@ class FirebaseTokenService {
 
       final tokenResult = await user.getIdTokenResult();
       final expirationTime = tokenResult.expirationTime;
-      
+
       if (expirationTime != null) {
         await Future.wait([
           SecureStorageService.setString(_firebaseIdTokenKey, idToken),
           SecureStorageService.setString(
-            _firebaseIdTokenExpiresKey, 
+            _firebaseIdTokenExpiresKey,
             expirationTime.toIso8601String(),
           ),
         ]);
@@ -150,16 +166,20 @@ class FirebaseTokenService {
   /// 캐시된 ID Token 가져오기
   static Future<String?> _getCachedIdToken() async {
     try {
-      final cachedToken = await SecureStorageService.getString(_firebaseIdTokenKey);
-      final cachedExpires = await SecureStorageService.getString(_firebaseIdTokenExpiresKey);
-      
+      final cachedToken = await SecureStorageService.getString(
+        _firebaseIdTokenKey,
+      );
+      final cachedExpires = await SecureStorageService.getString(
+        _firebaseIdTokenExpiresKey,
+      );
+
       if (cachedToken == null || cachedExpires == null) {
         return null;
       }
-      
+
       final expirationTime = DateTime.parse(cachedExpires);
       final now = DateTime.now();
-      
+
       // 만료되지 않은 캐시된 토큰만 반환
       if (expirationTime.isAfter(now)) {
         if (kDebugMode) {
@@ -172,7 +192,7 @@ class FirebaseTokenService {
         debugPrint('캐시된 ID Token 가져오기 실패: $e');
       }
     }
-    
+
     return null;
   }
 
@@ -183,7 +203,7 @@ class FirebaseTokenService {
         SecureStorageService.remove(_firebaseIdTokenKey),
         SecureStorageService.remove(_firebaseIdTokenExpiresKey),
       ]);
-      
+
       if (kDebugMode) {
         debugPrint('Firebase ID Token 캐시 삭제 완료');
       }
@@ -274,7 +294,7 @@ class FirebaseTokenService {
       // 최신 상태로 새로고침
       await user.reload();
       final updatedUser = _firebaseAuth.currentUser;
-      
+
       return updatedUser?.emailVerified ?? false;
     } catch (e) {
       if (kDebugMode) {
@@ -298,11 +318,11 @@ class FirebaseTokenService {
       if (user == null || user.emailVerified) return false;
 
       await user.sendEmailVerification();
-      
+
       if (kDebugMode) {
         debugPrint('이메일 인증 메일 발송 완료');
       }
-      
+
       return true;
     } catch (e) {
       if (kDebugMode) {

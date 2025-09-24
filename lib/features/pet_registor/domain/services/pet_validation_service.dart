@@ -1,4 +1,4 @@
-import '../entities/pet_registration_data_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_registration_data_entity.dart';
 
 /// 펫 등록 검증 서비스 인터페이스
 /// Domain Layer의 비즈니스 로직을 정의
@@ -24,4 +24,3 @@ abstract class PetValidationService {
   /// 마이크로칩 번호 유효성 검증
   bool isValidMicrochipNumber(String? number);
 }
-

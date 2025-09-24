@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../../../domain/entities/walk_record_entity.dart';
 
 /// 산책 지도 카메라 컨트롤러 클래스
 class WalkMapCameraController {
@@ -97,9 +96,7 @@ class WalkMapCameraController {
     GoogleMapController mapController,
     double zoomLevel,
   ) async {
-    await mapController.animateCamera(
-      CameraUpdate.zoomTo(zoomLevel),
-    );
+    await mapController.animateCamera(CameraUpdate.zoomTo(zoomLevel));
   }
 
   /// 특정 위치로 부드럽게 이동
@@ -139,13 +136,10 @@ class WalkMapCameraController {
 
   /// 기본 카메라 위치 생성
   static CameraPosition createDefaultCameraPosition({
-    double latitude = 35.6762,  // 도쿄 기본 위치
+    double latitude = 35.6762, // 도쿄 기본 위치
     double longitude = 139.6503,
     double zoom = 10.0,
   }) {
-    return CameraPosition(
-      target: LatLng(latitude, longitude),
-      zoom: zoom,
-    );
+    return CameraPosition(target: LatLng(latitude, longitude), zoom: zoom);
   }
 }

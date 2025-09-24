@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../app/router/routes/route_constants.dart';
-import '../../shared.dart';
 
 /// 정보 카드 컴포넌트 (범용)
 class InfoCardComponent extends StatelessWidget {

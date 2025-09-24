@@ -1,14 +1,13 @@
+import 'package:aipet_frontend/features/notification/data/services/notification_service.dart';
+import 'package:aipet_frontend/features/onboarding/data/data.dart';
+import 'package:aipet_frontend/shared/core/services/error_handler_service.dart';
+import 'package:aipet_frontend/shared/core/services/performance_monitor_service.dart';
+import 'package:aipet_frontend/shared/core/services/user_experience_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../features/notification/data/services/notification_service.dart';
-import '../../features/onboarding/data/data.dart';
-import '../../shared/core/services/error_handler_service.dart';
-import '../../shared/core/services/performance_monitor_service.dart';
-import '../../shared/core/services/user_experience_service.dart';
 
 part 'app_initialization_provider.g.dart';
 

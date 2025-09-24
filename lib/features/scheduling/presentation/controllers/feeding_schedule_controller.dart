@@ -1,5 +1,5 @@
-import '../../../../../app/controllers/base_controller.dart';
-import '../../../../../shared/shared.dart';
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 class MealStatus {
   final String meal;

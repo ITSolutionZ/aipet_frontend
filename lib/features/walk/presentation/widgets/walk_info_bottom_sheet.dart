@@ -1,35 +1,36 @@
+import 'package:aipet_frontend/features/onboarding/data/providers/walk_share_providers.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../shared/shared.dart';
-import '../../data/providers/walk_share_providers.dart';
-import '../../domain/entities/walk_record_entity.dart';
-import '../controllers/walk_controller.dart';
 import 'dialogs/edit_walk_bottom_sheet.dart';
 
-class WalkInfoBottomSheet extends ConsumerStatefulWidget {
+/// 🎯 Walk Info Bottom Sheet Expansion State Provider
+final walkInfoBottomSheetProvider =
+    StateNotifierProvider.family<WalkInfoExpansionController, bool, String>(
+      (ref, sheetId) => WalkInfoExpansionController(),
+    );
+
+class WalkInfoExpansionController extends StateNotifier<bool> {
+  WalkInfoExpansionController() : super(false);
+
+  void toggle() {
+    state = !state;
+  }
+}
+
+class WalkInfoBottomSheet extends ConsumerWidget {
   final WalkRecordEntity walkRecord;
 
   const WalkInfoBottomSheet({super.key, required this.walkRecord});
 
   @override
-  ConsumerState<WalkInfoBottomSheet> createState() =>
-      _WalkInfoBottomSheetState();
-}
-
-class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
-  bool _isExpanded = false;
-  late WalkRecordEntity walkRecord;
-
-  @override
-  void initState() {
-    super.initState();
-    walkRecord = widget.walkRecord;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sheetId = walkRecord.id;
+    final isExpanded = ref.watch(walkInfoBottomSheetProvider(sheetId));
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.6,
@@ -56,15 +57,13 @@ class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
           _buildDragHandle(),
 
           // 헤더
-          _buildHeader(),
+          _buildHeader(context, ref, sheetId, isExpanded),
 
           // 정보 내용 (스크롤 가능)
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-              child: Consumer(
-                builder: (context, ref, child) => _buildContent(context, ref),
-              ),
+              child: _buildContent(context, ref, isExpanded),
             ),
           ),
         ],
@@ -84,7 +83,12 @@ class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(
+    BuildContext context,
+    WidgetRef ref,
+    String sheetId,
+    bool isExpanded,
+  ) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Row(
@@ -157,12 +161,10 @@ class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
           // 확장/축소 버튼
           IconButton(
             onPressed: () {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
+              ref.read(walkInfoBottomSheetProvider(sheetId).notifier).toggle();
             },
             icon: Icon(
-              _isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+              isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
               color: AppColors.pointGray,
               size: 24,
             ),
@@ -172,7 +174,7 @@ class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
     );
   }
 
-  Widget _buildContent(BuildContext context, WidgetRef ref) {
+  Widget _buildContent(BuildContext context, WidgetRef ref, bool isExpanded) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
@@ -185,7 +187,7 @@ class _WalkInfoBottomSheetState extends ConsumerState<WalkInfoBottomSheet> {
           const SizedBox(height: AppSpacing.md),
           _buildInfoRow('時間', walkRecord.formattedDuration),
 
-          if (_isExpanded) ...[
+          if (isExpanded) ...[
             const SizedBox(height: AppSpacing.lg),
             Divider(color: AppColors.pointGray.withValues(alpha: 0.3)),
             const SizedBox(height: AppSpacing.md),

@@ -1,5 +1,4 @@
-import '../entities/entities.dart';
-import '../repositories/notification_repository.dart';
+import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
 
 class GetNotificationByIdUseCase {
   final NotificationRepository _repository;

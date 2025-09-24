@@ -1,16 +1,12 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 트릭 관리 바텀시트
 class TrickManagementBottomSheet extends StatelessWidget {
   final VoidCallback onResetProgress;
 
-  const TrickManagementBottomSheet({
-    super.key,
-    required this.onResetProgress,
-  });
+  const TrickManagementBottomSheet({super.key, required this.onResetProgress});
 
   /// 바텀시트를 표시하는 정적 메서드
   static Future<void> show(

@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class AnniversarySelectionCard extends StatelessWidget {
   final String type;
@@ -65,7 +64,7 @@ class AnniversarySelectionCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const const const SizedBox(height: 4),
                   Text(
                     selectedDate != null
                         ? '${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日'

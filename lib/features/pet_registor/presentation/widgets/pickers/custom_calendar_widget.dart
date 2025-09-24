@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class CustomCalendarWidget extends StatelessWidget {
   final int selectedYear;
@@ -63,7 +62,9 @@ class CustomCalendarWidget extends StatelessWidget {
             if (index < startOffset || dayIndex > daysInMonth) {
               if (index < startOffset) {
                 final prevMonth = selectedMonth == 1 ? 12 : selectedMonth - 1;
-                final prevYear = selectedMonth == 1 ? selectedYear - 1 : selectedYear;
+                final prevYear = selectedMonth == 1
+                    ? selectedYear - 1
+                    : selectedYear;
                 final prevMonthDays = _getDaysInMonth(prevYear, prevMonth);
                 final prevDay = prevMonthDays - (startOffset - index - 1);
 
@@ -90,7 +91,8 @@ class CustomCalendarWidget extends StatelessWidget {
               }
             }
 
-            final isSelected = selectedDate != null &&
+            final isSelected =
+                selectedDate != null &&
                 selectedDate!.year == selectedYear &&
                 selectedDate!.month == selectedMonth &&
                 selectedDate!.day == dayIndex;
@@ -115,8 +117,12 @@ class CustomCalendarWidget extends StatelessWidget {
                 child: Text(
                   '$dayIndex',
                   style: AppFonts.bodySmall.copyWith(
-                    color: isSelected ? AppColors.pointBrown : AppColors.pointDark,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    color: isSelected
+                        ? AppColors.pointBrown
+                        : AppColors.pointDark,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                 ),
               ),

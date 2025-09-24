@@ -1,11 +1,13 @@
+import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/features/ai/domain/constants/ai_constants.dart';
 import 'package:dio/dio.dart';
 
-import '../../../../app/config/app_config.dart';
+import 'ai_dio_service.dart';
 import 'ai_keyword_service.dart';
 
 /// 펫 관련 콘텐츠 필터링 서비스
 class PetContentFilterService {
-  late final Dio _dio;
+  final AiDioService _dioService;
 
   // 펫 관련 키워드 목록 (AiKeywordService를 통해 접근)
   List<String> get _petKeywords => AiKeywordService.getPetKeywords();
@@ -13,14 +15,11 @@ class PetContentFilterService {
   // 제외할 키워드 (AiKeywordService를 통해 접근)
   List<String> get _excludeKeywords => AiKeywordService.getExcludeKeywords();
 
-  PetContentFilterService() {
-    _dio = Dio();
-    _dio.options.baseUrl = 'https://api.openai.com/v1';
-    _dio.options.headers['Content-Type'] = 'application/json';
-    // Changed: Set timeouts to avoid hanging
-    _dio.options.connectTimeout = const Duration(seconds: 5);
-    _dio.options.receiveTimeout = const Duration(seconds: 8);
-  }
+  PetContentFilterService({AiDioService? dioService})
+    : _dioService = dioService ?? AiDioService.instance;
+
+  /// Dio 인스턴스 가져오기
+  Dio get _dio => _dioService.createOpenAIDio();
 
   /// 메시지가 펫 관련 질문인지 검증
   Future<PetContentValidationResult> validatePetContent(String message) async {
@@ -105,7 +104,7 @@ class PetContentFilterService {
           '/chat/completions',
           options: Options(headers: {'Authorization': 'Bearer $apiKey'}),
           data: {
-            'model': AppConfig.current.openaiModel,
+            'model': AiApiConstants.openaiModel,
             'messages': [
               {
                 'role': 'system',
@@ -120,11 +119,11 @@ class PetContentFilterService {
               },
               {'role': 'user', 'content': message},
             ],
-            'max_tokens': 10,
-            'temperature': 0.0, // Changed
+            'max_tokens': AiApiConstants.contentFilterMaxTokens,
+            'temperature': AiApiConstants.contentFilterTemperature,
           },
         )
-        .timeout(const Duration(seconds: 10)); // Changed
+        .timeout(AiApiConstants.contentFilterTimeout);
 
     final aiResponse = response.data['choices'][0]['message']['content']
         .toString()

@@ -1,4 +1,4 @@
-import '../entities/recipe_entity.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/entities/recipe_entity.dart';
 
 abstract class RecipeRepository {
   /// 모든 레시피 가져오기

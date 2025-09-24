@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class PetSizeSelectionCard extends StatelessWidget {
   final String size;
@@ -75,7 +74,7 @@ class PetSizeSelectionCard extends StatelessWidget {
                 color: isSelected ? AppColors.pointBrown : AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: 4),
+            const const const SizedBox(height: 4),
             Text(
               weightRange,
               style: AppFonts.bodySmall.copyWith(

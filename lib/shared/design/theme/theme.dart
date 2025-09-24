@@ -1,7 +1,7 @@
+import 'package:aipet_frontend/shared/design/text_styles.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/tokens.dart';
-import '../text_styles.dart';
 
 class AppTheme {
   static ThemeData light = ThemeData(

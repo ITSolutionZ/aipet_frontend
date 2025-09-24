@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/features/onboarding/domain/repositories/pet_activities_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/usecases.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/shared/repositories/pet_activities_repository_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../domain/entities/trick_entity.dart';
-import '../../domain/entities/youtube_video_entity.dart';
-import '../../domain/repositories/pet_activities_repository.dart';
-import '../../domain/usecases/usecases.dart';
-import '../repositories/pet_activities_repository_impl.dart';
 
 part 'pet_activities_providers.g.dart';
 

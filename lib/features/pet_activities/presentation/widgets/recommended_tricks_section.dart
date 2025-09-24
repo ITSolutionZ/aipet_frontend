@@ -1,16 +1,12 @@
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/learn_trick_card.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../widgets/learn_trick_card.dart';
 
 /// 추천 트릭 섹션
 class RecommendedTricksSection extends StatelessWidget {
   final Function(String) onTrickTap;
 
-  const RecommendedTricksSection({
-    super.key,
-    required this.onTrickTap,
-  });
+  const RecommendedTricksSection({super.key, required this.onTrickTap});
 
   @override
   Widget build(BuildContext context) {

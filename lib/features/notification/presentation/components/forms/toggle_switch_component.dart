@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import '../../../../../shared/shared.dart';
 
 /// 순수 UI 전용 토글 스위치 위젯
 class ToggleSwitchUI extends StatelessWidget {
@@ -32,11 +32,7 @@ class ToggleSwitchUI extends StatelessWidget {
               color: AppColors.pointBrown.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.medium),
             ),
-            child: Icon(
-              icon,
-              color: AppColors.pointBrown,
-              size: 24,
-            ),
+            child: Icon(icon, color: AppColors.pointBrown, size: 24),
           ),
           Expanded(
             child: Column(

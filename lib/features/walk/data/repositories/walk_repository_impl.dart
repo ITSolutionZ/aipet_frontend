@@ -1,7 +1,7 @@
-import '../../../../shared/testing/mock_data/features/walk/walk_mock_service.dart';
-import '../../domain/entities/walk_record_entity.dart';
-import '../../domain/entities/walk_statistics_entity.dart';
-import '../../domain/repositories/walk_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/walk_statistics_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/repositories/walk_repository.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/walk/walk_mock_service.dart';
 
 /// 산책 리포지토리 구현체
 class WalkRepositoryImpl implements WalkRepository {

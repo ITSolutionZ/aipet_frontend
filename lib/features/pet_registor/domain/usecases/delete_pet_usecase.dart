@@ -1,5 +1,5 @@
-import '../../../../shared/shared.dart';
-import '../repositories/pet_repository.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 class DeletePetUseCase {
   final PetRepository repository;

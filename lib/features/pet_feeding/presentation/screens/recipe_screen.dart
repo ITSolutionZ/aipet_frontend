@@ -1,24 +1,18 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/onboarding/data/data.dart';
+import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
-
-class RecipeScreen extends ConsumerStatefulWidget {
+class RecipeScreen extends ConsumerWidget {
   final String petId;
 
   const RecipeScreen({super.key, required this.petId});
 
   @override
-  ConsumerState<RecipeScreen> createState() => _RecipeScreenState();
-}
-
-class _RecipeScreenState extends ConsumerState<RecipeScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final recipesAsync = ref.watch(recipesNotifierProvider);
 
     return Scaffold(
@@ -44,7 +38,9 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   'Maxi',
-                  style: AppFonts.bodyMedium.copyWith(color: const Color(0xFF5B4034)),
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: const Color(0xFF5B4034),
+                  ),
                 ),
                 const Icon(
                   Icons.keyboard_arrow_down,

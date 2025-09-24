@@ -1,15 +1,15 @@
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import 'package:aipet_frontend/features/facility/presentation/controllers/facility_detail_controller.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/facility_availability_section.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/facility_contact_section.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/facility_detail_header.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/facility_location_section.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/facility_services_section.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/ui/components/states/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/facility.dart';
-import '../controllers/facility_detail_controller.dart';
-import '../widgets/facility_availability_section.dart';
-import '../widgets/facility_contact_section.dart';
-import '../widgets/facility_detail_header.dart';
-import '../widgets/facility_location_section.dart';
-import '../widgets/facility_services_section.dart';
 
 class FacilityDetailScreen extends ConsumerStatefulWidget {
   final String facilityId;
@@ -58,14 +58,10 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: AppColors.pointOffWhite,
-        appBar: SoftGradientBackAppBar(title: '連絡先を表示'),
-        body: Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
-          ),
-        ),
+        appBar: const SoftGradientBackAppBar(title: '連絡先を表示'),
+        body: LoadingWidget(loadingState: LoadingState.loading()),
       );
     }
 
@@ -247,35 +243,13 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
   }
 
   Widget _buildErrorState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: AppColors.pointBrown.withValues(alpha: 0.3),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '施設情報を読み込めませんでした',
-            style: AppFonts.titleMedium.copyWith(
-              color: AppColors.pointBrown.withValues(alpha: 0.6),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'しばらくしてから再度試してください',
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointBrown.withValues(alpha: 0.4),
-            ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: _loadFacilityData,
-            child: const Text('再度試す'),
-          ),
-        ],
+    return EmptyState(
+      icon: const Icon(Icons.error_outline),
+      title: '施設情報を読み込めませんでした',
+      subtitle: 'しばらくしてから再度試してください',
+      action: ElevatedButton(
+        onPressed: _loadFacilityData,
+        child: const Text('再度試す'),
       ),
     );
   }

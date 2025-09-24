@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 식사 타입 선택 드롭다운 위젯
 class MealTypeDropdown extends StatelessWidget {

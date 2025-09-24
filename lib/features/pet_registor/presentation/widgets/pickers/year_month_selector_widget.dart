@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class YearMonthSelectorWidget extends StatelessWidget {
   final int selectedYear;
@@ -49,18 +48,24 @@ class YearMonthSelectorWidget extends StatelessWidget {
                           color: selectedYear == year
                               ? AppColors.pointBrown
                               : Colors.transparent,
-                          borderRadius: BorderRadius.circular(selectedYear == year ? 18 : 14),
+                          borderRadius: BorderRadius.circular(
+                            selectedYear == year ? 18 : 14,
+                          ),
                         ),
                         child: Text(
                           '$year',
-                          style: (selectedYear == year ? AppFonts.bodyLarge : AppFonts.bodyMedium).copyWith(
-                            color: selectedYear == year
-                                ? Colors.white
-                                : AppColors.pointGray,
-                            fontWeight: selectedYear == year
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
+                          style:
+                              (selectedYear == year
+                                      ? AppFonts.bodyLarge
+                                      : AppFonts.bodyMedium)
+                                  .copyWith(
+                                    color: selectedYear == year
+                                        ? Colors.white
+                                        : AppColors.pointGray,
+                                    fontWeight: selectedYear == year
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                  ),
                         ),
                       ),
                     ),
@@ -90,18 +95,24 @@ class YearMonthSelectorWidget extends StatelessWidget {
                           color: selectedMonth == month
                               ? AppColors.pointBrown
                               : Colors.transparent,
-                          borderRadius: BorderRadius.circular(selectedMonth == month ? 18 : 14),
+                          borderRadius: BorderRadius.circular(
+                            selectedMonth == month ? 18 : 14,
+                          ),
                         ),
                         child: Text(
                           '$month月',
-                          style: (selectedMonth == month ? AppFonts.bodyLarge : AppFonts.bodyMedium).copyWith(
-                            color: selectedMonth == month
-                                ? Colors.white
-                                : AppColors.pointGray,
-                            fontWeight: selectedMonth == month
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
+                          style:
+                              (selectedMonth == month
+                                      ? AppFonts.bodyLarge
+                                      : AppFonts.bodyMedium)
+                                  .copyWith(
+                                    color: selectedMonth == month
+                                        ? Colors.white
+                                        : AppColors.pointGray,
+                                    fontWeight: selectedMonth == month
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                  ),
                         ),
                       ),
                     ),

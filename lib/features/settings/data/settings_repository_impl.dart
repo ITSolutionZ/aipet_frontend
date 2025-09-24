@@ -1,10 +1,9 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/shared/domain/entities/user_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/repositories/settings_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../shared/shared.dart';
-import '../domain/entities/user_profile_entity.dart';
-import '../domain/repositories/settings_repository.dart';
 
 class SettingsRepositoryImpl implements SettingsRepository {
   // SharedPreferences 키 상수

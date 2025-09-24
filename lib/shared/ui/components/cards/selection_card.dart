@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design/tokens/tokens.dart';
 
 /// ✅ 선택 가능한 카드
 ///
@@ -102,10 +101,7 @@ class SelectionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: _getBackgroundColor(),
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(
-          color: _getBorderColor(),
-          width: isSelected ? 2 : 1,
-        ),
+        border: Border.all(color: _getBorderColor(), width: isSelected ? 2 : 1),
         boxShadow: [
           BoxShadow(
             color: AppColors.pointDark.withValues(alpha: 0.1),
@@ -126,11 +122,7 @@ class SelectionCard extends StatelessWidget {
     }
 
     if (semanticLabel != null) {
-      card = Semantics(
-        label: semanticLabel,
-        selected: isSelected,
-        child: card,
-      );
+      card = Semantics(label: semanticLabel, selected: isSelected, child: card);
     }
 
     return card;
@@ -186,10 +178,7 @@ class SelectionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.small),
       ),
       child: IconTheme(
-        data: IconThemeData(
-          color: iconColor ?? AppColors.pointBrown,
-          size: 24,
-        ),
+        data: IconThemeData(color: iconColor ?? AppColors.pointBrown, size: 24),
         child: icon!,
       ),
     );
@@ -202,11 +191,7 @@ class SelectionCard extends StatelessWidget {
         color: selectedColor ?? AppColors.pointBrown,
         shape: BoxShape.circle,
       ),
-      child: const Icon(
-        Icons.check,
-        color: Colors.white,
-        size: 16,
-      ),
+      child: const Icon(Icons.check, color: Colors.white, size: 16),
     );
   }
 

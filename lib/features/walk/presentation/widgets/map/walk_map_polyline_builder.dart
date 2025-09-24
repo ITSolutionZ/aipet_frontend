@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../../../domain/entities/walk_record_entity.dart';
 
 /// 산책 지도 폴리라인 빌더 클래스
 class WalkMapPolylineBuilder {

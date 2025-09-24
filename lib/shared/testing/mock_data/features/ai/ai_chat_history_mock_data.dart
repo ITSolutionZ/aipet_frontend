@@ -89,9 +89,12 @@ class AiChatHistoryMockData {
           },
           {
             'id': 'msg_2',
-            'content': 'ポチの食事拒否について心配ですね。🍽️\n\nまず確認していただきたいことがあります：\n• 最近フードを変更しましたか？\n• 体調や元気さはいかがでしょうか？',
+            'content':
+                'ポチの食事拒否について心配ですね。🍽️\n\nまず確認していただきたいことがあります：\n• 最近フードを変更しましたか？\n• 体調や元気さはいかがでしょうか？',
             'isUser': false,
-            'timestamp': DateTime.now().subtract(const Duration(hours: 1, minutes: 58)),
+            'timestamp': DateTime.now().subtract(
+              const Duration(hours: 1, minutes: 58),
+            ),
           },
         ];
       default:
@@ -102,18 +105,18 @@ class AiChatHistoryMockData {
   /// 검색 기능을 위한 필터링된 세션 목록
   static List<Map<String, dynamic>> searchChatSessions(String query) {
     if (query.isEmpty) return getChatHistorySessions();
-    
+
     final lowerQuery = query.toLowerCase();
     return getChatHistorySessions().where((session) {
       final title = (session['title'] as String).toLowerCase();
       final summary = (session['summary'] as String).toLowerCase();
       final category = (session['category'] as String).toLowerCase();
       final petName = (session['petName'] as String).toLowerCase();
-      
+
       return title.contains(lowerQuery) ||
-             summary.contains(lowerQuery) ||
-             category.contains(lowerQuery) ||
-             petName.contains(lowerQuery);
+          summary.contains(lowerQuery) ||
+          category.contains(lowerQuery) ||
+          petName.contains(lowerQuery);
     }).toList();
   }
 

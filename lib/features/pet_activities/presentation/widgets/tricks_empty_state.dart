@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 트릭이 없을 때의 빈 상태 위젯
 class TricksEmptyState extends StatelessWidget {

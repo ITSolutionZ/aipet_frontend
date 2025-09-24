@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design/tokens/tokens.dart';
 
 /// ⏳ 로딩 상태 위젯
 ///
@@ -24,10 +23,7 @@ class LoadingState extends StatelessWidget {
   });
 
   /// 기본 로딩 상태 팩토리
-  factory LoadingState.basic({
-    String? message,
-    double size = 40,
-  }) {
+  factory LoadingState.basic({String? message, double size = 40}) {
     return LoadingState(
       message: message,
       size: size,
@@ -36,10 +32,7 @@ class LoadingState extends StatelessWidget {
   }
 
   /// 작은 로딩 인디케이터 팩토리
-  factory LoadingState.small({
-    String? message,
-    Color? color,
-  }) {
+  factory LoadingState.small({String? message, Color? color}) {
     return LoadingState(
       message: message,
       size: 24,
@@ -50,10 +43,7 @@ class LoadingState extends StatelessWidget {
   }
 
   /// 큰 로딩 인디케이터 팩토리
-  factory LoadingState.large({
-    String? message,
-    Color? color,
-  }) {
+  factory LoadingState.large({String? message, Color? color}) {
     return LoadingState(
       message: message,
       size: 60,
@@ -63,9 +53,7 @@ class LoadingState extends StatelessWidget {
   }
 
   /// 전체 화면 로딩 팩토리
-  factory LoadingState.fullScreen({
-    String message = '読み込み中...',
-  }) {
+  factory LoadingState.fullScreen({String message = '読み込み中...'}) {
     return LoadingState(
       message: message,
       size: 50,
@@ -74,10 +62,7 @@ class LoadingState extends StatelessWidget {
   }
 
   /// 인라인 로딩 팩토리 (리스트나 카드 내부용)
-  factory LoadingState.inline({
-    String? message,
-    double size = 20,
-  }) {
+  factory LoadingState.inline({String? message, double size = 20}) {
     return LoadingState(
       message: message,
       size: size,
@@ -113,9 +98,7 @@ class LoadingState extends StatelessWidget {
               const SizedBox(height: AppSpacing.lg),
               Text(
                 message!,
-                style: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.pointGray,
-                ),
+                style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                 textAlign: TextAlign.center,
               ),
             ],

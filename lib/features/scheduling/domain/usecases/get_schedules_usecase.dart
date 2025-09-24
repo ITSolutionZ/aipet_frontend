@@ -1,6 +1,6 @@
-import '../../../../shared/core/domain/result.dart';
-import '../entities/schedule_entity.dart';
-import '../repositories/schedule_repository.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/schedule_entity.dart';
+import 'package:aipet_frontend/features/scheduling/domain/repositories/schedule_repository.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 모든 스케줄 가져오기 Use Case
 class GetAllSchedulesUseCase {

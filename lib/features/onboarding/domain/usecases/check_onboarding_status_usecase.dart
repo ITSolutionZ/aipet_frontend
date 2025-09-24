@@ -1,4 +1,4 @@
-import '../domain.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 온보딩 상태 확인 UseCase
 class CheckOnboardingStatusUseCase

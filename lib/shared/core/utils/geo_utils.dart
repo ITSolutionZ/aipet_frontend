@@ -33,9 +33,12 @@ class GeoUtils {
     final lat1Rad = _toRadians(lat1);
     final lat2Rad = _toRadians(lat2);
 
-    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.sin(dLon / 2) * math.sin(dLon / 2) *
-        math.cos(lat1Rad) * math.cos(lat2Rad);
+    final a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.sin(dLon / 2) *
+            math.sin(dLon / 2) *
+            math.cos(lat1Rad) *
+            math.cos(lat2Rad);
 
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
@@ -72,8 +75,10 @@ class GeoUtils {
       final curr = coordinates[i];
 
       totalDistance += calculateDistanceKm(
-        prev[0], prev[1], // lat1, lon1
-        curr[0], curr[1], // lat2, lon2
+        prev[0],
+        prev[1], // lat1, lon1
+        curr[0],
+        curr[1], // lat2, lon2
       );
     }
 
@@ -106,7 +111,8 @@ class GeoUtils {
     final lat2Rad = _toRadians(lat2);
 
     final y = math.sin(dLon) * math.cos(lat2Rad);
-    final x = math.cos(lat1Rad) * math.sin(lat2Rad) -
+    final x =
+        math.cos(lat1Rad) * math.sin(lat2Rad) -
         math.sin(lat1Rad) * math.cos(lat2Rad) * math.cos(dLon);
 
     double bearing = math.atan2(y, x);
@@ -137,9 +143,7 @@ class GeoUtils {
 
     final lat3Rad = math.atan2(
       math.sin(lat1Rad) + math.sin(lat2Rad),
-      math.sqrt(
-        (math.cos(lat1Rad) + bx) * (math.cos(lat1Rad) + bx) + by * by,
-      ),
+      math.sqrt((math.cos(lat1Rad) + bx) * (math.cos(lat1Rad) + bx) + by * by),
     );
 
     final lon3Rad = _toRadians(lon1) + math.atan2(by, math.cos(lat1Rad) + bx);
@@ -171,9 +175,9 @@ class GeoUtils {
   /// Returns: 유효하면 true, 그렇지 않으면 false
   static bool isValidCoordinate(double latitude, double longitude) {
     return latitude >= -90.0 &&
-           latitude <= 90.0 &&
-           longitude >= -180.0 &&
-           longitude <= 180.0;
+        latitude <= 90.0 &&
+        longitude >= -180.0 &&
+        longitude <= 180.0;
   }
 
   /// 거리 포맷팅 (미터 단위를 km로 변환하여 포맷팅)

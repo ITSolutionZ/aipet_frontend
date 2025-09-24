@@ -1,16 +1,84 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../shared.dart';
+/// 🎯 Weight Input State Provider
+final weightInputProvider =
+    StateNotifierProvider.family<
+      WeightInputController,
+      WeightInputState,
+      String
+    >((ref, inputId) => WeightInputController());
+
+class WeightInputController extends StateNotifier<WeightInputState> {
+  WeightInputController() : super(const WeightInputState());
+
+  void initialize(
+    double weight, {
+    TextEditingController? controller,
+    FocusNode? focusNode,
+  }) {
+    final textController =
+        controller ?? TextEditingController(text: weight.toStringAsFixed(1));
+    final inputFocusNode = focusNode ?? FocusNode();
+
+    state = state.copyWith(
+      controller: textController,
+      focusNode: inputFocusNode,
+      currentWeight: weight,
+    );
+  }
+
+  void updateWeight(double weight) {
+    state = state.copyWith(currentWeight: weight);
+    if (state.controller != null) {
+      state.controller!.text = weight.toStringAsFixed(1);
+    }
+  }
+
+  @override
+  void dispose() {
+    state.controller?.dispose();
+    state.focusNode?.dispose();
+    super.dispose();
+  }
+}
+
+class WeightInputState {
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final double currentWeight;
+
+  const WeightInputState({
+    this.controller,
+    this.focusNode,
+    this.currentWeight = 0.0,
+  });
+
+  WeightInputState copyWith({
+    TextEditingController? controller,
+    FocusNode? focusNode,
+    double? currentWeight,
+  }) {
+    return WeightInputState(
+      controller: controller ?? this.controller,
+      focusNode: focusNode ?? this.focusNode,
+      currentWeight: currentWeight ?? this.currentWeight,
+    );
+  }
+}
 
 /// 범용 체중 입력 위젯
-class WeightInput extends StatefulWidget {
+class WeightInput extends ConsumerStatefulWidget {
   final double weight;
   final ValueChanged<double> onWeightChanged;
   final String? errorText;
   final double minWeight;
   final double maxWeight;
   final String unit;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
 
   const WeightInput({
     super.key,
@@ -20,46 +88,61 @@ class WeightInput extends StatefulWidget {
     this.minWeight = 0.5,
     this.maxWeight = 50.0,
     this.unit = 'kg',
+    this.controller,
+    this.focusNode,
   });
 
   @override
-  State<WeightInput> createState() => _WeightInputState();
+  ConsumerState<WeightInput> createState() => _WeightInputState();
 }
 
-class _WeightInputState extends State<WeightInput> {
-  late TextEditingController _controller;
-  late FocusNode _focusNode;
+class _WeightInputState extends ConsumerState<WeightInput> {
+  final String _inputId = DateTime.now().millisecondsSinceEpoch.toString();
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.weight.toStringAsFixed(1));
-    _focusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(weightInputProvider(_inputId).notifier)
+          .initialize(
+            widget.weight,
+            controller: widget.controller,
+            focusNode: widget.focusNode,
+          );
 
-    _focusNode.addListener(() {
-      if (!_focusNode.hasFocus) {
-        _validateAndUpdate();
-      }
+      final state = ref.read(weightInputProvider(_inputId));
+      state.focusNode?.addListener(() {
+        if (!(state.focusNode?.hasFocus ?? false)) {
+          _validateAndUpdate();
+        }
+      });
     });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _focusNode.dispose();
-    super.dispose();
   }
 
   @override
   void didUpdateWidget(WeightInput oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.weight != widget.weight) {
-      _controller.text = widget.weight.toStringAsFixed(1);
+      ref
+          .read(weightInputProvider(_inputId).notifier)
+          .updateWeight(widget.weight);
     }
   }
 
+  @override
+  void dispose() {
+    if (widget.controller == null || widget.focusNode == null) {
+      ref.read(weightInputProvider(_inputId).notifier).dispose();
+    }
+    super.dispose();
+  }
+
   void _validateAndUpdate() {
-    final text = _controller.text.trim();
+    final state = ref.read(weightInputProvider(_inputId));
+    if (state.controller == null) return;
+
+    final text = state.controller!.text.trim();
     if (text.isNotEmpty) {
       final newWeight = double.tryParse(text);
       if (newWeight != null &&
@@ -67,7 +150,7 @@ class _WeightInputState extends State<WeightInput> {
           newWeight <= widget.maxWeight) {
         widget.onWeightChanged(newWeight);
       } else {
-        _controller.text = widget.weight.toStringAsFixed(1);
+        state.controller!.text = widget.weight.toStringAsFixed(1);
         if (mounted) {
           UiService.showWarning(
             context,
@@ -76,12 +159,14 @@ class _WeightInputState extends State<WeightInput> {
         }
       }
     } else {
-      _controller.text = widget.weight.toStringAsFixed(1);
+      state.controller!.text = widget.weight.toStringAsFixed(1);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final inputState = ref.watch(weightInputProvider(_inputId));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -103,8 +188,8 @@ class _WeightInputState extends State<WeightInput> {
             ],
           ),
           child: TextField(
-            controller: _controller,
-            focusNode: _focusNode,
+            controller: inputState.controller,
+            focusNode: inputState.focusNode,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             textAlign: TextAlign.center,
             style: AppFonts.titleLarge.copyWith(
@@ -135,7 +220,7 @@ class _WeightInputState extends State<WeightInput> {
             },
             onSubmitted: (value) {
               _validateAndUpdate();
-              _focusNode.unfocus();
+              inputState.focusNode?.unfocus();
             },
           ),
         ),

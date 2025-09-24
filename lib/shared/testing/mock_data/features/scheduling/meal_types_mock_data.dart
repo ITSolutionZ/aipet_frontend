@@ -14,42 +14,22 @@ class MealTypesMockData {
 
   /// 식사 타입별 한국어 번역
   static Map<String, String> getMealTypeTranslations() {
-    return {
-      '朝食': '아침 식사',
-      '昼食': '점심 식사',
-      '夕食': '저녁 식사',
-      'おやつ': '간식',
-    };
+    return {'朝食': '아침 식사', '昼食': '점심 식사', '夕食': '저녁 식사', 'おやつ': '간식'};
   }
 
   /// 식사 타입별 영어 번역
   static Map<String, String> getMealTypeEnglishTranslations() {
-    return {
-      '朝食': 'Breakfast',
-      '昼食': 'Lunch',
-      '夕食': 'Dinner',
-      'おやつ': 'Snack',
-    };
+    return {'朝食': 'Breakfast', '昼食': 'Lunch', '夕食': 'Dinner', 'おやつ': 'Snack'};
   }
 
   /// 식사 타입별 기본 시간
   static Map<String, String> getDefaultMealTimes() {
-    return {
-      '朝食': '08:00',
-      '昼食': '12:00',
-      '夕食': '18:00',
-      'おやつ': '15:00',
-    };
+    return {'朝食': '08:00', '昼食': '12:00', '夕食': '18:00', 'おやつ': '15:00'};
   }
 
   /// 식사 타입별 아이콘
   static Map<String, String> getMealTypeIcons() {
-    return {
-      '朝食': '🌅',
-      '昼食': '☀️',
-      '夕食': '🌙',
-      'おやつ': '🍪',
-    };
+    return {'朝食': '🌅', '昼食': '☀️', '夕食': '🌙', 'おやつ': '🍪'};
   }
 
   /// 특정 식사 타입의 한국어 번역 조회

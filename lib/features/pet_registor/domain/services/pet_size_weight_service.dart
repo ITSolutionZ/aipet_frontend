@@ -3,7 +3,7 @@ class PetSizeWeightService {
   /// 체중에 따른 적절한 크기 추천
   static String? recommendSizeByWeight(double weight) {
     if (weight < 0.5 || weight > 50.0) return null;
-    
+
     if (weight <= 5.0) return 'extra_small';
     if (weight <= 10.0) return 'small';
     if (weight <= 25.0) return 'medium';
@@ -65,7 +65,10 @@ class PetSizeWeightService {
   }
 
   /// 체중 기반 추천 사료량 계산 (일일 권장량, g)
-  static double calculateDailyFoodAmount(double weight, {bool isNeutered = false}) {
+  static double calculateDailyFoodAmount(
+    double weight, {
+    bool isNeutered = false,
+  }) {
     // 기본 공식: 체중(kg) × 70 × 0.75 (중성화된 경우 0.6)
     final multiplier = isNeutered ? 0.6 : 0.75;
     return weight * 70 * multiplier;
@@ -77,10 +80,12 @@ class PetSizeWeightService {
     final min = range['min']!;
     final max = range['max']!;
     final typical = range['typical']!;
-    
+
     if (weight < min * 0.85) return 'underweight'; // 저체중
-    if (weight > max * 1.15) return 'overweight';  // 과체중
-    if (weight < typical * 0.9 || weight > typical * 1.1) return 'borderline'; // 주의
+    if (weight > max * 1.15) return 'overweight'; // 과체중
+    if (weight < typical * 0.9 || weight > typical * 1.1) {
+      return 'borderline'; // 주의
+    }
     return 'normal'; // 정상
   }
 

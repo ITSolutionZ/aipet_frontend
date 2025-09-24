@@ -24,82 +24,111 @@ void main() {
     const testDisplayName = 'Test User';
 
     group('Successful Signup', () {
-      test('should return success when signup is successful with display name', () async {
-        // Arrange
-        final mockUser = AuthUser(
-          uid: 'user-123',
-          email: testEmail,
-          displayName: testDisplayName,
-          isEmailVerified: false,
-          creationTime: DateTime.now(),
-        );
+      test(
+        'should return success when signup is successful with display name',
+        () async {
+          // Arrange
+          final mockUser = AuthUser(
+            uid: 'user-123',
+            email: testEmail,
+            displayName: testDisplayName,
+            isEmailVerified: false,
+            creationTime: DateTime.now(),
+          );
 
-        final mockAuthResult = AuthResult.success(
-          '会員登録が完了しました。確認メールを送信しました。',
-          user: mockUser,
-        );
+          final mockAuthResult = AuthResult.success(
+            '会員登録が完了しました。確認メールを送信しました。',
+            user: mockUser,
+          );
 
-        when(mockRepository.createUserWithEmailAndPassword(testEmail, testPassword))
-            .thenAnswer((_) async => mockAuthResult);
-        when(mockRepository.updateUserProfile(displayName: testDisplayName))
-            .thenAnswer((_) async {});
-        when(mockRepository.sendEmailVerification())
-            .thenAnswer((_) async {});
+          when(
+            mockRepository.createUserWithEmailAndPassword(
+              testEmail,
+              testPassword,
+            ),
+          ).thenAnswer((_) async => mockAuthResult);
+          when(
+            mockRepository.updateUserProfile(displayName: testDisplayName),
+          ).thenAnswer((_) async {});
+          when(mockRepository.sendEmailVerification()).thenAnswer((_) async {});
 
-        // Act
-        final result = await useCase.call(
-          email: testEmail,
-          password: testPassword,
-          confirmPassword: testConfirmPassword,
-          displayName: testDisplayName,
-        );
+          // Act
+          final result = await useCase.call(
+            email: testEmail,
+            password: testPassword,
+            confirmPassword: testConfirmPassword,
+            displayName: testDisplayName,
+          );
 
-        // Assert
-        expect(result, isA<Result<AuthUser>>());
-        expect(result.isSuccess, isTrue);
-        expect(result.data, equals(mockUser));
-        expect(result.message, contains('会員登録が完了しました'));
+          // Assert
+          expect(result, isA<Result<AuthUser>>());
+          expect(result.isSuccess, isTrue);
+          expect(result.data, equals(mockUser));
+          expect(result.message, contains('会員登録が完了しました'));
 
-        verify(mockRepository.createUserWithEmailAndPassword(testEmail, testPassword)).called(1);
-        verify(mockRepository.updateUserProfile(displayName: testDisplayName)).called(1);
-        verify(mockRepository.sendEmailVerification()).called(1);
-      });
+          verify(
+            mockRepository.createUserWithEmailAndPassword(
+              testEmail,
+              testPassword,
+            ),
+          ).called(1);
+          verify(
+            mockRepository.updateUserProfile(displayName: testDisplayName),
+          ).called(1);
+          verify(mockRepository.sendEmailVerification()).called(1);
+        },
+      );
 
-      test('should return success when signup is successful without display name', () async {
-        // Arrange
-        final mockUser = AuthUser(
-          uid: 'user-123',
-          email: testEmail,
-          isEmailVerified: false,
-          creationTime: DateTime.now(),
-        );
+      test(
+        'should return success when signup is successful without display name',
+        () async {
+          // Arrange
+          final mockUser = AuthUser(
+            uid: 'user-123',
+            email: testEmail,
+            isEmailVerified: false,
+            creationTime: DateTime.now(),
+          );
 
-        final mockAuthResult = AuthResult.success(
-          '会員登録が完了しました。確認メールを送信しました。',
-          user: mockUser,
-        );
+          final mockAuthResult = AuthResult.success(
+            '会員登録が完了しました。確認メールを送信しました。',
+            user: mockUser,
+          );
 
-        when(mockRepository.createUserWithEmailAndPassword(testEmail, testPassword))
-            .thenAnswer((_) async => mockAuthResult);
-        when(mockRepository.sendEmailVerification())
-            .thenAnswer((_) async {});
+          when(
+            mockRepository.createUserWithEmailAndPassword(
+              testEmail,
+              testPassword,
+            ),
+          ).thenAnswer((_) async => mockAuthResult);
+          when(mockRepository.sendEmailVerification()).thenAnswer((_) async {});
 
-        // Act
-        final result = await useCase.call(
-          email: testEmail,
-          password: testPassword,
-          confirmPassword: testConfirmPassword,
-        );
+          // Act
+          final result = await useCase.call(
+            email: testEmail,
+            password: testPassword,
+            confirmPassword: testConfirmPassword,
+          );
 
-        // Assert
-        expect(result, isA<Result<AuthUser>>());
-        expect(result.isSuccess, isTrue);
-        expect(result.data, equals(mockUser));
+          // Assert
+          expect(result, isA<Result<AuthUser>>());
+          expect(result.isSuccess, isTrue);
+          expect(result.data, equals(mockUser));
 
-        verify(mockRepository.createUserWithEmailAndPassword(testEmail, testPassword)).called(1);
-        verifyNever(mockRepository.updateUserProfile(displayName: anyNamed('displayName')));
-        verify(mockRepository.sendEmailVerification()).called(1);
-      });
+          verify(
+            mockRepository.createUserWithEmailAndPassword(
+              testEmail,
+              testPassword,
+            ),
+          ).called(1);
+          verifyNever(
+            mockRepository.updateUserProfile(
+              displayName: anyNamed('displayName'),
+            ),
+          );
+          verify(mockRepository.sendEmailVerification()).called(1);
+        },
+      );
     });
 
     group('Validation Failures', () {
@@ -178,20 +207,23 @@ void main() {
         verifyNever(mockRepository.createUserWithEmailAndPassword(any, any));
       });
 
-      test('should return failure when password is not strong enough', () async {
-        // Act
-        final result = await useCase.call(
-          email: testEmail,
-          password: 'weakpassword',
-          confirmPassword: 'weakpassword',
-        );
+      test(
+        'should return failure when password is not strong enough',
+        () async {
+          // Act
+          final result = await useCase.call(
+            email: testEmail,
+            password: 'weakpassword',
+            confirmPassword: 'weakpassword',
+          );
 
-        // Assert
-        expect(result, isA<Result<AuthUser>>());
-        expect(result.isSuccess, isFalse);
-        expect(result.message, equals('パスワードは英字、数字、特殊文字を含む必要があります'));
-        verifyNever(mockRepository.createUserWithEmailAndPassword(any, any));
-      });
+          // Assert
+          expect(result, isA<Result<AuthUser>>());
+          expect(result.isSuccess, isFalse);
+          expect(result.message, equals('パスワードは英字、数字、特殊文字を含む必要があります'));
+          verifyNever(mockRepository.createUserWithEmailAndPassword(any, any));
+        },
+      );
 
       test('should return failure when passwords do not match', () async {
         // Act
@@ -214,8 +246,12 @@ void main() {
         // Arrange
         final mockAuthResult = AuthResult.failure('会員登録に失敗しました');
 
-        when(mockRepository.createUserWithEmailAndPassword(testEmail, testPassword))
-            .thenAnswer((_) async => mockAuthResult);
+        when(
+          mockRepository.createUserWithEmailAndPassword(
+            testEmail,
+            testPassword,
+          ),
+        ).thenAnswer((_) async => mockAuthResult);
 
         // Act
         final result = await useCase.call(
@@ -228,13 +264,22 @@ void main() {
         expect(result, isA<Result<AuthUser>>());
         expect(result.isSuccess, isFalse);
         expect(result.message, equals('会員登録に失敗しました'));
-        verify(mockRepository.createUserWithEmailAndPassword(testEmail, testPassword)).called(1);
+        verify(
+          mockRepository.createUserWithEmailAndPassword(
+            testEmail,
+            testPassword,
+          ),
+        ).called(1);
       });
 
       test('should handle exceptions gracefully', () async {
         // Arrange
-        when(mockRepository.createUserWithEmailAndPassword(testEmail, testPassword))
-            .thenThrow(Exception('Network error'));
+        when(
+          mockRepository.createUserWithEmailAndPassword(
+            testEmail,
+            testPassword,
+          ),
+        ).thenThrow(Exception('Network error'));
 
         // Act
         final result = await useCase.call(
@@ -247,7 +292,12 @@ void main() {
         expect(result, isA<Result<AuthUser>>());
         expect(result.isSuccess, isFalse);
         expect(result.message, contains('会員登録に失敗しました'));
-        verify(mockRepository.createUserWithEmailAndPassword(testEmail, testPassword)).called(1);
+        verify(
+          mockRepository.createUserWithEmailAndPassword(
+            testEmail,
+            testPassword,
+          ),
+        ).called(1);
       });
     });
 
@@ -262,13 +312,24 @@ void main() {
           ];
 
           for (final email in validEmails) {
-            when(mockRepository.createUserWithEmailAndPassword(email, testPassword))
-                .thenAnswer((_) async => AuthResult.success('Success', user: AuthUser(
+            when(
+              mockRepository.createUserWithEmailAndPassword(
+                email,
+                testPassword,
+              ),
+            ).thenAnswer(
+              (_) async => AuthResult.success(
+                'Success',
+                user: AuthUser(
                   uid: 'user-123',
                   email: email,
                   creationTime: DateTime.now(),
-                )));
-            when(mockRepository.sendEmailVerification()).thenAnswer((_) async {});
+                ),
+              ),
+            );
+            when(
+              mockRepository.sendEmailVerification(),
+            ).thenAnswer((_) async {});
 
             final result = await useCase.call(
               email: email,
@@ -276,7 +337,11 @@ void main() {
               confirmPassword: testConfirmPassword,
             );
 
-            expect(result.isSuccess, isTrue, reason: 'Email $email should be valid');
+            expect(
+              result.isSuccess,
+              isTrue,
+              reason: 'Email $email should be valid',
+            );
           }
         });
 
@@ -297,7 +362,11 @@ void main() {
               confirmPassword: testConfirmPassword,
             );
 
-            expect(result.isSuccess, isFalse, reason: 'Email $email should be invalid');
+            expect(
+              result.isSuccess,
+              isFalse,
+              reason: 'Email $email should be invalid',
+            );
             expect(result.message, equals('有効なメールアドレスを入力してください'));
           }
         });
@@ -313,13 +382,24 @@ void main() {
           ];
 
           for (final password in strongPasswords) {
-            when(mockRepository.createUserWithEmailAndPassword(testEmail, password))
-                .thenAnswer((_) async => AuthResult.success('Success', user: AuthUser(
+            when(
+              mockRepository.createUserWithEmailAndPassword(
+                testEmail,
+                password,
+              ),
+            ).thenAnswer(
+              (_) async => AuthResult.success(
+                'Success',
+                user: AuthUser(
                   uid: 'user-123',
                   email: testEmail,
                   creationTime: DateTime.now(),
-                )));
-            when(mockRepository.sendEmailVerification()).thenAnswer((_) async {});
+                ),
+              ),
+            );
+            when(
+              mockRepository.sendEmailVerification(),
+            ).thenAnswer((_) async {});
 
             final result = await useCase.call(
               email: testEmail,
@@ -327,7 +407,11 @@ void main() {
               confirmPassword: password,
             );
 
-            expect(result.isSuccess, isTrue, reason: 'Password $password should be strong enough');
+            expect(
+              result.isSuccess,
+              isTrue,
+              reason: 'Password $password should be strong enough',
+            );
           }
         });
 
@@ -348,7 +432,11 @@ void main() {
               confirmPassword: password,
             );
 
-            expect(result.isSuccess, isFalse, reason: 'Password $password should be weak');
+            expect(
+              result.isSuccess,
+              isFalse,
+              reason: 'Password $password should be weak',
+            );
             expect(result.message, equals('パスワードは英字、数字、特殊文字を含む必要があります'));
           }
         });

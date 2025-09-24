@@ -1,4 +1,4 @@
-import '../../domain/entities/schedule_entity.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/schedule_entity.dart';
 
 /// 스케줄 모델 (데이터 레이어)
 class ScheduleModel extends ScheduleEntity {

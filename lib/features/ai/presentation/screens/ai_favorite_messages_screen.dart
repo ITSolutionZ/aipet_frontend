@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
+import 'package:aipet_frontend/features/ai/presentation/controllers/ai_chat_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/ai_favorite_qa_entity.dart';
-import '../controllers/ai_chat_controller.dart';
 
 /// AI 즐겨찾기 질문-답변 목록 화면 (펫별 그룹화)
 class AiFavoriteMessagesScreen extends ConsumerWidget {
@@ -15,7 +14,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final chatState = ref.watch(aiChatNotifierProvider);
 
-    // 임시로 빈 목록 사용 (향후 실제 데이터로 교체)
+    // 채팅 상태에서 즐겨찾기 QA 목록 가져오기
     final favoriteQAs = chatState.favoriteQAs;
 
     // 펫별로 그룹화

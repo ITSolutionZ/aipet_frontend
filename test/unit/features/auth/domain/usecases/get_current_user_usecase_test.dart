@@ -29,8 +29,7 @@ void main() {
           creationTime: DateTime.now(),
         );
 
-        when(mockRepository.getCurrentUser())
-            .thenAnswer((_) async => mockUser);
+        when(mockRepository.getCurrentUser()).thenAnswer((_) async => mockUser);
 
         // Act
         final result = await useCase.call();
@@ -43,26 +42,29 @@ void main() {
         verify(mockRepository.getCurrentUser()).called(1);
       });
 
-      test('should return success with null when user is not logged in', () async {
-        // Arrange
-        when(mockRepository.getCurrentUser())
-            .thenAnswer((_) async => null);
+      test(
+        'should return success with null when user is not logged in',
+        () async {
+          // Arrange
+          when(mockRepository.getCurrentUser()).thenAnswer((_) async => null);
 
-        // Act
-        final result = await useCase.call();
+          // Act
+          final result = await useCase.call();
 
-        // Assert
-        expect(result, isA<Result<AuthUser?>>());
-        expect(result.isSuccess, isTrue);
-        expect(result.data, isNull);
-        expect(result.message, equals('ログインしていません'));
-        verify(mockRepository.getCurrentUser()).called(1);
-      });
+          // Assert
+          expect(result, isA<Result<AuthUser?>>());
+          expect(result.isSuccess, isTrue);
+          expect(result.data, isNull);
+          expect(result.message, equals('ログインしていません'));
+          verify(mockRepository.getCurrentUser()).called(1);
+        },
+      );
 
       test('should return failure when repository throws exception', () async {
         // Arrange
-        when(mockRepository.getCurrentUser())
-            .thenThrow(Exception('Network error'));
+        when(
+          mockRepository.getCurrentUser(),
+        ).thenThrow(Exception('Network error'));
 
         // Act
         final result = await useCase.call();
@@ -84,8 +86,7 @@ void main() {
           creationTime: DateTime.now(),
         );
 
-        when(mockRepository.getCurrentUser())
-            .thenAnswer((_) async => mockUser);
+        when(mockRepository.getCurrentUser()).thenAnswer((_) async => mockUser);
 
         // Act
         final result = await useCase.isLoggedIn();
@@ -100,8 +101,7 @@ void main() {
 
       test('should return false when user is not logged in', () async {
         // Arrange
-        when(mockRepository.getCurrentUser())
-            .thenAnswer((_) async => null);
+        when(mockRepository.getCurrentUser()).thenAnswer((_) async => null);
 
         // Act
         final result = await useCase.isLoggedIn();
@@ -116,8 +116,9 @@ void main() {
 
       test('should return failure when repository throws exception', () async {
         // Arrange
-        when(mockRepository.getCurrentUser())
-            .thenThrow(Exception('Network error'));
+        when(
+          mockRepository.getCurrentUser(),
+        ).thenThrow(Exception('Network error'));
 
         // Act
         final result = await useCase.isLoggedIn();
@@ -140,8 +141,7 @@ void main() {
           creationTime: DateTime.now(),
         );
 
-        when(mockRepository.getCurrentUser())
-            .thenAnswer((_) async => mockUser);
+        when(mockRepository.getCurrentUser()).thenAnswer((_) async => mockUser);
 
         // Act
         final result = await useCase.isEmailVerified();
@@ -163,8 +163,7 @@ void main() {
           creationTime: DateTime.now(),
         );
 
-        when(mockRepository.getCurrentUser())
-            .thenAnswer((_) async => mockUser);
+        when(mockRepository.getCurrentUser()).thenAnswer((_) async => mockUser);
 
         // Act
         final result = await useCase.isEmailVerified();
@@ -179,8 +178,7 @@ void main() {
 
       test('should return failure when user is not logged in', () async {
         // Arrange
-        when(mockRepository.getCurrentUser())
-            .thenAnswer((_) async => null);
+        when(mockRepository.getCurrentUser()).thenAnswer((_) async => null);
 
         // Act
         final result = await useCase.isEmailVerified();
@@ -194,8 +192,9 @@ void main() {
 
       test('should return failure when repository throws exception', () async {
         // Arrange
-        when(mockRepository.getCurrentUser())
-            .thenThrow(Exception('Network error'));
+        when(
+          mockRepository.getCurrentUser(),
+        ).thenThrow(Exception('Network error'));
 
         // Act
         final result = await useCase.isEmailVerified();

@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/usecases.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../app/controllers/base_controller.dart';
-import '../../domain/entities/entities.dart';
-import '../../domain/usecases/usecases.dart';
 
 /// 🎯 통합된 알림 컨트롤러
 ///

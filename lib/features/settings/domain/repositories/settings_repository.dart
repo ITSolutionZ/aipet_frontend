@@ -1,5 +1,6 @@
-import '../../../../shared/shared.dart';
-import '../entities/user_profile_entity.dart' as settings_entities;
+import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart'
+    as settings_entities;
+import 'package:aipet_frontend/shared/shared.dart';
 
 abstract class SettingsRepository {
   Future<Result<settings_entities.UserProfileEntity>> getUserProfile();

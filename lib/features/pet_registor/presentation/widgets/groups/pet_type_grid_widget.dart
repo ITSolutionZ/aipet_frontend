@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/cards/pet_type_card.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
-import '../cards/pet_type_card.dart';
 
 class PetTypeGridWidget extends StatelessWidget {
   final String? selectedPetType;

@@ -31,7 +31,9 @@ class RetryInterceptor extends Interceptor {
         final delayMs = _calculateDelay(retryCount);
 
         if (kDebugMode) {
-          debugPrint('🔄 재시도 ${retryCount + 1}/$maxRetries after ${delayMs}ms - ${err.requestOptions.path}');
+          debugPrint(
+            '🔄 재시도 ${retryCount + 1}/$maxRetries after ${delayMs}ms - ${err.requestOptions.path}',
+          );
         }
 
         // 지연 시간 대기

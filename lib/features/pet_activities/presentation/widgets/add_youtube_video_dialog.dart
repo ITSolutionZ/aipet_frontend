@@ -1,27 +1,94 @@
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/entities/youtube_video_entity.dart';
+/// 🎯 Add YouTube Video Dialog State Provider
+final addYouTubeVideoDialogProvider =
+    StateNotifierProvider<
+      AddYouTubeVideoDialogController,
+      AddYouTubeVideoDialogState
+    >((ref) => AddYouTubeVideoDialogController());
+
+class AddYouTubeVideoDialogController
+    extends StateNotifier<AddYouTubeVideoDialogState> {
+  AddYouTubeVideoDialogController() : super(const AddYouTubeVideoDialogState());
+
+  void setLoading(bool isLoading) {
+    state = state.copyWith(isLoading: isLoading);
+  }
+
+  void addTag(String tag) {
+    if (tag.isNotEmpty && !state.tags.contains(tag)) {
+      state = state.copyWith(tags: [...state.tags, tag]);
+    }
+  }
+
+  void removeTag(String tag) {
+    final newTags = state.tags.where((t) => t != tag).toList();
+    state = state.copyWith(tags: newTags);
+  }
+
+  void resetForm() {
+    state = const AddYouTubeVideoDialogState();
+  }
+}
+
+class AddYouTubeVideoDialogState {
+  final bool isLoading;
+  final List<String> tags;
+
+  const AddYouTubeVideoDialogState({
+    this.isLoading = false,
+    this.tags = const [],
+  });
+
+  AddYouTubeVideoDialogState copyWith({bool? isLoading, List<String>? tags}) {
+    return AddYouTubeVideoDialogState(
+      isLoading: isLoading ?? this.isLoading,
+      tags: tags ?? this.tags,
+    );
+  }
+}
 
 /// YouTube 비디오 추가 다이얼로그
-class AddYouTubeVideoDialog extends StatefulWidget {
+class AddYouTubeVideoDialog extends ConsumerWidget {
   final String petId;
 
   const AddYouTubeVideoDialog({super.key, required this.petId});
 
   @override
-  State<AddYouTubeVideoDialog> createState() => _AddYouTubeVideoDialogState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _AddYouTubeVideoDialogContent(petId: petId);
+  }
 }
 
-class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
-  final _formKey = GlobalKey<FormState>();
-  final _urlController = TextEditingController();
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _tagController = TextEditingController();
+class _AddYouTubeVideoDialogContent extends ConsumerStatefulWidget {
+  final String petId;
 
-  final List<String> _tags = [];
-  bool _isLoading = false;
+  const _AddYouTubeVideoDialogContent({required this.petId});
+
+  @override
+  ConsumerState<_AddYouTubeVideoDialogContent> createState() =>
+      _AddYouTubeVideoDialogContentState();
+}
+
+class _AddYouTubeVideoDialogContentState
+    extends ConsumerState<_AddYouTubeVideoDialogContent> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _urlController;
+  late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _tagController;
+
+  @override
+  void initState() {
+    super.initState();
+    _urlController = TextEditingController();
+    _titleController = TextEditingController();
+    _descriptionController = TextEditingController();
+    _tagController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -29,6 +96,8 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
     _titleController.dispose();
     _descriptionController.dispose();
     _tagController.dispose();
+    // Reset the form state
+    ref.read(addYouTubeVideoDialogProvider.notifier).resetForm();
     super.dispose();
   }
 
@@ -42,9 +111,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    ref.read(addYouTubeVideoDialogProvider.notifier).setLoading(true);
 
     try {
       // YouTube API 호출 시뮬레이션
@@ -52,9 +119,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
 
       // 제목이 비어있다면 자동으로 채우기
       if (_titleController.text.trim().isEmpty) {
-        _titleController.text = PetActivitiesMockService.getDefaultVideoTitle(
-          videoId,
-        );
+        _titleController.text = 'YouTube Video $videoId';
       }
 
       if (mounted) {
@@ -63,26 +128,20 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
     } catch (error) {
       _showError('YouTubeビデオ情報を取得できませんでした。');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      ref.read(addYouTubeVideoDialogProvider.notifier).setLoading(false);
     }
   }
 
   void _addTag() {
     final tag = _tagController.text.trim();
-    if (tag.isNotEmpty && !_tags.contains(tag)) {
-      setState(() {
-        _tags.add(tag);
-        _tagController.clear();
-      });
+    if (tag.isNotEmpty) {
+      ref.read(addYouTubeVideoDialogProvider.notifier).addTag(tag);
+      _tagController.clear();
     }
   }
 
   void _removeTag(String tag) {
-    setState(() {
-      _tags.remove(tag);
-    });
+    ref.read(addYouTubeVideoDialogProvider.notifier).removeTag(tag);
   }
 
   void _showError(String message) {
@@ -100,16 +159,20 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
       return;
     }
 
+    final state = ref.read(addYouTubeVideoDialogProvider);
+
     Navigator.pop(context, {
       'url': url,
       'title': _titleController.text.trim(),
       'description': _descriptionController.text.trim(),
-      'tags': _tags,
+      'tags': state.tags,
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(addYouTubeVideoDialogProvider);
+
     return AlertDialog(
       title: const Text('YouTubeビデオを追加'),
       contentPadding: const EdgeInsets.all(AppSpacing.lg),
@@ -139,7 +202,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
                 const SizedBox(height: AppSpacing.sm),
 
                 // 태그 목록
-                if (_tags.isNotEmpty) _buildTagList(),
+                if (state.tags.isNotEmpty) _buildTagList(state.tags),
               ],
             ),
           ),
@@ -151,8 +214,8 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
           child: const Text('キャンセル'),
         ),
         ElevatedButton(
-          onPressed: _isLoading ? null : _submit,
-          child: _isLoading
+          onPressed: state.isLoading ? null : _submit,
+          child: state.isLoading
               ? const SizedBox(
                   width: 16,
                   height: 16,
@@ -296,7 +359,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
     );
   }
 
-  Widget _buildTagList() {
+  Widget _buildTagList(List<String> tags) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -308,7 +371,7 @@ class _AddYouTubeVideoDialogState extends State<AddYouTubeVideoDialog> {
         Wrap(
           spacing: AppSpacing.xs,
           runSpacing: AppSpacing.xs,
-          children: _tags
+          children: tags
               .map(
                 (tag) => Chip(
                   label: Text(tag, style: const TextStyle(fontSize: 12)),

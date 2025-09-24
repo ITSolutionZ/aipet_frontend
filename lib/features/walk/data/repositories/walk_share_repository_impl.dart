@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:aipet_frontend/features/onboarding/domain/repositories/walk_share_repository.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-
-import '../../domain/entities/walk_record_entity.dart';
-import '../../domain/repositories/walk_share_repository.dart';
 
 /// 산책 기록 공유 리포지토리 구현체
 class WalkShareRepositoryImpl implements WalkShareRepository {
@@ -19,9 +18,7 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       await Clipboard.setData(ClipboardData(text: text));
       return WalkShareResult.success('텍스트가 클립보드에 복사되었습니다');
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('클립보드 복사 실패: $e');
-      }
+      if (kDebugMode) {}
       return WalkShareResult.failure('클립보드 복사에 실패했습니다');
     }
   }
@@ -58,9 +55,7 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
         imagePath: imagePath,
       );
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('이미지 저장 실패: $e');
-      }
+      if (kDebugMode) {}
       return WalkShareResult.failure('이미지 저장에 실패했습니다');
     }
   }
@@ -71,9 +66,7 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       await Share.share(text, subject: subject ?? 'AI Pet 산책 기록');
       return WalkShareResult.success('시스템 공유가 실행되었습니다');
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('시스템 공유 실패: $e');
-      }
+      if (kDebugMode) {}
       return WalkShareResult.failure('시스템 공유에 실패했습니다');
     }
   }

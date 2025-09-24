@@ -1,10 +1,9 @@
+import 'package:aipet_frontend/features/onboarding/data/models/weather_model.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/controllers/weather_controller.dart';
+import 'package:aipet_frontend/shared/services/weather_icon_service.dart';
+import 'package:aipet_frontend/shared/utils/weather_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/services/weather_icon_service.dart';
-import '../../../../shared/utils/weather_utils.dart';
-import '../../data/models/weather_model.dart';
-import '../controllers/weather_controller.dart';
 
 /// 🎯 날씨 뷰모델
 ///

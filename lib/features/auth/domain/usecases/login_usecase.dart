@@ -1,6 +1,5 @@
-import '../../../../shared/shared.dart';
-import '../../data/services/auth_mode_service.dart';
-import '../repositories/auth_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 로그인 UseCase
 class LoginUseCase {
@@ -9,22 +8,16 @@ class LoginUseCase {
   const LoginUseCase(this._repository);
 
   /// 이메일/비밀번호로 로그인
+  ///
+  /// [email] 사용자 이메일 주소
+  /// [password] 사용자 비밀번호
+  ///
+  /// Returns: 로그인 결과 (성공 시 AuthUser 포함)
   Future<Result<AuthUser>> call({
     required String email,
     required String password,
   }) async {
     try {
-      if (AuthModeService.isMockMode) {
-        // Mock 모드: 임시 사용자 생성
-        AuthModeService.logTempLogin(email, '이메일 로그인');
-        final tempUser = AuthModeService.createTempUser(email);
-        return Result.success(
-          AuthModeService.getTempLoginMessage('로그인'),
-          tempUser,
-        );
-      }
-
-      // 실제 로그인 로직
       // 입력 유효성 검사
       if (email.isEmpty || password.isEmpty) {
         return Result.failure('メールアドレスとパスワードを入力してください');
@@ -44,8 +37,8 @@ class LoginUseCase {
         password,
       );
 
-      if (authResult.isSuccess && authResult.user != null) {
-        return Result.success('ログインが完了しました', authResult.user!);
+      if (authResult.isSuccess && authResult.data != null) {
+        return Result.success('ログインが完了しました', authResult.data!);
       } else {
         return Result.failure(authResult.message);
       }

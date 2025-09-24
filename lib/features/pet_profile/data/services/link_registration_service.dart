@@ -1,4 +1,3 @@
-
 /// 링크 등록 서비스
 ///
 /// 펫 프로필 링크를 등록하는 서비스입니다.
@@ -16,7 +15,9 @@ class LinkRegistrationService {
       'message': 'リンクが正常に登録されました',
       'linkId': 'link-${DateTime.now().millisecondsSinceEpoch}',
       'registeredLink': link,
-      'expiresAt': DateTime.now().add(const Duration(days: 30)).toIso8601String(),
+      'expiresAt': DateTime.now()
+          .add(const Duration(days: 30))
+          .toIso8601String(),
     };
   }
 
@@ -24,6 +25,6 @@ class LinkRegistrationService {
   static bool isValidLink(String link) {
     // 기본적인 URL 유효성 검증
     return Uri.tryParse(link) != null &&
-           (link.startsWith('http://') || link.startsWith('https://'));
+        (link.startsWith('http://') || link.startsWith('https://'));
   }
 }

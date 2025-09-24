@@ -84,11 +84,11 @@ class VaccineMockData {
   static List<Map<String, dynamic>> getAllVaccines() {
     final vaccineData = getVaccineData();
     final allVaccines = <Map<String, dynamic>>[];
-    
+
     for (final yearlyVaccines in vaccineData.values) {
       allVaccines.addAll(yearlyVaccines);
     }
-    
+
     return allVaccines;
   }
 }

@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
 
 /// 산책 기록의 반려동물 태그 위젯
 class WalkPetTag extends StatelessWidget {

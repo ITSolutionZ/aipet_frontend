@@ -1,10 +1,9 @@
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
+import 'package:aipet_frontend/shared/repositories/pet_repository_impl.dart';
+import 'package:aipet_frontend/shared/repositories/pet_repository_mockito_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../domain/entities/pet_profile_entity.dart';
-import '../../domain/repositories/pet_repository.dart';
-import '../repositories/pet_repository_impl.dart';
-import '../repositories/pet_repository_mockito_impl.dart';
 
 part 'pet_providers.g.dart';
 
@@ -38,7 +37,6 @@ class PetsNotifier extends _$PetsNotifier {
         throw Exception(result.message);
       }
     } catch (e) {
-      // REMOVED_SECURITY_RISK: print('Error in PetsNotifier.build(): $e');
       rethrow;
     }
   }

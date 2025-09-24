@@ -1,29 +1,18 @@
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/walk_detail_map_widget.dart';
+import 'package:aipet_frontend/shared/widgets/walk_info_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/entities/walk_record_entity.dart';
-import '../widgets/walk_detail_map_widget.dart';
-import '../widgets/walk_info_bottom_sheet.dart';
-
-class WalkDetailScreen extends ConsumerStatefulWidget {
+class WalkDetailScreen extends ConsumerWidget {
   final WalkRecordEntity walkRecord;
 
   const WalkDetailScreen({super.key, required this.walkRecord});
 
   @override
-  ConsumerState<WalkDetailScreen> createState() => _WalkDetailScreenState();
-}
-
-class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       body: SafeArea(
@@ -63,7 +52,7 @@ class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
                 Row(
                   children: [
                     Text(
-                      widget.walkRecord.title,
+                      walkRecord.title,
                       style: AppFonts.fredoka(
                         fontSize: AppFonts.lg,
                         color: AppColors.pointDark,
@@ -78,7 +67,7 @@ class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
-                      widget.walkRecord.dateString,
+                      walkRecord.dateString,
                       style: AppFonts.bodySmall.copyWith(
                         color: AppColors.pointGray,
                       ),
@@ -127,7 +116,7 @@ class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                widget.walkRecord.petImage ?? 'assets/images/dogs/shiba.png',
+                walkRecord.petImage ?? 'assets/images/dogs/shiba.png',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
@@ -145,7 +134,7 @@ class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
           const SizedBox(width: AppSpacing.xs),
           // 반려동물 이름
           Text(
-            widget.walkRecord.petName ?? 'Maxi',
+            walkRecord.petName ?? 'Maxi',
             style: AppFonts.bodySmall.copyWith(
               color: AppColors.pointDark,
               fontWeight: FontWeight.w600,
@@ -162,7 +151,7 @@ class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
       child: Stack(
         children: [
           // 지도 위젯
-          WalkDetailMapWidget(walkRecord: widget.walkRecord),
+          WalkDetailMapWidget(walkRecord: walkRecord),
 
           // 하단 정보 카드
           Positioned(
@@ -171,7 +160,7 @@ class _WalkDetailScreenState extends ConsumerState<WalkDetailScreen> {
             right: 0,
             child: Consumer(
               builder: (context, ref, child) {
-                return WalkInfoBottomSheet(walkRecord: widget.walkRecord);
+                return WalkInfoBottomSheet(walkRecord: walkRecord);
               },
             ),
           ),

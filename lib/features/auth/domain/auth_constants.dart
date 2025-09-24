@@ -1,4 +1,4 @@
-import '../../../shared/shared.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 인증 관련 상수 정의 (공통 상수 사용)
 class AuthConstants {

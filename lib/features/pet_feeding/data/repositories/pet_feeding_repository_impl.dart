@@ -1,6 +1,6 @@
-import '../../../../shared/testing/mock_data/mock_data_service.dart';
-import '../../domain/entities/feeding_record_entity.dart';
-import '../../domain/repositories/pet_feeding_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/feeding_record_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/repositories/pet_feeding_repository.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/mock_data_service.dart';
 
 class PetFeedingRepositoryImpl implements PetFeedingRepository {
   // 메모리 기반 저장소 (MockDataService의 데이터로 초기화)

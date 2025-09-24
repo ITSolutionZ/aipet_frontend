@@ -7,33 +7,45 @@ class AppointmentMockData {
     return [
       DateTime(baseDate.year, baseDate.month, baseDate.day, 14, 0), // 오늘 14:00
       DateTime(baseDate.year, baseDate.month, baseDate.day, 16, 30), // 오늘 16:30
-      DateTime(baseDate.year, baseDate.month, baseDate.day + 1, 10, 0), // 내일 10:00
-      DateTime(baseDate.year, baseDate.month, baseDate.day + 2, 15, 0), // 모레 15:00
-      DateTime(baseDate.year, baseDate.month, baseDate.day + 3, 9, 30), // 3일 후 9:30
-      DateTime(baseDate.year, baseDate.month, baseDate.day + 5, 11, 0), // 5일 후 11:00
+      DateTime(
+        baseDate.year,
+        baseDate.month,
+        baseDate.day + 1,
+        10,
+        0,
+      ), // 내일 10:00
+      DateTime(
+        baseDate.year,
+        baseDate.month,
+        baseDate.day + 2,
+        15,
+        0,
+      ), // 모레 15:00
+      DateTime(
+        baseDate.year,
+        baseDate.month,
+        baseDate.day + 3,
+        9,
+        30,
+      ), // 3일 후 9:30
+      DateTime(
+        baseDate.year,
+        baseDate.month,
+        baseDate.day + 5,
+        11,
+        0,
+      ), // 5일 후 11:00
     ];
   }
 
   /// 펫 타입별 예약 수 Mock 데이터
   static Map<String, int> getUpcomingAppointmentCount() {
-    return {
-      'dog': 3,
-      'cat': 1,
-      'rabbit': 2,
-      'hamster': 1,
-      'default': 2,
-    };
+    return {'dog': 3, 'cat': 1, 'rabbit': 2, 'hamster': 1, 'default': 2};
   }
 
   /// 펫 타입별 이번 달 총 예약 수 Mock 데이터
   static Map<String, int> getMonthlyAppointmentCount() {
-    return {
-      'dog': 6,
-      'cat': 3,
-      'rabbit': 5,
-      'hamster': 2,
-      'default': 4,
-    };
+    return {'dog': 6, 'cat': 3, 'rabbit': 5, 'hamster': 2, 'default': 4};
   }
 
   /// 다음 예약 시간을 계산하여 표시 형식으로 반환

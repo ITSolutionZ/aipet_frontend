@@ -1,6 +1,6 @@
-import '../../../../shared/shared.dart';
-import '../../data/providers/usecase_providers.dart';
-import '../../domain/domain.dart';
+import 'package:aipet_frontend/features/onboarding/data/providers/usecase_providers.dart';
+import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 class PetCoreController extends CrudController<PetProfileEntity> {
   PetCoreController(super.ref);

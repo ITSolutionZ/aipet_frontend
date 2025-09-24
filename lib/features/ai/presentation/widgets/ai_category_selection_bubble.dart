@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/features/ai/data/services/ai_category_service.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../data/services/ai_category_service.dart';
-import '../../domain/entities/ai_category_entity.dart';
 
 /// AI 메시지 버블 형태의 카테고리 선택 위젯
 class AiCategorySelectionBubble extends StatelessWidget {
@@ -38,16 +37,16 @@ class AiCategorySelectionBubble extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          
+
           // 메시지 버블
           Flexible(
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(AppRadius.medium).copyWith(
-                  bottomLeft: Radius.zero,
-                ),
+                borderRadius: BorderRadius.circular(
+                  AppRadius.medium,
+                ).copyWith(bottomLeft: Radius.zero),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
@@ -70,7 +69,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  
+
                   Text(
                     '該当するカテゴリを選択してください：',
                     style: AppFonts.bodyMedium.copyWith(
@@ -79,12 +78,12 @@ class AiCategorySelectionBubble extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  
+
                   // 카테고리 선택 위젯
                   _buildCategorySelection(),
-                  
+
                   const SizedBox(height: AppSpacing.sm),
-                  
+
                   // 타임스탬프
                   Text(
                     '今',
@@ -113,7 +112,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
 
   Widget _buildCategoryChip(AiCategoryEntity category) {
     final isSelected = selectedCategory?.id == category.id;
-    
+
     return GestureDetector(
       onTap: () => onCategorySelected(category),
       child: Container(
@@ -125,18 +124,20 @@ class AiCategorySelectionBubble extends StatelessWidget {
           color: isSelected ? AppColors.pointBrown : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(
-            color: isSelected 
-                ? AppColors.pointBrown 
+            color: isSelected
+                ? AppColors.pointBrown
                 : AppColors.pointBrown.withValues(alpha: 0.3),
             width: isSelected ? 2 : 1,
           ),
-          boxShadow: isSelected ? [
-            BoxShadow(
-              color: AppColors.pointBrown.withValues(alpha: 0.2),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ] : null,
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.pointBrown.withValues(alpha: 0.2),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

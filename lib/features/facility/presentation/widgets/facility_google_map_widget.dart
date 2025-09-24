@@ -1,12 +1,193 @@
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/facility.dart';
+final facilityGoogleMapProvider =
+    StateNotifierProvider.family<
+      FacilityGoogleMapController,
+      FacilityGoogleMapState,
+      FacilityGoogleMapParams
+    >((ref, params) => FacilityGoogleMapController(params));
 
-/// 시설 위치를 표시하는 Google Maps 위젯
-class FacilityGoogleMapWidget extends StatefulWidget {
+class FacilityGoogleMapParams {
+  final Facility facility;
+  final List<Facility>? nearbyFacilities;
+  final VoidCallback? onMapTap;
+  final Function(Facility)? onFacilityTap;
+
+  const FacilityGoogleMapParams({
+    required this.facility,
+    this.nearbyFacilities,
+    this.onMapTap,
+    this.onFacilityTap,
+  });
+}
+
+class FacilityGoogleMapState {
+  final GoogleMapController? mapController;
+  final Position? currentPosition;
+  final Set<Marker> markers;
+
+  const FacilityGoogleMapState({
+    this.mapController,
+    this.currentPosition,
+    this.markers = const {},
+  });
+
+  FacilityGoogleMapState copyWith({
+    GoogleMapController? mapController,
+    Position? currentPosition,
+    Set<Marker>? markers,
+  }) {
+    return FacilityGoogleMapState(
+      mapController: mapController ?? this.mapController,
+      currentPosition: currentPosition ?? this.currentPosition,
+      markers: markers ?? this.markers,
+    );
+  }
+}
+
+class FacilityGoogleMapController
+    extends StateNotifier<FacilityGoogleMapState> {
+  final FacilityGoogleMapParams params;
+
+  FacilityGoogleMapController(this.params)
+    : super(const FacilityGoogleMapState()) {
+    getCurrentLocation();
+  }
+
+  Future<void> getCurrentLocation() async {
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+      state = state.copyWith(currentPosition: position);
+      setupMarkers();
+    } catch (e) {
+      state = state.copyWith(
+        currentPosition: Position(
+          latitude: 35.6762,
+          longitude: 139.6503,
+          timestamp: DateTime.now(),
+          accuracy: 0,
+          altitude: 0,
+          heading: 0,
+          speed: 0,
+          speedAccuracy: 0,
+          altitudeAccuracy: 0,
+          headingAccuracy: 0,
+        ),
+      );
+      setupMarkers();
+    }
+  }
+
+  void setupMarkers() {
+    final markers = <Marker>{};
+
+    markers.add(
+      Marker(
+        markerId: MarkerId(params.facility.id),
+        position: LatLng(
+          getFacilityLatitude(params.facility),
+          getFacilityLongitude(params.facility),
+        ),
+        infoWindow: InfoWindow(
+          title: params.facility.name,
+          snippet: params.facility.type == FacilityType.grooming
+              ? 'トリミング'
+              : '動物病院',
+        ),
+        icon: BitmapDescriptor.defaultMarkerWithHue(
+          params.facility.type == FacilityType.grooming
+              ? BitmapDescriptor.hueViolet
+              : BitmapDescriptor.hueRed,
+        ),
+      ),
+    );
+
+    if (params.nearbyFacilities != null) {
+      for (final facility in params.nearbyFacilities!) {
+        if (facility.id != params.facility.id) {
+          markers.add(
+            Marker(
+              markerId: MarkerId(facility.id),
+              position: LatLng(
+                getFacilityLatitude(facility),
+                getFacilityLongitude(facility),
+              ),
+              infoWindow: InfoWindow(
+                title: facility.name,
+                snippet: facility.type == FacilityType.grooming
+                    ? 'トリミング'
+                    : '動物病院',
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                facility.type == FacilityType.grooming
+                    ? BitmapDescriptor.hueViolet
+                    : BitmapDescriptor.hueRed,
+              ),
+              onTap: () => params.onFacilityTap?.call(facility),
+            ),
+          );
+        }
+      }
+    }
+
+    if (state.currentPosition != null) {
+      markers.add(
+        Marker(
+          markerId: const MarkerId('current_location'),
+          position: LatLng(
+            state.currentPosition!.latitude,
+            state.currentPosition!.longitude,
+          ),
+          infoWindow: const InfoWindow(title: '現在地', snippet: 'あなたの現在位置'),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        ),
+      );
+    }
+
+    state = state.copyWith(markers: markers);
+  }
+
+  double getFacilityLatitude(Facility facility) {
+    return 35.6762 + (facility.id.hashCode % 100) * 0.001;
+  }
+
+  double getFacilityLongitude(Facility facility) {
+    return 139.6503 + (facility.id.hashCode % 100) * 0.001;
+  }
+
+  void onMapCreated(GoogleMapController controller) {
+    state = state.copyWith(mapController: controller);
+    setupMarkers();
+    moveToFacility();
+  }
+
+  void moveToFacility() {
+    if (state.mapController != null) {
+      state.mapController!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(
+              getFacilityLatitude(params.facility),
+              getFacilityLongitude(params.facility),
+            ),
+            zoom: 15.0,
+          ),
+        ),
+      );
+    }
+  }
+}
+
+class FacilityGoogleMapWidget extends ConsumerWidget {
   final Facility facility;
   final List<Facility>? nearbyFacilities;
   final VoidCallback? onMapTap;
@@ -21,159 +202,15 @@ class FacilityGoogleMapWidget extends StatefulWidget {
   });
 
   @override
-  State<FacilityGoogleMapWidget> createState() =>
-      _FacilityGoogleMapWidgetState();
-}
-
-class _FacilityGoogleMapWidgetState extends State<FacilityGoogleMapWidget> {
-  GoogleMapController? _mapController;
-  Position? _currentPosition;
-  final Set<Marker> _markers = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-  }
-
-  Future<void> _getCurrentLocation() async {
-    try {
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      );
-      setState(() {
-        _currentPosition = position;
-      });
-      _setupMarkers();
-    } catch (e) {
-      // 위치 권한이 없거나 오류 발생 시 기본 위치 사용
-      setState(() {
-        _currentPosition = Position(
-          latitude: 35.6762, // 도쿄 기본 위치
-          longitude: 139.6503,
-          timestamp: DateTime.now(),
-          accuracy: 0,
-          altitude: 0,
-          heading: 0,
-          speed: 0,
-          speedAccuracy: 0,
-          altitudeAccuracy: 0,
-          headingAccuracy: 0,
-        );
-      });
-      _setupMarkers();
-    }
-  }
-
-  void _setupMarkers() {
-    _markers.clear();
-
-    // 메인 시설 마커
-    _markers.add(
-      Marker(
-        markerId: MarkerId(widget.facility.id),
-        position: LatLng(
-          _getFacilityLatitude(widget.facility),
-          _getFacilityLongitude(widget.facility),
-        ),
-        infoWindow: InfoWindow(
-          title: widget.facility.name,
-          snippet: widget.facility.type == FacilityType.grooming
-              ? 'トリミング'
-              : '動物病院',
-        ),
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-          widget.facility.type == FacilityType.grooming
-              ? BitmapDescriptor.hueViolet
-              : BitmapDescriptor.hueRed,
-        ),
-      ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final params = FacilityGoogleMapParams(
+      facility: facility,
+      nearbyFacilities: nearbyFacilities,
+      onMapTap: onMapTap,
+      onFacilityTap: onFacilityTap,
     );
-
-    // 주변 시설 마커들
-    if (widget.nearbyFacilities != null) {
-      for (final facility in widget.nearbyFacilities!) {
-        if (facility.id != widget.facility.id) {
-          _markers.add(
-            Marker(
-              markerId: MarkerId(facility.id),
-              position: LatLng(
-                _getFacilityLatitude(facility),
-                _getFacilityLongitude(facility),
-              ),
-              infoWindow: InfoWindow(
-                title: facility.name,
-                snippet: facility.type == FacilityType.grooming
-                    ? 'トリミング'
-                    : '動物病院',
-              ),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                facility.type == FacilityType.grooming
-                    ? BitmapDescriptor.hueViolet
-                    : BitmapDescriptor.hueRed,
-              ),
-              onTap: () => widget.onFacilityTap?.call(facility),
-            ),
-          );
-        }
-      }
-    }
-
-    // 현재 위치 마커
-    if (_currentPosition != null) {
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('current_location'),
-          position: LatLng(
-            _currentPosition!.latitude,
-            _currentPosition!.longitude,
-          ),
-          infoWindow: const InfoWindow(title: '現在地', snippet: 'あなたの現在位置'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-        ),
-      );
-    }
-  }
-
-  double _getFacilityLatitude(Facility facility) {
-    // Mock 데이터에서 좌표 추출 (실제로는 facility.latitude 사용)
-    // 현재는 주소 기반으로 가상 좌표 생성
-    return 35.6762 + (facility.id.hashCode % 100) * 0.001;
-  }
-
-  double _getFacilityLongitude(Facility facility) {
-    // Mock 데이터에서 좌표 추출 (실제로는 facility.longitude 사용)
-    return 139.6503 + (facility.id.hashCode % 100) * 0.001;
-  }
-
-  void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
-    _setupMarkers();
-
-    // 메인 시설로 카메라 이동
-    _moveToFacility();
-  }
-
-  void _moveToFacility() {
-    if (_mapController != null) {
-      _mapController!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: LatLng(
-              _getFacilityLatitude(widget.facility),
-              _getFacilityLongitude(widget.facility),
-            ),
-            zoom: 15.0,
-          ),
-        ),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    final controller = ref.read(facilityGoogleMapProvider(params).notifier);
+    final state = ref.watch(facilityGoogleMapProvider(params));
     return Container(
       height: 200,
       decoration: BoxDecoration(
@@ -182,24 +219,24 @@ class _FacilityGoogleMapWidgetState extends State<FacilityGoogleMapWidget> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        child: _currentPosition == null
+        child: state.currentPosition == null
             ? _buildLoadingState()
             : GoogleMap(
-                onMapCreated: _onMapCreated,
+                onMapCreated: controller.onMapCreated,
                 initialCameraPosition: CameraPosition(
                   target: LatLng(
-                    _getFacilityLatitude(widget.facility),
-                    _getFacilityLongitude(widget.facility),
+                    controller.getFacilityLatitude(facility),
+                    controller.getFacilityLongitude(facility),
                   ),
                   zoom: 15.0,
                 ),
-                markers: _markers,
+                markers: state.markers,
                 myLocationEnabled: true,
                 myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,
                 mapToolbarEnabled: false,
                 compassEnabled: true,
-                onTap: (LatLng position) => widget.onMapTap?.call(),
+                onTap: (LatLng position) => onMapTap?.call(),
               ),
       ),
     );

@@ -20,6 +20,8 @@ export 'modals/microchip_modal_handler_widget.dart';
 // Navigation Widgets
 export 'navigation/next_button.dart';
 export 'navigation/pet_registration_progress_bar.dart';
+// Drawer Widgets
+export 'pet_section_widget.dart';
 // Picker Widgets
 export 'pickers/custom_calendar_widget.dart';
 export 'pickers/date_tab_bar_widget.dart';
@@ -29,5 +31,3 @@ export 'pickers/weight_slider_widget.dart';
 export 'pickers/year_month_selector_widget.dart';
 // Screen Widgets
 export 'screens/generic_breed_selection_screen.dart';
-// Drawer Widgets
-export 'pet_section_widget.dart';

@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../../shared/shared.dart';
-
-class EditableAttributeCard extends StatefulWidget {
+class EditableAttributeCard extends StatelessWidget {
   final String label;
   final String value;
   final String type;
@@ -26,27 +25,6 @@ class EditableAttributeCard extends StatefulWidget {
   });
 
   @override
-  State<EditableAttributeCard> createState() => _EditableAttributeCardState();
-}
-
-class _EditableAttributeCardState extends State<EditableAttributeCard> {
-  late TextEditingController _internalWeightController;
-
-  @override
-  void initState() {
-    super.initState();
-    _internalWeightController = widget.weightController ?? TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    if (widget.weightController == null) {
-      _internalWeightController.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -65,16 +43,16 @@ class _EditableAttributeCardState extends State<EditableAttributeCard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            widget.label,
+            label,
             style: AppFonts.bodyMedium.copyWith(
               color: AppColors.pointDark.withValues(alpha: 0.7),
             ),
           ),
-          if (widget.isEditMode)
+          if (isEditMode)
             _buildEditableField()
           else
             Text(
-              widget.value,
+              value,
               style: AppFonts.bodyMedium.copyWith(
                 color: AppColors.pointDark,
                 fontWeight: FontWeight.w600,
@@ -86,7 +64,7 @@ class _EditableAttributeCardState extends State<EditableAttributeCard> {
   }
 
   Widget _buildEditableField() {
-    switch (widget.type) {
+    switch (type) {
       case 'gender':
         return DropdownButton<String>(
           value: _getGenderValue(),
@@ -95,7 +73,7 @@ class _EditableAttributeCardState extends State<EditableAttributeCard> {
             DropdownMenuItem(value: 'male', child: Text('オス')),
             DropdownMenuItem(value: 'female', child: Text('メス')),
           ],
-          onChanged: widget.onGenderChanged,
+          onChanged: onGenderChanged,
         );
       case 'size':
         return DropdownButton<String>(
@@ -106,7 +84,7 @@ class _EditableAttributeCardState extends State<EditableAttributeCard> {
             DropdownMenuItem(value: 'medium', child: Text('中型')),
             DropdownMenuItem(value: 'large', child: Text('大型')),
           ],
-          onChanged: widget.onSizeChanged,
+          onChanged: onSizeChanged,
         );
       case 'weight':
         return SizedBox(
@@ -122,28 +100,28 @@ class _EditableAttributeCardState extends State<EditableAttributeCard> {
               contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               border: OutlineInputBorder(),
             ),
-            controller: _internalWeightController,
+            controller: weightController,
             onChanged: (value) {
               final weight = double.tryParse(value);
-              widget.onWeightChanged?.call(weight);
+              onWeightChanged?.call(weight);
             },
           ),
         );
       default:
-        return Text(widget.value);
+        return Text(value);
     }
   }
 
   String? _getGenderValue() {
-    if (widget.value == 'オス') return 'male';
-    if (widget.value == 'メス') return 'female';
+    if (value == 'オス') return 'male';
+    if (value == 'メス') return 'female';
     return null;
   }
 
   String? _getSizeValue() {
-    if (widget.value == '小型') return 'small';
-    if (widget.value == '中型') return 'medium';
-    if (widget.value == '大型') return 'large';
+    if (value == '小型') return 'small';
+    if (value == '中型') return 'medium';
+    if (value == '大型') return 'large';
     return null;
   }
 }

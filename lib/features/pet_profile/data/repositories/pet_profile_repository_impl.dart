@@ -1,8 +1,8 @@
 // Pet Profile Repository Implementation
-import '../../../../shared/testing/mock_data/features/pet/pet_mock_data.dart';
-import '../../domain/entities/pet_profile_entity.dart';
-import '../../domain/repositories/pet_profile_repository.dart';
-import '../models/pet_profile_model.dart';
+import 'package:aipet_frontend/features/onboarding/domain/repositories/pet_profile_repository.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/models/pet_profile_model.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_data.dart';
 
 class PetProfileRepositoryImpl implements PetProfileRepository {
   // 메모리 기반 저장소 (통합된 PetMockData 사용)
@@ -11,7 +11,9 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   PetProfileRepositoryImpl() {
     // 통합된 PetMockData에서 초기 데이터를 Model로 변환하여 로드
     final mockData = PetMockData.getMockPets();
-    _profileModels = mockData.map((entity) => PetProfileModel.fromLegacyEntity(entity)).toList();
+    _profileModels = mockData
+        .map((entity) => PetProfileModel.fromLegacyEntity(entity))
+        .toList();
   }
 
   // 테스트용 메서드
@@ -24,7 +26,9 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     await Future.delayed(const Duration(milliseconds: 300));
 
     try {
-      final profileModel = _profileModels.firstWhere((model) => model.id == petId);
+      final profileModel = _profileModels.firstWhere(
+        (model) => model.id == petId,
+      );
       return profileModel.toDomainEntity();
     } catch (e) {
       throw Exception('펫 프로필을 찾을 수 없습니다');
@@ -37,9 +41,9 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
 
     final index = _profileModels.indexWhere((model) => model.id == pet.id);
     if (index != -1) {
-      _profileModels[index] = PetProfileModel.fromDomainEntity(pet.copyWith(
-        updatedAt: DateTime.now(),
-      ));
+      _profileModels[index] = PetProfileModel.fromDomainEntity(
+        pet.copyWith(updatedAt: DateTime.now()),
+      );
       return _profileModels[index].toDomainEntity();
     }
     throw Exception('펫 프로필을 찾을 수 없습니다');

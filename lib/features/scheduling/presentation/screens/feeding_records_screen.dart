@@ -1,12 +1,11 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/widgets/scheduling_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
-import '../../../../shared/shared.dart';
-import '../widgets/scheduling_widgets.dart';
 
 /// 급여 기록 화면
 class FeedingRecordsScreen extends ConsumerStatefulWidget {
@@ -55,26 +54,26 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-            // 통계 차트
-            FeedingStatisticsCard(
-              feedingRecords: feedingRecords,
-              statistics: statistics,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-
-            // 기록 목록
-            Text(
-              '食事記録一覧',
-              style: AppFonts.titleMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.pointDark,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
+                    // 통계 차트
+                    FeedingStatisticsCard(
+                      feedingRecords: feedingRecords,
+                      statistics: statistics,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 기록 목록
-                    ...feedingRecords.map((record) =>
-                      FeedingRecordItem(record: record)
+                    Text(
+                      '食事記録一覧',
+                      style: AppFonts.titleMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.pointDark,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+
+                    // 기록 목록
+                    ...feedingRecords.map(
+                      (record) => FeedingRecordItem(record: record),
                     ),
                   ],
                 ),

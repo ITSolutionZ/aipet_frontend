@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 페이드 애니메이션 위젯
-class AnimatedFadeWidget extends StatefulWidget {
+class AnimatedFadeWidget extends ConsumerStatefulWidget {
   final Widget child;
   final Duration duration;
   final Duration delay;
@@ -20,10 +21,10 @@ class AnimatedFadeWidget extends StatefulWidget {
   });
 
   @override
-  State<AnimatedFadeWidget> createState() => _AnimatedFadeWidgetState();
+  ConsumerState<AnimatedFadeWidget> createState() => _AnimatedFadeWidgetState();
 }
 
-class _AnimatedFadeWidgetState extends State<AnimatedFadeWidget>
+class _AnimatedFadeWidgetState extends ConsumerState<AnimatedFadeWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -83,7 +84,7 @@ class _AnimatedFadeWidgetState extends State<AnimatedFadeWidget>
 }
 
 /// 순차적 페이드 애니메이션 위젯
-class StaggeredFadeWidget extends StatefulWidget {
+class StaggeredFadeWidget extends ConsumerStatefulWidget {
   final List<Widget> children;
   final Duration duration;
   final Duration staggerDelay;
@@ -100,10 +101,11 @@ class StaggeredFadeWidget extends StatefulWidget {
   });
 
   @override
-  State<StaggeredFadeWidget> createState() => _StaggeredFadeWidgetState();
+  ConsumerState<StaggeredFadeWidget> createState() =>
+      _StaggeredFadeWidgetState();
 }
 
-class _StaggeredFadeWidgetState extends State<StaggeredFadeWidget>
+class _StaggeredFadeWidgetState extends ConsumerState<StaggeredFadeWidget>
     with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;

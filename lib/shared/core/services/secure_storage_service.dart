@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// 보안 저장소 서비스 (flutter_secure_storage 기반)
-/// 
+///
 /// iOS: Keychain Services 사용
 /// Android: EncryptedSharedPreferences + Android Keystore 사용
 class SecureStorageService {
@@ -110,7 +110,9 @@ class SecureStorageService {
       return value != null;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('❌ Secure storage contains key check failed: $key, error: $e');
+        debugPrint(
+          '❌ Secure storage contains key check failed: $key, error: $e',
+        );
       }
       return false;
     }
@@ -139,7 +141,7 @@ class SecureStorageService {
   static Future<Map<String, dynamic>?> getJson(String key) async {
     final jsonString = await getString(key);
     if (jsonString == null) return null;
-    
+
     try {
       return jsonDecode(jsonString) as Map<String, dynamic>;
     } catch (e) {
@@ -157,15 +159,17 @@ class SecureStorageService {
         // 테스트 데이터 저장/읽기
         const testKey = 'security_test';
         const testValue = 'test_secure_data_12345';
-        
+
         await setString(testKey, testValue);
         final retrievedValue = await getString(testKey);
         await remove(testKey);
-        
+
         if (retrievedValue == testValue) {
           debugPrint('🔐 Secure Storage validation: PASSED');
         } else {
-          debugPrint('⚠️  Secure Storage validation: FAILED - Data integrity issue');
+          debugPrint(
+            '⚠️  Secure Storage validation: FAILED - Data integrity issue',
+          );
         }
       } catch (e) {
         debugPrint('⚠️  Secure Storage validation: FAILED - $e');

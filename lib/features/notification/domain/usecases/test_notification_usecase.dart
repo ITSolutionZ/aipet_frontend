@@ -1,4 +1,4 @@
-import '../repositories/notification_repository.dart';
+import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
 
 class TestNotificationUseCase {
   final NotificationRepository _repository;

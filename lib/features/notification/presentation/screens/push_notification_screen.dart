@@ -1,14 +1,13 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/controllers/notification_ui_controller.dart';
+import 'package:aipet_frontend/shared/components/forms/alarm_toggle_component.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../data/providers/notification_controller_providers.dart';
-import '../../domain/entities/entities.dart';
-import '../components/forms/alarm_toggle_component.dart';
-import '../controllers/notification_ui_controller.dart';
 // SectionHeader와 SettingsTile은 shared/widgets에서 가져옴 (이미 shared.dart에 포함됨)
 
 class PushNotificationScreen extends ConsumerStatefulWidget {
@@ -53,9 +52,7 @@ class _PushNotificationScreenState
         _isLoading = false;
       });
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('알림 설정 로드 실패: $e');
-      }
+      if (kDebugMode) {}
       setState(() {
         _isLoading = false;
       });

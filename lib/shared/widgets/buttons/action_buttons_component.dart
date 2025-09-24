@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import '../../shared.dart';
 
 /// 순수 UI 전용 액션 버튼들 위젯
 class ActionButtonsComponent extends StatelessWidget {
@@ -64,9 +64,7 @@ class ActionButtonsComponent extends StatelessWidget {
                   label: Text(secondaryButtonText),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.pointPink,
-                    side: const BorderSide(
-                      color: AppColors.pointPink,
-                    ),
+                    side: const BorderSide(color: AppColors.pointPink),
                     padding: const EdgeInsets.symmetric(
                       vertical: AppSpacing.md,
                     ),

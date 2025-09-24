@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
 
 /// 식사&급수 메인 페이지
 /// 드로워에서 "食事&給水" 메뉴를 탭했을 때 이동하는 페이지
@@ -17,9 +16,7 @@ class FeedingMainScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: showBackButton ? null : const AppDrawer(),
-      appBar: showBackButton
-          ? _buildBackAppBar()
-          : _buildDrawerAppBar(),
+      appBar: showBackButton ? _buildBackAppBar() : _buildDrawerAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -98,28 +95,30 @@ class FeedingMainScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: showBackButton ? null : CustomBottomNavigation(
-        selectedIndex: 0, // drawer에서 접근 시 홈 선택
-        onItemTapped: (index) {
-          switch (index) {
-            case 0:
-              context.go('/home');
-              break;
-            case 1:
-              context.go('/ai');
-              break;
-            case 2:
-              context.go('/scheduling');
-              break;
-            case 3:
-              context.go('/settings/push-notification');
-              break;
-            case 4:
-              context.go('/settings');
-              break;
-          }
-        },
-      ),
+      bottomNavigationBar: showBackButton
+          ? null
+          : CustomBottomNavigation(
+              selectedIndex: 0, // drawer에서 접근 시 홈 선택
+              onItemTapped: (index) {
+                switch (index) {
+                  case 0:
+                    context.go('/home');
+                    break;
+                  case 1:
+                    context.go('/ai');
+                    break;
+                  case 2:
+                    context.go('/scheduling');
+                    break;
+                  case 3:
+                    context.go('/settings/push-notification');
+                    break;
+                  case 4:
+                    context.go('/settings');
+                    break;
+                }
+              },
+            ),
     );
   }
 
@@ -182,7 +181,9 @@ class FeedingMainScreen extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       subtitle,
-                      style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointGray,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -202,5 +203,4 @@ class FeedingMainScreen extends ConsumerWidget {
       ),
     );
   }
-
 }

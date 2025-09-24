@@ -229,7 +229,9 @@ enum PetGender {
   final String displayName;
 
   static PetGender? fromString(String value) {
-    return PetGender.values.where((gender) => gender.value == value).firstOrNull;
+    return PetGender.values
+        .where((gender) => gender.value == value)
+        .firstOrNull;
   }
 }
 

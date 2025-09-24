@@ -1,13 +1,12 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/shared/core/constants/app_constants.dart';
+import 'package:aipet_frontend/shared/core/constants/app_texts.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-
-import '../constants/app_constants.dart';
-import '../constants/app_texts.dart';
-import '../domain/result.dart';
 
 /// API 호출 관련 공통 유틸리티
 class ApiUtils {

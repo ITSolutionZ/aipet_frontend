@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class PetInfoCard extends StatelessWidget {
   final String title;
@@ -65,7 +64,7 @@ class PetInfoCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const const const SizedBox(height: 4),
                   Text(
                     value,
                     style: AppFonts.bodyMedium.copyWith(

@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
-
-import '../../design/design.dart';
 
 /// 전역 SnackBar 관리 서비스
 ///
@@ -148,11 +147,7 @@ class SnackBarService {
       content: Row(
         children: [
           if (icon != null) ...[
-            Icon(
-              icon,
-              color: textColor ?? AppColors.pointOffWhite,
-              size: 20,
-            ),
+            Icon(icon, color: textColor ?? AppColors.pointOffWhite, size: 20),
             const SizedBox(width: AppSpacing.sm),
           ],
           Expanded(

@@ -1,6 +1,6 @@
-import '../../../../shared/shared.dart';
-import '../entities/splash_entity.dart';
-import '../repositories/splash_repository.dart';
+import 'package:aipet_frontend/features/splash/domain/repositories/splash_repository.dart';
+import 'package:aipet_frontend/shared/entities/splash_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 class GetSplashConfigUseCase {
   final SplashRepository repository;

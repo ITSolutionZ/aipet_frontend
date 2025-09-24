@@ -106,8 +106,8 @@ void main() {
 
       // Act
       final isNull = nullableString == null;
-      final isNotNull = nonNullableString != null;
-      final nonNullLength = nonNullableString.length;
+      const isNotNull = nonNullableString != null;
+      const nonNullLength = nonNullableString.length;
 
       // Assert
       expect(isNull, isTrue);

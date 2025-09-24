@@ -30,9 +30,9 @@ class EnvironmentConstants {
   /// 필수 환경 변수가 모두 설정되어 있는지 확인
   static bool get areAllEnvironmentVariablesSet {
     return googleMapsApiKey.isNotEmpty &&
-           weatherApiKey.isNotEmpty &&
-           openAiApiKey.isNotEmpty &&
-           lineChannelId.isNotEmpty;
+        weatherApiKey.isNotEmpty &&
+        openAiApiKey.isNotEmpty &&
+        lineChannelId.isNotEmpty;
   }
 
   /// 누락된 환경 변수 목록 반환

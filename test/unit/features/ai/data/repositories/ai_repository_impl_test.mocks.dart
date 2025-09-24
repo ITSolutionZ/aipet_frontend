@@ -3,17 +3,18 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i2;
 
 import 'package:aipet_frontend/features/ai/data/services/ai_mock_data_service_impl.dart'
     as _i7;
 import 'package:aipet_frontend/features/ai/data/services/openai_service.dart'
-    as _i3;
+    as _i4;
 import 'package:aipet_frontend/features/ai/domain/domain.dart' as _i8;
-import 'package:aipet_frontend/features/pet_registor/pet_registor.dart' as _i5;
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
+    as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
-import 'package:riverpod/src/internals.dart' as _i2;
+import 'package:riverpod/src/internals.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -29,33 +30,38 @@ import 'package:riverpod/src/internals.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeProviderContainer_0 extends _i1.SmartFake
-    implements _i2.ProviderContainer {
-  _FakeProviderContainer_0(Object parent, Invocation parentInvocation)
+class _FakeFuture_0<T1> extends _i1.SmartFake implements _i2.Future<T1> {
+  _FakeFuture_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeKeepAliveLink_1 extends _i1.SmartFake implements _i2.KeepAliveLink {
-  _FakeKeepAliveLink_1(Object parent, Invocation parentInvocation)
+class _FakeProviderContainer_1 extends _i1.SmartFake
+    implements _i3.ProviderContainer {
+  _FakeProviderContainer_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeProviderSubscription_2<State1> extends _i1.SmartFake
-    implements _i2.ProviderSubscription<State1> {
-  _FakeProviderSubscription_2(Object parent, Invocation parentInvocation)
+class _FakeKeepAliveLink_2 extends _i1.SmartFake implements _i3.KeepAliveLink {
+  _FakeKeepAliveLink_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeProviderSubscription_3<State1> extends _i1.SmartFake
+    implements _i3.ProviderSubscription<State1> {
+  _FakeProviderSubscription_3(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 /// A class which mocks [OpenAIService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockOpenAIService extends _i1.Mock implements _i3.OpenAIService {
+class MockOpenAIService extends _i1.Mock implements _i4.OpenAIService {
   MockOpenAIService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<String> generateResponse(
+  _i2.Future<String> generateResponse(
     String? message, {
     _i5.PetProfileEntity? petContext,
   }) =>
@@ -65,7 +71,7 @@ class MockOpenAIService extends _i1.Mock implements _i3.OpenAIService {
               [message],
               {#petContext: petContext},
             ),
-            returnValue: _i4.Future<String>.value(
+            returnValue: _i2.Future<String>.value(
               _i6.dummyValue<String>(
                 this,
                 Invocation.method(
@@ -76,7 +82,64 @@ class MockOpenAIService extends _i1.Mock implements _i3.OpenAIService {
               ),
             ),
           )
-          as _i4.Future<String>);
+          as _i2.Future<String>);
+
+  @override
+  void logError(String? message, [Object? error, StackTrace? stackTrace]) =>
+      super.noSuchMethod(
+        Invocation.method(#logError, [message, error, stackTrace]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void logInfo(String? message) => super.noSuchMethod(
+    Invocation.method(#logInfo, [message]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void logWarning(String? message) => super.noSuchMethod(
+    Invocation.method(#logWarning, [message]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void logDebug(String? message) => super.noSuchMethod(
+    Invocation.method(#logDebug, [message]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void recordPerformanceMetric(String? operation, Duration? duration) =>
+      super.noSuchMethod(
+        Invocation.method(#recordPerformanceMetric, [operation, duration]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i2.Future<T> trackApiPerformance<T>(
+    String? operation,
+    _i2.Future<T> Function()? apiCall,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#trackApiPerformance, [operation, apiCall]),
+            returnValue:
+                _i6.ifNotNull(
+                  _i6.dummyValueOrNull<T>(
+                    this,
+                    Invocation.method(#trackApiPerformance, [
+                      operation,
+                      apiCall,
+                    ]),
+                  ),
+                  (T v) => _i2.Future<T>.value(v),
+                ) ??
+                _FakeFuture_0<T>(
+                  this,
+                  Invocation.method(#trackApiPerformance, [operation, apiCall]),
+                ),
+          )
+          as _i2.Future<T>);
 }
 
 /// A class which mocks [AiMockDataServiceImpl].
@@ -89,100 +152,157 @@ class MockAiMockDataServiceImpl extends _i1.Mock
   }
 
   @override
-  _i4.Future<void> simulateApiDelay({int? seconds = 1}) =>
+  _i2.Future<void> simulateApiDelay({int? seconds = 1}) =>
       (super.noSuchMethod(
             Invocation.method(#simulateApiDelay, [], {#seconds: seconds}),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i2.Future<void>.value(),
+            returnValueForMissingStub: _i2.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i2.Future<void>);
 
   @override
-  _i4.Future<List<_i8.AiMessageEntity>> getChatHistory() =>
+  _i2.Future<List<Map<String, dynamic>>> getChatHistory() =>
       (super.noSuchMethod(
             Invocation.method(#getChatHistory, []),
-            returnValue: _i4.Future<List<_i8.AiMessageEntity>>.value(
+            returnValue: _i2.Future<List<Map<String, dynamic>>>.value(
+              <Map<String, dynamic>>[],
+            ),
+          )
+          as _i2.Future<List<Map<String, dynamic>>>);
+
+  @override
+  _i2.Future<List<Map<String, dynamic>>> getSuggestedQuestions() =>
+      (super.noSuchMethod(
+            Invocation.method(#getSuggestedQuestions, []),
+            returnValue: _i2.Future<List<Map<String, dynamic>>>.value(
+              <Map<String, dynamic>>[],
+            ),
+          )
+          as _i2.Future<List<Map<String, dynamic>>>);
+
+  @override
+  _i2.Future<List<Map<String, dynamic>>> getFavoriteQAs() =>
+      (super.noSuchMethod(
+            Invocation.method(#getFavoriteQAs, []),
+            returnValue: _i2.Future<List<Map<String, dynamic>>>.value(
+              <Map<String, dynamic>>[],
+            ),
+          )
+          as _i2.Future<List<Map<String, dynamic>>>);
+
+  @override
+  _i2.Future<List<Map<String, dynamic>>> getChatSessions() =>
+      (super.noSuchMethod(
+            Invocation.method(#getChatSessions, []),
+            returnValue: _i2.Future<List<Map<String, dynamic>>>.value(
+              <Map<String, dynamic>>[],
+            ),
+          )
+          as _i2.Future<List<Map<String, dynamic>>>);
+
+  @override
+  _i2.Future<List<_i8.AiMessageEntity>> getChatHistoryEntities() =>
+      (super.noSuchMethod(
+            Invocation.method(#getChatHistoryEntities, []),
+            returnValue: _i2.Future<List<_i8.AiMessageEntity>>.value(
               <_i8.AiMessageEntity>[],
             ),
           )
-          as _i4.Future<List<_i8.AiMessageEntity>>);
+          as _i2.Future<List<_i8.AiMessageEntity>>);
 
   @override
-  _i4.Future<List<_i8.AiSuggestedQuestionEntity>> getSuggestedQuestions() =>
+  _i2.Future<List<_i8.AiSuggestedQuestionEntity>>
+  getSuggestedQuestionEntities() =>
       (super.noSuchMethod(
-            Invocation.method(#getSuggestedQuestions, []),
-            returnValue: _i4.Future<List<_i8.AiSuggestedQuestionEntity>>.value(
+            Invocation.method(#getSuggestedQuestionEntities, []),
+            returnValue: _i2.Future<List<_i8.AiSuggestedQuestionEntity>>.value(
               <_i8.AiSuggestedQuestionEntity>[],
             ),
           )
-          as _i4.Future<List<_i8.AiSuggestedQuestionEntity>>);
+          as _i2.Future<List<_i8.AiSuggestedQuestionEntity>>);
 
   @override
-  _i4.Future<List<_i8.AiFavoriteQaEntity>> getFavoriteQAs() =>
+  _i2.Future<List<_i8.AiFavoriteQaEntity>> getFavoriteQAEntities() =>
       (super.noSuchMethod(
-            Invocation.method(#getFavoriteQAs, []),
-            returnValue: _i4.Future<List<_i8.AiFavoriteQaEntity>>.value(
+            Invocation.method(#getFavoriteQAEntities, []),
+            returnValue: _i2.Future<List<_i8.AiFavoriteQaEntity>>.value(
               <_i8.AiFavoriteQaEntity>[],
             ),
           )
-          as _i4.Future<List<_i8.AiFavoriteQaEntity>>);
+          as _i2.Future<List<_i8.AiFavoriteQaEntity>>);
 
   @override
-  _i4.Future<List<_i8.AiChatSessionEntity>> getChatSessions() =>
+  _i2.Future<List<_i8.AiChatSessionEntity>> getChatSessionEntities() =>
       (super.noSuchMethod(
-            Invocation.method(#getChatSessions, []),
-            returnValue: _i4.Future<List<_i8.AiChatSessionEntity>>.value(
+            Invocation.method(#getChatSessionEntities, []),
+            returnValue: _i2.Future<List<_i8.AiChatSessionEntity>>.value(
               <_i8.AiChatSessionEntity>[],
             ),
           )
-          as _i4.Future<List<_i8.AiChatSessionEntity>>);
+          as _i2.Future<List<_i8.AiChatSessionEntity>>);
 
   @override
-  _i4.Future<Map<String, dynamic>> generateAiResponse(String? userMessage) =>
+  _i2.Future<Map<String, dynamic>> generateAiResponse(String? userMessage) =>
       (super.noSuchMethod(
             Invocation.method(#generateAiResponse, [userMessage]),
-            returnValue: _i4.Future<Map<String, dynamic>>.value(
+            returnValue: _i2.Future<Map<String, dynamic>>.value(
               <String, dynamic>{},
             ),
           )
-          as _i4.Future<Map<String, dynamic>>);
+          as _i2.Future<Map<String, dynamic>>);
 
   @override
-  _i4.Future<Map<String, dynamic>> createChatSession(
+  _i2.Future<Map<String, dynamic>> createChatSession(
     String? title, {
     String? petId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#createChatSession, [title], {#petId: petId}),
-            returnValue: _i4.Future<Map<String, dynamic>>.value(
+            returnValue: _i2.Future<Map<String, dynamic>>.value(
               <String, dynamic>{},
             ),
           )
-          as _i4.Future<Map<String, dynamic>>);
+          as _i2.Future<Map<String, dynamic>>);
+
+  @override
+  _i2.Future<List<T>> getMockData<T>(String? dataType) =>
+      (super.noSuchMethod(
+            Invocation.method(#getMockData, [dataType]),
+            returnValue: _i2.Future<List<T>>.value(<T>[]),
+          )
+          as _i2.Future<List<T>>);
+
+  @override
+  _i2.Future<T?> getMockDataById<T>(String? dataType, String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#getMockDataById, [dataType, id]),
+            returnValue: _i2.Future<T?>.value(),
+          )
+          as _i2.Future<T?>);
 }
 
 /// A class which mocks [Ref].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockRef<State extends Object?> extends _i1.Mock
-    implements _i2.Ref<State> {
+    implements _i3.Ref<State> {
   MockRef() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.ProviderContainer get container =>
+  _i3.ProviderContainer get container =>
       (super.noSuchMethod(
             Invocation.getter(#container),
-            returnValue: _FakeProviderContainer_0(
+            returnValue: _FakeProviderContainer_1(
               this,
               Invocation.getter(#container),
             ),
           )
-          as _i2.ProviderContainer);
+          as _i3.ProviderContainer);
 
   @override
-  T refresh<T>(_i2.Refreshable<T>? provider) =>
+  T refresh<T>(_i3.Refreshable<T>? provider) =>
       (super.noSuchMethod(
             Invocation.method(#refresh, [provider]),
             returnValue: _i6.dummyValue<T>(
@@ -193,7 +313,7 @@ class MockRef<State extends Object?> extends _i1.Mock
           as T);
 
   @override
-  void invalidate(_i2.ProviderOrFamily? provider) => super.noSuchMethod(
+  void invalidate(_i3.ProviderOrFamily? provider) => super.noSuchMethod(
     Invocation.method(#invalidate, [provider]),
     returnValueForMissingStub: null,
   );
@@ -250,7 +370,7 @@ class MockRef<State extends Object?> extends _i1.Mock
   );
 
   @override
-  T read<T>(_i2.ProviderListenable<T>? provider) =>
+  T read<T>(_i3.ProviderListenable<T>? provider) =>
       (super.noSuchMethod(
             Invocation.method(#read, [provider]),
             returnValue: _i6.dummyValue<T>(
@@ -261,7 +381,7 @@ class MockRef<State extends Object?> extends _i1.Mock
           as T);
 
   @override
-  bool exists(_i2.ProviderBase<Object?>? provider) =>
+  bool exists(_i3.ProviderBase<Object?>? provider) =>
       (super.noSuchMethod(
             Invocation.method(#exists, [provider]),
             returnValue: false,
@@ -269,7 +389,7 @@ class MockRef<State extends Object?> extends _i1.Mock
           as bool);
 
   @override
-  T watch<T>(_i2.ProviderListenable<T>? provider) =>
+  T watch<T>(_i3.ProviderListenable<T>? provider) =>
       (super.noSuchMethod(
             Invocation.method(#watch, [provider]),
             returnValue: _i6.dummyValue<T>(
@@ -280,19 +400,19 @@ class MockRef<State extends Object?> extends _i1.Mock
           as T);
 
   @override
-  _i2.KeepAliveLink keepAlive() =>
+  _i3.KeepAliveLink keepAlive() =>
       (super.noSuchMethod(
             Invocation.method(#keepAlive, []),
-            returnValue: _FakeKeepAliveLink_1(
+            returnValue: _FakeKeepAliveLink_2(
               this,
               Invocation.method(#keepAlive, []),
             ),
           )
-          as _i2.KeepAliveLink);
+          as _i3.KeepAliveLink);
 
   @override
-  _i2.ProviderSubscription<T> listen<T>(
-    _i2.ProviderListenable<T>? provider,
+  _i3.ProviderSubscription<T> listen<T>(
+    _i3.ProviderListenable<T>? provider,
     void Function(T?, T)? listener, {
     void Function(Object, StackTrace)? onError,
     bool? fireImmediately,
@@ -303,7 +423,7 @@ class MockRef<State extends Object?> extends _i1.Mock
               [provider, listener],
               {#onError: onError, #fireImmediately: fireImmediately},
             ),
-            returnValue: _FakeProviderSubscription_2<T>(
+            returnValue: _FakeProviderSubscription_3<T>(
               this,
               Invocation.method(
                 #listen,
@@ -312,5 +432,5 @@ class MockRef<State extends Object?> extends _i1.Mock
               ),
             ),
           )
-          as _i2.ProviderSubscription<T>);
+          as _i3.ProviderSubscription<T>);
 }

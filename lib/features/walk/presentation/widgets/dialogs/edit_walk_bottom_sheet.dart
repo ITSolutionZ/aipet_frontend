@@ -1,11 +1,14 @@
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/forms/walk_edit_form.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../shared/shared.dart';
-import '../../../walk.dart';
-import '../forms/walk_edit_form.dart';
+/// 선택된 공동 관리자 ID 상태 Provider
+final selectedCoManagerProvider = StateProvider<String?>((ref) => null);
 
-class EditWalkBottomSheet extends StatefulWidget {
+class EditWalkBottomSheet extends ConsumerWidget {
   final WalkRecordEntity walkRecord;
   final WalkController controller;
 
@@ -33,19 +36,8 @@ class EditWalkBottomSheet extends StatefulWidget {
   }
 
   @override
-  State<EditWalkBottomSheet> createState() => _EditWalkBottomSheetState();
-}
-
-class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
-  String? _selectedCoManagerId;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedCoManagerId = ref.watch(selectedCoManagerProvider);
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -82,21 +74,21 @@ class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
-              if (widget.walkRecord.petName != null)
-                WalkPetTag(petName: widget.walkRecord.petName!),
+              if (walkRecord.petName != null)
+                WalkPetTag(petName: walkRecord.petName!),
               const SizedBox(height: AppSpacing.xl),
               WalkEditForm(
-                walkRecord: widget.walkRecord,
-                onSave: _updateWalk,
+                walkRecord: walkRecord,
+                onSave: (updatedRecord) =>
+                    _updateWalk(context, ref, updatedRecord),
                 onCancel: () => context.pop(),
               ),
               const SizedBox(height: AppSpacing.lg),
               WalkCoManagerSelector(
-                selectedCoManagerId: _selectedCoManagerId,
+                selectedCoManagerId: selectedCoManagerId,
                 onChanged: (managerId) {
-                  setState(() {
-                    _selectedCoManagerId = managerId;
-                  });
+                  ref.read(selectedCoManagerProvider.notifier).state =
+                      managerId;
                 },
               ),
               const SizedBox(height: AppSpacing.xl),
@@ -109,9 +101,9 @@ class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
-              WalkDetailInfoCard(walkRecord: widget.walkRecord),
+              WalkDetailInfoCard(walkRecord: walkRecord),
               const SizedBox(height: AppSpacing.lg),
-              if (widget.walkRecord.createdAt != null)
+              if (walkRecord.createdAt != null)
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
@@ -130,7 +122,7 @@ class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
-                        '記録日時: ${_formatDate(widget.walkRecord.createdAt!)}',
+                        '記録日時: ${_formatDate(walkRecord.createdAt!)}',
                         style: AppFonts.base(
                           fontSize: AppFonts.sm,
                           color: AppColors.pointBlue,
@@ -150,15 +142,19 @@ class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
     return '${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
   }
 
-  void _updateWalk(WalkRecordEntity updatedWalkRecord) async {
+  void _updateWalk(
+    BuildContext context,
+    WidgetRef ref,
+    WalkRecordEntity updatedWalkRecord,
+  ) async {
     try {
       // 공동 관리자 정보를 추가해서 업데이트
       final finalRecord = updatedWalkRecord.copyWith(updatedAt: DateTime.now());
 
       // 컨트롤러를 통해 수정
-      await widget.controller.updateWalkRecord(finalRecord);
+      await controller.updateWalkRecord(finalRecord);
 
-      if (mounted) {
+      if (context.mounted) {
         context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -166,9 +162,11 @@ class _EditWalkBottomSheetState extends State<EditWalkBottomSheet> {
             backgroundColor: AppColors.pointGreen,
           ),
         );
+        // 상태 초기화
+        ref.read(selectedCoManagerProvider.notifier).state = null;
       }
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('更新に失敗しました: $e'),

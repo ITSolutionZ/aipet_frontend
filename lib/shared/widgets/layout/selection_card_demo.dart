@@ -1,19 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'selection_card.dart';
 
+/// 🎯 Selection Card Demo State Provider
+final selectionCardDemoProvider = StateNotifierProvider<SelectionCardDemoController, String?>(
+  (ref) => SelectionCardDemoController(),
+);
+
+class SelectionCardDemoController extends StateNotifier<String?> {
+  SelectionCardDemoController() : super(null);
+
+  void selectPayment(String? payment) {
+    state = payment;
+  }
+}
+
+/// 🎯 Payment Selection Example State Provider
+final paymentSelectionExampleProvider = StateNotifierProvider<PaymentSelectionExampleController, String?>(
+  (ref) => PaymentSelectionExampleController(),
+);
+
+class PaymentSelectionExampleController extends StateNotifier<String?> {
+  PaymentSelectionExampleController() : super('credit'); // 기본 선택
+
+  void selectPayment(String? payment) {
+    state = payment;
+  }
+}
+
 /// 사용 예시를 보여주는 데모 위젯
-class SelectionCardDemo extends StatefulWidget {
+class SelectionCardDemo extends ConsumerWidget {
   const SelectionCardDemo({super.key});
 
   @override
-  State<SelectionCardDemo> createState() => _SelectionCardDemoState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedPayment = ref.watch(selectionCardDemoProvider);
+    final controller = ref.read(selectionCardDemoProvider.notifier);
 
-class _SelectionCardDemoState extends State<SelectionCardDemo> {
-  String? selectedPayment;
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(title: const Text('Selection Card Demo')),
@@ -50,11 +73,7 @@ class _SelectionCardDemoState extends State<SelectionCardDemo> {
             SelectionCardList<String>(
               title: '支払い方法選択',
               selectedValue: selectedPayment,
-              onChanged: (value) {
-                setState(() {
-                  selectedPayment = value;
-                });
-              },
+              onChanged: controller.selectPayment,
               items: const [
                 SelectionItem(
                   value: 'credit',
@@ -80,30 +99,21 @@ class _SelectionCardDemoState extends State<SelectionCardDemo> {
   }
 }
 
-/// 実際 사용 시 간단한 예시
-class PaymentSelectionExample extends StatefulWidget {
+/// 실際 사용 시 간단한 예시
+class PaymentSelectionExample extends ConsumerWidget {
   const PaymentSelectionExample({super.key});
 
   @override
-  State<PaymentSelectionExample> createState() =>
-      _PaymentSelectionExampleState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedPayment = ref.watch(paymentSelectionExampleProvider);
+    final controller = ref.read(paymentSelectionExampleProvider.notifier);
 
-class _PaymentSelectionExampleState extends State<PaymentSelectionExample> {
-  String? selectedPayment = 'credit'; // 기본 선택
-
-  @override
-  Widget build(BuildContext context) {
     return Column(
       children: [
         SelectionCardList<String>(
           title: '支払い方法選択',
           selectedValue: selectedPayment,
-          onChanged: (value) {
-            setState(() {
-              selectedPayment = value;
-            });
-          },
+          onChanged: controller.selectPayment,
           items: const [
             SelectionItem(
               value: 'credit',

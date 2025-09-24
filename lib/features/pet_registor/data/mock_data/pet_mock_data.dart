@@ -1,4 +1,4 @@
-import '../../../shared/testing/mock_data/features/pet/pet_mock_service.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart';
 
 /// ⚠️ DEPRECATED: 중복 Mock 데이터 클래스
 ///
@@ -19,11 +19,13 @@ class PetMockData {
   @Deprecated('Use PetMockService.getMockDogBreeds() instead')
   static List<Map<String, dynamic>> getDogBreeds() {
     return PetMockService.getMockDogBreeds()
-        .map((breed) => {
-              'id': breed['id'],
-              'name': breed['koreanName'],
-              'size': breed['size'],
-            })
+        .map(
+          (breed) => {
+            'id': breed['id'],
+            'name': breed['koreanName'],
+            'size': breed['size'],
+          },
+        )
         .toList();
   }
 
@@ -31,11 +33,13 @@ class PetMockData {
   @Deprecated('Use PetMockService.getCatBreeds() instead')
   static List<Map<String, dynamic>> getCatBreeds() {
     return PetMockService.getCatBreeds()
-        .map((breed) => {
-              'id': breed.toLowerCase().replaceAll(' ', '_'),
-              'name': breed,
-              'size': 'medium',
-            })
+        .map(
+          (breed) => {
+            'id': breed.toLowerCase().replaceAll(' ', '_'),
+            'name': breed,
+            'size': 'medium',
+          },
+        )
         .toList();
   }
 

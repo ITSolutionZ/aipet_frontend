@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/core/constants/ai_constants.dart';
 import 'package:flutter/material.dart';
-
-import '../constants/ai_constants.dart';
 
 /// AI 기능 전용 로거 유틸리티
 class AiLogger {

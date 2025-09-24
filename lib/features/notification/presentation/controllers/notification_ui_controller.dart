@@ -1,8 +1,8 @@
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/controllers/base_controller.dart';
-import '../../data/providers/notification_controller_providers.dart';
 import 'notification_controller.dart';
 
 /// 알림 UI 컨트롤러 - UI 로직 처리

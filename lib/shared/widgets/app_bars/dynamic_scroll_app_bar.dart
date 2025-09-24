@@ -1,8 +1,7 @@
 import 'dart:ui';
 
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
 
 /// 스크롤에 따라 동적으로 변화하는 앱 바
 ///

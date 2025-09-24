@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import 'package:aipet_frontend/features/facility/domain/usecases/filter_facilities_by_type_usecase.dart';
+import 'package:aipet_frontend/features/facility/domain/usecases/get_facility_by_id_usecase.dart';
+import 'package:aipet_frontend/features/facility/domain/usecases/load_facilities_usecase.dart';
+import 'package:aipet_frontend/features/facility/domain/usecases/search_facilities_usecase.dart';
+import 'package:aipet_frontend/features/facility/domain/usecases/set_current_location_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../domain/facility.dart';
-import '../../domain/usecases/filter_facilities_by_type_usecase.dart';
-import '../../domain/usecases/get_facility_by_id_usecase.dart';
-import '../../domain/usecases/load_facilities_usecase.dart';
-import '../../domain/usecases/search_facilities_usecase.dart';
-import '../../domain/usecases/set_current_location_usecase.dart';
 
 class FacilityController extends StateNotifier<FacilityState> {
   FacilityController(

@@ -21,7 +21,8 @@ class AppRouter {
   static const String loginRoute = RouteConstants.loginRoute;
   static const String signupRoute = RouteConstants.signupRoute;
   static const String welcomeRoute = RouteConstants.welcomeRoute;
-  static const String tokenExchangeRoute = RouteConstants.tokenExchangeRoute; // Changed
+  static const String tokenExchangeRoute =
+      RouteConstants.tokenExchangeRoute; // Changed
   static const String schedulingRoute = RouteConstants.schedulingRoute;
   static const String aiRoute = RouteConstants.aiRoute;
   static const String aiFavoriteMessagesRoute =

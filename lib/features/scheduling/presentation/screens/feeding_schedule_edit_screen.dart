@@ -1,15 +1,14 @@
 import 'dart:developer' as developer;
 
+import 'package:aipet_frontend/features/scheduling/presentation/widgets/scheduling_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart'
+    as pet_feature_mock;
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
-import '../../../../shared/testing/mock_data/features/pet/pet_mock_service.dart'
-    as pet_feature_mock;
-import '../../../../shared/shared.dart';
-import '../widgets/scheduling_widgets.dart';
 
 /// 급여 스케줄 편집 페이지
 class FeedingScheduleEditScreen extends ConsumerStatefulWidget {
@@ -227,50 +226,50 @@ class _FeedingScheduleEditScreenState
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-            // 펫 선택 그리드
-            PetSelectionGrid(
-              selectedPetId: _selectedPetId,
-              selectedStatuses: _selectedStatuses,
-              onPetSelected: _onPetSelected,
-              onPetStatusDialog: _showPetStatusDialog,
-            ),
+                    // 펫 선택 그리드
+                    PetSelectionGrid(
+                      selectedPetId: _selectedPetId,
+                      selectedStatuses: _selectedStatuses,
+                      onPetSelected: _onPetSelected,
+                      onPetStatusDialog: _showPetStatusDialog,
+                    ),
 
-            const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
-            // 식사 타입 선택
-            MealTypeDropdown(
-              selectedMealType: _selectedMealType,
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    _selectedMealType = newValue;
-                  });
-                }
-              },
-            ),
+                    // 식사 타입 선택
+                    MealTypeDropdown(
+                      selectedMealType: _selectedMealType,
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _selectedMealType = newValue;
+                          });
+                        }
+                      },
+                    ),
 
-            const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
-            // 시간 설정
-            TimeSelector(
-              title: '時間設定',
-              selectedTime: _selectedTime,
-              onTimeTap: _selectTime,
-            ),
+                    // 시간 설정
+                    TimeSelector(
+                      title: '時間設定',
+                      selectedTime: _selectedTime,
+                      onTimeTap: _selectTime,
+                    ),
 
-            const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
-            // 양 설정
-            AmountInput(controller: _amountController),
+                    // 양 설정
+                    AmountInput(controller: _amountController),
 
-            const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
-            // 급여 가이드 카드
-            if (_selectedPetInfo != null && _petSizeGuide != null)
-              FeedingGuideCard(
-                petInfo: _selectedPetInfo!,
-                sizeGuide: _petSizeGuide!,
-              ),
+                    // 급여 가이드 카드
+                    if (_selectedPetInfo != null && _petSizeGuide != null)
+                      FeedingGuideCard(
+                        petInfo: _selectedPetInfo!,
+                        sizeGuide: _petSizeGuide!,
+                      ),
 
                     const SizedBox(height: AppSpacing.lg),
 

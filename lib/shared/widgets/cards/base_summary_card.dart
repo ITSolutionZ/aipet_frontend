@@ -1,13 +1,12 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../ui/components/app_card.dart';
-
 /// 🎯 Summary Card의 공통 베이스 위젯
 ///
 /// 모든 summary card들이 공통으로 사용하는 패턴을 제공
-/// - AppCard.summary를 직접 사용하여 deprecated API 회피
+/// - Native Container를 사용하여 일관된 디자인 제공
 /// - 일관된 데이터 처리 로직
 /// - DRY 원칙 적용
 class BaseSummaryCard extends ConsumerWidget {
@@ -40,18 +39,92 @@ class BaseSummaryCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AppCard.summary(
-      title: title,
-      subtitle: subtitle,
-      value: value,
-      unit: unit,
-      icon: icon != null ? Icon(icon, color: iconColor) : null,
-      iconColor: iconColor,
+    return GestureDetector(
       onTap: onTap,
-      isLoading: isLoading,
-      backgroundColor: backgroundColor,
-      semanticLabel: semanticLabel,
-      tooltip: tooltip,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: backgroundColor ?? Colors.white,
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+          border: Border.all(
+            color: AppColors.pointGray.withValues(alpha: 0.3),
+            width: 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: _buildSummaryContent(context),
+      ),
+    );
+  }
+
+  Widget _buildSummaryContent(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            if (icon != null) ...[
+              Icon(icon, color: iconColor ?? AppColors.pointDark, size: 24),
+              const SizedBox(width: AppSpacing.md),
+            ],
+            Expanded(
+              child: Text(
+                title,
+                style: AppFonts.titleMedium.copyWith(
+                  color: AppColors.pointDark,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (subtitle != null) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            subtitle!,
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+          ),
+        ],
+        if (value != null) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              if (isLoading)
+                const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              else
+                Text(
+                  value!,
+                  style: AppFonts.headlineSmall.copyWith(
+                    color: AppColors.pointDark,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              if (unit != null && !isLoading) ...[
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  unit!,
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointGray,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ],
+      ],
     );
   }
 }

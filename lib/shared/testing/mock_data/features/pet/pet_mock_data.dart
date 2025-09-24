@@ -1,9 +1,8 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/features/pet_registor/pet_registor.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/base/mock_data_constants.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../features/pet_registor/pet_registor.dart';
-import '../../base/mock_data_constants.dart';
 
 /// 펫 관련 Mock 데이터 서비스
 ///

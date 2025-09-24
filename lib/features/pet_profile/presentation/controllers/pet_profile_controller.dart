@@ -1,12 +1,11 @@
+import 'package:aipet_frontend/features/onboarding/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/get_pet_profile_usecase.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
+    as pet_registor_entity;
+import 'package:aipet_frontend/shared/constants/pet_profile_constants.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart'
-    as pet_registor_entity;
-import '../../data/providers/pet_profile_providers.dart';
-import '../../domain/usecases/get_pet_profile_usecase.dart';
-import '../constants/pet_profile_constants.dart';
 
 part 'pet_profile_controller.g.dart';
 

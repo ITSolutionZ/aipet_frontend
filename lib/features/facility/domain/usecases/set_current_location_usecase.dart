@@ -1,4 +1,4 @@
-import '../repositories/facility_repository.dart';
+import 'package:aipet_frontend/features/facility/domain/repositories/facility_repository.dart';
 
 class SetCurrentLocationUseCase {
   final FacilityRepository repository;
@@ -6,6 +6,15 @@ class SetCurrentLocationUseCase {
   SetCurrentLocationUseCase(this.repository);
 
   Future<void> call(double latitude, double longitude, String address) async {
-    return repository.setCurrentLocation(latitude, longitude, address);
+    final result = await repository.setCurrentLocation(
+      latitude,
+      longitude,
+      address,
+    );
+    if (!result.isSuccess) {
+      throw Exception(
+        result.error?.toString() ?? 'Failed to set current location',
+      );
+    }
   }
 }

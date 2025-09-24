@@ -1,10 +1,85 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// 🎯 Firebase Login State Provider
+final firebaseLoginProvider =
+    StateNotifierProvider<FirebaseLoginController, FirebaseLoginState>(
+      (ref) => FirebaseLoginController(),
+    );
+
+class FirebaseLoginController extends StateNotifier<FirebaseLoginState> {
+  FirebaseLoginController() : super(const FirebaseLoginState()) {
+    _checkCurrentUser();
+    _listenToAuthChanges();
+  }
+
+  void _checkCurrentUser() {
+    final user = FirebaseAuth.instance.currentUser;
+    state = state.copyWith(currentUser: user);
+  }
+
+  void _listenToAuthChanges() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      state = state.copyWith(currentUser: user);
+    });
+  }
+
+  void setLoading(bool isLoading) {
+    state = state.copyWith(isLoading: isLoading);
+  }
+
+  Future<void> signInAnonymously({
+    VoidCallback? onSuccess,
+    Function(String)? onError,
+  }) async {
+    if (state.isLoading) return;
+
+    setLoading(true);
+
+    try {
+      final credential = await FirebaseAuth.instance.signInAnonymously();
+
+      if (credential.user != null) {
+        debugPrint('✅ Firebase 익명 로그인 성공: ${credential.user!.uid}');
+        onSuccess?.call();
+      }
+    } catch (e) {
+      debugPrint('❌ Firebase 로그인 실패: $e');
+      onError?.call(e.toString());
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      debugPrint('✅ Firebase 로그아웃 성공');
+    } catch (e) {
+      debugPrint('❌ Firebase 로그아웃 실패: $e');
+    }
+  }
+}
+
+class FirebaseLoginState {
+  final bool isLoading;
+  final User? currentUser;
+
+  const FirebaseLoginState({this.isLoading = false, this.currentUser});
+
+  FirebaseLoginState copyWith({bool? isLoading, User? currentUser}) {
+    return FirebaseLoginState(
+      isLoading: isLoading ?? this.isLoading,
+      currentUser: currentUser ?? this.currentUser,
+    );
+  }
+}
 
 /// 실제 Firebase Auth 로그인 버튼
 ///
 /// Google 로그인을 통해 Firebase 인증을 수행합니다.
-class FirebaseLoginButton extends StatefulWidget {
+class FirebaseLoginButton extends ConsumerWidget {
   final VoidCallback? onLoginSuccess;
   final Function(String)? onLoginError;
 
@@ -14,87 +89,17 @@ class FirebaseLoginButton extends StatefulWidget {
     this.onLoginError,
   });
 
-  @override
-  State<FirebaseLoginButton> createState() => _FirebaseLoginButtonState();
-}
-
-class _FirebaseLoginButtonState extends State<FirebaseLoginButton> {
-  bool _isLoading = false;
-  User? _currentUser;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkCurrentUser();
-
-    // 인증 상태 변화 감지
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (mounted) {
-        setState(() {
-          _currentUser = user;
-        });
-      }
-    });
-  }
-
-  void _checkCurrentUser() {
-    _currentUser = FirebaseAuth.instance.currentUser;
-  }
-
-  Future<void> _signInAnonymously() async {
-    if (_isLoading) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      // 익명 로그인 (데모용)
-      final credential = await FirebaseAuth.instance.signInAnonymously();
-
-      if (credential.user != null) {
-        debugPrint('✅ Firebase 익명 로그인 성공: ${credential.user!.uid}');
-        widget.onLoginSuccess?.call();
-      }
-    } catch (e) {
-      debugPrint('❌ Firebase 로그인 실패: $e');
-      widget.onLoginError?.call(e.toString());
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('로그인 실패: $e'), backgroundColor: Colors.red),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _signOut() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-      debugPrint('✅ Firebase 로그아웃 성공');
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('로그아웃 되었습니다'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } catch (e) {
-      debugPrint('❌ Firebase 로그아웃 실패: $e');
-    }
+  void _showSnackBar(BuildContext context, String message, Color color) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message), backgroundColor: color));
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (_currentUser != null) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(firebaseLoginProvider);
+
+    if (authState.currentUser != null) {
       // 로그인된 상태
       return Card(
         color: Colors.green.shade100,
@@ -119,7 +124,7 @@ class _FirebaseLoginButtonState extends State<FirebaseLoginButton> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'UID: ${_currentUser!.uid}',
+                          'UID: ${authState.currentUser!.uid}',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey.shade600,
@@ -134,7 +139,10 @@ class _FirebaseLoginButtonState extends State<FirebaseLoginButton> {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: _signOut,
+                  onPressed: () {
+                    ref.read(firebaseLoginProvider.notifier).signOut();
+                    _showSnackBar(context, 'ログアウトしました', Colors.green);
+                  },
                   child: const Text('로그아웃'),
                 ),
               ),
@@ -180,12 +188,28 @@ class _FirebaseLoginButtonState extends State<FirebaseLoginButton> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isLoading ? null : _signInAnonymously,
+                onPressed: authState.isLoading
+                    ? null
+                    : () {
+                        ref
+                            .read(firebaseLoginProvider.notifier)
+                            .signInAnonymously(
+                              onSuccess: onLoginSuccess,
+                              onError: (error) {
+                                onLoginError?.call(error);
+                                _showSnackBar(
+                                  context,
+                                  'ログイン失敗: $error',
+                                  Colors.red,
+                                );
+                              },
+                            );
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
                 ),
-                child: _isLoading
+                child: authState.isLoading
                     ? const SizedBox(
                         height: 20,
                         width: 20,

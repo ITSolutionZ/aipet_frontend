@@ -179,7 +179,7 @@ class AccessibleIconButton extends StatelessWidget {
 }
 
 /// 접근성을 개선한 토글 버튼 위젯
-class AccessibleToggleButton extends StatefulWidget {
+class AccessibleToggleButton extends StatelessWidget {
   final bool value;
   final ValueChanged<bool>? onChanged;
   final String label;
@@ -206,35 +206,28 @@ class AccessibleToggleButton extends StatefulWidget {
   });
 
   @override
-  State<AccessibleToggleButton> createState() => _AccessibleToggleButtonState();
-}
-
-class _AccessibleToggleButtonState extends State<AccessibleToggleButton> {
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final effectiveActiveColor = widget.activeColor ?? theme.primaryColor;
-    final effectiveInactiveColor = widget.inactiveColor ?? theme.disabledColor;
+    final effectiveActiveColor = activeColor ?? theme.primaryColor;
+    final effectiveInactiveColor = inactiveColor ?? theme.disabledColor;
 
     return Semantics(
       button: true,
-      enabled: widget.onChanged != null,
-      label: '${widget.label}: ${widget.value ? '활성화' : '비활성화'}',
-      hint: widget.hint,
+      enabled: onChanged != null,
+      label: '$label: ${value ? '활성화' : '비활성화'}',
+      hint: hint,
       child: ExcludeSemantics(
         child: Container(
-          width: widget.width,
-          height: widget.height,
+          width: width,
+          height: height,
           decoration: BoxDecoration(
-            color: widget.value ? effectiveActiveColor : effectiveInactiveColor,
+            color: value ? effectiveActiveColor : effectiveInactiveColor,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: widget.onChanged != null
-                  ? () => widget.onChanged!(!widget.value)
-                  : null,
+              onTap: onChanged != null ? () => onChanged!(!value) : null,
               borderRadius: BorderRadius.circular(8.0),
               child: Container(
                 padding: const EdgeInsets.symmetric(
@@ -242,13 +235,13 @@ class _AccessibleToggleButtonState extends State<AccessibleToggleButton> {
                   vertical: 12.0,
                 ),
                 child: Center(
-                  child: widget.value
-                      ? (widget.activeChild ??
+                  child: value
+                      ? (activeChild ??
                             const Text(
                               '활성화',
                               style: TextStyle(color: Colors.white),
                             ))
-                      : (widget.inactiveChild ??
+                      : (inactiveChild ??
                             const Text(
                               '비활성화',
                               style: TextStyle(color: Colors.white),

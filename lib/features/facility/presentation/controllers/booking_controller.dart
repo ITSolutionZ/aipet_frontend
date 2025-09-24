@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/facility.dart';
 
 /// 예약 컨트롤러
 class BookingController extends StateNotifier<BookingState> {
@@ -12,16 +11,22 @@ class BookingController extends StateNotifier<BookingState> {
 
   /// 시설 데이터 로드
   void _loadFacilityData() {
-    final facilityData = FacilityMockService.getMockFacilityDetailById(state.facilityId);
+    final facilityData = FacilityMockService.getMockFacilityDetailById(
+      state.facilityId,
+    );
     if (facilityData != null) {
       final facility = Facility(
         id: facilityData['id'] as String,
         name: facilityData['name'] as String,
         description: facilityData['description'] as String,
         address: facilityData['address'] as String,
+        latitude: facilityData['latitude'] as double? ?? 35.6762,
+        longitude: facilityData['longitude'] as double? ?? 139.6503,
         phone: facilityData['phone'] as String,
         email: facilityData['email'] as String,
-        type: facilityData['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
+        type: facilityData['type'] == 'grooming'
+            ? FacilityType.grooming
+            : FacilityType.hospital,
         rating: (facilityData['rating'] as num).toDouble(),
         reviewCount: facilityData['reviewCount'] as int,
         imagePath: facilityData['imagePath'] as String,

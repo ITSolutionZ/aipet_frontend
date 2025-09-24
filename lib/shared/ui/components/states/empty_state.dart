@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design/tokens/tokens.dart';
 
 /// 📝 Empty State 위젯
 ///

@@ -1,4 +1,4 @@
-import '../entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 
 /// Pet Profile Domain Service
 ///
@@ -17,7 +17,11 @@ abstract class PetProfileDomainService {
   bool canUpdateHealthInfo(PetProfileEntity profile, String userId);
 
   /// 패밀리 매니저 추가 가능 여부 확인
-  bool canAddFamilyManager(PetProfileEntity profile, String ownerId, String newManagerId);
+  bool canAddFamilyManager(
+    PetProfileEntity profile,
+    String ownerId,
+    String newManagerId,
+  );
 }
 
 /// Pet Profile Domain Service 구현체
@@ -50,8 +54,8 @@ class PetProfileDomainServiceImpl implements PetProfileDomainService {
   @override
   bool canGenerateShareLink(PetProfileEntity profile) {
     return profile.sharingSettings.allowSharing &&
-           profile.sharingSettings.allowDirectLink &&
-           profile.visibilityLevel != ProfileVisibilityLevel.private;
+        profile.sharingSettings.allowDirectLink &&
+        profile.visibilityLevel != ProfileVisibilityLevel.private;
   }
 
   @override
@@ -61,7 +65,11 @@ class PetProfileDomainServiceImpl implements PetProfileDomainService {
   }
 
   @override
-  bool canAddFamilyManager(PetProfileEntity profile, String ownerId, String newManagerId) {
+  bool canAddFamilyManager(
+    PetProfileEntity profile,
+    String ownerId,
+    String newManagerId,
+  ) {
     // 소유자만 패밀리 매니저를 추가할 수 있음
     if (profile.ownerId != ownerId) {
       return false;

@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/domain.dart';
 
 class SplashLogoWidget extends StatelessWidget {
   final SplashState splashState;

@@ -1,10 +1,9 @@
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/mock_data_service.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../app/controllers/base_controller.dart';
-import '../../../../shared/design/design.dart';
-import '../../../../shared/core/domain/result.dart';
-import '../../../../shared/testing/mock_data/mock_data_service.dart';
 
 class FeedingRecordsController extends BaseController {
   FeedingRecordsController(super.ref);

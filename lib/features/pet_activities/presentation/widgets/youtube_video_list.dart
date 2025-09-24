@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/youtube_video_card.dart';
+import 'package:aipet_frontend/shared/widgets/youtube_videos_empty_state.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/entities.dart';
-import '../widgets/youtube_video_card.dart';
-import '../widgets/youtube_videos_empty_state.dart';
 
 /// YouTube 영상 목록 위젯
 class YouTubeVideoList extends StatelessWidget {

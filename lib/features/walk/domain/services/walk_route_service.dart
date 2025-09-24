@@ -1,4 +1,4 @@
-import '../entities/walk_location_entity.dart';
+import 'package:aipet_frontend/shared/entities/walk_location_entity.dart';
 
 /// 산책 경로 서비스 인터페이스
 abstract class WalkRouteService {

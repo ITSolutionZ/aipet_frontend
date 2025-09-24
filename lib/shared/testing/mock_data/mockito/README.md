@@ -10,7 +10,7 @@
 
 ## 📁 구조
 
-```
+```text
 mock_data/
 ├── mockito/                    # Mockito 전용 (삭제 가능)
 │   ├── repositories/           # Mockito Repository 구현체들

@@ -1,5 +1,5 @@
-import '../../../../shared/shared.dart';
-import '../repositories/auth_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 현재 사용자 정보 가져오기 UseCase
 class GetCurrentUserUseCase {

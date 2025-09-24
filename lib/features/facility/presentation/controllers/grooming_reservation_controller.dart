@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/facility.dart';
 
 /// 그루밍 예약 화면의 상태 데이터
 class GroomingReservationState {
@@ -61,6 +60,8 @@ class GroomingReservationController {
               name: data['name'] as String,
               description: data['description'] as String,
               address: data['address'] as String,
+              latitude: data['latitude'] as double? ?? 35.6762,
+              longitude: data['longitude'] as double? ?? 139.6503,
               phone: data['phone'] as String,
               email: data['email'] as String,
               type: data['type'] == 'grooming'
@@ -151,7 +152,7 @@ class GroomingReservationController {
                 facility.name.toLowerCase().contains(
                   searchQuery.toLowerCase(),
                 ) ||
-                facility.description.toLowerCase().contains(
+                (facility.description?.toLowerCase() ?? '').contains(
                   searchQuery.toLowerCase(),
                 ),
           )

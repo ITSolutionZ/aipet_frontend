@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../design/design.dart';
 
 /// 공통 AppBar 스타일을 위한 위젯
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {

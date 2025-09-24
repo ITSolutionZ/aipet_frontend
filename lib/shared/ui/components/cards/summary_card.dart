@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design/tokens/tokens.dart';
 
 /// 📄 요약 정보 카드
 ///
@@ -122,10 +121,7 @@ class SummaryCard extends StatelessWidget {
     }
 
     if (semanticLabel != null) {
-      card = Semantics(
-        label: semanticLabel,
-        child: card,
-      );
+      card = Semantics(label: semanticLabel, child: card);
     }
 
     return card;
@@ -253,10 +249,7 @@ class SummaryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.small),
       ),
       child: IconTheme(
-        data: IconThemeData(
-          color: iconColor ?? AppColors.pointBrown,
-          size: 24,
-        ),
+        data: IconThemeData(color: iconColor ?? AppColors.pointBrown, size: 24),
         child: icon!,
       ),
     );

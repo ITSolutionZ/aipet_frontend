@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/design/tokens/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:aipet_frontend/shared/design/tokens/spacing.dart';
 
 void main() {
   group('AppSpacing', () {

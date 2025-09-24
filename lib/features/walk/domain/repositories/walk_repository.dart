@@ -1,5 +1,5 @@
-import '../entities/walk_record_entity.dart';
-import '../entities/walk_statistics_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/entities/walk_statistics_entity.dart';
 
 /// 산책 기록 리포지토리 인터페이스
 abstract class WalkRepository {

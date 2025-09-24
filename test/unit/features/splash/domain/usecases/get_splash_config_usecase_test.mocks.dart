@@ -5,8 +5,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:aipet_frontend/features/splash/domain/entities/splash_entity.dart'
-    as _i5;
 import 'package:aipet_frontend/features/splash/domain/repositories/splash_repository.dart'
     as _i3;
 import 'package:aipet_frontend/shared/shared.dart' as _i2;
@@ -40,17 +38,17 @@ class MockSplashRepository extends _i1.Mock implements _i3.SplashRepository {
   }
 
   @override
-  _i4.Future<_i2.Result<_i5.SplashEntity>> getSplashConfig() =>
+  _i4.Future<_i2.Result<dynamic>> getSplashConfig() =>
       (super.noSuchMethod(
             Invocation.method(#getSplashConfig, []),
-            returnValue: _i4.Future<_i2.Result<_i5.SplashEntity>>.value(
-              _FakeResult_0<_i5.SplashEntity>(
+            returnValue: _i4.Future<_i2.Result<dynamic>>.value(
+              _FakeResult_0<dynamic>(
                 this,
                 Invocation.method(#getSplashConfig, []),
               ),
             ),
           )
-          as _i4.Future<_i2.Result<_i5.SplashEntity>>);
+          as _i4.Future<_i2.Result<dynamic>>);
 
   @override
   _i4.Future<_i2.Result<void>> initializeApp() =>

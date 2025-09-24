@@ -4,29 +4,17 @@
 class RecipeDifficultyMockData {
   /// 기본 난이도 옵션들
   static List<String> getDifficultyLevels() {
-    return [
-      'Easy',
-      'Medium',
-      'Hard',
-    ];
+    return ['Easy', 'Medium', 'Hard'];
   }
 
   /// 난이도별 한국어 번역
   static Map<String, String> getDifficultyTranslations() {
-    return {
-      'Easy': '쉬움',
-      'Medium': '보통',
-      'Hard': '어려움',
-    };
+    return {'Easy': '쉬움', 'Medium': '보통', 'Hard': '어려움'};
   }
 
   /// 난이도별 일본어 번역
   static Map<String, String> getDifficultyJapaneseTranslations() {
-    return {
-      'Easy': '簡単',
-      'Medium': '普通',
-      'Hard': '難しい',
-    };
+    return {'Easy': '簡単', 'Medium': '普通', 'Hard': '難しい'};
   }
 
   /// 난이도별 색상
@@ -40,11 +28,7 @@ class RecipeDifficultyMockData {
 
   /// 난이도별 아이콘
   static Map<String, String> getDifficultyIcons() {
-    return {
-      'Easy': '🟢',
-      'Medium': '🟡',
-      'Hard': '🔴',
-    };
+    return {'Easy': '🟢', 'Medium': '🟡', 'Hard': '🔴'};
   }
 
   /// 난이도별 예상 조리 시간 (분)

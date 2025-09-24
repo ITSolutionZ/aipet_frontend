@@ -37,15 +37,11 @@ class EncryptionService {
       // 암호화된 데이터 저장
       await prefs.setString('$_keyPrefix$key', encodedData);
 
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('데이터 암호화 완료: $key');
-      }
+      if (kDebugMode) {}
 
       return true;
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('데이터 암호화 실패: $key, 오류: $e');
-      }
+      if (kDebugMode) {}
       return false;
     }
   }
@@ -70,15 +66,11 @@ class EncryptionService {
       final encryptedData = base64Decode(encodedData);
       final decryptedData = _decryptAES(encryptedData, encryptionKey, iv);
 
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('데이터 복호화 완료: $key');
-      }
+      if (kDebugMode) {}
 
       return decryptedData;
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('데이터 복호화 실패: $key, 오류: $e');
-      }
+      if (kDebugMode) {}
       return null;
     }
   }
@@ -94,15 +86,11 @@ class EncryptionService {
       await prefs.remove('$_keyPrefix$key');
       await prefs.remove('$_ivPrefix$key');
 
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('암호화된 데이터 삭제 완료: $key');
-      }
+      if (kDebugMode) {}
 
       return true;
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('암호화된 데이터 삭제 실패: $key, 오류: $e');
-      }
+      if (kDebugMode) {}
       return false;
     }
   }
@@ -192,15 +180,11 @@ class EncryptionService {
         await prefs.remove(key);
       }
 
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('모든 암호화된 데이터 삭제 완료');
-      }
+      if (kDebugMode) {}
 
       return true;
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('모든 암호화된 데이터 삭제 실패: $e');
-      }
+      if (kDebugMode) {}
       return false;
     }
   }

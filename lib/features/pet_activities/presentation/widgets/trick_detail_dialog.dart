@@ -1,17 +1,13 @@
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/trick_entity.dart';
 
 /// 트릭 상세 다이얼로그
 class TrickDetailDialog extends StatelessWidget {
   final TrickEntity trick;
 
-  const TrickDetailDialog({
-    super.key,
-    required this.trick,
-  });
+  const TrickDetailDialog({super.key, required this.trick});
 
   @override
   Widget build(BuildContext context) {

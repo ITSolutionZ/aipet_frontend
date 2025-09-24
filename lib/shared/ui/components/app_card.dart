@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../design/tokens/tokens.dart';
 
 /// ⚠️ DEPRECATED: 통합 Card 시스템
 ///

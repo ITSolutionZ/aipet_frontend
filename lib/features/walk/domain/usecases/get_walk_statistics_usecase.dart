@@ -1,5 +1,5 @@
-import '../entities/walk_statistics_entity.dart';
-import '../repositories/walk_repository.dart';
+import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
+import 'package:aipet_frontend/shared/entities/walk_statistics_entity.dart';
 
 /// 산책 통계 조회 UseCase
 class GetWalkStatisticsUseCase {
@@ -38,11 +38,7 @@ class GetWalkStatisticsUseCase {
     final today = DateTime(now.year, now.month, now.day);
     final tomorrow = today.add(const Duration(days: 1));
 
-    return call(
-      petId: petId,
-      startDate: today,
-      endDate: tomorrow,
-    );
+    return call(petId: petId, startDate: today, endDate: tomorrow);
   }
 
   /// 이번 주 산책 통계 조회
@@ -51,11 +47,7 @@ class GetWalkStatisticsUseCase {
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
     final endOfWeek = startOfWeek.add(const Duration(days: 7));
 
-    return call(
-      petId: petId,
-      startDate: startOfWeek,
-      endDate: endOfWeek,
-    );
+    return call(petId: petId, startDate: startOfWeek, endDate: endOfWeek);
   }
 
   /// 이번 달 산책 통계 조회
@@ -64,11 +56,7 @@ class GetWalkStatisticsUseCase {
     final startOfMonth = DateTime(now.year, now.month, 1);
     final endOfMonth = DateTime(now.year, now.month + 1, 0);
 
-    return call(
-      petId: petId,
-      startDate: startOfMonth,
-      endDate: endOfMonth,
-    );
+    return call(petId: petId, startDate: startOfMonth, endDate: endOfMonth);
   }
 
   /// 지난 N일간 산책 통계 조회
@@ -84,10 +72,6 @@ class GetWalkStatisticsUseCase {
     final endDate = DateTime(now.year, now.month, now.day, 23, 59, 59);
     final startDate = endDate.subtract(Duration(days: days));
 
-    return call(
-      petId: petId,
-      startDate: startDate,
-      endDate: endDate,
-    );
+    return call(petId: petId, startDate: startDate, endDate: endDate);
   }
 }

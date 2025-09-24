@@ -1,4 +1,4 @@
-import '../entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 
 /// 산책 기록 공유 결과
 class WalkShareResult {

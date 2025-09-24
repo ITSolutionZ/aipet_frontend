@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 학습/트레이닝 메인 화면
 class TrainingMainScreen extends StatelessWidget {
@@ -491,35 +490,25 @@ class TrainingMainScreen extends StatelessWidget {
 
   void _recordTrainingSession(BuildContext context, String command) {
     Navigator.pop(context); // 이전 다이얼로그 닫기
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('$command の練習セッションを記録しました')));
+    SnackBarService.showSaved(context, itemName: '$command の練習セッション');
   }
 
   // 고급 기술 관련 메서드들
   void _showAdvancedSkills(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('芸の練習機能は開発中です')));
+    SnackBarService.showInfo(context, '芸の練習機能は開発中です');
   }
 
   void _showAgilityTraining(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('アジリティ訓練機能は開発中です')));
+    SnackBarService.showInfo(context, 'アジリティ訓練機能は開発中です');
   }
 
   void _showObedienceTraining(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('服従訓練機能は開発中です')));
+    SnackBarService.showInfo(context, '服従訓練機能は開発中です');
   }
 
   // 기록 관련 메서드들
   void _viewDetailedRecords(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('詳細な記録機能は開発中です')));
+    SnackBarService.showInfo(context, '詳細な記録機能は開発中です');
   }
 
   // 스케줄 관련 메서드들
@@ -556,9 +545,7 @@ class TrainingMainScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('新しいスケジュールを作成しました')));
+              SnackBarService.showSaved(context, itemName: '新しいスケジュール');
             },
             child: const Text('作成'),
           ),
@@ -568,14 +555,10 @@ class TrainingMainScreen extends StatelessWidget {
   }
 
   void _viewWeeklySchedule(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('週間スケジュール機能は開発中です')));
+    SnackBarService.showInfo(context, '週間スケジュール機能は開発中です');
   }
 
   void _setTrainingReminders(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('リマインダー設定機能は開発中です')));
+    SnackBarService.showInfo(context, 'リマインダー設定機能は開発中です');
   }
 }

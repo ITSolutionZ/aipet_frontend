@@ -20,7 +20,9 @@ class ErrorHandlingService {
     try {
       LoggerService.debug('Starting async operation: ${context ?? 'unknown'}');
       final result = await operation;
-      LoggerService.debug('Async operation completed successfully: ${context ?? 'unknown'}');
+      LoggerService.debug(
+        'Async operation completed successfully: ${context ?? 'unknown'}',
+      );
       return result;
     } catch (error, stackTrace) {
       return _handleError(
@@ -43,7 +45,9 @@ class ErrorHandlingService {
     try {
       LoggerService.debug('Starting sync operation: ${context ?? 'unknown'}');
       final result = operation();
-      LoggerService.debug('Sync operation completed successfully: ${context ?? 'unknown'}');
+      LoggerService.debug(
+        'Sync operation completed successfully: ${context ?? 'unknown'}',
+      );
       return result;
     } catch (error, stackTrace) {
       return _handleError(
@@ -224,7 +228,8 @@ class ErrorHandlingService {
     }
 
     // 권한 에러
-    if (errorString.contains('permission') || errorString.contains('unauthorized')) {
+    if (errorString.contains('permission') ||
+        errorString.contains('unauthorized')) {
       return '권한이 없습니다. 로그인을 확인해주세요.';
     }
 
@@ -246,7 +251,8 @@ class ErrorHandlingService {
   static String _getNetworkErrorMessage(Object error) {
     final errorString = error.toString().toLowerCase();
 
-    if (errorString.contains('no internet') || errorString.contains('offline')) {
+    if (errorString.contains('no internet') ||
+        errorString.contains('offline')) {
       return '인터넷 연결을 확인해주세요.';
     } else if (errorString.contains('timeout')) {
       return '네트워크 응답 시간이 초과되었습니다.';
@@ -298,27 +304,14 @@ class ErrorHandlingService {
       child: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 48,
-            color: Colors.grey,
-          ),
+          Icon(Icons.error_outline, size: 48, color: Colors.grey),
           SizedBox(height: 8),
           Text(
             '데이터를 불러올 수 없습니다',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
           SizedBox(height: 4),
-          Text(
-            '다시 시도해주세요',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-            ),
-          ),
+          Text('다시 시도해주세요', style: TextStyle(fontSize: 14, color: Colors.grey)),
         ],
       ),
     );

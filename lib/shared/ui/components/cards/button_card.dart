@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design/tokens/tokens.dart';
 
 /// 🔘 버튼 형태 카드
 ///
@@ -116,7 +115,7 @@ class ButtonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget card = Container(
+    final Widget card = Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
@@ -125,10 +124,7 @@ class ButtonCard extends StatelessWidget {
         color: backgroundColor ?? AppColors.pureWhite,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         border: backgroundColor == Colors.transparent
-            ? Border.all(
-                color: textColor ?? AppColors.pointBrown,
-                width: 2,
-              )
+            ? Border.all(color: textColor ?? AppColors.pointBrown, width: 2)
             : null,
         boxShadow: backgroundColor != Colors.transparent
             ? [
@@ -170,8 +166,9 @@ class ButtonCard extends StatelessWidget {
                   Text(
                     subtitle!,
                     style: AppFonts.bodySmall.copyWith(
-                      color: (textColor ?? AppColors.pointDark)
-                          .withValues(alpha: 0.7),
+                      color: (textColor ?? AppColors.pointDark).withValues(
+                        alpha: 0.7,
+                      ),
                     ),
                   ),
                 ],

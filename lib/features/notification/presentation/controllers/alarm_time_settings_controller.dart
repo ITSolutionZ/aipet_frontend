@@ -1,16 +1,16 @@
+import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/usecases.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../data/providers/notification_controller_providers.dart';
-import '../../domain/usecases/usecases.dart';
 
 /// 알림 시간 설정 컨트롤러
 class AlarmTimeSettingsController
     extends StateNotifier<AlarmTimeSettingsState> {
   final GetNotificationSettingsUseCase _getNotificationSettingsUseCase;
-  
-  AlarmTimeSettingsController(this._getNotificationSettingsUseCase) : super(const AlarmTimeSettingsState());
+
+  AlarmTimeSettingsController(this._getNotificationSettingsUseCase)
+    : super(const AlarmTimeSettingsState());
 
   /// 알림 시간 로드
   Future<void> loadAlarmTimes() async {

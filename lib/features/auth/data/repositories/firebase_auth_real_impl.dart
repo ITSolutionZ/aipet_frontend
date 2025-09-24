@@ -1,44 +1,67 @@
+import 'package:aipet_frontend/features/auth/data/services/line_oauth_service.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-import '../../domain/repositories/auth_repository.dart';
-import '../services/line_oauth_service.dart';
-
 /// 🎯 실제 Firebase Auth 구현체
 ///
-/// Firebase Auth와 실제 OAuth 프로바이더들을 사용한 실제 구현
+/// Firebase Auth와 실제 OAuth 프로바이더들을 사용한 실제 구현체입니다.
+/// 이메일/비밀번호 로그인, Google Sign-In, Apple Sign-In을 지원합니다.
+/// LINE 로그인은 현재 Mock 구현으로 되어 있으며, 추후 실제 구현 예정입니다.
 class FirebaseAuthRealImpl implements AuthRepository {
+  /// Firebase Auth 인스턴스
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  /// Google Sign-In 인스턴스 (이메일, 프로필 스코프 포함)
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+
+  /// LINE OAuth 서비스 인스턴스
   final LineOAuthService _lineOAuthService = LineOAuthService();
 
+  // 서버 토큰 저장소 키
+  static const String _serverTokenKey = 'server_token';
+  static const String _serverTokenExpiresKey = 'server_token_expires';
+
+  /// 이메일/비밀번호로 로그인
+  ///
+  /// [email] 사용자 이메일 주소
+  /// [password] 사용자 비밀번호
+  ///
+  /// Returns: 인증 결과 (성공 시 AuthUser 포함)
+  ///
+  /// Throws: FirebaseAuthException - Firebase 인증 에러
   @override
-  Future<AuthResult> signInWithEmailAndPassword(
+  Future<Result<AuthUser>> signInWithEmailAndPassword(
     String email,
     String password,
   ) async {
     try {
+      // Firebase Auth를 통한 이메일/비밀번호 로그인
       final credential = await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       if (credential.user != null) {
+        // Firebase User를 AuthUser로 변환
         final user = _mapFirebaseUserToAuthUser(credential.user!);
-        return AuthResult.success('ログインが完了しました', user: user);
+        return Result.success('ログインが完了しました', user);
       } else {
-        return AuthResult.failure('ログインに失敗しました');
+        return Result.failure('ログインに失敗しました');
       }
     } on FirebaseAuthException catch (e) {
-      return AuthResult.failure(_getFirebaseErrorMessage(e));
+      // Firebase Auth 에러를 사용자 친화적 메시지로 변환
+      return Result.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return AuthResult.failure('ログインに失敗しました: ${e.toString()}');
+      return Result.failure('ログインに失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<AuthResult> createUserWithEmailAndPassword(
+  Future<Result<AuthUser>> createUserWithEmailAndPassword(
     String email,
     String password,
   ) async {
@@ -50,25 +73,25 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (credential.user != null) {
         final user = _mapFirebaseUserToAuthUser(credential.user!);
-        return AuthResult.success('会員登録が完了しました', user: user);
+        return Result.success('会員登録が完了しました', user);
       } else {
-        return AuthResult.failure('会員登録に失敗しました');
+        return Result.failure('会員登録に失敗しました');
       }
     } on FirebaseAuthException catch (e) {
-      return AuthResult.failure(_getFirebaseErrorMessage(e));
+      return Result.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return AuthResult.failure('会員登録に失敗しました: ${e.toString()}');
+      return Result.failure('会員登録に失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<AuthResult> signInWithGoogle() async {
+  Future<Result<AuthUser>> signInWithGoogle() async {
     try {
       // Google Sign-In 플로우
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
-        return AuthResult.failure('Google ログインがキャンセルされました');
+        return Result.failure('Google ログインがキャンセルされました');
       }
 
       final GoogleSignInAuthentication googleAuth =
@@ -84,19 +107,19 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
-        return AuthResult.success('Googleログインが完了しました', user: user);
+        return Result.success('Googleログインが完了しました', user);
       } else {
-        return AuthResult.failure('Google ログインに失敗しました');
+        return Result.failure('Google ログインに失敗しました');
       }
     } on FirebaseAuthException catch (e) {
-      return AuthResult.failure(_getFirebaseErrorMessage(e));
+      return Result.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return AuthResult.failure('Google ログインに失敗しました: ${e.toString()}');
+      return Result.failure('Google ログインに失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<AuthResult> signInWithApple() async {
+  Future<Result<AuthUser>> signInWithApple() async {
     try {
       // Apple Sign-In 플로우
       final credential = await SignInWithApple.getAppleIDCredential(
@@ -117,48 +140,54 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
-        return AuthResult.success('Appleログインが完了しました', user: user);
+        return Result.success('Appleログインが完了しました', user);
       } else {
-        return AuthResult.failure('Apple ログインに失敗しました');
+        return Result.failure('Apple ログインに失敗しました');
       }
     } on FirebaseAuthException catch (e) {
-      return AuthResult.failure(_getFirebaseErrorMessage(e));
+      return Result.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return AuthResult.failure('Apple ログインに失敗しました: ${e.toString()}');
+      return Result.failure('Apple ログインに失敗しました: ${e.toString()}');
     }
   }
 
+  /// LINE 로그인
+  ///
+  /// LINE OAuth 2.0을 통한 로그인을 수행합니다.
+  ///
+  /// Returns: 인증 결과 (성공 시 AuthUser 포함)
   @override
-  Future<AuthResult> signInWithLine() async {
+  Future<Result<AuthUser>> signInWithLine() async {
     try {
-      // 실제 LINE OAuth 로그인
+      // LINE OAuth 서비스를 통한 로그인
       final result = await _lineOAuthService.loginWithLine();
 
       if (result.isSuccess && result.data != null) {
-        final lineUser = result.data!;
+        final lineUserInfo = result.data!;
 
         // LINE 사용자 정보를 AuthUser로 변환
         final user = AuthUser(
-          uid: lineUser.userId,
-          email: '${lineUser.userId}@line.me', // LINE은 이메일을 제공하지 않을 수 있음
-          displayName: lineUser.displayName,
-          photoURL: lineUser.pictureUrl,
-          isEmailVerified: true,
+          uid: lineUserInfo.userId,
+          email: '${lineUserInfo.userId}@line.me', // LINE은 이메일을 제공하지 않을 수 있음
+          displayName: lineUserInfo.displayName,
+          isEmailVerified: false, // LINE은 이메일 인증을 제공하지 않음
           creationTime: DateTime.now(),
           lastSignInTime: DateTime.now(),
           customData: {
             'provider': 'line',
-            'lineUserId': lineUser.userId,
-            'statusMessage': lineUser.statusMessage,
+            'lineUserId': lineUserInfo.userId,
+            'lineDisplayName': lineUserInfo.displayName,
+            'linePictureUrl': lineUserInfo.pictureUrl,
+            'lineStatusMessage': lineUserInfo.statusMessage,
           },
         );
 
-        return AuthResult.success('LINEログインが完了しました', user: user);
+        return Result.success('LINEログインが完了しました', user);
       } else {
-        return AuthResult.failure(result.message);
+        return Result.failure(result.message);
       }
     } catch (e) {
-      return AuthResult.failure('LINE ログインに失敗しました: ${e.toString()}');
+      return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
     }
   }
 
@@ -167,7 +196,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
     try {
       await _firebaseAuth.signOut();
       await _googleSignIn.signOut();
-      // TODO: LINE 로그아웃 구현 예정
+      // LINE 로그아웃은 별도 구현이 필요할 수 있음 (현재는 Firebase 로그아웃으로 처리)
     } catch (e) {
       // 로그아웃 실패는 무시
     }
@@ -232,6 +261,182 @@ class FirebaseAuthRealImpl implements AuthRepository {
       }
     } catch (e) {
       throw Exception('アカウントの削除に失敗しました: ${e.toString()}');
+    }
+  }
+
+  /// Firebase ID 토큰을 서버 JWT로 교환
+  ///
+  /// [idToken] Firebase에서 발급받은 ID 토큰
+  ///
+  /// Returns: 서버에서 발급받은 JWT 토큰
+  @override
+  Future<String> exchangeServerToken(String idToken) async {
+    try {
+      // TODO: 실제 백엔드 API 호출로 서버 토큰 교환 구현 필요
+      // 현재는 Mock 구현 (프론트엔드 완성을 위해 임시 구현)
+
+      // 실제 구현 예시:
+      // final response = await http.post(
+      //   Uri.parse('${AppConfig.current.apiBaseUrl}/auth/exchange-token'),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Authorization': 'Bearer $idToken',
+      //   },
+      //   body: json.encode({'firebaseIdToken': idToken}),
+      // );
+      //
+      // if (response.statusCode == 200) {
+      //   final data = json.decode(response.body);
+      //   final serverToken = data['serverToken'] as String;
+      //   final expiresInHours = data['expiresInHours'] as int? ?? 24;
+      //
+      //   // 서버 토큰 저장
+      //   await saveServerToken(serverToken, expiresInHours: expiresInHours);
+      //   return serverToken;
+      // } else {
+      //   throw Exception('서버 토큰 교환 실패: ${response.statusCode}');
+      // }
+
+      // 현재 Mock 구현 (개발용) - 실제 서버 토큰처럼 동작
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Mock 서버 토큰 생성
+      final mockServerToken =
+          'real_server_jwt_token_${DateTime.now().millisecondsSinceEpoch}';
+
+      // Mock 토큰을 실제로 저장 (테스트용)
+      await saveServerToken(mockServerToken, expiresInHours: 24);
+
+      if (kDebugMode) {
+        debugPrint('Mock 서버 토큰 생성 및 저장 완료');
+      }
+
+      return mockServerToken;
+    } catch (e) {
+      throw Exception('서버 토큰 교환 실패: $e');
+    }
+  }
+
+  @override
+  Future<String?> getCurrentUserIdToken() async {
+    try {
+      final user = _firebaseAuth.currentUser;
+      if (user == null) return null;
+      return await user.getIdToken();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// 저장된 서버 JWT 토큰 확인
+  ///
+  /// SecureStorage에서 저장된 서버 토큰을 가져옵니다.
+  /// 토큰이 만료되었거나 없으면 null을 반환합니다.
+  @override
+  Future<String?> getStoredServerToken() async {
+    try {
+      final token = await SecureStorageService.getString(_serverTokenKey);
+      final expiresStr = await SecureStorageService.getString(
+        _serverTokenExpiresKey,
+      );
+
+      if (token == null || expiresStr == null) {
+        return null;
+      }
+
+      // 토큰 만료 확인
+      final expiresAt = DateTime.parse(expiresStr);
+      if (DateTime.now().isAfter(expiresAt)) {
+        // 만료된 토큰 삭제
+        await clearServerToken();
+        return null;
+      }
+
+      return token;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('서버 토큰 가져오기 실패: $e');
+      }
+      return null;
+    }
+  }
+
+  /// 서버 JWT 토큰 저장
+  ///
+  /// [token] 저장할 서버 JWT 토큰
+  /// [expiresInHours] 토큰 만료 시간 (기본 24시간)
+  @override
+  Future<void> saveServerToken(String token, {int expiresInHours = 24}) async {
+    try {
+      final expiresAt = DateTime.now().add(Duration(hours: expiresInHours));
+
+      await Future.wait([
+        SecureStorageService.setString(_serverTokenKey, token),
+        SecureStorageService.setString(
+          _serverTokenExpiresKey,
+          expiresAt.toIso8601String(),
+        ),
+      ]);
+
+      if (kDebugMode) {
+        debugPrint('서버 토큰 저장 완료 (만료: ${expiresAt.toIso8601String()})');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('서버 토큰 저장 실패: $e');
+      }
+      rethrow;
+    }
+  }
+
+  /// 저장된 서버 JWT 토큰 삭제
+  ///
+  /// 로그아웃 시 또는 토큰 만료 시 호출됩니다.
+  @override
+  Future<void> clearServerToken() async {
+    try {
+      await Future.wait([
+        SecureStorageService.remove(_serverTokenKey),
+        SecureStorageService.remove(_serverTokenExpiresKey),
+      ]);
+
+      if (kDebugMode) {
+        debugPrint('서버 토큰 삭제 완료');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('서버 토큰 삭제 실패: $e');
+      }
+      // 삭제 실패는 로그아웃에 영향을 주지 않도록 무시
+    }
+  }
+
+  /// 사용자 인증 상태 확인 (Firebase + 서버 JWT 모두 유효)
+  ///
+  /// Firebase 사용자 로그인 상태와 서버 JWT 토큰 유효성을 모두 확인합니다.
+  /// 두 조건이 모두 만족되어야 인증된 상태로 간주됩니다.
+  @override
+  Future<bool> isAuthenticated() async {
+    try {
+      // Firebase 사용자 로그인 상태 확인
+      final user = _firebaseAuth.currentUser;
+      if (user == null) {
+        return false;
+      }
+
+      // 서버 JWT 토큰 유효성 확인
+      final serverToken = await getStoredServerToken();
+      if (serverToken == null) {
+        return false;
+      }
+
+      // 두 조건 모두 만족 시 인증된 상태
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('인증 상태 확인 실패: $e');
+      }
+      return false;
     }
   }
 

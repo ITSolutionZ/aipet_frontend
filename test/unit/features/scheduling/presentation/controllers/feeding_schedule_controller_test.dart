@@ -40,10 +40,7 @@ void main() {
       test('should return failure when petId is empty', () async {
         // Arrange
         const petId = '';
-        final scheduleData = {
-          'time': '08:00',
-          'amount': '1 cup',
-        };
+        final scheduleData = {'time': '08:00', 'amount': '1 cup'};
 
         // Act
         final result = await controller.createSchedule(petId, scheduleData);
@@ -54,19 +51,22 @@ void main() {
         expect(result.message, contains('펫 ID가 필요합니다'));
       });
 
-      test('should return failure when required schedule data is missing', () async {
-        // Arrange
-        const petId = 'pet-123';
-        final scheduleData = <String, dynamic>{}; // Empty data
+      test(
+        'should return failure when required schedule data is missing',
+        () async {
+          // Arrange
+          const petId = 'pet-123';
+          final scheduleData = <String, dynamic>{}; // Empty data
 
-        // Act
-        final result = await controller.createSchedule(petId, scheduleData);
+          // Act
+          final result = await controller.createSchedule(petId, scheduleData);
 
-        // Assert
-        expect(result, isA<Result<Map<String, dynamic>>>());
-        expect(result.isSuccess, isFalse);
-        expect(result.message, contains('급식 시간이 필요합니다'));
-      });
+          // Assert
+          expect(result, isA<Result<Map<String, dynamic>>>());
+          expect(result.isSuccess, isFalse);
+          expect(result.message, contains('급식 시간이 필요합니다'));
+        },
+      );
     });
 
     group('getSchedules', () {
@@ -170,7 +170,10 @@ void main() {
         };
 
         // Act
-        final result = await controller.markFeedingComplete(scheduleId, feedingData);
+        final result = await controller.markFeedingComplete(
+          scheduleId,
+          feedingData,
+        );
 
         // Assert
         expect(result, isA<Result<Map<String, dynamic>>>());
@@ -202,7 +205,11 @@ void main() {
         final endDate = DateTime.now();
 
         // Act
-        final result = await controller.getFeedingHistory(petId, startDate, endDate);
+        final result = await controller.getFeedingHistory(
+          petId,
+          startDate,
+          endDate,
+        );
 
         // Assert
         expect(result, isA<Result<List<Map<String, dynamic>>>>());
@@ -214,10 +221,16 @@ void main() {
         // Arrange
         const petId = 'pet-123';
         final startDate = DateTime.now();
-        final endDate = DateTime.now().subtract(const Duration(days: 7)); // End before start
+        final endDate = DateTime.now().subtract(
+          const Duration(days: 7),
+        ); // End before start
 
         // Act
-        final result = await controller.getFeedingHistory(petId, startDate, endDate);
+        final result = await controller.getFeedingHistory(
+          petId,
+          startDate,
+          endDate,
+        );
 
         // Assert
         expect(result, isA<Result<List<Map<String, dynamic>>>>());
@@ -234,14 +247,21 @@ void main() {
         final endDate = DateTime.now();
 
         // Act
-        final result = await controller.calculateFeedingStats(petId, startDate, endDate);
+        final result = await controller.calculateFeedingStats(
+          petId,
+          startDate,
+          endDate,
+        );
 
         // Assert
         expect(result, isA<Result<Map<String, dynamic>>>());
         expect(result.isSuccess, isTrue);
         expect(result.message, contains('급식 통계를 계산했습니다'));
         expect(result.data, containsPair('totalFeedings', isA<int>()));
-        expect(result.data, containsPair('averageDailyFeedings', isA<double>()));
+        expect(
+          result.data,
+          containsPair('averageDailyFeedings', isA<double>()),
+        );
         expect(result.data, containsPair('missedFeedings', isA<int>()));
       });
     });

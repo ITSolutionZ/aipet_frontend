@@ -1,5 +1,5 @@
-import '../../../../shared/testing/mock_data/features/ai/ai_categories_mock_data.dart';
-import '../../domain/entities/ai_category_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/ai/ai_categories_mock_data.dart';
 
 /// AI 카테고리 데이터 관리 서비스
 ///

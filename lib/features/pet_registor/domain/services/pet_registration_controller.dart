@@ -1,7 +1,7 @@
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_registration_data_entity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/providers/providers.dart';
-import '../entities/pet_registration_data_entity.dart';
 import 'pet_validation_utils.dart';
 
 /// 펫 등록 컨트롤러

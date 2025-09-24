@@ -1,17 +1,16 @@
+import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/controllers/youtube_videos_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/add_youtube_video_button.dart';
+import 'package:aipet_frontend/shared/widgets/add_youtube_video_dialog.dart';
+import 'package:aipet_frontend/shared/widgets/video_bookmark_list.dart';
+import 'package:aipet_frontend/shared/widgets/youtube_search_bar.dart';
+import 'package:aipet_frontend/shared/widgets/youtube_tag_filter.dart';
+import 'package:aipet_frontend/shared/widgets/youtube_video_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../../../shared/shared.dart';
-import '../../data/providers/pet_activities_providers.dart';
-import '../../domain/entities/entities.dart';
-import '../controllers/youtube_videos_controller.dart';
-import '../widgets/add_youtube_video_button.dart';
-import '../widgets/add_youtube_video_dialog.dart';
-import '../widgets/video_bookmark_list.dart';
-import '../widgets/youtube_search_bar.dart';
-import '../widgets/youtube_tag_filter.dart';
-import '../widgets/youtube_video_list.dart';
 
 /// YouTube 교육 영상 관리 화면
 class YouTubeTrainingVideosScreen extends ConsumerStatefulWidget {

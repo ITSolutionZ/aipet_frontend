@@ -9,7 +9,8 @@ import 'package:aipet_frontend/features/ai/domain/entities/entities.dart'
     as _i3;
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart'
     as _i4;
-import 'package:aipet_frontend/features/pet_registor/pet_registor.dart' as _i6;
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
+    as _i6;
 import 'package:aipet_frontend/shared/shared.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 

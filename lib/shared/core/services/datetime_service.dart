@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
-
-import '../utils/date_time_utils.dart';
 
 /// 날짜/시간 관련 유틸리티 서비스
 ///
@@ -12,13 +11,29 @@ class DateTimeService {
 
   // 한국어 요일 배열
   static const List<String> _weekdaysKorean = [
-    '월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'
+    '월요일',
+    '화요일',
+    '수요일',
+    '목요일',
+    '금요일',
+    '토요일',
+    '일요일',
   ];
 
   // 한국어 월 배열
   static const List<String> _monthsKorean = [
-    '1월', '2월', '3월', '4월', '5월', '6월',
-    '7월', '8월', '9월', '10월', '11월', '12월'
+    '1월',
+    '2월',
+    '3월',
+    '4월',
+    '5월',
+    '6월',
+    '7월',
+    '8월',
+    '9월',
+    '10월',
+    '11월',
+    '12월',
   ];
 
   /// 상대적 시간 표시 (예: "방금 전", "3분 전", "2시간 전")
@@ -38,13 +53,13 @@ class DateTimeService {
       return '${difference.inDays}일 전';
     } else if (difference.inDays < 30) {
       final weeks = (difference.inDays / 7).floor();
-      return '${weeks}주 전';
+      return '$weeks주 전';
     } else if (difference.inDays < 365) {
       final months = (difference.inDays / 30).floor();
-      return '${months}개월 전';
+      return '$months개월 전';
     } else {
       final years = (difference.inDays / 365).floor();
-      return '${years}년 전';
+      return '$years년 전';
     }
   }
 
@@ -53,14 +68,14 @@ class DateTimeService {
     final year = dateTime.year;
     final month = dateTime.month;
     final day = dateTime.day;
-    return '$year년 ${month}월 ${day}일';
+    return '$year년 $month월 $day일';
   }
 
   /// 한국어 월일 포맷 (MM월 dd일)
   static String formatKoreanMonthDay(DateTime dateTime) {
     final month = dateTime.month;
     final day = dateTime.day;
-    return '${month}월 ${day}일';
+    return '$month월 $day일';
   }
 
   /// 한국어 요일 포맷 (월요일, 화요일 등)
@@ -102,15 +117,15 @@ class DateTimeService {
       return '${difference.inDays}일';
     } else if (difference.inDays < 365) {
       final months = (difference.inDays / 30).floor();
-      return '${months}개월';
+      return '$months개월';
     } else {
       final years = (difference.inDays / 365).floor();
       final remainingMonths = ((difference.inDays % 365) / 30).floor();
 
       if (remainingMonths == 0) {
-        return '${years}살';
+        return '$years살';
       } else {
-        return '${years}살 ${remainingMonths}개월';
+        return '$years살 $remainingMonths개월';
       }
     }
   }
@@ -163,11 +178,11 @@ class DateTimeService {
     final seconds = duration.inSeconds % 60;
 
     if (hours > 0) {
-      return '${hours}시간 ${minutes}분 ${seconds}초';
+      return '$hours시간 $minutes분 $seconds초';
     } else if (minutes > 0) {
-      return '${minutes}분 ${seconds}초';
+      return '$minutes분 $seconds초';
     } else {
-      return '${seconds}초';
+      return '$seconds초';
     }
   }
 
@@ -238,13 +253,21 @@ class DateTimeService {
       // 슬래시 형식 (yyyy/MM/dd)
       if (RegExp(r'^\d{4}/\d{2}/\d{2}$').hasMatch(dateString)) {
         final parts = dateString.split('/');
-        return DateTime(int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
+        return DateTime(
+          int.parse(parts[0]),
+          int.parse(parts[1]),
+          int.parse(parts[2]),
+        );
       }
 
       // 점 형식 (dd.MM.yyyy) - 기존 formatDate와 호환
       if (RegExp(r'^\d{2}\.\d{2}\.\d{4}$').hasMatch(dateString)) {
         final parts = dateString.split('.');
-        return DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
+        return DateTime(
+          int.parse(parts[2]),
+          int.parse(parts[1]),
+          int.parse(parts[0]),
+        );
       }
 
       return null;
@@ -295,36 +318,44 @@ class DateTimeService {
   /// 개발자용 디버그 포맷 (상세한 시간 정보)
   static String formatDebug(DateTime dateTime) {
     return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} '
-           '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}'
-           '.${dateTime.millisecond.toString().padLeft(3, '0')}';
+        '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}'
+        '.${dateTime.millisecond.toString().padLeft(3, '0')}';
   }
 
   // 기존 DateTimeUtils 메서드들을 재사용하기 위한 delegation
 
   /// 시간을 HH:mm 형식으로 포맷팅 (기존 DateTimeUtils 사용)
-  static String formatTime(DateTime dateTime) => DateTimeUtils.formatTime(dateTime);
+  static String formatTime(DateTime dateTime) =>
+      DateTimeUtils.formatTime(dateTime);
 
   /// 날짜를 dd.mm.yyyy 형식으로 포맷팅 (기존 DateTimeUtils 사용)
-  static String formatDate(DateTime dateTime) => DateTimeUtils.formatDate(dateTime);
+  static String formatDate(DateTime dateTime) =>
+      DateTimeUtils.formatDate(dateTime);
 
   /// 날짜와 시간을 dd.mm.yyyy | HH:mm 형식으로 포맷팅 (기존 DateTimeUtils 사용)
-  static String formatDateTime(DateTime dateTime) => DateTimeUtils.formatDateTime(dateTime);
+  static String formatDateTime(DateTime dateTime) =>
+      DateTimeUtils.formatDateTime(dateTime);
 
   /// Duration을 시간:분 형식으로 포맷팅 (기존 DateTimeUtils 사용)
-  static String formatDuration(Duration duration) => DateTimeUtils.formatDuration(duration);
+  static String formatDuration(Duration duration) =>
+      DateTimeUtils.formatDuration(duration);
 
   /// Duration을 --:-- 형식으로 포맷팅 (기존 DateTimeUtils 사용)
-  static String formatDurationSafe(Duration? duration) => DateTimeUtils.formatDurationSafe(duration);
+  static String formatDurationSafe(Duration? duration) =>
+      DateTimeUtils.formatDurationSafe(duration);
 
   /// 거리를 km 단위로 포맷팅 (기존 DateTimeUtils 사용)
-  static String formatDistance(double? distance) => DateTimeUtils.formatDistance(distance);
+  static String formatDistance(double? distance) =>
+      DateTimeUtils.formatDistance(distance);
 
   /// 오늘인지 확인 (기존 DateTimeUtils 사용)
   static bool isToday(DateTime dateTime) => DateTimeUtils.isToday(dateTime);
 
   /// 내일인지 확인 (기존 DateTimeUtils 사용)
-  static bool isTomorrow(DateTime dateTime) => DateTimeUtils.isTomorrow(dateTime);
+  static bool isTomorrow(DateTime dateTime) =>
+      DateTimeUtils.isTomorrow(dateTime);
 
   /// 이번 주인지 확인 (기존 DateTimeUtils 사용)
-  static bool isThisWeek(DateTime dateTime) => DateTimeUtils.isThisWeek(dateTime);
+  static bool isThisWeek(DateTime dateTime) =>
+      DateTimeUtils.isThisWeek(dateTime);
 }

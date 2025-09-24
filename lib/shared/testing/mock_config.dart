@@ -48,7 +48,9 @@ class MockConfig {
       case 'development':
       case 'dev':
       default:
-        return kDebugMode ? MockEnvironment.development : MockEnvironment.production;
+        return kDebugMode
+            ? MockEnvironment.development
+            : MockEnvironment.production;
     }
   }
 
@@ -106,7 +108,7 @@ class MockConfig {
   /// Mock 상세 로깅 여부
   static bool get enableMockLogging {
     return currentEnvironment == MockEnvironment.development ||
-           currentEnvironment == MockEnvironment.testing;
+        currentEnvironment == MockEnvironment.testing;
   }
 
   /// 환경 강제 설정 (테스트용)

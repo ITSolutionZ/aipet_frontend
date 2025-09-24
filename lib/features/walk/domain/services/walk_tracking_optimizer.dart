@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import '../entities/walk_location_entity.dart';
+import 'package:aipet_frontend/shared/entities/walk_location_entity.dart';
 
 /// 산책 추적 성능 최적화 서비스
 class WalkTrackingOptimizer {
@@ -29,7 +29,8 @@ class WalkTrackingOptimizer {
     }
 
     // 정확도가 너무 낮은 경우 무시
-    if (location.accuracy != null && location.accuracy! > maxAccuracyThreshold) {
+    if (location.accuracy != null &&
+        location.accuracy! > maxAccuracyThreshold) {
       return false;
     }
 
@@ -168,13 +169,12 @@ class WalkTrackingOptimizer {
 
     final window = [...recentLocations.takeLast(windowSize - 1), newLocation];
 
-    final avgLat = window.map((l) => l.latitude).reduce((a, b) => a + b) / window.length;
-    final avgLng = window.map((l) => l.longitude).reduce((a, b) => a + b) / window.length;
+    final avgLat =
+        window.map((l) => l.latitude).reduce((a, b) => a + b) / window.length;
+    final avgLng =
+        window.map((l) => l.longitude).reduce((a, b) => a + b) / window.length;
 
-    return newLocation.copyWith(
-      latitude: avgLat,
-      longitude: avgLng,
-    );
+    return newLocation.copyWith(latitude: avgLat, longitude: avgLng);
   }
 
   /// 메모리 사용량 최적화를 위한 경로 정리
@@ -224,9 +224,12 @@ class WalkTrackingOptimizer {
     final deltaLat = (to.latitude - from.latitude) * (math.pi / 180);
     final deltaLng = (to.longitude - from.longitude) * (math.pi / 180);
 
-    final a = math.sin(deltaLat / 2) * math.sin(deltaLat / 2) +
-        math.cos(lat1Rad) * math.cos(lat2Rad) *
-        math.sin(deltaLng / 2) * math.sin(deltaLng / 2);
+    final a =
+        math.sin(deltaLat / 2) * math.sin(deltaLat / 2) +
+        math.cos(lat1Rad) *
+            math.cos(lat2Rad) *
+            math.sin(deltaLng / 2) *
+            math.sin(deltaLng / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
     return earthRadius * c;

@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
 
 part 'pet_profile_form_controller.g.dart';
 
@@ -168,12 +167,8 @@ class PetProfileFormController extends _$PetProfileFormController {
 
       // 편집 모드 종료
       state = state.copyWith(isEditMode: false, isLoading: false);
-
     } catch (error) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: error.toString(),
-      );
+      state = state.copyWith(isLoading: false, errorMessage: error.toString());
     }
   }
 
@@ -185,12 +180,12 @@ class PetProfileFormController extends _$PetProfileFormController {
   /// 변경사항 확인
   bool hasChanges(PetProfileEntity originalPet) {
     return state.nameController.text != originalPet.name ||
-           state.breedController.text != (originalPet.breed ?? '') ||
-           state.weightController.text != originalPet.weight.toString() ||
-           state.editingGender != originalPet.gender ||
-           state.editingType != originalPet.type ||
-           state.editingWeight != originalPet.weight ||
-           state.selectedImagePath != originalPet.imagePath ||
-           state.editingBirthDate != originalPet.birthDate;
+        state.breedController.text != (originalPet.breed ?? '') ||
+        state.weightController.text != originalPet.weight.toString() ||
+        state.editingGender != originalPet.gender ||
+        state.editingType != originalPet.type ||
+        state.editingWeight != originalPet.weight ||
+        state.selectedImagePath != originalPet.imagePath ||
+        state.editingBirthDate != originalPet.birthDate;
   }
 }

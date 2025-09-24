@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/features/onboarding/domain/repositories/notification_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/usecases.dart';
+import 'package:aipet_frontend/shared/presentation/controllers/notification_controllers.dart';
+import 'package:aipet_frontend/shared/repositories/notification_repository_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../domain/repositories/notification_repository.dart';
-import '../../domain/usecases/usecases.dart';
-import '../../presentation/controllers/notification_controllers.dart';
-import '../repositories/notification_repository_impl.dart';
 
 // Repository Provider
 final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {

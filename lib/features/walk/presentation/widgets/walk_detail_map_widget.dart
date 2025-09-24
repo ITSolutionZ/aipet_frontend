@@ -1,20 +1,21 @@
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/entities/walk_record_entity.dart';
-
-class WalkDetailMapWidget extends StatefulWidget {
+class WalkDetailMapWidget extends ConsumerStatefulWidget {
   final WalkRecordEntity walkRecord;
 
   const WalkDetailMapWidget({super.key, required this.walkRecord});
 
   @override
-  State<WalkDetailMapWidget> createState() => _WalkDetailMapWidgetState();
+  ConsumerState<WalkDetailMapWidget> createState() =>
+      _WalkDetailMapWidgetState();
 }
 
-class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
+class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
   GoogleMapController? _mapController;
   Position? _currentPosition;
   final Set<Marker> _markers = {};

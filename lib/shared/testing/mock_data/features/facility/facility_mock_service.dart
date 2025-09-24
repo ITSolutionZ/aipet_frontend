@@ -1,10 +1,9 @@
-import '../../core/base_mock_service.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/core/base_mock_service.dart';
 
 /// Facility Feature 전용 Mock 데이터 서비스
 class FacilityMockService extends BaseMockService {
-  
   // ==================== 시설 데이터 ====================
-  
+
   /// Mock 시설 목록
   static List<Map<String, dynamic>> getMockFacilities() {
     return [
@@ -66,21 +65,21 @@ class FacilityMockService extends BaseMockService {
       },
     ];
   }
-  
+
   /// 병원 시설만 조회
   static List<Map<String, dynamic>> getMockHospitalFacilities() {
     return getMockFacilities()
         .where((facility) => facility['type'] == 'hospital')
         .toList();
   }
-  
-  /// 미용실 시설만 조회  
+
+  /// 미용실 시설만 조회
   static List<Map<String, dynamic>> getMockGroomingFacilities() {
     return getMockFacilities()
         .where((facility) => facility['type'] == 'grooming')
         .toList();
   }
-  
+
   /// ID로 시설 조회
   static Map<String, dynamic>? getMockFacilityById(String facilityId) {
     final facilities = getMockFacilities();
@@ -90,12 +89,12 @@ class FacilityMockService extends BaseMockService {
       return null;
     }
   }
-  
+
   /// 시설 상세 정보 조회
   static Map<String, dynamic>? getMockFacilityDetailById(String facilityId) {
     final facility = getMockFacilityById(facilityId);
     if (facility == null) return null;
-    
+
     // 상세 정보 추가
     return {
       ...facility,
@@ -107,9 +106,9 @@ class FacilityMockService extends BaseMockService {
       'gallery': _getGalleryImages(facility['id']),
     };
   }
-  
+
   // ==================== 시설 상세 정보 헬퍼 메소드들 ====================
-  
+
   static List<String> _getFacilityFeatures(String type) {
     switch (type) {
       case 'hospital':
@@ -120,7 +119,7 @@ class FacilityMockService extends BaseMockService {
         return ['친절한 서비스', '깨끗한 환경'];
     }
   }
-  
+
   static List<Map<String, dynamic>> _getStaffInfo(String type) {
     switch (type) {
       case 'hospital':
@@ -137,18 +136,12 @@ class FacilityMockService extends BaseMockService {
         return [];
     }
   }
-  
+
   static Map<String, dynamic> _getReviewSummary(String facilityId) {
     return {
       'totalReviews': 127,
       'averageRating': 4.6,
-      'ratingDistribution': {
-        '5': 89,
-        '4': 25,
-        '3': 10,
-        '2': 2,
-        '1': 1,
-      },
+      'ratingDistribution': {'5': 89, '4': 25, '3': 10, '2': 2, '1': 1},
       'recentReviews': [
         {
           'author': '김**',
@@ -165,7 +158,7 @@ class FacilityMockService extends BaseMockService {
       ],
     };
   }
-  
+
   static Map<String, dynamic> _getPricingInfo(String type) {
     switch (type) {
       case 'hospital':
@@ -186,7 +179,7 @@ class FacilityMockService extends BaseMockService {
         return {};
     }
   }
-  
+
   static List<String> _getGalleryImages(String facilityId) {
     return [
       'assets/images/facilities/gallery1.png',

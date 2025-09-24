@@ -1,13 +1,13 @@
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/facility.dart';
-
 /// 시설 전체화면 지도 화면
-class FacilityFullscreenMapScreen extends StatefulWidget {
+class FacilityFullscreenMapScreen extends ConsumerStatefulWidget {
   final Facility facility;
   final List<Facility>? nearbyFacilities;
 
@@ -18,12 +18,12 @@ class FacilityFullscreenMapScreen extends StatefulWidget {
   });
 
   @override
-  State<FacilityFullscreenMapScreen> createState() =>
+  ConsumerState<FacilityFullscreenMapScreen> createState() =>
       _FacilityFullscreenMapScreenState();
 }
 
 class _FacilityFullscreenMapScreenState
-    extends State<FacilityFullscreenMapScreen> {
+    extends ConsumerState<FacilityFullscreenMapScreen> {
   GoogleMapController? _mapController;
   Position? _currentPosition;
   final Set<Marker> _markers = {};

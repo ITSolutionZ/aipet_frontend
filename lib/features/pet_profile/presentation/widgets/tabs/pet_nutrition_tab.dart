@@ -1,16 +1,12 @@
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../../shared/shared.dart';
-import '../../../../pet_registor/domain/entities/pet_profile_entity.dart';
 
 class PetNutritionTab extends ConsumerWidget {
   final PetProfileEntity pet;
 
-  const PetNutritionTab({
-    super.key,
-    required this.pet,
-  });
+  const PetNutritionTab({super.key, required this.pet});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -200,7 +196,9 @@ class PetNutritionTab extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.pointBrown.withValues(alpha: 0.1) : Colors.white,
+        color: isSelected
+            ? AppColors.pointBrown.withValues(alpha: 0.1)
+            : Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         border: Border.all(
           color: isSelected ? AppColors.pointBrown : AppColors.pointGray,

@@ -1,6 +1,6 @@
-import '../../../../shared/shared.dart';
-import '../../domain/entities/splash_entity.dart';
-import '../../domain/repositories/splash_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/splash_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/repositories/splash_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 class SplashRepositoryImpl implements SplashRepository {
   @override

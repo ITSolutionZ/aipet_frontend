@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class ProfileEditButtons extends StatelessWidget {
   final bool isEditMode;
@@ -49,11 +48,7 @@ class ProfileEditButtons extends StatelessWidget {
         enabled: true,
         onPressed: onEdit,
         text: '編集',
-        leading: const Icon(
-          Icons.edit,
-          color: Colors.white,
-          size: 20,
-        ),
+        leading: const Icon(Icons.edit, color: Colors.white, size: 20),
       );
     }
   }

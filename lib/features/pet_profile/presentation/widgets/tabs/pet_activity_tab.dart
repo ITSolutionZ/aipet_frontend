@@ -1,18 +1,14 @@
+import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../../shared/shared.dart';
-import '../../../../pet_activities/data/providers/pet_activities_providers.dart';
-import '../../../../pet_activities/domain/entities/trick_entity.dart';
-import '../../../../pet_registor/domain/entities/pet_profile_entity.dart';
 
 class PetActivityTab extends ConsumerWidget {
   final PetProfileEntity pet;
 
-  const PetActivityTab({
-    super.key,
-    required this.pet,
-  });
+  const PetActivityTab({super.key, required this.pet});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,9 +16,7 @@ class PetActivityTab extends ConsumerWidget {
 
     return tricksState.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stackTrace) => Center(
-        child: Text('エラー: $error'),
-      ),
+      error: (error, stackTrace) => Center(child: Text('エラー: $error')),
       data: (tricks) => _buildActivityContent(tricks),
     );
   }
@@ -52,7 +46,9 @@ class PetActivityTab extends ConsumerWidget {
   }
 
   Widget _buildActivityStatsSection(int learnedCount, int totalCount) {
-    final progressPercentage = totalCount > 0 ? (learnedCount / totalCount) * 100 : 0;
+    final progressPercentage = totalCount > 0
+        ? (learnedCount / totalCount) * 100
+        : 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,10 +118,12 @@ class PetActivityTab extends ConsumerWidget {
             ),
           )
         else
-          ...learnedTricks.map((trick) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: _buildTrickCard(trick, isLearned: true),
-              )),
+          ...learnedTricks.map(
+            (trick) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _buildTrickCard(trick, isLearned: true),
+            ),
+          ),
       ],
     );
   }
@@ -142,10 +140,14 @@ class PetActivityTab extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        ...availableTricks.take(3).map((trick) => Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: _buildTrickCard(trick, isLearned: false),
-            )),
+        ...availableTricks
+            .take(3)
+            .map(
+              (trick) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: _buildTrickCard(trick, isLearned: false),
+              ),
+            ),
         if (availableTricks.length > 3)
           Center(
             child: TextButton(
@@ -154,9 +156,7 @@ class PetActivityTab extends ConsumerWidget {
               },
               child: Text(
                 'さらに${availableTricks.length - 3}個のトリックを見る',
-                style: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.pointBlue,
-                ),
+                style: AppFonts.bodyMedium.copyWith(color: AppColors.pointBlue),
               ),
             ),
           ),
@@ -209,7 +209,9 @@ class PetActivityTab extends ConsumerWidget {
       title: trick.name,
       subtitle: trick.description,
       badge: isLearned ? '習得済み' : trick.difficulty,
-      badgeColor: isLearned ? AppColors.pointGreen : _getDifficultyColor(trick.difficulty ?? 'easy'),
+      badgeColor: isLearned
+          ? AppColors.pointGreen
+          : _getDifficultyColor(trick.difficulty ?? 'easy'),
       onTap: () {
         // Navigate to trick detail or start learning
       },

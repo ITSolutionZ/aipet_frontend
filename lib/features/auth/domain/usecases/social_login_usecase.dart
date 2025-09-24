@@ -1,6 +1,5 @@
-import '../../../../shared/shared.dart';
-import '../../data/services/auth_mode_service.dart';
-import '../repositories/auth_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 🎯 소셜 로그인 UseCase
 ///
@@ -11,26 +10,17 @@ class SocialLoginUseCase {
   const SocialLoginUseCase(this._repository);
 
   /// Google 로그인
+  ///
+  /// Google Sign-In을 통한 로그인을 수행합니다.
+  ///
+  /// Returns: 로그인 결과 (성공 시 AuthUser 포함)
   Future<Result<AuthUser>> loginWithGoogle() async {
     try {
-      if (AuthModeService.isMockMode) {
-        // Mock 모드: 임시 사용자 생성
-        AuthModeService.logTempLogin('google@example.com', 'Google 로그인');
-        final tempUser = AuthModeService.createTempSocialUser(
-          'google',
-          'google@example.com',
-        );
-        return Result.success(
-          AuthModeService.getTempSocialLoginMessage('Google'),
-          tempUser,
-        );
-      }
-
-      // 실제 Firebase Google 로그인
+      // Firebase Google 로그인
       final authResult = await _repository.signInWithGoogle();
 
-      if (authResult.isSuccess && authResult.user != null) {
-        return Result.success('Googleログインが完了しました', authResult.user!);
+      if (authResult.isSuccess && authResult.data != null) {
+        return Result.success('Googleログインが完了しました', authResult.data!);
       } else {
         return Result.failure(authResult.message);
       }
@@ -40,26 +30,17 @@ class SocialLoginUseCase {
   }
 
   /// Apple 로그인
+  ///
+  /// Apple Sign-In을 통한 로그인을 수행합니다.
+  ///
+  /// Returns: 로그인 결과 (성공 시 AuthUser 포함)
   Future<Result<AuthUser>> loginWithApple() async {
     try {
-      if (AuthModeService.isMockMode) {
-        // Mock 모드: 임시 사용자 생성
-        AuthModeService.logTempLogin('apple@example.com', 'Apple 로그인');
-        final tempUser = AuthModeService.createTempSocialUser(
-          'apple',
-          'apple@example.com',
-        );
-        return Result.success(
-          AuthModeService.getTempSocialLoginMessage('Apple'),
-          tempUser,
-        );
-      }
-
-      // 실제 Firebase Apple 로그인
+      // Firebase Apple 로그인
       final authResult = await _repository.signInWithApple();
 
-      if (authResult.isSuccess && authResult.user != null) {
-        return Result.success('Appleログインが完了しました', authResult.user!);
+      if (authResult.isSuccess && authResult.data != null) {
+        return Result.success('Appleログインが完了しました', authResult.data!);
       } else {
         return Result.failure(authResult.message);
       }
@@ -69,26 +50,17 @@ class SocialLoginUseCase {
   }
 
   /// LINE 로그인
+  ///
+  /// LINE OAuth 2.0을 통한 로그인을 수행합니다.
+  ///
+  /// Returns: 로그인 결과 (성공 시 AuthUser 포함)
   Future<Result<AuthUser>> loginWithLine() async {
     try {
-      if (AuthModeService.isMockMode) {
-        // Mock 모드: 임시 사용자 생성
-        AuthModeService.logTempLogin('line@example.com', 'LINE 로그인');
-        final tempUser = AuthModeService.createTempSocialUser(
-          'line',
-          'line@example.com',
-        );
-        return Result.success(
-          AuthModeService.getTempSocialLoginMessage('LINE'),
-          tempUser,
-        );
-      }
-
-      // 실제 Firebase + LINE OAuth 로그인
+      // Firebase + LINE OAuth 로그인
       final authResult = await _repository.signInWithLine();
 
-      if (authResult.isSuccess && authResult.user != null) {
-        return Result.success('LINEログインが完了しました', authResult.user!);
+      if (authResult.isSuccess && authResult.data != null) {
+        return Result.success('LINEログインが完了しました', authResult.data!);
       } else {
         return Result.failure(authResult.message);
       }

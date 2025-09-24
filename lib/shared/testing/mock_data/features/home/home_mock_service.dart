@@ -1,4 +1,4 @@
-import '../../core/base_mock_service.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/core/base_mock_service.dart';
 
 /// Home Feature 전용 Mock 데이터 서비스
 class HomeMockService extends BaseMockService {

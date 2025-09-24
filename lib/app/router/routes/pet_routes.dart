@@ -1,9 +1,9 @@
+import 'package:aipet_frontend/features/pet_activities/presentation/screens/learn_trick_screen.dart';
+import 'package:aipet_frontend/features/pet_feeding/presentation/screens/pet_feeding_screens.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/vaccine_screen.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/screens/pet_registor_screens.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../features/pet_activities/presentation/screens/learn_trick_screen.dart';
-import '../../../features/pet_feeding/presentation/screens/pet_feeding_screens.dart';
-import '../../../features/pet_profile/presentation/screens/vaccine_screen.dart';
-import '../../../features/pet_registor/presentation/screens/pet_registor_screens.dart';
 import 'route_constants.dart';
 
 /// 펫 관련 라우트 설정

@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../shared/shared.dart';
 import 'home_widgets.dart';
 
 class HomeSummaryGrid extends StatelessWidget {

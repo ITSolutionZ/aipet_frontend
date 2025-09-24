@@ -18,11 +18,20 @@ class AiCategoryEntity {
 
   /// 기본 카테고리 목록 (AiCategoryService를 통해 접근)
   ///
-  /// @deprecated 정적 데이터는 AiCategoryService.getDefaultCategories()를 사용하세요.
+  /// @deprecated 이 메서드는 더 이상 지원되지 않습니다.
+  /// 대신 `AiCategoryService.getDefaultCategories()`를 사용하세요.
+  ///
+  /// ## 사용 권장 방법
+  /// ```dart
+  /// // 올바른 사용법
+  /// final categories = AiCategoryService.getDefaultCategories();
+  ///
+  /// // 잘못된 사용법 (deprecated)
+  /// final categories = AiCategoryEntity.defaultCategories; // 에러 발생
+  /// ```
   static List<AiCategoryEntity> get defaultCategories {
-    // 하위 호환성을 위해 유지하지만, 새로운 코드에서는 AiCategoryService 사용을 권장
     throw UnimplementedError(
-      '정적 데이터는 더 이상 지원되지 않습니다. '
+      'AiCategoryEntity.defaultCategories는 더 이상 지원되지 않습니다. '
       'AiCategoryService.getDefaultCategories()를 사용하세요.',
     );
   }

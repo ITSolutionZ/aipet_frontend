@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
-import '../../../../shared/shared.dart';
 
 /// 급여 스케줄 편집 컨트롤러
 class FeedingScheduleEditController

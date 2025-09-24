@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design/tokens/tokens.dart';
 
 /// 📊 메트릭 표시용 카드
 ///
@@ -149,10 +148,7 @@ class MetricCard extends StatelessWidget {
     }
 
     if (semanticLabel != null) {
-      card = Semantics(
-        label: semanticLabel,
-        child: card,
-      );
+      card = Semantics(label: semanticLabel, child: card);
     }
 
     return card;
@@ -168,10 +164,7 @@ class MetricCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.small),
       ),
       child: IconTheme(
-        data: IconThemeData(
-          color: iconColor ?? AppColors.pointBrown,
-          size: 24,
-        ),
+        data: IconThemeData(color: iconColor ?? AppColors.pointBrown, size: 24),
         child: icon!,
       ),
     );

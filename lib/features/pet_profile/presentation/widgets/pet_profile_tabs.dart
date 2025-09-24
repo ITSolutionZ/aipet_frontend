@@ -1,10 +1,10 @@
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/pet_activities/data/providers/pet_activities_providers.dart';
+import 'package:aipet_frontend/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/shared.dart';
-import '../../../pet_activities/data/providers/pet_activities_providers.dart';
-import '../../../pet_activities/domain/entities/trick_entity.dart';
-import '../../domain/entities/pet_profile_entity.dart';
 import 'pet_edit_fields.dart';
 import 'pet_profile_card.dart';
 
@@ -59,10 +59,12 @@ class AboutTab extends ConsumerWidget {
                     controller: controllers['appearance']!,
                     hintText: 'ペットの外観や特徴を入力してください',
                     maxLines: 3,
-                    onChanged: (value) => onValueChanged?.call('appearance', value),
+                    onChanged: (value) =>
+                        onValueChanged?.call('appearance', value),
                   )
                 : Text(
-                    pet.customFields?['appearance']?.toString() ?? 'No appearance description available',
+                    pet.customFields?['appearance']?.toString() ??
+                        'No appearance description available',
                     style: AppFonts.bodyMedium.copyWith(
                       color: AppColors.pointDark.withValues(alpha: 0.8),
                     ),
@@ -74,10 +76,14 @@ class AboutTab extends ConsumerWidget {
           // 주요 속성
           _buildSection('重要な属性', null),
           const SizedBox(height: AppSpacing.md),
-          
+
           EditableAttributeCard(
             label: '性別',
-            value: _getGenderString(isEditMode ? editingValues['gender'] : pet.customFields?['gender']),
+            value: _getGenderString(
+              isEditMode
+                  ? editingValues['gender']
+                  : pet.customFields?['gender'],
+            ),
             isEditMode: isEditMode,
             editWidget: isEditMode
                 ? GenderDropdown(
@@ -86,12 +92,14 @@ class AboutTab extends ConsumerWidget {
                   )
                 : null,
           ),
-          
+
           const SizedBox(height: AppSpacing.sm),
-          
+
           EditableAttributeCard(
             label: 'サイズ',
-            value: _getSizeString(isEditMode ? editingValues['size'] : pet.customFields?['size']),
+            value: _getSizeString(
+              isEditMode ? editingValues['size'] : pet.customFields?['size'],
+            ),
             isEditMode: isEditMode,
             editWidget: isEditMode
                 ? SizeDropdown(
@@ -100,12 +108,14 @@ class AboutTab extends ConsumerWidget {
                   )
                 : null,
           ),
-          
+
           const SizedBox(height: AppSpacing.sm),
-          
+
           EditableAttributeCard(
             label: '体重',
-            value: _getWeightString(isEditMode ? editingValues['weight'] : pet.healthInfo?.weight),
+            value: _getWeightString(
+              isEditMode ? editingValues['weight'] : pet.healthInfo?.weight,
+            ),
             isEditMode: isEditMode,
             editWidget: isEditMode
                 ? WeightInputField(
@@ -120,16 +130,16 @@ class AboutTab extends ConsumerWidget {
           // 마이크로칩 정보
           _buildSection('マイクロチップ情報', null),
           const SizedBox(height: AppSpacing.md),
-          
+
           PetProfileCard(
             label: 'マイクロチップ番号',
             value: isEditMode
                 ? controllers['microchip']!.text.isEmpty
-                    ? '未登録'
-                    : controllers['microchip']!.text
+                      ? '未登録'
+                      : controllers['microchip']!.text
                 : pet.customFields?['microchipId']?.toString().isEmpty ?? true
-                    ? '未登録'
-                    : pet.customFields!['microchipId'].toString(),
+                ? '未登録'
+                : pet.customFields!['microchipId'].toString(),
             icon: Icons.memory,
             iconColor: AppColors.pointGreen,
             trailing: isEditMode
@@ -138,7 +148,8 @@ class AboutTab extends ConsumerWidget {
                     child: EditableTextField(
                       controller: controllers['microchip']!,
                       hintText: 'マイクロチップ番号を入力',
-                      onChanged: (value) => onValueChanged?.call('microchipId', value),
+                      onChanged: (value) =>
+                          onValueChanged?.call('microchipId', value),
                     ),
                   )
                 : null,
@@ -149,16 +160,16 @@ class AboutTab extends ConsumerWidget {
           // 중요 날짜
           _buildSection('重要な日付', null),
           const SizedBox(height: AppSpacing.md),
-          
+
           DateInfoCard(
             icon: Icons.cake,
             label: '誕生日',
             date: _formatDate(pet.birthDate),
             additionalInfo: _calculateAge(pet.birthDate),
           ),
-          
+
           const SizedBox(height: AppSpacing.sm),
-          
+
           DateInfoCard(
             icon: Icons.home,
             label: '領養日',
@@ -170,7 +181,7 @@ class AboutTab extends ConsumerWidget {
           // 보호자
           _buildSection('飼い主', null),
           const SizedBox(height: AppSpacing.md),
-          
+
           PetProfileCard(
             label: pet.ownerId,
             value: 'owner@example.com',
@@ -268,10 +279,7 @@ class AboutTab extends ConsumerWidget {
 class ActivityTab extends ConsumerWidget {
   final String petId;
 
-  const ActivityTab({
-    super.key,
-    required this.petId,
-  });
+  const ActivityTab({super.key, required this.petId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -286,8 +294,12 @@ class ActivityTab extends ConsumerWidget {
   }
 
   Widget _buildActivityContent(BuildContext context, List<TrickEntity> tricks) {
-    final learnedTricks = tricks.where((trick) => trick.progress != null).toList();
-    final availableTricks = tricks.where((trick) => trick.progress == null).toList();
+    final learnedTricks = tricks
+        .where((trick) => trick.progress != null)
+        .toList();
+    final availableTricks = tricks
+        .where((trick) => trick.progress == null)
+        .toList();
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -303,7 +315,9 @@ class ActivityTab extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            ...learnedTricks.take(3).map((trick) => _buildTrickCard(trick, true)),
+            ...learnedTricks
+                .take(3)
+                .map((trick) => _buildTrickCard(trick, true)),
             const SizedBox(height: AppSpacing.lg),
           ],
 
@@ -316,7 +330,9 @@ class ActivityTab extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            ...availableTricks.take(2).map((trick) => _buildTrickCard(trick, false)),
+            ...availableTricks
+                .take(2)
+                .map((trick) => _buildTrickCard(trick, false)),
           ],
 
           const Spacer(),

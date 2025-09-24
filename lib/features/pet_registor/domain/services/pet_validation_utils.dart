@@ -1,5 +1,6 @@
-import '../../../../../shared/shared.dart';
-import '../entities/pet_registration_data_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_registration_data_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
 import 'pet_validation_service.dart';
 
 /// 펫 검증 유틸리티 클래스

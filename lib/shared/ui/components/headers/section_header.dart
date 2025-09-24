@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design/tokens/tokens.dart';
 
 /// 📋 섹션 헤더
 ///
@@ -79,11 +78,7 @@ class SectionHeader extends StatelessWidget {
           color: (iconColor ?? AppColors.pointBrown).withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        child: Icon(
-          icon,
-          color: iconColor ?? AppColors.pointBrown,
-          size: 20,
-        ),
+        child: Icon(icon, color: iconColor ?? AppColors.pointBrown, size: 20),
       ),
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
     );
@@ -142,7 +137,8 @@ class SectionHeader extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: titleStyle ??
+                    style:
+                        titleStyle ??
                         AppFonts.titleMedium.copyWith(
                           color: titleColor ?? AppColors.pointDark,
                           fontWeight: FontWeight.bold,
@@ -152,7 +148,8 @@ class SectionHeader extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       subtitle!,
-                      style: subtitleStyle ??
+                      style:
+                          subtitleStyle ??
                           AppFonts.bodyMedium.copyWith(
                             color: AppColors.pointGray,
                           ),
@@ -179,10 +176,7 @@ class SectionHeader extends StatelessWidget {
     );
 
     if (padding != null) {
-      header = Padding(
-        padding: padding!,
-        child: header,
-      );
+      header = Padding(padding: padding!, child: header);
     }
 
     return header;

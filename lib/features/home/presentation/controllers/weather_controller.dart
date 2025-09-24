@@ -1,8 +1,8 @@
-import '../../../../app/controllers/base_controller.dart';
-import '../../../../shared/shared.dart';
-import '../../../ai/data/services/openai_service.dart';
-import '../../data/models/weather_model.dart';
-import '../../data/services/weather_service.dart';
+import 'package:aipet_frontend/ai/data/services/openai_service.dart';
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/onboarding/data/models/weather_model.dart';
+import 'package:aipet_frontend/features/onboarding/data/services/weather_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 class WeatherController extends BaseController {
   WeatherController(super.ref);

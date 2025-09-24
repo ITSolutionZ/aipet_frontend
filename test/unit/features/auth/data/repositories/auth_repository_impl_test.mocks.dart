@@ -181,6 +181,61 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
+
+  @override
+  _i4.Future<String> exchangeServerToken(String? idToken) =>
+      (super.noSuchMethod(
+            Invocation.method(#exchangeServerToken, [idToken]),
+            returnValue: _i4.Future<String>.value(
+              _i5.dummyValue<String>(
+                this,
+                Invocation.method(#exchangeServerToken, [idToken]),
+              ),
+            ),
+          )
+          as _i4.Future<String>);
+
+  @override
+  _i4.Future<String?> getCurrentUserIdToken() =>
+      (super.noSuchMethod(
+            Invocation.method(#getCurrentUserIdToken, []),
+            returnValue: _i4.Future<String?>.value(),
+          )
+          as _i4.Future<String?>);
+
+  @override
+  _i4.Future<String?> getStoredServerToken() =>
+      (super.noSuchMethod(
+            Invocation.method(#getStoredServerToken, []),
+            returnValue: _i4.Future<String?>.value(),
+          )
+          as _i4.Future<String?>);
+
+  @override
+  _i4.Future<void> saveServerToken(String? token) =>
+      (super.noSuchMethod(
+            Invocation.method(#saveServerToken, [token]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> clearServerToken() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearServerToken, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<bool> isAuthenticated() =>
+      (super.noSuchMethod(
+            Invocation.method(#isAuthenticated, []),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
 }
 
 /// A class which mocks [Ref].

@@ -1,8 +1,8 @@
+import 'package:aipet_frontend/shared/core/constants/error_codes.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/auth/auth_mock_data.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-import '../constants/error_codes.dart';
-import '../../testing/mock_data/features/auth/auth_mock_data.dart';
 import 'auth_token_repository.dart';
 
 /// Dio 기반 HTTP 클라이언트 서비스

@@ -3,12 +3,10 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
-import 'package:aipet_frontend/features/home/domain/entities/entities.dart'
-    as _i2;
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart'
-    as _i3;
+    as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -25,46 +23,25 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeHomeDashboardEntity_0 extends _i1.SmartFake
-    implements _i2.HomeDashboardEntity {
-  _FakeHomeDashboardEntity_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeWalkSummary_1 extends _i1.SmartFake implements _i2.WalkSummary {
-  _FakeWalkSummary_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeHealthSummary_2 extends _i1.SmartFake implements _i2.HealthSummary {
-  _FakeHealthSummary_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
 /// A class which mocks [HomeRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockHomeRepository extends _i1.Mock implements _i3.HomeRepository {
+class MockHomeRepository extends _i1.Mock implements _i2.HomeRepository {
   MockHomeRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.HomeDashboardEntity> getDashboardData() =>
+  _i3.Future<dynamic> getDashboardData() =>
       (super.noSuchMethod(
             Invocation.method(#getDashboardData, []),
-            returnValue: _i4.Future<_i2.HomeDashboardEntity>.value(
-              _FakeHomeDashboardEntity_0(
-                this,
-                Invocation.method(#getDashboardData, []),
-              ),
-            ),
+            returnValue: _i3.Future<dynamic>.value(),
           )
-          as _i4.Future<_i2.HomeDashboardEntity>);
+          as _i3.Future<dynamic>);
 
   @override
-  _i4.Future<_i2.WeatherEntity?> getCurrentWeather({
-    _i2.WeatherLocationEntity? location,
+  _i3.Future<dynamic> getCurrentWeather({
+    dynamic location,
     bool? userTriggered = false,
   }) =>
       (super.noSuchMethod(
@@ -72,50 +49,39 @@ class MockHomeRepository extends _i1.Mock implements _i3.HomeRepository {
               #location: location,
               #userTriggered: userTriggered,
             }),
-            returnValue: _i4.Future<_i2.WeatherEntity?>.value(),
+            returnValue: _i3.Future<dynamic>.value(),
           )
-          as _i4.Future<_i2.WeatherEntity?>);
+          as _i3.Future<dynamic>);
 
   @override
-  _i4.Future<List<_i2.PetSummaryEntity>> getPetSummaries() =>
+  _i3.Future<List<dynamic>> getPetSummaries() =>
       (super.noSuchMethod(
             Invocation.method(#getPetSummaries, []),
-            returnValue: _i4.Future<List<_i2.PetSummaryEntity>>.value(
-              <_i2.PetSummaryEntity>[],
-            ),
+            returnValue: _i3.Future<List<dynamic>>.value(<dynamic>[]),
           )
-          as _i4.Future<List<_i2.PetSummaryEntity>>);
+          as _i3.Future<List<dynamic>>);
 
   @override
-  _i4.Future<_i2.WalkSummary> getWalkSummary() =>
+  _i3.Future<dynamic> getWalkSummary() =>
       (super.noSuchMethod(
             Invocation.method(#getWalkSummary, []),
-            returnValue: _i4.Future<_i2.WalkSummary>.value(
-              _FakeWalkSummary_1(this, Invocation.method(#getWalkSummary, [])),
-            ),
+            returnValue: _i3.Future<dynamic>.value(),
           )
-          as _i4.Future<_i2.WalkSummary>);
+          as _i3.Future<dynamic>);
 
   @override
-  _i4.Future<_i2.HealthSummary> getPetHealthSummary() =>
+  _i3.Future<dynamic> getPetHealthSummary() =>
       (super.noSuchMethod(
             Invocation.method(#getPetHealthSummary, []),
-            returnValue: _i4.Future<_i2.HealthSummary>.value(
-              _FakeHealthSummary_2(
-                this,
-                Invocation.method(#getPetHealthSummary, []),
-              ),
-            ),
+            returnValue: _i3.Future<dynamic>.value(),
           )
-          as _i4.Future<_i2.HealthSummary>);
+          as _i3.Future<dynamic>);
 
   @override
-  _i4.Future<List<_i2.AppointmentSummary>> getUpcomingAppointments() =>
+  _i3.Future<List<dynamic>> getUpcomingAppointments() =>
       (super.noSuchMethod(
             Invocation.method(#getUpcomingAppointments, []),
-            returnValue: _i4.Future<List<_i2.AppointmentSummary>>.value(
-              <_i2.AppointmentSummary>[],
-            ),
+            returnValue: _i3.Future<List<dynamic>>.value(<dynamic>[]),
           )
-          as _i4.Future<List<_i2.AppointmentSummary>>);
+          as _i3.Future<List<dynamic>>);
 }

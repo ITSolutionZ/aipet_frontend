@@ -1,12 +1,10 @@
+import 'package:aipet_frontend/shared/testing/mock_data/core/base_mock_service.dart';
 import 'package:flutter/material.dart';
-
-import '../../core/base_mock_service.dart';
 
 /// Pet Activities Feature 전용 Mock 데이터 서비스
 class PetActivitiesMockService extends BaseMockService {
-  
   // ==================== 트릭 데이터 ====================
-  
+
   /// Mock 트릭 목록
   static List<Map<String, dynamic>> getMockTricks() {
     return [
@@ -30,7 +28,7 @@ class PetActivitiesMockService extends BaseMockService {
         'completedAt': DateTime.now().subtract(const Duration(days: 5)),
       },
       {
-        'id': '2', 
+        'id': '2',
         'name': '손 내밀기',
         'petId': '1',
         'difficulty': 'easy',
@@ -38,11 +36,7 @@ class PetActivitiesMockService extends BaseMockService {
         'isCompleted': false,
         'learningDays': 8,
         'description': '앞발을 들어 손 맞추기',
-        'instructions': [
-          '앉은 상태에서 시작',
-          '손을 펫 앞에 내밀기',
-          '"손" 명령과 함께 발 유도',
-        ],
+        'instructions': ['앉은 상태에서 시작', '손을 펫 앞에 내밀기', '"손" 명령과 함께 발 유도'],
         'videoUrl': 'https://youtube.com/watch?v=example2',
         'imagePath': 'assets/images/tricks/shake.png',
         'createdAt': DateTime.now().subtract(const Duration(days: 8)),
@@ -56,23 +50,19 @@ class PetActivitiesMockService extends BaseMockService {
         'isCompleted': false,
         'learningDays': 12,
         'description': '제자리에서 한 바퀴 돌기',
-        'instructions': [
-          '간식으로 원형 유도',
-          '"돌아" 명령 사용',
-          '천천히 속도 조절',
-        ],
+        'instructions': ['간식으로 원형 유도', '"돌아" 명령 사용', '천천히 속도 조절'],
         'videoUrl': 'https://youtube.com/watch?v=example3',
         'imagePath': 'assets/images/tricks/spin.png',
         'createdAt': DateTime.now().subtract(const Duration(days: 12)),
       },
     ];
   }
-  
+
   /// 펫별 트릭 목록 조회
   static List<Map<String, dynamic>> getTricksByPet(String petId) {
     return getMockTricks().where((trick) => trick['petId'] == petId).toList();
   }
-  
+
   /// 완료된 트릭 목록
   static List<Map<String, dynamic>> getCompletedTricks({String? petId}) {
     return getMockTricks()
@@ -80,9 +70,9 @@ class PetActivitiesMockService extends BaseMockService {
         .where((trick) => petId == null || trick['petId'] == petId)
         .toList();
   }
-  
+
   // ==================== 비디오 북마크 데이터 ====================
-  
+
   /// Mock 비디오 북마크 목록
   static List<Map<String, dynamic>> getMockVideoBookmarks() {
     return [
@@ -112,9 +102,9 @@ class PetActivitiesMockService extends BaseMockService {
       },
     ];
   }
-  
+
   // ==================== 비디오 진행률 데이터 ====================
-  
+
   /// Mock 비디오 진행률 맵
   static Map<String, Map<String, dynamic>> getMockVideoProgress() {
     return {
@@ -127,7 +117,7 @@ class PetActivitiesMockService extends BaseMockService {
         'completed': false,
       },
       'xyz789ghi012': {
-        'videoId': 'xyz789ghi012', 
+        'videoId': 'xyz789ghi012',
         'watchedSeconds': 495,
         'totalSeconds': 495,
         'progress': 1.0, // 100%
@@ -136,9 +126,9 @@ class PetActivitiesMockService extends BaseMockService {
       },
     };
   }
-  
+
   // ==================== YouTube 비디오 정보 ====================
-  
+
   /// YouTube 비디오 정보 조회
   static Map<String, dynamic> getMockYouTubeVideoInfo(String videoId) {
     // Mock 비디오 정보 - 실제로는 YouTube API에서 가져옴
@@ -160,7 +150,7 @@ class PetActivitiesMockService extends BaseMockService {
         'title': '고양이 스트레스 해소 놀이법',
         'description': '실내 고양이의 스트레스를 해소하는 다양한 놀이 방법을 소개합니다.',
         'channelName': '고양이전문가',
-        'duration': '08:15', 
+        'duration': '08:15',
         'viewCount': 89000,
         'likeCount': 2100,
         'thumbnailUrl': 'https://img.youtube.com/vi/$videoId/mqdefault.jpg',
@@ -168,29 +158,30 @@ class PetActivitiesMockService extends BaseMockService {
         'tags': ['고양이놀이', '스트레스해소', '실내고양이'],
       },
     };
-    
-    return mockVideos[videoId] ?? {
-      'id': videoId,
-      'title': '비디오 제목',
-      'description': '비디오 설명',
-      'channelName': '채널명',
-      'duration': '00:00',
-      'viewCount': 0,
-      'likeCount': 0,
-      'thumbnailUrl': 'https://img.youtube.com/vi/$videoId/mqdefault.jpg',
-      'publishedAt': DateTime.now(),
-      'tags': [],
-    };
+
+    return mockVideos[videoId] ??
+        {
+          'id': videoId,
+          'title': '비디오 제목',
+          'description': '비디오 설명',
+          'channelName': '채널명',
+          'duration': '00:00',
+          'viewCount': 0,
+          'likeCount': 0,
+          'thumbnailUrl': 'https://img.youtube.com/vi/$videoId/mqdefault.jpg',
+          'publishedAt': DateTime.now(),
+          'tags': [],
+        };
   }
-  
+
   /// 기본 비디오 제목 생성
   static String getDefaultVideoTitle(String videoId) {
     final videoInfo = getMockYouTubeVideoInfo(videoId);
     return videoInfo['title'] ?? '새로운 훈련 비디오';
   }
-  
+
   // ==================== 활동 통계 ====================
-  
+
   /// 펫 활동 통계
   static Map<String, dynamic> getActivityStats({String? petId}) {
     return {

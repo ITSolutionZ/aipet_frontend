@@ -1,10 +1,10 @@
-import '../../../../shared/testing/mock_data/mock_data_service.dart';
 // TODO: 추후 PetActivitiesMockService로 마이그레이션 필요
-import '../../domain/entities/trick_entity.dart';
-import '../../domain/entities/video_bookmark_entity.dart';
-import '../../domain/entities/video_progress_entity.dart';
-import '../../domain/entities/youtube_video_entity.dart';
-import '../../domain/repositories/pet_activities_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/video_bookmark_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/video_progress_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/repositories/pet_activities_repository.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/mock_data_service.dart';
 
 class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
   // 메모리 기반 저장소 (MockDataService의 데이터로 초기화)

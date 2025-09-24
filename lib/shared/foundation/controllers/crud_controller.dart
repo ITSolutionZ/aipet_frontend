@@ -1,5 +1,5 @@
-import '../../../app/controllers/base_controller.dart';
-import '../../core/domain/result.dart';
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// CRUD 작업을 위한 공통 컨트롤러
 ///

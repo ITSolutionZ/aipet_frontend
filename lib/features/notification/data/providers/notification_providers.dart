@@ -1,12 +1,11 @@
+import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/delete_notification_usecase.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/get_notification_by_id_usecase.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/get_notifications_usecase.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/mark_notification_as_read_usecase.dart';
+import 'package:aipet_frontend/shared/repositories/notification_repository_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../domain/entities/entities.dart';
-import '../../domain/usecases/delete_notification_usecase.dart';
-import '../../domain/usecases/get_notification_by_id_usecase.dart';
-import '../../domain/usecases/get_notifications_usecase.dart';
-import '../../domain/usecases/mark_notification_as_read_usecase.dart';
-import '../repositories/notification_repository_impl.dart';
 
 part 'notification_providers.g.dart';
 

@@ -1,5 +1,5 @@
-import '../entities/weather_entity.dart';
-import '../repositories/home_repository.dart';
+import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
+import 'package:aipet_frontend/shared/entities/weather_entity.dart';
 
 /// 날씨 데이터 조회 UseCase
 class GetWeatherDataUseCase {
@@ -8,7 +8,7 @@ class GetWeatherDataUseCase {
   GetWeatherDataUseCase(this.repository);
 
   /// 현재 날씨 정보 조회
-  /// 
+  ///
   /// [location] 위치 정보 (선택사항)
   /// [userTriggered] 사용자가 직접 요청했는지 여부
   Future<WeatherEntity?> call({

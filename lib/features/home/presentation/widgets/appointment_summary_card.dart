@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/features/onboarding/data/providers/home_providers.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/shared.dart';
-import '../../data/providers/home_providers.dart';
 
 /// 📅 예약 요약 카드
 ///

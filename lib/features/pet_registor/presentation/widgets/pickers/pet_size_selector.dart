@@ -1,12 +1,11 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 /// 펫 크기 선택 위젯
 class PetSizeSelector extends StatelessWidget {
   final String? selectedSize;
   final ValueChanged<String> onSizeChanged;
-  
+
   const PetSizeSelector({
     super.key,
     required this.selectedSize,
@@ -68,7 +67,7 @@ class PetSizeSelector extends StatelessWidget {
     final sizeKey = entry.key;
     final sizeInfo = entry.value;
     final isSelected = selectedSize == sizeKey;
-    
+
     return Semantics(
       label: '${sizeInfo['name']} サイズを選択',
       hint: sizeInfo['description'] as String,
@@ -81,11 +80,11 @@ class PetSizeSelector extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: AppSpacing.sm),
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: isSelected 
+            color: isSelected
                 ? (sizeInfo['color'] as Color).withValues(alpha: 0.1)
                 : Colors.transparent,
             border: Border.all(
-              color: isSelected 
+              color: isSelected
                   ? (sizeInfo['color'] as Color)
                   : AppColors.pointGray.withValues(alpha: 0.3),
               width: isSelected ? 2 : 1,
@@ -98,15 +97,15 @@ class PetSizeSelector extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: isSelected 
+                  color: isSelected
                       ? (sizeInfo['color'] as Color)
                       : AppColors.pointGray.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(AppRadius.small),
                 ),
                 child: Icon(
                   sizeInfo['icon'] as IconData,
-                  color: isSelected 
-                      ? Colors.white 
+                  color: isSelected
+                      ? Colors.white
                       : AppColors.pointGray,
                   size: 24,
                 ),
@@ -120,12 +119,12 @@ class PetSizeSelector extends StatelessWidget {
                       sizeInfo['name'] as String,
                       style: AppFonts.bodyLarge.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: isSelected 
+                        color: isSelected
                             ? (sizeInfo['color'] as Color)
                             : AppColors.pointDark,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const const const SizedBox(height: 2),
                     Text(
                       sizeInfo['description'] as String,
                       style: AppFonts.bodySmall.copyWith(

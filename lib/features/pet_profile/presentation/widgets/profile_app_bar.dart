@@ -1,16 +1,12 @@
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
 
 class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PetProfileEntity pet;
 
-  const ProfileAppBar({
-    super.key,
-    required this.pet,
-  });
+  const ProfileAppBar({super.key, required this.pet});
 
   @override
   Widget build(BuildContext context) {

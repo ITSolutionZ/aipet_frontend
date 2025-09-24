@@ -1,7 +1,7 @@
-import '../../../../shared/shared.dart';
-import '../exceptions/pet_profile_exceptions.dart';
-import '../repositories/pet_profile_repository.dart';
-import '../services/pet_profile_domain_service.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/exceptions/pet_profile_exceptions.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/repositories/pet_profile_repository.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/services/pet_profile_domain_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// Manage Family Managers UseCase
 ///

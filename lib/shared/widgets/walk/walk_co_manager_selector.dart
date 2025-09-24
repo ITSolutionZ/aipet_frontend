@@ -1,9 +1,25 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../shared.dart';
+/// 🎯 Walk Co-Manager Selection State Provider
+final walkCoManagerSelectorProvider =
+    StateNotifierProvider.family<
+      WalkCoManagerSelectorController,
+      String?,
+      String?
+    >((ref, initialValue) => WalkCoManagerSelectorController(initialValue));
+
+class WalkCoManagerSelectorController extends StateNotifier<String?> {
+  WalkCoManagerSelectorController(super.initialValue);
+
+  void selectCoManager(String? managerId) {
+    state = managerId;
+  }
+}
 
 /// 산책 공동 관리자 선택 위젯
-class WalkCoManagerSelector extends StatefulWidget {
+class WalkCoManagerSelector extends ConsumerWidget {
   final String? selectedCoManagerId;
   final void Function(String?)? onChanged;
 
@@ -14,20 +30,14 @@ class WalkCoManagerSelector extends StatefulWidget {
   });
 
   @override
-  State<WalkCoManagerSelector> createState() => _WalkCoManagerSelectorState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(
+      walkCoManagerSelectorProvider(selectedCoManagerId).notifier,
+    );
+    final selectedId = ref.watch(
+      walkCoManagerSelectorProvider(selectedCoManagerId),
+    );
 
-class _WalkCoManagerSelectorState extends State<WalkCoManagerSelector> {
-  String? _selectedCoManagerId;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedCoManagerId = widget.selectedCoManagerId;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     // TODO: 실제로는 API에서 공동관리자 목록을 가져와야 함
     final coManagers = [
       {'id': 'co1', 'name': '田中さん', 'avatar': '👩'},
@@ -56,7 +66,17 @@ class _WalkCoManagerSelectorState extends State<WalkCoManagerSelector> {
           ),
           child: Column(
             children: [
-              _buildCoManagerOption(null, '記録者のみ', Icons.person, '自分だけの記録'),
+              _buildCoManagerOption(
+                null,
+                '記録者のみ',
+                Icons.person,
+                '自分だけの記録',
+                selectedId,
+                (managerId) {
+                  controller.selectCoManager(managerId);
+                  onChanged?.call(managerId);
+                },
+              ),
               const SizedBox(height: AppSpacing.sm),
               ...coManagers.map(
                 (manager) => Padding(
@@ -66,6 +86,11 @@ class _WalkCoManagerSelectorState extends State<WalkCoManagerSelector> {
                     manager['name'] as String,
                     Icons.people,
                     '${manager['avatar']} 共同管理',
+                    selectedId,
+                    (managerId) {
+                      controller.selectCoManager(managerId);
+                      onChanged?.call(managerId);
+                    },
                   ),
                 ),
               ),
@@ -81,16 +106,13 @@ class _WalkCoManagerSelectorState extends State<WalkCoManagerSelector> {
     String name,
     IconData icon,
     String description,
+    String? selectedCoManagerId,
+    Function(String?) onSelect,
   ) {
-    final isSelected = _selectedCoManagerId == managerId;
+    final isSelected = selectedCoManagerId == managerId;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedCoManagerId = managerId;
-        });
-        widget.onChanged?.call(managerId);
-      },
+      onTap: () => onSelect(managerId),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
