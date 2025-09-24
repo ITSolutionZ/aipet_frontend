@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../router/app_router.dart';
 
 /// GoRouter 프로바이더
 ///

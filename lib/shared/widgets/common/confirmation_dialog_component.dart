@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
 
 class ConfirmationDialogComponent extends StatelessWidget {
   final String title;
@@ -36,10 +35,10 @@ class ConfirmationDialogComponent extends StatelessWidget {
     this.onCancel,
     this.confirmText = '削除',
     this.cancelText = 'キャンセル',
-  })  : icon = Icons.delete_outline,
-        iconColor = AppColors.pointPink,
-        confirmButtonColor = AppColors.pointPink,
-        confirmTextColor = Colors.white;
+  }) : icon = Icons.delete_outline,
+       iconColor = AppColors.pointPink,
+       confirmButtonColor = AppColors.pointPink,
+       confirmTextColor = Colors.white;
 
   const ConfirmationDialogComponent.clear({
     super.key,
@@ -49,10 +48,10 @@ class ConfirmationDialogComponent extends StatelessWidget {
     this.onCancel,
     this.confirmText = 'クリア',
     this.cancelText = 'キャンセル',
-  })  : icon = Icons.clear_all,
-        iconColor = AppColors.pointGray,
-        confirmButtonColor = AppColors.pointGray,
-        confirmTextColor = Colors.white;
+  }) : icon = Icons.clear_all,
+       iconColor = AppColors.pointGray,
+       confirmButtonColor = AppColors.pointGray,
+       confirmTextColor = Colors.white;
 
   static Future<bool?> show({
     required BuildContext context,
@@ -132,11 +131,7 @@ class ConfirmationDialogComponent extends StatelessWidget {
       title: Row(
         children: [
           if (icon != null) ...[
-            Icon(
-              icon,
-              color: iconColor ?? AppColors.pointDark,
-              size: 24,
-            ),
+            Icon(icon, color: iconColor ?? AppColors.pointDark, size: 24),
             const SizedBox(width: AppSpacing.sm),
           ],
           Expanded(
@@ -186,9 +181,7 @@ class ConfirmationDialogComponent extends StatelessWidget {
           ),
           child: Text(
             confirmText,
-            style: AppFonts.bodyMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
       ],

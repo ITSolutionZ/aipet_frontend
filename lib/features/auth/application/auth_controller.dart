@@ -1,9 +1,10 @@
+import 'dart:async';
+
+import 'package:aipet_frontend/app/services/secure_storage.dart';
+import 'package:aipet_frontend/features/auth/data/repositories/firebase_auth_real_impl.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../app/services/secure_storage.dart'; // Changed
-import '../data/auth_repository_impl.dart';
-import '../domain/auth_repository.dart';
 
 /// 토큰 교환 상태를 나타내는 클래스
 class TokenExchangeState {
@@ -21,31 +22,31 @@ class TokenExchangeState {
 
   /// 로딩 상태
   const TokenExchangeState.loading()
-      : isLoading = true,
-        isSuccess = false,
-        errorMessage = null,
-        serverToken = null;
+    : isLoading = true,
+      isSuccess = false,
+      errorMessage = null,
+      serverToken = null;
 
   /// 성공 상태
   const TokenExchangeState.success(String token)
-      : isLoading = false,
-        isSuccess = true,
-        errorMessage = null,
-        serverToken = token;
+    : isLoading = false,
+      isSuccess = true,
+      errorMessage = null,
+      serverToken = token;
 
   /// 실패 상태
   const TokenExchangeState.error(String error)
-      : isLoading = false,
-        isSuccess = false,
-        errorMessage = error,
-        serverToken = null;
+    : isLoading = false,
+      isSuccess = false,
+      errorMessage = error,
+      serverToken = null;
 
   /// 초기 상태
   const TokenExchangeState.initial()
-      : isLoading = false,
-        isSuccess = false,
-        errorMessage = null,
-        serverToken = null;
+    : isLoading = false,
+      isSuccess = false,
+      errorMessage = null,
+      serverToken = null;
 
   @override
   bool operator ==(Object other) =>
@@ -75,7 +76,7 @@ class AuthController extends StateNotifier<TokenExchangeState> {
   final AuthRepository _authRepository;
 
   AuthController(this._authRepository)
-      : super(const TokenExchangeState.initial());
+    : super(const TokenExchangeState.initial());
 
   /// 서버 토큰 교환 실행
   Future<void> exchangeServerToken() async {
@@ -84,14 +85,14 @@ class AuthController extends StateNotifier<TokenExchangeState> {
     state = const TokenExchangeState.loading();
 
     try {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('🔄 서버 토큰 교환 시작');
-      }
+      if (kDebugMode) {}
 
       // Firebase 로그인 상태 확인 및 최신 idToken 획득
       final idToken = await _authRepository.getCurrentUserIdToken();
       if (idToken == null) {
-        throw Exception('Firebase 사용자가 로그인되지 않았습니다. 먼저 Firebase Auth로 로그인해주세요.');
+        throw Exception(
+          'Firebase 사용자가 로그인되지 않았습니다. 먼저 Firebase Auth로 로그인해주세요.',
+        );
       }
 
       // 서버 JWT로 교환
@@ -99,16 +100,12 @@ class AuthController extends StateNotifier<TokenExchangeState> {
 
       state = TokenExchangeState.success(serverJWT);
 
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('✅ 서버 토큰 교환 완료');
-      }
+      if (kDebugMode) {}
     } catch (e) {
       final errorMessage = e.toString().replaceFirst('Exception: ', '');
       state = TokenExchangeState.error(errorMessage);
 
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('❌ 서버 토큰 교환 실패: $errorMessage');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -147,16 +144,90 @@ class AuthController extends StateNotifier<TokenExchangeState> {
   Future<DateTime?> getTokenExpiry() async {
     return SecureStorage.getTokenExpiry();
   }
+
+  /// 토큰 자동 갱신 시도
+  ///
+  /// 토큰이 곧 만료될 경우 자동으로 갱신을 시도합니다.
+  ///
+  /// Returns: 갱신 성공 여부
+  Future<bool> autoRefreshToken() async {
+    try {
+      // 현재 저장된 토큰 확인
+      final currentToken = await getStoredToken();
+      if (currentToken == null) {
+        if (kDebugMode) {
+          debugPrint('갱신할 토큰이 없습니다');
+        }
+        return false;
+      }
+
+      // 토큰이 곧 만료되는지 확인 (5분 전)
+      final tokenExpiry = await getTokenExpiry();
+      if (tokenExpiry == null) {
+        return false;
+      }
+
+      final fiveMinutesFromNow = DateTime.now().add(const Duration(minutes: 5));
+      if (tokenExpiry.isAfter(fiveMinutesFromNow)) {
+        if (kDebugMode) {
+          debugPrint('토큰 갱신이 필요하지 않습니다 (만료: ${tokenExpiry.toIso8601String()})');
+        }
+        return true; // 갱신이 필요하지 않으면 성공으로 간주
+      }
+
+      // Firebase ID 토큰으로 새 서버 토큰 교환
+      if (kDebugMode) {
+        debugPrint('토큰 자동 갱신 시작 (만료 예정: ${tokenExpiry.toIso8601String()})');
+      }
+
+      await exchangeServerToken();
+
+      if (kDebugMode) {
+        debugPrint('토큰 자동 갱신 성공');
+      }
+
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('토큰 자동 갱신 실패: $e');
+      }
+      return false;
+    }
+  }
+
+  /// 주기적 토큰 갱신 시작
+  ///
+  /// 5분마다 토큰 상태를 확인하고 필요시 자동 갱신을 수행합니다.
+  void startPeriodicTokenRefresh() {
+    // 5분마다 토큰 상태 확인
+    Timer.periodic(const Duration(minutes: 5), (timer) async {
+      try {
+        final isAuthenticated = await this.isAuthenticated();
+        if (!isAuthenticated) {
+          // 인증되지 않은 상태면 타이머 정지
+          timer.cancel();
+          return;
+        }
+
+        // 자동 갱신 시도
+        await autoRefreshToken();
+      } catch (e) {
+        if (kDebugMode) {
+          debugPrint('주기적 토큰 갱신 에러: $e');
+        }
+      }
+    });
+  }
 }
 
 /// AuthRepository Provider
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepositoryImpl();
+  return FirebaseAuthRealImpl();
 });
 
 /// AuthController Provider
 final authControllerProvider =
     StateNotifierProvider<AuthController, TokenExchangeState>((ref) {
-  final authRepository = ref.watch(authRepositoryProvider);
-  return AuthController(authRepository);
-});
+      final authRepository = ref.watch(authRepositoryProvider);
+      return AuthController(authRepository);
+    });

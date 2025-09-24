@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
 
 /// 공통 버튼 위젯
 ///

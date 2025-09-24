@@ -1,4 +1,4 @@
-import '../../../../shared/shared.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 펫 등록 관련 UI 텍스트 상수
 ///

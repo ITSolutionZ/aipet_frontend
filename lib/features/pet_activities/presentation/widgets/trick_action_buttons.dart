@@ -1,16 +1,12 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 트릭 관련 액션 버튼들
 class TrickActionButtons extends StatelessWidget {
   final VoidCallback? onOpenTrainingVideos;
 
-  const TrickActionButtons({
-    super.key,
-    this.onOpenTrainingVideos,
-  });
+  const TrickActionButtons({super.key, this.onOpenTrainingVideos});
 
   @override
   Widget build(BuildContext context) {

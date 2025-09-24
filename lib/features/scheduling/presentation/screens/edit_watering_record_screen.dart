@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 급수 기록 편집 화면
 class EditWateringRecordScreen extends ConsumerStatefulWidget {
@@ -208,7 +207,7 @@ class _EditWateringRecordScreenState
               ),
               title: const Text('時間を選択'),
               subtitle: Text(
-                '${_selectedTime.format(context)}',
+                _selectedTime.format(context),
                 style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
               ),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -363,7 +362,6 @@ class _EditWateringRecordScreenState
       };
 
       // Mock 저장 로직 (실제로는 API 호출)
-      // REMOVED_SECURITY_RISK: print('급수 기록 업데이트: $updatedRecord');
 
       // 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
@@ -396,7 +394,6 @@ class _EditWateringRecordScreenState
                 Navigator.of(context).pop();
 
                 // TODO: 실제 삭제 로직 구현
-                // REMOVED_SECURITY_RISK: print('급수 기록 삭제: ${widget.record}');
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

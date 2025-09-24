@@ -1,7 +1,7 @@
-import '../../../../shared/shared.dart';
-import '../constants/splash_constants.dart';
-import '../entities/splash_state.dart';
-import '../repositories/splash_repository.dart';
+import 'package:aipet_frontend/features/splash/domain/repositories/splash_repository.dart';
+import 'package:aipet_frontend/shared/constants/splash_constants.dart';
+import 'package:aipet_frontend/shared/entities/splash_state.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 스플래시 시퀀스 관리 UseCase
 class ManageSplashSequenceUseCase {

@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
 
 class VaccineScreen extends ConsumerStatefulWidget {
   final String petId;

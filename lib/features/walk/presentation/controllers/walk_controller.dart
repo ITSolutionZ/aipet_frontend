@@ -1,10 +1,9 @@
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/onboarding/data/data.dart';
+import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/update_walk_record_usecase.dart';
 import 'package:aipet_frontend/shared/core/utils/geo_utils.dart';
-
-import '../../../../app/controllers/base_controller.dart';
-import '../../../../shared/shared.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
-import '../../domain/usecases/update_walk_record_usecase.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 산책 작업 결과 (shared의 Result 패턴 사용)
 typedef WalkResult<T> = Result<T>;

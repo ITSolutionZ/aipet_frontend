@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../features/notification/domain/entities/notification_model.dart';
-import '../design/tokens/tokens.dart';
 
 /// 🎯 알림 UI 유틸리티
 ///

@@ -1,4 +1,4 @@
-import '../../../../../shared/shared.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'notification_model.dart';
 
 /// 알림 스케줄 타입

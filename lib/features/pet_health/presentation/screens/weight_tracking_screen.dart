@@ -1,40 +1,33 @@
+import 'package:aipet_frontend/features/pet_health/presentation/widgets/current_weight_summary_card.dart';
+import 'package:aipet_frontend/features/pet_health/presentation/widgets/weight_chart_card.dart';
+import 'package:aipet_frontend/features/pet_health/presentation/widgets/weight_records_card.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/shared.dart';
-import '../widgets/current_weight_summary_card.dart';
-import '../widgets/weight_chart_card.dart';
-import '../widgets/weight_records_card.dart';
-
 /// 체중 추적 화면
-class WeightTrackingScreen extends ConsumerStatefulWidget {
+class WeightTrackingScreen extends ConsumerWidget {
   const WeightTrackingScreen({super.key});
 
   @override
-  ConsumerState<WeightTrackingScreen> createState() =>
-      _WeightTrackingScreenState();
-}
-
-class _WeightTrackingScreenState extends ConsumerState<WeightTrackingScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return CommonScreenPatterns.buildStandardScreen(
       title: '体重管理',
       backgroundColor: AppColors.pureWhite,
       appBar: const SoftGradientBackAppBar(title: '体重管理'),
       body: CommonScreenPatterns.buildScrollableContent(
-        children: const [
+        children: [
           // 현재 체중 요약 카드
-          CurrentWeightSummaryCard(),
-          SizedBox(height: AppSpacing.xl),
+          const CurrentWeightSummaryCard(),
+          const SizedBox(height: AppSpacing.xl),
 
           // 체중 변화 차트 카드
-          WeightChartCard(),
-          SizedBox(height: AppSpacing.xl),
+          const WeightChartCard(),
+          const SizedBox(height: AppSpacing.xl),
 
           // 체중 기록 목록
-          WeightRecordsCard(),
-          SizedBox(height: AppSpacing.xl),
+          const WeightRecordsCard(),
+          const SizedBox(height: AppSpacing.xl),
         ],
       ),
       floatingActionButtonLabel: '体重記録',

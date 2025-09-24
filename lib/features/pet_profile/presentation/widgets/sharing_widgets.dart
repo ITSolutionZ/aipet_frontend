@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
 
 /// QR 코드 생성 탭 위젯
 class GenerateCodeTab extends StatelessWidget {
@@ -21,10 +20,9 @@ class GenerateCodeTab extends StatelessWidget {
       child: Column(
         children: [
           // 펫 프로필 목록
-          ...pets.map((pet) => SharingPetCard(
-                pet: pet,
-                onTap: () => onPetTap(pet),
-              )),
+          ...pets.map(
+            (pet) => SharingPetCard(pet: pet, onTap: () => onPetTap(pet)),
+          ),
           const SizedBox(height: AppSpacing.xl),
 
           // 설명 텍스트
@@ -46,10 +44,7 @@ class GenerateCodeTab extends StatelessWidget {
 class ScanCodeTab extends StatelessWidget {
   final Function(String) onCodeScanned;
 
-  const ScanCodeTab({
-    super.key,
-    required this.onCodeScanned,
-  });
+  const ScanCodeTab({super.key, required this.onCodeScanned});
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +71,8 @@ class ScanCodeTab extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => _QRScannerScreen(
-                      onScanned: onCodeScanned,
-                    ),
+                    builder: (context) =>
+                        _QRScannerScreen(onScanned: onCodeScanned),
                   ),
                 );
               },
@@ -104,7 +98,7 @@ class ScanCodeTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
-          
+
           // 설명 텍스트
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
@@ -128,11 +122,7 @@ class SharingPetCard extends StatelessWidget {
   final PetProfileEntity pet;
   final VoidCallback onTap;
 
-  const SharingPetCard({
-    super.key,
-    required this.pet,
-    required this.onTap,
-  });
+  const SharingPetCard({super.key, required this.pet, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -196,11 +186,7 @@ class SharingPetCard extends StatelessWidget {
                 color: _getGenderColor(pet),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                _getGenderIcon(pet),
-                color: Colors.white,
-                size: 20,
-              ),
+              child: Icon(_getGenderIcon(pet), color: Colors.white, size: 20),
             ),
           ],
         ),
@@ -235,11 +221,7 @@ class QRCodeModal extends StatelessWidget {
   final PetProfileEntity pet;
   final String qrData;
 
-  const QRCodeModal({
-    super.key,
-    required this.pet,
-    required this.qrData,
-  });
+  const QRCodeModal({super.key, required this.pet, required this.qrData});
 
   @override
   Widget build(BuildContext context) {

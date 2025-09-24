@@ -1,7 +1,7 @@
+import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-import '../config/app_config.dart';
 import 'retry_interceptor.dart'; // Changed
 import 'secure_storage.dart';
 import 'token_refresh_interceptor.dart'; // Changed
@@ -20,16 +20,18 @@ class DioClient {
   static Dio _createDio() {
     final config = AppConfig.current;
 
-    final dio = Dio(BaseOptions(
-      baseUrl: config.apiBaseUrl,
-      connectTimeout: Duration(milliseconds: config.apiTimeoutMs),
-      receiveTimeout: Duration(milliseconds: config.apiTimeoutMs),
-      sendTimeout: Duration(milliseconds: config.apiTimeoutMs),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    ));
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: config.apiBaseUrl,
+        connectTimeout: Duration(milliseconds: config.apiTimeoutMs),
+        receiveTimeout: Duration(milliseconds: config.apiTimeoutMs),
+        sendTimeout: Duration(milliseconds: config.apiTimeoutMs),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
 
     // 인터셉터 추가 - 순서 중요! // Changed
     dio.interceptors.addAll([
@@ -69,7 +71,8 @@ class _AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async { // Changed: async 추가
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    // Changed: async 추가
     // 401 Unauthorized인 경우 저장된 토큰 삭제
     if (err.response?.statusCode == 401) {
       await SecureStorage.deleteServerJWT(); // Changed: await 추가
@@ -95,14 +98,18 @@ class _LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    debugPrint('✅ RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+    debugPrint(
+      '✅ RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
+    );
     debugPrint('📦 Data: ${response.data}');
     handler.next(response);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    debugPrint('❌ ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
+    debugPrint(
+      '❌ ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}',
+    );
     debugPrint('📦 Error: ${err.message}');
     handler.next(err);
   }

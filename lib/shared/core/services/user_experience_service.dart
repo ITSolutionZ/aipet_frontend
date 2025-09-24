@@ -45,9 +45,7 @@ class UserExperienceService {
       return;
     }
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('사용자 경험 서비스 초기화 시작');
-    }
+    if (kDebugMode) {}
 
     try {
       // 기본 설정 로드
@@ -58,13 +56,9 @@ class UserExperienceService {
         _startPerformanceMonitoring();
       }
 
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('사용자 경험 서비스 초기화 완료');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('사용자 경험 서비스 초기화 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -87,9 +81,7 @@ class UserExperienceService {
   /// 성능 모니터링 시작
   void _startPerformanceMonitoring() {
     // 페이지 로드 시간, 인터랙션 응답 시간 모니터링
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('성능 모니터링 시작');
-    }
+    if (kDebugMode) {}
   }
 
   /// 로딩 상태 표시
@@ -138,9 +130,7 @@ class UserExperienceService {
   void recordScreenVisit(String screenName) {
     _screenVisitCount[screenName] = (_screenVisitCount[screenName] ?? 0) + 1;
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('화면 방문: $screenName (총 ${_screenVisitCount[screenName]}회)');
-    }
+    if (kDebugMode) {}
   }
 
   /// 화면 체류 시간 기록
@@ -148,9 +138,7 @@ class UserExperienceService {
     _screenTimeSpent[screenName] =
         (_screenTimeSpent[screenName] ?? Duration.zero) + timeSpent;
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('화면 체류 시간: $screenName (${timeSpent.inSeconds}초)');
-    }
+    if (kDebugMode) {}
   }
 
   /// 사용자 액션 기록
@@ -168,9 +156,7 @@ class UserExperienceService {
       _userActions.removeAt(0);
     }
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('사용자 액션: $action');
-    }
+    if (kDebugMode) {}
   }
 
   /// 페이지 로드 시간 기록
@@ -182,9 +168,7 @@ class UserExperienceService {
       _pageLoadTimes.removeAt(0);
     }
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('페이지 로드 시간: $pageName (${loadTime.toStringAsFixed(2)}ms)');
-    }
+    if (kDebugMode) {}
   }
 
   /// 인터랙션 응답 시간 기록
@@ -196,9 +180,7 @@ class UserExperienceService {
       _interactionResponseTimes.removeAt(0);
     }
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('인터랙션 응답 시간: $interaction (${responseTime.toStringAsFixed(2)}ms)');
-    }
+    if (kDebugMode) {}
   }
 
   /// 사용자 경험 통계 가져오기
@@ -343,18 +325,14 @@ class UserExperienceService {
   void setAnalyticsEnabled(bool enabled) {
     _isAnalyticsEnabled = enabled;
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('사용자 분석 ${enabled ? '활성화' : '비활성화'}');
-    }
+    if (kDebugMode) {}
   }
 
   /// 성능 추적 활성화/비활성화
   void setPerformanceTrackingEnabled(bool enabled) {
     _isPerformanceTrackingEnabled = enabled;
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('성능 추적 ${enabled ? '활성화' : '비활성화'}');
-    }
+    if (kDebugMode) {}
   }
 
   /// 사용자 데이터 정리
@@ -365,9 +343,7 @@ class UserExperienceService {
     _pageLoadTimes.clear();
     _interactionResponseTimes.clear();
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('사용자 데이터 정리 완료');
-    }
+    if (kDebugMode) {}
   }
 
   /// 서비스 정리
@@ -380,8 +356,6 @@ class UserExperienceService {
     _pageLoadTimes.clear();
     _interactionResponseTimes.clear();
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('사용자 경험 서비스 정리 완료');
-    }
+    if (kDebugMode) {}
   }
 }

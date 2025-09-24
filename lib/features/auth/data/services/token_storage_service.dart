@@ -1,7 +1,7 @@
+import 'package:aipet_frontend/features/auth/domain/auth_token.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/auth_token.dart';
 import 'auth_config_service.dart';
 
 /// 토큰을 안전하게 저장하고 관리하는 서비스

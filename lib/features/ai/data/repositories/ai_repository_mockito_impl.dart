@@ -1,10 +1,17 @@
+import 'package:aipet_frontend/features/ai/data/services/openai_service.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_history_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_session_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
+import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/pet_registor.dart';
-import '../../domain/domain.dart';
-import '../services/openai_service.dart';
 
 /// AI Repository Mockito 구현체
 ///

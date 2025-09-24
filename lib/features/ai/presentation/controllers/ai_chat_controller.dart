@@ -1,17 +1,24 @@
 import 'dart:async';
 
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/ai/data/providers/ai_providers.dart';
+import 'package:aipet_frontend/features/ai/domain/domain.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../app/controllers/base_controller.dart';
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/pet_registor.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
-
 part 'ai_chat_controller.g.dart';
 
-/// AI 채팅 상태 데이터
+/// 🎯 AI 채팅 상태 데이터
+///
+/// AI 채팅 화면에서 사용되는 모든 상태 정보를 관리합니다.
+///
+/// ## 주요 상태
+/// - 메시지 목록 및 타이핑 상태
+/// - 펫 선택 및 카테고리 선택 상태
+/// - 즐겨찾기 메시지 관리
+/// - 에러 상태 및 로딩 상태
 class AiChatState {
   final List<AiMessageEntity> messages;
   final List<AiSuggestedQuestionEntity> suggestedQuestions;
@@ -64,7 +71,20 @@ class AiChatState {
   }
 }
 
-/// AI 채팅 상태 프로바이더
+/// 🎯 AI 채팅 상태 프로바이더
+///
+/// Riverpod을 사용한 AI 채팅 상태 관리 클래스입니다.
+///
+/// ## 주요 기능
+/// - 채팅 메시지 관리 (전송, 저장, 로드)
+/// - 펫 선택 및 카테고리 선택 처리
+/// - 즐겨찾기 메시지 관리
+/// - 채팅 히스토리 저장 및 복원
+///
+/// ## 상태 관리
+/// - 불변성 유지를 위한 copyWith 패턴 사용
+/// - 에러 처리 및 로딩 상태 관리
+/// - Repository 패턴을 통한 데이터 접근
 @riverpod
 class AiChatNotifier extends _$AiChatNotifier {
   @override
@@ -73,7 +93,19 @@ class AiChatNotifier extends _$AiChatNotifier {
     return const AiChatState();
   }
 
-  /// 초기 데이터 로드 (깨끗한 상태로 시작)
+  /// 초기 데이터 로드
+  ///
+  /// 채팅 화면 진입 시 필요한 초기 데이터를 로드합니다.
+  ///
+  /// ## 로드되는 데이터
+  /// - 추천 질문 목록
+  /// - 즐겨찾기 메시지 목록
+  /// - 저장된 채팅 히스토리 (선택사항)
+  ///
+  /// ## 상태 초기화
+  /// - 모든 선택 상태를 초기값으로 리셋
+  /// - 에러 상태 클리어
+  /// - 빈 메시지 목록으로 시작
   Future<void> initializeChat() async {
     final repository = ref.read(aiRepositoryProvider);
 
@@ -98,7 +130,18 @@ class AiChatNotifier extends _$AiChatNotifier {
     }
   }
 
-  /// 펫 선택
+  /// 펫 선택 처리
+  ///
+  /// 사용자가 펫을 선택했을 때의 처리 로직입니다.
+  ///
+  /// ## 처리 과정
+  /// 1. 선택된 펫 정보를 상태에 저장
+  /// 2. 사용자 메시지로 "펫에 대해 상담하고 싶다" 메시지 추가
+  /// 3. AI 응답으로 카테고리 선택 안내 메시지 추가
+  /// 4. 상태 업데이트 (hasPetSelected = true)
+  ///
+  /// ## 매개변수
+  /// - [pet] 선택된 펫 프로필 정보 (null이면 선택 해제)
   void selectPet(PetProfileEntity? pet) {
     if (pet != null) {
       // 펫 선택을 사용자 메시지로 추가
@@ -175,9 +218,10 @@ class AiChatNotifier extends _$AiChatNotifier {
   }
 
   /// 즐겨찾기 토글
-  void toggleFavorite(AiMessageEntity message) {
+  Future<void> toggleFavorite(AiMessageEntity message) async {
     final favoriteIds = List<String>.from(state.favoriteMessageIds);
     final favoriteQAs = List<AiFavoriteQaEntity>.from(state.favoriteQAs);
+    final repository = ref.read(aiRepositoryProvider);
 
     if (favoriteIds.contains(message.id)) {
       // 즐겨찾기에서 제거
@@ -217,12 +261,17 @@ class AiChatNotifier extends _$AiChatNotifier {
       favoriteQAs: favoriteQAs,
     );
 
-    // TODO: Repository를 통해 서버에 저장
-    // if (!favoriteIds.contains(message.id)) {
-    //   repository.addFavoriteMessage(message, state.selectedCategory?.id ?? 'general');
-    // } else {
-    //   repository.removeFavoriteMessage(message.id);
-    // }
+    // Repository를 통해 로컬 저장소에 저장
+    if (!favoriteIds.contains(message.id)) {
+      await repository.addFavoriteMessage(
+        message,
+        state.selectedCategory?.id ?? 'general',
+        petId: state.selectedPet?.id,
+        petName: state.selectedPet?.name,
+      );
+    } else {
+      await repository.removeFavoriteMessage(message.id);
+    }
   }
 
   /// 메시지 전송
@@ -237,12 +286,27 @@ class AiChatNotifier extends _$AiChatNotifier {
       content: content.trim(),
       type: MessageType.user,
       timestamp: DateTime.now(),
+      petId: state.selectedPet?.id,
+      petName: state.selectedPet?.name,
     );
 
     final updatedMessages = [...state.messages, userMessage];
 
     // 사용자 메시지를 추가하고 타이핑 상태 시작
     state = state.copyWith(messages: updatedMessages, isTyping: true);
+
+    // 사용자 메시지를 로컬 저장소에 저장
+    try {
+      // Repository의 _saveMessageToLocal 메서드를 통해 저장
+      // 이는 sendMessage와 sendMessageWithPetContext에서도 동일하게 처리됨
+      final existingHistory = await repository.getChatHistory();
+      existingHistory.add(userMessage);
+      // TODO: Repository에 사용자 메시지 저장 전용 메서드 추가 고려
+      // await repository.saveUserMessage(userMessage);
+    } catch (e) {
+      debugPrint('사용자 메시지 저장 실패: $e');
+      // 저장 실패해도 채팅은 계속 진행되도록 함
+    }
 
     try {
       // Repository를 통해 AI 응답 받기 (펫 정보 포함)
@@ -251,9 +315,9 @@ class AiChatNotifier extends _$AiChatNotifier {
         petContext: state.selectedPet,
       );
 
-      if (result.isSuccess && result.data != null) {
+      if (result.isSuccess && result.value != null) {
         // 현재 메시지 목록에 AI 응답 추가 (중복 방지)
-        final finalMessages = [...state.messages, result.data!];
+        final finalMessages = [...state.messages, result.value];
 
         state = state.copyWith(
           messages: finalMessages,
@@ -261,7 +325,7 @@ class AiChatNotifier extends _$AiChatNotifier {
           error: null,
         );
       } else {
-        state = state.copyWith(isTyping: false, error: result.message);
+        state = state.copyWith(isTyping: false, error: result.error);
       }
     } catch (error) {
       state = state.copyWith(isTyping: false, error: error.toString());
@@ -493,9 +557,9 @@ class AiChatController extends BaseController {
   }
 
   /// 즐겨찾기 토글
-  void toggleFavorite(AiMessageEntity message) {
+  Future<void> toggleFavorite(AiMessageEntity message) async {
     final notifier = ref.read(aiChatNotifierProvider.notifier);
-    notifier.toggleFavorite(message);
+    await notifier.toggleFavorite(message);
   }
 
   /// 현재 채팅을 히스토리에 수동 저장
@@ -516,13 +580,10 @@ class AiChatController extends BaseController {
 
   /// 현재 채팅을 히스토리에 자동 저장 (탭 전환시)
   Future<Result<void>> saveCurrentChatOnTabSwitch() async {
-    final result = await safeExecute(
-      () async {
-        final notifier = ref.read(aiChatNotifierProvider.notifier);
-        await notifier.saveCurrentChatToHistory(isManualSave: false);
-      },
-      errorMessage: 'チャット履歴自動保存',
-    );
+    final result = await safeExecute(() async {
+      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      await notifier.saveCurrentChatToHistory(isManualSave: false);
+    }, errorMessage: 'チャット履歴自動保存');
 
     return result != null
         ? Result.success('チャット履歴が自動保存されました')

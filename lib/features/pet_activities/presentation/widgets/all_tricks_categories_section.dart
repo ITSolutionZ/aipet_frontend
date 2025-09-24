@@ -1,16 +1,12 @@
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/trick_category_card.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../widgets/trick_category_card.dart';
 
 /// 모든 트릭 카테고리 섹션
 class AllTricksCategoriesSection extends StatelessWidget {
   final Function(String) onCategoryTap;
 
-  const AllTricksCategoriesSection({
-    super.key,
-    required this.onCategoryTap,
-  });
+  const AllTricksCategoriesSection({super.key, required this.onCategoryTap});
 
   @override
   Widget build(BuildContext context) {

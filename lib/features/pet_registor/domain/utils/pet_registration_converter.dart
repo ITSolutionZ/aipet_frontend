@@ -1,5 +1,5 @@
-import '../entities/pet_profile_entity.dart';
-import '../entities/pet_registration_data_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_registration_data_entity.dart';
 
 /// 펫 등록 데이터를 PetProfileEntity로 변환하는 유틸리티
 class PetRegistrationConverter {

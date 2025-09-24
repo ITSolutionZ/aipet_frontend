@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/facility.dart';
 
 class FacilityCard extends StatelessWidget {
   final Facility facility;
@@ -17,10 +16,12 @@ class FacilityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      onTap: onTap,
+    return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: _buildContent(context),
+      child: GestureDetector(
+        onTap: onTap,
+        child: InfoCard(child: _buildContent(context)),
+      ),
     );
   }
 
@@ -81,7 +82,7 @@ class FacilityCard extends StatelessWidget {
         const SizedBox(height: AppSpacing.md),
 
         Text(
-          facility.description,
+          facility.description ?? '',
           style: AppFonts.bodyMedium.copyWith(
             color: AppColors.pointDark.withValues(alpha: 0.7),
           ),
@@ -154,6 +155,18 @@ class FacilityCard extends StatelessWidget {
         return Icons.medical_services;
       case FacilityType.grooming:
         return Icons.content_cut;
+      case FacilityType.petShop:
+        return Icons.shopping_bag;
+      case FacilityType.dogRun:
+        return Icons.directions_run;
+      case FacilityType.park:
+        return Icons.park;
+      case FacilityType.cafe:
+        return Icons.local_cafe;
+      case FacilityType.hotel:
+        return Icons.hotel;
+      case FacilityType.training:
+        return Icons.school;
     }
   }
 
@@ -163,6 +176,18 @@ class FacilityCard extends StatelessWidget {
         return Colors.red;
       case FacilityType.grooming:
         return Colors.purple;
+      case FacilityType.petShop:
+        return Colors.orange;
+      case FacilityType.dogRun:
+        return Colors.green;
+      case FacilityType.park:
+        return Colors.lightGreen;
+      case FacilityType.cafe:
+        return Colors.brown;
+      case FacilityType.hotel:
+        return Colors.blue;
+      case FacilityType.training:
+        return Colors.indigo;
     }
   }
 
@@ -172,6 +197,18 @@ class FacilityCard extends StatelessWidget {
         return '動物病院';
       case FacilityType.grooming:
         return 'トリミング';
+      case FacilityType.petShop:
+        return 'ペットショップ';
+      case FacilityType.dogRun:
+        return 'ドッグラン';
+      case FacilityType.park:
+        return '公園';
+      case FacilityType.cafe:
+        return 'ペットカフェ';
+      case FacilityType.hotel:
+        return 'ペットホテル';
+      case FacilityType.training:
+        return '訓練所';
     }
   }
 }

@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/facility.dart';
 
 class FacilityDetailHeader extends StatelessWidget {
   final Facility facility;
@@ -18,7 +17,9 @@ class FacilityDetailHeader extends StatelessWidget {
           height: 300,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(facility.imagePath),
+              image: AssetImage(
+                facility.imagePath ?? 'assets/images/placeholder.png',
+              ),
               fit: BoxFit.cover,
               colorFilter: ColorFilter.mode(
                 Colors.black.withValues(alpha: 0.3),

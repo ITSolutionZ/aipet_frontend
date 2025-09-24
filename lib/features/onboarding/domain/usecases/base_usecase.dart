@@ -1,4 +1,4 @@
-import '../domain.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// UseCase 기본 클래스
 abstract class BaseUseCase<T> {

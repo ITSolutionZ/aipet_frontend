@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/design/design.dart';
 
 class FeedingStatisticsCard extends StatelessWidget {
   final List<dynamic> feedingRecords;

@@ -1,10 +1,9 @@
+import 'package:aipet_frontend/features/onboarding/domain/entities/video_bookmark_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/video_progress_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet_activities/pet_activities_mock_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/testing/mock_data/features/pet_activities/pet_activities_mock_service.dart';
-import '../../../../shared/shared.dart';
-import '../../domain/entities/trick_entity.dart';
-import '../../domain/entities/video_bookmark_entity.dart';
-import '../../domain/entities/video_progress_entity.dart';
 
 /// 펫 활동 컨트롤러
 class PetActivitiesController extends StateNotifier<PetActivitiesState> {

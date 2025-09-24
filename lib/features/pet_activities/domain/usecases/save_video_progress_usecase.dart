@@ -1,5 +1,5 @@
-import '../entities/video_progress_entity.dart';
-import '../repositories/pet_activities_repository.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/video_progress_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/repositories/pet_activities_repository.dart';
 
 class SaveVideoProgressUseCase {
   final PetActivitiesRepository _repository;

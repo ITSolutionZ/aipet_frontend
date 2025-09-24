@@ -1,12 +1,11 @@
+import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_controller.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/pet_profile_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/data/providers/pet_providers.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../controllers/pet_profile_controllers.dart';
-import '../widgets/pet_profile_widgets.dart';
 
 /// 🚀 리팩토링된 펫 프로필 스크린
 ///
@@ -27,7 +26,6 @@ class PetProfileScreenRefactored extends ConsumerStatefulWidget {
 class _PetProfileScreenRefactoredState
     extends ConsumerState<PetProfileScreenRefactored>
     with TickerProviderStateMixin {
-
   late TabController _tabController;
 
   @override
@@ -47,9 +45,8 @@ class _PetProfileScreenRefactoredState
     final petAsyncValue = ref.watch(petByIdProvider(widget.petId));
 
     return petAsyncValue.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, stackTrace) => Scaffold(
         body: Center(
           child: Column(

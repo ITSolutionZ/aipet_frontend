@@ -1,10 +1,9 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 /// 펫 타입 선택 카드 위젯
 ///
-/// AppCard를 사용하여 일관된 디자인과 접근성을 제공합니다.
+/// Native Container를 사용하여 일관된 디자인과 접근성을 제공합니다.
 class PetTypeCard extends StatelessWidget {
   final String imagePath;
   final Color selectionColor;
@@ -29,9 +28,28 @@ class PetTypeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return GestureDetector(
       onTap: onTap,
-      child: _buildContent(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+          border: isSelected
+              ? Border.all(color: selectionColor, width: 2.0)
+              : Border.all(
+                  color: AppColors.pointGray.withValues(alpha: 0.3),
+                  width: 1.0,
+                ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: _buildContent(context),
+      ),
     );
   }
 
@@ -51,15 +69,10 @@ class PetTypeCard extends StatelessWidget {
               color: AppColors.pointGray.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.medium),
             ),
-            child: Icon(
-              Icons.pets,
-              size: 40,
-              color: selectionColor,
-            ),
+            child: Icon(Icons.pets, size: 40, color: selectionColor),
           );
         },
       ),
     );
   }
-
 }

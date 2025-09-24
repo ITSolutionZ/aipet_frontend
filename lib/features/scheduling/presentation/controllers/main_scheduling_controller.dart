@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/shared/core/constants/app_texts.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../app/controllers/base_controller.dart';
-import '../../../../shared/core/constants/app_texts.dart';
-import '../../../../shared/design/design.dart';
-import '../../../../shared/core/domain/result.dart';
 
 class ScheduleCardData {
   final String title;

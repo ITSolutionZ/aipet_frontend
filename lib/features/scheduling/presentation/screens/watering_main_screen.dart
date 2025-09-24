@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 급수/물 관리 메인 화면
 class WateringMainScreen extends StatelessWidget {

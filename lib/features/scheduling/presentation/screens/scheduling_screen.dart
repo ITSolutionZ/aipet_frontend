@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
 
 /// 스케줄링 메인 화면
 /// 식사, 학습, 급수 카테고리와 알람 설정을 제공합니다.

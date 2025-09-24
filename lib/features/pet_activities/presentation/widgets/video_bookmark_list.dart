@@ -1,12 +1,65 @@
+import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/video_bookmark_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/shared.dart';
-import '../../data/providers/pet_activities_providers.dart';
-import '../../domain/entities/video_bookmark_entity.dart';
+// 북마크 프로바이더 (임시로 생성)
+final videoBookmarksProvider =
+    FutureProvider.family<List<VideoBookmarkEntity>, String>((
+      ref,
+      videoId,
+    ) async {
+      final repository = ref.read(petActivitiesRepositoryProvider);
+      return repository.getVideoBookmarks(videoId);
+    });
+
+/// 🎯 Video Bookmark 관리 Provider
+final videoBookmarkControllerProvider = Provider<VideoBookmarkController>(
+  (ref) => VideoBookmarkController(ref),
+);
+
+class VideoBookmarkController {
+  final Ref ref;
+
+  VideoBookmarkController(this.ref);
+
+  /// 북마크 추가
+  Future<void> addBookmark({
+    required String videoId,
+    required String youtubeVideoId,
+    required String label,
+    required int positionSec,
+    String? description,
+  }) async {
+    final bookmark = VideoBookmarkEntity(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      videoId: videoId,
+      youtubeVideoId: youtubeVideoId,
+      positionSec: positionSec,
+      label: label.isNotEmpty ? label : null,
+      description: description,
+      createdAt: DateTime.now(),
+    );
+
+    final repository = ref.read(petActivitiesRepositoryProvider);
+    await repository.addVideoBookmark(bookmark);
+
+    // 북마크 목록 새로고침
+    ref.invalidate(videoBookmarksProvider(videoId));
+  }
+
+  /// 북마크 삭제
+  Future<void> deleteBookmark(String bookmarkId, String videoId) async {
+    final repository = ref.read(petActivitiesRepositoryProvider);
+    await repository.removeVideoBookmark(bookmarkId);
+
+    ref.invalidate(videoBookmarksProvider(videoId));
+  }
+}
 
 /// 비디오 북마크 목록 위젯
-class VideoBookmarkList extends ConsumerStatefulWidget {
+class VideoBookmarkList extends ConsumerWidget {
   final String videoId;
   final String youtubeVideoId;
   final Function(VideoBookmarkEntity) onBookmarkTap;
@@ -18,72 +71,49 @@ class VideoBookmarkList extends ConsumerStatefulWidget {
     required this.onBookmarkTap,
   });
 
-  @override
-  ConsumerState<VideoBookmarkList> createState() => _VideoBookmarkListState();
-}
-
-class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
-  final _labelController = TextEditingController();
-  final _timeController = TextEditingController();
-
-  @override
-  void dispose() {
-    _labelController.dispose();
-    _timeController.dispose();
-    super.dispose();
-  }
-
-  void _showAddBookmarkDialog() {
+  void _showAddBookmarkDialog(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
       builder: (context) => _AddBookmarkDialog(
-        videoId: widget.videoId,
-        youtubeVideoId: widget.youtubeVideoId,
-        onAdd: _addBookmark,
+        videoId: videoId,
+        youtubeVideoId: youtubeVideoId,
+        onAdd: (label, positionSec, description) =>
+            _addBookmark(context, ref, label, positionSec, description),
       ),
     );
   }
 
   Future<void> _addBookmark(
+    BuildContext context,
+    WidgetRef ref,
     String label,
     int positionSec,
     String? description,
   ) async {
     try {
-      final bookmark = VideoBookmarkEntity(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        videoId: widget.videoId,
-        youtubeVideoId: widget.youtubeVideoId,
+      await ref.read(videoBookmarkControllerProvider).addBookmark(
+        videoId: videoId,
+        youtubeVideoId: youtubeVideoId,
+        label: label,
         positionSec: positionSec,
-        label: label.isNotEmpty ? label : null,
         description: description,
-        createdAt: DateTime.now(),
       );
 
-      final repository = ref.read(petActivitiesRepositoryProvider);
-      await repository.addVideoBookmark(bookmark);
-
-      // 북마크 목록 새로고침
-      // ignore: unused_result
-      ref.refresh(videoBookmarksProvider(widget.videoId));
-
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('ブックマークが追加されました.')));
+      if (context.mounted) {
+        UiService.showSuccess(context, 'ブックマークが追加されました.');
       }
     } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('ブックマークの追加に失敗しました: $error')));
+      if (context.mounted) {
+        UiService.showError(context, 'ブックマークの追加に失敗しました: $error');
       }
-    } finally {
-      // Bookmark operation completed
     }
   }
 
-  Future<void> _deleteBookmark(VideoBookmarkEntity bookmark) async {
+  Future<void> _deleteBookmark(
+    BuildContext context,
+    WidgetRef ref,
+    VideoBookmarkEntity bookmark,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -105,30 +135,25 @@ class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
 
     if (confirmed == true) {
       try {
-        final repository = ref.read(petActivitiesRepositoryProvider);
-        await repository.removeVideoBookmark(bookmark.id);
+        await ref.read(videoBookmarkControllerProvider).deleteBookmark(
+          bookmark.id,
+          videoId,
+        );
 
-        // ignore: unused_result
-        ref.refresh(videoBookmarksProvider(widget.videoId));
-
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('ブックマークが削除されました.')));
+        if (context.mounted) {
+          UiService.showSuccess(context, 'ブックマークが削除されました.');
         }
       } catch (error) {
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('ブックマークの削除に失敗しました: $error')));
+        if (context.mounted) {
+          UiService.showError(context, 'ブックマークの削除に失敗しました: $error');
         }
       }
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    final bookmarksState = ref.watch(videoBookmarksProvider(widget.videoId));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bookmarksState = ref.watch(videoBookmarksProvider(videoId));
 
     return Container(
       constraints: BoxConstraints(
@@ -159,7 +184,7 @@ class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
                 ),
                 const Spacer(),
                 IconButton(
-                  onPressed: _showAddBookmarkDialog,
+                  onPressed: () => _showAddBookmarkDialog(context, ref),
                   icon: const Icon(Icons.add),
                   tooltip: 'ブックマークを追加',
                 ),
@@ -180,7 +205,7 @@ class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
                 ),
               ),
               child: bookmarksState.when(
-                data: (bookmarks) => _buildBookmarkList(bookmarks),
+                data: (bookmarks) => _buildBookmarkList(bookmarks, context, ref),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) => Center(
                   child: Column(
@@ -196,7 +221,7 @@ class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
                       const SizedBox(height: AppSpacing.md),
                       ElevatedButton(
                         onPressed: () =>
-                            ref.refresh(videoBookmarksProvider(widget.videoId)),
+                            ref.refresh(videoBookmarksProvider(videoId)),
                         child: const Text('再試行'),
                       ),
                     ],
@@ -210,7 +235,7 @@ class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
     );
   }
 
-  Widget _buildBookmarkList(List<VideoBookmarkEntity> bookmarks) {
+  Widget _buildBookmarkList(List<VideoBookmarkEntity> bookmarks, BuildContext context, WidgetRef ref) {
     if (bookmarks.isEmpty) {
       return const Center(
         child: Column(
@@ -242,23 +267,13 @@ class _VideoBookmarkListState extends ConsumerState<VideoBookmarkList> {
         final bookmark = bookmarks[index];
         return _BookmarkCard(
           bookmark: bookmark,
-          onTap: () => widget.onBookmarkTap(bookmark),
-          onDelete: () => _deleteBookmark(bookmark),
+          onTap: () => onBookmarkTap(bookmark),
+          onDelete: () => _deleteBookmark(context, ref, bookmark),
         );
       },
     );
   }
 }
-
-// 북마크 프로바이더 (임시로 생성)
-final videoBookmarksProvider =
-    FutureProvider.family<List<VideoBookmarkEntity>, String>((
-      ref,
-      videoId,
-    ) async {
-      final repository = ref.read(petActivitiesRepositoryProvider);
-      return repository.getVideoBookmarks(videoId);
-    });
 
 /// 북마크 카드 위젯
 class _BookmarkCard extends StatelessWidget {
@@ -305,7 +320,7 @@ class _BookmarkCard extends StatelessWidget {
               ),
             ),
             if (bookmark.description?.isNotEmpty == true) ...[
-              const SizedBox(height: 2),
+              const const const SizedBox(height: 2),
               Text(
                 bookmark.description!,
                 style: TextStyle(
@@ -328,8 +343,83 @@ class _BookmarkCard extends StatelessWidget {
   }
 }
 
+/// 🎯 북마크 추가 Form State Provider
+final bookmarkFormControllerProvider = StateNotifierProvider<BookmarkFormController, BookmarkFormState>(
+  (ref) => BookmarkFormController(),
+);
+
+class BookmarkFormController extends StateNotifier<BookmarkFormState> {
+  BookmarkFormController() : super(
+    const BookmarkFormState(
+      label: '',
+      description: '',
+      minutes: 0,
+      seconds: 0,
+      isValid: true,
+    ),
+  );
+
+  void updateLabel(String label) {
+    final newState = state.copyWith(label: label);
+    state = newState.copyWith(isValid: _isFormValid(newState));
+  }
+
+  void updateDescription(String description) {
+    state = state.copyWith(description: description);
+  }
+
+  void updateMinutes(int minutes) {
+    final newState = state.copyWith(minutes: minutes);
+    state = newState.copyWith(isValid: _isFormValid(newState));
+  }
+
+  void updateSeconds(int seconds) {
+    final newState = state.copyWith(seconds: seconds);
+    state = newState.copyWith(isValid: _isFormValid(newState));
+  }
+
+  bool _isFormValid(BookmarkFormState checkState) {
+    return checkState.minutes >= 0 && checkState.seconds >= 0 && checkState.seconds < 60;
+  }
+
+  int get totalSeconds => state.minutes * 60 + state.seconds;
+}
+
+/// 북마크 Form 상태
+class BookmarkFormState {
+  final String label;
+  final String description;
+  final int minutes;
+  final int seconds;
+  final bool isValid;
+
+  const BookmarkFormState({
+    required this.label,
+    required this.description,
+    required this.minutes,
+    required this.seconds,
+    required this.isValid,
+  });
+
+  BookmarkFormState copyWith({
+    String? label,
+    String? description,
+    int? minutes,
+    int? seconds,
+    bool? isValid,
+  }) {
+    return BookmarkFormState(
+      label: label ?? this.label,
+      description: description ?? this.description,
+      minutes: minutes ?? this.minutes,
+      seconds: seconds ?? this.seconds,
+      isValid: isValid ?? this.isValid,
+    );
+  }
+}
+
 /// 북마크 추가 다이얼로그
-class _AddBookmarkDialog extends StatefulWidget {
+class _AddBookmarkDialog extends ConsumerWidget {
   final String videoId;
   final String youtubeVideoId;
   final Function(String label, int positionSec, String? description) onAdd;
@@ -340,136 +430,114 @@ class _AddBookmarkDialog extends StatefulWidget {
     required this.onAdd,
   });
 
-  @override
-  State<_AddBookmarkDialog> createState() => _AddBookmarkDialogState();
-}
+  void _submit(BuildContext context, WidgetRef ref) {
+    final formController = ref.read(bookmarkFormControllerProvider.notifier);
+    final formState = ref.read(bookmarkFormControllerProvider);
 
-class _AddBookmarkDialogState extends State<_AddBookmarkDialog> {
-  final _formKey = GlobalKey<FormState>();
-  final _labelController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _minutesController = TextEditingController(text: '0');
-  final _secondsController = TextEditingController(text: '0');
+    if (!formState.isValid) return;
 
-  @override
-  void dispose() {
-    _labelController.dispose();
-    _descriptionController.dispose();
-    _minutesController.dispose();
-    _secondsController.dispose();
-    super.dispose();
-  }
-
-  void _submit() {
-    if (!_formKey.currentState!.validate()) return;
-
-    final minutes = int.tryParse(_minutesController.text) ?? 0;
-    final seconds = int.tryParse(_secondsController.text) ?? 0;
-    final totalSeconds = minutes * 60 + seconds;
-
-    widget.onAdd(
-      _labelController.text.trim(),
-      totalSeconds,
-      _descriptionController.text.trim().isEmpty
+    onAdd(
+      formState.label.trim(),
+      formController.totalSeconds,
+      formState.description.trim().isEmpty
           ? null
-          : _descriptionController.text.trim(),
+          : formState.description.trim(),
     );
 
     Navigator.pop(context);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formState = ref.watch(bookmarkFormControllerProvider);
+    final formController = ref.read(bookmarkFormControllerProvider.notifier);
+
     return AlertDialog(
       title: const Text('ブックマークを追加'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // 시간 입력
-            Row(
-              children: [
-                const Text('時間: '),
-                SizedBox(
-                  width: 60,
-                  child: TextFormField(
-                    controller: _minutesController,
-                    decoration: const InputDecoration(
-                      labelText: '分',
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 8,
-                      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // 시간 입력
+          Row(
+            children: [
+              const Text('時間: '),
+              SizedBox(
+                width: 60,
+                child: TextFormField(
+                  initialValue: formState.minutes.toString(),
+                  decoration: const InputDecoration(
+                    labelText: '分',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8,
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      final num = int.tryParse(value ?? '');
-                      if (num == null || num < 0) {
-                        return '無効';
-                      }
-                      return null;
-                    },
                   ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    final minutes = int.tryParse(value) ?? 0;
+                    formController.updateMinutes(minutes);
+                  },
                 ),
-                const Text(' : '),
-                SizedBox(
-                  width: 60,
-                  child: TextFormField(
-                    controller: _secondsController,
-                    decoration: const InputDecoration(
-                      labelText: '秒',
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 8,
-                      ),
+              ),
+              const Text(' : '),
+              SizedBox(
+                width: 60,
+                child: TextFormField(
+                  initialValue: formState.seconds.toString(),
+                  decoration: const InputDecoration(
+                    labelText: '秒',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8,
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      final num = int.tryParse(value ?? '');
-                      if (num == null || num < 0 || num >= 60) {
-                        return '無効';
-                      }
-                      return null;
-                    },
                   ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    final seconds = int.tryParse(value) ?? 0;
+                    formController.updateSeconds(seconds);
+                  },
                 ),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.md),
-
-            // 라벨 입력
-            TextFormField(
-              controller: _labelController,
-              decoration: const InputDecoration(
-                labelText: 'ラベル (任意)',
-                border: OutlineInputBorder(),
               ),
-            ),
+            ],
+          ),
 
-            const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
-            // 설명 입력
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: '説明 (任意)',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 2,
+          // 라벨 입력
+          TextFormField(
+            initialValue: formState.label,
+            decoration: const InputDecoration(
+              labelText: 'ラベル (任意)',
+              border: OutlineInputBorder(),
             ),
-          ],
-        ),
+            onChanged: formController.updateLabel,
+          ),
+
+          const SizedBox(height: AppSpacing.md),
+
+          // 설명 입력
+          TextFormField(
+            initialValue: formState.description,
+            decoration: const InputDecoration(
+              labelText: '説明 (任意)',
+              border: OutlineInputBorder(),
+            ),
+            maxLines: 2,
+            onChanged: formController.updateDescription,
+          ),
+        ],
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text('キャンセル'),
         ),
-        ElevatedButton(onPressed: _submit, child: const Text('追加')),
+        ElevatedButton(
+          onPressed: formState.isValid ? () => _submit(context, ref) : null,
+          child: const Text('追加'),
+        ),
       ],
     );
   }

@@ -1,8 +1,9 @@
-import '../../../../shared/shared.dart';
-import '../../domain/entities/pet_profile_entity.dart';
-import '../../domain/entities/temporary_pet_data_entity.dart';
-import '../../domain/repositories/pet_repository.dart';
-import '../mock_data/pet_mock_data.dart' as pet_mock_data;
+import 'package:aipet_frontend/features/pet_registor/data/mock_data/pet_mock_data.dart'
+    as pet_mock_data;
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// Pet Repository Mockito 구현체
 ///

@@ -1,7 +1,7 @@
-import '../../../../shared/testing/mock_data/features/pet_health/pet_health_mock_service.dart';
-import '../../domain/entities/vaccine_record_entity.dart';
-import '../../domain/entities/weight_record_entity.dart';
-import '../../domain/repositories/pet_health_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/vaccine_record_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/weight_record_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/repositories/pet_health_repository.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet_health/pet_health_mock_service.dart';
 
 class PetHealthRepositoryImpl implements PetHealthRepository {
   // 메모리 기반 저장소 (PetHealthMockService의 데이터로 초기화)
@@ -11,24 +11,32 @@ class PetHealthRepositoryImpl implements PetHealthRepository {
   PetHealthRepositoryImpl() {
     // PetHealthMockService에서 초기 데이터 로드
     final vaccineData = PetHealthMockService.getMockVaccineRecords();
-    _vaccineRecords = vaccineData.map((data) => VaccineRecordEntity(
-      id: data['id'] as String,
-      name: data['vaccineName'] as String,
-      date: data['vaccineDate'] as DateTime,
-      doctor: data['veterinarian'] as String,
-      notes: data['notes'] as String?,
-    )).toList();
-    
+    _vaccineRecords = vaccineData
+        .map(
+          (data) => VaccineRecordEntity(
+            id: data['id'] as String,
+            name: data['vaccineName'] as String,
+            date: data['vaccineDate'] as DateTime,
+            doctor: data['veterinarian'] as String,
+            notes: data['notes'] as String?,
+          ),
+        )
+        .toList();
+
     final weightData = PetHealthMockService.getMockWeightRecords();
-    _weightRecords = weightData.map((data) => WeightRecordEntity(
-      id: data['id'] as String,
-      petId: data['petId'] as String,
-      petName: data['petName'] as String? ?? 'Unknown',
-      recordedDate: data['measurementDate'] as DateTime,
-      weight: data['weight'] as double,
-      notes: data['notes'] as String?,
-      createdAt: data['measurementDate'] as DateTime,
-    )).toList();
+    _weightRecords = weightData
+        .map(
+          (data) => WeightRecordEntity(
+            id: data['id'] as String,
+            petId: data['petId'] as String,
+            petName: data['petName'] as String? ?? 'Unknown',
+            recordedDate: data['measurementDate'] as DateTime,
+            weight: data['weight'] as double,
+            notes: data['notes'] as String?,
+            createdAt: data['measurementDate'] as DateTime,
+          ),
+        )
+        .toList();
   }
 
   @override
@@ -51,7 +59,7 @@ class PetHealthRepositoryImpl implements PetHealthRepository {
     VaccineRecordEntity record,
   ) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     final index = _vaccineRecords.indexWhere((r) => r.id == record.id);
     if (index != -1) {
       _vaccineRecords[index] = record;
@@ -84,7 +92,7 @@ class PetHealthRepositoryImpl implements PetHealthRepository {
     WeightRecordEntity record,
   ) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     final index = _weightRecords.indexWhere((r) => r.id == record.id);
     if (index != -1) {
       _weightRecords[index] = record;
@@ -110,7 +118,7 @@ class PetHealthRepositoryImpl implements PetHealthRepository {
   @override
   Future<WeightRecordEntity?> getLatestWeight(String petId) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     final petWeights = _weightRecords
         .where((record) => record.petId == petId)
         .toList();

@@ -1,4 +1,4 @@
-import '../../../../../features/notification/notification.dart';
+import 'package:aipet_frontend/features/notification/notification.dart';
 
 /// 알림 Mock 데이터
 class NotificationMockData {

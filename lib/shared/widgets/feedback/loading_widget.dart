@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
 
 /// 표준화된 로딩 위젯
 class LoadingWidget extends StatelessWidget {

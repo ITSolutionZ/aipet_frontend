@@ -1,4 +1,4 @@
-import '../entities/entities.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/entities.dart';
 
 abstract class NotificationRepository {
   /// 모든 알림 가져오기

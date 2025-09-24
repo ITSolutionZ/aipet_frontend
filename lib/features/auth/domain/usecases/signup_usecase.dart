@@ -1,5 +1,5 @@
-import '../../../../shared/shared.dart';
-import '../repositories/auth_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 회원가입 UseCase
 class SignupUseCase {
@@ -27,9 +27,12 @@ class SignupUseCase {
       }
 
       // Repository를 통한 회원가입 실행
-      final authResult = await _repository.createUserWithEmailAndPassword(email, password);
+      final authResult = await _repository.createUserWithEmailAndPassword(
+        email,
+        password,
+      );
 
-      if (authResult.isSuccess && authResult.user != null) {
+      if (authResult.isSuccess && authResult.data != null) {
         // 디스플레이 네임이 제공된 경우 프로필 업데이트
         if (displayName != null && displayName.isNotEmpty) {
           await _repository.updateUserProfile(displayName: displayName);
@@ -38,7 +41,7 @@ class SignupUseCase {
         // 이메일 인증 메일 발송
         await _repository.sendEmailVerification();
 
-        return Result.success('会員登録が完了しました。確認メールを送信しました。', authResult.user!);
+        return Result.success('会員登録が完了しました。確認メールを送信しました。', authResult.data!);
       } else {
         return Result.failure(authResult.message);
       }
@@ -83,13 +86,17 @@ class SignupUseCase {
 
   /// 이메일 유효성 검사
   bool _isValidEmail(String email) {
-    return RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(email);
+    return RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    ).hasMatch(email);
   }
 
   /// 강한 비밀번호 검사 (영문, 숫자, 특수문자 포함)
   bool _isStrongPassword(String password) {
     // 최소 8자, 영문 대소문자, 숫자, 특수문자 포함
-    final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]');
+    final regex = RegExp(
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]',
+    );
     return password.length >= 8 && regex.hasMatch(password);
   }
 }

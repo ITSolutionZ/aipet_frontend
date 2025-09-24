@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/features/ai/ai.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../features/ai/ai.dart';
 
 /// AI 관련 Mock 데이터 서비스
 ///

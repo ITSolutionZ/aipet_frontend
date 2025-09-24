@@ -1,24 +1,49 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/shared.dart';
+/// 급수 분석 화면 상태 관리
+final wateringAnalysisProvider =
+    StateNotifierProvider<WateringAnalysisController, WateringAnalysisState>(
+      (ref) => WateringAnalysisController(),
+    );
+
+class WateringAnalysisController extends StateNotifier<WateringAnalysisState> {
+  WateringAnalysisController() : super(const WateringAnalysisState());
+
+  void changePeriod(String period) {
+    state = state.copyWith(selectedPeriod: period);
+  }
+}
+
+class WateringAnalysisState {
+  final String selectedPeriod;
+  final List<String> periods;
+
+  const WateringAnalysisState({
+    this.selectedPeriod = '週間',
+    this.periods = const ['日間', '週間', '月間'],
+  });
+
+  WateringAnalysisState copyWith({
+    String? selectedPeriod,
+    List<String>? periods,
+  }) {
+    return WateringAnalysisState(
+      selectedPeriod: selectedPeriod ?? this.selectedPeriod,
+      periods: periods ?? this.periods,
+    );
+  }
+}
 
 /// 급수 분석 화면
-class WateringAnalysisScreen extends ConsumerStatefulWidget {
+class WateringAnalysisScreen extends ConsumerWidget {
   const WateringAnalysisScreen({super.key});
 
   @override
-  ConsumerState<WateringAnalysisScreen> createState() =>
-      _WateringAnalysisScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(wateringAnalysisProvider);
 
-class _WateringAnalysisScreenState
-    extends ConsumerState<WateringAnalysisScreen> {
-  String selectedPeriod = '週間';
-  List<String> periods = ['日間', '週間', '月間'];
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientAppBar(title: '給水分析'),
@@ -28,7 +53,7 @@ class _WateringAnalysisScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 기간 선택
-            _buildPeriodSelector(),
+            _buildPeriodSelector(state, ref),
             const SizedBox(height: AppSpacing.lg),
 
             // 분석 차트
@@ -48,7 +73,7 @@ class _WateringAnalysisScreenState
   }
 
   /// 기간 선택 위젯
-  Widget _buildPeriodSelector() {
+  Widget _buildPeriodSelector(WateringAnalysisState state, WidgetRef ref) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -64,8 +89,8 @@ class _WateringAnalysisScreenState
             ),
             const SizedBox(height: AppSpacing.sm),
             Row(
-              children: periods.map((period) {
-                final isSelected = selectedPeriod == period;
+              children: state.periods.map((period) {
+                final isSelected = state.selectedPeriod == period;
                 return Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(right: AppSpacing.xs),
@@ -74,9 +99,9 @@ class _WateringAnalysisScreenState
                       selected: isSelected,
                       onSelected: (selected) {
                         if (selected) {
-                          setState(() {
-                            selectedPeriod = period;
-                          });
+                          ref
+                              .read(wateringAnalysisProvider.notifier)
+                              .changePeriod(period);
                         }
                       },
                       selectedColor: AppColors.pointBlue.withValues(alpha: 0.2),

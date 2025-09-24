@@ -1,5 +1,5 @@
-import '../../../../../features/ai/ai.dart';
-import '../../core/base_mock_service.dart';
+import 'package:aipet_frontend/features/ai/ai.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/core/base_mock_service.dart';
 
 /// AI Feature 전용 Mock 데이터 서비스
 class AiMockService extends BaseMockService {

@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_form_controller.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../../shared/shared.dart';
-import '../../../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../../controllers/pet_profile_form_controller.dart';
 
 /// Pet Profile 기본 정보 편집 폼
 class PetProfileBasicInfoForm extends ConsumerWidget {
@@ -85,7 +84,10 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileImage(BuildContext context, PetProfileFormState formState) {
+  Widget _buildProfileImage(
+    BuildContext context,
+    PetProfileFormState formState,
+  ) {
     final imagePath = formState.isEditMode
         ? formState.selectedImagePath ?? pet.imagePath
         : pet.imagePath;
@@ -97,10 +99,7 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
         height: 120,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(
-            color: AppColors.pointBrown,
-            width: 3,
-          ),
+          border: Border.all(color: AppColors.pointBrown, width: 3),
         ),
         child: ClipOval(
           child: imagePath != null
@@ -146,9 +145,7 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
         Expanded(
           child: Text(
             value,
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointDark,
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
           ),
         ),
       ],
@@ -161,7 +158,11 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
     PetProfileFormController formController,
   ) {
     if (!formState.isEditMode) {
-      return _buildInfoRow('성별', pet.gender == 'male' ? '수컷' : '암컷', Icons.pets);
+      return _buildInfoRow(
+        '성별',
+        pet.gender == 'male' ? '수컷' : '암컷',
+        Icons.pets,
+      );
     }
 
     return Column(

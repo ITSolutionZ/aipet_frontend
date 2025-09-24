@@ -17,8 +17,12 @@ class AdvancedMockitoSetup {
     MockHomeRepository? homeRepo,
   }) {
     if (aiRepo != null) AiRepositoryMockSetup.setupSuccessScenario(aiRepo);
-    if (authRepo != null) AuthRepositoryMockSetup.setupSuccessScenario(authRepo);
-    if (homeRepo != null) HomeRepositoryMockSetup.setupSuccessScenario(homeRepo);
+    if (authRepo != null) {
+      AuthRepositoryMockSetup.setupSuccessScenario(authRepo);
+    }
+    if (homeRepo != null) {
+      HomeRepositoryMockSetup.setupSuccessScenario(homeRepo);
+    }
   }
 
   /// 전체 에러 시나리오 설정
@@ -28,7 +32,9 @@ class AdvancedMockitoSetup {
     MockHomeRepository? homeRepo,
   }) {
     if (aiRepo != null) AiRepositoryMockSetup.setupErrorScenario(aiRepo);
-    if (authRepo != null) AuthRepositoryMockSetup.setupAuthFailureScenario(authRepo);
+    if (authRepo != null) {
+      AuthRepositoryMockSetup.setupAuthFailureScenario(authRepo);
+    }
     if (homeRepo != null) HomeRepositoryMockSetup.setupErrorScenario(homeRepo);
   }
 
@@ -39,8 +45,12 @@ class AdvancedMockitoSetup {
     MockHomeRepository? homeRepo,
   }) {
     if (aiRepo != null) AiRepositoryMockSetup.setupSlowResponseScenario(aiRepo);
-    if (authRepo != null) AuthRepositoryMockSetup.setupSuccessScenario(authRepo);
-    if (homeRepo != null) HomeRepositoryMockSetup.setupSuccessScenario(homeRepo);
+    if (authRepo != null) {
+      AuthRepositoryMockSetup.setupSuccessScenario(authRepo);
+    }
+    if (homeRepo != null) {
+      HomeRepositoryMockSetup.setupSuccessScenario(homeRepo);
+    }
   }
 
   /// 모든 Mock 초기화
@@ -135,10 +145,10 @@ class AuthRepositoryMockSetup {
 
   /// 인증 실패 시나리오 설정
   static void setupAuthFailureScenario(MockAuthRepository mockRepo) {
-    when(mockRepo.signInWithEmailAndPassword(any, any))
-        .thenThrow(Exception('이메일 또는 비밀번호가 올바르지 않습니다'));
-    when(mockRepo.getCurrentUser())
-        .thenThrow(Exception('사용자가 로그인되어 있지 않습니다'));
+    when(
+      mockRepo.signInWithEmailAndPassword(any, any),
+    ).thenThrow(Exception('이메일 또는 비밀번호가 올바르지 않습니다'));
+    when(mockRepo.getCurrentUser()).thenThrow(Exception('사용자가 로그인되어 있지 않습니다'));
   }
 
   /// 로그아웃 시나리오 설정
@@ -149,10 +159,10 @@ class AuthRepositoryMockSetup {
 
   /// 네트워크 에러 시나리오 설정
   static void setupNetworkErrorScenario(MockAuthRepository mockRepo) {
-    when(mockRepo.signInWithEmailAndPassword(any, any))
-        .thenThrow(Exception('네트워크 연결을 확인해주세요'));
-    when(mockRepo.getCurrentUser())
-        .thenThrow(Exception('서버에 연결할 수 없습니다'));
+    when(
+      mockRepo.signInWithEmailAndPassword(any, any),
+    ).thenThrow(Exception('네트워크 연결을 확인해주세요'));
+    when(mockRepo.getCurrentUser()).thenThrow(Exception('서버에 연결할 수 없습니다'));
   }
 }
 
@@ -208,7 +218,8 @@ class MockUtilities {
   }
 
   /// 특정 시나리오에 맞는 Mock 설정
-  static void setupScenario(MockScenario scenario, {
+  static void setupScenario(
+    MockScenario scenario, {
     MockAiRepository? aiRepo,
     MockAuthRepository? authRepo,
     MockHomeRepository? homeRepo,
@@ -229,14 +240,24 @@ class MockUtilities {
         );
         break;
       case MockScenario.delay:
-        if (aiRepo != null) AiRepositoryMockSetup.setupSlowResponseScenario(aiRepo);
-        if (authRepo != null) AuthRepositoryMockSetup.setupSuccessScenario(authRepo);
-        if (homeRepo != null) HomeRepositoryMockSetup.setupSuccessScenario(homeRepo);
+        if (aiRepo != null) {
+          AiRepositoryMockSetup.setupSlowResponseScenario(aiRepo);
+        }
+        if (authRepo != null) {
+          AuthRepositoryMockSetup.setupSuccessScenario(authRepo);
+        }
+        if (homeRepo != null) {
+          HomeRepositoryMockSetup.setupSuccessScenario(homeRepo);
+        }
         break;
       case MockScenario.partialSuccess:
         if (aiRepo != null) AiRepositoryMockSetup.setupSuccessScenario(aiRepo);
-        if (authRepo != null) AuthRepositoryMockSetup.setupSignOutScenario(authRepo);
-        if (homeRepo != null) HomeRepositoryMockSetup.setupPartialLoadingScenario(homeRepo);
+        if (authRepo != null) {
+          AuthRepositoryMockSetup.setupSignOutScenario(authRepo);
+        }
+        if (homeRepo != null) {
+          HomeRepositoryMockSetup.setupPartialLoadingScenario(homeRepo);
+        }
         break;
       case MockScenario.empty:
         // 빈 데이터 시나리오는 각 Repository에서 개별 구현

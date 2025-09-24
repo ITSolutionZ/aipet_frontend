@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 온보딩 관련 상수들
 class OnboardingConstants {

@@ -31,8 +31,6 @@ class PerformanceMonitorService {
       _monitoringTimer = Timer.periodic(interval, (timer) {
         _collectMetrics();
       });
-
-      // REMOVED_SECURITY_RISK: print('성능 모니터링 시작됨 (간격: ${interval.inSeconds}초)');
     }
   }
 
@@ -51,9 +49,7 @@ class PerformanceMonitorService {
     _monitoringTimer?.cancel();
     _monitoringTimer = null;
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('성능 모니터링 중지됨');
-    }
+    if (kDebugMode) {}
   }
 
   /// 스트림 컨트롤러가 닫혔는지 확인
@@ -78,17 +74,13 @@ class PerformanceMonitorService {
     try {
       _metricController.add(metric);
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('메트릭 스트림 추가 실패: $e');
-      }
+      if (kDebugMode) {}
     }
 
     // 성능 이슈 감지
     _detectPerformanceIssues(metric);
 
-    if (kDebugMode) {
-      // // REMOVED_SECURITY_RISK: print('성능 메트릭 수집: ${metric.toString()}');
-    }
+    if (kDebugMode) {}
   }
 
   /// 메모리 사용량 측정
@@ -99,9 +91,7 @@ class PerformanceMonitorService {
       return 50.0 +
           (DateTime.now().millisecondsSinceEpoch % 20); // 50-70MB 시뮬레이션
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('메모리 사용량 측정 실패: $e');
-      }
+      if (kDebugMode) {}
     }
     return 0.0;
   }
@@ -121,9 +111,7 @@ class PerformanceMonitorService {
       return 55.0 +
           (DateTime.now().millisecondsSinceEpoch % 10); // 55-65fps 시뮬레이션
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('프레임 레이트 측정 실패: $e');
-      }
+      if (kDebugMode) {}
     }
     return 60.0;
   }
@@ -173,17 +161,13 @@ class PerformanceMonitorService {
 
   /// 성능 이슈 리포트
   void _reportPerformanceIssue(PerformanceIssue issue) {
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('🚨 성능 이슈 감지: ${issue.message}');
-    }
+    if (kDebugMode) {}
 
     // 성능 이슈 스트림으로 전송
     try {
       _issueController.add(issue);
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('이슈 스트림 추가 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 

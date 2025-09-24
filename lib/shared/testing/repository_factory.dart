@@ -1,7 +1,7 @@
-import '../../features/ai/domain/repositories/ai_repository.dart';
-import '../../features/auth/domain/repositories/auth_repository.dart';
-import '../../features/home/domain/repositories/home_repository.dart';
-import '../../features/pet_registor/domain/repositories/pet_repository.dart';
+import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
 import 'mock_config.dart';
 
 /// 스마트 Repository Factory

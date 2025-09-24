@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/utils/string_utils.dart';
 import 'package:flutter/foundation.dart';
-
-import '../domain/result.dart';
-import '../utils/string_utils.dart';
 
 /// 에러 심각도 레벨
 enum ErrorSeverity {
@@ -100,13 +99,9 @@ class CommonErrorService {
 
       _isInitialized = true;
 
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('공통 에러 처리 서비스 초기화 완료');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('공통 에러 처리 서비스 초기화 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -180,13 +175,9 @@ class CommonErrorService {
       // 심각도에 따른 처리
       await _handleErrorBySeverity(errorInfo);
 
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('에러 처리 완료: ${errorInfo.message}');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('에러 처리 중 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -210,18 +201,8 @@ class CommonErrorService {
   /// 에러 로그 기록
   void _logError(ErrorInfo errorInfo) {
     if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('=== 에러 발생 ===');
-      // REMOVED_SECURITY_RISK: print('메시지: ${errorInfo.message}');
-      // REMOVED_SECURITY_RISK: print('심각도: ${errorInfo.severity}');
-      // REMOVED_SECURITY_RISK: print('타입: ${errorInfo.type}');
-      // REMOVED_SECURITY_RISK: print('시간: ${errorInfo.timestamp}');
-      if (errorInfo.stackTrace != null) {
-        // REMOVED_SECURITY_RISK: print('스택 트레이스: ${errorInfo.stackTrace}');
-      }
-      if (errorInfo.context != null) {
-        // REMOVED_SECURITY_RISK: print('컨텍스트: ${errorInfo.context}');
-      }
-      // REMOVED_SECURITY_RISK: print('================');
+      if (errorInfo.stackTrace != null) {}
+      if (errorInfo.context != null) {}
     }
 
     // 개발자 로그에 기록
@@ -262,16 +243,12 @@ class CommonErrorService {
   /// 사용자 알림 표시
   void _showUserNotification(ErrorInfo errorInfo) {
     // SnackBar 또는 다이얼로그로 사용자에게 알림
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('사용자 알림: ${errorInfo.message}');
-    }
+    if (kDebugMode) {}
   }
 
   /// 높은 심각도 에러 처리
   void _handleHighSeverityError(ErrorInfo errorInfo) {
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('높은 심각도 에러: ${errorInfo.message}');
-    }
+    if (kDebugMode) {}
 
     // 메모리 정리, 캐시 정리 등 수행
     _performRecoveryActions();
@@ -279,9 +256,7 @@ class CommonErrorService {
 
   /// 치명적 에러 처리
   void _handleCriticalError(ErrorInfo errorInfo) {
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('치명적 에러: ${errorInfo.message}');
-    }
+    if (kDebugMode) {}
 
     // 앱 종료 또는 재시작
     // 실제 구현에서는 앱 종료 로직
@@ -294,13 +269,9 @@ class CommonErrorService {
       // 캐시 정리
       // 네트워크 연결 재설정 등
 
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('복구 작업 수행 완료');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('복구 작업 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -337,9 +308,7 @@ class CommonErrorService {
   void setEnabled(bool enabled) {
     _isEnabled = enabled;
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('에러 처리 ${enabled ? '활성화' : '비활성화'}');
-    }
+    if (kDebugMode) {}
   }
 
   /// 에러 히스토리 정리
@@ -349,9 +318,7 @@ class CommonErrorService {
     _severityCounters.clear();
     _initializeErrorCounters();
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('에러 히스토리 정리 완료');
-    }
+    if (kDebugMode) {}
   }
 
   /// 서비스 정리
@@ -361,9 +328,7 @@ class CommonErrorService {
     _errorCounters.clear();
     _severityCounters.clear();
 
-    if (kDebugMode) {
-      // REMOVED_SECURITY_RISK: print('공통 에러 처리 서비스 정리 완료');
-    }
+    if (kDebugMode) {}
   }
 
   // ========== Result<T> 패턴 지원 메서드들 ==========

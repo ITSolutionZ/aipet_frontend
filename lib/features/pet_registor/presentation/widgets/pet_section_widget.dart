@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
 import 'package:aipet_frontend/features/pet_registor/data/providers/providers.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class PetSectionWidget extends ConsumerWidget {
   const PetSectionWidget({super.key});
@@ -53,14 +52,14 @@ class PetSectionWidget extends ConsumerWidget {
                     ),
                   );
                   if (i < displayPets.length - 1) {
-                    children.add(const SizedBox(width: 12));
+                    children.add(const const const SizedBox(width: 12));
                   }
                 }
 
                 // 펫 추가 버튼 (3개 미만일 때만)
                 if (pets.length < 3) {
                   if (children.isNotEmpty) {
-                    children.add(const SizedBox(width: 12));
+                    children.add(const const const SizedBox(width: 12));
                   }
                   children.add(_buildAddPetButton(context));
                 }
@@ -89,14 +88,14 @@ class PetSectionWidget extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: 16),
+        const const const SizedBox(height: 16),
         // 구분선
         Container(
           height: 1,
           color: Colors.white.withValues(alpha: 0.2),
           margin: const EdgeInsets.symmetric(horizontal: 16),
         ),
-        const SizedBox(height: 16),
+        const const const SizedBox(height: 16),
         // 대시보드 메뉴
         ListTile(
           leading: const Icon(Icons.list, color: Colors.white, size: 20),
@@ -137,7 +136,7 @@ class PetSectionWidget extends ConsumerWidget {
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        const const const SizedBox(height: 4),
         Text(name, style: const TextStyle(color: Colors.white, fontSize: 12)),
       ],
     );
@@ -166,7 +165,7 @@ class PetSectionWidget extends ConsumerWidget {
             ),
             child: const Icon(Icons.add, color: Colors.white, size: 24),
           ),
-          const SizedBox(height: 4),
+          const const const SizedBox(height: 4),
           const Text(
             'ペット追加',
             style: TextStyle(color: Colors.white, fontSize: 12),

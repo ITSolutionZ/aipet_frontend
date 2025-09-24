@@ -1,5 +1,5 @@
-import '../entities/vaccine_record_entity.dart';
-import '../entities/weight_record_entity.dart';
+import 'package:aipet_frontend/shared/entities/vaccine_record_entity.dart';
+import 'package:aipet_frontend/shared/entities/weight_record_entity.dart';
 
 abstract class PetHealthRepository {
   // Vaccine records

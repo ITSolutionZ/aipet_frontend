@@ -1,13 +1,78 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
-import '../controllers/splash_controllers.dart';
-import '../widgets/splash_widgets.dart';
+/// Splash Screen 애니메이션 상태 관리
+final splashAnimationProvider =
+    StateNotifierProvider<SplashAnimationController, SplashAnimationState>(
+      (ref) => SplashAnimationController(),
+    );
+
+class SplashAnimationController extends StateNotifier<SplashAnimationState> {
+  SplashAnimationController() : super(const SplashAnimationState());
+
+  void initializeAnimations(TickerProvider vsync) {
+    final animationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: vsync,
+    );
+
+    final fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+      ),
+    );
+
+    final scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: const Interval(0.0, 0.8, curve: Curves.elasticOut),
+      ),
+    );
+
+    state = state.copyWith(
+      animationController: animationController,
+      fadeAnimation: fadeAnimation,
+      scaleAnimation: scaleAnimation,
+    );
+  }
+
+  void startAnimation() {
+    state.animationController?.forward();
+  }
+
+  @override
+  void dispose() {
+    state.animationController?.dispose();
+    super.dispose();
+  }
+}
+
+class SplashAnimationState {
+  final AnimationController? animationController;
+  final Animation<double>? fadeAnimation;
+  final Animation<double>? scaleAnimation;
+
+  const SplashAnimationState({
+    this.animationController,
+    this.fadeAnimation,
+    this.scaleAnimation,
+  });
+
+  SplashAnimationState copyWith({
+    AnimationController? animationController,
+    Animation<double>? fadeAnimation,
+    Animation<double>? scaleAnimation,
+  }) {
+    return SplashAnimationState(
+      animationController: animationController ?? this.animationController,
+      fadeAnimation: fadeAnimation ?? this.fadeAnimation,
+      scaleAnimation: scaleAnimation ?? this.scaleAnimation,
+    );
+  }
+}
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -18,75 +83,23 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
-  late SplashController _controller;
-
   @override
   void initState() {
     super.initState();
-    _controller = SplashController(ref);
-    _initializeAnimations();
-    _startSplashSequence();
-  }
-
-  void _initializeAnimations() {
-    _animationController = AnimationController(
-      duration: SplashConstants.animationDuration,
-      vsync: this,
-    );
-
-    _fadeAnimation =
-        Tween<double>(
-          begin: SplashConstants.fadeStart,
-          end: SplashConstants.fadeEnd,
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: SplashConstants.fadeInterval,
-          ),
-        );
-
-    _scaleAnimation =
-        Tween<double>(
-          begin: SplashConstants.scaleStart,
-          end: SplashConstants.scaleEnd,
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: SplashConstants.scaleInterval,
-          ),
-        );
-  }
-
-  void _startSplashSequence() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _animationController.forward();
+      ref.read(splashAnimationProvider.notifier).initializeAnimations(this);
+      ref.read(splashAnimationProvider.notifier).startAnimation();
       _listenToSplashSequence();
     });
   }
 
   void _listenToSplashSequence() {
-    _controller.startSplashSequence().listen(
-      (Result<SplashState> result) {
-        if (result.isSuccess && result.data != null) {
-          // 상태 업데이트
-          ref
-              .read(splashSequenceNotifierProvider.notifier)
-              .updateState(result.data!);
-
-          // 완료 시 다음 화면으로 이동
-          if (result.data!.isCompleted) {
-            _navigateToNext();
-          }
-        }
-      },
-      onError: (error) {
-        // 에러 발생 시에도 다음 화면으로 이동
+    // 스플래시 시퀀스를 단순화: 3초 후 자동으로 다음 화면으로 이동
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
         _navigateToNext();
-      },
-    );
+      }
+    });
   }
 
   Future<void> _navigateToNext() async {
@@ -99,32 +112,32 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   void dispose() {
-    _animationController.dispose();
+    ref.read(splashAnimationProvider.notifier).dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final animationState = ref.watch(splashAnimationProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(child: _buildContent()),
-    );
-  }
-
-  Widget _buildContent() {
-    final splashState = ref.watch(splashSequenceNotifierProvider);
-
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        return FadeTransition(
-          opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: SplashLogoWidget(splashState: splashState),
-          ),
-        );
-      },
+      body: Center(
+        child: animationState.animationController != null
+            ? AnimatedBuilder(
+                animation: animationState.animationController!,
+                builder: (context, child) {
+                  return FadeTransition(
+                    opacity: animationState.fadeAnimation!,
+                    child: ScaleTransition(
+                      scale: animationState.scaleAnimation!,
+                      child: const Center(child: FlutterLogo(size: 150)),
+                    ),
+                  );
+                },
+              )
+            : const Center(child: FlutterLogo(size: 150)),
+      ),
     );
   }
 }

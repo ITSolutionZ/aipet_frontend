@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'app/app.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 /// 앱의 진입점
 ///
@@ -24,7 +24,8 @@ void main() async {
   // 앱 실행
   await SentryFlutter.init(
     (options) {
-      options.dsn = 'https://b5916da06a961ec24d87dafbc5c07b2e@o4510047577309184.ingest.us.sentry.io/4510047582683136';
+      options.dsn =
+          'https://b5916da06a961ec24d87dafbc5c07b2e@o4510047577309184.ingest.us.sentry.io/4510047582683136';
       // Adds request headers and IP for users, for more info visit:
       // https://docs.sentry.io/platforms/dart/guides/flutter/data-management/data-collected/
       options.sendDefaultPii = true;
@@ -46,6 +47,8 @@ void main() async {
       options.replay.sessionSampleRate = 0.0;
       options.replay.onErrorSampleRate = 0.0;
     },
-    appRunner: () => runApp(SentryWidget(child: ProviderScope(child: AppBootstrap.createApp()))),
+    appRunner: () => runApp(
+      SentryWidget(child: ProviderScope(child: AppBootstrap.createApp())),
+    ),
   );
 }

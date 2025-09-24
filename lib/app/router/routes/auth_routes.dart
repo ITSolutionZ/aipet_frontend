@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/auth/presentation/presentation.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../features/auth/presentation/presentation.dart';
 import 'route_constants.dart';
 
 /// 인증 관련 라우트 설정

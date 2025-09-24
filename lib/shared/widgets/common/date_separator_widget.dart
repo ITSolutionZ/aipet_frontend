@@ -1,16 +1,11 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
 
 class DateSeparatorWidget extends StatelessWidget {
   final DateTime date;
   final EdgeInsets? margin;
 
-  const DateSeparatorWidget({
-    super.key,
-    required this.date,
-    this.margin,
-  });
+  const DateSeparatorWidget({super.key, required this.date, this.margin});
 
   @override
   Widget build(BuildContext context) {

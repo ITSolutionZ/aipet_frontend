@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-
-import '../design/design.dart';
-import '../shared.dart';
 
 /// 감성적인 브라운 그라데이션 AppBar
 class SoftGradientAppBar extends StatelessWidget

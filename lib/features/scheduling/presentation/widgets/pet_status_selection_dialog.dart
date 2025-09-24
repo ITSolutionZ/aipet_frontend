@@ -1,10 +1,69 @@
+import 'package:aipet_frontend/shared/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:aipet_frontend/shared/ui.dart';
+/// 🎯 Pet Status Selection State Provider
+final petStatusSelectionProvider =
+    StateNotifierProvider.family<
+      PetStatusSelectionController,
+      PetStatusSelectionState,
+      String
+    >((ref, dialogId) => PetStatusSelectionController());
+
+class PetStatusSelectionController
+    extends StateNotifier<PetStatusSelectionState> {
+  PetStatusSelectionController() : super(const PetStatusSelectionState());
+
+  void initialize(
+    List<String> selectedStatuses,
+    Map<String, String> statusValues,
+  ) {
+    state = state.copyWith(
+      selectedStatuses: selectedStatuses,
+      statusValues: statusValues,
+    );
+  }
+
+  void toggleStatus(String status) {
+    final selectedStatuses = List<String>.from(state.selectedStatuses);
+    if (selectedStatuses.contains(status)) {
+      selectedStatuses.remove(status);
+    } else {
+      selectedStatuses.add(status);
+    }
+    state = state.copyWith(selectedStatuses: selectedStatuses);
+  }
+
+  void updateStatusValue(String status, String value) {
+    final statusValues = Map<String, String>.from(state.statusValues);
+    statusValues[status] = value;
+    state = state.copyWith(statusValues: statusValues);
+  }
+}
+
+class PetStatusSelectionState {
+  final List<String> selectedStatuses;
+  final Map<String, String> statusValues;
+
+  const PetStatusSelectionState({
+    this.selectedStatuses = const [],
+    this.statusValues = const {},
+  });
+
+  PetStatusSelectionState copyWith({
+    List<String>? selectedStatuses,
+    Map<String, String>? statusValues,
+  }) {
+    return PetStatusSelectionState(
+      selectedStatuses: selectedStatuses ?? this.selectedStatuses,
+      statusValues: statusValues ?? this.statusValues,
+    );
+  }
+}
 
 /// 펫 상태 선택 다이얼로그
-class PetStatusSelectionDialog extends StatefulWidget {
+class PetStatusSelectionDialog extends ConsumerWidget {
   final Map<String, dynamic> petInfo;
   final List<String> selectedStatuses;
   final Map<String, String> statusValues;
@@ -21,23 +80,54 @@ class PetStatusSelectionDialog extends StatefulWidget {
   });
 
   @override
-  State<PetStatusSelectionDialog> createState() =>
-      _PetStatusSelectionDialogState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _PetStatusSelectionDialogContent(
+      petInfo: petInfo,
+      selectedStatuses: selectedStatuses,
+      statusValues: statusValues,
+      statusOptions: statusOptions,
+      onStatusUpdated: onStatusUpdated,
+    );
+  }
 }
 
-class _PetStatusSelectionDialogState extends State<PetStatusSelectionDialog> {
-  late List<String> _selectedStatuses;
-  late Map<String, String> _statusValues;
+class _PetStatusSelectionDialogContent extends ConsumerStatefulWidget {
+  final Map<String, dynamic> petInfo;
+  final List<String> selectedStatuses;
+  final Map<String, String> statusValues;
+  final List<Map<String, dynamic>> statusOptions;
+  final Function(List<String>, Map<String, String>) onStatusUpdated;
+
+  const _PetStatusSelectionDialogContent({
+    required this.petInfo,
+    required this.selectedStatuses,
+    required this.statusValues,
+    required this.statusOptions,
+    required this.onStatusUpdated,
+  });
+
+  @override
+  ConsumerState<_PetStatusSelectionDialogContent> createState() =>
+      _PetStatusSelectionDialogContentState();
+}
+
+class _PetStatusSelectionDialogContentState
+    extends ConsumerState<_PetStatusSelectionDialogContent> {
+  final String _dialogId = 'pet_status_selection';
 
   @override
   void initState() {
     super.initState();
-    _selectedStatuses = List<String>.from(widget.selectedStatuses);
-    _statusValues = Map<String, String>.from(widget.statusValues);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(petStatusSelectionProvider(_dialogId).notifier)
+          .initialize(widget.selectedStatuses, widget.statusValues);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(petStatusSelectionProvider(_dialogId));
     return Dialog(
       child: Container(
         width: MediaQuery.of(context).size.width * 0.9,

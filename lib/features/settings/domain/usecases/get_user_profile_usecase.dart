@@ -1,6 +1,6 @@
-import '../../../../shared/shared.dart';
-import '../entities/user_profile_entity.dart';
-import '../repositories/settings_repository.dart';
+import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart';
+import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 class GetUserProfileUseCase {
   final SettingsRepository _repository;

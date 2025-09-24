@@ -1,12 +1,53 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../shared.dart';
+/// 🎯 Common Input Field State Provider
+final commonInputFieldStateProvider =
+    StateNotifierProvider.family<
+      CommonInputFieldController,
+      CommonInputFieldState,
+      String
+    >((ref, fieldId) => CommonInputFieldController());
+
+class CommonInputFieldController extends StateNotifier<CommonInputFieldState> {
+  CommonInputFieldController() : super(const CommonInputFieldState());
+
+  void setFocus(bool hasFocus) {
+    state = state.copyWith(isFocused: hasFocus);
+  }
+
+  void toggleObscureText() {
+    state = state.copyWith(obscureText: !state.obscureText);
+  }
+
+  void setObscureText(bool obscureText) {
+    state = state.copyWith(obscureText: obscureText);
+  }
+}
+
+class CommonInputFieldState {
+  final bool isFocused;
+  final bool obscureText;
+
+  const CommonInputFieldState({
+    this.isFocused = false,
+    this.obscureText = false,
+  });
+
+  CommonInputFieldState copyWith({bool? isFocused, bool? obscureText}) {
+    return CommonInputFieldState(
+      isFocused: isFocused ?? this.isFocused,
+      obscureText: obscureText ?? this.obscureText,
+    );
+  }
+}
 
 /// 공통 입력 필드 위젯
 ///
 /// 모든 feature에서 공통으로 사용되는 입력 필드 패턴을 제공합니다.
-class CommonInputField extends StatefulWidget {
+class CommonInputField extends ConsumerStatefulWidget {
   /// 필드 라벨
   final String label;
 
@@ -79,6 +120,9 @@ class CommonInputField extends StatefulWidget {
   /// 텍스트 정렬
   final TextAlign textAlign;
 
+  /// 필드 ID (Riverpod 상태 관리용)
+  final String? fieldId;
+
   const CommonInputField({
     super.key,
     required this.label,
@@ -105,17 +149,16 @@ class CommonInputField extends StatefulWidget {
     this.required = false,
     this.autofocus = false,
     this.textAlign = TextAlign.start,
+    this.fieldId,
   });
 
   @override
-  State<CommonInputField> createState() => _CommonInputFieldState();
+  ConsumerState<CommonInputField> createState() => _CommonInputFieldState();
 }
 
-class _CommonInputFieldState extends State<CommonInputField> {
+class _CommonInputFieldState extends ConsumerState<CommonInputField> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
-  bool _isFocused = false;
-  bool _obscureText = false;
 
   @override
   void initState() {
@@ -123,13 +166,22 @@ class _CommonInputFieldState extends State<CommonInputField> {
     _controller =
         widget.controller ?? TextEditingController(text: widget.initialValue);
     _focusNode = widget.focusNode ?? FocusNode();
-    _obscureText = widget.obscureText;
 
     _focusNode.addListener(_onFocusChange);
+
+    // Initialize Riverpod state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.fieldId != null) {
+        ref
+            .read(commonInputFieldStateProvider(widget.fieldId!).notifier)
+            .setObscureText(widget.obscureText);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _focusNode.removeListener(_onFocusChange);
     if (widget.controller == null) {
       _controller.dispose();
     }
@@ -140,22 +192,22 @@ class _CommonInputFieldState extends State<CommonInputField> {
   }
 
   void _onFocusChange() {
-    if (_isFocused != _focusNode.hasFocus) {
-      setState(() {
-        _isFocused = _focusNode.hasFocus;
-      });
-      widget.onFocusChange?.call(_isFocused);
+    final hasFocus = _focusNode.hasFocus;
+    if (widget.fieldId != null) {
+      ref
+          .read(commonInputFieldStateProvider(widget.fieldId!).notifier)
+          .setFocus(hasFocus);
     }
-  }
-
-  void _toggleObscureText() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
+    widget.onFocusChange?.call(hasFocus);
   }
 
   @override
   Widget build(BuildContext context) {
+    final effectiveFieldId = widget.fieldId ?? 'default_common_input_field';
+    final fieldState = ref.watch(
+      commonInputFieldStateProvider(effectiveFieldId),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -165,7 +217,7 @@ class _CommonInputFieldState extends State<CommonInputField> {
         const SizedBox(height: AppSpacing.xs),
 
         // 입력 필드
-        _buildInputField(),
+        _buildInputField(fieldState),
 
         // 에러 메시지 또는 도움말
         if (widget.errorText != null || widget.helpText != null) ...[
@@ -202,7 +254,7 @@ class _CommonInputFieldState extends State<CommonInputField> {
     );
   }
 
-  Widget _buildInputField() {
+  Widget _buildInputField(CommonInputFieldState fieldState) {
     return TextFormField(
       controller: _controller,
       focusNode: _focusNode,
@@ -213,7 +265,7 @@ class _CommonInputFieldState extends State<CommonInputField> {
       onFieldSubmitted: widget.onSubmitted,
       readOnly: widget.readOnly,
       enabled: widget.enabled,
-      obscureText: _obscureText,
+      obscureText: fieldState.obscureText,
       maxLines: widget.maxLines,
       maxLength: widget.maxLength,
       autofocus: widget.autofocus,
@@ -229,13 +281,13 @@ class _CommonInputFieldState extends State<CommonInputField> {
         prefixIcon: widget.prefixIcon != null
             ? Icon(
                 widget.prefixIcon,
-                color: _isFocused
+                color: fieldState.isFocused
                     ? AppColors.pointBrown
                     : AppColors.pointOffWhite.withValues(alpha: 0.6),
                 size: 20,
               )
             : null,
-        suffixIcon: _buildSuffixIcon(),
+        suffixIcon: _buildSuffixIcon(fieldState),
         filled: true,
         fillColor: widget.enabled
             ? AppColors.pointOffWhite.withValues(alpha: 0.1)
@@ -284,15 +336,21 @@ class _CommonInputFieldState extends State<CommonInputField> {
     );
   }
 
-  Widget? _buildSuffixIcon() {
+  Widget? _buildSuffixIcon(CommonInputFieldState fieldState) {
     if (widget.obscureText) {
       return IconButton(
         icon: Icon(
-          _obscureText ? Icons.visibility_off : Icons.visibility,
+          fieldState.obscureText ? Icons.visibility_off : Icons.visibility,
           color: AppColors.pointOffWhite.withValues(alpha: 0.6),
           size: 20,
         ),
-        onPressed: _toggleObscureText,
+        onPressed: () {
+          if (widget.fieldId != null) {
+            ref
+                .read(commonInputFieldStateProvider(widget.fieldId!).notifier)
+                .toggleObscureText();
+          }
+        },
       );
     }
 

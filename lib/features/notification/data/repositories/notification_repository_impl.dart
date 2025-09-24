@@ -1,6 +1,6 @@
-import '../../../../shared/testing/mock_data/features/notification/notification_mock_service.dart';
-import '../../domain/entities/entities.dart';
-import '../../domain/repositories/notification_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/onboarding/domain/repositories/notification_repository.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/notification/notification_mock_service.dart';
 
 class NotificationRepositoryImpl implements NotificationRepository {
   @override
@@ -15,11 +15,9 @@ class NotificationRepositoryImpl implements NotificationRepository {
     await Future.delayed(const Duration(milliseconds: 200));
 
     final notifications = NotificationMockService.getMockNotifications();
-    
+
     try {
-      return notifications.firstWhere(
-        (notification) => notification.id == id,
-      );
+      return notifications.firstWhere((notification) => notification.id == id);
     } catch (e) {
       return null;
     }
@@ -86,7 +84,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     await Future.delayed(const Duration(milliseconds: 100));
 
     final notifications = NotificationMockService.getMockNotifications();
-    
+
     return notifications
         .where(
           (notification) => notification.status == NotificationStatus.unread,
@@ -105,8 +103,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     await Future.delayed(const Duration(milliseconds: 300));
 
     // 설정 유효성 검사
-    if (settings.enabled &&
-        !settings.typeSettings[NotificationType.feeding]!) {
+    if (settings.enabled && !settings.typeSettings[NotificationType.feeding]!) {
       throw Exception('급여 알림 설정이 필요합니다.');
     }
     // 목업에서는 저장 성공으로 처리

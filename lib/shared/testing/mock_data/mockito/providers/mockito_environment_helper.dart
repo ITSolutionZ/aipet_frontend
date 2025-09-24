@@ -1,4 +1,4 @@
-import '../../../../testing/mock_config.dart';
+import 'package:aipet_frontend/shared/testing/mock_config.dart';
 
 /// 🎭 Mockito 환경 도우미
 ///
@@ -12,12 +12,7 @@ class MockitoEnvironmentHelper {
       MockConfig.currentEnvironment;
 
   /// 환경 정보 디버그 출력
-  static void logEnvironmentInfo() {
-    // REMOVED_SECURITY_RISK: print('🎭 Mockito Environment Info:');
-    // REMOVED_SECURITY_RISK: print('   Environment: ${currentEnvironment.name}');
-    // REMOVED_SECURITY_RISK: print('   Use Mock: $shouldUseMock');
-    // REMOVED_SECURITY_RISK: print('   Build Mode: ${_getBuildMode()}');
-  }
+  static void logEnvironmentInfo() {}
 
   /// 빌드 모드 확인
   static String _getBuildMode() {
@@ -46,18 +41,15 @@ class MockitoEnvironmentHelper {
   /// 개발자용 Mock 강제 활성화
   static void forceMockMode() {
     MockConfig.setUseMock(true);
-    // REMOVED_SECURITY_RISK: print('🎭 Mockito: Mock mode forced ON');
   }
 
   /// 개발자용 Real API 강제 활성화
   static void forceRealMode() {
     MockConfig.setUseMock(false);
-    // REMOVED_SECURITY_RISK: print('🎭 Mockito: Real API mode forced ON');
   }
 
   /// 테스트용 환경 리셋
   static void resetForTesting() {
     MockConfig.reset();
-    // REMOVED_SECURITY_RISK: print('🎭 Mockito: Environment reset for testing');
   }
 }

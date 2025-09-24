@@ -1,4 +1,4 @@
-import '../../../../../features/ai/ai.dart';
+import 'package:aipet_frontend/features/ai/ai.dart';
 
 /// AI 채팅 메시지 관련 Mock 데이터 서비스
 ///

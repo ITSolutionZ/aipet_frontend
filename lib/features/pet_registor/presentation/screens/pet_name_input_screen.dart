@@ -1,44 +1,110 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/shared/pet_registor.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/utils/pet_image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/shared.dart';
-import '../../pet_registor.dart';
-import '../utils/pet_image_utils.dart';
+/// Pet Name Input 상태 관리
+final petNameInputProvider =
+    StateNotifierProvider<PetNameInputController, PetNameInputState>(
+      (ref) => PetNameInputController(ref),
+    );
 
-class PetNameInputScreen extends ConsumerStatefulWidget {
-  const PetNameInputScreen({super.key});
+class PetNameInputController extends StateNotifier<PetNameInputState> {
+  final Ref ref;
 
-  @override
-  ConsumerState<PetNameInputScreen> createState() => _PetNameInputScreenState();
-}
+  PetNameInputController(this.ref) : super(const PetNameInputState());
 
-class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _microchipController = TextEditingController();
-  bool _isValid = false;
-  String? _selectedGender;
-  bool _isNeutered = false;
-  String? _selectedImagePath;
+  void initialize() {
+    final nameController = TextEditingController();
+    final microchipController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _nameController.addListener(_validateName);
-
-    // 기존 데이터 복원
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _restoreData();
+    nameController.addListener(() {
+      validateName(nameController.text);
     });
+
+    state = state.copyWith(
+      nameController: nameController,
+      microchipController: microchipController,
+    );
+
+    _restoreData();
+  }
+
+  void validateName(String name) {
+    final isValid = name.trim().isNotEmpty;
+    state = state.copyWith(isValid: isValid);
+  }
+
+  void updateGender(String? gender) {
+    state = state.copyWith(selectedGender: gender);
+  }
+
+  void updateNeutered(bool isNeutered) {
+    state = state.copyWith(isNeutered: isNeutered);
+  }
+
+  void updateImagePath(String? imagePath) {
+    state = state.copyWith(selectedImagePath: imagePath);
+  }
+
+  void _restoreData() {
+    // Mock data restoration
+    final mockData = ref.read(temporaryPetDataProvider);
+    if (mockData.name.isNotEmpty) {
+      state.nameController?.text = mockData.name;
+      validateName(mockData.name);
+    }
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _microchipController.dispose();
+    state.nameController?.dispose();
+    state.microchipController?.dispose();
     super.dispose();
   }
+}
+
+class PetNameInputState {
+  final TextEditingController? nameController;
+  final TextEditingController? microchipController;
+  final bool isValid;
+  final String? selectedGender;
+  final bool isNeutered;
+  final String? selectedImagePath;
+
+  const PetNameInputState({
+    this.nameController,
+    this.microchipController,
+    this.isValid = false,
+    this.selectedGender,
+    this.isNeutered = false,
+    this.selectedImagePath,
+  });
+
+  PetNameInputState copyWith({
+    TextEditingController? nameController,
+    TextEditingController? microchipController,
+    bool? isValid,
+    String? selectedGender,
+    bool? isNeutered,
+    String? selectedImagePath,
+  }) {
+    return PetNameInputState(
+      nameController: nameController ?? this.nameController,
+      microchipController: microchipController ?? this.microchipController,
+      isValid: isValid ?? this.isValid,
+      selectedGender: selectedGender ?? this.selectedGender,
+      isNeutered: isNeutered ?? this.isNeutered,
+      selectedImagePath: selectedImagePath ?? this.selectedImagePath,
+    );
+  }
+}
+
+class PetNameInputScreen extends ConsumerWidget {
+  const PetNameInputScreen({super.key});
 
   void _validateName() {
     setState(() {

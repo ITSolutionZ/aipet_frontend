@@ -1,40 +1,67 @@
+import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../shared/shared.dart';
-import '../../data/walk_providers.dart';
-import '../../domain/entities/walk_record_entity.dart';
 import 'map/walk_map_camera_controller.dart';
 import 'map/walk_map_marker_builder.dart';
 import 'map/walk_map_polyline_builder.dart';
 
-class MapWidget extends StatefulWidget {
+final mapWidgetProvider =
+    StateNotifierProvider.family<
+      MapWidgetController,
+      MapWidgetState,
+      MapWidgetParams
+    >((ref, params) => MapWidgetController(params));
+
+class MapWidgetParams {
   final List<WalkRecordEntity> walkRecords;
   final PetInfo? selectedPet;
 
-  const MapWidget({super.key, required this.walkRecords, this.selectedPet});
-
-  @override
-  State<MapWidget> createState() => _MapWidgetState();
+  const MapWidgetParams({required this.walkRecords, this.selectedPet});
 }
 
-class _MapWidgetState extends State<MapWidget> {
-  GoogleMapController? _mapController;
-  Position? _currentPosition;
-  final Set<Marker> _markers = {};
-  final Set<Polyline> _polylines = {};
+class MapWidgetState {
+  final GoogleMapController? mapController;
+  final Position? currentPosition;
+  final Set<Marker> markers;
+  final Set<Polyline> polylines;
 
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-    _setupMarkersAndPolylines();
+  const MapWidgetState({
+    this.mapController,
+    this.currentPosition,
+    this.markers = const {},
+    this.polylines = const {},
+  });
+
+  MapWidgetState copyWith({
+    GoogleMapController? mapController,
+    Position? currentPosition,
+    Set<Marker>? markers,
+    Set<Polyline>? polylines,
+  }) {
+    return MapWidgetState(
+      mapController: mapController ?? this.mapController,
+      currentPosition: currentPosition ?? this.currentPosition,
+      markers: markers ?? this.markers,
+      polylines: polylines ?? this.polylines,
+    );
+  }
+}
+
+class MapWidgetController extends StateNotifier<MapWidgetState> {
+  final MapWidgetParams params;
+
+  MapWidgetController(this.params) : super(const MapWidgetState()) {
+    getCurrentLocation();
+    setupMarkersAndPolylines();
   }
 
-  Future<void> _getCurrentLocation() async {
+  Future<void> getCurrentLocation() async {
     try {
-      // 위치 권한 확인
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -47,21 +74,17 @@ class _MapWidgetState extends State<MapWidget> {
         return;
       }
 
-      // 현재 위치 가져오기
       final Position position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
         ),
       );
 
-      setState(() {
-        _currentPosition = position;
-      });
+      state = state.copyWith(currentPosition: position);
 
-      // 지도 컨트롤러가 준비되면 카메라 이동
-      if (_mapController != null) {
+      if (state.mapController != null) {
         await WalkMapCameraController.moveToCurrentLocation(
-          _mapController!,
+          state.mapController!,
           position,
         );
       }
@@ -70,25 +93,46 @@ class _MapWidgetState extends State<MapWidget> {
     }
   }
 
-  void _setupMarkersAndPolylines() {
-    // 마커 생성
-    _markers.clear();
-    _markers.addAll(WalkMapMarkerBuilder.buildAllMarkers(
-      walkRecords: widget.walkRecords,
-      currentPosition: _currentPosition,
-      selectedPet: widget.selectedPet,
-    ));
+  void setupMarkersAndPolylines() {
+    final markers = <Marker>{};
+    markers.addAll(
+      WalkMapMarkerBuilder.buildAllMarkers(
+        walkRecords: params.walkRecords,
+        currentPosition: state.currentPosition,
+        selectedPet: params.selectedPet,
+      ),
+    );
 
-    // 폴리라인 생성
-    _polylines.clear();
-    _polylines.addAll(WalkMapPolylineBuilder.buildAllPolylines(
-      widget.walkRecords,
-      defaultColor: AppColors.pointBrown,
-    ));
+    final polylines = <Polyline>{};
+    polylines.addAll(
+      WalkMapPolylineBuilder.buildAllPolylines(
+        params.walkRecords,
+        defaultColor: AppColors.pointBrown,
+      ),
+    );
+
+    state = state.copyWith(markers: markers, polylines: polylines);
   }
 
+  void setMapController(GoogleMapController controller) {
+    state = state.copyWith(mapController: controller);
+  }
+}
+
+class MapWidget extends ConsumerWidget {
+  final List<WalkRecordEntity> walkRecords;
+  final PetInfo? selectedPet;
+
+  const MapWidget({super.key, required this.walkRecords, this.selectedPet});
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final params = MapWidgetParams(
+      walkRecords: walkRecords,
+      selectedPet: selectedPet,
+    );
+    final controller = ref.read(mapWidgetProvider(params).notifier);
+    final state = ref.watch(mapWidgetProvider(params));
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -96,27 +140,26 @@ class _MapWidgetState extends State<MapWidget> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        child: _currentPosition == null
+        child: state.currentPosition == null
             ? _buildLoadingState()
             : GoogleMap(
-                onMapCreated: (GoogleMapController controller) {
-                  _mapController = controller;
-                  _setupMarkersAndPolylines();
+                onMapCreated: (GoogleMapController mapController) {
+                  controller.setMapController(mapController);
+                  controller.setupMarkersAndPolylines();
 
-                  // 초기 카메라 위치 설정
                   WalkMapCameraController.moveToCurrentLocation(
-                    controller,
-                    _currentPosition!,
+                    mapController,
+                    state.currentPosition!,
                   );
                 },
                 initialCameraPosition:
                     WalkMapCameraController.createDefaultCameraPosition(
-                  latitude: _currentPosition!.latitude,
-                  longitude: _currentPosition!.longitude,
-                  zoom: 15.0,
-                ),
-                markers: _markers,
-                polylines: _polylines,
+                      latitude: state.currentPosition!.latitude,
+                      longitude: state.currentPosition!.longitude,
+                      zoom: 15.0,
+                    ),
+                markers: state.markers,
+                polylines: state.polylines,
                 myLocationEnabled: true,
                 myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,
@@ -149,14 +192,5 @@ class _MapWidgetState extends State<MapWidget> {
         ),
       ),
     );
-  }
-
-  @override
-  void didUpdateWidget(MapWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.walkRecords != widget.walkRecords ||
-        oldWidget.selectedPet != widget.selectedPet) {
-      _setupMarkersAndPolylines();
-    }
   }
 }

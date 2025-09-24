@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/onboarding/domain/usecases/usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/usecases/usecases.dart';
 import 'pet_providers.dart';
 
 /// UseCase Provider들

@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class WeightSliderWidget extends StatelessWidget {
   final double weight;
@@ -90,7 +89,7 @@ class WeightSliderWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
-                          const SizedBox(width: 2),
+                          const const const SizedBox(width: 2),
                           Container(
                             width: 1.5,
                             height: 12,
@@ -99,7 +98,7 @@ class WeightSliderWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
-                          const SizedBox(width: 2),
+                          const const const SizedBox(width: 2),
                           Container(
                             width: 1.5,
                             height: 12,

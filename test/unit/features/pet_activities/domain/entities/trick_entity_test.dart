@@ -78,14 +78,17 @@ void main() {
         expect(updated.imagePath, trickEntity.imagePath);
       });
 
-      test('should return identical instance when no parameters are provided', () {
-        final copied = trickEntity.copyWith();
+      test(
+        'should return identical instance when no parameters are provided',
+        () {
+          final copied = trickEntity.copyWith();
 
-        expect(copied.id, trickEntity.id);
-        expect(copied.name, trickEntity.name);
-        expect(copied.progress, trickEntity.progress);
-        expect(copied.isCompleted, trickEntity.isCompleted);
-      });
+          expect(copied.id, trickEntity.id);
+          expect(copied.name, trickEntity.name);
+          expect(copied.progress, trickEntity.progress);
+          expect(copied.isCompleted, trickEntity.isCompleted);
+        },
+      );
     });
 
     group('markAsCompleted', () {
@@ -186,10 +189,7 @@ void main() {
 
       test('should return false for old completed trick', () {
         final oldDate = DateTime.now().subtract(const Duration(days: 10));
-        final oldTrick = trickEntity.copyWith(
-          isCompleted: true,
-          date: oldDate,
-        );
+        final oldTrick = trickEntity.copyWith(isCompleted: true, date: oldDate);
 
         expect(oldTrick.isRecentlyCompleted, false);
       });
@@ -200,10 +200,7 @@ void main() {
       });
 
       test('should return false when date is null', () {
-        final noDate = trickEntity.copyWith(
-          isCompleted: true,
-          date: null,
-        );
+        final noDate = trickEntity.copyWith(isCompleted: true, date: null);
         expect(noDate.isRecentlyCompleted, false);
       });
     });

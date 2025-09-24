@@ -1,28 +1,49 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/onboarding/data/providers/home_providers.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/pet_registor/presentation/services/microchip_reminder_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/data/providers/pet_providers.dart';
-import '../../../pet_registor/presentation/services/microchip_reminder_service.dart';
-import '../../data/providers/home_providers.dart';
+/// Pet Profile Card 상태 관리
+final petProfileCardProvider = StateNotifierProvider<PetProfileCardController, PetProfileCardState>(
+  (ref) => PetProfileCardController(),
+);
 
-class PetProfileCard extends ConsumerStatefulWidget {
-  const PetProfileCard({super.key});
+class PetProfileCardController extends StateNotifier<PetProfileCardState> {
+  PetProfileCardController() : super(const PetProfileCardState());
+
+  void initializeController() {
+    final controller = PageController();
+    state = state.copyWith(pageController: controller);
+  }
 
   @override
-  ConsumerState<PetProfileCard> createState() => _PetProfileCardState();
+  void dispose() {
+    state.pageController?.dispose();
+  }
 }
 
-class _PetProfileCardState extends ConsumerState<PetProfileCard> {
-  late PageController _pageController;
+class PetProfileCardState {
+  final PageController? pageController;
 
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
+  const PetProfileCardState({
+    this.pageController,
+  });
+
+  PetProfileCardState copyWith({
+    PageController? pageController,
+  }) {
+    return PetProfileCardState(
+      pageController: pageController ?? this.pageController,
+    );
   }
+}
+
+class PetProfileCard extends ConsumerWidget {
+  const PetProfileCard({super.key});
 
   /// 마이크로칩 등록 체크 및 모달 표시
   void _checkMicrochipRegistration(List<dynamic> pets) {
@@ -43,7 +64,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
 
   @override
   void dispose() {
-    _pageController.dispose();
+    ref.read(petProfileCardProvider.notifier).dispose();
     super.dispose();
   }
 
@@ -91,7 +112,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
               SizedBox(
                 height: 100, // 固定 높이 설정
                 child: PageView.builder(
-                  controller: _pageController,
+                  controller: ref.watch(petProfileCardProvider).pageController,
                   onPageChanged: (index) {
                     // 페이지 변경 시 홈 선택된 펫 프로바이더 업데이트
                     if (index < petList.length) {
@@ -168,10 +189,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
                                         ),
                                       ),
                                       child: Text(
-                                        PetMockData.getPetGenderByName(
-                                                  currentPet.name,
-                                                ) ==
-                                                'male'
+                                        currentPet.gender == 'male'
                                             ? 'オス'
                                             : 'メス',
                                         style: AppFonts.bodySmall.copyWith(
@@ -198,7 +216,7 @@ class _PetProfileCardState extends ConsumerState<PetProfileCard> {
 
                           // 화살표 아이콘 (펫이 2마리 이상일 때 표시)
                           if (hasMultiplePets) ...[
-                            const SizedBox(width: 8),
+                            const const const SizedBox(width: 8),
                             const Icon(
                               Icons.arrow_forward_ios,
                               color: AppColors.pointGray,

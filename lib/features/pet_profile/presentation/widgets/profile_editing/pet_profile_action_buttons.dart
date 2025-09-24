@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_form_controller.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../../shared/shared.dart';
-import '../../../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../../controllers/pet_profile_form_controller.dart';
 
 /// Pet Profile 액션 버튼들 (편집, 저장, 취소)
 class PetProfileActionButtons extends ConsumerWidget {
@@ -22,16 +21,9 @@ class PetProfileActionButtons extends ConsumerWidget {
     final formController = ref.read(petProfileFormControllerProvider.notifier);
 
     if (formState.isEditMode) {
-      return _buildEditModeButtons(
-        context,
-        formState,
-        formController,
-      );
+      return _buildEditModeButtons(context, formState, formController);
     } else {
-      return _buildViewModeButtons(
-        context,
-        formController,
-      );
+      return _buildViewModeButtons(context, formController);
     }
   }
 
@@ -102,10 +94,12 @@ class PetProfileActionButtons extends ConsumerWidget {
                   text: '취소',
                   type: ButtonType.outline,
                   size: ButtonSize.large,
-                  onPressed: formState.isLoading ? null : () {
-                    formController.cancelEdit();
-                    onEditComplete?.call();
-                  },
+                  onPressed: formState.isLoading
+                      ? null
+                      : () {
+                          formController.cancelEdit();
+                          onEditComplete?.call();
+                        },
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -117,7 +111,8 @@ class PetProfileActionButtons extends ConsumerWidget {
                   type: ButtonType.primary,
                   size: ButtonSize.large,
                   isLoading: formState.isLoading,
-                  onPressed: formState.isLoading || !formController.isFormValid()
+                  onPressed:
+                      formState.isLoading || !formController.isFormValid()
                       ? null
                       : () async {
                           await formController.saveChanges(pet);
@@ -132,7 +127,9 @@ class PetProfileActionButtons extends ConsumerWidget {
                                 backgroundColor: AppColors.pointGreen,
                                 behavior: SnackBarBehavior.floating,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(AppRadius.small),
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.small,
+                                  ),
                                 ),
                               ),
                             );

@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/youtube_video_entity.dart';
 
 /// YouTube 비디오 카드 위젯
 class YouTubeVideoCard extends StatelessWidget {

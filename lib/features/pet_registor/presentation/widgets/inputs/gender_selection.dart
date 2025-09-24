@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class GenderSelection extends StatelessWidget {
   final String? selectedGender;
@@ -75,7 +74,7 @@ class GenderSelection extends StatelessWidget {
                     color: isSelected ? Colors.white : AppColors.pointDark,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const const const SizedBox(width: 8),
                 Text(
                   label,
                   style: AppFonts.bodyMedium.copyWith(

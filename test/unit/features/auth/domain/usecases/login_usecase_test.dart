@@ -37,8 +37,9 @@ void main() {
           user: mockUser,
         );
 
-        when(mockRepository.signInWithEmailAndPassword(testEmail, testPassword))
-            .thenAnswer((_) async => mockAuthResult);
+        when(
+          mockRepository.signInWithEmailAndPassword(testEmail, testPassword),
+        ).thenAnswer((_) async => mockAuthResult);
 
         // Act
         final result = await useCase.call(
@@ -51,16 +52,14 @@ void main() {
         expect(result.isSuccess, isTrue);
         expect(result.data, equals(mockUser));
         expect(result.message, equals('ログインが完了しました'));
-        verify(mockRepository.signInWithEmailAndPassword(testEmail, testPassword))
-            .called(1);
+        verify(
+          mockRepository.signInWithEmailAndPassword(testEmail, testPassword),
+        ).called(1);
       });
 
       test('should return failure when email is empty', () async {
         // Act
-        final result = await useCase.call(
-          email: '',
-          password: testPassword,
-        );
+        final result = await useCase.call(email: '', password: testPassword);
 
         // Assert
         expect(result, isA<Result<AuthUser>>());
@@ -71,10 +70,7 @@ void main() {
 
       test('should return failure when password is empty', () async {
         // Act
-        final result = await useCase.call(
-          email: testEmail,
-          password: '',
-        );
+        final result = await useCase.call(email: testEmail, password: '');
 
         // Assert
         expect(result, isA<Result<AuthUser>>());
@@ -99,10 +95,7 @@ void main() {
 
       test('should return failure when password is too short', () async {
         // Act
-        final result = await useCase.call(
-          email: testEmail,
-          password: '123',
-        );
+        final result = await useCase.call(email: testEmail, password: '123');
 
         // Assert
         expect(result, isA<Result<AuthUser>>());
@@ -115,8 +108,9 @@ void main() {
         // Arrange
         final mockAuthResult = AuthResult.failure('認証に失敗しました');
 
-        when(mockRepository.signInWithEmailAndPassword(testEmail, testPassword))
-            .thenAnswer((_) async => mockAuthResult);
+        when(
+          mockRepository.signInWithEmailAndPassword(testEmail, testPassword),
+        ).thenAnswer((_) async => mockAuthResult);
 
         // Act
         final result = await useCase.call(
@@ -128,8 +122,9 @@ void main() {
         expect(result, isA<Result<AuthUser>>());
         expect(result.isSuccess, isFalse);
         expect(result.message, equals('認証に失敗しました'));
-        verify(mockRepository.signInWithEmailAndPassword(testEmail, testPassword))
-            .called(1);
+        verify(
+          mockRepository.signInWithEmailAndPassword(testEmail, testPassword),
+        ).called(1);
       });
     });
 
@@ -149,8 +144,9 @@ void main() {
           user: mockUser,
         );
 
-        when(mockRepository.signInWithGoogle())
-            .thenAnswer((_) async => mockAuthResult);
+        when(
+          mockRepository.signInWithGoogle(),
+        ).thenAnswer((_) async => mockAuthResult);
 
         // Act
         final result = await useCase.loginWithGoogle();
@@ -178,8 +174,9 @@ void main() {
           user: mockUser,
         );
 
-        when(mockRepository.signInWithApple())
-            .thenAnswer((_) async => mockAuthResult);
+        when(
+          mockRepository.signInWithApple(),
+        ).thenAnswer((_) async => mockAuthResult);
 
         // Act
         final result = await useCase.loginWithApple();
@@ -207,8 +204,9 @@ void main() {
           user: mockUser,
         );
 
-        when(mockRepository.signInWithLine())
-            .thenAnswer((_) async => mockAuthResult);
+        when(
+          mockRepository.signInWithLine(),
+        ).thenAnswer((_) async => mockAuthResult);
 
         // Act
         final result = await useCase.loginWithLine();
@@ -225,8 +223,9 @@ void main() {
         // Arrange
         final mockAuthResult = AuthResult.failure('Googleログインに失敗しました');
 
-        when(mockRepository.signInWithGoogle())
-            .thenAnswer((_) async => mockAuthResult);
+        when(
+          mockRepository.signInWithGoogle(),
+        ).thenAnswer((_) async => mockAuthResult);
 
         // Act
         final result = await useCase.loginWithGoogle();
@@ -242,8 +241,9 @@ void main() {
     group('Error Handling', () {
       test('should handle exceptions gracefully', () async {
         // Arrange
-        when(mockRepository.signInWithEmailAndPassword(testEmail, testPassword))
-            .thenThrow(Exception('Network error'));
+        when(
+          mockRepository.signInWithEmailAndPassword(testEmail, testPassword),
+        ).thenThrow(Exception('Network error'));
 
         // Act
         final result = await useCase.call(
@@ -255,8 +255,9 @@ void main() {
         expect(result, isA<Result<AuthUser>>());
         expect(result.isSuccess, isFalse);
         expect(result.message, contains('ログインに失敗しました'));
-        verify(mockRepository.signInWithEmailAndPassword(testEmail, testPassword))
-            .called(1);
+        verify(
+          mockRepository.signInWithEmailAndPassword(testEmail, testPassword),
+        ).called(1);
       });
     });
   });

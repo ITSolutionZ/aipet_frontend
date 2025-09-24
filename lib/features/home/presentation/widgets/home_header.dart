@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class HomeHeader extends StatelessWidget {
   final VoidCallback onNotificationTap;
@@ -26,7 +25,7 @@ class HomeHeader extends StatelessWidget {
           _buildTitle(),
           const Spacer(),
           _buildNotificationButton(),
-          const SizedBox(width: 8),
+          const const const SizedBox(width: 8),
           _buildProfileAvatar(),
         ],
       ),

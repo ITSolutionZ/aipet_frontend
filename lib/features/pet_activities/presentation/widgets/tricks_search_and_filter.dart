@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 트릭 검색 및 필터 섹션
 class TricksSearchAndFilter extends StatelessWidget {

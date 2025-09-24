@@ -1,6 +1,6 @@
-import '../../domain/entities/schedule_entity.dart';
-import '../../domain/repositories/schedule_repository.dart';
-import '../models/schedule_model.dart';
+import 'package:aipet_frontend/features/onboarding/domain/repositories/schedule_repository.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/schedule_entity.dart';
+import 'package:aipet_frontend/shared/models/schedule_model.dart';
 
 /// 스케줄 리포지토리 구현
 class ScheduleRepositoryImpl implements ScheduleRepository {

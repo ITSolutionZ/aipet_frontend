@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/shared/testing/mock_data/features/auth/auth.dart';
 import 'package:http/http.dart' as http;
 
-import '../../testing/mock_data/features/auth/auth.dart';
 import 'http_client_service.dart';
 
 /// 백엔드 API 통신을 담당하는 서비스

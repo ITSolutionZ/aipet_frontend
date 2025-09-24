@@ -1,3 +1,3 @@
 library;
 
-export 'auth_validator.dart';
+// AuthValidator 제거됨 - 직접 ValidationService 사용

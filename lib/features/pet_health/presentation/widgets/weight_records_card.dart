@@ -1,34 +1,103 @@
+import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet_health/pet_health_mock_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/design/design.dart';
-import '../../../../shared/testing/mock_data/features/pet_health/pet_health_mock_service.dart';
+/// 🎯 Weight Records State Provider
+final weightRecordsStateProvider =
+    StateNotifierProvider<WeightRecordsController, WeightRecordsState>(
+      (ref) => WeightRecordsController(),
+    );
 
-class WeightRecordsCard extends StatefulWidget {
+class WeightRecordsController extends StateNotifier<WeightRecordsState> {
+  WeightRecordsController()
+    : super(WeightRecordsState(selectedYear: DateTime.now().year));
+
+  void toggleMonth(String monthKey) {
+    final expandedMonths = Set<String>.from(state.expandedMonths);
+    if (expandedMonths.contains(monthKey)) {
+      expandedMonths.remove(monthKey);
+    } else {
+      expandedMonths.add(monthKey);
+    }
+    state = state.copyWith(expandedMonths: expandedMonths);
+  }
+
+  void setSelectedYear(int year) {
+    state = state.copyWith(selectedYear: year, expandedMonths: <String>{});
+  }
+
+  void initializeWithFirstMonth(List<String> monthKeys) {
+    if (state.expandedMonths.isEmpty && monthKeys.isNotEmpty) {
+      state = state.copyWith(expandedMonths: {monthKeys.first});
+    }
+  }
+}
+
+class WeightRecordsState {
+  final Set<String> expandedMonths;
+  final int selectedYear;
+
+  const WeightRecordsState({
+    this.expandedMonths = const <String>{},
+    required this.selectedYear,
+  });
+
+  WeightRecordsState copyWith({
+    Set<String>? expandedMonths,
+    int? selectedYear,
+  }) {
+    return WeightRecordsState(
+      expandedMonths: expandedMonths ?? this.expandedMonths,
+      selectedYear: selectedYear ?? this.selectedYear,
+    );
+  }
+}
+
+class WeightRecordsCard extends ConsumerWidget {
   const WeightRecordsCard({super.key});
 
   @override
-  State<WeightRecordsCard> createState() => _WeightRecordsCardState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const _WeightRecordsCardContent();
+  }
 }
 
-class _WeightRecordsCardState extends State<WeightRecordsCard> {
-  final Set<String> _expandedMonths = <String>{};
-  int _selectedYear = DateTime.now().year;
+class _WeightRecordsCardContent extends ConsumerWidget {
+  const _WeightRecordsCardContent();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(weightRecordsStateProvider);
+    return _WeightRecordsCardView(state: state);
+  }
+}
+
+class _WeightRecordsCardView extends ConsumerWidget {
+  final WeightRecordsState state;
+
+  const _WeightRecordsCardView({required this.state});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controllerState = ref.watch(weightRecordsStateProvider);
     final weightRecords = PetHealthMockService.getMockWeightRecords();
     final availableYears = _getAvailableYears(weightRecords);
     final filteredRecords = weightRecords
         .where(
           (record) =>
-              (record['recordedDate'] as DateTime).year == _selectedYear,
+              (record['recordedDate'] as DateTime).year == state.selectedYear,
         )
         .toList();
     final groupedRecords = _groupRecordsByMonth(filteredRecords);
 
     // 첫 번째(최신) 월을 기본으로 열어놓기
-    if (_expandedMonths.isEmpty && groupedRecords.isNotEmpty) {
-      _expandedMonths.add(groupedRecords.keys.first);
+    if (state.expandedMonths.isEmpty && groupedRecords.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref
+            .read(weightRecordsStateProvider.notifier)
+            .initializeWithFirstMonth(groupedRecords.keys.toList());
+      });
     }
 
     return Container(
@@ -79,7 +148,7 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: availableYears.map((year) {
-                  final isSelected = year == _selectedYear;
+                  final isSelected = year == state.selectedYear;
                   return Padding(
                     padding: const EdgeInsets.only(right: AppSpacing.sm),
                     child: FilterChip(
@@ -87,10 +156,9 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
                       label: Text('$year年'),
                       onSelected: (selected) {
                         if (selected) {
-                          setState(() {
-                            _selectedYear = year;
-                            _expandedMonths.clear(); // 년도 변경시 펼쳐진 월 초기화
-                          });
+                          ref
+                              .read(weightRecordsStateProvider.notifier)
+                              .setSelectedYear(year);
                         }
                       },
                       selectedColor: AppColors.pointBrown.withValues(
@@ -117,7 +185,7 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
             children: groupedRecords.entries.map((entry) {
               final monthKey = entry.key;
               final monthRecords = entry.value;
-              final isExpanded = _expandedMonths.contains(monthKey);
+              final isExpanded = state.expandedMonths.contains(monthKey);
 
               return _buildMonthAccordion(monthKey, monthRecords, isExpanded);
             }).toList(),
@@ -187,13 +255,9 @@ class _WeightRecordsCardState extends State<WeightRecordsCard> {
         children: [
           InkWell(
             onTap: () {
-              setState(() {
-                if (isExpanded) {
-                  _expandedMonths.remove(monthKey);
-                } else {
-                  _expandedMonths.add(monthKey);
-                }
-              });
+              ref
+                  .read(weightRecordsStateProvider.notifier)
+                  .toggleMonth(monthKey);
             },
             borderRadius: BorderRadius.circular(AppRadius.medium),
             child: Container(

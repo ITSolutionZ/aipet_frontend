@@ -59,11 +59,7 @@ void main() {
         // Arrange & Act
         await tester.pumpWidget(
           const ProviderScope(
-            child: MaterialApp(
-              home: Scaffold(
-                body: PetProfileCard(),
-              ),
-            ),
+            child: MaterialApp(home: Scaffold(body: PetProfileCard())),
           ),
         );
         await tester.pumpAndSettle();

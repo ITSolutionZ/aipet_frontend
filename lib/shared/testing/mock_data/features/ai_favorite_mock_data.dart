@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../../../../features/ai/domain/entities/ai_favorite_qa_entity.dart';
-import '../../../../../features/pet_registor/domain/entities/pet_profile_entity.dart';
 
 part 'ai_favorite_mock_data.g.dart';
 

@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/data/walk_providers.dart';
+import 'package:aipet_frontend/domain/entities/walk_location_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../../../data/walk_providers.dart';
-import '../../../domain/entities/walk_location_entity.dart';
-import '../../../domain/entities/walk_record_entity.dart';
 
 /// 산책 지도 마커 빌더 클래스
 class WalkMapMarkerBuilder {
@@ -56,10 +55,7 @@ class WalkMapMarkerBuilder {
   }
 
   /// 선택된 펫 마커 생성
-  static Marker buildSelectedPetMarker(
-    PetInfo pet,
-    Position currentPosition,
-  ) {
+  static Marker buildSelectedPetMarker(PetInfo pet, Position currentPosition) {
     return Marker(
       markerId: const MarkerId('selected_pet'),
       position: LatLng(

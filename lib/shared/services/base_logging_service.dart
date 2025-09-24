@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:logger/logger.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-
-import '../../app/config/app_config.dart';
 
 /// 🎯 기본 로깅 서비스
 ///

@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/shared/notification.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/domain.dart';
-import '../../notification.dart';
 import 'notification_stats_factory.dart' as data_factory;
 
 /// 알림 통계 분석 서비스
@@ -47,11 +47,9 @@ class NotificationAnalyticsService {
 
       _isInitialized = true;
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('알림 통계 분석 서비스 초기화 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('알림 통계 분석 서비스 초기화 실패: $e');
       }
     }
   }
@@ -77,13 +75,11 @@ class NotificationAnalyticsService {
       _analyticsController.add(analytics);
 
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print(
           '모의 통계 데이터 생성 완료: ${mockStats.length}개 통계, ${mockUserEngagement.length}개 사용자 참여도',
-        );
+        )
       }
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('모의 데이터 생성 실패: $e');
       }
     }
   }
@@ -102,11 +98,9 @@ class NotificationAnalyticsService {
       _analyticsController.add(analytics);
 
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('통계 추가됨: ${stats.title}');
       }
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('통계 추가 실패: $e');
       }
     }
   }
@@ -128,12 +122,10 @@ class NotificationAnalyticsService {
         _analyticsController.add(analytics);
 
         if (kDebugMode) {
-          // REMOVED_SECURITY_RISK: print('통계 업데이트됨: ${stats.title}');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('통계 업데이트 실패: $e');
       }
     }
   }
@@ -152,11 +144,9 @@ class NotificationAnalyticsService {
       _analyticsController.add(analytics);
 
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('통계 삭제됨: $statsId');
       }
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('통계 삭제 실패: $e');
       }
     }
   }
@@ -173,7 +163,6 @@ class NotificationAnalyticsService {
       }
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('통계 로드 실패: $e');
       }
     }
     return [];
@@ -192,7 +181,6 @@ class NotificationAnalyticsService {
       }).toList();
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('기간별 통계 조회 실패: $e');
       }
       return [];
     }
@@ -205,7 +193,6 @@ class NotificationAnalyticsService {
       return allStats.where((stat) => stat.type == type).toList();
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('타입별 통계 조회 실패: $e');
       }
       return [];
     }
@@ -242,7 +229,6 @@ class NotificationAnalyticsService {
       );
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('분석 데이터 생성 실패: $e');
       }
       rethrow;
     }
@@ -258,7 +244,6 @@ class NotificationAnalyticsService {
       }
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('분석 데이터 로드 실패: $e');
       }
     }
     return null;
@@ -278,7 +263,6 @@ class NotificationAnalyticsService {
       }
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('사용자 참여도 로드 실패: $e');
       }
     }
     return [];
@@ -293,11 +277,9 @@ class NotificationAnalyticsService {
       _userEngagementController.add(allEngagement);
 
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('사용자 참여도 추가됨: ${engagement.userId}');
       }
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('사용자 참여도 추가 실패: $e');
       }
     }
   }
@@ -309,7 +291,6 @@ class NotificationAnalyticsService {
       return analytics?.summary ?? {};
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('통계 요약 가져오기 실패: $e');
       }
       return {};
     }
@@ -334,7 +315,6 @@ class NotificationAnalyticsService {
       };
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('성과 지표 가져오기 실패: $e');
       }
       return {};
     }
@@ -383,7 +363,6 @@ class NotificationAnalyticsService {
       };
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('트렌드 분석 가져오기 실패: $e');
       }
       return {};
     }
@@ -426,7 +405,6 @@ class NotificationAnalyticsService {
       await SecureStorageService.setString(_statsKey, statsJson);
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('통계 저장 실패: $e');
       }
     }
   }
@@ -438,7 +416,6 @@ class NotificationAnalyticsService {
       await SecureStorageService.setString(_analyticsKey, analyticsJson);
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('분석 데이터 저장 실패: $e');
       }
     }
   }
@@ -452,7 +429,6 @@ class NotificationAnalyticsService {
       await SecureStorageService.setString(_userEngagementKey, engagementJson);
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('사용자 참여도 저장 실패: $e');
       }
     }
   }
@@ -478,11 +454,9 @@ class NotificationAnalyticsService {
       _userEngagementController.add([]);
 
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('모든 통계 데이터 삭제됨');
       }
     } catch (e) {
       if (kDebugMode) {
-        // REMOVED_SECURITY_RISK: print('데이터 삭제 실패: $e');
       }
     }
   }

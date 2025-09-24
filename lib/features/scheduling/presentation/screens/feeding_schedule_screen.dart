@@ -1,12 +1,11 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/widgets/scheduling_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
-import '../../../../shared/shared.dart';
-import '../widgets/scheduling_widgets.dart';
 
 /// 급여 스케줄 화면
 class FeedingScheduleScreen extends ConsumerStatefulWidget {
@@ -76,27 +75,28 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-            // 오늘의 급여 요약
-            if (_todayMeals != null) TodayMealsCard(todayMeals: _todayMeals!),
-            const SizedBox(height: AppSpacing.lg),
+                    // 오늘의 급여 요약
+                    if (_todayMeals != null)
+                      TodayMealsCard(todayMeals: _todayMeals!),
+                    const SizedBox(height: AppSpacing.lg),
 
-            // 스케줄 설정
-            Text(
-              'スケジュール設定',
-              style: AppFonts.titleMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.pointDark,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
+                    // 스케줄 설정
+                    Text(
+                      'スケジュール設定',
+                      style: AppFonts.titleMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.pointDark,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
                     // 스케줄 목록
                     if (_scheduleItems != null)
-                      ...(_scheduleItems!.map((item) =>
-                        ScheduleItemWidget(
+                      ...(_scheduleItems!.map(
+                        (item) => ScheduleItemWidget(
                           meal: item['mealType'],
                           time: item['time'],
                           amount: item['amount'],
-                        )
+                        ),
                       )),
 
                     const SizedBox(height: AppSpacing.lg),
@@ -111,7 +111,9 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.pointBrown,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.md,
+                          ),
                         ),
                       ),
                     ),

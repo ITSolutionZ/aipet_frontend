@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 급수 기록 추가 화면
 class AddWateringRecordScreen extends ConsumerStatefulWidget {
@@ -254,7 +253,6 @@ class _AddWateringRecordScreenState
       };
 
       // Mock 저장 로직 (실제로는 API 호출)
-      // REMOVED_SECURITY_RISK: print('급수 기록 저장: $record');
 
       // 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(

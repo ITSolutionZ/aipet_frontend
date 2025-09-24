@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/pet_registor.dart';
 
 /// AI 상담을 위한 펫 선택 위젯
 class AiPetSelection extends StatelessWidget {

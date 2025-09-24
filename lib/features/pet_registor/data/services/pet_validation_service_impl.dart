@@ -1,6 +1,6 @@
-import '../../../../shared/shared.dart';
-import '../../domain/entities/pet_registration_data_entity.dart';
-import '../../domain/services/pet_validation_service.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/pet_registration_data_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/services/pet_validation_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 펫 등록 검증 서비스 구현체
 ///

@@ -4,7 +4,9 @@
 
 ## 개요
 
-Services 모듈은 앱의 비즈니스 로직, 외부 API 통신, 데이터 처리, 에러 처리 등을 담당하는 서비스 클래스들을 포함합니다. Clean Architecture 원칙에 따라 도메인 로직과 분리되어 관리됩니다.
+Services 모듈은 앱의 비즈니스 로직, 외부 API 통신, 데이터 처리, 에러 처리 등을
+담당하는 서비스 클래스들을 포함합니다. Clean Architecture 원칙에 따라 도메인 로직과
+분리되어 관리됩니다.
 
 ## 주요 구성 요소
 
@@ -51,7 +53,7 @@ Services 모듈은 앱의 비즈니스 로직, 외부 API 통신, 데이터 처�
 
 ### API Service 사용
 
-```dart
+````dartdart
 import 'package:aipet_frontend/shared/core/services/api_service.dart';
 
 // GET 요청
@@ -65,11 +67,11 @@ final createResponse = await ApiService.post(
   '/users',
   body: {'name': 'John', 'email': 'john@example.com'},
 );
-```
+```dart
 
 ### Error Handling 사용
 
-```dart
+```dartdart
 import 'package:aipet_frontend/shared/core/services/error_handler_service.dart';
 
 // 에러 처리 서비스 초기화
@@ -81,11 +83,11 @@ ErrorHandlerService().handleError(
   severity: ErrorSeverity.medium,
   type: ErrorType.network,
 );
-```
+```dart
 
 ### Encryption Service 사용
 
-```dart
+```dartdart
 import 'package:aipet_frontend/shared/core/services/encryption_service.dart';
 
 // 데이터 암호화하여 저장
@@ -93,11 +95,11 @@ await EncryptionService.encryptAndSave('user_token', token, prefs);
 
 // 암호화된 데이터 복호화
 final decryptedToken = await EncryptionService.decryptAndLoad('user_token', prefs);
-```
+```dart
 
 ### Notification Service 사용
 
-```dart
+```dartdart
 import 'package:aipet_frontend/shared/core/services/notification_service.dart';
 
 // 알림 서비스 초기화
@@ -108,21 +110,21 @@ await NotificationService().showLocalNotification(
   title: '산책 시간',
   body: '펫과 함께 산책할 시간입니다!',
 );
-```
+```dart
 
 ## Mock 데이터 지원
 
 대부분의 서비스는 Mock 데이터를 지원하여 API 연계 전까지 개발 및 테스트가 가능합니다:
 
-```dart
+```dartdart
 // Mock 데이터 활성화/비활성화
 // lib/shared/mock_data/base/mock_data_base.dart에서 설정
 static const bool isEnabled = true; // false로 설정하면 실제 API 호출
-```
+```dart
 
 ## 파일 구조
 
-```
+```darttext
 lib/shared/core/services/
 ├── README.md                           # 이 파일
 ├── api_service.dart                    # API 통신 서비스
@@ -142,13 +144,13 @@ lib/shared/core/services/
 ├── secure_storage_service_v2.dart     # 보안 저장소 v2
 ├── ui_service.dart                     # UI 서비스
 └── user_experience_service.dart        # 사용자 경험
-```
+```dart
 
 ## 서비스 초기화
 
 앱 시작 시 필요한 서비스들을 초기화해야 합니다:
 
-```dart
+```dartdart
 void main() async {
   // 에러 처리 서비스 초기화
   await ErrorHandlerService().initialize();
@@ -160,7 +162,7 @@ void main() async {
 
   runApp(MyApp());
 }
-```
+```dart
 
 ## 확장 방법
 
@@ -204,7 +206,9 @@ void main() async {
 
 ### 概要 {#overview-1}
 
-Services モジュールは、アプリのビジネスロジック、外部 API 通信、データ処理、エラー処理などを担当するサービスクラスを含みます。Clean Architecture の原則に従ってドメインロジックと分離されて管理されます。
+Services モジュールは、アプリのビジネスロジック、外部 API 通信、データ処理、
+エラー処理などを担当するサービスクラスを含みます。Clean Architecture の原則に従って
+ドメインロジックと分離されて管理されます。
 
 ### 主要構成要素 {#key-components-1}
 
@@ -251,7 +255,7 @@ Services モジュールは、アプリのビジネスロジック、外部 API 
 
 #### API Service の使用
 
-```dart
+```dartdart
 import 'package:aipet_frontend/shared/core/services/api_service.dart';
 
 // GETリクエスト
@@ -265,11 +269,11 @@ final createResponse = await ApiService.post(
   '/users',
   body: {'name': 'John', 'email': 'john@example.com'},
 );
-```
+```dart
 
 #### Error Handling の使用
 
-```dart
+```dartdart
 import 'package:aipet_frontend/shared/core/services/error_handler_service.dart';
 
 // エラー処理サービスの初期化
@@ -281,11 +285,11 @@ ErrorHandlerService().handleError(
   severity: ErrorSeverity.medium,
   type: ErrorType.network,
 );
-```
+```dart
 
 #### Encryption Service の使用
 
-```dart
+```dartdart
 import 'package:aipet_frontend/shared/core/services/encryption_service.dart';
 
 // データを暗号化して保存
@@ -293,11 +297,11 @@ await EncryptionService.encryptAndSave('user_token', token, prefs);
 
 // 暗号化されたデータを復号化
 final decryptedToken = await EncryptionService.decryptAndLoad('user_token', prefs);
-```
+```dart
 
 #### Notification Service の使用
 
-```dart
+```dartdart
 import 'package:aipet_frontend/shared/core/services/notification_service.dart';
 
 // 通知サービスの初期化
@@ -308,21 +312,21 @@ await NotificationService().showLocalNotification(
   title: '散歩時間',
   body: 'ペットと一緒に散歩する時間です！',
 );
-```
+```dart
 
 ### Mock データサポート {#mock-data-support-1}
 
 ほとんどのサービスは Mock データをサポートし、API 連携前まで開発とテストが可能です：
 
-```dart
+```dartdart
 // Mockデータの有効化/無効化
 // lib/shared/mock_data/base/mock_data_base.dartで設定
 static const bool isEnabled = true; // falseに設定すると実際のAPI呼び出し
-```
+```dart
 
 ### ファイル構造 {#file-structure-1}
 
-```
+```darttext
 lib/shared/core/services/
 ├── README.md                           # このファイル
 ├── api_service.dart                    # API通信サービス
@@ -342,13 +346,13 @@ lib/shared/core/services/
 ├── secure_storage_service_v2.dart     # セキュリティストレージv2
 ├── ui_service.dart                     # UIサービス
 └── user_experience_service.dart        # ユーザーエクスペリエンス
-```
+```dart
 
 ### サービス初期化 {#service-initialization-1}
 
 アプリ開始時に必要なサービスを初期化する必要があります：
 
-```dart
+```dartdart
 void main() async {
   // エラー処理サービスの初期化
   await ErrorHandlerService().initialize();
@@ -360,7 +364,7 @@ void main() async {
 
   runApp(MyApp());
 }
-```
+```dart
 
 ### 拡張方法 {#extension-methods-1}
 
@@ -378,3 +382,4 @@ void main() async {
 - `lib/features/*/`: 機能別サービスの使用
 - `lib/app/controllers/`: コントローラーからのサービス呼び出し
 - `lib/app/providers/`: サービスプロバイダー設定
+````

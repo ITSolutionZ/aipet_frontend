@@ -1,13 +1,14 @@
+import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../../app/config/app_config.dart';
-import '../../domain/domain.dart';
-
-/// 🎯 Auth 모드 서비스
+/// 🎯 Auth 모드 서비스 (테스트 전용)
 ///
-/// 개발/프로덕션 모드에 따른 인증 로직을 분리
+/// 테스트 환경에서만 사용하는 Mock 데이터 생성 서비스입니다.
+/// 프로덕션 코드에서는 사용하지 않습니다.
+@Deprecated('테스트 환경에서만 사용하세요. 프로덕션에서는 실제 Firebase Auth를 사용합니다.')
 class AuthModeService {
-  /// 현재 Mock 모드 여부
+  /// 현재 Mock 모드 여부 (테스트 환경에서만 사용)
   static bool get isMockMode => AppConfig.current.isMockMode;
 
   /// 임시 로그인 사용자 생성 (개발 모드용)

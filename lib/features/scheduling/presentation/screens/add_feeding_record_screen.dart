@@ -1,16 +1,12 @@
 import 'dart:developer' as developer;
 
+import 'package:aipet_frontend/features/onboarding/data/providers/feeding_providers.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/controllers/scheduling_controllers.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/widgets/scheduling_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../../shared/testing/mock_data/features/pet/pet_mock_service.dart'
-    as pet_feature_mock;
-import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as scheduling_mock;
-import '../controllers/scheduling_controllers.dart';
-import '../widgets/scheduling_widgets.dart';
 
 /// 급여 기록 추가 페이지
 class AddFeedingRecordScreen extends ConsumerStatefulWidget {
@@ -59,8 +55,8 @@ class _AddFeedingRecordScreenState
 
   /// 펫 정보 및 사이즈 가이드 로드
   void _loadPetInfo() {
-    final petSizes =
-        scheduling_mock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = scheduling_mock
+        .SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     _selectedPetInfo = petSizes[_selectedPetId];
 
     if (_selectedPetInfo != null) {
@@ -176,8 +172,8 @@ class _AddFeedingRecordScreenState
 
   /// 펫 선택 처리
   void _onPetSelected(String petId) {
-    final petSizes =
-        scheduling_mock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = scheduling_mock
+        .SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     setState(() {
       _selectedPetId = petId;
       _selectedPetInfo = petSizes[petId];

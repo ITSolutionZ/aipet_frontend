@@ -1,7 +1,8 @@
-import '../../../../features/auth/domain/auth_token.dart';
-import '../../../../features/auth/domain/repositories/auth_repository.dart';
-import '../../../../shared/shared.dart';
-import 'repositories/firebase_auth_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/auth_token.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import 'repositories/firebase_auth_real_impl.dart';
 import 'services/token_storage_service.dart';
 
 /// 인증 관련 비즈니스 로직을 담당하는 서비스
@@ -10,7 +11,7 @@ class AuthService {
   final AuthRepository _repository;
 
   AuthService({AuthRepository? repository})
-    : _repository = repository ?? FirebaseAuthRepositoryImpl();
+    : _repository = repository ?? FirebaseAuthRealImpl();
 
   /// 이메일/비밀번호 로그인
   Future<Result<AuthUser>> signInWithEmailAndPassword(
@@ -23,10 +24,10 @@ class AuthService {
         password,
       );
 
-      if (result.isSuccess && result.user != null) {
+      if (result.isSuccess && result.data != null) {
         // 백엔드 토큰 저장
-        await _saveBackendTokenFromUser(result.user!);
-        return Result.success('ログインが完了しました', result.user!);
+        await _saveBackendTokenFromUser(result.data!);
+        return Result.success('ログインが完了しました', result.data!);
       } else {
         return Result.failure('ログインに失敗しました: ${result.message}');
       }
@@ -46,10 +47,10 @@ class AuthService {
         password,
       );
 
-      if (result.isSuccess && result.user != null) {
+      if (result.isSuccess && result.data != null) {
         // 백엔드 토큰 저장
-        await _saveBackendTokenFromUser(result.user!);
-        return Result.success('会員登録が完了しました', result.user!);
+        await _saveBackendTokenFromUser(result.data!);
+        return Result.success('会員登録が完了しました', result.data!);
       } else {
         return Result.failure('会員登録に失敗しました: ${result.message}');
       }
@@ -61,7 +62,7 @@ class AuthService {
   /// 소셜 로그인
   Future<Result<AuthUser>> signInWithProvider(String provider) async {
     try {
-      AuthResult result;
+      Result<AuthUser> result;
 
       switch (provider.toLowerCase()) {
         case 'google':
@@ -77,10 +78,10 @@ class AuthService {
           return Result.failure('サポートされていないプロバイダーです');
       }
 
-      if (result.isSuccess && result.user != null) {
+      if (result.isSuccess && result.data != null) {
         // 백엔드 토큰 저장
-        await _saveBackendTokenFromUser(result.user!);
-        return Result.success('$provider ログインが完了しました', result.user!);
+        await _saveBackendTokenFromUser(result.data!);
+        return Result.success('$provider ログインが完了しました', result.data!);
       } else {
         return Result.failure('$provider ログインに失敗しました: ${result.message}');
       }

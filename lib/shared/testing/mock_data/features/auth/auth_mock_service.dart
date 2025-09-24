@@ -1,10 +1,9 @@
-import '../../core/base_mock_service.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/core/base_mock_service.dart';
 
 /// Auth Feature 전용 Mock 데이터 서비스
 class AuthMockService extends BaseMockService {
-  
   // ==================== 사용자 인증 데이터 ====================
-  
+
   /// Mock 사용자 정보
   static Map<String, dynamic> getMockUserInfo() {
     return {
@@ -22,21 +21,23 @@ class AuthMockService extends BaseMockService {
       },
     };
   }
-  
+
   /// Mock 로그인 응답
   static Future<Map<String, dynamic>> mockLogin({
     required String email,
     required String password,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     // 간단한 Mock 검증
     if (email == 'test@example.com' && password == 'password') {
       return {
         'success': true,
         'user': getMockUserInfo(),
-        'accessToken': 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
-        'refreshToken': 'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+        'accessToken':
+            'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
+        'refreshToken':
+            'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
         'expiresIn': 3600, // 1시간
       };
     } else {
@@ -47,7 +48,7 @@ class AuthMockService extends BaseMockService {
       };
     }
   }
-  
+
   /// Mock 회원가입 응답
   static Future<Map<String, dynamic>> mockSignUp({
     required String email,
@@ -55,7 +56,7 @@ class AuthMockService extends BaseMockService {
     required String name,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     // 간단한 유효성 검사
     if (email.contains('@') && password.length >= 6 && name.isNotEmpty) {
       return {
@@ -77,24 +78,23 @@ class AuthMockService extends BaseMockService {
         'errorCode': 'VALIDATION_ERROR',
         'details': {
           'email': email.contains('@') ? null : 'Invalid email format',
-          'password': password.length >= 6 ? null : 'Password must be at least 6 characters',
+          'password': password.length >= 6
+              ? null
+              : 'Password must be at least 6 characters',
           'name': name.isNotEmpty ? null : 'Name is required',
         },
       };
     }
   }
-  
+
   /// Mock 이메일 인증 응답
   static Future<Map<String, dynamic>> mockEmailVerification({
     required String verificationCode,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     if (verificationCode == '123456') {
-      return {
-        'success': true,
-        'message': 'Email verified successfully',
-      };
+      return {'success': true, 'message': 'Email verified successfully'};
     } else {
       return {
         'success': false,
@@ -103,13 +103,13 @@ class AuthMockService extends BaseMockService {
       };
     }
   }
-  
+
   /// Mock 비밀번호 재설정 요청
   static Future<Map<String, dynamic>> mockPasswordResetRequest({
     required String email,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     if (email.contains('@')) {
       return {
         'success': true,
@@ -123,18 +123,20 @@ class AuthMockService extends BaseMockService {
       };
     }
   }
-  
+
   /// Mock 토큰 갱신 응답
   static Future<Map<String, dynamic>> mockTokenRefresh({
     required String refreshToken,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     if (refreshToken.startsWith('mock_refresh_token_')) {
       return {
         'success': true,
-        'accessToken': 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
-        'refreshToken': 'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+        'accessToken':
+            'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
+        'refreshToken':
+            'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
         'expiresIn': 3600,
       };
     } else {
@@ -145,13 +147,13 @@ class AuthMockService extends BaseMockService {
       };
     }
   }
-  
+
   // ==================== 소셜 로그인 ====================
-  
+
   /// Mock Google 로그인 응답
   static Future<Map<String, dynamic>> mockGoogleLogin() async {
     await MockHelper.simulateApiCall();
-    
+
     return {
       'success': true,
       'user': {
@@ -159,16 +161,18 @@ class AuthMockService extends BaseMockService {
         'provider': 'google',
         'providerId': 'google_user_123',
       },
-      'accessToken': 'mock_google_token_${DateTime.now().millisecondsSinceEpoch}',
-      'refreshToken': 'mock_google_refresh_${DateTime.now().millisecondsSinceEpoch}',
+      'accessToken':
+          'mock_google_token_${DateTime.now().millisecondsSinceEpoch}',
+      'refreshToken':
+          'mock_google_refresh_${DateTime.now().millisecondsSinceEpoch}',
       'expiresIn': 3600,
     };
   }
-  
+
   /// Mock Apple 로그인 응답
   static Future<Map<String, dynamic>> mockAppleLogin() async {
     await MockHelper.simulateApiCall();
-    
+
     return {
       'success': true,
       'user': {
@@ -176,14 +180,16 @@ class AuthMockService extends BaseMockService {
         'provider': 'apple',
         'providerId': 'apple_user_456',
       },
-      'accessToken': 'mock_apple_token_${DateTime.now().millisecondsSinceEpoch}',
-      'refreshToken': 'mock_apple_refresh_${DateTime.now().millisecondsSinceEpoch}',
+      'accessToken':
+          'mock_apple_token_${DateTime.now().millisecondsSinceEpoch}',
+      'refreshToken':
+          'mock_apple_refresh_${DateTime.now().millisecondsSinceEpoch}',
       'expiresIn': 3600,
     };
   }
-  
+
   // ==================== 프로필 관리 ====================
-  
+
   /// Mock 프로필 업데이트 응답
   static Future<Map<String, dynamic>> mockProfileUpdate({
     String? name,
@@ -191,7 +197,7 @@ class AuthMockService extends BaseMockService {
     String? profileImageUrl,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     final updatedUser = {
       ...getMockUserInfo(),
       if (name != null) 'name': name,
@@ -199,61 +205,59 @@ class AuthMockService extends BaseMockService {
       if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
       'updatedAt': DateTime.now(),
     };
-    
+
     return {
       'success': true,
       'user': updatedUser,
       'message': 'Profile updated successfully',
     };
   }
-  
+
   /// Mock 프로필 이미지 업로드 응답
   static Future<Map<String, dynamic>> mockProfileImageUpload({
     required String imagePath,
   }) async {
     await MockHelper.simulateLongApiCall(); // 파일 업로드는 시간이 오래 걸림
-    
-    final uploadedUrl = 'https://mock-storage.example.com/profiles/${MockHelper.generateId()}.jpg';
-    
+
+    final uploadedUrl =
+        'https://mock-storage.example.com/profiles/${MockHelper.generateId()}.jpg';
+
     return {
       'success': true,
       'imageUrl': uploadedUrl,
       'message': 'Profile image uploaded successfully',
     };
   }
-  
+
   // ==================== 계정 관리 ====================
-  
+
   /// Mock 비밀번호 변경 응답
   static Future<Map<String, dynamic>> mockPasswordChange({
     required String currentPassword,
     required String newPassword,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     if (currentPassword == 'password' && newPassword.length >= 6) {
-      return {
-        'success': true,
-        'message': 'Password changed successfully',
-      };
+      return {'success': true, 'message': 'Password changed successfully'};
     } else {
       return {
         'success': false,
-        'error': currentPassword != 'password' 
+        'error': currentPassword != 'password'
             ? 'Current password is incorrect'
             : 'New password must be at least 6 characters',
         'errorCode': 'VALIDATION_ERROR',
       };
     }
   }
-  
+
   /// Mock 계정 삭제 응답
   static Future<Map<String, dynamic>> mockAccountDeletion({
     required String password,
     required String reason,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     if (password == 'password') {
       return {
         'success': true,
@@ -268,25 +272,22 @@ class AuthMockService extends BaseMockService {
       };
     }
   }
-  
+
   // ==================== 세션 관리 ====================
-  
+
   /// Mock 로그아웃 응답
   static Future<Map<String, dynamic>> mockLogout() async {
     await MockHelper.simulateApiCall();
-    
-    return {
-      'success': true,
-      'message': 'Logged out successfully',
-    };
+
+    return {'success': true, 'message': 'Logged out successfully'};
   }
-  
+
   /// Mock 세션 검증 응답
   static Future<Map<String, dynamic>> mockSessionValidation({
     required String accessToken,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     if (accessToken.startsWith('mock_access_token_')) {
       return {
         'success': true,
@@ -303,9 +304,9 @@ class AuthMockService extends BaseMockService {
       };
     }
   }
-  
+
   // ==================== 기기 관리 ====================
-  
+
   /// Mock 등록된 기기 목록
   static List<Map<String, dynamic>> getMockRegisteredDevices() {
     return [
@@ -329,13 +330,13 @@ class AuthMockService extends BaseMockService {
       },
     ];
   }
-  
+
   /// Mock 기기 등록 해제 응답
   static Future<Map<String, dynamic>> mockDeviceUnregister({
     required String deviceId,
   }) async {
     await MockHelper.simulateApiCall();
-    
+
     return {
       'success': true,
       'message': 'Device unregistered successfully',

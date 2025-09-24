@@ -1,11 +1,79 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../shared/shared.dart';
+/// 급수 스케줄 편집 화면 상태 관리
+final wateringScheduleEditProvider =
+    StateNotifierProvider.family<
+      WateringScheduleEditController,
+      WateringScheduleEditState,
+      String
+    >((ref, scheduleId) => WateringScheduleEditController());
+
+class WateringScheduleEditController
+    extends StateNotifier<WateringScheduleEditState> {
+  WateringScheduleEditController() : super(const WateringScheduleEditState());
+
+  void initialize(String currentAmount, String currentTime) {
+    final amountController = TextEditingController(
+      text: currentAmount.replaceAll('ml', ''),
+    );
+    final formKey = GlobalKey<FormState>();
+
+    TimeOfDay selectedTime = TimeOfDay.now();
+    final timeParts = currentTime.split(':');
+    if (timeParts.length == 2) {
+      selectedTime = TimeOfDay(
+        hour: int.parse(timeParts[0]),
+        minute: int.parse(timeParts[1]),
+      );
+    }
+
+    state = state.copyWith(
+      formKey: formKey,
+      amountController: amountController,
+      selectedTime: selectedTime,
+    );
+  }
+
+  void updateTime(TimeOfDay time) {
+    state = state.copyWith(selectedTime: time);
+  }
+
+  @override
+  void dispose() {
+    state.amountController?.dispose();
+    super.dispose();
+  }
+}
+
+class WateringScheduleEditState {
+  final GlobalKey<FormState>? formKey;
+  final TextEditingController? amountController;
+  final TimeOfDay selectedTime;
+
+  const WateringScheduleEditState({
+    this.formKey,
+    this.amountController,
+    this.selectedTime = const TimeOfDay(hour: 9, minute: 0),
+  });
+
+  WateringScheduleEditState copyWith({
+    GlobalKey<FormState>? formKey,
+    TextEditingController? amountController,
+    TimeOfDay? selectedTime,
+  }) {
+    return WateringScheduleEditState(
+      formKey: formKey ?? this.formKey,
+      amountController: amountController ?? this.amountController,
+      selectedTime: selectedTime ?? this.selectedTime,
+    );
+  }
+}
 
 /// 급수 스케줄 편집 화면
-class WateringScheduleEditScreen extends ConsumerStatefulWidget {
+class WateringScheduleEditScreen extends ConsumerWidget {
   final String mealType;
   final String currentTime;
   final String currentAmount;
@@ -18,50 +86,22 @@ class WateringScheduleEditScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<WateringScheduleEditScreen> createState() =>
-      _WateringScheduleEditScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheduleId = DateTime.now().millisecondsSinceEpoch.toString();
+    final state = ref.watch(wateringScheduleEditProvider(scheduleId));
 
-class _WateringScheduleEditScreenState
-    extends ConsumerState<WateringScheduleEditScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _amountController = TextEditingController();
+    // Initialize after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(wateringScheduleEditProvider(scheduleId).notifier)
+          .initialize(currentAmount, currentTime);
+    });
 
-  TimeOfDay _selectedTime = TimeOfDay.now();
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeValues();
-  }
-
-  void _initializeValues() {
-    // 현재 값들로 초기화
-    _amountController.text = widget.currentAmount.replaceAll('ml', '');
-
-    // 시간 파싱
-    final timeParts = widget.currentTime.split(':');
-    if (timeParts.length == 2) {
-      _selectedTime = TimeOfDay(
-        hour: int.parse(timeParts[0]),
-        minute: int.parse(timeParts[1]),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _amountController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientAppBar(title: '給水スケジュール編集'),
       body: Form(
-        key: _formKey,
+        key: state.formKey,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -72,15 +112,15 @@ class _WateringScheduleEditScreenState
               const SizedBox(height: AppSpacing.lg),
 
               // 시간 선택
-              _buildTimeSelector(),
+              _buildTimeSelector(state),
               const SizedBox(height: AppSpacing.lg),
 
               // 급수량 입력
-              _buildAmountInput(),
+              _buildAmountInput(state),
               const SizedBox(height: AppSpacing.xl),
 
               // 버튼들
-              _buildActionButtons(),
+              _buildActionButtons(state),
             ],
           ),
         ),
@@ -135,7 +175,7 @@ class _WateringScheduleEditScreenState
   }
 
   /// 시간 선택 위젯
-  Widget _buildTimeSelector() {
+  Widget _buildTimeSelector(WateringScheduleEditState state) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -157,11 +197,11 @@ class _WateringScheduleEditScreenState
               ),
               title: const Text('時間を選択'),
               subtitle: Text(
-                '${_selectedTime.format(context)}',
+                state.selectedTime.format(context),
                 style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
               ),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: _selectTime,
+              onTap: () => _selectTime(state),
             ),
           ],
         ),
@@ -170,7 +210,7 @@ class _WateringScheduleEditScreenState
   }
 
   /// 급수량 입력 위젯
-  Widget _buildAmountInput() {
+  Widget _buildAmountInput(WateringScheduleEditState state) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -186,7 +226,7 @@ class _WateringScheduleEditScreenState
             ),
             const SizedBox(height: AppSpacing.md),
             TextFormField(
-              controller: _amountController,
+              controller: state.amountController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: '給水量 (ml)',
@@ -212,7 +252,7 @@ class _WateringScheduleEditScreenState
   }
 
   /// 액션 버튼들
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(WateringScheduleEditState state) {
     return Row(
       children: [
         Expanded(
@@ -227,7 +267,7 @@ class _WateringScheduleEditScreenState
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: ElevatedButton(
-            onPressed: _saveSchedule,
+            onPressed: () => _saveSchedule(state),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.pointBlue,
               foregroundColor: Colors.white,
@@ -241,31 +281,28 @@ class _WateringScheduleEditScreenState
   }
 
   /// 시간 선택
-  Future<void> _selectTime() async {
+  Future<void> _selectTime(WateringScheduleEditState state) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: _selectedTime,
+      initialTime: state.selectedTime,
     );
-    if (picked != null && picked != _selectedTime) {
-      setState(() {
-        _selectedTime = picked;
-      });
+    if (picked != null && picked != state.selectedTime) {
+      ref
+          .read(wateringScheduleEditProvider(_scheduleId).notifier)
+          .updateTime(picked);
     }
   }
 
   /// 스케줄 저장
-  void _saveSchedule() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: 실제 데이터 저장 로직 구현
-
+  void _saveSchedule(WateringScheduleEditState state) {
+    if (state.formKey?.currentState?.validate() ?? false) {
       final updatedSchedule = {
         'mealType': widget.mealType,
-        'time': _selectedTime.format(context),
-        'amount': '${_amountController.text}ml',
+        'time': state.selectedTime.format(context),
+        'amount': '${state.amountController?.text ?? ''}ml',
       };
 
       // Mock 저장 로직 (실제로는 API 호출)
-      // REMOVED_SECURITY_RISK: print('급수 스케줄 업데이트: $updatedSchedule');
 
       // 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(

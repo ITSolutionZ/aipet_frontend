@@ -1,15 +1,15 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/facility/data/facility_providers.dart';
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import 'package:aipet_frontend/features/facility/presentation/controllers/facility_list_controller.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/facility_card.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/filter_chip.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/search_bar_widget.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/ui/components/states/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../data/facility_providers.dart';
-import '../../domain/facility.dart';
-import '../controllers/facility_list_controller.dart';
-import '../widgets/facility_card.dart';
-import '../widgets/filter_chip.dart';
-import '../widgets/search_bar_widget.dart';
 
 class FacilityListScreen extends ConsumerStatefulWidget {
   const FacilityListScreen({super.key});
@@ -180,33 +180,12 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
   }
 
   Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.search_off,
-            size: 64,
-            color: AppColors.pointDark.withValues(alpha: 0.3),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _controller.hasActiveFilters
-                ? '検索条件に一致する施設がありません'
-                : '施設を見つけることができません',
-            style: AppFonts.titleMedium.copyWith(
-              color: AppColors.pointDark.withValues(alpha: 0.6),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '他の条件で検索してください',
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointDark.withValues(alpha: 0.4),
-            ),
-          ),
-        ],
-      ),
+    return EmptyState(
+      icon: const Icon(Icons.search_off),
+      title: _controller.hasActiveFilters
+          ? '検索条件に一致する施設がありません'
+          : '施設を見つけることができません',
+      subtitle: '他の条件で検索してください',
     );
   }
 

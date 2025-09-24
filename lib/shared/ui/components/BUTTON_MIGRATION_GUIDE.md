@@ -37,6 +37,7 @@ CommonButton(text: "확인", onPressed: () {}) // → AppButton.common()으로 �
 ## 📋 마이그레이션 계획
 
 ### 즉시 가능 (현재)
+
 - ✅ **기존 코드 100% 호환**: 모든 기존 Button이 자동으로 AppButton 사용
 - ✅ **빌드 에러 없음**: deprecated 경고만 표시
 - ✅ **동일한 UI**: 시각적 변화 없음
@@ -44,12 +45,14 @@ CommonButton(text: "확인", onPressed: () {}) // → AppButton.common()으로 �
 ### 점진적 마이그레이션 (추천)
 
 #### 1단계: 새로운 코드에서 AppButton 사용
+
 ```dart
 // 새로 작성하는 코드
 AppButton.glass(text: "새 버튼", onPressed: () {})
 ```
 
 #### 2단계: 기존 코드 업데이트 (선택사항)
+
 ```dart
 // Before
 GlassButton(label: "확인", onPressed: () {})
@@ -61,6 +64,7 @@ AppButton.glass(text: "확인", onPressed: () {})
 ## 🎯 AppButton 장점
 
 ### 1. **통합된 API**
+
 ```dart
 // 하나의 클래스로 모든 버튼 스타일 지원
 AppButton(
@@ -74,6 +78,7 @@ AppButton(
 ```
 
 ### 2. **향상된 접근성**
+
 ```dart
 AppButton(
   text: "저장",
@@ -84,6 +89,7 @@ AppButton(
 ```
 
 ### 3. **일관된 스타일링**
+
 - 모든 버튼이 동일한 디자인 토큰 사용
 - 브랜드 컬러 자동 적용
 - 다크모드 지원 준비
@@ -98,6 +104,7 @@ AppButton(
 ## 🔧 고급 사용법
 
 ### 커스텀 스타일링
+
 ```dart
 AppButton(
   text: "커스텀",
@@ -110,6 +117,7 @@ AppButton(
 ```
 
 ### 로딩 상태
+
 ```dart
 AppButton(
   text: "처리 중...",
@@ -119,6 +127,7 @@ AppButton(
 ```
 
 ### 아이콘 버튼
+
 ```dart
 AppButton(
   text: "추가",
@@ -133,6 +142,7 @@ AppButton(
 ## 🚨 주의사항
 
 ### 1. **Import 변경 불필요**
+
 ```dart
 // 기존 import 그대로 사용 가능
 import 'package:aipet_frontend/shared/shared.dart';
@@ -141,6 +151,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 ```
 
 ### 2. **파라미터 이름 차이**
+
 ```dart
 // GlassButton/PointButton
 label: "텍스트"    // 기존
@@ -150,6 +161,7 @@ text: "텍스트"     // 새로움 (더 직관적)
 ```
 
 ### 3. **Deprecated 경고**
+
 - IDE에서 deprecated 경고가 표시됨
 - 빌드에는 영향 없음
 - 점진적으로 새로운 API로 교체 권장
@@ -159,10 +171,12 @@ text: "텍스트"     // 새로움 (더 직관적)
 Phase 1 Button 통합이 완료되었습니다!
 
 **다음 Phase 2**: Card 시스템 통합
+
 - 8개 Card 클래스 → 1개 `AppCard`
 - 예상 절약: 1,200+ 줄
 - 목표: 2주 내 완료
 
 ---
 
-**🎯 결론**: Button 시스템이 성공적으로 통합되었고, 기존 코드는 수정 없이 그대로 사용 가능합니다. 새로운 코드에서는 `AppButton`을 사용하시기 바랍니다.
+**🎯 결론**: Button 시스템이 성공적으로 통합되었고, 기존 코드는 수정 없이 그대로
+사용 가능합니다. 새로운 코드에서는 `AppButton`을 사용하시기 바랍니다.

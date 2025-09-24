@@ -1,7 +1,7 @@
+import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/domain.dart';
 import 'page_indicator.dart';
 
 /// 온보딩 Bottom Sheet 위젯

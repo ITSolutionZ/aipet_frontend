@@ -1,6 +1,6 @@
-import '../../../../shared/testing/mock_data/features/pet_feeding/pet_feeding_mock_service.dart';
-import '../../domain/entities/recipe_entity.dart';
-import '../../domain/repositories/recipe_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/recipe_entity.dart';
+import 'package:aipet_frontend/features/onboarding/domain/repositories/recipe_repository.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet_feeding/pet_feeding_mock_service.dart';
 
 // Mock 데이터 사용 여부
 const bool _isEnabled = true;

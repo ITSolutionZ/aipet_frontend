@@ -1,11 +1,25 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../shared.dart';
+/// 🎯 App Text Field Focus State Provider
+final appTextFieldFocusProvider =
+    StateNotifierProvider.family<AppTextFieldFocusController, bool, String>(
+      (ref, fieldId) => AppTextFieldFocusController(),
+    );
+
+class AppTextFieldFocusController extends StateNotifier<bool> {
+  AppTextFieldFocusController() : super(false);
+
+  void setFocus(bool hasFocus) {
+    state = hasFocus;
+  }
+}
 
 /// 범용 텍스트 필드 위젯
 /// 일관된 스타일과 검증 로직 제공
-class AppTextField extends StatefulWidget {
+class AppTextField extends ConsumerStatefulWidget {
   final TextEditingController controller;
   final String label;
   final String? hintText;
@@ -26,6 +40,7 @@ class AppTextField extends StatefulWidget {
   final int? maxLines;
   final String? errorText;
   final FocusNode? focusNode;
+  final String? fieldId;
 
   const AppTextField({
     super.key,
@@ -49,13 +64,14 @@ class AppTextField extends StatefulWidget {
     this.maxLines = 1,
     this.errorText,
     this.focusNode,
+    this.fieldId,
   });
 
   @override
-  State<AppTextField> createState() => _AppTextFieldState();
+  ConsumerState<AppTextField> createState() => _AppTextFieldState();
 }
 
-class _AppTextFieldState extends State<AppTextField> {
+class _AppTextFieldState extends ConsumerState<AppTextField> {
   late FocusNode _internalFocusNode;
   FocusNode get _focusNode => widget.focusNode ?? _internalFocusNode;
 
@@ -65,18 +81,33 @@ class _AppTextFieldState extends State<AppTextField> {
     if (widget.focusNode == null) {
       _internalFocusNode = FocusNode();
     }
+
+    _focusNode.addListener(_onFocusChanged);
   }
 
   @override
   void dispose() {
+    _focusNode.removeListener(_onFocusChanged);
     if (widget.focusNode == null) {
       _internalFocusNode.dispose();
     }
     super.dispose();
   }
 
+  void _onFocusChanged() {
+    if (widget.fieldId != null) {
+      ref
+          .read(appTextFieldFocusProvider(widget.fieldId!).notifier)
+          .setFocus(_focusNode.hasFocus);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final hasFocus = widget.fieldId != null
+        ? ref.watch(appTextFieldFocusProvider(widget.fieldId!))
+        : _focusNode.hasFocus;
+
     return Semantics(
       label: widget.semanticLabel ?? widget.label,
       hint: widget.semanticHint ?? widget.hintText,
@@ -115,10 +146,10 @@ class _AppTextFieldState extends State<AppTextField> {
               border: Border.all(
                 color: widget.errorText != null
                     ? Colors.red
-                    : _focusNode.hasFocus
+                    : hasFocus
                     ? AppColors.pointBrown
                     : AppColors.pointGray.withValues(alpha: 0.3),
-                width: _focusNode.hasFocus ? 2 : 1,
+                width: hasFocus ? 2 : 1,
               ),
               boxShadow: widget.enabled
                   ? [

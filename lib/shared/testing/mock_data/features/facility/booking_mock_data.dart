@@ -67,7 +67,7 @@ class BookingMockData {
   static List<DateTime> getAvailableDates() {
     final today = DateTime.now();
     final availableDates = <DateTime>[];
-    
+
     for (int i = 0; i < 30; i++) {
       final date = today.add(Duration(days: i));
       // 일요일 제외
@@ -75,7 +75,7 @@ class BookingMockData {
         availableDates.add(date);
       }
     }
-    
+
     return availableDates;
   }
 
@@ -85,13 +85,13 @@ class BookingMockData {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final targetDate = DateTime(date.year, date.month, date.day);
-    
+
     final unavailableSlots = <String>[];
-    
+
     if (targetDate.isAtSameMomentAs(today)) {
       final currentHour = now.hour;
       final timeSlots = getTimeSlotsByFacilityType(facilityType);
-      
+
       for (final slot in timeSlots) {
         final slotHour = int.parse(slot.split(':')[0]);
         if (slotHour <= currentHour) {
@@ -99,19 +99,25 @@ class BookingMockData {
         }
       }
     }
-    
+
     // 랜덤하게 일부 슬롯을 예약 불가능하게 설정
-    if (date.weekday == 6) { // 토요일은 더 많이 예약됨
+    if (date.weekday == 6) {
+      // 토요일은 더 많이 예약됨
       unavailableSlots.addAll(['14:00', '15:00', '16:00']);
-    } else if (date.weekday == 5) { // 금요일
+    } else if (date.weekday == 5) {
+      // 금요일
       unavailableSlots.addAll(['10:00', '11:00']);
     }
-    
+
     return unavailableSlots;
   }
 
   /// 시간 슬롯이 예약 가능한지 확인
-  static bool isTimeSlotAvailable(DateTime date, String timeSlot, String facilityType) {
+  static bool isTimeSlotAvailable(
+    DateTime date,
+    String timeSlot,
+    String facilityType,
+  ) {
     final unavailableSlots = getUnavailableSlots(date, facilityType);
     return !unavailableSlots.contains(timeSlot);
   }

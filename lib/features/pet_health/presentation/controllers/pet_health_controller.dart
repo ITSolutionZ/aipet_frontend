@@ -1,7 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
     as SchedulingMock;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 펫 건강 컨트롤러
 class PetHealthController extends StateNotifier<PetHealthState> {

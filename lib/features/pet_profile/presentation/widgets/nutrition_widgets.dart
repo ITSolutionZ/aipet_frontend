@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 음식 타입 선택 카드
 class FoodTypeCard extends StatelessWidget {
@@ -229,28 +229,59 @@ class ScheduledMealCard extends StatelessWidget {
   }
 }
 
-/// 영양 탭 전체 위젯
-class NutritionTab extends StatefulWidget {
-  final String petId;
+/// 🎯 Nutrition Tab State Provider
+final nutritionTabProvider =
+    StateNotifierProvider.family<
+      NutritionTabController,
+      NutritionTabState,
+      String
+    >((ref, petId) => NutritionTabController());
 
-  const NutritionTab({
-    super.key,
-    required this.petId,
-  });
+class NutritionTabController extends StateNotifier<NutritionTabState> {
+  NutritionTabController() : super(const NutritionTabState());
 
-  @override
-  State<NutritionTab> createState() => _NutritionTabState();
+  void selectFoodType(String foodType) {
+    state = state.copyWith(selectedFoodType: foodType);
+  }
+
+  void toggleMealSchedule(String mealType, bool isEnabled) {
+    final updatedSchedules = Map<String, bool>.from(state.mealSchedules);
+    updatedSchedules[mealType] = isEnabled;
+    state = state.copyWith(mealSchedules: updatedSchedules);
+  }
 }
 
-class _NutritionTabState extends State<NutritionTab> {
-  String selectedFoodType = 'kibble';
-  final Map<String, bool> mealSchedules = {
-    'breakfast': true,
-    'dinner': true,
-  };
+class NutritionTabState {
+  final String selectedFoodType;
+  final Map<String, bool> mealSchedules;
+
+  const NutritionTabState({
+    this.selectedFoodType = 'kibble',
+    this.mealSchedules = const {'breakfast': true, 'dinner': true},
+  });
+
+  NutritionTabState copyWith({
+    String? selectedFoodType,
+    Map<String, bool>? mealSchedules,
+  }) {
+    return NutritionTabState(
+      selectedFoodType: selectedFoodType ?? this.selectedFoodType,
+      mealSchedules: mealSchedules ?? this.mealSchedules,
+    );
+  }
+}
+
+/// 영양 탭 전체 위젯
+class NutritionTab extends ConsumerWidget {
+  final String petId;
+
+  const NutritionTab({super.key, required this.petId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(nutritionTabProvider(petId));
+    final notifier = ref.read(nutritionTabProvider(petId).notifier);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -263,8 +294,8 @@ class _NutritionTabState extends State<NutritionTab> {
                 child: FoodTypeCard(
                   icon: Icons.eco,
                   title: 'Kibble / Dry',
-                  isSelected: selectedFoodType == 'kibble',
-                  onTap: () => setState(() => selectedFoodType = 'kibble'),
+                  isSelected: state.selectedFoodType == 'kibble',
+                  onTap: () => notifier.selectFoodType('kibble'),
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -272,8 +303,8 @@ class _NutritionTabState extends State<NutritionTab> {
                 child: FoodTypeCard(
                   icon: Icons.restaurant,
                   title: 'Home cooked',
-                  isSelected: selectedFoodType == 'homemade',
-                  onTap: () => setState(() => selectedFoodType = 'homemade'),
+                  isSelected: state.selectedFoodType == 'homemade',
+                  onTap: () => notifier.selectFoodType('homemade'),
                 ),
               ),
             ],
@@ -316,11 +347,9 @@ class _NutritionTabState extends State<NutritionTab> {
             title: 'Breakfast',
             schedule: 'everyday',
             time: '10:00',
-            isEnabled: mealSchedules['breakfast'] ?? false,
+            isEnabled: state.mealSchedules['breakfast'] ?? false,
             onToggle: (value) {
-              setState(() {
-                mealSchedules['breakfast'] = value;
-              });
+              notifier.toggleMealSchedule('breakfast', value);
             },
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -328,11 +357,9 @@ class _NutritionTabState extends State<NutritionTab> {
             title: 'Dinner',
             schedule: 'everyday',
             time: '20:00',
-            isEnabled: mealSchedules['dinner'] ?? false,
+            isEnabled: state.mealSchedules['dinner'] ?? false,
             onToggle: (value) {
-              setState(() {
-                mealSchedules['dinner'] = value;
-              });
+              notifier.toggleMealSchedule('dinner', value);
             },
           ),
         ],

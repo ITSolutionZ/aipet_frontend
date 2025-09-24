@@ -1,15 +1,11 @@
+import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_form_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../shared/shared.dart';
-import '../../controllers/pet_profile_form_controller.dart';
-
 /// Pet Profile 이미지 선택 다이얼로그
 class PetProfileImagePicker {
-  static void show(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+  static void show(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -142,9 +138,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: AppColors.pointDark.withValues(alpha: 0.1),
-          ),
+          border: Border.all(color: AppColors.pointDark.withValues(alpha: 0.1)),
           borderRadius: BorderRadius.circular(AppRadius.medium),
         ),
         child: Row(
@@ -156,11 +150,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                 color: AppColors.pointBrown.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppRadius.small),
               ),
-              child: Icon(
-                icon,
-                color: AppColors.pointBrown,
-                size: 24,
-              ),
+              child: Icon(icon, color: AppColors.pointBrown, size: 24),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -184,10 +174,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
-              Icons.chevron_right,
-              color: AppColors.pointDark,
-            ),
+            const Icon(Icons.chevron_right, color: AppColors.pointDark),
           ],
         ),
       ),

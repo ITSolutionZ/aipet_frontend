@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/features/onboarding/domain/repositories/schedule_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/get_schedules_usecase.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/manage_schedules_usecase.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/schedule_entity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../domain/entities/schedule_entity.dart';
-import '../../domain/repositories/schedule_repository.dart';
-import '../../domain/usecases/get_schedules_usecase.dart';
-import '../../domain/usecases/manage_schedules_usecase.dart';
 
 /// 스케줄 상태
 class ScheduleState {

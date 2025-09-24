@@ -1,9 +1,9 @@
+import 'package:aipet_frontend/features/pet_profile/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/sharing_widgets.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../widgets/sharing_widgets.dart';
 
 class SharingProfilesScreen extends ConsumerStatefulWidget {
   const SharingProfilesScreen({super.key});
@@ -16,13 +16,11 @@ class SharingProfilesScreen extends ConsumerStatefulWidget {
 class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<PetProfileEntity> _pets = [];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _loadPets();
   }
 
   @override
@@ -31,30 +29,32 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
     super.dispose();
   }
 
-  void _loadPets() {
-    // PetMockData에서 펫 데이터 로드
-    _pets = PetMockData.getMockPets();
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
+    final petsAsync = ref.watch(petsNotifierProvider);
+
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientDrawerAppBar(title: 'プロフィール共有'),
-      body: Column(
-        children: [
-          _buildTabControl(),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                GenerateCodeTab(pets: _pets, onPetTap: _showQRCodeModal),
-                ScanCodeTab(onCodeScanned: _handleScannedCode),
-              ],
+      body: petsAsync.when(
+        data: (pets) => Column(
+          children: [
+            _buildTabControl(),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  GenerateCodeTab(pets: pets, onPetTap: _showQRCodeModal),
+                  ScanCodeTab(onCodeScanned: _handleScannedCode),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Text('エラーが発生しました: $error'),
+        ),
       ),
     );
   }

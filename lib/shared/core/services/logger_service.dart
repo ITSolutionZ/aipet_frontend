@@ -12,10 +12,7 @@ class LoggerService {
   static void info(String message, {Map<String, dynamic>? data}) {
     if (kDebugMode) {
       final logData = data != null ? ' | Data: ${_sanitizeData(data)}' : '';
-      developer.log(
-        '[$_tag] INFO: $message$logData',
-        name: 'AIPet.Info',
-      );
+      developer.log('[$_tag] INFO: $message$logData', name: 'AIPet.Info');
     }
   }
 
@@ -23,10 +20,7 @@ class LoggerService {
   static void warning(String message, {Map<String, dynamic>? data}) {
     if (kDebugMode) {
       final logData = data != null ? ' | Data: ${_sanitizeData(data)}' : '';
-      developer.log(
-        '[$_tag] WARNING: $message$logData',
-        name: 'AIPet.Warning',
-      );
+      developer.log('[$_tag] WARNING: $message$logData', name: 'AIPet.Warning');
     }
   }
 
@@ -54,10 +48,7 @@ class LoggerService {
   static void debug(String message, {Map<String, dynamic>? data}) {
     if (kDebugMode) {
       final logData = data != null ? ' | Data: ${_sanitizeData(data)}' : '';
-      developer.log(
-        '[$_tag] DEBUG: $message$logData',
-        name: 'AIPet.Debug',
-      );
+      developer.log('[$_tag] DEBUG: $message$logData', name: 'AIPet.Debug');
     }
   }
 
@@ -89,7 +80,11 @@ class LoggerService {
   }
 
   /// 네비게이션 로그
-  static void navigation(String action, String route, {Map<String, dynamic>? params}) {
+  static void navigation(
+    String action,
+    String route, {
+    Map<String, dynamic>? params,
+  }) {
     if (kDebugMode) {
       final paramsInfo = params != null
           ? ' | Params: ${_sanitizeData(params)}'
@@ -107,10 +102,7 @@ class LoggerService {
       final contextInfo = context != null
           ? ' | Context: ${_sanitizeData(context)}'
           : '';
-      developer.log(
-        '[$_tag] USER: $action$contextInfo',
-        name: 'AIPet.User',
-      );
+      developer.log('[$_tag] USER: $action$contextInfo', name: 'AIPet.User');
     }
   }
 
@@ -213,12 +205,16 @@ class LoggerService {
     }
 
     // 신용카드 번호 패턴
-    if (RegExp(r'^\d{4}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}$').hasMatch(value)) {
+    if (RegExp(
+      r'^\d{4}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}$',
+    ).hasMatch(value)) {
       return true;
     }
 
     // JWT 토큰 패턴
-    if (RegExp(r'^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$').hasMatch(value)) {
+    if (RegExp(
+      r'^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$',
+    ).hasMatch(value)) {
       return true;
     }
 
@@ -228,7 +224,6 @@ class LoggerService {
 
 /// 레거시 print 구문 대체를 위한 확장 메서드
 extension LegacyLoggingMigration on String {
-  /// // REMOVED_SECURITY_RISK: print() 대신 사용할 수 있는 확장 메서드
   void logInfo() => LoggerService.info(this);
   void logWarning() => LoggerService.warning(this);
   void logError() => LoggerService.error(this);

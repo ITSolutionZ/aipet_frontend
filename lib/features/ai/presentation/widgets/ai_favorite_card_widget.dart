@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/ai_favorite_qa_entity.dart';
 
 class AiFavoriteCardWidget extends StatelessWidget {
   final AiFavoriteQaEntity favoriteQA;
@@ -94,7 +93,11 @@ class AiFavoriteCardWidget extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.delete, size: 16, color: AppColors.pointPink),
+                  const Icon(
+                    Icons.delete,
+                    size: 16,
+                    color: AppColors.pointPink,
+                  ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     '削除',

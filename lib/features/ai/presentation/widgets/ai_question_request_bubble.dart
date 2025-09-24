@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/pet_registor.dart';
-import '../../domain/entities/ai_category_entity.dart';
 
 /// AI 메시지 버블 형태의 질문 요청 위젯
 class AiQuestionRequestBubble extends StatelessWidget {
@@ -105,7 +104,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
 
   String _getCategorySpecificTitle() {
     final petName = selectedPet?.name ?? 'ペット';
-    
+
     switch (selectedCategory?.id) {
       case 'health':
         return '$petNameの健康について、どのような症状や心配事がありますか？';
@@ -132,7 +131,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
     final petName = selectedPet?.name ?? 'ペット';
     final petAge = selectedPet != null ? '${selectedPet!.age}歳の' : '';
     final petType = selectedPet?.typeName ?? 'ペット';
-    
+
     switch (selectedCategory?.id) {
       case 'health':
         return '$petAge$petTypeの$petNameの状況を詳しく教えてください。症状、期間、食欲の変化なども含めて説明していただけると、より正確なアドバイスができます。';
@@ -281,10 +280,12 @@ class AiQuestionRequestBubble extends StatelessWidget {
   Widget _buildSuggestedQuestion(String question) {
     // 디버그: 질문 텍스트 확인
     debugPrint('Building question widget for: "$question"');
-    
+
     // 이모지를 제거하여 실제 질문 텍스트만 추출 (전송용)
     final questionText = question.replaceAll(
-      RegExp(r'^[🍽️🚶💊✂️🎯🚫🏠🏥🌡️💡⚖️🩺⏰🎯🔊🛁💅👂🦷💩📍🥘🥗🍖🎂🍼🐾🛡️📚✈️👴👶🎉❓]+\s*'),
+      RegExp(
+        r'^[🍽️🚶💊✂️🎯🚫🏠🏥🌡️💡⚖️🩺⏰🎯🔊🛁💅👂🦷💩📍🥘🥗🍖🎂🍼🐾🛡️📚✈️👴👶🎉❓]+\s*',
+      ),
       '',
     );
 

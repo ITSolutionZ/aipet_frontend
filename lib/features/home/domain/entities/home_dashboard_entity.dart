@@ -75,4 +75,3 @@ class HomeDashboardEntity {
     required this.walkSummary,
   });
 }
-

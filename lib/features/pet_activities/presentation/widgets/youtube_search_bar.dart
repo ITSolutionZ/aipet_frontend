@@ -1,15 +1,11 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// YouTube 영상 검색 바
 class YouTubeSearchBar extends StatelessWidget {
   final ValueChanged<String> onSearchChanged;
 
-  const YouTubeSearchBar({
-    super.key,
-    required this.onSearchChanged,
-  });
+  const YouTubeSearchBar({super.key, required this.onSearchChanged});
 
   @override
   Widget build(BuildContext context) {

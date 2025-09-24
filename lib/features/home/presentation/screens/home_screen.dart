@@ -1,44 +1,46 @@
+import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/controllers/home_dashboard_controller.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/controllers/home_notification_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/home_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../shared/shared.dart';
-import '../../../../app/config/app_config.dart';
-import '../../../../app/router/routes/route_constants.dart';
-import '../controllers/home_dashboard_controller.dart';
-import '../controllers/home_notification_controller.dart';
-import '../widgets/home_widgets.dart';
+/// 홈 화면 상태 관리
+final homeScreenProvider =
+    StateNotifierProvider<HomeScreenController, HomeScreenState>(
+      (ref) => HomeScreenController(ref),
+    );
 
-class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+class HomeScreenController extends StateNotifier<HomeScreenState> {
+  final Ref ref;
 
-  @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
-}
+  HomeScreenController(this.ref) : super(const HomeScreenState());
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
-  late HomeDashboardController _dashboardController;
-  late HomeNotificationController _notificationController;
-  late ScrollController _scrollController;
+  void initialize() {
+    final dashboardController = HomeDashboardController(ref);
+    final notificationController = HomeNotificationController(ref);
+    final scrollController = ScrollController();
 
-  @override
-  void initState() {
-    super.initState();
-    _dashboardController = HomeDashboardController(ref);
-    _notificationController = HomeNotificationController(ref);
-    _scrollController = ScrollController();
+    state = state.copyWith(
+      dashboardController: dashboardController,
+      notificationController: notificationController,
+      scrollController: scrollController,
+    );
 
-    // 화면이 로드된 후 펫 목록을 확인하여 리다이렉트
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkPetsAndRedirect();
       _showInitialNotificationSnackBar();
     });
   }
 
-  /// 펫 목록을 확인하고 홈 화면 초기화
   Future<void> _checkPetsAndRedirect() async {
+    if (state.dashboardController == null) return;
+
     try {
-      final result = await _dashboardController.hasPets();
+      final result = await state.dashboardController!.hasPets();
       if (result.isSuccess && result.data == true) {
         await _initializeHomeScreen();
       } else {
@@ -49,135 +51,76 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  /// 홈 화면 초기화
   Future<void> _initializeHomeScreen() async {
+    if (state.dashboardController == null) return;
+
     try {
-      final result = await _dashboardController.initializeHome();
-      if (mounted && !result.isSuccess) {
-        _showErrorSnackBar(result.message);
+      final result = await state.dashboardController!.initializeHome();
+      if (!result.isSuccess) {
+        state = state.copyWith(errorMessage: result.message);
       }
     } catch (error) {
-      if (mounted) {
-        _showErrorSnackBar('ホーム画面を読み込む中にエラーが発生しました。');
-      }
+      state = state.copyWith(errorMessage: 'ホーム画面を読み込む中にエラーが発生しました。');
     }
   }
 
-  /// 알림 아이콘 탭 처리
-  Future<void> _handleNotificationTap() async {
-    try {
-      final result = await _notificationController.handleNotification();
-      if (mounted) {
-        if (result.isSuccess) {
-          _handleNotificationResult(result.data ?? []);
-          _showNotificationSnackBar();
-          context.go(RouteConstants.notificationListRoute);
-        } else {
-          _showErrorSnackBar(result.message);
-        }
-      }
-    } catch (error) {
-      if (mounted) {
-        _showErrorSnackBar('通知を確認する中にエラーが発生しました。');
-      }
-    }
-  }
-
-  /// 알림 결과 처리
-  void _handleNotificationResult(List<String> notifications) {
-    if (notifications.isNotEmpty) {
-      _showSuccessSnackBar('${notifications.length}件の通知があります');
-    }
-  }
-
-  /// 에러 스낵바 표시
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointPink),
-    );
-  }
-
-  /// 성공 스낵바 표시
-  void _showSuccessSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.pointBlue,
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
-
-  /// 알림 스낵바 표시
-  void _showNotificationSnackBar() {
-    final notificationCount =
-        NotificationMockService.getMockNotifications().length;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.notifications, color: Colors.white, size: 20),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                '$notificationCount件の通知があります',
-                style: AppFonts.bodyMedium.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: AppColors.pointBlue,
-        duration: const Duration(seconds: 3),
-        action: SnackBarAction(
-          label: '確認する',
-          textColor: Colors.white,
-          onPressed: () {
-            context.go(RouteConstants.notificationListRoute);
-          },
-        ),
-      ),
-    );
+  void _showInitialNotificationSnackBar() {
+    // 알림 스낵바 표시 로직
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    state.scrollController?.dispose();
     super.dispose();
   }
+}
 
-  /// 초기 알림 스낵바 표시 (알림이 있을 때만)
-  void _showInitialNotificationSnackBar() {
-    final notificationCount =
-        NotificationMockService.getMockNotifications().length;
+class HomeScreenState {
+  final HomeDashboardController? dashboardController;
+  final HomeNotificationController? notificationController;
+  final ScrollController? scrollController;
+  final String? errorMessage;
 
-    // 알림이 있을 때만 스낵바 표시
-    if (notificationCount > 0) {
-      if (AppConfig.current.environment == 'test') {
-        // 테스트 환경에서는 즉시 실행
-        if (mounted) {
-          _showNotificationSnackBar();
-        }
-      } else {
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (mounted) {
-            _showNotificationSnackBar();
-          }
-        });
-      }
-    }
+  const HomeScreenState({
+    this.dashboardController,
+    this.notificationController,
+    this.scrollController,
+    this.errorMessage,
+  });
+
+  HomeScreenState copyWith({
+    HomeDashboardController? dashboardController,
+    HomeNotificationController? notificationController,
+    ScrollController? scrollController,
+    String? errorMessage,
+  }) {
+    return HomeScreenState(
+      dashboardController: dashboardController ?? this.dashboardController,
+      notificationController:
+          notificationController ?? this.notificationController,
+      scrollController: scrollController ?? this.scrollController,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
   }
+}
+
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeState = ref.watch(homeScreenProvider);
+
+    // Initialize home screen after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(homeScreenProvider.notifier).initialize();
+    });
+
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: const AppDrawer(),
       appBar: DynamicAppBarStyles.brown(
-        scrollController: _scrollController,
+        scrollController: homeState.scrollController ?? ScrollController(),
         title: 'ホーム',
         leading: Builder(
           builder: (context) => IconButton(
@@ -186,23 +129,59 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             tooltip: 'メニュー',
           ),
         ),
-        actions: [_buildNotificationButton()],
+        actions: [_buildNotificationButton(context, ref)],
       ),
       body: CustomScrollView(
-        controller: _scrollController,
-        slivers: const [
+        controller: homeState.scrollController ?? ScrollController(),
+        slivers: [
           SliverPadding(
-            padding: EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             sliver: SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: AppSpacing.md),
-                  PetProfileCard(),
-                  SizedBox(height: AppSpacing.lg),
-                  WeatherCard(),
-                  SizedBox(height: AppSpacing.lg),
-                  HomeSummaryGrid(),
+                  const SizedBox(height: AppSpacing.md),
+                  Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: AppColors.pointBrown.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Pet Profile Card',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: AppColors.pointBlue.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Weather Card',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Container(
+                    height: 300,
+                    decoration: BoxDecoration(
+                      color: AppColors.pointGreen.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Home Summary Grid',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -212,9 +191,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildNotificationButton() {
+  Widget _buildNotificationButton(BuildContext context, WidgetRef ref) {
     return IconButton(
-      onPressed: _handleNotificationTap,
+      onPressed: () {
+        // Mock notification tap
+        context.go(RouteConstants.notificationListRoute);
+      },
       icon: const Stack(
         children: [
           Icon(

@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design/tokens/tokens.dart';
 
 /// 📋 정보 표시용 카드
 ///
@@ -101,10 +100,7 @@ class InfoCard extends StatelessWidget {
     }
 
     if (semanticLabel != null) {
-      card = Semantics(
-        label: semanticLabel,
-        child: card,
-      );
+      card = Semantics(label: semanticLabel, child: card);
     }
 
     return card;

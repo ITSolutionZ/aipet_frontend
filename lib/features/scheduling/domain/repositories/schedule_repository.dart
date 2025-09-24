@@ -1,4 +1,4 @@
-import '../entities/schedule_entity.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/schedule_entity.dart';
 
 /// 스케줄 리포지토리 인터페이스
 abstract class ScheduleRepository {

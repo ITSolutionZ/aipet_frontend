@@ -1,14 +1,13 @@
+import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/trick_category_section.dart';
+import 'package:aipet_frontend/shared/widgets/trick_detail_dialog.dart';
+import 'package:aipet_frontend/shared/widgets/tricks_empty_state.dart';
+import 'package:aipet_frontend/shared/widgets/tricks_search_and_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../../data/providers/pet_activities_providers.dart';
-import '../../domain/entities/trick_entity.dart';
-import '../widgets/trick_category_section.dart';
-import '../widgets/trick_detail_dialog.dart';
-import '../widgets/tricks_empty_state.dart';
-import '../widgets/tricks_search_and_filter.dart';
 
 /// 모든 트릭 보기 화면
 ///

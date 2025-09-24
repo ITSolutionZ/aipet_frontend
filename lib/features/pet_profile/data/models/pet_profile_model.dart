@@ -1,4 +1,4 @@
-import '../../domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 
 /// Pet Profile Data Model
 ///
@@ -54,9 +54,11 @@ class PetProfileModel {
       isActive: json['isActive'] as bool? ?? true,
       sharingSettings: json['sharingSettings'] as Map<String, dynamic>?,
       healthInfo: json['healthInfo'] as Map<String, dynamic>?,
-      familyManagerIds: (json['familyManagerIds'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList() ?? [],
+      familyManagerIds:
+          (json['familyManagerIds'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
       visibilityLevel: json['visibilityLevel'] as String? ?? 'private',
       customFields: json['customFields'] as Map<String, dynamic>?,
     );
@@ -153,7 +155,9 @@ class PetProfileModel {
   }
 
   // Helper methods for data conversion
-  static Map<String, dynamic>? _extractSharingSettings(Map<String, dynamic>? additionalInfo) {
+  static Map<String, dynamic>? _extractSharingSettings(
+    Map<String, dynamic>? additionalInfo,
+  ) {
     if (additionalInfo == null) return null;
     final isPublic = additionalInfo['isPublic'] as bool? ?? false;
     return {
@@ -163,16 +167,18 @@ class PetProfileModel {
     };
   }
 
-  static Map<String, dynamic>? _extractHealthInfo(Map<String, dynamic>? additionalInfo) {
+  static Map<String, dynamic>? _extractHealthInfo(
+    Map<String, dynamic>? additionalInfo,
+  ) {
     if (additionalInfo == null) return null;
     final weight = additionalInfo['weight'] as double?;
     if (weight == null) return null;
-    return {
-      'weight': weight,
-    };
+    return {'weight': weight};
   }
 
-  static List<String> _extractFamilyManagerIds(Map<String, dynamic>? additionalInfo) {
+  static List<String> _extractFamilyManagerIds(
+    Map<String, dynamic>? additionalInfo,
+  ) {
     if (additionalInfo == null) return [];
     final managers = additionalInfo['familyManagers'] as List<dynamic>?;
     return managers?.map((e) => e.toString()).toList() ?? [];
@@ -183,7 +189,9 @@ class PetProfileModel {
     return isPublic ? 'public' : 'private';
   }
 
-  static ProfileSharingSettings _parseSharingSettings(Map<String, dynamic>? data) {
+  static ProfileSharingSettings _parseSharingSettings(
+    Map<String, dynamic>? data,
+  ) {
     if (data == null) return const ProfileSharingSettings();
     return ProfileSharingSettings(
       allowSharing: data['allowSharing'] as bool? ?? false,
@@ -212,7 +220,9 @@ class PetProfileModel {
     }
   }
 
-  static Map<String, dynamic>? _serializeSharingSettings(ProfileSharingSettings settings) {
+  static Map<String, dynamic>? _serializeSharingSettings(
+    ProfileSharingSettings settings,
+  ) {
     return {
       'allowSharing': settings.allowSharing,
       'allowQrCode': settings.allowQrCode,

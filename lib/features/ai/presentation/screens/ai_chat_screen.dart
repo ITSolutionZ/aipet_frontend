@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/ai/presentation/controllers/ai_chat_controller.dart';
+import 'package:aipet_frontend/features/ai/presentation/widgets/ai_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../controllers/ai_chat_controller.dart';
-import '../widgets/ai_widgets.dart';
 
 class AiChatScreen extends ConsumerStatefulWidget {
   const AiChatScreen({super.key});
@@ -224,8 +223,10 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
           AiMessageBubble(
             message: message,
             isFavorite: chatState.favoriteMessageIds.contains(message.id),
-            onFavoriteToggle: (msg) {
-              ref.read(aiChatNotifierProvider.notifier).toggleFavorite(msg);
+            onFavoriteToggle: (msg) async {
+              await ref
+                  .read(aiChatNotifierProvider.notifier)
+                  .toggleFavorite(msg);
             },
           ),
         ],

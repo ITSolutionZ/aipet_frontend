@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/auth/application/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../application/auth_controller.dart';
 
 /// 서버 토큰 교환 버튼 위젯
 ///
@@ -88,19 +87,13 @@ class ExchangeTokenButton extends ConsumerWidget {
             const SizedBox(height: 12),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            if (subtitle != null) ...[
+            ...[
               const SizedBox(height: 8),
               Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                ),
+                subtitle ?? '',
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -119,8 +112,11 @@ class ExchangeTokenButton extends ConsumerWidget {
     return ElevatedButton(
       onPressed: state.isLoading
           ? null
-          : () async { // Changed: async 추가
-              await ref.read(authControllerProvider.notifier).exchangeServerToken();
+          : () async {
+              // Changed: async 추가
+              await ref
+                  .read(authControllerProvider.notifier)
+                  .exchangeServerToken();
 
               // Changed: 성공/실패 토스트 표시
               if (context.mounted) {
@@ -146,16 +142,11 @@ class ExchangeTokenButton extends ConsumerWidget {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
         state.isLoading ? '교환 중...' : 'Firebase → Server 토큰 교환',
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -168,16 +159,11 @@ class ExchangeTokenButton extends ConsumerWidget {
       },
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: const Text(
         '다시 시도',
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -208,11 +194,7 @@ class ExchangeTokenButton extends ConsumerWidget {
             '2. "Firebase → Server 토큰 교환" 버튼을 누르세요\n'
             '3. 성공 시 서버 JWT가 자동으로 저장됩니다\n'
             '4. 이후 모든 API 요청에 자동으로 Authorization 헤더가 추가됩니다',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.blue,
-              height: 1.4,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.blue, height: 1.4),
           ),
         ],
       ),
@@ -226,8 +208,6 @@ class AuthDemoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ProviderScope(
-      child: ExchangeTokenButton(),
-    );
+    return const ProviderScope(child: ExchangeTokenButton());
   }
 }

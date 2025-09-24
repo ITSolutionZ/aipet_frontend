@@ -1,5 +1,5 @@
-import '../entities/youtube_video_entity.dart';
-import '../repositories/pet_activities_repository.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/repositories/pet_activities_repository.dart';
 
 /// YouTube 비디오 목록 조회 유스케이스
 class GetYouTubeVideosUseCase {

@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// YouTube 영상 추가 버튼
 class AddYouTubeVideoButton extends StatelessWidget {

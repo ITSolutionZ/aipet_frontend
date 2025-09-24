@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/shared/testing/mock_config.dart';
 import 'package:flutter/material.dart';
 
-import '../../mock_config.dart';
 import 'providers/mockito_environment_helper.dart';
 
 /// 🧪 Mockito 통합 테스트 도우미

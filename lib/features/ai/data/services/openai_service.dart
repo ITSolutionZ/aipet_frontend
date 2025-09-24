@@ -1,78 +1,21 @@
-import 'package:dio/dio.dart';
-import 'package:logger/logger.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/features/ai/domain/constants/ai_constants.dart';
+import 'package:aipet_frontend/features/ai/domain/errors/ai_errors.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
+import 'package:aipet_frontend/shared/core/services/unified_error_handler.dart';
+import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 
-import '../../../../app/config/app_config.dart';
-import '../../../pet_registor/pet_registor.dart';
 import 'pet_content_filter_service.dart';
 
 /// OpenAI API와 통신하는 서비스
-class OpenAIService {
-  late final Dio _dio;
-  late final Logger _logger;
+class OpenAIService extends BaseLoggingService {
   final PetContentFilterService _contentFilter = PetContentFilterService();
+  final AiHttpClientService _httpClient;
 
-  // API 안정성을 위한 설정
-  static const int _maxRetries = 3;
-  static const Duration _connectTimeout = Duration(seconds: 30);
-  static const Duration _receiveTimeout = Duration(seconds: 60);
-
-  OpenAIService() {
-    _initializeLogger();
-    _initializeDio();
-  }
-
-  /// Logger 초기화
-  void _initializeLogger() {
-    _logger = Logger(
-      filter: AppConfig.current.isDebugMode
-          ? DevelopmentFilter()
-          : ProductionFilter(),
-      printer: PrettyPrinter(
-        methodCount: AppConfig.current.isDebugMode ? 2 : 0,
-        errorMethodCount: 3,
-        lineLength: 120,
-        colors: true,
-        printEmojis: true,
-        printTime: true,
-      ),
-      output: ConsoleOutput(),
-    );
-  }
-
-  /// Dio 초기화
-  void _initializeDio() {
-    _dio = Dio();
-    _dio.options.baseUrl = 'https://api.openai.com/v1';
-    _dio.options.headers['Content-Type'] = 'application/json';
-    _dio.options.connectTimeout = _connectTimeout;
-    _dio.options.receiveTimeout = _receiveTimeout;
-
-    // 인터셉터 추가로 요청/응답 로깅 및 에러 처리 개선
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          // API 키 확인
-          if (!options.headers.containsKey('Authorization')) {
-            final apiKey = AppConfig.current.openaiApiKey;
-            if (apiKey.isNotEmpty) {
-              options.headers['Authorization'] = 'Bearer $apiKey';
-            }
-          }
-          handler.next(options);
-        },
-        onError: (error, handler) {
-          // 상세한 에러 정보 로깅
-          _logError('OpenAI API Error: ${error.message}', error);
-          if (error.response != null) {
-            _logWarning('Status: ${error.response?.statusCode}');
-            _logDebug('Response Data: ${error.response?.data}');
-          }
-          handler.next(error);
-        },
-      ),
-    );
-  }
+  OpenAIService({AiHttpClientService? httpClient})
+    : _httpClient = httpClient ?? AiHttpClientService(),
+      super('openai_service');
 
   /// OpenAI ChatGPT API를 사용하여 메시지에 대한 응답 생성 (재시도 로직 포함)
   Future<String> generateResponse(
@@ -82,7 +25,10 @@ class OpenAIService {
     final apiKey = AppConfig.current.openaiApiKey;
 
     if (apiKey.isEmpty) {
-      throw Exception('OpenAI API キーが設定されていません');
+      throw AiOpenAIException(
+        AiErrorMessages.apiKeyError,
+        code: 'MISSING_API_KEY',
+      );
     }
 
     // ペット関連コンテンツ検証 (펫 컨텍스트가 있으면 스킵)
@@ -92,7 +38,7 @@ class OpenAIService {
           message,
         );
         if (!validationResult.isValid) {
-          _logInfo(
+          logInfo(
             'Non-pet related content detected: ${validationResult.reason}',
           );
           return '''こんにちは！私はペット専門のAIアシスタントです。🐶🐱
@@ -110,130 +56,57 @@ ${_translateReasonToJapanese(validationResult.reason)}
 具体的な状況を教えていただければ、より正確なサポートを提供できます！😊''';
         }
       } catch (e) {
-        _logError('Content filter validation failed: $e');
+        logError('Content filter validation failed: $e');
+        // 통합 에러 핸들러로 에러 처리
+        await UnifiedErrorHandler.handleUnifiedError(
+          e,
+          context: {'operation': 'content_filter_validation'},
+        );
         // 컨텐츠 필터링 실패 시에도 계속 진행
       }
     }
 
-    return _executeWithRetry(() async {
-      final response = await _dio.post(
+    return _httpClient.executeWithRetry(() async {
+      final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
         '/chat/completions',
-        options: Options(headers: {'Authorization': 'Bearer $apiKey'}),
         data: {
-          'model': 'gpt-3.5-turbo',
+          'model': AiApiConstants.openaiModel,
           'messages': [
             {'role': 'system', 'content': _buildSystemPrompt(petContext)},
             {'role': 'user', 'content': message},
           ],
-          'max_tokens': 1000,
-          'temperature': 0.7,
+          'max_tokens': AiApiConstants.openaiMaxTokens,
+          'temperature': AiApiConstants.openaiTemperature,
         },
       );
 
-      final data = response.data;
-      if (data is! Map<String, dynamic>) {
-        throw Exception('Invalid response format from OpenAI API');
-      }
-
-      if (data['choices'] != null &&
-          data['choices'] is List &&
-          data['choices'].isNotEmpty) {
-        final choice = data['choices'][0];
+      if (response['choices'] != null &&
+          response['choices'] is List &&
+          response['choices'].isNotEmpty) {
+        final choice = response['choices'][0];
         if (choice is Map<String, dynamic> &&
             choice['message'] != null &&
             choice['message']['content'] != null) {
           final content = choice['message']['content'].toString().trim();
           if (content.isEmpty) {
-            throw Exception('Empty response content from OpenAI API');
+            throw AiOpenAIException(
+              'Empty response content from OpenAI API',
+              code: 'EMPTY_RESPONSE',
+            );
           }
           return content;
         }
       }
 
       // 에러 정보가 있는 경우 포함
-      final errorInfo = data['error'] != null ? ' Error: ${data['error']}' : '';
-      throw Exception('No valid response from OpenAI API$errorInfo');
+      final errorInfo = response['error'] != null
+          ? ' Error: ${response['error']}'
+          : '';
+      throw AiOpenAIException(
+        'No valid response from OpenAI API$errorInfo',
+        code: 'NO_VALID_RESPONSE',
+      );
     });
-  }
-
-  /// 재시도 로직이 포함된 API 호출 실행
-  Future<T> _executeWithRetry<T>(Future<T> Function() apiCall) async {
-    int retryCount = 0;
-    late Exception lastException;
-
-    while (retryCount < _maxRetries) {
-      try {
-        return await apiCall();
-      } on DioException catch (e) {
-        lastException = _handleDioException(e);
-
-        // 재시도하지 않을 에러들
-        if (e.response?.statusCode == 401 || // Invalid API key
-            e.response?.statusCode == 403 || // Forbidden
-            e.response?.statusCode == 400) {
-          // Bad request
-          throw lastException;
-        }
-
-        // 429(Rate limit) 또는 5xx 서버 에러의 경우 재시도
-        final statusCode = e.response?.statusCode;
-        if (statusCode == 429 || (statusCode != null && statusCode >= 500)) {
-          retryCount++;
-          if (retryCount < _maxRetries) {
-            final delay = Duration(seconds: retryCount * 2); // 지수 백오프
-            _logInfo(
-              'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$_maxRetries)',
-            );
-            await Future.delayed(delay);
-            continue;
-          }
-        }
-
-        throw lastException;
-      } catch (e) {
-        lastException = Exception('Unexpected error: $e');
-        retryCount++;
-        if (retryCount < _maxRetries) {
-          final delay = Duration(seconds: retryCount * 2);
-          _logInfo(
-            'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$_maxRetries)',
-          );
-          await Future.delayed(delay);
-          continue;
-        }
-        throw lastException;
-      }
-    }
-
-    throw lastException;
-  }
-
-  /// Dio 예외를 사용자 친화적인 메시지로 변환
-  Exception _handleDioException(DioException e) {
-    switch (e.response?.statusCode) {
-      case 401:
-        return Exception('OpenAI API キーが無効です。設定を確認してください。');
-      case 429:
-        return Exception('API リクエスト制限を超えました。しばらくしてから再試行してください。');
-      case 500:
-      case 502:
-      case 503:
-      case 504:
-        return Exception('OpenAI サーバーに一時的な問題が発生しています。しばらくしてから再試行してください。');
-      case null:
-        if (e.type == DioExceptionType.connectionTimeout) {
-          return Exception('接続時間がタイムアウトしました。ネットワーク接続を確認してください。');
-        } else if (e.type == DioExceptionType.receiveTimeout) {
-          return Exception('応答時間がタイムアウトしました。しばらくしてから再試行してください。');
-        } else if (e.type == DioExceptionType.connectionError) {
-          return Exception('ネットワーク接続に問題があります。インターネット接続を確認してください。');
-        }
-        return Exception('ネットワークエラーが発生しました: ${e.message}');
-      default:
-        return Exception(
-          'OpenAI API エラー (${e.response?.statusCode}): ${e.message}',
-        );
-    }
   }
 
   /// 検証理由を日本語に翻訳 (필터 서비스와 동일한 메시지)
@@ -315,63 +188,6 @@ ${petContext.name}の年齢（$age歳）、種類（${petContext.typeName}）に
     return basePrompt;
   }
 
-  /// 에러 로깅
-  void _logError(String message, [Object? error, StackTrace? stackTrace]) {
-    _logger.e(message, error: error, stackTrace: stackTrace);
-
-    // Sentry를 사용한 에러 추적
-    if (error != null) {
-      Sentry.captureException(
-        error,
-        stackTrace: stackTrace,
-        withScope: (scope) {
-          scope.setTag('service', 'openai');
-          scope.setExtra('openai_error', {
-            'message': message,
-            'timestamp': DateTime.now().toIso8601String(),
-          });
-        },
-      );
-    } else {
-      Sentry.captureMessage(
-        message,
-        level: SentryLevel.error,
-        withScope: (scope) {
-          scope.setTag('service', 'openai');
-          scope.setExtra('openai_error', {
-            'timestamp': DateTime.now().toIso8601String(),
-          });
-        },
-      );
-    }
-  }
-
-  /// 정보 로깅
-  void _logInfo(String message) {
-    _logger.i(message);
-  }
-
-  /// 경고 로깅
-  void _logWarning(String message) {
-    _logger.w(message);
-
-    // 경고도 Sentry에 전송 (선택적)
-    if (AppConfig.current.isDebugMode) {
-      Sentry.captureMessage(
-        message,
-        level: SentryLevel.warning,
-        withScope: (scope) {
-          scope.setTag('service', 'openai');
-          scope.setTag('type', 'warning');
-        },
-      );
-    }
-  }
-
-  /// 디버그 로깅
-  void _logDebug(String message) {
-    if (AppConfig.current.isDebugMode) {
-      _logger.d(message);
-    }
-  }
+  // BaseLoggingService의 로깅 메서드들을 사용
+  // logError, logInfo, logWarning, logDebug 메서드들이 자동으로 사용 가능
 }

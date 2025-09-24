@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 건강 관리 카드 위젯
 class HealthCard extends StatelessWidget {
@@ -84,10 +83,7 @@ class HealthCard extends StatelessWidget {
 class HealthTab extends StatelessWidget {
   final String petId;
 
-  const HealthTab({
-    super.key,
-    required this.petId,
-  });
+  const HealthTab({super.key, required this.petId});
 
   @override
   Widget build(BuildContext context) {
@@ -269,10 +265,7 @@ class MedicalRecordCard extends StatelessWidget {
 class HealthSummaryCard extends StatelessWidget {
   final Map<String, dynamic> healthData;
 
-  const HealthSummaryCard({
-    super.key,
-    required this.healthData,
-  });
+  const HealthSummaryCard({super.key, required this.healthData});
 
   @override
   Widget build(BuildContext context) {
@@ -288,9 +281,7 @@ class HealthSummaryCard extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(AppRadius.large),
-        border: Border.all(
-          color: AppColors.pointGreen.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: AppColors.pointGreen.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// YouTube 영상 태그 필터
 class YouTubeTagFilter extends StatelessWidget {

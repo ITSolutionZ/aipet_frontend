@@ -1,22 +1,25 @@
+import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_history_list_screen.dart';
+import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_screen.dart';
+import 'package:aipet_frontend/features/ai/presentation/screens/ai_favorite_messages_screen.dart';
+import 'package:aipet_frontend/features/facility/domain/facility.dart';
+import 'package:aipet_frontend/features/facility/presentation/screens/facility_screens.dart';
+import 'package:aipet_frontend/features/home/presentation/presentation.dart';
+import 'package:aipet_frontend/features/notification/presentation/screens/notification_screens.dart';
+import 'package:aipet_frontend/features/pet_activities/pet_activities.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/link_registration_screen.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen_refactored.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/qr_scanner_screen.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/sharing_profiles_screen.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/presentation.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/screens/today_appointments_screen.dart';
+import 'package:aipet_frontend/features/settings/presentation/screens/settings_screens.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/presentation/screens/walk_screens.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart';
+import 'package:aipet_frontend/shared/widgets/navigation/main_navigation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../features/ai/presentation/screens/ai_chat_history_list_screen.dart';
-import '../../../features/ai/presentation/screens/ai_chat_screen.dart';
-import '../../../features/ai/presentation/screens/ai_favorite_messages_screen.dart';
-import '../../../features/facility/domain/facility.dart';
-import '../../../features/facility/presentation/screens/facility_screens.dart';
-import '../../../features/home/presentation/presentation.dart';
-import '../../../features/notification/presentation/screens/notification_screens.dart';
-import '../../../features/pet_activities/pet_activities.dart';
-import '../../../features/pet_profile/presentation/screens/pet_profile_screen_refactored.dart';
-import '../../../features/scheduling/presentation/presentation.dart';
-import '../../../features/scheduling/presentation/screens/today_appointments_screen.dart';
-import '../../../features/settings/presentation/screens/settings_screens.dart';
-import '../../../features/walk/domain/entities/walk_record_entity.dart';
-import '../../../features/walk/presentation/screens/walk_screens.dart';
-import '../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart';
-import '../../../shared/widgets/navigation/main_navigation_screen.dart';
 import 'route_constants.dart';
 
 /// 메인 앱 Shell 라우트 설정 (하단 네비게이션이 있는 화면들)

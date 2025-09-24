@@ -1,10 +1,9 @@
-import '../../core/base_mock_service.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/core/base_mock_service.dart';
 
 /// Pet Feeding Feature 전용 Mock 데이터 서비스
 class PetFeedingMockService extends BaseMockService {
-  
   // ==================== 레시피 데이터 ====================
-  
+
   /// Mock 레시피 목록
   static List<Map<String, dynamic>> getMockRecipes() {
     return [
@@ -20,7 +19,7 @@ class PetFeedingMockService extends BaseMockService {
         'isFavorite': true,
         'ingredients': [
           '닭가슴살 200g',
-          '고구마 100g', 
+          '고구마 100g',
           '당근 50g',
           '브로콜리 50g',
           '현미 100g',
@@ -53,13 +52,7 @@ class PetFeedingMockService extends BaseMockService {
         'servings': 6,
         'rating': 4.5,
         'isFavorite': false,
-        'ingredients': [
-          '연어살 150g',
-          '감자 100g',
-          '시금치 30g',
-          '계란 1개',
-          '귀리 50g',
-        ],
+        'ingredients': ['연어살 150g', '감자 100g', '시금치 30g', '계란 1개', '귀리 50g'],
         'instructions': [
           '연어살을 잘게 다져주세요',
           '감자를 삶아서 으깨주세요',
@@ -88,12 +81,7 @@ class PetFeedingMockService extends BaseMockService {
         'servings': 8,
         'rating': 4.3,
         'isFavorite': true,
-        'ingredients': [
-          '바나나 2개',
-          '귀리 100g',
-          '코코넛오일 1스푼',
-          '계피 약간',
-        ],
+        'ingredients': ['바나나 2개', '귀리 100g', '코코넛오일 1스푼', '계피 약간'],
         'instructions': [
           '바나나를 으깨주세요',
           '귀리와 섞어주세요',
@@ -125,7 +113,9 @@ class PetFeedingMockService extends BaseMockService {
   /// 인기 레시피 조회
   static List<Map<String, dynamic>> getMockTopRatedRecipes({int limit = 5}) {
     final recipes = List<Map<String, dynamic>>.from(getMockRecipes());
-    recipes.sort((a, b) => (b['rating'] as double).compareTo(a['rating'] as double));
+    recipes.sort(
+      (a, b) => (b['rating'] as double).compareTo(a['rating'] as double),
+    );
     return recipes.take(limit).toList();
   }
 
@@ -146,14 +136,16 @@ class PetFeedingMockService extends BaseMockService {
   }
 
   /// 난이도별 레시피 조회
-  static List<Map<String, dynamic>> getMockRecipesByDifficulty(String difficulty) {
+  static List<Map<String, dynamic>> getMockRecipesByDifficulty(
+    String difficulty,
+  ) {
     return getMockRecipes()
         .where((recipe) => recipe['difficulty'] == difficulty)
         .toList();
   }
 
   // ==================== 급여 데이터 ====================
-  
+
   /// Mock 펫 급여 데이터
   static Map<String, dynamic> getMockPetFeedingData({String? petId}) {
     return {
@@ -229,7 +221,7 @@ class PetFeedingMockService extends BaseMockService {
   }
 
   // ==================== 메뉴 계획 데이터 ====================
-  
+
   /// Mock 주간 메뉴 데이터
   static Map<String, dynamic> getMockMenuData({String? petId}) {
     return {
@@ -294,16 +286,12 @@ class PetFeedingMockService extends BaseMockService {
         'fat': 'optimal',
         'carbs': 'balanced',
       },
-      'preparation': {
-        'totalTime': '45분',
-        'difficulty': '쉬움',
-        'steps': 3,
-      },
+      'preparation': {'totalTime': '45분', 'difficulty': '쉬움', 'steps': 3},
     };
   }
 
   // ==================== 급여 기록 데이터 ====================
-  
+
   /// Mock 급여 기록 목록
   static List<Map<String, dynamic>> getMockFeedingRecords({String? petId}) {
     final allRecords = [

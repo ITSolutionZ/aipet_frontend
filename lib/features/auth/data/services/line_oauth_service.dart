@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
-
-import '../../../../app/config/app_config.dart';
-import '../../../../shared/shared.dart';
 
 /// 🎯 LINE OAuth 서비스
 ///
@@ -23,10 +22,12 @@ class LineOAuthService {
   String get _redirectUri => AppConfig.current.lineRedirectUri;
 
   /// LINE OAuth 로그인 시작
+  ///
+  /// LINE OAuth 2.0 플로우를 통해 사용자 인증을 진행합니다.
+  ///
+  /// Returns: 인증 성공 시 LineUserInfo, 실패 시 에러 메시지
   Future<Result<LineUserInfo>> loginWithLine() async {
     try {
-      // REMOVED_SECURITY_RISK: print('LINE OAuth 로그인 시작');
-
       // 1. State 파라미터 생성 (CSRF 보호)
       final state = _generateState();
 
@@ -54,10 +55,8 @@ class LineOAuthService {
         return Result.failure(profileResult.message);
       }
 
-      // REMOVED_SECURITY_RISK: print('LINE OAuth 로그인 성공');
       return Result.success('LINEログインが完了しました', profileResult.data!);
     } catch (e) {
-      // REMOVED_SECURITY_RISK: print('LINE OAuth 로그인 실패: $e');
       return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
     }
   }
@@ -83,23 +82,41 @@ class LineOAuthService {
     return uri.toString();
   }
 
-  /// OAuth URL 실행
+  /// OAuth URL 실행 (flutter_web_auth 사용)
+  ///
+  /// flutter_web_auth 패키지를 사용하여 실제 OAuth 플로우를 처리합니다.
+  /// 웹뷰에서 인증을 진행하고 콜백 URL을 받아 처리합니다.
   Future<String> _launchOAuthUrl(String authUrl) async {
     try {
-      final uri = Uri.parse(authUrl);
-      if (await canLaunchUrl(uri)) {
-        // 외부 브라우저에서 OAuth 인증 진행
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      // flutter_web_auth를 사용한 OAuth 플로우
+      final result = await FlutterWebAuth.authenticate(
+        url: authUrl,
+        callbackUrlScheme: _extractSchemeFromRedirectUri(_redirectUri),
+      );
 
-        // 실제 구현에서는 콜백 URL을 받아야 하지만,
-        // 현재는 간단히 성공으로 처리
-        // TODO: 실제 콜백 URL 처리를 위해서는 flutter_web_auth 패키지 사용 필요
-        return '$_redirectUri?code=temp_code&state=temp_state';
-      } else {
-        throw Exception('OAuth URL을 실행할 수 없습니다');
-      }
+      // 콜백 URL에서 결과 반환
+      return result;
     } catch (e) {
+      // 사용자가 취소한 경우 또는 OAuth 실패
+      if (e.toString().contains('CANCELLED') ||
+          e.toString().contains('canceled')) {
+        throw Exception('LINE ログインがキャンセルされました');
+      }
       throw Exception('OAuth URL 실행 실패: $e');
+    }
+  }
+
+  /// 리다이렉트 URI에서 스키마 추출
+  ///
+  /// [redirectUri] 리다이렉트 URI (예: https://example.com/callback)
+  /// Returns: 스키마 부분 (예: https)
+  String _extractSchemeFromRedirectUri(String redirectUri) {
+    try {
+      final uri = Uri.parse(redirectUri);
+      return uri.scheme;
+    } catch (e) {
+      // 파싱 실패 시 기본값 반환
+      return 'https';
     }
   }
 
@@ -109,7 +126,6 @@ class LineOAuthService {
       final uri = Uri.parse(callbackUrl);
       return uri.queryParameters['code'];
     } catch (e) {
-      // REMOVED_SECURITY_RISK: print('인증 코드 추출 실패: $e');
       return null;
     }
   }
@@ -137,11 +153,9 @@ class LineOAuthService {
         final tokenInfo = LineTokenInfo.fromJson(data);
         return Result.success('토큰 획득 성공', tokenInfo);
       } else {
-        // REMOVED_SECURITY_RISK: print('토큰 요청 실패: ${response.statusCode} - ${response.body}');
         return Result.failure('LINE トークンの取得に失敗しました');
       }
     } catch (e) {
-      // REMOVED_SECURITY_RISK: print('토큰 요청 중 오류: $e');
       return Result.failure('LINE トークンの取得に失敗しました: ${e.toString()}');
     }
   }
@@ -161,11 +175,9 @@ class LineOAuthService {
         final userInfo = LineUserInfo.fromJson(data);
         return Result.success('프로필 정보 획득 성공', userInfo);
       } else {
-        // REMOVED_SECURITY_RISK: print('프로필 요청 실패: ${response.statusCode} - ${response.body}');
         return Result.failure('LINE プロフィールの取得に失敗しました');
       }
     } catch (e) {
-      // REMOVED_SECURITY_RISK: print('프로필 요청 중 오류: $e');
       return Result.failure('LINE プロフィールの取得に失敗しました: ${e.toString()}');
     }
   }

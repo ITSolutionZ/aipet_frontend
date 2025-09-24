@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
 
 /// 범용 정보 카드 컴포넌트
 /// 다양한 정보를 표시할 수 있는 유연한 카드 위젯

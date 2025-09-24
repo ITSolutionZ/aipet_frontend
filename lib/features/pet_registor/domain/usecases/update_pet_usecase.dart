@@ -1,6 +1,6 @@
-import '../../../../shared/shared.dart';
-import '../entities/pet_profile_entity.dart';
-import '../repositories/pet_repository.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 class UpdatePetUseCase {
   final PetRepository repository;

@@ -31,28 +31,28 @@ void main() {
     );
 
     group('startNewWalk', () {
-      test('should return success when new walk is started successfully', () async {
-        // Act
-        final result = await controller.startNewWalk(
-          title: 'Test Walk',
-          petId: 'pet-123',
-          petName: 'Buddy',
-        );
+      test(
+        'should return success when new walk is started successfully',
+        () async {
+          // Act
+          final result = await controller.startNewWalk(
+            title: 'Test Walk',
+            petId: 'pet-123',
+            petName: 'Buddy',
+          );
 
-        // Assert
-        expect(result, isA<Result<WalkRecordEntity>>());
-        expect(result.isSuccess, isTrue);
-        expect(result.data?.title, equals('Test Walk'));
-        expect(result.data?.petId, equals('pet-123'));
-        expect(result.data?.status, equals(WalkStatus.inProgress));
-      });
+          // Assert
+          expect(result, isA<Result<WalkRecordEntity>>());
+          expect(result.isSuccess, isTrue);
+          expect(result.data?.title, equals('Test Walk'));
+          expect(result.data?.petId, equals('pet-123'));
+          expect(result.data?.status, equals(WalkStatus.inProgress));
+        },
+      );
 
       test('should set current walk in provider when started', () async {
         // Act
-        await controller.startNewWalk(
-          title: 'Test Walk',
-          petId: 'pet-123',
-        );
+        await controller.startNewWalk(title: 'Test Walk', petId: 'pet-123');
 
         // Assert
         final currentWalk = controller.getCurrentWalk();
@@ -74,10 +74,7 @@ void main() {
 
       test('should end current walk successfully when walk exists', () async {
         // Arrange - Start a walk first
-        await controller.startNewWalk(
-          title: 'Test Walk',
-          petId: 'pet-123',
-        );
+        await controller.startNewWalk(title: 'Test Walk', petId: 'pet-123');
 
         // Act
         final result = await controller.endCurrentWalk(
@@ -98,10 +95,7 @@ void main() {
     group('pauseCurrentWalk', () {
       test('should pause current walk successfully', () {
         // Arrange - Start a walk first
-        controller.startNewWalk(
-          title: 'Test Walk',
-          petId: 'pet-123',
-        );
+        controller.startNewWalk(title: 'Test Walk', petId: 'pet-123');
 
         // Act
         final result = controller.pauseCurrentWalk();
@@ -115,10 +109,7 @@ void main() {
     group('resumeCurrentWalk', () {
       test('should resume current walk successfully', () {
         // Arrange - Start and pause a walk first
-        controller.startNewWalk(
-          title: 'Test Walk',
-          petId: 'pet-123',
-        );
+        controller.startNewWalk(title: 'Test Walk', petId: 'pet-123');
         controller.pauseCurrentWalk();
 
         // Act

@@ -1,8 +1,8 @@
-import '../../../../shared/shared.dart';
-import '../entities/pet_profile_entity.dart';
-import '../exceptions/pet_profile_exceptions.dart';
-import '../repositories/pet_profile_repository.dart';
-import '../services/pet_profile_domain_service.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/exceptions/pet_profile_exceptions.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/repositories/pet_profile_repository.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/services/pet_profile_domain_service.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// Update Pet Profile UseCase
 ///

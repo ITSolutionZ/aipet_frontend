@@ -6,9 +6,22 @@ part of 'ai_chat_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$aiChatNotifierHash() => r'089b0d089509e2c3a6d3f150f2973db83d37c159';
+String _$aiChatNotifierHash() => r'c1b59de005cd8e7d1e3b1d6da1651619cd9790aa';
 
-/// AI 채팅 상태 프로바이더
+/// 🎯 AI 채팅 상태 프로바이더
+///
+/// Riverpod을 사용한 AI 채팅 상태 관리 클래스입니다.
+///
+/// ## 주요 기능
+/// - 채팅 메시지 관리 (전송, 저장, 로드)
+/// - 펫 선택 및 카테고리 선택 처리
+/// - 즐겨찾기 메시지 관리
+/// - 채팅 히스토리 저장 및 복원
+///
+/// ## 상태 관리
+/// - 불변성 유지를 위한 copyWith 패턴 사용
+/// - 에러 처리 및 로딩 상태 관리
+/// - Repository 패턴을 통한 데이터 접근
 ///
 /// Copied from [AiChatNotifier].
 @ProviderFor(AiChatNotifier)

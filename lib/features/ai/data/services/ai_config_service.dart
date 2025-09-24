@@ -2,70 +2,109 @@ import '../../../../app/app.dart';
 import '../../domain/domain.dart';
 import 'ai_cache_service.dart';
 import 'ai_data_service.dart';
+import 'ai_dio_service.dart';
 
-/// 🎯 AI 설정 서비스 (리팩토링됨)
+/// 🎯 AI 설정 서비스 (의존성 주입 패턴으로 리팩토링됨)
 ///
-/// 기존의 거대한 AiConfigService를 여러 서비스로 분리한 후
-/// 이 서비스는 단순히 다른 서비스들을 조합하는 역할만 담당
+/// 기존의 static 패턴을 의존성 주입 패턴으로 변경하여
+/// 테스트 가능하고 유연한 구조로 개선했습니다.
 class AiConfigService {
-  static late final AiDataService _dataService;
-  static late final AiCacheService _cacheService;
+  final AiDataService _dataService;
+  final AiCacheService _cacheService;
+
+  /// 생성자 - 의존성 주입
+  AiConfigService({
+    required AiDataService dataService,
+    required AiCacheService cacheService,
+  }) : _dataService = dataService,
+       _cacheService = cacheService;
+
+  /// 팩토리 생성자 - 기본 설정으로 인스턴스 생성
+  factory AiConfigService.createDefault() {
+    final dioService = AiDioService.instance;
+    final cacheService = AiCacheService();
+    final dataService = AiDataService(cacheService, dioService);
+
+    return AiConfigService(
+      dataService: dataService,
+      cacheService: cacheService,
+    );
+  }
 
   /// 현재 Mock 모드 여부
-  static bool get isMockMode => AppConfig.current.isMockMode;
+  bool get isMockMode => AppConfig.current.isMockMode;
 
-  /// 서비스 초기화
-  static Future<void> initialize() async {
+  /// AI 카테고리 데이터 가져오기
+  Future<List<AiCategoryEntity>> getCategories() async {
     try {
-      _cacheService = AiCacheService();
-      _dataService = AiDataService(_cacheService);
-      _dataService.logInfo('AiConfigService initialized successfully');
+      return await _dataService.getCategories();
     } catch (e) {
-      // ignore: avoid_print
-      // REMOVED_SECURITY_RISK: print('[AI_CONFIG_ERROR] Failed to initialize service: $e');
-      rethrow;
+      throw AiConfigException(
+        AiErrorMessages.configError,
+        configKey: 'categories',
+        originalError: e,
+      );
     }
   }
 
-  /// AI 카테고리 데이터 가져오기
-  static Future<List<AiCategoryEntity>> getCategories() async {
-    return _dataService.getCategories();
-  }
-
   /// AI 추천 질문 가져오기
-  static Future<List<AiSuggestedQuestionEntity>> getSuggestedQuestions() async {
-    return _dataService.getSuggestedQuestions();
+  Future<List<AiSuggestedQuestionEntity>> getSuggestedQuestions() async {
+    try {
+      return await _dataService.getSuggestedQuestions();
+    } catch (e) {
+      throw AiConfigException(
+        AiErrorMessages.configError,
+        configKey: 'suggested_questions',
+        originalError: e,
+      );
+    }
   }
 
   /// AI 응답 템플릿 가져오기
-  static Future<Map<String, String>> getResponseTemplates() async {
-    return _dataService.getResponseTemplates();
+  Future<Map<String, String>> getResponseTemplates() async {
+    try {
+      return await _dataService.getResponseTemplates();
+    } catch (e) {
+      throw AiConfigException(
+        AiErrorMessages.configError,
+        configKey: 'response_templates',
+        originalError: e,
+      );
+    }
   }
 
   /// 키워드 매핑 가져오기
-  static Future<Map<String, List<String>>> getKeywordMapping() async {
-    return _dataService.getKeywordMapping();
+  Future<Map<String, List<String>>> getKeywordMapping() async {
+    try {
+      return await _dataService.getKeywordMapping();
+    } catch (e) {
+      throw AiConfigException(
+        AiErrorMessages.configError,
+        configKey: 'keyword_mapping',
+        originalError: e,
+      );
+    }
   }
 
   /// 캐시 관리 메서드들
-  static void clearCache() {
+  void clearCache() {
     _cacheService.clearCache();
   }
 
-  static void clearCacheForKey(String key) {
+  void clearCacheForKey(String key) {
     _cacheService.clearCacheForKey(key);
   }
 
-  static Map<String, dynamic> getCacheStatus() {
+  Map<String, dynamic> getCacheStatus() {
     return _cacheService.getCacheStatus();
   }
 
-  static void cleanupExpiredCache() {
+  void cleanupExpiredCache() {
     _cacheService.cleanupExpiredCache();
   }
 
   /// 서비스 상태 확인
-  static Future<Map<String, dynamic>> getServiceStatus() async {
+  Future<Map<String, dynamic>> getServiceStatus() async {
     try {
       return {
         'isMockMode': isMockMode,
@@ -73,11 +112,7 @@ class AiConfigService {
         'lastCheck': DateTime.now().toIso8601String(),
       };
     } catch (e) {
-      _dataService.logError('Failed to get service status', e);
-      return {
-        'error': e.toString(),
-        'lastCheck': DateTime.now().toIso8601String(),
-      };
+      throw AiConfigException('Failed to get service status', originalError: e);
     }
   }
 }

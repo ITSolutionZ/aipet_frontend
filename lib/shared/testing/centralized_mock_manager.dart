@@ -30,7 +30,8 @@ enum MockScenario {
 /// 모든 Mock 데이터를 중앙에서 관리하고,
 /// 시나리오별 테스트와 실제 API 연동을 지원합니다.
 class CentralizedMockManager {
-  static final CentralizedMockManager _instance = CentralizedMockManager._internal();
+  static final CentralizedMockManager _instance =
+      CentralizedMockManager._internal();
   factory CentralizedMockManager() => _instance;
   CentralizedMockManager._internal();
 
@@ -98,7 +99,9 @@ class CentralizedMockManager {
         'type': 'walk',
         'duration': 3600,
         'distance': 2.5,
-        'date': DateTime.now().subtract(const Duration(hours: 2)).toIso8601String(),
+        'date': DateTime.now()
+            .subtract(const Duration(hours: 2))
+            .toIso8601String(),
       },
     ];
   }
@@ -110,13 +113,17 @@ class CentralizedMockManager {
         'id': 'msg_001',
         'type': 'user',
         'content': '우리 강아지가 계속 기침을 해요',
-        'timestamp': DateTime.now().subtract(const Duration(minutes: 5)).toIso8601String(),
+        'timestamp': DateTime.now()
+            .subtract(const Duration(minutes: 5))
+            .toIso8601String(),
       },
       {
         'id': 'msg_002',
         'type': 'assistant',
         'content': '강아지의 기침은 여러 원인이 있을 수 있습니다. 지속적인 기침이라면 수의사 상담을 권합니다.',
-        'timestamp': DateTime.now().subtract(const Duration(minutes: 4)).toIso8601String(),
+        'timestamp': DateTime.now()
+            .subtract(const Duration(minutes: 4))
+            .toIso8601String(),
       },
     ];
   }
@@ -127,7 +134,9 @@ class CentralizedMockManager {
       {
         'id': 'walk_001',
         'petId': 'pet_001',
-        'startTime': DateTime.now().subtract(const Duration(hours: 1)).toIso8601String(),
+        'startTime': DateTime.now()
+            .subtract(const Duration(hours: 1))
+            .toIso8601String(),
         'endTime': DateTime.now().toIso8601String(),
         'distance': 1.8,
         'route': [
@@ -313,19 +322,29 @@ class CentralizedMockManager {
 
     switch (scenario) {
       case MockScenario.success:
-        await Future.delayed(Duration(milliseconds: 200 + _random.nextInt(300)));
+        await Future.delayed(
+          Duration(milliseconds: 200 + _random.nextInt(300)),
+        );
         break;
       case MockScenario.delay:
-        await Future.delayed(Duration(milliseconds: 1000 + _random.nextInt(2000)));
+        await Future.delayed(
+          Duration(milliseconds: 1000 + _random.nextInt(2000)),
+        );
         break;
       case MockScenario.partialSuccess:
-        await Future.delayed(Duration(milliseconds: 500 + _random.nextInt(500)));
+        await Future.delayed(
+          Duration(milliseconds: 500 + _random.nextInt(500)),
+        );
         break;
       case MockScenario.error:
-        await Future.delayed(Duration(milliseconds: 100 + _random.nextInt(200)));
+        await Future.delayed(
+          Duration(milliseconds: 100 + _random.nextInt(200)),
+        );
         break;
       case MockScenario.empty:
-        await Future.delayed(Duration(milliseconds: 100 + _random.nextInt(100)));
+        await Future.delayed(
+          Duration(milliseconds: 100 + _random.nextInt(100)),
+        );
         break;
       case MockScenario.loading:
         // 로딩 시나리오는 호출하는 곳에서 처리
@@ -361,7 +380,10 @@ class CentralizedMockManager {
   static Map<String, dynamic> getStatistics() {
     final instance = CentralizedMockManager();
     return {
-      'totalCalls': instance._callCounts.values.fold<int>(0, (sum, count) => sum + count),
+      'totalCalls': instance._callCounts.values.fold<int>(
+        0,
+        (sum, count) => sum + count,
+      ),
       'callsByKey': Map.from(instance._callCounts),
       'activeOverrides': Map.from(instance._scenarioOverrides),
       'dataKeys': instance._dataStore.keys.toList(),
@@ -382,5 +404,6 @@ class CentralizedMockManager {
   }
 
   /// Mock 상태 확인
-  static bool get isInitialized => CentralizedMockManager()._dataStore.isNotEmpty;
+  static bool get isInitialized =>
+      CentralizedMockManager()._dataStore.isNotEmpty;
 }

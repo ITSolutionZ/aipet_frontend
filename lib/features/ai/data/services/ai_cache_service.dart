@@ -1,4 +1,4 @@
-import '../../../../shared/services/base_logging_service.dart';
+import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 
 /// 🎯 AI 캐시 서비스
 ///

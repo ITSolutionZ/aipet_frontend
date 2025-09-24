@@ -1,9 +1,7 @@
+import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../data/providers/pet_activities_providers.dart';
-import '../../domain/entities/youtube_video_entity.dart';
-import '../../domain/usecases/usecases.dart';
 
 /// YouTube 비디오 컨트롤러
 class YouTubeVideosController {

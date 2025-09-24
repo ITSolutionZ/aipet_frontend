@@ -1,4 +1,4 @@
-import '../../../../app/config/app_config.dart';
+import 'package:aipet_frontend/app/config/app_config.dart';
 
 /// Auth 기능 환경별 설정 서비스
 ///

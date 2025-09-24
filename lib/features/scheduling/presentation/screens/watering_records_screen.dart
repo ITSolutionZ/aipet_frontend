@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 급수 기록 화면
 class WateringRecordsScreen extends ConsumerStatefulWidget {

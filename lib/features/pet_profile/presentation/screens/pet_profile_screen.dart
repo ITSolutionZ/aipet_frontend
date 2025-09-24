@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_controller.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/pet_profile_widgets.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/pet_registor.dart';
-import '../controllers/pet_profile_controllers.dart';
-import '../widgets/pet_profile_widgets.dart';
 
 /// 리팩토링된 Pet Profile 화면
 ///
@@ -18,14 +17,11 @@ class PetProfileScreen extends ConsumerStatefulWidget {
   const PetProfileScreen({super.key, required this.petId});
 
   @override
-  ConsumerState<PetProfileScreen> createState() =>
-      _PetProfileScreenState();
+  ConsumerState<PetProfileScreen> createState() => _PetProfileScreenState();
 }
 
-class _PetProfileScreenState
-    extends ConsumerState<PetProfileScreen>
+class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     with SingleTickerProviderStateMixin {
-
   @override
   void initState() {
     super.initState();
@@ -74,9 +70,7 @@ class _LoadingScreen extends StatelessWidget {
     return const Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       body: Center(
-        child: CircularProgressIndicator(
-          color: AppColors.pointBrown,
-        ),
+        child: CircularProgressIndicator(color: AppColors.pointBrown),
       ),
     );
   }
@@ -142,11 +136,7 @@ class _PetNotFoundScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.pets,
-              size: 64,
-              color: AppColors.pointBrown,
-            ),
+            const Icon(Icons.pets, size: 64, color: AppColors.pointBrown),
             const SizedBox(height: AppSpacing.lg),
             Text(
               '펫을 찾을 수 없습니다',
@@ -327,10 +317,7 @@ class _HealthTab extends StatelessWidget {
       child: Text(
         '건강 정보\n(구현 예정)',
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 18,
-          color: AppColors.pointDark,
-        ),
+        style: TextStyle(fontSize: 18, color: AppColors.pointDark),
       ),
     );
   }
@@ -348,10 +335,7 @@ class _NutritionTab extends StatelessWidget {
       child: Text(
         '영양 정보\n(구현 예정)',
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 18,
-          color: AppColors.pointDark,
-        ),
+        style: TextStyle(fontSize: 18, color: AppColors.pointDark),
       ),
     );
   }
@@ -369,10 +353,7 @@ class _ActivityTab extends StatelessWidget {
       child: Text(
         '활동 정보\n(구현 예정)',
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 18,
-          color: AppColors.pointDark,
-        ),
+        style: TextStyle(fontSize: 18, color: AppColors.pointDark),
       ),
     );
   }

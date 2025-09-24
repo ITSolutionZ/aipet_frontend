@@ -1,6 +1,6 @@
-import '../../../../shared/shared.dart';
-import '../entities/pet_profile_entity.dart';
-import '../entities/temporary_pet_data_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/entities/temporary_pet_data_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 abstract class PetRepository {
   /// 모든 펫 목록 가져오기

@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import '../../../../shared/shared.dart';
-import '../../data/walk_providers.dart';
 
 class PetSelectorWidget extends StatelessWidget {
   final PetInfo? selectedPet;

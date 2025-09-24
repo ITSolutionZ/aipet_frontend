@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/features/facility/data/facility_providers.dart';
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../data/facility_providers.dart';
-import '../../domain/facility.dart';
 
 /// 시설 목록 화면의 비즈니스 로직을 관리하는 컨트롤러
 class FacilityListController {
@@ -55,7 +54,7 @@ class FacilityListController {
               .where(
                 (facility) =>
                     facility.name.toLowerCase().contains(query.toLowerCase()) ||
-                    facility.description.toLowerCase().contains(
+                    (facility.description?.toLowerCase() ?? '').contains(
                       query.toLowerCase(),
                     ),
               )
@@ -127,7 +126,7 @@ class FacilityListController {
               .where(
                 (facility) =>
                     facility.name.toLowerCase().contains(query.toLowerCase()) ||
-                    facility.description.toLowerCase().contains(
+                    (facility.description?.toLowerCase() ?? '').contains(
                       query.toLowerCase(),
                     ),
               )
@@ -160,9 +159,21 @@ class FacilityListController {
   String getFacilityTypeLabel(FacilityType type) {
     switch (type) {
       case FacilityType.hospital:
-        return '동물병원';
+        return '動物病院';
       case FacilityType.grooming:
-        return '트리밍';
+        return 'トリミング';
+      case FacilityType.petShop:
+        return 'ペットショップ';
+      case FacilityType.dogRun:
+        return 'ドッグラン';
+      case FacilityType.park:
+        return '公園';
+      case FacilityType.cafe:
+        return 'ペットカフェ';
+      case FacilityType.hotel:
+        return 'ペットホテル';
+      case FacilityType.training:
+        return '訓練所';
     }
   }
 

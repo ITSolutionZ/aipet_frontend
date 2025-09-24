@@ -1,6 +1,6 @@
 library;
 
-export '../../../../shared/core/domain/result.dart';
+export 'package:aipet_frontend/shared/core/domain/result.dart';
 export 'auth_constants.dart';
 export 'auth_error.dart';
 export 'auth_form_state.dart';

@@ -1,7 +1,7 @@
+import 'package:aipet_frontend/features/auth/application/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../application/auth_controller.dart';
 import 'api_connection_checker.dart'; // Changed
 import 'firebase_login_button.dart'; // Changed
 
@@ -147,10 +147,7 @@ class _EnhancedExchangeTokenButtonState
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -230,19 +227,13 @@ class _EnhancedExchangeTokenButtonState
             const SizedBox(height: 12),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            if (subtitle != null) ...[
+            ...[
               const SizedBox(height: 8),
               Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                ),
+                subtitle ?? '',
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -261,7 +252,9 @@ class _EnhancedExchangeTokenButtonState
       onPressed: state.isLoading
           ? null
           : () async {
-              await ref.read(authControllerProvider.notifier).exchangeServerToken();
+              await ref
+                  .read(authControllerProvider.notifier)
+                  .exchangeServerToken();
 
               // 토큰 상태 새로고침 // Changed
               await _checkTokenStatus();
@@ -289,16 +282,11 @@ class _EnhancedExchangeTokenButtonState
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
         state.isLoading ? '교환 중...' : 'Firebase → Server 토큰 교환',
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -311,16 +299,11 @@ class _EnhancedExchangeTokenButtonState
       },
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: const Text(
         '다시 시도',
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
       ),
     );
   }

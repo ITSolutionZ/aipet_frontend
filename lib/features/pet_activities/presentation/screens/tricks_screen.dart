@@ -1,15 +1,14 @@
+import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/controllers/tricks_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/learn_next_section.dart';
+import 'package:aipet_frontend/shared/widgets/trick_action_buttons.dart';
+import 'package:aipet_frontend/shared/widgets/trick_management_bottom_sheet.dart';
+import 'package:aipet_frontend/shared/widgets/your_tricks_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../../data/providers/pet_activities_providers.dart';
-import '../../domain/entities/trick_entity.dart';
-import '../controllers/tricks_controller.dart';
-import '../widgets/learn_next_section.dart';
-import '../widgets/trick_action_buttons.dart';
-import '../widgets/trick_management_bottom_sheet.dart';
-import '../widgets/your_tricks_section.dart';
 
 /// 펫 트릭 화면
 ///

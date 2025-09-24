@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// YouTube 영상이 없을 때의 빈 상태 위젯
 class YouTubeVideosEmptyState extends StatelessWidget {
@@ -26,9 +25,7 @@ class YouTubeVideosEmptyState extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            hasFilters
-                ? '現在のフィルターでは動画が見つかりません'
-                : 'まだトレーニング動画がありません',
+            hasFilters ? '現在のフィルターでは動画が見つかりません' : 'まだトレーニング動画がありません',
             style: AppFonts.bodyMedium.copyWith(
               color: AppColors.pointDark.withValues(alpha: 0.6),
             ),

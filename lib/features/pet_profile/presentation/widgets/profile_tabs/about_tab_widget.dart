@@ -1,13 +1,12 @@
+import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_controller.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/profile_cards/caretaker_card.dart';
+import 'package:aipet_frontend/shared/profile_cards/date_card.dart';
+import 'package:aipet_frontend/shared/profile_cards/editable_attribute_card.dart';
+import 'package:aipet_frontend/shared/profile_cards/microchip_card.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../../shared/shared.dart';
-import '../../../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../../controllers/pet_profile_controllers.dart';
-import '../profile_cards/caretaker_card.dart';
-import '../profile_cards/date_card.dart';
-import '../profile_cards/editable_attribute_card.dart';
-import '../profile_cards/microchip_card.dart';
 
 class AboutTabWidget extends ConsumerStatefulWidget {
   final bool isEditMode;
@@ -124,7 +123,8 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
             CircleAvatar(
               radius: 50,
               backgroundColor: Colors.grey.withValues(alpha: 0.2),
-              backgroundImage: (widget.selectedImagePath ?? pet.imagePath) != null
+              backgroundImage:
+                  (widget.selectedImagePath ?? pet.imagePath) != null
                   ? AssetImage(widget.selectedImagePath ?? pet.imagePath!)
                   : null,
               child: (widget.selectedImagePath ?? pet.imagePath) == null
@@ -207,7 +207,11 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                '${pet.type == 'dog' ? '犬' : pet.type == 'cat' ? '猫' : pet.type} | ${pet.breed}',
+                '${pet.type == 'dog'
+                    ? '犬'
+                    : pet.type == 'cat'
+                    ? '猫'
+                    : pet.type} | ${pet.breed}',
                 style: AppFonts.bodyMedium.copyWith(
                   color: AppColors.pointDark.withValues(alpha: 0.7),
                 ),
@@ -248,7 +252,8 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
           )
         else
           Text(
-            pet.additionalInfo?['appearance'] ?? 'No appearance description available',
+            pet.additionalInfo?['appearance'] ??
+                'No appearance description available',
             style: AppFonts.bodyMedium.copyWith(
               color: AppColors.pointDark.withValues(alpha: 0.8),
             ),
@@ -271,7 +276,11 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
         const SizedBox(height: AppSpacing.md),
         EditableAttributeCard(
           label: '性別',
-          value: _getGenderString(widget.isEditMode ? widget.editingGender : pet.additionalInfo?['gender']),
+          value: _getGenderString(
+            widget.isEditMode
+                ? widget.editingGender
+                : pet.additionalInfo?['gender'],
+          ),
           type: 'gender',
           isEditMode: widget.isEditMode,
           onGenderChanged: widget.onGenderChanged,
@@ -279,7 +288,11 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
         const SizedBox(height: AppSpacing.sm),
         EditableAttributeCard(
           label: 'サイズ',
-          value: _getSizeString(widget.isEditMode ? widget.editingSize : pet.additionalInfo?['size']),
+          value: _getSizeString(
+            widget.isEditMode
+                ? widget.editingSize
+                : pet.additionalInfo?['size'],
+          ),
           type: 'size',
           isEditMode: widget.isEditMode,
           onSizeChanged: widget.onSizeChanged,
@@ -287,7 +300,11 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
         const SizedBox(height: AppSpacing.sm),
         EditableAttributeCard(
           label: '体重',
-          value: _getWeightString(widget.isEditMode ? widget.editingWeight : pet.additionalInfo?['weight']),
+          value: _getWeightString(
+            widget.isEditMode
+                ? widget.editingWeight
+                : pet.additionalInfo?['weight'],
+          ),
           type: 'weight',
           isEditMode: widget.isEditMode,
           onWeightChanged: widget.onWeightChanged,

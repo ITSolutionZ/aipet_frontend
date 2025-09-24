@@ -1,4 +1,4 @@
-import '../../../../../shared/shared.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'walk_location_entity.dart';
 
 class WalkRecordEntity {

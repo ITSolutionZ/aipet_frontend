@@ -8,6 +8,7 @@ import 'dart:async' as _i3;
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart'
     as _i2;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -162,4 +163,59 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
+
+  @override
+  _i3.Future<String> exchangeServerToken(String? idToken) =>
+      (super.noSuchMethod(
+            Invocation.method(#exchangeServerToken, [idToken]),
+            returnValue: _i3.Future<String>.value(
+              _i4.dummyValue<String>(
+                this,
+                Invocation.method(#exchangeServerToken, [idToken]),
+              ),
+            ),
+          )
+          as _i3.Future<String>);
+
+  @override
+  _i3.Future<String?> getCurrentUserIdToken() =>
+      (super.noSuchMethod(
+            Invocation.method(#getCurrentUserIdToken, []),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
+
+  @override
+  _i3.Future<String?> getStoredServerToken() =>
+      (super.noSuchMethod(
+            Invocation.method(#getStoredServerToken, []),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
+
+  @override
+  _i3.Future<void> saveServerToken(String? token) =>
+      (super.noSuchMethod(
+            Invocation.method(#saveServerToken, [token]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> clearServerToken() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearServerToken, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<bool> isAuthenticated() =>
+      (super.noSuchMethod(
+            Invocation.method(#isAuthenticated, []),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
 }

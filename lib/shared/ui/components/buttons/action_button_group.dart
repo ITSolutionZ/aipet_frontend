@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design/tokens/tokens.dart';
 
 /// 🔘 액션 버튼 그룹
 ///
@@ -100,14 +99,10 @@ class ActionButtonGroup extends StatelessWidget {
     return Row(
       children: [
         if (_shouldShowSecondaryButton) ...[
-          Expanded(
-            child: _buildSecondaryButton(),
-          ),
+          Expanded(child: _buildSecondaryButton()),
           const SizedBox(width: AppSpacing.md),
         ],
-        Expanded(
-          child: _buildPrimaryButton(),
-        ),
+        Expanded(child: _buildPrimaryButton()),
       ],
     );
   }
@@ -133,12 +128,7 @@ class ActionButtonGroup extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.medium),
         ),
       ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
     );
   }
 
@@ -158,12 +148,7 @@ class ActionButtonGroup extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.medium),
         ),
       ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
     );
   }
 }

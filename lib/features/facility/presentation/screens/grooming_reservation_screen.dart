@@ -1,12 +1,11 @@
+import 'package:aipet_frontend/features/facility/presentation/controllers/grooming_reservation_controller.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/facility_card.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/filter_chips.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/search_bar_widget.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../controllers/grooming_reservation_controller.dart';
-import '../widgets/facility_card.dart';
-import '../widgets/filter_chips.dart';
-import '../widgets/search_bar_widget.dart';
 
 class GroomingReservationScreen extends ConsumerStatefulWidget {
   const GroomingReservationScreen({super.key});

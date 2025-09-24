@@ -6,49 +6,19 @@ import '../../../../shared/services/base_logging_service.dart';
 import '../../../../shared/testing/mock_data/features/ai/ai_config_mock_data.dart';
 import '../../domain/domain.dart';
 import 'ai_cache_service.dart';
+import 'ai_dio_service.dart';
 
 /// 🎯 AI 데이터 서비스
 ///
 /// AI 관련 데이터의 로딩과 관리를 담당
 class AiDataService extends BaseLoggingService {
-  late final Dio _dio;
   final AiCacheService _cacheService;
+  final AiDioService _dioService;
 
-  // API 설정
-  static const Duration _connectTimeout = Duration(seconds: 30);
-  static const Duration _receiveTimeout = Duration(seconds: 60);
-  static const int _maxRetries = 3;
+  AiDataService(this._cacheService, this._dioService) : super('ai_data');
 
-  AiDataService(this._cacheService) : super('ai_data') {
-    _initializeDio();
-  }
-
-  /// Dio 인스턴스 초기화
-  void _initializeDio() {
-    _dio = Dio();
-    _dio.options.baseUrl = AppConfig.current.apiBaseUrl;
-    _dio.options.headers['Content-Type'] = 'application/json';
-    _dio.options.connectTimeout = _connectTimeout;
-    _dio.options.receiveTimeout = _receiveTimeout;
-
-    // 인터셉터 추가
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          logInfo('API Request: ${options.method} ${options.path}');
-          handler.next(options);
-        },
-        onError: (error, handler) {
-          logError('API Error: ${error.message}', error);
-          if (error.response != null) {
-            logWarning('Status: ${error.response?.statusCode}');
-            logDebug('Response Data: ${error.response?.data}');
-          }
-          handler.next(error);
-        },
-      ),
-    );
-  }
+  /// Dio 인스턴스 가져오기
+  Dio get _dio => _dioService.createApiDio();
 
   /// AI 카테고리 데이터 가져오기
   Future<List<AiCategoryEntity>> getCategories() async {
@@ -238,85 +208,9 @@ class AiDataService extends BaseLoggingService {
 
   /// 재시도 로직이 포함된 API 호출 실행
   Future<T> _executeWithRetry<T>(Future<T> Function() apiCall) async {
-    int retryCount = 0;
-    late Exception lastException;
-
-    while (retryCount < _maxRetries) {
-      try {
-        return await apiCall();
-      } on DioException catch (e) {
-        lastException = _handleDioException(e);
-
-        // 재시도하지 않을 에러들
-        if (e.response?.statusCode == 401 || // Unauthorized
-            e.response?.statusCode == 403 || // Forbidden
-            e.response?.statusCode == 400) {
-          // Bad request
-          throw lastException;
-        }
-
-        // 429(Rate limit) 또는 5xx 서버 에러의 경우 재시도
-        final statusCode = e.response?.statusCode;
-        if (statusCode == 429 || (statusCode != null && statusCode >= 500)) {
-          retryCount++;
-          if (retryCount < _maxRetries) {
-            final delay = Duration(seconds: retryCount * 2); // 지수 백오프
-            logInfo(
-              'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$_maxRetries)',
-            );
-            await Future.delayed(delay);
-            continue;
-          }
-        }
-
-        throw lastException;
-      } catch (e) {
-        lastException = Exception('Unexpected error: $e');
-        retryCount++;
-        if (retryCount < _maxRetries) {
-          final delay = Duration(seconds: retryCount * 2);
-          logInfo(
-            'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$_maxRetries)',
-          );
-          await Future.delayed(delay);
-          continue;
-        }
-        throw lastException;
-      }
-    }
-
-    throw lastException;
+    return _dioService.executeWithRetry(apiCall);
   }
 
-  /// Dio 예외를 사용자 친화적인 메시지로 변환
-  Exception _handleDioException(DioException e) {
-    switch (e.response?.statusCode) {
-      case 401:
-        return Exception('認証が必要です。ログインを確認してください。');
-      case 403:
-        return Exception('アクセス権限がありません。');
-      case 404:
-        return Exception('リクエストされたリソースが見つかりません。');
-      case 429:
-        return Exception('API リクエスト制限を超えました。しばらくしてから再試行してください。');
-      case 500:
-      case 502:
-      case 503:
-      case 504:
-        return Exception('サーバーに一時的な問題が発生しています。しばらくしてから再試行してください。');
-      case null:
-        if (e.type == DioExceptionType.connectionTimeout) {
-          return Exception('接続時間がタイムアウトしました。ネットワーク接続を確認してください。');
-        } else if (e.type == DioExceptionType.receiveTimeout) {
-          return Exception('応答時間がタイムアウトしました。しばらくしてから再試行してください。');
-        } else if (e.type == DioExceptionType.connectionError) {
-          return Exception('ネットワーク接続に問題があります。インターネット接続を確認してください。');
-        }
-        return Exception('ネットワークエラーが発生しました: ${e.message}');
-      default:
-        return Exception('API エラー (${e.response?.statusCode}): ${e.message}');
-    }
-  }
 
   /// JSON을 AiCategoryEntity로 매핑
   AiCategoryEntity _mapToAiCategoryEntity(Map<String, dynamic> json) {

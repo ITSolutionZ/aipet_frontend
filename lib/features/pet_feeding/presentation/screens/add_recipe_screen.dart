@@ -1,10 +1,9 @@
+import 'package:aipet_frontend/features/onboarding/data/data.dart';
+import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
 
 class AddRecipeScreen extends ConsumerStatefulWidget {
   const AddRecipeScreen({super.key});
@@ -42,9 +41,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientBackAppBar(
-        title: '新しいレシピを追加',
-      ),
+      appBar: const SoftGradientBackAppBar(title: '新しいレシピを追加'),
       body: Form(
         key: _formKey,
         child: ListView(

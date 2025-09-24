@@ -1,12 +1,11 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/features/onboarding/data/providers/pet_registration_provider.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pet_registor_widgets.dart';
+import 'package:aipet_frontend/shared/constants/pet_registration_texts.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/shared.dart';
-import '../../data/providers/pet_registration_provider.dart';
-import '../constants/pet_registration_texts.dart';
-import '../widgets/pet_registor_widgets.dart';
 
 class PetTypeSelectionScreen extends ConsumerStatefulWidget {
   const PetTypeSelectionScreen({super.key});
@@ -19,7 +18,6 @@ class PetTypeSelectionScreen extends ConsumerStatefulWidget {
 class _PetTypeSelectionScreenState
     extends ConsumerState<PetTypeSelectionScreen> {
   bool _showMicrochipBanner = false;
-
 
   /// 7단계 프로그레스바 생성
   Widget _buildProgressBar() {
@@ -45,7 +43,6 @@ class _PetTypeSelectionScreenState
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {

@@ -1,11 +1,11 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 공통 폼 필드 위젯
 ///
 /// 모든 feature에서 공통으로 사용되는 폼 필드 패턴을 제공합니다.
-class CommonFormField extends StatefulWidget {
+class CommonFormField extends StatelessWidget {
   const CommonFormField({
     super.key,
     required this.label,
@@ -52,39 +52,13 @@ class CommonFormField extends StatefulWidget {
   final InputDecoration? decoration;
 
   @override
-  State<CommonFormField> createState() => _CommonFormFieldState();
-}
-
-class _CommonFormFieldState extends State<CommonFormField> {
-  late TextEditingController _controller;
-  late FocusNode _focusNode;
-  @override
-  void initState() {
-    super.initState();
-    _controller =
-        widget.controller ?? TextEditingController(text: widget.initialValue);
-    _focusNode = widget.focusNode ?? FocusNode();
-  }
-
-  @override
-  void dispose() {
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
-    if (widget.focusNode == null) {
-      _focusNode.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 라벨
         Text(
-          widget.label,
+          label,
           style: AppFonts.bodyMedium.copyWith(
             color: AppColors.pointDark,
             fontWeight: FontWeight.w500,
@@ -94,20 +68,21 @@ class _CommonFormFieldState extends State<CommonFormField> {
 
         // 입력 필드
         TextFormField(
-          controller: _controller,
-          focusNode: _focusNode,
-          onChanged: widget.onChanged,
-          validator: widget.validator,
-          keyboardType: widget.keyboardType,
-          textInputAction: widget.textInputAction,
-          obscureText: widget.obscureText,
-          maxLines: widget.maxLines,
-          maxLength: widget.maxLength,
-          enabled: widget.enabled,
-          readOnly: widget.readOnly,
-          autofocus: widget.autofocus,
-          onFieldSubmitted: widget.onSubmitted,
-          onTap: widget.onTap,
+          controller: controller,
+          focusNode: focusNode,
+          initialValue: controller == null ? initialValue : null,
+          onChanged: onChanged,
+          validator: validator,
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          obscureText: obscureText,
+          maxLines: maxLines,
+          maxLength: maxLength,
+          enabled: enabled,
+          readOnly: readOnly,
+          autofocus: autofocus,
+          onFieldSubmitted: onSubmitted,
+          onTap: onTap,
           decoration: _buildDecoration(),
         ),
       ],
@@ -116,12 +91,12 @@ class _CommonFormFieldState extends State<CommonFormField> {
 
   InputDecoration _buildDecoration() {
     final baseDecoration = InputDecoration(
-      hintText: widget.hint,
-      prefixIcon: widget.prefixIcon,
-      suffixIcon: widget.suffixIcon,
+      hintText: hint,
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
       counterText: '', // maxLength 카운터 숨기기
       filled: true,
-      fillColor: widget.enabled ? AppColors.pureWhite : AppColors.pointOffWhite,
+      fillColor: enabled ? AppColors.pureWhite : AppColors.pointOffWhite,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
         borderSide: BorderSide(
@@ -162,13 +137,13 @@ class _CommonFormFieldState extends State<CommonFormField> {
     );
 
     // 커스텀 데코레이션이 있으면 병합
-    if (widget.decoration != null) {
+    if (decoration != null) {
       return baseDecoration.copyWith(
-        hintText: widget.decoration!.hintText ?? baseDecoration.hintText,
-        prefixIcon: widget.decoration!.prefixIcon ?? baseDecoration.prefixIcon,
-        suffixIcon: widget.decoration!.suffixIcon ?? baseDecoration.suffixIcon,
-        errorText: widget.decoration!.errorText,
-        helperText: widget.decoration!.helperText,
+        hintText: decoration!.hintText ?? baseDecoration.hintText,
+        prefixIcon: decoration!.prefixIcon ?? baseDecoration.prefixIcon,
+        suffixIcon: decoration!.suffixIcon ?? baseDecoration.suffixIcon,
+        errorText: decoration!.errorText,
+        helperText: decoration!.helperText,
       );
     }
 
@@ -176,8 +151,22 @@ class _CommonFormFieldState extends State<CommonFormField> {
   }
 }
 
+/// 🎯 Password Visibility State Provider
+final passwordVisibilityProvider =
+    StateNotifierProvider.family<PasswordVisibilityController, bool, String>(
+      (ref, fieldId) => PasswordVisibilityController(),
+    );
+
+class PasswordVisibilityController extends StateNotifier<bool> {
+  PasswordVisibilityController() : super(true); // Initially obscured
+
+  void toggle() {
+    state = !state;
+  }
+}
+
 /// 비밀번호 입력 필드
-class PasswordFormField extends StatefulWidget {
+class PasswordFormField extends ConsumerWidget {
   const PasswordFormField({
     super.key,
     required this.label,
@@ -190,6 +179,7 @@ class PasswordFormField extends StatefulWidget {
     this.controller,
     this.focusNode,
     this.onSubmitted,
+    this.fieldId,
   });
 
   final String label;
@@ -202,37 +192,34 @@ class PasswordFormField extends StatefulWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final ValueChanged<String>? onSubmitted;
+  final String? fieldId;
 
   @override
-  State<PasswordFormField> createState() => _PasswordFormFieldState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final effectiveFieldId = fieldId ?? 'default_password_field';
+    final obscureText = ref.watch(passwordVisibilityProvider(effectiveFieldId));
 
-class _PasswordFormFieldState extends State<PasswordFormField> {
-  bool _obscureText = true;
-
-  @override
-  Widget build(BuildContext context) {
     return CommonFormField(
-      label: widget.label,
-      hint: widget.hint,
-      initialValue: widget.initialValue,
-      onChanged: widget.onChanged,
-      validator: widget.validator,
-      textInputAction: widget.textInputAction,
-      enabled: widget.enabled,
-      controller: widget.controller,
-      focusNode: widget.focusNode,
-      onSubmitted: widget.onSubmitted,
-      obscureText: _obscureText,
+      label: label,
+      hint: hint,
+      initialValue: initialValue,
+      onChanged: onChanged,
+      validator: validator,
+      textInputAction: textInputAction,
+      enabled: enabled,
+      controller: controller,
+      focusNode: focusNode,
+      onSubmitted: onSubmitted,
+      obscureText: obscureText,
       suffixIcon: IconButton(
         icon: Icon(
-          _obscureText ? Icons.visibility_off : Icons.visibility,
+          obscureText ? Icons.visibility_off : Icons.visibility,
           color: AppColors.pointDark.withValues(alpha: 0.6),
         ),
         onPressed: () {
-          setState(() {
-            _obscureText = !_obscureText;
-          });
+          ref
+              .read(passwordVisibilityProvider(effectiveFieldId).notifier)
+              .toggle();
         },
       ),
     );

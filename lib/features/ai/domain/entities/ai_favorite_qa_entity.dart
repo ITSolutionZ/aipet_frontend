@@ -1,4 +1,4 @@
-import '../../../pet_registor/pet_registor.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 
 /// AI 즐겨찾기 질문-답변 쌍 엔티티
 class AiFavoriteQaEntity {
@@ -22,7 +22,10 @@ class AiFavoriteQaEntity {
     required this.originalTimestamp,
   });
 
-  /// JSON으로 변환 (향후 구현 예정)
+  /// JSON으로 변환
+  ///
+  /// 즐겨찾기 QA 엔티티를 JSON 형태로 직렬화합니다.
+  /// 로컬 저장소나 API 통신 시 사용됩니다.
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -37,13 +40,16 @@ class AiFavoriteQaEntity {
     };
   }
 
-  /// JSON에서 생성 (향후 구현 예정)
+  /// JSON에서 생성
+  ///
+  /// JSON 데이터로부터 즐겨찾기 QA 엔티티를 생성합니다.
+  /// 로컬 저장소나 API 응답에서 데이터를 복원할 때 사용됩니다.
   factory AiFavoriteQaEntity.fromJson(Map<String, dynamic> json) {
-    // petId가 있으면 mock 데이터에서 펫을 찾아서 복원
+    // petId가 있으면 펫 정보를 복원
     PetProfileEntity? pet;
     if (json['petId'] != null) {
-      // Mock 데이터에서 펫을 찾는 로직 (실제로는 repository에서 조회)
-      // pet = MockDataService.findPetById(json['petId']);
+      // TODO: Repository를 통해 펫 정보 조회 로직 구현 필요
+      // pet = petRepository.findById(json['petId']);
     }
 
     return AiFavoriteQaEntity(

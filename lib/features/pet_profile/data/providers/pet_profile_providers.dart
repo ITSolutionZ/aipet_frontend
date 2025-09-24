@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/features/onboarding/domain/repositories/pet_profile_repository.dart';
+import 'package:aipet_frontend/features/onboarding/domain/services/pet_profile_domain_service.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/get_pet_profile_usecase.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/manage_family_managers_usecase.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/update_pet_profile_usecase.dart';
+import 'package:aipet_frontend/shared/repositories/pet_profile_repository_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../domain/repositories/pet_profile_repository.dart';
-import '../../domain/services/pet_profile_domain_service.dart';
-import '../../domain/usecases/get_pet_profile_usecase.dart';
-import '../../domain/usecases/manage_family_managers_usecase.dart';
-import '../../domain/usecases/update_pet_profile_usecase.dart';
-import '../repositories/pet_profile_repository_impl.dart';
 
 /// Pet Profile Data Layer Providers
 ///
@@ -17,27 +16,30 @@ final petProfileRepositoryProvider = Provider<PetProfileRepository>((ref) {
 });
 
 // Domain Service Provider
-final petProfileDomainServiceProvider = Provider<PetProfileDomainService>((ref) {
+final petProfileDomainServiceProvider = Provider<PetProfileDomainService>((
+  ref,
+) {
   return PetProfileDomainServiceImpl();
 });
 
 // UseCase Providers
 final getPetProfileUseCaseProvider = Provider<GetPetProfileUseCase>((ref) {
-  return GetPetProfileUseCase(
-    ref.read(petProfileRepositoryProvider),
-  );
+  return GetPetProfileUseCase(ref.read(petProfileRepositoryProvider));
 });
 
-final updatePetProfileUseCaseProvider = Provider<UpdatePetProfileUseCase>((ref) {
+final updatePetProfileUseCaseProvider = Provider<UpdatePetProfileUseCase>((
+  ref,
+) {
   return UpdatePetProfileUseCase(
     ref.read(petProfileRepositoryProvider),
     ref.read(petProfileDomainServiceProvider),
   );
 });
 
-final manageFamilyManagersUseCaseProvider = Provider<ManageFamilyManagersUseCase>((ref) {
-  return ManageFamilyManagersUseCase(
-    ref.read(petProfileRepositoryProvider),
-    ref.read(petProfileDomainServiceProvider),
-  );
-});
+final manageFamilyManagersUseCaseProvider =
+    Provider<ManageFamilyManagersUseCase>((ref) {
+      return ManageFamilyManagersUseCase(
+        ref.read(petProfileRepositoryProvider),
+        ref.read(petProfileDomainServiceProvider),
+      );
+    });

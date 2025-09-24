@@ -1,12 +1,11 @@
+import 'package:aipet_frontend/home/data/providers/home_providers.dart';
+import 'package:aipet_frontend/home/domain/entities/home_dashboard_entity.dart';
+import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
+import 'package:aipet_frontend/shared/widgets/soft_gradient_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/design/design.dart';
-import '../../../../shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
-import '../../../../shared/widgets/soft_gradient_app_bar.dart';
-import '../../../home/data/providers/home_providers.dart';
-import '../../../home/domain/entities/home_dashboard_entity.dart';
 
 /// 오늘의 예약 화면
 class TodayAppointmentsScreen extends ConsumerWidget {

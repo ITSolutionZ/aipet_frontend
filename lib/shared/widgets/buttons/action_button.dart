@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
 
 /// 범용 액션 버튼 위젯
 /// 다양한 상황에서 재사용 가능한 버튼 컴포넌트

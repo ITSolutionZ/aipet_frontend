@@ -1,50 +1,85 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-import '../../../../shared/shared.dart';
+/// 🎯 QR Scanner State Provider
+final qrScannerStateProvider =
+    StateNotifierProvider<QRScannerController, QRScannerState>(
+      (ref) => QRScannerController(),
+    );
+
+class QRScannerController extends StateNotifier<QRScannerState> {
+  QRScannerController() : super(const QRScannerState());
+
+  Future<void> requestCameraPermission() async {
+    state = state.copyWith(isLoading: true);
+    final status = await Permission.camera.request();
+    state = state.copyWith(hasPermission: status.isGranted, isLoading: false);
+  }
+
+  void setController(QRViewController controller) {
+    state = state.copyWith(qrController: controller);
+  }
+}
+
+class QRScannerState {
+  final bool hasPermission;
+  final bool isLoading;
+  final QRViewController? qrController;
+
+  const QRScannerState({
+    this.hasPermission = false,
+    this.isLoading = true,
+    this.qrController,
+  });
+
+  QRScannerState copyWith({
+    bool? hasPermission,
+    bool? isLoading,
+    QRViewController? qrController,
+  }) {
+    return QRScannerState(
+      hasPermission: hasPermission ?? this.hasPermission,
+      isLoading: isLoading ?? this.isLoading,
+      qrController: qrController ?? this.qrController,
+    );
+  }
+}
 
 /// QR 코드 스캔 화면
 ///
 /// 카메라를 사용하여 QR 코드를 스캔하는 화면입니다.
-class QRScannerScreen extends StatefulWidget {
+class QRScannerScreen extends ConsumerStatefulWidget {
   const QRScannerScreen({super.key});
 
   @override
-  State<QRScannerScreen> createState() => _QRScannerScreenState();
+  ConsumerState<QRScannerScreen> createState() => _QRScannerScreenState();
 }
 
-class _QRScannerScreenState extends State<QRScannerScreen> {
+class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
-  bool _hasPermission = false;
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _requestCameraPermission();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(qrScannerStateProvider.notifier).requestCameraPermission();
+    });
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    final state = ref.read(qrScannerStateProvider);
+    state.qrController?.dispose();
     super.dispose();
-  }
-
-  /// 카메라 권한 요청
-  Future<void> _requestCameraPermission() async {
-    final status = await Permission.camera.request();
-    setState(() {
-      _hasPermission = status.isGranted;
-      _isLoading = false;
-    });
   }
 
   /// QR 코드 스캔 결과 처리
   void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
+    ref.read(qrScannerStateProvider.notifier).setController(controller);
     controller.scannedDataStream.listen((scanData) {
       if (scanData.code != null) {
         _handleScannedCode(scanData.code!);
@@ -54,8 +89,9 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
 
   /// 스캔된 코드 처리
   void _handleScannedCode(String code) {
+    final state = ref.read(qrScannerStateProvider);
     // QR 코드 스캔 중지
-    controller?.pauseCamera();
+    state.qrController?.pauseCamera();
 
     // 결과를 이전 화면으로 전달
     if (mounted) {
@@ -89,13 +125,15 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
   }
 
   Widget _buildBody() {
-    if (_isLoading) {
+    final state = ref.watch(qrScannerStateProvider);
+
+    if (state.isLoading) {
       return const Center(
         child: CircularProgressIndicator(color: Colors.white),
       );
     }
 
-    if (!_hasPermission) {
+    if (!state.hasPermission) {
       return _buildPermissionDenied();
     }
 
@@ -133,7 +171,9 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
             ),
             const SizedBox(height: AppSpacing.xl),
             ElevatedButton(
-              onPressed: _requestCameraPermission,
+              onPressed: () => ref
+                  .read(qrScannerStateProvider.notifier)
+                  .requestCameraPermission(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBlue,
                 foregroundColor: Colors.white,

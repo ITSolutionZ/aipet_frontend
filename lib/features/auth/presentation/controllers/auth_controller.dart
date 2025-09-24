@@ -1,28 +1,48 @@
+import 'package:aipet_frontend/features/auth/data/auth_providers.dart';
+import 'package:aipet_frontend/features/auth/domain/auth_form_state.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/usecases/get_current_user_usecase.dart';
+import 'package:aipet_frontend/features/auth/domain/usecases/login_usecase.dart';
+import 'package:aipet_frontend/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:aipet_frontend/features/auth/domain/usecases/signup_usecase.dart';
+import 'package:aipet_frontend/features/auth/domain/usecases/social_login_usecase.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../../shared/shared.dart';
-import '../../data/auth_providers.dart';
-import '../../domain/auth_form_state.dart';
-import '../../domain/repositories/auth_repository.dart';
-import '../../domain/usecases/get_current_user_usecase.dart';
-import '../../domain/usecases/login_usecase.dart';
-import '../../domain/usecases/logout_usecase.dart';
-import '../../domain/usecases/signup_usecase.dart';
-import '../../domain/usecases/social_login_usecase.dart';
-
-/// 인증 작업 결과 (Result 패턴 사용)
+/// 인증 작업 결과 타입 (Result 패턴 사용)
+///
+/// 인증 관련 작업의 성공/실패 결과를 담는 타입입니다.
 typedef AuthControllerResult = Result<String>;
 
-/// 인증 유효성 검사 결과 (Result 패턴 사용)
+/// 인증 유효성 검사 결과 타입 (Result 패턴 사용)
+///
+/// 폼 입력 데이터의 유효성 검사 결과를 담는 타입입니다.
 typedef AuthValidationResult = Result<void>;
 
+/// 인증 컨트롤러
+///
+/// 인증 관련 비즈니스 로직을 관리하는 컨트롤러입니다.
+/// UseCase 패턴을 사용하여 인증 로직을 처리하고,
+/// 폼 상태 관리를 담당합니다.
 class AuthController extends FormController<AuthFormState> {
+  /// 로그인 UseCase
   late final LoginUseCase _loginUseCase;
+
+  /// 회원가입 UseCase
   late final SignupUseCase _signupUseCase;
+
+  /// 로그아웃 UseCase
   late final LogoutUseCase _logoutUseCase;
+
+  /// 현재 사용자 정보 조회 UseCase
   late final GetCurrentUserUseCase _getCurrentUserUseCase;
+
+  /// 소셜 로그인 UseCase
   late final SocialLoginUseCase _socialLoginUseCase;
 
+  /// 생성자
+  ///
+  /// [ref] Riverpod Ref 객체
   AuthController(super.ref) {
     final repository = ref.read(authRepositoryProvider);
     _loginUseCase = LoginUseCase(repository);
@@ -76,13 +96,15 @@ class AuthController extends FormController<AuthFormState> {
     ref.read(authFormStateNotifierProvider.notifier).toggleRememberMe();
   }
 
-  /// TODO: 개발 완료 후 삭제할 임시 로그인 성공 처리
-  /// 현재는 아무 입력값이나 넣어도 로그인 성공으로 처리
-  void handleTempLoginSuccess() {
-    debugPrint('🚨 임시 로그인 성공 처리 - 실제 인증 로직 우회');
+  /// 실제 로그인 성공 처리
+  ///
+  /// 인증 성공 시 호출되어 폼 상태를 업데이트합니다.
+  /// 로딩 상태를 해제하고 에러를 초기화합니다.
+  void handleLoginSuccess() {
+    debugPrint('✅ AuthController: 로그인 성공 처리');
 
-    // 로딩 상태 해제 및 에러 초기화
-    ref.read(authFormStateNotifierProvider.notifier).handleTempLoginSuccess();
+    // 폼 상태 업데이트
+    ref.read(authFormStateNotifierProvider.notifier).handleLoginSuccess();
   }
 
   /// 로그인 처리 (UseCase 패턴 사용)

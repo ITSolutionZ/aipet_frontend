@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/ui/components/cards/cards.dart';
 import 'package:flutter/material.dart';
-
-import '../../ui/components/cards/cards.dart';
 
 /// ⚠️ DEPRECATED: 기존 API 호환성을 위해 유지됨
 /// 새로운 코드에서는 SummaryCard.basic() 또는 SummaryCard.withValue()를 사용하세요.

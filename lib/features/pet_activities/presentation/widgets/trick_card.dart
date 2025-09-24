@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/trick_entity.dart';
 
 /// 트릭 카드 위젯
 ///
@@ -20,9 +19,27 @@ class TrickCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return GestureDetector(
       onTap: onTap,
-      child: _buildContent(context),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+          border: Border.all(
+            color: AppColors.pointGray.withValues(alpha: 0.3),
+            width: 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: _buildContent(context),
+      ),
     );
   }
 

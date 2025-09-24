@@ -1,5 +1,5 @@
-import '../entities/entities.dart';
-import '../repositories/notification_repository.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
 
 class SaveNotificationSettingsUseCase {
   final NotificationRepository _repository;

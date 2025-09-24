@@ -1,11 +1,11 @@
+import 'package:aipet_frontend/features/notification/presentation/screens/notification_detail_screen.dart';
+import 'package:aipet_frontend/features/notification/presentation/screens/notification_list_screen.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
+import 'package:aipet_frontend/features/pet_health/presentation/screens/weight_tracking_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../features/notification/presentation/screens/notification_detail_screen.dart';
-import '../../../features/notification/presentation/screens/notification_list_screen.dart';
-import '../../../features/pet_activities/presentation/screens/all_tricks_screen.dart';
-import '../../../features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
-import '../../../features/pet_health/presentation/screens/weight_tracking_screen.dart';
 import 'route_constants.dart';
 
 /// 독립적인 전체화면 라우트 설정 (Shell 밖에 있는 화면들)

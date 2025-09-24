@@ -1,4 +1,4 @@
-import '../domain/result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// Result 패턴을 위한 공통 유틸리티
 ///

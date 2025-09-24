@@ -1,5 +1,5 @@
-import '../../../../shared/shared.dart';
-import '../repositories/auth_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 로그아웃 UseCase
 class LogoutUseCase {

@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/auth/auth.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/core/base_mock_service.dart';
 import 'package:mockito/mockito.dart';
-
-import '../../../../../features/auth/auth.dart';
-import '../../core/base_mock_service.dart';
 
 /// 🎭 Auth Repository Mockito 구현체
 ///

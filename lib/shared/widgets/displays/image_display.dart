@@ -1,8 +1,7 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
 
 /// 범용 이미지 표시 위젯
 class ImageDisplay extends StatelessWidget {

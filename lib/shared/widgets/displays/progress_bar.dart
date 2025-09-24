@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../shared.dart';
 
 /// 범용 프로그레스 바 위젯
 class ProgressBar extends StatelessWidget {

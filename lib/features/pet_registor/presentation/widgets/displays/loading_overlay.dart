@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 /// 로딩 오버레이 위젯
 /// 전체 화면을 덮는 반투명 로딩 인디케이터
@@ -98,7 +97,7 @@ class InlineLoadingIndicator extends StatelessWidget {
           ),
         ),
         if (message != null) ...[
-          const SizedBox(width: 8),
+          const const const SizedBox(width: 8),
           Text(
             message!,
             style: AppFonts.bodySmall.copyWith(
@@ -146,7 +145,7 @@ class ButtonLoadingState extends StatelessWidget {
                   ),
                 ),
                 if (loadingText != null) ...[
-                  const SizedBox(width: 8),
+                  const const const SizedBox(width: 8),
                   Text(loadingText!),
                 ],
               ],

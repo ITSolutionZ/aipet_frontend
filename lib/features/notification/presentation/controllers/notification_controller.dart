@@ -1,6 +1,6 @@
-import '../../../../app/controllers/base_controller.dart';
-import '../../domain/entities/entities.dart';
-import '../../domain/usecases/usecases.dart';
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/onboarding/domain/usecases/usecases.dart';
 
 /// 알림 컨트롤러 - UseCase를 통한 클린 아키텍처 구현
 class NotificationController extends BaseController {
@@ -77,7 +77,9 @@ class NotificationController extends BaseController {
   Future<int> getUnreadCount() async {
     try {
       final notifications = await _getNotificationsUseCase.call();
-      return notifications.where((n) => n.status == NotificationStatus.unread).length;
+      return notifications
+          .where((n) => n.status == NotificationStatus.unread)
+          .length;
     } catch (error) {
       handleError(error);
       return 0;

@@ -1,5 +1,5 @@
-import '../../../../shared/shared.dart';
-import '../repositories/settings_repository.dart';
+import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 class DeleteAccountUseCase {
   final SettingsRepository repository;

@@ -1,12 +1,9 @@
+import 'package:aipet_frontend/features/ai/data/repositories/ai_repository_impl.dart';
+import 'package:aipet_frontend/features/ai/data/services/ai_mock_data_service_impl.dart';
+import 'package:aipet_frontend/features/ai/data/services/openai_service.dart';
+import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../../../shared/testing/mock_config.dart';
-import '../../domain/domain.dart';
-import '../repositories/ai_repository_impl.dart';
-import '../repositories/ai_repository_mockito_impl.dart';
-import '../services/ai_mock_data_service_impl.dart';
-import '../services/openai_service.dart';
 
 part 'ai_providers.g.dart';
 
@@ -16,20 +13,13 @@ part 'ai_providers.g.dart';
 /// MockConfig.shouldUseMock 값에 따라 결정됩니다.
 @riverpod
 AiRepository aiRepository(Ref ref) {
-  if (MockConfig.shouldUseMock) {
-    // Mockito Mock 구현체 사용 (개발/테스트 환경)
-    return AiRepositoryMockitoImpl(
-      openAIService: OpenAIService(),
-      ref: ref,
-    );
-  } else {
-    // Real 구현체 사용 (프로덕션 환경)
-    return AiRepositoryImpl(
-      openAIService: OpenAIService(),
-      aiMockDataService: AiMockDataServiceImpl(),
-      ref: ref,
-    );
-  }
+  // 항상 동일한 Repository 구현체 사용
+  // 내부적으로 Mock 데이터 서비스로 Mock/Real API 전환
+  return AiRepositoryImpl(
+    openAIService: OpenAIService(),
+    aiMockDataService: AiMockDataServiceImpl(),
+    ref: ref,
+  );
 }
 
 /// Legacy AI Repository Provider (기존 구현체)

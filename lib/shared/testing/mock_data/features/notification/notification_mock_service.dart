@@ -1,5 +1,5 @@
-import '../../../../../features/notification/notification.dart';
-import '../../core/base_mock_service.dart';
+import 'package:aipet_frontend/features/notification/notification.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/core/base_mock_service.dart';
 
 /// Notification Feature 전용 Mock 데이터 서비스
 class NotificationMockService extends BaseMockService {

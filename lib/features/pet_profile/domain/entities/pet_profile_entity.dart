@@ -125,7 +125,7 @@ class PetProfileEntity {
   /// 프로필이 공유 가능한지 확인
   bool get isShareable {
     return sharingSettings.allowSharing &&
-           visibilityLevel != ProfileVisibilityLevel.private;
+        visibilityLevel != ProfileVisibilityLevel.private;
   }
 
   /// 패밀리 매니저 권한 확인
@@ -230,7 +230,7 @@ class VaccinationRecord {
 
 /// 프로필 공개 수준
 enum ProfileVisibilityLevel {
-  private,     // 비공개
-  family,      // 가족만
-  public,      // 공개
+  private, // 비공개
+  family, // 가족만
+  public, // 공개
 }

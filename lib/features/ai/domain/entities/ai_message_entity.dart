@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 /// AI 채팅 메시지 타입
 enum MessageType {
@@ -61,77 +60,6 @@ class AiMessageEntity {
   bool get isSystem => type == MessageType.system;
 }
 
-/// AI 채팅 세션 엔티티
-class AiChatSessionEntity {
-  final String id;
-  final String title;
-  final List<AiMessageEntity> messages;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String? petId;
-  final String? petName;
-
-  const AiChatSessionEntity({
-    required this.id,
-    required this.title,
-    required this.messages,
-    required this.createdAt,
-    required this.updatedAt,
-    this.petId,
-    this.petName,
-  });
-
-  AiChatSessionEntity copyWith({
-    String? id,
-    String? title,
-    List<AiMessageEntity>? messages,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    String? petId,
-    String? petName,
-  }) {
-    return AiChatSessionEntity(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      messages: messages ?? this.messages,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      petId: petId ?? this.petId,
-      petName: petName ?? this.petName,
-    );
-  }
-
-  /// 메시지 추가
-  AiChatSessionEntity addMessage(AiMessageEntity message) {
-    final updatedMessages = List<AiMessageEntity>.from(messages)..add(message);
-    return copyWith(messages: updatedMessages, updatedAt: DateTime.now());
-  }
-
-  /// 마지막 메시지
-  AiMessageEntity? get lastMessage {
-    return messages.isNotEmpty ? messages.last : null;
-  }
-
-  /// 총 메시지 수
-  int get messageCount => messages.length;
-}
-
-/// AI 추천 질문 엔티티
-class AiSuggestedQuestionEntity {
-  final String id;
-  final String question;
-  final String category;
-  final IconData icon;
-  final String? description;
-
-  const AiSuggestedQuestionEntity({
-    required this.id,
-    required this.question,
-    required this.category,
-    required this.icon,
-    this.description,
-  });
-}
 
 /// AI 응답 타입
 enum AiResponseType {

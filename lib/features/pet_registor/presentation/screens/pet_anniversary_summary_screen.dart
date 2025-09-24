@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pet_registor_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/shared.dart';
-import '../../data/providers/providers.dart';
-import '../widgets/pet_registor_widgets.dart';
 
 class PetAnniversarySummaryScreen extends ConsumerStatefulWidget {
   const PetAnniversarySummaryScreen({super.key});
@@ -30,6 +29,7 @@ class _PetAnniversarySummaryScreenState
     _scrollController.dispose();
     super.dispose();
   }
+
   /// 선택된 펫 이미지 경로 가져오기
   String _getPetImagePath() {
     final registrationState = ref.read(petRegistrationStateProvider);
@@ -165,102 +165,112 @@ class _PetAnniversarySummaryScreenState
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                        // 프로그레스바
-                        _buildProgressBar(),
-                        const SizedBox(height: AppSpacing.lg),
+                                // 프로그레스바
+                                _buildProgressBar(),
+                                const SizedBox(height: AppSpacing.lg),
 
-                        // 제목
-                        Text(
-                          '登録確認',
-                          style: AppFonts.titleLarge.copyWith(
-                            color: AppColors.pointBrown,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
+                                // 제목
+                                Text(
+                                  '登録確認',
+                                  style: AppFonts.titleLarge.copyWith(
+                                    color: AppColors.pointBrown,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: AppSpacing.xl),
 
-                        // 펫 이미지
-                        PetImageDisplay(
-                          imageFile: registrationState.petImagePath,
-                          imagePath: registrationState.petImagePath == null
-                              ? _getPetImagePath()
-                              : null,
-                          width: 200,
-                          height: 200,
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
+                                // 펫 이미지
+                                PetImageDisplay(
+                                  imageFile: registrationState.petImagePath,
+                                  imagePath:
+                                      registrationState.petImagePath == null
+                                      ? _getPetImagePath()
+                                      : null,
+                                  width: 200,
+                                  height: 200,
+                                ),
+                                const SizedBox(height: AppSpacing.xl),
 
-                        // 정보 카드들
-                        PetInfoCard(
-                          title: '名前',
-                          value: registrationState.petName ?? 'Unknown',
-                          icon: Icons.pets,
-                          onTap: () =>
-                              context.go(RouteConstants.petNameInputRoute),
-                        ),
-                        PetInfoCard(
-                          title: '性別',
-                          value: _getGenderText(),
-                          icon: Icons.wc,
-                          onTap: () =>
-                              context.go(RouteConstants.petNameInputRoute),
-                        ),
-                        PetInfoCard(
-                          title: '誕生日',
-                          value: registrationState.petBirthday != null
-                              ? '${registrationState.petBirthday!.year}年${registrationState.petBirthday!.month}月${registrationState.petBirthday!.day}日'
-                              : '未設定',
-                          icon: Icons.cake,
-                          badge: _calculateAge().isNotEmpty
-                              ? Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
+                                // 정보 카드들
+                                PetInfoCard(
+                                  title: '名前',
+                                  value: registrationState.petName ?? 'Unknown',
+                                  icon: Icons.pets,
+                                  onTap: () => context.go(
+                                    RouteConstants.petNameInputRoute,
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.pointPink,
-                                    borderRadius: BorderRadius.circular(15),
+                                ),
+                                PetInfoCard(
+                                  title: '性別',
+                                  value: _getGenderText(),
+                                  icon: Icons.wc,
+                                  onTap: () => context.go(
+                                    RouteConstants.petNameInputRoute,
                                   ),
-                                  child: Text(
-                                    _calculateAge(),
-                                    style: AppFonts.bodySmall.copyWith(
-                                      color: AppColors.pureWhite,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                ),
+                                PetInfoCard(
+                                  title: '誕生日',
+                                  value: registrationState.petBirthday != null
+                                      ? '${registrationState.petBirthday!.year}年${registrationState.petBirthday!.month}月${registrationState.petBirthday!.day}日'
+                                      : '未設定',
+                                  icon: Icons.cake,
+                                  badge: _calculateAge().isNotEmpty
+                                      ? Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.pointPink,
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            _calculateAge(),
+                                            style: AppFonts.bodySmall.copyWith(
+                                              color: AppColors.pureWhite,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        )
+                                      : null,
+                                  onTap: () => context.go(
+                                    RouteConstants.petAnniversaryRoute,
                                   ),
-                                )
-                              : null,
-                          onTap: () =>
-                              context.go(RouteConstants.petAnniversaryRoute),
-                        ),
-                        PetInfoCard(
-                          title: '帰宅日',
-                          value: registrationState.petArrivalDate != null
-                              ? '${registrationState.petArrivalDate!.year}年${registrationState.petArrivalDate!.month}月${registrationState.petArrivalDate!.day}日'
-                              : '未設定',
-                          icon: Icons.home,
-                          onTap: () =>
-                              context.go(RouteConstants.petAnniversaryRoute),
-                        ),
-                        PetInfoCard(
-                          title: 'マイクロチップ',
-                          value: _getMicrochipText(),
-                          icon: Icons.qr_code,
-                          onTap: () =>
-                              context.go(RouteConstants.petNameInputRoute),
-                        ),
-                        PetInfoCard(
-                          title: '体重・サイズ',
-                          value:
-                              registrationState.petWeight != null &&
-                                  registrationState.petSize != null
-                              ? '${registrationState.petWeight!.toStringAsFixed(1)}kg・${registrationState.petSize}'
-                              : '未設定',
-                          icon: Icons.monitor_weight,
-                          onTap: () =>
-                              context.go(RouteConstants.petSizeWeightRoute),
-                        ),
+                                ),
+                                PetInfoCard(
+                                  title: '帰宅日',
+                                  value:
+                                      registrationState.petArrivalDate != null
+                                      ? '${registrationState.petArrivalDate!.year}年${registrationState.petArrivalDate!.month}月${registrationState.petArrivalDate!.day}日'
+                                      : '未設定',
+                                  icon: Icons.home,
+                                  onTap: () => context.go(
+                                    RouteConstants.petAnniversaryRoute,
+                                  ),
+                                ),
+                                PetInfoCard(
+                                  title: 'マイクロチップ',
+                                  value: _getMicrochipText(),
+                                  icon: Icons.qr_code,
+                                  onTap: () => context.go(
+                                    RouteConstants.petNameInputRoute,
+                                  ),
+                                ),
+                                PetInfoCard(
+                                  title: '体重・サイズ',
+                                  value:
+                                      registrationState.petWeight != null &&
+                                          registrationState.petSize != null
+                                      ? '${registrationState.petWeight!.toStringAsFixed(1)}kg・${registrationState.petSize}'
+                                      : '未設定',
+                                  icon: Icons.monitor_weight,
+                                  onTap: () => context.go(
+                                    RouteConstants.petSizeWeightRoute,
+                                  ),
+                                ),
                               ],
                             ),
                           ]),

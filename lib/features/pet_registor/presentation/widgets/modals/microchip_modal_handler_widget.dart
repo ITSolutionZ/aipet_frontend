@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/data/providers/microchip_service_provider.dart';
+import 'package:aipet_frontend/shared/widgets/banners/microchip_registration_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../../shared/widgets/banners/microchip_registration_banner.dart';
-import '../../../data/providers/microchip_service_provider.dart';
 
 class MicrochipModalHandlerWidget extends ConsumerWidget {
   final String? petType;
@@ -30,9 +29,9 @@ class MicrochipModalHandlerWidget extends ConsumerWidget {
             await microchipService.openRegistrationSite();
           } catch (e) {
             if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('URLが開けません')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('URLが開けません')));
             }
           }
         },
