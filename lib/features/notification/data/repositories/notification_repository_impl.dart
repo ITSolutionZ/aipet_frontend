@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/onboarding/domain/repositories/notification_repository.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/notification/notification_mock_service.dart';
 
 class NotificationRepositoryImpl implements NotificationRepository {

@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
-import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/scheduling/presentation/controllers/notification_ui_controller.dart';
-import 'package:aipet_frontend/shared/components/forms/alarm_toggle_component.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';
+import 'package:aipet_frontend/features/notification/presentation/components/forms/alarm_toggle_component.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -224,7 +224,7 @@ class _PushNotificationScreenState
             ActionButton.primary(
               text: '修正完了',
               onPressed: _saveNotificationSettings,
-              enabled: true,
+              isEnabled: true,
             ),
 
             const SizedBox(height: AppSpacing.xl),

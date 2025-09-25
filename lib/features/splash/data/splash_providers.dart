@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/shared/domain/domain.dart';
+import 'package:aipet_frontend/shared/core/domain/domain.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../domain/domain.dart';
 import 'repositories/splash_repository_impl.dart';
 
 part 'splash_providers.g.dart';

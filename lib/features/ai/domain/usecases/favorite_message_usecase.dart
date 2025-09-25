@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 
 /// 즐겨찾기 메시지 관리 UseCase
 class FavoriteMessageUseCase {
@@ -28,12 +28,9 @@ class FavoriteMessageUseCase {
     try {
       // 입력 유효성 검사
       if (category.trim().isEmpty) {
-        return Future.value(
-          ResultFactory.failure<AiFavoriteEntity>('カテゴリを入力してください'),
-        );
+        return ResultFactory.failure<AiFavoriteEntity>('カテゴリを入力してください').toFuture();
       }
 
-      // Repository를 통한 즐겨찾기 추가
       final favorite = await _repository.addFavoriteMessage(
         message,
         category,
@@ -41,13 +38,11 @@ class FavoriteMessageUseCase {
         petName: petName,
         userNote: userNote,
       );
-      return Future.value(ResultFactory.success(favorite, 'お気に入りに追加しました'));
+      return ResultFactory.success(favorite, 'お気に入りに追加しました').toFuture();
     } catch (error) {
-      return Future.value(
-        ResultFactory.failure<AiFavoriteEntity>(
-          'お気に入りの追加に失敗しました: ${error.toString()}',
-        ),
-      );
+      return ResultFactory.failure<AiFavoriteEntity>(
+        'お気に入りの追加に失敗しました: ${error.toString()}',
+      ).toFuture();
     }
   }
 
@@ -60,16 +55,13 @@ class FavoriteMessageUseCase {
     try {
       // 입력 유효성 검사
       if (favoriteId.trim().isEmpty) {
-        return Future.value(ResultFactory.failure<void>('お気に入りIDが無効です'));
+        return ResultFactory.failure<void>('お気に入りIDが無効です').toFuture();
       }
 
-      // Repository를 통한 즐겨찾기 삭제
       await _repository.removeFavoriteMessage(favoriteId);
-      return Future.value(ResultFactory.success(null, 'お気に入りを削除しました'));
+      return ResultFactory.success(null, 'お気に入りを削除しました').toFuture();
     } catch (error) {
-      return Future.value(
-        ResultFactory.failure<void>('お気に入りの削除に失敗しました: ${error.toString()}'),
-      );
+      return ResultFactory.failure<void>('お気に入りの削除に失敗しました: ${error.toString()}').toFuture();
     }
   }
 
@@ -84,18 +76,15 @@ class FavoriteMessageUseCase {
     String? category,
   }) async {
     try {
-      // Repository를 통한 즐겨찾기 목록 조회
       final favorites = await _repository.getFavoriteMessages(
         petId: petId,
         category: category,
       );
-      return Future.value(ResultFactory.success(favorites, 'お気に入り一覧を取得しました'));
+      return ResultFactory.success(favorites, 'お気に入り一覧を取得しました').toFuture();
     } catch (error) {
-      return Future.value(
-        ResultFactory.failure<List<AiFavoriteEntity>>(
-          'お気に入り一覧の取得に失敗しました: ${error.toString()}',
-        ),
-      );
+      return ResultFactory.failure<List<AiFavoriteEntity>>(
+        'お気に入り一覧の取得に失敗しました: ${error.toString()}',
+      ).toFuture();
     }
   }
 }

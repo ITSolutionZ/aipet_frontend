@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/features/home/presentation/viewmodels/weather_view_model.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/viewmodels/weather_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -57,7 +57,7 @@ class WeatherCard extends ConsumerWidget {
                         ),
                       ),
                       const MeteoconsIcon(name: 'celsius', size: 36),
-                      const const const SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       // UV 지수 표시 (아이콘만)
                       MeteoconsIcon(
                         name: viewModel.isLoading
@@ -65,7 +65,7 @@ class WeatherCard extends ConsumerWidget {
                             : viewModel.getUvIndexIcon(),
                         size: 36,
                       ),
-                      const const const SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       // 풍속 표시 (Beaufort 스케일 아이콘)
                       MeteoconsIcon(
                         name: viewModel.isLoading

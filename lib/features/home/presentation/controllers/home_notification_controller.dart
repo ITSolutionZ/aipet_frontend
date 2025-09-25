@@ -1,15 +1,19 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
-import 'package:aipet_frontend/features/onboarding/data/data.dart';
-import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/features/home/data/repositories/home_repository_impl.dart';
+import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
+import 'package:aipet_frontend/features/home/domain/usecases/get_dashboard_data_usecase.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 class HomeNotificationController extends BaseController {
-  HomeNotificationController(super.ref);
+  final GetDashboardDataUseCase _getDashboardDataUseCase;
 
-  // Repository 및 UseCase 인스턴스
-  late final HomeRepository _repository = HomeRepositoryImpl();
-  late final GetDashboardDataUseCase _getDashboardDataUseCase =
-      GetDashboardDataUseCase(_repository);
+  HomeNotificationController(
+    super.ref, {
+    HomeRepository? repository,
+    GetDashboardDataUseCase? getDashboardDataUseCase,
+  }) : _getDashboardDataUseCase =
+           getDashboardDataUseCase ??
+           GetDashboardDataUseCase(repository ?? HomeRepositoryImpl());
 
   /// 알림 처리
   Future<Result<List<String>>> handleNotification() async {
@@ -17,7 +21,15 @@ class HomeNotificationController extends BaseController {
       final notifications = <String>[];
 
       // 대시보드 데이터 가져오기
-      final dashboardData = await _getDashboardDataUseCase.call();
+      final result = await _getDashboardDataUseCase.call();
+      if (result.isFailure) {
+        return ResultFactory.failure(result.errorOrNull ?? 'エラーが発生しました');
+      }
+
+      final dashboardData = result.dataOrNull;
+      if (dashboardData == null) {
+        return ResultFactory.failure('ダッシュボードデータがありません');
+      }
 
       // 예정된 예약 알림 확인
       final upcomingAppointments = dashboardData.upcomingAppointments;
@@ -72,10 +84,10 @@ class HomeNotificationController extends BaseController {
         );
       }
 
-      return Result.success('通知が処理されました', notifications);
+      return ResultFactory.success(notifications, '通知が処理されました');
     } catch (error) {
       handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
+      return ResultFactory.failure(getUserFriendlyErrorMessage(error));
     }
   }
 

@@ -1,6 +1,6 @@
-import 'package:aipet_frontend/features/onboarding/data/services/notification_icon_service.dart';
-import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/components/cards/notification_card_component.dart';
+import 'package:aipet_frontend/features/notification/data/services/notification_icon_service.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/notification/presentation/components/cards/notification_card_component.dart';
 import 'package:aipet_frontend/shared/core/services/date_format_service.dart';
 import 'package:flutter/material.dart';
 

@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 
 /// AI 메시지 전송 UseCase
 class SendMessageUseCase {
@@ -18,17 +18,17 @@ class SendMessageUseCase {
     try {
       // 입력 유효성 검사
       if (message.trim().isEmpty) {
-        return Result.failure('メッセージを入力してください');
+        return ResultFactory.failure('メッセージを入力してください');
       }
 
       if (message.length > 2000) {
-        return Result.failure('メッセージは2000文字以内で入力してください');
+        return ResultFactory.failure('メッセージは2000文字以内で入力してください');
       }
 
       // Repository를 통한 메시지 전송
       return await _repository.sendMessage(message);
     } catch (error) {
-      return Result.failure('メッセージの送信に失敗しました: ${error.toString()}');
+      return ResultFactory.failure('メッセージの送信に失敗しました: ${error.toString()}');
     }
   }
 
@@ -45,11 +45,11 @@ class SendMessageUseCase {
     try {
       // 입력 유효성 검사
       if (message.trim().isEmpty) {
-        return Result.failure('メッセージを入力してください');
+        return ResultFactory.failure('メッセージを入力してください');
       }
 
       if (message.length > 2000) {
-        return Result.failure('メッセージは2000文字以内で入力してください');
+        return ResultFactory.failure('メッセージは2000文字以内で入力してください');
       }
 
       // Repository를 통한 펫 컨텍스트와 함께 메시지 전송
@@ -58,7 +58,7 @@ class SendMessageUseCase {
         petContext: petContext,
       );
     } catch (error) {
-      return Result.failure('メッセージの送信に失敗しました: ${error.toString()}');
+      return ResultFactory.failure('メッセージの送信に失敗しました: ${error.toString()}');
     }
   }
 }

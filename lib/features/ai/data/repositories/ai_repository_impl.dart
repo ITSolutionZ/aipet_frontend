@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:aipet_frontend/shared/core/utils/ai_logger.dart';
+import 'package:aipet_frontend/shared/core/utils/mock_helper.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/ai/ai_config_mock_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -132,7 +135,7 @@ class AiRepositoryImpl implements AiRepository {
     try {
       // AI 로거를 사용한 API 호출 시작 로그
       AiLogger.logApiStart(message, context: '펫 컨텍스트');
-      AiLogger.logPetContext(petContext?.name, petContext?.typeName);
+      AiLogger.logPetContext(petContext?.name, petContext?.type);
 
       // 펫 정보와 함께 OpenAI API 호출
       final response = await _openAIService.generateResponse(

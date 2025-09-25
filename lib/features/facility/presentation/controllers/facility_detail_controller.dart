@@ -33,7 +33,9 @@ class FacilityDetailController extends BaseFacilityController {
         showSuccessMessage('${facility.name}が連絡先に追加されました。');
       }
     } catch (error) {
-      FacilityErrorHandler.handleContactError(error, context);
+      if (context.mounted) {
+        FacilityErrorHandler.handleContactError(error, context);
+      }
     }
   }
 
@@ -61,7 +63,9 @@ class FacilityDetailController extends BaseFacilityController {
         showSuccessMessage(message);
       }
     } catch (error) {
-      FacilityErrorHandler.handleFavoriteError(error, context);
+      if (context.mounted) {
+        FacilityErrorHandler.handleFavoriteError(error, context);
+      }
     }
   }
 

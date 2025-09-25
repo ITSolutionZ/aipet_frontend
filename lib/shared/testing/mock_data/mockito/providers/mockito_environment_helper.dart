@@ -14,30 +14,6 @@ class MockitoEnvironmentHelper {
   /// 환경 정보 디버그 출력
   static void logEnvironmentInfo() {}
 
-  /// 빌드 모드 확인
-  static String _getBuildMode() {
-    bool kDebugMode = false;
-    bool kProfileMode = false;
-    bool kReleaseMode = false;
-
-    assert(() {
-      kDebugMode = true;
-      return true;
-    }());
-
-    if (kDebugMode) return 'Debug';
-
-    assert(() {
-      kProfileMode = true;
-      return true;
-    }());
-
-    if (kProfileMode) return 'Profile';
-
-    kReleaseMode = true;
-    return 'Release';
-  }
-
   /// 개발자용 Mock 강제 활성화
   static void forceMockMode() {
     MockConfig.setUseMock(true);

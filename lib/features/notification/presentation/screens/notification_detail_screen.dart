@@ -1,10 +1,10 @@
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
-import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/scheduling/presentation/controllers/notification_detail_controller.dart';
-import 'package:aipet_frontend/features/scheduling/presentation/controllers/notification_ui_controller.dart';
-import 'package:aipet_frontend/shared/components/cards/notification_detail_header_component.dart';
-import 'package:aipet_frontend/shared/components/cards/notification_detail_metadata_component.dart';
-import 'package:aipet_frontend/shared/components/forms/notification_detail_actions_component.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_detail_controller.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';
+import 'package:aipet_frontend/features/notification/presentation/components/cards/notification_detail_header_component.dart';
+import 'package:aipet_frontend/features/notification/presentation/components/cards/notification_detail_metadata_component.dart';
+import 'package:aipet_frontend/features/notification/presentation/components/forms/notification_detail_actions_component.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

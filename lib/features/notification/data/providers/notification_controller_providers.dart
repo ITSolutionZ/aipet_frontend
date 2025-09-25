@@ -1,66 +1,68 @@
-import 'package:aipet_frontend/features/onboarding/domain/repositories/notification_repository.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/usecases.dart';
-import 'package:aipet_frontend/shared/presentation/controllers/notification_controllers.dart';
-import 'package:aipet_frontend/shared/repositories/notification_repository_impl.dart';
+import 'package:aipet_frontend/features/notification/data/repositories/notification_repository_impl.dart';
+import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
+import 'package:aipet_frontend/features/notification/domain/usecases/usecases.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_controller.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_detail_controller.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'notification_controller_providers.g.dart';
 
 // Repository Provider
-final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
+@riverpod
+NotificationRepository notificationRepository(Ref ref) {
   return NotificationRepositoryImpl();
-});
+}
 
 // UseCase Providers
-final getNotificationsUseCaseProvider = Provider<GetNotificationsUseCase>((
-  ref,
-) {
+@riverpod
+GetNotificationsUseCase getNotificationsUseCase(Ref ref) {
   return GetNotificationsUseCase(ref.read(notificationRepositoryProvider));
-});
+}
 
-final getNotificationByIdUseCaseProvider = Provider<GetNotificationByIdUseCase>(
-  (ref) {
-    return GetNotificationByIdUseCase(ref.read(notificationRepositoryProvider));
-  },
-);
+@riverpod
+GetNotificationByIdUseCase getNotificationByIdUseCase(Ref ref) {
+  return GetNotificationByIdUseCase(ref.read(notificationRepositoryProvider));
+}
 
-final markNotificationAsReadUseCaseProvider =
-    Provider<MarkNotificationAsReadUseCase>((ref) {
-      return MarkNotificationAsReadUseCase(
-        ref.read(notificationRepositoryProvider),
-      );
-    });
+@riverpod
+MarkNotificationAsReadUseCase markNotificationAsReadUseCase(Ref ref) {
+  return MarkNotificationAsReadUseCase(
+    ref.read(notificationRepositoryProvider),
+  );
+}
 
-final deleteNotificationUseCaseProvider = Provider<DeleteNotificationUseCase>((
-  ref,
-) {
+@riverpod
+DeleteNotificationUseCase deleteNotificationUseCase(Ref ref) {
   return DeleteNotificationUseCase(ref.read(notificationRepositoryProvider));
-});
+}
 
-final getNotificationSettingsUseCaseProvider =
-    Provider<GetNotificationSettingsUseCase>((ref) {
-      return GetNotificationSettingsUseCase(
-        ref.read(notificationRepositoryProvider),
-      );
-    });
+@riverpod
+GetNotificationSettingsUseCase getNotificationSettingsUseCase(Ref ref) {
+  return GetNotificationSettingsUseCase(
+    ref.read(notificationRepositoryProvider),
+  );
+}
 
-final saveNotificationSettingsUseCaseProvider =
-    Provider<SaveNotificationSettingsUseCase>((ref) {
-      return SaveNotificationSettingsUseCase(
-        ref.read(notificationRepositoryProvider),
-      );
-    });
+@riverpod
+SaveNotificationSettingsUseCase saveNotificationSettingsUseCase(Ref ref) {
+  return SaveNotificationSettingsUseCase(
+    ref.read(notificationRepositoryProvider),
+  );
+}
 
-final requestNotificationPermissionUseCaseProvider =
-    Provider<RequestNotificationPermissionUseCase>((ref) {
-      return RequestNotificationPermissionUseCase(
-        ref.read(notificationRepositoryProvider),
-      );
-    });
+@riverpod
+RequestNotificationPermissionUseCase requestNotificationPermissionUseCase(Ref ref) {
+  return RequestNotificationPermissionUseCase(
+    ref.read(notificationRepositoryProvider),
+  );
+}
 
-final testNotificationUseCaseProvider = Provider<TestNotificationUseCase>((
-  ref,
-) {
+@riverpod
+TestNotificationUseCase testNotificationUseCase(Ref ref) {
   return TestNotificationUseCase(ref.read(notificationRepositoryProvider));
-});
+}
 
 // Controller Factory Providers - Consumer에서 WidgetRef를 받아서 사용
 final notificationControllerFactoryProvider =

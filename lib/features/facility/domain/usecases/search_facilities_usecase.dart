@@ -9,10 +9,10 @@ class SearchFacilitiesUseCase {
   Future<List<Facility>> call(String query) async {
     final result = await repository.searchFacilities(query);
     if (result.isSuccess) {
-      return result.data ?? [];
+      return result.dataOrNull ?? [];
     } else {
       throw Exception(
-        result.error?.toString() ?? 'Failed to search facilities',
+        result.errorOrNull?.toString() ?? 'Failed to search facilities',
       );
     }
   }

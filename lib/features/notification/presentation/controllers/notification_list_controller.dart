@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/usecases.dart';
+import 'package:aipet_frontend/features/notification/domain/usecases/usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'notification_ui_controller.dart';

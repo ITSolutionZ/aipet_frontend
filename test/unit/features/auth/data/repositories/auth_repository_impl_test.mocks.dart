@@ -6,10 +6,11 @@
 import 'dart:async' as _i4;
 
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart'
-    as _i2;
+    as _i3;
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i5;
-import 'package:riverpod/src/internals.dart' as _i3;
+import 'package:mockito/src/dummies.dart' as _i6;
+import 'package:riverpod/src/internals.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,45 +26,40 @@ import 'package:riverpod/src/internals.dart' as _i3;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeAuthResult_0 extends _i1.SmartFake implements _i2.AuthResult {
-  _FakeAuthResult_0(Object parent, Invocation parentInvocation)
+class _FakeProviderContainer_0 extends _i1.SmartFake
+    implements _i2.ProviderContainer {
+  _FakeProviderContainer_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeProviderContainer_1 extends _i1.SmartFake
-    implements _i3.ProviderContainer {
-  _FakeProviderContainer_1(Object parent, Invocation parentInvocation)
+class _FakeKeepAliveLink_1 extends _i1.SmartFake implements _i2.KeepAliveLink {
+  _FakeKeepAliveLink_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeKeepAliveLink_2 extends _i1.SmartFake implements _i3.KeepAliveLink {
-  _FakeKeepAliveLink_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeProviderSubscription_3<State1> extends _i1.SmartFake
-    implements _i3.ProviderSubscription<State1> {
-  _FakeProviderSubscription_3(Object parent, Invocation parentInvocation)
+class _FakeProviderSubscription_2<State1> extends _i1.SmartFake
+    implements _i2.ProviderSubscription<State1> {
+  _FakeProviderSubscription_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AuthRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
+class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
   MockAuthRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.AuthResult> signInWithEmailAndPassword(
+  _i4.Future<_i5.Result<_i3.AuthUser>> signInWithEmailAndPassword(
     String? email,
     String? password,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#signInWithEmailAndPassword, [email, password]),
-            returnValue: _i4.Future<_i2.AuthResult>.value(
-              _FakeAuthResult_0(
+            returnValue: _i4.Future<_i5.Result<_i3.AuthUser>>.value(
+              _i6.dummyValue<_i5.Result<_i3.AuthUser>>(
                 this,
                 Invocation.method(#signInWithEmailAndPassword, [
                   email,
@@ -72,10 +68,10 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
               ),
             ),
           )
-          as _i4.Future<_i2.AuthResult>);
+          as _i4.Future<_i5.Result<_i3.AuthUser>>);
 
   @override
-  _i4.Future<_i2.AuthResult> createUserWithEmailAndPassword(
+  _i4.Future<_i5.Result<_i3.AuthUser>> createUserWithEmailAndPassword(
     String? email,
     String? password,
   ) =>
@@ -84,8 +80,8 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
               email,
               password,
             ]),
-            returnValue: _i4.Future<_i2.AuthResult>.value(
-              _FakeAuthResult_0(
+            returnValue: _i4.Future<_i5.Result<_i3.AuthUser>>.value(
+              _i6.dummyValue<_i5.Result<_i3.AuthUser>>(
                 this,
                 Invocation.method(#createUserWithEmailAndPassword, [
                   email,
@@ -94,37 +90,46 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
               ),
             ),
           )
-          as _i4.Future<_i2.AuthResult>);
+          as _i4.Future<_i5.Result<_i3.AuthUser>>);
 
   @override
-  _i4.Future<_i2.AuthResult> signInWithGoogle() =>
+  _i4.Future<_i5.Result<_i3.AuthUser>> signInWithGoogle() =>
       (super.noSuchMethod(
             Invocation.method(#signInWithGoogle, []),
-            returnValue: _i4.Future<_i2.AuthResult>.value(
-              _FakeAuthResult_0(this, Invocation.method(#signInWithGoogle, [])),
+            returnValue: _i4.Future<_i5.Result<_i3.AuthUser>>.value(
+              _i6.dummyValue<_i5.Result<_i3.AuthUser>>(
+                this,
+                Invocation.method(#signInWithGoogle, []),
+              ),
             ),
           )
-          as _i4.Future<_i2.AuthResult>);
+          as _i4.Future<_i5.Result<_i3.AuthUser>>);
 
   @override
-  _i4.Future<_i2.AuthResult> signInWithApple() =>
+  _i4.Future<_i5.Result<_i3.AuthUser>> signInWithApple() =>
       (super.noSuchMethod(
             Invocation.method(#signInWithApple, []),
-            returnValue: _i4.Future<_i2.AuthResult>.value(
-              _FakeAuthResult_0(this, Invocation.method(#signInWithApple, [])),
+            returnValue: _i4.Future<_i5.Result<_i3.AuthUser>>.value(
+              _i6.dummyValue<_i5.Result<_i3.AuthUser>>(
+                this,
+                Invocation.method(#signInWithApple, []),
+              ),
             ),
           )
-          as _i4.Future<_i2.AuthResult>);
+          as _i4.Future<_i5.Result<_i3.AuthUser>>);
 
   @override
-  _i4.Future<_i2.AuthResult> signInWithLine() =>
+  _i4.Future<_i5.Result<_i3.AuthUser>> signInWithLine() =>
       (super.noSuchMethod(
             Invocation.method(#signInWithLine, []),
-            returnValue: _i4.Future<_i2.AuthResult>.value(
-              _FakeAuthResult_0(this, Invocation.method(#signInWithLine, [])),
+            returnValue: _i4.Future<_i5.Result<_i3.AuthUser>>.value(
+              _i6.dummyValue<_i5.Result<_i3.AuthUser>>(
+                this,
+                Invocation.method(#signInWithLine, []),
+              ),
             ),
           )
-          as _i4.Future<_i2.AuthResult>);
+          as _i4.Future<_i5.Result<_i3.AuthUser>>);
 
   @override
   _i4.Future<void> signOut() =>
@@ -136,12 +141,12 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
           as _i4.Future<void>);
 
   @override
-  _i4.Future<_i2.AuthUser?> getCurrentUser() =>
+  _i4.Future<_i3.AuthUser?> getCurrentUser() =>
       (super.noSuchMethod(
             Invocation.method(#getCurrentUser, []),
-            returnValue: _i4.Future<_i2.AuthUser?>.value(),
+            returnValue: _i4.Future<_i3.AuthUser?>.value(),
           )
-          as _i4.Future<_i2.AuthUser?>);
+          as _i4.Future<_i3.AuthUser?>);
 
   @override
   _i4.Future<void> sendPasswordResetEmail(String? email) =>
@@ -187,7 +192,7 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
       (super.noSuchMethod(
             Invocation.method(#exchangeServerToken, [idToken]),
             returnValue: _i4.Future<String>.value(
-              _i5.dummyValue<String>(
+              _i6.dummyValue<String>(
                 this,
                 Invocation.method(#exchangeServerToken, [idToken]),
               ),
@@ -242,27 +247,27 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockRef<State extends Object?> extends _i1.Mock
-    implements _i3.Ref<State> {
+    implements _i2.Ref<State> {
   MockRef() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.ProviderContainer get container =>
+  _i2.ProviderContainer get container =>
       (super.noSuchMethod(
             Invocation.getter(#container),
-            returnValue: _FakeProviderContainer_1(
+            returnValue: _FakeProviderContainer_0(
               this,
               Invocation.getter(#container),
             ),
           )
-          as _i3.ProviderContainer);
+          as _i2.ProviderContainer);
 
   @override
-  T refresh<T>(_i3.Refreshable<T>? provider) =>
+  T refresh<T>(_i2.Refreshable<T>? provider) =>
       (super.noSuchMethod(
             Invocation.method(#refresh, [provider]),
-            returnValue: _i5.dummyValue<T>(
+            returnValue: _i6.dummyValue<T>(
               this,
               Invocation.method(#refresh, [provider]),
             ),
@@ -270,7 +275,7 @@ class MockRef<State extends Object?> extends _i1.Mock
           as T);
 
   @override
-  void invalidate(_i3.ProviderOrFamily? provider) => super.noSuchMethod(
+  void invalidate(_i2.ProviderOrFamily? provider) => super.noSuchMethod(
     Invocation.method(#invalidate, [provider]),
     returnValueForMissingStub: null,
   );
@@ -327,10 +332,10 @@ class MockRef<State extends Object?> extends _i1.Mock
   );
 
   @override
-  T read<T>(_i3.ProviderListenable<T>? provider) =>
+  T read<T>(_i2.ProviderListenable<T>? provider) =>
       (super.noSuchMethod(
             Invocation.method(#read, [provider]),
-            returnValue: _i5.dummyValue<T>(
+            returnValue: _i6.dummyValue<T>(
               this,
               Invocation.method(#read, [provider]),
             ),
@@ -338,7 +343,7 @@ class MockRef<State extends Object?> extends _i1.Mock
           as T);
 
   @override
-  bool exists(_i3.ProviderBase<Object?>? provider) =>
+  bool exists(_i2.ProviderBase<Object?>? provider) =>
       (super.noSuchMethod(
             Invocation.method(#exists, [provider]),
             returnValue: false,
@@ -346,10 +351,10 @@ class MockRef<State extends Object?> extends _i1.Mock
           as bool);
 
   @override
-  T watch<T>(_i3.ProviderListenable<T>? provider) =>
+  T watch<T>(_i2.ProviderListenable<T>? provider) =>
       (super.noSuchMethod(
             Invocation.method(#watch, [provider]),
-            returnValue: _i5.dummyValue<T>(
+            returnValue: _i6.dummyValue<T>(
               this,
               Invocation.method(#watch, [provider]),
             ),
@@ -357,19 +362,19 @@ class MockRef<State extends Object?> extends _i1.Mock
           as T);
 
   @override
-  _i3.KeepAliveLink keepAlive() =>
+  _i2.KeepAliveLink keepAlive() =>
       (super.noSuchMethod(
             Invocation.method(#keepAlive, []),
-            returnValue: _FakeKeepAliveLink_2(
+            returnValue: _FakeKeepAliveLink_1(
               this,
               Invocation.method(#keepAlive, []),
             ),
           )
-          as _i3.KeepAliveLink);
+          as _i2.KeepAliveLink);
 
   @override
-  _i3.ProviderSubscription<T> listen<T>(
-    _i3.ProviderListenable<T>? provider,
+  _i2.ProviderSubscription<T> listen<T>(
+    _i2.ProviderListenable<T>? provider,
     void Function(T?, T)? listener, {
     void Function(Object, StackTrace)? onError,
     bool? fireImmediately,
@@ -380,7 +385,7 @@ class MockRef<State extends Object?> extends _i1.Mock
               [provider, listener],
               {#onError: onError, #fireImmediately: fireImmediately},
             ),
-            returnValue: _FakeProviderSubscription_3<T>(
+            returnValue: _FakeProviderSubscription_2<T>(
               this,
               Invocation.method(
                 #listen,
@@ -389,5 +394,5 @@ class MockRef<State extends Object?> extends _i1.Mock
               ),
             ),
           )
-          as _i3.ProviderSubscription<T>);
+          as _i2.ProviderSubscription<T>);
 }

@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/features/onboarding/data/providers/home_providers.dart';
+import 'package:aipet_frontend/features/home/data/providers/home_providers.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

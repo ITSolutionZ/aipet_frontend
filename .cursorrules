@@ -10,6 +10,18 @@
 
 ### 주요 기술 스택
 - **상태 관리**: Riverpod (flutter_riverpod, riverpod_annotation)
+- **결과 패턴**: Result 패턴 (shared/core/domain/result.dart)
+- **에러 처리**: ErrorHandlingService (shared/core/services/error_handling_service.dart)
+- **공통 에러 처리**: ErrorHandler (shared/foundation/error_handler/error_handler.dart)
+- **usecase**: BaseUseCase (shared/core/domain/base_usecase.dart)
+- **repository**: BaseRepository (shared/core/domain/base_repository.dart)
+- **entity**: BaseEntity (shared/core/domain/base_entity.dart)
+- **model**: BaseModel (shared/core/domain/base_model.dart)
+- **provider**: BaseProvider (shared/core/domain/base_provider.dart)
+- **service**: BaseService (shared/core/domain/base_service.dart)
+- **widget**: BaseWidget (shared/core/domain/base_widget.dart)
+- **util**: BaseUtil (shared/core/domain/base_util.dart)
+- **validator**: BaseValidator (shared/core/domain/base_validator.dart)등의 usecase 사용
 - **라우팅**: GoRouter (go_router)
 - **목업/테스트**: Mockito
 - **API 연계 전까지**: mock_data 폴더의 Mock 데이터 사용을 위하여, 기본 코드는 api를 추후 연계하는 것을 기본으로 mockito 사용하도록 코드를 계획합니다.
@@ -22,6 +34,7 @@
 - **Data Layer**: API 호출, 로컬 저장소, Mock 데이터 관리
 - **Infrastructure Layer**: 현재는 mock_data 사용, 추후 API 연동시 변경 예정
 - **UI & Logic 분리**: ui, Logic을 분리하여 작성하여 DRY원칙을 적용합니다.
+- **코드재사용** : 공통 코드는 shared 폴더에 작성하여 재사용합니다.
 
 ### 2. Flutter 앱 폴더 구조
 ```
@@ -91,28 +104,7 @@ import 'controllers/auth_controller.dart';
 ```
 
 #### 배럴 파일 Import 가이드라인
-- **다른 feature import**: 반드시 최종 배럴 파일 사용
-  ```dart
-  // ✅ 올바른 예시
-  import '../../../features/auth/auth.dart';
-  import '../../../features/home/home.dart';
-  import '../../../shared/shared.dart';
-
-  // ❌ 잘못된 예시
-  import '../../../features/auth/presentation/screens/login_screen.dart';
-  import '../../../features/home/domain/entities/home_entity.dart';
-  import '../../../shared/widgets/custom_button.dart';
-  ```
-
-- **동일 feature 내부**: 상대 경로 또는 레이어 배럴 사용
-  ```dart
-  // ✅ 올바른 예시 (같은 feature 내부)
-  import '../domain/domain.dart';           // 레이어 배럴
-  import 'widgets/login_form.dart';         // 직접 import (같은 레이어)
-
-  // ❌ 잘못된 예시
-  import '../../../features/auth/domain/entities/user.dart';  // 너무 긴 경로
-  ```
+- 무한 import 방지를 위하여, 배럴 파일 사용 시 최종 배럴 파일 사용
 
 #### 경로 선택 기준
 - **3단계 이상 상대 경로**: 절대 경로 고려
@@ -129,6 +121,7 @@ import 'controllers/auth_controller.dart';
    - `data/data.dart`: data 레이어의 모든 파일 export
    - `domain/domain.dart`: domain 레이어의 모든 파일 export
    - `presentation/presentation.dart`: presentation 레이어의 모든 파일 export
+   - `presentation` 폴더의 파일이 많아 인식성이 떨어지는 경우, 폴더 분리 가능
 
 2. **Feature 최종 배럴** (feature 루트)
    - `feature_name.dart`: 해당 feature의 모든 레이어를 통합 export
@@ -181,14 +174,14 @@ lib/features/auth/
 ```
 
 ##### Mock 데이터 관리
-- API 연계 전까지는 `mock_data/` 폴더의 Mock 데이터 사용
-- Mock 데이터도 배럴 파일로 관리: `mock_data/mock_data.dart`
-- 필요시 `mock_data/` 폴더의 데이터 수정 가능
+- mockito 폴더도 배럴 파일로 관리: `mock_data/mockito/mockito.dart`
+- mockito 폴더의 파일이 많아 인식성이 떨어지는 경우, 폴더 분리 가능
+- 필요시 mockito 폴더의 파일 수정 가능
 
 ### 4. 상태 관리
 - **Riverpod** 사용 (flutter_riverpod, riverpod_annotation)
 - **@riverpod** 어노테이션 사용
-- StateNotifierProvider 대신 riverpod_annotation 사용
+- StateNotifierProvider 대신 riverpod_annotation 사용 (StateNotifierProvider 사용 금지)
 - 단순한 상태: Notifier 사용
 - 비동기 상태 (API 호출, DB 연동): AsyncNotifier 사용
 
@@ -221,10 +214,15 @@ lib/features/auth/
   ```
 
 #### 📋 사용 가이드라인
-- **단순한 상태 변경**: Provider만 사용
-- **복잡한 비즈니스 로직**: Controller + Provider 조합
-- **에러 처리 필요**: Controller 사용
-- **사용자 피드백 필요**: Controller 사용
+- **비즈니스 로직**: BaseController 사용
+- **에러 처리**: ErrorHandlingService 사용
+- **사용자 피드백**: showSuccess, showWarning, showInfo 사용
+- **데이터 접근** : usecase 사용
+- **비즈니스 로직** : BaseUseCase 사용
+- **상태 관리** : riverpod_annotation 사용
+- **UI 표시** : BaseWidget 사용
+- **유틸리티** : BaseUtil 사용
+- **검증** : BaseValidator 사용
 
 ### 5. 라우팅 (GoRouter)
 - **go_router** 패키지 사용
@@ -244,7 +242,7 @@ lib/features/auth/
 - **app/**: 앱 전체 설정, 라우팅, 초기화
 - **features/**: 사용자 기능별 UI와 비즈니스 로직
 - **shared/**: 재사용 가능한 컴포넌트, 서비스, 유틸리티
-- **mock_data/**: Backend API 개발 전까지 사용하는 임시 데이터
+- **mockito/**: mockito 폴더
 
 ## 디자인 시스템
 

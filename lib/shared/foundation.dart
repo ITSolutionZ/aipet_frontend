@@ -7,7 +7,6 @@ export 'core/domain/base_repository.dart';
 export 'core/domain/base_usecase.dart' hide BaseUseCase, BaseUseCaseNoParams;
 export 'core/domain/base_usecase_enhanced.dart';
 export 'core/domain/common_errors.dart' hide ErrorSeverity, ValidationError;
-export 'core/domain/result.dart';
 export 'core/utils/api_utils.dart';
 export 'core/utils/date_time_utils.dart';
 export 'core/utils/loading_state.dart';
@@ -31,7 +30,7 @@ export 'foundation/result/result.dart';
 // 테스트 유틸리티
 export 'foundation/testing/testing.dart';
 // 고급 타입 시스템
-export 'foundation/types/types.dart';
+export 'foundation/types/types.dart' hide Success, Failure;
 // 고급 유틸리티 및 확장 메서드
 export 'foundation/utils/utils.dart';
 export 'services/base_logging_service.dart';

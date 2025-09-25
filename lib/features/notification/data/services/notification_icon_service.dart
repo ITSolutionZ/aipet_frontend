@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 

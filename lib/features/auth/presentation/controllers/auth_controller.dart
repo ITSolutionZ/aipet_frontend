@@ -6,7 +6,8 @@ import 'package:aipet_frontend/features/auth/domain/usecases/login_usecase.dart'
 import 'package:aipet_frontend/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/social_login_usecase.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart' hide Result;
 import 'package:flutter/foundation.dart';
 
 /// 인증 작업 결과 타입 (Result 패턴 사용)
@@ -128,9 +129,9 @@ class AuthController extends FormController<AuthFormState> {
       );
 
       if (result.isSuccess) {
-        return Result.success(result.message);
+        return Result.success('ログインが完了しました');
       } else {
-        return Result.failure(result.message);
+        return Result.failure(result.errorOrNull ?? 'ログインに失敗しました');
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -159,9 +160,9 @@ class AuthController extends FormController<AuthFormState> {
       );
 
       if (result.isSuccess) {
-        return Result.success(result.message);
+        return Result.success('회원가입이 완료되었습니다');
       } else {
-        return Result.failure(result.message);
+        return Result.failure('회원가입에 실패했습니다');
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -175,9 +176,9 @@ class AuthController extends FormController<AuthFormState> {
       final result = await _socialLoginUseCase.loginWithGoogle();
 
       if (result.isSuccess) {
-        return Result.success(result.message);
+        return Result.success('Googleログインが完了しました');
       } else {
-        return Result.failure(result.message);
+        return Result.failure('Googleログインに失敗しました');
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -191,9 +192,9 @@ class AuthController extends FormController<AuthFormState> {
       final result = await _socialLoginUseCase.loginWithApple();
 
       if (result.isSuccess) {
-        return Result.success(result.message);
+        return Result.success('Appleログインが完了しました');
       } else {
-        return Result.failure(result.message);
+        return Result.failure('Appleログインに失敗しました');
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -207,9 +208,9 @@ class AuthController extends FormController<AuthFormState> {
       final result = await _socialLoginUseCase.loginWithLine();
 
       if (result.isSuccess) {
-        return Result.success(result.message);
+        return Result.success('LINEログインが完了しました');
       } else {
-        return Result.failure(result.message);
+        return Result.failure('LINEログインに失敗しました');
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -254,9 +255,9 @@ class AuthController extends FormController<AuthFormState> {
         // 인증 상태 초기화
         ref.read(authFormStateNotifierProvider.notifier).resetState();
 
-        return Result.success(result.message);
+        return Result.success('ログアウトが完了しました');
       } else {
-        return Result.failure(result.message);
+        return Result.failure('ログアウトに失敗しました');
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -315,7 +316,14 @@ class AuthController extends FormController<AuthFormState> {
   /// 현재 사용자 정보 가져오기
   Future<Result<AuthUser?>> getCurrentUser() async {
     try {
-      return await _getCurrentUserUseCase.call();
+      final result = await _getCurrentUserUseCase.call();
+      if (result.isSuccess) {
+        return Result.success('사용자 정보를 가져왔습니다', result.dataOrNull);
+      } else {
+        return Result.failure(
+          result.errorOrNull?.toString() ?? '사용자 정보를 가져오는데 실패했습니다',
+        );
+      }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
       return Result.failure(getUserFriendlyErrorMessage(error));
@@ -325,7 +333,14 @@ class AuthController extends FormController<AuthFormState> {
   /// 로그인 상태 확인
   Future<Result<bool>> isLoggedIn() async {
     try {
-      return await _getCurrentUserUseCase.isLoggedIn();
+      final result = await _getCurrentUserUseCase.isLoggedIn();
+      if (result.isSuccess) {
+        return Result.success('로그인 상태를 확인했습니다', result.dataOrNull ?? false);
+      } else {
+        return Result.failure(
+          result.errorOrNull?.toString() ?? '로그인 상태 확인에 실패했습니다',
+        );
+      }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
       return Result.failure(getUserFriendlyErrorMessage(error));
@@ -335,7 +350,14 @@ class AuthController extends FormController<AuthFormState> {
   /// 이메일 인증 상태 확인
   Future<Result<bool>> isEmailVerified() async {
     try {
-      return await _getCurrentUserUseCase.isEmailVerified();
+      final result = await _getCurrentUserUseCase.isEmailVerified();
+      if (result.isSuccess) {
+        return Result.success('이메일 인증 상태를 확인했습니다', result.dataOrNull ?? false);
+      } else {
+        return Result.failure(
+          result.errorOrNull?.toString() ?? '이메일 인증 상태 확인에 실패했습니다',
+        );
+      }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
       return Result.failure(getUserFriendlyErrorMessage(error));

@@ -26,7 +26,7 @@ class OpenAIService extends BaseLoggingService {
 
     if (apiKey.isEmpty) {
       throw AiOpenAIException(
-        AiErrorMessages.apiKeyError,
+        AiErrorKeys.apiKeyError,
         code: 'MISSING_API_KEY',
       );
     }

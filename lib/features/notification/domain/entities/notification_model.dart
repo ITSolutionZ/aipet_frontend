@@ -43,39 +43,42 @@ enum NotificationType {
 }
 
 /// NotificationType 확장
-/// NotificationType Business Logic Extension (Domain Layer)
+/// NotificationType Business Logic Extension (Domain Layer - Language Independent)
 extension NotificationTypeExtension on NotificationType {
-  /// 알림 타입별 표시 이름
-  String get name {
+  /// 알림 타입별 키 (다국어 지원용)
+  String get key {
     switch (this) {
       case NotificationType.general:
-        return '一般';
+        return 'notification.type.general';
       case NotificationType.reservation:
-        return '予約';
+        return 'notification.type.reservation';
       case NotificationType.walk:
-        return '散歩';
+        return 'notification.type.walk';
       case NotificationType.feeding:
-        return '食事';
+        return 'notification.type.feeding';
       case NotificationType.health:
-        return '健康';
+        return 'notification.type.health';
       case NotificationType.medication:
-        return '薬';
+        return 'notification.type.medication';
       case NotificationType.system:
-        return 'システム';
+        return 'notification.type.system';
       case NotificationType.food:
-        return '食事';
+        return 'notification.type.food';
       case NotificationType.appointment:
-        return '予約';
+        return 'notification.type.appointment';
       case NotificationType.reminder:
-        return 'リマインダー';
+        return 'notification.type.reminder';
       case NotificationType.medical:
-        return '医療';
+        return 'notification.type.medical';
       case NotificationType.grooming:
-        return 'グルーミング';
+        return 'notification.type.grooming';
       case NotificationType.emergency:
-        return '緊急';
+        return 'notification.type.emergency';
     }
   }
+
+  /// 알림 타입별 enum 이름 (기존 호환성 유지)
+  String get name => toString().split('.').last;
 }
 
 /// 알림 우선순위

@@ -1,3 +1,4 @@
+import '../../../../shared/foundation/result/app_result.dart';
 import '../../../../shared/shared.dart';
 
 /// 인증 리포지토리 인터페이스
@@ -66,7 +67,7 @@ abstract class AuthRepository {
 /// 인증 결과 (공통 Result 패턴 사용)
 ///
 /// @deprecated 이 클래스는 더 이상 사용되지 않습니다.
-/// 대신 공통 Result<AuthUser> 패턴을 사용하세요.
+/// 대신 공통 `Result<AuthUser>` 패턴을 사용하세요.
 class AuthResult {
   final bool isSuccess;
   final String message;
@@ -95,9 +96,9 @@ class AuthResult {
   /// 공통 Result 패턴으로 변환
   Result<AuthUser> toResult() {
     if (isSuccess && user != null) {
-      return Result.success(message, user!);
+      return ResultFactory.success(user!, message);
     } else {
-      return Result.failure(message);
+      return ResultFactory.failure(message);
     }
   }
 }

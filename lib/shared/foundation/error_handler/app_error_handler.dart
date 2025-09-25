@@ -281,9 +281,9 @@ class AppErrorHandler extends BaseLoggingService {
 }
 
 /// 에러 처리 확장 메서드들
-extension ErrorHandlingExtensions on Future<T> Function() {
+extension ErrorHandlingExtensions<T> on Future<T> Function() {
   /// Future를 Result로 래핑하고 에러 처리
-  Future<Result<T>> toResult<T>() async {
+  Future<Result<T>> toResult() async {
     try {
       final result = await this();
       return ResultFactory.success(result);
@@ -293,7 +293,7 @@ extension ErrorHandlingExtensions on Future<T> Function() {
   }
 
   /// 재시도 로직과 함께 실행
-  Future<Result<T>> withRetry<T>({
+  Future<Result<T>> withRetry({
     int maxRetries = 3,
     Duration delay = const Duration(seconds: 1),
     bool Function(Exception)? retryCondition,
@@ -308,9 +308,9 @@ extension ErrorHandlingExtensions on Future<T> Function() {
 }
 
 /// 동기 함수 에러 처리 확장 메서드들
-extension SyncErrorHandlingExtensions on T Function() {
+extension SyncErrorHandlingExtensions<T> on T Function() {
   /// 동기 함수를 Result로 래핑하고 에러 처리
-  Result<T> toResult<T>() {
+  Result<T> toResult() {
     try {
       final result = this();
       return ResultFactory.success(result);
@@ -320,7 +320,7 @@ extension SyncErrorHandlingExtensions on T Function() {
   }
 
   /// 재시도 로직과 함께 실행
-  Result<T> withRetry<T>({
+  Result<T> withRetry({
     int maxRetries = 3,
     bool Function(Exception)? retryCondition,
   }) {

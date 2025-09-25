@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 
 /// 추천 질문 조회 UseCase
 class GetSuggestedQuestionsUseCase {
@@ -14,7 +14,6 @@ class GetSuggestedQuestionsUseCase {
   /// Returns: 추천 질문 목록
   Future<Result<List<AiSuggestedQuestionEntity>>> call() async {
     try {
-      // Repository를 통한 추천 질문 조회
       final questions = await _repository.getSuggestedQuestions();
       return ResultFactory.success(questions, '推奨質問を取得しました').toFuture();
     } catch (error) {
@@ -40,10 +39,10 @@ class GetSuggestedQuestionsUseCase {
         category: category,
         pet: pet,
       );
-      return ResultFactory.success(questions, 'カスタマイズされた推奨質問を取得しました');
+      return ResultFactory.success(questions, 'カスタマイズされた推奨質問を取得しました').toFuture();
     } catch (error) {
       return ResultFactory.failure<List<AiSuggestedQuestionEntity>>(
-        '推奨質問の取得に失敗しました: ${error.toString()}',
+        '推奨質問の取得に失敗しました (personalized): ${error.toString()}',
       ).toFuture();
     }
   }

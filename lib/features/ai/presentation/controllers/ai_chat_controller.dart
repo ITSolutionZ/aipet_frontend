@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
-import 'package:aipet_frontend/features/ai/data/providers/ai_providers.dart';
+import 'package:aipet_frontend/features/ai/data/providers/ai_usecase_providers.dart';
 import 'package:aipet_frontend/features/ai/domain/domain.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'ai_chat_controller.g.dart';
@@ -107,26 +106,24 @@ class AiChatNotifier extends _$AiChatNotifier {
   /// - 에러 상태 클리어
   /// - 빈 메시지 목록으로 시작
   Future<void> initializeChat() async {
-    final repository = ref.read(aiRepositoryProvider);
+    final useCase = ref.read(initializeChatUseCaseProvider);
 
-    try {
-      final suggestedQuestions = await repository.getSuggestedQuestions();
+    final result = await useCase();
 
-      // 빈 채팅으로 시작 - 펫 선택부터 시작
+    if (result.isSuccess && result.dataOrNull != null) {
       state = state.copyWith(
-        messages: <AiMessageEntity>[], // 빈 메시지 리스트
-        suggestedQuestions: suggestedQuestions,
-        favoriteQAs: <AiFavoriteQaEntity>[], // 빈 즐겨찾기 리스트
-        favoriteMessageIds: <String>[], // 빈 즐겨찾기 ID 리스트
-        // 초기 상태: 아무것도 선택되지 않음
+        messages: <AiMessageEntity>[],
+        suggestedQuestions: result.dataOrNull!,
+        favoriteQAs: <AiFavoriteQaEntity>[],
+        favoriteMessageIds: <String>[],
         selectedPet: null,
         hasPetSelected: false,
         selectedCategory: null,
         hasCategorySelected: false,
         error: null,
       );
-    } catch (error) {
-      state = state.copyWith(error: error.toString());
+    } else {
+      state = state.copyWith(error: result.errorOrNull);
     }
   }
 
@@ -143,96 +140,62 @@ class AiChatNotifier extends _$AiChatNotifier {
   /// ## 매개변수
   /// - [pet] 선택된 펫 프로필 정보 (null이면 선택 해제)
   void selectPet(PetProfileEntity? pet) {
-    if (pet != null) {
-      // 펫 선택을 사용자 메시지로 추가
-      final userMessage = AiMessageEntity(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: '${pet.name}について相談したいです',
-        type: MessageType.user,
-        timestamp: DateTime.now(),
-      );
+    final useCase = ref.read(selectPetUseCaseProvider);
+    final result = useCase(pet);
 
-      // AI 응답 메시지 추가
-      final aiMessage = AiMessageEntity(
-        id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
-        content:
-            '${pet.name}についてですね！🐕\n\nどのような内容でお困りですか？カテゴリを選択してください：\n\n• 健康 - 病気、怪我、健康管理\n• 食事 - フード、栄養、給餌\n• 行動 - しつけ、問題行動\n• グルーミング - お手入れ、毛づくろい\n• その他',
-        type: MessageType.assistant,
-        timestamp: DateTime.now().add(const Duration(milliseconds: 500)),
-      );
-
-      final updatedMessages = [...state.messages, userMessage, aiMessage];
-
+    if (result.isSuccess && result.dataOrNull != null && pet != null) {
+      final updatedMessages = [...state.messages, ...result.dataOrNull!];
       state = state.copyWith(
         selectedPet: pet,
         hasPetSelected: true,
         messages: updatedMessages,
       );
-    } else {
+    } else if (pet == null) {
       state = state.copyWith(selectedPet: pet, hasPetSelected: true);
+    } else {
+      state = state.copyWith(error: result.errorOrNull);
     }
   }
 
-  /// 카테고리 선택
   Future<void> selectCategory(AiCategoryEntity category) async {
-    // 카테고리 선택을 사용자 메시지로 추가
-    final userMessage = AiMessageEntity(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      content: '${category.name}について相談したいです',
-      type: MessageType.user,
-      timestamp: DateTime.now(),
+    final useCase = ref.read(selectCategoryUseCaseProvider);
+
+    final result = await useCase(
+      category: category,
+      selectedPet: state.selectedPet,
     );
 
-    // AI 응답 메시지 추가
-    final petName = state.selectedPet?.name ?? 'ペット';
-    final aiMessage = AiMessageEntity(
-      id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
-      content:
-          '$petNameの${category.name}について、どのような症状や心配事がありますか？\n\n$petNameの状況を詳しく教えてください。症状、期間、食欲の変化なども含めて説明していただけると、より正確なアドバイスができます。',
-      type: MessageType.assistant,
-      timestamp: DateTime.now().add(const Duration(milliseconds: 500)),
-    );
+    if (result.isSuccess && result.dataOrNull != null) {
+      final updatedMessages = [...state.messages, ...result.dataOrNull!.messages];
 
-    final updatedMessages = [...state.messages, userMessage, aiMessage];
-
-    state = state.copyWith(
-      selectedCategory: category,
-      hasCategorySelected: true,
-      messages: updatedMessages,
-    );
-
-    // 카테고리별 맞춤 추천 질문 업데이트
-    try {
-      final repository = ref.read(aiRepositoryProvider);
-      final personalizedQuestions = await repository
-          .getPersonalizedSuggestedQuestions(
-            category: category.id,
-            pet: state.selectedPet,
-          );
-
-      state = state.copyWith(suggestedQuestions: personalizedQuestions);
-    } catch (e) {
-      // 에러 발생 시 기본 추천 질문 유지
-      AiLogger.logApiError(e);
+      state = state.copyWith(
+        selectedCategory: category,
+        hasCategorySelected: true,
+        messages: updatedMessages,
+        suggestedQuestions: result.dataOrNull!.suggestedQuestions,
+      );
+    } else {
+      state = state.copyWith(error: result.errorOrNull);
     }
   }
 
-  /// 즐겨찾기 토글
   Future<void> toggleFavorite(AiMessageEntity message) async {
+    final useCase = ref.read(favoriteMessageUseCaseProvider);
     final favoriteIds = List<String>.from(state.favoriteMessageIds);
     final favoriteQAs = List<AiFavoriteQaEntity>.from(state.favoriteQAs);
-    final repository = ref.read(aiRepositoryProvider);
 
     if (favoriteIds.contains(message.id)) {
-      // 즐겨찾기에서 제거
-      favoriteIds.remove(message.id);
-      favoriteQAs.removeWhere((qa) => qa.id == message.id);
+      final result = await useCase.removeFavorite(message.id);
+      if (result.isSuccess) {
+        favoriteIds.remove(message.id);
+        favoriteQAs.removeWhere((qa) => qa.id == message.id);
+        state = state.copyWith(
+          favoriteMessageIds: favoriteIds,
+          favoriteQAs: favoriteQAs,
+        );
+      }
     } else {
-      // 즐겨찾기에 추가
-      favoriteIds.add(message.id);
-
-      // 해당 메시지와 연관된 질문 찾기 (바로 이전 사용자 메시지)
-      String userQuestion = '질문을 찾을 수 없습니다';
+      String userQuestion = '質問を見つけられませんでした';
       final messageIndex = state.messages.indexWhere((m) => m.id == message.id);
       if (messageIndex > 0) {
         final previousMessage = state.messages[messageIndex - 1];
@@ -241,46 +204,39 @@ class AiChatNotifier extends _$AiChatNotifier {
         }
       }
 
-      // AiFavoriteQaEntity 생성
-      final favoriteQA = AiFavoriteQaEntity(
-        id: message.id,
-        question: userQuestion,
-        answer: message.content,
-        pet: state.selectedPet,
-        categoryId: state.selectedCategory?.id,
-        categoryName: state.selectedCategory?.name,
-        createdAt: DateTime.now(),
-        originalTimestamp: message.timestamp,
-      );
-
-      favoriteQAs.add(favoriteQA);
-    }
-
-    state = state.copyWith(
-      favoriteMessageIds: favoriteIds,
-      favoriteQAs: favoriteQAs,
-    );
-
-    // Repository를 통해 로컬 저장소에 저장
-    if (!favoriteIds.contains(message.id)) {
-      await repository.addFavoriteMessage(
-        message,
-        state.selectedCategory?.id ?? 'general',
+      final result = await useCase.addFavorite(
+        message: message,
+        category: state.selectedCategory?.id ?? 'general',
         petId: state.selectedPet?.id,
         petName: state.selectedPet?.name,
       );
-    } else {
-      await repository.removeFavoriteMessage(message.id);
+
+      if (result.isSuccess) {
+        favoriteIds.add(message.id);
+        final favoriteQA = AiFavoriteQaEntity(
+          id: message.id,
+          question: userQuestion,
+          answer: message.content,
+          pet: state.selectedPet,
+          categoryId: state.selectedCategory?.id,
+          categoryName: state.selectedCategory?.name,
+          createdAt: DateTime.now(),
+          originalTimestamp: message.timestamp,
+        );
+        favoriteQAs.add(favoriteQA);
+        state = state.copyWith(
+          favoriteMessageIds: favoriteIds,
+          favoriteQAs: favoriteQAs,
+        );
+      }
     }
   }
 
-  /// 메시지 전송
   Future<void> sendMessage(String content) async {
     if (content.trim().isEmpty) return;
 
-    final repository = ref.read(aiRepositoryProvider);
+    final useCase = ref.read(sendMessageUseCaseProvider);
 
-    // 사용자 메시지 추가
     final userMessage = AiMessageEntity(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       content: content.trim(),
@@ -291,44 +247,22 @@ class AiChatNotifier extends _$AiChatNotifier {
     );
 
     final updatedMessages = [...state.messages, userMessage];
-
-    // 사용자 메시지를 추가하고 타이핑 상태 시작
     state = state.copyWith(messages: updatedMessages, isTyping: true);
 
-    // 사용자 메시지를 로컬 저장소에 저장
-    try {
-      // Repository의 _saveMessageToLocal 메서드를 통해 저장
-      // 이는 sendMessage와 sendMessageWithPetContext에서도 동일하게 처리됨
-      final existingHistory = await repository.getChatHistory();
-      existingHistory.add(userMessage);
-      // TODO: Repository에 사용자 메시지 저장 전용 메서드 추가 고려
-      // await repository.saveUserMessage(userMessage);
-    } catch (e) {
-      debugPrint('사용자 메시지 저장 실패: $e');
-      // 저장 실패해도 채팅은 계속 진행되도록 함
-    }
+    final result = await useCase.callWithPetContext(
+      content.trim(),
+      petContext: state.selectedPet,
+    );
 
-    try {
-      // Repository를 통해 AI 응답 받기 (펫 정보 포함)
-      final result = await repository.sendMessageWithPetContext(
-        content.trim(),
-        petContext: state.selectedPet,
+    if (result.isSuccess && result.dataOrNull != null) {
+      final finalMessages = [...state.messages, result.dataOrNull!];
+      state = state.copyWith(
+        messages: finalMessages,
+        isTyping: false,
+        error: null,
       );
-
-      if (result.isSuccess && result.value != null) {
-        // 현재 메시지 목록에 AI 응답 추가 (중복 방지)
-        final finalMessages = [...state.messages, result.value];
-
-        state = state.copyWith(
-          messages: finalMessages,
-          isTyping: false,
-          error: null,
-        );
-      } else {
-        state = state.copyWith(isTyping: false, error: result.error);
-      }
-    } catch (error) {
-      state = state.copyWith(isTyping: false, error: error.toString());
+    } else {
+      state = state.copyWith(isTyping: false, error: result.errorOrNull);
     }
   }
 
@@ -353,93 +287,40 @@ class AiChatNotifier extends _$AiChatNotifier {
     );
   }
 
-  /// 현재 채팅을 히스토리에 저장 (AI 요약 포함)
   Future<void> saveCurrentChatToHistory({bool isManualSave = false}) async {
-    // 메시지가 없으면 저장하지 않음
     if (state.messages.isEmpty) return;
 
-    final repository = ref.read(aiRepositoryProvider);
+    final useCase = ref.read(saveChatHistoryUseCaseProvider);
 
-    try {
-      // AI를 사용하여 채팅 내용을 요약
-      final summary = await _generateChatSummary();
-
-      // 채팅 히스토리 생성
-      final chatHistory = AiChatHistoryEntity(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: summary.title,
-        summary: summary.content,
-        messages: List.from(state.messages),
-        pet: state.selectedPet,
-        category: state.selectedCategory,
-        createdAt: DateTime.now(),
-        isManualSaved: isManualSave,
-        messageCount: state.messages.length,
-      );
-
-      // 히스토리에 저장
-      await repository.saveChatHistory(chatHistory);
-    } catch (error) {
-      debugPrint('채팅 저장 실패: $error');
-    }
+    await useCase(
+      messages: state.messages,
+      selectedPet: state.selectedPet,
+      selectedCategory: state.selectedCategory,
+      isManualSave: isManualSave,
+    );
   }
 
-  /// AI를 사용하여 채팅 요약 생성
-  Future<AiChatSummary> _generateChatSummary() async {
-    final repository = ref.read(aiRepositoryProvider);
-
-    // 사용자 메시지만 추출하여 요약 요청
-    final userMessages = state.messages
-        .where((m) => m.isUser)
-        .map((m) => m.content)
-        .toList();
-
-    if (userMessages.isEmpty) {
-      return AiChatSummary(
-        title: '${state.selectedPet?.name ?? 'ペット'}の相談',
-        content: '${state.selectedCategory?.name ?? '一般的な'}相談',
-      );
-    }
-
-    try {
-      return await repository.generateChatSummary(
-        userMessages: userMessages,
-        petName: state.selectedPet?.name ?? 'ペット',
-        category: state.selectedCategory?.name ?? '一般',
-      );
-    } catch (error) {
-      // AI 요약 실패 시 기본 요약 생성
-      final firstMessage = userMessages.first;
-      final title = firstMessage.length > 20
-          ? '${firstMessage.substring(0, 20)}...'
-          : firstMessage;
-
-      return AiChatSummary(
-        title: title,
-        content:
-            '${state.selectedPet?.name ?? 'ペット'}の${state.selectedCategory?.name ?? '相談'}について',
-      );
-    }
-  }
-
-  /// 채팅 기록 초기화 (현재 채팅을 저장한 후 리셋)
   Future<void> clearChatHistory({bool saveBeforeClear = true}) async {
-    final repository = ref.read(aiRepositoryProvider);
-
     try {
-      // 현재 채팅이 있으면 히스토리에 저장
       if (saveBeforeClear && state.messages.isNotEmpty) {
         await saveCurrentChatToHistory();
       }
 
-      await repository.clearChatHistory();
+      final clearUseCase = ref.read(clearChatHistoryUseCaseProvider);
+      final clearResult = await clearUseCase();
 
-      // 완전히 초기 상태로 리셋
-      state = const AiChatState();
+      if (clearResult.isSuccess) {
+        state = const AiChatState();
 
-      // 추천 질문만 다시 로드
-      final suggestedQuestions = await repository.getSuggestedQuestions();
-      state = state.copyWith(suggestedQuestions: suggestedQuestions);
+        final initUseCase = ref.read(initializeChatUseCaseProvider);
+        final initResult = await initUseCase();
+
+        if (initResult.isSuccess && initResult.dataOrNull != null) {
+          state = state.copyWith(suggestedQuestions: initResult.dataOrNull!);
+        }
+      } else {
+        state = state.copyWith(error: clearResult.errorOrNull);
+      }
     } catch (error) {
       state = state.copyWith(error: error.toString());
     }
@@ -460,20 +341,15 @@ class AiChatController extends BaseController {
     return ref.watch(aiChatNotifierProvider);
   }
 
-  /// 초기 데이터 로드
   Future<Result<void>> initializeChat() async {
-    final result = await safeExecuteWithTimeout(
+    return await wrapAsync(
       () async {
         final notifier = ref.read(aiChatNotifierProvider.notifier);
         await notifier.initializeChat();
       },
-      timeout: const Duration(seconds: 10),
-      errorMessage: 'チャット初期化',
+      successMessage: 'チャットが初期化されました',
+      failureMessage: 'チャット初期化に失敗しました',
     );
-
-    return result != null
-        ? Result.success('チャットが初期化されました')
-        : Result.failure('チャット初期化に失敗しました');
   }
 
   /// 펫 선택
@@ -482,40 +358,30 @@ class AiChatController extends BaseController {
     notifier.selectPet(pet);
   }
 
-  /// 메시지 전송
   Future<Result<void>> sendMessage(String content) async {
     if (content.trim().isEmpty) {
-      return Result.failure('メッセージが空です');
+      return validationError('メッセージが空です');
     }
 
-    final result = await safeExecuteWithTimeout(
+    return await wrapAsync(
       () async {
         final notifier = ref.read(aiChatNotifierProvider.notifier);
         await notifier.sendMessage(content);
       },
-      timeout: const Duration(seconds: 30),
-      errorMessage: 'メッセージ送信',
+      successMessage: 'メッセージが送信されました',
+      failureMessage: 'メッセージの送信に失敗しました',
     );
-
-    return result != null
-        ? Result.success('メッセージが送信されました')
-        : Result.failure('メッセージの送信に失敗しました');
   }
 
-  /// 채팅 기록 초기화
   Future<Result<void>> clearChatHistory() async {
-    final result = await safeExecuteWithRetry(
+    return await wrapAsync(
       () async {
         final notifier = ref.read(aiChatNotifierProvider.notifier);
         await notifier.clearChatHistory();
       },
-      maxRetries: 2,
-      errorMessage: 'チャット履歴クリア',
+      successMessage: 'チャット履歴がクリアされました',
+      failureMessage: 'チャット履歴のクリアに失敗しました',
     );
-
-    return result != null
-        ? Result.success('チャット履歴がクリアされました')
-        : Result.failure('チャット履歴のクリアに失敗しました');
   }
 
   /// 현재 메시지 목록 가져오기
@@ -562,31 +428,25 @@ class AiChatController extends BaseController {
     await notifier.toggleFavorite(message);
   }
 
-  /// 현재 채팅을 히스토리에 수동 저장
   Future<Result<void>> saveCurrentChatManually() async {
-    final result = await safeExecuteWithTimeout(
+    return await wrapAsync(
       () async {
         final notifier = ref.read(aiChatNotifierProvider.notifier);
         await notifier.saveCurrentChatToHistory(isManualSave: true);
       },
-      timeout: const Duration(seconds: 15),
-      errorMessage: 'チャット履歴保存',
+      successMessage: 'チャット履歴が保存されました',
+      failureMessage: 'チャット履歴の保存に失敗しました',
     );
-
-    return result != null
-        ? Result.success('チャット履歴が保存されました')
-        : Result.failure('チャット履歴の保存に失敗しました');
   }
 
-  /// 현재 채팅을 히스토리에 자동 저장 (탭 전환시)
   Future<Result<void>> saveCurrentChatOnTabSwitch() async {
-    final result = await safeExecute(() async {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
-      await notifier.saveCurrentChatToHistory(isManualSave: false);
-    }, errorMessage: 'チャット履歴自動保存');
-
-    return result != null
-        ? Result.success('チャット履歴が自動保存されました')
-        : Result.failure('チャット履歴の自動保存に失敗しました');
+    return await wrapAsync(
+      () async {
+        final notifier = ref.read(aiChatNotifierProvider.notifier);
+        await notifier.saveCurrentChatToHistory(isManualSave: false);
+      },
+      successMessage: 'チャット履歴が自動保存されました',
+      failureMessage: 'チャット履歴の自動保存に失敗しました',
+    );
   }
 }

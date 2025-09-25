@@ -9,7 +9,7 @@ class GetFacilityByIdUseCase {
   Future<Facility?> call(String id) async {
     final result = await repository.getFacilityById(id);
     if (result.isSuccess) {
-      return result.data;
+      return result.dataOrNull;
     } else {
       return null;
     }

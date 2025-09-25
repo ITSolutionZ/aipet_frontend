@@ -1,8 +1,7 @@
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_history_list_screen.dart';
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_screen.dart';
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_favorite_messages_screen.dart';
-import 'package:aipet_frontend/features/facility/domain/facility.dart';
-import 'package:aipet_frontend/features/facility/presentation/screens/facility_screens.dart';
+import 'package:aipet_frontend/features/facility/facility.dart';
 import 'package:aipet_frontend/features/home/presentation/presentation.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_screens.dart';
 import 'package:aipet_frontend/features/pet_activities/pet_activities.dart';
@@ -326,6 +325,8 @@ class ShellRoutes {
                 imagePath: 'assets/images/placeholder.png',
                 isFavorite: false,
                 hasHistory: false,
+                latitude: 35.6092,
+                longitude: 139.7301,
               );
               return FacilityFullscreenMapScreen(facility: mockFacility);
             },

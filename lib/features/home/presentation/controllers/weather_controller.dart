@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/ai/data/services/openai_service.dart';
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
-import 'package:aipet_frontend/features/onboarding/data/models/weather_model.dart';
-import 'package:aipet_frontend/features/onboarding/data/services/weather_service.dart';
+import 'package:aipet_frontend/features/ai/data/services/openai_service.dart';
+import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
+import 'package:aipet_frontend/features/home/data/services/weather_service.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 class WeatherController extends BaseController {
@@ -35,13 +36,13 @@ class WeatherController extends BaseController {
       );
       if (weatherData != null) {
         _currentWeatherData = weatherData;
-        return Result.success('天気情報を取得しました', weatherData);
+        return ResultFactory.success(weatherData, '天気情報を取得しました');
       } else {
-        return Result.failure('天気情報を取得できません');
+        return ResultFactory.failure('天気情報を取得できません');
       }
     } catch (error) {
       handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
+      return ResultFactory.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
@@ -55,12 +56,12 @@ class WeatherController extends BaseController {
   Future<Result<String>> generateWalkingAdvice() async {
     try {
       if (_currentWeatherData == null) {
-        return Result.failure('天気データがありません');
+        return ResultFactory.failure('天気データがありません');
       }
 
       // 캐시된 조언 확인
       if (_isAdviceCacheValid()) {
-        return Result.success('キャッシュされた散歩アドバイス', _cachedWalkingAdvice!);
+        return ResultFactory.success(_cachedWalkingAdvice!, 'キャッシュされた散歩アドバイス');
       }
 
       final weatherData = _currentWeatherData!;
@@ -108,7 +109,7 @@ UV指数: ${weatherData.uvIndex.toStringAsFixed(1)}
       // 조언 캐시 업데이트
       _updateAdviceCache(shortAdvice);
 
-      return Result.success('散歩アドバイスを生成しました', shortAdvice);
+      return ResultFactory.success(shortAdvice, '散歩アドバイスを生成しました');
     } catch (e) {
       handleError(e);
       // 폴백: 온도 기반 간단한 조언
@@ -119,24 +120,24 @@ UV指数: ${weatherData.uvIndex.toStringAsFixed(1)}
   /// OpenAI 실패 시 사용할 폴백 조언
   Result<String> _getFallbackWalkingAdvice() {
     if (_currentWeatherData == null) {
-      return Result.success('基本アドバイス', '今日も散歩を楽しもう');
+      return ResultFactory.success('今日も散歩を楽しもう', '基本アドバイス');
     }
 
     final temp = _currentWeatherData!.temperature;
 
     // 온도 기반 조언
     if (temp >= 30.0) {
-      return Result.success('温度ベースアドバイス', '暑いので短時間で');
+      return ResultFactory.success('暑いので短時間で', '温度ベースアドバイス');
     } else if (temp >= 25.0) {
-      return Result.success('温度ベースアドバイス', '日陰を選んで散歩');
+      return ResultFactory.success('日陰を選んで散歩', '温度ベースアドバイス');
     } else if (temp >= 20.0) {
-      return Result.success('温度ベースアドバイス', '今日は散歩に最適です');
+      return ResultFactory.success('今日は散歩に最適です', '温度ベースアドバイス');
     } else if (temp >= 10.0) {
-      return Result.success('温度ベースアドバイス', '軽い運動がおすすめ');
+      return ResultFactory.success('軽い運動がおすすめ', '温度ベースアドバイス');
     } else if (temp >= 0.0) {
-      return Result.success('温度ベースアドバイス', '防寒対策をしっかり');
+      return ResultFactory.success('防寒対策をしっかり', '温度ベースアドバイス');
     } else {
-      return Result.success('温度ベースアドバイス', '短時間の外出を');
+      return ResultFactory.success('短時間の外出を', '温度ベースアドバイス');
     }
   }
 
