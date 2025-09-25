@@ -12,7 +12,7 @@ abstract class AppException implements Exception {
   final DateTime timestamp;
   final Map<String, dynamic>? context;
 
-  const AppException(
+  AppException(
     this.message, {
     this.code,
     this.originalError,
@@ -40,7 +40,7 @@ abstract class AppException implements Exception {
 
 /// 네트워크 관련 예외
 class NetworkException extends AppException {
-  const NetworkException(
+  NetworkException(
     super.message, {
     super.code,
     super.originalError,
@@ -54,7 +54,7 @@ class NetworkException extends AppException {
 
 /// 인증 관련 예외
 class AuthenticationException extends AppException {
-  const AuthenticationException(
+  AuthenticationException(
     super.message, {
     super.code,
     super.originalError,
@@ -68,7 +68,7 @@ class AuthenticationException extends AppException {
 
 /// 권한 관련 예외
 class AuthorizationException extends AppException {
-  const AuthorizationException(
+  AuthorizationException(
     super.message, {
     super.code,
     super.originalError,
@@ -85,7 +85,7 @@ class ValidationException extends AppException {
   final String? field;
   final String? validationRule;
 
-  const ValidationException(
+  ValidationException(
     super.message, {
     super.code,
     super.originalError,
@@ -105,7 +105,7 @@ class StorageException extends AppException {
   final String? operation;
   final String? dataType;
 
-  const StorageException(
+  StorageException(
     super.message, {
     super.code,
     super.originalError,
@@ -125,7 +125,7 @@ class CacheException extends AppException {
   final String? cacheKey;
   final String? operation;
 
-  const CacheException(
+  CacheException(
     super.message, {
     super.code,
     super.originalError,
@@ -145,7 +145,7 @@ class ConfigurationException extends AppException {
   final String? configKey;
   final String? expectedType;
 
-  const ConfigurationException(
+  ConfigurationException(
     super.message, {
     super.code,
     super.originalError,
@@ -165,7 +165,7 @@ class DataParsingException extends AppException {
   final String? dataType;
   final String? expectedFormat;
 
-  const DataParsingException(
+  DataParsingException(
     super.message, {
     super.code,
     super.originalError,
@@ -183,17 +183,14 @@ class DataParsingException extends AppException {
 /// 비즈니스 로직 관련 예외
 class BusinessLogicException extends AppException {
   final String? operation;
-  @override
-  final String? context;
 
-  const BusinessLogicException(
+  BusinessLogicException(
     super.message, {
     super.code,
     super.originalError,
     super.timestamp,
     super.context,
     this.operation,
-    this.context,
   });
 
   @override
@@ -207,7 +204,7 @@ class ExternalApiException extends AppException {
   final String? endpoint;
   final String? httpMethod;
 
-  const ExternalApiException(
+  ExternalApiException(
     super.message, {
     super.code,
     super.originalError,
@@ -225,7 +222,7 @@ class ExternalApiException extends AppException {
 
 /// 예상치 못한 예외
 class UnexpectedException extends AppException {
-  const UnexpectedException(
+  UnexpectedException(
     super.message, {
     super.code,
     super.originalError,

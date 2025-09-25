@@ -13,7 +13,7 @@ class SetCurrentLocationUseCase {
     );
     if (!result.isSuccess) {
       throw Exception(
-        result.error?.toString() ?? 'Failed to set current location',
+        result.errorOrNull?.toString() ?? 'Failed to set current location',
       );
     }
   }

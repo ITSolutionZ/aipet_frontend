@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 /// 로그인 UseCase
@@ -20,15 +21,15 @@ class LoginUseCase {
     try {
       // 입력 유효성 검사
       if (email.isEmpty || password.isEmpty) {
-        return Result.failure('メールアドレスとパスワードを入力してください');
+        return ResultFactory.failure('メールアドレスとパスワードを入力してください');
       }
 
       if (!_isValidEmail(email)) {
-        return Result.failure('有効なメールアドレスを入力してください');
+        return ResultFactory.failure('有効なメールアドレスを入力してください');
       }
 
       if (password.length < 6) {
-        return Result.failure('パスワードは6文字以上で入力してください');
+        return ResultFactory.failure('パスワードは6文字以上で入力してください');
       }
 
       // Repository를 통한 로그인 실행
@@ -37,13 +38,13 @@ class LoginUseCase {
         password,
       );
 
-      if (authResult.isSuccess && authResult.data != null) {
-        return Result.success('ログインが完了しました', authResult.data!);
+      if (authResult.isSuccess && authResult.dataOrNull != null) {
+        return ResultFactory.success(authResult.dataOrNull!, 'ログインが完了しました');
       } else {
-        return Result.failure(authResult.message);
+        return ResultFactory.failure(authResult.errorOrNull ?? 'ログインに失敗しました');
       }
     } catch (error) {
-      return Result.failure('ログインに失敗しました: ${error.toString()}');
+      return ResultFactory.failure('ログインに失敗しました: ${error.toString()}');
     }
   }
 

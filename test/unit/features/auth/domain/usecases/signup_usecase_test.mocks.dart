@@ -7,8 +7,9 @@ import 'dart:async' as _i3;
 
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart'
     as _i2;
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i4;
+import 'package:mockito/src/dummies.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -24,11 +25,6 @@ import 'package:mockito/src/dummies.dart' as _i4;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeAuthResult_0 extends _i1.SmartFake implements _i2.AuthResult {
-  _FakeAuthResult_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
 /// A class which mocks [AuthRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -38,14 +34,14 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
   }
 
   @override
-  _i3.Future<_i2.AuthResult> signInWithEmailAndPassword(
+  _i3.Future<_i4.Result<_i2.AuthUser>> signInWithEmailAndPassword(
     String? email,
     String? password,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#signInWithEmailAndPassword, [email, password]),
-            returnValue: _i3.Future<_i2.AuthResult>.value(
-              _FakeAuthResult_0(
+            returnValue: _i3.Future<_i4.Result<_i2.AuthUser>>.value(
+              _i5.dummyValue<_i4.Result<_i2.AuthUser>>(
                 this,
                 Invocation.method(#signInWithEmailAndPassword, [
                   email,
@@ -54,10 +50,10 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
               ),
             ),
           )
-          as _i3.Future<_i2.AuthResult>);
+          as _i3.Future<_i4.Result<_i2.AuthUser>>);
 
   @override
-  _i3.Future<_i2.AuthResult> createUserWithEmailAndPassword(
+  _i3.Future<_i4.Result<_i2.AuthUser>> createUserWithEmailAndPassword(
     String? email,
     String? password,
   ) =>
@@ -66,8 +62,8 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
               email,
               password,
             ]),
-            returnValue: _i3.Future<_i2.AuthResult>.value(
-              _FakeAuthResult_0(
+            returnValue: _i3.Future<_i4.Result<_i2.AuthUser>>.value(
+              _i5.dummyValue<_i4.Result<_i2.AuthUser>>(
                 this,
                 Invocation.method(#createUserWithEmailAndPassword, [
                   email,
@@ -76,37 +72,46 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
               ),
             ),
           )
-          as _i3.Future<_i2.AuthResult>);
+          as _i3.Future<_i4.Result<_i2.AuthUser>>);
 
   @override
-  _i3.Future<_i2.AuthResult> signInWithGoogle() =>
+  _i3.Future<_i4.Result<_i2.AuthUser>> signInWithGoogle() =>
       (super.noSuchMethod(
             Invocation.method(#signInWithGoogle, []),
-            returnValue: _i3.Future<_i2.AuthResult>.value(
-              _FakeAuthResult_0(this, Invocation.method(#signInWithGoogle, [])),
+            returnValue: _i3.Future<_i4.Result<_i2.AuthUser>>.value(
+              _i5.dummyValue<_i4.Result<_i2.AuthUser>>(
+                this,
+                Invocation.method(#signInWithGoogle, []),
+              ),
             ),
           )
-          as _i3.Future<_i2.AuthResult>);
+          as _i3.Future<_i4.Result<_i2.AuthUser>>);
 
   @override
-  _i3.Future<_i2.AuthResult> signInWithApple() =>
+  _i3.Future<_i4.Result<_i2.AuthUser>> signInWithApple() =>
       (super.noSuchMethod(
             Invocation.method(#signInWithApple, []),
-            returnValue: _i3.Future<_i2.AuthResult>.value(
-              _FakeAuthResult_0(this, Invocation.method(#signInWithApple, [])),
+            returnValue: _i3.Future<_i4.Result<_i2.AuthUser>>.value(
+              _i5.dummyValue<_i4.Result<_i2.AuthUser>>(
+                this,
+                Invocation.method(#signInWithApple, []),
+              ),
             ),
           )
-          as _i3.Future<_i2.AuthResult>);
+          as _i3.Future<_i4.Result<_i2.AuthUser>>);
 
   @override
-  _i3.Future<_i2.AuthResult> signInWithLine() =>
+  _i3.Future<_i4.Result<_i2.AuthUser>> signInWithLine() =>
       (super.noSuchMethod(
             Invocation.method(#signInWithLine, []),
-            returnValue: _i3.Future<_i2.AuthResult>.value(
-              _FakeAuthResult_0(this, Invocation.method(#signInWithLine, [])),
+            returnValue: _i3.Future<_i4.Result<_i2.AuthUser>>.value(
+              _i5.dummyValue<_i4.Result<_i2.AuthUser>>(
+                this,
+                Invocation.method(#signInWithLine, []),
+              ),
             ),
           )
-          as _i3.Future<_i2.AuthResult>);
+          as _i3.Future<_i4.Result<_i2.AuthUser>>);
 
   @override
   _i3.Future<void> signOut() =>
@@ -169,7 +174,7 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
       (super.noSuchMethod(
             Invocation.method(#exchangeServerToken, [idToken]),
             returnValue: _i3.Future<String>.value(
-              _i4.dummyValue<String>(
+              _i5.dummyValue<String>(
                 this,
                 Invocation.method(#exchangeServerToken, [idToken]),
               ),

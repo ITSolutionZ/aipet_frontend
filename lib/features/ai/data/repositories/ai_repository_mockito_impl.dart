@@ -1,4 +1,6 @@
 import 'package:aipet_frontend/features/ai/data/services/openai_service.dart';
+import 'package:aipet_frontend/shared/core/utils/ai_logger.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_history_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_session_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart';
@@ -9,7 +11,7 @@ import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dar
 import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/shared.dart' hide Result;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -51,10 +53,10 @@ class AiRepositoryMockitoImpl implements AiRepository {
         timestamp: DateTime.now(),
       );
 
-      return Result.success('AI 응답이 생성되었습니다', aiMessage);
+      return ResultFactory.success(aiMessage, 'AI 응답이 생성되었습니다').toFuture();
     } catch (error) {
       AiLogger.logApiError(error.toString());
-      return Result.failure('AI 응답 생성에 실패했습니다: ${error.toString()}');
+      return ResultFactory.failure<AiMessageEntity>('AI 응답 생성에 실패했습니다: ${error.toString()}').toFuture();
     }
   }
 
@@ -65,11 +67,8 @@ class AiRepositoryMockitoImpl implements AiRepository {
   }) async {
     try {
       // AI 로거를 사용한 API 호출 시작 로그 (펫 컨텍스트 포함)
-      AiLogger.logApiStartWithPet(
-        message,
-        petName: petContext?.name,
-        petType: petContext?.typeName,
-      );
+      AiLogger.logApiStart(message, context: '펫 컨텍스트');
+      AiLogger.logPetContext(petContext?.name, petContext?.type);
 
       // 실제 OpenAI API 호출 (펫 컨텍스트 포함)
       final response = await _openAIService.generateResponse(
@@ -87,10 +86,10 @@ class AiRepositoryMockitoImpl implements AiRepository {
         timestamp: DateTime.now(),
       );
 
-      return Result.success('펫 컨텍스트와 함께 AI 응답이 생성되었습니다', aiMessage);
+      return ResultFactory.success(aiMessage, '펫 컨텍스트와 함께 AI 응답이 생성되었습니다').toFuture();
     } catch (error) {
       AiLogger.logApiError(error.toString());
-      return Result.failure('AI 응답 생성에 실패했습니다: ${error.toString()}');
+      return ResultFactory.failure<AiMessageEntity>('AI 응답 생성에 실패했습니다: ${error.toString()}').toFuture();
     }
   }
 

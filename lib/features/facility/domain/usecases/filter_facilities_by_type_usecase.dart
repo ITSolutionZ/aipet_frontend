@@ -9,10 +9,10 @@ class FilterFacilitiesByTypeUseCase {
   Future<List<Facility>> call(FacilityType type) async {
     final result = await repository.getFacilitiesByType(type);
     if (result.isSuccess) {
-      return result.data ?? [];
+      return result.dataOrNull ?? [];
     } else {
       throw Exception(
-        result.error?.toString() ?? 'Failed to filter facilities',
+        result.errorOrNull?.toString() ?? 'Failed to filter facilities',
       );
     }
   }

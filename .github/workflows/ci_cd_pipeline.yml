@@ -1,0 +1,253 @@
+name: AI Pet Frontend CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # 코드 품질 검사
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.7"
+          channel: "stable"
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Check imports
+        run: dart fix --dry-run
+
+  # 테스트 실행
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test-type: [unit, widget, integration]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.7"
+          channel: "stable"
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate mocks
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Run unit tests
+        if: matrix.test-type == 'unit'
+        run: flutter test test/unit/ --coverage
+
+      - name: Run widget tests
+        if: matrix.test-type == 'widget'
+        run: flutter test test/widget/ --coverage
+
+      - name: Run integration tests
+        if: matrix.test-type == 'integration'
+        run: flutter test test/integration/ --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: coverage/lcov.info
+          flags: ${{ matrix.test-type }}
+
+  # 보안 검사
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.7"
+          channel: "stable"
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Security audit
+        run: flutter pub audit
+
+      - name: Check for hardcoded secrets
+        run: |
+          if grep -r "sk-" lib/; then
+            echo "❌ Hardcoded API keys detected!"
+            exit 1
+          fi
+          if grep -r "AIza" lib/; then
+            echo "❌ Hardcoded Google API keys detected!"
+            exit 1
+          fi
+          echo "✅ No hardcoded secrets found"
+
+      - name: Check for mock mode in production
+        run: |
+          if grep -r "isMockMode.*true" lib/; then
+            echo "❌ Mock mode enabled in production code!"
+            exit 1
+          fi
+          echo "✅ No mock mode in production code"
+
+  # 성능 테스트
+  performance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.7"
+          channel: "stable"
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build for performance testing
+        run: flutter build apk --profile
+
+      - name: Run performance tests
+        run: flutter test test/performance/ --coverage
+
+      - name: Check memory usage
+        run: |
+          # 메모리 사용량 체크
+          flutter test test/performance/features/memory_test.dart
+
+  # 빌드 테스트
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [android, ios]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.7"
+          channel: "stable"
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate mocks
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build Android APK
+        if: matrix.platform == 'android'
+        run: flutter build apk --release
+
+      - name: Build iOS
+        if: matrix.platform == 'ios'
+        run: flutter build ios --release --no-codesign
+
+  # 배포 (main 브랜치만)
+  deploy:
+    needs: [code-quality, test, security, performance, build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.7"
+          channel: "stable"
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate mocks
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Build release iOS
+        run: flutter build ios --release --no-codesign
+
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: testers
+          file: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          body: |
+            ## 🚀 AI Pet Frontend Release v${{ github.run_number }}
+
+            ### 📊 Quality Metrics
+            - ✅ Code Quality: Passed
+            - ✅ Tests: Passed
+            - ✅ Security: Passed
+            - ✅ Performance: Passed
+            - ✅ Build: Passed
+
+            ### 🔧 Changes
+            - Automated release from CI/CD pipeline
+            - All quality checks passed
+
+            ### 📱 Downloads
+            - Android APK: Available in Firebase App Distribution
+            - iOS: Available in Firebase App Distribution
+          draft: false
+          prerelease: false
+
+  # 알림
+  notify:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Notify on success
+        if: needs.deploy.result == 'success'
+        run: |
+          echo "✅ Deployment successful!"
+          # Slack notification 등 추가 가능
+
+      - name: Notify on failure
+        if: needs.deploy.result == 'failure'
+        run: |
+          echo "❌ Deployment failed!"
+          # Slack notification 등 추가 가능

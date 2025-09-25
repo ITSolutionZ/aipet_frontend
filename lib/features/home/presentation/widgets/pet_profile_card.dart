@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
-import 'package:aipet_frontend/features/onboarding/data/providers/home_providers.dart';
+import 'package:aipet_frontend/features/home/data/providers/home_providers.dart';
 import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
-import 'package:aipet_frontend/pet_registor/presentation/services/microchip_reminder_service.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/services/microchip_reminder_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +23,7 @@ class PetProfileCardController extends StateNotifier<PetProfileCardState> {
   @override
   void dispose() {
     state.pageController?.dispose();
+    super.dispose();
   }
 }
 
@@ -46,7 +47,7 @@ class PetProfileCard extends ConsumerWidget {
   const PetProfileCard({super.key});
 
   /// 마이크로칩 등록 체크 및 모달 표시
-  void _checkMicrochipRegistration(List<dynamic> pets) {
+  void _checkMicrochipRegistration(BuildContext context, List<dynamic> pets) {
     if (pets.isNotEmpty) {
       final firstPet = pets.first;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -63,20 +64,14 @@ class PetProfileCard extends ConsumerWidget {
   }
 
   @override
-  void dispose() {
-    ref.read(petProfileCardProvider.notifier).dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // Pet 리스트 관리 - Mockito를 사용한 실제 Pet provider에서 로드
     final petsAsync = ref.watch(petsNotifierProvider);
 
     return petsAsync.when(
       data: (petList) {
         // 마이크로칩 등록 체크
-        _checkMicrochipRegistration(petList);
+        _checkMicrochipRegistration(context, petList);
 
         if (petList.isEmpty) {
           return GestureDetector(
@@ -216,7 +211,7 @@ class PetProfileCard extends ConsumerWidget {
 
                           // 화살표 아이콘 (펫이 2마리 이상일 때 표시)
                           if (hasMultiplePets) ...[
-                            const const const SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             const Icon(
                               Icons.arrow_forward_ios,
                               color: AppColors.pointGray,

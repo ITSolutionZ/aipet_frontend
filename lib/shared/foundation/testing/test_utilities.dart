@@ -450,6 +450,8 @@ extension ListTestExtensions<T> on List<T> {
 
   /// 리스트를 테스트용 JSON으로 변환
   List<Map<String, dynamic>> toTestJsonList() {
-    return map((item) => item.toTestJson()).toList();
+    return map(
+      (item) => item?.toTestJson(),
+    ).where((json) => json != null).cast<Map<String, dynamic>>().toList();
   }
 }

@@ -6,20 +6,23 @@
 import 'dart:async' as _i6;
 
 import 'package:aipet_frontend/features/ai/domain/entities/entities.dart'
-    as _i3;
+    as _i2;
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart'
     as _i5;
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart'
-    as _i4;
-import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart'
-    as _i9;
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
-    as _i7;
-import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart'
     as _i10;
-import 'package:aipet_frontend/shared/core/services/http_client_service.dart'
+import 'package:aipet_frontend/features/home/domain/entities/entities.dart'
+    as _i3;
+import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart'
     as _i11;
-import 'package:aipet_frontend/shared/shared.dart' as _i2;
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
+    as _i9;
+import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart'
+    as _i12;
+import 'package:aipet_frontend/shared/core/services/http_client_service.dart'
+    as _i13;
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart' as _i7;
+import 'package:aipet_frontend/shared/shared.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i8;
 
@@ -37,42 +40,48 @@ import 'package:mockito/src/dummies.dart' as _i8;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeResult_0<T> extends _i1.SmartFake implements _i2.Result<T> {
-  _FakeResult_0(Object parent, Invocation parentInvocation)
+class _FakeAiChatSessionEntity_0 extends _i1.SmartFake
+    implements _i2.AiChatSessionEntity {
+  _FakeAiChatSessionEntity_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAiChatSessionEntity_1 extends _i1.SmartFake
-    implements _i3.AiChatSessionEntity {
-  _FakeAiChatSessionEntity_1(Object parent, Invocation parentInvocation)
+class _FakeAiFavoriteEntity_1 extends _i1.SmartFake
+    implements _i2.AiFavoriteEntity {
+  _FakeAiFavoriteEntity_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAiFavoriteEntity_2 extends _i1.SmartFake
-    implements _i3.AiFavoriteEntity {
-  _FakeAiFavoriteEntity_2(Object parent, Invocation parentInvocation)
+class _FakeAiChatSummaryEntity_2 extends _i1.SmartFake
+    implements _i2.AiChatSummaryEntity {
+  _FakeAiChatSummaryEntity_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAiChatSummaryEntity_3 extends _i1.SmartFake
-    implements _i3.AiChatSummaryEntity {
-  _FakeAiChatSummaryEntity_3(Object parent, Invocation parentInvocation)
+class _FakeAiChatSummary_3 extends _i1.SmartFake implements _i2.AiChatSummary {
+  _FakeAiChatSummary_3(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAiChatSummary_4 extends _i1.SmartFake implements _i3.AiChatSummary {
-  _FakeAiChatSummary_4(Object parent, Invocation parentInvocation)
+class _FakeHomeDashboardEntity_4 extends _i1.SmartFake
+    implements _i3.HomeDashboardEntity {
+  _FakeHomeDashboardEntity_4(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAuthResult_5 extends _i1.SmartFake implements _i4.AuthResult {
-  _FakeAuthResult_5(Object parent, Invocation parentInvocation)
+class _FakeWalkSummary_5 extends _i1.SmartFake implements _i3.WalkSummary {
+  _FakeWalkSummary_5(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeApiResponse_6<T1> extends _i1.SmartFake
-    implements _i2.ApiResponse<T1> {
-  _FakeApiResponse_6(Object parent, Invocation parentInvocation)
+class _FakeHealthSummary_6 extends _i1.SmartFake implements _i3.HealthSummary {
+  _FakeHealthSummary_6(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeApiResponse_7<T1> extends _i1.SmartFake
+    implements _i4.ApiResponse<T1> {
+  _FakeApiResponse_7(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -85,32 +94,32 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
   }
 
   @override
-  _i6.Future<List<_i3.AiMessageEntity>> getChatHistory() =>
+  _i6.Future<List<_i2.AiMessageEntity>> getChatHistory() =>
       (super.noSuchMethod(
             Invocation.method(#getChatHistory, []),
-            returnValue: _i6.Future<List<_i3.AiMessageEntity>>.value(
-              <_i3.AiMessageEntity>[],
+            returnValue: _i6.Future<List<_i2.AiMessageEntity>>.value(
+              <_i2.AiMessageEntity>[],
             ),
           )
-          as _i6.Future<List<_i3.AiMessageEntity>>);
+          as _i6.Future<List<_i2.AiMessageEntity>>);
 
   @override
-  _i6.Future<_i2.Result<_i3.AiMessageEntity>> sendMessage(String? message) =>
+  _i6.Future<_i7.Result<_i2.AiMessageEntity>> sendMessage(String? message) =>
       (super.noSuchMethod(
             Invocation.method(#sendMessage, [message]),
-            returnValue: _i6.Future<_i2.Result<_i3.AiMessageEntity>>.value(
-              _FakeResult_0<_i3.AiMessageEntity>(
+            returnValue: _i6.Future<_i7.Result<_i2.AiMessageEntity>>.value(
+              _i8.dummyValue<_i7.Result<_i2.AiMessageEntity>>(
                 this,
                 Invocation.method(#sendMessage, [message]),
               ),
             ),
           )
-          as _i6.Future<_i2.Result<_i3.AiMessageEntity>>);
+          as _i6.Future<_i7.Result<_i2.AiMessageEntity>>);
 
   @override
-  _i6.Future<_i2.Result<_i3.AiMessageEntity>> sendMessageWithPetContext(
+  _i6.Future<_i7.Result<_i2.AiMessageEntity>> sendMessageWithPetContext(
     String? message, {
-    _i7.PetProfileEntity? petContext,
+    _i9.PetProfileEntity? petContext,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -118,8 +127,8 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               [message],
               {#petContext: petContext},
             ),
-            returnValue: _i6.Future<_i2.Result<_i3.AiMessageEntity>>.value(
-              _FakeResult_0<_i3.AiMessageEntity>(
+            returnValue: _i6.Future<_i7.Result<_i2.AiMessageEntity>>.value(
+              _i8.dummyValue<_i7.Result<_i2.AiMessageEntity>>(
                 this,
                 Invocation.method(
                   #sendMessageWithPetContext,
@@ -129,7 +138,7 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               ),
             ),
           )
-          as _i6.Future<_i2.Result<_i3.AiMessageEntity>>);
+          as _i6.Future<_i7.Result<_i2.AiMessageEntity>>);
 
   @override
   _i6.Future<void> clearChatHistory() =>
@@ -141,30 +150,30 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
           as _i6.Future<void>);
 
   @override
-  _i6.Future<List<_i3.AiChatSessionEntity>> getChatSessions() =>
+  _i6.Future<List<_i2.AiChatSessionEntity>> getChatSessions() =>
       (super.noSuchMethod(
             Invocation.method(#getChatSessions, []),
-            returnValue: _i6.Future<List<_i3.AiChatSessionEntity>>.value(
-              <_i3.AiChatSessionEntity>[],
+            returnValue: _i6.Future<List<_i2.AiChatSessionEntity>>.value(
+              <_i2.AiChatSessionEntity>[],
             ),
           )
-          as _i6.Future<List<_i3.AiChatSessionEntity>>);
+          as _i6.Future<List<_i2.AiChatSessionEntity>>);
 
   @override
-  _i6.Future<_i3.AiChatSessionEntity> createChatSession(
+  _i6.Future<_i2.AiChatSessionEntity> createChatSession(
     String? title, {
     String? petId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#createChatSession, [title], {#petId: petId}),
-            returnValue: _i6.Future<_i3.AiChatSessionEntity>.value(
-              _FakeAiChatSessionEntity_1(
+            returnValue: _i6.Future<_i2.AiChatSessionEntity>.value(
+              _FakeAiChatSessionEntity_0(
                 this,
                 Invocation.method(#createChatSession, [title], {#petId: petId}),
               ),
             ),
           )
-          as _i6.Future<_i3.AiChatSessionEntity>);
+          as _i6.Future<_i2.AiChatSessionEntity>);
 
   @override
   _i6.Future<void> deleteChatSession(String? sessionId) =>
@@ -176,35 +185,35 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
           as _i6.Future<void>);
 
   @override
-  _i6.Future<List<_i3.AiSuggestedQuestionEntity>> getSuggestedQuestions() =>
+  _i6.Future<List<_i2.AiSuggestedQuestionEntity>> getSuggestedQuestions() =>
       (super.noSuchMethod(
             Invocation.method(#getSuggestedQuestions, []),
-            returnValue: _i6.Future<List<_i3.AiSuggestedQuestionEntity>>.value(
-              <_i3.AiSuggestedQuestionEntity>[],
+            returnValue: _i6.Future<List<_i2.AiSuggestedQuestionEntity>>.value(
+              <_i2.AiSuggestedQuestionEntity>[],
             ),
           )
-          as _i6.Future<List<_i3.AiSuggestedQuestionEntity>>);
+          as _i6.Future<List<_i2.AiSuggestedQuestionEntity>>);
 
   @override
-  _i6.Future<List<_i3.AiSuggestedQuestionEntity>>
+  _i6.Future<List<_i2.AiSuggestedQuestionEntity>>
   getPersonalizedSuggestedQuestions({
     String? category,
-    _i7.PetProfileEntity? pet,
+    _i9.PetProfileEntity? pet,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#getPersonalizedSuggestedQuestions, [], {
               #category: category,
               #pet: pet,
             }),
-            returnValue: _i6.Future<List<_i3.AiSuggestedQuestionEntity>>.value(
-              <_i3.AiSuggestedQuestionEntity>[],
+            returnValue: _i6.Future<List<_i2.AiSuggestedQuestionEntity>>.value(
+              <_i2.AiSuggestedQuestionEntity>[],
             ),
           )
-          as _i6.Future<List<_i3.AiSuggestedQuestionEntity>>);
+          as _i6.Future<List<_i2.AiSuggestedQuestionEntity>>);
 
   @override
-  _i6.Future<_i3.AiFavoriteEntity> addFavoriteMessage(
-    _i3.AiMessageEntity? message,
+  _i6.Future<_i2.AiFavoriteEntity> addFavoriteMessage(
+    _i2.AiMessageEntity? message,
     String? category, {
     String? petId,
     String? petName,
@@ -216,8 +225,8 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               [message, category],
               {#petId: petId, #petName: petName, #userNote: userNote},
             ),
-            returnValue: _i6.Future<_i3.AiFavoriteEntity>.value(
-              _FakeAiFavoriteEntity_2(
+            returnValue: _i6.Future<_i2.AiFavoriteEntity>.value(
+              _FakeAiFavoriteEntity_1(
                 this,
                 Invocation.method(
                   #addFavoriteMessage,
@@ -227,7 +236,7 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               ),
             ),
           )
-          as _i6.Future<_i3.AiFavoriteEntity>);
+          as _i6.Future<_i2.AiFavoriteEntity>);
 
   @override
   _i6.Future<void> removeFavoriteMessage(String? favoriteId) =>
@@ -239,7 +248,7 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
           as _i6.Future<void>);
 
   @override
-  _i6.Future<List<_i3.AiFavoriteEntity>> getFavoriteMessages({
+  _i6.Future<List<_i2.AiFavoriteEntity>> getFavoriteMessages({
     String? petId,
     String? category,
   }) =>
@@ -248,23 +257,23 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               #petId: petId,
               #category: category,
             }),
-            returnValue: _i6.Future<List<_i3.AiFavoriteEntity>>.value(
-              <_i3.AiFavoriteEntity>[],
+            returnValue: _i6.Future<List<_i2.AiFavoriteEntity>>.value(
+              <_i2.AiFavoriteEntity>[],
             ),
           )
-          as _i6.Future<List<_i3.AiFavoriteEntity>>);
+          as _i6.Future<List<_i2.AiFavoriteEntity>>);
 
   @override
-  List<_i3.AiFavoriteQaEntity> getFavoriteQAs() =>
+  List<_i2.AiFavoriteQaEntity> getFavoriteQAs() =>
       (super.noSuchMethod(
             Invocation.method(#getFavoriteQAs, []),
-            returnValue: <_i3.AiFavoriteQaEntity>[],
+            returnValue: <_i2.AiFavoriteQaEntity>[],
           )
-          as List<_i3.AiFavoriteQaEntity>);
+          as List<_i2.AiFavoriteQaEntity>);
 
   @override
-  _i6.Future<_i3.AiChatSummaryEntity> createChatSummary(
-    List<_i3.AiMessageEntity>? messages,
+  _i6.Future<_i2.AiChatSummaryEntity> createChatSummary(
+    List<_i2.AiMessageEntity>? messages,
     String? category, {
     String? petId,
     String? petName,
@@ -275,8 +284,8 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               [messages, category],
               {#petId: petId, #petName: petName},
             ),
-            returnValue: _i6.Future<_i3.AiChatSummaryEntity>.value(
-              _FakeAiChatSummaryEntity_3(
+            returnValue: _i6.Future<_i2.AiChatSummaryEntity>.value(
+              _FakeAiChatSummaryEntity_2(
                 this,
                 Invocation.method(
                   #createChatSummary,
@@ -286,10 +295,10 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               ),
             ),
           )
-          as _i6.Future<_i3.AiChatSummaryEntity>);
+          as _i6.Future<_i2.AiChatSummaryEntity>);
 
   @override
-  _i6.Future<List<_i3.AiChatSummaryEntity>> getChatSummaries({
+  _i6.Future<List<_i2.AiChatSummaryEntity>> getChatSummaries({
     String? petId,
     String? category,
   }) =>
@@ -298,11 +307,11 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               #petId: petId,
               #category: category,
             }),
-            returnValue: _i6.Future<List<_i3.AiChatSummaryEntity>>.value(
-              <_i3.AiChatSummaryEntity>[],
+            returnValue: _i6.Future<List<_i2.AiChatSummaryEntity>>.value(
+              <_i2.AiChatSummaryEntity>[],
             ),
           )
-          as _i6.Future<List<_i3.AiChatSummaryEntity>>);
+          as _i6.Future<List<_i2.AiChatSummaryEntity>>);
 
   @override
   _i6.Future<void> deleteChatSummary(String? summaryId) =>
@@ -314,7 +323,7 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
           as _i6.Future<void>);
 
   @override
-  _i6.Future<void> saveChatHistory(_i3.AiChatHistoryEntity? chatHistory) =>
+  _i6.Future<void> saveChatHistory(_i2.AiChatHistoryEntity? chatHistory) =>
       (super.noSuchMethod(
             Invocation.method(#saveChatHistory, [chatHistory]),
             returnValue: _i6.Future<void>.value(),
@@ -323,7 +332,7 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
           as _i6.Future<void>);
 
   @override
-  _i6.Future<_i3.AiChatSummary> generateChatSummary({
+  _i6.Future<_i2.AiChatSummary> generateChatSummary({
     required List<String>? userMessages,
     required String? petName,
     required String? category,
@@ -334,8 +343,8 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               #petName: petName,
               #category: category,
             }),
-            returnValue: _i6.Future<_i3.AiChatSummary>.value(
-              _FakeAiChatSummary_4(
+            returnValue: _i6.Future<_i2.AiChatSummary>.value(
+              _FakeAiChatSummary_3(
                 this,
                 Invocation.method(#generateChatSummary, [], {
                   #userMessages: userMessages,
@@ -345,10 +354,10 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               ),
             ),
           )
-          as _i6.Future<_i3.AiChatSummary>);
+          as _i6.Future<_i2.AiChatSummary>);
 
   @override
-  _i6.Future<List<_i3.AiChatHistoryEntity>> getChatHistories({
+  _i6.Future<List<_i2.AiChatHistoryEntity>> getChatHistories({
     int? limit = 30,
     bool? onlyManualSaved = false,
   }) =>
@@ -357,11 +366,11 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
               #limit: limit,
               #onlyManualSaved: onlyManualSaved,
             }),
-            returnValue: _i6.Future<List<_i3.AiChatHistoryEntity>>.value(
-              <_i3.AiChatHistoryEntity>[],
+            returnValue: _i6.Future<List<_i2.AiChatHistoryEntity>>.value(
+              <_i2.AiChatHistoryEntity>[],
             ),
           )
-          as _i6.Future<List<_i3.AiChatHistoryEntity>>);
+          as _i6.Future<List<_i2.AiChatHistoryEntity>>);
 
   @override
   _i6.Future<void> deleteChatHistory(String? historyId) =>
@@ -376,20 +385,20 @@ class MockAiRepository extends _i1.Mock implements _i5.AiRepository {
 /// A class which mocks [AuthRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
+class MockAuthRepository extends _i1.Mock implements _i10.AuthRepository {
   MockAuthRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<_i4.AuthResult> signInWithEmailAndPassword(
+  _i6.Future<_i7.Result<_i10.AuthUser>> signInWithEmailAndPassword(
     String? email,
     String? password,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#signInWithEmailAndPassword, [email, password]),
-            returnValue: _i6.Future<_i4.AuthResult>.value(
-              _FakeAuthResult_5(
+            returnValue: _i6.Future<_i7.Result<_i10.AuthUser>>.value(
+              _i8.dummyValue<_i7.Result<_i10.AuthUser>>(
                 this,
                 Invocation.method(#signInWithEmailAndPassword, [
                   email,
@@ -398,10 +407,10 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
               ),
             ),
           )
-          as _i6.Future<_i4.AuthResult>);
+          as _i6.Future<_i7.Result<_i10.AuthUser>>);
 
   @override
-  _i6.Future<_i4.AuthResult> createUserWithEmailAndPassword(
+  _i6.Future<_i7.Result<_i10.AuthUser>> createUserWithEmailAndPassword(
     String? email,
     String? password,
   ) =>
@@ -410,8 +419,8 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
               email,
               password,
             ]),
-            returnValue: _i6.Future<_i4.AuthResult>.value(
-              _FakeAuthResult_5(
+            returnValue: _i6.Future<_i7.Result<_i10.AuthUser>>.value(
+              _i8.dummyValue<_i7.Result<_i10.AuthUser>>(
                 this,
                 Invocation.method(#createUserWithEmailAndPassword, [
                   email,
@@ -420,37 +429,46 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
               ),
             ),
           )
-          as _i6.Future<_i4.AuthResult>);
+          as _i6.Future<_i7.Result<_i10.AuthUser>>);
 
   @override
-  _i6.Future<_i4.AuthResult> signInWithGoogle() =>
+  _i6.Future<_i7.Result<_i10.AuthUser>> signInWithGoogle() =>
       (super.noSuchMethod(
             Invocation.method(#signInWithGoogle, []),
-            returnValue: _i6.Future<_i4.AuthResult>.value(
-              _FakeAuthResult_5(this, Invocation.method(#signInWithGoogle, [])),
+            returnValue: _i6.Future<_i7.Result<_i10.AuthUser>>.value(
+              _i8.dummyValue<_i7.Result<_i10.AuthUser>>(
+                this,
+                Invocation.method(#signInWithGoogle, []),
+              ),
             ),
           )
-          as _i6.Future<_i4.AuthResult>);
+          as _i6.Future<_i7.Result<_i10.AuthUser>>);
 
   @override
-  _i6.Future<_i4.AuthResult> signInWithApple() =>
+  _i6.Future<_i7.Result<_i10.AuthUser>> signInWithApple() =>
       (super.noSuchMethod(
             Invocation.method(#signInWithApple, []),
-            returnValue: _i6.Future<_i4.AuthResult>.value(
-              _FakeAuthResult_5(this, Invocation.method(#signInWithApple, [])),
+            returnValue: _i6.Future<_i7.Result<_i10.AuthUser>>.value(
+              _i8.dummyValue<_i7.Result<_i10.AuthUser>>(
+                this,
+                Invocation.method(#signInWithApple, []),
+              ),
             ),
           )
-          as _i6.Future<_i4.AuthResult>);
+          as _i6.Future<_i7.Result<_i10.AuthUser>>);
 
   @override
-  _i6.Future<_i4.AuthResult> signInWithLine() =>
+  _i6.Future<_i7.Result<_i10.AuthUser>> signInWithLine() =>
       (super.noSuchMethod(
             Invocation.method(#signInWithLine, []),
-            returnValue: _i6.Future<_i4.AuthResult>.value(
-              _FakeAuthResult_5(this, Invocation.method(#signInWithLine, [])),
+            returnValue: _i6.Future<_i7.Result<_i10.AuthUser>>.value(
+              _i8.dummyValue<_i7.Result<_i10.AuthUser>>(
+                this,
+                Invocation.method(#signInWithLine, []),
+              ),
             ),
           )
-          as _i6.Future<_i4.AuthResult>);
+          as _i6.Future<_i7.Result<_i10.AuthUser>>);
 
   @override
   _i6.Future<void> signOut() =>
@@ -462,12 +480,12 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
           as _i6.Future<void>);
 
   @override
-  _i6.Future<_i4.AuthUser?> getCurrentUser() =>
+  _i6.Future<_i10.AuthUser?> getCurrentUser() =>
       (super.noSuchMethod(
             Invocation.method(#getCurrentUser, []),
-            returnValue: _i6.Future<_i4.AuthUser?>.value(),
+            returnValue: _i6.Future<_i10.AuthUser?>.value(),
           )
-          as _i6.Future<_i4.AuthUser?>);
+          as _i6.Future<_i10.AuthUser?>);
 
   @override
   _i6.Future<void> sendPasswordResetEmail(String? email) =>
@@ -567,22 +585,27 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
 /// A class which mocks [HomeRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockHomeRepository extends _i1.Mock implements _i9.HomeRepository {
+class MockHomeRepository extends _i1.Mock implements _i11.HomeRepository {
   MockHomeRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<dynamic> getDashboardData() =>
+  _i6.Future<_i3.HomeDashboardEntity> getDashboardData() =>
       (super.noSuchMethod(
             Invocation.method(#getDashboardData, []),
-            returnValue: _i6.Future<dynamic>.value(),
+            returnValue: _i6.Future<_i3.HomeDashboardEntity>.value(
+              _FakeHomeDashboardEntity_4(
+                this,
+                Invocation.method(#getDashboardData, []),
+              ),
+            ),
           )
-          as _i6.Future<dynamic>);
+          as _i6.Future<_i3.HomeDashboardEntity>);
 
   @override
-  _i6.Future<dynamic> getCurrentWeather({
-    dynamic location,
+  _i6.Future<_i3.WeatherEntity?> getCurrentWeather({
+    _i3.WeatherLocationEntity? location,
     bool? userTriggered = false,
   }) =>
       (super.noSuchMethod(
@@ -590,117 +613,131 @@ class MockHomeRepository extends _i1.Mock implements _i9.HomeRepository {
               #location: location,
               #userTriggered: userTriggered,
             }),
-            returnValue: _i6.Future<dynamic>.value(),
+            returnValue: _i6.Future<_i3.WeatherEntity?>.value(),
           )
-          as _i6.Future<dynamic>);
+          as _i6.Future<_i3.WeatherEntity?>);
 
   @override
-  _i6.Future<List<dynamic>> getPetSummaries() =>
+  _i6.Future<List<_i3.PetSummaryEntity>> getPetSummaries() =>
       (super.noSuchMethod(
             Invocation.method(#getPetSummaries, []),
-            returnValue: _i6.Future<List<dynamic>>.value(<dynamic>[]),
+            returnValue: _i6.Future<List<_i3.PetSummaryEntity>>.value(
+              <_i3.PetSummaryEntity>[],
+            ),
           )
-          as _i6.Future<List<dynamic>>);
+          as _i6.Future<List<_i3.PetSummaryEntity>>);
 
   @override
-  _i6.Future<dynamic> getWalkSummary() =>
+  _i6.Future<_i3.WalkSummary> getWalkSummary() =>
       (super.noSuchMethod(
             Invocation.method(#getWalkSummary, []),
-            returnValue: _i6.Future<dynamic>.value(),
+            returnValue: _i6.Future<_i3.WalkSummary>.value(
+              _FakeWalkSummary_5(this, Invocation.method(#getWalkSummary, [])),
+            ),
           )
-          as _i6.Future<dynamic>);
+          as _i6.Future<_i3.WalkSummary>);
 
   @override
-  _i6.Future<dynamic> getPetHealthSummary() =>
+  _i6.Future<_i3.HealthSummary> getPetHealthSummary() =>
       (super.noSuchMethod(
             Invocation.method(#getPetHealthSummary, []),
-            returnValue: _i6.Future<dynamic>.value(),
+            returnValue: _i6.Future<_i3.HealthSummary>.value(
+              _FakeHealthSummary_6(
+                this,
+                Invocation.method(#getPetHealthSummary, []),
+              ),
+            ),
           )
-          as _i6.Future<dynamic>);
+          as _i6.Future<_i3.HealthSummary>);
 
   @override
-  _i6.Future<List<dynamic>> getUpcomingAppointments() =>
+  _i6.Future<List<_i3.AppointmentSummary>> getUpcomingAppointments() =>
       (super.noSuchMethod(
             Invocation.method(#getUpcomingAppointments, []),
-            returnValue: _i6.Future<List<dynamic>>.value(<dynamic>[]),
+            returnValue: _i6.Future<List<_i3.AppointmentSummary>>.value(
+              <_i3.AppointmentSummary>[],
+            ),
           )
-          as _i6.Future<List<dynamic>>);
+          as _i6.Future<List<_i3.AppointmentSummary>>);
 }
 
 /// A class which mocks [PetRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPetRepository extends _i1.Mock implements _i10.PetRepository {
+class MockPetRepository extends _i1.Mock implements _i12.PetRepository {
   MockPetRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<_i2.Result<List<_i7.PetProfileEntity>>> getAllPets() =>
+  _i6.Future<_i7.Result<List<_i9.PetProfileEntity>>> getAllPets() =>
       (super.noSuchMethod(
             Invocation.method(#getAllPets, []),
             returnValue:
-                _i6.Future<_i2.Result<List<_i7.PetProfileEntity>>>.value(
-                  _FakeResult_0<List<_i7.PetProfileEntity>>(
+                _i6.Future<_i7.Result<List<_i9.PetProfileEntity>>>.value(
+                  _i8.dummyValue<_i7.Result<List<_i9.PetProfileEntity>>>(
                     this,
                     Invocation.method(#getAllPets, []),
                   ),
                 ),
           )
-          as _i6.Future<_i2.Result<List<_i7.PetProfileEntity>>>);
+          as _i6.Future<_i7.Result<List<_i9.PetProfileEntity>>>);
 
   @override
-  _i6.Future<_i2.Result<_i7.PetProfileEntity?>> getPetById(String? id) =>
+  _i6.Future<_i7.Result<_i9.PetProfileEntity?>> getPetById(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#getPetById, [id]),
-            returnValue: _i6.Future<_i2.Result<_i7.PetProfileEntity?>>.value(
-              _FakeResult_0<_i7.PetProfileEntity?>(
+            returnValue: _i6.Future<_i7.Result<_i9.PetProfileEntity?>>.value(
+              _i8.dummyValue<_i7.Result<_i9.PetProfileEntity?>>(
                 this,
                 Invocation.method(#getPetById, [id]),
               ),
             ),
           )
-          as _i6.Future<_i2.Result<_i7.PetProfileEntity?>>);
+          as _i6.Future<_i7.Result<_i9.PetProfileEntity?>>);
 
   @override
-  _i6.Future<_i2.Result<_i7.PetProfileEntity>> createPet(
-    _i7.PetProfileEntity? pet,
+  _i6.Future<_i7.Result<_i9.PetProfileEntity>> createPet(
+    _i9.PetProfileEntity? pet,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#createPet, [pet]),
-            returnValue: _i6.Future<_i2.Result<_i7.PetProfileEntity>>.value(
-              _FakeResult_0<_i7.PetProfileEntity>(
+            returnValue: _i6.Future<_i7.Result<_i9.PetProfileEntity>>.value(
+              _i8.dummyValue<_i7.Result<_i9.PetProfileEntity>>(
                 this,
                 Invocation.method(#createPet, [pet]),
               ),
             ),
           )
-          as _i6.Future<_i2.Result<_i7.PetProfileEntity>>);
+          as _i6.Future<_i7.Result<_i9.PetProfileEntity>>);
 
   @override
-  _i6.Future<_i2.Result<_i7.PetProfileEntity>> updatePet(
-    _i7.PetProfileEntity? pet,
+  _i6.Future<_i7.Result<_i9.PetProfileEntity>> updatePet(
+    _i9.PetProfileEntity? pet,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updatePet, [pet]),
-            returnValue: _i6.Future<_i2.Result<_i7.PetProfileEntity>>.value(
-              _FakeResult_0<_i7.PetProfileEntity>(
+            returnValue: _i6.Future<_i7.Result<_i9.PetProfileEntity>>.value(
+              _i8.dummyValue<_i7.Result<_i9.PetProfileEntity>>(
                 this,
                 Invocation.method(#updatePet, [pet]),
               ),
             ),
           )
-          as _i6.Future<_i2.Result<_i7.PetProfileEntity>>);
+          as _i6.Future<_i7.Result<_i9.PetProfileEntity>>);
 
   @override
-  _i6.Future<_i2.Result<void>> deletePet(String? id) =>
+  _i6.Future<_i7.Result<void>> deletePet(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deletePet, [id]),
-            returnValue: _i6.Future<_i2.Result<void>>.value(
-              _FakeResult_0<void>(this, Invocation.method(#deletePet, [id])),
+            returnValue: _i6.Future<_i7.Result<void>>.value(
+              _i8.dummyValue<_i7.Result<void>>(
+                this,
+                Invocation.method(#deletePet, [id]),
+              ),
             ),
           )
-          as _i6.Future<_i2.Result<void>>);
+          as _i6.Future<_i7.Result<void>>);
 
   @override
   _i6.Future<void> saveTemporaryPetData(dynamic data) =>
@@ -732,13 +769,13 @@ class MockPetRepository extends _i1.Mock implements _i10.PetRepository {
 /// A class which mocks [HttpClientService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockHttpClientService extends _i1.Mock implements _i11.HttpClientService {
+class MockHttpClientService extends _i1.Mock implements _i13.HttpClientService {
   MockHttpClientService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<_i2.ApiResponse<T>> get<T>(
+  _i6.Future<_i4.ApiResponse<T>> get<T>(
     String? path, {
     Map<String, dynamic>? queryParameters,
     T Function(Map<String, dynamic>)? fromJson,
@@ -749,8 +786,8 @@ class MockHttpClientService extends _i1.Mock implements _i11.HttpClientService {
               [path],
               {#queryParameters: queryParameters, #fromJson: fromJson},
             ),
-            returnValue: _i6.Future<_i2.ApiResponse<T>>.value(
-              _FakeApiResponse_6<T>(
+            returnValue: _i6.Future<_i4.ApiResponse<T>>.value(
+              _FakeApiResponse_7<T>(
                 this,
                 Invocation.method(
                   #get,
@@ -760,10 +797,10 @@ class MockHttpClientService extends _i1.Mock implements _i11.HttpClientService {
               ),
             ),
           )
-          as _i6.Future<_i2.ApiResponse<T>>);
+          as _i6.Future<_i4.ApiResponse<T>>);
 
   @override
-  _i6.Future<_i2.ApiResponse<T>> post<T>(
+  _i6.Future<_i4.ApiResponse<T>> post<T>(
     String? path, {
     Map<String, dynamic>? data,
     T Function(Map<String, dynamic>)? fromJson,
@@ -774,8 +811,8 @@ class MockHttpClientService extends _i1.Mock implements _i11.HttpClientService {
               [path],
               {#data: data, #fromJson: fromJson},
             ),
-            returnValue: _i6.Future<_i2.ApiResponse<T>>.value(
-              _FakeApiResponse_6<T>(
+            returnValue: _i6.Future<_i4.ApiResponse<T>>.value(
+              _FakeApiResponse_7<T>(
                 this,
                 Invocation.method(
                   #post,
@@ -785,18 +822,18 @@ class MockHttpClientService extends _i1.Mock implements _i11.HttpClientService {
               ),
             ),
           )
-          as _i6.Future<_i2.ApiResponse<T>>);
+          as _i6.Future<_i4.ApiResponse<T>>);
 
   @override
-  _i6.Future<_i2.ApiResponse<T>> put<T>(
+  _i6.Future<_i4.ApiResponse<T>> put<T>(
     String? path, {
     Map<String, dynamic>? data,
     T Function(Map<String, dynamic>)? fromJson,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#put, [path], {#data: data, #fromJson: fromJson}),
-            returnValue: _i6.Future<_i2.ApiResponse<T>>.value(
-              _FakeApiResponse_6<T>(
+            returnValue: _i6.Future<_i4.ApiResponse<T>>.value(
+              _FakeApiResponse_7<T>(
                 this,
                 Invocation.method(
                   #put,
@@ -806,30 +843,30 @@ class MockHttpClientService extends _i1.Mock implements _i11.HttpClientService {
               ),
             ),
           )
-          as _i6.Future<_i2.ApiResponse<T>>);
+          as _i6.Future<_i4.ApiResponse<T>>);
 
   @override
-  _i6.Future<_i2.ApiResponse<T>> delete<T>(
+  _i6.Future<_i4.ApiResponse<T>> delete<T>(
     String? path, {
     T Function(Map<String, dynamic>)? fromJson,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [path], {#fromJson: fromJson}),
-            returnValue: _i6.Future<_i2.ApiResponse<T>>.value(
-              _FakeApiResponse_6<T>(
+            returnValue: _i6.Future<_i4.ApiResponse<T>>.value(
+              _FakeApiResponse_7<T>(
                 this,
                 Invocation.method(#delete, [path], {#fromJson: fromJson}),
               ),
             ),
           )
-          as _i6.Future<_i2.ApiResponse<T>>);
+          as _i6.Future<_i4.ApiResponse<T>>);
 }
 
 /// A class which mocks [SecureStorageService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSecureStorageService extends _i1.Mock
-    implements _i2.SecureStorageService {
+    implements _i4.SecureStorageService {
   MockSecureStorageService() {
     _i1.throwOnMissingStub(this);
   }

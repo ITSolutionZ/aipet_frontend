@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/scheduling/presentation/controllers/alarm_time_settings_controller.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/alarm_time_settings_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -143,7 +143,7 @@ class _AlarmTimeSettingsScreenState
 
                 ActionButton.primary(
                   text: '保存',
-                  enabled: true,
+                  isEnabled: true,
                   onPressed: () {
                     ref
                         .read(alarmTimeSettingsControllerProvider.notifier)

@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 /// 🎯 소셜 로그인 UseCase
@@ -19,13 +20,18 @@ class SocialLoginUseCase {
       // Firebase Google 로그인
       final authResult = await _repository.signInWithGoogle();
 
-      if (authResult.isSuccess && authResult.data != null) {
-        return Result.success('Googleログインが完了しました', authResult.data!);
+      if (authResult.isSuccess && authResult.dataOrNull != null) {
+        return ResultFactory.success(
+          authResult.dataOrNull!,
+          'Googleログインが完了しました',
+        );
       } else {
-        return Result.failure(authResult.message);
+        return ResultFactory.failure(
+          authResult.errorOrNull ?? 'Googleログインに失敗しました',
+        );
       }
     } catch (error) {
-      return Result.failure('Googleログインに失敗しました: ${error.toString()}');
+      return ResultFactory.failure('Googleログインに失敗しました: ${error.toString()}');
     }
   }
 
@@ -39,13 +45,18 @@ class SocialLoginUseCase {
       // Firebase Apple 로그인
       final authResult = await _repository.signInWithApple();
 
-      if (authResult.isSuccess && authResult.data != null) {
-        return Result.success('Appleログインが完了しました', authResult.data!);
+      if (authResult.isSuccess && authResult.dataOrNull != null) {
+        return ResultFactory.success(
+          authResult.dataOrNull!,
+          'Appleログインが完了しました',
+        );
       } else {
-        return Result.failure(authResult.message);
+        return ResultFactory.failure(
+          authResult.errorOrNull ?? 'Appleログインに失敗しました',
+        );
       }
     } catch (error) {
-      return Result.failure('Appleログインに失敗しました: ${error.toString()}');
+      return ResultFactory.failure('Appleログインに失敗しました: ${error.toString()}');
     }
   }
 
@@ -59,13 +70,15 @@ class SocialLoginUseCase {
       // Firebase + LINE OAuth 로그인
       final authResult = await _repository.signInWithLine();
 
-      if (authResult.isSuccess && authResult.data != null) {
-        return Result.success('LINEログインが完了しました', authResult.data!);
+      if (authResult.isSuccess && authResult.dataOrNull != null) {
+        return ResultFactory.success(authResult.dataOrNull!, 'LINEログインが完了しました');
       } else {
-        return Result.failure(authResult.message);
+        return ResultFactory.failure(
+          authResult.errorOrNull ?? 'LINEログインに失敗しました',
+        );
       }
     } catch (error) {
-      return Result.failure('LINEログインに失敗しました: ${error.toString()}');
+      return ResultFactory.failure('LINEログインに失敗しました: ${error.toString()}');
     }
   }
 }

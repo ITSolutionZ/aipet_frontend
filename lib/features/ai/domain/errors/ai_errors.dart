@@ -8,7 +8,7 @@ import '../../../../shared/shared.dart';
 
 /// AI 관련 기본 예외 클래스 (공통 시스템 확장)
 abstract class AiException extends AppException {
-  const AiException(
+  AiException(
     super.message, {
     super.code,
     super.originalError,
@@ -23,7 +23,7 @@ abstract class AiException extends AppException {
 
 /// 네트워크 관련 에러
 class AiNetworkException extends AiException {
-  const AiNetworkException(
+  AiNetworkException(
     super.message, {
     super.code,
     super.originalError,
@@ -32,7 +32,8 @@ class AiNetworkException extends AiException {
   });
 
   @override
-  String toString() => 'AiNetworkException: $message';
+  String toString() =>
+      'AiNetworkException: $message${code != null ? ' (Code: $code)' : ''}';
 }
 
 /// OpenAI API 관련 에러
@@ -40,7 +41,7 @@ class AiOpenAIException extends AiException {
   final int? statusCode;
   final String? errorType;
 
-  const AiOpenAIException(
+  AiOpenAIException(
     super.message, {
     super.code,
     super.originalError,
@@ -60,7 +61,7 @@ class AiContentValidationException extends AiException {
   final String? reason;
   final double? confidence;
 
-  const AiContentValidationException(
+  AiContentValidationException(
     super.message, {
     super.code,
     super.originalError,
@@ -80,7 +81,7 @@ class AiLocalStorageException extends AiException {
   final String? operation;
   final String? dataType;
 
-  const AiLocalStorageException(
+  AiLocalStorageException(
     super.message, {
     super.code,
     super.originalError,
@@ -100,7 +101,7 @@ class AiCacheException extends AiException {
   final String? cacheKey;
   final String? operation;
 
-  const AiCacheException(
+  AiCacheException(
     super.message, {
     super.code,
     super.originalError,
@@ -120,7 +121,7 @@ class AiConfigException extends AiException {
   final String? configKey;
   final String? expectedType;
 
-  const AiConfigException(
+  AiConfigException(
     super.message, {
     super.code,
     super.originalError,
@@ -140,7 +141,7 @@ class AiDataParsingException extends AiException {
   final String? dataType;
   final String? expectedFormat;
 
-  const AiDataParsingException(
+  AiDataParsingException(
     super.message, {
     super.code,
     super.originalError,
@@ -160,7 +161,7 @@ class AiInputValidationException extends AiException {
   final String? field;
   final String? validationRule;
 
-  const AiInputValidationException(
+  AiInputValidationException(
     super.message, {
     super.code,
     super.originalError,
@@ -179,7 +180,7 @@ class AiInputValidationException extends AiException {
 class AiBusinessLogicException extends AiException {
   final String? operation;
 
-  const AiBusinessLogicException(
+  AiBusinessLogicException(
     super.message, {
     super.code,
     super.originalError,

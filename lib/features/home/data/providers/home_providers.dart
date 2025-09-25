@@ -5,6 +5,10 @@ import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+export 'home_data_service_provider.dart';
+// Export new providers
+export 'home_usecase_providers.dart';
+
 part 'home_providers.g.dart';
 
 // 홈 상태 관리

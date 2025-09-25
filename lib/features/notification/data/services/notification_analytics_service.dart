@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
-import 'package:aipet_frontend/shared/notification.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 
@@ -75,11 +74,11 @@ class NotificationAnalyticsService {
       _analyticsController.add(analytics);
 
       if (kDebugMode) {
-          '모의 통계 데이터 생성 완료: ${mockStats.length}개 통계, ${mockUserEngagement.length}개 사용자 참여도',
-        )
+        print('모의 통계 데이터 생성 완료: ${mockStats.length}개 통계, ${mockUserEngagement.length}개 사용자 참여도');
       }
     } catch (e) {
       if (kDebugMode) {
+        print('통계 데이터 생성 실패: $e');
       }
     }
   }

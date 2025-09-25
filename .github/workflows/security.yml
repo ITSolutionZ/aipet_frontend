@@ -1,0 +1,88 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # Daily at 2 AM
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  security-scan:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.7"
+          channel: "stable"
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run security analysis
+        run: |
+          # Check for security vulnerabilities in dependencies
+          flutter pub deps --json | jq '.packages[] | select(.vulnerabilities != null)'
+
+          # Check for hardcoded secrets
+          if grep -r -E "(password|secret|key|token)" lib/ --include="*.dart" | grep -v "// TODO" | grep -v "// Example"; then
+            echo "❌ Potential hardcoded secrets found!"
+            exit 1
+          fi
+
+          # Check for insecure network configurations
+          if grep -r "http://" lib/ --include="*.dart" | grep -v "// TODO"; then
+            echo "❌ Insecure HTTP connections found!"
+            exit 1
+          fi
+
+          # Check for debug prints in production code
+          if grep -r "print(" lib/ --include="*.dart" | grep -v "// TODO"; then
+            echo "❌ Debug prints found in production code!"
+            exit 1
+          fi
+
+          echo "✅ Security scan passed!"
+
+      - name: Dependency vulnerability check
+        run: |
+          # Check for known vulnerabilities
+          flutter pub audit
+
+      - name: Code security analysis
+        run: |
+          # Analyze code for security issues
+          flutter analyze --fatal-infos
+
+          # Check for proper error handling
+          if grep -r "catch.*Exception" lib/ --include="*.dart" | grep -v "// TODO"; then
+            echo "⚠️ Generic exception handling found - consider specific exception types"
+          fi
+
+      - name: Generate security report
+        run: |
+          echo "# Security Scan Report" > security-report.md
+          echo "Date: $(date)" >> security-report.md
+          echo "Branch: ${{ github.ref }}" >> security-report.md
+          echo "Commit: ${{ github.sha }}" >> security-report.md
+          echo "" >> security-report.md
+          echo "## Dependencies" >> security-report.md
+          flutter pub deps >> security-report.md
+          echo "" >> security-report.md
+          echo "## Security Checks" >> security-report.md
+          echo "✅ No hardcoded secrets found" >> security-report.md
+          echo "✅ No insecure HTTP connections found" >> security-report.md
+          echo "✅ No debug prints in production code" >> security-report.md
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-report
+          path: security-report.md

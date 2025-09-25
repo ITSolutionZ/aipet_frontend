@@ -4,6 +4,8 @@
 /// Railway-oriented programming 원칙을 따릅니다.
 library;
 
+import 'package:aipet_frontend/shared/foundation/errors/app_exception.dart';
+
 /// 공통 Result 타입
 sealed class Result<T> {
   const Result();
@@ -17,8 +19,12 @@ sealed class Result<T> {
   /// 성공 시 데이터 반환, 실패 시 null
   T? get dataOrNull => isSuccess ? (this as Success<T>).data : null;
 
-  /// 실패 시 에러 반환, 성공 시 null
+  /// 실패 시 에러 메시지 반환, 성공 시 null
   String? get errorOrNull => isFailure ? (this as Failure<T>).message : null;
+
+  /// 실패 시 예외 반환, 성공 시 null
+  Exception? get exceptionOrNull =>
+      isFailure ? (this as Failure<T>).exception : null;
 
   /// 성공 시 데이터 반환, 실패 시 기본값
   T dataOr(T defaultValue) =>
@@ -116,6 +122,9 @@ sealed class Result<T> {
     }
     return this;
   }
+
+  /// Result를 Future로 변환
+  Future<Result<T>> toFuture() => Future.value(this);
 
   /// 성공 시 다른 값 반환, 실패 시 기본값 반환
   U fold<U>(
@@ -306,14 +315,6 @@ extension ResultExtensions<T> on Result<T> {
   /// 성공 시 데이터 반환, 실패 시 계산된 기본값
   T dataOrElse(T Function() defaultValue) {
     return isSuccess ? (this as Success<T>).data : defaultValue();
-  }
-}
-
-/// Result<T> 확장 메서드들
-extension ResultExtensions<T> on Result<T> {
-  /// Result<T>를 Future<Result<T>>로 변환
-  Future<Result<T>> toFuture() {
-    return Future.value(this);
   }
 }
 

@@ -1,9 +1,8 @@
-import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/features/scheduling/presentation/controllers/home_dashboard_controller.dart';
-import 'package:aipet_frontend/features/scheduling/presentation/controllers/home_notification_controller.dart';
+import 'package:aipet_frontend/features/home/presentation/controllers/home_dashboard_controller.dart';
+import 'package:aipet_frontend/features/home/presentation/controllers/home_notification_controller.dart';
+import 'package:aipet_frontend/features/home/presentation/widgets/pet_profile_card_refactored.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/home_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,9 +18,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
 
   HomeScreenController(this.ref) : super(const HomeScreenState());
 
-  void initialize() {
-    final dashboardController = HomeDashboardController(ref);
-    final notificationController = HomeNotificationController(ref);
+  void initialize(WidgetRef widgetRef) {
+    final dashboardController = HomeDashboardController(widgetRef);
+    final notificationController = HomeNotificationController(widgetRef);
     final scrollController = ScrollController();
 
     state = state.copyWith(
@@ -41,7 +40,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
 
     try {
       final result = await state.dashboardController!.hasPets();
-      if (result.isSuccess && result.data == true) {
+      if (result.isSuccess && result.dataOrNull == true) {
         await _initializeHomeScreen();
       } else {
         await _initializeHomeScreen();
@@ -54,13 +53,16 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
   Future<void> _initializeHomeScreen() async {
     if (state.dashboardController == null) return;
 
-    try {
-      final result = await state.dashboardController!.initializeHome();
-      if (!result.isSuccess) {
-        state = state.copyWith(errorMessage: result.message);
-      }
-    } catch (error) {
-      state = state.copyWith(errorMessage: 'ホーム画面を読み込む中にエラーが発生しました。');
+    final result = await ErrorHandlingService.handleAsync(
+      state.dashboardController!.initializeHome(),
+      context: '홈 화면 초기화',
+      showUserMessage: false,
+    );
+
+    if (result == null || !result.isSuccess) {
+      state = state.copyWith(
+        errorMessage: result?.errorOrNull ?? 'ホーム画面を読み込む中にエラーが発生しました。',
+      );
     }
   }
 
@@ -113,7 +115,7 @@ class HomeScreen extends ConsumerWidget {
 
     // Initialize home screen after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(homeScreenProvider.notifier).initialize();
+      ref.read(homeScreenProvider.notifier).initialize(ref);
     });
 
     return Scaffold(
@@ -141,19 +143,7 @@ class HomeScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: AppSpacing.md),
-                  Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: AppColors.pointBrown.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Pet Profile Card',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
+                  const PetProfileCardRefactored(),
                   const SizedBox(height: AppSpacing.lg),
                   Container(
                     height: 150,

@@ -25,7 +25,7 @@ class HomeHeader extends StatelessWidget {
           _buildTitle(),
           const Spacer(),
           _buildNotificationButton(),
-          const const const SizedBox(width: 8),
+          const SizedBox(width: 8),
           _buildProfileAvatar(),
         ],
       ),

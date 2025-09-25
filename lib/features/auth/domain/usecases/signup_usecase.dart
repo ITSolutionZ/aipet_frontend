@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 /// 회원가입 UseCase
@@ -23,7 +24,7 @@ class SignupUseCase {
       );
 
       if (!validationResult.isSuccess) {
-        return Result.failure(validationResult.message);
+        return ResultFactory.failure(validationResult.errorOrNull ?? '入力が無効です');
       }
 
       // Repository를 통한 회원가입 실행
@@ -32,7 +33,7 @@ class SignupUseCase {
         password,
       );
 
-      if (authResult.isSuccess && authResult.data != null) {
+      if (authResult.isSuccess && authResult.dataOrNull != null) {
         // 디스플레이 네임이 제공된 경우 프로필 업데이트
         if (displayName != null && displayName.isNotEmpty) {
           await _repository.updateUserProfile(displayName: displayName);
@@ -41,12 +42,15 @@ class SignupUseCase {
         // 이메일 인증 메일 발송
         await _repository.sendEmailVerification();
 
-        return Result.success('会員登録が完了しました。確認メールを送信しました。', authResult.data!);
+        return ResultFactory.success(
+          authResult.dataOrNull!,
+          '会員登録が完了しました。確認メールを送信しました。',
+        );
       } else {
-        return Result.failure(authResult.message);
+        return ResultFactory.failure(authResult.errorOrNull ?? '会員登録に失敗しました');
       }
     } catch (error) {
-      return Result.failure('会員登録に失敗しました: ${error.toString()}');
+      return ResultFactory.failure('会員登録に失敗しました: ${error.toString()}');
     }
   }
 
@@ -58,30 +62,30 @@ class SignupUseCase {
   }) {
     // 필수 입력 검사
     if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      return Result.failure('全ての項目を入力してください');
+      return ResultFactory.failure('全ての項目を入力してください');
     }
 
     // 이메일 형식 검사
     if (!_isValidEmail(email)) {
-      return Result.failure('有効なメールアドレスを入力してください');
+      return ResultFactory.failure('有効なメールアドレスを入力してください');
     }
 
     // 비밀번호 길이 검사
     if (password.length < 8) {
-      return Result.failure('パスワードは8文字以上で入力してください');
+      return ResultFactory.failure('パスワードは8文字以上で入力してください');
     }
 
     // 비밀번호 복잡성 검사
     if (!_isStrongPassword(password)) {
-      return Result.failure('パスワードは英字、数字、特殊文字を含む必要があります');
+      return ResultFactory.failure('パスワードは英字、数字、特殊文字を含む必要があります');
     }
 
     // 비밀번호 확인 검사
     if (password != confirmPassword) {
-      return Result.failure('パスワードが一致しません');
+      return ResultFactory.failure('パスワードが一致しません');
     }
 
-    return Result.success('入力が有効です');
+    return ResultFactory.success(null, '入力が有効です');
   }
 
   /// 이메일 유효성 검사

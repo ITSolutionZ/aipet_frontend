@@ -3,16 +3,17 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i4;
 
 import 'package:aipet_frontend/features/ai/domain/entities/entities.dart'
-    as _i3;
+    as _i2;
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart'
-    as _i4;
+    as _i3;
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
-    as _i6;
-import 'package:aipet_frontend/shared/shared.dart' as _i2;
+    as _i7;
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -28,69 +29,64 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeResult_0<T> extends _i1.SmartFake implements _i2.Result<T> {
-  _FakeResult_0(Object parent, Invocation parentInvocation)
+class _FakeAiChatSessionEntity_0 extends _i1.SmartFake
+    implements _i2.AiChatSessionEntity {
+  _FakeAiChatSessionEntity_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAiChatSessionEntity_1 extends _i1.SmartFake
-    implements _i3.AiChatSessionEntity {
-  _FakeAiChatSessionEntity_1(Object parent, Invocation parentInvocation)
+class _FakeAiFavoriteEntity_1 extends _i1.SmartFake
+    implements _i2.AiFavoriteEntity {
+  _FakeAiFavoriteEntity_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAiFavoriteEntity_2 extends _i1.SmartFake
-    implements _i3.AiFavoriteEntity {
-  _FakeAiFavoriteEntity_2(Object parent, Invocation parentInvocation)
+class _FakeAiChatSummaryEntity_2 extends _i1.SmartFake
+    implements _i2.AiChatSummaryEntity {
+  _FakeAiChatSummaryEntity_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAiChatSummaryEntity_3 extends _i1.SmartFake
-    implements _i3.AiChatSummaryEntity {
-  _FakeAiChatSummaryEntity_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeAiChatSummary_4 extends _i1.SmartFake implements _i3.AiChatSummary {
-  _FakeAiChatSummary_4(Object parent, Invocation parentInvocation)
+class _FakeAiChatSummary_3 extends _i1.SmartFake implements _i2.AiChatSummary {
+  _FakeAiChatSummary_3(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AiRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
+class MockAiRepository extends _i1.Mock implements _i3.AiRepository {
   MockAiRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<List<_i3.AiMessageEntity>> getChatHistory() =>
+  _i4.Future<List<_i2.AiMessageEntity>> getChatHistory() =>
       (super.noSuchMethod(
             Invocation.method(#getChatHistory, []),
-            returnValue: _i5.Future<List<_i3.AiMessageEntity>>.value(
-              <_i3.AiMessageEntity>[],
+            returnValue: _i4.Future<List<_i2.AiMessageEntity>>.value(
+              <_i2.AiMessageEntity>[],
             ),
           )
-          as _i5.Future<List<_i3.AiMessageEntity>>);
+          as _i4.Future<List<_i2.AiMessageEntity>>);
 
   @override
-  _i5.Future<_i2.Result<_i3.AiMessageEntity>> sendMessage(String? message) =>
+  _i4.Future<_i5.Result<_i2.AiMessageEntity>> sendMessage(String? message) =>
       (super.noSuchMethod(
             Invocation.method(#sendMessage, [message]),
-            returnValue: _i5.Future<_i2.Result<_i3.AiMessageEntity>>.value(
-              _FakeResult_0<_i3.AiMessageEntity>(
+            returnValue: _i4.Future<_i5.Result<_i2.AiMessageEntity>>.value(
+              _i6.dummyValue<_i5.Result<_i2.AiMessageEntity>>(
                 this,
                 Invocation.method(#sendMessage, [message]),
               ),
             ),
           )
-          as _i5.Future<_i2.Result<_i3.AiMessageEntity>>);
+          as _i4.Future<_i5.Result<_i2.AiMessageEntity>>);
 
   @override
-  _i5.Future<_i2.Result<_i3.AiMessageEntity>> sendMessageWithPetContext(
+  _i4.Future<_i5.Result<_i2.AiMessageEntity>> sendMessageWithPetContext(
     String? message, {
-    _i6.PetProfileEntity? petContext,
+    _i7.PetProfileEntity? petContext,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -98,8 +94,8 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               [message],
               {#petContext: petContext},
             ),
-            returnValue: _i5.Future<_i2.Result<_i3.AiMessageEntity>>.value(
-              _FakeResult_0<_i3.AiMessageEntity>(
+            returnValue: _i4.Future<_i5.Result<_i2.AiMessageEntity>>.value(
+              _i6.dummyValue<_i5.Result<_i2.AiMessageEntity>>(
                 this,
                 Invocation.method(
                   #sendMessageWithPetContext,
@@ -109,82 +105,82 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               ),
             ),
           )
-          as _i5.Future<_i2.Result<_i3.AiMessageEntity>>);
+          as _i4.Future<_i5.Result<_i2.AiMessageEntity>>);
 
   @override
-  _i5.Future<void> clearChatHistory() =>
+  _i4.Future<void> clearChatHistory() =>
       (super.noSuchMethod(
             Invocation.method(#clearChatHistory, []),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<List<_i3.AiChatSessionEntity>> getChatSessions() =>
+  _i4.Future<List<_i2.AiChatSessionEntity>> getChatSessions() =>
       (super.noSuchMethod(
             Invocation.method(#getChatSessions, []),
-            returnValue: _i5.Future<List<_i3.AiChatSessionEntity>>.value(
-              <_i3.AiChatSessionEntity>[],
+            returnValue: _i4.Future<List<_i2.AiChatSessionEntity>>.value(
+              <_i2.AiChatSessionEntity>[],
             ),
           )
-          as _i5.Future<List<_i3.AiChatSessionEntity>>);
+          as _i4.Future<List<_i2.AiChatSessionEntity>>);
 
   @override
-  _i5.Future<_i3.AiChatSessionEntity> createChatSession(
+  _i4.Future<_i2.AiChatSessionEntity> createChatSession(
     String? title, {
     String? petId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#createChatSession, [title], {#petId: petId}),
-            returnValue: _i5.Future<_i3.AiChatSessionEntity>.value(
-              _FakeAiChatSessionEntity_1(
+            returnValue: _i4.Future<_i2.AiChatSessionEntity>.value(
+              _FakeAiChatSessionEntity_0(
                 this,
                 Invocation.method(#createChatSession, [title], {#petId: petId}),
               ),
             ),
           )
-          as _i5.Future<_i3.AiChatSessionEntity>);
+          as _i4.Future<_i2.AiChatSessionEntity>);
 
   @override
-  _i5.Future<void> deleteChatSession(String? sessionId) =>
+  _i4.Future<void> deleteChatSession(String? sessionId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteChatSession, [sessionId]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<List<_i3.AiSuggestedQuestionEntity>> getSuggestedQuestions() =>
+  _i4.Future<List<_i2.AiSuggestedQuestionEntity>> getSuggestedQuestions() =>
       (super.noSuchMethod(
             Invocation.method(#getSuggestedQuestions, []),
-            returnValue: _i5.Future<List<_i3.AiSuggestedQuestionEntity>>.value(
-              <_i3.AiSuggestedQuestionEntity>[],
+            returnValue: _i4.Future<List<_i2.AiSuggestedQuestionEntity>>.value(
+              <_i2.AiSuggestedQuestionEntity>[],
             ),
           )
-          as _i5.Future<List<_i3.AiSuggestedQuestionEntity>>);
+          as _i4.Future<List<_i2.AiSuggestedQuestionEntity>>);
 
   @override
-  _i5.Future<List<_i3.AiSuggestedQuestionEntity>>
+  _i4.Future<List<_i2.AiSuggestedQuestionEntity>>
   getPersonalizedSuggestedQuestions({
     String? category,
-    _i6.PetProfileEntity? pet,
+    _i7.PetProfileEntity? pet,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#getPersonalizedSuggestedQuestions, [], {
               #category: category,
               #pet: pet,
             }),
-            returnValue: _i5.Future<List<_i3.AiSuggestedQuestionEntity>>.value(
-              <_i3.AiSuggestedQuestionEntity>[],
+            returnValue: _i4.Future<List<_i2.AiSuggestedQuestionEntity>>.value(
+              <_i2.AiSuggestedQuestionEntity>[],
             ),
           )
-          as _i5.Future<List<_i3.AiSuggestedQuestionEntity>>);
+          as _i4.Future<List<_i2.AiSuggestedQuestionEntity>>);
 
   @override
-  _i5.Future<_i3.AiFavoriteEntity> addFavoriteMessage(
-    _i3.AiMessageEntity? message,
+  _i4.Future<_i2.AiFavoriteEntity> addFavoriteMessage(
+    _i2.AiMessageEntity? message,
     String? category, {
     String? petId,
     String? petName,
@@ -196,8 +192,8 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               [message, category],
               {#petId: petId, #petName: petName, #userNote: userNote},
             ),
-            returnValue: _i5.Future<_i3.AiFavoriteEntity>.value(
-              _FakeAiFavoriteEntity_2(
+            returnValue: _i4.Future<_i2.AiFavoriteEntity>.value(
+              _FakeAiFavoriteEntity_1(
                 this,
                 Invocation.method(
                   #addFavoriteMessage,
@@ -207,19 +203,19 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               ),
             ),
           )
-          as _i5.Future<_i3.AiFavoriteEntity>);
+          as _i4.Future<_i2.AiFavoriteEntity>);
 
   @override
-  _i5.Future<void> removeFavoriteMessage(String? favoriteId) =>
+  _i4.Future<void> removeFavoriteMessage(String? favoriteId) =>
       (super.noSuchMethod(
             Invocation.method(#removeFavoriteMessage, [favoriteId]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<List<_i3.AiFavoriteEntity>> getFavoriteMessages({
+  _i4.Future<List<_i2.AiFavoriteEntity>> getFavoriteMessages({
     String? petId,
     String? category,
   }) =>
@@ -228,23 +224,23 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               #petId: petId,
               #category: category,
             }),
-            returnValue: _i5.Future<List<_i3.AiFavoriteEntity>>.value(
-              <_i3.AiFavoriteEntity>[],
+            returnValue: _i4.Future<List<_i2.AiFavoriteEntity>>.value(
+              <_i2.AiFavoriteEntity>[],
             ),
           )
-          as _i5.Future<List<_i3.AiFavoriteEntity>>);
+          as _i4.Future<List<_i2.AiFavoriteEntity>>);
 
   @override
-  List<_i3.AiFavoriteQaEntity> getFavoriteQAs() =>
+  List<_i2.AiFavoriteQaEntity> getFavoriteQAs() =>
       (super.noSuchMethod(
             Invocation.method(#getFavoriteQAs, []),
-            returnValue: <_i3.AiFavoriteQaEntity>[],
+            returnValue: <_i2.AiFavoriteQaEntity>[],
           )
-          as List<_i3.AiFavoriteQaEntity>);
+          as List<_i2.AiFavoriteQaEntity>);
 
   @override
-  _i5.Future<_i3.AiChatSummaryEntity> createChatSummary(
-    List<_i3.AiMessageEntity>? messages,
+  _i4.Future<_i2.AiChatSummaryEntity> createChatSummary(
+    List<_i2.AiMessageEntity>? messages,
     String? category, {
     String? petId,
     String? petName,
@@ -255,8 +251,8 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               [messages, category],
               {#petId: petId, #petName: petName},
             ),
-            returnValue: _i5.Future<_i3.AiChatSummaryEntity>.value(
-              _FakeAiChatSummaryEntity_3(
+            returnValue: _i4.Future<_i2.AiChatSummaryEntity>.value(
+              _FakeAiChatSummaryEntity_2(
                 this,
                 Invocation.method(
                   #createChatSummary,
@@ -266,10 +262,10 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               ),
             ),
           )
-          as _i5.Future<_i3.AiChatSummaryEntity>);
+          as _i4.Future<_i2.AiChatSummaryEntity>);
 
   @override
-  _i5.Future<List<_i3.AiChatSummaryEntity>> getChatSummaries({
+  _i4.Future<List<_i2.AiChatSummaryEntity>> getChatSummaries({
     String? petId,
     String? category,
   }) =>
@@ -278,32 +274,32 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               #petId: petId,
               #category: category,
             }),
-            returnValue: _i5.Future<List<_i3.AiChatSummaryEntity>>.value(
-              <_i3.AiChatSummaryEntity>[],
+            returnValue: _i4.Future<List<_i2.AiChatSummaryEntity>>.value(
+              <_i2.AiChatSummaryEntity>[],
             ),
           )
-          as _i5.Future<List<_i3.AiChatSummaryEntity>>);
+          as _i4.Future<List<_i2.AiChatSummaryEntity>>);
 
   @override
-  _i5.Future<void> deleteChatSummary(String? summaryId) =>
+  _i4.Future<void> deleteChatSummary(String? summaryId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteChatSummary, [summaryId]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> saveChatHistory(_i3.AiChatHistoryEntity? chatHistory) =>
+  _i4.Future<void> saveChatHistory(_i2.AiChatHistoryEntity? chatHistory) =>
       (super.noSuchMethod(
             Invocation.method(#saveChatHistory, [chatHistory]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<_i3.AiChatSummary> generateChatSummary({
+  _i4.Future<_i2.AiChatSummary> generateChatSummary({
     required List<String>? userMessages,
     required String? petName,
     required String? category,
@@ -314,8 +310,8 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               #petName: petName,
               #category: category,
             }),
-            returnValue: _i5.Future<_i3.AiChatSummary>.value(
-              _FakeAiChatSummary_4(
+            returnValue: _i4.Future<_i2.AiChatSummary>.value(
+              _FakeAiChatSummary_3(
                 this,
                 Invocation.method(#generateChatSummary, [], {
                   #userMessages: userMessages,
@@ -325,10 +321,10 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               ),
             ),
           )
-          as _i5.Future<_i3.AiChatSummary>);
+          as _i4.Future<_i2.AiChatSummary>);
 
   @override
-  _i5.Future<List<_i3.AiChatHistoryEntity>> getChatHistories({
+  _i4.Future<List<_i2.AiChatHistoryEntity>> getChatHistories({
     int? limit = 30,
     bool? onlyManualSaved = false,
   }) =>
@@ -337,18 +333,18 @@ class MockAiRepository extends _i1.Mock implements _i4.AiRepository {
               #limit: limit,
               #onlyManualSaved: onlyManualSaved,
             }),
-            returnValue: _i5.Future<List<_i3.AiChatHistoryEntity>>.value(
-              <_i3.AiChatHistoryEntity>[],
+            returnValue: _i4.Future<List<_i2.AiChatHistoryEntity>>.value(
+              <_i2.AiChatHistoryEntity>[],
             ),
           )
-          as _i5.Future<List<_i3.AiChatHistoryEntity>>);
+          as _i4.Future<List<_i2.AiChatHistoryEntity>>);
 
   @override
-  _i5.Future<void> deleteChatHistory(String? historyId) =>
+  _i4.Future<void> deleteChatHistory(String? historyId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteChatHistory, [historyId]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 }

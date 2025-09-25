@@ -9,9 +9,11 @@ class LoadFacilitiesUseCase {
   Future<List<Facility>> call() async {
     final result = await repository.getNearbyFacilities();
     if (result.isSuccess) {
-      return result.data ?? [];
+      return result.dataOrNull ?? [];
     } else {
-      throw Exception(result.error?.toString() ?? 'Failed to load facilities');
+      throw Exception(
+        result.errorOrNull?.toString() ?? 'Failed to load facilities',
+      );
     }
   }
 }

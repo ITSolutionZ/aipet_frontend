@@ -3,12 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
 import 'package:aipet_frontend/features/splash/domain/repositories/splash_repository.dart'
-    as _i3;
-import 'package:aipet_frontend/shared/shared.dart' as _i2;
+    as _i2;
+import 'package:aipet_frontend/shared/shared.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -24,39 +25,37 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeResult_0<T> extends _i1.SmartFake implements _i2.Result<T> {
-  _FakeResult_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
 /// A class which mocks [SplashRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSplashRepository extends _i1.Mock implements _i3.SplashRepository {
+class MockSplashRepository extends _i1.Mock implements _i2.SplashRepository {
   MockSplashRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.Result<dynamic>> getSplashConfig() =>
+  _i3.Future<_i4.Result<dynamic>> getSplashConfig() =>
       (super.noSuchMethod(
             Invocation.method(#getSplashConfig, []),
-            returnValue: _i4.Future<_i2.Result<dynamic>>.value(
-              _FakeResult_0<dynamic>(
+            returnValue: _i3.Future<_i4.Result<dynamic>>.value(
+              _i5.dummyValue<_i4.Result<dynamic>>(
                 this,
                 Invocation.method(#getSplashConfig, []),
               ),
             ),
           )
-          as _i4.Future<_i2.Result<dynamic>>);
+          as _i3.Future<_i4.Result<dynamic>>);
 
   @override
-  _i4.Future<_i2.Result<void>> initializeApp() =>
+  _i3.Future<_i4.Result<void>> initializeApp() =>
       (super.noSuchMethod(
             Invocation.method(#initializeApp, []),
-            returnValue: _i4.Future<_i2.Result<void>>.value(
-              _FakeResult_0<void>(this, Invocation.method(#initializeApp, [])),
+            returnValue: _i3.Future<_i4.Result<void>>.value(
+              _i5.dummyValue<_i4.Result<void>>(
+                this,
+                Invocation.method(#initializeApp, []),
+              ),
             ),
           )
-          as _i4.Future<_i2.Result<void>>);
+          as _i3.Future<_i4.Result<void>>);
 }

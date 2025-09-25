@@ -320,7 +320,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.message),
+              content: Text(result.isSuccess ? result.data! : result.message),
               backgroundColor: Colors.green,
             ),
           );
@@ -331,7 +331,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.message),
+              content: Text(result.isSuccess ? result.data! : result.message),
               backgroundColor: Colors.red,
             ),
           );
@@ -369,7 +369,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.message),
+              content: Text(result.isSuccess ? result.data! : result.message),
               backgroundColor: Colors.green,
             ),
           );
@@ -379,7 +379,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.message),
+              content: Text(result.isSuccess ? result.data! : result.message),
               backgroundColor: Colors.red,
             ),
           );
@@ -417,7 +417,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.message),
+              content: Text(result.isSuccess ? result.data! : result.message),
               backgroundColor: Colors.green,
             ),
           );
@@ -427,7 +427,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.message),
+              content: Text(result.isSuccess ? result.data! : result.message),
               backgroundColor: Colors.red,
             ),
           );
@@ -465,7 +465,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.message),
+              content: Text(result.isSuccess ? result.data! : result.message),
               backgroundColor: Colors.green,
             ),
           );
@@ -475,7 +475,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.message),
+              content: Text(result.isSuccess ? result.data! : result.message),
               backgroundColor: Colors.red,
             ),
           );

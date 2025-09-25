@@ -77,43 +77,42 @@ class AiBusinessConstants {
   static const int maxPetNameLength = 50;
 }
 
-/// AI 에러 메시지 상수
-class AiErrorMessages {
+/// AI 에러 키 상수 (Domain Layer - 언어독립적)
+class AiErrorKeys {
   // 네트워크 에러
-  static const String networkError = 'ネットワーク接続を確認してください。';
-  static const String timeoutError = '接続がタイムアウトしました。しばらくしてから再試行してください。';
-  static const String connectionError = 'ネットワーク接続に問題があります。インターネット接続を確認してください。';
+  static const String networkError = 'error.network.connection';
+  static const String timeoutError = 'error.network.timeout';
+  static const String connectionError = 'error.network.unavailable';
 
   // OpenAI API 에러
-  static const String apiKeyError = 'OpenAI API キーが設定されていません。';
-  static const String apiLimitError = 'API リクエスト制限を超えました。しばらくしてから再試行してください。';
-  static const String apiServerError =
-      'OpenAI サーバーに一時的な問題が発生しています。しばらくしてから再試行してください。';
+  static const String apiKeyError = 'error.api.key_missing';
+  static const String apiLimitError = 'error.api.rate_limit';
+  static const String apiServerError = 'error.api.server_unavailable';
 
   // 콘텐츠 검증 에러
-  static const String contentTooShort = '内容が短すぎます。ペット関連の具体的な質問を入力してください。';
-  static const String contentNotPetRelated = 'ペットに関連する内容を含めてご質問ください。';
-  static const String contentExcluded = 'ペットと関連していない話題です。';
+  static const String contentTooShort = 'error.content.too_short';
+  static const String contentNotPetRelated = 'error.content.not_pet_related';
+  static const String contentExcluded = 'error.content.excluded_topic';
 
   // 로컬 저장소 에러
-  static const String storageSaveError = 'データの保存に失敗しました。';
-  static const String storageLoadError = 'データの読み込みに失敗しました。';
-  static const String storageDeleteError = 'データの削除に失敗しました。';
+  static const String storageSaveError = 'error.storage.save_failed';
+  static const String storageLoadError = 'error.storage.load_failed';
+  static const String storageDeleteError = 'error.storage.delete_failed';
 
   // 일반 에러
-  static const String unexpectedError = '予期しないエラーが発生しました。しばらくしてから再試行してください。';
-  static const String validationError = '入力内容を確認してください。';
-  static const String configError = '設定に問題があります。管理者にお問い合わせください。';
+  static const String unexpectedError = 'error.general.unexpected';
+  static const String validationError = 'error.validation.input_invalid';
+  static const String configError = 'error.config.invalid_settings';
 }
 
-/// AI 성공 메시지 상수
-class AiSuccessMessages {
-  static const String messageSent = 'メッセージを送信しました。';
-  static const String favoriteAdded = 'お気に入りに追加しました。';
-  static const String favoriteRemoved = 'お気に入りから削除しました。';
-  static const String chatSaved = 'チャットを保存しました。';
-  static const String chatDeleted = 'チャットを削除しました。';
-  static const String historyCleared = 'チャット履歴をクリアしました。';
+/// AI 성공 메시지 키 상수 (Domain Layer - 언어독립적)
+class AiSuccessKeys {
+  static const String messageSent = 'success.message.sent';
+  static const String favoriteAdded = 'success.favorite.added';
+  static const String favoriteRemoved = 'success.favorite.removed';
+  static const String chatSaved = 'success.chat.saved';
+  static const String chatDeleted = 'success.chat.deleted';
+  static const String historyCleared = 'success.history.cleared';
 }
 
 /// AI 시스템 프롬프트 상수
@@ -158,7 +157,7 @@ $petNameの年齢（$age歳）、種類（$petType）に応じた特性を踏ま
   }
 }
 
-/// AI 카테고리 관련 상수
+/// AI 카테고리 관련 상수 (Domain Layer - 언어독립적)
 class AiCategoryConstants {
   static const List<String> defaultCategories = [
     'health', // 건강
@@ -170,13 +169,13 @@ class AiCategoryConstants {
     'general', // 일반
   ];
 
-  static const Map<String, String> categoryDisplayNames = {
-    'health': '健康管理',
-    'behavior': '行動・しつけ',
-    'feeding': '食事・栄養',
-    'training': 'トレーニング',
-    'grooming': 'グルーミング',
-    'exercise': '運動・散歩',
-    'general': '一般的な相談',
+  static const Map<String, String> categoryKeys = {
+    'health': 'category.health',
+    'behavior': 'category.behavior',
+    'feeding': 'category.feeding',
+    'training': 'category.training',
+    'grooming': 'category.grooming',
+    'exercise': 'category.exercise',
+    'general': 'category.general',
   };
 }

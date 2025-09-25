@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/features/onboarding/data/providers/notification_providers.dart';
-import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/notification/data/providers/notification_providers.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +67,7 @@ class _NotificationListWidgetState
         itemCount:
             filteredNotifications.length +
             (filteredNotifications.length >= widget.maxItems ? 1 : 0),
-        separatorBuilder: (context, index) => const const const SizedBox(height: 1),
+        separatorBuilder: (context, index) => const SizedBox(height: 1),
         itemBuilder: (context, index) {
           // 더보기 버튼 표시
           if (index == filteredNotifications.length) {
@@ -299,7 +299,7 @@ class _NotificationListWidgetState
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const const const SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Text(
                           notification.body,
                           style: NotificationUIUtils.bodyStyle,
@@ -320,7 +320,7 @@ class _NotificationListWidgetState
                         style: NotificationUIUtils.timeStyle,
                       ),
                       if (notification.isUnread) ...[
-                        const const const SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         NotificationUIUtils.buildUnreadIndicator(),
                       ],
                     ],

@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
 
 class GetNotificationSettingsUseCase {

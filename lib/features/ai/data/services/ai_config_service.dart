@@ -40,7 +40,7 @@ class AiConfigService {
       return await _dataService.getCategories();
     } catch (e) {
       throw AiConfigException(
-        AiErrorMessages.configError,
+        AiErrorKeys.configError,
         configKey: 'categories',
         originalError: e,
       );
@@ -53,7 +53,7 @@ class AiConfigService {
       return await _dataService.getSuggestedQuestions();
     } catch (e) {
       throw AiConfigException(
-        AiErrorMessages.configError,
+        AiErrorKeys.configError,
         configKey: 'suggested_questions',
         originalError: e,
       );
@@ -66,7 +66,7 @@ class AiConfigService {
       return await _dataService.getResponseTemplates();
     } catch (e) {
       throw AiConfigException(
-        AiErrorMessages.configError,
+        AiErrorKeys.configError,
         configKey: 'response_templates',
         originalError: e,
       );
@@ -79,7 +79,7 @@ class AiConfigService {
       return await _dataService.getKeywordMapping();
     } catch (e) {
       throw AiConfigException(
-        AiErrorMessages.configError,
+        AiErrorKeys.configError,
         configKey: 'keyword_mapping',
         originalError: e,
       );

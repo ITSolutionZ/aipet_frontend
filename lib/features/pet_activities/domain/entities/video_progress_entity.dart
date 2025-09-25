@@ -1,71 +1,121 @@
-/// 비디오 진행도 엔티티
+/// 비디오 진행률 엔티티
 class VideoProgressEntity {
-  final String videoId; // 트릭 ID 또는 비디오 식별자
-  final int lastPositionSec; // 마지막 재생 위치 (초)
+  final String videoId;
+  final int currentPositionSec;
+  final int totalDurationSec;
+  final double progress; // 0.0 ~ 1.0
+  final bool isCompleted;
+  final DateTime lastWatchedAt;
   final DateTime updatedAt;
 
   const VideoProgressEntity({
     required this.videoId,
-    required this.lastPositionSec,
+    required this.currentPositionSec,
+    required this.totalDurationSec,
+    required this.progress,
+    this.isCompleted = false,
+    required this.lastWatchedAt,
     required this.updatedAt,
   });
 
+  /// JSON에서 VideoProgressEntity 생성
+  factory VideoProgressEntity.fromJson(Map<String, dynamic> json) {
+    return VideoProgressEntity(
+      videoId: json['videoId'] as String,
+      currentPositionSec: json['currentPositionSec'] as int,
+      totalDurationSec: json['totalDurationSec'] as int,
+      progress: (json['progress'] as num).toDouble(),
+      isCompleted: json['isCompleted'] as bool? ?? false,
+      lastWatchedAt: DateTime.parse(json['lastWatchedAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+    );
+  }
+
+  /// VideoProgressEntity를 JSON으로 변환
+  Map<String, dynamic> toJson() {
+    return {
+      'videoId': videoId,
+      'currentPositionSec': currentPositionSec,
+      'totalDurationSec': totalDurationSec,
+      'progress': progress,
+      'isCompleted': isCompleted,
+      'lastWatchedAt': lastWatchedAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+    };
+  }
+
+  /// 진행률 계산
+  double get calculatedProgress {
+    if (totalDurationSec == 0) return 0.0;
+    return (currentPositionSec / totalDurationSec).clamp(0.0, 1.0);
+  }
+
+  /// 남은 시간 계산 (초)
+  int get remainingTimeSec {
+    return (totalDurationSec - currentPositionSec).clamp(0, totalDurationSec);
+  }
+
+  /// 남은 시간을 시:분:초 형식으로 반환
+  String get remainingTimeFormatted {
+    final hours = remainingTimeSec ~/ 3600;
+    final minutes = (remainingTimeSec % 3600) ~/ 60;
+    final seconds = remainingTimeSec % 60;
+
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    } else {
+      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    }
+  }
+
+  /// 진행률 업데이트
+  VideoProgressEntity updateProgress(int newPositionSec) {
+    final newProgress = (newPositionSec / totalDurationSec).clamp(0.0, 1.0);
+    final isCompleted = newProgress >= 0.95; // 95% 이상이면 완료로 간주
+
+    return VideoProgressEntity(
+      videoId: videoId,
+      currentPositionSec: newPositionSec,
+      totalDurationSec: totalDurationSec,
+      progress: newProgress,
+      isCompleted: isCompleted,
+      lastWatchedAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+  }
+
+  /// 진행률 복사
   VideoProgressEntity copyWith({
     String? videoId,
-    int? lastPositionSec,
+    int? currentPositionSec,
+    int? totalDurationSec,
+    double? progress,
+    bool? isCompleted,
+    DateTime? lastWatchedAt,
     DateTime? updatedAt,
   }) {
     return VideoProgressEntity(
       videoId: videoId ?? this.videoId,
-      lastPositionSec: lastPositionSec ?? this.lastPositionSec,
+      currentPositionSec: currentPositionSec ?? this.currentPositionSec,
+      totalDurationSec: totalDurationSec ?? this.totalDurationSec,
+      progress: progress ?? this.progress,
+      isCompleted: isCompleted ?? this.isCompleted,
+      lastWatchedAt: lastWatchedAt ?? this.lastWatchedAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
-  /// 마지막 위치를 MM:SS 형식으로 포맷
-  String get formattedTime {
-    final minutes = lastPositionSec ~/ 60;
-    final seconds = lastPositionSec % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-  }
-
-  /// 마지막 위치를 HH:MM:SS 형식으로 포맷 (1시간 이상인 경우)
-  String get formattedTimeWithHours {
-    final hours = lastPositionSec ~/ 3600;
-    final minutes = (lastPositionSec % 3600) ~/ 60;
-    final seconds = lastPositionSec % 60;
-
-    if (hours > 0) {
-      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-    }
-    return formattedTime;
-  }
-
-  /// 진행도가 유효한지 확인 (5초 이상인 경우만 유효)
-  bool get isValidProgress {
-    return lastPositionSec >= 5;
-  }
-
-  /// 이어보기 제안 메시지
-  String get resumeMessage {
-    return '$formattedTimeから再生しますか？';
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is VideoProgressEntity && other.videoId == videoId;
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is VideoProgressEntity &&
-          runtimeType == other.runtimeType &&
-          videoId == other.videoId &&
-          lastPositionSec == other.lastPositionSec &&
-          updatedAt == other.updatedAt;
-
-  @override
-  int get hashCode =>
-      videoId.hashCode ^ lastPositionSec.hashCode ^ updatedAt.hashCode;
+  int get hashCode => videoId.hashCode;
 
   @override
   String toString() {
-    return 'VideoProgressEntity(videoId: $videoId, position: $formattedTime, updatedAt: $updatedAt)';
+    return 'VideoProgressEntity(videoId: $videoId, progress: ${(progress * 100).toStringAsFixed(1)}%, isCompleted: $isCompleted)';
   }
 }

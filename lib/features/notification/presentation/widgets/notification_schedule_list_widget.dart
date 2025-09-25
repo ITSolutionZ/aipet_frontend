@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
-import 'package:aipet_frontend/features/onboarding/domain/entities/notification_schedule.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/notification_schedule.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 

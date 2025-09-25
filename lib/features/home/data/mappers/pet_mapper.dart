@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/onboarding/domain/entities/pet_summary_entity.dart';
+import 'package:aipet_frontend/features/home/domain/entities/pet_summary_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 
 /// Pet 관련 데이터 변환 매퍼

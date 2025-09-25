@@ -1,10 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:aipet_frontend/features/auth/data/services/line_oauth_service.dart';
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
+import '../../../../app/app.dart';
 
 /// 🎯 실제 Firebase Auth 구현체
 ///
@@ -48,15 +54,15 @@ class FirebaseAuthRealImpl implements AuthRepository {
       if (credential.user != null) {
         // Firebase User를 AuthUser로 변환
         final user = _mapFirebaseUserToAuthUser(credential.user!);
-        return Result.success('ログインが完了しました', user);
+        return ResultFactory.success(user, 'ログインが完了しました');
       } else {
-        return Result.failure('ログインに失敗しました');
+        return ResultFactory.failure('ログインに失敗しました');
       }
     } on FirebaseAuthException catch (e) {
       // Firebase Auth 에러를 사용자 친화적 메시지로 변환
-      return Result.failure(_getFirebaseErrorMessage(e));
+      return ResultFactory.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return Result.failure('ログインに失敗しました: ${e.toString()}');
+      return ResultFactory.failure('ログインに失敗しました: ${e.toString()}');
     }
   }
 
@@ -73,14 +79,14 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (credential.user != null) {
         final user = _mapFirebaseUserToAuthUser(credential.user!);
-        return Result.success('会員登録が完了しました', user);
+        return ResultFactory.success(user, '会員登録が完了しました');
       } else {
-        return Result.failure('会員登録に失敗しました');
+        return ResultFactory.failure('会員登録に失敗しました');
       }
     } on FirebaseAuthException catch (e) {
-      return Result.failure(_getFirebaseErrorMessage(e));
+      return ResultFactory.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return Result.failure('会員登録に失敗しました: ${e.toString()}');
+      return ResultFactory.failure('会員登録に失敗しました: ${e.toString()}');
     }
   }
 
@@ -91,7 +97,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
-        return Result.failure('Google ログインがキャンセルされました');
+        return ResultFactory.failure('Google ログインがキャンセルされました');
       }
 
       final GoogleSignInAuthentication googleAuth =
@@ -107,14 +113,14 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
-        return Result.success('Googleログインが完了しました', user);
+        return ResultFactory.success(user, 'Googleログインが完了しました');
       } else {
-        return Result.failure('Google ログインに失敗しました');
+        return ResultFactory.failure('Google ログインに失敗しました');
       }
     } on FirebaseAuthException catch (e) {
-      return Result.failure(_getFirebaseErrorMessage(e));
+      return ResultFactory.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return Result.failure('Google ログインに失敗しました: ${e.toString()}');
+      return ResultFactory.failure('Google ログインに失敗しました: ${e.toString()}');
     }
   }
 
@@ -140,14 +146,14 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
-        return Result.success('Appleログインが完了しました', user);
+        return ResultFactory.success(user, 'Appleログインが完了しました');
       } else {
-        return Result.failure('Apple ログインに失敗しました');
+        return ResultFactory.failure('Apple ログインに失敗しました');
       }
     } on FirebaseAuthException catch (e) {
-      return Result.failure(_getFirebaseErrorMessage(e));
+      return ResultFactory.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return Result.failure('Apple ログインに失敗しました: ${e.toString()}');
+      return ResultFactory.failure('Apple ログインに失敗しました: ${e.toString()}');
     }
   }
 
@@ -162,8 +168,8 @@ class FirebaseAuthRealImpl implements AuthRepository {
       // LINE OAuth 서비스를 통한 로그인
       final result = await _lineOAuthService.loginWithLine();
 
-      if (result.isSuccess && result.data != null) {
-        final lineUserInfo = result.data!;
+      if (result.isSuccess && result.dataOrNull != null) {
+        final lineUserInfo = result.dataOrNull!;
 
         // LINE 사용자 정보를 AuthUser로 변환
         final user = AuthUser(
@@ -182,12 +188,12 @@ class FirebaseAuthRealImpl implements AuthRepository {
           },
         );
 
-        return Result.success('LINEログインが完了しました', user);
+        return ResultFactory.success(user, 'LINEログインが完了しました');
       } else {
-        return Result.failure(result.message);
+        return ResultFactory.failure(result.errorOrNull ?? 'LINE ログインに失敗しました');
       }
     } catch (e) {
-      return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
+      return ResultFactory.failure('LINE ログインに失敗しました: ${e.toString()}');
     }
   }
 
@@ -272,46 +278,57 @@ class FirebaseAuthRealImpl implements AuthRepository {
   @override
   Future<String> exchangeServerToken(String idToken) async {
     try {
-      // TODO: 실제 백엔드 API 호출로 서버 토큰 교환 구현 필요
-      // 현재는 Mock 구현 (프론트엔드 완성을 위해 임시 구현)
+      // 실제 백엔드 API 호출로 서버 토큰 교환
+      final response = await http.post(
+        Uri.parse('${AppConfig.current.apiBaseUrl}/auth/exchange-token'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $idToken',
+          'Accept': 'application/json',
+        },
+        body: json.encode({
+          'firebaseIdToken': idToken,
+          'clientType': 'mobile',
+          'platform': Platform.isIOS ? 'ios' : 'android',
+        }),
+      );
 
-      // 실제 구현 예시:
-      // final response = await http.post(
-      //   Uri.parse('${AppConfig.current.apiBaseUrl}/auth/exchange-token'),
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': 'Bearer $idToken',
-      //   },
-      //   body: json.encode({'firebaseIdToken': idToken}),
-      // );
-      //
-      // if (response.statusCode == 200) {
-      //   final data = json.decode(response.body);
-      //   final serverToken = data['serverToken'] as String;
-      //   final expiresInHours = data['expiresInHours'] as int? ?? 24;
-      //
-      //   // 서버 토큰 저장
-      //   await saveServerToken(serverToken, expiresInHours: expiresInHours);
-      //   return serverToken;
-      // } else {
-      //   throw Exception('서버 토큰 교환 실패: ${response.statusCode}');
-      // }
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        final serverToken = data['serverToken'] as String;
+        final expiresInHours = data['expiresInHours'] as int? ?? 24;
 
-      // 현재 Mock 구현 (개발용) - 실제 서버 토큰처럼 동작
-      await Future.delayed(const Duration(milliseconds: 500));
+        // 토큰 유효성 검증
+        if (serverToken.isEmpty || serverToken.length < 32) {
+          throw AuthTokenException(
+            AuthErrorKeys.tokenExchangeFailed,
+            'Invalid server token format',
+          );
+        }
 
-      // Mock 서버 토큰 생성
-      final mockServerToken =
-          'real_server_jwt_token_${DateTime.now().millisecondsSinceEpoch}';
+        // 서버 토큰 저장
+        await saveServerToken(serverToken, expiresInHours: expiresInHours);
 
-      // Mock 토큰을 실제로 저장 (테스트용)
-      await saveServerToken(mockServerToken, expiresInHours: 24);
+        if (kDebugMode) {
+          debugPrint('서버 토큰 교환 성공 - 만료시간: $expiresInHours시간');
+        }
 
-      if (kDebugMode) {
-        debugPrint('Mock 서버 토큰 생성 및 저장 완료');
+        return serverToken;
+      } else if (response.statusCode == 401) {
+        throw AuthTokenException(
+          AuthErrorKeys.tokenExpired('Firebase ID token expired'),
+        );
+      } else if (response.statusCode >= 500) {
+        throw AuthNetworkException(
+          AuthErrorKeys.serverError('Server temporarily unavailable'),
+        );
+      } else {
+        final errorData = json.decode(response.body) as Map<String, dynamic>?;
+        final errorMessage = errorData?['message'] ?? 'Token exchange failed';
+        throw AuthTokenException(
+          AuthErrorKeys.tokenExchangeFailed(errorMessage),
+        );
       }
-
-      return mockServerToken;
     } catch (e) {
       throw Exception('서버 토큰 교환 실패: $e');
     }

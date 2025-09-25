@@ -6,6 +6,10 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 ///
 /// 모든 서비스에서 공통으로 사용하는 로깅 로직을 제공
 abstract class BaseLoggingService {
+  static BaseLoggingService? _instance;
+  static BaseLoggingService get instance =>
+      _instance ??= _DefaultLoggingService();
+
   late final Logger _logger;
   late final String _serviceName;
 
@@ -157,3 +161,8 @@ abstract class BaseLoggingService {
 
 /// 로깅 레벨 열거형
 enum _LogLevel { debug, info, warning, error }
+
+/// 기본 로깅 서비스 구현체
+class _DefaultLoggingService extends BaseLoggingService {
+  _DefaultLoggingService() : super('DefaultLoggingService');
+}

@@ -1,9 +1,9 @@
-import 'package:aipet_frontend/features/onboarding/domain/entities/user_profile_entity.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/get_app_settings_usecase.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/get_user_profile_usecase.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/save_app_settings_usecase.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/update_user_profile_usecase.dart';
-import 'package:aipet_frontend/shared/repositories/settings_repository_impl.dart';
+import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/get_app_settings_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/get_user_profile_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/save_app_settings_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/update_user_profile_usecase.dart';
+import 'package:aipet_frontend/features/settings/data/repositories/settings_repository_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

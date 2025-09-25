@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/onboarding/data/models/weather_model.dart';
-import 'package:aipet_frontend/features/scheduling/presentation/controllers/weather_controller.dart';
+import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
+import 'package:aipet_frontend/features/home/presentation/controllers/weather_controller.dart';
 import 'package:aipet_frontend/shared/services/weather_icon_service.dart';
 import 'package:aipet_frontend/shared/utils/weather_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -83,8 +83,8 @@ class WeatherViewModel extends ChangeNotifier {
 
     _isLoading = false;
 
-    if (result.isSuccess && result.data != null) {
-      _weatherData = result.data;
+    if (result.isSuccess && result.dataOrNull != null) {
+      _weatherData = result.dataOrNull;
       debugPrint(
         '🌡️ 날씨 데이터 받음: ${_weatherData!.location}, ${_weatherData!.temperature}°C, UV: ${_weatherData!.uvIndex}, Wind: ${_weatherData!.windSpeed}m/s',
       );
@@ -99,8 +99,8 @@ class WeatherViewModel extends ChangeNotifier {
       // 산책 조언 생성
       await _generateWalkingAdvice();
     } else {
-      debugPrint('❌ 날씨 데이터 로드 실패: ${result.message}');
-      _errorMessage = result.message;
+      debugPrint('❌ 날씨 데이터 로드 실패: ${result.errorOrNull}');
+      _errorMessage = result.errorOrNull;
       _weatherData = null;
       _walkingAdvice = null;
     }
@@ -119,7 +119,7 @@ class WeatherViewModel extends ChangeNotifier {
     try {
       final adviceResult = await _controller.generateWalkingAdvice();
       if (adviceResult.isSuccess) {
-        _walkingAdvice = adviceResult.data?.toString();
+        _walkingAdvice = adviceResult.dataOrNull?.toString();
       }
     } catch (e) {
       debugPrint('散歩アドバイス生成失敗: $e');
