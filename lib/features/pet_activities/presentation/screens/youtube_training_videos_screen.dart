@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
 import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/controllers/youtube_videos_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/widgets/add_youtube_video_button.dart';
@@ -127,7 +127,8 @@ class _YouTubeTrainingVideosScreenState
                 onDeleteTap: _deleteVideo,
                 onAddVideo: _addVideo,
               ),
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () =>
+                  const Center(child: const CircularProgressIndicator()),
               error: (error, stack) => Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

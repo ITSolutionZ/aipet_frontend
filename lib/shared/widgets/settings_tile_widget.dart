@@ -10,6 +10,8 @@ class SettingsTileWidget extends StatelessWidget {
   final bool enabled;
   final Color? tileColor;
   final EdgeInsetsGeometry? contentPadding;
+  final IconData? icon;
+  final Color? backgroundColor;
 
   const SettingsTileWidget({
     super.key,
@@ -21,12 +23,26 @@ class SettingsTileWidget extends StatelessWidget {
     this.enabled = true,
     this.tileColor,
     this.contentPadding,
+    this.icon,
+    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: leading,
+      leading:
+          leading ??
+          (icon != null && backgroundColor != null
+              ? Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: Colors.white, size: 20),
+                )
+              : null),
       title: Text(
         title,
         style: TextStyle(color: enabled ? null : Colors.grey.shade500),

@@ -89,7 +89,7 @@ class WeightSliderWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
-                          const const const SizedBox(width: 2),
+                          const const SizedBox(width: 2),
                           Container(
                             width: 1.5,
                             height: 12,
@@ -98,7 +98,7 @@ class WeightSliderWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
-                          const const const SizedBox(width: 2),
+                          const const SizedBox(width: 2),
                           Container(
                             width: 1.5,
                             height: 12,

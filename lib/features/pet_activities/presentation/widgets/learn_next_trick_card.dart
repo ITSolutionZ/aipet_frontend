@@ -122,10 +122,10 @@ class LearnNextTrickCard extends StatelessWidget {
                 ),
 
                 // 트릭 설명
-                if (trick.description != null) ...[
+                ...[
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    trick.description!,
+                    trick.description,
                     style: AppFonts.bodySmall.copyWith(
                       color: AppColors.pointDark.withValues(alpha: 0.7),
                     ),

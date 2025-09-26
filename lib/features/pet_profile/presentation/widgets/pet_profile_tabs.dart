@@ -287,7 +287,7 @@ class ActivityTab extends ConsumerWidget {
 
     return tricksState.when(
       data: (tricks) => _buildActivityContent(context, tricks),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: const CircularProgressIndicator()),
       error: (error, stackTrace) =>
           Center(child: Text('活動データの読み込み中にエラーが発生しました: $error')),
     );

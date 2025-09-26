@@ -42,7 +42,7 @@ class _NotificationListWidgetState
 
     return notificationsAsync.when(
       data: (notifications) => _buildNotificationList(notifications),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: const CircularProgressIndicator()),
       error: (error, stack) => _buildErrorState(error),
     );
   }
@@ -106,8 +106,7 @@ class _NotificationListWidgetState
           .markAsRead(notification.id);
       widget.onNotificationTap?.call();
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -143,8 +142,7 @@ class _NotificationListWidgetState
           .deleteNotification(notification.id);
       widget.onNotificationDelete?.call();
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 

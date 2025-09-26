@@ -74,7 +74,7 @@ class GenderSelection extends StatelessWidget {
                     color: isSelected ? Colors.white : AppColors.pointDark,
                   ),
                 ),
-                const const const SizedBox(width: 8),
+                const const SizedBox(width: 8),
                 Text(
                   label,
                   style: AppFonts.bodyMedium.copyWith(

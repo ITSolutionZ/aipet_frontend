@@ -20,7 +20,7 @@ class AppBootstrap {
 
     try {
       if (kDebugMode) {
-        print('🚀 Starting app bootstrap...');
+        debugPrint('🚀 Starting app bootstrap...');
       }
 
       // 1. 보안 시스템 초기화
@@ -39,14 +39,14 @@ class AppBootstrap {
       _isInitializing = false;
 
       if (kDebugMode) {
-        print('✅ App bootstrap completed successfully');
+        debugPrint('✅ App bootstrap completed successfully');
         _printBootstrapSummary();
       }
     } catch (e) {
       _isInitializing = false;
 
       if (kDebugMode) {
-        print('❌ App bootstrap failed: $e');
+        debugPrint('❌ App bootstrap failed: $e');
       }
 
       // 프로덕션 환경에서는 초기화 실패 시 앱 종료
@@ -61,7 +61,7 @@ class AppBootstrap {
   /// 보안 시스템 초기화
   static Future<void> _initializeSecuritySystems() async {
     if (kDebugMode) {
-      print('🛡️ Initializing security systems...');
+      debugPrint('🛡️ Initializing security systems...');
     }
 
     // 1. 보안 부트스트랩 실행
@@ -71,14 +71,14 @@ class AppBootstrap {
     // ApiSecurityManager는 싱글톤이므로 자동으로 초기화됨
 
     if (kDebugMode) {
-      print('✅ Security systems initialized');
+      debugPrint('✅ Security systems initialized');
     }
   }
 
   /// 성능 시스템 초기화
   static Future<void> _initializePerformanceSystems() async {
     if (kDebugMode) {
-      print('📊 Initializing performance systems...');
+      debugPrint('📊 Initializing performance systems...');
     }
 
     // 1. 성능 모니터링 시작
@@ -92,14 +92,14 @@ class AppBootstrap {
     }
 
     if (kDebugMode) {
-      print('✅ Performance systems initialized');
+      debugPrint('✅ Performance systems initialized');
     }
   }
 
   /// 모니터링 대시보드 초기화
   static Future<void> _initializeMonitoringDashboard() async {
     if (kDebugMode) {
-      print('📈 Initializing monitoring dashboard...');
+      debugPrint('📈 Initializing monitoring dashboard...');
     }
 
     // 모니터링 대시보드 시작
@@ -108,21 +108,21 @@ class AppBootstrap {
     }
 
     if (kDebugMode) {
-      print('✅ Monitoring dashboard initialized');
+      debugPrint('✅ Monitoring dashboard initialized');
     }
   }
 
   /// 환경별 설정 적용
   static Future<void> _applyEnvironmentSettings() async {
     if (kDebugMode) {
-      print('🔧 Applying environment settings...');
+      debugPrint('🔧 Applying environment settings...');
     }
 
     // 환경별 설정 검증
     EnvironmentConfig.validateConfiguration();
 
     if (kDebugMode) {
-      print('✅ Environment settings applied');
+      debugPrint('✅ Environment settings applied');
     }
   }
 
@@ -130,24 +130,24 @@ class AppBootstrap {
   static void _printBootstrapSummary() {
     if (!kDebugMode) return;
 
-    print('\n=== App Bootstrap Summary ===');
-    print('Environment: ${EnvironmentConfig.currentEnvironment.name}');
-    print(
+    debugPrint('\n=== App Bootstrap Summary ===');
+    debugPrint('Environment: ${EnvironmentConfig.currentEnvironment.name}');
+    debugPrint(
       'Security Validation: ${EnvironmentConfig.isSecurityValidationEnabled ? 'Enabled' : 'Disabled'}',
     );
-    print(
+    debugPrint(
       'Performance Monitoring: ${EnvironmentConfig.isPerformanceMonitoringEnabled ? 'Enabled' : 'Disabled'}',
     );
-    print(
+    debugPrint(
       'Mock Mode Allowed: ${EnvironmentConfig.isMockModeAllowed ? 'Yes' : 'No'}',
     );
-    print(
+    debugPrint(
       'Debug Logging: ${EnvironmentConfig.isDebugLoggingAllowed ? 'Enabled' : 'Disabled'}',
     );
-    print(
+    debugPrint(
       'Error Reporting: ${EnvironmentConfig.isErrorReportingEnabled ? 'Enabled' : 'Disabled'}',
     );
-    print('===============================\n');
+    debugPrint('===============================\n');
   }
 
   /// 앱 종료 처리
@@ -156,7 +156,7 @@ class AppBootstrap {
 
     try {
       if (kDebugMode) {
-        print('🔄 Disposing app systems...');
+        debugPrint('🔄 Disposing app systems...');
       }
 
       // 1. 모니터링 대시보드 중지
@@ -174,11 +174,11 @@ class AppBootstrap {
       _isInitialized = false;
 
       if (kDebugMode) {
-        print('✅ App systems disposed');
+        debugPrint('✅ App systems disposed');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ App disposal failed: $e');
+        debugPrint('❌ App disposal failed: $e');
       }
     }
   }
@@ -284,18 +284,18 @@ class AppBootstrap {
     if (!kDebugMode) return;
 
     performHealthCheck().then((healthCheck) {
-      print('\n=== System Health Check ===');
-      print('Score: ${healthCheck.score}/100');
-      print('Level: ${healthCheck.level.name}');
-      print('Timestamp: ${healthCheck.timestamp.toIso8601String()}');
+      debugPrint('\n=== System Health Check ===');
+      debugPrint('Score: ${healthCheck.score}/100');
+      debugPrint('Level: ${healthCheck.level.name}');
+      debugPrint('Timestamp: ${healthCheck.timestamp.toIso8601String()}');
 
       if (healthCheck.issues.isNotEmpty) {
-        print('\nIssues:');
+        debugPrint('\nIssues:');
         for (final issue in healthCheck.issues) {
-          print('  - $issue');
+          debugPrint('  - $issue');
         }
       }
-      print('============================\n');
+      debugPrint('============================\n');
     });
   }
 }

@@ -24,14 +24,19 @@ import 'package:flutter/material.dart';
 enum CardVariant {
   /// 정보 표시용 카드 (기존 InfoCard)
   info,
+
   /// 메트릭/통계 카드 (기존 MetricCard)
   metric,
+
   /// 선택 가능한 카드 (기존 SelectionCard)
   selection,
+
   /// 버튼 형태 카드 (기존 ButtonCard)
   button,
+
   /// 요약 정보 카드 (기존 CommonSummaryCard)
   summary,
+
   /// 일반 컨테이너 카드
   container,
 }
@@ -39,10 +44,13 @@ enum CardVariant {
 enum CardSize {
   /// 작은 카드
   small,
+
   /// 중간 카드
   medium,
+
   /// 큰 카드
   large,
+
   /// 전체 너비
   expanded,
 }
@@ -50,10 +58,13 @@ enum CardSize {
 enum CardElevation {
   /// 그림자 없음
   none,
+
   /// 낮은 그림자
   low,
+
   /// 중간 그림자
   medium,
+
   /// 높은 그림자
   high,
 }
@@ -311,9 +322,7 @@ class AppCard extends StatelessWidget {
         button: onTap != null,
         enabled: isEnabled,
         selected: isSelected,
-        child: tooltip != null
-          ? Tooltip(message: tooltip!, child: card)
-          : card,
+        child: tooltip != null ? Tooltip(message: tooltip!, child: card) : card,
       );
     }
 
@@ -498,10 +507,7 @@ class AppCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null) ...[
-            icon!,
-            const SizedBox(width: AppSpacing.sm),
-          ],
+          if (icon != null) ...[icon!, const SizedBox(width: AppSpacing.sm)],
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -606,10 +612,7 @@ class AppCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.small),
       ),
       child: IconTheme(
-        data: IconThemeData(
-          color: iconColor ?? AppColors.pointBrown,
-          size: 24,
-        ),
+        data: IconThemeData(color: iconColor ?? AppColors.pointBrown, size: 24),
         child: icon!,
       ),
     );
@@ -677,10 +680,7 @@ class AppCard extends StatelessWidget {
       borderColorValue = AppColors.pointDark.withValues(alpha: 0.1);
     }
 
-    return Border.all(
-      color: borderColorValue,
-      width: isSelected ? 2 : 1,
-    );
+    return Border.all(color: borderColorValue, width: isSelected ? 2 : 1);
   }
 
   List<BoxShadow> _getBoxShadow() {
@@ -748,7 +748,6 @@ class AppCard extends StatelessWidget {
         return const BoxConstraints(minWidth: double.infinity);
     }
   }
-
 }
 
 // === 기존 API 완전 호환을 위한 typedef들 ===

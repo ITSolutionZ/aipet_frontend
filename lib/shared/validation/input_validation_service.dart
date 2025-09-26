@@ -22,8 +22,8 @@ class InputValidationService {
     RegExp(r'vbscript:', caseSensitive: false),
     RegExp(r'data:text/html', caseSensitive: false),
     RegExp(r'<img[^>]*src\s*=\s*["\']javascript:', caseSensitive: false),
-    RegExp(r'<link[^>]*href\s*=\s*["\']javascript:', caseSensitive: false),
-    RegExp(r'<meta[^>]*content\s*=.*?javascript:', caseSensitive: false),
+    void RegExp(r'<link[^>]*href\s*=\s*["\']javascript:', caseSensitive: false),
+    void RegExp(r'<meta[^>]*content\s*=.*?javascript:', caseSensitive = false),
   ];
 
   /// SQL Injection 패턴
@@ -34,7 +34,7 @@ class InputValidationService {
     RegExp(r'(\band\s+1\s*=\s*1\b)', caseSensitive: false),
     RegExp(r'(\bhaving\s+\d+\s*=\s*\d+\b)', caseSensitive: false),
     RegExp(r'(\bwaitfor\s+delay\b)', caseSensitive: false),
-    RegExp(r'([\'"]\s*;\s*drop\s+table)', caseSensitive: false),
+    RegExp(r'([\'"]s*;s*drops+table)', caseSensitive: false),
     RegExp(r'(--\s*$)', multiLine: true),
     RegExp(r'(/\*.*?\*/)', dotAll: true),
     RegExp(r'(\bcast\s*\()', caseSensitive: false),
@@ -94,7 +94,7 @@ class InputValidationService {
 
       // 2. 길이 검사
       if (maxLength != null && trimmedInput.length > maxLength) {
-        return ResultFactory.failure('$fieldNameは${maxLength}文字以下で入力してください');
+        return ResultFactory.failure('$fieldNameは$maxLength文字以下で入力してください');
       }
 
       // 3. XSS 공격 패턴 검사
@@ -251,10 +251,10 @@ class InputValidationService {
     // 숫자로 변환
     final number = double.tryParse(securityResult.data!);
     if (number == null) {
-      return ResultFactory.failure('${fieldName}は有効な数値ではありません');
+      return ResultFactory.failure('$fieldNameは有効な数値ではありません');
     }
 
-    return ResultFactory.success(number, '${fieldName}の検証が完了しました');
+    return ResultFactory.success(number, '$fieldNameの検証が完了しました');
   }
 
   /// 검색어 입력 검증

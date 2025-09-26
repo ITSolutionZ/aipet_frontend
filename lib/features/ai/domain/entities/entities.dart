@@ -1,3 +1,4 @@
+export 'ai_analysis_entity.dart';
 export 'ai_category_entity.dart';
 export 'ai_chat_history_entity.dart';
 export 'ai_chat_session_entity.dart';

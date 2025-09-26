@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/notification/data/repositories/notification_repository_impl.dart';
+import 'package:aipet_frontend/features/notification/data/services/notification_service.dart';
 import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
 import 'package:aipet_frontend/features/notification/domain/usecases/usecases.dart';
 import 'package:aipet_frontend/features/notification/presentation/controllers/notification_controller.dart';
@@ -53,15 +54,23 @@ SaveNotificationSettingsUseCase saveNotificationSettingsUseCase(Ref ref) {
 }
 
 @riverpod
-RequestNotificationPermissionUseCase requestNotificationPermissionUseCase(Ref ref) {
+RequestNotificationPermissionUseCase requestNotificationPermissionUseCase(
+  Ref ref,
+) {
   return RequestNotificationPermissionUseCase(
-    ref.read(notificationRepositoryProvider),
+    ref.read(
+      notificationRepositoryProvider as ProviderListenable<NotificationService>,
+    ),
   );
 }
 
 @riverpod
 TestNotificationUseCase testNotificationUseCase(Ref ref) {
-  return TestNotificationUseCase(ref.read(notificationRepositoryProvider));
+  return TestNotificationUseCase(
+    ref.read(
+      notificationRepositoryProvider as ProviderListenable<NotificationService>,
+    ),
+  );
 }
 
 // Controller Factory Providers - Consumer에서 WidgetRef를 받아서 사용

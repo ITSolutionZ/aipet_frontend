@@ -1,4 +1,3 @@
-
 /// AI 채팅 메시지 타입
 enum MessageType {
   user, // 사용자 메시지
@@ -59,7 +58,6 @@ class AiMessageEntity {
   /// 시스템 메시지인지 확인
   bool get isSystem => type == MessageType.system;
 }
-
 
 /// AI 응답 타입
 enum AiResponseType {

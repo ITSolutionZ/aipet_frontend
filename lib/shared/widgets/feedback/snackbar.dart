@@ -123,9 +123,10 @@ class GlassSnackbar extends StatelessWidget {
 }
 
 /// 🎯 Snackbar Visibility State Provider
-final snackbarVisibilityProvider = StateNotifierProvider.family<SnackbarVisibilityController, bool, String>(
-  (ref, snackbarId) => SnackbarVisibilityController(),
-);
+final snackbarVisibilityProvider =
+    StateNotifierProvider.family<SnackbarVisibilityController, bool, String>(
+      (ref, snackbarId) => SnackbarVisibilityController(),
+    );
 
 class SnackbarVisibilityController extends StateNotifier<bool> {
   SnackbarVisibilityController() : super(false);
@@ -150,7 +151,8 @@ class GlassSnackbarWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<GlassSnackbarWidget> createState() => _GlassSnackbarWidgetState();
+  ConsumerState<GlassSnackbarWidget> createState() =>
+      _GlassSnackbarWidgetState();
 }
 
 class _GlassSnackbarWidgetState extends ConsumerState<GlassSnackbarWidget> {

@@ -55,7 +55,9 @@ class SelectCategoryUseCase {
 
       return ResultFactory.success(result, 'カテゴリを選択しました');
     } catch (error) {
-      return ResultFactory.failure<SelectCategoryResult>('カテゴリ選択に失敗しました: ${error.toString()}');
+      return ResultFactory.failure<SelectCategoryResult>(
+        'カテゴリ選択に失敗しました: ${error.toString()}',
+      );
     }
   }
 }

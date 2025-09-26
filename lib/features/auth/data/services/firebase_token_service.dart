@@ -106,16 +106,22 @@ class FirebaseTokenService {
       if (idToken == null || idToken.isEmpty) return false;
 
       // 2. JWT 구조 검증 수행
-      final structureValidation = JwtValidationService.validateFirebaseIdToken(idToken);
+      final structureValidation = JwtValidationService.validateFirebaseIdToken(
+        idToken,
+      );
       if (!structureValidation.isSuccess) {
         if (kDebugMode) {
-          debugPrint('🔐 JWT 구조 검증 실패: ${structureValidation.errorOrNull ?? 'Unknown error'}');
+          debugPrint(
+            '🔐 JWT 구조 검증 실패: ${structureValidation.errorOrNull ?? 'Unknown error'}',
+          );
         }
         return false;
       }
 
       // 3. 보안 등급 평가
-      final securityLevel = JwtValidationService.evaluateSecurityLevel(structureValidation.dataOrNull!);
+      final securityLevel = JwtValidationService.evaluateSecurityLevel(
+        structureValidation.dataOrNull!,
+      );
       if (securityLevel.level == SecurityLevel.critical) {
         if (kDebugMode) {
           debugPrint('🚨 심각한 JWT 보안 문제 발견: ${securityLevel.recommendation}');
@@ -134,7 +140,9 @@ class FirebaseTokenService {
       final isTimeValid = expirationTime.isAfter(fiveMinutesFromNow);
 
       if (kDebugMode && securityLevel.level != SecurityLevel.high) {
-        debugPrint('⚠️ JWT 보안 등급: ${securityLevel.level.displayName} (점수: ${securityLevel.score}/${securityLevel.maxScore})');
+        debugPrint(
+          '⚠️ JWT 보안 등급: ${securityLevel.level.displayName} (점수: ${securityLevel.score}/${securityLevel.maxScore})',
+        );
         debugPrint('💡 권장사항: ${securityLevel.recommendation}');
       }
 

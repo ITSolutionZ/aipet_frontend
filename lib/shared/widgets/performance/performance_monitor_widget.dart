@@ -172,7 +172,7 @@ class _PerformanceMonitorWidgetState
 
   Widget _buildMetrics(PerformanceMetric? currentMetric) {
     if (currentMetric == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: const CircularProgressIndicator());
     }
 
     return Row(

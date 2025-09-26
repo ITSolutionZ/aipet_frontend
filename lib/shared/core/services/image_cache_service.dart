@@ -391,7 +391,7 @@ class CachedImage extends StatelessWidget {
       width: width,
       height: height,
       color: Colors.grey[300],
-      child: const Center(child: CircularProgressIndicator()),
+      child: const Center(child: const CircularProgressIndicator()),
     );
   }
 
@@ -457,7 +457,7 @@ class CachedAssetImage extends StatelessWidget {
       width: width,
       height: height,
       color: Colors.grey[300],
-      child: const Center(child: CircularProgressIndicator()),
+      child: const Center(child: const CircularProgressIndicator()),
     );
   }
 

@@ -63,7 +63,7 @@ class _AlarmTimeSettingsScreenState
           return const Scaffold(
             backgroundColor: AppColors.pointOffWhite,
             appBar: SoftGradientDrawerAppBar(title: 'アラーム時間設定'),
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(child: const CircularProgressIndicator()),
           );
         }
 

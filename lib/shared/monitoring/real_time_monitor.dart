@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/shared/monitoring/monitoring_dashboard.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
+import 'package:flutter/foundation.dart';
 
 /// 🔴 실시간 모니터링 서비스
 ///
@@ -236,12 +237,12 @@ class ConsoleNotificationSubscription implements MonitoringSubscription {
   @override
   void notify(MonitoringEvent event) {
     final emoji = _getSeverityEmoji(event.severity);
-    print(
+    debugPrint(
       '$emoji [${event.timestamp.toIso8601String()}] ${event.type.name.toUpperCase()}: ${event.message}',
     );
 
     if (event.data != null) {
-      print('   Data: ${jsonEncode(event.data)}');
+      debugPrint('   Data: ${jsonEncode(event.data)}');
     }
   }
 

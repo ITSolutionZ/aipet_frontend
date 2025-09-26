@@ -35,7 +35,9 @@ class ChatSessionUseCase {
     try {
       // 입력 유효성 검사
       if (title.trim().isEmpty) {
-        return ResultFactory.failure<AiChatSessionEntity>('セッションタイトルを入力してください').toFuture();
+        return ResultFactory.failure<AiChatSessionEntity>(
+          'セッションタイトルを入力してください',
+        ).toFuture();
       }
 
       if (title.length > 100) {
@@ -68,7 +70,9 @@ class ChatSessionUseCase {
       await _repository.deleteChatSession(sessionId);
       return ResultFactory.success(null, 'チャットセッションを削除しました').toFuture();
     } catch (error) {
-      return ResultFactory.failure<void>('チャットセッションの削除に失敗しました: ${error.toString()}').toFuture();
+      return ResultFactory.failure<void>(
+        'チャットセッションの削除に失敗しました: ${error.toString()}',
+      ).toFuture();
     }
   }
 }

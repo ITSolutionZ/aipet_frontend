@@ -13,7 +13,7 @@ class StartWalkUseCase {
       throw ArgumentError('산책 제목은 필수입니다.');
     }
 
-    if (walkRecord.petId == null || walkRecord.petId!.isEmpty) {
+    if (walkRecord.petId.isEmpty) {
       throw ArgumentError('펫 ID는 필수입니다.');
     }
 

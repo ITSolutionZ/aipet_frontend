@@ -75,7 +75,7 @@ class PerformanceMonitor {
       );
     } catch (e) {
       if (kDebugMode) {
-        print('Memory usage measurement failed: $e');
+        debugPrint('Memory usage measurement failed: $e');
       }
     }
   }
@@ -153,7 +153,7 @@ class PerformanceMonitor {
   /// 메모리 최적화 실행
   void _performMemoryOptimization() {
     if (kDebugMode) {
-      print('Performing memory optimization...');
+      debugPrint('Performing memory optimization...');
     }
 
     // 오래된 메트릭 정리
@@ -163,7 +163,7 @@ class PerformanceMonitor {
     // 가비지 컬렉션 강제 실행 (가능한 경우)
     if (kDebugMode) {
       // 디버그 모드에서만 가비지 컬렉션 힌트 제공
-      print('Memory optimization completed');
+      debugPrint('Memory optimization completed');
     }
   }
 
@@ -260,17 +260,17 @@ class PerformanceMonitor {
     if (!kDebugMode) return;
 
     final report = generateReport();
-    print('=== Performance Report ===');
-    print('Total Metrics: ${report.totalMetrics}');
-    print(
+    debugPrint('=== Performance Report ===');
+    debugPrint('Total Metrics: ${report.totalMetrics}');
+    debugPrint(
       'Avg API Response Time: ${report.avgApiResponseTime.toStringAsFixed(2)}ms',
     );
-    print('Avg Memory Usage: ${report.avgMemoryUsage.toStringAsFixed(2)}MB');
-    print(
+    debugPrint('Avg Memory Usage: ${report.avgMemoryUsage.toStringAsFixed(2)}MB');
+    debugPrint(
       'Avg Widget Build Time: ${report.avgWidgetBuildTime.toStringAsFixed(2)}ms',
     );
-    print('Slow Operations: ${report.slowOperations.length}');
-    print('Memory Alerts: ${report.memoryAlerts.length}');
+    debugPrint('Slow Operations: ${report.slowOperations.length}');
+    debugPrint('Memory Alerts: ${report.memoryAlerts.length}');
   }
 }
 

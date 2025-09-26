@@ -17,16 +17,20 @@ class AiMockDataServiceImpl implements MockDataService {
   @override
   Future<List<Map<String, dynamic>>> getChatHistory() async {
     final entities = AiChatMessagesMockData.getChatHistory();
-    return entities.map((entity) => {
-      'id': entity.id,
-      'content': entity.content,
-      'type': entity.type.name,
-      'timestamp': entity.timestamp.toIso8601String(),
-      'isTyping': entity.isTyping,
-      'petId': entity.petId,
-      'petName': entity.petName,
-      'metadata': entity.metadata,
-    }).toList();
+    return entities
+        .map(
+          (entity) => {
+            'id': entity.id,
+            'content': entity.content,
+            'type': entity.type.name,
+            'timestamp': entity.timestamp.toIso8601String(),
+            'isTyping': entity.isTyping,
+            'petId': entity.petId,
+            'petName': entity.petName,
+            'metadata': entity.metadata,
+          },
+        )
+        .toList();
   }
 
   @override
@@ -40,43 +44,54 @@ class AiMockDataServiceImpl implements MockDataService {
   Future<List<Map<String, dynamic>>> getFavoriteQAs() async {
     // Mock 데이터에서 즐겨찾기 QA 반환
     final entities = await getFavoriteQAEntities();
-    return entities.map((entity) => {
-      'id': entity.id,
-      'question': entity.question,
-      'answer': entity.answer,
-      'categoryId': entity.categoryId,
-      'categoryName': entity.categoryName,
-      'createdAt': entity.createdAt.toIso8601String(),
-      'originalTimestamp': entity.originalTimestamp.toIso8601String(),
-      'pet': entity.pet != null ? {
-        'id': entity.pet!.id,
-        'name': entity.pet!.name,
-      } : null,
-    }).toList();
+    return entities
+        .map(
+          (entity) => {
+            'id': entity.id,
+            'question': entity.question,
+            'answer': entity.answer,
+            'categoryId': entity.categoryId,
+            'categoryName': entity.categoryName,
+            'createdAt': entity.createdAt.toIso8601String(),
+            'originalTimestamp': entity.originalTimestamp.toIso8601String(),
+            'pet': entity.pet != null
+                ? {'id': entity.pet!.id, 'name': entity.pet!.name}
+                : null,
+          },
+        )
+        .toList();
   }
 
   @override
   Future<List<Map<String, dynamic>>> getChatSessions() async {
     // Mock 데이터에서 채팅 세션 반환
     final entities = await getChatSessionEntities();
-    return entities.map((entity) => {
-      'id': entity.id,
-      'title': entity.title,
-      'messages': entity.messages.map((msg) => {
-        'id': msg.id,
-        'content': msg.content,
-        'type': msg.type.name,
-        'timestamp': msg.timestamp.toIso8601String(),
-        'isTyping': msg.isTyping,
-        'petId': msg.petId,
-        'petName': msg.petName,
-        'metadata': msg.metadata,
-      }).toList(),
-      'createdAt': entity.createdAt.toIso8601String(),
-      'updatedAt': entity.updatedAt.toIso8601String(),
-      'petId': entity.petId,
-      'petName': entity.petName,
-    }).toList();
+    return entities
+        .map(
+          (entity) => {
+            'id': entity.id,
+            'title': entity.title,
+            'messages': entity.messages
+                .map(
+                  (msg) => {
+                    'id': msg.id,
+                    'content': msg.content,
+                    'type': msg.type.name,
+                    'timestamp': msg.timestamp.toIso8601String(),
+                    'isTyping': msg.isTyping,
+                    'petId': msg.petId,
+                    'petName': msg.petName,
+                    'metadata': msg.metadata,
+                  },
+                )
+                .toList(),
+            'createdAt': entity.createdAt.toIso8601String(),
+            'updatedAt': entity.updatedAt.toIso8601String(),
+            'petId': entity.petId,
+            'petName': entity.petName,
+          },
+        )
+        .toList();
   }
 
   // AI 전용 메서드들 (엔티티 타입 직접 반환)

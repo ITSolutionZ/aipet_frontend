@@ -26,10 +26,7 @@ class OpenAIService extends BaseLoggingService {
     final apiKey = AppConfig.current.openaiApiKey;
 
     if (apiKey.isEmpty) {
-      throw AiOpenAIException(
-        AiErrorKeys.apiKeyError,
-        code: 'MISSING_API_KEY',
-      );
+      throw AiOpenAIException(AiErrorKeys.apiKeyError, code: 'MISSING_API_KEY');
     }
 
     // ペット関連コンテンツ検証 (펫 컨텍스트가 있으면 스킵)
@@ -106,9 +103,13 @@ ${_translateReasonToJapanese(validationResult.reason)}
         );
 
         if (usageResult.isSuccess) {
-          logInfo('Token usage recorded: ${usageResult.dataOrNull!.totalTokens} tokens');
+          logInfo(
+            'Token usage recorded: ${usageResult.dataOrNull!.totalTokens} tokens',
+          );
         } else {
-          logWarning('Failed to record token usage: ${usageResult.errorOrNull ?? 'Unknown error'}');
+          logWarning(
+            'Failed to record token usage: ${usageResult.errorOrNull ?? 'Unknown error'}',
+          );
         }
       }
 

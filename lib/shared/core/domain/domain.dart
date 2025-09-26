@@ -4,6 +4,8 @@
 /// 기능 간 순환 참조를 방지하고 코드 재사용성을 높입니다.
 library;
 
+// Repository 인터페이스
+export '../domain/repositories/settings_repository.dart';
 // 엔티티
 export 'entities/pet_entity.dart';
 

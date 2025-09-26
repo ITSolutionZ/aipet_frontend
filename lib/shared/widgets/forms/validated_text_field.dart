@@ -242,11 +242,7 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.security,
-                  size: 16,
-                  color: Colors.red[600],
-                ),
+                Icon(Icons.security, size: 16, color: Colors.red[600]),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
@@ -269,7 +265,9 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
   List<TextInputFormatter>? _buildInputFormatters() {
     final formatters = <TextInputFormatter>[
       // 제어 문자 필터링
-      FilteringTextInputFormatter.deny(RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]')),
+      FilteringTextInputFormatter.deny(
+        RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]'),
+      ),
     ];
 
     // 최대 길이 제한
@@ -279,7 +277,9 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
 
     // 특수문자 제한
     if (!widget.allowSpecialChars) {
-      formatters.add(FilteringTextInputFormatter.deny(RegExp(r'[<>{}[\]\\|`~!@#$%^&*()+=]')));
+      formatters.add(
+        FilteringTextInputFormatter.deny(RegExp(r'[<>{}[\]\\|`~!@#$%^&*()+=]')),
+      );
     }
 
     // HTML 태그 제한
@@ -297,10 +297,7 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
 
   Widget? _buildSuffixIcon() {
     if (_hasSecurityThreat && widget.realtimeValidation) {
-      return Icon(
-        Icons.error,
-        color: Colors.red[600],
-      );
+      return Icon(Icons.error, color: Colors.red[600]);
     }
     return widget.suffixIcon;
   }
@@ -328,10 +325,7 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
   InputBorder _buildErrorBorder() {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(
-        color: Colors.red,
-        width: 1,
-      ),
+      borderSide: const BorderSide(color: Colors.red, width: 1),
     );
   }
 
@@ -454,9 +448,7 @@ class _ValidatedPasswordFieldState extends State<ValidatedPasswordField> {
       allowSpecialChars: true,
       prefixIcon: const Icon(Icons.lock_outline),
       suffixIcon: IconButton(
-        icon: Icon(
-          _obscureText ? Icons.visibility : Icons.visibility_off,
-        ),
+        icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
         onPressed: () {
           setState(() {
             _obscureText = !_obscureText;

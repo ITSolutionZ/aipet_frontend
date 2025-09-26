@@ -69,9 +69,9 @@ class TrickCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.xs),
 
               // 설명 (있는 경우)
-              if (trick.description?.isNotEmpty == true) ...[
+              if (trick.description.isNotEmpty == true) ...[
                 Text(
-                  trick.description!,
+                  trick.description,
                   style: AppFonts.bodySmall.copyWith(
                     color: AppColors.pointDark.withValues(alpha: 0.7),
                   ),
@@ -88,7 +88,7 @@ class TrickCard extends StatelessWidget {
                   _buildDifficultyChip(),
                   const Spacer(),
                   // 진행도 (학습 중인 경우)
-                  if (trick.progress != null) _buildProgressIndicator(),
+                  _buildProgressIndicator(),
                 ],
               ),
             ],
@@ -157,8 +157,6 @@ class TrickCard extends StatelessWidget {
   }
 
   Widget _buildProgressIndicator() {
-    if (trick.progress == null) return const SizedBox.shrink();
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -186,8 +184,8 @@ class TrickCard extends StatelessWidget {
   }
 
   Widget _buildActionButton() {
-    final isLearned = trick.progress != null && trick.progress! >= 100;
-    final isLearning = trick.progress != null && trick.progress! < 100;
+    final isLearned = trick.progress >= 100;
+    final isLearning = trick.progress < 100;
 
     if (isLearned) {
       return Container(

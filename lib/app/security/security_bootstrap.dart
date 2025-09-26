@@ -26,11 +26,11 @@ class SecurityBootstrap {
       _isInitialized = true;
 
       if (kDebugMode) {
-        print('🛡️ Security system initialized successfully');
+        debugPrint('🛡️ Security system initialized successfully');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Security system initialization failed: $e');
+        debugPrint('❌ Security system initialization failed: $e');
       }
 
       // 프로덕션 환경에서는 보안 검증 실패 시 앱 종료
@@ -49,9 +49,9 @@ class SecurityBootstrap {
 
       if (kDebugMode) {
         final envInfo = EnvironmentConfig.getEnvironmentInfo();
-        print('🔧 Environment Configuration:');
+        debugPrint('🔧 Environment Configuration:');
         envInfo.forEach((key, value) {
-          print('  $key: $value');
+          debugPrint('  $key: $value');
         });
       }
     } catch (e) {
@@ -69,11 +69,11 @@ class SecurityBootstrap {
         ProductionSecurityValidator.runAllSecurityValidations();
 
         if (kDebugMode) {
-          print('✅ Security validations passed');
+          debugPrint('✅ Security validations passed');
         }
       } else {
         if (kDebugMode) {
-          print('⚠️ Security validations skipped (development mode)');
+          debugPrint('⚠️ Security validations skipped (development mode)');
         }
       }
     } catch (e) {
@@ -90,16 +90,16 @@ class SecurityBootstrap {
         PerformanceMonitor.instance.startMonitoring();
 
         if (kDebugMode) {
-          print('📊 Performance monitoring started');
+          debugPrint('📊 Performance monitoring started');
         }
       } else {
         if (kDebugMode) {
-          print('⚠️ Performance monitoring disabled');
+          debugPrint('⚠️ Performance monitoring disabled');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Performance monitoring initialization failed: $e');
+        debugPrint('❌ Performance monitoring initialization failed: $e');
       }
       // 성능 모니터링 실패는 앱 종료하지 않음
     }
@@ -116,11 +116,11 @@ class SecurityBootstrap {
       _isInitialized = false;
 
       if (kDebugMode) {
-        print('🛡️ Security system disposed');
+        debugPrint('🛡️ Security system disposed');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Security system disposal failed: $e');
+        debugPrint('❌ Security system disposal failed: $e');
       }
     }
   }

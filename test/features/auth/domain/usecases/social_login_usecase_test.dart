@@ -20,7 +20,7 @@ void main() {
 
     test('should return success when Google login is successful', () async {
       // Arrange
-      final expectedUser = AuthUser(
+      const expectedUser = AuthUser(
         id: 'google_user_123',
         email: 'user@gmail.com',
         name: 'Google User',
@@ -43,7 +43,7 @@ void main() {
 
     test('should return success when Apple login is successful', () async {
       // Arrange
-      final expectedUser = AuthUser(
+      const expectedUser = AuthUser(
         id: 'apple_user_123',
         email: 'user@icloud.com',
         name: 'Apple User',
@@ -66,7 +66,7 @@ void main() {
 
     test('should return success when LINE login is successful', () async {
       // Arrange
-      final expectedUser = AuthUser(
+      const expectedUser = AuthUser(
         id: 'line_user_123',
         email: 'user@line.com',
         name: 'LINE User',

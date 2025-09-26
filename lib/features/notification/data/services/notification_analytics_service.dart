@@ -45,11 +45,9 @@ class NotificationAnalyticsService {
       }
 
       _isInitialized = true;
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -74,11 +72,13 @@ class NotificationAnalyticsService {
       _analyticsController.add(analytics);
 
       if (kDebugMode) {
-        print('모의 통계 데이터 생성 완료: ${mockStats.length}개 통계, ${mockUserEngagement.length}개 사용자 참여도');
+        debugPrint(
+          '모의 통계 데이터 생성 완료: ${mockStats.length}개 통계, ${mockUserEngagement.length}개 사용자 참여도',
+        );
       }
     } catch (e) {
       if (kDebugMode) {
-        print('통계 데이터 생성 실패: $e');
+        debugPrint('통계 데이터 생성 실패: $e');
       }
     }
   }
@@ -96,11 +96,9 @@ class NotificationAnalyticsService {
       await _saveAnalytics(analytics);
       _analyticsController.add(analytics);
 
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -120,12 +118,10 @@ class NotificationAnalyticsService {
         await _saveAnalytics(analytics);
         _analyticsController.add(analytics);
 
-        if (kDebugMode) {
-        }
+        if (kDebugMode) {}
       }
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -142,11 +138,9 @@ class NotificationAnalyticsService {
       await _saveAnalytics(analytics);
       _analyticsController.add(analytics);
 
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -161,8 +155,7 @@ class NotificationAnalyticsService {
             .toList();
       }
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
     return [];
   }
@@ -179,8 +172,7 @@ class NotificationAnalyticsService {
             stat.date.isBefore(endDate.add(const Duration(days: 1)));
       }).toList();
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       return [];
     }
   }
@@ -191,8 +183,7 @@ class NotificationAnalyticsService {
       final allStats = await getStats();
       return allStats.where((stat) => stat.type == type).toList();
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       return [];
     }
   }
@@ -227,8 +218,7 @@ class NotificationAnalyticsService {
         summary: summary,
       );
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       rethrow;
     }
   }
@@ -242,8 +232,7 @@ class NotificationAnalyticsService {
         return NotificationAnalytics.fromJson(analyticsData);
       }
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
     return null;
   }
@@ -261,8 +250,7 @@ class NotificationAnalyticsService {
             .toList();
       }
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
     return [];
   }
@@ -275,11 +263,9 @@ class NotificationAnalyticsService {
       await _saveUserEngagement(allEngagement);
       _userEngagementController.add(allEngagement);
 
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -289,8 +275,7 @@ class NotificationAnalyticsService {
       final analytics = await getAnalytics();
       return analytics?.summary ?? {};
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       return {};
     }
   }
@@ -313,8 +298,7 @@ class NotificationAnalyticsService {
             '${analytics.startDate.toString().substring(0, 10)} ~ ${analytics.endDate.toString().substring(0, 10)}',
       };
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       return {};
     }
   }
@@ -361,8 +345,7 @@ class NotificationAnalyticsService {
         },
       };
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       return {};
     }
   }
@@ -378,13 +361,26 @@ class NotificationAnalyticsService {
     if (stats.isEmpty) return {};
 
     final totalSent = stats.fold<int>(0, (sum, stat) => sum + stat.sentCount);
-    final totalOpened = stats.fold<int>(0, (sum, stat) => sum + stat.openedCount);
-    final totalClicked = stats.fold<int>(0, (sum, stat) => sum + stat.clickedCount);
-    final totalDismissed = stats.fold<int>(0, (sum, stat) => sum + stat.dismissedCount);
-    
+    final totalOpened = stats.fold<int>(
+      0,
+      (sum, stat) => sum + stat.openedCount,
+    );
+    final totalClicked = stats.fold<int>(
+      0,
+      (sum, stat) => sum + stat.clickedCount,
+    );
+    final totalDismissed = stats.fold<int>(
+      0,
+      (sum, stat) => sum + stat.dismissedCount,
+    );
+
     final openRate = totalSent > 0 ? (totalOpened / totalSent) * 100 : 0.0;
-    final clickRate = totalOpened > 0 ? (totalClicked / totalOpened) * 100 : 0.0;
-    final engagementRate = totalSent > 0 ? ((totalOpened + totalClicked) / totalSent) * 100 : 0.0;
+    final clickRate = totalOpened > 0
+        ? (totalClicked / totalOpened) * 100
+        : 0.0;
+    final engagementRate = totalSent > 0
+        ? ((totalOpened + totalClicked) / totalSent) * 100
+        : 0.0;
 
     return {
       'totalSent': totalSent.toDouble(),
@@ -403,8 +399,7 @@ class NotificationAnalyticsService {
       final statsJson = jsonEncode(stats.map((s) => s.toJson()).toList());
       await SecureStorageService.setString(_statsKey, statsJson);
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -414,8 +409,7 @@ class NotificationAnalyticsService {
       final analyticsJson = jsonEncode(analytics.toJson());
       await SecureStorageService.setString(_analyticsKey, analyticsJson);
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -427,8 +421,7 @@ class NotificationAnalyticsService {
       );
       await SecureStorageService.setString(_userEngagementKey, engagementJson);
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -452,11 +445,9 @@ class NotificationAnalyticsService {
       );
       _userEngagementController.add([]);
 
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
     }
   }
 

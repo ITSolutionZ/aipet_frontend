@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/features/ai/data/services/openai_service.dart';
-import 'package:aipet_frontend/shared/core/utils/ai_logger.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/features/ai/domain/entities/ai_analysis_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_history_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_session_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart';
@@ -11,6 +10,7 @@ import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dar
 import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import 'package:aipet_frontend/shared/shared.dart' hide Result;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,7 +56,9 @@ class AiRepositoryMockitoImpl implements AiRepository {
       return ResultFactory.success(aiMessage, 'AI 응답이 생성되었습니다').toFuture();
     } catch (error) {
       AiLogger.logApiError(error.toString());
-      return ResultFactory.failure<AiMessageEntity>('AI 응답 생성에 실패했습니다: ${error.toString()}').toFuture();
+      return ResultFactory.failure<AiMessageEntity>(
+        'AI 응답 생성에 실패했습니다: ${error.toString()}',
+      ).toFuture();
     }
   }
 
@@ -86,10 +88,15 @@ class AiRepositoryMockitoImpl implements AiRepository {
         timestamp: DateTime.now(),
       );
 
-      return ResultFactory.success(aiMessage, '펫 컨텍스트와 함께 AI 응답이 생성되었습니다').toFuture();
+      return ResultFactory.success(
+        aiMessage,
+        '펫 컨텍스트와 함께 AI 응답이 생성되었습니다',
+      ).toFuture();
     } catch (error) {
       AiLogger.logApiError(error.toString());
-      return ResultFactory.failure<AiMessageEntity>('AI 응답 생성에 실패했습니다: ${error.toString()}').toFuture();
+      return ResultFactory.failure<AiMessageEntity>(
+        'AI 응답 생성에 실패했습니다: ${error.toString()}',
+      ).toFuture();
     }
   }
 
@@ -407,5 +414,59 @@ class AiRepositoryMockitoImpl implements AiRepository {
         createdAt: DateTime.now().subtract(const Duration(hours: 1)),
       ),
     ];
+  }
+
+  /// 채팅 히스토리 로드 (UseCase용)
+  @override
+  Future<Result<List<AiMessageEntity>>> loadChatHistory({
+    required String userId,
+    String? petId,
+    int? limit,
+    int? offset,
+  }) async {
+    final messages = _getMockChatHistory();
+    return ResultFactory.success(messages);
+  }
+
+  /// 메시지 분석 (UseCase용)
+  @override
+  Future<Result<AiAnalysisEntity>> analyzeMessage({
+    required String message,
+    String? petId,
+    Map<String, dynamic>? context,
+  }) async {
+    final analysis = AiAnalysisEntity.fromMessage(
+      message: message,
+      analysis: 'Mock 메시지 분석 결과',
+      topics: ['Mock'],
+    );
+    return ResultFactory.success(analysis);
+  }
+
+  /// 파라미터와 함께 메시지 전송
+  @override
+  Future<Result<AiMessageEntity>> sendMessageWithParams({
+    required String message,
+    required String petId,
+    String? categoryId,
+    List<String>? attachedImages,
+  }) async {
+    return await sendMessage(message);
+  }
+
+  /// 즐겨찾기 토글
+  @override
+  Future<Result<bool>> toggleFavoriteMessage(String messageId) async {
+    return ResultFactory.success(true);
+  }
+
+  /// 파라미터와 함께 제안 질문 가져오기
+  @override
+  Future<Result<List<AiSuggestedQuestionEntity>>> getSuggestedQuestionsWithParams({
+    String? petId,
+    String? categoryId,
+  }) async {
+    final suggestions = await getSuggestedQuestions();
+    return ResultFactory.success(suggestions);
   }
 }

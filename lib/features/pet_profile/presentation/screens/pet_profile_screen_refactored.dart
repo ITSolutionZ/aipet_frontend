@@ -1,8 +1,7 @@
-import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_controller.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/pet_profile_widgets.dart';
 import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/features/pet_profile/presentation/widgets/pet_profile_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -45,8 +44,9 @@ class _PetProfileScreenRefactoredState
     final petAsyncValue = ref.watch(petByIdProvider(widget.petId));
 
     return petAsyncValue.when(
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const Scaffold(
+        body: Center(child: const CircularProgressIndicator()),
+      ),
       error: (error, stackTrace) => Scaffold(
         body: Center(
           child: Column(

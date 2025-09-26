@@ -9,9 +9,9 @@ class ImportAppDataUseCase {
   Future<Result<void>> call(String filePath) async {
     final result = await repository.importAppData(filePath);
     if (result.isSuccess) {
-      return Result.success(result.message);
+      return Success(null, result.errorOrNull);
     } else {
-      return Result.failure(result.message);
+      return Failure(result.errorOrNull ?? 'Unknown error');
     }
   }
 }

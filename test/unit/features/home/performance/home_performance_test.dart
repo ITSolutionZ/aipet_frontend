@@ -65,9 +65,7 @@ void main() {
         stopwatch.stop();
 
         // Assert
-        if (result != null) {
-          expect(stopwatch.elapsed, lessThan(maxResponseTime));
-        }
+        expect(stopwatch.elapsed, lessThan(maxResponseTime));
         print('Weather data loaded in: ${stopwatch.elapsedMilliseconds}ms');
       });
     });

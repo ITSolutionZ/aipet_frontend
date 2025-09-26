@@ -20,7 +20,7 @@ class NotificationApiService {
   final http.Client _httpClient;
 
   NotificationApiService({http.Client? httpClient})
-      : _httpClient = httpClient ?? http.Client();
+    : _httpClient = httpClient ?? http.Client();
 
   /// 사용자의 알림 목록 조회
   ///
@@ -51,8 +51,9 @@ class NotificationApiService {
         queryParams['type'] = type;
       }
 
-      final uri = Uri.parse('$_baseUrl$_notificationsEndpoint')
-          .replace(queryParameters: queryParams);
+      final uri = Uri.parse(
+        '$_baseUrl$_notificationsEndpoint',
+      ).replace(queryParameters: queryParams);
 
       final response = await _httpClient.get(
         uri,
@@ -72,7 +73,10 @@ class NotificationApiService {
           debugPrint('[$_tag] ✅ 알림 조회 성공: ${notifications.length}개');
         }
 
-        return ResultFactory.success(notifications, 'Notifications fetched successfully');
+        return ResultFactory.success(
+          notifications,
+          'Notifications fetched successfully',
+        );
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
         if (kDebugMode) {
@@ -98,7 +102,9 @@ class NotificationApiService {
     required bool isRead,
   }) async {
     try {
-      final uri = Uri.parse('$_baseUrl$_notificationsEndpoint/$notificationId/read');
+      final uri = Uri.parse(
+        '$_baseUrl$_notificationsEndpoint/$notificationId/read',
+      );
 
       final response = await _httpClient.patch(
         uri,
@@ -106,9 +112,7 @@ class NotificationApiService {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        body: json.encode({
-          'isRead': isRead,
-        }),
+        body: json.encode({'isRead': isRead}),
       );
 
       if (response.statusCode == 200) {
@@ -171,7 +175,9 @@ class NotificationApiService {
   /// 알림 설정 조회
   ///
   /// [userId] 사용자 ID
-  Future<Result<Map<String, dynamic>>> getNotificationSettings(String userId) async {
+  Future<Result<Map<String, dynamic>>> getNotificationSettings(
+    String userId,
+  ) async {
     try {
       final uri = Uri.parse('$_baseUrl$_settingsEndpoint/$userId');
 
@@ -188,7 +194,10 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 설정 조회 성공');
         }
-        return ResultFactory.success(settings, 'Notification settings fetched successfully');
+        return ResultFactory.success(
+          settings,
+          'Notification settings fetched successfully',
+        );
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
         if (kDebugMode) {
@@ -229,7 +238,10 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 설정 업데이트 성공');
         }
-        return ResultFactory.success(true, 'Notification settings updated successfully');
+        return ResultFactory.success(
+          true,
+          'Notification settings updated successfully',
+        );
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
         if (kDebugMode) {
@@ -249,7 +261,9 @@ class NotificationApiService {
   /// 알림 통계 조회
   ///
   /// [userId] 사용자 ID
-  Future<Result<Map<String, dynamic>>> getNotificationStats(String userId) async {
+  Future<Result<Map<String, dynamic>>> getNotificationStats(
+    String userId,
+  ) async {
     try {
       final uri = Uri.parse('$_baseUrl$_notificationsEndpoint/$userId/stats');
 
@@ -266,7 +280,10 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 통계 조회 성공');
         }
-        return ResultFactory.success(stats, 'Notification stats fetched successfully');
+        return ResultFactory.success(
+          stats,
+          'Notification stats fetched successfully',
+        );
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
         if (kDebugMode) {

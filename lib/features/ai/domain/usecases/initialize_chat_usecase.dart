@@ -12,7 +12,9 @@ class InitializeChatUseCase {
       final suggestedQuestions = await _repository.getSuggestedQuestions();
       return ResultFactory.success(suggestedQuestions, 'チャットが初期化されました');
     } catch (error) {
-      return ResultFactory.failure<List<AiSuggestedQuestionEntity>>('チャット初期化に失敗しました: ${error.toString()}');
+      return ResultFactory.failure<List<AiSuggestedQuestionEntity>>(
+        'チャット初期化に失敗しました: ${error.toString()}',
+      );
     }
   }
 }

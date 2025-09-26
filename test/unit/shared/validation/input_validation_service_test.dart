@@ -17,8 +17,11 @@ void main() {
             input,
             fieldName: 'Test Field',
           );
-          expect(result.isSuccess, false,
-              reason: 'Should detect XSS in: $input');
+          expect(
+            result.isSuccess,
+            false,
+            reason: 'Should detect XSS in: $input',
+          );
           expect(result.message, contains('不正な文字'));
         }
       });
@@ -35,8 +38,11 @@ void main() {
             input,
             fieldName: 'Test Field',
           );
-          expect(result.isSuccess, false,
-              reason: 'Should detect JavaScript URL in: $input');
+          expect(
+            result.isSuccess,
+            false,
+            reason: 'Should detect JavaScript URL in: $input',
+          );
         }
       });
 
@@ -53,8 +59,11 @@ void main() {
             input,
             fieldName: 'Test Field',
           );
-          expect(result.isSuccess, false,
-              reason: 'Should detect event handler in: $input');
+          expect(
+            result.isSuccess,
+            false,
+            reason: 'Should detect event handler in: $input',
+          );
         }
       });
 
@@ -71,8 +80,11 @@ void main() {
             input,
             fieldName: 'Test Field',
           );
-          expect(result.isSuccess, false,
-              reason: 'Should detect dangerous tag in: $input');
+          expect(
+            result.isSuccess,
+            false,
+            reason: 'Should detect dangerous tag in: $input',
+          );
         }
       });
     });
@@ -96,8 +108,11 @@ void main() {
             input,
             fieldName: 'Test Field',
           );
-          expect(result.isSuccess, false,
-              reason: 'Should detect SQL injection in: $input');
+          expect(
+            result.isSuccess,
+            false,
+            reason: 'Should detect SQL injection in: $input',
+          );
           expect(result.message, contains('SQL'));
         }
       });
@@ -115,8 +130,11 @@ void main() {
             input,
             fieldName: 'Test Field',
           );
-          expect(result.isSuccess, false,
-              reason: 'Should detect SQL comment in: $input');
+          expect(
+            result.isSuccess,
+            false,
+            reason: 'Should detect SQL comment in: $input',
+          );
         }
       });
     });
@@ -141,8 +159,11 @@ void main() {
             input,
             fieldName: 'Test Field',
           );
-          expect(result.isSuccess, false,
-              reason: 'Should detect command injection in: $input');
+          expect(
+            result.isSuccess,
+            false,
+            reason: 'Should detect command injection in: $input',
+          );
           expect(result.message, contains('コマンド'));
         }
       });
@@ -163,8 +184,11 @@ void main() {
             input,
             fieldName: 'Test Field',
           );
-          expect(result.isSuccess, false,
-              reason: 'Should detect path traversal in: $input');
+          expect(
+            result.isSuccess,
+            false,
+            reason: 'Should detect path traversal in: $input',
+          );
           expect(result.message, contains('パス'));
         }
       });
@@ -185,8 +209,11 @@ void main() {
             input,
             fieldName: 'Test Field',
           );
-          expect(result.isSuccess, false,
-              reason: 'Should detect control character in: $input');
+          expect(
+            result.isSuccess,
+            false,
+            reason: 'Should detect control character in: $input',
+          );
           expect(result.message, contains('制御文字'));
         }
       });
@@ -210,8 +237,11 @@ void main() {
             input,
             fieldName: 'Test Field',
           );
-          expect(result.isSuccess, true,
-              reason: 'Should allow safe input: $input');
+          expect(
+            result.isSuccess,
+            true,
+            reason: 'Should allow safe input: $input',
+          );
         }
       });
 
@@ -229,8 +259,11 @@ void main() {
             fieldName: 'Test Field',
             allowHtml: true,
           );
-          expect(result.isSuccess, true,
-              reason: 'Should allow safe HTML: $input');
+          expect(
+            result.isSuccess,
+            true,
+            reason: 'Should allow safe HTML: $input',
+          );
         }
       });
     });
@@ -282,25 +315,35 @@ void main() {
     group('특수 검증 메서드', () {
       test('이메일 입력 검증', () {
         // 정상 이메일
-        var result = InputValidationService.validateEmailInput('test@example.com');
+        var result = InputValidationService.validateEmailInput(
+          'test@example.com',
+        );
         expect(result.isSuccess, true);
 
         // XSS 공격이 포함된 이메일
-        result = InputValidationService.validateEmailInput('<script>alert(1)</script>@example.com');
+        result = InputValidationService.validateEmailInput(
+          '<script>alert(1)</script>@example.com',
+        );
         expect(result.isSuccess, false);
 
         // 너무 긴 이메일
-        result = InputValidationService.validateEmailInput('${'a' * 250}@example.com');
+        result = InputValidationService.validateEmailInput(
+          '${'a' * 250}@example.com',
+        );
         expect(result.isSuccess, false);
       });
 
       test('비밀번호 입력 검증', () {
         // 정상 비밀번호
-        var result = InputValidationService.validatePasswordInput('SecurePassword123!');
+        var result = InputValidationService.validatePasswordInput(
+          'SecurePassword123!',
+        );
         expect(result.isSuccess, true);
 
         // SQL Injection 시도
-        result = InputValidationService.validatePasswordInput("'; DROP TABLE users; --");
+        result = InputValidationService.validatePasswordInput(
+          "'; DROP TABLE users; --",
+        );
         expect(result.isSuccess, false);
 
         // 너무 긴 비밀번호
@@ -314,7 +357,9 @@ void main() {
         expect(result.isSuccess, true);
 
         // XSS 공격 시도
-        result = InputValidationService.validatePetNameInput('<script>alert(1)</script>');
+        result = InputValidationService.validatePetNameInput(
+          '<script>alert(1)</script>',
+        );
         expect(result.isSuccess, false);
 
         // 특수문자 포함 (허용되지 않음)
@@ -352,7 +397,9 @@ void main() {
 
       test('URL 입력 검증', () {
         // 정상 URL
-        var result = InputValidationService.validateUrlInput('https://example.com');
+        var result = InputValidationService.validateUrlInput(
+          'https://example.com',
+        );
         expect(result.isSuccess, true);
 
         // JavaScript URL (보안 위협)
@@ -360,7 +407,9 @@ void main() {
         expect(result.isSuccess, false);
 
         // 너무 긴 URL
-        result = InputValidationService.validateUrlInput('https://${'a' * 2050}.com');
+        result = InputValidationService.validateUrlInput(
+          'https://${'a' * 2050}.com',
+        );
         expect(result.isSuccess, false);
       });
 
@@ -370,7 +419,9 @@ void main() {
         expect(result.isSuccess, true);
 
         // XSS 공격 시도
-        result = InputValidationService.validatePhoneInput('<script>alert(1)</script>');
+        result = InputValidationService.validatePhoneInput(
+          '<script>alert(1)</script>',
+        );
         expect(result.isSuccess, false);
 
         // 허용되지 않는 문자
@@ -381,19 +432,19 @@ void main() {
 
     group('입력 정규화', () {
       test('제어 문자 제거', () {
-        final input = 'Hello\x00World\x08Test';
+        const input = 'Hello\x00World\x08Test';
         final sanitized = InputValidationService.sanitizeInput(input);
         expect(sanitized, 'HelloWorldTest');
       });
 
       test('연속 공백을 단일 공백으로', () {
-        final input = 'Hello     World';
+        const input = 'Hello     World';
         final sanitized = InputValidationService.sanitizeInput(input);
         expect(sanitized, 'Hello World');
       });
 
       test('스크립트 태그 제거', () {
-        final input = 'Hello <script>alert(1)</script> World';
+        const input = 'Hello <script>alert(1)</script> World';
         final sanitized = InputValidationService.sanitizeInput(input);
         expect(sanitized, 'Hello  World');
       });
@@ -425,7 +476,10 @@ void main() {
           ),
         };
 
-        final result = InputValidationService.validateMultipleInputs(inputs, configs);
+        final result = InputValidationService.validateMultipleInputs(
+          inputs,
+          configs,
+        );
         expect(result.isSuccess, true);
         expect(result.data!['name'], 'Test User');
         expect(result.data!['email'], 'test@example.com');
@@ -448,13 +502,13 @@ void main() {
             displayName: 'Email',
             maxLength: 254,
           ),
-          'age': const InputValidationConfig(
-            displayName: 'Age',
-            maxLength: 3,
-          ),
+          'age': const InputValidationConfig(displayName: 'Age', maxLength: 3),
         };
 
-        final result = InputValidationService.validateMultipleInputs(inputs, configs);
+        final result = InputValidationService.validateMultipleInputs(
+          inputs,
+          configs,
+        );
         expect(result.isSuccess, false);
         expect(result.message, contains('Email'));
       });

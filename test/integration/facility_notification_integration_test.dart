@@ -22,9 +22,11 @@ void main() {
       mockFacilityRepository = MockFacilityRepository();
       mockNotificationRepository = MockNotificationRepository();
 
-      container = ProviderContainer(overrides: [
-        // Override providers with mocks
-      ]);
+      container = ProviderContainer(
+        overrides: [
+          // Override providers with mocks
+        ],
+      );
     });
 
     tearDown(() {
@@ -47,18 +49,22 @@ void main() {
           ),
         ];
 
-        when(mockFacilityRepository.getFacilitiesByLocation(
-          any,
-          any,
-          radiusKm: anyNamed('radiusKm'),
-        )).thenAnswer((_) async => mockFacilities);
+        when(
+          mockFacilityRepository.getFacilitiesByLocation(
+            any,
+            any,
+            radiusKm: anyNamed('radiusKm'),
+          ),
+        ).thenAnswer((_) async => mockFacilities);
 
         // When & Then
-        verify(mockFacilityRepository.getFacilitiesByLocation(
-          any,
-          any,
-          radiusKm: anyNamed('radiusKm'),
-        )).called(0); // Not called yet
+        verify(
+          mockFacilityRepository.getFacilitiesByLocation(
+            any,
+            any,
+            radiusKm: anyNamed('radiusKm'),
+          ),
+        ).called(0); // Not called yet
       });
 
       test('시설 예약 기능이 정상적으로 동작하는지 확인', () async {
@@ -66,11 +72,9 @@ void main() {
         const facilityId = 'test-facility-id';
         final bookingDateTime = DateTime.now().add(const Duration(days: 1));
 
-        when(mockFacilityRepository.bookFacility(
-          facilityId,
-          bookingDateTime,
-          any,
-        )).thenAnswer((_) async => 'booking-id-123');
+        when(
+          mockFacilityRepository.bookFacility(facilityId, bookingDateTime, any),
+        ).thenAnswer((_) async => 'booking-id-123');
 
         // When
         final bookingId = await mockFacilityRepository.bookFacility(
@@ -81,11 +85,13 @@ void main() {
 
         // Then
         expect(bookingId, 'booking-id-123');
-        verify(mockFacilityRepository.bookFacility(
-          facilityId,
-          bookingDateTime,
-          'Test booking notes',
-        )).called(1);
+        verify(
+          mockFacilityRepository.bookFacility(
+            facilityId,
+            bookingDateTime,
+            'Test booking notes',
+          ),
+        ).called(1);
       });
 
       test('시설 검색 필터링이 정상적으로 동작하는지 확인', () async {
@@ -103,8 +109,9 @@ void main() {
           ),
         ];
 
-        when(mockFacilityRepository.getFacilitiesByType(FacilityType.hospital))
-            .thenAnswer((_) async => mockHospitals);
+        when(
+          mockFacilityRepository.getFacilitiesByType(FacilityType.hospital),
+        ).thenAnswer((_) async => mockHospitals);
 
         // When
         final hospitals = await mockFacilityRepository.getFacilitiesByType(
@@ -114,8 +121,9 @@ void main() {
         // Then
         expect(hospitals, hasLength(1));
         expect(hospitals.first.facilityType, FacilityType.hospital);
-        verify(mockFacilityRepository.getFacilitiesByType(FacilityType.hospital))
-            .called(1);
+        verify(
+          mockFacilityRepository.getFacilitiesByType(FacilityType.hospital),
+        ).called(1);
       });
     });
 
@@ -133,11 +141,13 @@ void main() {
           ),
         ];
 
-        when(mockNotificationRepository.getUnreadNotifications())
-            .thenAnswer((_) async => mockNotifications);
+        when(
+          mockNotificationRepository.getUnreadNotifications(),
+        ).thenAnswer((_) async => mockNotifications);
 
         // When
-        final notifications = await mockNotificationRepository.getUnreadNotifications();
+        final notifications = await mockNotificationRepository
+            .getUnreadNotifications();
 
         // Then
         expect(notifications, hasLength(1));
@@ -149,11 +159,14 @@ void main() {
         // Given
         const notificationId = 'test-notification-id';
 
-        when(mockNotificationRepository.markAsRead(notificationId))
-            .thenAnswer((_) async => true);
+        when(
+          mockNotificationRepository.markAsRead(notificationId),
+        ).thenAnswer((_) async => true);
 
         // When
-        final success = await mockNotificationRepository.markAsRead(notificationId);
+        final success = await mockNotificationRepository.markAsRead(
+          notificationId,
+        );
 
         // Then
         expect(success, true);
@@ -169,23 +182,25 @@ void main() {
           'type': 'feeding',
         };
 
-        when(mockNotificationRepository.scheduleNotification(
-          scheduledTime,
-          notificationData,
-        )).thenAnswer((_) async => 'scheduled-id-123');
+        when(
+          mockNotificationRepository.scheduleNotification(
+            scheduledTime,
+            notificationData,
+          ),
+        ).thenAnswer((_) async => 'scheduled-id-123');
 
         // When
-        final scheduleId = await mockNotificationRepository.scheduleNotification(
-          scheduledTime,
-          notificationData,
-        );
+        final scheduleId = await mockNotificationRepository
+            .scheduleNotification(scheduledTime, notificationData);
 
         // Then
         expect(scheduleId, 'scheduled-id-123');
-        verify(mockNotificationRepository.scheduleNotification(
-          scheduledTime,
-          notificationData,
-        )).called(1);
+        verify(
+          mockNotificationRepository.scheduleNotification(
+            scheduledTime,
+            notificationData,
+          ),
+        ).called(1);
       });
 
       test('알림 타입별 필터링이 정상적으로 동작하는지 확인', () async {
@@ -201,8 +216,11 @@ void main() {
           ),
         ];
 
-        when(mockNotificationRepository.getNotificationsByType(NotificationType.feeding))
-            .thenAnswer((_) async => mockFeedingNotifications);
+        when(
+          mockNotificationRepository.getNotificationsByType(
+            NotificationType.feeding,
+          ),
+        ).thenAnswer((_) async => mockFeedingNotifications);
 
         // When
         final feedingNotifications = await mockNotificationRepository
@@ -211,9 +229,11 @@ void main() {
         // Then
         expect(feedingNotifications, hasLength(1));
         expect(feedingNotifications.first.type, NotificationType.feeding);
-        verify(mockNotificationRepository.getNotificationsByType(
-          NotificationType.feeding,
-        )).called(1);
+        verify(
+          mockNotificationRepository.getNotificationsByType(
+            NotificationType.feeding,
+          ),
+        ).called(1);
       });
     });
 
@@ -224,11 +244,9 @@ void main() {
         final bookingDateTime = DateTime.now().add(const Duration(days: 1));
         const bookingId = 'booking-456';
 
-        when(mockFacilityRepository.bookFacility(
-          facilityId,
-          bookingDateTime,
-          any,
-        )).thenAnswer((_) async => bookingId);
+        when(
+          mockFacilityRepository.bookFacility(facilityId, bookingDateTime, any),
+        ).thenAnswer((_) async => bookingId);
 
         // Given - 예약 확인 알림 생성
         final notificationData = {
@@ -239,8 +257,9 @@ void main() {
           'bookingId': bookingId,
         };
 
-        when(mockNotificationRepository.createNotification(notificationData))
-            .thenAnswer((_) async => 'notification-789');
+        when(
+          mockNotificationRepository.createNotification(notificationData),
+        ).thenAnswer((_) async => 'notification-789');
 
         // When - 예약 및 알림 생성
         final actualBookingId = await mockFacilityRepository.bookFacility(
@@ -256,14 +275,17 @@ void main() {
         expect(actualBookingId, bookingId);
         expect(notificationId, 'notification-789');
 
-        verify(mockFacilityRepository.bookFacility(
-          facilityId,
-          bookingDateTime,
-          'Regular checkup',
-        )).called(1);
+        verify(
+          mockFacilityRepository.bookFacility(
+            facilityId,
+            bookingDateTime,
+            'Regular checkup',
+          ),
+        ).called(1);
 
-        verify(mockNotificationRepository.createNotification(notificationData))
-            .called(1);
+        verify(
+          mockNotificationRepository.createNotification(notificationData),
+        ).called(1);
       });
 
       test('시설 리뷰 작성 시 알림 업데이트 시나리오', () async {
@@ -275,8 +297,9 @@ void main() {
           'userId': 'user-123',
         };
 
-        when(mockFacilityRepository.submitReview(facilityId, reviewData))
-            .thenAnswer((_) async => 'review-456');
+        when(
+          mockFacilityRepository.submitReview(facilityId, reviewData),
+        ).thenAnswer((_) async => 'review-456');
 
         // Given - 리뷰 감사 알림
         final thankYouNotification = {
@@ -286,8 +309,9 @@ void main() {
           'facilityId': facilityId,
         };
 
-        when(mockNotificationRepository.createNotification(thankYouNotification))
-            .thenAnswer((_) async => 'thank-you-notification-789');
+        when(
+          mockNotificationRepository.createNotification(thankYouNotification),
+        ).thenAnswer((_) async => 'thank-you-notification-789');
 
         // When
         final reviewId = await mockFacilityRepository.submitReview(
@@ -302,10 +326,12 @@ void main() {
         expect(reviewId, 'review-456');
         expect(notificationId, 'thank-you-notification-789');
 
-        verify(mockFacilityRepository.submitReview(facilityId, reviewData))
-            .called(1);
-        verify(mockNotificationRepository.createNotification(thankYouNotification))
-            .called(1);
+        verify(
+          mockFacilityRepository.submitReview(facilityId, reviewData),
+        ).called(1);
+        verify(
+          mockNotificationRepository.createNotification(thankYouNotification),
+        ).called(1);
       });
 
       test('에러 상황에서의 롤백 처리 시나리오', () async {
@@ -314,17 +340,17 @@ void main() {
         final bookingDateTime = DateTime.now().add(const Duration(days: 2));
         const bookingId = 'booking-789';
 
-        when(mockFacilityRepository.bookFacility(
-          facilityId,
-          bookingDateTime,
-          any,
-        )).thenAnswer((_) async => bookingId);
+        when(
+          mockFacilityRepository.bookFacility(facilityId, bookingDateTime, any),
+        ).thenAnswer((_) async => bookingId);
 
-        when(mockNotificationRepository.createNotification(any))
-            .thenThrow(Exception('Notification service unavailable'));
+        when(
+          mockNotificationRepository.createNotification(any),
+        ).thenThrow(Exception('Notification service unavailable'));
 
-        when(mockFacilityRepository.cancelBooking(bookingId))
-            .thenAnswer((_) async => true);
+        when(
+          mockFacilityRepository.cancelBooking(bookingId),
+        ).thenAnswer((_) async => true);
 
         // When & Then
         final actualBookingId = await mockFacilityRepository.bookFacility(
@@ -336,21 +362,28 @@ void main() {
         expect(actualBookingId, bookingId);
 
         // 알림 생성 실패 시뮬레이션
-        expect(() => mockNotificationRepository.createNotification({
-          'title': 'Booking Confirmed',
-          'body': 'Your pet hotel booking is confirmed',
-          'type': 'booking',
-        }), throwsException);
+        expect(
+          () => mockNotificationRepository.createNotification({
+            'title': 'Booking Confirmed',
+            'body': 'Your pet hotel booking is confirmed',
+            'type': 'booking',
+          }),
+          throwsException,
+        );
 
         // 롤백 처리
-        final cancelSuccess = await mockFacilityRepository.cancelBooking(bookingId);
+        final cancelSuccess = await mockFacilityRepository.cancelBooking(
+          bookingId,
+        );
         expect(cancelSuccess, true);
 
-        verify(mockFacilityRepository.bookFacility(
-          facilityId,
-          bookingDateTime,
-          'Pet hotel stay',
-        )).called(1);
+        verify(
+          mockFacilityRepository.bookFacility(
+            facilityId,
+            bookingDateTime,
+            'Pet hotel stay',
+          ),
+        ).called(1);
 
         verify(mockFacilityRepository.cancelBooking(bookingId)).called(1);
       });
@@ -359,21 +392,25 @@ void main() {
     group('Performance Tests', () {
       test('대량 데이터 처리 성능 테스트', () async {
         // Given - 100개의 시설 데이터
-        final mockFacilities = List.generate(100, (index) =>
-          FacilityEntity(
+        final mockFacilities = List.generate(
+          100,
+          (index) => FacilityEntity(
             id: 'facility-$index',
             name: 'Facility $index',
             address: 'Address $index',
             phone: '010-$index-$index',
-            facilityType: index % 2 == 0 ? FacilityType.hospital : FacilityType.grooming,
+            facilityType: index % 2 == 0
+                ? FacilityType.hospital
+                : FacilityType.grooming,
             rating: 4.0 + (index % 10) * 0.1,
             services: ['Service ${index % 3}'],
             openingHours: '09:00-18:00',
           ),
         );
 
-        when(mockFacilityRepository.getAllFacilities())
-            .thenAnswer((_) async => mockFacilities);
+        when(
+          mockFacilityRepository.getAllFacilities(),
+        ).thenAnswer((_) async => mockFacilities);
 
         // When - 성능 측정
         final stopwatch = Stopwatch()..start();
@@ -390,26 +427,25 @@ void main() {
       test('동시성 처리 테스트 - 다중 예약 요청', () async {
         // Given
         const facilityId = 'popular-hospital-123';
-        final bookingTimes = List.generate(5, (index) =>
-          DateTime.now().add(Duration(days: index + 1))
+        final bookingTimes = List.generate(
+          5,
+          (index) => DateTime.now().add(Duration(days: index + 1)),
         );
 
-        when(mockFacilityRepository.bookFacility(
-          facilityId,
-          any,
-          any,
-        )).thenAnswer((invocation) async {
+        when(
+          mockFacilityRepository.bookFacility(facilityId, any, any),
+        ).thenAnswer((invocation) async {
           final dateTime = invocation.positionalArguments[1] as DateTime;
           return 'booking-${dateTime.day}';
         });
 
         // When - 동시 예약 요청
-        final bookingFutures = bookingTimes.map((dateTime) =>
-          mockFacilityRepository.bookFacility(
+        final bookingFutures = bookingTimes.map(
+          (dateTime) => mockFacilityRepository.bookFacility(
             facilityId,
             dateTime,
             'Concurrent booking test',
-          )
+          ),
         );
 
         final bookingIds = await Future.wait(bookingFutures);
@@ -418,11 +454,13 @@ void main() {
         expect(bookingIds, hasLength(5));
         expect(bookingIds.every((id) => id.startsWith('booking-')), true);
 
-        verify(mockFacilityRepository.bookFacility(
-          facilityId,
-          any,
-          'Concurrent booking test',
-        )).called(5);
+        verify(
+          mockFacilityRepository.bookFacility(
+            facilityId,
+            any,
+            'Concurrent booking test',
+          ),
+        ).called(5);
       });
     });
   });

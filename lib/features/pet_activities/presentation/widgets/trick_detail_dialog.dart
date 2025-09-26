@@ -76,7 +76,7 @@ class TrickDetailDialog extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppSpacing.sm),
               ),
               child: Text(
-                trick.difficulty?.toUpperCase() ?? 'UNKNOWN',
+                trick.difficulty.toUpperCase() ?? 'UNKNOWN',
                 style: AppFonts.bodySmall.copyWith(
                   color: _getDifficultyColor(trick.difficulty),
                   fontWeight: FontWeight.bold,
@@ -87,7 +87,7 @@ class TrickDetailDialog extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
 
             // 설명
-            if (trick.description?.isNotEmpty == true) ...[
+            if (trick.description.isNotEmpty == true) ...[
               Text(
                 '説明',
                 style: AppFonts.titleMedium.copyWith(
@@ -97,7 +97,7 @@ class TrickDetailDialog extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                trick.description!,
+                trick.description,
                 style: AppFonts.bodyMedium.copyWith(
                   color: AppColors.pointDark.withValues(alpha: 0.8),
                   height: 1.5,

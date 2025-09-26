@@ -34,7 +34,7 @@ class MemoryOptimizer {
     });
 
     if (kDebugMode) {
-      print('🧠 Memory optimization started');
+      debugPrint('🧠 Memory optimization started');
     }
   }
 
@@ -44,7 +44,7 @@ class MemoryOptimizer {
     _optimizationTimer = null;
 
     if (kDebugMode) {
-      print('🧠 Memory optimization stopped');
+      debugPrint('🧠 Memory optimization stopped');
     }
   }
 
@@ -64,7 +64,7 @@ class MemoryOptimizer {
       return memoryInfo;
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to get memory info: $e');
+        debugPrint('❌ Failed to get memory info: $e');
       }
       return MemoryInfo.unknown();
     }
@@ -82,7 +82,7 @@ class MemoryOptimizer {
       return null;
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to get system memory info: $e');
+        debugPrint('❌ Failed to get system memory info: $e');
       }
       return null;
     }
@@ -98,7 +98,7 @@ class MemoryOptimizer {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to get Android memory info: $e');
+        debugPrint('❌ Failed to get Android memory info: $e');
       }
     }
     return null;
@@ -114,7 +114,7 @@ class MemoryOptimizer {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to get iOS memory info: $e');
+        debugPrint('❌ Failed to get iOS memory info: $e');
       }
     }
     return null;
@@ -144,7 +144,7 @@ class MemoryOptimizer {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to parse meminfo: $e');
+        debugPrint('❌ Failed to parse meminfo: $e');
       }
     }
     return null;
@@ -196,7 +196,7 @@ class MemoryOptimizer {
       );
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to parse vm_stat: $e');
+        debugPrint('❌ Failed to parse vm_stat: $e');
       }
     }
     return null;
@@ -229,11 +229,11 @@ class MemoryOptimizer {
       }
 
       if (kDebugMode && usageRatio >= _warningThreshold) {
-        print('🧠 Memory usage: ${(usageRatio * 100).toStringAsFixed(1)}%');
+        debugPrint('🧠 Memory usage: ${(usageRatio * 100).toStringAsFixed(1)}%');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Memory optimization failed: $e');
+        debugPrint('❌ Memory optimization failed: $e');
       }
     }
   }
@@ -252,7 +252,7 @@ class MemoryOptimizer {
   /// 경고 수준 최적화
   Future<void> _performWarningOptimization() async {
     if (kDebugMode) {
-      print('🧠 Performing warning-level memory optimization');
+      debugPrint('🧠 Performing warning-level memory optimization');
     }
 
     // 1. 오래된 메모리 스냅샷 정리
@@ -265,7 +265,7 @@ class MemoryOptimizer {
   /// 위험 수준 최적화
   Future<void> _performCriticalOptimization() async {
     if (kDebugMode) {
-      print('🧠 Performing critical-level memory optimization');
+      debugPrint('🧠 Performing critical-level memory optimization');
     }
 
     // 1. 경고 수준 최적화 실행
@@ -281,7 +281,7 @@ class MemoryOptimizer {
   /// 비상 수준 최적화
   Future<void> _performEmergencyOptimization() async {
     if (kDebugMode) {
-      print('🚨 Performing emergency-level memory optimization');
+      debugPrint('🚨 Performing emergency-level memory optimization');
     }
 
     // 1. 위험 수준 최적화 실행
@@ -309,7 +309,7 @@ class MemoryOptimizer {
       await SystemChannels.platform.invokeMethod('System.gc');
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to trigger garbage collection: $e');
+        debugPrint('❌ Failed to trigger garbage collection: $e');
       }
     }
   }
@@ -321,7 +321,7 @@ class MemoryOptimizer {
       await SystemChannels.platform.invokeMethod('System.clearImageCache');
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to clear image cache: $e');
+        debugPrint('❌ Failed to clear image cache: $e');
       }
     }
   }
@@ -339,7 +339,7 @@ class MemoryOptimizer {
       // 추가 캐시 정리 로직
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to clear all caches: $e');
+        debugPrint('❌ Failed to clear all caches: $e');
       }
     }
   }
@@ -354,7 +354,7 @@ class MemoryOptimizer {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to force garbage collection: $e');
+        debugPrint('❌ Failed to force garbage collection: $e');
       }
     }
   }
@@ -415,18 +415,18 @@ class MemoryOptimizer {
     if (!kDebugMode) return;
 
     final stats = generateStats();
-    print('=== Memory Report ===');
-    print(
+    debugPrint('=== Memory Report ===');
+    debugPrint(
       'Average Memory: ${(stats.averageMemory / 1024 / 1024).toStringAsFixed(2)} MB',
     );
-    print(
+    debugPrint(
       'Max Memory: ${(stats.maxMemory / 1024 / 1024).toStringAsFixed(2)} MB',
     );
-    print(
+    debugPrint(
       'Min Memory: ${(stats.minMemory / 1024 / 1024).toStringAsFixed(2)} MB',
     );
-    print('Total Snapshots: ${stats.totalSnapshots}');
-    print('Memory Trend: ${stats.memoryTrend.name}');
+    debugPrint('Total Snapshots: ${stats.totalSnapshots}');
+    debugPrint('Memory Trend: ${stats.memoryTrend.name}');
   }
 }
 

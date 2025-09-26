@@ -121,7 +121,7 @@ void main() {
 
         // Assert
         expect(result, isNotNull);
-        expect(result!.id, equals('1'));
+        expect(result.id, equals('1'));
         expect(result.name, equals('テストペット1'));
         verify(mockRepository.getPetSummaries()).called(1);
       });

@@ -1,6 +1,4 @@
 import 'package:aipet_frontend/features/home/domain/domain.dart';
-import 'package:aipet_frontend/features/home/domain/usecases/get_weather_data_usecase.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

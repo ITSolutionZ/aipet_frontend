@@ -23,10 +23,8 @@ void main() {
       // When
       await tester.pumpWidget(
         ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: FacilityTestCard(facility: facility),
-            ),
+          child: const MaterialApp(
+            home: Scaffold(body: FacilityTestCard(facility: facility)),
           ),
         ),
       );
@@ -73,7 +71,10 @@ void main() {
       expect(find.text('Test Notification'), findsOneWidget);
       expect(find.text('Read Notification'), findsOneWidget);
       expect(find.byIcon(Icons.restaurant), findsOneWidget); // Feeding icon
-      expect(find.byIcon(Icons.health_and_safety), findsOneWidget); // Health icon
+      expect(
+        find.byIcon(Icons.health_and_safety),
+        findsOneWidget,
+      ); // Health icon
     });
 
     testWidgets('빈 알림 리스트 상태 테스트', (WidgetTester tester) async {
@@ -83,7 +84,7 @@ void main() {
       // When
       await tester.pumpWidget(
         ProviderScope(
-          child: MaterialApp(
+          child: const MaterialApp(
             home: Scaffold(
               body: NotificationTestList(notifications: notifications),
             ),
@@ -186,11 +187,7 @@ void main() {
       // When
       await tester.pumpWidget(
         ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: LoadingStateWidget(),
-            ),
-          ),
+          child: const MaterialApp(home: Scaffold(body: LoadingStateWidget())),
         ),
       );
 
@@ -246,10 +243,8 @@ void main() {
 
         await tester.pumpWidget(
           ProviderScope(
-            child: MaterialApp(
-              home: Scaffold(
-                body: FacilityTestCard(facility: facility),
-              ),
+            child: const MaterialApp(
+              home: Scaffold(body: FacilityTestCard(facility: facility)),
             ),
           ),
         );
@@ -307,7 +302,7 @@ class FacilityTestCard extends StatelessWidget {
             Text(facility.address),
             Row(
               children: [
-                Icon(Icons.star, color: Colors.amber),
+                const Icon(Icons.star, color: Colors.amber),
                 Text(facility.rating.toString()),
               ],
             ),
@@ -332,9 +327,7 @@ class NotificationTestList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (notifications.isEmpty) {
-      return Center(
-        child: Text('알림이 없습니다'),
-      );
+      return const Center(child: Text('알림이 없습니다'));
     }
 
     return ListView.builder(
@@ -346,8 +339,8 @@ class NotificationTestList extends StatelessWidget {
           subtitle: Text(notification.body),
           leading: Icon(_getNotificationIcon(notification.type)),
           trailing: notification.isRead
-              ? Icon(Icons.check, color: Colors.green)
-              : Icon(Icons.circle, color: Colors.blue),
+              ? const Icon(Icons.check, color: Colors.green)
+              : const Icon(Icons.circle, color: Colors.blue),
         );
       },
     );
@@ -393,13 +386,13 @@ class FacilityFilterWidget extends StatelessWidget {
     return Row(
       children: [
         FilterChip(
-          label: Text('병원'),
+          label: const Text('병원'),
           selected: hospitalSelected,
           onSelected: onHospitalToggle,
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         FilterChip(
-          label: Text('미용실'),
+          label: const Text('미용실'),
           selected: groomingSelected,
           onSelected: onGroomingToggle,
         ),
@@ -425,7 +418,7 @@ class NotificationItemWidget extends StatelessWidget {
       title: Text(notification.title),
       subtitle: Text(notification.body),
       trailing: notification.isRead
-          ? Icon(Icons.check, color: Colors.green)
+          ? const Icon(Icons.check, color: Colors.green)
           : null,
       onTap: notification.isRead ? null : onMarkAsRead,
     );
@@ -434,9 +427,11 @@ class NotificationItemWidget extends StatelessWidget {
 
 /// 테스트용 로딩 상태 위젯
 class LoadingStateWidget extends StatelessWidget {
+  const LoadingStateWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -466,14 +461,11 @@ class ErrorStateWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error, color: Colors.red, size: 48),
-          SizedBox(height: 16),
+          const Icon(Icons.error, color: Colors.red, size: 48),
+          const SizedBox(height: 16),
           Text(message, textAlign: TextAlign.center),
-          SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: onRetry,
-            child: Text('다시 시도'),
-          ),
+          const SizedBox(height: 16),
+          ElevatedButton(onPressed: onRetry, child: const Text('다시 시도')),
         ],
       ),
     );

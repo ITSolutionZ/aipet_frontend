@@ -26,7 +26,7 @@ class PetRegistrationErrorHandler {
     final lowerError = error.toLowerCase();
 
     // 네트워크 관련 에러
-    if (lowerError.contains('network') || 
+    if (lowerError.contains('network') ||
         lowerError.contains('connection') ||
         lowerError.contains('timeout')) {
       return 'ネットワーク接続を確認してください';
@@ -38,7 +38,7 @@ class PetRegistrationErrorHandler {
     }
 
     // 권한 에러
-    if (lowerError.contains('permission') || 
+    if (lowerError.contains('permission') ||
         lowerError.contains('unauthorized') ||
         lowerError.contains('403')) {
       return '権限がありません。設定を確認してください';
@@ -61,23 +61,23 @@ class PetRegistrationErrorHandler {
   /// Exception 타입 에러 메시지 변환
   static String _getMessageForException(Exception exception) {
     final message = exception.toString();
-    
+
     if (message.contains('SocketException')) {
       return 'インターネット接続を確認してください';
     }
-    
+
     if (message.contains('TimeoutException')) {
       return '接続がタイムアウトしました。再度お試しください';
     }
-    
+
     if (message.contains('FormatException')) {
       return 'データ形式にエラーがあります';
     }
-    
+
     if (message.contains('FileSystemException')) {
       return 'ファイルの処理中にエラーが発生しました';
     }
-    
+
     return 'システムエラーが発生しました';
   }
 
@@ -91,25 +91,18 @@ class PetRegistrationErrorHandler {
     if (!context.mounted) return;
 
     final message = customMessage ?? getUserFriendlyMessage(error);
-    
+
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            const Icon(
-              Icons.error_outline,
-              color: Colors.white,
-              size: 20,
-            ),
+            const Icon(Icons.error_outline, color: Colors.white, size: 20),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
                 message,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
           ],
@@ -118,9 +111,7 @@ class PetRegistrationErrorHandler {
         duration: duration,
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         action: SnackBarAction(
           label: '閉じる',
           textColor: Colors.white,
@@ -154,10 +145,7 @@ class PetRegistrationErrorHandler {
             Expanded(
               child: Text(
                 message,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
           ],
@@ -166,9 +154,7 @@ class PetRegistrationErrorHandler {
         duration: duration,
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -234,11 +220,7 @@ class PetRegistrationErrorHandler {
         return AlertDialog(
           title: Row(
             children: [
-              Icon(
-                Icons.error_outline,
-                color: Colors.red.shade600,
-                size: 24,
-              ),
+              Icon(Icons.error_outline, color: Colors.red.shade600, size: 24),
               const SizedBox(width: 8),
               Text(title),
             ],
@@ -288,12 +270,8 @@ class PetRegistrationErrorHandler {
     VoidCallback? onRetry,
     String? customMessage,
   }) {
-    showErrorSnackBar(
-      context,
-      error,
-      customMessage: customMessage,
-    );
-    
+    showErrorSnackBar(context, error, customMessage: customMessage);
+
     if (onRetry != null) {
       // 재시도 버튼이 있는 경우 별도 처리 로직
       // 예: 재시도 다이얼로그 표시

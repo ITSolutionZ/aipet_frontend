@@ -28,7 +28,9 @@ class SelectPetUseCase {
 
       return ResultFactory.success([userMessage, aiMessage], 'ペットを選択しました');
     } catch (error) {
-      return ResultFactory.failure<List<AiMessageEntity>>('ペット選択に失敗しました: ${error.toString()}');
+      return ResultFactory.failure<List<AiMessageEntity>>(
+        'ペット選択に失敗しました: ${error.toString()}',
+      );
     }
   }
 }

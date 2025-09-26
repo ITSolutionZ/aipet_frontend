@@ -46,7 +46,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
           .where(
             (trick) =>
                 trick.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                (trick.description?.toLowerCase().contains(
+                (trick.description.toLowerCase().contains(
                       _searchQuery.toLowerCase(),
                     ) ??
                     false),

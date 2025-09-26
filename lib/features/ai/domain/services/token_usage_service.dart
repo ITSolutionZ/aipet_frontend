@@ -54,7 +54,9 @@ class TokenUsageService {
       // 시간당 사용량 체크
       final currentHourlyUsage = _hourlyUsage[hourKey] ?? 0;
       if (currentHourlyUsage + totalTokens > HOURLY_TOKEN_LIMIT) {
-        return ResultFactory.failure('시간당 토큰 사용량 한도 초과 ($HOURLY_TOKEN_LIMIT 토큰)');
+        return ResultFactory.failure(
+          '시간당 토큰 사용량 한도 초과 ($HOURLY_TOKEN_LIMIT 토큰)',
+        );
       }
 
       // 사용량 기록
@@ -80,15 +82,18 @@ class TokenUsageService {
 
       // 경고 레벨 확인
       if (currentDailyUsage + totalTokens >= WARNING_THRESHOLD && kDebugMode) {
-        debugPrint('[$_tag] ⚠️ 일일 토큰 사용량이 경고 임계값에 도달: ${currentDailyUsage + totalTokens}/$DAILY_TOKEN_LIMIT');
+        debugPrint(
+          '[$_tag] ⚠️ 일일 토큰 사용량이 경고 임계값에 도달: ${currentDailyUsage + totalTokens}/$DAILY_TOKEN_LIMIT',
+        );
       }
 
       if (kDebugMode) {
-        debugPrint('[$_tag] 토큰 사용량 기록: $totalTokens 토큰 (일일: ${currentDailyUsage + totalTokens}/$DAILY_TOKEN_LIMIT)');
+        debugPrint(
+          '[$_tag] 토큰 사용량 기록: $totalTokens 토큰 (일일: ${currentDailyUsage + totalTokens}/$DAILY_TOKEN_LIMIT)',
+        );
       }
 
       return ResultFactory.success(usageRecord, '토큰 사용량 기록 완료');
-
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error recording token usage: $error\n$stackTrace');
@@ -209,7 +214,9 @@ class TokenUsageService {
 
   static int _getRequestCountForDate(DateTime date) {
     final dateKey = _formatDateKey(date);
-    return _usageHistory.where((record) => _formatDateKey(record.timestamp) == dateKey).length;
+    return _usageHistory
+        .where((record) => _formatDateKey(record.timestamp) == dateKey)
+        .length;
   }
 }
 
