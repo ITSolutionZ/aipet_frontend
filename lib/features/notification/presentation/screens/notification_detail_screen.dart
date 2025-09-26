@@ -50,6 +50,7 @@ class _NotificationDetailScreenState
 
     try {
       final notification = await _controller.loadNotification(
+        'default_user_id',
         widget.notificationId,
       );
 
@@ -81,7 +82,7 @@ class _NotificationDetailScreenState
   }
 
   Future<void> _markAsRead(NotificationModel notification) async {
-    await _controller.markAsRead(context, notification);
+    await _controller.markAsRead(context, 'default_user_id', notification);
 
     // 알림 상태를 읽음으로 업데이트
     setState(() {
@@ -99,7 +100,11 @@ class _NotificationDetailScreenState
   void _handleDelete() {
     final notification = _notification;
     if (notification != null) {
-      _controller.deleteNotification(context, notification.id);
+      _controller.deleteNotification(
+        context,
+        'default_user_id',
+        notification.id,
+      );
     }
   }
 
@@ -109,7 +114,7 @@ class _NotificationDetailScreenState
       return const Scaffold(
         backgroundColor: AppColors.pointOffWhite,
         appBar: SoftGradientBackAppBar(title: '通知詳細'),
-        body: Center(child: const CircularProgressIndicator()),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 

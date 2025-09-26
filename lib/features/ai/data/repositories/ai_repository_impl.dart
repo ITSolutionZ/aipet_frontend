@@ -2,13 +2,13 @@ import 'dart:math';
 
 import 'package:aipet_frontend/shared/core/utils/ai_logger.dart';
 import 'package:aipet_frontend/shared/core/utils/mock_helper.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/ai/ai_config_mock_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/foundation/error_handler/error_handler.dart';
 import '../../../../shared/foundation/result/result.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import '../../../pet_registor/pet_registor.dart';
 import '../../domain/domain.dart';
 import '../services/ai_local_storage_service.dart';
@@ -510,10 +510,8 @@ class AiRepositoryImpl implements AiRepository {
 
   /// 파라미터와 함께 제안 질문 가져오기
   @override
-  Future<Result<List<AiSuggestedQuestionEntity>>> getSuggestedQuestionsWithParams({
-    String? petId,
-    String? categoryId,
-  }) async {
+  Future<Result<List<AiSuggestedQuestionEntity>>>
+  getSuggestedQuestionsWithParams({String? petId, String? categoryId}) async {
     try {
       // Mock 제안 질문들
       final suggestions = [
@@ -521,13 +519,15 @@ class AiRepositoryImpl implements AiRepository {
           id: '1',
           question: '우리 강아지 건강은 어떤가요?',
           category: categoryId ?? '건강',
-          relevanceScore: 0.9,
+          // relevanceScore: 0.9,
+          icon: Icons.medical_services,
         ),
         AiSuggestedQuestionEntity(
           id: '2',
           question: '오늘 산책은 어떻게 해야 할까요?',
           category: categoryId ?? '산책',
-          relevanceScore: 0.8,
+          // relevanceScore: 0.8,
+          icon: Icons.directions_walk,
         ),
       ];
 

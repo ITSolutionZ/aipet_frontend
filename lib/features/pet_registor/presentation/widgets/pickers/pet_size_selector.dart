@@ -124,7 +124,7 @@ class PetSizeSelector extends StatelessWidget {
                             : AppColors.pointDark,
                       ),
                     ),
-                    const const SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
                       sizeInfo['description'] as String,
                       style: AppFonts.bodySmall.copyWith(

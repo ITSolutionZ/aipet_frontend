@@ -15,7 +15,7 @@ class PetActivityTab extends ConsumerWidget {
     final tricksState = ref.watch(allTricksProvider);
 
     return tricksState.when(
-      loading: () => const Center(child: const CircularProgressIndicator()),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) => Center(child: Text('エラー: $error')),
       data: (tricks) => _buildActivityContent(tricks),
     );

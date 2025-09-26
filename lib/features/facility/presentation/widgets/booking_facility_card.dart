@@ -22,8 +22,8 @@ class BookingFacilityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.elevated(
-      padding: AppSpacing.lg,
+    return AppCard(
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -45,7 +45,7 @@ class BookingFacilityCard extends StatelessWidget {
                         color: AppColors.cardBackgroundGray,
                         borderRadius: BorderRadius.circular(AppSpacing.sm),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.business,
                         color: AppColors.textSecondary,
                       ),
@@ -60,7 +60,7 @@ class BookingFacilityCard extends StatelessWidget {
                     color: AppColors.cardBackgroundGray,
                     borderRadius: BorderRadius.circular(AppSpacing.sm),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.business,
                     color: AppColors.textSecondary,
                     size: 32,
@@ -84,7 +84,7 @@ class BookingFacilityCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.location_on_outlined,
                           size: 16,
                           color: AppColors.textSecondary,
@@ -105,7 +105,7 @@ class BookingFacilityCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.phone_outlined,
                           size: 16,
                           color: AppColors.textSecondary,

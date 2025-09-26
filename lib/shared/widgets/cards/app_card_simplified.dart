@@ -42,13 +42,13 @@ class AppCard extends StatelessWidget {
     VoidCallback? onTap,
   }) {
     return AppCard._(
-      child: child,
       padding: padding,
       margin: margin,
       backgroundColor: AppColors.cardBackgroundWhite,
       elevation: 2,
       borderRadius: BorderRadius.circular(AppSpacing.md),
       onTap: onTap,
+      child: child,
     );
   }
 
@@ -61,13 +61,13 @@ class AppCard extends StatelessWidget {
     VoidCallback? onTap,
   }) {
     return AppCard._(
-      child: child,
       padding: padding,
       margin: margin,
       backgroundColor: AppColors.cardBackgroundWhite,
       elevation: elevation,
       borderRadius: BorderRadius.circular(AppSpacing.md),
       onTap: onTap,
+      child: child,
     );
   }
 
@@ -80,7 +80,6 @@ class AppCard extends StatelessWidget {
     VoidCallback? onTap,
   }) {
     return AppCard._(
-      child: child,
       padding: padding,
       margin: margin,
       backgroundColor: AppColors.cardBackgroundWhite,
@@ -88,6 +87,7 @@ class AppCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppSpacing.md),
       border: Border.all(color: borderColor),
       onTap: onTap,
+      child: child,
     );
   }
 
@@ -100,13 +100,13 @@ class AppCard extends StatelessWidget {
     VoidCallback? onTap,
   }) {
     return AppCard._(
-      child: child,
       padding: padding,
       margin: margin,
       backgroundColor: backgroundColor,
       elevation: 0,
       borderRadius: BorderRadius.circular(AppSpacing.sm),
       onTap: onTap,
+      child: child,
     );
   }
 
@@ -119,7 +119,6 @@ class AppCard extends StatelessWidget {
     VoidCallback? onTap,
   }) {
     return AppCard._(
-      child: child,
       padding: padding,
       margin: margin,
       backgroundColor: isSelected
@@ -132,6 +131,7 @@ class AppCard extends StatelessWidget {
         width: isSelected ? 2 : 1,
       ),
       onTap: onTap,
+      child: child,
     );
   }
 
@@ -144,10 +144,7 @@ class AppCard extends StatelessWidget {
       child: Container(
         padding: padding,
         margin: margin,
-        decoration: BoxDecoration(
-          borderRadius: borderRadius,
-          border: border,
-        ),
+        decoration: BoxDecoration(borderRadius: borderRadius, border: border),
         child: child,
       ),
     );
@@ -195,10 +192,7 @@ class InfoCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: AppTextStyles.titleMedium,
-                ),
+                Text(title, style: AppTextStyles.titleMedium),
                 if (subtitle != null)
                   Text(
                     subtitle!,
@@ -251,12 +245,7 @@ class SummaryCard extends StatelessWidget {
                   color: AppColors.textSecondary,
                 ),
               ),
-              if (icon != null)
-                Icon(
-                  icon,
-                  color: accentColor,
-                  size: 20,
-                ),
+              if (icon != null) Icon(icon, color: accentColor, size: 20),
             ],
           ),
           const SizedBox(height: AppSpacing.xs),

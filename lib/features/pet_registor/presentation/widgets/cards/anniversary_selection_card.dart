@@ -64,7 +64,7 @@ class AnniversarySelectionCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const const SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     selectedDate != null
                         ? '${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日'

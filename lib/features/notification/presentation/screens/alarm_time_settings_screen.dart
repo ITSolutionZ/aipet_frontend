@@ -18,7 +18,9 @@ class _AlarmTimeSettingsScreenState
     super.initState();
     // 컨트롤러를 통해 알림 시간 로드
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(alarmTimeSettingsControllerProvider.notifier).loadAlarmTimes();
+      ref
+          .read(alarmTimeSettingsControllerProvider.notifier)
+          .loadAlarmTimes('default_user_id');
     });
   }
 
@@ -63,7 +65,7 @@ class _AlarmTimeSettingsScreenState
           return const Scaffold(
             backgroundColor: AppColors.pointOffWhite,
             appBar: SoftGradientDrawerAppBar(title: 'アラーム時間設定'),
-            body: Center(child: const CircularProgressIndicator()),
+            body: Center(child: CircularProgressIndicator()),
           );
         }
 

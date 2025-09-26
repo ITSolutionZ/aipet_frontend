@@ -20,7 +20,7 @@ class BookingTimeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.outlined(
+    return AppCard(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -29,11 +29,7 @@ class BookingTimeSelector extends StatelessWidget {
             // 섹션 헤더
             Row(
               children: [
-                const Icon(
-                  Icons.access_time,
-                  size: 20,
-                  color: AppColors.primary,
-                ),
+                Icon(Icons.access_time, size: 20, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '시간 선택',
@@ -102,20 +98,11 @@ class BookingTimeSelector extends StatelessWidget {
   Widget _buildLegend() {
     return Row(
       children: [
-        _LegendItem(
-          color: AppColors.primary,
-          label: '선택됨',
-        ),
+        _LegendItem(color: AppColors.primary, label: '선택됨'),
         const SizedBox(width: AppSpacing.md),
-        _LegendItem(
-          color: AppColors.cardBackgroundGray,
-          label: '이용 가능',
-        ),
+        _LegendItem(color: AppColors.cardBackgroundGray, label: '이용 가능'),
         const SizedBox(width: AppSpacing.md),
-        _LegendItem(
-          color: AppColors.error.withOpacity(0.2),
-          label: '예약 불가',
-        ),
+        _LegendItem(color: AppColors.error.withOpacity(0.2), label: '예약 불가'),
       ],
     );
   }
@@ -179,11 +166,7 @@ class BookingTimeChip extends StatelessWidget {
               Positioned(
                 top: 2,
                 right: 2,
-                child: Icon(
-                  Icons.block,
-                  size: 12,
-                  color: AppColors.error,
-                ),
+                child: Icon(Icons.block, size: 12, color: AppColors.error),
               ),
           ],
         ),
@@ -197,10 +180,7 @@ class _LegendItem extends StatelessWidget {
   final Color color;
   final String label;
 
-  const _LegendItem({
-    required this.color,
-    required this.label,
-  });
+  const _LegendItem({required this.color, required this.label});
 
   @override
   Widget build(BuildContext context) {

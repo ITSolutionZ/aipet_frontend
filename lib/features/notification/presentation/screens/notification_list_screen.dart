@@ -43,7 +43,9 @@ class _NotificationListScreenState
 
   /// 알림 설정 상태 확인
   Future<void> _checkNotificationSettings() async {
-    final shouldShow = await _controller.checkNotificationSettings();
+    final shouldShow = await _controller.checkNotificationSettings(
+      'default_user_id',
+    );
     if (mounted) {
       setState(() {
         _shouldShowInfoCard = shouldShow;

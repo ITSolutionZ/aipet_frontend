@@ -451,7 +451,7 @@ class AiRepositoryMockitoImpl implements AiRepository {
     String? categoryId,
     List<String>? attachedImages,
   }) async {
-    return await sendMessage(message);
+    return sendMessage(message);
   }
 
   /// 즐겨찾기 토글
@@ -462,10 +462,8 @@ class AiRepositoryMockitoImpl implements AiRepository {
 
   /// 파라미터와 함께 제안 질문 가져오기
   @override
-  Future<Result<List<AiSuggestedQuestionEntity>>> getSuggestedQuestionsWithParams({
-    String? petId,
-    String? categoryId,
-  }) async {
+  Future<Result<List<AiSuggestedQuestionEntity>>>
+  getSuggestedQuestionsWithParams({String? petId, String? categoryId}) async {
     final suggestions = await getSuggestedQuestions();
     return ResultFactory.success(suggestions);
   }

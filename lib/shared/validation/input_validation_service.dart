@@ -22,8 +22,8 @@ class InputValidationService {
     RegExp(r'vbscript:', caseSensitive: false),
     RegExp(r'data:text/html', caseSensitive: false),
     RegExp(r'<img[^>]*src\s*=\s*["\']javascript:', caseSensitive: false),
-    void RegExp(r'<link[^>]*href\s*=\s*["\']javascript:', caseSensitive: false),
-    void RegExp(r'<meta[^>]*content\s*=.*?javascript:', caseSensitive = false),
+    RegExp(r'<link[^>]*href\s*=\s*["\']javascript:', caseSensitive: false),
+    RegExp(r'<meta[^>]*content\s*=.*?javascript:', caseSensitive: false),
   ];
 
   /// SQL Injection 패턴

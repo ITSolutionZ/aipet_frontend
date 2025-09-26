@@ -113,9 +113,8 @@ class AiPetSelectionBubble extends ConsumerWidget {
                       final petsAsync = ref.watch(petsNotifierProvider);
                       return petsAsync.when(
                         data: (pets) => _buildPetSelection(pets),
-                        loading: () => const Center(
-                          child: const CircularProgressIndicator(),
-                        ),
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
                         error: (error, stack) => _buildPetSelection([]),
                       );
                     },

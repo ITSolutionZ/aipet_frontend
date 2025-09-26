@@ -22,9 +22,12 @@ class NotificationDetailController {
   );
 
   /// 알림 데이터 로드
-  Future<NotificationModel?> loadNotification(String notificationId) async {
+  Future<NotificationModel?> loadNotification(
+    String userId,
+    String notificationId,
+  ) async {
     try {
-      return await _getNotificationByIdUseCase.call(notificationId);
+      return await _getNotificationByIdUseCase.call(userId, notificationId);
     } catch (error) {
       rethrow;
     }
@@ -33,10 +36,11 @@ class NotificationDetailController {
   /// 알림을 읽음 상태로 변경
   Future<void> markAsRead(
     BuildContext context,
+    String userId,
     NotificationModel notification,
   ) async {
     try {
-      await _markAsReadUseCase.call(notification.id);
+      await _markAsReadUseCase.call(userId, notification.id);
       if (context.mounted) {
         _uiController.showSuccessSnackBar(context, '通知を読み取りました');
       }
@@ -50,6 +54,7 @@ class NotificationDetailController {
   /// 알림 삭제 확인 및 실행
   Future<void> deleteNotification(
     BuildContext context,
+    String userId,
     String notificationId,
   ) async {
     try {
@@ -57,7 +62,7 @@ class NotificationDetailController {
         context,
       );
       if (confirmed && context.mounted) {
-        await _deleteNotificationUseCase.call(notificationId);
+        await _deleteNotificationUseCase.call(userId, notificationId);
         if (context.mounted) {
           _uiController.showSuccessSnackBar(context, '通知を削除しました');
           context.pop();

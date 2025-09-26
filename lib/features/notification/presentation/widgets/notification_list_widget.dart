@@ -42,7 +42,7 @@ class _NotificationListWidgetState
 
     return notificationsAsync.when(
       data: (notifications) => _buildNotificationList(notifications),
-      loading: () => const Center(child: const CircularProgressIndicator()),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => _buildErrorState(error),
     );
   }

@@ -57,7 +57,7 @@ class SplashState {
     progress: 0.0,
   );
 
-  factory SplashState.loading() => SplashState(
+  factory SplashState.loading() => const SplashState(
     phase: SplashPhase.loading,
     imagePath: SplashConstants.loadingLottiePath,
     currentStep: 1,

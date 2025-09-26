@@ -16,7 +16,7 @@ class ServiceSectionWidget extends StatelessWidget {
           child: Row(
             children: [
               Icon(Icons.settings, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(
                 'Service',
                 style: TextStyle(

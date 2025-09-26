@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:aipet_frontend/features/ai/domain/domain.dart';
-import 'package:aipet_frontend/features/ai/domain/usecases/usecases.dart';
 import 'package:aipet_frontend/features/ai/data/providers/ai_usecase_providers.dart';
+import 'package:aipet_frontend/features/ai/domain/domain.dart';
 // import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'; // 임시 제거
 import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 🎯 AI 메시지 전용 서비스
@@ -17,8 +17,6 @@ class AiMessageService {
   // UseCases
   late final SendMessageUseCase _sendMessageUseCase;
   late final LoadChatHistoryUseCase _loadHistoryUseCase;
-  late final AnalyzeMessageUseCase _analyzeMessageUseCase;
-  late final GetSuggestedQuestionsUseCase _getSuggestionsUseCase;
 
   AiMessageService(this._ref) {
     _initializeUseCases();
@@ -27,8 +25,6 @@ class AiMessageService {
   void _initializeUseCases() {
     _sendMessageUseCase = _ref.read(sendMessageUseCaseProvider);
     _loadHistoryUseCase = _ref.read(loadChatHistoryUseCaseProviderProvider);
-    _analyzeMessageUseCase = _ref.read(analyzeMessageUseCaseProviderProvider);
-    _getSuggestionsUseCase = _ref.read(getSuggestedQuestionsUseCaseProvider);
   }
 
   /// ✅ 메시지 전송 처리
@@ -40,7 +36,9 @@ class AiMessageService {
   }) async {
     try {
       if (kDebugMode) {
-        debugPrint('📤 Sending AI message: ${message.substring(0, message.length.clamp(0, 50))}...');
+        debugPrint(
+          '📤 Sending AI message: ${message.substring(0, message.length.clamp(0, 50))}...',
+        );
       }
 
       final params = SendMessageParams(
@@ -70,23 +68,19 @@ class AiMessageService {
     AiCategoryEntity? category,
   }) async {
     try {
-      final params = AnalyzeMessageParams(
-        message: messageContent,
-        petId: petId,
-        context: category != null ? {'category': category.name} : null,
-      );
-
       // 임시로 분석 결과를 반환하도록 수정 (실제로는 _analyzeMessageUseCase 호출)
-      return ResultFactory.success(MessageAnalysis(
-        response: AiMessageEntity(
-          id: 'analysis_${DateTime.now().millisecondsSinceEpoch}',
-          content: '메시지 분석이 완료되었습니다: $messageContent',
-          timestamp: DateTime.now(),
-          type: MessageType.assistant,
+      return ResultFactory.success(
+        MessageAnalysis(
+          response: AiMessageEntity(
+            id: 'analysis_${DateTime.now().millisecondsSinceEpoch}',
+            content: '메시지 분석이 완료되었습니다: $messageContent',
+            timestamp: DateTime.now(),
+            type: MessageType.assistant,
+          ),
+          detectedTopics: ['일반'],
+          confidenceScore: 0.8,
         ),
-        detectedTopics: ['일반'],
-        confidenceScore: 0.8,
-      ));
+      );
     } catch (e) {
       debugPrint('❌ Failed to analyze message: $e');
       return ResultFactory.failure('메시지 분석 중 오류가 발생했습니다: $e');
@@ -107,7 +101,7 @@ class AiMessageService {
         offset: 0, // lastMessageId 대신 offset 사용
       );
 
-      return await _loadHistoryUseCase.execute(params);
+      return await _loadHistoryUseCase.call(params);
     } catch (e) {
       debugPrint('❌ Failed to load chat history: $e');
       return ResultFactory.failure('채팅 기록 로드 중 오류가 발생했습니다: $e');
@@ -126,13 +120,15 @@ class AiMessageService {
           id: '1',
           question: '우리 강아지 건강은 어떤가요?',
           category: category?.name ?? '일반',
-          relevanceScore: 0.9,
+          // relevanceScore: 0.9,
+          icon: Icons.medical_services,
         ),
         AiSuggestedQuestionEntity(
           id: '2',
           question: '오늘 산책은 어떻게 해야 할까요?',
           category: category?.name ?? '일반',
-          relevanceScore: 0.8,
+          // relevanceScore: 0.8,
+          icon: Icons.directions_walk,
         ),
       ];
 
@@ -166,8 +162,12 @@ class AiMessageService {
       return MessageStatistics.empty();
     }
 
-    final userMessages = messages.where((m) => m.type == MessageType.user).toList();
-    final aiMessages = messages.where((m) => m.type == MessageType.assistant).toList();
+    final userMessages = messages
+        .where((m) => m.type == MessageType.user)
+        .toList();
+    final aiMessages = messages
+        .where((m) => m.type == MessageType.assistant)
+        .toList();
 
     final totalWords = messages.fold<int>(
       0,
@@ -175,7 +175,10 @@ class AiMessageService {
     );
 
     final avgResponseTime = aiMessages.isNotEmpty
-        ? aiMessages.map((m) => m.timestamp.millisecondsSinceEpoch.toDouble()).reduce((a, b) => a + b) / aiMessages.length
+        ? aiMessages
+                  .map((m) => m.timestamp.millisecondsSinceEpoch.toDouble())
+                  .reduce((a, b) => a + b) /
+              aiMessages.length
         : 0.0;
 
     return MessageStatistics(
@@ -184,7 +187,9 @@ class AiMessageService {
       aiMessages: aiMessages.length,
       totalWords: totalWords,
       averageResponseTimeMs: avgResponseTime,
-      lastMessageTime: messages.isNotEmpty ? messages.last.timestamp : DateTime.now(),
+      lastMessageTime: messages.isNotEmpty
+          ? messages.last.timestamp
+          : DateTime.now(),
     );
   }
 

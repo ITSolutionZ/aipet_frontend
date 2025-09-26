@@ -26,9 +26,9 @@ class NotificationController extends BaseController {
   );
 
   /// 알림 목록 가져오기
-  Future<List<NotificationModel>> getNotifications() async {
+  Future<List<NotificationModel>> getNotifications(String userId) async {
     try {
-      return await _getNotificationsUseCase.call();
+      return await _getNotificationsUseCase.call(userId);
     } catch (error) {
       handleError(error);
       return [];
@@ -36,37 +36,40 @@ class NotificationController extends BaseController {
   }
 
   /// 알림 새로고침
-  Future<void> refreshNotifications() async {
+  Future<void> refreshNotifications(String userId) async {
     try {
       // 새로고침은 단순히 다시 가져오기
-      await _getNotificationsUseCase.call();
+      await _getNotificationsUseCase.call(userId);
     } catch (error) {
       handleError(error);
     }
   }
 
   /// 알림 읽음 처리
-  Future<void> markAsRead(String id) async {
+  Future<void> markAsRead(String userId, String id) async {
     try {
-      await _markAsReadUseCase.call(id);
+      await _markAsReadUseCase.call(userId, id);
     } catch (error) {
       handleError(error);
     }
   }
 
   /// 알림 삭제
-  Future<void> deleteNotification(String id) async {
+  Future<void> deleteNotification(String userId, String id) async {
     try {
-      await _deleteNotificationUseCase.call(id);
+      await _deleteNotificationUseCase.call(userId, id);
     } catch (error) {
       handleError(error);
     }
   }
 
   /// 개별 알림 가져오기
-  Future<NotificationModel?> getNotificationById(String id) async {
+  Future<NotificationModel?> getNotificationById(
+    String userId,
+    String id,
+  ) async {
     try {
-      return await _getNotificationByIdUseCase.call(id);
+      return await _getNotificationByIdUseCase.call(userId, id);
     } catch (error) {
       handleError(error);
       return null;
@@ -74,9 +77,9 @@ class NotificationController extends BaseController {
   }
 
   /// 읽지 않은 알림 개수 가져오기
-  Future<int> getUnreadCount() async {
+  Future<int> getUnreadCount(String userId) async {
     try {
-      final notifications = await _getNotificationsUseCase.call();
+      final notifications = await _getNotificationsUseCase.call(userId);
       return notifications
           .where((n) => n.status == NotificationStatus.unread)
           .length;
@@ -87,19 +90,22 @@ class NotificationController extends BaseController {
   }
 
   /// 알림 설정 가져오기
-  Future<NotificationSettings?> getNotificationSettings() async {
+  Future<Map<String, dynamic>> getNotificationSettings(String userId) async {
     try {
-      return await _getSettingsUseCase.call();
+      return await _getSettingsUseCase.call(userId);
     } catch (error) {
       handleError(error);
-      return null;
+      return {};
     }
   }
 
   /// 알림 설정 저장
-  Future<void> saveNotificationSettings(NotificationSettings settings) async {
+  Future<void> saveNotificationSettings(
+    String userId,
+    Map<String, dynamic> settings,
+  ) async {
     try {
-      await _saveSettingsUseCase.call(settings);
+      await _saveSettingsUseCase.call(userId, settings);
     } catch (error) {
       handleError(error);
     }

@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
@@ -14,8 +15,15 @@ class GetSuggestedQuestionsUseCase {
   /// Returns: 추천 질문 목록
   Future<Result<List<AiSuggestedQuestionEntity>>> call(GetSuggestedQuestionsParams params) async {
     try {
-      final questions = await _repository.getSuggestedQuestionsWithParams(params);
-      return ResultFactory.success(questions, '推奨質問を取得しました');
+      final questionsResult = await _repository.getSuggestedQuestionsWithParams(
+        petId: params.petProfile.id,
+        categoryId: params.category?.id,
+      );
+      if (questionsResult.isSuccess) {
+        return ResultFactory.success(questionsResult.dataOrNull!, '推奨質問を取得しました');
+      } else {
+        return ResultFactory.failure(questionsResult.errorOrNull ?? '推奨質問の取得に失敗しました');
+      }
     } catch (error) {
       return ResultFactory.failure<List<AiSuggestedQuestionEntity>>(
         '推奨質問の取得に失敗しました: ${error.toString()}',
@@ -42,18 +50,18 @@ class GetSuggestedQuestionsUseCase {
       return ResultFactory.success(
         questions,
         'カスタマイズされた推奨質問を取得しました',
-      ).toFuture();
+      );
     } catch (error) {
       return ResultFactory.failure<List<AiSuggestedQuestionEntity>>(
         '推奨質問の取得に失敗しました (personalized): ${error.toString()}',
-      ).toFuture();
+      );
     }
   }
 }
 
 /// 🎯 추천 질문 조회 파라미터
 class GetSuggestedQuestionsParams {
-  final PetProfile petProfile;
+  final PetProfileEntity petProfile;
   final AiCategoryEntity? category;
 
   const GetSuggestedQuestionsParams({

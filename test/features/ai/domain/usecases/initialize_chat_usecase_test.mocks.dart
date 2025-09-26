@@ -347,4 +347,124 @@ class MockAiRepository extends _i1.Mock implements _i3.AiRepository {
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
+
+  @override
+  _i4.Future<_i5.Result<List<_i2.AiMessageEntity>>> loadChatHistory({
+    required String? userId,
+    String? petId,
+    int? limit,
+    int? offset,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#loadChatHistory, [], {
+              #userId: userId,
+              #petId: petId,
+              #limit: limit,
+              #offset: offset,
+            }),
+            returnValue:
+                _i4.Future<_i5.Result<List<_i2.AiMessageEntity>>>.value(
+                  _i6.dummyValue<_i5.Result<List<_i2.AiMessageEntity>>>(
+                    this,
+                    Invocation.method(#loadChatHistory, [], {
+                      #userId: userId,
+                      #petId: petId,
+                      #limit: limit,
+                      #offset: offset,
+                    }),
+                  ),
+                ),
+          )
+          as _i4.Future<_i5.Result<List<_i2.AiMessageEntity>>>);
+
+  @override
+  _i4.Future<_i5.Result<_i2.AiAnalysisEntity>> analyzeMessage({
+    required String? message,
+    String? petId,
+    Map<String, dynamic>? context,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#analyzeMessage, [], {
+              #message: message,
+              #petId: petId,
+              #context: context,
+            }),
+            returnValue: _i4.Future<_i5.Result<_i2.AiAnalysisEntity>>.value(
+              _i6.dummyValue<_i5.Result<_i2.AiAnalysisEntity>>(
+                this,
+                Invocation.method(#analyzeMessage, [], {
+                  #message: message,
+                  #petId: petId,
+                  #context: context,
+                }),
+              ),
+            ),
+          )
+          as _i4.Future<_i5.Result<_i2.AiAnalysisEntity>>);
+
+  @override
+  _i4.Future<_i5.Result<_i2.AiMessageEntity>> sendMessageWithParams({
+    required String? message,
+    required String? petId,
+    String? categoryId,
+    List<String>? attachedImages,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#sendMessageWithParams, [], {
+              #message: message,
+              #petId: petId,
+              #categoryId: categoryId,
+              #attachedImages: attachedImages,
+            }),
+            returnValue: _i4.Future<_i5.Result<_i2.AiMessageEntity>>.value(
+              _i6.dummyValue<_i5.Result<_i2.AiMessageEntity>>(
+                this,
+                Invocation.method(#sendMessageWithParams, [], {
+                  #message: message,
+                  #petId: petId,
+                  #categoryId: categoryId,
+                  #attachedImages: attachedImages,
+                }),
+              ),
+            ),
+          )
+          as _i4.Future<_i5.Result<_i2.AiMessageEntity>>);
+
+  @override
+  _i4.Future<_i5.Result<bool>> toggleFavoriteMessage(String? messageId) =>
+      (super.noSuchMethod(
+            Invocation.method(#toggleFavoriteMessage, [messageId]),
+            returnValue: _i4.Future<_i5.Result<bool>>.value(
+              _i6.dummyValue<_i5.Result<bool>>(
+                this,
+                Invocation.method(#toggleFavoriteMessage, [messageId]),
+              ),
+            ),
+          )
+          as _i4.Future<_i5.Result<bool>>);
+
+  @override
+  _i4.Future<_i5.Result<List<_i2.AiSuggestedQuestionEntity>>>
+  getSuggestedQuestionsWithParams({String? petId, String? categoryId}) =>
+      (super.noSuchMethod(
+            Invocation.method(#getSuggestedQuestionsWithParams, [], {
+              #petId: petId,
+              #categoryId: categoryId,
+            }),
+            returnValue:
+                _i4.Future<
+                  _i5.Result<List<_i2.AiSuggestedQuestionEntity>>
+                >.value(
+                  _i6.dummyValue<
+                    _i5.Result<List<_i2.AiSuggestedQuestionEntity>>
+                  >(
+                    this,
+                    Invocation.method(#getSuggestedQuestionsWithParams, [], {
+                      #petId: petId,
+                      #categoryId: categoryId,
+                    }),
+                  ),
+                ),
+          )
+          as _i4.Future<_i5.Result<List<_i2.AiSuggestedQuestionEntity>>>);
 }

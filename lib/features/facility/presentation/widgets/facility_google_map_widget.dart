@@ -249,8 +249,8 @@ class FacilityGoogleMapWidget extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 8),
+            CircularProgressIndicator(),
+            SizedBox(height: 8),
             Text('地図を読み込み中...'),
           ],
         ),

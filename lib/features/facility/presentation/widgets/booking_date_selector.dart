@@ -20,7 +20,7 @@ class BookingDateSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.outlined(
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -29,14 +29,10 @@ class BookingDateSelector extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
-                const Icon(
-                  Icons.calendar_today,
-                  size: 20,
-                  color: AppColors.primary,
-                ),
+                Icon(Icons.calendar_today, size: 20, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  '날짜 선택',
+                  '日付を選択してください',
                   style: AppTextStyles.titleMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -71,7 +67,8 @@ class BookingDateSelector extends StatelessWidget {
             child: CalendarDatePicker(
               initialDate: selectedDate ?? DateTime.now(),
               firstDate: minimumDate ?? DateTime.now(),
-              lastDate: maximumDate ?? DateTime.now().add(const Duration(days: 90)),
+              lastDate:
+                  maximumDate ?? DateTime.now().add(const Duration(days: 90)),
               onDateChanged: onDateSelected,
             ),
           ),
@@ -100,10 +97,7 @@ class CompactDateSelector extends StatelessWidget {
 
   List<DateTime> _generateDates() {
     final now = DateTime.now();
-    return List.generate(
-      daysToShow,
-      (index) => now.add(Duration(days: index)),
-    );
+    return List.generate(daysToShow, (index) => now.add(Duration(days: index)));
   }
 
   @override
@@ -134,7 +128,8 @@ class CompactDateSelector extends StatelessWidget {
             itemCount: dates.length,
             itemBuilder: (context, index) {
               final date = dates[index];
-              final isSelected = selectedDate?.day == date.day &&
+              final isSelected =
+                  selectedDate?.day == date.day &&
                   selectedDate?.month == date.month &&
                   selectedDate?.year == date.year;
               final isToday = _isToday(date);
@@ -159,7 +154,7 @@ class CompactDateSelector extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          ['월', '화', '수', '목', '금', '토', '일'][date.weekday - 1],
+                          ['月', '火', '水', '木', '金', '土', '日'][date.weekday - 1],
                           style: AppTextStyles.bodySmall.copyWith(
                             color: isSelected
                                 ? Colors.white
@@ -192,7 +187,7 @@ class CompactDateSelector extends StatelessWidget {
   bool _isToday(DateTime date) {
     final now = DateTime.now();
     return date.year == now.year &&
-           date.month == now.month &&
-           date.day == now.day;
+        date.month == now.month &&
+        date.day == now.day;
   }
 }
