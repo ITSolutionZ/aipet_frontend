@@ -20,7 +20,7 @@ class BookingServiceSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard.outlined(
+    return AppCard(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -29,14 +29,10 @@ class BookingServiceSelector extends StatelessWidget {
             // 섹션 헤더
             Row(
               children: [
-                const Icon(
-                  Icons.room_service,
-                  size: 20,
-                  color: AppColors.primary,
-                ),
+                Icon(Icons.room_service, size: 20, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  '서비스 선택',
+                  'サービスを選択してください',
                   style: AppTextStyles.titleMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -53,7 +49,7 @@ class BookingServiceSelector extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSpacing.sm),
                     ),
                     child: Text(
-                      '${selectedServiceIds.length}개 선택',
+                      '${selectedServiceIds.length}個選択',
                       style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -66,14 +62,16 @@ class BookingServiceSelector extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
 
             // 서비스 목록
-            ...services.map((service) => Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: BookingServiceCard(
-                service: service,
-                isSelected: selectedServiceIds.contains(service.id),
-                onToggle: () => onServiceToggle(service.id),
+            ...services.map(
+              (service) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: BookingServiceCard(
+                  service: service,
+                  isSelected: selectedServiceIds.contains(service.id),
+                  onToggle: () => onServiceToggle(service.id),
+                ),
               ),
-            )),
+            ),
 
             // 총 금액 표시
             if (selectedServiceIds.isNotEmpty) ...[
@@ -99,15 +97,15 @@ class BookingServiceSelector extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.sm),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '총 금액',
+            '合計金額',
             style: AppTextStyles.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -146,7 +144,7 @@ class BookingServiceCard extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withOpacity(0.1)
+              ? AppColors.primary.withValues(alpha: 0.1)
               : AppColors.cardBackgroundGray,
           borderRadius: BorderRadius.circular(AppSpacing.sm),
           border: Border.all(
@@ -169,11 +167,7 @@ class BookingServiceCard extends StatelessWidget {
                 ),
               ),
               child: isSelected
-                  ? const Icon(
-                      Icons.check,
-                      size: 14,
-                      color: Colors.white,
-                    )
+                  ? const Icon(Icons.check, size: 14, color: Colors.white)
                   : null,
             ),
             const SizedBox(width: AppSpacing.md),
@@ -185,9 +179,11 @@ class BookingServiceCard extends StatelessWidget {
                 children: [
                   Text(
                     service.name,
-                    style: AppTextStyles.titleSmall.copyWith(
+                    style: AppTextStyles.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                      color: isSelected
+                          ? AppColors.primary
+                          : AppColors.textPrimary,
                     ),
                   ),
                   if (service.description != null) ...[
@@ -209,7 +205,7 @@ class BookingServiceCard extends StatelessWidget {
                       ),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
-                        '${service.durationMinutes}분',
+                        '${service.durationMinutes}分',
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.textSecondary,
                         ),

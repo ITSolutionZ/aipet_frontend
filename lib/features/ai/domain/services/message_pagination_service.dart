@@ -9,19 +9,19 @@ class MessagePaginationService {
   static const String _tag = 'MessagePaginationService';
 
   /// 메모리 내 최대 메시지 수 (100개로 제한)
-  static const int MAX_MESSAGES_IN_MEMORY = 100;
+  static const int maxMessagesInMemory = 100;
 
   /// 페이지당 메시지 수
-  static const int MESSAGES_PER_PAGE = 20;
+  static const int messagesPerPage = 20;
 
   /// 히스토리 보관 최대 메시지 수 (영구 저장소)
-  static const int MAX_STORED_MESSAGES = 1000;
+  static const int maxStoredMessages = 1000;
 
   /// 자동 정리 임계값 (이 수치를 넘으면 자동으로 오래된 메시지 정리)
-  static const int AUTO_CLEANUP_THRESHOLD = 120;
+  static const int autoCleanupThreshold = 120;
 
   /// 메모리 사용량 모니터링 임계값 (MB)
-  static const int MEMORY_THRESHOLD_MB = 50;
+  static const int memoryThresholdMb = 50;
 
   /// 메시지 목록에서 메모리 제한을 적용합니다
   ///
@@ -31,13 +31,13 @@ class MessagePaginationService {
     List<AiMessageEntity> messages,
   ) {
     try {
-      if (messages.length <= MAX_MESSAGES_IN_MEMORY) {
+      if (messages.length <= maxMessagesInMemory) {
         return ResultFactory.success(messages, 'Messages within memory limit');
       }
 
-      // 최신 메시지부터 MAX_MESSAGES_IN_MEMORY개만 유지
+      // 최신 메시지부터 maxMessagesInMemory개만 유지
       final limitedMessages = messages
-          .skip(messages.length - MAX_MESSAGES_IN_MEMORY)
+          .skip(messages.length - maxMessagesInMemory)
           .toList();
 
       final removedCount = messages.length - limitedMessages.length;
@@ -66,7 +66,7 @@ class MessagePaginationService {
   /// [messageCount] 현재 메시지 수
   /// [return] 정리 필요 여부
   static bool shouldAutoCleanup(int messageCount) {
-    return messageCount >= AUTO_CLEANUP_THRESHOLD;
+    return messageCount >= autoCleanupThreshold;
   }
 
   /// 메시지를 페이지 단위로 분할합니다
@@ -83,12 +83,12 @@ class MessagePaginationService {
         return ResultFactory.failure('페이지 인덱스는 0 이상이어야 합니다');
       }
 
-      final startIndex = pageIndex * MESSAGES_PER_PAGE;
+      final startIndex = pageIndex * messagesPerPage;
       if (startIndex >= messages.length) {
         return ResultFactory.success([], 'Empty page');
       }
 
-      final endIndex = (startIndex + MESSAGES_PER_PAGE).clamp(
+      final endIndex = (startIndex + messagesPerPage).clamp(
         0,
         messages.length,
       );
@@ -109,7 +109,7 @@ class MessagePaginationService {
   /// [return] 총 페이지 수
   static int calculateTotalPages(int totalMessages) {
     if (totalMessages <= 0) return 0;
-    return (totalMessages / MESSAGES_PER_PAGE).ceil();
+    return (totalMessages / messagesPerPage).ceil();
   }
 
   /// 메시지 목록을 시간순으로 정렬합니다
@@ -206,13 +206,13 @@ class MessagePaginationService {
     final usageBytes = estimateMemoryUsage(messages);
     final usageMB = usageBytes / (1024 * 1024);
 
-    if (kDebugMode && usageMB > MEMORY_THRESHOLD_MB * 0.8) {
+    if (kDebugMode && usageMB > memoryThresholdMb * 0.8) {
       debugPrint(
         '[$_tag] Memory usage approaching threshold: ${usageMB.toStringAsFixed(1)}MB',
       );
     }
 
-    return usageMB > MEMORY_THRESHOLD_MB;
+    return usageMB > memoryThresholdMb;
   }
 
   /// 메시지 목록을 최적화합니다 (정렬, 중복 제거, 제한 적용)

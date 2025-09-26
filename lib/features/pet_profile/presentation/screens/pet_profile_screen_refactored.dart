@@ -44,9 +44,8 @@ class _PetProfileScreenRefactoredState
     final petAsyncValue = ref.watch(petByIdProvider(widget.petId));
 
     return petAsyncValue.when(
-      loading: () => const Scaffold(
-        body: Center(child: const CircularProgressIndicator()),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, stackTrace) => Scaffold(
         body: Center(
           child: Column(

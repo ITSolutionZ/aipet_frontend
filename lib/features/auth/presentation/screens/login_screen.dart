@@ -65,7 +65,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     SizedBox(height: AppSpacing.lg),
                     AuthLogo(),
                     SizedBox(height: AppSpacing.lg),
-                    const Divider(),
+                    Divider(),
                     SizedBox(height: AppSpacing.lg),
                   ],
                 ),

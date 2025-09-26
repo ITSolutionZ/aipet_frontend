@@ -67,7 +67,7 @@ class RecipeScreen extends ConsumerWidget {
             return _buildRecipeCard(recipe);
           },
         ),
-        loading: () => const Center(child: const CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

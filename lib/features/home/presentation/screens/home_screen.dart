@@ -1,9 +1,24 @@
 import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
+import 'package:aipet_frontend/features/home/domain/entities/pet_summary_entity.dart';
+import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
 import 'package:aipet_frontend/features/home/presentation/controllers/home_dashboard_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+// 임시 프로바이더 (실제 구현에서는 별도 파일로 분리)
+final homeDashboardControllerProvider = FutureProvider<HomeDashboardEntity>((
+  ref,
+) async {
+  final controller = HomeDashboardController(ref as WidgetRef);
+  final result = await controller.initializeHome();
+  if (result.isSuccess) {
+    return result.dataOrNull!;
+  } else {
+    throw Exception(result.errorOrNull);
+  }
+});
 
 /// 🏠 홈 스크린
 ///
@@ -20,9 +35,7 @@ class HomeScreen extends ConsumerWidget {
       body: SafeArea(
         child: dashboardState.when(
           data: (dashboard) => _buildDashboard(context, ref, dashboard),
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
-          ),
+          loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stackTrace) => _buildErrorView(context, ref, error),
         ),
       ),
@@ -50,24 +63,25 @@ class HomeScreen extends ConsumerWidget {
             _buildHeader(context, dashboard),
             const SizedBox(height: AppSpacing.lg),
 
-            // 날씨 정보 (있을 경우)
-            if (dashboard.weather != null) ...[
-              _buildWeatherCard(dashboard.weather!),
-              const SizedBox(height: AppSpacing.lg),
-            ],
+            // 날씨 정보
+            _buildWeatherCard(dashboard.weather),
+            const SizedBox(height: AppSpacing.lg),
 
             // 펫 요약 카드들
-            _buildPetSummaryGrid(dashboard.pets),
+            _buildPetSummaryGrid(dashboard.petProfiles),
             const SizedBox(height: AppSpacing.lg),
 
             // 오늘의 예약 (있을 경우)
             if (dashboard.hasTodayAppointments) ...[
-              _buildTodayAppointments(dashboard.todayAppointments),
+              _buildTodayAppointments(dashboard.upcomingAppointments),
               const SizedBox(height: AppSpacing.lg),
             ],
 
             // 산책 요약
-            _buildWalkSummary(dashboard.totalWalkMinutes),
+            _buildWalkSummary(
+              context,
+              dashboard.walkSummary.todayDuration.inMinutes,
+            ),
           ],
         ),
       ),
@@ -84,9 +98,7 @@ class HomeScreen extends ConsumerWidget {
           children: [
             Text(
               'おかえりなさい！',
-              style: AppTextStyles.headlineMedium.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
             ),
             Text(
               '今日も一緒に頑張りましょう',
@@ -98,10 +110,7 @@ class HomeScreen extends ConsumerWidget {
         ),
         CircleAvatar(
           backgroundColor: AppColors.primary.withOpacity(0.1),
-          child: Icon(
-            Icons.person,
-            color: AppColors.primary,
-          ),
+          child: Icon(Icons.person, color: AppColors.primary),
         ),
       ],
     );
@@ -162,10 +171,7 @@ class HomeScreen extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Text(
-            weather.icon,
-            style: const TextStyle(fontSize: 40),
-          ),
+          Text(weather.iconCode, style: const TextStyle(fontSize: 40)),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
@@ -173,9 +179,7 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Text(
                   '${weather.temperature.round()}°C',
-                  style: AppTextStyles.headlineMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text(
                   weather.location,
@@ -193,13 +197,13 @@ class HomeScreen extends ConsumerWidget {
                 vertical: AppSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: AppColors.success.withOpacity(0.1),
+                color: AppColors.pointGreen.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(AppSpacing.sm),
               ),
               child: Text(
                 '散歩日和',
                 style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.success,
+                  color: AppColors.pointGreen,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -216,9 +220,7 @@ class HomeScreen extends ConsumerWidget {
       children: [
         Text(
           'ペット一覧',
-          style: AppTextStyles.titleLarge.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: AppSpacing.md),
         GridView.builder(
@@ -258,15 +260,11 @@ class HomeScreen extends ConsumerWidget {
           CircleAvatar(
             radius: 30,
             backgroundColor: AppColors.primary.withOpacity(0.1),
-            backgroundImage: pet.imageUrl != null
-                ? NetworkImage(pet.imageUrl!)
+            backgroundImage: pet.profileImageUrl != null
+                ? NetworkImage(pet.profileImageUrl!)
                 : null,
-            child: pet.imageUrl == null
-                ? Icon(
-                    Icons.pets,
-                    color: AppColors.primary,
-                    size: 30,
-                  )
+            child: pet.profileImageUrl == null
+                ? Icon(Icons.pets, color: AppColors.primary, size: 30)
                 : null,
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -290,24 +288,24 @@ class HomeScreen extends ConsumerWidget {
   }
 
   /// 오늘의 예약 섹션
-  Widget _buildTodayAppointments(List<TodayAppointmentEntity> appointments) {
+  Widget _buildTodayAppointments(List<AppointmentSummary> appointments) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '今日の予約',
-          style: AppTextStyles.titleLarge.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: AppSpacing.md),
-        ...appointments.map((appointment) => _buildAppointmentCard(appointment)),
+        ...appointments.map(
+          (appointment) => _buildAppointmentCard(appointment),
+        ),
       ],
     );
   }
 
   /// 예약 카드
-  Widget _buildAppointmentCard(TodayAppointmentEntity appointment) {
+  Widget _buildAppointmentCard(AppointmentSummary appointment) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -318,10 +316,7 @@ class HomeScreen extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.schedule,
-            color: AppColors.primary,
-          ),
+          Icon(Icons.schedule, color: AppColors.primary),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
@@ -334,7 +329,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  appointment.location,
+                  appointment.petName,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -344,7 +339,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           Text(
             '${appointment.scheduledTime.hour}:${appointment.scheduledTime.minute.toString().padLeft(2, '0')}',
-            style: AppTextStyles.titleSmall.copyWith(
+            style: AppTextStyles.titleMedium.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.bold,
             ),
@@ -355,7 +350,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   /// 산책 요약 섹션
-  Widget _buildWalkSummary(int totalMinutes) {
+  Widget _buildWalkSummary(BuildContext context, int totalMinutes) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -364,11 +359,7 @@ class HomeScreen extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.directions_walk,
-            color: AppColors.primary,
-            size: 32,
-          ),
+          Icon(Icons.directions_walk, color: AppColors.primary, size: 32),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
@@ -381,7 +372,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  '${totalMinutes}分',
+                  '$totalMinutes分',
                   style: AppTextStyles.headlineSmall.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.bold,
@@ -407,11 +398,7 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: AppColors.error,
-            ),
+            Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: AppSpacing.lg),
             Text(
               'データの読み込みに失敗しました',
@@ -437,4 +424,3 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 }
-

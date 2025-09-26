@@ -264,8 +264,8 @@ class _FacilityFullscreenMapScreenState
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 16),
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
             Text('地図を読み込み中...'),
           ],
         ),

@@ -74,7 +74,7 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
       appBar: const SoftGradientBackAppBar(title: 'Pet Profile'),
       body: tricksState.when(
         data: (tricks) => _buildContent(tricks),
-        loading: () => const Center(child: const CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text('エラーが発生しました: $error')),
       ),
     );

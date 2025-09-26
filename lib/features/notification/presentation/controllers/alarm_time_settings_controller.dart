@@ -13,9 +13,9 @@ class AlarmTimeSettingsController
     : super(const AlarmTimeSettingsState());
 
   /// 알림 시간 로드
-  Future<void> loadAlarmTimes() async {
+  Future<void> loadAlarmTimes(String userId) async {
     try {
-      await _getNotificationSettingsUseCase();
+      await _getNotificationSettingsUseCase(userId);
 
       // SharedPreferences에서 저장된 시간 정보 로드
       final prefs = await SharedPreferences.getInstance();

@@ -2,24 +2,15 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
-import 'package:aipet_frontend/features/home/data/services/api_rate_limiter.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/home/home_mock_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
-import 'weather_cache_service.dart';
-
 class WeatherService {
   static const String _oneCallUrl =
       'https://api.openweathermap.org/data/3.0/onecall';
   static const String _geocodingUrl = 'https://api.openweathermap.org/geo/1.0';
-
-  // API Rate Limiter 설정
-  static const String _rateLimiterKey = 'weather_api';
-
-  // 마지막 API 요청 시간 추적
-  static DateTime? _lastRequestTime;
 
   Future<WeatherData?> getCurrentWeather({
     WeatherLocation? location,
@@ -28,71 +19,6 @@ class WeatherService {
     try {
       final weatherLocation = location ?? await _getCurrentLocation();
       if (weatherLocation == null) return null;
-
-      // 🚦 Rate Limiting 확인
-      final rateLimitResult = ApiRateLimiter.checkRateLimit(
-        _rateLimiterKey,
-        priority: userTriggered ? RequestPriority.high : RequestPriority.normal,
-        isUserTriggered: userTriggered,
-      );
-
-      if (!rateLimitResult.isSuccess) {
-        final decision = rateLimitResult.dataOrNull!;
-        if (kDebugMode) {
-          debugPrint('🚫 API Rate limit: ${decision.reason}');
-          if (decision.retryAfter != null) {
-            debugPrint('⏰ Retry after: ${decision.retryAfter!.inSeconds}s');
-          }
-          debugPrint('📊 Quota: ${decision.quotaStatus}');
-        }
-
-        // Rate limit 걸렸을 때 캐시된 데이터 사용
-        final cachedData = await WeatherCacheService.getCached(
-          location: weatherLocation,
-          userTriggered: false, // 캐시 허용 기준 완화
-        );
-        if (cachedData != null) {
-          debugPrint('✅ Using cached data due to rate limit');
-          return cachedData;
-        }
-
-        // 캐시도 없고 사용자 트리거가 아니면 null 반환
-        if (!userTriggered) {
-          debugPrint('❌ No cached data available, skipping API call');
-          return null;
-        }
-
-        // 사용자 트리거인 경우 잠시 대기 후 재시도
-        if (decision.retryAfter != null &&
-            decision.retryAfter!.inSeconds <= 10) {
-          debugPrint(
-            '⏳ User triggered request - waiting ${decision.retryAfter!.inSeconds}s...',
-          );
-          await Future.delayed(decision.retryAfter!);
-          // 재귀 호출로 다시 시도 (무한 루프 방지를 위해 userTriggered를 false로)
-          return getCurrentWeather(location: location, userTriggered: false);
-        }
-
-        throw Exception('API rate limit exceeded: ${decision.reason}');
-      }
-
-      if (kDebugMode) {
-        final decision = rateLimitResult.dataOrNull!;
-        debugPrint(
-          '✅ Rate limit OK - Tokens: ${decision.tokensRemaining}, ${decision.quotaStatus}',
-        );
-      }
-
-      // 캐시된 데이터 확인
-      final cachedData = await WeatherCacheService.getCached(
-        location: weatherLocation,
-        userTriggered: userTriggered,
-      );
-
-      if (cachedData != null) {
-        debugPrint('✅ Using cached weather data (API call skipped)');
-        return cachedData;
-      }
 
       final apiKey = AppConfig.current.weatherApiKey;
       if (apiKey.isEmpty) {
@@ -116,38 +42,14 @@ class WeatherService {
       final response = await http.get(url).timeout(const Duration(seconds: 10));
       debugPrint('📡 One Call API 3.0 응답: ${response.statusCode}');
 
-      if (response.statusCode == 401) {
-        debugPrint('❌ One Call API 401 인증 오류:');
-        debugPrint('   - API 키 검증 실패');
-        debugPrint('   - 상태 코드: ${response.statusCode}');
-
-        debugPrint('💡 해결책: OpenWeatherMap 계정에서 One Call API 구독 확인 필요');
-      }
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
-        final current = data['current'] as Map<String, dynamic>;
-        final uvi = current['uvi'];
-
-        debugPrint('🌞 One Call API 3.0 응답 데이터:');
-        debugPrint('   전체 current 데이터: $current');
-        debugPrint('   UV Index (uvi): $uvi (타입: ${uvi.runtimeType})');
-
-        debugPrint(
-          '✅ One Call API 3.0 성공 - UV: $uvi, Wind: ${current['wind_speed']}',
-        );
         final weatherData = WeatherData.fromOneCallJson(
           data,
           weatherLocation.name,
         );
 
-        // 새로운 캐시 서비스를 통한 캐시 저장
-        await WeatherCacheService.setCached(
-          weatherData: weatherData,
-          location: weatherLocation,
-        );
-
-        _lastRequestTime = DateTime.now();
+        // _lastRequestTime = DateTime.now();
         return weatherData;
       } else {
         // 에러 발생 시 기본 API로 폴백 (One Call API 권한 없는 경우)
@@ -186,25 +88,9 @@ class WeatherService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
-      final wind = data['wind'] as Map<String, dynamic>? ?? {};
-      final windSpeed = wind['speed'] ?? 0.0;
-      final weatherId = (data['weather'] as List).first['id'] as int;
-      final estimatedUV = _estimateUvIndexForLocation(
-        weatherId,
-        weatherLocation,
-      );
-      debugPrint(
-        '✅ 기본 API 성공 - Wind: ${windSpeed}m/s, UV: $estimatedUV (도쿄 기준 추정값)',
-      );
       final weatherData = WeatherData.fromJson(data, weatherLocation.name);
 
-      // 캐시 저장
-      await WeatherCacheService.setCached(
-        weatherData: weatherData,
-        location: weatherLocation,
-      );
-
-      _lastRequestTime = DateTime.now();
+      // _lastRequestTime = DateTime.now();
       return weatherData;
     } else if (response.statusCode == 401) {
       // API 키 문제시 목업 데이터 사용
@@ -362,24 +248,8 @@ class WeatherService {
     );
   }
 
-  /// 🚦 Weather API Rate Limit 상태 조회
-  static ApiRateLimitStats getRateLimitStats() {
-    return ApiRateLimiter.getStats(_rateLimiterKey);
-  }
-
-  /// 🚦 Rate Limiter 리셋 (개발/디버깅용)
-  static void resetRateLimit() {
-    ApiRateLimiter.resetApiLimiter(_rateLimiterKey);
-    if (kDebugMode) {
-      debugPrint('🔄 Weather API Rate Limiter reset');
-    }
-  }
-
-  /// 캐시 클리어 (전체)
-  static Future<void> clearCache() async {
-    await WeatherCacheService.clearAllCache();
-    debugPrint('🗑️ 날씨 캐시 전체 클리어');
-  }
+  // 마지막 API 요청 시간 추적 (향후 사용 예정)
+  // static DateTime? _lastRequestTime;
 
   /// API 실패 시 목업 날씨 데이터 반환
   WeatherData _getMockWeatherData(String locationName) {
@@ -411,73 +281,9 @@ class WeatherService {
       humidity: 65,
       windSpeed: 2.5,
       iconCode: mockWeatherInfo['iconCode'] as String,
-      uvIndex: _estimateUvIndexForLocation(800, _getDefaultLocation()),
+      uvIndex: 5.0,
       visibility: 10000,
       pressure: 1013.25,
     );
-  }
-
-  /// 특정 위치에 대한 UV Index 추정 (도쿄 시나가와구 기준)
-  double _estimateUvIndexForLocation(int weatherId, WeatherLocation location) {
-    final now = DateTime.now();
-    final hour = now.hour;
-
-    // 야간 (18시~6시): UV Index 0
-    if (hour < 6 || hour >= 18) {
-      return 0.0;
-    }
-
-    // 도쿄 시나가와구의 실제 위도 (경도는 UV Index 계산에 큰 영향 없음)
-    const tokyoLatitude = 35.6092;
-
-    // 도쿄 시나가와구와 현재 위치의 위도 차이
-    final latDiff = (location.latitude - tokyoLatitude).abs();
-
-    // 위도 차이에 따른 UV Index 보정 (위도 1도당 약 5% 변화)
-    final uvCorrection = 1.0 + (latDiff * 0.05);
-
-    // 낮 시간대 기본 UV Index 계산 (도쿄 기준)
-    double baseUv;
-    if (hour >= 11 && hour <= 13) {
-      baseUv = 8.0; // 정오 시간대 최고
-    } else if (hour >= 10 && hour <= 14) {
-      baseUv = 6.0; // 오전/오후
-    } else if (hour >= 9 && hour <= 15) {
-      baseUv = 4.0; // 이른 오전/늦은 오후
-    } else {
-      baseUv = 2.0; // 아침/저녁
-    }
-
-    // 날씨 상황에 따른 UV Index 보정
-    double weatherAdjustedUv;
-    if (weatherId >= 200 && weatherId < 300) {
-      weatherAdjustedUv = baseUv * 0.3; // 뇌우: 70% 감소
-    } else if (weatherId >= 300 && weatherId < 600) {
-      weatherAdjustedUv = baseUv * 0.4; // 비: 60% 감소
-    } else if (weatherId >= 600 && weatherId < 700) {
-      weatherAdjustedUv = baseUv * 0.2; // 눈: 80% 감소
-    } else if (weatherId >= 700 && weatherId < 800) {
-      weatherAdjustedUv = baseUv * 0.5; // 안개/먼지: 50% 감소
-    } else if (weatherId == 800) {
-      weatherAdjustedUv = baseUv; // 맑음: 그대로
-    } else if (weatherId >= 801 && weatherId <= 802) {
-      weatherAdjustedUv = baseUv * 0.8; // 약간 흐림: 20% 감소
-    } else if (weatherId >= 803 && weatherId <= 804) {
-      weatherAdjustedUv = baseUv * 0.6; // 많이 흐림: 40% 감소
-    } else {
-      weatherAdjustedUv = baseUv * 0.7; // 기본값
-    }
-
-    // 위치 보정 적용
-    final finalUv = weatherAdjustedUv * uvCorrection;
-
-    debugPrint(
-      '🌍 UV Index 계산 - 위치: ${location.name}, 위도: ${location.latitude}, 경도: ${location.longitude}',
-    );
-    debugPrint(
-      '   기본 UV: $baseUv, 날씨 보정: $weatherAdjustedUv, 위치 보정: $uvCorrection, 최종: ${finalUv.toStringAsFixed(1)}',
-    );
-
-    return finalUv.clamp(0.0, 11.0); // UV Index는 0-11 범위로 제한
   }
 }

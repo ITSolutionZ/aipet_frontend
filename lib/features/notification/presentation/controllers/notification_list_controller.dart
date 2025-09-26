@@ -17,9 +17,9 @@ class NotificationListController {
       );
 
   /// 알림 설정 상태 확인
-  Future<bool> checkNotificationSettings() async {
+  Future<bool> checkNotificationSettings(String userId) async {
     try {
-      final settings = await _getNotificationSettingsUseCase();
+      final settings = await _getNotificationSettingsUseCase(userId);
 
       // 주요 알림 타입들이 모두 활성화되어 있는지 확인
       final mainTypes = [
@@ -28,9 +28,14 @@ class NotificationListController {
         NotificationType.system,
       ];
 
-      final allEnabled =
-          settings.enabled &&
-          mainTypes.every((type) => settings.isTypeEnabled(type));
+      // settings가 Map<String, dynamic>이므로 적절히 처리
+      final enabled = settings['enabled'] as bool? ?? false;
+      final typeSettings = settings['typeSettings'] as Map<String, dynamic>? ?? {};
+      
+      final allEnabled = enabled && mainTypes.every((type) {
+        final typeKey = type.toString().split('.').last;
+        return typeSettings[typeKey] as bool? ?? false;
+      });
 
       return !allEnabled; // 설정이 완료되지 않았으면 true (카드 표시)
     } catch (e) {

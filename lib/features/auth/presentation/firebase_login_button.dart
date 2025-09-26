@@ -162,7 +162,7 @@ class FirebaseLoginButton extends ConsumerWidget {
             const Row(
               children: [
                 Icon(Icons.login, color: Colors.blue, size: 32),
-                const SizedBox(width: 16),
+                SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +174,7 @@ class FirebaseLoginButton extends ConsumerWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         '먼저 Firebase에 로그인해주세요',
                         style: TextStyle(fontSize: 12, color: Colors.blue),

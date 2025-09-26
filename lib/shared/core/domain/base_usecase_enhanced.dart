@@ -1,4 +1,4 @@
-import 'result.dart';
+import '../../foundation/result/app_result.dart';
 
 /// 향상된 UseCase 기본 클래스
 ///

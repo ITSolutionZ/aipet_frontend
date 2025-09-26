@@ -9,10 +9,12 @@ class ToggleFavoriteUseCase {
 
   Future<Result<void>> call(ToggleFavoriteParams params) async {
     try {
-      return await _repository.toggleFavoriteMessage(
-        messageId: params.messageId,
-        isFavorite: params.isFavorite,
-      );
+      final result = await _repository.toggleFavoriteMessage(params.messageId);
+      if (result.isSuccess) {
+        return ResultFactory.success(null);
+      } else {
+        return ResultFactory.failure(result.errorOrNull ?? 'Unknown error');
+      }
     } catch (e) {
       return ResultFactory.failure('즐겨찾기 설정 중 오류가 발생했습니다: $e');
     }

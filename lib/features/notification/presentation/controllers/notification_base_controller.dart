@@ -30,9 +30,10 @@ class NotificationBaseController extends BaseController {
   /// 알림 목록 가져오기 (UI 피드백 포함)
   Future<List<NotificationModel>> getNotificationsWithFeedback(
     BuildContext context,
+    String userId,
   ) async {
     try {
-      final notifications = await _getNotificationsUseCase.call();
+      final notifications = await _getNotificationsUseCase.call(userId);
       return notifications;
     } catch (error) {
       if (context.mounted) {
@@ -43,9 +44,9 @@ class NotificationBaseController extends BaseController {
   }
 
   /// 알림 새로고침 (UI 피드백 포함)
-  Future<void> refreshNotificationsWithFeedback(BuildContext context) async {
+  Future<void> refreshNotificationsWithFeedback(BuildContext context, String userId) async {
     try {
-      await _getNotificationsUseCase.call();
+      await _getNotificationsUseCase.call(userId);
       if (context.mounted) {
         showSuccessSnackBar(context, '通知が更新されました。');
       }
@@ -57,9 +58,9 @@ class NotificationBaseController extends BaseController {
   }
 
   /// 알림 읽음 처리 (UI 피드백 포함)
-  Future<void> markAsReadWithFeedback(BuildContext context, String id) async {
+  Future<void> markAsReadWithFeedback(BuildContext context, String userId, String id) async {
     try {
-      await _markAsReadUseCase.call(id);
+      await _markAsReadUseCase.call(userId, id);
       if (context.mounted) {
         showSuccessSnackBar(context, '通知を既読にしました。');
       }
@@ -73,10 +74,11 @@ class NotificationBaseController extends BaseController {
   /// 알림 삭제 (UI 피드백 포함)
   Future<void> deleteNotificationWithFeedback(
     BuildContext context,
+    String userId,
     String id,
   ) async {
     try {
-      await _deleteNotificationUseCase.call(id);
+      await _deleteNotificationUseCase.call(userId, id);
       if (context.mounted) {
         showSuccessSnackBar(context, '通知が削除されました。');
       }
@@ -90,10 +92,11 @@ class NotificationBaseController extends BaseController {
   /// 알림 설정 저장 (UI 피드백 포함)
   Future<void> saveNotificationSettingsWithFeedback(
     BuildContext context,
-    NotificationSettings settings,
+    String userId,
+    Map<String, dynamic> settings,
   ) async {
     try {
-      await _saveSettingsUseCase.call(settings);
+      await _saveSettingsUseCase.call(userId, settings);
       if (context.mounted) {
         showSuccessSnackBar(context, '通知設定が保存されました。');
       }
@@ -141,9 +144,9 @@ class NotificationBaseController extends BaseController {
   }
 
   /// 읽지 않은 알림 개수 가져오기
-  Future<int> getUnreadCount() async {
+  Future<int> getUnreadCount(String userId) async {
     try {
-      final notifications = await _getNotificationsUseCase.call();
+      final notifications = await _getNotificationsUseCase.call(userId);
       return notifications
           .where((n) => n.status == NotificationStatus.unread)
           .length;
@@ -154,12 +157,12 @@ class NotificationBaseController extends BaseController {
   }
 
   /// 알림 설정 가져오기
-  Future<NotificationSettings?> getNotificationSettings() async {
+  Future<Map<String, dynamic>> getNotificationSettings(String userId) async {
     try {
-      return await _getSettingsUseCase.call();
+      return await _getSettingsUseCase.call(userId);
     } catch (error) {
       handleError(error);
-      return null;
+      return {};
     }
   }
 

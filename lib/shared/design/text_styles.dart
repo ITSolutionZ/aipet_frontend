@@ -16,4 +16,10 @@ class AppTextStyles {
     fontSize: 12,
     fontWeight: FontWeight.w300,
   );
+
+  // Additional semantic text style getters
+  static TextStyle get titleMedium => AppFonts.point(fontSize: 18, fontWeight: FontWeight.w500);
+  static TextStyle get headlineSmall => AppFonts.point(fontSize: 20, fontWeight: FontWeight.w600);
+  static TextStyle get bodySmall => AppFonts.base(fontSize: 12, fontWeight: FontWeight.normal);
+  static TextStyle get bodyMedium => AppFonts.base(fontSize: 14, fontWeight: FontWeight.normal);
 }

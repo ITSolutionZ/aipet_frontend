@@ -1,22 +1,25 @@
-import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
 
-/// 🏠 홈 리포지토리 인터페이스
-///
-/// 홈 화면 데이터 관리를 위한 리포지토리 인터페이스
+/// 홈 리포지토리 인터페이스
 abstract class HomeRepository {
-  /// 대시보드 데이터 가져오기
-  Future<Result<HomeDashboardEntity>> getDashboardData(String userId);
+  /// 대시보드 데이터 조회
+  Future<HomeDashboardEntity> getDashboardData();
 
-  /// 날씨 데이터 가져오기
-  Future<Result<WeatherEntity?>> getWeatherData(String location);
+  /// 현재 날씨 정보 조회
+  Future<WeatherEntity?> getCurrentWeather({
+    WeatherLocationEntity? location,
+    bool userTriggered = false,
+  });
 
-  /// 펫 요약 목록 가져오기
-  Future<Result<List<PetSummaryEntity>>> getPetSummaries(String userId);
+  /// 펫 프로필 목록 조회
+  Future<List<PetSummaryEntity>> getPetSummaries();
 
-  /// 오늘의 예약 목록 가져오기
-  Future<Result<List<TodayAppointmentEntity>>> getTodayAppointments(String userId);
+  /// 산책 요약 정보 조회
+  Future<WalkSummary> getWalkSummary();
 
-  /// 오늘의 총 산책 시간 가져오기
-  Future<Result<int>> getTotalWalkMinutes(String userId);
+  /// 펫 건강 요약 정보 조회
+  Future<HealthSummary> getPetHealthSummary();
+
+  /// 예정된 예약 목록 조회
+  Future<List<AppointmentSummary>> getUpcomingAppointments();
 }

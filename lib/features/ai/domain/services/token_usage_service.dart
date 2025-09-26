@@ -8,19 +8,19 @@ class TokenUsageService {
   static const String _tag = 'TokenUsageService';
 
   /// 일일 토큰 사용량 제한 (GPT-3.5-turbo 기준)
-  static const int DAILY_TOKEN_LIMIT = 50000;
+  static const int dailyTokenLimit = 50000;
 
   /// 시간당 토큰 사용량 제한
-  static const int HOURLY_TOKEN_LIMIT = 10000;
+  static const int hourlyTokenLimit = 10000;
 
   /// 단일 요청 최대 토큰 수
-  static const int MAX_TOKENS_PER_REQUEST = 4000;
+  static const int maxTokensPerRequest = 4000;
 
   /// 경고 임계값 (일일 제한의 80%)
-  static const int WARNING_THRESHOLD = DAILY_TOKEN_LIMIT * 80 ~/ 100;
+  static const int warningThreshold = dailyTokenLimit * 80 ~/ 100;
 
   /// 토큰당 예상 비용 (USD, GPT-3.5-turbo 기준)
-  static const double COST_PER_TOKEN = 0.002 / 1000;
+  static const double costPerToken = 0.002 / 1000;
 
   /// 토큰 사용량 기록
   static final Map<String, int> _dailyUsage = {};
@@ -47,15 +47,15 @@ class TokenUsageService {
 
       // 일일 사용량 체크
       final currentDailyUsage = _dailyUsage[dateKey] ?? 0;
-      if (currentDailyUsage + totalTokens > DAILY_TOKEN_LIMIT) {
-        return ResultFactory.failure('일일 토큰 사용량 한도 초과 ($DAILY_TOKEN_LIMIT 토큰)');
+      if (currentDailyUsage + totalTokens > dailyTokenLimit) {
+        return ResultFactory.failure('일일 토큰 사용량 한도 초과 ($dailyTokenLimit 토큰)');
       }
 
       // 시간당 사용량 체크
       final currentHourlyUsage = _hourlyUsage[hourKey] ?? 0;
-      if (currentHourlyUsage + totalTokens > HOURLY_TOKEN_LIMIT) {
+      if (currentHourlyUsage + totalTokens > hourlyTokenLimit) {
         return ResultFactory.failure(
-          '시간당 토큰 사용량 한도 초과 ($HOURLY_TOKEN_LIMIT 토큰)',
+          '시간당 토큰 사용량 한도 초과 ($hourlyTokenLimit 토큰)',
         );
       }
 
@@ -70,7 +70,7 @@ class TokenUsageService {
         totalTokens: totalTokens,
         model: model,
         userId: userId,
-        estimatedCost: totalTokens * COST_PER_TOKEN,
+        estimatedCost: totalTokens * costPerToken,
       );
 
       _usageHistory.add(usageRecord);
@@ -81,15 +81,15 @@ class TokenUsageService {
       }
 
       // 경고 레벨 확인
-      if (currentDailyUsage + totalTokens >= WARNING_THRESHOLD && kDebugMode) {
+      if (currentDailyUsage + totalTokens >= warningThreshold && kDebugMode) {
         debugPrint(
-          '[$_tag] ⚠️ 일일 토큰 사용량이 경고 임계값에 도달: ${currentDailyUsage + totalTokens}/$DAILY_TOKEN_LIMIT',
+          '[$_tag] ⚠️ 일일 토큰 사용량이 경고 임계값에 도달: ${currentDailyUsage + totalTokens}/$dailyTokenLimit',
         );
       }
 
       if (kDebugMode) {
         debugPrint(
-          '[$_tag] 토큰 사용량 기록: $totalTokens 토큰 (일일: ${currentDailyUsage + totalTokens}/$DAILY_TOKEN_LIMIT)',
+          '[$_tag] 토큰 사용량 기록: $totalTokens 토큰 (일일: ${currentDailyUsage + totalTokens}/$dailyTokenLimit)',
         );
       }
 
@@ -123,11 +123,11 @@ class TokenUsageService {
     return TokenUsageStatistics(
       date: targetDate,
       totalTokens: usage,
-      remainingTokens: (DAILY_TOKEN_LIMIT - usage).clamp(0, DAILY_TOKEN_LIMIT),
-      usagePercentage: (usage / DAILY_TOKEN_LIMIT * 100).clamp(0.0, 100.0),
-      estimatedCost: usage * COST_PER_TOKEN,
-      isOverLimit: usage >= DAILY_TOKEN_LIMIT,
-      isNearLimit: usage >= WARNING_THRESHOLD,
+      remainingTokens: (dailyTokenLimit - usage).clamp(0, dailyTokenLimit),
+      usagePercentage: (usage / dailyTokenLimit * 100).clamp(0.0, 100.0),
+      estimatedCost: usage * costPerToken,
+      isOverLimit: usage >= dailyTokenLimit,
+      isNearLimit: usage >= warningThreshold,
       requestCount: _getRequestCountForDate(targetDate),
     );
   }
@@ -192,11 +192,11 @@ class TokenUsageService {
     final currentDailyUsage = _dailyUsage[dateKey] ?? 0;
     final currentHourlyUsage = _hourlyUsage[hourKey] ?? 0;
 
-    if (currentDailyUsage + estimatedTokens > DAILY_TOKEN_LIMIT) {
+    if (currentDailyUsage + estimatedTokens > dailyTokenLimit) {
       return ResultFactory.failure('일일 토큰 한도 초과');
     }
 
-    if (currentHourlyUsage + estimatedTokens > HOURLY_TOKEN_LIMIT) {
+    if (currentHourlyUsage + estimatedTokens > hourlyTokenLimit) {
       return ResultFactory.failure('시간당 토큰 한도 초과');
     }
 
@@ -270,6 +270,6 @@ class TokenUsageStatistics {
 
   @override
   String toString() {
-    return 'TokenUsageStatistics(date: $date, usage: $totalTokens/${TokenUsageService.DAILY_TOKEN_LIMIT}, percentage: ${usagePercentage.toStringAsFixed(1)}%, cost: \$${estimatedCost.toStringAsFixed(4)})';
+    return 'TokenUsageStatistics(date: $date, usage: $totalTokens/${TokenUsageService.dailyTokenLimit}, percentage: ${usagePercentage.toStringAsFixed(1)}%, cost: \$${estimatedCost.toStringAsFixed(4)})';
   }
 }

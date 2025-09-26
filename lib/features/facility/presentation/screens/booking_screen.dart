@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/features/facility/presentation/controllers/booking_controller.dart';
-import 'package:aipet_frontend/features/facility/presentation/widgets/booking_facility_card.dart';
 import 'package:aipet_frontend/features/facility/presentation/widgets/booking_date_selector.dart';
-import 'package:aipet_frontend/features/facility/presentation/widgets/booking_time_selector.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/booking_facility_card.dart';
 import 'package:aipet_frontend/features/facility/presentation/widgets/booking_service_selector.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/booking_time_selector.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,7 +43,9 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(bookingControllerProvider(widget.facilityId));
-    final controller = ref.read(bookingControllerProvider(widget.facilityId).notifier);
+    final controller = ref.read(
+      bookingControllerProvider(widget.facilityId).notifier,
+    );
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -83,8 +85,11 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             // 🛠️ 서비스 선택
             BookingServiceSelector(
               services: _getServices(),
-              selectedServiceIds: state.selectedServices.map((s) => s.toString()).toList(),
-              onServiceToggle: (serviceId) => controller.toggleService(int.parse(serviceId)),
+              selectedServiceIds: state.selectedServices
+                  .map((s) => s.toString())
+                  .toList(),
+              onServiceToggle: (serviceId) =>
+                  controller.toggleService(int.parse(serviceId)),
               allowMultipleSelection: true,
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -120,20 +125,13 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
-                const Icon(
-                  Icons.person,
-                  size: 20,
-                  color: Colors.blue,
-                ),
-                const SizedBox(width: 8),
-                const Text(
+                Icon(Icons.person, size: 20, color: Colors.blue),
+                SizedBox(width: 8),
+                Text(
                   '예약자 정보',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -180,20 +178,13 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
-                const Icon(
-                  Icons.note_outlined,
-                  size: 20,
-                  color: Colors.blue,
-                ),
-                const SizedBox(width: 8),
-                const Text(
+                Icon(Icons.note_outlined, size: 20, color: Colors.blue),
+                SizedBox(width: 8),
+                Text(
                   '메모 (선택사항)',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -218,18 +209,18 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   /// 📋 예약 버튼
   Widget _buildBookingButton(BookingController controller) {
     return ElevatedButton(
-      onPressed: _isBookingEnabled() ? () => _showBookingConfirmation(controller) : null,
+      onPressed: _isBookingEnabled()
+          ? () => _showBookingConfirmation(controller)
+          : null,
       child: const Text('예약하기'),
     );
   }
 
   bool _isBookingEnabled() {
     final state = ref.read(bookingControllerProvider(widget.facilityId));
-    return state.selectedDate != null &&
-           state.selectedTime != null &&
-           state.selectedServices.isNotEmpty &&
-           _nameController.text.trim().isNotEmpty &&
-           _phoneController.text.trim().isNotEmpty;
+    return state.selectedServices.isNotEmpty &&
+        _nameController.text.trim().isNotEmpty &&
+        _phoneController.text.trim().isNotEmpty;
   }
 
   /// 📋 예약 확인 다이얼로그
@@ -262,9 +253,16 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
       // 예약 정보 수집
       final bookingData = {
         'facilityId': widget.facilityId,
-        'date': ref.read(bookingControllerProvider(widget.facilityId)).selectedDate?.toIso8601String(),
-        'time': ref.read(bookingControllerProvider(widget.facilityId)).selectedTime,
-        'services': ref.read(bookingControllerProvider(widget.facilityId)).selectedServices,
+        'date': ref
+            .read(bookingControllerProvider(widget.facilityId))
+            .selectedDate
+            .toIso8601String(),
+        'time': ref
+            .read(bookingControllerProvider(widget.facilityId))
+            .selectedTime,
+        'services': ref
+            .read(bookingControllerProvider(widget.facilityId))
+            .selectedServices,
         'customerName': _nameController.text.trim(),
         'customerPhone': _phoneController.text.trim(),
         'note': _noteController.text.trim(),
@@ -300,9 +298,20 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   // Mock 데이터 (실제로는 상태에서 가져와야 함)
   List<String> _getTimeSlots() {
     return [
-      '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-      '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
-      '17:00', '17:30',
+      '09:00',
+      '09:30',
+      '10:00',
+      '10:30',
+      '11:00',
+      '11:30',
+      '14:00',
+      '14:30',
+      '15:00',
+      '15:30',
+      '16:00',
+      '16:30',
+      '17:00',
+      '17:30',
     ];
   }
 

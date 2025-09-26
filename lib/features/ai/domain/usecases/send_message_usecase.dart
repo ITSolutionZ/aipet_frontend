@@ -26,7 +26,12 @@ class SendMessageUseCase {
       }
 
       // Repository를 통한 메시지 전송
-      return await _repository.sendMessageWithParams(params);
+      return await _repository.sendMessageWithParams(
+        message: params.message,
+        petId: params.petId,
+        categoryId: params.categoryId,
+        attachedImages: params.attachedImages,
+      );
     } catch (error) {
       return ResultFactory.failure('メッセージの送信に失敗しました: ${error.toString()}');
     }

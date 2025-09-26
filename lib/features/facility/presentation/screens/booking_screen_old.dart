@@ -175,7 +175,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
         final state = ref.watch(bookingControllerProvider(widget.facilityId));
 
         if (state.facility == null) {
-          return const Center(child: const CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         return Container(

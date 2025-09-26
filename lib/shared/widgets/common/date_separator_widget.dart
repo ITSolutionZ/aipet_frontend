@@ -13,7 +13,7 @@ class DateSeparatorWidget extends StatelessWidget {
       margin: margin ?? const EdgeInsets.symmetric(vertical: AppSpacing.md),
       child: Row(
         children: [
-          const Expanded(child: const Divider()),
+          const Expanded(child: Divider()),
           Container(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -31,7 +31,7 @@ class DateSeparatorWidget extends StatelessWidget {
               ),
             ),
           ),
-          const Expanded(child: const Divider()),
+          const Expanded(child: Divider()),
         ],
       ),
     );

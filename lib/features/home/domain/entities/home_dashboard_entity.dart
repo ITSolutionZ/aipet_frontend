@@ -1,107 +1,83 @@
-/// 🏠 홈 대시보드 엔티티
-///
-/// 홈 화면에 표시되는 전체 대시보드 데이터
-class HomeDashboardEntity {
-  final String userId;
-  final WeatherEntity? weather;
-  final List<PetSummaryEntity> pets;
-  final List<TodayAppointmentEntity> todayAppointments;
-  final int totalWalkMinutes;
-  final DateTime lastUpdated;
+import 'pet_summary_entity.dart';
+import 'weather_entity.dart';
 
-  const HomeDashboardEntity({
-    required this.userId,
-    this.weather,
-    required this.pets,
-    required this.todayAppointments,
-    required this.totalWalkMinutes,
-    required this.lastUpdated,
-  });
-
-  factory HomeDashboardEntity.empty() => HomeDashboardEntity(
-        userId: '',
-        weather: null,
-        pets: const [],
-        todayAppointments: const [],
-        totalWalkMinutes: 0,
-        lastUpdated: DateTime.now(),
-      );
-
-  /// 펫이 등록되어 있는지 확인
-  bool get hasPets => pets.isNotEmpty;
-
-  /// 오늘의 예약이 있는지 확인
-  bool get hasTodayAppointments => todayAppointments.isNotEmpty;
-}
-
-/// 🌤️ 날씨 엔티티
-class WeatherEntity {
-  final double temperature;
-  final String condition;
-  final String icon;
-  final String location;
-  final DateTime timestamp;
-
-  const WeatherEntity({
-    required this.temperature,
-    required this.condition,
-    required this.icon,
-    required this.location,
-    required this.timestamp,
-  });
-
-  /// 산책하기 좋은 날씨인지 판단
-  bool get isGoodForWalking {
-    // 간단한 로직: 10도 이상, 30도 이하, 비가 오지 않는 경우
-    return temperature >= 10 &&
-           temperature <= 30 &&
-           !condition.toLowerCase().contains('rain');
-  }
-}
-
-/// 🐕 펫 요약 엔티티
-class PetSummaryEntity {
-  final String id;
-  final String name;
-  final String type;
-  final String? imageUrl;
-  final int age;
-  final bool needsAttention;
-  final String? attentionReason;
-
-  const PetSummaryEntity({
-    required this.id,
-    required this.name,
-    required this.type,
-    this.imageUrl,
-    required this.age,
-    this.needsAttention = false,
-    this.attentionReason,
-  });
-}
-
-/// 📅 오늘의 예약 엔티티
-class TodayAppointmentEntity {
+// 예약 정보 요약
+class AppointmentSummary {
   final String id;
   final String title;
   final DateTime scheduledTime;
-  final String location;
   final String type;
-  final bool isCompleted;
+  final String petName;
 
-  const TodayAppointmentEntity({
+  const AppointmentSummary({
     required this.id,
     required this.title,
     required this.scheduledTime,
-    required this.location,
     required this.type,
-    this.isCompleted = false,
+    required this.petName,
+  });
+}
+
+// 건강 상태 요약
+class HealthSummary {
+  final int totalPets;
+  final int healthyPets;
+  final int petsNeedingAttention;
+  final List<HealthAlert> alerts;
+
+  const HealthSummary({
+    required this.totalPets,
+    required this.healthyPets,
+    required this.petsNeedingAttention,
+    required this.alerts,
+  });
+}
+
+// 건강 알림
+class HealthAlert {
+  final String petName;
+  final String message;
+
+  const HealthAlert({required this.petName, required this.message});
+}
+
+// 산책 요약
+class WalkSummary {
+  final int todayWalks;
+  final double todayDistance;
+  final Duration todayDuration;
+  final double weeklyGoal;
+  final double weeklyProgress;
+
+  const WalkSummary({
+    required this.todayWalks,
+    required this.todayDistance,
+    required this.todayDuration,
+    required this.weeklyGoal,
+    required this.weeklyProgress,
+  });
+}
+
+class HomeDashboardEntity {
+  final String currentTime;
+  final WeatherEntity weather;
+  final List<PetSummaryEntity> petProfiles;
+  final List<AppointmentSummary> upcomingAppointments;
+  final HealthSummary petHealthSummary;
+  final WalkSummary walkSummary;
+
+  const HomeDashboardEntity({
+    required this.currentTime,
+    required this.weather,
+    required this.petProfiles,
+    required this.upcomingAppointments,
+    required this.petHealthSummary,
+    required this.walkSummary,
   });
 
-  /// 예약 시간까지 남은 시간 (분 단위)
-  int get minutesUntilAppointment {
-    final now = DateTime.now();
-    final difference = scheduledTime.difference(now).inMinutes;
-    return difference > 0 ? difference : 0;
-  }
+  /// 펫이 있는지 확인
+  bool get hasPets => petProfiles.isNotEmpty;
+
+  /// 오늘의 예약이 있는지 확인
+  bool get hasTodayAppointments => upcomingAppointments.isNotEmpty;
 }

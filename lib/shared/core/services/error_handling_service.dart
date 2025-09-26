@@ -305,12 +305,12 @@ class ErrorHandlingService {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.error_outline, size: 48, color: Colors.grey),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             '데이터를 불러올 수 없습니다',
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           Text('다시 시도해주세요', style: TextStyle(fontSize: 14, color: Colors.grey)),
         ],
       ),
