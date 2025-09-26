@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/auth/domain/services/jwt_validation_service.dart';
 import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -87,7 +88,7 @@ class FirebaseTokenService {
     return getCurrentIdToken(forceRefresh: true);
   }
 
-  /// ID Token이 유효한지 확인
+  /// 🔐 ID Token이 유효한지 확인 (JWT 구조 검증 포함)
   static Future<bool> isIdTokenValid() async {
     if (!_isFirebaseInitialized) {
       if (kDebugMode) {
@@ -100,7 +101,29 @@ class FirebaseTokenService {
       final user = _firebaseAuth.currentUser;
       if (user == null) return false;
 
-      // 토큰 만료 확인
+      // 1. 현재 토큰 가져오기
+      final idToken = await user.getIdToken();
+      if (idToken == null || idToken.isEmpty) return false;
+
+      // 2. JWT 구조 검증 수행
+      final structureValidation = JwtValidationService.validateFirebaseIdToken(idToken);
+      if (!structureValidation.isSuccess) {
+        if (kDebugMode) {
+          debugPrint('🔐 JWT 구조 검증 실패: ${structureValidation.errorOrNull ?? 'Unknown error'}');
+        }
+        return false;
+      }
+
+      // 3. 보안 등급 평가
+      final securityLevel = JwtValidationService.evaluateSecurityLevel(structureValidation.dataOrNull!);
+      if (securityLevel.level == SecurityLevel.critical) {
+        if (kDebugMode) {
+          debugPrint('🚨 심각한 JWT 보안 문제 발견: ${securityLevel.recommendation}');
+        }
+        return false;
+      }
+
+      // 4. 기존 Firebase 만료 시간 확인
       final tokenResult = await user.getIdTokenResult();
       final expirationTime = tokenResult.expirationTime;
 
@@ -108,7 +131,14 @@ class FirebaseTokenService {
 
       // 현재 시간보다 5분 이상 남아있으면 유효
       final fiveMinutesFromNow = DateTime.now().add(const Duration(minutes: 5));
-      return expirationTime.isAfter(fiveMinutesFromNow);
+      final isTimeValid = expirationTime.isAfter(fiveMinutesFromNow);
+
+      if (kDebugMode && securityLevel.level != SecurityLevel.high) {
+        debugPrint('⚠️ JWT 보안 등급: ${securityLevel.level.displayName} (점수: ${securityLevel.score}/${securityLevel.maxScore})');
+        debugPrint('💡 권장사항: ${securityLevel.recommendation}');
+      }
+
+      return isTimeValid;
     } catch (e) {
       if (kDebugMode) {
         debugPrint('ID Token 유효성 확인 실패: $e');

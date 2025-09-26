@@ -1,128 +1,285 @@
+import 'package:aipet_frontend/features/notification/data/services/notification_api_service.dart';
+import 'package:aipet_frontend/features/notification/data/services/notification_cache_service.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/notification/notification_mock_service.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:flutter/foundation.dart';
 
+/// 📱 알림 Repository 구현체
+///
+/// API 서비스와 캐시 서비스를 조합하여 효율적인 데이터 관리를 제공합니다.
+/// 프론트엔드 중심의 구조로 네트워크 상태에 따라 캐시와 API를 적절히 활용합니다.
 class NotificationRepositoryImpl implements NotificationRepository {
-  @override
-  Future<List<NotificationModel>> getAllNotifications() async {
-    // 시뮬레이션된 네트워크 지연
-    await Future.delayed(const Duration(milliseconds: 300));
-    return NotificationMockService.getMockNotifications();
-  }
+  static const String _tag = 'NotificationRepositoryImpl';
+
+  final NotificationApiService _apiService;
+
+  NotificationRepositoryImpl({
+    NotificationApiService? apiService,
+  }) : _apiService = apiService ?? NotificationApiService();
 
   @override
-  Future<NotificationModel?> getNotificationById(String id) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-
-    final notifications = NotificationMockService.getMockNotifications();
-
+  Future<Result<List<NotificationModel>>> getAllNotifications({
+    required String userId,
+    int page = 0,
+    int limit = 20,
+    bool? isRead,
+    String? type,
+  }) async {
     try {
-      return notifications.firstWhere((notification) => notification.id == id);
-    } catch (e) {
-      return null;
+      // 1. 캐시가 유효한지 확인
+      final isCacheValid = await NotificationCacheService.isCacheValid(userId);
+
+      if (isCacheValid) {
+        if (kDebugMode) {
+          debugPrint('[$_tag] 🗄️ 유효한 캐시 데이터 사용');
+        }
+        return await NotificationCacheService.getCachedNotifications(userId);
+      }
+
+      // 2. API에서 최신 데이터 조회
+      final apiResult = await _apiService.getNotifications(
+        userId: userId,
+        page: page,
+        limit: limit,
+        isRead: isRead,
+        type: type,
+      );
+
+      if (apiResult.isSuccess) {
+        // 3. 성공한 경우 캐시에 저장
+        final notifications = apiResult.dataOrNull!;
+        await NotificationCacheService.cacheNotifications(
+          userId: userId,
+          notifications: notifications,
+        );
+
+        if (kDebugMode) {
+          debugPrint('[$_tag] ✅ API에서 알림 조회 및 캐시 저장 완료');
+        }
+
+        return apiResult;
+      } else {
+        // 4. API 실패 시 캐시된 데이터라도 반환 시도
+        if (kDebugMode) {
+          debugPrint('[$_tag] ⚠️ API 실패, 캐시된 데이터 조회 시도');
+        }
+
+        final cacheResult = await NotificationCacheService.getCachedNotifications(userId);
+        if (cacheResult.isSuccess) {
+          if (kDebugMode) {
+            debugPrint('[$_tag] 🗄️ 만료된 캐시 데이터 사용 (오프라인 모드)');
+          }
+          return cacheResult;
+        }
+
+        return apiResult; // 캐시도 없으면 API 에러 반환
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] ❌ 알림 조회 중 예외 발생: $error');
+      }
+      return ResultFactory.failure('알림 조회 중 오류 발생: $error');
     }
   }
 
   @override
-  Future<NotificationModel> createNotification(
-    NotificationModel notification,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 300));
+  Future<Result<NotificationModel?>> getNotificationById({
+    required String userId,
+    required String notificationId,
+  }) async {
+    try {
+      // 1. 캐시에서 먼저 확인
+      final cachedNotifications = await NotificationCacheService.getCachedNotifications(userId);
+      if (cachedNotifications.isSuccess) {
+        final notification = cachedNotifications.dataOrNull!
+            .cast<NotificationModel?>()
+            .firstWhere(
+              (n) => n?.id == notificationId,
+              orElse: () => null,
+            );
 
-    // 유효성 검사
-    if (notification.title.isEmpty || notification.body.isEmpty) {
-      throw Exception('알림 제목과 메시지는 필수입니다.');
+        if (notification != null) {
+          if (kDebugMode) {
+            debugPrint('[$_tag] 🗄️ 캐시에서 특정 알림 조회 성공: $notificationId');
+          }
+          return ResultFactory.success(notification, 'Notification found in cache');
+        }
+      }
+
+      // 2. 캐시에 없으면 전체 목록을 API에서 다시 조회
+      final allNotifications = await getAllNotifications(userId: userId);
+      if (allNotifications.isSuccess) {
+        final notification = allNotifications.dataOrNull!
+            .cast<NotificationModel?>()
+            .firstWhere(
+              (n) => n?.id == notificationId,
+              orElse: () => null,
+            );
+
+        if (notification != null) {
+          if (kDebugMode) {
+            debugPrint('[$_tag] ✅ API에서 특정 알림 조회 성공: $notificationId');
+          }
+          return ResultFactory.success(notification, 'Notification found via API');
+        }
+      }
+
+      if (kDebugMode) {
+        debugPrint('[$_tag] ⚠️ 알림을 찾을 수 없음: $notificationId');
+      }
+      return ResultFactory.success(null, 'Notification not found');
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] ❌ 특정 알림 조회 중 예외 발생: $error');
+      }
+      return ResultFactory.failure('알림 조회 중 오류 발생: $error');
     }
-
-    final newNotification = NotificationModel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: notification.title,
-      body: notification.body,
-      type: notification.type,
-      priority: notification.priority,
-      status: notification.status,
-      createdAt: DateTime.now(),
-      data: notification.data,
-      actions: notification.actions,
-      imageUrl: notification.imageUrl,
-      icon: notification.icon,
-    );
-
-    return newNotification;
   }
 
   @override
-  Future<NotificationModel> updateNotification(
-    NotificationModel notification,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 200));
+  Future<Result<bool>> markAsRead({
+    required String userId,
+    required String notificationId,
+    required bool isRead,
+  }) async {
+    try {
+      // 1. API에서 읽음 상태 업데이트
+      final result = await _apiService.markAsRead(
+        notificationId: notificationId,
+        isRead: isRead,
+      );
 
-    // 유효성 검사
-    if (notification.title.isEmpty || notification.body.isEmpty) {
-      throw Exception('알림 제목과 메시지는 필수입니다.');
+      if (result.isSuccess) {
+        // 2. 성공한 경우 캐시 무효화 (다음 조회 시 최신 데이터 받기 위해)
+        await NotificationCacheService.clearUserCache(userId);
+
+        if (kDebugMode) {
+          debugPrint('[$_tag] ✅ 읽음 상태 업데이트 및 캐시 무효화 완료');
+        }
+      }
+
+      return result;
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] ❌ 읽음 상태 업데이트 중 예외 발생: $error');
+      }
+      return ResultFactory.failure('읽음 상태 업데이트 중 오류 발생: $error');
     }
-
-    return notification;
   }
 
   @override
-  Future<void> deleteNotification(String id) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    // 목업에서는 삭제 성공으로 처리
-    return;
-  }
+  Future<Result<bool>> deleteNotification({
+    required String userId,
+    required String notificationId,
+  }) async {
+    try {
+      // 1. API에서 알림 삭제
+      final result = await _apiService.deleteNotification(notificationId);
 
-  @override
-  Future<void> markAsRead(String id) async {
-    await Future.delayed(const Duration(milliseconds: 100));
-    // 목업에서는 읽음 처리 성공으로 처리
-    return;
-  }
+      if (result.isSuccess) {
+        // 2. 성공한 경우 캐시 무효화
+        await NotificationCacheService.clearUserCache(userId);
 
-  @override
-  Future<int> getUnreadCount() async {
-    await Future.delayed(const Duration(milliseconds: 100));
+        if (kDebugMode) {
+          debugPrint('[$_tag] ✅ 알림 삭제 및 캐시 무효화 완료');
+        }
+      }
 
-    final notifications = NotificationMockService.getMockNotifications();
-
-    return notifications
-        .where(
-          (notification) => notification.status == NotificationStatus.unread,
-        )
-        .length;
-  }
-
-  @override
-  Future<NotificationSettings> getNotificationSettings() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    return NotificationMockService.getMockNotificationSettings();
-  }
-
-  @override
-  Future<void> saveNotificationSettings(NotificationSettings settings) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-
-    // 설정 유효성 검사
-    if (settings.enabled && !settings.typeSettings[NotificationType.feeding]!) {
-      throw Exception('급여 알림 설정이 필요합니다.');
+      return result;
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] ❌ 알림 삭제 중 예외 발생: $error');
+      }
+      return ResultFactory.failure('알림 삭제 중 오류 발생: $error');
     }
-    // 목업에서는 저장 성공으로 처리
-    return;
   }
 
   @override
-  Future<bool> requestNotificationPermission() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+  Future<Result<Map<String, dynamic>>> getNotificationSettings(String userId) async {
+    try {
+      // 1. 캐시가 유효한지 확인
+      final cachedSettings = await NotificationCacheService.getCachedSettings(userId);
+      if (cachedSettings.isSuccess) {
+        if (kDebugMode) {
+          debugPrint('[$_tag] 🗄️ 캐시된 설정 사용');
+        }
+        return cachedSettings;
+      }
 
-    // 권한 요청 시뮬레이션 (80% 확률로 성공)
-    final random = DateTime.now().millisecondsSinceEpoch % 10;
-    return random < 8; // 80% 확률로 성공
+      // 2. API에서 설정 조회
+      final apiResult = await _apiService.getNotificationSettings(userId);
+
+      if (apiResult.isSuccess) {
+        // 3. 성공한 경우 캐시에 저장
+        final settings = apiResult.dataOrNull!;
+        await NotificationCacheService.cacheSettings(
+          userId: userId,
+          settings: settings,
+        );
+
+        if (kDebugMode) {
+          debugPrint('[$_tag] ✅ API에서 설정 조회 및 캐시 저장 완료');
+        }
+      }
+
+      return apiResult;
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] ❌ 설정 조회 중 예외 발생: $error');
+      }
+      return ResultFactory.failure('설정 조회 중 오류 발생: $error');
+    }
   }
 
   @override
-  Future<void> sendTestNotification() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    // 목업에서는 테스트 알림 전송 성공으로 처리
-    return;
+  Future<Result<bool>> updateNotificationSettings({
+    required String userId,
+    required Map<String, dynamic> settings,
+  }) async {
+    try {
+      // 1. API에서 설정 업데이트
+      final result = await _apiService.updateNotificationSettings(
+        userId: userId,
+        settings: settings,
+      );
+
+      if (result.isSuccess) {
+        // 2. 성공한 경우 캐시에도 업데이트
+        await NotificationCacheService.cacheSettings(
+          userId: userId,
+          settings: settings,
+        );
+
+        if (kDebugMode) {
+          debugPrint('[$_tag] ✅ 설정 업데이트 및 캐시 동기화 완료');
+        }
+      }
+
+      return result;
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] ❌ 설정 업데이트 중 예외 발생: $error');
+      }
+      return ResultFactory.failure('설정 업데이트 중 오류 발생: $error');
+    }
+  }
+
+  @override
+  Future<Result<Map<String, dynamic>>> getNotificationStats(String userId) async {
+    try {
+      // 통계는 실시간성이 중요하므로 항상 API에서 조회
+      return await _apiService.getNotificationStats(userId);
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] ❌ 통계 조회 중 예외 발생: $error');
+      }
+      return ResultFactory.failure('통계 조회 중 오류 발생: $error');
+    }
+  }
+
+  /// Repository 정리
+  void dispose() {
+    _apiService.dispose();
   }
 }

@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/auth/domain/auth_token.dart';
 import 'package:aipet_frontend/shared/core/services/auth_token_repository.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 import 'token_storage_service.dart';
 
@@ -36,55 +40,69 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
   @override
   Future<AuthTokenBundle?> refreshToken(String refreshToken) async {
     try {
-      // TODO: 실제 백엔드 API 호출로 토큰 갱신 구현 필요
-      // 현재는 Mock 데이터 사용 중 (프론트엔드 완성을 위해 실제 로직 구현)
-
-      // 실제 구현 예시:
-      // final response = await http.post(
-      //   Uri.parse('${AppConfig.current.apiBaseUrl}/auth/refresh'),
-      //   headers: {'Authorization': 'Bearer $refreshToken'},
-      // );
-      //
-      // if (response.statusCode == 200) {
-      //   final data = json.decode(response.body);
-      //   final authToken = AuthToken.fromJson(data);
-      //   await TokenStorageService.saveToken(authToken);
-      //   return AuthTokenBundle(...);
-      // } else {
-      //   // 토큰 갱신 실패 시 기존 토큰 삭제
-      //   await TokenStorageService.clearToken();
-      //   return null;
-      // }
-
-      // 현재 Mock 구현 (개발용) - 실제 토큰 갱신처럼 동작
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      // Mock 새 토큰 생성 (실제 API 응답처럼)
-      final authToken = AuthToken(
-        accessToken:
-            'refreshed_access_token_${DateTime.now().millisecondsSinceEpoch}',
-        refreshToken:
-            'refreshed_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
-        expiresAt: DateTime.now().add(const Duration(hours: 1)),
-        tokenType: 'Bearer',
+      // 실제 백엔드 API 호출로 토큰 갱신
+      final response = await http.post(
+        Uri.parse('${AppConfig.current.apiBaseUrl}/auth/refresh'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $refreshToken',
+          'Accept': 'application/json',
+        },
+        body: json.encode({
+          'refreshToken': refreshToken,
+          'clientType': 'mobile',
+        }),
       );
 
-      // 새 토큰 저장
-      await TokenStorageService.saveToken(authToken);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+
+        // 응답 데이터 검증
+        final accessToken = data['accessToken'] as String?;
+        final newRefreshToken = data['refreshToken'] as String?;
+        final expiresIn = data['expiresIn'] as int? ?? 3600; // 기본 1시간
+
+        if (accessToken == null || accessToken.isEmpty) {
+          await TokenStorageService.clearToken();
+          return null;
+        }
+
+        final authToken = AuthToken(
+          accessToken: accessToken,
+          refreshToken: newRefreshToken ?? refreshToken,
+          expiresAt: DateTime.now().add(Duration(seconds: expiresIn)),
+          tokenType: data['tokenType'] as String? ?? 'Bearer',
+        );
+
+        // 새 토큰 저장
+        await TokenStorageService.saveToken(authToken);
 
       if (kDebugMode) {
         debugPrint('토큰 갱신 완료 (만료: ${authToken.expiresAt.toIso8601String()})');
       }
 
-      return AuthTokenBundle(
-        accessToken: authToken.accessToken,
-        refreshToken: authToken.refreshToken,
-        tokenType: authToken.tokenType,
-        expiresAt: authToken.expiresAt,
-      );
+        return AuthTokenBundle(
+          accessToken: authToken.accessToken,
+          refreshToken: authToken.refreshToken,
+          tokenType: authToken.tokenType,
+          expiresAt: authToken.expiresAt,
+        );
+      } else if (response.statusCode == 401) {
+        // Refresh token이 만료된 경우
+        await TokenStorageService.clearToken();
+        if (kDebugMode) {
+          debugPrint('Refresh token 만료됨 - 재로그인 필요');
+        }
+        return null;
+      } else {
+        // 기타 서버 오류
+        final errorData = json.decode(response.body) as Map<String, dynamic>?;
+        final errorMessage = errorData?['message'] ?? 'Token refresh failed';
+        throw Exception('Token refresh failed: $errorMessage');
+      }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('토큰 리프레시 실패: $e');
+        debugPrint('토큰 갱신 실패: $e');
       }
 
       // 갱신 실패 시 기존 토큰 삭제 (보안상 이유)

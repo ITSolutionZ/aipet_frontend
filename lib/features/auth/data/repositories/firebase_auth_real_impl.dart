@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:aipet_frontend/features/auth/data/services/line_oauth_service.dart';
+import 'package:aipet_frontend/features/auth/domain/auth_error.dart' as auth_errors;
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -300,10 +301,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
         // 토큰 유효성 검증
         if (serverToken.isEmpty || serverToken.length < 32) {
-          throw AuthTokenException(
-            AuthErrorKeys.tokenExchangeFailed,
-            'Invalid server token format',
-          );
+          throw const auth_errors.TokenError(auth_errors.TokenErrorType.invalid);
         }
 
         // 서버 토큰 저장
@@ -315,18 +313,15 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
         return serverToken;
       } else if (response.statusCode == 401) {
-        throw AuthTokenException(
-          AuthErrorKeys.tokenExpired('Firebase ID token expired'),
-        );
+        throw const auth_errors.TokenError(auth_errors.TokenErrorType.expired);
       } else if (response.statusCode >= 500) {
-        throw AuthNetworkException(
-          AuthErrorKeys.serverError('Server temporarily unavailable'),
-        );
+        throw auth_errors.ServerError(statusCode: response.statusCode);
       } else {
         final errorData = json.decode(response.body) as Map<String, dynamic>?;
         final errorMessage = errorData?['message'] ?? 'Token exchange failed';
-        throw AuthTokenException(
-          AuthErrorKeys.tokenExchangeFailed(errorMessage),
+        throw auth_errors.ClientError(
+          statusCode: response.statusCode,
+          reason: errorMessage,
         );
       }
     } catch (e) {
