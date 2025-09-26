@@ -136,35 +136,20 @@ abstract class AppConfig {
         lineChannelId.isNotEmpty;
   }
 
-  /// API 키 설정 상태 로그 출력 (디버그용)
+  /// 🛡️ API 키 설정 상태 확인 (보안 강화)
+  ///
+  /// 실제 키 값은 절대 로그에 출력하지 않으며, 존재 여부만 확인합니다.
   void logApiKeyStatus() {
-    if (isEnvLoaded) {
-      debugPrint('🔑 API Key Status:');
-      debugPrint('  Google Maps: ${googleMapsApiKey.isNotEmpty ? '✅' : '❌'}');
-      debugPrint('  OpenAI: ${openaiApiKey.isNotEmpty ? '✅' : '❌'}');
-      debugPrint('  Weather: ${weatherApiKey.isNotEmpty ? '✅' : '❌'}');
-      debugPrint('  LINE: ${lineChannelId.isNotEmpty ? '✅' : '❌'}');
-      debugPrint('  YouTube: ${youtubeApiKey.isNotEmpty ? '✅' : '❌'}'); // Added
-      debugPrint(
-        '  Google Calendar: ${googleCalendarApiKey.isNotEmpty ? '✅' : '❌'}',
-      ); // Added
+    if (!kDebugMode) return; // 릴리즈 모드에서는 실행하지 않음
 
-      // Google Maps API 키 특별 검사
-      if (googleMapsApiKey.isNotEmpty) {
-        debugPrint(
-          '  📍 Google Maps API Key: ${googleMapsApiKey.substring(0, 10)}...',
-        );
-      }
-      if (youtubeApiKey.isNotEmpty) {
-        debugPrint(
-          '  ▶️ YouTube API Key: ${youtubeApiKey.substring(0, 10)}...',
-        ); // Added
-      }
-      if (googleCalendarApiKey.isNotEmpty) {
-        debugPrint(
-          '  🗓️ Google Calendar API Key: ${googleCalendarApiKey.substring(0, 10)}...',
-        ); // Added
-      }
+    if (isEnvLoaded) {
+      debugPrint('🔑 API Key Status (키 값은 보안상 표시되지 않습니다):');
+      debugPrint('  Google Maps: ${googleMapsApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint('  OpenAI: ${openaiApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint('  Weather: ${weatherApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint('  LINE: ${lineChannelId.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint('  YouTube: ${youtubeApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint('  Google Calendar: ${googleCalendarApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
     } else {
       debugPrint('❌ Environment variables not loaded');
     }

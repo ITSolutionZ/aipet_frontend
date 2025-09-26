@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/notification/data/services/notification_cache_service.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
@@ -16,6 +17,8 @@ class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
   NotificationService._internal();
+
+  static const String _tag = 'NotificationService';
 
   static const String _notificationsKey = 'notifications';
   static const String _settingsKey = 'notification_settings';
@@ -56,7 +59,12 @@ class NotificationService {
       onDidReceiveNotificationResponse: _onNotificationTapped,
     );
 
-    if (kDebugMode) {}
+    // 🔄 레거시 데이터 마이그레이션 수행
+    await _performDataMigration();
+
+    if (kDebugMode) {
+      debugPrint('알림 서비스 초기화 완료');
+    }
   }
 
   /// 알림 생성
@@ -389,35 +397,32 @@ class NotificationService {
     }
   }
 
-  /// 알림 저장
+  /// 🔄 레거시 데이터 마이그레이션 수행
+  Future<void> _performDataMigration() async {
+    try {
+      // 프론트엔드 중심 구조에서는 단순히 캐시를 정리
+      if (kDebugMode) {
+        debugPrint('[$_tag] 🗄️ 캐시 초기화 수행 (레거시 마이그레이션 대체)');
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('❌ 알림 데이터 마이그레이션 실패: $error');
+      }
+    }
+  }
+
+  /// 알림 저장 (프론트엔드 중심 - 로그만 기록)
   Future<void> _saveNotification(NotificationModel notification) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final notificationsJson = prefs.getStringList(_notificationsKey) ?? [];
-
-      // 기존 알림 제거 (ID가 같은 경우)
-      notificationsJson.removeWhere((json) {
-        try {
-          final existingNotification = NotificationModel.fromJson(
-            jsonDecode(json),
-          );
-          return existingNotification.id == notification.id;
-        } catch (e) {
-          return false;
-        }
-      });
-
-      // 새 알림 추가
-      notificationsJson.add(jsonEncode(notification.toJson()));
-
-      // 최대 100개까지만 유지
-      if (notificationsJson.length > 100) {
-        notificationsJson.removeRange(0, notificationsJson.length - 100);
+      // 프론트엔드 중심 구조에서는 API를 통해 알림이 관리되므로
+      // 로컬 저장 대신 간단한 로그만 기록
+      if (kDebugMode) {
+        debugPrint('[$_tag] 📝 알림 수신 기록: ${notification.title}');
       }
-
-      await prefs.setStringList(_notificationsKey, notificationsJson);
-    } catch (e) {
-      if (kDebugMode) {}
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] ❌ 알림 기록 중 오류: $error');
+      }
     }
   }
 

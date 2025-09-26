@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/ai/domain/constants/ai_constants.dart';
 import 'package:aipet_frontend/features/ai/domain/errors/ai_errors.dart';
+import 'package:aipet_frontend/features/ai/domain/services/token_usage_service.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
 import 'package:aipet_frontend/shared/core/services/unified_error_handler.dart';
@@ -67,6 +68,17 @@ ${_translateReasonToJapanese(validationResult.reason)}
     }
 
     return _httpClient.executeWithRetry(() async {
+      // 🪙 토큰 사용량 사전 체크
+      final canMakeRequest = TokenUsageService.canMakeRequest(
+        estimatedTokens: AiApiConstants.openaiMaxTokens,
+      );
+      if (!canMakeRequest.isSuccess) {
+        throw AiOpenAIException(
+          canMakeRequest.errorOrNull ?? 'Token limit exceeded',
+          code: 'TOKEN_LIMIT_EXCEEDED',
+        );
+      }
+
       final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
         '/chat/completions',
         data: {
@@ -79,6 +91,26 @@ ${_translateReasonToJapanese(validationResult.reason)}
           'temperature': AiApiConstants.openaiTemperature,
         },
       );
+
+      // 🪙 토큰 사용량 기록
+      if (response['usage'] != null) {
+        final usage = response['usage'] as Map<String, dynamic>;
+        final promptTokens = usage['prompt_tokens'] as int? ?? 0;
+        final completionTokens = usage['completion_tokens'] as int? ?? 0;
+
+        final usageResult = TokenUsageService.recordUsage(
+          promptTokens: promptTokens,
+          completionTokens: completionTokens,
+          model: AiApiConstants.openaiModel,
+          userId: petContext?.id, // 펫 ID를 사용자 식별자로 사용
+        );
+
+        if (usageResult.isSuccess) {
+          logInfo('Token usage recorded: ${usageResult.dataOrNull!.totalTokens} tokens');
+        } else {
+          logWarning('Failed to record token usage: ${usageResult.errorOrNull ?? 'Unknown error'}');
+        }
+      }
 
       if (response['choices'] != null &&
           response['choices'] is List &&

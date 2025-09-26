@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
+import 'package:aipet_frontend/features/home/data/services/api_rate_limiter.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/home/home_mock_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,11 +15,11 @@ class WeatherService {
       'https://api.openweathermap.org/data/3.0/onecall';
   static const String _geocodingUrl = 'https://api.openweathermap.org/geo/1.0';
 
-  // Request debouncing 필드 - API 스팸 방지
+  // API Rate Limiter 설정
+  static const String _rateLimiterKey = 'weather_api';
+
+  // 마지막 API 요청 시간 추적
   static DateTime? _lastRequestTime;
-  static const Duration _debounceInterval = Duration(
-    seconds: 5,
-  ); // 5초 간격으로 요청 제한
 
   Future<WeatherData?> getCurrentWeather({
     WeatherLocation? location,
@@ -28,16 +29,58 @@ class WeatherService {
       final weatherLocation = location ?? await _getCurrentLocation();
       if (weatherLocation == null) return null;
 
-      // API 호출 제한 및 캐시 확인
+      // 🚦 Rate Limiting 확인
+      final rateLimitResult = ApiRateLimiter.checkRateLimit(
+        _rateLimiterKey,
+        priority: userTriggered ? RequestPriority.high : RequestPriority.normal,
+        isUserTriggered: userTriggered,
+      );
 
-      // Request debouncing (사용자 트리거가 아닌 경우)
-      if (!userTriggered && _shouldDebounceRequest()) {
-        debugPrint('😫 Request debounced - too frequent API calls');
+      if (!rateLimitResult.isSuccess) {
+        final decision = rateLimitResult.dataOrNull!;
+        if (kDebugMode) {
+          debugPrint('🚫 API Rate limit: ${decision.reason}');
+          if (decision.retryAfter != null) {
+            debugPrint('⏰ Retry after: ${decision.retryAfter!.inSeconds}s');
+          }
+          debugPrint('📊 Quota: ${decision.quotaStatus}');
+        }
+
+        // Rate limit 걸렸을 때 캐시된 데이터 사용
         final cachedData = await WeatherCacheService.getCached(
           location: weatherLocation,
-          userTriggered: false,
+          userTriggered: false, // 캐시 허용 기준 완화
         );
-        if (cachedData != null) return cachedData;
+        if (cachedData != null) {
+          debugPrint('✅ Using cached data due to rate limit');
+          return cachedData;
+        }
+
+        // 캐시도 없고 사용자 트리거가 아니면 null 반환
+        if (!userTriggered) {
+          debugPrint('❌ No cached data available, skipping API call');
+          return null;
+        }
+
+        // 사용자 트리거인 경우 잠시 대기 후 재시도
+        if (decision.retryAfter != null &&
+            decision.retryAfter!.inSeconds <= 10) {
+          debugPrint(
+            '⏳ User triggered request - waiting ${decision.retryAfter!.inSeconds}s...',
+          );
+          await Future.delayed(decision.retryAfter!);
+          // 재귀 호출로 다시 시도 (무한 루프 방지를 위해 userTriggered를 false로)
+          return getCurrentWeather(location: location, userTriggered: false);
+        }
+
+        throw Exception('API rate limit exceeded: ${decision.reason}');
+      }
+
+      if (kDebugMode) {
+        final decision = rateLimitResult.dataOrNull!;
+        debugPrint(
+          '✅ Rate limit OK - Tokens: ${decision.tokensRemaining}, ${decision.quotaStatus}',
+        );
       }
 
       // 캐시된 데이터 확인
@@ -61,28 +104,23 @@ class WeatherService {
         throw Exception('Weather API key not found');
       }
 
-      debugPrint('🔑 API 키 상태: 존재함 (${apiKey.length}자)');
-      debugPrint('🎯 API 키 검증을 위한 One Call API 3.0 시도 중...');
-      debugPrint(
-        '📍 API 키 첫 8자: ${apiKey.length > 8 ? apiKey.substring(0, 8) : 'too_short'}...',
-      );
+      debugPrint('🔑 Weather API 키 상태: 설정됨');
+      debugPrint('🎯 One Call API 3.0 호출 시작...');
 
       // One Call 3.0 API 사용
       final url = Uri.parse(
         '$_oneCallUrl?lat=${weatherLocation.latitude}&lon=${weatherLocation.longitude}&appid=$apiKey&units=metric&lang=ja&exclude=minutely,alerts',
       );
 
-      debugPrint('🌐 One Call API 3.0 호출: $url');
+      debugPrint('🌐 One Call API 3.0 호출 요청');
       final response = await http.get(url).timeout(const Duration(seconds: 10));
       debugPrint('📡 One Call API 3.0 응답: ${response.statusCode}');
 
       if (response.statusCode == 401) {
-        debugPrint('❌ One Call API 401 에러 상세:');
-        debugPrint('   - 응답 본문: ${response.body}');
-        debugPrint('   - API 키 길이: ${apiKey.length}');
-        debugPrint(
-          '   - API 키 첫 8자: ${apiKey.length > 8 ? apiKey.substring(0, 8) : 'too_short'}...',
-        );
+        debugPrint('❌ One Call API 401 인증 오류:');
+        debugPrint('   - API 키 검증 실패');
+        debugPrint('   - 상태 코드: ${response.statusCode}');
+
         debugPrint('💡 해결책: OpenWeatherMap 계정에서 One Call API 구독 확인 필요');
       }
 
@@ -324,12 +362,17 @@ class WeatherService {
     );
   }
 
-  /// Request debouncing 확인
-  bool _shouldDebounceRequest() {
-    if (_lastRequestTime == null) return false;
+  /// 🚦 Weather API Rate Limit 상태 조회
+  static ApiRateLimitStats getRateLimitStats() {
+    return ApiRateLimiter.getStats(_rateLimiterKey);
+  }
 
-    final timeSinceLastRequest = DateTime.now().difference(_lastRequestTime!);
-    return timeSinceLastRequest < _debounceInterval;
+  /// 🚦 Rate Limiter 리셋 (개발/디버깅용)
+  static void resetRateLimit() {
+    ApiRateLimiter.resetApiLimiter(_rateLimiterKey);
+    if (kDebugMode) {
+      debugPrint('🔄 Weather API Rate Limiter reset');
+    }
   }
 
   /// 캐시 클리어 (전체)
