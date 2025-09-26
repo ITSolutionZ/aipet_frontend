@@ -32,10 +32,7 @@ class MessagePaginationService {
   ) {
     try {
       if (messages.length <= MAX_MESSAGES_IN_MEMORY) {
-        return ResultFactory.success(
-          messages,
-          'Messages within memory limit',
-        );
+        return ResultFactory.success(messages, 'Messages within memory limit');
       }
 
       // 최신 메시지부터 MAX_MESSAGES_IN_MEMORY개만 유지
@@ -46,7 +43,9 @@ class MessagePaginationService {
       final removedCount = messages.length - limitedMessages.length;
 
       if (kDebugMode) {
-        debugPrint('[$_tag] Memory limit applied: removed $removedCount old messages');
+        debugPrint(
+          '[$_tag] Memory limit applied: removed $removedCount old messages',
+        );
         debugPrint('[$_tag] Memory messages count: ${limitedMessages.length}');
       }
 
@@ -54,7 +53,6 @@ class MessagePaginationService {
         limitedMessages,
         'Memory limit applied: $removedCount messages archived',
       );
-
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error limiting messages: $error\n$stackTrace');
@@ -90,14 +88,16 @@ class MessagePaginationService {
         return ResultFactory.success([], 'Empty page');
       }
 
-      final endIndex = (startIndex + MESSAGES_PER_PAGE).clamp(0, messages.length);
+      final endIndex = (startIndex + MESSAGES_PER_PAGE).clamp(
+        0,
+        messages.length,
+      );
       final pageMessages = messages.sublist(startIndex, endIndex);
 
       return ResultFactory.success(
         pageMessages,
         'Page $pageIndex loaded with ${pageMessages.length} messages',
       );
-
     } catch (error) {
       return ResultFactory.failure('페이지 로드 중 에러가 발생했습니다: $error');
     }
@@ -133,7 +133,6 @@ class MessagePaginationService {
         sortedMessages,
         'Messages sorted by time (${ascending ? 'ascending' : 'descending'})',
       );
-
     } catch (error) {
       return ResultFactory.failure('메시지 정렬 중 에러가 발생했습니다: $error');
     }
@@ -167,7 +166,6 @@ class MessagePaginationService {
         uniqueMessages,
         'Duplicates removed: $removedCount messages',
       );
-
     } catch (error) {
       return ResultFactory.failure('중복 제거 중 에러가 발생했습니다: $error');
     }
@@ -192,7 +190,6 @@ class MessagePaginationService {
       }
 
       return totalSize;
-
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error estimating memory usage: $error');
@@ -210,7 +207,9 @@ class MessagePaginationService {
     final usageMB = usageBytes / (1024 * 1024);
 
     if (kDebugMode && usageMB > MEMORY_THRESHOLD_MB * 0.8) {
-      debugPrint('[$_tag] Memory usage approaching threshold: ${usageMB.toStringAsFixed(1)}MB');
+      debugPrint(
+        '[$_tag] Memory usage approaching threshold: ${usageMB.toStringAsFixed(1)}MB',
+      );
     }
 
     return usageMB > MEMORY_THRESHOLD_MB;
@@ -233,30 +232,36 @@ class MessagePaginationService {
       // 2. 시간순 정렬
       final sortedResult = sortMessagesByTime(deduplicatedResult.dataOrNull!);
       if (!sortedResult.isSuccess) {
-        return ResultFactory.failure('정렬 실패: ${sortedResult.errorOrNull ?? 'Unknown error'}');
+        return ResultFactory.failure(
+          '정렬 실패: ${sortedResult.errorOrNull ?? 'Unknown error'}',
+        );
       }
 
       // 3. 메모리 제한 적용
       final limitedResult = limitMessagesInMemory(sortedResult.dataOrNull!);
       if (!limitedResult.isSuccess) {
-        return ResultFactory.failure('메모리 제한 적용 실패: ${limitedResult.errorOrNull ?? 'Unknown error'}');
+        return ResultFactory.failure(
+          '메모리 제한 적용 실패: ${limitedResult.errorOrNull ?? 'Unknown error'}',
+        );
       }
 
       final optimizedMessages = limitedResult.dataOrNull!;
-      final memoryUsageMB = estimateMemoryUsage(optimizedMessages) / (1024 * 1024);
+      final memoryUsageMB =
+          estimateMemoryUsage(optimizedMessages) / (1024 * 1024);
 
       if (kDebugMode) {
         debugPrint('[$_tag] Messages optimized:');
         debugPrint('[$_tag] - Original count: ${messages.length}');
         debugPrint('[$_tag] - Optimized count: ${optimizedMessages.length}');
-        debugPrint('[$_tag] - Estimated memory: ${memoryUsageMB.toStringAsFixed(2)}MB');
+        debugPrint(
+          '[$_tag] - Estimated memory: ${memoryUsageMB.toStringAsFixed(2)}MB',
+        );
       }
 
       return ResultFactory.success(
         optimizedMessages,
         'Messages optimized: ${optimizedMessages.length} messages, ${memoryUsageMB.toStringAsFixed(1)}MB',
       );
-
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error optimizing messages: $error\n$stackTrace');
@@ -271,9 +276,16 @@ class MessagePaginationService {
   /// [return] 메시지 통계 정보
   static MessageStatistics generateStatistics(List<AiMessageEntity> messages) {
     try {
-      final userMessages = messages.where((m) => m.type == MessageType.user).length;
-      final assistantMessages = messages.where((m) => m.type == MessageType.assistant).length;
-      final totalCharacters = messages.fold<int>(0, (sum, m) => sum + m.content.length);
+      final userMessages = messages
+          .where((m) => m.type == MessageType.user)
+          .length;
+      final assistantMessages = messages
+          .where((m) => m.type == MessageType.assistant)
+          .length;
+      final totalCharacters = messages.fold<int>(
+        0,
+        (sum, m) => sum + m.content.length,
+      );
       final memoryUsageBytes = estimateMemoryUsage(messages);
 
       return MessageStatistics(
@@ -286,7 +298,6 @@ class MessagePaginationService {
         isMemoryHigh: isMemoryUsageHigh(messages),
         needsCleanup: shouldAutoCleanup(messages.length),
       );
-
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error generating statistics: $error');

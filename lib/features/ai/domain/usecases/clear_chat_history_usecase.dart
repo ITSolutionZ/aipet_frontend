@@ -11,7 +11,9 @@ class ClearChatHistoryUseCase {
       await _repository.clearChatHistory();
       return ResultFactory.success(null, 'チャット履歴をクリアしました');
     } catch (error) {
-      return ResultFactory.failure<void>('チャット履歴のクリアに失敗しました: ${error.toString()}');
+      return ResultFactory.failure<void>(
+        'チャット履歴のクリアに失敗しました: ${error.toString()}',
+      );
     }
   }
 }

@@ -97,7 +97,7 @@ class InlineLoadingIndicator extends StatelessWidget {
           ),
         ),
         if (message != null) ...[
-          const const const SizedBox(width: 8),
+          const const SizedBox(width: 8),
           Text(
             message!,
             style: AppFonts.bodySmall.copyWith(
@@ -145,7 +145,7 @@ class ButtonLoadingState extends StatelessWidget {
                   ),
                 ),
                 if (loadingText != null) ...[
-                  const const const SizedBox(width: 8),
+                  const const SizedBox(width: 8),
                   Text(loadingText!),
                 ],
               ],

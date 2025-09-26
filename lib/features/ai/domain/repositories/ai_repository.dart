@@ -92,4 +92,36 @@ abstract class AiRepository {
 
   /// 채팅 히스토리 삭제
   Future<void> deleteChatHistory(String historyId);
+
+  /// 채팅 히스토리 로드 (UseCase에서 사용)
+  Future<Result<List<AiMessageEntity>>> loadChatHistory({
+    required String userId,
+    String? petId,
+    int? limit,
+    int? offset,
+  });
+
+  /// 메시지 분석 (UseCase에서 사용)
+  Future<Result<AiAnalysisEntity>> analyzeMessage({
+    required String message,
+    String? petId,
+    Map<String, dynamic>? context,
+  });
+
+  /// 파라미터와 함께 메시지 전송
+  Future<Result<AiMessageEntity>> sendMessageWithParams({
+    required String message,
+    required String petId,
+    String? categoryId,
+    List<String>? attachedImages,
+  });
+
+  /// 즐겨찾기 토글
+  Future<Result<bool>> toggleFavoriteMessage(String messageId);
+
+  /// 파라미터와 함께 제안 질문 가져오기
+  Future<Result<List<AiSuggestedQuestionEntity>>> getSuggestedQuestionsWithParams({
+    String? petId,
+    String? categoryId,
+  });
 }

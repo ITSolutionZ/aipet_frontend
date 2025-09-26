@@ -1,9 +1,9 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/onboarding/data/data.dart';
 import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
-import 'package:aipet_frontend/features/scheduling/presentation/controllers/onboarding_controllers.dart';
+import 'package:aipet_frontend/features/onboarding/presentation/controllers/onboarding_controller.dart';
+import 'package:aipet_frontend/features/onboarding/presentation/widgets/onboarding_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/onboarding_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -98,7 +98,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         top: MediaQuery.of(context).padding.top + AppSpacing.md,
                         right: AppSpacing.md,
                         child: ActionButton.secondary(
-                          enabled: true,
+                          isEnabled: true,
                           text: OnboardingConstants.skipButtonText,
                           onPressed: _completeOnboarding,
                         ),

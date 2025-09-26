@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'selection_card.dart';
 
 /// 🎯 Selection Card Demo State Provider
-final selectionCardDemoProvider = StateNotifierProvider<SelectionCardDemoController, String?>(
-  (ref) => SelectionCardDemoController(),
-);
+final selectionCardDemoProvider =
+    StateNotifierProvider<SelectionCardDemoController, String?>(
+      (ref) => SelectionCardDemoController(),
+    );
 
 class SelectionCardDemoController extends StateNotifier<String?> {
   SelectionCardDemoController() : super(null);
@@ -16,9 +17,10 @@ class SelectionCardDemoController extends StateNotifier<String?> {
 }
 
 /// 🎯 Payment Selection Example State Provider
-final paymentSelectionExampleProvider = StateNotifierProvider<PaymentSelectionExampleController, String?>(
-  (ref) => PaymentSelectionExampleController(),
-);
+final paymentSelectionExampleProvider =
+    StateNotifierProvider<PaymentSelectionExampleController, String?>(
+      (ref) => PaymentSelectionExampleController(),
+    );
 
 class PaymentSelectionExampleController extends StateNotifier<String?> {
   PaymentSelectionExampleController() : super('credit'); // 기본 선택

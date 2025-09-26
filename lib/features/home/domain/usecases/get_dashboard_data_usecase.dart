@@ -1,20 +1,25 @@
 import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
 import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/base_usecase.dart';
 
-class GetDashboardDataUseCase {
-  final HomeRepository repository;
+/// 📊 대시보드 데이터 조회 UseCase
+class GetDashboardDataUseCase extends BaseUseCase<HomeDashboardEntity, GetDashboardDataParams> {
+  final HomeRepository _homeRepository;
 
-  GetDashboardDataUseCase(this.repository);
+  GetDashboardDataUseCase(this._homeRepository);
 
-  Future<Result<HomeDashboardEntity>> call() async {
-    try {
-      final data = await repository.getDashboardData();
-      return ResultFactory.success(data, 'ダッシュボードデータを取得しました');
-    } catch (error) {
-      return ResultFactory.failure<HomeDashboardEntity>(
-        'ダッシュボードデータの取得に失敗しました: ${error.toString()}',
-      );
-    }
+  @override
+  Future<Result<HomeDashboardEntity>> execute(GetDashboardDataParams params) async {
+    return await _homeRepository.getDashboardData(params.userId);
   }
+}
+
+/// 📊 대시보드 데이터 조회 파라미터
+class GetDashboardDataParams {
+  final String userId;
+
+  const GetDashboardDataParams({
+    required this.userId,
+  });
 }

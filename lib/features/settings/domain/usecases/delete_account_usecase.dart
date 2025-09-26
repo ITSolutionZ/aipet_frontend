@@ -9,9 +9,9 @@ class DeleteAccountUseCase {
   Future<Result<void>> call() async {
     final result = await repository.deleteAccount();
     if (result.isSuccess) {
-      return Result.success(result.message);
+      return Success(null, result.errorOrNull);
     } else {
-      return Result.failure(result.message);
+      return Failure(result.errorOrNull ?? 'Unknown error');
     }
   }
 }

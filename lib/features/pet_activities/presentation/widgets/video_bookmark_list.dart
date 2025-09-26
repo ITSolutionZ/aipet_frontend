@@ -206,7 +206,7 @@ class VideoBookmarkList extends ConsumerWidget {
               ),
               child: bookmarksState.when(
                 data: (bookmarks) => _buildBookmarkList(bookmarks, context, ref),
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => const Center(child: const CircularProgressIndicator()),
                 error: (error, stack) => Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -320,7 +320,7 @@ class _BookmarkCard extends StatelessWidget {
               ),
             ),
             if (bookmark.description?.isNotEmpty == true) ...[
-              const const const SizedBox(height: 2),
+              const const SizedBox(height: 2),
               Text(
                 bookmark.description!,
                 style: TextStyle(

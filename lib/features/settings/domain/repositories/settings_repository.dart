@@ -1,23 +1,18 @@
-import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart'
-    as settings_entities;
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/entities/settings_entity.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 
 abstract class SettingsRepository {
-  Future<Result<settings_entities.UserProfileEntity>> getUserProfile();
-  Future<Result<settings_entities.UserProfileEntity>> updateUserProfile(
-    settings_entities.UserProfileEntity profile,
+  Future<Result<UserProfileEntity>> getUserProfile();
+  Future<Result<UserProfileEntity>> updateUserProfile(
+    UserProfileEntity profile,
   );
-  Future<Result<void>> changePassword(
-    settings_entities.PasswordChangeRequest request,
-  );
+  Future<Result<void>> changePassword(PasswordChangeRequest request);
   Future<Result<void>> deleteAccount();
 
-  Future<Result<settings_entities.AppSettingsEntity>> getAppSettings();
-  Future<Result<settings_entities.AppSettingsEntity>> saveAppSettings(
-    settings_entities.AppSettingsEntity settings,
-  );
+  Future<Result<AppSettingsEntity>> getAppSettings();
+  Future<Result<AppSettingsEntity>> saveAppSettings(AppSettingsEntity settings);
 
-  Future<Result<settings_entities.DataExportResult>> exportAppData();
+  Future<Result<DataExportResult>> exportAppData();
   Future<Result<void>> importAppData(String filePath);
 
   Future<Result<void>> clearAppCache();

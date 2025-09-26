@@ -77,9 +77,9 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
         // 새 토큰 저장
         await TokenStorageService.saveToken(authToken);
 
-      if (kDebugMode) {
-        debugPrint('토큰 갱신 완료 (만료: ${authToken.expiresAt.toIso8601String()})');
-      }
+        if (kDebugMode) {
+          debugPrint('토큰 갱신 완료 (만료: ${authToken.expiresAt.toIso8601String()})');
+        }
 
         return AuthTokenBundle(
           accessToken: authToken.accessToken,

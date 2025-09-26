@@ -188,8 +188,11 @@ class AppInitialization extends _$AppInitialization {
     try {
       // 온보딩 리포지토리를 통해 상태 확인
       final onboardingRepository = ref.read(onboardingRepositoryProvider);
-      final isOnboardingCompleted = await onboardingRepository
+      final onboardingCompletedResult = await onboardingRepository
           .isOnboardingCompleted();
+      final isOnboardingCompleted = onboardingCompletedResult.isSuccess
+          ? (onboardingCompletedResult.dataOrNull ?? false)
+          : false;
 
       // 온보딩 완료 버전 확인 (앱 업데이트 시 온보딩 재표시 여부 결정)
       final prefs = await SharedPreferences.getInstance();
@@ -205,8 +208,10 @@ class AppInitialization extends _$AppInitialization {
       final onboardingStateNotifier = ref.read(
         onboardingNotifierProvider.notifier,
       );
-      final savedState = await onboardingRepository.loadOnboardingState();
-      onboardingStateNotifier.state = savedState;
+      final savedStateResult = await onboardingRepository.loadOnboardingState();
+      if (savedStateResult.isSuccess) {
+        onboardingStateNotifier.state = savedStateResult.dataOrNull!;
+      }
 
       // 상태 업데이트
       state = state.copyWith(isOnboardingCompleted: finalOnboardingStatus);

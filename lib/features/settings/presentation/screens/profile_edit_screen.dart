@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/settings/presentation/widgets/profile_header_widget.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/widgets/form_field_widget.dart';
-import 'package:aipet_frontend/shared/widgets/profile_header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -211,12 +211,12 @@ class ProfileEditFormState {
 class ProfileEditScreen extends ConsumerWidget {
   const ProfileEditScreen({super.key});
 
-  Future<void> _saveProfile() async {
+  Future<void> _saveProfile(WidgetRef ref, BuildContext context) async {
     final formState = ref.read(profileEditFormProvider);
     if (formState.formKey?.currentState?.validate() ?? false) {
       final profileNotifier = ref.read(profileDataProvider.notifier);
       final success = await profileNotifier.saveProfile();
-      if (mounted) {
+      if (context.mounted) {
         if (success) {
           ScaffoldMessenger.of(
             context,
@@ -232,17 +232,17 @@ class ProfileEditScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final profileData = ref.watch(profileDataProvider);
     final formState = ref.watch(profileEditFormProvider);
 
     // Update controllers when profile data changes from provider
     ref.listen(profileDataProvider, (previous, next) {
       if (previous != next && !next.isLoading) {
-        _userNameController.text = next.userName;
-        _emailController.text = next.email;
-        _nameKatakanaController.text = next.nameKatakana;
-        _contactController.text = next.contact;
+        formState.userNameController?.text = next.userName;
+        formState.emailController?.text = next.email;
+        formState.nameKatakanaController?.text = next.nameKatakana;
+        formState.contactController?.text = next.contact;
       }
     });
 
@@ -266,8 +266,10 @@ class ProfileEditScreen extends ConsumerWidget {
                 ),
 
               // フォームフィールド
-              const FormFieldWidget(
+              FormFieldWidget(
                 label: 'ユーザ名',
+                controller:
+                    formState.userNameController ?? TextEditingController(),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'ユーザ名を入力してください';
@@ -280,7 +282,8 @@ class ProfileEditScreen extends ConsumerWidget {
 
               FormFieldWidget(
                 label: 'メールアドレス',
-                controller: _emailController,
+                controller:
+                    formState.emailController ?? TextEditingController(),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'メールアドレスを入力してください';
@@ -296,7 +299,8 @@ class ProfileEditScreen extends ConsumerWidget {
 
               FormFieldWidget(
                 label: 'フリガナ',
-                controller: _nameKatakanaController,
+                controller:
+                    formState.nameKatakanaController ?? TextEditingController(),
                 validator: (value) => null, // Optional field
               ),
 
@@ -304,7 +308,8 @@ class ProfileEditScreen extends ConsumerWidget {
 
               FormFieldWidget(
                 label: '連絡先',
-                controller: _contactController,
+                controller:
+                    formState.contactController ?? TextEditingController(),
                 validator: (value) => null, // Optional field
               ),
 
@@ -314,7 +319,9 @@ class ProfileEditScreen extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: profileData.isLoading ? null : _saveProfile,
+                  onPressed: profileData.isLoading
+                      ? null
+                      : () => _saveProfile(ref, context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,

@@ -22,7 +22,7 @@ void main() {
       // Arrange
       const email = 'test@example.com';
       const password = 'password123';
-      final expectedUser = AuthUser(
+      const expectedUser = AuthUser(
         id: 'user_123',
         email: email,
         name: 'Test User',

@@ -34,17 +34,17 @@ class MockSplashRepository extends _i1.Mock implements _i2.SplashRepository {
   }
 
   @override
-  _i3.Future<_i4.Result<dynamic>> getSplashConfig() =>
+  _i3.Future<_i4.Result<_i4.SplashEntity>> getSplashConfig() =>
       (super.noSuchMethod(
             Invocation.method(#getSplashConfig, []),
-            returnValue: _i3.Future<_i4.Result<dynamic>>.value(
-              _i5.dummyValue<_i4.Result<dynamic>>(
+            returnValue: _i3.Future<_i4.Result<_i4.SplashEntity>>.value(
+              _i5.dummyValue<_i4.Result<_i4.SplashEntity>>(
                 this,
                 Invocation.method(#getSplashConfig, []),
               ),
             ),
           )
-          as _i3.Future<_i4.Result<dynamic>>);
+          as _i3.Future<_i4.Result<_i4.SplashEntity>>);
 
   @override
   _i3.Future<_i4.Result<void>> initializeApp() =>
@@ -58,4 +58,25 @@ class MockSplashRepository extends _i1.Mock implements _i2.SplashRepository {
             ),
           )
           as _i3.Future<_i4.Result<void>>);
+
+  @override
+  _i3.Stream<_i4.Result<_i4.SplashState>> executeSplashSequence() =>
+      (super.noSuchMethod(
+            Invocation.method(#executeSplashSequence, []),
+            returnValue: _i3.Stream<_i4.Result<_i4.SplashState>>.empty(),
+          )
+          as _i3.Stream<_i4.Result<_i4.SplashState>>);
+
+  @override
+  _i3.Future<_i4.Result<String>> determineNextRoute() =>
+      (super.noSuchMethod(
+            Invocation.method(#determineNextRoute, []),
+            returnValue: _i3.Future<_i4.Result<String>>.value(
+              _i5.dummyValue<_i4.Result<String>>(
+                this,
+                Invocation.method(#determineNextRoute, []),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.Result<String>>);
 }

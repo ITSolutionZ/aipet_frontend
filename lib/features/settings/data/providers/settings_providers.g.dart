@@ -105,8 +105,123 @@ final saveAppSettingsUseCaseProvider =
 // ignore: unused_element
 typedef SaveAppSettingsUseCaseRef =
     AutoDisposeProviderRef<SaveAppSettingsUseCase>;
+String _$changePasswordUseCaseHash() =>
+    r'ac036b380d5bb158fe063811c3927ff5a9cb863c';
+
+/// See also [changePasswordUseCase].
+@ProviderFor(changePasswordUseCase)
+final changePasswordUseCaseProvider =
+    AutoDisposeProvider<ChangePasswordUseCase>.internal(
+      changePasswordUseCase,
+      name: r'changePasswordUseCaseProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$changePasswordUseCaseHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ChangePasswordUseCaseRef =
+    AutoDisposeProviderRef<ChangePasswordUseCase>;
+String _$deleteAccountUseCaseHash() =>
+    r'f6d11a294e74f96d009e17b7ad966e1d1cf5c239';
+
+/// See also [deleteAccountUseCase].
+@ProviderFor(deleteAccountUseCase)
+final deleteAccountUseCaseProvider =
+    AutoDisposeProvider<DeleteAccountUseCase>.internal(
+      deleteAccountUseCase,
+      name: r'deleteAccountUseCaseProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$deleteAccountUseCaseHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef DeleteAccountUseCaseRef = AutoDisposeProviderRef<DeleteAccountUseCase>;
+String _$exportAppDataUseCaseHash() =>
+    r'6039efec066c24cc510b8d28ebb7ac0fd1551fc5';
+
+/// See also [exportAppDataUseCase].
+@ProviderFor(exportAppDataUseCase)
+final exportAppDataUseCaseProvider =
+    AutoDisposeProvider<ExportAppDataUseCase>.internal(
+      exportAppDataUseCase,
+      name: r'exportAppDataUseCaseProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$exportAppDataUseCaseHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ExportAppDataUseCaseRef = AutoDisposeProviderRef<ExportAppDataUseCase>;
+String _$importAppDataUseCaseHash() =>
+    r'ccbc0b3e557698b0fa933505943332c7b9dfdd4e';
+
+/// See also [importAppDataUseCase].
+@ProviderFor(importAppDataUseCase)
+final importAppDataUseCaseProvider =
+    AutoDisposeProvider<ImportAppDataUseCase>.internal(
+      importAppDataUseCase,
+      name: r'importAppDataUseCaseProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$importAppDataUseCaseHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ImportAppDataUseCaseRef = AutoDisposeProviderRef<ImportAppDataUseCase>;
+String _$clearAppCacheUseCaseHash() =>
+    r'bcab7fdfe870c5ec28dce0b407486bb4d7c88ce8';
+
+/// See also [clearAppCacheUseCase].
+@ProviderFor(clearAppCacheUseCase)
+final clearAppCacheUseCaseProvider =
+    AutoDisposeProvider<ClearAppCacheUseCase>.internal(
+      clearAppCacheUseCase,
+      name: r'clearAppCacheUseCaseProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$clearAppCacheUseCaseHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ClearAppCacheUseCaseRef = AutoDisposeProviderRef<ClearAppCacheUseCase>;
+String _$settingsControllerHash() =>
+    r'9e64ba4bab60d6502f546123f6a3af99038e3eff';
+
+/// See also [settingsController].
+@ProviderFor(settingsController)
+final settingsControllerProvider =
+    AutoDisposeProvider<SettingsController>.internal(
+      settingsController,
+      name: r'settingsControllerProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$settingsControllerHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef SettingsControllerRef = AutoDisposeProviderRef<SettingsController>;
 String _$userProfileNotifierHash() =>
-    r'5bf479cd8f48e614cb0a40f9dfe8fecd90c4c213';
+    r'225ab27474887a97179d94446598265b89867ab0';
 
 /// See also [UserProfileNotifier].
 @ProviderFor(UserProfileNotifier)
@@ -126,7 +241,7 @@ final userProfileNotifierProvider =
 
 typedef _$UserProfileNotifier = AutoDisposeAsyncNotifier<UserProfileEntity>;
 String _$appSettingsNotifierHash() =>
-    r'd4c77001dd10cc1b81c53e3b25e9b5c8b5878409';
+    r'e828eca78df445c0f6d3e6341108782958e209bf';
 
 /// See also [AppSettingsNotifier].
 @ProviderFor(AppSettingsNotifier)

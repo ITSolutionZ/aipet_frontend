@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
-import 'package:aipet_frontend/features/notification/presentation/controllers/notification_list_controller.dart';
 import 'package:aipet_frontend/features/notification/presentation/components/lists/filter_chips_component.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_list_controller.dart';
 import 'package:aipet_frontend/features/notification/presentation/widgets/notification_list_widget.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

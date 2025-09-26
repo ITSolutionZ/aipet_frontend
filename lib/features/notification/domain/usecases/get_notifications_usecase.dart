@@ -7,7 +7,11 @@ class GetNotificationsUseCase {
   const GetNotificationsUseCase(this._repository);
 
   /// 모든 알림 가져오기
-  Future<List<NotificationModel>> call() async {
-    return _repository.getAllNotifications();
+  Future<List<NotificationModel>> call(String userId) async {
+    final result = await _repository.getAllNotifications(userId: userId);
+    if (result.isSuccess) {
+      return result.dataOrNull ?? [];
+    }
+    throw Exception('알림 조회 실패: ${result.errorOrNull}');
   }
 }

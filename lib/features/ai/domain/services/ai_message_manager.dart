@@ -35,21 +35,29 @@ class AiMessageManager {
       }
 
       // 메시지 최적화 (페이징, 정렬, 중복 제거)
-      final optimizedResult = MessagePaginationService.optimizeMessages(combinedMessages);
+      final optimizedResult = MessagePaginationService.optimizeMessages(
+        combinedMessages,
+      );
 
       if (optimizedResult.isSuccess) {
         if (kDebugMode) {
-          debugPrint('[$_tag] Messages added and optimized: ${optimizedResult.dataOrNull!.length} total');
+          debugPrint(
+            '[$_tag] Messages added and optimized: ${optimizedResult.dataOrNull!.length} total',
+          );
         }
         return optimizedResult;
       }
 
       // 최적화 실패 시 원본 반환
       if (kDebugMode) {
-        debugPrint('[$_tag] Optimization failed, returning unoptimized messages');
+        debugPrint(
+          '[$_tag] Optimization failed, returning unoptimized messages',
+        );
       }
-      return ResultFactory.success(combinedMessages, 'Messages added without optimization');
-
+      return ResultFactory.success(
+        combinedMessages,
+        'Messages added without optimization',
+      );
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error adding messages: $error\n$stackTrace');
@@ -88,7 +96,9 @@ class AiMessageManager {
       // 메시지 길이 제한
       const maxContentLength = 10000;
       if (message.content.length > maxContentLength) {
-        return ResultFactory.failure('메시지가 너무 깁니다 (${message.content.length}/$maxContentLength자)');
+        return ResultFactory.failure(
+          '메시지가 너무 깁니다 (${message.content.length}/$maxContentLength자)',
+        );
       }
 
       // 타입별 특수 검증
@@ -100,7 +110,6 @@ class AiMessageManager {
         case MessageType.system:
           return _validateSystemMessage(message);
       }
-
     } catch (error) {
       return ResultFactory.failure('메시지 검증 중 오류: $error');
     }
@@ -110,7 +119,9 @@ class AiMessageManager {
   ///
   /// [messages] 정리할 메시지 목록
   /// [return] 정리된 메시지 목록
-  static Result<List<AiMessageEntity>> cleanupMessages(List<AiMessageEntity> messages) {
+  static Result<List<AiMessageEntity>> cleanupMessages(
+    List<AiMessageEntity> messages,
+  ) {
     try {
       // 빈 메시지 제거
       final nonEmptyMessages = messages
@@ -123,7 +134,8 @@ class AiMessageManager {
 
       for (final message in nonEmptyMessages) {
         // 연속된 시스템 메시지는 마지막 것만 유지
-        if (message.type == MessageType.system && lastType == MessageType.system) {
+        if (message.type == MessageType.system &&
+            lastType == MessageType.system) {
           if (cleanedMessages.isNotEmpty) {
             cleanedMessages.removeLast();
           }
@@ -134,18 +146,24 @@ class AiMessageManager {
       }
 
       // 메시지 최적화 적용
-      final optimizedResult = MessagePaginationService.optimizeMessages(cleanedMessages);
+      final optimizedResult = MessagePaginationService.optimizeMessages(
+        cleanedMessages,
+      );
 
       if (optimizedResult.isSuccess) {
         if (kDebugMode) {
-          debugPrint('[$_tag] Messages cleaned up: ${messages.length} → ${optimizedResult.dataOrNull!.length}');
+          debugPrint(
+            '[$_tag] Messages cleaned up: ${messages.length} → ${optimizedResult.dataOrNull!.length}',
+          );
         }
         return optimizedResult;
       }
 
       // 최적화 실패 시 정리된 메시지 반환
-      return ResultFactory.success(cleanedMessages, 'Messages cleaned up without optimization');
-
+      return ResultFactory.success(
+        cleanedMessages,
+        'Messages cleaned up without optimization',
+      );
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error cleaning up messages: $error\n$stackTrace');
@@ -181,7 +199,6 @@ class AiMessageManager {
         found: false,
       );
       return ResultFactory.success(result, 'Message not found');
-
     } catch (error) {
       return ResultFactory.failure('메시지 검색 중 오류: $error');
     }
@@ -202,8 +219,12 @@ class AiMessageManager {
   static MemoryStatus checkMemoryStatus(List<AiMessageEntity> messages) {
     try {
       final isMemoryHigh = MessagePaginationService.isMemoryUsageHigh(messages);
-      final shouldCleanup = MessagePaginationService.shouldAutoCleanup(messages.length);
-      final estimatedUsage = MessagePaginationService.estimateMemoryUsage(messages);
+      final shouldCleanup = MessagePaginationService.shouldAutoCleanup(
+        messages.length,
+      );
+      final estimatedUsage = MessagePaginationService.estimateMemoryUsage(
+        messages,
+      );
 
       final status = MemoryStatus(
         isHigh: isMemoryHigh,
@@ -219,7 +240,6 @@ class AiMessageManager {
       }
 
       return status;
-
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error checking memory status: $error');
@@ -248,7 +268,9 @@ class AiMessageManager {
     final errorPatterns = ['error', 'failed', 'cannot', 'unable'];
     final contentLower = message.content.toLowerCase();
 
-    final hasErrorPattern = errorPatterns.any((pattern) => contentLower.contains(pattern));
+    final hasErrorPattern = errorPatterns.any(
+      (pattern) => contentLower.contains(pattern),
+    );
     if (hasErrorPattern && message.content.length < 50) {
       return ResultFactory.failure('AI 응답에 오류 패턴이 감지되었습니다');
     }
@@ -323,6 +345,6 @@ class MemoryStatus {
   @override
   String toString() {
     return 'MemoryStatus(high: $isHigh, cleanup: $shouldCleanup, '
-           'size: ${estimatedMB.toStringAsFixed(2)}MB, count: $messageCount)';
+        'size: ${estimatedMB.toStringAsFixed(2)}MB, count: $messageCount)';
   }
 }

@@ -38,13 +38,17 @@ class JwtValidationService {
       // 3. Header 검증
       final headerResult = _validateJwtPart(parts[0], 'header');
       if (!headerResult.isSuccess) {
-        return ResultFactory.failure('Header 검증 실패: ${headerResult.errorOrNull ?? 'Unknown error'}');
+        return ResultFactory.failure(
+          'Header 검증 실패: ${headerResult.errorOrNull ?? 'Unknown error'}',
+        );
       }
 
       // 4. Payload 검증
       final payloadResult = _validateJwtPart(parts[1], 'payload');
       if (!payloadResult.isSuccess) {
-        return ResultFactory.failure('Payload 검증 실패: ${payloadResult.errorOrNull ?? 'Unknown error'}');
+        return ResultFactory.failure(
+          'Payload 검증 실패: ${payloadResult.errorOrNull ?? 'Unknown error'}',
+        );
       }
 
       // 5. Signature 검증 (길이 및 형식만)

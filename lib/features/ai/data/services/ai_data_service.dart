@@ -211,7 +211,6 @@ class AiDataService extends BaseLoggingService {
     return _dioService.executeWithRetry(apiCall);
   }
 
-
   /// JSON을 AiCategoryEntity로 매핑
   AiCategoryEntity _mapToAiCategoryEntity(Map<String, dynamic> json) {
     return AiCategoryEntity(

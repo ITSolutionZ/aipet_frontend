@@ -31,7 +31,10 @@ class AiChatStateManager {
       // 메시지 추가 (있는 경우)
       var updatedMessages = currentState.messages;
       if (newMessages.isNotEmpty) {
-        final messageResult = AiMessageManager.addMessages(updatedMessages, newMessages);
+        final messageResult = AiMessageManager.addMessages(
+          updatedMessages,
+          newMessages,
+        );
         if (messageResult.isSuccess) {
           updatedMessages = messageResult.dataOrNull!;
         }
@@ -45,11 +48,12 @@ class AiChatStateManager {
       );
 
       if (kDebugMode) {
-        debugPrint('[$_tag] 🐕 Pet selected: ${pet?.name ?? 'None'} (messages: ${updatedMessages.length})');
+        debugPrint(
+          '[$_tag] 🐕 Pet selected: ${pet?.name ?? 'None'} (messages: ${updatedMessages.length})',
+        );
       }
 
       return ResultFactory.success(updatedState, 'Pet selection updated');
-
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error updating pet selection: $error\n$stackTrace');
@@ -75,7 +79,10 @@ class AiChatStateManager {
       // 메시지 추가
       var updatedMessages = currentState.messages;
       if (newMessages.isNotEmpty) {
-        final messageResult = AiMessageManager.addMessages(updatedMessages, newMessages);
+        final messageResult = AiMessageManager.addMessages(
+          updatedMessages,
+          newMessages,
+        );
         if (messageResult.isSuccess) {
           updatedMessages = messageResult.dataOrNull!;
         }
@@ -90,14 +97,17 @@ class AiChatStateManager {
       );
 
       if (kDebugMode) {
-        debugPrint('[$_tag] 📂 Category selected: ${category.name} (suggestions: ${suggestedQuestions.length})');
+        debugPrint(
+          '[$_tag] 📂 Category selected: ${category.name} (suggestions: ${suggestedQuestions.length})',
+        );
       }
 
       return ResultFactory.success(updatedState, 'Category selection updated');
-
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error updating category selection: $error\n$stackTrace');
+        debugPrint(
+          '[$_tag] Error updating category selection: $error\n$stackTrace',
+        );
       }
       return ResultFactory.failure('카테고리 선택 업데이트 중 오류 발생: $error');
     }
@@ -121,7 +131,10 @@ class AiChatStateManager {
 
       // 사용자 메시지 추가
       if (userMessage != null) {
-        final userResult = AiMessageManager.addMessage(updatedMessages, userMessage);
+        final userResult = AiMessageManager.addMessage(
+          updatedMessages,
+          userMessage,
+        );
         if (userResult.isSuccess) {
           updatedMessages = userResult.dataOrNull!;
         }
@@ -129,7 +142,10 @@ class AiChatStateManager {
 
       // AI 응답 메시지 추가
       if (assistantMessage != null) {
-        final assistantResult = AiMessageManager.addMessage(updatedMessages, assistantMessage);
+        final assistantResult = AiMessageManager.addMessage(
+          updatedMessages,
+          assistantMessage,
+        );
         if (assistantResult.isSuccess) {
           updatedMessages = assistantResult.dataOrNull!;
         }
@@ -145,14 +161,17 @@ class AiChatStateManager {
         final userAdded = userMessage != null ? 'user+' : '';
         final assistantAdded = assistantMessage != null ? 'assistant+' : '';
         final typingStatus = isTyping ? 'typing' : 'idle';
-        debugPrint('[$_tag] 💬 Message exchange: $userAdded$assistantAdded [$typingStatus] (total: ${updatedMessages.length})');
+        debugPrint(
+          '[$_tag] 💬 Message exchange: $userAdded$assistantAdded [$typingStatus] (total: ${updatedMessages.length})',
+        );
       }
 
       return ResultFactory.success(updatedState, 'Message exchange updated');
-
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error updating message exchange: $error\n$stackTrace');
+        debugPrint(
+          '[$_tag] Error updating message exchange: $error\n$stackTrace',
+        );
       }
       return ResultFactory.failure('메시지 교환 업데이트 중 오류 발생: $error');
     }
@@ -170,7 +189,9 @@ class AiChatStateManager {
     required String userQuestion,
   }) {
     try {
-      final isCurrentlyFavorite = currentState.favoriteMessageIds.contains(message.id);
+      final isCurrentlyFavorite = currentState.favoriteMessageIds.contains(
+        message.id,
+      );
 
       Result<FavoriteUpdateResult> favoriteResult;
 
@@ -194,7 +215,9 @@ class AiChatStateManager {
       }
 
       if (!favoriteResult.isSuccess) {
-        return ResultFactory.failure(favoriteResult.errorOrNull ?? 'Favorite operation failed');
+        return ResultFactory.failure(
+          favoriteResult.errorOrNull ?? 'Favorite operation failed',
+        );
       }
 
       final result = favoriteResult.dataOrNull!;
@@ -205,14 +228,17 @@ class AiChatStateManager {
 
       if (kDebugMode) {
         final action = isCurrentlyFavorite ? 'Removed from' : 'Added to';
-        debugPrint('[$_tag] ⭐ $action favorites: ${message.id} (total: ${result.favoriteIds.length})');
+        debugPrint(
+          '[$_tag] ⭐ $action favorites: ${message.id} (total: ${result.favoriteIds.length})',
+        );
       }
 
       return ResultFactory.success(updatedState, result.message);
-
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error updating favorite toggle: $error\n$stackTrace');
+        debugPrint(
+          '[$_tag] Error updating favorite toggle: $error\n$stackTrace',
+        );
       }
       return ResultFactory.failure('즐겨찾기 토글 중 오류 발생: $error');
     }
@@ -226,16 +252,15 @@ class AiChatStateManager {
     List<AiSuggestedQuestionEntity> suggestedQuestions = const [],
   }) {
     try {
-      final initialState = AiChatState(
-        suggestedQuestions: suggestedQuestions,
-      );
+      final initialState = AiChatState(suggestedQuestions: suggestedQuestions);
 
       if (kDebugMode) {
-        debugPrint('[$_tag] 🔄 State initialized with ${suggestedQuestions.length} suggestions');
+        debugPrint(
+          '[$_tag] 🔄 State initialized with ${suggestedQuestions.length} suggestions',
+        );
       }
 
       return ResultFactory.success(initialState, 'State initialized');
-
     } catch (error) {
       return ResultFactory.failure('상태 초기화 중 오류 발생: $error');
     }
@@ -252,7 +277,9 @@ class AiChatStateManager {
 
       // 1. 메시지 상태 검증
       var validatedMessages = currentState.messages;
-      final messageCleanupResult = AiMessageManager.cleanupMessages(validatedMessages);
+      final messageCleanupResult = AiMessageManager.cleanupMessages(
+        validatedMessages,
+      );
 
       if (messageCleanupResult.isSuccess &&
           messageCleanupResult.dataOrNull!.length != validatedMessages.length) {
@@ -279,13 +306,16 @@ class AiChatStateManager {
         needsUpdate = true;
       }
 
-      if (currentState.hasCategorySelected && currentState.selectedCategory == null) {
+      if (currentState.hasCategorySelected &&
+          currentState.selectedCategory == null) {
         issues.add('카테고리 선택 상태 불일치');
         needsUpdate = true;
       }
 
       // 4. 메모리 상태 체크
-      final memoryStatus = AiMessageManager.checkMemoryStatus(validatedMessages);
+      final memoryStatus = AiMessageManager.checkMemoryStatus(
+        validatedMessages,
+      );
       if (memoryStatus.shouldCleanup) {
         issues.add(memoryStatus.recommendation);
       }
@@ -324,7 +354,6 @@ class AiChatStateManager {
         resultData.state,
         needsUpdate ? 'State validated and updated' : 'State validation passed',
       );
-
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error validating state: $error\n$stackTrace');
@@ -355,7 +384,6 @@ class AiChatStateManager {
       }
 
       return ResultFactory.success(updatedState, 'Error state updated');
-
     } catch (error) {
       return ResultFactory.failure('에러 상태 설정 중 오류 발생: $error');
     }
@@ -367,9 +395,15 @@ class AiChatStateManager {
   /// [return] 상태 스냅샷
   static StateSnapshot createSnapshot(AiChatState currentState) {
     try {
-      final messageStats = AiMessageManager.generateStatistics(currentState.messages);
-      final favoriteStats = AiFavoriteManager.generateStatistics(currentState.favoriteQAs);
-      final memoryStatus = AiMessageManager.checkMemoryStatus(currentState.messages);
+      final messageStats = AiMessageManager.generateStatistics(
+        currentState.messages,
+      );
+      final favoriteStats = AiFavoriteManager.generateStatistics(
+        currentState.favoriteQAs,
+      );
+      final memoryStatus = AiMessageManager.checkMemoryStatus(
+        currentState.messages,
+      );
 
       return StateSnapshot(
         timestamp: DateTime.now(),
@@ -384,7 +418,6 @@ class AiChatStateManager {
         memoryStatus: memoryStatus,
         suggestedQuestionsCount: currentState.suggestedQuestions.length,
       );
-
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error creating snapshot: $error');
@@ -399,10 +432,7 @@ class StateValidationResult {
   final AiChatState state;
   final StateValidationSummary summary;
 
-  const StateValidationResult({
-    required this.state,
-    required this.summary,
-  });
+  const StateValidationResult({required this.state, required this.summary});
 }
 
 /// 상태 검증 요약
@@ -422,10 +452,10 @@ class StateValidationSummary {
   @override
   String toString() {
     return 'StateValidationSummary('
-           'valid: $isValid, '
-           'issues: ${issues.length}, '
-           'updated: $wasUpdated'
-           ')';
+        'valid: $isValid, '
+        'issues: ${issues.length}, '
+        'updated: $wasUpdated'
+        ')';
   }
 }
 
@@ -486,12 +516,12 @@ class StateSnapshot {
   @override
   String toString() {
     return 'StateSnapshot('
-           'messages: $messageCount, '
-           'favorites: $favoriteCount, '
-           'pet: $hasSelectedPet, '
-           'category: $hasSelectedCategory, '
-           'typing: $isTyping, '
-           'error: $hasError'
-           ')';
+        'messages: $messageCount, '
+        'favorites: $favoriteCount, '
+        'pet: $hasSelectedPet, '
+        'category: $hasSelectedCategory, '
+        'typing: $isTyping, '
+        'error: $hasError'
+        ')';
   }
 }

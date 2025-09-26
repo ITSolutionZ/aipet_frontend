@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';
 import 'package:aipet_frontend/features/notification/presentation/components/forms/alarm_toggle_component.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -118,7 +118,7 @@ class _PushNotificationScreenState
       return const Scaffold(
         backgroundColor: AppColors.pointOffWhite,
         appBar: SoftGradientDrawerAppBar(title: 'プッシュ通知'),
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(child: const CircularProgressIndicator()),
       );
     }
 

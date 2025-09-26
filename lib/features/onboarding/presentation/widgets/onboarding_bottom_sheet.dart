@@ -87,18 +87,13 @@ class OnboardingBottomSheet extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ActionButton.primary(
-                  enabled: true,
+                  isEnabled: true,
                   text:
                       onboardingState.currentPage ==
                           OnboardingData.pages.length - 1
                       ? OnboardingConstants.startButtonText
                       : OnboardingConstants.nextButtonText,
                   onPressed: onNext,
-                  trailing: const Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                    size: 20,
-                  ),
                 ),
               ),
             ],

@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -34,9 +33,9 @@ class SplashLogoWidget extends StatelessWidget {
   /// 로딩 애니메이션 위젯 - 카드 없이 깔끔하게 표시
   Widget _buildLoadingAnimation() {
     return Lottie.asset(
-      SplashConstants.loadingLottiePath,
-      width: SplashConstants.loadingLottieSize,
-      height: SplashConstants.loadingLottieSize,
+      AppConstants.splashLoadingLottiePath,
+      width: AppConstants.splashLoadingLottieSize,
+      height: AppConstants.splashLoadingLottieSize,
       fit: BoxFit.contain,
       repeat: true,
       errorBuilder: (context, error, stackTrace) {
@@ -52,33 +51,33 @@ class SplashLogoWidget extends StatelessWidget {
       children: [
         // 앱 로고
         Container(
-          width: SplashConstants.appLogoSize,
-          height: SplashConstants.appLogoSize,
+          width: AppConstants.splashAppLogoSize,
+          height: AppConstants.splashAppLogoSize,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
                 Colors.white.withValues(
-                  alpha: SplashConstants.gradientAlpha1 / 255,
+                  alpha: AppConstants.splashGradientAlpha1 / 255,
                 ),
                 Colors.white.withValues(
-                  alpha: SplashConstants.gradientAlpha2 / 255,
+                  alpha: AppConstants.splashGradientAlpha2 / 255,
                 ),
               ],
             ),
-            borderRadius: BorderRadius.circular(SplashConstants.logoRadius),
+            borderRadius: BorderRadius.circular(AppConstants.splashLogoRadius),
             border: Border.all(
               color: Colors.white.withValues(
-                alpha: SplashConstants.borderAlpha / 255,
+                alpha: AppConstants.splashBorderAlpha / 255,
               ),
               width: 1,
             ),
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(SplashConstants.logoRadius),
+            borderRadius: BorderRadius.circular(AppConstants.splashLogoRadius),
             child: Image.asset(
-              SplashConstants.appLogoPath,
+              AppConstants.splashAppLogoPath,
               fit: BoxFit.contain,
               errorBuilder: _buildErrorWidget,
             ),
@@ -88,13 +87,11 @@ class SplashLogoWidget extends StatelessWidget {
         const SizedBox(height: AppSpacing.lg), // 앱 로고와 회사 로고 사이 간격
         // 회사 로고 (작게)
         Container(
-          width: SplashConstants.companyLogoWidth,
-          height: SplashConstants.companyLogoHeight,
+          width: AppConstants.splashCompanyLogoWidth,
+          height: AppConstants.splashCompanyLogoHeight,
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.9),
-            borderRadius: BorderRadius.circular(
-              SplashConstants.companyLogoRadius,
-            ),
+            borderRadius: BorderRadius.circular(8.0), // companyLogoRadius 상수화
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.1),
@@ -104,11 +101,9 @@ class SplashLogoWidget extends StatelessWidget {
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(
-              SplashConstants.companyLogoRadius,
-            ),
+            borderRadius: BorderRadius.circular(8.0),
             child: Image.asset(
-              SplashConstants.companyLogoPath,
+              AppConstants.splashCompanyLogoPath,
               fit: BoxFit.contain,
               errorBuilder: _buildErrorWidget,
             ),

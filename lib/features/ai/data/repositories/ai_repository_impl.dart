@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/foundation/error_handler/error_handler.dart';
 import '../../../../shared/foundation/result/result.dart';
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import '../../../pet_registor/pet_registor.dart';
 import '../../domain/domain.dart';
 import '../services/ai_local_storage_service.dart';
@@ -421,5 +422,135 @@ class AiRepositoryImpl implements AiRepository {
     } catch (e) {
       debugPrint('메시지 로컬 저장 실패: $e');
     }
+  }
+
+  /// 채팅 히스토리 로드 (UseCase용)
+  @override
+  Future<Result<List<AiMessageEntity>>> loadChatHistory({
+    required String userId,
+    String? petId,
+    int? limit,
+    int? offset,
+  }) async {
+    try {
+      final messages = await _localStorageService.loadChatHistory();
+
+      // 펫 ID로 필터링
+      var filteredMessages = petId != null
+          ? messages.where((msg) => msg.id.contains(petId)).toList()
+          : messages;
+
+      // 최신순 정렬
+      filteredMessages.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+      // offset과 limit 적용
+      if (offset != null && offset > 0) {
+        filteredMessages = filteredMessages.skip(offset).toList();
+      }
+      if (limit != null && limit > 0) {
+        filteredMessages = filteredMessages.take(limit).toList();
+      }
+
+      return ResultFactory.success(filteredMessages);
+    } catch (e) {
+      return ResultFactory.failure('채팅 히스토리 로드 실패: $e');
+    }
+  }
+
+  /// 메시지 분석 (UseCase용)
+  @override
+  Future<Result<AiAnalysisEntity>> analyzeMessage({
+    required String message,
+    String? petId,
+    Map<String, dynamic>? context,
+  }) async {
+    try {
+      // 간단한 분석 로직 (실제로는 더 복잡한 AI 분석)
+      final analysis = AiAnalysisEntity.fromMessage(
+        message: message,
+        analysis: '메시지 분석이 완료되었습니다. 내용: $message',
+        topics: _extractTopics(message),
+        confidenceScore: 0.8,
+      );
+
+      return ResultFactory.success(analysis);
+    } catch (e) {
+      return ResultFactory.failure('메시지 분석 실패: $e');
+    }
+  }
+
+  /// 파라미터와 함께 메시지 전송
+  @override
+  Future<Result<AiMessageEntity>> sendMessageWithParams({
+    required String message,
+    required String petId,
+    String? categoryId,
+    List<String>? attachedImages,
+  }) async {
+    try {
+      // 기존 sendMessage 메서드 재사용
+      final result = await sendMessage(message);
+      return result;
+    } catch (e) {
+      return ResultFactory.failure('메시지 전송 실패: $e');
+    }
+  }
+
+  /// 즐겨찾기 토글
+  @override
+  Future<Result<bool>> toggleFavoriteMessage(String messageId) async {
+    try {
+      // Mock 구현 - 실제로는 로컬 저장소나 서버에서 즐겨찾기 상태 토글
+      final isFavorite = Random().nextBool();
+      return ResultFactory.success(isFavorite);
+    } catch (e) {
+      return ResultFactory.failure('즐겨찾기 토글 실패: $e');
+    }
+  }
+
+  /// 파라미터와 함께 제안 질문 가져오기
+  @override
+  Future<Result<List<AiSuggestedQuestionEntity>>> getSuggestedQuestionsWithParams({
+    String? petId,
+    String? categoryId,
+  }) async {
+    try {
+      // Mock 제안 질문들
+      final suggestions = [
+        AiSuggestedQuestionEntity(
+          id: '1',
+          question: '우리 강아지 건강은 어떤가요?',
+          category: categoryId ?? '건강',
+          relevanceScore: 0.9,
+        ),
+        AiSuggestedQuestionEntity(
+          id: '2',
+          question: '오늘 산책은 어떻게 해야 할까요?',
+          category: categoryId ?? '산책',
+          relevanceScore: 0.8,
+        ),
+      ];
+
+      return ResultFactory.success(suggestions);
+    } catch (e) {
+      return ResultFactory.failure('제안 질문 가져오기 실패: $e');
+    }
+  }
+
+  /// 메시지에서 주제 추출
+  List<String> _extractTopics(String message) {
+    final topics = <String>[];
+
+    if (message.contains('건강') || message.contains('병원')) {
+      topics.add('건강');
+    }
+    if (message.contains('산책') || message.contains('운동')) {
+      topics.add('산책');
+    }
+    if (message.contains('먹이') || message.contains('음식')) {
+      topics.add('급식');
+    }
+
+    return topics.isEmpty ? ['일반'] : topics;
   }
 }

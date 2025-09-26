@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Centralized env accessor
@@ -144,12 +144,16 @@ abstract class AppConfig {
 
     if (isEnvLoaded) {
       debugPrint('🔑 API Key Status (키 값은 보안상 표시되지 않습니다):');
-      debugPrint('  Google Maps: ${googleMapsApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint(
+        '  Google Maps: ${googleMapsApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}',
+      );
       debugPrint('  OpenAI: ${openaiApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
       debugPrint('  Weather: ${weatherApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
       debugPrint('  LINE: ${lineChannelId.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
       debugPrint('  YouTube: ${youtubeApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
-      debugPrint('  Google Calendar: ${googleCalendarApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint(
+        '  Google Calendar: ${googleCalendarApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}',
+      );
     } else {
       debugPrint('❌ Environment variables not loaded');
     }

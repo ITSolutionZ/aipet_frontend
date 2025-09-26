@@ -54,4 +54,3 @@ class AiChatSessionEntity {
   String toString() =>
       'AiChatSessionEntity(id: $id, title: $title, messages: ${messages.length})';
 }
-

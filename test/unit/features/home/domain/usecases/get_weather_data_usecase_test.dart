@@ -209,7 +209,7 @@ void main() {
 
         // Assert
         expect(result, isNotNull);
-        expect(result!.temperature, equals(-50.0));
+        expect(result.temperature, equals(-50.0));
         expect(result.humidity, equals(100));
       });
 
@@ -241,7 +241,7 @@ void main() {
 
         // Assert
         expect(result, isNotNull);
-        expect(result!.location, contains('スペシャル都市'));
+        expect(result.location, contains('スペシャル都市'));
         expect(result.description, contains('スペシャル天気'));
       });
 
@@ -273,7 +273,7 @@ void main() {
 
         // Assert
         expect(result, isNotNull);
-        expect(result!.location.length, equals(1000));
+        expect(result.location.length, equals(1000));
         expect(result.description.length, equals(1000));
       });
     });

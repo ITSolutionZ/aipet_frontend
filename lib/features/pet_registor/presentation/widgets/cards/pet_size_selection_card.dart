@@ -74,7 +74,7 @@ class PetSizeSelectionCard extends StatelessWidget {
                 color: isSelected ? AppColors.pointBrown : AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: 4),
+            const const SizedBox(height: 4),
             Text(
               weightRange,
               style: AppFonts.bodySmall.copyWith(

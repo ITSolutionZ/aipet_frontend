@@ -78,8 +78,7 @@ class SaveChatHistoryUseCase {
 
       return AiChatSummary(
         title: title,
-        content:
-            '${petName ?? 'ペット'}の${categoryName ?? '相談'}について',
+        content: '${petName ?? 'ペット'}の${categoryName ?? '相談'}について',
       );
     }
   }

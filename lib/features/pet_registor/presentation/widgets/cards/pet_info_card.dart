@@ -64,7 +64,7 @@ class PetInfoCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const const const SizedBox(height: 4),
+                  const const SizedBox(height: 4),
                   Text(
                     value,
                     style: AppFonts.bodyMedium.copyWith(

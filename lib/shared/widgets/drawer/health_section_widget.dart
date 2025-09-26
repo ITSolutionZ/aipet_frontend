@@ -16,7 +16,7 @@ class HealthSectionWidget extends StatelessWidget {
           child: Row(
             children: [
               Icon(Icons.favorite, color: Colors.white, size: 20),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 'Health',
                 style: TextStyle(

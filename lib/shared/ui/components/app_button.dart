@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
-import 'package:aipet_frontend/shared/widgets/buttons/common_button.dart' show ButtonType, IconPosition;
+import 'package:aipet_frontend/shared/widgets/buttons/common_button.dart'
+    show ButtonType, IconPosition;
 import 'package:flutter/material.dart';
 
 /// 🎯 통합 Button 시스템
@@ -11,12 +12,16 @@ import 'package:flutter/material.dart';
 enum ButtonVariant {
   /// Glass morphism 스타일 (기존 GlassButton)
   glass,
+
   /// Point 브랜드 스타일 (기존 PointButton)
   point,
+
   /// 일반 스타일 (기존 CommonButton)
   filled,
+
   /// 외곽선 스타일 (기존 PointOutlinedButton)
   outlined,
+
   /// 텍스트만 (기존 PointTextButton)
   text,
 }
@@ -24,8 +29,10 @@ enum ButtonVariant {
 enum ButtonSize {
   /// 작은 크기 (기존 dense/small)
   small,
+
   /// 중간 크기 (기존 medium)
   medium,
+
   /// 큰 크기 (기존 large)
   large,
 }
@@ -188,8 +195,8 @@ class AppButton extends StatelessWidget {
         button: true,
         enabled: !isDisabled,
         child: tooltip != null
-          ? Tooltip(message: tooltip!, child: button)
-          : button,
+            ? Tooltip(message: tooltip!, child: button)
+            : button,
       );
     }
 
@@ -322,10 +329,7 @@ class AppButton extends StatelessWidget {
 
   BorderSide _getBorderSide(ColorScheme colorScheme) {
     if (variant == ButtonVariant.outlined) {
-      return BorderSide(
-        color: borderColor ?? AppColors.pointBrown,
-        width: 1.0,
-      );
+      return BorderSide(color: borderColor ?? AppColors.pointBrown, width: 1.0);
     }
     if (variant == ButtonVariant.glass) {
       return BorderSide(
@@ -459,11 +463,7 @@ class AppButton extends StatelessWidget {
 
     // width가 지정된 경우 Container로 감싸기
     if (width != null) {
-      button = SizedBox(
-        width: width,
-        height: height,
-        child: button,
-      );
+      button = SizedBox(width: width, height: height, child: button);
     }
 
     return button;

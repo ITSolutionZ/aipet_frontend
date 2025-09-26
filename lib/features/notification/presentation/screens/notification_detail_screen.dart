@@ -1,10 +1,10 @@
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/notification/presentation/controllers/notification_detail_controller.dart';
-import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';
 import 'package:aipet_frontend/features/notification/presentation/components/cards/notification_detail_header_component.dart';
 import 'package:aipet_frontend/features/notification/presentation/components/cards/notification_detail_metadata_component.dart';
 import 'package:aipet_frontend/features/notification/presentation/components/forms/notification_detail_actions_component.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_detail_controller.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -109,7 +109,7 @@ class _NotificationDetailScreenState
       return const Scaffold(
         backgroundColor: AppColors.pointOffWhite,
         appBar: SoftGradientBackAppBar(title: '通知詳細'),
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(child: const CircularProgressIndicator()),
       );
     }
 

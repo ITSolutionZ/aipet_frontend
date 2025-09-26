@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:aipet_frontend/app/router/app_router.dart';
-import 'package:aipet_frontend/features/notification/data/services/notification_cache_service.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';

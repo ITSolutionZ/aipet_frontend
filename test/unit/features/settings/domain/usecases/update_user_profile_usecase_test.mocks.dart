@@ -5,11 +5,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart'
-    as _i5;
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart'
     as _i2;
-import 'package:aipet_frontend/shared/shared.dart' as _i4;
+import 'package:aipet_frontend/shared/entities/settings_entity.dart' as _i5;
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
 

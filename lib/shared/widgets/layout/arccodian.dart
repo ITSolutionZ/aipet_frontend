@@ -18,9 +18,10 @@ class AccordionItem {
 }
 
 /// 🎯 Glass Accordion State Provider
-final glassAccordionProvider = StateNotifierProvider.family<GlassAccordionController, List<bool>, String>(
-  (ref, accordionId) => GlassAccordionController(),
-);
+final glassAccordionProvider =
+    StateNotifierProvider.family<GlassAccordionController, List<bool>, String>(
+      (ref, accordionId) => GlassAccordionController(),
+    );
 
 class GlassAccordionController extends StateNotifier<List<bool>> {
   GlassAccordionController() : super([]);
@@ -100,7 +101,9 @@ class GlassAccordion extends ConsumerWidget {
     // Initialize the accordion state if it's empty
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (openStates.isEmpty && items.isNotEmpty) {
-        ref.read(glassAccordionProvider(effectiveId).notifier).initialize(items);
+        ref
+            .read(glassAccordionProvider(effectiveId).notifier)
+            .initialize(items);
       }
     });
 
@@ -110,16 +113,15 @@ class GlassAccordion extends ConsumerWidget {
           _AccordionItemCard(
             item: items[i],
             isOpen: i < openStates.length ? openStates[i] : false,
-            onToggle: () => ref.read(glassAccordionProvider(effectiveId).notifier).toggle(i, multiOpen),
+            onToggle: () => ref
+                .read(glassAccordionProvider(effectiveId).notifier)
+                .toggle(i, multiOpen),
             duration: animationDuration,
             curve: animationCurve,
             borderRadius: borderRadius,
           ),
           if (i != items.length - 1)
-            Opacity(
-              opacity: dividerOpacity,
-              child: const Divider(height: 12),
-            ),
+            Opacity(opacity: dividerOpacity, child: const Divider(height: 12)),
         ],
       ],
     );

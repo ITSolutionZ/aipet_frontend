@@ -46,4 +46,3 @@ class AiSuggestedQuestionEntity {
   String toString() =>
       'AiSuggestedQuestionEntity(id: $id, question: $question, category: $category)';
 }
-

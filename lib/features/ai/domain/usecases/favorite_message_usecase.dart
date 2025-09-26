@@ -28,7 +28,9 @@ class FavoriteMessageUseCase {
     try {
       // 입력 유효성 검사
       if (category.trim().isEmpty) {
-        return ResultFactory.failure<AiFavoriteEntity>('カテゴリを入力してください').toFuture();
+        return ResultFactory.failure<AiFavoriteEntity>(
+          'カテゴリを入力してください',
+        ).toFuture();
       }
 
       final favorite = await _repository.addFavoriteMessage(
@@ -61,7 +63,9 @@ class FavoriteMessageUseCase {
       await _repository.removeFavoriteMessage(favoriteId);
       return ResultFactory.success(null, 'お気に入りを削除しました').toFuture();
     } catch (error) {
-      return ResultFactory.failure<void>('お気に入りの削除に失敗しました: ${error.toString()}').toFuture();
+      return ResultFactory.failure<void>(
+        'お気に入りの削除に失敗しました: ${error.toString()}',
+      ).toFuture();
     }
   }
 

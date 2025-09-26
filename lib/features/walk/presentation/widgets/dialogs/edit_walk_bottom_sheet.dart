@@ -74,8 +74,7 @@ class EditWalkBottomSheet extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
-              if (walkRecord.petName != null)
-                WalkPetTag(petName: walkRecord.petName!),
+              WalkPetTag(petName: walkRecord.petName),
               const SizedBox(height: AppSpacing.xl),
               WalkEditForm(
                 walkRecord: walkRecord,
@@ -103,34 +102,33 @@ class EditWalkBottomSheet extends ConsumerWidget {
               const SizedBox(height: AppSpacing.md),
               WalkDetailInfoCard(walkRecord: walkRecord),
               const SizedBox(height: AppSpacing.lg),
-              if (walkRecord.createdAt != null)
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: AppColors.pointBlue.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppRadius.medium),
-                    border: Border.all(
-                      color: AppColors.pointBlue.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.check_circle,
-                        size: 16,
-                        color: AppColors.pointBlue,
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        '記録日時: ${_formatDate(walkRecord.createdAt!)}',
-                        style: AppFonts.base(
-                          fontSize: AppFonts.sm,
-                          color: AppColors.pointBlue,
-                        ),
-                      ),
-                    ],
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: AppColors.pointBlue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppRadius.medium),
+                  border: Border.all(
+                    color: AppColors.pointBlue.withValues(alpha: 0.2),
                   ),
                 ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.check_circle,
+                      size: 16,
+                      color: AppColors.pointBlue,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      '記録日時: ${_formatDate(walkRecord.createdAt)}',
+                      style: AppFonts.base(
+                        fontSize: AppFonts.sm,
+                        color: AppColors.pointBlue,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

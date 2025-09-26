@@ -3,64 +3,70 @@ import 'package:aipet_frontend/features/settings/data/data.dart';
 import 'package:aipet_frontend/features/settings/domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
+/// Settings 기능 전용 Controller
+///
+/// 사용자 프로필, 앱 설정, 계정 관리 등의 CRUD 작업을 처리합니다.
+/// BaseController를 상속받아 에러 처리와 리소스 관리를 자동화합니다.
 class SettingsController extends BaseController {
   SettingsController(super.ref);
 
-  // Repository 및 UseCase 인스턴스 (목업 데이터 사용)
-  late final SettingsRepository _repository = SettingsRepositoryImpl();
-  late final GetUserProfileUseCase _getUserProfileUseCase =
-      GetUserProfileUseCase(_repository);
-  late final UpdateUserProfileUseCase _updateUserProfileUseCase =
-      UpdateUserProfileUseCase(_repository);
-  late final ChangePasswordUseCase _changePasswordUseCase =
-      ChangePasswordUseCase(_repository);
-  late final GetAppSettingsUseCase _getAppSettingsUseCase =
-      GetAppSettingsUseCase(_repository);
-  late final SaveAppSettingsUseCase _saveAppSettingsUseCase =
-      SaveAppSettingsUseCase(_repository);
-  late final DeleteAccountUseCase _deleteAccountUseCase = DeleteAccountUseCase(
-    _repository,
+  // ✅ Riverpod Provider를 통한 의존성 주입 (Mockito 데이터 사용)
+  late final GetUserProfileUseCase _getUserProfileUseCase = ref.read(
+    getUserProfileUseCaseProvider,
   );
-  late final ExportAppDataUseCase _exportAppDataUseCase = ExportAppDataUseCase(
-    _repository,
+  late final UpdateUserProfileUseCase _updateUserProfileUseCase = ref.read(
+    updateUserProfileUseCaseProvider,
   );
-  late final ImportAppDataUseCase _importAppDataUseCase = ImportAppDataUseCase(
-    _repository,
+  late final ChangePasswordUseCase _changePasswordUseCase = ref.read(
+    changePasswordUseCaseProvider,
   );
-  late final ClearAppCacheUseCase _clearAppCacheUseCase = ClearAppCacheUseCase(
-    _repository,
+  late final GetAppSettingsUseCase _getAppSettingsUseCase = ref.read(
+    getAppSettingsUseCaseProvider,
+  );
+  late final SaveAppSettingsUseCase _saveAppSettingsUseCase = ref.read(
+    saveAppSettingsUseCaseProvider,
+  );
+  late final DeleteAccountUseCase _deleteAccountUseCase = ref.read(
+    deleteAccountUseCaseProvider,
+  );
+  late final ExportAppDataUseCase _exportAppDataUseCase = ref.read(
+    exportAppDataUseCaseProvider,
+  );
+  late final ImportAppDataUseCase _importAppDataUseCase = ref.read(
+    importAppDataUseCaseProvider,
+  );
+  late final ClearAppCacheUseCase _clearAppCacheUseCase = ref.read(
+    clearAppCacheUseCaseProvider,
   );
 
   /// 사용자 프로필 로드
   Future<Result<UserProfileEntity>> loadUserProfile() async {
-    try {
-      final result = await _getUserProfileUseCase.call();
-      if (result.isSuccess) {
-        return Result.success(result.message, result.data);
+    final result = await safeExecute<Result<UserProfileEntity>>(() async {
+      final useCaseResult = await _getUserProfileUseCase.call();
+      if (useCaseResult.isSuccess) {
+        return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
       } else {
-        return Result.failure(result.message);
+        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    });
+
+    return result ?? const Failure('プロフィールの読み込みに失敗しました');
   }
 
   /// 프로필 업데이트
   Future<Result<UserProfileEntity>> updateProfile(
     UserProfileEntity profile,
   ) async {
-    try {
-      final result = await _updateUserProfileUseCase.call(profile);
-      if (result.isSuccess) {
-        return Result.success(result.message, result.data);
+    final result = await safeExecute<Result<UserProfileEntity>>(() async {
+      final useCaseResult = await _updateUserProfileUseCase.call(profile);
+      if (useCaseResult.isSuccess) {
+        return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
       } else {
-        return Result.failure(result.message);
+        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    });
+
+    return result ?? const Failure('プロフィールの更新に失敗しました');
   }
 
   /// 비밀번호 변경
@@ -69,122 +75,116 @@ class SettingsController extends BaseController {
     required String newPassword,
     required String confirmPassword,
   }) async {
-    try {
-      if (newPassword != confirmPassword) {
-        return Result.failure('새 비밀번호가 일치하지 않습니다');
-      }
+    // ✅ BaseController의 검증 메서드 활용
+    if (newPassword != confirmPassword) {
+      return const Failure('새 비밀번호가 일치하지 않습니다');
+    }
 
-      if (newPassword.length < 6) {
-        return Result.failure('새 비밀번호는 6자 이상이어야 합니다');
-      }
+    if (newPassword.length < 6) {
+      return const Failure('새 비밀번호는 6자 이상이어야 합니다');
+    }
 
+    final result = await safeExecute<Result<void>>(() async {
       final request = PasswordChangeRequest(
         currentPassword: currentPassword,
         newPassword: newPassword,
         confirmPassword: confirmPassword,
       );
 
-      final result = await _changePasswordUseCase.call(request);
-      if (result.isSuccess) {
-        return Result.success(result.message);
+      final useCaseResult = await _changePasswordUseCase.call(request);
+      if (useCaseResult.isSuccess) {
+        return Success(null, useCaseResult.errorOrNull);
       } else {
-        return Result.failure(result.message);
+        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    });
+
+    return result ?? const Failure('パスワードの変更に失敗しました');
   }
 
   /// 계정 삭제
   Future<Result<void>> deleteAccount() async {
-    try {
-      final result = await _deleteAccountUseCase.call();
-      if (result.isSuccess) {
-        return Result.success(result.message);
+    final result = await safeExecute<Result<void>>(() async {
+      final useCaseResult = await _deleteAccountUseCase.call();
+      if (useCaseResult.isSuccess) {
+        return Success(null, useCaseResult.errorOrNull);
       } else {
-        return Result.failure(result.message);
+        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    });
+
+    return result ?? const Failure('アカウントの削除に失敗しました');
   }
 
   /// 앱 설정 로드
   Future<Result<AppSettingsEntity>> loadAppSettings() async {
-    try {
-      final result = await _getAppSettingsUseCase.call();
-      if (result.isSuccess) {
-        return Result.success(result.message, result.data);
+    final result = await safeExecute<Result<AppSettingsEntity>>(() async {
+      final useCaseResult = await _getAppSettingsUseCase.call();
+      if (useCaseResult.isSuccess) {
+        return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
       } else {
-        return Result.failure(result.message);
+        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    });
+
+    return result ?? const Failure('アプリ設定の読み込みに失敗しました');
   }
 
   /// 앱 설정 저장
   Future<Result<AppSettingsEntity>> saveAppSettings(
     AppSettingsEntity settings,
   ) async {
-    try {
-      final result = await _saveAppSettingsUseCase.call(settings);
-      if (result.isSuccess) {
-        return Result.success(result.message, result.data);
+    final result = await safeExecute<Result<AppSettingsEntity>>(() async {
+      final useCaseResult = await _saveAppSettingsUseCase.call(settings);
+      if (useCaseResult.isSuccess) {
+        return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
       } else {
-        return Result.failure(result.message);
+        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    });
+
+    return result ?? const Failure('アプリ設定の保存に失敗しました');
   }
 
   /// 앱 데이터 내보내기
   Future<Result<DataExportResult>> exportAppData() async {
-    try {
-      final result = await _exportAppDataUseCase.call();
-      if (result.isSuccess) {
-        return Result.success(result.message, result.data);
+    final result = await safeExecute<Result<DataExportResult>>(() async {
+      final useCaseResult = await _exportAppDataUseCase.call();
+      if (useCaseResult.isSuccess) {
+        return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
       } else {
-        return Result.failure(result.message);
+        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    });
+
+    return result ?? const Failure('データのエクスポートに失敗しました');
   }
 
   /// 앱 데이터 가져오기
   Future<Result<void>> importAppData(String filePath) async {
-    try {
-      final result = await _importAppDataUseCase.call(filePath);
-      if (result.isSuccess) {
-        return Result.success(result.message);
+    final result = await safeExecute<Result<void>>(() async {
+      final useCaseResult = await _importAppDataUseCase.call(filePath);
+      if (useCaseResult.isSuccess) {
+        return Success(null, useCaseResult.errorOrNull);
       } else {
-        return Result.failure(result.message);
+        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    });
+
+    return result ?? const Failure('データのインポートに失敗しました');
   }
 
   /// 앱 캐시 정리
   Future<Result<void>> clearAppCache() async {
-    try {
-      final result = await _clearAppCacheUseCase.call();
-      if (result.isSuccess) {
-        return Result.success(result.message);
+    final result = await safeExecute<Result<void>>(() async {
+      final useCaseResult = await _clearAppCacheUseCase.call();
+      if (useCaseResult.isSuccess) {
+        return Success(null, useCaseResult.errorOrNull);
       } else {
-        return Result.failure(result.message);
+        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
-    } catch (error) {
-      handleError(error);
-      return Result.failure(getUserFriendlyErrorMessage(error));
-    }
+    });
+
+    return result ?? const Failure('キャッシュのクリアに失敗しました');
   }
 }

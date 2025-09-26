@@ -113,10 +113,7 @@ class LegacyInfoCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: IconTheme(
-                data: IconThemeData(
-                  color: iconColor ?? Colors.blue,
-                  size: 24,
-                ),
+                data: IconThemeData(color: iconColor ?? Colors.blue, size: 24),
                 child: icon!,
               ),
             ),
@@ -138,19 +135,13 @@ class LegacyInfoCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     subtitle!,
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
                   ),
                 ],
               ],
             ),
           ),
-          if (trailing != null) ...[
-            const SizedBox(width: 12),
-            trailing!,
-          ],
+          if (trailing != null) ...[const SizedBox(width: 12), trailing!],
         ],
       ),
     );

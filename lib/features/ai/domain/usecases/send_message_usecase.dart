@@ -14,19 +14,19 @@ class SendMessageUseCase {
   /// [message] 사용자가 입력한 메시지
   ///
   /// Returns: AI 응답 메시지
-  Future<Result<AiMessageEntity>> call(String message) async {
+  Future<Result<AiMessageEntity>> call(SendMessageParams params) async {
     try {
       // 입력 유효성 검사
-      if (message.trim().isEmpty) {
+      if (params.message.trim().isEmpty) {
         return ResultFactory.failure('メッセージを入力してください');
       }
 
-      if (message.length > 2000) {
+      if (params.message.length > 2000) {
         return ResultFactory.failure('メッセージは2000文字以内で入力してください');
       }
 
       // Repository를 통한 메시지 전송
-      return await _repository.sendMessage(message);
+      return await _repository.sendMessageWithParams(params);
     } catch (error) {
       return ResultFactory.failure('メッセージの送信に失敗しました: ${error.toString()}');
     }
@@ -63,3 +63,17 @@ class SendMessageUseCase {
   }
 }
 
+/// 📤 메시지 전송 파라미터
+class SendMessageParams {
+  final String message;
+  final String petId;
+  final String? categoryId;
+  final List<String> attachedImages;
+
+  const SendMessageParams({
+    required this.message,
+    required this.petId,
+    this.categoryId,
+    this.attachedImages = const [],
+  });
+}

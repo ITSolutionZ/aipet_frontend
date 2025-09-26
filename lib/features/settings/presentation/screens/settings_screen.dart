@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
-import 'package:aipet_frontend/home/data/providers/home_providers.dart';
+// import 'package:aipet_frontend/home/data/providers/home_providers.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/widgets/section_header_widget.dart';
 import 'package:aipet_frontend/shared/widgets/settings_tile_widget.dart';
@@ -106,10 +106,8 @@ class SettingsScreen extends ConsumerWidget {
             title: 'ペット情報編集',
             backgroundColor: const Color(0xFFA88B5A),
             onTap: () {
-              // 현재 선택된 펫의 ID를 가져오거나 기본값 사용
-              final selectedPet = ref.read(homeSelectedPetNotifierProvider);
-              final petId = selectedPet?.id ?? 'default';
-              context.push('${AppRouter.petProfileRoute}?petId=$petId');
+              // TODO: 펫 프로필 편집 구현
+              context.push('${AppRouter.petProfileRoute}?petId=default');
             },
           ),
           SettingsTileWidget(

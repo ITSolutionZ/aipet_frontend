@@ -187,7 +187,7 @@ final unreadNotificationCountProvider = AutoDisposeFutureProvider<int>.internal(
 // ignore: unused_element
 typedef UnreadNotificationCountRef = AutoDisposeFutureProviderRef<int>;
 String _$notificationsNotifierHash() =>
-    r'83d2c70f39a8d683cfe1966f37af74c68e7d6915';
+    r'8ea79bf85456b5bd65e4c763236fcb0d83e84276';
 
 /// See also [NotificationsNotifier].
 @ProviderFor(NotificationsNotifier)
@@ -208,7 +208,7 @@ final notificationsNotifierProvider =
 typedef _$NotificationsNotifier =
     AutoDisposeAsyncNotifier<List<NotificationModel>>;
 String _$notificationSettingsNotifierHash() =>
-    r'479217c8bf3bfceb59746753762629c4ab781d52';
+    r'857be3d10af1adf8868df9e12ec1a98e51182e7c';
 
 /// See also [NotificationSettingsNotifier].
 @ProviderFor(NotificationSettingsNotifier)

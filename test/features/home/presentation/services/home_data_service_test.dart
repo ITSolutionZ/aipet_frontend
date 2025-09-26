@@ -52,14 +52,14 @@ void main() {
             id: 'dashboard_1',
             petSummaries: [],
             weather: null,
-            walkSummary: WalkSummary(
+            walkSummary: const WalkSummary(
               id: 'walk_1',
               todayWalks: 0,
               weeklyProgress: 0,
               weeklyGoal: 5,
               lastWalkTime: null,
             ),
-            petHealthSummary: HealthSummary(
+            petHealthSummary: const HealthSummary(
               id: 'health_1',
               totalPets: 0,
               healthyPets: 0,
@@ -215,14 +215,14 @@ void main() {
               id: 'dashboard_1',
               petSummaries: [],
               weather: null,
-              walkSummary: WalkSummary(
+              walkSummary: const WalkSummary(
                 id: 'walk_1',
                 todayWalks: 0,
                 weeklyProgress: 0,
                 weeklyGoal: 5,
                 lastWalkTime: null,
               ),
-              petHealthSummary: HealthSummary(
+              petHealthSummary: const HealthSummary(
                 id: 'health_1',
                 totalPets: 0,
                 healthyPets: 0,
@@ -244,7 +244,7 @@ void main() {
             '天気情報を取得しました',
           );
           final walkResult = ResultFactory.success(
-            WalkSummary(
+            const WalkSummary(
               id: 'walk_1',
               todayWalks: 0,
               weeklyProgress: 0,
@@ -254,7 +254,7 @@ void main() {
             '散歩情報を取得しました',
           );
           final healthResult = ResultFactory.success(
-            HealthSummary(
+            const HealthSummary(
               id: 'health_1',
               totalPets: 0,
               healthyPets: 0,

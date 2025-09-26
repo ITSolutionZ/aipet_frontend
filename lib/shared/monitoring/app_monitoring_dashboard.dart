@@ -32,7 +32,7 @@ class AppMonitoringDashboard {
     });
 
     if (kDebugMode) {
-      print('📊 App monitoring dashboard started');
+      debugPrint('📊 App monitoring dashboard started');
     }
   }
 
@@ -42,7 +42,7 @@ class AppMonitoringDashboard {
     _dashboardTimer = null;
 
     if (kDebugMode) {
-      print('📊 App monitoring dashboard stopped');
+      debugPrint('📊 App monitoring dashboard stopped');
     }
   }
 
@@ -61,7 +61,7 @@ class AppMonitoringDashboard {
       await _checkAlerts(snapshot);
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Dashboard update failed: $e');
+        debugPrint('❌ Dashboard update failed: $e');
       }
     }
   }
@@ -207,12 +207,12 @@ class AppMonitoringDashboard {
   /// 알림 전송
   Future<void> _sendAlert(String message, DashboardSnapshot snapshot) async {
     if (kDebugMode) {
-      print('🚨 ALERT: $message');
-      print(
+      debugPrint('🚨 ALERT: $message');
+      debugPrint(
         'System Health: ${snapshot.systemHealth.score}/100 (${snapshot.systemHealth.level.name})',
       );
       if (snapshot.systemHealth.issues.isNotEmpty) {
-        print('Issues: ${snapshot.systemHealth.issues.join(', ')}');
+        debugPrint('Issues: ${snapshot.systemHealth.issues.join(', ')}');
       }
     }
 
@@ -290,41 +290,41 @@ class AppMonitoringDashboard {
 
     final current = currentSnapshot;
     if (current == null) {
-      print('📊 No dashboard data available');
+      debugPrint('📊 No dashboard data available');
       return;
     }
 
     final stats = generateStats();
 
-    print('=== App Monitoring Dashboard ===');
-    print('Timestamp: ${current.timestamp.toIso8601String()}');
-    print(
+    debugPrint('=== App Monitoring Dashboard ===');
+    debugPrint('Timestamp: ${current.timestamp.toIso8601String()}');
+    debugPrint(
       'System Health: ${current.systemHealth.score}/100 (${current.systemHealth.level.name})',
     );
-    print('Environment: ${current.environment['environment']}');
-    print('Active Requests: ${current.security.activeRequests}');
-    print(
+    debugPrint('Environment: ${current.environment['environment']}');
+    debugPrint('Active Requests: ${current.security.activeRequests}');
+    debugPrint(
       'Memory Usage: ${(current.memory.processMemory / 1024 / 1024).toStringAsFixed(2)} MB',
     );
-    print('Suspicious Activities: ${current.suspiciousActivities.length}');
-    print('Slow Operations: ${current.performance.slowOperations.length}');
-    print('Memory Alerts: ${current.performance.memoryAlerts.length}');
+    debugPrint('Suspicious Activities: ${current.suspiciousActivities.length}');
+    debugPrint('Slow Operations: ${current.performance.slowOperations.length}');
+    debugPrint('Memory Alerts: ${current.performance.memoryAlerts.length}');
 
     if (current.systemHealth.issues.isNotEmpty) {
-      print('\nIssues:');
+      debugPrint('\nIssues:');
       for (final issue in current.systemHealth.issues) {
-        print('  - $issue');
+        debugPrint('  - $issue');
       }
     }
 
-    print('\n=== Statistics (Last Hour) ===');
-    print('Total Snapshots: ${stats.totalSnapshots}');
-    print('Avg Health Score: ${stats.avgHealthScore.toStringAsFixed(1)}');
-    print('Min Health Score: ${stats.minHealthScore}');
-    print('Max Health Score: ${stats.maxHealthScore}');
-    print('Total Alerts: ${stats.totalAlerts}');
-    print('Total Suspicious Activities: ${stats.totalSuspiciousActivities}');
-    print('Uptime: ${stats.uptime.inMinutes} minutes');
+    debugPrint('\n=== Statistics (Last Hour) ===');
+    debugPrint('Total Snapshots: ${stats.totalSnapshots}');
+    debugPrint('Avg Health Score: ${stats.avgHealthScore.toStringAsFixed(1)}');
+    debugPrint('Min Health Score: ${stats.minHealthScore}');
+    debugPrint('Max Health Score: ${stats.maxHealthScore}');
+    debugPrint('Total Alerts: ${stats.totalAlerts}');
+    debugPrint('Total Suspicious Activities: ${stats.totalSuspiciousActivities}');
+    debugPrint('Uptime: ${stats.uptime.inMinutes} minutes');
   }
 
   /// JSON 형태로 대시보드 데이터 내보내기

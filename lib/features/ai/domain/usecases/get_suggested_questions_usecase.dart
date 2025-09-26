@@ -12,14 +12,14 @@ class GetSuggestedQuestionsUseCase {
   /// 기본 추천 질문 조회
   ///
   /// Returns: 추천 질문 목록
-  Future<Result<List<AiSuggestedQuestionEntity>>> call() async {
+  Future<Result<List<AiSuggestedQuestionEntity>>> call(GetSuggestedQuestionsParams params) async {
     try {
-      final questions = await _repository.getSuggestedQuestions();
-      return ResultFactory.success(questions, '推奨質問を取得しました').toFuture();
+      final questions = await _repository.getSuggestedQuestionsWithParams(params);
+      return ResultFactory.success(questions, '推奨質問を取得しました');
     } catch (error) {
       return ResultFactory.failure<List<AiSuggestedQuestionEntity>>(
         '推奨質問の取得に失敗しました: ${error.toString()}',
-      ).toFuture();
+      );
     }
   }
 
@@ -39,11 +39,25 @@ class GetSuggestedQuestionsUseCase {
         category: category,
         pet: pet,
       );
-      return ResultFactory.success(questions, 'カスタマイズされた推奨質問を取得しました').toFuture();
+      return ResultFactory.success(
+        questions,
+        'カスタマイズされた推奨質問を取得しました',
+      ).toFuture();
     } catch (error) {
       return ResultFactory.failure<List<AiSuggestedQuestionEntity>>(
         '推奨質問の取得に失敗しました (personalized): ${error.toString()}',
       ).toFuture();
     }
   }
+}
+
+/// 🎯 추천 질문 조회 파라미터
+class GetSuggestedQuestionsParams {
+  final PetProfile petProfile;
+  final AiCategoryEntity? category;
+
+  const GetSuggestedQuestionsParams({
+    required this.petProfile,
+    this.category,
+  });
 }

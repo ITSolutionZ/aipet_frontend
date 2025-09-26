@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart';
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
@@ -9,14 +8,14 @@ class ChangePasswordUseCase {
 
   Future<Result<void>> call(PasswordChangeRequest request) async {
     if (!request.isValid) {
-      return Result.failure('無効なパスワード変更リクエストです');
+      return const Failure('無効なパスワード変更リクエストです');
     }
 
     final result = await repository.changePassword(request);
     if (result.isSuccess) {
-      return Result.success(result.message);
+      return Success(null, result.errorOrNull);
     } else {
-      return Result.failure(result.message);
+      return Failure(result.errorOrNull ?? 'Unknown error');
     }
   }
 }

@@ -213,7 +213,7 @@ class _WateringSettingsScreenState
                 color: AppColors.pointGreen,
               ),
             ),
-            const const const Divider(),
+            const const Divider(),
             ListTile(
               leading: const Icon(Icons.settings, color: AppColors.pointGray),
               title: const Text('給水器を再設定'),
@@ -263,7 +263,7 @@ class _WateringSettingsScreenState
                 context.pushNamed('watering-schedule');
               },
             ),
-            const const const Divider(),
+            const const Divider(),
             ListTile(
               leading: const Icon(Icons.analytics, color: AppColors.pointGray),
               title: const Text('データエクスポート'),
@@ -273,7 +273,7 @@ class _WateringSettingsScreenState
                 _showExportDataDialog();
               },
             ),
-            const const const Divider(),
+            const const Divider(),
             ListTile(
               leading: const Icon(Icons.restore, color: AppColors.pointGray),
               title: const Text('設定をリセット'),
@@ -374,13 +374,13 @@ class _WateringSettingsScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('デバイス名: スマート給水器'),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('モデル: SW-2024'),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('ファームウェア: v1.2.3'),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('バッテリー残量: 85%'),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('接続状態: 接続済み'),
             ],
           ),
