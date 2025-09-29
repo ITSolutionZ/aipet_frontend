@@ -16,11 +16,11 @@ class SplashRepositoryImpl implements SplashRepository {
         nextRoute: '/onboarding',
       );
 
-      return const Success(config, 'スプラッシュ設定を取得しました');
+      return Result.success('スプラッシュ設定を取得しました', config);
     } catch (error) {
       return Result.failure(
         'スプラッシュ設定の取得に失敗しました: ${error.toString()}',
-        exception: error is Exception ? error : Exception(error.toString()),
+        error is Exception ? error : Exception(error.toString()),
       );
     }
   }
@@ -30,11 +30,11 @@ class SplashRepositoryImpl implements SplashRepository {
     try {
       // 앱 초기화 로직 (예: 설정 로드, 캐시 정리 등)
       await Future.delayed(const Duration(milliseconds: 200));
-      return const Success(null, 'アプリ初期化が完了しました');
+      return Result.success('アプリ初期化が完了しました', null);
     } catch (error) {
       return Result.failure(
         'アプリ初期化に失敗しました: ${error.toString()}',
-        exception: error is Exception ? error : Exception(error.toString()),
+        error is Exception ? error : Exception(error.toString()),
       );
     }
   }
@@ -43,7 +43,7 @@ class SplashRepositoryImpl implements SplashRepository {
   Stream<Result<SplashState>> executeSplashSequence() async* {
     try {
       // 1단계: 초기화 (로딩 애니메이션 준비)
-      yield Success(SplashState.initializing(), 'スプラッシュ初期化中...');
+      yield Result.success('スプラッシュ初期化中...', SplashState.initializing());
 
       // 앱 초기화 작업 수행
       final initResult = await initializeApp();
@@ -52,37 +52,42 @@ class SplashRepositoryImpl implements SplashRepository {
       }
 
       // 2단계: 로딩 애니메이션 표시 - 1.5초간 표시
-      yield Success(SplashState.loading(), 'ローディングアニメーション表示中...');
+      yield Result.success('ローディングアニメーション表示中...', SplashState.loading());
 
       // 로딩 애니메이션 1.5초 대기
       await Future.delayed(const Duration(milliseconds: 1500));
 
       // 3단계: 앱 로고 표시 - 무조건 2초간 표시 (회사 로고 포함)
-      yield Success(
-        SplashState.appLogo(AppConstants.splashAppLogoPath),
+      yield Result.success(
         'AI Petアプリロゴ表示中...',
+        SplashState.appLogo('assets/icons/aipet_logo.png'),
       );
 
       // 앱 로고 2초 대기 (조건 없음, 무조건 대기)
-      await Future.delayed(AppConstants.splashLogoDisplayDuration);
+      await Future.delayed(const Duration(seconds: 2));
 
       // 4단계: 완료 - 온보딩으로 이동 준비
-      yield Success(SplashState.completed(), 'スプラッシュシーケンス完了 - オンボーディングへ移動');
+      yield Result.success(
+        'スプラッシュシーケンス完了 - オンボーディングへ移動',
+        SplashState.completed(),
+      );
     } catch (error) {
       // 에러 발생 시에도 순차적 진행 보장
       // 로딩 애니메이션 1.5초
-      yield Success(SplashState.loading(), 'ローディングアニメーション表示中... (エラー復旧)');
+      yield Result.success(
+        'ローディングアニメーション表示中... (エラー復旧, SplashState.loading())',
+      );
       await Future.delayed(const Duration(milliseconds: 1500));
 
       // 앱 로고 2초 (회사 로고 포함)
-      yield Success(
-        SplashState.appLogo(AppConstants.splashAppLogoPath),
+      yield Result.success(
         'AI Petアプリロゴ表示中... (エラー復旧)',
+        SplashState.appLogo('assets/icons/aipet_logo.png'),
       );
-      await Future.delayed(AppConstants.splashLogoDisplayDuration);
+      await Future.delayed(const Duration(seconds: 2));
 
       // 최종 완료
-      yield Success(SplashState.completed(), 'スプラッシュシーケンス完了 (エラー復旧)');
+      yield Result.success('スプラッシュシーケンス完了 (エラー復旧)', SplashState.completed());
     }
   }
 
@@ -91,11 +96,11 @@ class SplashRepositoryImpl implements SplashRepository {
     try {
       // 스플래시 이후 무조건 온보딩 화면으로 이동
       // 다른 조건이나 분기 없이 고정 경로 반환
-      return const Success('/onboarding', 'オンボーディング画面へ移動');
+      return Result.success('オンボーディング画面へ移動', '/onboarding');
     } catch (error) {
       return Result.failure(
         'ルート決定に失敗しました: ${error.toString()}',
-        exception: error is Exception ? error : Exception(error.toString()),
+        error is Exception ? error : Exception(error.toString()),
       );
     }
   }

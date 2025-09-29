@@ -31,7 +31,7 @@ class ProfileEditButtons extends StatelessWidget {
               text: 'キャンセル',
             ),
           ),
-          const const const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
           // 保存ボタン
           Expanded(
             child: ActionButton.primary(

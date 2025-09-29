@@ -30,7 +30,7 @@ class AboutTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -47,7 +47,7 @@ class AboutTab extends ConsumerWidget {
                 : null,
           ),
 
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
 
           // 외모 및 특징
           _buildSection(
@@ -68,11 +68,11 @@ class AboutTab extends ConsumerWidget {
                   ),
           ),
 
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
 
           // 주요 속성
           _buildSection('重要な属性', null),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           EditableAttributeCard(
             label: '性別',
@@ -88,7 +88,7 @@ class AboutTab extends ConsumerWidget {
                 : null,
           ),
 
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
 
           EditableAttributeCard(
             label: 'サイズ',
@@ -104,7 +104,7 @@ class AboutTab extends ConsumerWidget {
                 : null,
           ),
 
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
 
           EditableAttributeCard(
             label: '体重',
@@ -120,11 +120,11 @@ class AboutTab extends ConsumerWidget {
                 : null,
           ),
 
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
 
           // 마이크로칩 정보
           _buildSection('マイクロチップ情報', null),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           PetProfileCard(
             label: 'マイクロチップ番号',
@@ -150,11 +150,11 @@ class AboutTab extends ConsumerWidget {
                 : null,
           ),
 
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
 
           // 중요 날짜
           _buildSection('重要な日付', null),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           DateInfoCard(
             icon: Icons.cake,
@@ -163,7 +163,7 @@ class AboutTab extends ConsumerWidget {
             additionalInfo: _calculateAge(pet.birthDate),
           ),
 
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
 
           DateInfoCard(
             icon: Icons.home,
@@ -171,11 +171,11 @@ class AboutTab extends ConsumerWidget {
             date: _getArrivalDateString(pet.arrivalDate),
           ),
 
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
 
           // 보호자
           _buildSection('飼い主', null),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           PetProfileCard(
             label: pet.ownerId,
@@ -200,7 +200,7 @@ class AboutTab extends ConsumerWidget {
           ),
         ),
         if (content != null) ...[
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           content,
         ],
       ],
@@ -298,7 +298,7 @@ class ActivityTab extends ConsumerWidget {
         .toList();
 
     return Padding(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -310,11 +310,11 @@ class ActivityTab extends ConsumerWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             ...learnedTricks
                 .take(3)
                 .map((trick) => _buildTrickCard(trick, true)),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
           ],
 
           if (availableTricks.isNotEmpty) ...[
@@ -325,7 +325,7 @@ class ActivityTab extends ConsumerWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             ...availableTricks
                 .take(2)
                 .map((trick) => _buildTrickCard(trick, false)),
@@ -344,7 +344,7 @@ class ActivityTab extends ConsumerWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBlue,
                 foregroundColor: Colors.white,
-                padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
               ),
             ),
           ),
@@ -355,7 +355,7 @@ class ActivityTab extends ConsumerWidget {
 
   Widget _buildTrickCard(dynamic trick, bool isLearned) {
     return Card(
-      margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         leading: Container(
           width: 40,

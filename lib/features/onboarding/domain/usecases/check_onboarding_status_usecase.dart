@@ -19,7 +19,9 @@ class CheckOnboardingStatusUseCase
       final isCompleted = completedResult.dataOrNull ?? false;
       if (isCompleted) {
         // 완료된 경우 완료 상태 반환
-        return Result.success(const OnboardingState(isCompleted: true));
+        return Result.success(
+          const OnboardingState(isCompleted: true).toString(),
+        );
       } else {
         // 미완료인 경우 현재 진행 상태 로드
         return repository.loadOnboardingState();

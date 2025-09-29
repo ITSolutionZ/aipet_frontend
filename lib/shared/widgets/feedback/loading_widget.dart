@@ -49,7 +49,7 @@ class LoadingWidget extends StatelessWidget {
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
           ),
           if (loadingState.loadingMessage != null) ...[
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Text(
               loadingState.loadingMessage!,
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
@@ -67,7 +67,7 @@ class LoadingWidget extends StatelessWidget {
       color: Colors.black.withValues(alpha: 0.3),
       child: Center(
         child: Container(
-          padding: const const const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -86,7 +86,7 @@ class LoadingWidget extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
               ),
               if (loadingState.loadingMessage != null) ...[
-                const const const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   loadingState.loadingMessage!,
                   style: AppFonts.bodyMedium.copyWith(
@@ -106,7 +106,7 @@ class LoadingWidget extends StatelessWidget {
   Widget _buildErrorWidget() {
     return Center(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -115,26 +115,26 @@ class LoadingWidget extends StatelessWidget {
               size: 64,
               color: AppColors.pointPink,
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               '오류가 발생했습니다',
               style: AppTextStyles.h2.copyWith(color: AppColors.pointDark),
               textAlign: TextAlign.center,
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Text(
               loadingState.error ?? '알 수 없는 오류가 발생했습니다.',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
-              const const const SizedBox(height: AppSpacing.xl),
+              const SizedBox(height: AppSpacing.xl),
               ElevatedButton(
                 onPressed: onRetry,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBrown,
                   foregroundColor: Colors.white,
-                  padding: const const const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.md,
                   ),
@@ -213,7 +213,7 @@ class SimpleLoadingIndicator extends StatelessWidget {
             ),
           ),
           if (message != null) ...[
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               message!,
               style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
@@ -253,7 +253,7 @@ class ButtonLoadingIndicator extends StatelessWidget {
           ),
         ),
         if (message != null) ...[
-          const const const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.sm),
           Text(
             message!,
             style: AppFonts.bodySmall.copyWith(color: color ?? Colors.white),

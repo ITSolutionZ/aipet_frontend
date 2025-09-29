@@ -5,7 +5,13 @@ import 'package:aipet_frontend/features/facility/presentation/controllers/facili
 import 'package:aipet_frontend/features/facility/presentation/widgets/facility_card.dart';
 import 'package:aipet_frontend/features/facility/presentation/widgets/filter_chip.dart';
 import 'package:aipet_frontend/features/facility/presentation/widgets/search_bar_widget.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+
+import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
+import 'package:aipet_frontend/shared/foundation/error_handler/app_error_handler.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:aipet_frontend/shared/ui/components/states/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -72,14 +78,14 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
           ],
           child: const Icon(Icons.sort),
         ),
-        const const const SizedBox(width: 8),
+        const SizedBox(width: 8),
       ],
     );
   }
 
   Widget _buildSearchSection() {
     return Padding(
-      padding: const const const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: SearchBarWidget(
         controller: _searchController,
         onChanged: _controller.handleSearchChanged,
@@ -97,7 +103,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
 
     return Container(
       height: 50,
-      padding: const const const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
@@ -106,10 +112,10 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
             isSelected: selectedType == null,
             onTap: () => _controller.handleFilterChanged(null),
           ),
-          const const const SizedBox(width: 8),
+          const SizedBox(width: 8),
           for (final type in FacilityType.values)
             Padding(
-              padding: const const const EdgeInsets.only(right: 8.0),
+              padding: const EdgeInsets.only(right: 8.0),
               child: FacilityFilterChip(
                 label: _controller.getFacilityTypeLabel(type),
                 isSelected: selectedType == type,
@@ -127,7 +133,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
     FacilityType? selectedType,
   ) {
     return Padding(
-      padding: const const const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: [
           Text(
@@ -161,12 +167,12 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
       child: searchResults.isEmpty
           ? _buildEmptyState()
           : ListView.builder(
-              padding: const const const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               itemCount: searchResults.length,
               itemBuilder: (context, index) {
                 final facility = searchResults[index];
                 return Padding(
-                  padding: const const const EdgeInsets.only(bottom: 12.0),
+                  padding: const EdgeInsets.only(bottom: 12.0),
                   child: FacilityCard(
                     facility: facility,
                     onFavoriteToggle: () =>

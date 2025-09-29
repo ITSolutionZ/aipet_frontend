@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/features/splash/data/data.dart';
 import 'package:aipet_frontend/features/splash/domain/domain.dart';
+import 'package:aipet_frontend/shared/constants/splash_constants.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 /// 스플래시 화면 컨트롤러
@@ -30,19 +31,19 @@ class SplashController extends BaseController {
 
   /// 기본 스플래시 시퀀스 (에러 복구용)
   Stream<Result<SplashState>> _getDefaultSplashSequence() async* {
-    yield Success(SplashState.initializing(), 'スプラッシュ初期化中...');
+    yield Result.success('スプラッシュ初期化中...', SplashState.initializing());
     await Future.delayed(const Duration(milliseconds: 500));
 
-    yield Success(SplashState.loading(), 'ローディング中...');
+    yield Result.success('ローディング中...', SplashState.loading());
     await Future.delayed(const Duration(milliseconds: 1500));
 
-    yield Success(
-      SplashState.appLogo(AppConstants.splashAppLogoPath),
+    yield Result.success(
       'AI Petアプリロゴ表示中...',
+      SplashState.appLogo(SplashConstants.logoImagePath),
     );
-    await Future.delayed(AppConstants.splashLogoDisplayDuration);
+    await Future.delayed(SplashConstants.splashDurationMs as Duration);
 
-    yield Success(SplashState.completed(), 'スプラッシュ完了');
+    yield Result.success('スプラッシュ完了', SplashState.completed());
   }
 
   /// 다음 화면 경로 결정
@@ -55,7 +56,7 @@ class SplashController extends BaseController {
           }
           return result;
         }) ??
-        const Success('/onboarding', 'オンボーディング画面へ移動');
+        Result.success('オンボーディング画面へ移動', '/onboarding');
   }
 
   /// 스플래시 설정 로드
@@ -67,7 +68,7 @@ class SplashController extends BaseController {
           }
           return result;
         }) ??
-        Success(SplashEntity.defaultConfig(), 'デフォルト設定を使用します');
+        Result.success('デフォルト設定を使用します', SplashEntity.defaultConfig());
   }
 
   /// 스플래시 상태 업데이트

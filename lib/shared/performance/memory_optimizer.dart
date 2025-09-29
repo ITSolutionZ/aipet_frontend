@@ -23,7 +23,7 @@ class MemoryOptimizer {
 
   // 최적화 설정
   static const int _maxHistorySize = 100;
-  static const Duration _optimizationInterval = Duration(seconds: 30);
+  static const Duration _optimizationInterval = const Duration(seconds: 30);
 
   /// 메모리 최적화 시작
   void startOptimization() {

@@ -141,7 +141,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('0.5kg ~ 50.0kg 사이의 값을 입력해주세요'),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -159,7 +159,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
             color: AppColors.pointDark,
           ),
         ),
-        const const const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         Semantics(
           label: '体重入力フィールド',
           hint: '0.5キロから50キロまでの体重を入力してください',
@@ -194,7 +194,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
                   color: AppColors.pointGray.withValues(alpha: 0.5),
                 ),
                 suffixIcon: Padding(
-                  padding: const const const EdgeInsets.only(right: AppSpacing.md),
+                  padding: const EdgeInsets.only(right: AppSpacing.md),
                   child: Center(
                     widthFactor: 0.0,
                     child: Text(
@@ -207,7 +207,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
                   ),
                 ),
                 border: InputBorder.none,
-                contentPadding: const const const EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   vertical: AppSpacing.md,
                   horizontal: AppSpacing.md,
                 ),
@@ -217,13 +217,13 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
           ),
         ),
         if (widget.errorText != null) ...[
-          const const const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             widget.errorText!,
             style: AppFonts.bodySmall.copyWith(color: Colors.red),
           ),
         ],
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           '推奨体重範囲: 0.5kg - 50.0kg',
           style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),

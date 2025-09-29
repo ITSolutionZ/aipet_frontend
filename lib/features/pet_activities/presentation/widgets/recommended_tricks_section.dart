@@ -68,7 +68,7 @@ class RecommendedTricksSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         SizedBox(
           height: 200,
           child: ListView(

@@ -150,7 +150,7 @@ class MetricCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widget = Container(
-      margin: margin ?? const const const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      margin: margin ?? const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.cardBackgroundGray,
         borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.md),
@@ -171,15 +171,15 @@ class MetricCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.md),
           child: Padding(
-            padding: padding ?? const const const EdgeInsets.all(AppSpacing.md),
+            padding: padding ?? const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildHeader(),
-                const const const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.sm),
                 _buildValue(),
                 if (change != null) ...[
-                  const const const SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: AppSpacing.xs),
                   _buildChange(),
                 ],
               ],
@@ -190,17 +190,11 @@ class MetricCard extends StatelessWidget {
     );
 
     if (semanticLabel != null) {
-      return Semantics(
-        label: semanticLabel,
-        child: widget,
-      );
+      return Semantics(label: semanticLabel, child: widget);
     }
 
     if (tooltip != null) {
-      return Tooltip(
-        message: tooltip!,
-        child: widget,
-      );
+      return Tooltip(message: tooltip!, child: widget);
     }
 
     return widget;
@@ -217,7 +211,7 @@ class MetricCard extends StatelessWidget {
             ),
             child: icon!,
           ),
-          const const const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.sm),
         ],
         Expanded(
           child: Text(
@@ -244,7 +238,7 @@ class MetricCard extends StatelessWidget {
           ),
         ),
         if (unit != null) ...[
-          const const const SizedBox(width: AppSpacing.xs),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             unit!,
             style: AppTextStyles.bodyMedium.copyWith(
@@ -263,12 +257,8 @@ class MetricCard extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(
-          changeIcon,
-          size: 16,
-          color: changeColor,
-        ),
-        const const const SizedBox(width: AppSpacing.xs),
+        Icon(changeIcon, size: 16, color: changeColor),
+        const SizedBox(width: AppSpacing.xs),
         Text(
           change!,
           style: AppTextStyles.bodySmall.copyWith(

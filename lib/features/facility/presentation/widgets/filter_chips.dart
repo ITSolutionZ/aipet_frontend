@@ -1,4 +1,6 @@
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 
 class FilterChips extends StatelessWidget {
@@ -18,9 +20,9 @@ class FilterChips extends StatelessWidget {
       child: Row(
         children: [
           _buildFilterChip('全て', Icons.list),
-          const const const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.sm),
           _buildFilterChip('お気に入り', Icons.favorite),
-          const const const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.sm),
           _buildFilterChip('履歴', Icons.history),
         ],
       ),
@@ -39,7 +41,7 @@ class FilterChips extends StatelessWidget {
             size: 16,
             color: isSelected ? Colors.white : Colors.grey[600],
           ),
-          const const const SizedBox(width: AppSpacing.xs),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: AppFonts.bodySmall.copyWith(

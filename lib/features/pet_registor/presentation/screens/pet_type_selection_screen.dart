@@ -74,13 +74,13 @@ class _PetTypeSelectionScreenState
             // 스크롤 가능한 상단 영역
             Expanded(
               child: SingleChildScrollView(
-                padding: const const const EdgeInsets.all(AppSpacing.lg),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 프로그레스바
                     _buildProgressBar(),
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 제목
                     Text(
@@ -90,9 +90,9 @@ class _PetTypeSelectionScreenState
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.sm),
                     // 설명 제거 (디자인에 없음)
-                    const const const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: AppSpacing.xl),
 
                     // 펫 종류 선택 카드들
                     PetTypeGridWidget(
@@ -113,7 +113,7 @@ class _PetTypeSelectionScreenState
 
             // 하단 고정 버튼 영역
             Container(
-              padding: const const const EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(

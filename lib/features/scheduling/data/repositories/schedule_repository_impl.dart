@@ -323,15 +323,13 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       final existingEnd =
           existingSchedule.endDateTime ??
           existingSchedule.startDateTime.add(
-            const Duration(minutes: existingSchedule.totalMinutes),
+            Duration(minutes: existingSchedule.totalMinutes),
           );
 
       final newStart = schedule.startDateTime;
       final newEnd =
           schedule.endDateTime ??
-          schedule.startDateTime.add(
-            const Duration(minutes: schedule.totalMinutes),
-          );
+          schedule.startDateTime.add(Duration(minutes: schedule.totalMinutes));
 
       return (newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart));
     });

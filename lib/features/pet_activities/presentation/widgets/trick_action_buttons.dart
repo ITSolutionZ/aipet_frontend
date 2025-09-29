@@ -21,14 +21,14 @@ class TrickActionButtons extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.pointBlue,
               foregroundColor: Colors.white,
-              padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.md),
               ),
             ),
           ),
         ),
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
 
         // 모든 트릭 보기 버튼
         SizedBox(
@@ -42,7 +42,7 @@ class TrickActionButtons extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.pointBrown,
               side: const BorderSide(color: AppColors.pointBrown),
-              padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.md),
               ),

@@ -39,7 +39,8 @@ class RecipesNotifier extends _$RecipesNotifier {
   @override
   Future<List<RecipeEntity>> build() async {
     final useCase = ref.watch(getAllRecipesUseCaseProvider);
-    return useCase();
+    final result = await useCase();
+    return result.dataOrNull ?? [];
   }
 
   /// 레시피 새로고침
@@ -47,7 +48,8 @@ class RecipesNotifier extends _$RecipesNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final useCase = ref.read(getAllRecipesUseCaseProvider);
-      return useCase();
+      final result = await useCase();
+      return result.dataOrNull ?? [];
     });
   }
 

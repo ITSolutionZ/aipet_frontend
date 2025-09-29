@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 class GetUserProfileUseCase {
   final SettingsRepository _repository;
@@ -8,10 +7,10 @@ class GetUserProfileUseCase {
   const GetUserProfileUseCase(this._repository);
 
   /// 사용자 프로필 가져오기
-  Future<Result<UserProfileEntity>> call() async {
+  Future<Result<Map<String, dynamic>>> call() async {
     final result = await _repository.getUserProfile();
     if (result.isSuccess) {
-      return Result.success('ユーザープロフィールを取得しました', result.dataOrNull!);
+      return Result.success('ユーザープロフィールを取得しました', result.dataOrNull);
     } else {
       return Result.failure('ユーザープロフィールの取得に失敗しました');
     }

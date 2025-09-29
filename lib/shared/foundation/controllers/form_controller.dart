@@ -88,7 +88,7 @@ abstract class FormController<T> extends BaseController {
       if (isValid) {
         return Result.success('パスワードが一致しています');
       } else {
-        return const Failure('パスワードが一致しません');
+        return Result.failure('パスワードが一致しません');
       }
     } catch (error) {
       return Result.failure('パスワード確認中にエラーが発生しました: ${error.toString()}');
@@ -173,7 +173,7 @@ abstract class FormController<T> extends BaseController {
     try {
       // 폼 유효성 검사
       if (!isFormValid) {
-        return const Failure('フォームに無効な値があります');
+        return Result.failure('フォームに無効な値があります');
       }
 
       // 제출 실행
@@ -201,16 +201,16 @@ abstract class PetFormController<T> extends FormController<T> {
   /// 펫 이름 유효성 검사
   Result<void> validatePetName(String? name) {
     if (name == null || name.trim().isEmpty) {
-      return const Failure('ペットの名前は必須項目です');
+      return Result.failure('ペットの名前は必須項目です');
     }
 
     final trimmedName = name.trim();
     if (trimmedName.isEmpty) {
-      return const Failure('ペットの名前は1文字以上である必要があります');
+      return Result.failure('ペットの名前は1文字以上である必要があります');
     }
 
     if (trimmedName.length > 50) {
-      return const Failure('ペットの名前は50文字以下である必要があります');
+      return Result.failure('ペットの名前は50文字以下である必要があります');
     }
 
     return Result.success('有効な名前です');
@@ -219,15 +219,15 @@ abstract class PetFormController<T> extends FormController<T> {
   /// 펫 체중 유효성 검사
   Result<void> validatePetWeight(double? weight) {
     if (weight == null) {
-      return const Failure('ペットの体重は必須項目です');
+      return Result.failure('ペットの体重は必須項目です');
     }
 
     if (weight <= 0.0) {
-      return const Failure('ペットの体重は0より大きい必要があります');
+      return Result.failure('ペットの体重は0より大きい必要があります');
     }
 
     if (weight > 100.0) {
-      return const Failure('ペットの体重は100kg以下である必要があります');
+      return Result.failure('ペットの体重は100kg以下である必要があります');
     }
 
     return Result.success('有効な体重です');
@@ -236,18 +236,18 @@ abstract class PetFormController<T> extends FormController<T> {
   /// 펫 생년월일 유효성 검사
   Result<void> validatePetBirthday(DateTime? birthday) {
     if (birthday == null) {
-      return const Failure('ペットの生年月日は必須項目です');
+      return Result.failure('ペットの生年月日は必須項目です');
     }
 
     final now = DateTime.now();
     if (birthday.isAfter(now)) {
-      return const Failure('ペットの生年月日は未来の日付にできません');
+      return Result.failure('ペットの生年月日は未来の日付にできません');
     }
 
     // 30년 전보다 오래된 날짜는 유효하지 않음
     final thirtyYearsAgo = DateTime(now.year - 30, now.month, now.day);
     if (birthday.isBefore(thirtyYearsAgo)) {
-      return const Failure('ペットの生年月日は30年前より新しい必要があります');
+      return Result.failure('ペットの生年月日は30年前より新しい必要があります');
     }
 
     return Result.success('有効な生年月日です');
@@ -260,11 +260,11 @@ abstract class PetFormController<T> extends FormController<T> {
     }
 
     if (number.length != 15) {
-      return const Failure('マイクロチップ番号は15桁である必要があります');
+      return Result.failure('マイクロチップ番号は15桁である必要があります');
     }
 
     if (!RegExp(r'^[0-9]+$').hasMatch(number)) {
-      return const Failure('マイクロチップ番号は数字のみである必要があります');
+      return Result.failure('マイクロチップ番号は数字のみである必要があります');
     }
 
     return Result.success('有効なマイクロチップ番号です');

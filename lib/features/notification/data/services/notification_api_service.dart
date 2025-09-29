@@ -74,8 +74,8 @@ class NotificationApiService {
         }
 
         return Result.success(
-          notifications,
           'Notifications fetched successfully',
+          notifications,
         );
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
@@ -119,7 +119,7 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 읽음 상태 업데이트 성공: $notificationId');
         }
-        return Result.success(true, 'Notification read status updated');
+        return Result.success('Notification read status updated', true);
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
         if (kDebugMode) {
@@ -155,7 +155,7 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 삭제 성공: $notificationId');
         }
-        return Result.success(true, 'Notification deleted successfully');
+        return Result.success('Notification deleted successfully', true);
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
         if (kDebugMode) {
@@ -195,8 +195,8 @@ class NotificationApiService {
           debugPrint('[$_tag] ✅ 알림 설정 조회 성공');
         }
         return Result.success(
-          settings,
           'Notification settings fetched successfully',
+          settings,
         );
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
@@ -239,8 +239,8 @@ class NotificationApiService {
           debugPrint('[$_tag] ✅ 알림 설정 업데이트 성공');
         }
         return Result.success(
-          true,
           'Notification settings updated successfully',
+          true,
         );
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
@@ -280,10 +280,7 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 통계 조회 성공');
         }
-        return Result.success(
-          stats,
-          'Notification stats fetched successfully',
-        );
+        return Result.success('Notification stats fetched successfully', stats);
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
         if (kDebugMode) {

@@ -141,8 +141,6 @@ class WelcomeScreen extends StatelessWidget {
               // 완료메시지 카드
               Expanded(
                 child: WhiteCard(
-                  borderWidth: 2,
-                  borderColor: AppColors.pointBrown.withValues(alpha: 0.3),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

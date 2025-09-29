@@ -28,7 +28,8 @@ class NotificationController extends BaseController {
   /// 알림 목록 가져오기
   Future<List<NotificationModel>> getNotifications(String userId) async {
     try {
-      return await _getNotificationsUseCase.call(userId);
+      final result = await _getNotificationsUseCase.call(userId);
+      return result.dataOrNull ?? [];
     } catch (error) {
       handleError(error);
       return [];
@@ -69,7 +70,8 @@ class NotificationController extends BaseController {
     String id,
   ) async {
     try {
-      return await _getNotificationByIdUseCase.call(userId, id);
+      final result = await _getNotificationByIdUseCase.call(userId, id);
+      return result.dataOrNull;
     } catch (error) {
       handleError(error);
       return null;
@@ -79,7 +81,8 @@ class NotificationController extends BaseController {
   /// 읽지 않은 알림 개수 가져오기
   Future<int> getUnreadCount(String userId) async {
     try {
-      final notifications = await _getNotificationsUseCase.call(userId);
+      final result = await _getNotificationsUseCase.call(userId);
+      final notifications = result.dataOrNull ?? [];
       return notifications
           .where((n) => n.status == NotificationStatus.unread)
           .length;
@@ -92,7 +95,8 @@ class NotificationController extends BaseController {
   /// 알림 설정 가져오기
   Future<Map<String, dynamic>> getNotificationSettings(String userId) async {
     try {
-      return await _getSettingsUseCase.call(userId);
+      final result = await _getSettingsUseCase.call(userId);
+      return result.dataOrNull ?? {};
     } catch (error) {
       handleError(error);
       return {};
@@ -114,7 +118,8 @@ class NotificationController extends BaseController {
   /// 알림 권한 요청
   Future<bool> requestNotificationPermission() async {
     try {
-      return await _requestPermissionUseCase.call();
+      final result = await _requestPermissionUseCase.call();
+      return result.dataOrNull ?? false;
     } catch (error) {
       handleError(error);
       return false;

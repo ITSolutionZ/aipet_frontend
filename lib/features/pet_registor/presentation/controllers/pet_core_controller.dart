@@ -1,9 +1,5 @@
-import 'package:aipet_frontend/features/pet_registor/data/providers/usecase_providers.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/usecases/create_pet_usecase.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/usecases/delete_pet_usecase.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/usecases/get_all_pets_usecase.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/usecases/get_pet_by_id_usecase.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/usecases/update_pet_usecase.dart';
+import 'package:aipet_frontend/features/pet_registor/data/data.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/domain.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart' as coreResult;
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
@@ -38,11 +34,11 @@ class PetCoreController extends CrudController<PetProfileEntity> {
           result.dataOrNull!,
         );
       } else {
-        return coreResult.Failure(result.errorOrNull!);
+        return coreResult.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return coreResult.Failure(
+      return coreResult.Result.failure(
         '펫 목록을 가져오는데 실패했습니다: ${error.toString()}',
       );
     }
@@ -54,18 +50,18 @@ class PetCoreController extends CrudController<PetProfileEntity> {
       final result = await _getPetByIdUseCase.call(id);
       if (result.isSuccess) {
         if (result.dataOrNull == null) {
-          return coreResult.Failure('펫을 찾을 수 없습니다');
+          return coreResult.Result.failure('펫을 찾을 수 없습니다');
         }
         return coreResult.Result.success(
-          '펫 목록을 성공적으로 가져왔습니다',
+          '펫 정보를 성공적으로 가져왔습니다',
           result.dataOrNull!,
         );
       } else {
-        return coreResult.Failure(result.errorOrNull!);
+        return coreResult.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return coreResult.Failure(
+      return coreResult.Result.failure(
         '펫 정보를 가져오는데 실패했습니다: ${error.toString()}',
       );
     }
@@ -79,15 +75,15 @@ class PetCoreController extends CrudController<PetProfileEntity> {
       final result = await _createPetUseCase.call(pet);
       if (result.isSuccess) {
         return coreResult.Result.success(
-          '펫 목록을 성공적으로 가져왔습니다',
+          '펫이 성공적으로 생성되었습니다',
           result.dataOrNull!,
         );
       } else {
-        return coreResult.Failure(result.errorOrNull!);
+        return coreResult.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return coreResult.Failure('펫 생성에 실패했습니다: ${error.toString()}');
+      return coreResult.Result.failure('펫 생성에 실패했습니다: ${error.toString()}');
     }
   }
 
@@ -99,15 +95,15 @@ class PetCoreController extends CrudController<PetProfileEntity> {
       final result = await _updatePetUseCase.call(pet);
       if (result.isSuccess) {
         return coreResult.Result.success(
-          '펫 목록을 성공적으로 가져왔습니다',
+          '펫 정보가 성공적으로 업데이트되었습니다',
           result.dataOrNull!,
         );
       } else {
-        return coreResult.Failure(result.errorOrNull!);
+        return coreResult.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return coreResult.Failure('펫 업데이트에 실패했습니다: ${error.toString()}');
+      return coreResult.Result.failure('펫 업데이트에 실패했습니다: ${error.toString()}');
     }
   }
 
@@ -118,11 +114,11 @@ class PetCoreController extends CrudController<PetProfileEntity> {
       if (result.isSuccess) {
         return coreResult.Result.success('펫이 성공적으로 삭제되었습니다', null);
       } else {
-        return coreResult.Failure(result.errorOrNull!);
+        return coreResult.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return coreResult.Failure('펫 삭제에 실패했습니다: ${error.toString()}');
+      return coreResult.Result.failure('펫 삭제에 실패했습니다: ${error.toString()}');
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:aipet_frontend/features/facility/presentation/controllers/facility_detail_controller.dart';
 import 'package:aipet_frontend/features/facility/presentation/widgets/facility_availability_section.dart';
@@ -5,8 +6,16 @@ import 'package:aipet_frontend/features/facility/presentation/widgets/facility_c
 import 'package:aipet_frontend/features/facility/presentation/widgets/facility_detail_header.dart';
 import 'package:aipet_frontend/features/facility/presentation/widgets/facility_location_section.dart';
 import 'package:aipet_frontend/features/facility/presentation/widgets/facility_services_section.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+
+import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:aipet_frontend/shared/ui/components/states/empty_state.dart';
+import 'package:aipet_frontend/shared/ui/components/states/loading_state.dart';
+import 'package:aipet_frontend/shared/widgets/feedback/loading_widget.dart';
+import 'package:aipet_frontend/shared/widgets/soft_gradient_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -58,10 +67,10 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Scaffold(
+      return const Scaffold(
         backgroundColor: AppColors.pointOffWhite,
-        appBar: const SoftGradientBackAppBar(title: '連絡先を表示'),
-        body: LoadingWidget(loadingState: LoadingState.loading()),
+        appBar: SoftGradientBackAppBar(title: '連絡先を表示'),
+        body: LoadingState(),
       );
     }
 
@@ -119,20 +128,20 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
   Widget _buildContent() {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildContactSection(),
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
             _buildLocationSection(),
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
             _buildAvailabilitySection(),
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
             _buildServicesSection(),
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
             _buildActionButtons(),
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),
@@ -147,7 +156,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: FacilityContactSection(facility: _facility!),
       ),
     );
@@ -161,7 +170,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: FacilityLocationSection(facility: _facility!),
       ),
     );
@@ -175,7 +184,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: FacilityAvailabilitySection(facility: _facility!),
       ),
     );
@@ -189,7 +198,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: FacilityServicesSection(facility: _facility!),
       ),
     );
@@ -215,7 +224,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.pointBlue,
               foregroundColor: AppColors.pureWhite,
-              padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
@@ -223,7 +232,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
           ),
         ),
 
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
 
         // 연락처 추가 버튼
         Center(

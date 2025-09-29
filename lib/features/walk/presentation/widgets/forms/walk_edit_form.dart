@@ -231,7 +231,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
             },
           ),
 
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           // 거리 필드
           WalkFormFields.buildDistanceField(
@@ -249,7 +249,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
             },
           ),
 
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           // 시간 필드들
           Row(
@@ -262,7 +262,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
                       .updateStartTime(time),
                 ),
               ),
-              const const const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: WalkFormFields.buildStartTimeField(
                   initialValue: formState.endTime,
@@ -274,12 +274,12 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
             ],
           ),
 
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           // 메모 필드
           WalkFormFields.buildNotesField(controller: _notesController),
 
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
 
           // 버튼들
           CommonFormPatterns.buildFormButtons(

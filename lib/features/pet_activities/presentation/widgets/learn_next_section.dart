@@ -39,7 +39,7 @@ class LearnNextSection extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const const const SizedBox(width: AppSpacing.xs),
+                  const SizedBox(width: AppSpacing.xs),
                   const Icon(
                     Icons.arrow_forward_ios,
                     size: 12,
@@ -50,7 +50,7 @@ class LearnNextSection extends StatelessWidget {
             ),
           ],
         ),
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         if (availableTricks.isEmpty)
           Center(
             child: Text(
@@ -65,7 +65,7 @@ class LearnNextSection extends StatelessWidget {
               .take(3)
               .map(
                 (trick) => Padding(
-                  padding: const const const EdgeInsets.only(bottom: AppSpacing.md),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: LearnNextTrickCard(trick: trick),
                 ),
               ),

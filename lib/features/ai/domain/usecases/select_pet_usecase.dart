@@ -26,7 +26,7 @@ class SelectPetUseCase {
         timestamp: DateTime.now().add(const Duration(milliseconds: 500)),
       );
 
-      return Result.success('ペットを選択しました', [userMessage, aiMessage]);
+      return Result.success('ペットを選択しました', [aiMessage]);
     } catch (error) {
       return Result.failure('ペット選択に失敗しました: ${error.toString()}');
     }

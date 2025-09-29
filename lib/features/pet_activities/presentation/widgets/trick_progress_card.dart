@@ -13,7 +13,7 @@ class TrickProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -47,7 +47,7 @@ class TrickProgressCard extends StatelessWidget {
                 ? const Icon(Icons.pets, color: AppColors.pointBrown, size: 30)
                 : null,
           ),
-          const const const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
 
           // 트릭 정보
           Expanded(
@@ -62,7 +62,7 @@ class TrickProgressCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const const const SizedBox(height: AppSpacing.xs),
+                const SizedBox(height: AppSpacing.xs),
 
                 // 진행도 바
                 LinearProgressIndicator(
@@ -75,7 +75,7 @@ class TrickProgressCard extends StatelessWidget {
                   ),
                   minHeight: 6,
                 ),
-                const const const SizedBox(height: AppSpacing.xs),
+                const SizedBox(height: AppSpacing.xs),
 
                 // 진행도 텍스트와 날짜
                 Row(
@@ -104,7 +104,7 @@ class TrickProgressCard extends StatelessWidget {
           // 완료 상태 아이콘
           if (trick.isCompleted)
             Container(
-              padding: const const const EdgeInsets.all(AppSpacing.xs),
+              padding: const EdgeInsets.all(AppSpacing.xs),
               decoration: const BoxDecoration(
                 color: AppColors.pointGreen,
                 shape: BoxShape.circle,

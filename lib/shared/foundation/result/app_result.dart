@@ -16,6 +16,9 @@ sealed class Result<T> {
   /// 실패 여부 확인
   bool get isFailure => this is Failure<T>;
 
+  /// 성공 시 데이터 반환, 실패 시 에러 메시지 반환
+  String? get messageOrNull => isSuccess ? (this as Success<T>).message : null;
+
   /// 성공 시 데이터 반환, 실패 시 null
   T? get dataOrNull => isSuccess ? (this as Success<T>).data : null;
 
@@ -46,10 +49,10 @@ sealed class Result<T> {
       try {
         return Success(transform((this as Success<T>).data));
       } catch (e) {
-        return Result.failure('変換中にエラーが発生しました: ${e.toString()}');
+        return Failure('変換中にエラーが発生しました: ${e.toString()}');
       }
     } else {
-      return Result.failure((this as Failure<T>).message);
+      return Failure((this as Failure<T>).message);
     }
   }
 
@@ -60,10 +63,10 @@ sealed class Result<T> {
         final result = await transform((this as Success<T>).data);
         return Success(result);
       } catch (e) {
-        return Result.failure('非同期変換中にエラーが発生しました: ${e.toString()}');
+        return Failure('非同期変換中にエラーが発生しました: ${e.toString()}');
       }
     } else {
-      return Result.failure((this as Failure<T>).message);
+      return Failure((this as Failure<T>).message);
     }
   }
 
@@ -72,7 +75,7 @@ sealed class Result<T> {
     if (isSuccess) {
       return transform((this as Success<T>).data);
     } else {
-      return Result.failure((this as Failure<T>).message);
+      return Failure((this as Failure<T>).message);
     }
   }
 
@@ -83,7 +86,7 @@ sealed class Result<T> {
     if (isSuccess) {
       return transform((this as Success<T>).data);
     } else {
-      return Result.failure((this as Failure<T>).message);
+      return Failure((this as Failure<T>).message);
     }
   }
 
@@ -206,7 +209,7 @@ class Failure<T> extends Result<T> {
 }
 
 /// Result 팩토리 함수들
-class Result {
+class ResultFactory {
   /// 성공 결과 생성
   static Result<T> success<T>(T data, [String? message]) {
     return Success(data, message);
@@ -218,12 +221,12 @@ class Result {
     Exception? exception,
     String? code,
   }) {
-    return Result.failure(message, exception: exception, code: code);
+    return Failure(message, exception: exception, code: code);
   }
 
   /// 예외로부터 실패 결과 생성
   static Result<T> fromException<T>(Exception exception) {
-    return Result.failure(
+    return Failure(
       exception.toString().replaceFirst('Exception: ', ''),
       exception: exception,
     );
@@ -231,7 +234,7 @@ class Result {
 
   /// AppException으로부터 실패 결과 생성
   static Result<T> fromAppException<T>(AppException exception) {
-    return Result.failure(
+    return Failure(
       exception.message,
       exception: exception,
       code: exception.code,
@@ -242,7 +245,7 @@ class Result {
   static Result<List<T>> combine<T>(List<Result<T>> results) {
     final failures = results.where((r) => r.isFailure).toList();
     if (failures.isNotEmpty) {
-      return Result.failure(
+      return Failure(
         '複数の操作が失敗しました: ${failures.map((f) => f.errorOrNull).join(', ')}',
       );
     }
@@ -318,7 +321,6 @@ extension ResultExtensions<T> on Result<T> {
   }
 }
 
-/// Future<Result<T>> 확장 메서드들
 extension FutureResultExtensions<T> on Future<Result<T>> {
   /// 성공 시 데이터 반환, 실패 시 기본값
   Future<T> dataOr(T defaultValue) async {

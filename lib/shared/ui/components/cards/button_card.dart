@@ -116,7 +116,7 @@ class ButtonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Widget card = Container(
-      padding: const const const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
       ),
@@ -149,7 +149,7 @@ class ButtonCard extends StatelessWidget {
                 ),
                 child: icon!,
               ),
-              const const const SizedBox(width: AppSpacing.sm),
+              const SizedBox(width: AppSpacing.sm),
             ],
             Column(
               mainAxisSize: MainAxisSize.min,
@@ -162,7 +162,7 @@ class ButtonCard extends StatelessWidget {
                   ),
                 ),
                 if (subtitle != null) ...[
-                  const const const SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
                     subtitle!,
                     style: AppFonts.bodySmall.copyWith(

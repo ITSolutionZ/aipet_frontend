@@ -220,7 +220,7 @@ class _FeedingScheduleEditScreenState
         controller: _scrollController,
         slivers: [
           SliverPadding(
-            padding: const const const EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 Column(
@@ -234,7 +234,7 @@ class _FeedingScheduleEditScreenState
                       onPetStatusDialog: _showPetStatusDialog,
                     ),
 
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 식사 타입 선택
                     MealTypeDropdown(
@@ -248,7 +248,7 @@ class _FeedingScheduleEditScreenState
                       },
                     ),
 
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 시간 설정
                     TimeSelector(
@@ -257,12 +257,12 @@ class _FeedingScheduleEditScreenState
                       onTimeTap: _selectTime,
                     ),
 
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 양 설정
                     AmountInput(controller: _amountController),
 
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 급여 가이드 카드
                     if (_selectedPetInfo != null && _petSizeGuide != null)
@@ -271,7 +271,7 @@ class _FeedingScheduleEditScreenState
                         sizeGuide: _petSizeGuide!,
                       ),
 
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     ActionButton.primary(
                       text: '保存',

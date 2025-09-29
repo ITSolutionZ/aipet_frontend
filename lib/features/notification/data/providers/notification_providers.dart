@@ -24,7 +24,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     if (result.isSuccess) {
       return result.dataOrNull ?? [];
     }
-    throw Exception('알림 목록 조회 실패: ${result.errorOrNull}');
+    throw Exception('알림 목록 조회 실패: ${result.error}');
   }
 
   /// 알림 새로고침
@@ -39,7 +39,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
       if (result.isSuccess) {
         return result.dataOrNull ?? [];
       }
-      throw Exception('알림 목록 새로고침 실패: ${result.errorOrNull}');
+      throw Exception('알림 목록 새로고침 실패: ${result.error}');
     });
   }
 
@@ -58,7 +58,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     if (result.isSuccess) {
       await refresh();
     } else {
-      throw Exception('알림 읽음 처리 실패: ${result.errorOrNull}');
+      throw Exception('알림 읽음 처리 실패: ${result.error}');
     }
   }
 
@@ -76,7 +76,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     if (result.isSuccess) {
       await refresh();
     } else {
-      throw Exception('알림 삭제 실패: ${result.errorOrNull}');
+      throw Exception('알림 삭제 실패: ${result.error}');
     }
   }
 }
@@ -127,7 +127,7 @@ class NotificationSettingsNotifier extends _$NotificationSettingsNotifier {
     if (result.isSuccess) {
       return result.dataOrNull ?? {};
     }
-    throw Exception('알림 설정 조회 실패: ${result.errorOrNull}');
+    throw Exception('알림 설정 조회 실패: ${result.error}');
   }
 
   /// 설정 저장
@@ -145,7 +145,7 @@ class NotificationSettingsNotifier extends _$NotificationSettingsNotifier {
       state = AsyncValue.data(settings);
     } else {
       state = AsyncValue.error(
-        Exception('설정 저장 실패: ${result.errorOrNull}'),
+        Exception('설정 저장 실패: ${result.error}'),
         StackTrace.current,
       );
     }

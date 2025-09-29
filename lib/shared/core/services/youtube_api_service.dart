@@ -23,7 +23,7 @@ class YouTubeApiService {
         if (AppConfig.current.isMockMode) {
           return _getMockVideos();
         }
-        return const Failure('YouTube API 키가 설정되지 않았습니다');
+        return Result.failure('YouTube API 키가 설정되지 않았습니다');
       }
 
       final searchQuery = '$query 반려동물 훈련 pet training';
@@ -58,7 +58,7 @@ class YouTubeApiService {
             .cast<YouTubeVideo>()
             .toList();
 
-        return Success(videos, '비디오를 성공적으로 찾았습니다');
+        return Result.success('비디오를 성공적으로 찾았습니다', videos);
       } else {
         return Result.failure('YouTube API 요청 실패: ${response.statusCode}');
       }
@@ -82,7 +82,7 @@ class YouTubeApiService {
         if (AppConfig.current.isMockMode) {
           return _getMockVideos();
         }
-        return const Failure('YouTube API 키가 설정되지 않았습니다');
+        return Result.failure('YouTube API 키가 설정되지 않았습니다');
       }
 
       final Map<String, String> params = {
@@ -112,7 +112,7 @@ class YouTubeApiService {
             .cast<YouTubeVideo>()
             .toList();
 
-        return Success(videos, '인기 비디오를 성공적으로 가져왔습니다');
+        return Result.success('인기 비디오를 성공적으로 가져왔습니다', videos);
       } else {
         return Result.failure('YouTube API 요청 실패: ${response.statusCode}');
       }
@@ -130,7 +130,7 @@ class YouTubeApiService {
     try {
       final apiKey = AppConfig.current.youtubeApiKey;
       if (apiKey.isEmpty) {
-        return const Failure('YouTube API 키가 설정되지 않았습니다');
+        return Result.failure('YouTube API 키가 설정되지 않았습니다');
       }
 
       final Map<String, String> params = {
@@ -152,11 +152,11 @@ class YouTubeApiService {
         if (items.isNotEmpty) {
           final video = _mapYouTubeItem(items.first as Map<String, dynamic>);
           if (video != null) {
-            return Success(video, '비디오 상세 정보를 가져왔습니다');
+            return Result.success('비디오 상세 정보를 가져왔습니다', video);
           }
         }
 
-        return const Failure('비디오를 찾을 수 없습니다');
+        return Result.failure('비디오를 찾을 수 없습니다');
       } else {
         return Result.failure('YouTube API 요청 실패: ${response.statusCode}');
       }
@@ -282,7 +282,7 @@ class YouTubeApiService {
       ),
     ];
 
-    return Success(mockVideos, 'Mock 비디오 데이터를 로드했습니다');
+    return Result.success('Mock 비디오 데이터를 로드했습니다', mockVideos);
   }
 }
 

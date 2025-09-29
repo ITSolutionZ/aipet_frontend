@@ -1,6 +1,6 @@
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/core/services/validation_service.dart';
 import 'package:flutter/foundation.dart';
+
+import '../shared.dart';
 
 /// 🛡️ 입력 검증 강화 서비스
 ///
@@ -208,7 +208,7 @@ class InputValidationService {
 
     // 기존 이메일 검증 로직 활용
     final emailValidation = ValidationService.validateEmail(
-      securityResult.dataOrThrow,
+      securityResult.data!,
     );
     if (!emailValidation.isSuccess) {
       return Result.failure(emailValidation.message);
@@ -233,7 +233,7 @@ class InputValidationService {
 
     // 기존 비밀번호 검증 로직 활용
     final passwordValidation = ValidationService.validatePassword(
-      securityResult.dataOrThrow,
+      securityResult.data!,
     );
     if (!passwordValidation.isSuccess) {
       return Result.failure(passwordValidation.message);
@@ -258,7 +258,7 @@ class InputValidationService {
 
     // 기존 펫 이름 검증 로직 활용
     final petNameValidation = ValidationService.validatePetName(
-      securityResult.dataOrThrow,
+      securityResult.data!,
     );
     if (!petNameValidation.isSuccess) {
       return Result.failure(petNameValidation.message);
@@ -288,7 +288,7 @@ class InputValidationService {
 
     // 숫자 형식 검증
     final validationResult = ValidationService.validateNumberField(
-      securityResult.dataOrThrow,
+      securityResult.data!,
       fieldName,
       min: min,
       max: max,
@@ -299,12 +299,12 @@ class InputValidationService {
     }
 
     // 숫자로 변환
-    final number = double.tryParse(securityResult.dataOrThrow);
+    final number = double.tryParse(securityResult.data!);
     if (number == null) {
       return Result.failure('$fieldNameは有効な数値ではありません');
     }
 
-    return Result.success(number, '$fieldNameの検証が完了しました');
+    return Result.success('$fieldNameの検証が完了しました', number);
   }
 
   /// 검색어 입력 검증
@@ -346,14 +346,12 @@ class InputValidationService {
       return securityResult;
     }
 
-    if (securityResult.dataOrThrow.isEmpty) {
+    if (securityResult.data?.isEmpty ?? true) {
       return securityResult;
     }
 
     // URL 형식 검증
-    final urlValidation = ValidationService.validateUrl(
-      securityResult.dataOrThrow,
-    );
+    final urlValidation = ValidationService.validateUrl(securityResult.data);
     if (!urlValidation.isSuccess) {
       return Result.failure(urlValidation.message);
     }
@@ -377,18 +375,18 @@ class InputValidationService {
       return securityResult;
     }
 
-    if (securityResult.dataOrThrow.isEmpty) {
+    if (securityResult.data?.isEmpty ?? true) {
       return securityResult;
     }
 
     // 전화번호 패턴 검증 (숫자, 하이픈, 공백, 괄호만)
-    if (!_isValidPhoneNumber(securityResult.dataOrThrow)) {
+    if (!_isValidPhoneNumber(securityResult.data!)) {
       return Result.failure('電話番号は数字、ハイフン、スペース、括弧のみ使用できます');
     }
 
     // 기존 전화번호 검증 로직 활용
     final phoneValidation = ValidationService.validatePhoneNumber(
-      securityResult.dataOrThrow,
+      securityResult.data!,
     );
     if (!phoneValidation.isSuccess) {
       return Result.failure(phoneValidation.message);
@@ -432,7 +430,7 @@ class InputValidationService {
       final actualHash = input.hashCode.toString();
 
       if (actualHash == expectedHash) {
-        return Result.success(true, 'Input integrity verified');
+        return Result.success('Input integrity verified', true);
       } else {
         _logSecurityThreat('Input integrity violation', 'hash_check', input);
         return Result.failure('入力データの整合性に問題があります');
@@ -502,10 +500,10 @@ class InputValidationService {
           return Result.failure(result.message);
         }
 
-        validatedInputs[fieldName] = result.dataOrThrow;
+        validatedInputs[fieldName] = result.data!;
       }
 
-      return Result.success(validatedInputs, '全ての入力検証が完了しました');
+      return Result.success('全ての入力検証が完了しました', validatedInputs);
     } catch (error) {
       return Result.failure('複数入力検証中にエラーが発生しました: $error');
     }

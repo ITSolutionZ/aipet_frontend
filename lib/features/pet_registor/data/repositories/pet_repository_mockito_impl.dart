@@ -47,7 +47,7 @@ class PetRepositoryMockitoImpl implements PetRepository {
       // API 지연 시뮬레이션
       await Future.delayed(const Duration(milliseconds: 300));
 
-      return Success(List.from(_pets), '펫 목록을 성공적으로 조회했습니다');
+      return Result.success('펫 목록을 성공적으로 조회했습니다', List.from(_pets));
     } catch (error) {
       return Result.failure('펫 목록 조회에 실패했습니다: ${error.toString()}');
     }
@@ -59,7 +59,7 @@ class PetRepositoryMockitoImpl implements PetRepository {
       await Future.delayed(const Duration(milliseconds: 200));
 
       final pet = _pets.where((pet) => pet.id == id).firstOrNull;
-      return Success(pet, '펫 정보를 성공적으로 조회했습니다');
+      return Result.success('펫 정보를 성공적으로 조회했습니다', pet);
     } catch (error) {
       return Result.failure('펫 조회에 실패했습니다: ${error.toString()}');
     }
@@ -79,7 +79,7 @@ class PetRepositoryMockitoImpl implements PetRepository {
 
       _pets.add(newPet);
 
-      return Success(newPet, '펫이 성공적으로 생성되었습니다');
+      return Result.success('펫이 성공적으로 생성되었습니다', newPet);
     } catch (error) {
       return Result.failure('펫 생성에 실패했습니다: ${error.toString()}');
     }
@@ -92,13 +92,13 @@ class PetRepositoryMockitoImpl implements PetRepository {
 
       final index = _pets.indexWhere((p) => p.id == pet.id);
       if (index == -1) {
-        return const Failure('펫을 찾을 수 없습니다');
+        return Result.failure('펫을 찾을 수 없습니다');
       }
 
       final updatedPet = pet.copyWith(updatedAt: DateTime.now());
       _pets[index] = updatedPet;
 
-      return Success(updatedPet, '펫 정보가 성공적으로 업데이트되었습니다');
+      return Result.success('펫 정보가 성공적으로 업데이트되었습니다', updatedPet);
     } catch (error) {
       return Result.failure('펫 업데이트에 실패했습니다: ${error.toString()}');
     }
@@ -111,12 +111,12 @@ class PetRepositoryMockitoImpl implements PetRepository {
 
       final index = _pets.indexWhere((pet) => pet.id == id);
       if (index == -1) {
-        return const Failure('펫을 찾을 수 없습니다');
+        return Result.failure('펫을 찾을 수 없습니다');
       }
 
       _pets.removeAt(index);
 
-      return const Success(null, '펫이 성공적으로 삭제되었습니다');
+      return Result.success('펫이 성공적으로 삭제되었습니다', null);
     } catch (error) {
       return Result.failure('펫 삭제에 실패했습니다: ${error.toString()}');
     }

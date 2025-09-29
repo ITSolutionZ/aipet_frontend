@@ -21,13 +21,13 @@ class TricksSearchAndFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       color: Colors.white,
       child: Column(
         children: [
           // 검색 바
           _buildSearchBar(),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           // 카테고리 필터
           _buildCategoryFilter(),
@@ -60,7 +60,7 @@ class TricksSearchAndFilter extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(AppSpacing.md)),
           borderSide: BorderSide(color: AppColors.pointGreen),
         ),
-        contentPadding: const const const EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
@@ -87,7 +87,7 @@ class TricksSearchAndFilter extends StatelessWidget {
           final isSelected = selectedCategory == category['key'];
 
           return Padding(
-            padding: const const const EdgeInsets.only(right: AppSpacing.sm),
+            padding: const EdgeInsets.only(right: AppSpacing.sm),
             child: FilterChip(
               label: Text(category['label']!),
               selected: isSelected,

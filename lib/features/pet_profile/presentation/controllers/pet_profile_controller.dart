@@ -86,13 +86,8 @@ class PetProfileNotifier extends _$PetProfileNotifier {
         );
         return Result.success('Pet profile loaded successfully');
       } else {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: result.errorOrNull,
-        );
-        return Result.failure(
-          result.errorOrNull ?? 'Failed to load pet profile',
-        );
+        state = state.copyWith(isLoading: false, errorMessage: result.message);
+        return Result.failure(result.message);
       }
     } catch (error) {
       state = state.copyWith(

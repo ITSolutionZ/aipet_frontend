@@ -13,87 +13,87 @@ class SettingsRepositoryImpl implements SettingsRepository {
   static const String _keyExportedData = 'exported_data';
 
   // 기본 사용자 프로필
-  final UserProfileEntity _defaultUserProfile = UserProfileEntity(
-    id: 'user-1',
-    name: '田中太郎',
-    email: 'tanaka@example.com',
-    avatarPath: 'assets/images/avatars/default.png',
-    createdAt: DateTime.now(),
-    lastLoginAt: DateTime.now(),
-  );
+  final Map<String, dynamic> _defaultUserProfile = {
+    'id': 'user-1',
+    'name': '田中太郎',
+    'email': 'tanaka@example.com',
+    'avatarPath': 'assets/images/avatars/default.png',
+    'createdAt': DateTime.now(),
+    'lastLoginAt': DateTime.now(),
+  };
 
   // 기본 앱 설정
-  final AppSettingsEntity _defaultAppSettings = const AppSettingsEntity(
-    language: 'ja',
-    theme: ThemeMode.light,
-    notificationsEnabled: true,
-    autoBackup: true,
-    biometricLogin: false,
-    syncFrequency: DataSyncFrequency.daily,
-  );
+  final Map<String, dynamic> _defaultAppSettings = {
+    'language': 'ja',
+    'theme': ThemeMode.light,
+    'notificationsEnabled': true,
+    'autoBackup': true,
+    'biometricLogin': false,
+    'syncFrequency': DataSyncFrequency.daily,
+  };
 
   @override
-  Future<Result<UserProfileEntity>> getUserProfile() async {
+  Future<Result<Map<String, dynamic>>> getUserProfile() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final profileJson = prefs.getString(_keyUserProfile);
 
       if (profileJson != null) {
         final profileMap = jsonDecode(profileJson) as Map<String, dynamic>;
-        final profile = UserProfileEntity(
-          id: profileMap['id'] as String,
-          name: profileMap['name'] as String,
-          email: profileMap['email'] as String,
-          avatarPath: profileMap['avatarPath'] as String?,
-          createdAt: DateTime.parse(profileMap['createdAt'] as String),
-          lastLoginAt: profileMap['lastLoginAt'] != null
+        final profile = {
+          'id': profileMap['id'] as String,
+          'name': profileMap['name'] as String,
+          'email': profileMap['email'] as String,
+          'avatarPath': profileMap['avatarPath'] as String?,
+          'createdAt': DateTime.parse(profileMap['createdAt'] as String),
+          'lastLoginAt': profileMap['lastLoginAt'] != null
               ? DateTime.parse(profileMap['lastLoginAt'] as String)
               : null,
-        );
-        return Success(profile, 'ユーザープロフィールを取得しました');
+        };
+        return Result.success('ユーザープロフィールを取得しました', profile);
       }
 
-      return Success(_defaultUserProfile, 'デフォルトプロフィールを取得しました');
+      return Result.success('デフォルトプロフィールを取得しました', _defaultUserProfile);
     } catch (e) {
       return Result.failure('プロフィールの取得に失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<Result<UserProfileEntity>> updateUserProfile(
-    UserProfileEntity profile,
+  Future<Result<Map<String, dynamic>>> updateUserProfile(
+    Map<String, dynamic> profile,
   ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final profileMap = {
-        'id': profile.id,
-        'name': profile.name,
-        'email': profile.email,
-        'avatarPath': profile.avatarPath,
-        'createdAt': profile.createdAt.toIso8601String(),
-        'lastLoginAt': profile.lastLoginAt?.toIso8601String(),
+        'id': profile['id'],
+        'name': profile['name'],
+        'email': profile['email'],
+        'avatarPath': profile['avatarPath'],
+        'createdAt': (profile['createdAt'] as DateTime).toIso8601String(),
+        'lastLoginAt': (profile['lastLoginAt'] as DateTime?)?.toIso8601String(),
       };
 
       await prefs.setString(_keyUserProfile, jsonEncode(profileMap));
-      return Success(profile, 'プロフィールが更新されました');
+      return Result.success('プロフィールが更新されました', profile);
     } catch (e) {
       return Result.failure('プロフィールの更新に失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<Result<void>> changePassword(PasswordChangeRequest request) async {
+  Future<Result<void>> changePassword(Map<String, dynamic> request) async {
     try {
       // 비밀번호 유효성 검사
-      if (!request.isValid) {
-        return const Failure('無効なパスワード変更リクエストです');
+      if (request['isValid'] != true) {
+        return Result.failure('無効なパスワード変更リクエストです');
       }
 
       // 로컬에서 비밀번호 변경 처리 (실제로는 암호화 필요)
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_keyUserPassword, request.newPassword);
+      await prefs.setString(_keyUserPassword, request['newPassword'] as String);
 
-      return const Success(null, 'パスワードが変更されました');
+      return Result.success('パスワードが変更されました', null);
     } catch (e) {
       return Result.failure('パスワードの変更に失敗しました: ${e.toString()}');
     }
@@ -111,67 +111,67 @@ class SettingsRepositoryImpl implements SettingsRepository {
       await prefs.remove(_keyCacheSize);
       await prefs.remove(_keyExportedData);
 
-      return const Success(null, 'アカウントが削除されました');
+      return Result.success('アカウントが削除されました', null);
     } catch (e) {
       return Result.failure('アカウントの削除に失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<Result<AppSettingsEntity>> getAppSettings() async {
+  Future<Result<Map<String, dynamic>>> getAppSettings() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final settingsJson = prefs.getString(_keyAppSettings);
 
       if (settingsJson != null) {
         final settingsMap = jsonDecode(settingsJson) as Map<String, dynamic>;
-        final settings = AppSettingsEntity(
-          language: settingsMap['language'] as String,
-          theme: ThemeMode.values.firstWhere(
+        final settings = {
+          'language': settingsMap['language'] as String,
+          'theme': ThemeMode.values.firstWhere(
             (e) => e.name == settingsMap['theme'],
             orElse: () => ThemeMode.light,
           ),
-          notificationsEnabled: settingsMap['notificationsEnabled'] as bool,
-          autoBackup: settingsMap['autoBackup'] as bool,
-          biometricLogin: settingsMap['biometricLogin'] as bool,
-          syncFrequency: DataSyncFrequency.values.firstWhere(
+          'notificationsEnabled': settingsMap['notificationsEnabled'] as bool,
+          'autoBackup': settingsMap['autoBackup'] as bool,
+          'biometricLogin': settingsMap['biometricLogin'] as bool,
+          'syncFrequency': DataSyncFrequency.values.firstWhere(
             (e) => e.name == settingsMap['syncFrequency'],
             orElse: () => DataSyncFrequency.daily,
           ),
-        );
-        return Success(settings, 'アプリ設定を取得しました');
+        };
+        return Result.success('アプリ設定を取得しました', settings);
       }
 
-      return Success(_defaultAppSettings, 'デフォルト設定を取得しました');
+      return Result.success('デフォルト設定を取得しました', _defaultAppSettings);
     } catch (e) {
       return Result.failure('アプリ設定の取得に失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<Result<AppSettingsEntity>> saveAppSettings(
-    AppSettingsEntity settings,
+  Future<Result<Map<String, dynamic>>> saveAppSettings(
+    Map<String, dynamic> settings,
   ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final settingsMap = {
-        'language': settings.language,
-        'theme': settings.theme.name,
-        'notificationsEnabled': settings.notificationsEnabled,
-        'autoBackup': settings.autoBackup,
-        'biometricLogin': settings.biometricLogin,
-        'syncFrequency': settings.syncFrequency.name,
+        'language': settings['language'],
+        'theme': (settings['theme'] as ThemeMode).name,
+        'notificationsEnabled': settings['notificationsEnabled'],
+        'autoBackup': settings['autoBackup'],
+        'biometricLogin': settings['biometricLogin'],
+        'syncFrequency': (settings['syncFrequency'] as DataSyncFrequency).name,
       };
 
       await prefs.setString(_keyAppSettings, jsonEncode(settingsMap));
-      return Success(settings, 'アプリ設定が保存されました');
+      return Result.success('アプリ設定が保存されました', settings);
     } catch (e) {
       return Result.failure('アプリ設定の保存に失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<Result<DataExportResult>> exportAppData() async {
+  Future<Result<Result<dynamic>>> exportAppData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
@@ -185,12 +185,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
       // SharedPreferences에 임시 저장
       await prefs.setString(_keyExportedData, jsonEncode(exportData));
 
-      final result = DataExportResult(
-        success: true,
-        filePath: 'local://exported_data.json',
-        exportedAt: DateTime.now(),
-      );
-      return Success(result, 'アプリデータがエクスポートされました');
+      final exportResult = Result.success('エクスポートが完了しました', {
+        'success': true,
+        'filePath': 'local://exported_data.json',
+        'exportedAt': DateTime.now(),
+      });
+      return Result.success('アプリデータがエクスポートされました', exportResult);
     } catch (e) {
       return Result.failure('アプリデータのエクスポートに失敗しました: ${e.toString()}');
     }
@@ -214,10 +214,10 @@ class SettingsRepositoryImpl implements SettingsRepository {
           await prefs.setString(_keyAppSettings, exportedData['appSettings']);
         }
 
-        return const Success(null, 'アプリデータがインポートされました');
+        return Result.success('アプリデータがインポートされました', null);
       }
 
-      return const Failure('インポートするデータが見つかりません');
+      return Result.failure('インポートするデータが見つかりません');
     } catch (e) {
       return Result.failure('アプリデータのインポートに失敗しました: ${e.toString()}');
     }
@@ -232,7 +232,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       await prefs.remove(_keyCacheSize);
       await prefs.remove(_keyExportedData);
 
-      return const Success(null, 'キャッシュがクリアされました');
+      return Result.success('キャッシュがクリアされました', null);
     } catch (e) {
       return Result.failure('キャッシュのクリアに失敗しました: ${e.toString()}');
     }
@@ -245,14 +245,14 @@ class SettingsRepositoryImpl implements SettingsRepository {
       final cachedSize = prefs.getInt(_keyCacheSize);
 
       if (cachedSize != null) {
-        return Success(cachedSize, 'キャッシュサイズを取得しました');
+        return Result.success('キャッシュサイズを取得しました', cachedSize);
       }
 
       // 기본 캐시 크기 계산 (실제로는 파일 시스템에서 계산)
       const defaultSize = 1024 * 1024 * 5; // 5MB
       await prefs.setInt(_keyCacheSize, defaultSize);
 
-      return const Success(defaultSize, 'デフォルトキャッシュサイズを取得しました');
+      return Result.success('デフォルトキャッシュサイズを取得しました', defaultSize);
     } catch (e) {
       return Result.failure('キャッシュサイズの取得に失敗しました: ${e.toString()}');
     }

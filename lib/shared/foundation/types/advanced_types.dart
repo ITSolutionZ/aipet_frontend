@@ -4,8 +4,8 @@
 /// 엔터프라이즈급 타입 안전성을 제공합니다.
 library;
 
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/foundation/errors/errors.dart';
-import 'package:aipet_frontend/shared/foundation/result/result.dart';
 
 /// 타입 안전한 ID 래퍼
 sealed class TypedId<T> {
@@ -333,20 +333,14 @@ class TypeSafeBuilder<T> {
   /// 빌드
   Result<T> build() {
     if (_errors.isNotEmpty) {
-      return Result.failure(
-        'Validation failed: ${_errors.join(', ')}',
-        code: 'VALIDATION_FAILED',
-      );
+      return Result.failure('Validation failed: ${_errors.join(', ')}');
     }
 
     if (_value == null) {
-      return Result.failure(
-        'Value is required',
-        code: 'REQUIRED_VALUE_MISSING',
-      );
+      return Result.failure('Value is required');
     }
 
-    return Result.success(_value as T);
+    return Result.success('Success', _value as T);
   }
 }
 

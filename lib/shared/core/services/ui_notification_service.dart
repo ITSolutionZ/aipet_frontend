@@ -27,7 +27,7 @@ class UINotificationService {
         content: Row(
           children: [
             const Icon(Icons.check_circle, color: Colors.white, size: 20),
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 message,
@@ -45,7 +45,7 @@ class UINotificationService {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        margin: const const const EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
@@ -62,7 +62,7 @@ class UINotificationService {
         content: Row(
           children: [
             const Icon(Icons.error, color: Colors.white, size: 20),
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 message,
@@ -80,7 +80,7 @@ class UINotificationService {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        margin: const const const EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.all(AppSpacing.md),
         action: SnackBarAction(
           label: '닫기',
           textColor: Colors.white,
@@ -104,7 +104,7 @@ class UINotificationService {
         content: Row(
           children: [
             const Icon(Icons.warning, color: Colors.white, size: 20),
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 message,
@@ -122,7 +122,7 @@ class UINotificationService {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        margin: const const const EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
@@ -139,7 +139,7 @@ class UINotificationService {
         content: Row(
           children: [
             const Icon(Icons.info, color: Colors.white, size: 20),
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 message,
@@ -157,7 +157,7 @@ class UINotificationService {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        margin: const const const EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
@@ -181,7 +181,7 @@ class UINotificationService {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
             ),
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 message,
@@ -199,7 +199,7 @@ class UINotificationService {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        margin: const const const EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
   }

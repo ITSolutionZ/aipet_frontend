@@ -1,5 +1,11 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+
+import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
+import 'package:aipet_frontend/shared/foundation/error_handler/app_error_handler.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 
 class FacilityDetailHeader extends StatelessWidget {
@@ -48,8 +54,8 @@ class FacilityDetailHeader extends StatelessWidget {
           left: 0,
           right: 0,
           child: Container(
-            margin: const const const EdgeInsets.all(AppSpacing.lg),
-            padding: const const const EdgeInsets.all(AppSpacing.lg),
+            margin: const EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -76,7 +82,7 @@ class FacilityDetailHeader extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const const const SizedBox(height: AppSpacing.xs),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         facility.type == FacilityType.grooming
                             ? 'トリミング'
@@ -85,7 +91,7 @@ class FacilityDetailHeader extends StatelessWidget {
                           color: AppColors.pointGray,
                         ),
                       ),
-                      const const const SizedBox(height: AppSpacing.sm),
+                      const SizedBox(height: AppSpacing.sm),
                       Row(
                         children: [
                           Text(
@@ -95,7 +101,7 @@ class FacilityDetailHeader extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const const const SizedBox(width: AppSpacing.xs),
+                          const SizedBox(width: AppSpacing.xs),
                           // 별점
                           Row(
                             children: List.generate(5, (index) {
@@ -121,7 +127,7 @@ class FacilityDetailHeader extends StatelessWidget {
                               }
                             }),
                           ),
-                          const const const SizedBox(width: AppSpacing.xs),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             '${facility.reviewCount} レビュー',
                             style: AppFonts.bodySmall.copyWith(

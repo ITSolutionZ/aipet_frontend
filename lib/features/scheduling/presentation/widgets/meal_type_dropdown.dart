@@ -16,7 +16,7 @@ class MealTypeDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -27,14 +27,14 @@ class MealTypeDropdown extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             DropdownButtonFormField<String>(
               value: selectedMealType,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.medium),
                 ),
-                contentPadding: const const const EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
                 ),

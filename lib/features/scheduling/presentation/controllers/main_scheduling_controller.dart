@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/shared/core/constants/app_texts.dart';
-import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleCardData {
@@ -27,8 +27,8 @@ class MainSchedulingController extends BaseController {
 
   /// 스케줄링 메인 화면의 카드 데이터 로드
   Future<Result<List<ScheduleCardData>>> loadScheduleCards() async {
-    return wrapAsync(
-      () async => [
+    try {
+      final cards = [
         const ScheduleCardData(
           title: AppTexts.feedingSchedule,
           icon: Icons.restaurant,
@@ -57,17 +57,19 @@ class MainSchedulingController extends BaseController {
           route: '/home/vaccines',
           description: AppTexts.healthManagementDescription,
         ),
-      ],
-      successMessage: '스케줄 카드가 로드되었습니다',
-      failureMessage: '스케줄 카드 로드 실패',
-    );
+      ];
+
+      return Result.success('스케줄 카드가 로드되었습니다', cards);
+    } catch (error) {
+      return Result.failure('스케줄 카드 로드 실패: $error');
+    }
   }
 
   /// 카드 탭 처리
   Future<Result<String>> handleCardTap(String route) async {
     try {
       // 네비게이션 전 유효성 검사나 추가 로직 수행 가능
-      return Success(route);
+      return Result.success('네비게이션이 성공했습니다', route);
     } catch (error) {
       return Result.failure('네비게이션 실패: $error');
     }
@@ -90,7 +92,7 @@ class MainSchedulingController extends BaseController {
       // 완료되지 않은 작업만 필터링
       final pendingTasks = tasks.where((task) => !task['completed']).toList();
 
-      return Success({
+      return Result.success('오늘의 할 일이 로드되었습니다', {
         'totalTasks': tasks.length,
         'pendingTasks': pendingTasks.length,
         'completedTasks': tasks.length - pendingTasks.length,
@@ -124,7 +126,7 @@ class MainSchedulingController extends BaseController {
         },
       };
 
-      return Success(stats);
+      return Result.success('스케줄 통계가 로드되었습니다', stats);
     } catch (error) {
       return Result.failure('스케줄 통계 로드 실패: $error');
     }
@@ -161,7 +163,7 @@ class MainSchedulingController extends BaseController {
         });
       }
 
-      return Success(notifications);
+      return Result.success('긴급 알림이 확인되었습니다', notifications);
     } catch (error) {
       return Result.failure('긴급 알림 확인 실패: $error');
     }
@@ -180,7 +182,7 @@ class MainSchedulingController extends BaseController {
         'status': 'success',
       };
 
-      return Success(syncResult);
+      return Result.success('스케줄 동기화가 완료되었습니다', syncResult);
     } catch (error) {
       return Result.failure('스케줄 동기화 실패: $error');
     }
@@ -258,7 +260,10 @@ class MainSchedulingController extends BaseController {
       // Mock complete task logic
       await Future.delayed(const Duration(milliseconds: 300));
 
-      return Success({'taskId': taskId, 'completedAt': DateTime.now()});
+      return Result.success('작업이 완료되었습니다', {
+        'completedAt': DateTime.now(),
+        'taskId': taskId,
+      });
     } catch (error) {
       return Result.failure('작업 완료 처리 실패: $error');
     }
@@ -275,7 +280,7 @@ class MainSchedulingController extends BaseController {
 
       final newTime = DateTime.now().add(delay);
 
-      return Success({
+      return Result.success('작업이 연기되었습니다', {
         'taskId': taskId,
         'newScheduledTime': newTime,
         'delay': delay,
@@ -304,7 +309,7 @@ class MainSchedulingController extends BaseController {
         'achievements': ['今週は毎日夕食を時間通りに与えました', '体重が理想的な範囲を維持しています'],
       };
 
-      return Success(summary);
+      return Result.success('주간 요약이 생성되었습니다', summary);
     } catch (error) {
       return Result.failure('주간 요약 생성 실패: $error');
     }

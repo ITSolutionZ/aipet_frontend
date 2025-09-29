@@ -29,9 +29,7 @@ class DialogUtils {
   }
 
   /// 로딩 다이얼로그 표시
-  static Future<void> showLoading({
-    String? message,
-  }) {
+  static Future<void> showLoading({String? message}) {
     // Implementation will be added when needed
     return Future.value();
   }

@@ -184,6 +184,6 @@ class AiMockDataService {
 
   /// API 지연 시뮬레이션
   static Future<void> simulateApiDelay({int seconds = 1}) async {
-    await Future.delayed(const Duration(seconds: seconds));
+    await Future.delayed(Duration(seconds: seconds));
   }
 }

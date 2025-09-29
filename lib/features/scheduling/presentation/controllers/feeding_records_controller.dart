@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
-import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/mock_data_service.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -10,60 +10,63 @@ class FeedingRecordsController extends BaseController {
 
   /// 급여 기록 데이터 로드
   Future<Result<List<dynamic>>> loadFeedingRecords() async {
-    return wrapAsync(
-      () async => MockDataService.getMockFeedingRecords(),
-      successMessage: '급여 기록이 로드되었습니다',
-      failureMessage: '급여 기록 로드 실패',
-    );
+    try {
+      final records = MockDataService.getMockFeedingRecords();
+      return Result.success('급여 기록이 로드되었습니다', records);
+    } catch (error) {
+      return Result.failure('급여 기록 로드 실패: $error');
+    }
   }
 
   /// 급여 통계 데이터 로드
   Future<Result<Map<String, dynamic>>> loadFeedingStatistics() async {
-    return wrapAsync(
-      () async => MockDataService.getMockFeedingStatistics(),
-      successMessage: '급여 통계가 로드되었습니다',
-      failureMessage: '급여 통계 로드 실패',
-    );
+    try {
+      final statistics = MockDataService.getMockFeedingStatistics();
+      return Result.success('급여 통계가 로드되었습니다', statistics);
+    } catch (error) {
+      return Result.failure('급여 통계 로드 실패: $error');
+    }
   }
 
   /// 차트 데이터 생성
   Result<Map<String, dynamic>> generateChartData(List<dynamic> feedingRecords) {
-    return wrapSync(
-      () {
-        final now = DateTime.now();
-        final chartData = <FlSpot>[];
-        final targetData = <FlSpot>[];
+    try {
+      final now = DateTime.now();
+      final chartData = <FlSpot>[];
+      final targetData = <FlSpot>[];
 
-        for (int i = 6; i >= 0; i--) {
-          final date = DateTime(now.year, now.month, now.day - i);
+      for (int i = 6; i >= 0; i--) {
+        final date = DateTime(now.year, now.month, now.day - i);
 
-          final dayRecords = feedingRecords.where((record) {
-            final recordDate = DateTime(
-              record.fedTime.year,
-              record.fedTime.month,
-              record.fedTime.day,
-            );
-            return recordDate.year == date.year &&
-                recordDate.month == date.month &&
-                recordDate.day == date.day;
-          }).toList();
-
-          final actualAmount = dayRecords.fold<double>(
-            0.0,
-            (sum, record) => sum + record.amount,
+        final dayRecords = feedingRecords.where((record) {
+          final recordDate = DateTime(
+            record.fedTime.year,
+            record.fedTime.month,
+            record.fedTime.day,
           );
+          return recordDate.year == date.year &&
+              recordDate.month == date.month &&
+              recordDate.day == date.day;
+        }).toList();
 
-          const targetAmount = 300.0; // 목표량
+        final actualAmount = dayRecords.fold<double>(
+          0.0,
+          (sum, record) => sum + record.amount,
+        );
 
-          chartData.add(FlSpot((6 - i).toDouble(), actualAmount));
-          targetData.add(FlSpot((6 - i).toDouble(), targetAmount));
-        }
+        const targetAmount = 300.0; // 목표량
 
-        return {'chartData': chartData, 'targetData': targetData};
-      },
-      successMessage: '차트 데이터가 생성되었습니다',
-      failureMessage: '차트 데이터 생성 실패',
-    );
+        chartData.add(FlSpot((6 - i).toDouble(), actualAmount));
+        targetData.add(FlSpot((6 - i).toDouble(), targetAmount));
+      }
+
+      return Result.success('차트 데이터가 생성되었습니다', {
+        'chartData': chartData,
+        'targetData': targetData,
+      });
+    } catch (error) {
+      return Result.failure('차트 데이터 생성 실패: $error');
+    }
   }
 
   /// 차트 위젯 생성
@@ -289,7 +292,7 @@ class FeedingRecordsController extends BaseController {
         'status': 'completed',
       };
 
-      return Success(record);
+      return Result.success('급여 기록이 추가되었습니다', record);
     } catch (error) {
       return Result.failure('급여 기록 추가 실패: $error');
     }
@@ -300,7 +303,7 @@ class FeedingRecordsController extends BaseController {
     try {
       // Mock delete logic
       await Future.delayed(const Duration(milliseconds: 300));
-      return const Success(null);
+      return Result.success('급여 기록이 삭제되었습니다', null);
     } catch (error) {
       return Result.failure('급여 기록 삭제 실패: $error');
     }
@@ -329,7 +332,7 @@ class FeedingRecordsController extends BaseController {
         'status': 'completed',
       };
 
-      return Success(updatedRecord);
+      return Result.success('급여 기록이 수정되었습니다', updatedRecord);
     } catch (error) {
       return Result.failure('급여 기록 수정 실패: $error');
     }

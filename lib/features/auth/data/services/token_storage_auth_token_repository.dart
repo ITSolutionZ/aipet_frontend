@@ -70,7 +70,7 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
         final authToken = AuthToken(
           accessToken: accessToken,
           refreshToken: newRefreshToken ?? refreshToken,
-          expiresAt: DateTime.now().add(const Duration(seconds: expiresIn)),
+          expiresAt: DateTime.now().add(Duration(seconds: expiresIn)),
           tokenType: data['tokenType'] as String? ?? 'Bearer',
         );
 

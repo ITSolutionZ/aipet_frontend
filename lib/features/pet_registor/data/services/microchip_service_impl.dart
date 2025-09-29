@@ -11,18 +11,18 @@ class MicrochipServiceImpl implements MicrochipService {
       // 실제 구현에서는 API 호출을 통해 유효성 검증
       // 현재는 로컬 검증만 수행
       if (microchipNumber.isEmpty || microchipNumber.length != 15) {
-        return const Failure('마이크로칩 번호는 15자리여야 합니다');
+        return Result.failure('마이크로칩 번호는 15자리여야 합니다');
       }
 
       // 숫자만 포함하는지 확인
       final isNumeric = RegExp(r'^[0-9]+$').hasMatch(microchipNumber);
       if (!isNumeric) {
-        return const Failure('마이크로칩 번호는 숫자만 포함해야 합니다');
+        return Result.failure('마이크로칩 번호는 숫자만 포함해야 합니다');
       }
 
       // TODO: 실제 마이크로칩 데이터베이스와 연동하여 검증
       // 현재는 항상 true 반환 (기본 검증만 수행)
-      return const Success(true);
+      return Result.success('마이크로칩 번호가 유효합니다', true);
     } catch (error) {
       return Result.failure('마이크로칩 번호 검증 중 오류가 발생했습니다: ${error.toString()}');
     }
@@ -35,14 +35,16 @@ class MicrochipServiceImpl implements MicrochipService {
     try {
       // TODO: 실제 마이크로칩 데이터베이스에서 펫 정보 조회
       // 현재는 Mock 데이터 반환
-      return Success({
+      return Result.success('마이크로칩 번호로 펫 정보를 성공적으로 조회했습니다', {
         'microchipNumber': microchipNumber,
         'petName': 'Unknown Pet',
         'ownerName': 'Unknown Owner',
         'registrationDate': DateTime.now().toIso8601String(),
       });
     } catch (error) {
-      return Result.failure('마이크로칩으로 펫 정보 조회 중 오류가 발생했습니다: ${error.toString()}');
+      return Result.failure(
+        '마이크로칩으로 펫 정보 조회 중 오류가 발생했습니다: ${error.toString()}',
+      );
     }
   }
 
@@ -53,7 +55,7 @@ class MicrochipServiceImpl implements MicrochipService {
   ) async {
     try {
       // TODO: 실제 마이크로칩 등록 API 호출
-      return const Success(null, '마이크로칩 번호가 성공적으로 등록되었습니다');
+      return Result.success('마이크로칩 번호가 성공적으로 등록되었습니다', null);
     } catch (error) {
       return Result.failure('마이크로칩 번호 등록 중 오류가 발생했습니다: ${error.toString()}');
     }

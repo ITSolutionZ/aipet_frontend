@@ -89,7 +89,7 @@ class WalkMockService extends BaseMockService {
     return {
       'walks': todayRecords.length,
       'totalDistance': totalDistance,
-      'totalDuration': const Duration(minutes: totalDuration),
+      'totalDuration': Duration(minutes: totalDuration),
       'totalCalories': todayRecords.fold<int>(
         0,
         (sum, record) => sum + (record['calories'] as int),

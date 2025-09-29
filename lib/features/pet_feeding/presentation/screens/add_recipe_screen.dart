@@ -53,11 +53,11 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const const const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
             // 기본 정보 섹션
             _buildSectionTitle('基本情報'),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
 
             // 레시피 이름
             CommonFormPatterns.buildTextField(
@@ -70,7 +70,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                 return null;
               },
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
 
             // 레시피 설명
             CommonFormPatterns.buildTextField(
@@ -84,7 +84,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                 return null;
               },
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
 
             // 조리 시간과 난이도
             Row(
@@ -101,7 +101,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                     },
                   ),
                 ),
-                const const const SizedBox(width: AppSpacing.md),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: CommonFormPatterns.buildDropdownField<String>(
                     label: '難易度 *',
@@ -117,7 +117,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                 ),
               ],
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
 
             // 인분 수
             CommonFormPatterns.buildNumberField(
@@ -126,11 +126,11 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
               min: 1,
               max: 20,
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 재료 섹션
             _buildSectionTitle('材料'),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
 
             // 재료 추가
             Row(
@@ -141,19 +141,19 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                     label: '材料を追加',
                   ),
                 ),
-                const const const SizedBox(width: AppSpacing.sm),
+                const SizedBox(width: AppSpacing.sm),
                 ElevatedButton(
                   onPressed: _addIngredient,
                   child: const Text('追加'),
                 ),
               ],
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
 
             // 재료 목록
             if (_ingredients.isNotEmpty) ...[
               Container(
-                padding: const const const EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -168,7 +168,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.sm),
                     ..._ingredients.asMap().entries.map((entry) {
                       final index = entry.key;
                       final ingredient = entry.value;
@@ -186,12 +186,12 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                   ],
                 ),
               ),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
             ],
 
             // 조리 방법 섹션
             _buildSectionTitle('調理手順'),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
 
             // 조리 방법 추가
             Row(
@@ -203,19 +203,19 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                     maxLines: 2,
                   ),
                 ),
-                const const const SizedBox(width: AppSpacing.sm),
+                const SizedBox(width: AppSpacing.sm),
                 ElevatedButton(
                   onPressed: _addInstruction,
                   child: const Text('追加'),
                 ),
               ],
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
 
             // 조리 방법 목록
             if (_instructions.isNotEmpty) ...[
               Container(
-                padding: const const const EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -230,7 +230,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.sm),
                     ..._instructions.asMap().entries.map((entry) {
                       final index = entry.key;
                       final instruction = entry.value;
@@ -259,7 +259,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                   ],
                 ),
               ),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
             ],
 
             // 저장 버튼
@@ -270,7 +270,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBlue,
                   foregroundColor: Colors.white,
-                  padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.large),
                   ),

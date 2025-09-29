@@ -1,5 +1,8 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 
 class FacilityServicesSection extends StatelessWidget {
@@ -27,14 +30,14 @@ class FacilityServicesSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
 
         // 서비스 목록
         Column(
           children: services.map((service) {
             return Container(
-              margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
-              padding: const const const EdgeInsets.all(AppSpacing.md),
+              margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+              padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(AppRadius.medium),

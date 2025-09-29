@@ -12,7 +12,7 @@ class ProfileEditController {
   double? editingWeight;
   String? selectedImagePath;
 
-  const ProfileEditController({
+  ProfileEditController({
     required this.nameController,
     required this.appearanceController,
     required this.weightController,

@@ -31,13 +31,13 @@ class FormFieldWidget extends StatelessWidget {
           ),
         ),
         if (subtitle != null) ...[
-          const const const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             subtitle!,
             style: TextStyle(fontSize: 12, color: Colors.grey[600]),
           ),
         ],
-        const const const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppRadius.small),
@@ -52,7 +52,7 @@ class FormFieldWidget extends StatelessWidget {
             validator: validator,
             decoration: const InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(
+              contentPadding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,
                 vertical: AppSpacing.md,
               ),

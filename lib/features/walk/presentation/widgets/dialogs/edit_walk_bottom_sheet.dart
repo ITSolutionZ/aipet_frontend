@@ -53,85 +53,89 @@ class EditWalkBottomSheet extends ConsumerWidget {
           left: AppSpacing.lg,
           right: AppSpacing.lg,
           top: AppSpacing.md,
-          bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.lg,
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const const const SizedBox(height: AppSpacing.lg),
-              Text(
-                '散歩記録を編集',
-                style: AppFonts.point(
-                  fontSize: AppFonts.xxl,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const const const SizedBox(height: AppSpacing.md),
-              WalkPetTag(petName: walkRecord.petName),
-              const const const SizedBox(height: AppSpacing.xl),
-              WalkEditForm(
-                walkRecord: walkRecord,
-                onSave: (updatedRecord) =>
-                    _updateWalk(context, ref, updatedRecord),
-                onCancel: () => context.pop(),
-              ),
-              const const const SizedBox(height: AppSpacing.lg),
-              WalkCoManagerSelector(
-                selectedCoManagerId: selectedCoManagerId,
-                onChanged: (managerId) {
-                  ref.read(selectedCoManagerProvider.notifier).state =
-                      managerId;
-                },
-              ),
-              const const const SizedBox(height: AppSpacing.xl),
-              Text(
-                '散歩の詳細',
-                style: AppFonts.point(
-                  fontSize: AppFonts.lg,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[700],
-                ),
-              ),
-              const const const SizedBox(height: AppSpacing.md),
-              WalkDetailInfoCard(walkRecord: walkRecord),
-              const const const SizedBox(height: AppSpacing.lg),
-              Container(
-                padding: const const const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: AppColors.pointBlue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                  border: Border.all(
-                    color: AppColors.pointBlue.withValues(alpha: 0.2),
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.lg,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.check_circle,
-                      size: 16,
-                      color: AppColors.pointBlue,
+                const SizedBox(height: AppSpacing.lg),
+                Text(
+                  '散歩記録を編集',
+                  style: AppFonts.point(
+                    fontSize: AppFonts.xxl,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                WalkPetTag(petName: walkRecord.petName),
+                const SizedBox(height: AppSpacing.xl),
+                WalkEditForm(
+                  walkRecord: walkRecord,
+                  onSave: (updatedRecord) =>
+                      _updateWalk(context, ref, updatedRecord),
+                  onCancel: () => context.pop(),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                WalkCoManagerSelector(
+                  selectedCoManagerId: selectedCoManagerId,
+                  onChanged: (managerId) {
+                    ref.read(selectedCoManagerProvider.notifier).state =
+                        managerId;
+                  },
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                Text(
+                  '散歩の詳細',
+                  style: AppFonts.point(
+                    fontSize: AppFonts.lg,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                WalkDetailInfoCard(walkRecord: walkRecord),
+                const SizedBox(height: AppSpacing.lg),
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.pointBlue.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppRadius.medium),
+                    border: Border.all(
+                      color: AppColors.pointBlue.withValues(alpha: 0.2),
                     ),
-                    const const const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      '記録日時: ${_formatDate(walkRecord.createdAt)}',
-                      style: AppFonts.base(
-                        fontSize: AppFonts.sm,
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.check_circle,
+                        size: 16,
                         color: AppColors.pointBlue,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        '記録日時: ${_formatDate(walkRecord.createdAt)}',
+                        style: AppFonts.base(
+                          fontSize: AppFonts.sm,
+                          color: AppColors.pointBlue,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

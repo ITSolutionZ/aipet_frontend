@@ -34,14 +34,14 @@ class YouTubeVideoList extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const const const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       itemCount: filteredVideos.length,
       itemBuilder: (context, index) {
         final video = filteredVideos[index];
         return RepaintBoundary(
           key: ValueKey('youtube_video_${video.id}_$index'),
           child: Padding(
-            padding: const const const EdgeInsets.only(bottom: AppSpacing.md),
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
             child: YouTubeVideoCard(
               key: ValueKey('youtube_card_${video.id}'),
               video: video,

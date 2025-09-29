@@ -32,9 +32,9 @@ class WalkStatistics {
     return WalkStatistics(
       totalWalks: json['totalWalks'] as int,
       totalDistance: (json['totalDistance'] as num).toDouble(),
-      totalDuration: const Duration(milliseconds: json['totalDuration'] as int),
+      totalDuration: Duration(milliseconds: json['totalDuration'] as int),
       averageDistance: (json['averageDistance'] as num).toDouble(),
-      averageDuration: const Duration(milliseconds: json['averageDuration'] as int),
+      averageDuration: Duration(milliseconds: json['averageDuration'] as int),
       lastWalkDate: json['lastWalkDate'] != null
           ? DateTime.parse(json['lastWalkDate'] as String)
           : null,

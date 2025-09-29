@@ -48,21 +48,21 @@ class WateringAnalysisScreen extends ConsumerWidget {
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientAppBar(title: '給水分析'),
       body: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 기간 선택
             _buildPeriodSelector(state, ref),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 분석 차트
             _buildAnalysisChart(),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 통계 요약
             _buildStatsSummary(),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 상세 분석
             _buildDetailedAnalysis(),
@@ -76,7 +76,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
   Widget _buildPeriodSelector(WateringAnalysisState state, WidgetRef ref) {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -87,13 +87,13 @@ class WateringAnalysisScreen extends ConsumerWidget {
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: state.periods.map((period) {
                 final isSelected = state.selectedPeriod == period;
                 return Expanded(
                   child: Padding(
-                    padding: const const const EdgeInsets.only(right: AppSpacing.xs),
+                    padding: const EdgeInsets.only(right: AppSpacing.xs),
                     child: FilterChip(
                       label: Text(period),
                       selected: isSelected,
@@ -129,7 +129,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
   Widget _buildAnalysisChart() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -140,7 +140,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
             Container(
               height: 200,
               decoration: BoxDecoration(
@@ -155,7 +155,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.bar_chart, size: 48, color: AppColors.pointGray),
-                    SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'チャート表示エリア',
                       style: TextStyle(
@@ -184,7 +184,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
   Widget _buildStatsSummary() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -195,7 +195,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 Expanded(
@@ -216,7 +216,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 Expanded(
@@ -251,8 +251,8 @@ class WateringAnalysisScreen extends ConsumerWidget {
     Color color,
   ) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.md),
-      margin: const const const EdgeInsets.all(AppSpacing.xs),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      margin: const EdgeInsets.all(AppSpacing.xs),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
@@ -260,7 +260,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
       child: Column(
         children: [
           Icon(icon, color: color, size: 24),
-          const const const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             value,
             style: AppFonts.titleMedium.copyWith(
@@ -282,7 +282,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
   Widget _buildDetailedAnalysis() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -293,21 +293,21 @@ class WateringAnalysisScreen extends ConsumerWidget {
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             _buildAnalysisItem(
               '給水パターン',
               '定期的な給水が習慣化されています。',
               Icons.schedule,
               AppColors.pointGreen,
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             _buildAnalysisItem(
               '推奨事項',
               '夜間の給水量を少し増やすことをお勧めします。',
               Icons.lightbulb,
               AppColors.pointBlue,
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             _buildAnalysisItem(
               '注意点',
               '特に問題はありません。',
@@ -331,14 +331,14 @@ class WateringAnalysisScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const const const EdgeInsets.all(AppSpacing.xs),
+          padding: const EdgeInsets.all(AppSpacing.xs),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 20),
         ),
-        const const const SizedBox(width: AppSpacing.sm),
+        const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

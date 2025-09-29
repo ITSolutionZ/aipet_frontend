@@ -37,7 +37,7 @@ class AppCard extends StatelessWidget {
   /// 기본 카드 (가장 일반적인 사용)
   factory AppCard({
     required Widget child,
-    EdgeInsetsGeometry? padding = const const EdgeInsets.all(AppSpacing.md),
+    EdgeInsetsGeometry? padding = const EdgeInsets.all(AppSpacing.md),
     EdgeInsetsGeometry? margin,
     VoidCallback? onTap,
   }) {
@@ -55,7 +55,7 @@ class AppCard extends StatelessWidget {
   /// 강조된 카드 (그림자 있음)
   factory AppCard.elevated({
     required Widget child,
-    EdgeInsetsGeometry? padding = const const EdgeInsets.all(AppSpacing.md),
+    EdgeInsetsGeometry? padding = const EdgeInsets.all(AppSpacing.md),
     EdgeInsetsGeometry? margin,
     double elevation = 4,
     VoidCallback? onTap,
@@ -74,7 +74,7 @@ class AppCard extends StatelessWidget {
   /// 테두리가 있는 카드
   factory AppCard.outlined({
     required Widget child,
-    EdgeInsetsGeometry? padding = const const EdgeInsets.all(AppSpacing.md),
+    EdgeInsetsGeometry? padding = const EdgeInsets.all(AppSpacing.md),
     EdgeInsetsGeometry? margin,
     Color borderColor = AppColors.borderGray,
     VoidCallback? onTap,
@@ -94,7 +94,7 @@ class AppCard extends StatelessWidget {
   /// 플랫 카드 (그림자 없음)
   factory AppCard.flat({
     required Widget child,
-    EdgeInsetsGeometry? padding = const const EdgeInsets.all(AppSpacing.md),
+    EdgeInsetsGeometry? padding = const EdgeInsets.all(AppSpacing.md),
     EdgeInsetsGeometry? margin,
     Color? backgroundColor = AppColors.cardBackgroundGray,
     VoidCallback? onTap,
@@ -114,7 +114,7 @@ class AppCard extends StatelessWidget {
   factory AppCard.selectable({
     required Widget child,
     required bool isSelected,
-    EdgeInsetsGeometry? padding = const const EdgeInsets.all(AppSpacing.md),
+    EdgeInsetsGeometry? padding = const EdgeInsets.all(AppSpacing.md),
     EdgeInsetsGeometry? margin,
     VoidCallback? onTap,
   }) {
@@ -186,7 +186,7 @@ class InfoCard extends StatelessWidget {
         children: [
           if (leading != null) ...[
             leading!,
-            const const const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.md),
           ],
           Expanded(
             child: Column(
@@ -204,7 +204,7 @@ class InfoCard extends StatelessWidget {
             ),
           ),
           if (trailing != null) ...[
-            const const const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.md),
             trailing!,
           ],
         ],
@@ -248,7 +248,7 @@ class SummaryCard extends StatelessWidget {
               if (icon != null) Icon(icon, color: accentColor, size: 20),
             ],
           ),
-          const const const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             value,
             style: AppTextStyles.headlineMedium.copyWith(
@@ -257,7 +257,7 @@ class SummaryCard extends StatelessWidget {
             ),
           ),
           if (subtitle != null) ...[
-            const const const SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               subtitle!,
               style: AppTextStyles.bodySmall.copyWith(

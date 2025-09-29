@@ -4,7 +4,7 @@
 /// Circuit Breaker, Retry with Backoff, Fallback 등 엔터프라이즈급 패턴을 구현합니다.
 library;
 
-import 'package:aipet_frontend/shared/foundation/result/result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 
 /// Future를 Result로 변환하는 확장 메서드
@@ -12,9 +12,9 @@ extension FutureToResult<T> on Future<T> {
   Future<Result<T>> toResult() async {
     try {
       final result = await this;
-      return Result.success(result);
+      return Result.success('Success', result);
     } catch (error) {
-      return Result.failure<T>(error.toString());
+      return Result.failure(error.toString());
     }
   }
 }
@@ -30,7 +30,7 @@ class CircuitBreaker {
   int _failureCount = 0;
   DateTime? _nextAttemptTime;
 
-  const CircuitBreaker({
+  CircuitBreaker({
     required this.name,
     this.failureThreshold = 5,
     this.timeout = const Duration(seconds: 30),
@@ -38,13 +38,12 @@ class CircuitBreaker {
   });
 
   /// Circuit Breaker를 통한 작업 실행
-  Future<Result<T>> execute<T>(Future<T> Function() operation) async {
+  Future<Result> execute<T>(Future<T> Function() operation) async {
     if (_state == CircuitState.open) {
       if (_nextAttemptTime != null &&
           DateTime.now().isBefore(_nextAttemptTime!)) {
         return Result.failure(
           'Circuit breaker is open. Next attempt at $_nextAttemptTime',
-          code: 'CIRCUIT_BREAKER_OPEN',
         );
       }
       _state = CircuitState.halfOpen;
@@ -53,7 +52,7 @@ class CircuitBreaker {
     try {
       final result = await operation().timeout(timeout);
       _onSuccess();
-      return Result.success(result);
+      return Result.success('Success', result);
     } catch (e) {
       _onFailure();
       return Result.fromException(Exception(e.toString()));
@@ -98,7 +97,7 @@ class ExponentialBackoffRetry {
   });
 
   /// 지수 백오프로 재시도 실행
-  Future<Result<T>> execute<T>(Future<T> Function() operation) async {
+  Future<Result> execute<T>(Future<T> Function() operation) async {
     int attempt = 0;
     Duration delay = initialDelay;
     Exception? lastException;
@@ -106,7 +105,7 @@ class ExponentialBackoffRetry {
     while (attempt <= maxRetries) {
       try {
         final result = await operation();
-        return Result.success(result);
+        return Result.success('Success', result);
       } catch (e) {
         lastException = e is Exception ? e : Exception(e.toString());
         attempt++;
@@ -128,7 +127,7 @@ class ExponentialBackoffRetry {
       }
     }
 
-    return Result.fromException(lastException!);
+    return Result.fromException(Exception(lastException!.toString()));
   }
 }
 
@@ -145,48 +144,46 @@ class FallbackStrategy {
   });
 
   /// Fallback 작업 실행
-  Future<Result<T>> execute<T>(
+  Future<Result> execute<T>(
     Future<T> Function() primaryOperation,
     Future<T> Function() fallbackOperation,
   ) async {
     try {
       final result = await primaryOperation().timeout(timeout);
-      return Result.success(result);
+      return Result.success('Success', result);
     } catch (e) {
       try {
         final fallbackResult = await fallbackOperation().timeout(timeout);
         return Result.success(
-          fallbackResult,
           'Fallback operation succeeded: $name',
+          fallbackResult,
         );
       } catch (fallbackError) {
         return Result.failure(
           'Both primary and fallback operations failed. Primary: ${e.toString()}, Fallback: ${fallbackError.toString()}',
-          code: 'FALLBACK_FAILED',
         );
       }
     }
   }
 
   /// 동기 Fallback 작업 실행
-  Result<T> executeSync<T>(
+  Result executeSync<T>(
     T Function() primaryOperation,
     T Function() fallbackOperation,
   ) {
     try {
       final result = primaryOperation();
-      return Result.success(result);
+      return Result.success('Success', result);
     } catch (e) {
       try {
         final fallbackResult = fallbackOperation();
         return Result.success(
-          fallbackResult,
           'Fallback operation succeeded: $name',
+          fallbackResult,
         );
       } catch (fallbackError) {
         return Result.failure(
           'Both primary and fallback operations failed. Primary: ${e.toString()}, Fallback: ${fallbackError.toString()}',
-          code: 'FALLBACK_FAILED',
         );
       }
     }
@@ -215,7 +212,7 @@ class AdvancedErrorRecoveryManager extends BaseLoggingService {
   }
 
   /// Circuit Breaker를 통한 작업 실행
-  Future<Result<T>> executeWithCircuitBreaker<T>(
+  Future<Result> executeWithCircuitBreaker<T>(
     String circuitBreakerName,
     Future<T> Function() operation,
   ) async {
@@ -238,7 +235,7 @@ class AdvancedErrorRecoveryManager extends BaseLoggingService {
   }
 
   /// 지수 백오프로 작업 실행
-  Future<Result<T>> executeWithRetry<T>(
+  Future<Result> executeWithRetry<T>(
     String retryStrategyName,
     Future<T> Function() operation,
   ) async {
@@ -258,7 +255,7 @@ class AdvancedErrorRecoveryManager extends BaseLoggingService {
   }
 
   /// Fallback으로 작업 실행
-  Future<Result<T>> executeWithFallback<T>(
+  Future<Result> executeWithFallback<T>(
     String fallbackStrategyName,
     Future<T> Function() primaryOperation,
     Future<T> Function() fallbackOperation,
@@ -273,7 +270,7 @@ class AdvancedErrorRecoveryManager extends BaseLoggingService {
   }
 
   /// 복합 전략 실행 (Circuit Breaker + Retry + Fallback)
-  Future<Result<T>> executeWithFullRecovery<T>({
+  Future<Result> executeWithFullRecovery<T>({
     required String circuitBreakerName,
     required String retryStrategyName,
     required String fallbackStrategyName,
@@ -333,7 +330,7 @@ class AdvancedErrorRecoveryManager extends BaseLoggingService {
 /// 고급 에러 복구 확장 메서드들
 extension AdvancedErrorRecoveryExtensions<T> on Future<T> Function() {
   /// Circuit Breaker와 함께 실행
-  Future<Result<T>> withCircuitBreaker(String circuitBreakerName) async {
+  Future<Result> withCircuitBreaker(String circuitBreakerName) async {
     return AdvancedErrorRecoveryManager.instance.executeWithCircuitBreaker(
       circuitBreakerName,
       this,
@@ -341,26 +338,30 @@ extension AdvancedErrorRecoveryExtensions<T> on Future<T> Function() {
   }
 
   /// 지수 백오프 재시도와 함께 실행
-  Future<Result<T>> withExponentialBackoff(String retryStrategyName) async {
+  Future<Result> withExponentialBackoff(String retryStrategyName) async {
     return AdvancedErrorRecoveryManager.instance.executeWithRetry(
       retryStrategyName,
       this,
     );
   }
 
-  /// Fallback과 함께 실행 (임시로 주석 처리 - 타입 에러로 인한 빌드 실패 방지)
-  // Future<Result<T>> withFallback<T>(
-  //   String fallbackStrategyName,
-  //   Future<T> Function() fallbackOperation,
-  // ) async {
-  //   // TODO: 타입 에러 수정 후 재활성화
-  // }
+  /// Fallback과 함께 실행
+  Future<Result> withFallback<T>(
+    String fallbackStrategyName,
+    Future<T> Function() fallbackOperation,
+  ) async {
+    return AdvancedErrorRecoveryManager.instance.executeWithFallback(
+      fallbackStrategyName,
+      this,
+      fallbackOperation,
+    );
+  }
 }
 
 /// 동기 함수 고급 에러 복구 확장 메서드들
 extension SyncAdvancedErrorRecoveryExtensions<T> on T Function() {
   /// 동기 Fallback과 함께 실행
-  Result<T> withFallbackSync(
+  Result withFallbackSync(
     String fallbackStrategyName,
     T Function() fallbackOperation,
   ) {
@@ -370,9 +371,9 @@ extension SyncAdvancedErrorRecoveryExtensions<T> on T Function() {
     if (fallbackStrategy == null) {
       try {
         final result = this();
-        return Result.success(result);
+        return Result.success('Success', result);
       } catch (error) {
-        return Result.failure<T>(error.toString());
+        return Result.failure(error.toString());
       }
     }
 

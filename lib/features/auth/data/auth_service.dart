@@ -82,19 +82,14 @@ class AuthService {
       if (result.isSuccess && result.dataOrNull != null) {
         // 백엔드 토큰 저장
         await _saveBackendTokenFromUser(result.dataOrNull!);
-        return Result.success(
-          '$provider ログインが完了しました',
-          result.dataOrNull!,
-        );
+        return Result.success('$provider ログインが完了しました', result.dataOrNull!);
       } else {
         return Result.failure(
           '$provider ログインに失敗しました: ${result.error?.toString()}',
         );
       }
     } catch (error) {
-      return Result.failure(
-        '$provider ログインに失敗しました: ${error.toString()}',
-      );
+      return Result.failure('$provider ログインに失敗しました: ${error.toString()}');
     }
   }
 
@@ -135,9 +130,7 @@ class AuthService {
       await _repository.sendPasswordResetEmail(email);
       return Result.success('パスワードリセットメールを送信しました', null);
     } catch (error) {
-      return Result.failure(
-        'パスワードリセットメールの送信に失敗しました: ${error.toString()}',
-      );
+      return Result.failure('パスワードリセットメールの送信に失敗しました: ${error.toString()}');
     }
   }
 

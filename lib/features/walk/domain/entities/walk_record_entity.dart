@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 
 /// 산책 기록 엔티티
@@ -82,7 +83,10 @@ class WalkRecordEntity {
 
     final double a =
         math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(lat1Rad) * math.cos(lat2Rad) * math.sin(dLon / 2) * math.sin(dLon / 2);
+        math.cos(lat1Rad) *
+            math.cos(lat2Rad) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     final double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
     return earthRadius * c;
@@ -100,7 +104,11 @@ class WalkRecordEntity {
   }
 
   /// 펫 이미지 경로 (기본값)
-  String? get petImage => null; // TODO: 펫 이미지 시스템 구현 시 수정
+  String? get petImage {
+    // 펫 이미지 시스템에서 펫 ID로 이미지 조회
+    // 현재는 기본 이미지 반환, 추후 펫 프로필 서비스 연동 예정
+    return 'assets/images/pets/default_pet.png';
+  }
 
   /// 시간 문자열 (HH:MM 형식)
   String get timeString {
@@ -138,10 +146,18 @@ class WalkRecordEntity {
   }
 
   /// 소유자 이름 (기본값)
-  String get ownerName => '소유자'; // TODO: 실제 소유자 정보 연동
+  String get ownerName {
+    // 실제 소유자 정보 연동 (사용자 프로필 서비스에서 조회)
+    // 현재는 기본값 반환, 추후 사용자 프로필 서비스 연동 예정
+    return 'ペットの飼い主';
+  }
 
   /// 소유자 아바타 (기본값)
-  String? get ownerAvatar => null; // TODO: 실제 소유자 아바타 연동
+  String? get ownerAvatar {
+    // 실제 소유자 아바타 연동 (사용자 프로필 서비스에서 조회)
+    // 현재는 기본 아바타 반환, 추후 사용자 프로필 서비스 연동 예정
+    return 'assets/images/avatars/default_avatar.png';
+  }
 
   /// JSON에서 엔티티 생성
   factory WalkRecordEntity.fromJson(Map<String, dynamic> json) {
@@ -155,17 +171,19 @@ class WalkRecordEntity {
       endTime: json['endTime'] is DateTime
           ? json['endTime'] as DateTime?
           : json['endTime'] != null
-              ? DateTime.parse(json['endTime'] as String)
-              : null,
+          ? DateTime.parse(json['endTime'] as String)
+          : null,
       duration: json['duration'] is Duration
           ? json['duration'] as Duration?
           : json['duration'] != null
-              ? const Duration(milliseconds: json['duration'] as int)
-              : null,
+          ? Duration(milliseconds: json['duration'] as int)
+          : null,
       distance: json['distance'] as double?,
-      route: (json['route'] as List<dynamic>?)
-          ?.map((e) => WalkLocation.fromJson(e as Map<String, dynamic>))
-          .toList() ?? [],
+      route:
+          (json['route'] as List<dynamic>?)
+              ?.map((e) => WalkLocation.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
       notes: json['notes'] as String?,
       status: json['status'] is WalkStatus
           ? json['status'] as WalkStatus

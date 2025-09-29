@@ -80,13 +80,13 @@ ClearAppCacheUseCase clearAppCacheUseCase(Ref ref) {
 @riverpod
 class UserProfileNotifier extends _$UserProfileNotifier {
   @override
-  Future<UserProfileEntity> build() async {
+  Future<Map<String, dynamic>> build() async {
     final useCase = ref.watch(getUserProfileUseCaseProvider);
     final result = await useCase();
     if (result.isSuccess) {
       return result.dataOrNull!;
     } else {
-      throw Exception(result.errorOrNull);
+      throw Exception(result.error);
     }
   }
 
@@ -99,13 +99,13 @@ class UserProfileNotifier extends _$UserProfileNotifier {
       if (result.isSuccess) {
         return result.dataOrNull!;
       } else {
-        throw Exception(result.errorOrNull);
+        throw Exception(result.error);
       }
     });
   }
 
   /// 프로필 업데이트
-  Future<bool> updateProfile(UserProfileEntity profile) async {
+  Future<bool> updateProfile(Map<String, dynamic> profile) async {
     final useCase = ref.read(updateUserProfileUseCaseProvider);
     final result = await useCase(profile);
     if (result.isSuccess) {
@@ -121,13 +121,13 @@ class UserProfileNotifier extends _$UserProfileNotifier {
 @riverpod
 class AppSettingsNotifier extends _$AppSettingsNotifier {
   @override
-  Future<AppSettingsEntity> build() async {
+  Future<Map<String, dynamic>> build() async {
     final useCase = ref.watch(getAppSettingsUseCaseProvider);
     final result = await useCase();
     if (result.isSuccess) {
       return result.dataOrNull!;
     } else {
-      throw Exception(result.errorOrNull);
+      throw Exception(result.error);
     }
   }
 
@@ -140,13 +140,13 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
       if (result.isSuccess) {
         return result.dataOrNull!;
       } else {
-        throw Exception(result.errorOrNull);
+        throw Exception(result.error);
       }
     });
   }
 
   /// 설정 저장
-  Future<bool> saveSettings(AppSettingsEntity settings) async {
+  Future<bool> saveSettings(Map<String, dynamic> settings) async {
     final useCase = ref.read(saveAppSettingsUseCaseProvider);
     final result = await useCase(settings);
     if (result.isSuccess) {

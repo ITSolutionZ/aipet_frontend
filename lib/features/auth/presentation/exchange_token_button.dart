@@ -188,7 +188,7 @@ class ExchangeTokenButton extends ConsumerWidget {
               color: Colors.blue,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             '1. Firebase Auth로 먼저 로그인하세요\n'
             '2. "Firebase → Server 토큰 교환" 버튼을 누르세요\n'

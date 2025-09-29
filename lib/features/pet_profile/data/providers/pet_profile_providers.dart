@@ -23,7 +23,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
       if (result.isSuccess) {
         return result.dataOrNull ?? [];
       } else {
-        throw Exception(result.errorOrNull);
+        throw Exception(result.error);
       }
     } catch (e) {
       rethrow;
@@ -39,7 +39,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
       if (result.isSuccess) {
         return result.dataOrNull ?? [];
       } else {
-        throw Exception(result.errorOrNull);
+        throw Exception(result.error);
       }
     });
   }
@@ -52,7 +52,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
       await refresh();
       return result.dataOrNull!;
     } else {
-      throw Exception(result.errorOrNull);
+      throw Exception(result.error);
     }
   }
 
@@ -63,7 +63,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
     if (result.isSuccess) {
       await refresh();
     } else {
-      throw Exception(result.errorOrNull);
+      throw Exception(result.error);
     }
   }
 
@@ -74,7 +74,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
     if (result.isSuccess) {
       await refresh();
     } else {
-      throw Exception(result.errorOrNull);
+      throw Exception(result.error);
     }
   }
 }
@@ -87,7 +87,7 @@ Future<PetProfileEntity?> petProfileById(Ref ref, String id) async {
   if (result.isSuccess) {
     return result.dataOrNull;
   } else {
-    throw Exception(result.errorOrNull);
+    throw Exception(result.error);
   }
 }
 

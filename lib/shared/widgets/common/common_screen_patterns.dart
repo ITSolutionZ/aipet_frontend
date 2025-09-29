@@ -83,7 +83,7 @@ class CommonScreenPatterns {
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
   }) {
     return SingleChildScrollView(
-      padding: padding ?? const const const EdgeInsets.all(AppConstants.spacingLG),
+      padding: padding ?? const EdgeInsets.all(AppConstants.spacingLG),
       child: Column(crossAxisAlignment: crossAxisAlignment, children: children),
     );
   }
@@ -95,10 +95,10 @@ class CommonScreenPatterns {
     double spacing = AppConstants.spacingLG,
   }) {
     return SingleChildScrollView(
-      padding: padding ?? const const const EdgeInsets.all(AppConstants.spacingLG),
+      padding: padding ?? const EdgeInsets.all(AppConstants.spacingLG),
       child: Column(
         children: cards
-            .expand((card) => [card, const SizedBox(height: spacing)])
+            .expand((card) => [card, SizedBox(height: spacing)])
             .take(cards.length * 2 - 1)
             .toList(),
       ),
@@ -130,7 +130,7 @@ class CommonCardPatterns {
       color: backgroundColor,
       margin: margin,
       child: Padding(
-        padding: padding ?? const const const EdgeInsets.all(AppConstants.spacingMD),
+        padding: padding ?? const EdgeInsets.all(AppConstants.spacingMD),
         child: child,
       ),
     );
@@ -167,7 +167,7 @@ class CommonCardPatterns {
             color: iconColor ?? Colors.blue,
             size: AppConstants.defaultIconSize,
           ),
-          const const const SizedBox(width: AppConstants.spacingMD),
+          const SizedBox(width: AppConstants.spacingMD),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +180,7 @@ class CommonCardPatterns {
                   ),
                 ),
                 if (subtitle != null) ...[
-                  const const const SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     subtitle,
                     style: const TextStyle(fontSize: 14, color: Colors.grey),
@@ -215,7 +215,7 @@ class CommonCardPatterns {
       child: Column(
         children: [
           Icon(icon, color: color, size: AppConstants.defaultIconSize * 1.5),
-          const const const SizedBox(height: AppConstants.spacingSM),
+          const SizedBox(height: AppConstants.spacingSM),
           Text(
             title,
             style: TextStyle(
@@ -226,10 +226,13 @@ class CommonCardPatterns {
             textAlign: TextAlign.center,
           ),
           if (subtitle != null) ...[
-            const const const SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               subtitle,
-              style: TextStyle(fontSize: 14, color: color.withValues(alpha: 0.7)),
+              style: TextStyle(
+                fontSize: 14,
+                color: color.withValues(alpha: 0.7),
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -304,7 +307,7 @@ class CommonDialogPatterns {
     return showStandardDialog<T>(
       context: context,
       title: title,
-      content: const SizedBox(width: double.maxFinite, child: form),
+      content: SizedBox(width: double.maxFinite, child: form),
       actions: actions,
     );
   }
@@ -322,7 +325,7 @@ class CommonDialogPatterns {
         children: [
           const CircularProgressIndicator(),
           if (message != null) ...[
-            const const const SizedBox(height: AppConstants.spacingMD),
+            const SizedBox(height: AppConstants.spacingMD),
             Text(message),
           ],
         ],
@@ -388,7 +391,7 @@ class CommonListPatterns {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 64, color: Colors.grey),
-          const const const SizedBox(height: AppConstants.spacingLG),
+          const SizedBox(height: AppConstants.spacingLG),
           Text(
             title,
             style: const TextStyle(
@@ -398,7 +401,7 @@ class CommonListPatterns {
             ),
           ),
           if (subtitle != null) ...[
-            const const const SizedBox(height: AppConstants.spacingSM),
+            const SizedBox(height: AppConstants.spacingSM),
             Text(
               subtitle,
               style: const TextStyle(fontSize: 14, color: Colors.grey),
@@ -406,7 +409,7 @@ class CommonListPatterns {
             ),
           ],
           if (action != null) ...[
-            const const const SizedBox(height: AppConstants.spacingLG),
+            const SizedBox(height: AppConstants.spacingLG),
             action,
           ],
         ],
@@ -422,7 +425,7 @@ class CommonListPatterns {
         children: [
           const CircularProgressIndicator(),
           if (message != null) ...[
-            const const const SizedBox(height: AppConstants.spacingMD),
+            const SizedBox(height: AppConstants.spacingMD),
             Text(message),
           ],
         ],
@@ -440,14 +443,14 @@ class CommonListPatterns {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(Icons.error_outline, size: 64, color: Colors.red),
-          const const const SizedBox(height: AppConstants.spacingLG),
+          const SizedBox(height: AppConstants.spacingLG),
           Text(
             message,
             style: const TextStyle(fontSize: 16, color: Colors.red),
             textAlign: TextAlign.center,
           ),
           if (onRetry != null) ...[
-            const const const SizedBox(height: AppConstants.spacingLG),
+            const SizedBox(height: AppConstants.spacingLG),
             ElevatedButton(
               onPressed: onRetry,
               child: const Text(AppTexts.retry),

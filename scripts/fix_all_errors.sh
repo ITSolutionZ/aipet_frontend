@@ -39,13 +39,13 @@ find lib/ -name "*.dart" -exec sed -i '' 's/Duration(seconds:/const Duration(sec
 find lib/ -name "*.dart" -exec sed -i '' 's/Duration(minutes:/const Duration(minutes:/g' {} \;
 find lib/ -name "*.dart" -exec sed -i '' 's/Duration(milliseconds:/const Duration(milliseconds:/g' {} \;
 
-# 7. const 생성자 추가 - EdgeInsets 클래스들
+# 7. const 생성자 추가 - EdgeInsets 클래스들 (중복 방지)
 echo "📝 EdgeInsets const 생성자 추가..."
 find lib/ -name "*.dart" -exec sed -i '' 's/EdgeInsets\.all(/const EdgeInsets.all(/g' {} \;
 find lib/ -name "*.dart" -exec sed -i '' 's/EdgeInsets\.only(/const EdgeInsets.only(/g' {} \;
 find lib/ -name "*.dart" -exec sed -i '' 's/EdgeInsets\.symmetric(/const EdgeInsets.symmetric(/g' {} \;
 
-# 8. const 생성자 추가 - SizedBox 클래스들
+# 8. const 생성자 추가 - SizedBox 클래스들 (중복 방지)
 echo "📝 SizedBox const 생성자 추가..."
 find lib/ -name "*.dart" -exec sed -i '' 's/SizedBox(width:/const SizedBox(width:/g' {} \;
 find lib/ -name "*.dart" -exec sed -i '' 's/SizedBox(height:/const SizedBox(height:/g' {} \;
@@ -63,7 +63,13 @@ echo "📝 undefined method 패턴 수정..."
 find lib/ -name "*.dart" -exec sed -i '' 's/\.success\b/Result.success/g' {} \;
 find lib/ -name "*.dart" -exec sed -i '' 's/\.failure\b/Result.failure/g' {} \;
 
-# 12. import 정렬 문제 해결을 위한 dart fix 실행
+# 12. const 중복 제거 (안전장치)
+echo "📝 const 중복 제거..."
+find lib/ -name "*.dart" -exec sed -i '' 's/const const/const/g' {} \;
+find lib/ -name "*.dart" -exec sed -i '' 's/const const const/const/g' {} \;
+find lib/ -name "*.dart" -exec sed -i '' 's/const const const const/const/g' {} \;
+
+# 13. import 정렬 문제 해결을 위한 dart fix 실행
 echo "📝 자동 수정 적용..."
 dart fix --apply lib/ 2>/dev/null || true
 

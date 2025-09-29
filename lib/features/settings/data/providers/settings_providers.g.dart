@@ -228,7 +228,7 @@ String _$userProfileNotifierHash() =>
 final userProfileNotifierProvider =
     AutoDisposeAsyncNotifierProvider<
       UserProfileNotifier,
-      UserProfileEntity
+      Map<String, dynamic>
     >.internal(
       UserProfileNotifier.new,
       name: r'userProfileNotifierProvider',
@@ -239,7 +239,7 @@ final userProfileNotifierProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$UserProfileNotifier = AutoDisposeAsyncNotifier<UserProfileEntity>;
+typedef _$UserProfileNotifier = AutoDisposeAsyncNotifier<Map<String, dynamic>>;
 String _$appSettingsNotifierHash() =>
     r'e828eca78df445c0f6d3e6341108782958e209bf';
 
@@ -248,7 +248,7 @@ String _$appSettingsNotifierHash() =>
 final appSettingsNotifierProvider =
     AutoDisposeAsyncNotifierProvider<
       AppSettingsNotifier,
-      AppSettingsEntity
+      Map<String, dynamic>
     >.internal(
       AppSettingsNotifier.new,
       name: r'appSettingsNotifierProvider',
@@ -259,6 +259,6 @@ final appSettingsNotifierProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$AppSettingsNotifier = AutoDisposeAsyncNotifier<AppSettingsEntity>;
+typedef _$AppSettingsNotifier = AutoDisposeAsyncNotifier<Map<String, dynamic>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

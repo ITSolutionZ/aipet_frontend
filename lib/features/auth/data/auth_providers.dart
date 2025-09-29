@@ -114,7 +114,10 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
           navigationCallback();
         }
       } else {
-        state = state.copyWith(isLoading: false, error: result.error?.toString());
+        state = state.copyWith(
+          isLoading: false,
+          error: result.error?.toString(),
+        );
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: 'ログインに失敗しました');

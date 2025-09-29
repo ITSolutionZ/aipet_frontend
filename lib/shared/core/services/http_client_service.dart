@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/shared/core/constants/error_codes.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/auth/auth_mock_data.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -179,7 +180,7 @@ class HttpClientService {
     ErrorInterceptorHandler handler,
   ) async {
     final retryCount = _getRetryCount(error.requestOptions) + 1;
-    final delay = const Duration(seconds: retryCount * 2); // 지수 백오프
+    final delay = Duration(seconds: retryCount * 2); // 지수 백오프
 
     if (kDebugMode) {
       debugPrint('🔄 재시도 $retryCount/$maxRetries - ${delay.inSeconds}초 후 재시도');
@@ -289,6 +290,44 @@ class HttpClientService {
     }
   }
 
+  /// POST Multipart 요청 (파일 업로드용)
+  Future<ApiResponse<T>> postMultipart<T>(
+    String path, {
+    Map<String, dynamic>? data,
+    Map<String, String>? files,
+    T Function(Map<String, dynamic>)? fromJson,
+  }) async {
+    try {
+      // Mock 환경에서는 Mock 데이터 사용
+      if (_useMockData) {
+        return _postMockResponse(path, data, fromJson);
+      }
+
+      final formData = FormData();
+
+      // 일반 데이터 추가
+      if (data != null) {
+        data.forEach((key, value) {
+          formData.fields.add(MapEntry(key, value.toString()));
+        });
+      }
+
+      // 파일 데이터 추가
+      if (files != null) {
+        for (final entry in files.entries) {
+          formData.files.add(
+            MapEntry(entry.key, await MultipartFile.fromFile(entry.value)),
+          );
+        }
+      }
+
+      final response = await _dio.post(path, data: formData);
+      return _parseResponse(response, fromJson);
+    } catch (e) {
+      return _handleError<T>(e);
+    }
+  }
+
   /// 응답 파싱
   ApiResponse<T> _parseResponse<T>(
     Response response,
@@ -297,9 +336,9 @@ class HttpClientService {
     final data = response.data as Map<String, dynamic>;
 
     if (fromJson != null) {
-      return ApiResponseResult.success(fromJson(data['data'] ?? data));
+      return Result.success('요청이 성공했습니다', fromJson(data['data'] ?? data));
     } else {
-      return ApiResponseResult.success(data as T);
+      return Result.success('요청이 성공했습니다', data as T);
     }
   }
 
@@ -348,12 +387,9 @@ class HttpClientService {
           errorMessage = ErrorCodes.getErrorMessage(errorCode);
       }
 
-      return ApiResponse.error(errorMessage, errorCode: errorCode);
+      return Result.failure(errorMessage);
     } else {
-      return ApiResponse.error(
-        '예상치 못한 오류가 발생했습니다',
-        errorCode: 'UNEXPECTED_ERROR',
-      );
+      return Result.failure('예상치 못한 오류가 발생했습니다');
     }
   }
 
@@ -369,13 +405,13 @@ class HttpClientService {
 
     final mockData = await _getMockDataForEndpoint(path);
     if (mockData == null) {
-      return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $path');
+      return Result.failure('엔드포인트를 찾을 수 없습니다: $path');
     }
 
     if (fromJson != null) {
-      return ApiResponseResult.success(fromJson(mockData));
+      return Result.success('Mock 요청이 성공했습니다', fromJson(mockData));
     } else {
-      return ApiResponseResult.success(mockData as T);
+      return Result.success('Mock 요청이 성공했습니다', mockData as T);
     }
   }
 
@@ -388,13 +424,13 @@ class HttpClientService {
 
     final mockData = await _postMockDataForEndpoint(path, body);
     if (mockData == null) {
-      return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $path');
+      return Result.failure('엔드포인트를 찾을 수 없습니다: $path');
     }
 
     if (fromJson != null) {
-      return ApiResponseResult.success(fromJson(mockData));
+      return Result.success('Mock 요청이 성공했습니다', fromJson(mockData));
     } else {
-      return ApiResponseResult.success(mockData as T);
+      return Result.success('Mock 요청이 성공했습니다', mockData as T);
     }
   }
 
@@ -407,13 +443,13 @@ class HttpClientService {
 
     final mockData = await _putMockDataForEndpoint(path, body);
     if (mockData == null) {
-      return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $path');
+      return Result.failure('엔드포인트를 찾을 수 없습니다: $path');
     }
 
     if (fromJson != null) {
-      return ApiResponseResult.success(fromJson(mockData));
+      return Result.success('Mock 요청이 성공했습니다', fromJson(mockData));
     } else {
-      return ApiResponseResult.success(mockData as T);
+      return Result.success('Mock 요청이 성공했습니다', mockData as T);
     }
   }
 
@@ -425,13 +461,13 @@ class HttpClientService {
 
     final mockData = await _deleteMockDataForEndpoint(path);
     if (mockData == null) {
-      return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $path');
+      return Result.failure('엔드포인트를 찾을 수 없습니다: $path');
     }
 
     if (fromJson != null) {
-      return ApiResponseResult.success(fromJson(mockData));
+      return Result.success('Mock 요청이 성공했습니다', fromJson(mockData));
     } else {
-      return ApiResponseResult.success(mockData as T);
+      return Result.success('Mock 요청이 성공했습니다', mockData as T);
     }
   }
 
@@ -486,24 +522,13 @@ class HttpClientService {
   }
 }
 
-/// API 응답을 래핑하는 클래스 (개선된 버전)
-class ApiResponse<T> {
-  final T? data;
-  final String? error;
-  final String? errorCode;
-  final int? statusCode;
+/// API 응답을 래핑하는 클래스 (Result 패턴 사용)
+typedef ApiResponse<T> = Result<T>;
 
-  const ApiResponse._({this.data, this.error, this.errorCode, this.statusCode});
-
-  factory ApiResponseResult.success(T data) => ApiResponse._(data: data);
-
-  factory ApiResponse.error(
-    String error, {
-    String? errorCode,
-    int? statusCode,
-  }) =>
-      ApiResponse._(error: error, errorCode: errorCode, statusCode: statusCode);
-
-  bool get isSuccess => error == null;
-  bool get isError => error != null;
+/// Result 클래스의 success 메서드 확장
+extension ApiResponseExtension on Result {
+  static Result<T> success<T>(String message, T data) =>
+      Result.success(message, data);
+  static Result<T> failure<T>(String message, [Exception? error]) =>
+      Result.failure(message, error);
 }

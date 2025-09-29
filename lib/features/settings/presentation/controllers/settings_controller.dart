@@ -40,33 +40,33 @@ class SettingsController extends BaseController {
   );
 
   /// 사용자 프로필 로드
-  Future<Result<UserProfileEntity>> loadUserProfile() async {
-    final result = await safeExecute<Result<UserProfileEntity>>(() async {
+  Future<Result<Map<String, dynamic>>> loadUserProfile() async {
+    final result = await safeExecute<Result<Map<String, dynamic>>>(() async {
       final useCaseResult = await _getUserProfileUseCase.call();
       if (useCaseResult.isSuccess) {
-        return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
+        return Result.success(useCaseResult.message, useCaseResult.dataOrNull);
       } else {
-        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.message);
       }
     });
 
-    return result ?? const Failure('プロフィールの読み込みに失敗しました');
+    return result ?? Result.failure('プロフィールの読み込みに失敗しました');
   }
 
   /// 프로필 업데이트
-  Future<Result<UserProfileEntity>> updateProfile(
-    UserProfileEntity profile,
+  Future<Result<Map<String, dynamic>>> updateProfile(
+    Map<String, dynamic> profile,
   ) async {
-    final result = await safeExecute<Result<UserProfileEntity>>(() async {
+    final result = await safeExecute<Result<Map<String, dynamic>>>(() async {
       final useCaseResult = await _updateUserProfileUseCase.call(profile);
       if (useCaseResult.isSuccess) {
-        return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
+        return Result.success(useCaseResult.message, useCaseResult.dataOrNull!);
       } else {
-        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.message);
       }
     });
 
-    return result ?? const Failure('プロフィールの更新に失敗しました');
+    return result ?? Result.failure('プロフィールの更新に失敗しました');
   }
 
   /// 비밀번호 변경
@@ -77,29 +77,29 @@ class SettingsController extends BaseController {
   }) async {
     // ✅ BaseController의 검증 메서드 활용
     if (newPassword != confirmPassword) {
-      return const Failure('새 비밀번호가 일치하지 않습니다');
+      return Result.failure('새 비밀번호가 일치하지 않습니다');
     }
 
     if (newPassword.length < 6) {
-      return const Failure('새 비밀번호는 6자 이상이어야 합니다');
+      return Result.failure('새 비밀번호는 6자 이상이어야 합니다');
     }
 
     final result = await safeExecute<Result<void>>(() async {
-      final request = PasswordChangeRequest(
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-        confirmPassword: confirmPassword,
-      );
+      final request = {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+        'confirmPassword': confirmPassword,
+      };
 
       final useCaseResult = await _changePasswordUseCase.call(request);
       if (useCaseResult.isSuccess) {
-        return Success(null, useCaseResult.errorOrNull);
+        return Result.success(useCaseResult.message, null);
       } else {
-        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.message);
       }
     });
 
-    return result ?? const Failure('パスワードの変更に失敗しました');
+    return result ?? Result.failure('パスワードの変更に失敗しました');
   }
 
   /// 계정 삭제
@@ -107,57 +107,57 @@ class SettingsController extends BaseController {
     final result = await safeExecute<Result<void>>(() async {
       final useCaseResult = await _deleteAccountUseCase.call();
       if (useCaseResult.isSuccess) {
-        return Success(null, useCaseResult.errorOrNull);
+        return Result.success(useCaseResult.message, null);
       } else {
-        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.message);
       }
     });
 
-    return result ?? const Failure('アカウントの削除に失敗しました');
+    return result ?? Result.failure('アカウントの削除に失敗しました');
   }
 
   /// 앱 설정 로드
-  Future<Result<AppSettingsEntity>> loadAppSettings() async {
-    final result = await safeExecute<Result<AppSettingsEntity>>(() async {
+  Future<Result<Map<String, dynamic>>> loadAppSettings() async {
+    final result = await safeExecute<Result<Map<String, dynamic>>>(() async {
       final useCaseResult = await _getAppSettingsUseCase.call();
       if (useCaseResult.isSuccess) {
-        return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
+        return Result.success(useCaseResult.message, useCaseResult.dataOrNull!);
       } else {
-        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.message);
       }
     });
 
-    return result ?? const Failure('アプリ設定の読み込みに失敗しました');
+    return result ?? Result.failure('アプリ設定の読み込みに失敗しました');
   }
 
   /// 앱 설정 저장
-  Future<Result<AppSettingsEntity>> saveAppSettings(
-    AppSettingsEntity settings,
+  Future<Result<Map<String, dynamic>>> saveAppSettings(
+    Map<String, dynamic> settings,
   ) async {
-    final result = await safeExecute<Result<AppSettingsEntity>>(() async {
+    final result = await safeExecute<Result<Map<String, dynamic>>>(() async {
       final useCaseResult = await _saveAppSettingsUseCase.call(settings);
       if (useCaseResult.isSuccess) {
-        return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
+        return Result.success(useCaseResult.message, useCaseResult.dataOrNull!);
       } else {
-        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.message);
       }
     });
 
-    return result ?? const Failure('アプリ設定の保存に失敗しました');
+    return result ?? Result.failure('アプリ設定の保存に失敗しました');
   }
 
   /// 앱 데이터 내보내기
-  Future<Result<DataExportResult>> exportAppData() async {
-    final result = await safeExecute<Result<DataExportResult>>(() async {
+  Future<Result<Result>> exportAppData() async {
+    final result = await safeExecute<Result<Result>>(() async {
       final useCaseResult = await _exportAppDataUseCase.call();
       if (useCaseResult.isSuccess) {
-        return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
+        return Result.success(useCaseResult.message, useCaseResult.dataOrNull!);
       } else {
-        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.message);
       }
     });
 
-    return result ?? const Failure('データのエクスポートに失敗しました');
+    return result ?? Result.failure('データのエクスポートに失敗しました');
   }
 
   /// 앱 데이터 가져오기
@@ -165,13 +165,13 @@ class SettingsController extends BaseController {
     final result = await safeExecute<Result<void>>(() async {
       final useCaseResult = await _importAppDataUseCase.call(filePath);
       if (useCaseResult.isSuccess) {
-        return Success(null, useCaseResult.errorOrNull);
+        return Result.success(useCaseResult.message, null);
       } else {
-        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.message);
       }
     });
 
-    return result ?? const Failure('データのインポートに失敗しました');
+    return result ?? Result.failure('データのインポートに失敗しました');
   }
 
   /// 앱 캐시 정리
@@ -179,12 +179,12 @@ class SettingsController extends BaseController {
     final result = await safeExecute<Result<void>>(() async {
       final useCaseResult = await _clearAppCacheUseCase.call();
       if (useCaseResult.isSuccess) {
-        return Success(null, useCaseResult.errorOrNull);
+        return Result.success(useCaseResult.message, null);
       } else {
-        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.message);
       }
     });
 
-    return result ?? const Failure('キャッシュのクリアに失敗しました');
+    return result ?? Result.failure('キャッシュのクリアに失敗しました');
   }
 }

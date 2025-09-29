@@ -40,7 +40,7 @@ class SectionHeader extends StatelessWidget {
       title: title,
       subtitle: subtitle,
       action: action,
-      padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
     );
   }
 
@@ -56,7 +56,7 @@ class SectionHeader extends StatelessWidget {
       subtitle: subtitle,
       action: action,
       showDivider: true,
-      padding: padding ?? const const const EdgeInsets.all(AppSpacing.lg),
+      padding: padding ?? const EdgeInsets.all(AppSpacing.lg),
     );
   }
 
@@ -73,14 +73,14 @@ class SectionHeader extends StatelessWidget {
       subtitle: subtitle,
       action: action,
       leading: Container(
-        padding: const const const EdgeInsets.all(AppSpacing.xs),
+        padding: const EdgeInsets.all(AppSpacing.xs),
         decoration: BoxDecoration(
           color: (iconColor ?? AppColors.pointBrown).withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
         child: Icon(icon, color: iconColor ?? AppColors.pointBrown, size: 20),
       ),
-      padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
     );
   }
 
@@ -97,7 +97,7 @@ class SectionHeader extends StatelessWidget {
       subtitle: subtitle,
       action: action,
       leading: Container(
-        padding: const const const EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.sm,
           vertical: AppSpacing.xs,
         ),
@@ -114,7 +114,7 @@ class SectionHeader extends StatelessWidget {
           ),
         ),
       ),
-      padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
     );
   }
 
@@ -128,7 +128,7 @@ class SectionHeader extends StatelessWidget {
           children: [
             if (leading != null) ...[
               leading!,
-              const const const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
             ],
             Expanded(
               child: Column(
@@ -145,7 +145,7 @@ class SectionHeader extends StatelessWidget {
                         ),
                   ),
                   if (subtitle != null) ...[
-                    const const const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       subtitle!,
                       style:
@@ -159,13 +159,13 @@ class SectionHeader extends StatelessWidget {
               ),
             ),
             if (action != null) ...[
-              const const const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
               action!,
             ],
           ],
         ),
         if (showDivider) ...[
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           Divider(
             color: AppColors.pointGray.withValues(alpha: 0.3),
             thickness: 1,

@@ -72,7 +72,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.qr_code, size: 20),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text('コード生成'),
               ],
             ),
@@ -82,7 +82,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.qr_code_scanner, size: 20),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text('コードスキャン'),
               ],
             ),

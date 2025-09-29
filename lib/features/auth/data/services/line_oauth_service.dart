@@ -59,10 +59,7 @@ class LineOAuthService {
         );
       }
 
-      return Result.success(
-        'LINEログインが完了しました',
-        profileResult.dataOrNull!,
-      );
+      return Result.success('LINEログインが完了しました', profileResult.dataOrNull!);
     } catch (e) {
       return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
     }

@@ -8,12 +8,12 @@ class LogoutButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const const const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(16),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: const const const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: Colors.white.withAlpha(10),
             borderRadius: BorderRadius.circular(12),
@@ -47,7 +47,7 @@ class LogoutButtonWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              const const const SizedBox(width: 12),
+              const SizedBox(width: 12),
               // 로그아웃 텍스트
               const Text(
                 'ログアウト',

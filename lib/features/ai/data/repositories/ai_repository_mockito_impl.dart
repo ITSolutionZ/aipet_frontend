@@ -1,19 +1,11 @@
 import 'package:aipet_frontend/features/ai/data/services/openai_service.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_analysis_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_history_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_session_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/features/ai/domain/domain.dart';
 import 'package:aipet_frontend/shared/core/utils/ai_logger.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../shared/core/domain/result.dart';
 
 /// AI Repository Mockito 구현체
 ///
@@ -44,11 +36,11 @@ class AiRepositoryMockitoImpl implements AiRepository {
       final response = await _openAIService.generateResponse(message);
 
       // AI 로거를 사용한 응답 성공 로그
-      AiLogger.logApiSuccess(response);
+      AiLogger.logApiSuccess(response as String);
 
       final aiMessage = AiMessageEntity(
         id: _generateId(),
-        content: response,
+        content: response as String,
         type: MessageType.assistant,
         timestamp: DateTime.now(),
       );
@@ -77,11 +69,11 @@ class AiRepositoryMockitoImpl implements AiRepository {
       );
 
       // AI 로거를 사용한 응답 성공 로그
-      AiLogger.logApiSuccess(response);
+      AiLogger.logApiSuccess(response as String);
 
       final aiMessage = AiMessageEntity(
         id: _generateId(),
-        content: response,
+        content: response as String,
         type: MessageType.assistant,
         timestamp: DateTime.now(),
       );

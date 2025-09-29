@@ -4,27 +4,29 @@ import 'package:aipet_frontend/shared/entities/settings_entity.dart';
 /// Settings Feature 전용 Repository 인터페이스
 abstract class SettingsRepository {
   /// 사용자 프로필 가져오기
-  Future<Result<UserProfileEntity>> getUserProfile();
+  Future<Result<Map<String, dynamic>>> getUserProfile();
 
   /// 사용자 프로필 업데이트
-  Future<Result<UserProfileEntity>> updateUserProfile(
-    UserProfileEntity profile,
+  Future<Result<Map<String, dynamic>>> updateUserProfile(
+    Map<String, dynamic> profile,
   );
 
   /// 비밀번호 변경
-  Future<Result<void>> changePassword(PasswordChangeRequest request);
+  Future<Result<void>> changePassword(Map<String, dynamic> request);
 
   /// 계정 삭제
   Future<Result<void>> deleteAccount();
 
   /// 앱 설정 가져오기
-  Future<Result<AppSettingsEntity>> getAppSettings();
+  Future<Result<Map<String, dynamic>>> getAppSettings();
 
   /// 앱 설정 저장
-  Future<Result<AppSettingsEntity>> saveAppSettings(AppSettingsEntity settings);
+  Future<Result<Map<String, dynamic>>> saveAppSettings(
+    Map<String, dynamic> settings,
+  );
 
   /// 앱 데이터 내보내기
-  Future<Result<DataExportResult>> exportAppData();
+  Future<Result<Result>> exportAppData();
 
   /// 앱 데이터 가져오기
   Future<Result<void>> importAppData(String filePath);

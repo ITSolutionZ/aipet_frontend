@@ -42,7 +42,7 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       iconData: icon ?? Icons.inbox_outlined,
       action: action,
-      padding: const const const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -57,7 +57,7 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       iconData: Icons.search_off_outlined,
       action: action,
-      padding: const const const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -72,7 +72,7 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       iconData: Icons.wifi_off_outlined,
       action: action,
-      padding: const const const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -88,7 +88,7 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       iconData: icon ?? Icons.folder_open_outlined,
       action: action,
-      padding: const const const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -104,7 +104,7 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       imagePath: imagePath,
       action: action,
-      padding: const const const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -120,21 +120,21 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       iconData: icon ?? Icons.add_circle_outline,
       action: action,
-      padding: const const const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? const const const EdgeInsets.all(AppSpacing.xl),
+      padding: padding ?? const EdgeInsets.all(AppSpacing.xl),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildIcon(),
-            const SizedBox(height: spacing ?? AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               title,
               style: AppFonts.titleLarge.copyWith(
@@ -144,7 +144,7 @@ class EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             if (subtitle != null) ...[
-              const const const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 subtitle!,
                 style: AppFonts.bodyMedium.copyWith(
@@ -154,7 +154,7 @@ class EmptyState extends StatelessWidget {
               ),
             ],
             if (action != null) ...[
-              const const const SizedBox(height: AppSpacing.xl),
+              const SizedBox(height: AppSpacing.xl),
               action!,
             ],
           ],

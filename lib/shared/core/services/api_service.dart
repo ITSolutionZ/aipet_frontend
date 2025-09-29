@@ -1,9 +1,8 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/auth/auth.dart';
 import 'package:http/http.dart' as http;
-
-import 'http_client_service.dart';
 
 /// 백엔드 API 통신을 담당하는 서비스
 class ApiService {
@@ -11,7 +10,7 @@ class ApiService {
   static const Duration timeout = Duration(seconds: 30);
 
   /// GET 요청
-  static Future<ApiResponse<T>> get<T>(
+  static Future<Result<T>> get<T>(
     String endpoint, {
     Map<String, String>? headers,
     T Function(Map<String, dynamic>)? fromJson,
@@ -29,12 +28,12 @@ class ApiService {
 
       return _handleResponse(response, fromJson);
     } catch (e) {
-      return ApiResponse.error('ネットワークエラーが発生しました: $e');
+      return Result.failure('ネットワークエラーが発生しました: $e');
     }
   }
 
   /// POST 요청
-  static Future<ApiResponse<T>> post<T>(
+  static Future<Result<T>> post<T>(
     String endpoint, {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
@@ -57,12 +56,12 @@ class ApiService {
 
       return _handleResponse(response, fromJson);
     } catch (e) {
-      return ApiResponse.error('ネットワークエラーが発生しました: $e');
+      return Result.failure('ネットワークエラーが発生しました: $e');
     }
   }
 
   /// PUT 요청
-  static Future<ApiResponse<T>> put<T>(
+  static Future<Result<T>> put<T>(
     String endpoint, {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
@@ -85,12 +84,12 @@ class ApiService {
 
       return _handleResponse(response, fromJson);
     } catch (e) {
-      return ApiResponse.error('ネットワークエラーが発生しました: $e');
+      return Result.failure('ネットワークエラーが発生しました: $e');
     }
   }
 
   /// DELETE 요청
-  static Future<ApiResponse<T>> delete<T>(
+  static Future<Result<T>> delete<T>(
     String endpoint, {
     Map<String, String>? headers,
     T Function(Map<String, dynamic>)? fromJson,
@@ -111,12 +110,12 @@ class ApiService {
 
       return _handleResponse(response, fromJson);
     } catch (e) {
-      return ApiResponse.error('ネットワークエラーが発生しました: $e');
+      return Result.failure('ネットワークエラーが発生しました: $e');
     }
   }
 
   /// HTTP 응답 처리
-  static ApiResponse<T> _handleResponse<T>(
+  static Result<T> _handleResponse<T>(
     http.Response response,
     T Function(Map<String, dynamic>)? fromJson,
   ) {
@@ -124,15 +123,12 @@ class ApiService {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (fromJson != null) {
-        return ApiResponseResult.success(fromJson(data['data'] ?? data));
+        return Result.success('API 호출이 성공했습니다', fromJson(data['data'] ?? data));
       } else {
-        return ApiResponseResult.success(data as T);
+        return Result.success('API 호출이 성공했습니다', data as T);
       }
     } else {
-      return ApiResponse.error(
-        data['message'] ?? 'サーバーエラーが発生しました',
-        statusCode: response.statusCode,
-      );
+      return Result.failure(data['message'] ?? 'サーバーエラーが発生しました');
     }
   }
 
@@ -141,7 +137,7 @@ class ApiService {
       const bool.fromEnvironment('USE_MOCK_DATA', defaultValue: true);
 
   /// Mock GET 응답
-  static Future<ApiResponse<T>> _getMockResponse<T>(
+  static Future<Result<T>> _getMockResponse<T>(
     String endpoint,
     T Function(Map<String, dynamic>)? fromJson,
   ) async {
@@ -150,18 +146,18 @@ class ApiService {
     // Mock 데이터 반환 로직
     final mockData = await _getMockDataForEndpoint(endpoint);
     if (mockData == null) {
-      return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $endpoint');
+      return Result.failure('엔드포인트를 찾을 수 없습니다: $endpoint');
     }
 
     if (fromJson != null) {
-      return ApiResponseResult.success(fromJson(mockData));
+      return Result.success('Mock GET 요청이 성공했습니다', fromJson(mockData));
     } else {
-      return ApiResponseResult.success(mockData as T);
+      return Result.success('Mock GET 요청이 성공했습니다', mockData as T);
     }
   }
 
   /// Mock POST 응답
-  static Future<ApiResponse<T>> _postMockResponse<T>(
+  static Future<Result<T>> _postMockResponse<T>(
     String endpoint,
     Map<String, dynamic>? body,
     T Function(Map<String, dynamic>)? fromJson,
@@ -170,18 +166,18 @@ class ApiService {
 
     final mockData = await _postMockDataForEndpoint(endpoint, body);
     if (mockData == null) {
-      return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $endpoint');
+      return Result.failure('엔드포인트를 찾을 수 없습니다: $endpoint');
     }
 
     if (fromJson != null) {
-      return ApiResponseResult.success(fromJson(mockData));
+      return Result.success('Mock POST 요청이 성공했습니다', fromJson(mockData));
     } else {
-      return ApiResponseResult.success(mockData as T);
+      return Result.success('Mock POST 요청이 성공했습니다', mockData as T);
     }
   }
 
   /// Mock PUT 응답
-  static Future<ApiResponse<T>> _putMockResponse<T>(
+  static Future<Result<T>> _putMockResponse<T>(
     String endpoint,
     Map<String, dynamic>? body,
     T Function(Map<String, dynamic>)? fromJson,
@@ -190,18 +186,18 @@ class ApiService {
 
     final mockData = await _putMockDataForEndpoint(endpoint, body);
     if (mockData == null) {
-      return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $endpoint');
+      return Result.failure('엔드포인트를 찾을 수 없습니다: $endpoint');
     }
 
     if (fromJson != null) {
-      return ApiResponseResult.success(fromJson(mockData));
+      return Result.success('Mock PUT 요청이 성공했습니다', fromJson(mockData));
     } else {
-      return ApiResponseResult.success(mockData as T);
+      return Result.success('Mock PUT 요청이 성공했습니다', mockData as T);
     }
   }
 
   /// Mock DELETE 응답
-  static Future<ApiResponse<T>> _deleteMockResponse<T>(
+  static Future<Result<T>> _deleteMockResponse<T>(
     String endpoint,
     T Function(Map<String, dynamic>)? fromJson,
   ) async {
@@ -209,13 +205,13 @@ class ApiService {
 
     final mockData = await _deleteMockDataForEndpoint(endpoint);
     if (mockData == null) {
-      return ApiResponse.error('엔드포인트를 찾을 수 없습니다: $endpoint');
+      return Result.failure('엔드포인트를 찾을 수 없습니다: $endpoint');
     }
 
     if (fromJson != null) {
-      return ApiResponseResult.success(fromJson(mockData));
+      return Result.success('Mock DELETE 요청이 성공했습니다', fromJson(mockData));
     } else {
-      return ApiResponseResult.success(mockData as T);
+      return Result.success('Mock DELETE 요청이 성공했습니다', mockData as T);
     }
   }
 
@@ -274,5 +270,3 @@ class ApiService {
     return {'message': 'Deleted successfully'};
   }
 }
-
-// ApiResponse 클래스는 http_client_service.dart에서 정의됨

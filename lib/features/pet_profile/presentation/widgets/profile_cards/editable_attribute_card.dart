@@ -27,7 +27,7 @@ class EditableAttributeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -97,7 +97,10 @@ class EditableAttributeCard extends StatelessWidget {
             decoration: const InputDecoration(
               suffix: Text('kg'),
               isDense: true,
-              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 8,
+              ),
               border: OutlineInputBorder(),
             ),
             controller: weightController,

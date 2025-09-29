@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 
 enum FacilityType {
   hospital, // 동물병원

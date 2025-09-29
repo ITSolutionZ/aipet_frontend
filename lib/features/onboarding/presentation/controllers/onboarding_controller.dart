@@ -97,7 +97,7 @@ class OnboardingController extends BaseController {
     try {
       // Start onboarding tracking
       ref.read(onboardingNotifierProvider.notifier).startOnboarding();
-      return Result.success(null, '온보딩이 시작되었습니다');
+      return Result.success(null.toString(), '온보딩이 시작되었습니다');
     } catch (error) {
       return Result.failure('온보딩 초기화 중 오류가 발생했습니다: $error');
     }

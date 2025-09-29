@@ -30,12 +30,14 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
       );
 
       if (response.isSuccess && response.data != null) {
-        final pets = response.dataOrThrow
-            .map((petData) => PetProfileEntity.fromJson(petData))
-            .toList();
-        return Success(pets, '펫 목록을 성공적으로 조회했습니다');
+        final pets =
+            response.data
+                ?.map((petData) => PetProfileEntity.fromJson(petData))
+                .toList() ??
+            [];
+        return Result.success('펫 목록을 성공적으로 조회했습니다', pets);
       } else {
-        return Result.failure(response.error ?? '펫 목록 조회에 실패했습니다');
+        return Result.failure(response.error?.toString() ?? '펫 목록 조회에 실패했습니다');
       }
     } catch (error) {
       debugPrint('getAllPets error: $error');
@@ -78,7 +80,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
             ),
           )
           .toList();
-      return Success(pets, '펫 목록을 성공적으로 조회했습니다');
+      return Result.success('펫 목록을 성공적으로 조회했습니다', pets);
     } catch (error) {
       return Result.failure('펫 목록 조회에 실패했습니다: ${error.toString()}');
     }
@@ -95,12 +97,12 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
           final pets = result.dataOrNull!;
           try {
             final pet = pets.firstWhere((pet) => pet.id == id);
-            return Success(pet, '펫 정보를 성공적으로 조회했습니다');
+            return Result.success('펫 정보를 성공적으로 조회했습니다', pet);
           } catch (e) {
-            return const Success(null, '해당 ID의 펫을 찾을 수 없습니다');
+            return Result.success('해당 ID의 펫을 찾을 수 없습니다', null);
           }
         } else {
-          return Result.failure(result.errorOrNull!);
+          return Result.failure(result.message);
         }
       }
 
@@ -111,10 +113,10 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
       );
 
       if (response.isSuccess && response.data != null) {
-        final pet = PetProfileEntity.fromJson(response.dataOrThrow);
-        return Success(pet, '펫 정보를 성공적으로 조회했습니다');
+        final pet = PetProfileEntity.fromJson(response.data!);
+        return Result.success('펫 정보를 성공적으로 조회했습니다', pet);
       } else {
-        return Result.failure(response.error ?? '펫 조회에 실패했습니다');
+        return Result.failure(response.error?.toString() ?? '펫 조회에 실패했습니다');
       }
     } catch (error) {
       debugPrint('getPetById error: $error');
@@ -139,7 +141,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
-        return Success(newPet, '펫이 성공적으로 생성되었습니다');
+        return Result.success('펫이 성공적으로 생성되었습니다', newPet);
       }
 
       // 실제 API 호출
@@ -150,10 +152,10 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
       );
 
       if (response.isSuccess && response.data != null) {
-        final createdPet = PetProfileEntity.fromJson(response.dataOrThrow);
-        return Success(createdPet, '펫이 성공적으로 생성되었습니다');
+        final createdPet = PetProfileEntity.fromJson(response.data!);
+        return Result.success('펫이 성공적으로 생성되었습니다', createdPet);
       } else {
-        return Result.failure(response.error ?? '펫 생성에 실패했습니다');
+        return Result.failure(response.error?.toString() ?? '펫 생성에 실패했습니다');
       }
     } catch (error) {
       debugPrint('createPet error: $error');
@@ -174,7 +176,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
         }
 
         final updatedPet = pet.copyWith(updatedAt: DateTime.now());
-        return Success(updatedPet, '펫 정보가 성공적으로 업데이트되었습니다');
+        return Result.success('펫 정보가 성공적으로 업데이트되었습니다', updatedPet);
       }
 
       // 실제 API 호출
@@ -185,10 +187,10 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
       );
 
       if (response.isSuccess && response.data != null) {
-        final updatedPet = PetProfileEntity.fromJson(response.dataOrThrow);
-        return Success(updatedPet, '펫 정보가 성공적으로 업데이트되었습니다');
+        final updatedPet = PetProfileEntity.fromJson(response.data!);
+        return Result.success('펫 정보가 성공적으로 업데이트되었습니다', updatedPet);
       } else {
-        return Result.failure(response.error ?? '펫 업데이트에 실패했습니다');
+        return Result.failure(response.error?.toString() ?? '펫 업데이트에 실패했습니다');
       }
     } catch (error) {
       debugPrint('updatePet error: $error');
@@ -207,16 +209,16 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
         } else {
           await Future.delayed(const Duration(milliseconds: 200));
         }
-        return const Success(null, '펫이 성공적으로 삭제되었습니다');
+        return Result.success('펫이 성공적으로 삭제되었습니다', null);
       }
 
       // 실제 API 호출
       final response = await _httpClient.delete('/pets/$id');
 
       if (response.isSuccess) {
-        return const Success(null, '펫이 성공적으로 삭제되었습니다');
+        return Result.success('펫이 성공적으로 삭제되었습니다', null);
       } else {
-        return Result.failure(response.error ?? '펫 삭제에 실패했습니다');
+        return Result.failure(response.error?.toString() ?? '펫 삭제에 실패했습니다');
       }
     } catch (error) {
       debugPrint('deletePet error: $error');
@@ -232,22 +234,21 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
           AppConfig.current.environment == 'test') {
         await Future.delayed(const Duration(milliseconds: 500));
         final imageUrl = 'https://example.com/images/$petId.jpg';
-        return Success(imageUrl, '이미지가 성공적으로 업로드되었습니다');
+        return Result.success('이미지가 성공적으로 업로드되었습니다', imageUrl);
       }
 
       // 실제 이미지 업로드 API 호출
-      // TODO: FormData를 사용한 실제 파일 업로드 구현 필요
-      final response = await _httpClient.post<Map<String, dynamic>>(
+      final response = await _httpClient.postMultipart<Map<String, dynamic>>(
         '/pets/$petId/image',
-        data: {'imagePath': imagePath},
+        files: {'image': imagePath},
         fromJson: (data) => data,
       );
 
       if (response.isSuccess && response.data != null) {
-        final imageUrl = response.dataOrThrow['imageUrl'] as String;
-        return Success(imageUrl, '이미지가 성공적으로 업로드되었습니다');
+        final imageUrl = response.data!['imageUrl'] as String;
+        return Result.success('이미지가 성공적으로 업로드되었습니다', imageUrl);
       } else {
-        return Result.failure(response.error ?? '이미지 업로드에 실패했습니다');
+        return Result.failure(response.error?.toString() ?? '이미지 업로드에 실패했습니다');
       }
     } catch (error) {
       debugPrint('uploadPetImage error: $error');
@@ -263,7 +264,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     try {
       // 시뮬레이션된 공유 설정 업데이트
       await Future.delayed(const Duration(milliseconds: 200));
-      return const Success(null, '공유 설정이 성공적으로 업데이트되었습니다');
+      return Result.success('공유 설정이 성공적으로 업데이트되었습니다', null);
     } catch (error) {
       return Result.failure('공유 설정 업데이트에 실패했습니다: ${error.toString()}');
     }
@@ -274,7 +275,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     try {
       // 시뮬레이션된 가족 관리자 추가
       await Future.delayed(const Duration(milliseconds: 300));
-      return const Success(null, '가족 관리자가 성공적으로 추가되었습니다');
+      return Result.success('가족 관리자가 성공적으로 추가되었습니다', null);
     } catch (error) {
       return Result.failure('가족 관리자 추가에 실패했습니다: ${error.toString()}');
     }
@@ -285,7 +286,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     try {
       // 시뮬레이션된 가족 관리자 제거
       await Future.delayed(const Duration(milliseconds: 300));
-      return const Success(null, '가족 관리자가 성공적으로 제거되었습니다');
+      return Result.success('가족 관리자가 성공적으로 제거되었습니다', null);
     } catch (error) {
       return Result.failure('가족 관리자 제거에 실패했습니다: ${error.toString()}');
     }

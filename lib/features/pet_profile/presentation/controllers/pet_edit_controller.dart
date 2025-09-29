@@ -119,15 +119,10 @@ class PetEditNotifier extends _$PetEditNotifier {
           isEditMode: false,
           successMessage: 'ペットプロフィールを保存しました',
         );
-        return Result.success(true);
+        return Result.success('ペットプロフィールを保存しました', true);
       } else {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: result.errorOrNull,
-        );
-        return Result.failure(
-          result.errorOrNull ?? 'Failed to save pet profile',
-        );
+        state = state.copyWith(isLoading: false, errorMessage: result.message);
+        return Result.failure(result.message);
       }
     } catch (error) {
       state = state.copyWith(

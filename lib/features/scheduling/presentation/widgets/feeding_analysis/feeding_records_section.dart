@@ -14,8 +14,8 @@ class FeedingRecordsSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: const const const EdgeInsets.all(AppSpacing.lg),
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      margin: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -44,7 +44,7 @@ class FeedingRecordsSection extends StatelessWidget {
               GestureDetector(
                 onTap: () => _showAddFeedingDialog(context),
                 child: Container(
-                  padding: const const const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                     vertical: AppSpacing.sm,
                   ),
@@ -56,7 +56,7 @@ class FeedingRecordsSection extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(Icons.add, color: Colors.white, size: 16),
-                      const const const SizedBox(width: AppSpacing.xs),
+                      const SizedBox(width: AppSpacing.xs),
                       Text(
                         '追加',
                         style: AppFonts.fredoka(
@@ -71,7 +71,7 @@ class FeedingRecordsSection extends StatelessWidget {
               ),
             ],
           ),
-          const const const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.lg),
           ...recentRecords.map(
             (record) => FeedingRecordItem(
               amount: record['amount'],
@@ -138,7 +138,7 @@ class FeedingRecordsSection extends StatelessWidget {
                       },
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.md),
                   // 급여량 입력
                   TextField(
                     controller: amountController,
@@ -150,7 +150,7 @@ class FeedingRecordsSection extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.md),
                   // 메모 입력
                   TextField(
                     controller: noteController,
@@ -214,7 +214,7 @@ class FeedingRecordItem extends StatelessWidget {
     final isPositive = change.startsWith('+');
 
     return Container(
-      margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
           Container(
@@ -230,7 +230,7 @@ class FeedingRecordItem extends StatelessWidget {
               size: 20,
             ),
           ),
-          const const const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

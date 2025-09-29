@@ -98,7 +98,7 @@ class PetRegistrationErrorHandler {
         content: Row(
           children: [
             const Icon(Icons.error_outline, color: Colors.white, size: 20),
-            const const const SizedBox(width: 8),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 message,
@@ -110,7 +110,7 @@ class PetRegistrationErrorHandler {
         backgroundColor: Colors.red.shade600,
         duration: duration,
         behavior: SnackBarBehavior.floating,
-        margin: const const const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         action: SnackBarAction(
           label: '閉じる',
@@ -141,7 +141,7 @@ class PetRegistrationErrorHandler {
               color: Colors.white,
               size: 20,
             ),
-            const const const SizedBox(width: 8),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 message,
@@ -153,7 +153,7 @@ class PetRegistrationErrorHandler {
         backgroundColor: Colors.green.shade600,
         duration: duration,
         behavior: SnackBarBehavior.floating,
-        margin: const const const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
@@ -180,7 +180,7 @@ class PetRegistrationErrorHandler {
                 color: Colors.orange.shade600,
                 size: 24,
               ),
-              const const const SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(title),
             ],
           ),
@@ -221,7 +221,7 @@ class PetRegistrationErrorHandler {
           title: Row(
             children: [
               Icon(Icons.error_outline, color: Colors.red.shade600, size: 24),
-              const const const SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(title),
             ],
           ),

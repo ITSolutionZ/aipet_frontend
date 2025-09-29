@@ -16,7 +16,7 @@ class GetNotificationSettingsUseCase {
 
       final result = await _repository.getNotificationSettings(userId);
       if (result.isSuccess) {
-        return Result.success('通知設定を取得しました', result.dataOrNull ?? {});
+        return Result.success('通知設定を取得しました', result.dataOrNull);
       } else {
         return Result.failure('通知設定の取得に失敗しました');
       }

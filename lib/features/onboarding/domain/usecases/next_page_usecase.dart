@@ -25,7 +25,7 @@ class NextPageUseCase extends BaseUseCaseNoParams<void> {
         return saveResult;
       }
 
-      return Result.success(null, '다음 페이지로 이동했습니다');
+      return Result.success('다음 페이지로 이동했습니다', null);
     } catch (e) {
       return Result.failure('페이지 이동 중 오류가 발생했습니다: $e');
     }
@@ -58,7 +58,7 @@ class PreviousPageUseCase extends BaseUseCaseNoParams<void> {
         return saveResult;
       }
 
-      return Result.success(null, '이전 페이지로 이동했습니다');
+      return Result.success('이전 페이지로 이동했습니다', null);
     } catch (e) {
       return Result.failure('페이지 이동 중 오류가 발생했습니다: $e');
     }
@@ -82,7 +82,7 @@ class GoToPageUseCase extends BaseUseCase<void, int> {
         return saveResult;
       }
 
-      return Result.success(null, '페이지 $targetPage로 이동했습니다');
+      return Result.success('페이지 $targetPage로 이동했습니다', null);
     } catch (e) {
       return Result.failure('페이지 이동 중 오류가 발생했습니다: $e');
     }

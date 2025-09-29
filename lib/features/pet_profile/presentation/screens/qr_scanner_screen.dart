@@ -143,7 +143,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
   Widget _buildPermissionDenied() {
     return Center(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -152,7 +152,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
               size: 80,
               color: Colors.white.withValues(alpha: 0.7),
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               '카메라 권한이 필요합니다',
               style: AppFonts.titleLarge.copyWith(
@@ -161,7 +161,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'QR 코드를 스캔하기 위해 카메라 접근 권한을 허용해주세요.',
               style: AppFonts.bodyMedium.copyWith(
@@ -169,7 +169,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
             ElevatedButton(
               onPressed: () => ref
                   .read(qrScannerStateProvider.notifier)
@@ -177,7 +177,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBlue,
                 foregroundColor: Colors.white,
-                padding: const const const EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.xl,
                   vertical: AppSpacing.md,
                 ),
@@ -192,7 +192,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
                 ),
               ),
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
             TextButton(
               onPressed: () => context.pop(),
               child: Text(
@@ -240,7 +240,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const const const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   '자동으로 스캔됩니다',
                   style: AppFonts.bodySmall.copyWith(

@@ -59,7 +59,7 @@ class ScheduleController extends StateNotifier<ScheduleState> {
   // final MarkScheduleAsCompletedUseCase _markScheduleAsCompletedUseCase; // 今後実装予定
   final CancelScheduleUseCase _cancelScheduleUseCase;
 
-  const ScheduleController({
+  ScheduleController({
     required GetAllSchedulesUseCase getAllSchedulesUseCase,
     required GetSchedulesByDateUseCase getSchedulesByDateUseCase,
     required GetTodaySchedulesUseCase getTodaySchedulesUseCase,
@@ -93,7 +93,7 @@ class ScheduleController extends StateNotifier<ScheduleState> {
       if (result.isSuccess) {
         state = state.copyWith(isLoading: false, schedules: result.dataOrNull!);
       } else {
-        state = state.copyWith(isLoading: false, error: result.errorOrNull);
+        state = state.copyWith(isLoading: false, error: result.message);
       }
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());
@@ -162,7 +162,7 @@ class ScheduleController extends StateNotifier<ScheduleState> {
         final updatedSchedules = [...state.schedules, result.dataOrNull!];
         state = state.copyWith(isLoading: false, schedules: updatedSchedules);
       } else {
-        state = state.copyWith(isLoading: false, error: result.errorOrNull);
+        state = state.copyWith(isLoading: false, error: result.message);
       }
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());
@@ -176,19 +176,20 @@ class ScheduleController extends StateNotifier<ScheduleState> {
     try {
       final result = await _updateScheduleUseCase(schedule);
       if (result.isSuccess) {
+        final updatedSchedule = result.dataOrNull!;
         final updatedSchedules = state.schedules.map((s) {
-          return s.id == result.dataOrNull!.id ? result.dataOrNull! : s;
+          return s.id == updatedSchedule.id ? updatedSchedule : s;
         }).toList();
 
         state = state.copyWith(
           isLoading: false,
           schedules: updatedSchedules,
-          selectedSchedule: state.selectedSchedule?.id == result.dataOrNull!.id
-              ? result.dataOrNull!
+          selectedSchedule: state.selectedSchedule?.id == updatedSchedule.id
+              ? updatedSchedule
               : state.selectedSchedule,
         );
       } else {
-        state = state.copyWith(isLoading: false, error: result.errorOrNull);
+        state = state.copyWith(isLoading: false, error: result.message);
       }
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());
@@ -221,18 +222,23 @@ class ScheduleController extends StateNotifier<ScheduleState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      final updatedSchedule = await _updateScheduleStatusUseCase(id, status);
-      final updatedSchedules = state.schedules.map((s) {
-        return s.id == updatedSchedule.id ? updatedSchedule : s;
-      }).toList();
+      final result = await _updateScheduleStatusUseCase(id, status);
+      if (result.isSuccess) {
+        final updatedSchedule = result.dataOrNull!;
+        final updatedSchedules = state.schedules.map((s) {
+          return s.id == updatedSchedule.id ? updatedSchedule : s;
+        }).toList();
 
-      state = state.copyWith(
-        isLoading: false,
-        schedules: updatedSchedules,
-        selectedSchedule: state.selectedSchedule?.id == updatedSchedule.id
-            ? updatedSchedule
-            : state.selectedSchedule,
-      );
+        state = state.copyWith(
+          isLoading: false,
+          schedules: updatedSchedules,
+          selectedSchedule: state.selectedSchedule?.id == updatedSchedule.id
+              ? updatedSchedule
+              : state.selectedSchedule,
+        );
+      } else {
+        state = state.copyWith(isLoading: false, error: result.message);
+      }
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());
     }
@@ -248,18 +254,23 @@ class ScheduleController extends StateNotifier<ScheduleState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      final updatedSchedule = await _cancelScheduleUseCase(id, reason);
-      final updatedSchedules = state.schedules.map((s) {
-        return s.id == updatedSchedule.id ? updatedSchedule : s;
-      }).toList();
+      final result = await _cancelScheduleUseCase(id, reason);
+      if (result.isSuccess) {
+        final updatedSchedule = result.dataOrNull!;
+        final updatedSchedules = state.schedules.map((s) {
+          return s.id == updatedSchedule.id ? updatedSchedule : s;
+        }).toList();
 
-      state = state.copyWith(
-        isLoading: false,
-        schedules: updatedSchedules,
-        selectedSchedule: state.selectedSchedule?.id == updatedSchedule.id
-            ? updatedSchedule
-            : state.selectedSchedule,
-      );
+        state = state.copyWith(
+          isLoading: false,
+          schedules: updatedSchedules,
+          selectedSchedule: state.selectedSchedule?.id == updatedSchedule.id
+              ? updatedSchedule
+              : state.selectedSchedule,
+        );
+      } else {
+        state = state.copyWith(isLoading: false, error: result.message);
+      }
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());
     }

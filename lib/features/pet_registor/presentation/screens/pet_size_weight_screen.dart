@@ -96,7 +96,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('0.5kg ~ 50.0kg 사이의 값을 입력해주세요'),
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -209,7 +209,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                 controller: _scrollController,
                 slivers: [
                   SliverPadding(
-                    padding: const const const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.lg,
                     ),
                     sliver: SliverList(
@@ -219,7 +219,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                           children: [
                             // 프로그레스바
                             const PetRegistrationProgressBar(currentStep: 4),
-                            const const const SizedBox(height: AppSpacing.md),
+                            const SizedBox(height: AppSpacing.md),
 
                             // 제목
                             Consumer(
@@ -240,7 +240,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                                 );
                               },
                             ),
-                            const const const SizedBox(height: AppSpacing.md),
+                            const SizedBox(height: AppSpacing.md),
 
                             // 펫 이미지
                             PetImageDisplay(
@@ -249,7 +249,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                               height: 100,
                               badge: _isNeutered
                                   ? Container(
-                                      padding: const const const EdgeInsets.symmetric(
+                                      padding: const EdgeInsets.symmetric(
                                         horizontal: 6,
                                         vertical: 3,
                                       ),
@@ -267,7 +267,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                                     )
                                   : null,
                             ),
-                            const const const SizedBox(height: AppSpacing.md),
+                            const SizedBox(height: AppSpacing.md),
 
                             // 사이즈 선택 버튼들
                             PetSizeSelectionGroupWidget(
@@ -279,7 +279,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                                 _updateWeightBasedOnSize();
                               },
                             ),
-                            const const const SizedBox(height: AppSpacing.md),
+                            const SizedBox(height: AppSpacing.md),
 
                             // 체중 표시 (중앙) - 크기 축소
                             WeightDisplayWidget(
@@ -294,7 +294,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                                 _saveToGlobalState();
                               },
                             ),
-                            const const const SizedBox(height: AppSpacing.sm),
+                            const SizedBox(height: AppSpacing.sm),
 
                             // 체중 슬라이더 - 크기 축소
                             WeightSliderWidget(
@@ -323,7 +323,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
 
             // 하단 고정 버튼 영역
             Container(
-              padding: const const const EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.md,
               ),

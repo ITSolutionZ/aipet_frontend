@@ -175,7 +175,7 @@ class _AddYouTubeVideoDialogContentState
 
     return AlertDialog(
       title: const Text('YouTubeビデオを追加'),
-      contentPadding: const const const EdgeInsets.all(AppSpacing.lg),
+      contentPadding: const EdgeInsets.all(AppSpacing.lg),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
         child: Form(
@@ -187,19 +187,19 @@ class _AddYouTubeVideoDialogContentState
               children: [
                 // YouTube URL 입력
                 _buildUrlField(),
-                const const const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
                 // 제목 입력
                 _buildTitleField(),
-                const const const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
                 // 설명 입력
                 _buildDescriptionField(),
-                const const const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
                 // 태그 입력
                 _buildTagField(),
-                const const const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.sm),
 
                 // 태그 목록
                 if (state.tags.isNotEmpty) _buildTagList(state.tags),
@@ -235,13 +235,13 @@ class _AddYouTubeVideoDialogContentState
           'YouTube URL *',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: _urlController,
           decoration: const InputDecoration(
             hintText: 'https://www.youtube.com/watch?v=...',
             border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.sm,
             ),
@@ -276,13 +276,13 @@ class _AddYouTubeVideoDialogContentState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('タイトル *', style: TextStyle(fontWeight: FontWeight.bold)),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: _titleController,
           decoration: const InputDecoration(
             hintText: 'ビデオタイトルを入力してください',
             border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.sm,
             ),
@@ -303,13 +303,13 @@ class _AddYouTubeVideoDialogContentState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('설명', style: TextStyle(fontWeight: FontWeight.bold)),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: _descriptionController,
           decoration: const InputDecoration(
             hintText: '비디오에 대한 설명을 입력하세요 (선택사항)',
             border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.sm,
             ),
@@ -325,7 +325,7 @@ class _AddYouTubeVideoDialogContentState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('태그', style: TextStyle(fontWeight: FontWeight.bold)),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         Row(
           children: [
             Expanded(
@@ -334,7 +334,7 @@ class _AddYouTubeVideoDialogContentState
                 decoration: const InputDecoration(
                   hintText: '태그를 입력하세요 (예: sit, stay, roll)',
                   border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.sm,
                     vertical: AppSpacing.sm,
                   ),
@@ -342,11 +342,11 @@ class _AddYouTubeVideoDialogContentState
                 onFieldSubmitted: (_) => _addTag(),
               ),
             ),
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             ElevatedButton(
               onPressed: _addTag,
               style: ElevatedButton.styleFrom(
-                padding: const const const EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
                   vertical: AppSpacing.sm,
                 ),
@@ -367,7 +367,7 @@ class _AddYouTubeVideoDialogContentState
           '추가된 태그:',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         ),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         Wrap(
           spacing: AppSpacing.xs,
           runSpacing: AppSpacing.xs,

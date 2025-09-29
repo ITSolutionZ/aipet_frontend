@@ -18,7 +18,7 @@ class TimeSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -29,11 +29,11 @@ class TimeSelector extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             InkWell(
               onTap: onTimeTap,
               child: Container(
-                padding: const const const EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   border: Border.all(color: AppColors.pointGray),
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -41,7 +41,7 @@ class TimeSelector extends StatelessWidget {
                 child: Row(
                   children: [
                     const Icon(Icons.access_time, color: AppColors.pointBrown),
-                    const const const SizedBox(width: AppSpacing.md),
+                    const SizedBox(width: AppSpacing.md),
                     Text(
                       selectedTime.format(context),
                       style: AppFonts.bodyMedium.copyWith(

@@ -13,16 +13,16 @@ class AiApiConstants {
   static const double openaiTemperature = 0.7;
 
   // API 타임아웃 설정
-  static const Duration connectTimeout = Duration(seconds: 30);
-  static const Duration receiveTimeout = Duration(seconds: 60);
-  static const Duration shortTimeout = Duration(seconds: 5);
+  static const Duration connectTimeout = const Duration(seconds: 30);
+  static const Duration receiveTimeout = const Duration(seconds: 60);
+  static const Duration shortTimeout = const Duration(seconds: 5);
 
   // 재시도 설정
   static const int maxRetries = 3;
-  static const Duration retryDelay = Duration(seconds: 2);
+  static const Duration retryDelay = const Duration(seconds: 2);
 
   // 콘텐츠 필터링 설정
-  static const Duration contentFilterTimeout = Duration(seconds: 8);
+  static const Duration contentFilterTimeout = const Duration(seconds: 8);
   static const int contentFilterMaxTokens = 10;
   static const double contentFilterTemperature = 0.0;
 }
@@ -37,16 +37,22 @@ class AiStorageConstants {
   static const String favoriteQAsKey = 'ai_favorite_qas';
 
   // 캐시 설정
-  static const Duration cacheTimeout = Duration(minutes: 30);
+  static const Duration cacheTimeout = const Duration(minutes: 30);
   static const int maxCacheSize = 100;
 }
 
 /// AI UI 관련 상수
 class AiUIConstants {
   // 애니메이션 지속 시간
-  static const Duration typingAnimationDuration = Duration(milliseconds: 1500);
-  static const Duration messageAnimationDuration = Duration(milliseconds: 300);
-  static const Duration fadeAnimationDuration = Duration(milliseconds: 200);
+  static const Duration typingAnimationDuration = const Duration(
+    milliseconds: 1500,
+  );
+  static const Duration messageAnimationDuration = const Duration(
+    milliseconds: 300,
+  );
+  static const Duration fadeAnimationDuration = const Duration(
+    milliseconds: 200,
+  );
 
   // UI 제한값
   static const int maxMessageLength = 2000;
@@ -54,7 +60,9 @@ class AiUIConstants {
   static const int maxSuggestedQuestions = 10;
 
   // 타이핑 인디케이터 설정
-  static const Duration typingIndicatorDelay = Duration(milliseconds: 500);
+  static const Duration typingIndicatorDelay = const Duration(
+    milliseconds: 500,
+  );
   static const int typingIndicatorDots = 3;
 }
 

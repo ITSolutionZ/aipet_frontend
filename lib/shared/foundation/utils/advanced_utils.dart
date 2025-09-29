@@ -6,9 +6,10 @@ library;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math' as math;
 
-import 'package:aipet_frontend/shared/foundation/result/result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 고급 비동기 유틸리티
 class AdvancedAsyncUtils {
@@ -38,12 +39,11 @@ class AdvancedAsyncUtils {
   }) async {
     try {
       final result = await future.timeout(timeout);
-      return Result.success(result);
+      return Result.success('Operation completed successfully', result);
     } on TimeoutException {
       return Result.failure(
         timeoutMessage ??
             'Operation timed out after ${timeout.inSeconds} seconds',
-        code: 'TIMEOUT',
       );
     } catch (e) {
       return Result.fromException(Exception(e.toString()));
@@ -58,7 +58,6 @@ class AdvancedAsyncUtils {
     final completer = Completer<T>();
     Timer? timer;
 
-    timer?.cancel();
     timer = Timer(delay, () async {
       try {
         final result = await operation();
@@ -70,6 +69,7 @@ class AdvancedAsyncUtils {
           completer.completeError(e);
         }
       }
+      timer?.cancel();
     });
 
     return completer.future;
@@ -300,12 +300,9 @@ class AdvancedJsonUtils {
   static Result<String> toJson(dynamic object) {
     try {
       final json = jsonEncode(object);
-      return Result.success(json);
+      return Result.success('JSON conversion successful', json);
     } catch (e) {
-      return Result.failure(
-        'Failed to convert to JSON: ${e.toString()}',
-        code: 'JSON_ENCODE_ERROR',
-      );
+      return Result.failure('Failed to convert to JSON: ${e.toString()}');
     }
   }
 
@@ -317,12 +314,9 @@ class AdvancedJsonUtils {
     try {
       final json = jsonDecode(jsonString) as Map<String, dynamic>;
       final object = fromJsonConverter(json);
-      return Result.success(object);
+      return Result.success('JSON parsing successful', object);
     } catch (e) {
-      return Result.failure(
-        'Failed to parse JSON: ${e.toString()}',
-        code: 'JSON_DECODE_ERROR',
-      );
+      return Result.failure('Failed to parse JSON: ${e.toString()}');
     }
   }
 
@@ -336,12 +330,9 @@ class AdvancedJsonUtils {
       final objects = jsonList
           .map((item) => fromJsonConverter(item as Map<String, dynamic>))
           .toList();
-      return Result.success(objects);
+      return Result.success('JSON list parsing successful', objects);
     } catch (e) {
-      return Result.failure(
-        'Failed to parse JSON list: ${e.toString()}',
-        code: 'JSON_DECODE_ERROR',
-      );
+      return Result.failure('Failed to parse JSON list: ${e.toString()}');
     }
   }
 
@@ -351,13 +342,26 @@ class AdvancedJsonUtils {
     T Function(Map<String, dynamic>) fromJsonConverter,
   ) async {
     try {
-      // TODO: 파일 읽기 구현 (path_provider 등 사용)
-      throw UnimplementedError('File reading not implemented yet');
+      // 실제 파일 읽기 구현
+      final file = File(filePath);
+
+      // 파일 존재 확인
+      if (!await file.exists()) {
+        return Result.failure('File does not exist: $filePath');
+      }
+
+      // 파일 읽기
+      final jsonString = await file.readAsString();
+
+      // JSON 파싱
+      final jsonData = jsonDecode(jsonString) as Map<String, dynamic>;
+
+      // 객체 변환
+      final object = fromJsonConverter(jsonData);
+
+      return Result.success('JSON file loaded successfully', object);
     } catch (e) {
-      return Result.failure(
-        'Failed to load JSON from file: ${e.toString()}',
-        code: 'FILE_READ_ERROR',
-      );
+      return Result.failure('Failed to load JSON from file: ${e.toString()}');
     }
   }
 }
@@ -544,7 +548,21 @@ extension DateTimeExtensions on DateTime {
 
   /// 날짜를 포맷된 문자열로 변환
   String format(String pattern) {
-    // TODO: 날짜 포맷팅 구현 (intl 패키지 등 사용)
-    return toIso8601String();
+    // 기본 날짜 포맷팅 구현
+    switch (pattern) {
+      case 'yyyy-MM-dd':
+        return '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
+      case 'MM/dd/yyyy':
+        return '${month.toString().padLeft(2, '0')}/${day.toString().padLeft(2, '0')}/${year.toString().padLeft(4, '0')}';
+      case 'dd/MM/yyyy':
+        return '${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}/${year.toString().padLeft(4, '0')}';
+      case 'HH:mm':
+        return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+      case 'yyyy-MM-dd HH:mm':
+        return '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')} ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+      default:
+        // 기본값으로 ISO 8601 형식 반환
+        return toIso8601String();
+    }
   }
 }

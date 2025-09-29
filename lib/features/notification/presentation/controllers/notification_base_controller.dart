@@ -34,7 +34,7 @@ class NotificationBaseController extends BaseController {
   ) async {
     try {
       final notifications = await _getNotificationsUseCase.call(userId);
-      return notifications;
+      return notifications.dataOrNull ?? [];
     } catch (error) {
       if (context.mounted) {
         showErrorSnackBar(context, '通知の読み込みに失敗しました: $error');
@@ -135,13 +135,13 @@ class NotificationBaseController extends BaseController {
     try {
       final result = await _requestPermissionUseCase.call();
       if (context.mounted) {
-        if (result) {
+        if (result.dataOrNull ?? false) {
           showSuccessSnackBar(context, '通知の許可が許可されました。');
         } else {
           showWarningSnackBar(context, '通知の許可が拒否されました。');
         }
       }
-      return result;
+      return result.dataOrNull ?? false;
     } catch (error) {
       if (context.mounted) {
         showErrorSnackBar(context, '通知の許可の要求に失敗しました: $error');
@@ -154,9 +154,10 @@ class NotificationBaseController extends BaseController {
   Future<int> getUnreadCount(String userId) async {
     try {
       final notifications = await _getNotificationsUseCase.call(userId);
-      return notifications
-          .where((n) => n.status == NotificationStatus.unread)
-          .length;
+      return notifications.dataOrNull
+              ?.where((n) => n.status == NotificationStatus.unread)
+              .length ??
+          0;
     } catch (error) {
       handleError(error);
       return 0;
@@ -166,7 +167,8 @@ class NotificationBaseController extends BaseController {
   /// 알림 설정 가져오기
   Future<Map<String, dynamic>> getNotificationSettings(String userId) async {
     try {
-      return await _getSettingsUseCase.call(userId);
+      final result = await _getSettingsUseCase.call(userId);
+      return result.dataOrNull ?? {};
     } catch (error) {
       handleError(error);
       return {};

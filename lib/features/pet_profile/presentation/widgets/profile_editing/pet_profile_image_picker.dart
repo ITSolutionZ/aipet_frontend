@@ -2,6 +2,7 @@ import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 /// Pet Profile 이미지 선택 다이얼로그
 class PetProfileImagePicker {
@@ -37,7 +38,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
             Container(
               width: 40,
               height: 4,
-              margin: const const const EdgeInsets.only(top: AppSpacing.sm),
+              margin: const EdgeInsets.only(top: AppSpacing.sm),
               decoration: BoxDecoration(
                 color: AppColors.pointDark.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
@@ -46,7 +47,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
 
             // 타이틀
             Padding(
-              padding: const const const EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Text(
                 '프로필 이미지 선택',
                 style: AppFonts.headlineSmall.copyWith(
@@ -58,7 +59,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
 
             // 옵션들
             Padding(
-              padding: const const const EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.md,
               ),
@@ -72,11 +73,11 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                     subtitle: '디바이스에서 이미지를 선택합니다',
                     onTap: () {
                       Navigator.pop(context);
-                      _selectFromGallery();
+                      _selectFromGallery(context);
                     },
                   ),
 
-                  const const const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.sm),
 
                   // 카메라로 촬영
                   _buildOptionTile(
@@ -86,11 +87,11 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                     subtitle: '새로운 사진을 촬영합니다',
                     onTap: () {
                       Navigator.pop(context);
-                      _takePhoto();
+                      _takePhoto(context);
                     },
                   ),
 
-                  const const const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.sm),
 
                   // 기본 이미지 선택
                   _buildOptionTile(
@@ -104,7 +105,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                     },
                   ),
 
-                  const const const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // 취소 버튼
                   CommonButton(
@@ -115,7 +116,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                   ),
 
-                  const const const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.md),
                 ],
               ),
             ),
@@ -136,7 +137,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.medium),
       child: Container(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.pointDark.withValues(alpha: 0.1)),
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -152,7 +153,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
               ),
               child: Icon(icon, color: AppColors.pointBrown, size: 24),
             ),
-            const const const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +165,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                       color: AppColors.pointDark,
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.xs / 2),
+                  const SizedBox(height: AppSpacing.xs / 2),
                   Text(
                     subtitle,
                     style: AppFonts.bodySmall.copyWith(
@@ -181,22 +182,86 @@ class _ImagePickerBottomSheet extends StatelessWidget {
     );
   }
 
-  void _selectFromGallery() {
-    // TODO: 실제 갤러리 선택 구현
+  void _selectFromGallery(BuildContext context) async {
+    // 실제 갤러리 선택 구현
     final formController = ref.read(petProfileFormControllerProvider.notifier);
 
-    // Mock: 갤러리에서 선택된 이미지 경로
-    const mockImagePath = 'assets/images/pets/selected_pet.png';
-    formController.updateImagePath(mockImagePath);
+    try {
+      // image_picker 패키지를 사용한 갤러리 선택
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+
+      if (image != null) {
+        // 선택된 이미지 경로 업데이트
+        formController.updateImagePath(image.path);
+
+        // 성공 메시지 표시
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('画像を選択しました'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (error) {
+      // 에러 처리
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('画像の選択に失敗しました: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
-  void _takePhoto() {
-    // TODO: 실제 카메라 촬영 구현
+  void _takePhoto(BuildContext context) async {
+    // 실제 카메라 촬영 구현
     final formController = ref.read(petProfileFormControllerProvider.notifier);
 
-    // Mock: 카메라로 촬영된 이미지 경로
-    const mockImagePath = 'assets/images/pets/camera_pet.png';
-    formController.updateImagePath(mockImagePath);
+    try {
+      // image_picker 패키지를 사용한 카메라 촬영
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+
+      if (image != null) {
+        // 촬영된 이미지 경로 업데이트
+        formController.updateImagePath(image.path);
+
+        // 성공 메시지 표시
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('写真を撮影しました'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (error) {
+      // 에러 처리
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('写真の撮影に失敗しました: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _selectDefaultImage(BuildContext context) {

@@ -28,7 +28,7 @@ class TrickCategorySection extends StatelessWidget {
       children: [
         // 카테고리 헤더
         Padding(
-          padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Text(
             _getCategoryDisplayName(category),
             style: AppFonts.fredoka(
@@ -38,7 +38,7 @@ class TrickCategorySection extends StatelessWidget {
             ),
           ),
         ),
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
 
         // 트릭 목록
         ListView.builder(
@@ -48,7 +48,7 @@ class TrickCategorySection extends StatelessWidget {
           itemBuilder: (context, index) {
             final trick = tricks[index];
             return Padding(
-              padding: const const const EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.xs,
               ),
@@ -56,7 +56,7 @@ class TrickCategorySection extends StatelessWidget {
             );
           },
         ),
-        const const const SizedBox(height: AppSpacing.lg),
+        const SizedBox(height: AppSpacing.lg),
       ],
     );
   }
@@ -71,7 +71,7 @@ class TrickCategorySection extends StatelessWidget {
         onTap: () => onShowTrickDetail(trick),
         borderRadius: BorderRadius.circular(AppSpacing.md),
         child: Padding(
-          padding: const const const EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
               // 트릭 이미지
@@ -93,7 +93,7 @@ class TrickCategorySection extends StatelessWidget {
                         size: 30,
                       ),
               ),
-              const const const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
 
               // 트릭 정보
               Expanded(
@@ -106,7 +106,7 @@ class TrickCategorySection extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       trick.description,
                       style: AppFonts.bodySmall.copyWith(
@@ -115,11 +115,11 @@ class TrickCategorySection extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const const const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         _buildDifficultyChip(trick.difficulty),
-                        const const const SizedBox(width: AppSpacing.sm),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           '${trick.estimatedTime}分',
                           style: AppFonts.bodySmall.copyWith(
@@ -168,7 +168,7 @@ class TrickCategorySection extends StatelessWidget {
     }
 
     return Container(
-      padding: const const const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),

@@ -20,7 +20,7 @@ class NotificationCacheService {
   // Note: Last updated tracking removed for simplified frontend-centric approach
 
   // 캐시 만료 시간 (30분)
-  static const Duration _cacheExpiration = Duration(minutes: 30);
+  static const Duration _cacheExpiration = const Duration(minutes: 30);
 
   static SharedPreferences? _prefs;
 
@@ -56,7 +56,7 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 알림 캐시 저장 완료: ${notifications.length}개');
       }
 
-      return Result.success(true, 'Notifications cached successfully');
+      return Result.success('Notifications cached successfully', true);
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 알림 캐시 저장 실패: $error');
@@ -101,7 +101,7 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 캐시된 알림 조회 성공: ${notifications.length}개');
       }
 
-      return Result.success(notifications, 'Cached notifications retrieved');
+      return Result.success('Cached notifications retrieved', notifications);
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 캐시 조회 실패: $error');
@@ -133,7 +133,7 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 설정 캐시 저장 완료');
       }
 
-      return Result.success(true, 'Settings cached successfully');
+      return Result.success('Settings cached successfully', true);
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 설정 캐시 저장 실패: $error');
@@ -176,7 +176,7 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 캐시된 설정 조회 성공');
       }
 
-      return Result.success(settings, 'Cached settings retrieved');
+      return Result.success('Cached settings retrieved', settings);
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 설정 캐시 조회 실패: $error');
@@ -200,7 +200,7 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 사용자 캐시 삭제 완료: $userId');
       }
 
-      return Result.success(true, 'User cache cleared successfully');
+      return Result.success('User cache cleared successfully', true);
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 캐시 삭제 실패: $error');
@@ -227,7 +227,7 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 전체 캐시 삭제 완료');
       }
 
-      return Result.success(true, 'All cache cleared successfully');
+      return Result.success('All cache cleared successfully', true);
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 전체 캐시 삭제 실패: $error');

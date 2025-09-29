@@ -17,7 +17,7 @@ class TodayMealsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -48,7 +48,7 @@ class TodayMealsCard extends StatelessWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         Row(
           children: [
             for (int i = 0; i < todayMeals.length; i++)

@@ -75,7 +75,7 @@ class GenericInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return WhiteCard(
       onTap: onTap,
-      padding: padding ?? const const const EdgeInsets.all(AppSpacing.md),
+      padding: padding ?? const EdgeInsets.all(AppSpacing.md),
       child: InkWell(
         onLongPress: onLongPress,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -83,7 +83,7 @@ class GenericInfoCard extends StatelessWidget {
           children: [
             if (leading != null) ...[
               leading!,
-              const const const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
             ],
             Expanded(
               child: Column(
@@ -102,9 +102,9 @@ class GenericInfoCard extends StatelessWidget {
                           ),
                         ),
                         if (badge != null) ...[
-                          const const const SizedBox(width: AppSpacing.sm),
+                          const SizedBox(width: AppSpacing.sm),
                           Container(
-                            padding: const const const EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.sm,
                               vertical: AppSpacing.xs,
                             ),
@@ -128,7 +128,7 @@ class GenericInfoCard extends StatelessWidget {
                     ),
                   ],
                   if (subtitle != null) ...[
-                    const const const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       subtitle!,
                       style: AppFonts.bodySmall.copyWith(
@@ -140,11 +140,11 @@ class GenericInfoCard extends StatelessWidget {
               ),
             ),
             if (trailing != null) ...[
-              const const const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
               trailing!,
             ],
             if (showChevron && onTap != null) ...[
-              const const const SizedBox(width: AppSpacing.sm),
+              const SizedBox(width: AppSpacing.sm),
               const Icon(
                 Icons.chevron_right,
                 color: AppColors.pointGray,

@@ -45,7 +45,7 @@ class GlassButton extends StatelessWidget {
     this.opacity = 0.18,
     this.borderWidth = 1,
     this.borderColor,
-    this.padding = const const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+    this.padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
     this.textStyle,
     this.leading,
     this.trailing,
@@ -55,6 +55,7 @@ class GlassButton extends StatelessWidget {
   const GlassButton.dense({
     super.key,
     required this.label,
+    required this.onPressed,
     this.isPrimary = true,
     this.isLoading = false,
     this.expand = false,
@@ -68,12 +69,12 @@ class GlassButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.constraints,
-  }) : padding = const const EdgeInsets.symmetric(horizontal = 12, {super.key}),
-       onPressed = isLoading ? null : onPressed;
+  }) : padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 
   const GlassButton.medium({
     super.key,
     required this.label,
+    required this.onPressed,
     this.isPrimary = true,
     this.isLoading = false,
     this.expand = false,
@@ -87,12 +88,12 @@ class GlassButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.constraints,
-  }) : padding = const const EdgeInsets.symmetric(horizontal = 20, {super.key}),
-       onPressed = isLoading ? null : onPressed;
+  }) : padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 14);
 
   const GlassButton.large({
     super.key,
     required this.label,
+    required this.onPressed,
     this.isPrimary = true,
     this.isLoading = false,
     this.expand = false,
@@ -106,8 +107,7 @@ class GlassButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.constraints,
-  }) : padding = const const EdgeInsets.symmetric(horizontal = 28, {super.key}),
-       onPressed = isLoading ? null : onPressed;
+  }) : padding = const EdgeInsets.symmetric(horizontal: 28, vertical: 18);
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +123,7 @@ class GlassButton extends StatelessWidget {
       backgroundColor: isPrimary ? null : Colors.transparent,
       borderColor: borderColor,
       padding:
-          padding != const const const EdgeInsets.symmetric(vertical: 14, horizontal: 20)
+          padding != const EdgeInsets.symmetric(vertical: 14, horizontal: 20)
           ? padding
           : null,
       textStyle: textStyle,
@@ -132,10 +132,10 @@ class GlassButton extends StatelessWidget {
   }
 
   ButtonSize _getSize() {
-    if (padding == const const EdgeInsets.symmetric(vertical: 8, horizontal: 12)) {
+    if (padding == const EdgeInsets.symmetric(vertical: 8, horizontal: 12)) {
       return ButtonSize.small;
     }
-    if (padding == const const EdgeInsets.symmetric(vertical: 18, horizontal: 28)) {
+    if (padding == const EdgeInsets.symmetric(vertical: 18, horizontal: 28)) {
       return ButtonSize.large;
     }
     return ButtonSize.medium;
@@ -166,7 +166,7 @@ class PointButton extends StatelessWidget {
     this.trailing,
     this.backgroundColor,
     this.foregroundColor,
-    this.padding = const const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+    this.padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
     this.textStyle,
     this.borderRadius = 12,
   }) : onPressed = isLoading ? null : onPressed;
@@ -174,6 +174,7 @@ class PointButton extends StatelessWidget {
   const PointButton.small({
     super.key,
     required this.label,
+    required this.onPressed,
     this.isLoading = false,
     this.expand = false,
     this.leading,
@@ -182,12 +183,12 @@ class PointButton extends StatelessWidget {
     this.foregroundColor,
     this.textStyle,
     this.borderRadius = 10,
-  }) : padding = const const EdgeInsets.symmetric(horizontal = 12, {super.key}),
-       onPressed = isLoading ? null : onPressed;
+  }) : padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 
   const PointButton.medium({
     super.key,
     required this.label,
+    required this.onPressed,
     this.isLoading = false,
     this.expand = false,
     this.leading,
@@ -196,12 +197,12 @@ class PointButton extends StatelessWidget {
     this.foregroundColor,
     this.textStyle,
     this.borderRadius = 12,
-  }) : padding = const const EdgeInsets.symmetric(horizontal = 20, {super.key}),
-       onPressed = isLoading ? null : onPressed;
+  }) : padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 14);
 
   const PointButton.large({
     super.key,
     required this.label,
+    required this.onPressed,
     this.isLoading = false,
     this.expand = false,
     this.leading,
@@ -210,8 +211,7 @@ class PointButton extends StatelessWidget {
     this.foregroundColor,
     this.textStyle,
     this.borderRadius = 14,
-  }) : padding = const const EdgeInsets.symmetric(horizontal = 28, {super.key}),
-       onPressed = isLoading ? null : onPressed;
+  }) : padding = const EdgeInsets.symmetric(horizontal: 28, vertical: 18);
 
   @override
   Widget build(BuildContext context) {
@@ -232,10 +232,10 @@ class PointButton extends StatelessWidget {
   }
 
   ButtonSize _getSize() {
-    if (padding == const const EdgeInsets.symmetric(vertical: 8, horizontal: 12)) {
+    if (padding == const EdgeInsets.symmetric(vertical: 8, horizontal: 12)) {
       return ButtonSize.small;
     }
-    if (padding == const const EdgeInsets.symmetric(vertical: 18, horizontal: 28)) {
+    if (padding == const EdgeInsets.symmetric(vertical: 18, horizontal: 28)) {
       return ButtonSize.large;
     }
     return ButtonSize.medium;
@@ -243,9 +243,9 @@ class PointButton extends StatelessWidget {
 
   bool _isCustomPadding() {
     return padding !=
-            const const const EdgeInsets.symmetric(vertical: 14, horizontal: 20) &&
-        padding != const const const EdgeInsets.symmetric(vertical: 8, horizontal: 12) &&
-        padding != const const const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
+            const EdgeInsets.symmetric(vertical: 14, horizontal: 20) &&
+        padding != const EdgeInsets.symmetric(vertical: 8, horizontal: 12) &&
+        padding != const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
   }
 }
 
@@ -269,7 +269,7 @@ class PointTextButton extends StatelessWidget {
     this.trailing,
     this.textColor,
     this.textStyle,
-    this.padding = const const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+    this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
   }) : onPressed = isLoading ? null : onPressed;
 
   @override
@@ -312,7 +312,7 @@ class PointOutlinedButton extends StatelessWidget {
     this.borderColor,
     this.textColor,
     this.textStyle,
-    this.padding = const const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+    this.padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
     this.borderRadius = 12,
   }) : onPressed = isLoading ? null : onPressed;
 

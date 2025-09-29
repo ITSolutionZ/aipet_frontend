@@ -81,7 +81,8 @@ class YouTubeVideosController {
   ) async {
     final repository = ref.read(petActivitiesRepositoryProvider);
     final useCase = GetYouTubeVideosUseCase(repository);
-    return useCase.getByTags(petId, tags);
+    final result = await useCase.getByTags(petId, tags);
+    return result.dataOrNull ?? [];
   }
 
   /// 검색어로 비디오를 검색합니다.
@@ -91,6 +92,7 @@ class YouTubeVideosController {
   ) async {
     final repository = ref.read(petActivitiesRepositoryProvider);
     final useCase = GetYouTubeVideosUseCase(repository);
-    return useCase.search(petId, query);
+    final result = await useCase.search(petId, query);
+    return result.dataOrNull ?? [];
   }
 }

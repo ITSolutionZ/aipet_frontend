@@ -22,7 +22,7 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       if (kDebugMode) {
         print('클립보드 복사 에러: $e');
       }
-      return const Failure('클립보드 복사에 실패했습니다');
+      return Result.failure('클립보드 복사에 실패했습니다');
     }
   }
 
@@ -48,17 +48,14 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       await file.writeAsString(content, encoding: const Utf8Codec());
 
       // 실제 이미지 생성 및 저장
-      await _generateWalkRecordImage(
-        walkRecord,
-        imagesDir.path,
-      );
+      await _generateWalkRecordImage(walkRecord, imagesDir.path);
 
       return Result.success('산책 기록 이미지가 생성되었습니다');
     } catch (e) {
       if (kDebugMode) {
         print('이미지 저장 에러: $e');
       }
-      return const Failure('이미지 저장에 실패했습니다');
+      return Result.failure('이미지 저장에 실패했습니다');
     }
   }
 
@@ -71,7 +68,7 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       if (kDebugMode) {
         print('시스템 공유 에러: $e');
       }
-      return const Failure('시스템 공유에 실패했습니다');
+      return Result.failure('시스템 공유에 실패했습니다');
     }
   }
 

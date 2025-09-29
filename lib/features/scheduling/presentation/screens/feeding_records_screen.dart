@@ -48,7 +48,7 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
         controller: _scrollController,
         slivers: [
           SliverPadding(
-            padding: const const const EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 Column(
@@ -59,7 +59,7 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
                       feedingRecords: feedingRecords,
                       statistics: statistics,
                     ),
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 기록 목록
                     Text(
@@ -69,7 +69,7 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
                         color: AppColors.pointDark,
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.md),
 
                     // 기록 목록
                     ...feedingRecords.map(

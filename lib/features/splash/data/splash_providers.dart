@@ -38,7 +38,7 @@ Future<SplashEntity> splashConfig(Ref ref) async {
   if (result.isSuccess && result.dataOrNull != null) {
     return result.dataOrNull!;
   } else {
-    throw Exception(result.errorOrNull ?? 'Unknown error');
+    throw Exception(result.error ?? 'Unknown error');
   }
 }
 

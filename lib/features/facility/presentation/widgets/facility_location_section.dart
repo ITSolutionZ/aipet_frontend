@@ -1,5 +1,7 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,7 +25,7 @@ class FacilityLocationSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
 
         // 주소 정보
         Column(
@@ -33,12 +35,12 @@ class FacilityLocationSection extends StatelessWidget {
               '住所: ${facility.address}',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
             ),
-            const const const SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               '市区町村: ${facility.address}',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
             ),
-            const const const SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               '国: ${facility.address}',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
@@ -46,7 +48,7 @@ class FacilityLocationSection extends StatelessWidget {
           ],
         ),
 
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
 
         // Google Maps 지도
         FacilityGoogleMapWidget(

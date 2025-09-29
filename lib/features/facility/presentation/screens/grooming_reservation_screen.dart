@@ -2,7 +2,14 @@ import 'package:aipet_frontend/features/facility/presentation/controllers/groomi
 import 'package:aipet_frontend/features/facility/presentation/widgets/facility_card.dart';
 import 'package:aipet_frontend/features/facility/presentation/widgets/filter_chips.dart';
 import 'package:aipet_frontend/features/facility/presentation/widgets/search_bar_widget.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+
+import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
+import 'package:aipet_frontend/shared/foundation/error_handler/app_error_handler.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/widgets/soft_gradient_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -61,7 +68,7 @@ class _GroomingReservationScreenState
             children: [
               // 검색바
               Padding(
-                padding: const const const EdgeInsets.all(AppSpacing.lg),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 child: SearchBarWidget(
                   controller: _searchController,
                   onChanged: _onSearchChanged,
@@ -71,14 +78,14 @@ class _GroomingReservationScreenState
 
               // 필터 칩
               Padding(
-                padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 child: FilterChips(
                   currentFilter: state.currentFilter,
                   onFilterChanged: _onFilterChanged,
                 ),
               ),
 
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 시설 목록
               Expanded(
@@ -92,7 +99,7 @@ class _GroomingReservationScreenState
                               size: 64,
                               color: Colors.grey[400],
                             ),
-                            const const const SizedBox(height: AppSpacing.md),
+                            const SizedBox(height: AppSpacing.md),
                             Text(
                               '検索結果がありません',
                               style: AppFonts.bodyMedium.copyWith(
@@ -103,14 +110,14 @@ class _GroomingReservationScreenState
                         ),
                       )
                     : ListView.builder(
-                        padding: const const const EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.lg,
                         ),
                         itemCount: state.filteredFacilities.length,
                         itemBuilder: (context, index) {
                           final facility = state.filteredFacilities[index];
                           return Padding(
-                            padding: const const const EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                               bottom: AppSpacing.md,
                             ),
                             child: FacilityCard(
@@ -128,7 +135,7 @@ class _GroomingReservationScreenState
 
               // 찾아보기 버튼
               Padding(
-                padding: const const const EdgeInsets.all(AppSpacing.lg),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
@@ -139,7 +146,7 @@ class _GroomingReservationScreenState
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.blue,
                       elevation: 2,
-                      padding: const const const EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         vertical: AppSpacing.lg,
                       ),
                       shape: RoundedRectangleBorder(

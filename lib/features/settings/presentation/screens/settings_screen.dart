@@ -18,7 +18,7 @@ class SettingsScreen extends ConsumerWidget {
       appBar: SoftGradientDrawerAppBar(
         title: '設定',
         selectedPetInfo: Container(
-          margin: const const const EdgeInsets.only(right: 16),
+          margin: const EdgeInsets.only(right: 16),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Image.asset(
@@ -39,12 +39,12 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
       body: ListView(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
           // ユーザー情報カード
           Container(
-            margin: const const const EdgeInsets.only(bottom: AppSpacing.xl),
-            padding: const const const EdgeInsets.all(AppSpacing.lg),
+            margin: const EdgeInsets.only(bottom: AppSpacing.xl),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -71,7 +71,7 @@ class SettingsScreen extends ConsumerWidget {
                     },
                   ),
                 ),
-                const const const SizedBox(width: AppSpacing.md),
+                const SizedBox(width: AppSpacing.md),
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -123,7 +123,7 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => context.push(AppRouter.accountDeleteRoute),
           ),
 
-          const const const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.lg),
 
           // システム
           const SectionHeaderWidget(title: 'システム'),
@@ -146,7 +146,7 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () {},
           ),
 
-          const const const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.lg),
 
           // その他
           const SectionHeaderWidget(title: 'その他'),
@@ -163,7 +163,7 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () {},
           ),
 
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
         ],
       ),
     );

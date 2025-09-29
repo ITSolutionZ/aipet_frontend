@@ -32,7 +32,7 @@ class WeightDisplayWidget extends StatelessWidget {
           }
         },
         child: Container(
-          padding: const const const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -72,7 +72,7 @@ class WeightDisplayWidget extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('0.5kg ~ 50.0kg 사이의 값을 입력해주세요'),
-                              duration: Duration(seconds: 2),
+                              duration: const Duration(seconds: 2),
                             ),
                           );
                         }

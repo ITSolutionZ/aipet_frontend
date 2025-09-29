@@ -34,7 +34,7 @@ class PetsNotifier extends _$PetsNotifier {
       if (result.isSuccess) {
         return result.dataOrNull ?? [];
       } else {
-        throw Exception(result.errorOrNull);
+        throw Exception(result.error);
       }
     } catch (e) {
       rethrow;
@@ -50,7 +50,7 @@ class PetsNotifier extends _$PetsNotifier {
       if (result.isSuccess) {
         return result.dataOrNull ?? [];
       } else {
-        throw Exception(result.errorOrNull);
+        throw Exception(result.error);
       }
     });
   }
@@ -63,7 +63,7 @@ class PetsNotifier extends _$PetsNotifier {
       await refresh();
       return result.dataOrNull!;
     } else {
-      throw Exception(result.errorOrNull);
+      throw Exception(result.error);
     }
   }
 
@@ -74,7 +74,7 @@ class PetsNotifier extends _$PetsNotifier {
     if (result.isSuccess) {
       await refresh();
     } else {
-      throw Exception(result.errorOrNull);
+      throw Exception(result.error);
     }
   }
 
@@ -85,7 +85,7 @@ class PetsNotifier extends _$PetsNotifier {
     if (result.isSuccess) {
       await refresh();
     } else {
-      throw Exception(result.errorOrNull);
+      throw Exception(result.error);
     }
   }
 }
@@ -98,7 +98,7 @@ Future<PetProfileEntity?> petById(Ref ref, String id) async {
   if (result.isSuccess) {
     return result.dataOrNull;
   } else {
-    throw Exception(result.errorOrNull);
+    throw Exception(result.error);
   }
 }
 

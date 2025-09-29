@@ -84,7 +84,7 @@ class AuthResult {
     return AuthResult._(isSuccess: true, message: message, user: user);
   }
 
-  factory AuthFailure(String message, {String? errorCode}) {
+  factory AuthResult.failure(String message, {String? errorCode}) {
     return AuthResult._(
       isSuccess: false,
       message: message,

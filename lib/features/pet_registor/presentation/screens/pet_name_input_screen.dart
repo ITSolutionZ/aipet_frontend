@@ -121,7 +121,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
             // 상단 영역 (스크롤 추가)
             Expanded(
               child: SingleChildScrollView(
-                padding: const const const EdgeInsets.all(AppSpacing.lg),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -130,7 +130,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                       currentStep: 3,
                       totalSteps: 7,
                     ),
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 제목
                     Text(
@@ -141,7 +141,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 펫 이미지
                     // ignore: deprecated_member_use_from_same_package
@@ -155,12 +155,12 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                         _saveData();
                       },
                     ),
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 이름 입력 필드
                     Container(
                       width: double.infinity,
-                      padding: const const const EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
                       ),
                       child: TextFormField(
@@ -206,7 +206,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                               width: 2,
                             ),
                           ),
-                          contentPadding: const const const EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             vertical: AppSpacing.md,
                             horizontal: AppSpacing.md,
                           ),
@@ -217,7 +217,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                         },
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 성별 선택 버튼
                     GenderSelection(
@@ -229,7 +229,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                         _saveData();
                       },
                     ),
-                    const const const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.md),
 
                     // 중성화/피임 체크박스
                     Row(
@@ -254,7 +254,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                         ),
                       ],
                     ),
-                    const const const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.md),
 
                     // 마이크로칩 번호 입력
                     MicrochipInput(
@@ -268,7 +268,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
 
             // 하단 고정 버튼 영역
             Container(
-              padding: const const const EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(

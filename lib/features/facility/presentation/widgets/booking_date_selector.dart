@@ -1,4 +1,5 @@
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
 import 'package:flutter/material.dart';
 
 /// 📅 예약 날짜 선택 위젯
@@ -20,13 +21,13 @@ class BookingDateSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return InfoCard.basic(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 섹션 헤더
           Padding(
-            padding: const const const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
                 const Icon(
@@ -34,17 +35,17 @@ class BookingDateSelector extends StatelessWidget {
                   size: 20,
                   color: AppColors.primary,
                 ),
-                const const const SizedBox(width: AppSpacing.xs),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   '日付を選択してください',
-                  style: AppTextStyles.titleMedium.copyWith(
+                  style: AppFonts.titleMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 if (selectedDate != null) ...[
-                  const const const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   Container(
-                    padding: const const const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.sm,
                       vertical: AppSpacing.xs,
                     ),
@@ -54,7 +55,7 @@ class BookingDateSelector extends StatelessWidget {
                     ),
                     child: Text(
                       '${selectedDate!.year}/${selectedDate!.month.toString().padLeft(2, '0')}/${selectedDate!.day.toString().padLeft(2, '0')}',
-                      style: AppTextStyles.bodySmall.copyWith(
+                      style: AppFonts.bodySmall.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
@@ -67,7 +68,7 @@ class BookingDateSelector extends StatelessWidget {
 
           // 달력 위젯
           Padding(
-            padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: CalendarDatePicker(
               initialDate: selectedDate ?? DateTime.now(),
               firstDate: minimumDate ?? DateTime.now(),
@@ -77,7 +78,7 @@ class BookingDateSelector extends StatelessWidget {
             ),
           ),
 
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
         ],
       ),
     );
@@ -113,22 +114,20 @@ class CompactDateSelector extends StatelessWidget {
       children: [
         // 헤더
         Padding(
-          padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Text(
             '날짜 선택',
-            style: AppTextStyles.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        const const const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
 
         // 날짜 선택 칩들
         SizedBox(
           height: 80,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             itemCount: dates.length,
             itemBuilder: (context, index) {
               final date = dates[index];
@@ -139,12 +138,12 @@ class CompactDateSelector extends StatelessWidget {
               final isToday = _isToday(date);
 
               return Padding(
-                padding: const const const EdgeInsets.only(right: AppSpacing.sm),
+                padding: const EdgeInsets.only(right: AppSpacing.sm),
                 child: GestureDetector(
                   onTap: () => onDateSelected(date),
                   child: Container(
                     width: 60,
-                    padding: const const const EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? AppColors.primary
@@ -159,17 +158,17 @@ class CompactDateSelector extends StatelessWidget {
                       children: [
                         Text(
                           ['月', '火', '水', '木', '金', '土', '日'][date.weekday - 1],
-                          style: AppTextStyles.bodySmall.copyWith(
+                          style: AppFonts.bodySmall.copyWith(
                             color: isSelected
                                 ? Colors.white
                                 : AppColors.textSecondary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const const const SizedBox(height: AppSpacing.xs),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           date.day.toString(),
-                          style: AppTextStyles.headlineSmall.copyWith(
+                          style: AppFonts.headlineSmall.copyWith(
                             color: isSelected
                                 ? Colors.white
                                 : AppColors.textPrimary,

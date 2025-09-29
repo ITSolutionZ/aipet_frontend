@@ -106,7 +106,7 @@ class DatabaseService {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
 
-      return const Success(null, '펫 프로필이 성공적으로 저장되었습니다');
+      return Result.success('펫 프로필이 성공적으로 저장되었습니다', null);
     } catch (e) {
       return Result.failure('펫 프로필 저장에 실패했습니다: ${e.toString()}');
     }
@@ -123,11 +123,11 @@ class DatabaseService {
       );
 
       if (maps.isEmpty) {
-        return const Success(null, '펫을 찾을 수 없습니다');
+        return Result.success('펫을 찾을 수 없습니다', null);
       }
 
       final pet = _mapToPetProfile(maps.first);
-      return Success(pet, '펫 프로필을 성공적으로 조회했습니다');
+      return Result.success('펫 프로필을 성공적으로 조회했습니다', pet);
     } catch (e) {
       return Result.failure('펫 프로필 조회에 실패했습니다: ${e.toString()}');
     }
@@ -143,7 +143,7 @@ class DatabaseService {
       );
 
       final pets = maps.map(_mapToPetProfile).toList();
-      return Success(pets, '펫 목록을 성공적으로 조회했습니다');
+      return Result.success('펫 목록을 성공적으로 조회했습니다', pets);
     } catch (e) {
       return Result.failure('펫 목록 조회에 실패했습니다: ${e.toString()}');
     }
@@ -163,7 +163,7 @@ class DatabaseService {
       );
 
       final pets = maps.map(_mapToPetProfile).toList();
-      return Success(pets, '사용자의 펫 목록을 성공적으로 조회했습니다');
+      return Result.success('사용자의 펫 목록을 성공적으로 조회했습니다', pets);
     } catch (e) {
       return Result.failure('사용자 펫 목록 조회에 실패했습니다: ${e.toString()}');
     }
@@ -195,10 +195,10 @@ class DatabaseService {
       );
 
       if (rowsAffected == 0) {
-        return const Failure('업데이트할 펫을 찾을 수 없습니다');
+        return Result.failure('업데이트할 펫을 찾을 수 없습니다');
       }
 
-      return const Success(null, '펫 프로필이 성공적으로 업데이트되었습니다');
+      return Result.success('펫 프로필이 성공적으로 업데이트되었습니다', null);
     } catch (e) {
       return Result.failure('펫 프로필 업데이트에 실패했습니다: ${e.toString()}');
     }
@@ -216,10 +216,10 @@ class DatabaseService {
       );
 
       if (rowsAffected == 0) {
-        return const Failure('삭제할 펫을 찾을 수 없습니다');
+        return Result.failure('삭제할 펫을 찾을 수 없습니다');
       }
 
-      return const Success(null, '펫 프로필이 성공적으로 삭제되었습니다');
+      return Result.success('펫 프로필이 성공적으로 삭제되었습니다', null);
     } catch (e) {
       return Result.failure('펫 프로필 삭제에 실패했습니다: ${e.toString()}');
     }
@@ -247,7 +247,7 @@ class DatabaseService {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
 
-      return const Success(null, '임시 데이터가 성공적으로 저장되었습니다');
+      return Result.success('임시 데이터가 성공적으로 저장되었습니다', null);
     } catch (e) {
       return Result.failure('임시 데이터 저장에 실패했습니다: ${e.toString()}');
     }
@@ -264,12 +264,12 @@ class DatabaseService {
       );
 
       if (maps.isEmpty) {
-        return const Success(null, '임시 데이터를 찾을 수 없습니다');
+        return Result.success('임시 데이터를 찾을 수 없습니다', null);
       }
 
       final data =
           jsonDecode(maps.first['data'] as String) as Map<String, dynamic>;
-      return Success(data, '임시 데이터를 성공적으로 조회했습니다');
+      return Result.success('임시 데이터를 성공적으로 조회했습니다', data);
     } catch (e) {
       return Result.failure('임시 데이터 조회에 실패했습니다: ${e.toString()}');
     }
@@ -280,7 +280,7 @@ class DatabaseService {
     try {
       final db = await database;
       await db.delete('temporary_pet_data');
-      return const Success(null, '모든 임시 데이터가 삭제되었습니다');
+      return Result.success('모든 임시 데이터가 삭제되었습니다', null);
     } catch (e) {
       return Result.failure('임시 데이터 삭제에 실패했습니다: ${e.toString()}');
     }

@@ -19,7 +19,7 @@ class NotificationBanner extends StatelessWidget {
     this.type = BannerType.info,
     this.onDismiss,
     this.leading,
-    this.margin = const const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+    this.margin = const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
     this.borderRadius = 12,
   });
 
@@ -69,11 +69,11 @@ class NotificationBanner extends StatelessWidget {
               borderRadius: BorderRadius.circular(borderRadius),
               border: Border.all(color: baseColor.withAlpha(80), width: 1),
             ),
-            padding: const const const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             child: Row(
               children: [
                 leading ?? Icon(_defaultIcon(), color: baseColor, size: 20),
-                const const const SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     message,
@@ -85,7 +85,7 @@ class NotificationBanner extends StatelessWidget {
                   ),
                 ),
                 if (onDismiss != null) ...[
-                  const const const SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   GestureDetector(
                     onTap: onDismiss,
                     child: Icon(

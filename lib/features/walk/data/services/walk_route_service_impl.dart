@@ -117,7 +117,7 @@ class WalkRouteServiceImpl implements WalkRouteService {
         WalkLocation(
           latitude: latitude,
           longitude: longitude,
-          timestamp: now.add(const Duration(minutes: locations.length)),
+          timestamp: now.add(Duration(minutes: locations.length)),
         ),
       );
     }

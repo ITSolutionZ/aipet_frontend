@@ -10,6 +10,7 @@ import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/app/services/secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -34,6 +35,9 @@ class FirebaseAuthRealImpl implements AuthRepository {
   // 서버 토큰 저장소 키
   static const String _serverTokenKey = 'server_token';
   static const String _serverTokenExpiresKey = 'server_token_expires';
+
+  // FlutterSecureStorage 인스턴스
+  static const _storage = FlutterSecureStorage();
 
   /// 이메일/비밀번호로 로그인
   ///
@@ -352,10 +356,8 @@ class FirebaseAuthRealImpl implements AuthRepository {
   @override
   Future<String?> getStoredServerToken() async {
     try {
-      final token = await SecureStorage.getString(_serverTokenKey);
-      final expiresStr = await SecureStorage.getString(
-        _serverTokenExpiresKey,
-      );
+      final token = await _storage.read(key: _serverTokenKey);
+      final expiresStr = await _storage.read(key: _serverTokenExpiresKey);
 
       if (token == null || expiresStr == null) {
         return null;
@@ -388,10 +390,10 @@ class FirebaseAuthRealImpl implements AuthRepository {
       final expiresAt = DateTime.now().add(Duration(hours: expiresInHours));
 
       await Future.wait([
-        SecureStorage.setString(_serverTokenKey, token),
-        SecureStorage.setString(
-          _serverTokenExpiresKey,
-          expiresAt.toIso8601String(),
+        _storage.write(key: _serverTokenKey, value: token),
+        _storage.write(
+          key: _serverTokenExpiresKey,
+          value: expiresAt.toIso8601String(),
         ),
       ]);
 
@@ -413,8 +415,8 @@ class FirebaseAuthRealImpl implements AuthRepository {
   Future<void> clearServerToken() async {
     try {
       await Future.wait([
-        SecureStorage.remove(_serverTokenKey),
-        SecureStorage.remove(_serverTokenExpiresKey),
+        _storage.delete(key: _serverTokenKey),
+        _storage.delete(key: _serverTokenExpiresKey),
       ]);
 
       if (kDebugMode) {

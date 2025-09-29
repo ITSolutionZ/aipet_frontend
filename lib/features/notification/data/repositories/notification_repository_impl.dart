@@ -101,10 +101,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
           if (kDebugMode) {
             debugPrint('[$_tag] 🗄️ 캐시에서 특정 알림 조회 성공: $notificationId');
           }
-          return Result.success(
-            notification,
-            'Notification found in cache',
-          );
+          return Result.success('Notification found in cache', notification);
         }
       }
 
@@ -119,17 +116,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
           if (kDebugMode) {
             debugPrint('[$_tag] ✅ API에서 특정 알림 조회 성공: $notificationId');
           }
-          return Result.success(
-            notification,
-            'Notification found via API',
-          );
+          return Result.success('Notification found via API', notification);
         }
       }
 
       if (kDebugMode) {
         debugPrint('[$_tag] ⚠️ 알림을 찾을 수 없음: $notificationId');
       }
-      return Result.success(null, 'Notification not found');
+      return Result.success('Notification not found', null);
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 특정 알림 조회 중 예외 발생: $error');
