@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# 🎯 const 생성자 자동 추가 스크립트
+# 🎯 const 생성자 자동 추가 스크립트 (개선된 버전)
 # StatelessWidget에서 const 생성자가 없는 경우 자동으로 추가하여 성능 최적화
+# const 중복 문제를 방지하는 안전한 버전
 
 echo "🔍 Analyzing StatelessWidget constructors..."
 
@@ -38,11 +39,8 @@ echo "📊 Analysis complete!"
 echo "   - Total StatelessWidgets: $total_widgets"
 echo "   - Missing const constructors: $missing_const_count"
 
-# 특정 패턴의 수정
+# 특정 패턴의 수정 (안전한 방법)
 echo "🔧 Applying specific const constructor fixes..."
-
-# 일반적인 패턴 수정
-find lib/ -name "*.dart" -exec sed -i '' 's/^\([[:space:]]*\)\([A-Za-z][A-Za-z0-9_]*\)({$/\1const \2({/g' {} \;
 
 # super.key가 있는 경우만 const 추가 (더 안전한 방법)
 find lib/ -name "*.dart" -type f | while read file; do
@@ -51,11 +49,19 @@ find lib/ -name "*.dart" -type f | while read file; do
         # class name 추출하고 const 추가
         class_name=$(grep "class.*extends StatelessWidget" "$file" | head -n1 | sed 's/.*class \([A-Za-z0-9_]*\).*/\1/' 2>/dev/null)
         if [ ! -z "$class_name" ]; then
-            # const가 없는 생성자에 const 추가
-            sed -i '' "s/^[[:space:]]*$class_name({/  const $class_name({/g" "$file"
+            # const가 없는 생성자에만 const 추가 (중복 방지)
+            if ! grep -q "const $class_name({" "$file"; then
+                sed -i '' "s/^[[:space:]]*$class_name({/  const $class_name({/g" "$file"
+            fi
         fi
     fi
 done
+
+# const 중복 제거 (안전장치)
+echo "🧹 Removing const duplicates..."
+find lib/ -name "*.dart" -exec sed -i '' 's/const const/const/g' {} \;
+find lib/ -name "*.dart" -exec sed -i '' 's/const const const/const/g' {} \;
+find lib/ -name "*.dart" -exec sed -i '' 's/const const const const/const/g' {} \;
 
 echo "✅ Const constructor optimization completed!"
 echo "📝 Next steps:"

@@ -1,6 +1,8 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:aipet_frontend/features/facility/domain/repositories/facility_repository.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
+import 'package:aipet_frontend/shared/foundation/error_handler/app_error_handler.dart';
 
 class FacilityRepositoryImpl implements FacilityRepository {
   @override
@@ -9,7 +11,7 @@ class FacilityRepositoryImpl implements FacilityRepository {
       await Future.delayed(const Duration(milliseconds: 500));
       final facilitiesData = FacilityMockService.getMockFacilities();
       final facilities = _convertToFacilityList(facilitiesData);
-      return Result.success(facilities, '근처 시설을 성공적으로 조회했습니다');
+      return Result.success('근처 시설을 성공적으로 조회했습니다', facilities);
     } catch (e) {
       final appException = AppErrorHandler.convertToAppException(e);
       return Result.failure(appException.toString());
@@ -24,7 +26,7 @@ class FacilityRepositoryImpl implements FacilityRepository {
       final facilities = _convertToFacilityList(facilitiesData);
 
       if (query.isEmpty) {
-        return Result.success(facilities, '모든 시설을 조회했습니다');
+        return Result.success('모든 시설을 조회했습니다', facilities);
       }
 
       final lowerQuery = query.toLowerCase();
@@ -34,7 +36,7 @@ class FacilityRepositoryImpl implements FacilityRepository {
             facility.address.toLowerCase().contains(lowerQuery);
       }).toList();
 
-      return Result.success(filteredFacilities, '검색 결과를 성공적으로 조회했습니다');
+      return Result.success('검색 결과를 성공적으로 조회했습니다', filteredFacilities);
     } catch (e) {
       final appException = AppErrorHandler.convertToAppException(e);
       return Result.failure(appException.toString());
@@ -51,8 +53,8 @@ class FacilityRepositoryImpl implements FacilityRepository {
           .where((facility) => facility.type == type)
           .toList();
       return Result.success(
-        filteredFacilities,
         '${type.name} 타입 시설을 성공적으로 조회했습니다',
+        filteredFacilities,
       );
     } catch (e) {
       final appException = AppErrorHandler.convertToAppException(e);
@@ -69,7 +71,7 @@ class FacilityRepositoryImpl implements FacilityRepository {
       final facility = facilities.where((f) => f.id == id).firstOrNull;
 
       if (facility != null) {
-        return Result.success(facility, '시설 정보를 성공적으로 조회했습니다');
+        return Result.success('시설 정보를 성공적으로 조회했습니다', facility);
       } else {
         return Result.failure('시설을 찾을 수 없습니다');
       }
@@ -90,7 +92,7 @@ class FacilityRepositoryImpl implements FacilityRepository {
       // 간단한 구현: 모든 시설 반환
       final facilitiesData = FacilityMockService.getMockFacilities();
       final facilities = _convertToFacilityList(facilitiesData);
-      return Result.success(facilities, '반경 내 시설을 성공적으로 조회했습니다');
+      return Result.success('반경 내 시설을 성공적으로 조회했습니다', facilities);
     } catch (e) {
       final appException = AppErrorHandler.convertToAppException(e);
       return Result.failure(appException.toString());
@@ -105,7 +107,7 @@ class FacilityRepositoryImpl implements FacilityRepository {
   ) async {
     try {
       await Future.delayed(const Duration(milliseconds: 100));
-      return Result.success(null, '현재 위치를 성공적으로 설정했습니다');
+      return Result.success('현재 위치를 성공적으로 설정했습니다', null);
     } catch (e) {
       final appException = AppErrorHandler.convertToAppException(e);
       return Result.failure(appException.toString());

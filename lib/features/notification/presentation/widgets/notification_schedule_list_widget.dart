@@ -35,7 +35,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const const const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       itemCount: schedules.length,
       itemBuilder: (context, index) {
         final schedule = schedules[index];
@@ -50,12 +50,12 @@ class NotificationScheduleListWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(Icons.schedule, size: 64, color: AppColors.pointGray),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           Text(
             emptyMessage ?? '예약된 알림이 없습니다',
             style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
           ),
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             '새로운 알림 스케줄을 추가해보세요',
             style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
@@ -71,7 +71,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const const const EdgeInsets.only(right: AppSpacing.md),
+        padding: const EdgeInsets.only(right: AppSpacing.md),
         color: Colors.red,
         child: const Icon(Icons.delete, color: Colors.white),
       ),
@@ -79,7 +79,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
         onScheduleDelete?.call(schedule.id);
       },
       child: Container(
-        margin: const const const EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.xs,
         ),
@@ -100,25 +100,25 @@ class NotificationScheduleListWidget extends StatelessWidget {
             onTap: () => onScheduleTap?.call(schedule),
             borderRadius: BorderRadius.circular(AppRadius.medium),
             child: Padding(
-              padding: const const const EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildScheduleIcon(schedule),
-                  const const const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildScheduleHeader(schedule),
-                        const const const SizedBox(height: AppSpacing.xs),
+                        const SizedBox(height: AppSpacing.xs),
                         _buildScheduleDetails(schedule),
-                        const const const SizedBox(height: AppSpacing.sm),
+                        const SizedBox(height: AppSpacing.sm),
                         _buildScheduleStatus(schedule),
                       ],
                     ),
                   ),
-                  const const const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   _buildScheduleActions(schedule),
                 ],
               ),
@@ -217,7 +217,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
           ),
         ),
         Container(
-          padding: const const const EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.xs,
             vertical: 2,
           ),
@@ -251,11 +251,11 @@ class NotificationScheduleListWidget extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         Row(
           children: [
             const Icon(Icons.access_time, size: 16, color: AppColors.pointGray),
-            const const const SizedBox(width: AppSpacing.xs),
+            const SizedBox(width: AppSpacing.xs),
             Text(
               '${schedule.time}',
               style: AppFonts.bodySmall.copyWith(
@@ -263,7 +263,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             if (schedule.scheduleType == ScheduleType.weekly &&
                 schedule.weekDays != null) ...[
               const Icon(
@@ -271,7 +271,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
                 size: 16,
                 color: AppColors.pointGray,
               ),
-              const const const SizedBox(width: AppSpacing.xs),
+              const SizedBox(width: AppSpacing.xs),
               Text(
                 _getWeekDaysText(schedule.weekDays!),
                 style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
@@ -297,7 +297,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
             shape: BoxShape.circle,
           ),
         ),
-        const const const SizedBox(width: AppSpacing.xs),
+        const SizedBox(width: AppSpacing.xs),
         Text(
           isEnabled ? 'オン' : 'オフ',
           style: AppFonts.caption.copyWith(
@@ -306,7 +306,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
           ),
         ),
         ...[
-          const const const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.sm),
           Text(
             '次: ${_formatNextTrigger(nextTrigger)}',
             style: AppFonts.caption.copyWith(color: AppColors.pointGray),
@@ -326,7 +326,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
           },
           activeColor: AppColors.pointBlue,
         ),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         const Icon(Icons.chevron_right, color: AppColors.pointGray, size: 20),
       ],
     );

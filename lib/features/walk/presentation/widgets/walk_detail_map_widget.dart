@@ -278,7 +278,7 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
             CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
             ),
-            SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Text(
               '地図を読み込み中...',
               style: TextStyle(color: AppColors.pointGray, fontSize: 14),

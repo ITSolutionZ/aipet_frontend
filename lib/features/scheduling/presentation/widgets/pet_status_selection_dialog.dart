@@ -131,7 +131,7 @@ class _PetStatusSelectionDialogContentState
     return Dialog(
       child: Container(
         width: MediaQuery.of(context).size.width * 0.9,
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +143,7 @@ class _PetStatusSelectionDialogContentState
                   radius: 25,
                   backgroundImage: AssetImage(widget.petInfo['imagePath']),
                 ),
-                const const const SizedBox(width: AppSpacing.md),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,7 +160,7 @@ class _PetStatusSelectionDialogContentState
                 ),
               ],
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 상태 옵션들
             Flexible(
@@ -172,7 +172,7 @@ class _PetStatusSelectionDialogContentState
                     );
 
                     return Card(
-                      margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
+                      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                       child: ExpansionTile(
                         leading: Icon(
                           statusOption['icon'],
@@ -202,7 +202,7 @@ class _PetStatusSelectionDialogContentState
                           children: [
                             if (isSelected)
                               Container(
-                                padding: const const const EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   horizontal: AppSpacing.xs,
                                   vertical: 2,
                                 ),
@@ -223,7 +223,7 @@ class _PetStatusSelectionDialogContentState
                                   ),
                                 ),
                               ),
-                            const const const SizedBox(width: AppSpacing.xs),
+                            const SizedBox(width: AppSpacing.xs),
                             InkWell(
                               onTap: () {
                                 if (!isSelected &&
@@ -272,7 +272,7 @@ class _PetStatusSelectionDialogContentState
                         children: [
                           if (isSelected)
                             Padding(
-                              padding: const const const EdgeInsets.all(AppSpacing.md),
+                              padding: const EdgeInsets.all(AppSpacing.md),
                               child: Column(
                                 children: [
                                   DropdownButtonFormField<String>(
@@ -317,7 +317,7 @@ class _PetStatusSelectionDialogContentState
               ),
             ),
 
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 버튼들
             Row(

@@ -62,7 +62,7 @@ class GlassAccordion extends ConsumerWidget {
     super.key,
     required this.items,
     this.multiOpen = true,
-    this.itemMargin = const const EdgeInsets.symmetric(vertical: 6),
+    this.itemMargin = const EdgeInsets.symmetric(vertical: 6),
     this.animationDuration = const Duration(milliseconds: 180),
     this.animationCurve = Curves.easeOutCubic,
     this.borderRadius = 14,
@@ -157,7 +157,7 @@ class _AccordionItemCard extends StatelessWidget {
     );
 
     return GlassCard(
-      margin: const const const EdgeInsets.symmetric(vertical: 6),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       borderRadius: borderRadius,
       padding: EdgeInsets.zero, // 헤더/본문 패딩을 각각 관리
       child: Column(
@@ -168,12 +168,12 @@ class _AccordionItemCard extends StatelessWidget {
             onTap: onToggle,
             highlightColor: Colors.white12,
             child: Padding(
-              padding: const const const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
               child: Row(
                 children: [
                   if (item.leading != null) ...[
                     item.leading!,
-                    const const const SizedBox(width: 10),
+                    const SizedBox(width: 10),
                   ],
                   Expanded(child: Text(item.title, style: titleStyle)),
                   AnimatedRotation(

@@ -24,7 +24,10 @@ class WeightSliderWidget extends StatelessWidget {
             final relativeX = localPosition.dx - 16;
             final normalizedX = (relativeX / width).clamp(0.0, 1.0);
 
-            final newWeight = (0.5 + normalizedX * (50.0 - 0.5)).clamp(0.5, 50.0);
+            final newWeight = (0.5 + normalizedX * (50.0 - 0.5)).clamp(
+              0.5,
+              50.0,
+            );
 
             if ((newWeight - weight).abs() > 0.05) {
               onWeightChanged(newWeight);
@@ -32,7 +35,7 @@ class WeightSliderWidget extends StatelessWidget {
           },
           child: Container(
             height: 60,
-            padding: const const const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Stack(
               children: [
                 ...List.generate(15, (index) {
@@ -89,7 +92,7 @@ class WeightSliderWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
-                          const const const SizedBox(width: 2),
+                          const SizedBox(width: 2),
                           Container(
                             width: 1.5,
                             height: 12,
@@ -98,7 +101,7 @@ class WeightSliderWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
-                          const const const SizedBox(width: 2),
+                          const SizedBox(width: 2),
                           Container(
                             width: 1.5,
                             height: 12,
@@ -116,7 +119,7 @@ class WeightSliderWidget extends StatelessWidget {
             ),
           ),
         ),
-        const const const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
       ],
     );
   }

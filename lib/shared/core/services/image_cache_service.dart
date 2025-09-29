@@ -363,7 +363,7 @@ class CachedImage extends StatelessWidget {
         }
 
         return Image.memory(
-          snapshot.dataOrThrow,
+          snapshot.data!,
           width: width,
           height: height,
           fit: fit,
@@ -443,7 +443,7 @@ class CachedAssetImage extends StatelessWidget {
         }
 
         return Image.memory(
-          snapshot.dataOrThrow,
+          snapshot.data!,
           width: width,
           height: height,
           fit: fit,

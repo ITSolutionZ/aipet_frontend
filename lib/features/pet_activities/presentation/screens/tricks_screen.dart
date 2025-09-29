@@ -89,7 +89,7 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
         .toList();
 
     return SingleChildScrollView(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -98,11 +98,11 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
             learnedTricks: learnedTricks,
             onManageTricks: _showTrickManagementMenu,
           ),
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
 
           // Learn next 섹션
           LearnNextSection(availableTricks: availableTricks),
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
 
           // Action buttons
           TrickActionButtons(onOpenTrainingVideos: _openTrainingVideos),

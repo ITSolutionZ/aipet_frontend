@@ -16,7 +16,7 @@ final homeDashboardControllerProvider = FutureProvider<HomeDashboardEntity>((
   if (result.isSuccess) {
     return result.dataOrNull!;
   } else {
-    throw Exception(result.errorOrNull);
+    throw Exception(result.error?.toString());
   }
 });
 
@@ -55,26 +55,26 @@ class HomeScreen extends ConsumerWidget {
     return RefreshIndicator(
       onRefresh: () => ref.refresh(homeDashboardControllerProvider.future),
       child: SingleChildScrollView(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 헤더
             _buildHeader(context, dashboard),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 날씨 정보
             _buildWeatherCard(dashboard.weather),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 펫 요약 카드들
             _buildPetSummaryGrid(dashboard.petProfiles),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 오늘의 예약 (있을 경우)
             if (dashboard.hasTodayAppointments) ...[
               _buildTodayAppointments(dashboard.upcomingAppointments),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
             ],
 
             // 산책 요약
@@ -120,7 +120,7 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildEmptyPetState(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -129,13 +129,13 @@ class HomeScreen extends ConsumerWidget {
               size: 80,
               color: AppColors.textSecondary.withValues(alpha: 0.5),
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'まだペットが登録されていません',
               style: AppTextStyles.headlineSmall,
               textAlign: TextAlign.center,
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Text(
               '最初のペットを登録して、\nAIPetを始めましょう！',
               style: AppTextStyles.bodyMedium.copyWith(
@@ -143,7 +143,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
             ElevatedButton(
               onPressed: () => context.push('/pet-type-selection'),
               child: const Text('ペット登録'),
@@ -157,7 +157,7 @@ class HomeScreen extends ConsumerWidget {
   /// 날씨 카드
   Widget _buildWeatherCard(WeatherEntity weather) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -172,7 +172,7 @@ class HomeScreen extends ConsumerWidget {
       child: Row(
         children: [
           Text(weather.iconCode, style: const TextStyle(fontSize: 40)),
-          const const const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +192,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           if (weather.isGoodForWalking)
             Container(
-              padding: const const const EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
                 vertical: AppSpacing.xs,
               ),
@@ -222,7 +222,7 @@ class HomeScreen extends ConsumerWidget {
           'ペット一覧',
           style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
         ),
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -242,7 +242,7 @@ class HomeScreen extends ConsumerWidget {
   /// 펫 카드
   Widget _buildPetCard(PetSummaryEntity pet) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -267,7 +267,7 @@ class HomeScreen extends ConsumerWidget {
                 ? const Icon(Icons.pets, color: AppColors.primary, size: 30)
                 : null,
           ),
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             pet.name,
             style: AppTextStyles.titleMedium.copyWith(
@@ -296,7 +296,7 @@ class HomeScreen extends ConsumerWidget {
           '今日の予約',
           style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
         ),
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         ...appointments.map(
           (appointment) => _buildAppointmentCard(appointment),
         ),
@@ -307,8 +307,8 @@ class HomeScreen extends ConsumerWidget {
   /// 예약 카드
   Widget _buildAppointmentCard(AppointmentSummary appointment) {
     return Container(
-      margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
-      padding: const const const EdgeInsets.all(AppSpacing.md),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.sm),
@@ -317,7 +317,7 @@ class HomeScreen extends ConsumerWidget {
       child: Row(
         children: [
           const Icon(Icons.schedule, color: AppColors.primary),
-          const const const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,7 +352,7 @@ class HomeScreen extends ConsumerWidget {
   /// 산책 요약 섹션
   Widget _buildWalkSummary(BuildContext context, int totalMinutes) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -360,7 +360,7 @@ class HomeScreen extends ConsumerWidget {
       child: Row(
         children: [
           const Icon(Icons.directions_walk, color: AppColors.primary, size: 32),
-          const const const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,18 +394,18 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildErrorView(BuildContext context, WidgetRef ref, Object error) {
     return Center(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.error_outline, size: 64, color: AppColors.error),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'データの読み込みに失敗しました',
               style: AppTextStyles.titleMedium,
               textAlign: TextAlign.center,
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               error.toString(),
               style: AppTextStyles.bodySmall.copyWith(
@@ -413,7 +413,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
             ElevatedButton(
               onPressed: () => ref.invalidate(homeDashboardControllerProvider),
               child: const Text('再試行'),

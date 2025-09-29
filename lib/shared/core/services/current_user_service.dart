@@ -17,9 +17,9 @@ class CurrentUserService {
       final user = await _authRepository.getCurrentUser();
 
       if (user != null && user.uid.isNotEmpty) {
-        return Success(user.uid, '사용자 ID를 성공적으로 가져왔습니다');
+        return Result.success('사용자 ID를 성공적으로 가져왔습니다', user.uid);
       } else {
-        return const Failure('로그인된 사용자를 찾을 수 없습니다');
+        return Result.failure('로그인된 사용자를 찾을 수 없습니다');
       }
     } catch (error) {
       debugPrint('getCurrentUserId error: $error');
@@ -44,9 +44,9 @@ class CurrentUserService {
       final user = await _authRepository.getCurrentUser();
 
       if (user != null && user.email != null && user.email!.isNotEmpty) {
-        return Success(user.email!, '사용자 이메일을 성공적으로 가져왔습니다');
+        return Result.success('사용자 이메일을 성공적으로 가져왔습니다', user.email!);
       } else {
-        return const Failure('사용자 이메일을 찾을 수 없습니다');
+        return Result.failure('사용자 이메일을 찾을 수 없습니다');
       }
     } catch (error) {
       debugPrint('getCurrentUserEmail error: $error');
@@ -59,15 +59,17 @@ class CurrentUserService {
     try {
       final user = await _authRepository.getCurrentUser();
 
-      if (user != null && user.displayName != null && user.displayName!.isNotEmpty) {
-        return Success(user.displayName!, '사용자 이름을 성공적으로 가져왔습니다');
+      if (user != null &&
+          user.displayName != null &&
+          user.displayName!.isNotEmpty) {
+        return Result.success('사용자 이름을 성공적으로 가져왔습니다', user.displayName!);
       } else {
         // 이메일에서 이름 부분 추출 시도
         if (user?.email != null) {
           final emailName = user!.email!.split('@').first;
-          return Success(emailName, '사용자 이름을 이메일에서 추출했습니다');
+          return Result.success('사용자 이름을 이메일에서 추출했습니다', emailName);
         }
-        return const Failure('사용자 이름을 찾을 수 없습니다');
+        return Result.failure('사용자 이름을 찾을 수 없습니다');
       }
     } catch (error) {
       debugPrint('getCurrentUserDisplayName error: $error');
@@ -79,7 +81,7 @@ class CurrentUserService {
   Future<Result<void>> signOut() async {
     try {
       await _authRepository.signOut();
-      return const Success(null, '로그아웃이 성공적으로 완료되었습니다');
+      return Result.success('로그아웃이 성공적으로 완료되었습니다', null);
     } catch (error) {
       debugPrint('signOut error: $error');
       return Result.failure('로그아웃에 실패했습니다: ${error.toString()}');
@@ -107,7 +109,9 @@ final currentUserIdProvider = FutureProvider<String?>((ref) async {
 });
 
 /// 현재 사용자 정보 Provider
-final currentUserInfoProvider = FutureProvider<Map<String, String?>>((ref) async {
+final currentUserInfoProvider = FutureProvider<Map<String, String?>>((
+  ref,
+) async {
   final userService = ref.watch(currentUserServiceProvider);
 
   final userIdResult = await userService.getCurrentUserId();
@@ -117,6 +121,8 @@ final currentUserInfoProvider = FutureProvider<Map<String, String?>>((ref) async
   return {
     'userId': userIdResult.isSuccess ? userIdResult.dataOrNull : null,
     'email': emailResult.isSuccess ? emailResult.dataOrNull : null,
-    'displayName': displayNameResult.isSuccess ? displayNameResult.dataOrNull : null,
+    'displayName': displayNameResult.isSuccess
+        ? displayNameResult.dataOrNull
+        : null,
   };
 });

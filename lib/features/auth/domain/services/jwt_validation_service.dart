@@ -219,9 +219,7 @@ class JwtValidationService {
 
       // 최소 길이 검증 (일반적인 signature는 최소 20자 이상)
       if (signature.length < 20) {
-        return Result.failure(
-          'Signature가 너무 짧습니다 (${signature.length}자)',
-        );
+        return Result.failure('Signature가 너무 짧습니다 (${signature.length}자)');
       }
 
       return Result.success('Signature 기본 형식 검증 성공', true);

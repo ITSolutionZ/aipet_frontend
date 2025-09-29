@@ -17,7 +17,7 @@ class PetSelectorWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => _showPetSelector(context),
       child: Container(
-        padding: const const const EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.sm,
           vertical: AppSpacing.xs,
         ),
@@ -61,7 +61,7 @@ class PetSelectorWidget extends StatelessWidget {
                 ),
               ),
             ),
-            const const const SizedBox(width: AppSpacing.xs),
+            const SizedBox(width: AppSpacing.xs),
             // 반려동물 이름
             Text(
               selectedPet?.name ?? 'Maxi',
@@ -70,7 +70,7 @@ class PetSelectorWidget extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const const const SizedBox(width: AppSpacing.xs),
+            const SizedBox(width: AppSpacing.xs),
             // 드롭다운 아이콘
             const Icon(
               Icons.keyboard_arrow_down,
@@ -127,7 +127,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
     ];
 
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -138,7 +138,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const const const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.lg),
           ...pets.map((pet) => _buildPetOption(context, pet)),
         ],
       ),
@@ -154,8 +154,8 @@ class _PetSelectorBottomSheet extends StatelessWidget {
         Navigator.of(context).pop();
       },
       child: Container(
-        margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.pointBrown.withValues(alpha: 0.1)
@@ -197,7 +197,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
                 ),
               ),
             ),
-            const const const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.md),
             // 반려동물 정보
             Expanded(
               child: Column(

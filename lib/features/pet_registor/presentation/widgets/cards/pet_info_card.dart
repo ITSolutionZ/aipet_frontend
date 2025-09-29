@@ -22,8 +22,8 @@ class PetInfoCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
-        margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -51,7 +51,7 @@ class PetInfoCard extends StatelessWidget {
                 ),
                 child: Icon(icon, color: AppColors.pointBrown, size: 24),
               ),
-              const const const SizedBox(width: AppSpacing.lg),
+              const SizedBox(width: AppSpacing.lg),
             ],
             Expanded(
               child: Column(
@@ -64,7 +64,7 @@ class PetInfoCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const const const SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     value,
                     style: AppFonts.bodyMedium.copyWith(
@@ -76,7 +76,7 @@ class PetInfoCard extends StatelessWidget {
             ),
             if (badge != null) ...[
               badge!,
-              const const const SizedBox(width: AppSpacing.sm),
+              const SizedBox(width: AppSpacing.sm),
             ],
             if (onTap != null)
               const Icon(

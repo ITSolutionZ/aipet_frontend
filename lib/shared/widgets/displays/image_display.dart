@@ -190,7 +190,7 @@ class ImageDisplay extends StatelessWidget {
             size: width * 0.3,
             color: AppColors.pointGray.withValues(alpha: 0.6),
           ),
-          const const const SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             'No Image',
             style: AppFonts.bodySmall.copyWith(

@@ -15,16 +15,18 @@ class ManageSplashSequenceUseCase {
       yield* repository.executeSplashSequence();
     } catch (error) {
       // 에러 발생 시에도 순차적 진행 보장
-      yield Success(SplashState.loading(), 'ローディングアニメーション表示中... (エラー復旧)');
+      yield Result.success(
+        'ローディングアニメーション表示中... (エラー復旧, SplashState.loading())',
+      );
       await Future.delayed(const Duration(milliseconds: 1500));
 
-      yield Success(
-        SplashState.appLogo(AppConstants.splashAppLogoPath),
+      yield Result.success(
         'AI Petアプリロゴ表示中... (エラー復旧)',
+        SplashState.appLogo('assets/icons/aipet_logo.png'),
       );
-      await Future.delayed(AppConstants.splashLogoDisplayDuration);
+      await Future.delayed(const Duration(seconds: 2));
 
-      yield Success(SplashState.completed(), 'スプラッシュシーケンス完了 (エラー復旧)');
+      yield Result.success('スプラッシュシーケンス完了 (エラー復旧)', SplashState.completed());
     }
   }
 
@@ -35,7 +37,7 @@ class ManageSplashSequenceUseCase {
     } catch (error) {
       return Result.failure(
         'ルート決定に失敗しました: ${error.toString()}',
-        exception: error is Exception ? error : Exception(error.toString()),
+        error is Exception ? error : Exception(error.toString()),
       );
     }
   }

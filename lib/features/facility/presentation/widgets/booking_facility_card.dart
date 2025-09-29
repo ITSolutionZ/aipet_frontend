@@ -1,4 +1,5 @@
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
 import 'package:flutter/material.dart';
 
 /// 🏢 예약 화면용 시설 정보 카드
@@ -22,8 +23,8 @@ class BookingFacilityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+    return InfoCard.basic(
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -66,7 +67,7 @@ class BookingFacilityCard extends StatelessWidget {
                     size: 32,
                   ),
                 ),
-              const const const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
 
               // 시설 정보
               Expanded(
@@ -75,13 +76,13 @@ class BookingFacilityCard extends StatelessWidget {
                   children: [
                     Text(
                       facilityName,
-                      style: AppTextStyles.headlineSmall.copyWith(
+                      style: AppFonts.headlineSmall.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const const const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         const Icon(
@@ -89,11 +90,11 @@ class BookingFacilityCard extends StatelessWidget {
                           size: 16,
                           color: AppColors.textSecondary,
                         ),
-                        const const const SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Expanded(
                           child: Text(
                             facilityAddress,
-                            style: AppTextStyles.bodySmall.copyWith(
+                            style: AppFonts.bodySmall.copyWith(
                               color: AppColors.textSecondary,
                             ),
                             maxLines: 1,
@@ -102,7 +103,7 @@ class BookingFacilityCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const const const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         const Icon(
@@ -110,10 +111,10 @@ class BookingFacilityCard extends StatelessWidget {
                           size: 16,
                           color: AppColors.textSecondary,
                         ),
-                        const const const SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           facilityPhoneNumber,
-                          style: AppTextStyles.bodySmall.copyWith(
+                          style: AppFonts.bodySmall.copyWith(
                             color: AppColors.textSecondary,
                           ),
                         ),

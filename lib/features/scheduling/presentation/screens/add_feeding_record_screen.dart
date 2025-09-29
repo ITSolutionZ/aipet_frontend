@@ -247,7 +247,7 @@ class _AddFeedingRecordScreenState
           controller: _scrollController,
           slivers: [
             SliverPadding(
-              padding: const const const EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   Column(
@@ -261,7 +261,7 @@ class _AddFeedingRecordScreenState
                         onPetStatusDialog: _showPetStatusDialog,
                       ),
 
-                      const const const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // 날짜와 시간 선택
                       DateTimeSelector(
@@ -271,7 +271,7 @@ class _AddFeedingRecordScreenState
                         onTimeTap: _selectTime,
                       ),
 
-                      const const const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // 식사 타입 선택
                       MealTypeDropdown(
@@ -285,7 +285,7 @@ class _AddFeedingRecordScreenState
                         },
                       ),
 
-                      const const const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // 식사 내용 입력
                       MealContentInput(
@@ -298,7 +298,7 @@ class _AddFeedingRecordScreenState
                         },
                       ),
 
-                      const const const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // 양 입력
                       AmountInput(
@@ -311,12 +311,12 @@ class _AddFeedingRecordScreenState
                         },
                       ),
 
-                      const const const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // 메모 입력
                       MemoInput(controller: _noteController),
 
-                      const const const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // 급여 가이드 카드
                       if (_selectedPetInfo != null && _petSizeGuide != null)
@@ -325,7 +325,7 @@ class _AddFeedingRecordScreenState
                           sizeGuide: _petSizeGuide!,
                         ),
 
-                      const const const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // 저장 버튼
                       ActionButton.primary(

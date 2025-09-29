@@ -69,74 +69,76 @@ class AiCategorySelection extends StatelessWidget {
       child: GestureDetector(
         onTap: () => onCategorySelected(category),
         child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? category.color.withValues(alpha: 0.1)
-              : Colors.white,
-          border: Border.all(
+          duration: const Duration(milliseconds: 200),
+          decoration: BoxDecoration(
             color: isSelected
-                ? category.color
-                : AppColors.pointGray.withValues(alpha: 0.3),
-            width: isSelected ? 2.0 : 1.0,
+                ? category.color.withValues(alpha: 0.1)
+                : Colors.white,
+            border: Border.all(
+              color: isSelected
+                  ? category.color
+                  : AppColors.pointGray.withValues(alpha: 0.3),
+              width: isSelected ? 2.0 : 1.0,
+            ),
+            borderRadius: BorderRadius.circular(AppRadius.medium),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: category.color.withValues(alpha: 0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
           ),
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: category.color.withValues(alpha: 0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-        ),
-        padding: const EdgeInsets.all(AppSpacing.sm),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.xs),
-              decoration: BoxDecoration(
-                color: category.color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppRadius.small),
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.xs),
+                decoration: BoxDecoration(
+                  color: category.color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppRadius.small),
+                ),
+                child: Icon(category.icon, color: category.color, size: 20),
               ),
-              child: Icon(category.icon, color: category.color, size: 20),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    category.name,
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: isSelected ? category.color : AppColors.pointDark,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.w500,
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      category.name,
+                      style: AppFonts.bodyMedium.copyWith(
+                        color: isSelected
+                            ? category.color
+                            : AppColors.pointDark,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    category.description,
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointGray,
+                    Text(
+                      category.description,
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointGray,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         ),
       ),
     );

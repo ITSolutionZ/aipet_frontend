@@ -311,7 +311,7 @@ class _PetRegistrationTextFieldContentState
         ),
       ),
 
-      contentPadding: const const const EdgeInsets.symmetric(
+      contentPadding: const EdgeInsets.symmetric(
         vertical: AppSpacing.md,
         horizontal: AppSpacing.md,
       ),

@@ -30,7 +30,7 @@ typedef AuthValidationResult = Result<void>;
 /// 인증 관련 비즈니스 로직을 관리하는 컨트롤러입니다.
 /// UseCase 패턴을 사용하여 인증 로직을 처리하고,
 /// 폼 상태 관리를 담당합니다.
-class AuthController extends FormController<AuthFormState> {
+class AuthController extends StateNotifier<AuthFormState> {
   /// 로그인 UseCase
   late final LoginUseCase _loginUseCase;
 
@@ -46,11 +46,14 @@ class AuthController extends FormController<AuthFormState> {
   /// 소셜 로그인 UseCase
   late final SocialLoginUseCase _socialLoginUseCase;
 
+  /// Riverpod Ref 객체
+  final WidgetRef _ref;
+
   /// 생성자
   ///
   /// [ref] Riverpod Ref 객체
-  AuthController(super.ref) {
-    final repository = ref.read(authRepositoryProvider);
+  AuthController(this._ref) : super(const AuthFormState()) {
+    final repository = _ref.read(authRepositoryProvider);
     _loginUseCase = LoginUseCase(repository);
     _signupUseCase = SignupUseCase(repository);
     _logoutUseCase = LogoutUseCase(repository);
@@ -58,12 +61,10 @@ class AuthController extends FormController<AuthFormState> {
     _socialLoginUseCase = SocialLoginUseCase(repository);
   }
 
-  AuthFormState get currentState => ref.read(authFormStateNotifierProvider);
+  AuthFormState get currentState => _ref.read(authFormStateNotifierProvider);
 
-  @override
   AuthFormState get formData => currentState;
 
-  @override
   bool get isFormValid {
     final state = currentState;
     return state.email.isNotEmpty &&
@@ -71,35 +72,35 @@ class AuthController extends FormController<AuthFormState> {
         state.error == null;
   }
 
-  @override
   bool get canSubmit => isFormValid && !currentState.isLoading;
 
-  @override
   void initializeForm() {
     // 폼 초기화 로직
-    ref.read(authFormStateNotifierProvider.notifier).resetState();
+    _ref.read(authFormStateNotifierProvider.notifier).resetState();
   }
 
   void updateEmail(String email) {
-    ref.read(authFormStateNotifierProvider.notifier).updateEmail(email);
+    _ref.read(authFormStateNotifierProvider.notifier).updateEmail(email);
   }
 
   void updateUsername(String username) {
-    ref.read(authFormStateNotifierProvider.notifier).updateUsername(username);
+    _ref.read(authFormStateNotifierProvider.notifier).updateUsername(username);
   }
 
   void togglePasswordVisibility() {
-    ref.read(authFormStateNotifierProvider.notifier).togglePasswordVisibility();
+    _ref
+        .read(authFormStateNotifierProvider.notifier)
+        .togglePasswordVisibility();
   }
 
   void toggleConfirmPasswordVisibility() {
-    ref
+    _ref
         .read(authFormStateNotifierProvider.notifier)
         .toggleConfirmPasswordVisibility();
   }
 
   void toggleRememberMe() {
-    ref.read(authFormStateNotifierProvider.notifier).toggleRememberMe();
+    _ref.read(authFormStateNotifierProvider.notifier).toggleRememberMe();
   }
 
   /// 실제 로그인 성공 처리
@@ -110,7 +111,7 @@ class AuthController extends FormController<AuthFormState> {
     debugPrint('✅ AuthController: 로그인 성공 처리');
 
     // 폼 상태 업데이트
-    ref.read(authFormStateNotifierProvider.notifier).handleLoginSuccess();
+    _ref.read(authFormStateNotifierProvider.notifier).handleLoginSuccess();
   }
 
   /// 로그인 처리 (UseCase 패턴 사용)
@@ -226,18 +227,18 @@ class AuthController extends FormController<AuthFormState> {
   /// 저장된 로그인 정보 불러오기
   Future<void> loadSavedCredentials() async {
     try {
-      await ref
+      await _ref
           .read(authFormStateNotifierProvider.notifier)
           .loadSavedCredentials();
     } catch (error) {
-      handleError(error);
+      handleError(error, StackTrace.current);
     }
   }
 
   /// 저장된 로그인 정보 삭제
   Future<bool> clearSavedCredentials() async {
     try {
-      await ref
+      await _ref
           .read(authFormStateNotifierProvider.notifier)
           .clearSavedCredentials();
       return true;
@@ -258,7 +259,7 @@ class AuthController extends FormController<AuthFormState> {
         await clearSavedCredentials();
 
         // 인증 상태 초기화
-        ref.read(authFormStateNotifierProvider.notifier).resetState();
+        _ref.read(authFormStateNotifierProvider.notifier).resetState();
 
         return Result.success('ログアウトが完了しました', '');
       } else {
@@ -274,10 +275,9 @@ class AuthController extends FormController<AuthFormState> {
   AuthValidationResult validateLoginData() {
     final state = currentState;
 
-    // 이메일 검증 (공통 ValidationService 사용)
-    final emailResult = ValidationService.validateEmail(state.email);
-    if (!emailResult.isSuccess) {
-      return Result.failure(emailResult.message);
+    // 이메일 검증 (공통 ValidationUtils 사용)
+    if (!ValidationUtils.isValidEmail(state.email)) {
+      return Result.failure('無効なメールアドレスです');
     }
 
     // 비밀번호 검증은 UI에서 직접 처리 (AuthFormState에는 패스워드 없음)
@@ -290,16 +290,14 @@ class AuthController extends FormController<AuthFormState> {
   AuthValidationResult validateSignupData() {
     final state = currentState;
 
-    // 이메일 검증 (공통 ValidationService 사용)
-    final emailResult = ValidationService.validateEmail(state.email);
-    if (!emailResult.isSuccess) {
-      return Result.failure(emailResult.message);
+    // 이메일 검증 (공통 ValidationUtils 사용)
+    if (!ValidationUtils.isValidEmail(state.email)) {
+      return Result.failure('無効なメールアドレスです');
     }
 
-    // 사용자명 검증 (공통 ValidationService 사용)
-    final usernameResult = ValidationService.validateUsername(state.username);
-    if (!usernameResult.isSuccess) {
-      return Result.failure(usernameResult.message);
+    // 사용자명 검증 (공통 ValidationUtils 사용)
+    if (!ValidationUtils.isValidUsername(state.username)) {
+      return Result.failure('無効なユーザー名です');
     }
 
     // 비밀번호 검증은 UI에서 직접 처리 (AuthFormState에는 패스워드 없음)
@@ -310,12 +308,11 @@ class AuthController extends FormController<AuthFormState> {
 
   /// 에러 메시지 초기화
   void clearError() {
-    ref.read(authFormStateNotifierProvider.notifier).clearError();
+    _ref.read(authFormStateNotifierProvider.notifier).clearError();
   }
 
-  @override
   void resetForm() {
-    ref.read(authFormStateNotifierProvider.notifier).resetState();
+    _ref.read(authFormStateNotifierProvider.notifier).resetState();
   }
 
   /// 현재 사용자 정보 가져오기
@@ -342,9 +339,7 @@ class AuthController extends FormController<AuthFormState> {
       if (result.isSuccess) {
         return Result.success('로그인 상태를 확인했습니다', result.dataOrNull ?? false);
       } else {
-        return Result.failure(
-          result.error?.toString() ?? '로그인 상태 확인에 실패했습니다',
-        );
+        return Result.failure(result.error?.toString() ?? '로그인 상태 확인에 실패했습니다');
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -369,9 +364,25 @@ class AuthController extends FormController<AuthFormState> {
     }
   }
 
-  @override
   Future<Result<void>> submitForm() async {
     // 로그인 폼 제출 (기본 동작) - 패스워드는 별도로 제공되어야 함
     return Result.failure('submitFormではなく、login()メソッドを直接使用してください');
+  }
+
+  /// 에러 처리 메서드
+  void handleError(Object error, StackTrace stackTrace) {
+    debugPrint('❌ AuthController Error: $error');
+    debugPrint('StackTrace: $stackTrace');
+  }
+
+  /// 사용자 친화적 에러 메시지 변환
+  String getUserFriendlyErrorMessage(Object error) {
+    if (error.toString().contains('network')) {
+      return 'ネットワークエラーが発生しました';
+    } else if (error.toString().contains('timeout')) {
+      return 'タイムアウトが発生しました';
+    } else {
+      return 'エラーが発生しました';
+    }
   }
 }

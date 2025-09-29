@@ -27,7 +27,9 @@ class NotificationUIController extends BaseController {
     String userId,
   ) async {
     try {
-      final notifications = await _notificationController.getNotifications(userId);
+      final notifications = await _notificationController.getNotifications(
+        userId,
+      );
       return notifications;
     } catch (error) {
       if (context.mounted) {
@@ -38,7 +40,10 @@ class NotificationUIController extends BaseController {
   }
 
   /// 알림 새로고침 (UI 피드백 포함)
-  Future<void> refreshNotificationsWithFeedback(BuildContext context, String userId) async {
+  Future<void> refreshNotificationsWithFeedback(
+    BuildContext context,
+    String userId,
+  ) async {
     try {
       await _notificationController.refreshNotifications(userId);
       if (context.mounted) {
@@ -52,7 +57,11 @@ class NotificationUIController extends BaseController {
   }
 
   /// 알림 읽음 처리 (UI 피드백 포함)
-  Future<void> markAsReadWithFeedback(BuildContext context, String userId, String id) async {
+  Future<void> markAsReadWithFeedback(
+    BuildContext context,
+    String userId,
+    String id,
+  ) async {
     try {
       await _notificationController.markAsRead(userId, id);
       if (context.mounted) {

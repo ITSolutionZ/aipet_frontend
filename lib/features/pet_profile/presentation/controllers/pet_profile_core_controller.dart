@@ -38,11 +38,11 @@ class PetProfileCoreController extends CrudController<PetProfileEntity> {
           result.dataOrNull!,
         );
       } else {
-        return coreResult.Failure(result.errorOrNull!);
+        return coreResult.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return coreResult.Failure(
+      return coreResult.Result.failure(
         '펫 목록을 가져오는데 실패했습니다: ${error.toString()}',
       );
     }
@@ -58,11 +58,11 @@ class PetProfileCoreController extends CrudController<PetProfileEntity> {
           result.dataOrNull!,
         );
       } else {
-        return coreResult.Failure(result.errorOrNull ?? '펫을 찾을 수 없습니다');
+        return coreResult.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return coreResult.Failure(
+      return coreResult.Result.failure(
         '펫 정보를 가져오는데 실패했습니다: ${error.toString()}',
       );
     }
@@ -80,11 +80,11 @@ class PetProfileCoreController extends CrudController<PetProfileEntity> {
           result.dataOrNull!,
         );
       } else {
-        return coreResult.Failure(result.errorOrNull!);
+        return coreResult.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return coreResult.Failure('펫 생성에 실패했습니다: ${error.toString()}');
+      return coreResult.Result.failure('펫 생성에 실패했습니다: ${error.toString()}');
     }
   }
 
@@ -100,11 +100,11 @@ class PetProfileCoreController extends CrudController<PetProfileEntity> {
           result.dataOrNull!,
         );
       } else {
-        return coreResult.Failure(result.errorOrNull!);
+        return coreResult.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return coreResult.Failure('펫 업데이트에 실패했습니다: ${error.toString()}');
+      return coreResult.Result.failure('펫 업데이트에 실패했습니다: ${error.toString()}');
     }
   }
 
@@ -115,11 +115,11 @@ class PetProfileCoreController extends CrudController<PetProfileEntity> {
       if (result.isSuccess) {
         return coreResult.Result.success('펫이 성공적으로 삭제되었습니다', result.dataOrNull);
       } else {
-        return coreResult.Failure(result.errorOrNull!);
+        return coreResult.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return coreResult.Failure('펫 삭제에 실패했습니다: ${error.toString()}');
+      return coreResult.Result.failure('펫 삭제에 실패했습니다: ${error.toString()}');
     }
   }
 }

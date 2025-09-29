@@ -23,12 +23,12 @@ class ActionButtonsComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Card(
         color: Colors.white,
         elevation: 2,
         child: Padding(
-          padding: const const const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -39,7 +39,7 @@ class ActionButtonsComponent extends StatelessWidget {
                   color: AppColors.pointDark,
                 ),
               ),
-              const const const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -49,13 +49,13 @@ class ActionButtonsComponent extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,
-                    padding: const const const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: AppSpacing.md,
                     ),
                   ),
                 ),
               ),
-              const const const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -65,7 +65,7 @@ class ActionButtonsComponent extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.pointPink,
                     side: const BorderSide(color: AppColors.pointPink),
-                    padding: const const const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: AppSpacing.md,
                     ),
                   ),

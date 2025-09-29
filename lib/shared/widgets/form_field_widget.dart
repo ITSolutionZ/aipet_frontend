@@ -48,7 +48,7 @@ class FormFieldWidget extends StatelessWidget {
             context,
           ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
         ),
-        const const const SizedBox(height: 8),
+        const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           validator: validator,

@@ -20,7 +20,7 @@ class AppMonitoringDashboard {
   final List<DashboardSnapshot> _snapshots = [];
 
   // 모니터링 설정
-  static const Duration _updateInterval = Duration(seconds: 10);
+  static const Duration _updateInterval = const Duration(seconds: 10);
   static const int _maxSnapshots = 100;
 
   /// 대시보드 시작

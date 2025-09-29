@@ -12,11 +12,11 @@ class HealthSectionWidget extends StatelessWidget {
       children: [
         // Health 헤더
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
               Icon(Icons.favorite, color: Colors.white, size: 20),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 'Health',
                 style: TextStyle(
@@ -82,12 +82,12 @@ class HealthSectionWidget extends StatelessWidget {
             context.push(AppRouter.groomingReservationRoute); // 트리밍 예약 페이지로 이동
           },
         ),
-        const const const SizedBox(height: 16),
+        const SizedBox(height: 16),
         // 구분선
         Container(
           height: 1,
           color: Colors.white.withAlpha(20),
-          margin: const const const EdgeInsets.symmetric(horizontal: 16),
+          margin: const EdgeInsets.symmetric(horizontal: 16),
         ),
       ],
     );

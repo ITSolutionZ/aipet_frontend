@@ -1,5 +1,9 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+
+import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 예약 컨트롤러
@@ -103,7 +107,7 @@ class BookingState {
   final bool isBookingConfirmed;
   final String? error;
 
-  const BookingState({
+  BookingState({
     required this.facilityId,
     this.facility,
     this.selectedTime = '11:00',

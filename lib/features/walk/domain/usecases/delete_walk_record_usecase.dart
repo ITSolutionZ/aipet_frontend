@@ -37,7 +37,7 @@ class DeleteWalkRecordUseCase {
   }
 
   /// 특정 날짜 범위의 산책 기록 삭제
-  Future<Result<Map<String, int>>> deleteWalkRecordsByDateRange(
+  Future<Result<Map<String, dynamic>>> deleteWalkRecordsByDateRange(
     String petId,
     DateTime startDate,
     DateTime endDate,
@@ -67,7 +67,7 @@ class DeleteWalkRecordUseCase {
   }
 
   /// 오래된 산책 기록 일괄 삭제 (예: 1년 이상 된 기록)
-  Future<Result<Map<String, int>>> deleteOldWalkRecords(int daysOld) async {
+  Future<Result<Map<String, dynamic>>> deleteOldWalkRecords(int daysOld) async {
     try {
       if (daysOld <= 0) {
         return Result.failure('日数は0より大きい値である必要があります');
@@ -91,7 +91,7 @@ class DeleteWalkRecordUseCase {
   }
 
   /// 특정 조건의 산책 기록 삭제
-  Future<Result<Map<String, int>>> deleteWalkRecordsByCondition(
+  Future<Result<Map<String, dynamic>>> deleteWalkRecordsByCondition(
     String petId,
     Map<String, dynamic> conditions,
   ) async {
@@ -157,7 +157,7 @@ class DeleteWalkRecordUseCase {
   }
 
   /// 사용자의 모든 산책 기록 삭제
-  Future<Result<Map<String, int>>> deleteAllUserWalkRecords(
+  Future<Result<Map<String, dynamic>>> deleteAllUserWalkRecords(
     String userId,
   ) async {
     try {

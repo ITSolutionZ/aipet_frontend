@@ -27,7 +27,11 @@ class NotificationDetailController {
     String notificationId,
   ) async {
     try {
-      return await _getNotificationByIdUseCase.call(userId, notificationId);
+      final result = await _getNotificationByIdUseCase.call(
+        userId,
+        notificationId,
+      );
+      return result.dataOrNull;
     } catch (error) {
       rethrow;
     }

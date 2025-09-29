@@ -11,7 +11,7 @@ class PetValidationServiceImpl implements PetValidationService {
   Future<Result<void>> validatePetName(String name) async {
     final oldResult = ValidationService.validatePetName(name);
     if (oldResult.isSuccess) {
-      return const Success(null);
+      return Result.success('펫 이름이 유효합니다', null);
     } else {
       return Result.failure(oldResult.message);
     }
@@ -21,7 +21,7 @@ class PetValidationServiceImpl implements PetValidationService {
   Future<Result<void>> validateWeight(double weight) async {
     final oldResult = ValidationService.validatePetWeight(weight);
     if (oldResult.isSuccess) {
-      return const Success(null);
+      return Result.success('펫 무게가 유효합니다', null);
     } else {
       return Result.failure(oldResult.message);
     }
@@ -31,7 +31,7 @@ class PetValidationServiceImpl implements PetValidationService {
   Future<Result<void>> validateMicrochipNumber(String number) async {
     final oldResult = ValidationService.validateMicrochipNumber(number);
     if (oldResult.isSuccess) {
-      return const Success(null);
+      return Result.success('마이크로칩 번호가 유효합니다', null);
     } else {
       return Result.failure(oldResult.message);
     }
@@ -41,7 +41,7 @@ class PetValidationServiceImpl implements PetValidationService {
   Future<Result<void>> validateBirthday(DateTime birthday) async {
     final oldResult = ValidationService.validatePetBirthday(birthday);
     if (oldResult.isSuccess) {
-      return const Success(null);
+      return Result.success('펫 생일이 유효합니다', null);
     } else {
       return Result.failure(oldResult.message);
     }
@@ -51,14 +51,14 @@ class PetValidationServiceImpl implements PetValidationService {
   Future<Result<void>> validatePetData(PetRegistrationDataEntity data) async {
     // 전체 데이터 검증
     final nameResult = await validatePetName(data.name ?? '');
-    if (nameResult.isFailure) {
+    if (nameResult.isSuccess) {
       return nameResult;
     }
 
     final weight = data.additionalInfo?['weight'] as double?;
     if (weight != null) {
       final weightResult = await validateWeight(weight);
-      if (weightResult.isFailure) {
+      if (weightResult.isSuccess) {
         return weightResult;
       }
     }
@@ -66,18 +66,18 @@ class PetValidationServiceImpl implements PetValidationService {
     final microchipNumber = data.additionalInfo?['microchipNumber'] as String?;
     if (microchipNumber != null && microchipNumber.isNotEmpty) {
       final microchipResult = await validateMicrochipNumber(microchipNumber);
-      if (microchipResult.isFailure) {
+      if (microchipResult.isSuccess) {
         return microchipResult;
       }
     }
 
     if (data.birthDate != null) {
       final birthdayResult = await validateBirthday(data.birthDate!);
-      if (birthdayResult.isFailure) {
+      if (birthdayResult.isSuccess) {
         return birthdayResult;
       }
     }
 
-    return const Success(null);
+    return Result.success('펫 데이터가 유효합니다', null);
   }
 }

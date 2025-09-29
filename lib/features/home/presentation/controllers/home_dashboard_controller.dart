@@ -31,7 +31,7 @@ class HomeDashboardController extends BaseController {
   Future<app_result.Result<HomeDashboardEntity>> initializeHome() async {
     try {
       final dashboard = await _getDashboardDataUseCase.call();
-      return app_result.Result.success(dashboard, '홈 화면 초기화가 완료되었습니다');
+      return app_result.Result.success('홈 화면 초기화가 완료되었습니다', dashboard.data);
     } catch (error) {
       handleError(error);
       return app_result.Result.failure(getUserFriendlyErrorMessage(error));
@@ -42,10 +42,8 @@ class HomeDashboardController extends BaseController {
   Future<app_result.Result<bool>> hasPets() async {
     try {
       final petSummaries = await _getPetSummaryUseCase.call();
-      return app_result.Result.success(
-        petSummaries.isNotEmpty,
-        'ペットリストの確認が完了しました',
-      );
+      final hasPetsData = petSummaries.data?.isNotEmpty ?? false;
+      return app_result.Result.success('ペットリストの確認が完了しました', hasPetsData);
     } catch (error) {
       handleError(error);
       return app_result.Result.failure(getUserFriendlyErrorMessage(error));
@@ -62,7 +60,7 @@ class HomeDashboardController extends BaseController {
         userTriggered: userTriggered,
       );
 
-      return app_result.Result.success(weather, '天気情報がロードされました');
+      return app_result.Result.success('天気情報がロードされました', weather.data);
     } catch (error) {
       handleError(error);
       return app_result.Result.failure(getUserFriendlyErrorMessage(error));
@@ -80,7 +78,7 @@ class HomeDashboardController extends BaseController {
       return app_result.Result.failure('산책 정보 로드에 실패했습니다');
     }
 
-    return app_result.Result.success(walkSummary, '散歩情報がロードされました');
+    return app_result.Result.success('散歩情報がロードされました', walkSummary);
   }
 
   /// 건강 정보 로드
@@ -94,7 +92,7 @@ class HomeDashboardController extends BaseController {
       return app_result.Result.failure('건강 정보 로드에 실패했습니다');
     }
 
-    return app_result.Result.success(healthSummary, '健康情報がロードされました');
+    return app_result.Result.success('健康情報がロードされました', healthSummary);
   }
 
   /// 예약 정보 로드
@@ -109,7 +107,7 @@ class HomeDashboardController extends BaseController {
       return app_result.Result.failure('예약 정보 로드에 실패했습니다');
     }
 
-    return app_result.Result.success(appointments, '予約情報がロードされました');
+    return app_result.Result.success('予約情報がロードされました', appointments);
   }
 
   /// 프로필 업데이트
@@ -119,12 +117,12 @@ class HomeDashboardController extends BaseController {
       final dashboardData = await _getDashboardDataUseCase.call();
 
       final result = {
-        'pets': petSummaries,
-        'dashboard': dashboardData,
-        'petCount': petSummaries.length,
+        'pets': petSummaries.data,
+        'dashboard': dashboardData.data,
+        'petCount': petSummaries.data?.length ?? 0,
       };
 
-      return app_result.Result.success(result, 'プロフィールが更新されました');
+      return app_result.Result.success('プロフィールが更新されました', result);
     } catch (error) {
       handleError(error);
       return app_result.Result.failure(getUserFriendlyErrorMessage(error));

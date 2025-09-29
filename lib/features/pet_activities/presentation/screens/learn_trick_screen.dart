@@ -12,13 +12,13 @@ class LearnTrickScreen extends ConsumerWidget {
       backgroundColor: AppColors.pointOffWhite,
       appBar: SoftGradientBackAppBar(title: '新しいトリックを学ぶ'),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 추천 트릭 섹션
             Center(child: Text('추천 트릭 섹션')),
-            SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
 
             // 모든 트릭 카테고리
             Center(child: Text('모든 트릭 카테고리')),

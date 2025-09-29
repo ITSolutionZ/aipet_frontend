@@ -19,7 +19,7 @@ class BottomNavigationWidget extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const const const EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,
           ),
@@ -39,7 +39,7 @@ class BottomNavigationWidget extends StatelessWidget {
 
   Widget _buildNavItem(IconData icon, bool isSelected) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: isSelected
             ? Colors.white.withValues(alpha: 0.2)

@@ -61,7 +61,7 @@ class GlassSnackbar extends StatelessWidget {
     final baseColor = _baseColor();
 
     return Container(
-      margin: const const const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
@@ -76,12 +76,12 @@ class GlassSnackbar extends StatelessWidget {
               borderRadius: BorderRadius.circular(borderRadius),
               border: Border.all(color: baseColor.withAlpha(80), width: 1),
             ),
-            padding: const const const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 leading ?? Icon(_defaultIcon(), color: baseColor, size: 18),
-                const const const SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Flexible(
                   child: Text(
                     message,
@@ -93,7 +93,7 @@ class GlassSnackbar extends StatelessWidget {
                   ),
                 ),
                 if (actionLabel != null && onAction != null) ...[
-                  const const const SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   TextButton(
                     onPressed: onAction,
                     style: TextButton.styleFrom(foregroundColor: baseColor),
@@ -107,7 +107,7 @@ class GlassSnackbar extends StatelessWidget {
                   ),
                 ],
                 if (onClose != null) ...[
-                  const const const SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   InkWell(
                     onTap: onClose,
                     child: Icon(Icons.close, color: baseColor, size: 18),

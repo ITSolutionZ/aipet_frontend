@@ -25,7 +25,7 @@ class GooglePlacesService {
         if (AppConfig.current.isMockMode) {
           return _getMockFacilities();
         }
-        return const Failure('Google Maps API 키가 설정되지 않았습니다');
+        return Result.failure('Google Maps API 키가 설정되지 않았습니다');
       }
 
       // Google Places API 요청 파라미터
@@ -58,7 +58,7 @@ class GooglePlacesService {
               .cast<Facility>()
               .toList();
 
-          return Success(facilities, '주변 시설을 성공적으로 찾았습니다');
+          return Result.success('주변 시설을 성공적으로 찾았습니다', facilities);
         } else {
           final errorMessage =
               data['error_message'] as String? ??
@@ -92,7 +92,7 @@ class GooglePlacesService {
         if (AppConfig.current.isMockMode) {
           return _getMockFacilities();
         }
-        return const Failure('Google Maps API 키가 설정되지 않았습니다');
+        return Result.failure('Google Maps API 키가 설정되지 않았습니다');
       }
 
       final Map<String, String> params = {
@@ -128,7 +128,7 @@ class GooglePlacesService {
               .cast<Facility>()
               .toList();
 
-          return Success(facilities, '검색 결과를 성공적으로 가져왔습니다');
+          return Result.success('검색 결과를 성공적으로 가져왔습니다', facilities);
         } else {
           final errorMessage =
               data['error_message'] as String? ??
@@ -154,7 +154,7 @@ class GooglePlacesService {
     try {
       final apiKey = AppConfig.current.googleMapsApiKey;
       if (apiKey.isEmpty) {
-        return const Failure('Google Maps API 키가 설정되지 않았습니다');
+        return Result.failure('Google Maps API 키가 설정되지 않았습니다');
       }
 
       final Map<String, String> params = {
@@ -179,9 +179,9 @@ class GooglePlacesService {
           final facility = _mapPlaceToFacility(result);
 
           if (facility != null) {
-            return Success(facility, '시설 상세 정보를 가져왔습니다');
+            return Result.success('시설 상세 정보를 가져왔습니다', facility);
           } else {
-            return const Failure('시설 정보를 파싱할 수 없습니다');
+            return Result.failure('시설 정보를 파싱할 수 없습니다');
           }
         } else {
           final errorMessage =
@@ -343,7 +343,7 @@ class GooglePlacesService {
       ),
     ];
 
-    return Success(mockFacilities, 'Mock 시설 데이터를 로드했습니다');
+    return Result.success('Mock 시설 데이터를 로드했습니다', mockFacilities);
   }
 }
 

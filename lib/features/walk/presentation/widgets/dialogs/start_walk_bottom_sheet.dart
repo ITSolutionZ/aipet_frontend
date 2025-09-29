@@ -1,46 +1,11 @@
+import 'package:aipet_frontend/features/walk/presentation/controllers/start_walk_form_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/start_walk_info_section.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/start_walk_pet_selector.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-/// 🎯 Start Walk Form State Provider
-final startWalkFormProvider =
-    StateNotifierProvider<StartWalkFormController, StartWalkFormState>(
-      (ref) => StartWalkFormController(),
-    );
-
-class StartWalkFormController extends StateNotifier<StartWalkFormState> {
-  StartWalkFormController()
-    : super(const StartWalkFormState(title: '', selectedPetId: 'pet1'));
-
-  void updateTitle(String title) {
-    state = state.copyWith(title: title);
-  }
-
-  void selectPet(String petId) {
-    state = state.copyWith(selectedPetId: petId);
-  }
-
-  bool isFormValid() {
-    return state.title.trim().isNotEmpty;
-  }
-}
-
-/// Start Walk Form 상태
-class StartWalkFormState {
-  final String title;
-  final String selectedPetId;
-
-  const StartWalkFormState({required this.title, required this.selectedPetId});
-
-  StartWalkFormState copyWith({String? title, String? selectedPetId}) {
-    return StartWalkFormState(
-      title: title ?? this.title,
-      selectedPetId: selectedPetId ?? this.selectedPetId,
-    );
-  }
-}
 
 class StartWalkBottomSheet extends ConsumerWidget {
   final WalkController controller;
@@ -77,9 +42,13 @@ class StartWalkBottomSheet extends ConsumerWidget {
           left: AppSpacing.lg,
           right: AppSpacing.lg,
           top: AppSpacing.md,
-          bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.lg,
+          // const 사용 불가: MediaQuery.of(context) 호출 필요
         ),
+        // Padding 위젯을 SingleChildScrollView로 감싸서, viewInsets.bottom 동적 적용
         child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.lg,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -92,13 +61,13 @@ class StartWalkBottomSheet extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 헤더 섹션
               Column(
                 children: [
                   Container(
-                    padding: const const const EdgeInsets.all(AppSpacing.md),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: AppColors.pointBlue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppRadius.large),
@@ -109,7 +78,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                       color: AppColors.pointBlue,
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     '新しい散歩を始める',
                     style: AppFonts.fredoka(
@@ -117,7 +86,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     '愛犬との楽しい散歩時間を記録しましょう',
                     style: AppFonts.base(
@@ -126,7 +95,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const const const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.xl),
                 ],
               ),
 
@@ -143,7 +112,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                       color: Colors.grey[700],
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.sm),
                   WalkFormFields.buildTitleField(
                     initialValue: formState.title,
                     onChanged: (value) =>
@@ -156,7 +125,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                     },
                   ),
 
-                  const const const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // 펫 선택
                   Text(
@@ -167,130 +136,20 @@ class StartWalkBottomSheet extends ConsumerWidget {
                       color: Colors.grey[700],
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.sm),
-                  Container(
-                    padding: const const const EdgeInsets.all(AppSpacing.sm),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[50],
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
-                      border: Border.all(color: Colors.grey[200]!),
-                    ),
-                    child: Column(
-                      children: [
-                        _buildPetOption(
-                          'pet1',
-                          'Maxi',
-                          Icons.pets,
-                          '元気な柴犬',
-                          formState.selectedPetId,
-                          formController.selectPet,
-                        ),
-                        const const const SizedBox(height: AppSpacing.sm),
-                        _buildPetOption(
-                          'pet2',
-                          'Luna',
-                          Icons.pets,
-                          '優しいゴールデン',
-                          formState.selectedPetId,
-                          formController.selectPet,
-                        ),
-                      ],
-                    ),
+                  const SizedBox(height: AppSpacing.sm),
+                  StartWalkPetSelector(
+                    selectedPetId: formState.selectedPetId,
+                    onSelectPet: formController.selectPet,
                   ),
 
-                  const const const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // 散歩 정보
-                  Container(
-                    padding: const const const EdgeInsets.all(AppSpacing.lg),
-                    decoration: BoxDecoration(
-                      color: AppColors.pointGreen.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
-                      border: Border.all(
-                        color: AppColors.pointGreen.withValues(alpha: 0.2),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.info_outline,
-                              size: 18,
-                              color: AppColors.pointGreen,
-                            ),
-                            const const const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              '散歩について',
-                              style: AppFonts.fredoka(
-                                fontSize: AppFonts.baseSize,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.pointGreen,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const const const SizedBox(height: AppSpacing.sm),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on,
-                              size: 16,
-                              color: AppColors.pointGreen,
-                            ),
-                            const const const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              'GPS位置情報を使用してルートを記録',
-                              style: AppFonts.base(
-                                fontSize: AppFonts.sm,
-                                color: AppColors.pointGreen,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const const const SizedBox(height: AppSpacing.xs),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.timer,
-                              size: 16,
-                              color: AppColors.pointGreen,
-                            ),
-                            const const const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              '歩いた時間と距離を自動測定',
-                              style: AppFonts.base(
-                                fontSize: AppFonts.sm,
-                                color: AppColors.pointGreen,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const const const SizedBox(height: AppSpacing.xs),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.camera_alt,
-                              size: 16,
-                              color: AppColors.pointGreen,
-                            ),
-                            const const const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              '散歩中の思い出を写真で記録可能',
-                              style: AppFonts.base(
-                                fontSize: AppFonts.sm,
-                                color: AppColors.pointGreen,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  const StartWalkInfoSection(),
                 ],
               ),
 
-              const const const SizedBox(height: AppSpacing.xl),
+              const SizedBox(height: AppSpacing.xl),
 
               // 버튼 섹션
               _buildActionButtons(context, ref, formState, formController),
@@ -319,14 +178,14 @@ class StartWalkBottomSheet extends ConsumerWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.pointGray,
                 side: const BorderSide(color: AppColors.pointGray),
-                padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.medium),
                 ),
               ),
             ),
           ),
-          const const const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             flex: 2,
             child: ElevatedButton.icon(
@@ -338,7 +197,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBlue,
                 foregroundColor: Colors.white,
-                padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.medium),
                 ),
@@ -347,81 +206,6 @@ class StartWalkBottomSheet extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildPetOption(
-    String petId,
-    String name,
-    IconData icon,
-    String description,
-    String selectedPetId,
-    Function(String) onSelectPet,
-  ) {
-    final isSelected = selectedPetId == petId;
-
-    return GestureDetector(
-      onTap: () => onSelectPet(petId),
-      child: Container(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.pointBlue.withValues(alpha: 0.1)
-              : Colors.white,
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(
-            color: isSelected ? AppColors.pointBlue : Colors.grey[300]!,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const const const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.pointBlue : Colors.grey[200],
-                borderRadius: BorderRadius.circular(AppRadius.small),
-              ),
-              child: Icon(
-                icon,
-                size: 20,
-                color: isSelected ? Colors.white : Colors.grey[600],
-              ),
-            ),
-            const const const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: AppFonts.fredoka(
-                      fontSize: AppFonts.baseSize,
-                      fontWeight: FontWeight.bold,
-                      color: isSelected
-                          ? AppColors.pointBlue
-                          : Colors.grey[800],
-                    ),
-                  ),
-                  Text(
-                    description,
-                    style: AppFonts.base(
-                      fontSize: AppFonts.sm,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (isSelected)
-              const Icon(
-                Icons.check_circle,
-                color: AppColors.pointBlue,
-                size: 24,
-              ),
-          ],
-        ),
       ),
     );
   }

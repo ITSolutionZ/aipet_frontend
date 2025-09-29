@@ -29,62 +29,62 @@ class PetProfileCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            if (icon != null) ...[
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: (iconColor ?? AppColors.pointBlue).withValues(
-                    alpha: 0.1,
-                  ),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  icon,
-                  color: iconColor ?? AppColors.pointBlue,
-                  size: 20,
-                ),
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(AppRadius.medium),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-              const const const SizedBox(width: AppSpacing.md),
             ],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointDark.withValues(alpha: 0.7),
+          ),
+          child: Row(
+            children: [
+              if (icon != null) ...[
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: (iconColor ?? AppColors.pointBlue).withValues(
+                      alpha: 0.1,
                     ),
+                    shape: BoxShape.circle,
                   ),
-                  const const const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    value,
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointDark,
-                      fontWeight: FontWeight.w600,
+                  child: Icon(
+                    icon,
+                    color: iconColor ?? AppColors.pointBlue,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointDark.withValues(alpha: 0.7),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      value,
+                      style: AppFonts.bodyMedium.copyWith(
+                        color: AppColors.pointDark,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            if (trailing != null) trailing!,
-          ],
-        ),
+              if (trailing != null) trailing!,
+            ],
+          ),
         ),
       ),
     );
@@ -109,7 +109,7 @@ class EditableAttributeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -253,7 +253,7 @@ class PetProfileHeader extends StatelessWidget {
               ),
           ],
         ),
-        const const const SizedBox(width: AppSpacing.lg),
+        const SizedBox(width: AppSpacing.lg),
 
         // 이름과 종류
         Expanded(
@@ -271,7 +271,7 @@ class PetProfileHeader extends StatelessWidget {
                         ),
                       ),
                       if (!isEditMode) ...[
-                        const const const SizedBox(width: AppSpacing.sm),
+                        const SizedBox(width: AppSpacing.sm),
                         const Icon(
                           Icons.edit,
                           size: 20,
@@ -280,7 +280,7 @@ class PetProfileHeader extends StatelessWidget {
                       ],
                     ],
                   ),
-              const const const SizedBox(height: AppSpacing.xs),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 typeAndBreed,
                 style: AppFonts.bodyMedium.copyWith(

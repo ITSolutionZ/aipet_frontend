@@ -19,7 +19,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   Future<Result<List<OnboardingPage>>> loadOnboardingData() async {
     try {
       // 로컬 정적 데이터 반환
-      return Result.success(OnboardingData.pages);
+      return Result.success('온보딩 데이터 로드 성공', OnboardingData.pages);
     } catch (e) {
       debugPrint('❌ 온보딩 데이터 로드 실패: $e');
       return Result.failure('온보딩 데이터 로드에 실패했습니다');
@@ -33,7 +33,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt(_keyOnboardingCurrentPage, state.currentPage);
       await prefs.setBool(_keyOnboardingCompleted, state.isCompleted);
-      return Result.success(null);
+      return Result.success('온보딩 상태 저장 성공', null);
     } catch (e) {
       debugPrint('❌ 온보딩 상태 저장 실패: $e');
       // 메모리 캐시는 유지
@@ -54,7 +54,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
         isCompleted: isCompleted,
       );
 
-      return Result.success(_currentState!);
+      return Result.success('온보딩 상태 로드 성공', _currentState!);
     } catch (e) {
       debugPrint('❌ 온보딩 상태 로드 실패: $e');
       return Result.failure('온보딩 상태 로드에 실패했습니다');
@@ -69,7 +69,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_keyOnboardingCompleted, true);
       await prefs.setInt(_keyOnboardingCurrentPage, 0); // 완료시 페이지 리셋
-      return Result.success(null);
+      return Result.success('온보딩 완료 성공', null);
     } catch (e) {
       debugPrint('❌ 온보딩 완료 실패: $e');
       return Result.failure('온보딩 완료에 실패했습니다');
@@ -81,7 +81,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       final isCompleted = prefs.getBool(_keyOnboardingCompleted) ?? false;
-      return Result.success(isCompleted);
+      return Result.success('온보딩 완료 상태 확인 성공', isCompleted);
     } catch (e) {
       debugPrint('❌ 온보딩 완료 상태 확인 실패: $e');
       return Result.failure('온보딩 완료 상태 확인에 실패했습니다');
@@ -96,7 +96,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_keyOnboardingCompleted, false);
       await prefs.setInt(_keyOnboardingCurrentPage, 0);
-      return Result.success(null);
+      return Result.success('온보딩 재시작 성공', null);
     } catch (e) {
       debugPrint('❌ 온보딩 재시작 실패: $e');
       return Result.failure('온보딩 재시작에 실패했습니다');
@@ -108,8 +108,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       // saveOnboardingState를 호출하여 중복 로직 제거
       final newState = OnboardingState(currentPage: currentPage);
-      final result = await saveOnboardingState(newState);
-      return result;
+      return await saveOnboardingState(newState);
     } catch (e) {
       debugPrint('❌ 온보딩 진행률 저장 실패: $e');
       return Result.failure('온보딩 진행률 저장에 실패했습니다');
@@ -121,7 +120,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       final progress = prefs.getInt(_keyOnboardingCurrentPage) ?? 0;
-      return Result.success(progress);
+      return Result.success('온보딩 진행률 로드 성공', progress);
     } catch (e) {
       debugPrint('❌ 온보딩 진행률 로드 실패: $e');
       return Result.failure('온보딩 진행률 로드에 실패했습니다');

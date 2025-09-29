@@ -114,7 +114,7 @@ class TestCaseAutomator {
         stopwatch.stop();
 
         results.add(
-          TestFailure(
+          TestResult.failure(
             input: input,
             error: e.toString(),
             duration: stopwatch.elapsed,
@@ -230,7 +230,7 @@ class TestCaseAutomator {
         iterationStopwatch.stop();
 
         results.add(
-          TestFailure(
+          TestResult.failure(
             input: null,
             error: e.toString(),
             duration: iterationStopwatch.elapsed,
@@ -281,7 +281,7 @@ class TestResult {
     );
   }
 
-  factory TestFailure({
+  factory TestResult.failure({
     required dynamic input,
     required String error,
     required Duration duration,
@@ -426,8 +426,36 @@ extension TestHelperExtensions on Object {
 
   /// 객체의 JSON 표현 생성 (테스트용)
   Map<String, dynamic> toTestJson() {
-    // TODO: JSON 변환 구현
-    return {'type': runtimeType.toString(), 'value': toString()};
+    // 기본 JSON 변환 구현
+    try {
+      // Map이나 List인 경우 직접 변환
+      if (this is Map) {
+        return Map<String, dynamic>.from(this as Map);
+      }
+      if (this is List) {
+        return {
+          'list': (this as List).map((item) => item?.toTestJson()).toList(),
+        };
+      }
+
+      // 기본 객체의 경우 리플렉션을 통한 변환
+      final Map<String, dynamic> json = {};
+
+      // toString() 결과를 value로 사용하고 타입 정보 포함
+      json['type'] = runtimeType.toString();
+      json['value'] = toString();
+      json['timestamp'] = DateTime.now().toIso8601String();
+
+      return json;
+    } catch (e) {
+      // 변환 실패 시 기본 구조 반환
+      return {
+        'type': runtimeType.toString(),
+        'value': toString(),
+        'error': 'JSON conversion failed: $e',
+        'timestamp': DateTime.now().toIso8601String(),
+      };
+    }
   }
 }
 

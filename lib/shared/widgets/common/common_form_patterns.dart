@@ -366,7 +366,7 @@ class CommonFormPatterns {
               child: Text(cancelText ?? AppTexts.cancel),
             ),
           ),
-          const const const SizedBox(width: AppConstants.spacingMD),
+          const SizedBox(width: AppConstants.spacingMD),
         ],
         Expanded(
           child: ElevatedButton(

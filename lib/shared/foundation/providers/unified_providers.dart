@@ -47,7 +47,7 @@ sealed class UnifiedState {
 
   const factory UnifiedState.initial() = _Initial;
   const factory UnifiedState.loading() = _Loading;
-  const factory UnifiedStateResult.success(String message) = _Success;
+  const factory UnifiedState.success(String message) = _Success;
   const factory UnifiedState.error(String error) = _Error;
 
   bool get isLoading => this is _Loading;
@@ -85,7 +85,7 @@ class UnifiedStateNotifier extends StateNotifier<UnifiedState> {
 
   /// 성공 상태 설정
   void setSuccess(String message) {
-    state = UnifiedStateResult.success(message);
+    state = UnifiedState.success(message);
   }
 
   /// 에러 상태 설정

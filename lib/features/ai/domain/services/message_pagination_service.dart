@@ -88,10 +88,7 @@ class MessagePaginationService {
         return Result.success('Empty page', []);
       }
 
-      final endIndex = (startIndex + messagesPerPage).clamp(
-        0,
-        messages.length,
-      );
+      final endIndex = (startIndex + messagesPerPage).clamp(0, messages.length);
       final pageMessages = messages.sublist(startIndex, endIndex);
 
       return Result.success(

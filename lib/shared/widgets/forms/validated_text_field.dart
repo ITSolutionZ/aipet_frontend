@@ -232,9 +232,9 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
 
         // 보안 위협 경고 표시
         if (_hasSecurityThreat && widget.realtimeValidation) ...[
-          const const const SizedBox(height: 4),
+          const SizedBox(height: 4),
           Container(
-            padding: const const const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.red[50],
               borderRadius: BorderRadius.circular(4),
@@ -243,7 +243,7 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
             child: Row(
               children: [
                 Icon(Icons.security, size: 16, color: Colors.red[600]),
-                const const const SizedBox(width: 4),
+                const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     'セキュリティ上の問題が検出されました',

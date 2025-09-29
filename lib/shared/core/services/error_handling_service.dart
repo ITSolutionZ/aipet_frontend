@@ -300,17 +300,17 @@ class ErrorHandlingService {
   /// 기본 에러 위젯 생성
   static Widget _buildDefaultErrorWidget() {
     return Container(
-      padding: const const const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.error_outline, size: 48, color: Colors.grey),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             '데이터를 불러올 수 없습니다',
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text('다시 시도해주세요', style: TextStyle(fontSize: 14, color: Colors.grey)),
         ],
       ),

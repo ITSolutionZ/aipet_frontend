@@ -50,44 +50,42 @@ class FeedingScheduleController extends BaseController {
 
   /// 펫 정보 로드
   Future<Result<Map<String, dynamic>>> loadPetInfo(String petId) async {
-    return wrapAsync(
-      () async {
-        final pet = MockDataService.getMockPetById(petId);
-        return pet;
-      },
-      successMessage: '펫 정보가 로드되었습니다',
-      failureMessage: '펫 정보 로드 실패',
-    );
+    try {
+      final pet = MockDataService.getMockPetById(petId);
+      return Result.success('펫 정보가 로드되었습니다', pet);
+    } catch (error) {
+      return Result.failure('펫 정보 로드 실패: $error');
+    }
   }
 
   /// 오늘의 급여 상태 로드
   Future<Result<List<MealStatus>>> loadTodayMealStatus() async {
-    return wrapAsync(
-      () async {
-        // Mock data for today's meal status
-        final now = DateTime.now();
+    try {
+      // Mock data for today's meal status
+      final now = DateTime.now();
 
-        return [
-          MealStatus(
-            meal: '朝',
-            time: '08:00',
-            isCompleted: now.hour > 8 || (now.hour == 8 && now.minute > 30),
-          ),
-          MealStatus(
-            meal: '昼',
-            time: '12:00',
-            isCompleted: now.hour > 12 || (now.hour == 12 && now.minute > 30),
-          ),
-          MealStatus(
-            meal: '夜',
-            time: '18:00',
-            isCompleted: now.hour > 18 || (now.hour == 18 && now.minute > 30),
-          ),
-        ];
-      },
-      successMessage: '급여 상태가 로드되었습니다',
-      failureMessage: '급여 상태 로드 실패',
-    );
+      final mealStatuses = [
+        MealStatus(
+          meal: '朝',
+          time: '08:00',
+          isCompleted: now.hour > 8 || (now.hour == 8 && now.minute > 30),
+        ),
+        MealStatus(
+          meal: '昼',
+          time: '12:00',
+          isCompleted: now.hour > 12 || (now.hour == 12 && now.minute > 30),
+        ),
+        MealStatus(
+          meal: '夜',
+          time: '18:00',
+          isCompleted: now.hour > 18 || (now.hour == 18 && now.minute > 30),
+        ),
+      ];
+
+      return Result.success('급여 상태가 로드되었습니다', mealStatuses);
+    } catch (error) {
+      return Result.failure('급여 상태 로드 실패: $error');
+    }
   }
 
   /// 스케줄 설정 로드
@@ -118,7 +116,7 @@ class FeedingScheduleController extends BaseController {
         ),
       ];
 
-      return Success(scheduleItems);
+      return Result.success('스케줄 설정이 로드되었습니다', scheduleItems);
     } catch (error) {
       return Result.failure('스케줄 설정 로드 실패: $error');
     }
@@ -129,7 +127,7 @@ class FeedingScheduleController extends BaseController {
     try {
       // Mock update logic - 실제로는 repository를 통해 저장
       await Future.delayed(const Duration(milliseconds: 500));
-      return Success(item);
+      return Result.success('스케줄이 업데이트되었습니다', item);
     } catch (error) {
       return Result.failure('스케줄 업데이트 실패: $error');
     }
@@ -153,7 +151,7 @@ class FeedingScheduleController extends BaseController {
         'timestamp': DateTime.now(),
       };
 
-      return Success(record);
+      return Result.success('급여 기록이 추가되었습니다', record);
     } catch (error) {
       return Result.failure('급여 기록 추가 실패: $error');
     }

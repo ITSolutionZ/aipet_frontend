@@ -23,7 +23,7 @@ class GlassCard extends StatelessWidget {
   const GlassCard({
     super.key,
     required this.child,
-    this.padding = const const EdgeInsets.all(16),
+    this.padding = const EdgeInsets.all(16),
     this.margin,
     this.borderRadius = 14,
     this.blurX = 12,
@@ -52,7 +52,7 @@ class GlassCard extends StatelessWidget {
     this.onTap,
     this.clipBehavior = Clip.antiAlias,
     this.constraints,
-  }) : padding = const const const EdgeInsets.symmetric(horizontal = 12, {super.key});
+  }) : padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 
   /// Panel preset for larger sections
   const GlassCard.panel({
@@ -69,7 +69,7 @@ class GlassCard extends StatelessWidget {
     this.onTap,
     this.clipBehavior = Clip.antiAlias,
     this.constraints,
-  }) : padding = const const const EdgeInsets.all(, {super.key});
+  }) : padding = const EdgeInsets.all(16);
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +143,7 @@ class WhiteCard extends StatelessWidget {
   const WhiteCard({
     super.key,
     required this.child,
-    this.padding = const const EdgeInsets.all(16),
+    this.padding = const EdgeInsets.all(16),
     this.margin,
     this.borderRadius = 14,
     this.elevation = 2,
@@ -168,7 +168,7 @@ class WhiteCard extends StatelessWidget {
     this.onTap,
     this.clipBehavior = Clip.antiAlias,
     this.constraints,
-  }) : padding = const const const EdgeInsets.symmetric(horizontal = 12, {super.key});
+  }) : padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 
   /// Panel preset for larger sections
   const WhiteCard.panel({
@@ -183,7 +183,7 @@ class WhiteCard extends StatelessWidget {
     this.onTap,
     this.clipBehavior = Clip.antiAlias,
     this.constraints,
-  }) : padding = const const const EdgeInsets.all(, {super.key});
+  }) : padding = const EdgeInsets.all(16);
 
   /// Elevated preset for prominent cards
   const WhiteCard.elevated({
@@ -198,7 +198,7 @@ class WhiteCard extends StatelessWidget {
     this.onTap,
     this.clipBehavior = Clip.antiAlias,
     this.constraints,
-  }) : padding = const const const EdgeInsets.all(, {super.key});
+  }) : padding = const EdgeInsets.all(16);
 
   @override
   Widget build(BuildContext context) {

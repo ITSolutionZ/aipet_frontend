@@ -19,7 +19,8 @@ class NotificationListController {
   /// 알림 설정 상태 확인
   Future<bool> checkNotificationSettings(String userId) async {
     try {
-      final settings = await _getNotificationSettingsUseCase(userId);
+      final result = await _getNotificationSettingsUseCase(userId);
+      final settings = result.dataOrNull ?? {};
 
       // 주요 알림 타입들이 모두 활성화되어 있는지 확인
       final mainTypes = [

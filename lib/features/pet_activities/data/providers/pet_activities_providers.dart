@@ -46,5 +46,6 @@ final youTubeVideosProvider =
     FutureProvider.family<List<YouTubeVideoEntity>, String>((ref, petId) async {
       final repository = ref.read(petActivitiesRepositoryProvider);
       final useCase = GetYouTubeVideosUseCase(repository);
-      return useCase.call(petId);
+      final result = await useCase.call(petId);
+      return result.dataOrNull ?? [];
     });

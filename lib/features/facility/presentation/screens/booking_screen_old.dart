@@ -1,5 +1,12 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:aipet_frontend/features/facility/presentation/controllers/booking_controller.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+
+import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/widgets/soft_gradient_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,7 +24,26 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   final TextEditingController _noteController = TextEditingController();
 
   // 시간 슬롯
-  List<String> get _timeSlots => BookingMockData.getDefaultTimeSlots();
+  List<String> get _timeSlots => [
+    '09:00',
+    '09:30',
+    '10:00',
+    '10:30',
+    '11:00',
+    '11:30',
+    '12:00',
+    '12:30',
+    '13:00',
+    '13:30',
+    '14:00',
+    '14:30',
+    '15:00',
+    '15:30',
+    '16:00',
+    '16:30',
+    '17:00',
+    '17:30',
+  ];
 
   @override
   void dispose() {
@@ -81,16 +107,16 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('施設: ${state.facility?.name ?? 'Unknown'}'),
-                      const const const SizedBox(height: AppSpacing.sm),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         '日付: ${state.selectedDate.year}年 ${state.selectedDate.month}月 ${state.selectedDate.day}日',
                       ),
-                      const const const SizedBox(height: AppSpacing.sm),
+                      const SizedBox(height: AppSpacing.sm),
                       Text('時間: ${state.selectedTime}'),
-                      const const const SizedBox(height: AppSpacing.sm),
+                      const SizedBox(height: AppSpacing.sm),
                       Text('サービス: ${state.selectedServices.join(', ')}'),
                       if (_noteController.text.isNotEmpty) ...[
-                        const const const SizedBox(height: AppSpacing.sm),
+                        const SizedBox(height: AppSpacing.sm),
                         Text('メモ: ${_noteController.text}'),
                       ],
                     ],
@@ -134,33 +160,33 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
           backgroundColor: AppColors.pointOffWhite,
           appBar: const SoftGradientBackAppBar(title: '予約'),
           body: SingleChildScrollView(
-            padding: const const const EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // 시설 정보 카드
                 _buildFacilityCard(),
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // 날짜 선택
                 _buildDateSelection(),
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // 시간 선택
                 _buildTimeSelection(),
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // 서비스 선택
                 _buildServiceSelection(),
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // 메모 추가
                 _buildNoteSection(),
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // 예약 확인 버튼
                 _buildConfirmButton(),
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),
@@ -180,7 +206,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
         return Container(
           width: double.infinity,
-          padding: const const const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.blue,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -209,7 +235,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const const const SizedBox(height: AppSpacing.sm),
+                        const SizedBox(height: AppSpacing.sm),
                         Row(
                           children: [
                             const Icon(
@@ -217,7 +243,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                               color: Colors.white,
                               size: 16,
                             ),
-                            const const const SizedBox(width: AppSpacing.xs),
+                            const SizedBox(width: AppSpacing.xs),
                             Text(
                               state.facility!.address,
                               style: AppFonts.bodyMedium.copyWith(
@@ -226,7 +252,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                             ),
                           ],
                         ),
-                        const const const SizedBox(height: AppSpacing.sm),
+                        const SizedBox(height: AppSpacing.sm),
                         Row(
                           children: [
                             Text(
@@ -236,7 +262,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            const const const SizedBox(height: AppSpacing.xs),
+                            const SizedBox(height: AppSpacing.xs),
                             Row(
                               children: List.generate(5, (index) {
                                 if (index < state.facility!.rating.floor()) {
@@ -254,7 +280,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                                 }
                               }),
                             ),
-                            const const const SizedBox(height: AppSpacing.sm),
+                            const SizedBox(height: AppSpacing.sm),
                             Text(
                               '${state.facility!.reviewCount}件のレビュー',
                               style: AppFonts.bodyMedium.copyWith(
@@ -298,7 +324,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
         return Container(
           width: double.infinity,
-          padding: const const const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -330,7 +356,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   ),
                 ],
               ),
-              const const const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -342,8 +368,8 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                     return GestureDetector(
                       onTap: () => _selectDate(date),
                       child: Container(
-                        margin: const const const EdgeInsets.only(right: AppSpacing.sm),
-                        padding: const const const EdgeInsets.symmetric(
+                        margin: const EdgeInsets.only(right: AppSpacing.sm),
+                        padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.md,
                           vertical: AppSpacing.sm,
                         ),
@@ -382,7 +408,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
         return Container(
           width: double.infinity,
-          padding: const const const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -405,7 +431,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const const const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
               Wrap(
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
@@ -414,7 +440,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   return GestureDetector(
                     onTap: () => _selectTime(time),
                     child: Container(
-                      padding: const const const EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
                         vertical: AppSpacing.sm,
                       ),
@@ -452,7 +478,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
         return Container(
           width: double.infinity,
-          padding: const const const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -475,7 +501,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const const const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
               Column(
                 children: state.services.asMap().entries.map((entry) {
                   final index = entry.key;
@@ -483,8 +509,8 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   final isSelected = service['selected'];
 
                   return Container(
-                    margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
-                    padding: const const const EdgeInsets.all(AppSpacing.md),
+                    margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -515,7 +541,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                                 : null,
                           ),
                         ),
-                        const const const SizedBox(width: AppSpacing.md),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: Text(
                             service['name'],
@@ -537,7 +563,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   );
                 }).toList(),
               ),
-              const const const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 '料金は概算です。お支払いは施設で行います。',
                 style: AppFonts.bodySmall.copyWith(color: Colors.grey[600]),
@@ -552,7 +578,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   Widget _buildNoteSection() {
     return Container(
       width: double.infinity,
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -575,7 +601,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           TextField(
             controller: _noteController,
             maxLength: 250,
@@ -609,7 +635,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   Widget _buildConfirmButton() {
     return Container(
       width: double.infinity,
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -628,7 +654,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
-            padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
             ),

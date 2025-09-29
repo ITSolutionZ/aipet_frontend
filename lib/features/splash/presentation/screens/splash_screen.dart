@@ -179,7 +179,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         _navigateToNext();
       }
     } else {
-      _handleSplashError(Exception(result.errorOrNull ?? 'Unknown error'));
+      _handleSplashError(Exception(result.error ?? 'Unknown error'));
     }
   }
 

@@ -57,7 +57,7 @@ class PetSizeSelector extends StatelessWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const const const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         ..._sizeData.entries.map((entry) => _buildSizeOption(entry)),
       ],
     );
@@ -77,8 +77,8 @@ class PetSizeSelector extends StatelessWidget {
         onTap: () => onSizeChanged(sizeKey),
         child: Container(
           width: double.infinity,
-          margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
-          padding: const const const EdgeInsets.all(AppSpacing.md),
+          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: isSelected
                 ? (sizeInfo['color'] as Color).withValues(alpha: 0.1)
@@ -104,13 +104,11 @@ class PetSizeSelector extends StatelessWidget {
                 ),
                 child: Icon(
                   sizeInfo['icon'] as IconData,
-                  color: isSelected
-                      ? Colors.white
-                      : AppColors.pointGray,
+                  color: isSelected ? Colors.white : AppColors.pointGray,
                   size: 24,
                 ),
               ),
-              const const const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +122,7 @@ class PetSizeSelector extends StatelessWidget {
                             : AppColors.pointDark,
                       ),
                     ),
-                    const const const SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
                       sizeInfo['description'] as String,
                       style: AppFonts.bodySmall.copyWith(

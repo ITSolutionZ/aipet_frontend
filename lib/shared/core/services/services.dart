@@ -10,6 +10,7 @@ export 'error_handling_service.dart';
 export 'error_service.dart';
 export 'http_client_service.dart' show ApiResponse;
 export 'image_cache_service.dart';
+export 'image_management_service.dart';
 export 'image_service.dart';
 export 'logger_service.dart';
 export 'performance_monitor_service.dart';

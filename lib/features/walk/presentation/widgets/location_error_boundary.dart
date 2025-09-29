@@ -51,9 +51,9 @@ class LocationErrorBoundary extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(errorMessage, style: const TextStyle(fontSize: 16)),
-              const const const SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: const const const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppColors.pointBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -68,7 +68,7 @@ class LocationErrorBoundary extends ConsumerWidget {
                       color: AppColors.pointBlue,
                       size: 20,
                     ),
-                    const const const SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         userAction,
@@ -172,7 +172,7 @@ class LocationErrorBoundary extends ConsumerWidget {
     final severity = WalkErrorHandler.getErrorSeverity(error);
 
     return Container(
-      padding: const const const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: _getErrorColor(severity).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
@@ -188,7 +188,7 @@ class LocationErrorBoundary extends ConsumerWidget {
             color: _getErrorColor(severity),
             size: 48,
           ),
-          const const const SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
             _getErrorTitle(severity),
             style: TextStyle(
@@ -197,19 +197,19 @@ class LocationErrorBoundary extends ConsumerWidget {
               color: _getErrorColor(severity),
             ),
           ),
-          const const const SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             errorMessage,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14),
           ),
-          const const const SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             userAction,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
           ),
-          const const const SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -224,7 +224,7 @@ class LocationErrorBoundary extends ConsumerWidget {
                   ),
                 ),
               if (onRetry != null && onSettings != null)
-                const const const SizedBox(width: 12),
+                const SizedBox(width: 12),
               if (onRetry != null && severity != WalkErrorSeverity.critical)
                 ElevatedButton.icon(
                   onPressed: onRetry,

@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/core/services/image_management_service.dart';
+import 'package:aipet_frontend/shared/core/domain/domain.dart';
+import 'package:aipet_frontend/shared/core/services/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -22,7 +22,7 @@ class SavedImagesNotifier extends _$SavedImagesNotifier {
     if (result.isSuccess) {
       return result.dataOrNull ?? [];
     } else {
-      throw Exception(result.errorOrNull);
+      throw Exception(result.error);
     }
   }
 
@@ -43,7 +43,7 @@ class SavedImagesNotifier extends _$SavedImagesNotifier {
         currentState.where((path) => path != imagePath).toList(),
       );
     } else {
-      throw Exception(deleteResult.errorOrNull);
+      throw Exception(deleteResult.error);
     }
   }
 
@@ -62,7 +62,7 @@ class SavedImagesNotifier extends _$SavedImagesNotifier {
       await refresh(); // 목록 갱신
       return result.dataOrNull ?? 0;
     } else {
-      throw Exception(result.errorOrNull);
+      throw Exception(result.error);
     }
   }
 }
@@ -208,7 +208,7 @@ class ImageCompressionNotifier extends _$ImageCompressionNotifier {
       } else {
         state = state.copyWith(
           isCompressing: false,
-          error: result.errorOrNull,
+          error: result.error?.toString(),
           currentImagePath: null,
         );
         return result;

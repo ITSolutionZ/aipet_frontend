@@ -135,7 +135,7 @@ class AddFeedingRecordState {
   final List<String> selectedStatuses;
   final Map<String, String> statusValues;
 
-  const AddFeedingRecordState({
+  AddFeedingRecordState({
     DateTime? selectedDate,
     this.selectedTime = const TimeOfDay(hour: 10, minute: 0),
     this.selectedMealType = '朝食',

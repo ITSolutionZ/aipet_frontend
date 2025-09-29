@@ -47,7 +47,7 @@ class _PushNotificationScreenState
       setState(() {
         // settings가 Map<String, dynamic>이므로 적절히 처리
         final typeSettings =
-            settings['typeSettings'] as Map<String, dynamic>? ?? {};
+            settings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ?? {};
         _foodAlarmEnabled = typeSettings['feeding'] as bool? ?? false;
         _walkAlarmEnabled = typeSettings['walk'] as bool? ?? false;
         _systemAlarmEnabled = typeSettings['system'] as bool? ?? true;
@@ -75,14 +75,17 @@ class _PushNotificationScreenState
 
       // 새로운 타입 설정 생성
       final newTypeSettings = Map<String, dynamic>.from(
-        currentSettings['typeSettings'] as Map<String, dynamic>? ?? {},
+        currentSettings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ??
+            {},
       );
       newTypeSettings['feeding'] = _foodAlarmEnabled;
       newTypeSettings['walk'] = _walkAlarmEnabled;
       newTypeSettings['system'] = _systemAlarmEnabled;
 
       // 새로운 설정 생성
-      final newSettings = Map<String, dynamic>.from(currentSettings);
+      final newSettings = Map<String, dynamic>.from(
+        currentSettings.dataOrNull ?? {},
+      );
       newSettings['typeSettings'] = newTypeSettings;
 
       if (!mounted) return;
@@ -129,16 +132,16 @@ class _PushNotificationScreenState
       drawer: const AppDrawer(),
       appBar: const SoftGradientDrawerAppBar(title: 'プッシュ通知'),
       body: SingleChildScrollView(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
 
             // 페이지 설명 추가
             Container(
-              padding: const const const EdgeInsets.all(AppSpacing.md),
-              margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
+              margin: const EdgeInsets.only(bottom: AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.pointBrown.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -153,7 +156,7 @@ class _PushNotificationScreenState
                     color: AppColors.pointBrown,
                     size: 20,
                   ),
-                  const const const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'アラームをオンにすると、設定した時間にお知らせを受け取ることができます',
@@ -169,7 +172,7 @@ class _PushNotificationScreenState
 
             const SectionHeaderComponent(title: 'アラーム種類'),
 
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
 
             AlarmToggleComponent(
               title: '食事アラーム',
@@ -182,7 +185,7 @@ class _PushNotificationScreenState
               },
             ),
 
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             AlarmToggleComponent(
               title: '散歩アラーム',
@@ -195,7 +198,7 @@ class _PushNotificationScreenState
               },
             ),
 
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             AlarmToggleComponent(
               title: 'システムアラーム',
@@ -208,11 +211,11 @@ class _PushNotificationScreenState
               },
             ),
 
-            const const const SizedBox(height: AppSpacing.xl * 2),
+            const SizedBox(height: AppSpacing.xl * 2),
 
             const SectionHeaderComponent(title: '詳細設定'),
 
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             SettingsTileComponent(
               title: 'アラーム時間設定',
@@ -221,7 +224,7 @@ class _PushNotificationScreenState
               },
             ),
 
-            const const const SizedBox(height: AppSpacing.xl * 3),
+            const SizedBox(height: AppSpacing.xl * 3),
 
             ActionButton.primary(
               text: '修正完了',
@@ -229,7 +232,7 @@ class _PushNotificationScreenState
               isEnabled: true,
             ),
 
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),

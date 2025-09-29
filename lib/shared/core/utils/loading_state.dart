@@ -27,7 +27,7 @@ class LoadingState {
   }
 
   /// 로딩 완료 상태
-  factory LoadingStateResult.success() {
+  factory LoadingState.success() {
     return LoadingState(isLoading: false, lastUpdated: DateTime.now());
   }
 
@@ -122,7 +122,7 @@ mixin LoadingStateMixin {
 
   /// 로딩 완료
   void finishLoading() {
-    _loadingState = LoadingStateResult.success();
+    _loadingState = LoadingState.success();
   }
 
   /// 에러 설정
@@ -191,7 +191,7 @@ class LoadingStateManager {
 
   /// 로딩 완료
   void finishLoading() {
-    _currentState = LoadingStateResult.success();
+    _currentState = LoadingState.success();
     _notifyListeners();
   }
 

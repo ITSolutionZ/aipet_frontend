@@ -66,7 +66,7 @@ class PetRepositoryImpl implements PetRepository {
           ),
         )
         .toList();
-    return Success(pets, '펫 목록을 성공적으로 조회했습니다');
+    return Result.success('펫 목록을 성공적으로 조회했습니다', pets);
   }
 
   @override
@@ -78,12 +78,12 @@ class PetRepositoryImpl implements PetRepository {
           final pets = result.dataOrNull!;
           try {
             final pet = pets.firstWhere((pet) => pet.id == id);
-            return Success(pet, '펫 정보를 성공적으로 조회했습니다');
+            return Result.success('펫 정보를 성공적으로 조회했습니다', pet);
           } catch (e) {
-            return const Success(null, '펫을 찾을 수 없습니다');
+            return Result.success('펫을 찾을 수 없습니다', null);
           }
         } else {
-          return Result.failure(result.errorOrNull!);
+          return Result.failure(result.error as String ?? '펫 조회에 실패했습니다');
         }
       }
 
@@ -111,15 +111,15 @@ class PetRepositoryImpl implements PetRepository {
         } else {
           await Future.delayed(const Duration(milliseconds: 300));
         }
-        return Success(newPet, '펫이 성공적으로 생성되었습니다');
+        return Result.success('펫이 성공적으로 생성되었습니다', newPet);
       }
 
       // 실제 데이터베이스에 저장
       final saveResult = await _databaseService.savePetProfile(newPet);
       if (saveResult.isSuccess) {
-        return Success(newPet, '펫이 성공적으로 생성되었습니다');
+        return Result.success('펫이 성공적으로 생성되었습니다', newPet);
       } else {
-        return Result.failure(saveResult.errorOrNull!);
+        return Result.failure(saveResult.error as String ?? '펫 생성에 실패했습니다');
       }
     } catch (error) {
       return Result.failure('펫 생성에 실패했습니다: ${error.toString()}');
@@ -137,15 +137,15 @@ class PetRepositoryImpl implements PetRepository {
         } else {
           await Future.delayed(const Duration(milliseconds: 200));
         }
-        return Success(updatedPet, '펫 정보가 성공적으로 업데이트되었습니다');
+        return Result.success('펫 정보가 성공적으로 업데이트되었습니다', updatedPet);
       }
 
       // 실제 데이터베이스에서 업데이트
       final updateResult = await _databaseService.updatePetProfile(updatedPet);
       if (updateResult.isSuccess) {
-        return Success(updatedPet, '펫 정보가 성공적으로 업데이트되었습니다');
+        return Result.success('펫 정보가 성공적으로 업데이트되었습니다', updatedPet);
       } else {
-        return Result.failure(updateResult.errorOrNull!);
+        return Result.failure(updateResult.error as String ?? '펫 업데이트에 실패했습니다');
       }
     } catch (error) {
       return Result.failure('펫 업데이트에 실패했습니다: ${error.toString()}');
@@ -161,7 +161,7 @@ class PetRepositoryImpl implements PetRepository {
         } else {
           await Future.delayed(const Duration(milliseconds: 200));
         }
-        return const Success(null, '펫이 성공적으로 삭제되었습니다');
+        return Result.success('펫이 성공적으로 삭제되었습니다', null);
       }
 
       // 실제 데이터베이스에서 삭제

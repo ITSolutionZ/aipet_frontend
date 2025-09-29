@@ -102,9 +102,7 @@ class HomeRepositoryImpl implements HomeRepository {
     return WalkSummary(
       todayWalks: walkSummaryData['todayWalks'] as int,
       todayDistance: walkSummaryData['todayDistance'] as double,
-      todayDuration: const Duration(
-        minutes: walkSummaryData['todayDuration'] as int,
-      ),
+      todayDuration: Duration(minutes: walkSummaryData['todayDuration'] as int),
       weeklyGoal: walkSummaryData['weeklyGoal'] as double,
       weeklyProgress: walkSummaryData['weeklyProgress'] as double,
     );

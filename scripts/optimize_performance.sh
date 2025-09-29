@@ -39,7 +39,13 @@ echo "  - ListView: $LISTVIEW_COUNT"
 echo "  - ListView.builder: $LISTVIEW_BUILDER_COUNT"
 echo "  - ListView.separated: $LISTVIEW_SEPARATED_COUNT"
 
-# 4. 포맷팅
+# 4. const 중복 제거 (안전장치)
+echo "📝 const 중복 제거..."
+find lib/ -name "*.dart" -exec sed -i '' 's/const const/const/g' {} \;
+find lib/ -name "*.dart" -exec sed -i '' 's/const const const/const/g' {} \;
+find lib/ -name "*.dart" -exec sed -i '' 's/const const const const/const/g' {} \;
+
+# 5. 포맷팅
 echo "📝 코드 포맷팅 중..."
 dart format lib test 2>&1 | tail -3
 

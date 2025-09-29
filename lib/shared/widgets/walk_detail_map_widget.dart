@@ -20,7 +20,7 @@ class WalkDetailMapWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.map, size: 48, color: Colors.grey),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               '지도 위젯 구현 예정',
               style: TextStyle(color: Colors.grey, fontSize: 16),

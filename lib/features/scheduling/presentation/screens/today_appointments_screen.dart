@@ -1,5 +1,4 @@
 // import 'package:aipet_frontend/features/home/data/providers/home_providers.dart';
-import 'package:aipet_frontend/features/scheduling/data/providers/scheduling_providers.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/appointment_summary_entity.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
@@ -14,8 +13,6 @@ class TodayAppointmentsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 현재 선택된 펫 정보 가져오기
-    final selectedPet = ref.watch(homeSelectedPetNotifierProvider);
     final todayAppointments =
         SchedulingMock.SchedulingMockService.getMockTodayMealsForSchedule();
 
@@ -23,14 +20,14 @@ class TodayAppointmentsScreen extends ConsumerWidget {
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientBackAppBar(title: '今日の予約'),
       body: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 헤더 정보
             Container(
               width: double.infinity,
-              padding: const const const EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 borderRadius: BorderRadius.circular(AppRadius.large),
@@ -47,7 +44,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                   Row(
                     children: [
                       Container(
-                        padding: const const const EdgeInsets.all(AppSpacing.sm),
+                        padding: const EdgeInsets.all(AppSpacing.sm),
                         decoration: BoxDecoration(
                           color: AppColors.pointBrown.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -58,7 +55,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                           size: 24,
                         ),
                       ),
-                      const const const SizedBox(width: AppSpacing.md),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +67,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                                 color: AppColors.pointDark,
                               ),
                             ),
-                            const const const SizedBox(height: AppSpacing.xs),
+                            const SizedBox(height: AppSpacing.xs),
                             Text(
                               '${DateTime.now().month}月${DateTime.now().day}日',
                               style: AppFonts.bodyMedium.copyWith(
@@ -81,7 +78,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                         ),
                       ),
                       Container(
-                        padding: const const const EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.md,
                           vertical: AppSpacing.sm,
                         ),
@@ -103,7 +100,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
               ),
             ),
 
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
 
             // 예약 목록
             if (todayAppointments.isEmpty)
@@ -146,7 +143,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 color: AppColors.pointGray,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               '今日の予約はありません',
               style: AppFonts.titleMedium.copyWith(
@@ -154,7 +151,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'ゆっくりペットと過ごす日ですね',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
@@ -191,7 +188,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
     }
 
     return Container(
-      margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -204,7 +201,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
         ],
       ),
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -212,7 +209,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
             Row(
               children: [
                 Container(
-                  padding: const const const EdgeInsets.all(AppSpacing.sm),
+                  padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
                     color: _getTypeColor(
                       appointment.type,
@@ -225,7 +222,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                     size: 20,
                   ),
                 ),
-                const const const SizedBox(width: AppSpacing.md),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,7 +244,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                   ),
                 ),
                 Container(
-                  padding: const const const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.sm,
                     vertical: AppSpacing.xs,
                   ),
@@ -259,7 +256,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(statusIcon, size: 14, color: statusColor),
-                      const const const SizedBox(width: AppSpacing.xs),
+                      const SizedBox(width: AppSpacing.xs),
                       Text(
                         statusText,
                         style: AppFonts.bodySmall.copyWith(
@@ -273,7 +270,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
               ],
             ),
 
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
 
             // 예약 제목과 펫 이름
             Text(
@@ -283,11 +280,11 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.xs),
             Row(
               children: [
                 const Icon(Icons.pets, size: 16, color: AppColors.pointGray),
-                const const const SizedBox(width: AppSpacing.xs),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   appointment.petName,
                   style: AppFonts.bodyMedium.copyWith(

@@ -4,8 +4,8 @@
 /// 에러 로깅, 사용자 친화적 메시지 변환, 복구 전략 등을 제공합니다.
 library;
 
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/foundation/errors/errors.dart';
-import 'package:aipet_frontend/shared/foundation/result/result.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 
 /// 공통 에러 핸들러
@@ -56,7 +56,7 @@ class AppErrorHandler extends BaseLoggingService {
       if (message.contains('validation') ||
           message.contains('invalid') ||
           message.contains('format')) {
-        return const ValidationException(message, originalError: error);
+        return ValidationException(message, originalError: error);
       }
 
       // 저장소 관련 에러 판별
@@ -96,27 +96,27 @@ class AppErrorHandler extends BaseLoggingService {
   /// 에러 메시지를 사용자 친화적으로 변환
   static String getUserFriendlyMessage(AppException error) {
     switch (error.runtimeType) {
-      case NetworkException:
+      case NetworkException _:
         return AppErrorCode.networkConnectionFailed.userFriendlyMessage;
-      case AuthenticationException:
+      case AuthenticationException _:
         return AppErrorCode.authenticationFailed.userFriendlyMessage;
-      case AuthorizationException:
+      case AuthorizationException _:
         return AppErrorCode.authorizationDenied.userFriendlyMessage;
-      case ValidationException:
+      case ValidationException _:
         return AppErrorCode.validationFailed.userFriendlyMessage;
-      case StorageException:
+      case StorageException _:
         return AppErrorCode.storageReadFailed.userFriendlyMessage;
-      case CacheException:
+      case CacheException _:
         return AppErrorCode.cacheMiss.userFriendlyMessage;
-      case ConfigurationException:
+      case ConfigurationException _:
         return AppErrorCode.configurationMissing.userFriendlyMessage;
-      case DataParsingException:
+      case DataParsingException _:
         return AppErrorCode.parsingFailed.userFriendlyMessage;
-      case BusinessLogicException:
+      case BusinessLogicException _:
         return AppErrorCode.businessRuleViolation.userFriendlyMessage;
-      case ExternalApiException:
+      case ExternalApiException _:
         return AppErrorCode.apiRequestFailed.userFriendlyMessage;
-      case UnexpectedException:
+      case UnexpectedException _:
         return AppErrorCode.unexpectedError.userFriendlyMessage;
       default:
         return AppErrorCode.unknownError.userFriendlyMessage;
@@ -139,31 +139,31 @@ class AppErrorHandler extends BaseLoggingService {
   }
 
   /// 에러를 Result로 변환
-  static Result<T> toResult<T>(AppException error) {
-    return Result.fromAppException(error);
+  static Result toResult<T>(AppException error) {
+    return Result.fromException(error);
   }
 
   /// 예외를 Result로 변환
-  static Result<T> exceptionToResult<T>(Exception exception) {
+  static Result exceptionToResult<T>(Exception exception) {
     final appException = convertToAppException(exception);
-    return Result.fromAppException(appException);
+    return Result.fromException(appException);
   }
 
   /// 동적 에러를 Result로 변환
-  static Result<T> dynamicToResult<T>(dynamic error) {
+  static Result dynamicToResult<T>(dynamic error) {
     if (error is AppException) {
-      return Result.fromAppException(error);
+      return Result.fromException(error);
     } else if (error is Exception) {
       final appException = convertToAppException(error);
-      return Result.fromAppException(appException);
+      return Result.fromException(appException);
     } else {
       final appException = UnexpectedException('Unexpected error: $error');
-      return Result.fromAppException(appException);
+      return Result.fromException(appException as AppException);
     }
   }
 
   /// 에러 복구 전략
-  static Future<Result<T>> withRetry<T>(
+  static Future<Result> withRetry<T>(
     Future<T> Function() operation, {
     int maxRetries = 3,
     Duration delay = const Duration(seconds: 1),
@@ -175,7 +175,7 @@ class AppErrorHandler extends BaseLoggingService {
     while (attempts < maxRetries) {
       try {
         final result = await operation();
-        return Result.success(result);
+        return Result.success('Success', result);
       } catch (e) {
         lastException = e is Exception ? e : Exception(e.toString());
         attempts++;
@@ -196,7 +196,7 @@ class AppErrorHandler extends BaseLoggingService {
   }
 
   /// 에러 복구 전략 (동기)
-  static Result<T> withRetrySync<T>(
+  static Result withRetrySync<T>(
     T Function() operation, {
     int maxRetries = 3,
     bool Function(Exception)? retryCondition,
@@ -207,7 +207,7 @@ class AppErrorHandler extends BaseLoggingService {
     while (attempts < maxRetries) {
       try {
         final result = operation();
-        return Result.success(result);
+        return Result.success('Success', result);
       } catch (e) {
         lastException = e is Exception ? e : Exception(e.toString());
         attempts++;
@@ -249,15 +249,47 @@ class AppErrorHandler extends BaseLoggingService {
 
   /// 에러 리포팅 (크래시 리포팅 서비스 연동)
   void _reportError(AppException error, Map<String, dynamic> details) {
-    // TODO: Firebase Crashlytics, Sentry 등 크래시 리포팅 서비스 연동
-    // 현재는 로깅만 수행
-    logInfo('Error reported to crash analytics: ${error.runtimeType}');
+    // Firebase Crashlytics, Sentry 등 크래시 리포팅 서비스 연동
+    try {
+      // Firebase Crashlytics 연동 (필요시 구현)
+      // FirebaseCrashlytics.instance.recordError(error, StackTrace.current);
+
+      // Sentry 연동 (필요시 구현)
+      // Sentry.captureException(error);
+
+      // 기본 로깅 수행
+      logInfo('Error reported to crash analytics: ${error.runtimeType}');
+      logError('Error details for reporting: $details', error);
+    } catch (reportingError) {
+      logError(
+        'Failed to report error to analytics: $reportingError',
+        reportingError,
+      );
+    }
   }
 
   /// 에러 메트릭 수집
   void collectErrorMetrics(AppException error) {
-    // TODO: 에러 메트릭 수집 (Firebase Analytics 등)
-    logDebug('Error metrics collected: ${error.runtimeType}');
+    // 에러 메트릭 수집 (Firebase Analytics 등)
+    try {
+      // Firebase Analytics 연동 (필요시 구현)
+      // FirebaseAnalytics.instance.logEvent(
+      //   name: 'error_occurred',
+      //   parameters: {
+      //     'error_type': error.runtimeType.toString(),
+      //     'error_code': error.code,
+      //     'error_message': error.message,
+      //   },
+      // );
+
+      // 기본 메트릭 로깅
+      logDebug('Error metrics collected: ${error.runtimeType}');
+      logInfo(
+        'Error metrics: type=${error.runtimeType}, code=${error.code}, message=${error.message}',
+      );
+    } catch (metricsError) {
+      logError('Failed to collect error metrics: $metricsError', metricsError);
+    }
   }
 
   /// 에러 발생 빈도 추적
@@ -283,17 +315,17 @@ class AppErrorHandler extends BaseLoggingService {
 /// 에러 처리 확장 메서드들
 extension ErrorHandlingExtensions<T> on Future<T> Function() {
   /// Future를 Result로 래핑하고 에러 처리
-  Future<Result<T>> toResult() async {
+  Future<Result> toResult() async {
     try {
       final result = await this();
-      return Result.success(result);
+      return Result.success('Success', result);
     } catch (e) {
       return AppErrorHandler.dynamicToResult(e);
     }
   }
 
   /// 재시도 로직과 함께 실행
-  Future<Result<T>> withRetry({
+  Future<Result> withRetry({
     int maxRetries = 3,
     Duration delay = const Duration(seconds: 1),
     bool Function(Exception)? retryCondition,
@@ -310,17 +342,17 @@ extension ErrorHandlingExtensions<T> on Future<T> Function() {
 /// 동기 함수 에러 처리 확장 메서드들
 extension SyncErrorHandlingExtensions<T> on T Function() {
   /// 동기 함수를 Result로 래핑하고 에러 처리
-  Result<T> toResult() {
+  Result toResult() {
     try {
       final result = this();
-      return Result.success(result);
+      return Result.success('Success', result);
     } catch (e) {
       return AppErrorHandler.dynamicToResult(e);
     }
   }
 
   /// 재시도 로직과 함께 실행
-  Result<T> withRetry({
+  Result withRetry({
     int maxRetries = 3,
     bool Function(Exception)? retryCondition,
   }) {

@@ -111,9 +111,9 @@ class FacilityDetailController extends BaseFacilityController {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('以下の連絡先を追加しますか？'),
-              const const const SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: const const const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(8),
@@ -125,7 +125,7 @@ class FacilityDetailController extends BaseFacilityController {
                       facility.name,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const const const SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text('電話: ${facility.phone}'),
                     Text('メール: ${facility.email}'),
                     Text('住所: ${facility.address}'),

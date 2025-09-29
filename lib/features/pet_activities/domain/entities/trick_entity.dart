@@ -68,7 +68,7 @@ class TrickEntity {
   bool get isVideo => videoUrl != null && videoUrl!.isNotEmpty;
 
   /// 지속 시간 (분)
-  Duration get duration => const Duration(minutes: estimatedTime);
+  Duration get duration => Duration(minutes: estimatedTime);
 
   /// 진행률 업데이트
   TrickEntity updateProgress(int newProgress) {

@@ -16,9 +16,7 @@ class ChatSessionUseCase {
       final sessions = await _repository.getChatSessions();
       return Result.success('チャットセッション一覧を取得しました', sessions);
     } catch (error) {
-      return Result.failure(
-        'チャットセッション一覧の取得に失敗しました: ${error.toString()}',
-      );
+      return Result.failure('チャットセッション一覧の取得に失敗しました: ${error.toString()}');
     }
   }
 
@@ -35,23 +33,17 @@ class ChatSessionUseCase {
     try {
       // 입력 유효성 검사
       if (title.trim().isEmpty) {
-        return Result.failure(
-          'セッションタイトルを入力してください',
-        );
+        return Result.failure('セッションタイトルを入力してください');
       }
 
       if (title.length > 100) {
-        return Result.failure(
-          'セッションタイトルは100文字以内で入力してください',
-        );
+        return Result.failure('セッションタイトルは100文字以内で入力してください');
       }
 
       final session = await _repository.createChatSession(title, petId: petId);
       return Result.success('チャットセッションを作成しました', session);
     } catch (error) {
-      return Result.failure(
-        'チャットセッションの作成に失敗しました: ${error.toString()}',
-      );
+      return Result.failure('チャットセッションの作成に失敗しました: ${error.toString()}');
     }
   }
 
@@ -70,9 +62,7 @@ class ChatSessionUseCase {
       await _repository.deleteChatSession(sessionId);
       return Result.success('チャットセッションを削除しました', null);
     } catch (error) {
-      return Result.failure(
-        'チャットセッションの削除に失敗しました: ${error.toString()}',
-      );
+      return Result.failure('チャットセッションの削除に失敗しました: ${error.toString()}');
     }
   }
 }

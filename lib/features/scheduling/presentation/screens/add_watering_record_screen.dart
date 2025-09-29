@@ -37,25 +37,25 @@ class _AddWateringRecordScreenState
       body: Form(
         key: _formKey,
         child: Padding(
-          padding: const const const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 급수량 입력
               _buildAmountInput(),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 시간 선택
               _buildTimeSelector(),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 급수 타입 선택
               _buildTypeSelector(),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 메모 입력
               _buildNotesInput(),
-              const const const SizedBox(height: AppSpacing.xl),
+              const SizedBox(height: AppSpacing.xl),
 
               // 저장 버튼
               _buildSaveButton(),
@@ -70,7 +70,7 @@ class _AddWateringRecordScreenState
   Widget _buildAmountInput() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -81,7 +81,7 @@ class _AddWateringRecordScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _amountController,
               keyboardType: TextInputType.number,
@@ -112,7 +112,7 @@ class _AddWateringRecordScreenState
   Widget _buildTimeSelector() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -123,7 +123,7 @@ class _AddWateringRecordScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             ListTile(
               leading: const Icon(
                 Icons.access_time,
@@ -147,7 +147,7 @@ class _AddWateringRecordScreenState
   Widget _buildTypeSelector() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -158,7 +158,7 @@ class _AddWateringRecordScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             ..._wateringTypes.map(
               (type) => RadioListTile<String>(
                 title: Text(type),
@@ -182,7 +182,7 @@ class _AddWateringRecordScreenState
   Widget _buildNotesInput() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -193,7 +193,7 @@ class _AddWateringRecordScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _notesController,
               maxLines: 3,
@@ -218,7 +218,7 @@ class _AddWateringRecordScreenState
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.pointBlue,
           foregroundColor: Colors.white,
-          padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
         ),
         child: const Text('給水記録を保存'),
       ),
@@ -243,14 +243,6 @@ class _AddWateringRecordScreenState
     if (_formKey.currentState!.validate()) {
       // TODO: 실제 데이터 저장 로직 구현
       // 현재는 Mock 데이터로 시뮬레이션
-
-      final record = {
-        'amount': '${_amountController.text}ml',
-        'time': _selectedTime.format(context),
-        'type': _selectedType,
-        'notes': _notesController.text,
-        'date': DateTime.now().toIso8601String().split('T')[0],
-      };
 
       // Mock 저장 로직 (실제로는 API 호출)
 

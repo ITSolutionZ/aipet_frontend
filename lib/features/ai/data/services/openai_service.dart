@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/ai/domain/constants/ai_constants.dart';
-import 'package:aipet_frontend/features/ai/domain/errors/ai_errors.dart';
 import 'package:aipet_frontend/features/ai/domain/services/token_usage_service.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
 import 'package:aipet_frontend/shared/core/services/unified_error_handler.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
@@ -19,14 +19,14 @@ class OpenAIService extends BaseLoggingService {
       super('openai_service');
 
   /// OpenAI ChatGPT API를 사용하여 메시지에 대한 응답 생성 (재시도 로직 포함)
-  Future<String> generateResponse(
+  Future<Result<String>> generateResponse(
     String message, {
     PetProfileEntity? petContext,
   }) async {
     final apiKey = AppConfig.current.openaiApiKey;
 
     if (apiKey.isEmpty) {
-      throw AiOpenAIException(AiErrorKeys.apiKeyError, code: 'MISSING_API_KEY');
+      return Result.failure('OpenAI API 키가 설정되지 않았습니다');
     }
 
     // ペット関連コンテンツ検証 (펫 컨텍스트가 있으면 스킵)
@@ -39,7 +39,7 @@ class OpenAIService extends BaseLoggingService {
           logInfo(
             'Non-pet related content detected: ${validationResult.reason}',
           );
-          return '''こんにちは！私はペット専門のAIアシスタントです。🐶🐱
+          return Result.success('''こんにちは！私はペット専門のAIアシスタントです。🐶🐱
 
 ${_translateReasonToJapanese(validationResult.reason)}
 
@@ -51,7 +51,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
 • ペット用品と環境
 • 保護と譲渡相談
 
-具体的な状況を教えていただければ、より正確なサポートを提供できます！😊''';
+具体的な状況を教えていただければ、より正確なサポートを提供できます！😊''');
         }
       } catch (e) {
         logError('Content filter validation failed: $e');
@@ -70,9 +70,8 @@ ${_translateReasonToJapanese(validationResult.reason)}
         estimatedTokens: AiApiConstants.openaiMaxTokens,
       );
       if (!canMakeRequest.isSuccess) {
-        throw AiOpenAIException(
+        return Result.failure(
           canMakeRequest.error?.toString() ?? 'Token limit exceeded',
-          code: 'TOKEN_LIMIT_EXCEEDED',
         );
       }
 
@@ -89,9 +88,15 @@ ${_translateReasonToJapanese(validationResult.reason)}
         },
       );
 
+      if (!response.isSuccess) {
+        return Result.failure(response.message);
+      }
+
+      final responseData = response.dataOrNull!;
+
       // 🪙 토큰 사용량 기록
-      if (response['usage'] != null) {
-        final usage = response['usage'] as Map<String, dynamic>;
+      if (responseData['usage'] != null) {
+        final usage = responseData['usage'] as Map<String, dynamic>;
         final promptTokens = usage['prompt_tokens'] as int? ?? 0;
         final completionTokens = usage['completion_tokens'] as int? ?? 0;
 
@@ -113,32 +118,26 @@ ${_translateReasonToJapanese(validationResult.reason)}
         }
       }
 
-      if (response['choices'] != null &&
-          response['choices'] is List &&
-          response['choices'].isNotEmpty) {
-        final choice = response['choices'][0];
+      if (responseData['choices'] != null &&
+          responseData['choices'] is List &&
+          responseData['choices'].isNotEmpty) {
+        final choice = responseData['choices'][0];
         if (choice is Map<String, dynamic> &&
             choice['message'] != null &&
             choice['message']['content'] != null) {
           final content = choice['message']['content'].toString().trim();
           if (content.isEmpty) {
-            throw AiOpenAIException(
-              'Empty response content from OpenAI API',
-              code: 'EMPTY_RESPONSE',
-            );
+            return Result.failure('Empty response content from OpenAI API');
           }
-          return content;
+          return Result.success('OpenAI API 응답이 성공적으로 생성되었습니다', content);
         }
       }
 
       // 에러 정보가 있는 경우 포함
-      final errorInfo = response['error'] != null
-          ? ' Error: ${response['error']}'
+      final errorInfo = responseData['error'] != null
+          ? ' Error: ${responseData['error']}'
           : '';
-      throw AiOpenAIException(
-        'No valid response from OpenAI API$errorInfo',
-        code: 'NO_VALID_RESPONSE',
-      );
+      return Result.failure('No valid response from OpenAI API$errorInfo');
     });
   }
 
@@ -220,7 +219,4 @@ ${petContext.name}の年齢（$age歳）、種類（${petContext.typeName}）に
 
     return basePrompt;
   }
-
-  // BaseLoggingService의 로깅 메서드들을 사용
-  // logError, logInfo, logWarning, logDebug 메서드들이 자동으로 사용 가능
 }

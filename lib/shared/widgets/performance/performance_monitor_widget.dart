@@ -103,7 +103,7 @@ class _PerformanceMonitorWidgetState
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -120,14 +120,14 @@ class _PerformanceMonitorWidgetState
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildHeader(),
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           _buildMetrics(_currentMetric),
           if (widget.showDetails) ...[
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             _buildDetails(),
           ],
           if (_recentIssues.isNotEmpty) ...[
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             _buildIssues(),
           ],
         ],
@@ -139,7 +139,7 @@ class _PerformanceMonitorWidgetState
     return Row(
       children: [
         const Icon(Icons.speed, color: AppColors.pointBrown, size: 20),
-        const const const SizedBox(width: AppSpacing.xs),
+        const SizedBox(width: AppSpacing.xs),
         Text(
           '성능 모니터',
           style: AppFonts.bodyMedium.copyWith(
@@ -150,7 +150,7 @@ class _PerformanceMonitorWidgetState
         const Spacer(),
         if (_currentMetric != null)
           Container(
-            padding: const const const EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.xs,
               vertical: 2,
             ),
@@ -185,7 +185,7 @@ class _PerformanceMonitorWidgetState
             _getMemoryColor(),
           ),
         ),
-        const const const SizedBox(width: AppSpacing.sm),
+        const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: _buildMetricCard(
             'FPS',
@@ -194,7 +194,7 @@ class _PerformanceMonitorWidgetState
             _getFrameRateColor(),
           ),
         ),
-        const const const SizedBox(width: AppSpacing.sm),
+        const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: _buildMetricCard(
             'CPU',
@@ -214,7 +214,7 @@ class _PerformanceMonitorWidgetState
     Color color,
   ) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
@@ -223,7 +223,7 @@ class _PerformanceMonitorWidgetState
       child: Column(
         children: [
           Icon(icon, color: color, size: 16),
-          const const const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             title,
             style: AppFonts.bodySmall.copyWith(
@@ -231,7 +231,7 @@ class _PerformanceMonitorWidgetState
               fontWeight: FontWeight.w500,
             ),
           ),
-          const const const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             value,
             style: AppFonts.bodyMedium.copyWith(
@@ -255,7 +255,7 @@ class _PerformanceMonitorWidgetState
             color: AppColors.pointDark,
           ),
         ),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           '위젯 리빌드: ${_currentMetric?.widgetRebuilds ?? 0}회',
           style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
@@ -279,7 +279,7 @@ class _PerformanceMonitorWidgetState
             color: AppColors.pointDark,
           ),
         ),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         ..._recentIssues.map((issue) => _buildIssueItem(issue)),
       ],
     );
@@ -287,8 +287,8 @@ class _PerformanceMonitorWidgetState
 
   Widget _buildIssueItem(PerformanceIssue issue) {
     return Container(
-      margin: const const const EdgeInsets.only(bottom: AppSpacing.xs),
-      padding: const const const EdgeInsets.all(AppSpacing.sm),
+      margin: const EdgeInsets.only(bottom: AppSpacing.xs),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: _getIssueColor(issue.severity).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
@@ -303,7 +303,7 @@ class _PerformanceMonitorWidgetState
             color: _getIssueColor(issue.severity),
             size: 16,
           ),
-          const const const SizedBox(width: AppSpacing.xs),
+          const SizedBox(width: AppSpacing.xs),
           Expanded(
             child: Text(
               issue.message,

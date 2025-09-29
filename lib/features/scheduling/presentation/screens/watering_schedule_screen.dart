@@ -48,13 +48,13 @@ class _WateringScheduleScreenState
       backgroundColor: AppColors.pointOffWhite,
       appBar: SoftGradientAppBar(title: '$petNameの給水スケジュール'),
       body: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 오늘의 급수 요약
             if (_todayWaterings != null) _buildTodayWateringCard(),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 스케줄 설정
             Text(
@@ -64,7 +64,7 @@ class _WateringScheduleScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Expanded(
               child: _scheduleItems != null
                   ? ListView.builder(
@@ -93,7 +93,7 @@ class _WateringScheduleScreenState
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBlue,
                   foregroundColor: Colors.white,
-                  padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
               ),
             ),
@@ -107,7 +107,7 @@ class _WateringScheduleScreenState
   Widget _buildTodayWateringCard() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -118,10 +118,10 @@ class _WateringScheduleScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             ..._todayWaterings!.map(
               (watering) => Padding(
-                padding: const const const EdgeInsets.only(bottom: AppSpacing.xs),
+                padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                 child: Row(
                   children: [
                     Icon(
@@ -133,7 +133,7 @@ class _WateringScheduleScreenState
                           : AppColors.pointGray,
                       size: 20,
                     ),
-                    const const const SizedBox(width: AppSpacing.sm),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       '${watering['time']} - ${watering['amount']}',
                       style: AppFonts.bodyMedium.copyWith(
@@ -159,10 +159,10 @@ class _WateringScheduleScreenState
     required String amount,
   }) {
     return Card(
-      margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         leading: Container(
-          padding: const const const EdgeInsets.all(AppSpacing.sm),
+          padding: const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             shape: BoxShape.circle,

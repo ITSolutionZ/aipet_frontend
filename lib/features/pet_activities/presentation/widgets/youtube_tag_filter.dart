@@ -19,7 +19,7 @@ class YouTubeTagFilter extends StatelessWidget {
     if (allTags.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      padding: const const const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.sm,
       ),
@@ -34,7 +34,7 @@ class YouTubeTagFilter extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           Wrap(
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,

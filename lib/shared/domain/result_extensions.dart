@@ -11,11 +11,11 @@ extension ResultExtensions<T> on Result<T> {
 class ResultUtils {
   /// 성공 결과 생성 (유틸리티 메서드)
   static Result<T> createSuccess<T>(T data, [String? message]) {
-    return Result.success(data, message ?? 'Success');
+    return Result.success(data as String);
   }
 
   /// 실패 결과 생성 (유틸리티 메서드)
   static Result<T> createFailure<T>(String error) {
-    return Result.failure<T>(error);
+    return Result.failure(error);
   }
 }

@@ -26,26 +26,26 @@ class _WateringSettingsScreenState
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientAppBar(title: '給水設定'),
       body: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 자동 급수 설정
               _buildAutoWateringSection(),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 급수량 설정
               _buildWaterAmountSection(),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 알림 설정
               _buildNotificationSection(),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 급수기 설정
               _buildWateringDeviceSection(),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 고급 설정
               _buildAdvancedSection(),
@@ -60,7 +60,7 @@ class _WateringSettingsScreenState
   Widget _buildAutoWateringSection() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -71,7 +71,7 @@ class _WateringSettingsScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             SwitchListTile(
               title: const Text('自動給水を有効にする'),
               subtitle: const Text('設定された時間に自動で給水します'),
@@ -93,7 +93,7 @@ class _WateringSettingsScreenState
   Widget _buildWaterAmountSection() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -104,7 +104,7 @@ class _WateringSettingsScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Text(
               '1回の給水量: ${_waterAmount.round()}ml',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
@@ -131,7 +131,7 @@ class _WateringSettingsScreenState
   Widget _buildNotificationSection() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -142,7 +142,7 @@ class _WateringSettingsScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             SwitchListTile(
               title: const Text('給水通知を有効にする'),
               subtitle: const Text('給水時間に通知を受け取ります'),
@@ -165,7 +165,7 @@ class _WateringSettingsScreenState
               },
               activeColor: AppColors.pointBlue,
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'アラート閾値: $_alertThreshold%',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
@@ -192,7 +192,7 @@ class _WateringSettingsScreenState
   Widget _buildWateringDeviceSection() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -203,7 +203,7 @@ class _WateringSettingsScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             const ListTile(
               leading: Icon(Icons.water_drop, color: AppColors.pointBlue),
               title: Text('スマート給水器'),
@@ -242,7 +242,7 @@ class _WateringSettingsScreenState
   Widget _buildAdvancedSection() {
     return Card(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -253,7 +253,7 @@ class _WateringSettingsScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             ListTile(
               leading: const Icon(Icons.schedule, color: AppColors.pointGray),
               title: const Text('給水スケジュール管理'),
@@ -374,13 +374,13 @@ class _WateringSettingsScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('デバイス名: スマート給水器'),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('モデル: SW-2024'),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('ファームウェア: v1.2.3'),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('バッテリー残量: 85%'),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('接続状態: 接続済み'),
             ],
           ),

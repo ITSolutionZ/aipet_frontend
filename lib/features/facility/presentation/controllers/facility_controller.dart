@@ -24,18 +24,15 @@ class FacilityController extends StateNotifier<FacilityState> {
   Future<void> loadFacilities() async {
     state = state.copyWith(isLoading: true, error: null);
 
-    try {
-      final facilities = await _loadFacilitiesUseCase();
+    final result = await _loadFacilitiesUseCase();
+    if (result.isSuccess) {
       state = state.copyWith(
         isLoading: false,
-        facilities: facilities,
+        facilities: result.dataOrNull ?? [],
         error: null,
       );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: '施設の読み込みに失敗しました: ${e.toString()}',
-      );
+    } else {
+      state = state.copyWith(isLoading: false, error: result.message);
     }
   }
 
@@ -47,51 +44,54 @@ class FacilityController extends StateNotifier<FacilityState> {
 
     state = state.copyWith(isLoading: true, error: null);
 
-    try {
-      final facilities = await _searchFacilitiesUseCase(query);
+    final result = await _searchFacilitiesUseCase(query);
+    if (result.isSuccess) {
       state = state.copyWith(
         isLoading: false,
-        facilities: facilities,
+        facilities: result.dataOrNull ?? [],
         error: null,
       );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: 'シセツの検索に失敗しました: ${e.toString()}',
-      );
+    } else {
+      state = state.copyWith(isLoading: false, error: result.message);
     }
   }
 
   Future<void> filterFacilitiesByType(FacilityType? type) async {
     state = state.copyWith(isLoading: true, error: null);
 
-    try {
-      final List<Facility> facilities;
-      if (type == null) {
-        facilities = await _loadFacilitiesUseCase();
+    if (type == null) {
+      final result = await _loadFacilitiesUseCase();
+      if (result.isSuccess) {
+        state = state.copyWith(
+          isLoading: false,
+          facilities: result.dataOrNull ?? [],
+          selectedType: type,
+          error: null,
+        );
       } else {
-        facilities = await _filterFacilitiesByTypeUseCase(type);
+        state = state.copyWith(isLoading: false, error: result.message);
       }
-
-      state = state.copyWith(
-        isLoading: false,
-        facilities: facilities,
-        selectedType: type,
-        error: null,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: 'シセツのフィルタリングに失敗しました: ${e.toString()}',
-      );
+    } else {
+      final result = await _filterFacilitiesByTypeUseCase(type);
+      if (result.isSuccess) {
+        state = state.copyWith(
+          isLoading: false,
+          facilities: result.dataOrNull ?? [],
+          selectedType: type,
+          error: null,
+        );
+      } else {
+        state = state.copyWith(isLoading: false, error: result.message);
+      }
     }
   }
 
   Future<Facility?> getFacilityById(String id) async {
-    try {
-      return await _getFacilityByIdUseCase(id);
-    } catch (e) {
-      state = state.copyWith(error: 'シセツ詳細の取得に失敗しました: ${e.toString()}');
+    final result = await _getFacilityByIdUseCase(id);
+    if (result.isSuccess) {
+      return result.dataOrNull;
+    } else {
+      state = state.copyWith(error: result.message);
       return null;
     }
   }

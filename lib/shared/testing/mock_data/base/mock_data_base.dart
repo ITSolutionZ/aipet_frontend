@@ -9,7 +9,7 @@ abstract class MockDataBase {
   /// API 지연 시뮬레이션
   static Future<void> simulateApiDelay({int milliseconds = 300}) async {
     if (isEnabled) {
-      await Future.delayed(const Duration(milliseconds: milliseconds));
+      await Future.delayed(Duration(milliseconds: milliseconds));
     }
   }
 

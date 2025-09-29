@@ -32,7 +32,7 @@ class NavigateAfterOnboardingUseCase extends BaseUseCaseNoParams<String> {
   ) async {
     try {
       context.go(route);
-      return Result.success(null, '네비게이션이 완료되었습니다');
+      return Result.success(null.toString(), '네비게이션이 완료되었습니다');
     } catch (e) {
       return Result.failure('네비게이션 실행 중 오류가 발생했습니다: $e');
     }

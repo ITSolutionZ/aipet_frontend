@@ -171,7 +171,7 @@ class VideoBookmarkList extends ConsumerWidget {
           Container(
             width: 40,
             height: 4,
-            margin: const const const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+            margin: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
             decoration: BoxDecoration(
               color: Colors.grey[300],
               borderRadius: BorderRadius.circular(2),
@@ -180,7 +180,7 @@ class VideoBookmarkList extends ConsumerWidget {
 
           // 헤더
           Padding(
-            padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Row(
               children: [
                 const Text(
@@ -222,9 +222,9 @@ class VideoBookmarkList extends ConsumerWidget {
                         size: 48,
                         color: Colors.red,
                       ),
-                      const const const SizedBox(height: AppSpacing.md),
+                      const SizedBox(height: AppSpacing.md),
                       Text('ブックマークの読み込みに失敗しました: $error'),
-                      const const const SizedBox(height: AppSpacing.md),
+                      const SizedBox(height: AppSpacing.md),
                       ElevatedButton(
                         onPressed: () =>
                             ref.refresh(videoBookmarksProvider(videoId)),
@@ -252,12 +252,12 @@ class VideoBookmarkList extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.bookmark_outline, size: 64, color: Colors.grey),
-            SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'ブックマークがありません',
               style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
-            SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'ビデオの特定のモーメントにすばやく移動するには、ブックマークを追加してください',
               style: TextStyle(color: Colors.grey, fontSize: 12),
@@ -269,10 +269,10 @@ class VideoBookmarkList extends ConsumerWidget {
     }
 
     return ListView.separated(
-      padding: const const const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       itemCount: bookmarks.length,
       separatorBuilder: (context, index) =>
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, index) {
         final bookmark = bookmarks[index];
         return RepaintBoundary(
@@ -335,7 +335,7 @@ class _BookmarkCard extends StatelessWidget {
               ),
             ),
             if (bookmark.description?.isNotEmpty == true) ...[
-              const const const SizedBox(height: 2),
+              const SizedBox(height: 2),
               Text(
                 bookmark.description!,
                 style: TextStyle(
@@ -482,7 +482,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
                   decoration: const InputDecoration(
                     labelText: '分',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 8,
                     ),
@@ -502,7 +502,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
                   decoration: const InputDecoration(
                     labelText: '秒',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 8,
                     ),
@@ -517,7 +517,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
             ],
           ),
 
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           // 라벨 입력
           TextFormField(
@@ -529,7 +529,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
             onChanged: formController.updateLabel,
           ),
 
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           // 설명 입력
           TextFormField(

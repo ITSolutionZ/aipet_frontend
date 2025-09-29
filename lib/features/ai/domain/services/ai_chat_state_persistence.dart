@@ -20,7 +20,10 @@ class AiChatStatePersistence {
   Future<Result<void>> saveSelectedPet(String petId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final success = await prefs.setString('$_keyPrefix$_keySelectedPet', petId);
+      final success = await prefs.setString(
+        '$_keyPrefix$_keySelectedPet',
+        petId,
+      );
 
       if (success) {
         if (kDebugMode) {
@@ -144,12 +147,16 @@ class AiChatStatePersistence {
       // 최근 메시지만 캐시 (성능 고려)
       final recentMessages = messages.take(maxMessages).toList();
       final messagesJson = jsonEncode(
-        recentMessages.map((m) => {
-          'id': m.id,
-          'content': m.content,
-          'timestamp': m.timestamp.toIso8601String(),
-          'type': m.type.name,
-        }).toList(),
+        recentMessages
+            .map(
+              (m) => {
+                'id': m.id,
+                'content': m.content,
+                'timestamp': m.timestamp.toIso8601String(),
+                'type': m.type.name,
+              },
+            )
+            .toList(),
       );
 
       await prefs.setString('$_keyPrefix$_keyRecentMessages', messagesJson);
@@ -176,20 +183,18 @@ class AiChatStatePersistence {
       }
 
       final messagesList = jsonDecode(messagesJson) as List;
-      final messages = messagesList
-          .map((json) {
-            final map = json as Map<String, dynamic>;
-            return AiMessageEntity(
-              id: map['id'] as String,
-              content: map['content'] as String,
-              timestamp: DateTime.parse(map['timestamp'] as String),
-              type: MessageType.values.firstWhere(
-                (t) => t.name == map['type'],
-                orElse: () => MessageType.user,
-              ),
-            );
-          })
-          .toList();
+      final messages = messagesList.map((json) {
+        final map = json as Map<String, dynamic>;
+        return AiMessageEntity(
+          id: map['id'] as String,
+          content: map['content'] as String,
+          timestamp: DateTime.parse(map['timestamp'] as String),
+          type: MessageType.values.firstWhere(
+            (t) => t.name == map['type'],
+            orElse: () => MessageType.user,
+          ),
+        );
+      }).toList();
 
       if (kDebugMode) {
         debugPrint('📋 Loaded ${messages.length} cached messages');

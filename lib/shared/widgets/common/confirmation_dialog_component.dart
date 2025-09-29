@@ -132,7 +132,7 @@ class ConfirmationDialogComponent extends StatelessWidget {
         children: [
           if (icon != null) ...[
             Icon(icon, color: iconColor ?? AppColors.pointDark, size: 24),
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
           ],
           Expanded(
             child: Text(

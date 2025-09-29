@@ -190,7 +190,8 @@ abstract class BaseController {
     while (attempts < maxRetries) {
       final result = await ErrorHandlingService.handleAsync(
         action(),
-        context: '${errorMessage ?? 'BaseController'} - Attempt ${attempts + 1}',
+        context:
+            '${errorMessage ?? 'BaseController'} - Attempt ${attempts + 1}',
         showUserMessage: attempts == maxRetries - 1, // 마지막 시도에서만 UI 메시지 표시
       );
 

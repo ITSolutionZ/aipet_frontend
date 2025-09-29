@@ -16,14 +16,14 @@ class GenerateCodeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
           // 펫 프로필 목록
           ...pets.map(
             (pet) => SharingPetCard(pet: pet, onTap: () => onPetTap(pet)),
           ),
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
 
           // 설명 텍스트
           Text(
@@ -84,7 +84,7 @@ class ScanCodeTab extends StatelessWidget {
                     size: 80,
                     color: AppColors.pointBrown,
                   ),
-                  const const const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     'Tap to Scan',
                     style: AppFonts.fredoka(
@@ -97,11 +97,11 @@ class ScanCodeTab extends StatelessWidget {
               ),
             ),
           ),
-          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.xl),
 
           // 설명 텍스트
           Padding(
-            padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: Text(
               'Scan QR codes to add pets shared by other users',
               textAlign: TextAlign.center,
@@ -129,8 +129,8 @@ class SharingPetCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -152,7 +152,7 @@ class SharingPetCard extends StatelessWidget {
               ),
               backgroundColor: AppColors.pointBrown,
             ),
-            const const const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.md),
 
             // 펫 정보
             Expanded(
@@ -167,7 +167,7 @@ class SharingPetCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     '${_getTypeString(pet.type)}${pet.breed != null ? ' | ${pet.breed}' : ''}',
                     style: AppFonts.bodySmall.copyWith(
@@ -228,7 +228,7 @@ class QRCodeModal extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -245,7 +245,7 @@ class QRCodeModal extends StatelessWidget {
                     pet.imagePath ?? 'assets/images/dogs/shiba.png',
                   ),
                 ),
-                const const const SizedBox(width: AppSpacing.md),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,11 +272,11 @@ class QRCodeModal extends StatelessWidget {
                 ),
               ],
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // QR 코드
             Container(
-              padding: const const const EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -297,7 +297,7 @@ class QRCodeModal extends StatelessWidget {
                 ),
               ),
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 설명 텍스트
             Text(
@@ -307,7 +307,7 @@ class QRCodeModal extends StatelessWidget {
                 color: AppColors.pointDark.withValues(alpha: 0.7),
               ),
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // 공유 버튼
             SizedBox(
@@ -321,7 +321,7 @@ class QRCodeModal extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBrown,
                   foregroundColor: Colors.white,
-                  padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.medium),
                   ),

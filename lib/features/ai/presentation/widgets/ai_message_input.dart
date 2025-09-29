@@ -17,11 +17,11 @@ class AiMessageInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         left: AppSpacing.md,
         right: AppSpacing.md,
         top: AppSpacing.sm,
-        bottom: MediaQuery.of(context).padding.bottom + AppSpacing.sm,
+        bottom: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
         color: Colors.white,

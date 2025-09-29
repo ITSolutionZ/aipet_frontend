@@ -1,4 +1,5 @@
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
 import 'package:flutter/material.dart';
 
 /// ⏰ 예약 시간 선택 위젯
@@ -20,9 +21,9 @@ class BookingTimeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return InfoCard.basic(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -34,17 +35,17 @@ class BookingTimeSelector extends StatelessWidget {
                   size: 20,
                   color: AppColors.primary,
                 ),
-                const const const SizedBox(width: AppSpacing.xs),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   '시간 선택',
-                  style: AppTextStyles.titleMedium.copyWith(
+                  style: AppFonts.titleMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 if (selectedTime != null) ...[
-                  const const const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   Container(
-                    padding: const const const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.sm,
                       vertical: AppSpacing.xs,
                     ),
@@ -54,7 +55,7 @@ class BookingTimeSelector extends StatelessWidget {
                     ),
                     child: Text(
                       selectedTime!,
-                      style: AppTextStyles.bodySmall.copyWith(
+                      style: AppFonts.bodySmall.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
@@ -63,7 +64,7 @@ class BookingTimeSelector extends StatelessWidget {
                 ],
               ],
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
 
             // 시간대 그리드
             GridView.builder(
@@ -91,7 +92,7 @@ class BookingTimeSelector extends StatelessWidget {
             ),
 
             // 범례
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             _buildLegend(),
           ],
         ),
@@ -103,10 +104,13 @@ class BookingTimeSelector extends StatelessWidget {
     return Row(
       children: [
         const _LegendItem(color: AppColors.primary, label: '선택됨'),
-        const const const SizedBox(width: AppSpacing.md),
+        const SizedBox(width: AppSpacing.md),
         const _LegendItem(color: AppColors.cardBackgroundGray, label: '이용 가능'),
-        const const const SizedBox(width: AppSpacing.md),
-        _LegendItem(color: AppColors.error.withValues(alpha: 0.2), label: '예약 불가'),
+        const SizedBox(width: AppSpacing.md),
+        _LegendItem(
+          color: AppColors.error.withValues(alpha: 0.2),
+          label: '예약 불가',
+        ),
       ],
     );
   }
@@ -160,7 +164,7 @@ class BookingTimeChip extends StatelessWidget {
             Center(
               child: Text(
                 time,
-                style: AppTextStyles.bodyMedium.copyWith(
+                style: AppFonts.bodyMedium.copyWith(
                   color: textColor,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
@@ -199,12 +203,10 @@ class _LegendItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(2),
           ),
         ),
-        const const const SizedBox(width: AppSpacing.xs),
+        const SizedBox(width: AppSpacing.xs),
         Text(
           label,
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
         ),
       ],
     );

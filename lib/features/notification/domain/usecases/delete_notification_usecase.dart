@@ -99,7 +99,7 @@ class DeleteNotificationUseCase {
   }
 
   /// 읽지 않은 알림만 삭제
-  Future<Result<Map<String, int>>> deleteUnreadNotifications(
+  Future<Result<Map<String, dynamic>>> deleteUnreadNotifications(
     String userId,
   ) async {
     try {

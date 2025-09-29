@@ -85,13 +85,13 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const const const EdgeInsets.all(AppSpacing.lg),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // 프로그레스바
                     const PetRegistrationProgressBar(currentStep: 5),
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 제목
                     Consumer(
@@ -111,7 +111,7 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
                         );
                       },
                     ),
-                    const const const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: AppSpacing.xl),
 
                     // 펫 이미지
                     PetImageDisplay(
@@ -119,7 +119,7 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
                       width: 200,
                       height: 200,
                     ),
-                    const const const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: AppSpacing.xl),
 
                     // 기념일 카드들
                     Consumer(
@@ -139,7 +139,7 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
                                   registrationState.petBirthday != null &&
                                       _calculateAge().isNotEmpty
                                   ? Container(
-                                      padding: const const const EdgeInsets.symmetric(
+                                      padding: const EdgeInsets.symmetric(
                                         horizontal: 12,
                                         vertical: 6,
                                       ),
@@ -186,7 +186,7 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
 
             // 하단 고정 버튼 영역
             Container(
-              padding: const const const EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(

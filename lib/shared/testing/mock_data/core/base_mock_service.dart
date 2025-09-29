@@ -9,7 +9,7 @@ abstract class BaseMockService {
   ///
   /// [seconds] 지연 시간 (기본값: 0.3초)
   static Future<void> simulateApiDelay({int milliseconds = 300}) async {
-    await Future.delayed(const Duration(milliseconds: milliseconds));
+    await Future.delayed(Duration(milliseconds: milliseconds));
   }
 
   /// 랜덤 성공/실패 시뮬레이션

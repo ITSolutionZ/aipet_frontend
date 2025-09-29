@@ -88,11 +88,11 @@ class AiRepositoryImpl implements AiRepository {
       final response = await _openAIService.generateResponse(message);
 
       // AI 로거를 사용한 응답 성공 로그
-      AiLogger.logApiSuccess(response);
+      AiLogger.logApiSuccess(response as String);
 
       final aiMessage = AiMessageEntity(
         id: _generateId(),
-        content: response,
+        content: response as String,
         type: MessageType.assistant,
         timestamp: DateTime.now(),
       );
@@ -142,11 +142,11 @@ class AiRepositoryImpl implements AiRepository {
       );
 
       // AI 로거를 사용한 응답 성공 로그
-      AiLogger.logApiSuccess(response);
+      AiLogger.logApiSuccess(response as String);
 
       final aiMessage = AiMessageEntity(
         id: _generateId(),
-        content: response,
+        content: response as String,
         type: MessageType.assistant,
         timestamp: DateTime.now(),
         petId: petContext?.id,
@@ -386,12 +386,51 @@ class AiRepositoryImpl implements AiRepository {
     bool onlyManualSaved = false,
   }) async {
     // 로컬 저장소에서 채팅 히스토리 목록 가져오기
-    // 현재는 메시지만 저장하고 있으므로 빈 목록 반환
-    // TODO: 채팅 히스토리 엔티티를 별도로 저장하는 기능 구현 필요
-    // - 메시지와 메타데이터를 분리하여 저장
-    // - 제목, 요약, 카테고리 정보 포함
-    // - 페이징 및 검색 기능 추가
-    return [];
+    try {
+      // Mock 채팅 히스토리 데이터 반환
+      // 추후 실제 로컬 저장소 구현 시 교체 예정
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      final mockHistories = [
+        {
+          'id': 'history_1',
+          'title': '健康相談',
+          'summary': 'ペットの健康について相談しました',
+          'messageCount': 5,
+          'createdAt': DateTime.now()
+              .subtract(const Duration(days: 1))
+              .toIso8601String(),
+          'isManualSaved': false,
+        },
+        {
+          'id': 'history_2',
+          'title': '食事相談',
+          'summary': 'ペットの食事について相談しました',
+          'messageCount': 3,
+          'createdAt': DateTime.now()
+              .subtract(const Duration(days: 2))
+              .toIso8601String(),
+          'isManualSaved': true,
+        },
+      ];
+
+      return mockHistories
+          .map(
+            (history) => AiChatHistoryEntity(
+              id: history['id'] as String,
+              title: history['title'] as String,
+              summary: history['summary'] as String,
+              messages: [], // TODO: 실제 메시지 목록 로드 구현 필요
+              messageCount: history['messageCount'] as int,
+              createdAt: DateTime.parse(history['createdAt'] as String),
+              isManualSaved: history['isManualSaved'] as bool,
+            ),
+          )
+          .toList();
+    } catch (error) {
+      debugPrint('getChatHistories error: $error');
+      return [];
+    }
   }
 
   @override

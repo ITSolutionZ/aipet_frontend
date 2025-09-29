@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 
 import 'mock_config.dart';
+import 'mock_data/mock_data_service.dart';
 
 /// 목업 데이터 시나리오 타입
 enum MockScenario {
@@ -29,6 +30,27 @@ enum MockScenario {
 ///
 /// 모든 Mock 데이터를 중앙에서 관리하고,
 /// 시나리오별 테스트와 실제 API 연동을 지원합니다.
+///
+/// 사용법:
+/// ```dart
+/// // 초기화
+/// await CentralizedMockManager.initialize();
+///
+/// // 데이터 조회
+/// final pet = await CentralizedMockManager.getMockData<Pet>(
+///   key: 'pets',
+///   fromJson: Pet.fromJson,
+/// );
+///
+/// // 목록 조회
+/// final pets = await CentralizedMockManager.getMockDataList<Pet>(
+///   key: 'pets',
+///   fromJson: Pet.fromJson,
+/// );
+///
+/// // 시나리오 강제 설정 (테스트용)
+/// CentralizedMockManager.setScenarioOverride('pets', MockScenario.error);
+/// ```
 class CentralizedMockManager {
   static final CentralizedMockManager _instance =
       CentralizedMockManager._internal();
@@ -57,12 +79,38 @@ class CentralizedMockManager {
 
   /// Mock 데이터 로드
   Future<void> _loadMockData() async {
-    // 여기서 모든 Mock 데이터를 중앙에서 로드
-    // 실제로는 각 feature의 mock 데이터를 통합
+    // 기존 mock_data/ 시스템과 통합
     await _loadPetMockData();
     await _loadAiMockData();
     await _loadWalkMockData();
     await _loadSchedulingMockData();
+
+    // 추가 Mock 데이터 로드 (기존 시스템 활용)
+    await _loadAdditionalMockData();
+  }
+
+  /// 추가 Mock 데이터 로드 (기존 mock_data/ 시스템 활용)
+  Future<void> _loadAdditionalMockData() async {
+    // 기존 MockDataService의 데이터를 중앙 저장소에 통합
+    if (MockDataService.isEnabled) {
+      // Pet Activities 데이터 통합
+      _dataStore['mock_tricks'] = MockDataService.getMockTricks();
+      _dataStore['mock_video_bookmarks'] =
+          MockDataService.getMockVideoBookmarks();
+      _dataStore['mock_video_progress'] =
+          MockDataService.getMockVideoProgress();
+
+      // Pet Feeding 데이터 통합
+      _dataStore['mock_feeding_records'] =
+          MockDataService.getMockFeedingRecords();
+      _dataStore['mock_feeding_statistics'] =
+          MockDataService.getMockFeedingStatistics();
+      _dataStore['mock_pet_sizes'] =
+          MockDataService.getMockPetSizesAndFeedingAmounts();
+
+      // Pet 데이터 통합
+      _dataStore['mock_pet_by_id'] = MockDataService.getMockPetById('pet-1');
+    }
   }
 
   /// Pet 관련 Mock 데이터 로드
@@ -70,23 +118,23 @@ class CentralizedMockManager {
     _dataStore['pets'] = [
       {
         'id': 'pet_001',
-        'name': '몽이',
+        'name': 'ポチ',
         'type': 'dog',
-        'breed': '골든 리트리버',
+        'breed': '柴犬',
         'age': 3,
-        'weight': 25.5,
-        'imageUrl': 'https://example.com/pet1.jpg',
+        'weight': 12.5,
+        'imageUrl': 'assets/images/dogs/shiba.png',
         'birthDate': '2021-03-15',
         'isActive': true,
       },
       {
         'id': 'pet_002',
-        'name': '나비',
+        'name': 'ルナ',
         'type': 'cat',
-        'breed': '페르시안',
+        'breed': 'マンチカン',
         'age': 2,
-        'weight': 4.2,
-        'imageUrl': 'https://example.com/pet2.jpg',
+        'weight': 3.8,
+        'imageUrl': 'assets/images/cats/cats.png',
         'birthDate': '2022-06-20',
         'isActive': true,
       },
@@ -112,7 +160,7 @@ class CentralizedMockManager {
       {
         'id': 'msg_001',
         'type': 'user',
-        'content': '우리 강아지가 계속 기침을 해요',
+        'content': 'ポチが最近食事を拒否していて心配です',
         'timestamp': DateTime.now()
             .subtract(const Duration(minutes: 5))
             .toIso8601String(),
@@ -120,7 +168,8 @@ class CentralizedMockManager {
       {
         'id': 'msg_002',
         'type': 'assistant',
-        'content': '강아지의 기침은 여러 원인이 있을 수 있습니다. 지속적인 기침이라면 수의사 상담을 권합니다.',
+        'content':
+            'ポチの食事拒否について心配ですね。まず確認していただきたいことがあります：最近フードを変更しましたか？体調や元気さはいかがでしょうか？',
         'timestamp': DateTime.now()
             .subtract(const Duration(minutes: 4))
             .toIso8601String(),
@@ -155,7 +204,7 @@ class CentralizedMockManager {
         'petId': 'pet_001',
         'time': '08:00',
         'amount': '200g',
-        'foodType': '사료',
+        'foodType': 'フード',
         'isActive': true,
       },
     ];
@@ -323,27 +372,27 @@ class CentralizedMockManager {
     switch (scenario) {
       case MockScenario.success:
         await Future.delayed(
-          const Duration(milliseconds: 200 + _random.nextInt(300)),
+          Duration(milliseconds: 200 + _random.nextInt(300)),
         );
         break;
       case MockScenario.delay:
         await Future.delayed(
-          const Duration(milliseconds: 1000 + _random.nextInt(2000)),
+          Duration(milliseconds: 1000 + _random.nextInt(2000)),
         );
         break;
       case MockScenario.partialSuccess:
         await Future.delayed(
-          const Duration(milliseconds: 500 + _random.nextInt(500)),
+          Duration(milliseconds: 500 + _random.nextInt(500)),
         );
         break;
       case MockScenario.error:
         await Future.delayed(
-          const Duration(milliseconds: 100 + _random.nextInt(200)),
+          Duration(milliseconds: 100 + _random.nextInt(200)),
         );
         break;
       case MockScenario.empty:
         await Future.delayed(
-          const Duration(milliseconds: 100 + _random.nextInt(100)),
+          Duration(milliseconds: 100 + _random.nextInt(100)),
         );
         break;
       case MockScenario.loading:

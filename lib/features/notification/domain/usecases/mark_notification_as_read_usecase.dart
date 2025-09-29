@@ -77,7 +77,7 @@ class MarkNotificationAsReadUseCase {
   }
 
   /// 모든 알림을 읽음으로 표시
-  Future<Result<Map<String, int>>> markAllAsRead(String userId) async {
+  Future<Result<Map<String, dynamic>>> markAllAsRead(String userId) async {
     try {
       if (userId.trim().isEmpty) {
         return Result.failure('ユーザーIDが無効です');
@@ -143,8 +143,8 @@ class MarkNotificationAsReadUseCase {
 
       // 현재 읽음 상태 조회 (실제로는 repository에서 조회)
       // Mock으로 현재 상태를 가정하고 토글
-      final currentIsRead = false; // Mock 데이터
-      final newIsRead = !currentIsRead;
+      const currentIsUnread = true; // Mock 데이터
+      const newIsRead = !currentIsUnread;
 
       final result = await _repository.markAsRead(
         userId: userId,
@@ -153,7 +153,7 @@ class MarkNotificationAsReadUseCase {
       );
 
       if (result.isSuccess) {
-        final message = newIsRead ? '通知を既読にしました' : '通知を未読にしました';
+        const message = newIsRead ? '通知を既読にしました' : '通知を未読にしました';
         return Result.success(message, newIsRead);
       } else {
         return Result.failure('通知の読み取り状態変更に失敗しました');

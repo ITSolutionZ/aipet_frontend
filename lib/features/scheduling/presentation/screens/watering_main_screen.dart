@@ -11,7 +11,7 @@ class WateringMainScreen extends StatelessWidget {
     return Scaffold(
       appBar: const SoftGradientAppBar(title: '給水管理'),
       body: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -19,7 +19,7 @@ class WateringMainScreen extends StatelessWidget {
               'ペットの水分補給を管理しましょう',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
             ),
-            const const const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             Expanded(
               child: GridView.count(
@@ -84,25 +84,25 @@ class WateringMainScreen extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
-          padding: const const const EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const const const EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: color, size: 32),
               ),
-              const const const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 title,
                 style: AppFonts.titleMedium,
                 textAlign: TextAlign.center,
               ),
-              const const const SizedBox(height: AppSpacing.xs),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 subtitle,
                 style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),

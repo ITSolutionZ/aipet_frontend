@@ -6,10 +6,10 @@ class ExportAppDataUseCase {
 
   ExportAppDataUseCase(this.repository);
 
-  Future<Result<DataExportResult>> call() async {
+  Future<Result<Result>> call() async {
     final result = await repository.exportAppData();
     if (result.isSuccess) {
-      return Result.success('アプリデータをエクスポートしました', result.dataOrNull!);
+      return Result.success('アプリデータをエクスポートしました', result.dataOrNull);
     } else {
       return Result.failure('アプリデータのエクスポートに失敗しました');
     }

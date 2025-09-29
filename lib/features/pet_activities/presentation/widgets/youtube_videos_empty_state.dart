@@ -12,7 +12,7 @@ class YouTubeVideosEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -30,7 +30,7 @@ class YouTubeVideosEmptyState extends StatelessWidget {
                 color: AppColors.pointBlue,
               ),
             ),
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
 
             // 메시지
             Text(
@@ -41,7 +41,7 @@ class YouTubeVideosEmptyState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const const const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
 
             Text(
               'YouTubeビデオを追加して\nペットのトレーニングを始めましょう',
@@ -50,7 +50,7 @@ class YouTubeVideosEmptyState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const const const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.xl),
 
             // 비디오 추가 버튼
             if (onAddVideo != null)
@@ -61,7 +61,7 @@ class YouTubeVideosEmptyState extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBlue,
                   foregroundColor: Colors.white,
-                  padding: const const const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.md,
                   ),

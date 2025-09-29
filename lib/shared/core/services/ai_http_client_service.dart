@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 import 'package:dio/dio.dart';
@@ -50,7 +51,7 @@ class AiHttpClientService extends BaseLoggingService {
   }
 
   /// OpenAI API 호출 (재시도 로직 포함)
-  Future<T> callOpenAI<T>(
+  Future<Result<T>> callOpenAI<T>(
     String endpoint, {
     Map<String, dynamic>? data,
     T Function(Map<String, dynamic>)? fromJson,
@@ -61,23 +62,25 @@ class AiHttpClientService extends BaseLoggingService {
 
         if (response.statusCode == 200 && response.data != null) {
           final responseData = response.data as Map<String, dynamic>;
+          T result;
           if (fromJson != null) {
-            return fromJson(responseData);
+            result = fromJson(responseData);
           } else {
-            return responseData as T;
+            result = responseData as T;
           }
+          return Result.success('OpenAI API 호출이 성공했습니다', result);
         } else {
-          throw Exception('OpenAI API 응답 오류: ${response.statusCode}');
+          return Result.failure('OpenAI API 응답 오류: ${response.statusCode}');
         }
       } catch (e) {
         logError('OpenAI API 호출 실패: $e');
-        rethrow;
+        return Result.failure('OpenAI API 호출 실패: $e');
       }
     });
   }
 
   /// 일반 API 호출 (공통 HttpClientService 사용)
-  Future<T> callApi<T>(
+  Future<Result<T>> callApi<T>(
     String endpoint, {
     Map<String, dynamic>? data,
     T Function(Map<String, dynamic>)? fromJson,
@@ -91,19 +94,19 @@ class AiHttpClientService extends BaseLoggingService {
         );
 
         if (response.isSuccess) {
-          return response.data as T;
+          return Result.success('API 호출이 성공했습니다', response.data as T);
         } else {
-          throw Exception('API 호출 실패: ${response.error}');
+          return Result.failure('API 호출 실패: ${response.message}');
         }
       } catch (e) {
         logError('API 호출 실패: $e');
-        rethrow;
+        return Result.failure('API 호출 실패: $e');
       }
     });
   }
 
   /// GET 요청
-  Future<T> getApi<T>(
+  Future<Result<T>> getApi<T>(
     String endpoint, {
     Map<String, dynamic>? queryParameters,
     T Function(Map<String, dynamic>)? fromJson,
@@ -117,19 +120,19 @@ class AiHttpClientService extends BaseLoggingService {
         );
 
         if (response.isSuccess) {
-          return response.data as T;
+          return Result.success('GET 요청이 성공했습니다', response.data as T);
         } else {
-          throw Exception('GET 요청 실패: ${response.error}');
+          return Result.failure('GET 요청 실패: ${response.message}');
         }
       } catch (e) {
         logError('GET 요청 실패: $e');
-        rethrow;
+        return Result.failure('GET 요청 실패: $e');
       }
     });
   }
 
   /// PUT 요청
-  Future<T> putApi<T>(
+  Future<Result<T>> putApi<T>(
     String endpoint, {
     Map<String, dynamic>? data,
     T Function(Map<String, dynamic>)? fromJson,
@@ -143,19 +146,19 @@ class AiHttpClientService extends BaseLoggingService {
         );
 
         if (response.isSuccess) {
-          return response.data as T;
+          return Result.success('PUT 요청이 성공했습니다', response.data as T);
         } else {
-          throw Exception('PUT 요청 실패: ${response.error}');
+          return Result.failure('PUT 요청 실패: ${response.message}');
         }
       } catch (e) {
         logError('PUT 요청 실패: $e');
-        rethrow;
+        return Result.failure('PUT 요청 실패: $e');
       }
     });
   }
 
   /// DELETE 요청
-  Future<T> deleteApi<T>(
+  Future<Result<T>> deleteApi<T>(
     String endpoint, {
     T Function(Map<String, dynamic>)? fromJson,
   }) async {
@@ -167,38 +170,55 @@ class AiHttpClientService extends BaseLoggingService {
         );
 
         if (response.isSuccess) {
-          return response.data as T;
+          return Result.success('DELETE 요청이 성공했습니다', response.data as T);
         } else {
-          throw Exception('DELETE 요청 실패: ${response.error}');
+          return Result.failure('DELETE 요청 실패: ${response.message}');
         }
       } catch (e) {
         logError('DELETE 요청 실패: $e');
-        rethrow;
+        return Result.failure('DELETE 요청 실패: $e');
       }
     });
   }
 
   /// 재시도 로직이 포함된 API 호출 실행
-  Future<T> executeWithRetry<T>(
-    Future<T> Function() apiCall, {
+  Future<Result<T>> executeWithRetry<T>(
+    Future<Result<T>> Function() apiCall, {
     int? maxRetries,
   }) async {
     final retries = maxRetries ?? 3;
     int retryCount = 0;
-    late Exception lastException;
+    late Result<T> lastResult;
 
     while (retryCount < retries) {
       try {
-        return await apiCall();
+        final result = await apiCall();
+        if (result.isSuccess) {
+          return result;
+        }
+
+        // 실패한 경우 재시도 여부 확인
+        if (retryCount < retries - 1) {
+          retryCount++;
+          final delay = Duration(seconds: retryCount * 2); // 지수 백오프
+          logInfo(
+            'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$retries)',
+          );
+          await Future.delayed(delay);
+          lastResult = result;
+          continue;
+        }
+
+        return result;
       } on DioException catch (e) {
-        lastException = _handleDioException(e);
+        final exception = _handleDioException(e);
 
         // 재시도하지 않을 에러들
         if (e.response?.statusCode == 401 || // Unauthorized
             e.response?.statusCode == 403 || // Forbidden
             e.response?.statusCode == 400) {
           // Bad request
-          throw lastException;
+          return Result.failure(exception.toString());
         }
 
         // 429(Rate limit) 또는 5xx 서버 에러의 경우 재시도
@@ -206,7 +226,7 @@ class AiHttpClientService extends BaseLoggingService {
         if (statusCode == 429 || (statusCode != null && statusCode >= 500)) {
           retryCount++;
           if (retryCount < retries) {
-            final delay = const Duration(seconds: retryCount * 2); // 지수 백오프
+            final delay = Duration(seconds: retryCount * 2); // 지수 백오프
             logInfo(
               'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$retries)',
             );
@@ -215,23 +235,22 @@ class AiHttpClientService extends BaseLoggingService {
           }
         }
 
-        throw lastException;
+        return Result.failure(exception.toString());
       } catch (e) {
-        lastException = Exception('Unexpected error: $e');
         retryCount++;
         if (retryCount < retries) {
-          final delay = const Duration(seconds: retryCount * 2);
+          final delay = Duration(seconds: retryCount * 2);
           logInfo(
             'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$retries)',
           );
           await Future.delayed(delay);
           continue;
         }
-        throw lastException;
+        return Result.failure('Unexpected error: $e');
       }
     }
 
-    throw lastException;
+    return lastResult;
   }
 
   /// Dio 예외를 사용자 친화적인 메시지로 변환

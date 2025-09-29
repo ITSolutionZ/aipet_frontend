@@ -25,9 +25,9 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
         isEmailVerified: true,
         creationTime: DateTime.now(),
       );
-      return Result.success(mockUser, 'Mockito 로그인 성공');
+      return Result.success('Mockito 로그인 성공', mockUser);
     } else {
-      return Result.failure<AuthUser>('이메일과 패스워드를 입력해주세요');
+      return Result.failure('이메일과 패스워드를 입력해주세요');
     }
   }
 
@@ -45,7 +45,7 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
       isEmailVerified: false,
       creationTime: DateTime.now(),
     );
-    return Result.success(mockUser, 'Mockito 회원가입 성공');
+    return Result.success('Mockito 회원가입 성공', mockUser);
   }
 
   @override
@@ -59,7 +59,7 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
       isEmailVerified: true,
       creationTime: DateTime.now(),
     );
-    return Result.success(mockUser, 'Mockito Google 로그인 성공');
+    return Result.success('Mockito Google 로그인 성공', mockUser);
   }
 
   @override
@@ -73,7 +73,7 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
       isEmailVerified: true,
       creationTime: DateTime.now(),
     );
-    return Result.success(mockUser, 'Mockito Apple 로그인 성공');
+    return Result.success('Mockito Apple 로그인 성공', mockUser);
   }
 
   @override
@@ -87,7 +87,7 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
       isEmailVerified: true,
       creationTime: DateTime.now(),
     );
-    return Result.success(mockUser, 'Mockito LINE 로그인 성공');
+    return Result.success('Mockito LINE 로그인 성공', mockUser);
   }
 
   @override

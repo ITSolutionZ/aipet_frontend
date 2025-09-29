@@ -17,7 +17,7 @@ final petSizeFeedingInfoProvider = FutureProvider<Map<String, dynamic>>((
   if (result.isSuccess) {
     return result.dataOrNull!;
   } else {
-    throw Exception(result.errorOrNull);
+    throw Exception(result.error);
   }
 });
 
@@ -31,7 +31,7 @@ final petSizeFeedingGuideProvider = FutureProvider<Map<String, dynamic>>((
   if (result.isSuccess) {
     return result.dataOrNull!;
   } else {
-    throw Exception(result.errorOrNull);
+    throw Exception(result.error);
   }
 });
 
@@ -43,7 +43,7 @@ final petStatusOptionsProvider = FutureProvider<List<String>>((ref) async {
   if (result.isSuccess) {
     return result.dataOrNull!;
   } else {
-    throw Exception(result.errorOrNull);
+    throw Exception(result.error);
   }
 });
 
@@ -58,7 +58,7 @@ final petInfoProvider = FutureProvider.family<Map<String, dynamic>?, String>((
   if (result.isSuccess) {
     return result.dataOrNull;
   } else {
-    throw Exception(result.errorOrNull);
+    throw Exception(result.error);
   }
 });
 
@@ -71,7 +71,7 @@ final feedingRecordsProvider =
       if (result.isSuccess) {
         return result.dataOrNull!;
       } else {
-        throw Exception(result.errorOrNull);
+        throw Exception(result.error);
       }
     });
 
@@ -84,6 +84,6 @@ final feedingAnalysisDataProvider =
       if (result.isSuccess) {
         return result.dataOrNull!;
       } else {
-        throw Exception(result.errorOrNull);
+        throw Exception(result.error);
       }
     });

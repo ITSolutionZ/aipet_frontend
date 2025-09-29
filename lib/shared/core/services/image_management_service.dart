@@ -8,10 +8,7 @@ import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// 이미지 선택 소스 열거형
-enum ImagePickerSource {
-  camera,
-  gallery,
-}
+enum ImagePickerSource { camera, gallery }
 
 /// 이미지 관리 서비스
 ///
@@ -20,7 +17,8 @@ class ImageManagementService {
   final ImagePicker _imagePicker = ImagePicker();
   final Logger _logger = Logger();
 
-  static final ImageManagementService _instance = ImageManagementService._internal();
+  static final ImageManagementService _instance =
+      ImageManagementService._internal();
   factory ImageManagementService() => _instance;
   ImageManagementService._internal();
 
@@ -45,11 +43,11 @@ class ImageManagementService {
       );
 
       if (image == null) {
-        return const Success(null, '이미지 선택이 취소되었습니다');
+        return Result.success('이미지 선택이 취소되었습니다', null);
       }
 
       final File imageFile = File(image.path);
-      return Success(imageFile, '이미지가 성공적으로 선택되었습니다');
+      return Result.success('이미지가 성공적으로 선택되었습니다', imageFile);
     } catch (error) {
       _logger.e('갤러리 이미지 선택 실패', error: error);
       return Result.failure('갤러리에서 이미지를 선택하는데 실패했습니다: ${error.toString()}');
@@ -72,11 +70,11 @@ class ImageManagementService {
       );
 
       if (image == null) {
-        return const Success(null, '사진 촬영이 취소되었습니다');
+        return Result.success('사진 촬영이 취소되었습니다', null);
       }
 
       final File imageFile = File(image.path);
-      return Success(imageFile, '사진이 성공적으로 촬영되었습니다');
+      return Result.success('사진이 성공적으로 촬영되었습니다', imageFile);
     } catch (error) {
       _logger.e('카메라 사진 촬영 실패', error: error);
       return Result.failure('카메라로 사진을 촬영하는데 실패했습니다: ${error.toString()}');
@@ -97,15 +95,17 @@ class ImageManagementService {
       );
 
       if (images.isEmpty) {
-        return const Success([], '이미지 선택이 취소되었습니다');
+        return Result.success('이미지 선택이 취소되었습니다', []);
       }
 
       if (images.length > maxImages) {
         return Result.failure('최대 $maxImages개의 이미지만 선택할 수 있습니다');
       }
 
-      final List<File> imageFiles = images.map((xFile) => File(xFile.path)).toList();
-      return Success(imageFiles, '${imageFiles.length}개의 이미지가 선택되었습니다');
+      final List<File> imageFiles = images
+          .map((xFile) => File(xFile.path))
+          .toList();
+      return Result.success('${imageFiles.length}개의 이미지가 선택되었습니다', imageFiles);
     } catch (error) {
       _logger.e('다중 이미지 선택 실패', error: error);
       return Result.failure('이미지들을 선택하는데 실패했습니다: ${error.toString()}');
@@ -113,7 +113,10 @@ class ImageManagementService {
   }
 
   /// 이미지를 앱 디렉토리에 저장
-  Future<Result<String>> saveImageToAppDirectory(File imageFile, {String? fileName}) async {
+  Future<Result<String>> saveImageToAppDirectory(
+    File imageFile, {
+    String? fileName,
+  }) async {
     try {
       final Directory appDocumentDir = await getApplicationDocumentsDirectory();
       final Directory imagesDir = Directory('${appDocumentDir.path}/images');
@@ -129,7 +132,7 @@ class ImageManagementService {
       final String savedPath = '${imagesDir.path}/$finalFileName';
       final File savedFile = await imageFile.copy(savedPath);
 
-      return Success(savedFile.path, '이미지가 성공적으로 저장되었습니다');
+      return Result.success('이미지가 성공적으로 저장되었습니다', savedFile.path);
     } catch (error) {
       _logger.e('이미지 저장 실패', error: error);
       return Result.failure('이미지 저장에 실패했습니다: ${error.toString()}');
@@ -142,11 +145,11 @@ class ImageManagementService {
       final File imageFile = File(imagePath);
 
       if (!await imageFile.exists()) {
-        return const Failure('삭제할 이미지 파일이 존재하지 않습니다');
+        return Result.failure('삭제할 이미지 파일이 존재하지 않습니다');
       }
 
       await imageFile.delete();
-      return const Success(null, '이미지가 성공적으로 삭제되었습니다');
+      return Result.success('이미지가 성공적으로 삭제되었습니다', null);
     } catch (error) {
       _logger.e('이미지 삭제 실패', error: error);
       return Result.failure('이미지 삭제에 실패했습니다: ${error.toString()}');
@@ -159,11 +162,11 @@ class ImageManagementService {
       final File imageFile = File(imagePath);
 
       if (!await imageFile.exists()) {
-        return const Failure('이미지 파일이 존재하지 않습니다');
+        return Result.failure('이미지 파일이 존재하지 않습니다');
       }
 
       final int size = await imageFile.length();
-      return Success(size, '이미지 크기를 확인했습니다');
+      return Result.success('이미지 크기를 확인했습니다', size);
     } catch (error) {
       _logger.e('이미지 크기 확인 실패', error: error);
       return Result.failure('이미지 크기 확인에 실패했습니다: ${error.toString()}');
@@ -176,11 +179,11 @@ class ImageManagementService {
       final File imageFile = File(imagePath);
 
       if (!await imageFile.exists()) {
-        return const Failure('이미지 파일이 존재하지 않습니다');
+        return Result.failure('이미지 파일이 존재하지 않습니다');
       }
 
       final Uint8List bytes = await imageFile.readAsBytes();
-      return Success(bytes, '이미지를 메모리에 로드했습니다');
+      return Result.success('이미지를 메모리에 로드했습니다', bytes);
     } catch (error) {
       _logger.e('이미지 바이트 읽기 실패', error: error);
       return Result.failure('이미지 읽기에 실패했습니다: ${error.toString()}');
@@ -194,7 +197,7 @@ class ImageManagementService {
       final Directory imagesDir = Directory('${appDocumentDir.path}/images');
 
       if (!await imagesDir.exists()) {
-        return const Success([], '저장된 이미지가 없습니다');
+        return Result.success('저장된 이미지가 없습니다', []);
       }
 
       final List<FileSystemEntity> entities = await imagesDir.list().toList();
@@ -204,9 +207,12 @@ class ImageManagementService {
           .map((file) => file.path)
           .toList();
 
-      imagePaths.sort((a, b) => File(b).lastModifiedSync().compareTo(File(a).lastModifiedSync()));
+      imagePaths.sort(
+        (a, b) =>
+            File(b).lastModifiedSync().compareTo(File(a).lastModifiedSync()),
+      );
 
-      return Success(imagePaths, '${imagePaths.length}개의 이미지를 찾았습니다');
+      return Result.success('${imagePaths.length}개의 이미지를 찾았습니다', imagePaths);
     } catch (error) {
       _logger.e('저장된 이미지 목록 조회 실패', error: error);
       return Result.failure('저장된 이미지 목록 조회에 실패했습니다: ${error.toString()}');
@@ -220,10 +226,12 @@ class ImageManagementService {
       final Directory imagesDir = Directory('${appDocumentDir.path}/images');
 
       if (!await imagesDir.exists()) {
-        return const Success(0, '정리할 이미지가 없습니다');
+        return Result.success('정리할 이미지가 없습니다', 0);
       }
 
-      final DateTime cutoffDate = DateTime.now().subtract(Duration(days: maxAgeInDays));
+      final DateTime cutoffDate = DateTime.now().subtract(
+        Duration(days: maxAgeInDays),
+      );
       final List<FileSystemEntity> entities = await imagesDir.list().toList();
 
       int deletedCount = 0;
@@ -237,7 +245,7 @@ class ImageManagementService {
         }
       }
 
-      return Success(deletedCount, '$deletedCount개의 오래된 이미지를 정리했습니다');
+      return Result.success('$deletedCount개의 오래된 이미지를 정리했습니다', deletedCount);
     } catch (error) {
       _logger.e('이미지 캐시 정리 실패', error: error);
       return Result.failure('이미지 캐시 정리에 실패했습니다: ${error.toString()}');
@@ -255,7 +263,7 @@ class ImageManagementService {
       final File originalFile = File(imagePath);
 
       if (!await originalFile.exists()) {
-        return const Failure('압축할 이미지 파일이 존재하지 않습니다');
+        return Result.failure('압축할 이미지 파일이 존재하지 않습니다');
       }
 
       // 임시로 새 이름으로 압축된 이미지 생성
@@ -270,14 +278,14 @@ class ImageManagementService {
       );
 
       if (compressedImage == null) {
-        return const Failure('이미지 압축에 실패했습니다');
+        return Result.failure('이미지 압축에 실패했습니다');
       }
 
       // 원본 파일 삭제 후 압축된 파일을 원본 경로로 이동
       await originalFile.delete();
       final File finalFile = await File(compressedImage.path).copy(imagePath);
 
-      return Success(finalFile.path, '이미지가 성공적으로 압축되었습니다');
+      return Result.success('이미지가 성공적으로 압축되었습니다', finalFile.path);
     } catch (error) {
       _logger.e('이미지 압축 실패', error: error);
       return Result.failure('이미지 압축에 실패했습니다: ${error.toString()}');
@@ -312,7 +320,9 @@ class ImageManagementService {
       final Result<List<String>> allImagesResult = await getAllSavedImages();
 
       if (!allImagesResult.isSuccess) {
-        return Result.failure(allImagesResult.errorOrNull!);
+        return Result.failure(
+          allImagesResult.error?.toString() ?? '저장된 이미지 목록 조회에 실패했습니다',
+        );
       }
 
       int totalSize = 0;
@@ -323,7 +333,7 @@ class ImageManagementService {
         }
       }
 
-      return Success(totalSize, '총 저장소 크기를 계산했습니다');
+      return Result.success('총 저장소 크기를 계산했습니다', totalSize);
     } catch (error) {
       _logger.e('저장소 크기 계산 실패', error: error);
       return Result.failure('저장소 크기 계산에 실패했습니다: ${error.toString()}');
@@ -331,11 +341,13 @@ class ImageManagementService {
   }
 
   /// 이미지 파일명 생성 (타임스탬프 기반)
-  String generateImageFileName({String prefix = 'image', String extension = 'jpg'}) {
+  String generateImageFileName({
+    String prefix = 'image',
+    String extension = 'jpg',
+  }) {
     final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     return '${prefix}_$timestamp.$extension';
   }
-
 
   /// 이미지 파일이 유효한지 검증
   Future<Result<bool>> validateImageFile(String imagePath) async {
@@ -343,25 +355,25 @@ class ImageManagementService {
       final File imageFile = File(imagePath);
 
       if (!await imageFile.exists()) {
-        return const Failure('이미지 파일이 존재하지 않습니다');
+        return Result.failure('이미지 파일이 존재하지 않습니다');
       }
 
       if (!_isImageFile(imagePath)) {
-        return const Failure('지원되지 않는 이미지 형식입니다');
+        return Result.failure('지원되지 않는 이미지 형식입니다');
       }
 
       final int size = await imageFile.length();
       if (size == 0) {
-        return const Failure('이미지 파일이 손상되었습니다');
+        return Result.failure('이미지 파일이 손상되었습니다');
       }
 
       // 최대 파일 크기 검증 (10MB)
       const int maxSizeInBytes = 10 * 1024 * 1024;
       if (size > maxSizeInBytes) {
-        return const Failure('이미지 파일이 너무 큽니다 (최대 10MB)');
+        return Result.failure('이미지 파일이 너무 큽니다 (최대 10MB)');
       }
 
-      return const Success(true, '유효한 이미지 파일입니다');
+      return Result.success('유효한 이미지 파일입니다', true);
     } catch (error) {
       _logger.e('이미지 파일 검증 실패', error: error);
       return Result.failure('이미지 파일 검증에 실패했습니다: ${error.toString()}');

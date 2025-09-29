@@ -10,12 +10,12 @@ class DateSeparatorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margin ?? const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+      margin: margin ?? const EdgeInsets.symmetric(vertical: AppSpacing.md),
       child: Row(
         children: [
           const Expanded(child: Divider()),
           Container(
-            padding: const const const EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.xs,
             ),

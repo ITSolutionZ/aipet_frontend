@@ -17,7 +17,7 @@ class GetNotificationsUseCase {
 
       final result = await _repository.getAllNotifications(userId: userId);
       if (result.isSuccess) {
-        return Result.success('通知一覧を取得しました', result.dataOrNull ?? []);
+        return Result.success('通知一覧を取得しました', result.dataOrNull);
       } else {
         return Result.failure('通知一覧の取得に失敗しました');
       }

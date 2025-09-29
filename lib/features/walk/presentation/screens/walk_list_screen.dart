@@ -4,7 +4,8 @@ import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_widgets.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/shared.dart'
+    hide MapWidget, WalkRecordCardWidget;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -100,7 +101,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                     color: AppColors.pointOffWhite,
                   ),
                 ),
-                const const const SizedBox(width: AppSpacing.xs),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   selectedPet.name,
                   style: AppFonts.fredoka(
@@ -114,7 +115,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                   color: AppColors.pointOffWhite,
                   size: 16,
                 ),
-                const const const SizedBox(width: AppSpacing.md),
+                const SizedBox(width: AppSpacing.md),
               ],
             )
           : null,
@@ -127,7 +128,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
     return Container(
       height: mapExpanded ? MediaQuery.of(context).size.height * 0.6 : 200,
-      margin: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Stack(
         children: [
           // 지도 위젯
@@ -165,13 +166,13 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     }
 
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 페이지 인디케이터
           _buildPageIndicator(),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
           // 산책 기록 리스트
           Expanded(
@@ -180,7 +181,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
               itemBuilder: (context, index) {
                 final walkRecord = walkRecords[index];
                 return Padding(
-                  padding: const const const EdgeInsets.only(bottom: AppSpacing.sm),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                   child: GestureDetector(
                     onTap: () => _showWalkDetails(walkRecord),
                     onLongPress: () => _showWalkOptions(walkRecord),
@@ -210,7 +211,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
             shape: BoxShape.circle,
           ),
         ),
-        const const const SizedBox(width: AppSpacing.xs),
+        const SizedBox(width: AppSpacing.xs),
         Container(
           width: 8,
           height: 8,
@@ -219,7 +220,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
             shape: BoxShape.circle,
           ),
         ),
-        const const const SizedBox(width: AppSpacing.xs),
+        const SizedBox(width: AppSpacing.xs),
         Container(
           width: 8,
           height: 8,
@@ -242,12 +243,12 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
             size: 64,
             color: AppColors.pointGray.withValues(alpha: 0.5),
           ),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           Text(
             '散歩記録がありません。',
             style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
           ),
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             '一番目の散歩を始めてみてください。',
             style: AppFonts.bodySmall.copyWith(
@@ -370,11 +371,3 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     );
   }
 }
-
-// StartWalkDialog는 별도 파일로 분리됨
-
-// EditWalkDialog는 별도 파일로 분리됨
-
-// CurrentWalkDialog는 별도 파일로 분리됨
-
-// WalkOptionsBottomSheet는 별도 파일로 분리됨

@@ -8,7 +8,9 @@ class WalkTrackingOptimizer {
 
   /// 위치 업데이트 필터링 설정
   static const double minDistanceThreshold = 2.0; // 최소 이동 거리 (미터)
-  static const Duration minTimeThreshold = Duration(seconds: 3); // 최소 시간 간격
+  static const Duration minTimeThreshold = const Duration(
+    seconds: 3,
+  ); // 최소 시간 간격
   static const double maxAccuracyThreshold = 50.0; // 최대 허용 정확도 (미터)
   static const double minSpeedThreshold = 0.5; // 최소 속도 (m/s)
   static const double maxReasonableSpeed = 20.0; // 최대 합리적 속도 (m/s)

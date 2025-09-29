@@ -156,7 +156,7 @@ class NotificationMockService extends BaseMockService {
         'notificationsReceived': 2 + (i % 4),
         'notificationsRead': 1 + (i % 3),
         'actionsCompleted': (i % 2 == 0) ? 1 : 2,
-        'responseTime': const Duration(minutes: 15 + (i % 30)), // 평균 응답 시간
+        'responseTime': Duration(minutes: 15 + (i % 30)), // 평균 응답 시간
       };
 
       if (petId != null) {

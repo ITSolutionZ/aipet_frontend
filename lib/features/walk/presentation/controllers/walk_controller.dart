@@ -44,7 +44,7 @@ class WalkController extends BaseController {
       if (walkRecord != null) {
         return Result.success('산책 기록을 가져왔습니다', walkRecord);
       } else {
-        return const Failure('해당 ID의 산책 기록을 찾을 수 없습니다');
+        return Result.failure('해당 ID의 산책 기록을 찾을 수 없습니다');
       }
     } catch (e) {
       return Result.failure('산책 기록 조회에 실패했습니다: ${e.toString()}');
@@ -134,7 +134,7 @@ class WalkController extends BaseController {
   Future<WalkResult> endCurrentWalk({double? distance, String? notes}) async {
     final currentWalk = ref.read(currentWalkNotifierProvider);
     if (currentWalk == null) {
-      return const Failure('진행 중인 산책이 없습니다');
+      return Result.failure('진행 중인 산책이 없습니다');
     }
 
     final result = await safeExecuteWithTimeout(
@@ -163,7 +163,7 @@ class WalkController extends BaseController {
     if (result != null) {
       return Result.success('산책이 종료되었습니다', result);
     } else {
-      return const Failure('산책 종료에 실패했습니다');
+      return Result.failure('산책 종료에 실패했습니다');
     }
   }
 
@@ -187,7 +187,7 @@ class WalkController extends BaseController {
     if (result != null) {
       return Result.success('산책 기록이 업데이트되었습니다', result);
     } else {
-      return const Failure('산책 기록 업데이트에 실패했습니다');
+      return Result.failure('산책 기록 업데이트에 실패했습니다');
     }
   }
 
@@ -225,7 +225,7 @@ class WalkController extends BaseController {
     if (result != null && result) {
       return Result.success('산책 기록이 삭제되었습니다');
     } else {
-      return const Failure('산책 기록 삭제에 실패했습니다');
+      return Result.failure('산책 기록 삭제에 실패했습니다');
     }
   }
 
@@ -279,7 +279,7 @@ class WalkController extends BaseController {
     if (result != null) {
       return Result.success('반려동물 산책 기록을 가져왔습니다', result);
     } else {
-      return const Failure('반려동물 산책 기록 가져오기에 실패했습니다');
+      return Result.failure('반려동물 산책 기록 가져오기에 실패했습니다');
     }
   }
 

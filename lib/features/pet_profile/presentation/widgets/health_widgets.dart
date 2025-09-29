@@ -21,7 +21,7 @@ class HealthCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -45,7 +45,7 @@ class HealthCard extends StatelessWidget {
               ),
               child: Icon(icon, color: iconColor, size: 24),
             ),
-            const const const SizedBox(width: AppSpacing.lg),
+            const SizedBox(width: AppSpacing.lg),
 
             // 제목
             Expanded(
@@ -88,7 +88,7 @@ class HealthTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
           HealthCard(
@@ -99,7 +99,7 @@ class HealthTab extends StatelessWidget {
               // 보험 정보 화면으로 이동
             },
           ),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           HealthCard(
             icon: Icons.medical_services,
             title: 'Vaccines',
@@ -113,7 +113,7 @@ class HealthTab extends StatelessWidget {
               );
             },
           ),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           HealthCard(
             icon: Icons.medication,
             title: '寄生虫治療',
@@ -122,7 +122,7 @@ class HealthTab extends StatelessWidget {
               // 구충제/기생충 치료 정보 화면으로 이동
             },
           ),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           HealthCard(
             icon: Icons.hearing,
             title: '医療介入',
@@ -131,7 +131,7 @@ class HealthTab extends StatelessWidget {
               // 의료 시술/수술 정보 화면으로 이동
             },
           ),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           HealthCard(
             icon: Icons.healing,
             title: 'その他の治療',
@@ -172,8 +172,8 @@ class MedicalRecordCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -196,7 +196,7 @@ class MedicalRecordCard extends StatelessWidget {
               ),
               child: Icon(icon, color: iconColor, size: 20),
             ),
-            const const const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,7 +208,7 @@ class MedicalRecordCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     date,
                     style: AppFonts.bodySmall.copyWith(
@@ -216,7 +216,7 @@ class MedicalRecordCard extends StatelessWidget {
                     ),
                   ),
                   if (description != null) ...[
-                    const const const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       description!,
                       style: AppFonts.bodySmall.copyWith(
@@ -227,7 +227,7 @@ class MedicalRecordCard extends StatelessWidget {
                     ),
                   ],
                   if (veterinarian != null) ...[
-                    const const const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         const Icon(
@@ -235,7 +235,7 @@ class MedicalRecordCard extends StatelessWidget {
                           size: 14,
                           color: AppColors.pointBlue,
                         ),
-                        const const const SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           veterinarian!,
                           style: AppFonts.bodySmall.copyWith(
@@ -270,7 +270,7 @@ class HealthSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -301,7 +301,7 @@ class HealthSummaryCard extends StatelessWidget {
                   size: 20,
                 ),
               ),
-              const const const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
               Text(
                 '健康状態',
                 style: AppFonts.titleMedium.copyWith(
@@ -311,7 +311,7 @@ class HealthSummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -342,7 +342,7 @@ class HealthSummaryCard extends StatelessWidget {
         Row(
           children: [
             Icon(icon, size: 16, color: AppColors.pointGreen),
-            const const const SizedBox(width: AppSpacing.xs),
+            const SizedBox(width: AppSpacing.xs),
             Text(
               label,
               style: AppFonts.bodySmall.copyWith(
@@ -351,7 +351,7 @@ class HealthSummaryCard extends StatelessWidget {
             ),
           ],
         ),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           value,
           style: AppFonts.bodyMedium.copyWith(

@@ -26,7 +26,6 @@ export 'foundation/providers/base_providers.dart';
 export 'foundation/providers/common_providers.dart';
 export 'foundation/providers/unified_providers.dart';
 // 공통 Result 패턴
-export 'foundation/result/result.dart';
 // 테스트 유틸리티
 export 'foundation/testing/testing.dart';
 // 고급 타입 시스템

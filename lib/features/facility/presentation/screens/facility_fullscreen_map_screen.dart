@@ -1,5 +1,11 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+
+import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
+import 'package:aipet_frontend/shared/foundation/error_handler/app_error_handler.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -265,7 +271,7 @@ class _FacilityFullscreenMapScreenState
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text('地図を読み込み中...'),
           ],
         ),
@@ -280,7 +286,7 @@ class _FacilityFullscreenMapScreenState
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,7 +312,7 @@ class _FacilityFullscreenMapScreenState
                     size: 20,
                   ),
                 ),
-                const const const SizedBox(width: AppSpacing.md),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,7 +324,7 @@ class _FacilityFullscreenMapScreenState
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const const const SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
                         _selectedFacility!.type == FacilityType.grooming
                             ? 'トリミング'
@@ -340,7 +346,7 @@ class _FacilityFullscreenMapScreenState
                 ),
               ],
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 const Icon(
@@ -348,7 +354,7 @@ class _FacilityFullscreenMapScreenState
                   color: AppColors.pointGray,
                   size: 16,
                 ),
-                const const const SizedBox(width: 4),
+                const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     _selectedFacility!.address,
@@ -361,11 +367,11 @@ class _FacilityFullscreenMapScreenState
                 ),
               ],
             ),
-            const const const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 const Icon(Icons.star, color: Colors.amber, size: 16),
-                const const const SizedBox(width: 4),
+                const SizedBox(width: 4),
                 Text(
                   '${_selectedFacility!.rating} (${_selectedFacility!.reviewCount})',
                   style: AppFonts.bodyMedium.copyWith(
@@ -386,7 +392,7 @@ class _FacilityFullscreenMapScreenState
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBlue,
                     foregroundColor: Colors.white,
-                    padding: const const const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
                       vertical: AppSpacing.sm,
                     ),
