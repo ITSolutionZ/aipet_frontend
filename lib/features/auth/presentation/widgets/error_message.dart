@@ -32,7 +32,7 @@ class ErrorMessage extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: double.infinity,
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: theme.backgroundColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -42,7 +42,7 @@ class ErrorMessage extends StatelessWidget {
         children: [
           if (showIcon) ...[
             Icon(theme.icon, color: theme.backgroundColor, size: 20),
-            const const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
           ],
           Expanded(
             child: Text(
@@ -55,7 +55,7 @@ class ErrorMessage extends StatelessWidget {
             ),
           ),
           if (onDismiss != null) ...[
-            const const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
             GestureDetector(
               onTap: onDismiss,
               child: Icon(Icons.close, color: theme.backgroundColor, size: 18),

@@ -102,7 +102,9 @@ class HomeRepositoryImpl implements HomeRepository {
     return WalkSummary(
       todayWalks: walkSummaryData['todayWalks'] as int,
       todayDistance: walkSummaryData['todayDistance'] as double,
-      todayDuration: const Duration(minutes: walkSummaryData['todayDuration'] as int),
+      todayDuration: const Duration(
+        minutes: walkSummaryData['todayDuration'] as int,
+      ),
       weeklyGoal: walkSummaryData['weeklyGoal'] as double,
       weeklyProgress: walkSummaryData['weeklyProgress'] as double,
     );
@@ -142,14 +144,14 @@ class HomeRepositoryImpl implements HomeRepository {
       AppointmentSummary(
         id: 'app-1',
         title: '健康診断',
-        scheduledTime: DateTime.now().add(Duration(days: 3)),
+        scheduledTime: DateTime.now().add(const Duration(days: 3)),
         type: 'health_check',
         petName: 'マックス',
       ),
       AppointmentSummary(
         id: 'app-2',
         title: '予防接種',
-        scheduledTime: DateTime.now().add(Duration(days: 7)),
+        scheduledTime: DateTime.now().add(const Duration(days: 7)),
         type: 'vaccination',
         petName: 'ルナ',
       ),

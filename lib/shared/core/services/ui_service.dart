@@ -175,7 +175,7 @@ class UiService {
           content: Row(
             children: [
               const CircularProgressIndicator(),
-              const SizedBox(width: 16),
+              const const const SizedBox(width: 16),
               Text(message),
             ],
           ),

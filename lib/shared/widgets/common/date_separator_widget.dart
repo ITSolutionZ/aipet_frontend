@@ -10,12 +10,12 @@ class DateSeparatorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margin ?? const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+      margin: margin ?? const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
       child: Row(
         children: [
           const Expanded(child: Divider()),
           Container(
-            padding: const const EdgeInsets.symmetric(
+            padding: const const const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.xs,
             ),
@@ -40,7 +40,7 @@ class DateSeparatorWidget extends StatelessWidget {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(Duration(days: 1));
+    final yesterday = today.subtract(const Duration(days: 1));
     final messageDate = DateTime(date.year, date.month, date.day);
 
     if (messageDate.isAtSameMomentAs(today)) {

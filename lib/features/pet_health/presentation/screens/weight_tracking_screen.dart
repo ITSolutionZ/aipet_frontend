@@ -19,15 +19,15 @@ class WeightTrackingScreen extends ConsumerWidget {
         children: [
           // 현재 체중 요약 카드
           const CurrentWeightSummaryCard(),
-          const SizedBox(height: AppSpacing.xl),
+          const const const SizedBox(height: AppSpacing.xl),
 
           // 체중 변화 차트 카드
           const WeightChartCard(),
-          const SizedBox(height: AppSpacing.xl),
+          const const const SizedBox(height: AppSpacing.xl),
 
           // 체중 기록 목록
           const WeightRecordsCard(),
-          const SizedBox(height: AppSpacing.xl),
+          const const const SizedBox(height: AppSpacing.xl),
         ],
       ),
       floatingActionButtonLabel: '体重記録',

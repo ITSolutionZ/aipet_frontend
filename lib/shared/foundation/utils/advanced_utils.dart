@@ -506,7 +506,7 @@ extension DateTimeExtensions on DateTime {
 
   /// 날짜가 어제인지 확인
   bool get isYesterday {
-    final yesterday = DateTime.now().subtract(Duration(days: 1));
+    final yesterday = DateTime.now().subtract(const Duration(days: 1));
     return year == yesterday.year &&
         month == yesterday.month &&
         day == yesterday.day;
@@ -514,7 +514,7 @@ extension DateTimeExtensions on DateTime {
 
   /// 날짜가 내일인지 확인
   bool get isTomorrow {
-    final tomorrow = DateTime.now().add(Duration(days: 1));
+    final tomorrow = DateTime.now().add(const Duration(days: 1));
     return year == tomorrow.year &&
         month == tomorrow.month &&
         day == tomorrow.day;

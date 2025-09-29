@@ -29,7 +29,7 @@ class TrickCategoryCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppSpacing.md),
         child: Container(
-          padding: const const EdgeInsets.all(AppSpacing.lg),
+          padding: const const const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSpacing.md),
             gradient: LinearGradient(
@@ -53,7 +53,7 @@ class TrickCategoryCard extends StatelessWidget {
                 ),
                 child: Icon(icon, color: color, size: 30),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
 
               // 텍스트 정보
               Expanded(
@@ -67,7 +67,7 @@ class TrickCategoryCard extends StatelessWidget {
                         color: AppColors.pointDark,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Text(
                       description,
                       style: AppFonts.bodyMedium.copyWith(

@@ -13,7 +13,7 @@ class LearnNextTrickCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -71,7 +71,7 @@ class LearnNextTrickCard extends StatelessWidget {
                 ),
             ],
           ),
-          const const SizedBox(width: AppSpacing.md),
+          const const const SizedBox(width: AppSpacing.md),
 
           // 트릭 정보
           Expanded(
@@ -86,14 +86,14 @@ class LearnNextTrickCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                const const const SizedBox(height: AppSpacing.xs),
 
                 // 난이도와 소요 시간
                 Row(
                   children: [
                     // 난이도 배지
                     Container(
-                      padding: const const EdgeInsets.symmetric(
+                      padding: const const const EdgeInsets.symmetric(
                         horizontal: AppSpacing.sm,
                         vertical: AppSpacing.xs,
                       ),
@@ -109,7 +109,7 @@ class LearnNextTrickCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const const SizedBox(width: AppSpacing.sm),
+                    const const const SizedBox(width: AppSpacing.sm),
 
                     // 소요 시간
                     Row(
@@ -120,7 +120,7 @@ class LearnNextTrickCard extends StatelessWidget {
                           size: 14,
                           color: AppColors.pointDark.withValues(alpha: 0.6),
                         ),
-                        const const SizedBox(width: AppSpacing.xs),
+                        const const const SizedBox(width: AppSpacing.xs),
                         Text(
                           '${trick.estimatedTime}分',
                           style: AppFonts.bodySmall.copyWith(
@@ -134,7 +134,7 @@ class LearnNextTrickCard extends StatelessWidget {
 
                 // 트릭 설명
                 ...[
-                  const SizedBox(height: AppSpacing.xs),
+                  const const const SizedBox(height: AppSpacing.xs),
                   Text(
                     trick.description,
                     style: AppFonts.bodySmall.copyWith(

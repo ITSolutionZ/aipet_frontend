@@ -51,7 +51,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientBackAppBar(title: '예약'),
       body: SingleChildScrollView(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -63,7 +63,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               facilityPhoneNumber: '03-1234-5678',
               facilityImageUrl: null,
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 📅 날짜 선택
             CompactDateSelector(
@@ -71,7 +71,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               onDateSelected: controller.selectDate,
               daysToShow: 14,
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // ⏰ 시간 선택
             BookingTimeSelector(
@@ -80,7 +80,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               onTimeSelected: (time) => controller.selectTime(time),
               unavailableSlots: const [],
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 🛠️ 서비스 선택
             BookingServiceSelector(
@@ -92,19 +92,19 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   controller.toggleService(int.parse(serviceId)),
               allowMultipleSelection: true,
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 👤 고객 정보 입력
             _buildCustomerInfoSection(),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 📝 메모 입력
             _buildNoteSection(),
-            const SizedBox(height: AppSpacing.xl),
+            const const const SizedBox(height: AppSpacing.xl),
 
             // 📋 예약 확인 버튼
             _buildBookingButton(controller),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
           ],
         ),
       ),
@@ -114,28 +114,28 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   /// 👤 고객 정보 입력 섹션
   Widget _buildCustomerInfoSection() {
     return Container(
-      padding: const const EdgeInsets.all(16),
+      padding: const const const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(8),
         color: Colors.white,
       ),
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Row(
               children: [
                 Icon(Icons.person, size: 20, color: Colors.blue),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Text(
                   '예약자 정보',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
 
             TextField(
               controller: _nameController,
@@ -146,7 +146,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 16),
+            const const const SizedBox(height: 16),
 
             TextField(
               controller: _phoneController,
@@ -167,28 +167,28 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   /// 📝 메모 입력 섹션
   Widget _buildNoteSection() {
     return Container(
-      padding: const const EdgeInsets.all(16),
+      padding: const const const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(8),
         color: Colors.white,
       ),
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Row(
               children: [
                 Icon(Icons.note_outlined, size: 20, color: Colors.blue),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Text(
                   '메모 (선택사항)',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const const const SizedBox(height: 16),
 
             TextField(
               controller: _noteController,

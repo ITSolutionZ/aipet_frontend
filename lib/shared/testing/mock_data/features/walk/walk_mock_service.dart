@@ -13,9 +13,9 @@ class WalkMockService extends BaseMockService {
         'id': MockHelper.generateId(),
         'petId': '1',
         'petName': 'ぺっと１',
-        'startTime': DateTime.now().subtract(Duration(hours: 2)),
+        'startTime': DateTime.now().subtract(const Duration(hours: 2)),
         'endTime': DateTime.now().subtract(
-          Duration(hours: 1, minutes: 30),
+          const Duration(hours: 1, minutes: 30),
         ),
         'duration': const Duration(minutes: 30),
         'distance': 2.1, // km
@@ -30,10 +30,10 @@ class WalkMockService extends BaseMockService {
         'id': MockHelper.generateId(),
         'petId': '1',
         'startTime': DateTime.now().subtract(
-          Duration(days: 1, hours: 10),
+          const Duration(days: 1, hours: 10),
         ),
         'endTime': DateTime.now().subtract(
-          Duration(days: 1, hours: 9, minutes: 45),
+          const Duration(days: 1, hours: 9, minutes: 45),
         ),
         'duration': const Duration(minutes: 15),
         'distance': 0.8,
@@ -47,9 +47,9 @@ class WalkMockService extends BaseMockService {
       {
         'id': MockHelper.generateId(),
         'petId': '2',
-        'startTime': DateTime.now().subtract(Duration(hours: 4)),
+        'startTime': DateTime.now().subtract(const Duration(hours: 4)),
         'endTime': DateTime.now().subtract(
-          Duration(hours: 3, minutes: 45),
+          const Duration(hours: 3, minutes: 45),
         ),
         'duration': const Duration(minutes: 15),
         'distance': 0.5,
@@ -187,9 +187,9 @@ class WalkMockService extends BaseMockService {
   static bool _isThisWeek(DateTime date) {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(Duration(days: 6));
+    final endOfWeek = startOfWeek.add(const Duration(days: 6));
 
-    return date.isAfter(startOfWeek.subtract(Duration(days: 1))) &&
-        date.isBefore(endOfWeek.add(Duration(days: 1)));
+    return date.isAfter(startOfWeek.subtract(const Duration(days: 1))) &&
+        date.isBefore(endOfWeek.add(const Duration(days: 1)));
   }
 }

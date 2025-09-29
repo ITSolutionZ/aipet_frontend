@@ -332,7 +332,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
-                padding: const const EdgeInsets.all(AppSpacing.md),
+                padding: const const const EdgeInsets.all(AppSpacing.md),
                 itemCount: _getTotalItemCount(chatState),
                 itemBuilder: (context, index) {
                   return _buildChatItem(context, ref, chatState, index);

@@ -21,14 +21,14 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
     final formController = ref.read(petProfileFormControllerProvider.notifier);
 
     return Card(
-      margin: const const EdgeInsets.all(AppSpacing.md),
+      margin: const const const EdgeInsets.all(AppSpacing.md),
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           children: [
             // 프로필 이미지
             _buildProfileImage(context, formState),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 이름 필드
             if (formState.isEditMode) ...[
@@ -38,10 +38,10 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
                 hintText: '펫의 이름을 입력하세요',
                 prefixIcon: const Icon(Icons.pets),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
             ] else ...[
               _buildInfoRow('이름', pet.name, Icons.pets),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
             ],
 
             // 품종 필드
@@ -52,19 +52,19 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
                 hintText: '품종을 입력하세요',
                 prefixIcon: const Icon(Icons.category),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
             ] else ...[
               _buildInfoRow('품종', pet.breed ?? '미등록', Icons.category),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
             ],
 
             // 성별 선택
             _buildGenderSelection(context, formState, formController),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
 
             // 타입 선택
             _buildTypeSelection(context, formState, formController),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
 
             // 몸무게 필드
             if (formState.isEditMode) ...[
@@ -134,7 +134,7 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
     return Row(
       children: [
         Icon(icon, color: AppColors.pointBrown, size: 20),
-        const const SizedBox(width: AppSpacing.sm),
+        const const const SizedBox(width: AppSpacing.sm),
         Text(
           '$label: ',
           style: AppFonts.bodyMedium.copyWith(
@@ -175,7 +175,7 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
         Row(
           children: [
             Expanded(
@@ -230,7 +230,7 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
         DropdownButtonFormField<String>(
           value: formState.editingType ?? pet.type,
           decoration: const InputDecoration(

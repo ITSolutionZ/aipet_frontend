@@ -62,7 +62,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
           // 정보 내용 (스크롤 가능)
           Flexible(
             child: SingleChildScrollView(
-              padding: const const EdgeInsets.only(bottom: AppSpacing.lg),
+              padding: const const const EdgeInsets.only(bottom: AppSpacing.lg),
               child: _buildContent(context, ref, isExpanded),
             ),
           ),
@@ -73,7 +73,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
 
   Widget _buildDragHandle() {
     return Container(
-      margin: const const EdgeInsets.only(top: AppSpacing.sm),
+      margin: const const const EdgeInsets.only(top: AppSpacing.sm),
       width: 40,
       height: 4,
       decoration: BoxDecoration(
@@ -90,7 +90,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     bool isExpanded,
   ) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       child: Row(
         children: [
           // 프로필 이미지
@@ -122,7 +122,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
               ),
             ),
           ),
-          const const SizedBox(width: AppSpacing.md),
+          const const const SizedBox(width: AppSpacing.md),
 
           // 사용자 정보
           Expanded(
@@ -138,7 +138,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const const SizedBox(width: AppSpacing.xs),
+                    const const const SizedBox(width: AppSpacing.xs),
                     Text(
                       '(3.5)',
                       style: AppFonts.bodySmall.copyWith(
@@ -147,7 +147,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                const const const SizedBox(height: AppSpacing.xs),
                 Text(
                   'ドッグウォーカー',
                   style: AppFonts.bodySmall.copyWith(
@@ -176,32 +176,32 @@ class WalkInfoBottomSheet extends ConsumerWidget {
 
   Widget _buildContent(BuildContext context, WidgetRef ref, bool isExpanded) {
     return Container(
-      padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // 주요 정보
           _buildInfoRow('開始時間', walkRecord.timeString),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
           _buildInfoRow('距離', walkRecord.formattedDistance),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
           _buildInfoRow('時間', walkRecord.formattedDuration),
 
           if (isExpanded) ...[
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
             Divider(color: AppColors.pointGray.withValues(alpha: 0.3)),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
 
             // 추가 정보
             _buildInfoRow('日付', walkRecord.dateString),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             _buildInfoRow('状態', _getStatusText(walkRecord.status)),
             if (walkRecord.notes != null) ...[
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
               _buildInfoRow('メモ', walkRecord.notes!),
             ],
 
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 액션 버튼들
             Row(
@@ -219,7 +219,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const const SizedBox(width: AppSpacing.md),
+                const const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {

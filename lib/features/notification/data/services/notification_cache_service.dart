@@ -20,7 +20,7 @@ class NotificationCacheService {
   // Note: Last updated tracking removed for simplified frontend-centric approach
 
   // 캐시 만료 시간 (30분)
-  static const Duration _cacheExpiration = const Duration(minutes: 30);
+  static const Duration _cacheExpiration = Duration(minutes: 30);
 
   static SharedPreferences? _prefs;
 
@@ -101,10 +101,7 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 캐시된 알림 조회 성공: ${notifications.length}개');
       }
 
-      return Result.success(
-        notifications,
-        'Cached notifications retrieved',
-      );
+      return Result.success(notifications, 'Cached notifications retrieved');
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 캐시 조회 실패: $error');

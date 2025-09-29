@@ -20,7 +20,7 @@ class AppMonitoringDashboard {
   final List<DashboardSnapshot> _snapshots = [];
 
   // 모니터링 설정
-  static const Duration _updateInterval = const Duration(seconds: 10);
+  static const Duration _updateInterval = Duration(seconds: 10);
   static const int _maxSnapshots = 100;
 
   /// 대시보드 시작
@@ -234,7 +234,7 @@ class AppMonitoringDashboard {
     }
 
     final now = DateTime.now();
-    final lastHour = now.subtract(Duration(hours: 1));
+    final lastHour = now.subtract(const Duration(hours: 1));
 
     // 최근 1시간 데이터 필터링
     final recentSnapshots = _snapshots
@@ -323,7 +323,9 @@ class AppMonitoringDashboard {
     debugPrint('Min Health Score: ${stats.minHealthScore}');
     debugPrint('Max Health Score: ${stats.maxHealthScore}');
     debugPrint('Total Alerts: ${stats.totalAlerts}');
-    debugPrint('Total Suspicious Activities: ${stats.totalSuspiciousActivities}');
+    debugPrint(
+      'Total Suspicious Activities: ${stats.totalSuspiciousActivities}',
+    );
     debugPrint('Uptime: ${stats.uptime.inMinutes} minutes');
   }
 

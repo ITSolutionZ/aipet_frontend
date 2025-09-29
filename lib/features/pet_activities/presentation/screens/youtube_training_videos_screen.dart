@@ -137,14 +137,14 @@ class _YouTubeTrainingVideosScreenState
                       size: 64,
                       color: AppColors.pointBrown,
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     Text(
                       'ビデオの読み込みに失敗しました',
                       style: AppFonts.bodyMedium.copyWith(
                         color: AppColors.pointDark,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     ElevatedButton(
                       onPressed: _loadVideos,
                       child: const Text('再試行'),

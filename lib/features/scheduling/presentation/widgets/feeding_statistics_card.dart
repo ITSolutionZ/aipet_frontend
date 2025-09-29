@@ -16,7 +16,7 @@ class FeedingStatisticsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -27,21 +27,21 @@ class FeedingStatisticsCard extends StatelessWidget {
                 color: AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             SizedBox(
               height: 200,
               child: FeedingChart(feedingRecords: feedingRecords),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 _buildStatItem('総食事回数', '${statistics['totalFeedings']}回'),
-                const const SizedBox(width: AppSpacing.md),
+                const const const SizedBox(width: AppSpacing.md),
                 _buildStatItem(
                   '完了率',
                   '${(statistics['completionRate'] * 100).round()}%',
                 ),
-                const const SizedBox(width: AppSpacing.md),
+                const const const SizedBox(width: AppSpacing.md),
                 _buildStatItem(
                   '平均量',
                   '${statistics['averageAmount'].round()}g',
@@ -57,7 +57,7 @@ class FeedingStatisticsCard extends StatelessWidget {
   Widget _buildStatItem(String label, String value) {
     return Expanded(
       child: Container(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.pointBlue.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -71,7 +71,7 @@ class FeedingStatisticsCard extends StatelessWidget {
                 color: AppColors.pointBlue,
               ),
             ),
-            const SizedBox(height: AppSpacing.xs),
+            const const const SizedBox(height: AppSpacing.xs),
             Text(
               label,
               style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),

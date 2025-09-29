@@ -12,7 +12,7 @@ class LearnTrickScreen extends ConsumerWidget {
       backgroundColor: AppColors.pointOffWhite,
       appBar: SoftGradientBackAppBar(title: '新しいトリックを学ぶ'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

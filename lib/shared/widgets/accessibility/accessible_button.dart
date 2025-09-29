@@ -67,7 +67,7 @@ class AccessibleButton extends StatelessWidget {
               child: Container(
                 padding:
                     padding ??
-                    const const EdgeInsets.symmetric(
+                    const const const EdgeInsets.symmetric(
                       horizontal: 16.0,
                       vertical: 12.0,
                     ),
@@ -230,7 +230,7 @@ class AccessibleToggleButton extends StatelessWidget {
               onTap: onChanged != null ? () => onChanged!(!value) : null,
               borderRadius: BorderRadius.circular(8.0),
               child: Container(
-                padding: const const EdgeInsets.symmetric(
+                padding: const const const EdgeInsets.symmetric(
                   horizontal: 16.0,
                   vertical: 12.0,
                 ),

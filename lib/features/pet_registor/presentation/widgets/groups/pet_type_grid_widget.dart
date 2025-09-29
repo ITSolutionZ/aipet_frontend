@@ -83,7 +83,7 @@ class PetTypeGridWidget extends StatelessWidget {
             },
           ),
         ),
-        const SizedBox(height: AppSpacing.lg),
+        const const const SizedBox(height: AppSpacing.lg),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
@@ -93,7 +93,7 @@ class PetTypeGridWidget extends StatelessWidget {
               );
             },
             style: OutlinedButton.styleFrom(
-              padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.medium),
               ),

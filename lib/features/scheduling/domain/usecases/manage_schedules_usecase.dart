@@ -128,7 +128,7 @@ class CreateRecurringScheduleUseCase {
         startDateTime: occurrence,
         endDateTime: baseSchedule.duration != null
             ? occurrence.add(baseSchedule.duration!)
-            : occurrence.add(Duration(hours: 1)),
+            : occurrence.add(const Duration(hours: 1)),
         createdAt: DateTime.now(),
       );
       schedules.add(schedule);

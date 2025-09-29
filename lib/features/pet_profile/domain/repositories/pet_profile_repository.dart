@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 abstract class PetProfileRepository {
   /// 모든 펫 목록 가져오기

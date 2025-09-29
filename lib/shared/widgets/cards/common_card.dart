@@ -116,7 +116,7 @@ class LegacyInfoCard extends StatelessWidget {
         children: [
           if (icon != null) ...[
             Container(
-              padding: const const EdgeInsets.all(8),
+              padding: const const const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: (iconColor ?? Colors.blue).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
@@ -126,7 +126,7 @@ class LegacyInfoCard extends StatelessWidget {
                 child: icon!,
               ),
             ),
-            const SizedBox(width: 12),
+            const const const SizedBox(width: 12),
           ],
           Expanded(
             child: Column(
@@ -141,7 +141,7 @@ class LegacyInfoCard extends StatelessWidget {
                   ),
                 ),
                 if (subtitle != null) ...[
-                  const SizedBox(height: 4),
+                  const const const SizedBox(height: 4),
                   Text(
                     subtitle!,
                     style: TextStyle(color: Colors.grey[600], fontSize: 14),
@@ -150,7 +150,7 @@ class LegacyInfoCard extends StatelessWidget {
               ],
             ),
           ),
-          if (trailing != null) ...[const SizedBox(width: 12), trailing!],
+          if (trailing != null) ...[const const const SizedBox(width: 12), trailing!],
         ],
       );
   }

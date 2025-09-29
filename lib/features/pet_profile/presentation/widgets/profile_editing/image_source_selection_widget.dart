@@ -14,7 +14,7 @@ class ImageSourceSelectionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -22,7 +22,7 @@ class ImageSourceSelectionWidget extends StatelessWidget {
             'プロフィール写真変更',
             style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -42,7 +42,7 @@ class ImageSourceSelectionWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
         ],
       ),
     );
@@ -68,7 +68,7 @@ class ImageSourceSelectionWidget extends StatelessWidget {
             child: Icon(icon, color: color, size: 30),
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         Text(label),
       ],
     );

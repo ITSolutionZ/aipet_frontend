@@ -193,7 +193,7 @@ class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
           children: [
             // 프로그레스바
             Container(
-              padding: const const EdgeInsets.symmetric(
+              padding: const const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.md,
               ),
@@ -225,7 +225,7 @@ class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
             Expanded(
               child: Column(
                 children: [
-                  const SizedBox(height: AppSpacing.lg),
+                  const const const SizedBox(height: AppSpacing.lg),
 
                   // 연도/월 선택
                   YearMonthSelectorWidget(
@@ -234,12 +234,12 @@ class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
                     onYearChanged: controller.updateYear,
                     onMonthChanged: controller.updateMonth,
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  const const const SizedBox(height: AppSpacing.md),
 
                   // 달력
                   Expanded(
                     child: Container(
-                      padding: const const EdgeInsets.symmetric(
+                      padding: const const const EdgeInsets.symmetric(
                         horizontal: AppSpacing.lg,
                       ),
                       child: CustomCalendarWidget(
@@ -256,7 +256,7 @@ class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
 
             // 선택 버튼
             Container(
-              padding: const const EdgeInsets.all(AppSpacing.lg),
+              padding: const const const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
@@ -286,7 +286,7 @@ class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: AppColors.pureWhite,
-                    padding: const const EdgeInsets.symmetric(
+                    padding: const const const EdgeInsets.symmetric(
                       vertical: AppSpacing.lg,
                     ),
                     shape: RoundedRectangleBorder(

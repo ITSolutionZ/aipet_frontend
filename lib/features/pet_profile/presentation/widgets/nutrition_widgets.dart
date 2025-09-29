@@ -22,7 +22,7 @@ class FoodTypeCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.pointBrown.withValues(alpha: 0.1)
@@ -59,7 +59,7 @@ class FoodTypeCard extends StatelessWidget {
                 size: 30,
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const const const SizedBox(height: AppSpacing.sm),
             Text(
               title,
               style: AppFonts.bodyMedium.copyWith(
@@ -95,7 +95,7 @@ class NutritionItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -118,7 +118,7 @@ class NutritionItemCard extends StatelessWidget {
               ),
               child: Icon(icon, color: iconColor, size: 24),
             ),
-            const const SizedBox(width: AppSpacing.lg),
+            const const const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Text(
                 title,
@@ -168,7 +168,7 @@ class ScheduledMealCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -193,7 +193,7 @@ class ScheduledMealCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const const const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
                     const Icon(
@@ -201,14 +201,14 @@ class ScheduledMealCard extends StatelessWidget {
                       size: 16,
                       color: Colors.grey,
                     ),
-                    const const SizedBox(width: AppSpacing.xs),
+                    const const const SizedBox(width: AppSpacing.xs),
                     Text(
                       schedule,
                       style: AppFonts.bodyMedium.copyWith(color: Colors.grey),
                     ),
-                    const const SizedBox(width: AppSpacing.md),
+                    const const const SizedBox(width: AppSpacing.md),
                     const Icon(Icons.access_time, size: 16, color: Colors.grey),
-                    const const SizedBox(width: AppSpacing.xs),
+                    const const const SizedBox(width: AppSpacing.xs),
                     Text(
                       time,
                       style: AppFonts.bodyMedium.copyWith(color: Colors.grey),
@@ -283,7 +283,7 @@ class NutritionTab extends ConsumerWidget {
     final notifier = ref.read(nutritionTabProvider(petId).notifier);
 
     return SingleChildScrollView(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -298,7 +298,7 @@ class NutritionTab extends ConsumerWidget {
                   onTap: () => notifier.selectFoodType('kibble'),
                 ),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: FoodTypeCard(
                   icon: Icons.restaurant,
@@ -310,7 +310,7 @@ class NutritionTab extends ConsumerWidget {
             ],
           ),
 
-          const SizedBox(height: AppSpacing.xl),
+          const const const SizedBox(height: AppSpacing.xl),
 
           // 레시피 및 음식 일지
           NutritionItemCard(
@@ -321,7 +321,7 @@ class NutritionTab extends ConsumerWidget {
               // 레시피 화면으로 이동
             },
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
           NutritionItemCard(
             icon: Icons.pets,
             title: 'Food Journal',
@@ -331,7 +331,7 @@ class NutritionTab extends ConsumerWidget {
             },
           ),
 
-          const SizedBox(height: AppSpacing.xl),
+          const const const SizedBox(height: AppSpacing.xl),
 
           // 예약된 식사
           Text(
@@ -341,7 +341,7 @@ class NutritionTab extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
 
           ScheduledMealCard(
             title: 'Breakfast',
@@ -352,7 +352,7 @@ class NutritionTab extends ConsumerWidget {
               notifier.toggleMealSchedule('breakfast', value);
             },
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           ScheduledMealCard(
             title: 'Dinner',
             schedule: 'everyday',

@@ -21,7 +21,7 @@ class MicrochipCard extends StatelessWidget {
         : pet.additionalInfo?['microchipId'] ?? '';
 
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -48,7 +48,7 @@ class MicrochipCard extends StatelessWidget {
               size: 20,
             ),
           ),
-          const const SizedBox(width: AppSpacing.md),
+          const const const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +59,7 @@ class MicrochipCard extends StatelessWidget {
                     color: AppColors.pointDark.withValues(alpha: 0.7),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                const const const SizedBox(height: AppSpacing.xs),
                 if (isEditMode && microchipController != null)
                   TextField(
                     controller: microchipController,
@@ -70,7 +70,7 @@ class MicrochipCard extends StatelessWidget {
                     decoration: InputDecoration(
                       hintText: 'マイクロチップ番号を入力',
                       isDense: true,
-                      contentPadding: const const EdgeInsets.symmetric(
+                      contentPadding: const const const EdgeInsets.symmetric(
                         vertical: 8,
                         horizontal: 12,
                       ),

@@ -161,11 +161,11 @@ class HomeMockService extends BaseMockService {
   static Map<String, dynamic> getMockHealthSummary({String? petId}) {
     return {
       'overall': 'good', // excellent, good, fair, poor
-      'lastCheckup': DateTime.now().subtract(Duration(days: 45)),
-      'nextCheckup': DateTime.now().add(Duration(days: 45)),
+      'lastCheckup': DateTime.now().subtract(const Duration(days: 45)),
+      'nextCheckup': DateTime.now().add(const Duration(days: 45)),
       'vaccines': {
         'upToDate': true,
-        'nextDue': DateTime.now().add(Duration(days: 120)),
+        'nextDue': DateTime.now().add(const Duration(days: 120)),
       },
       'weight': {
         'current': petId == '2' ? 3.5 : (petId == '3' ? 4.2 : 15.8),

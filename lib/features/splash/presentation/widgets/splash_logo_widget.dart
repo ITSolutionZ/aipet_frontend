@@ -84,7 +84,7 @@ class SplashLogoWidget extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: AppSpacing.lg), // 앱 로고와 회사 로고 사이 간격
+        const const const SizedBox(height: AppSpacing.lg), // 앱 로고와 회사 로고 사이 간격
         // 회사 로고 (작게)
         Container(
           width: AppConstants.splashCompanyLogoWidth,

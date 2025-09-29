@@ -250,8 +250,8 @@ class FeedingRecordsController extends BaseController {
   ) {
     return records.where((record) {
       final recordDate = record.fedTime;
-      return recordDate.isAfter(startDate.subtract(Duration(days: 1))) &&
-          recordDate.isBefore(endDate.add(Duration(days: 1)));
+      return recordDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
+          recordDate.isBefore(endDate.add(const Duration(days: 1)));
     }).toList();
   }
 
@@ -339,7 +339,7 @@ class FeedingRecordsController extends BaseController {
   Map<String, dynamic> calculateWeeklyStatistics(List<dynamic> records) {
     final now = DateTime.now();
     final weekStart = now.subtract(Duration(days: now.weekday - 1));
-    final weekEnd = weekStart.add(Duration(days: 6));
+    final weekEnd = weekStart.add(const Duration(days: 6));
 
     final weeklyRecords = filterRecordsByDate(records, weekStart, weekEnd);
 

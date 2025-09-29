@@ -1,7 +1,7 @@
 library;
 
-import 'package:aipet_frontend/shared/entities/settings_entity.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/entities/settings_entity.dart';
 
 /// 설정 관련 Repository 인터페이스
 abstract class SettingsRepository {

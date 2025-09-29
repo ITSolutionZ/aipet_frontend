@@ -18,7 +18,7 @@ class FeedingMainScreen extends ConsumerWidget {
       drawer: showBackButton ? null : const AppDrawer(),
       appBar: showBackButton ? _buildBackAppBar() : _buildDrawerAppBar(),
       body: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -30,12 +30,12 @@ class FeedingMainScreen extends ConsumerWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             Text(
               'スケジュール設定、記録管理、分析などを通じてペットの健康を体系的に管理できます。',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
             ),
-            const SizedBox(height: AppSpacing.xl),
+            const const const SizedBox(height: AppSpacing.xl),
 
             // 메뉴 리스트
             Expanded(
@@ -51,7 +51,7 @@ class FeedingMainScreen extends ConsumerWidget {
                       '${AppRouter.feedingScheduleRoute}?petId=default',
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  const const const SizedBox(height: AppSpacing.md),
                   _buildMenuCard(
                     context,
                     icon: Icons.history,
@@ -60,7 +60,7 @@ class FeedingMainScreen extends ConsumerWidget {
                     color: AppColors.pointGreen,
                     onTap: () => context.go(AppRouter.feedingRecordsRoute),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  const const const SizedBox(height: AppSpacing.md),
                   _buildMenuCard(
                     context,
                     icon: Icons.analytics,
@@ -71,7 +71,7 @@ class FeedingMainScreen extends ConsumerWidget {
                       '${AppRouter.feedingAnalysisRoute}?petId=default',
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  const const const SizedBox(height: AppSpacing.md),
                   _buildMenuCard(
                     context,
                     icon: Icons.cookie,
@@ -80,7 +80,7 @@ class FeedingMainScreen extends ConsumerWidget {
                     color: AppColors.pointPink,
                     onTap: () => context.go('/snacks'), // 간식 관리 페이지
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  const const const SizedBox(height: AppSpacing.md),
                   _buildMenuCard(
                     context,
                     icon: Icons.menu_book,
@@ -151,7 +151,7 @@ class FeedingMainScreen extends ConsumerWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
-          padding: const const EdgeInsets.all(AppSpacing.lg),
+          padding: const const const EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
               // 아이콘
@@ -164,7 +164,7 @@ class FeedingMainScreen extends ConsumerWidget {
                 ),
                 child: Icon(icon, color: color, size: 32),
               ),
-              const const SizedBox(width: AppSpacing.lg),
+              const const const SizedBox(width: AppSpacing.lg),
 
               // 텍스트 영역
               Expanded(
@@ -178,7 +178,7 @@ class FeedingMainScreen extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Text(
                       subtitle,
                       style: AppFonts.bodySmall.copyWith(

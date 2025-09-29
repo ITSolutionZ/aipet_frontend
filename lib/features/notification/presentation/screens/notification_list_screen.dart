@@ -70,11 +70,11 @@ class _NotificationListScreenState
           if (_shouldShowInfoCard) const InfoCardComponent(),
 
           // 동적 간격 (정보 카드가 있으면 md, 없으면 lg)
-          SizedBox(height: _shouldShowInfoCard ? AppSpacing.md : AppSpacing.lg),
+          const SizedBox(height: _shouldShowInfoCard ? AppSpacing.md : AppSpacing.lg),
 
           // 필터 섹션 제목
           Container(
-            margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            margin: const const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: const Text(
               '通知の種類',
               style: TextStyle(
@@ -85,7 +85,7 @@ class _NotificationListScreenState
             ),
           ),
 
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
 
           // 필터 칩
           NotificationFilterChipsComponent(
@@ -93,7 +93,7 @@ class _NotificationListScreenState
             onFilterChanged: _onFilterChanged,
           ),
 
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
 
           // 알림 리스트
           Expanded(

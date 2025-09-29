@@ -129,16 +129,16 @@ class _PushNotificationScreenState
       drawer: const AppDrawer(),
       appBar: const SoftGradientDrawerAppBar(title: 'プッシュ通知'),
       body: SingleChildScrollView(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: AppSpacing.sm),
+            const const const SizedBox(height: AppSpacing.sm),
 
             // 페이지 설명 추가
             Container(
-              padding: const const EdgeInsets.all(AppSpacing.md),
-              margin: const const EdgeInsets.only(bottom: AppSpacing.md),
+              padding: const const const EdgeInsets.all(AppSpacing.md),
+              margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.pointBrown.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -153,7 +153,7 @@ class _PushNotificationScreenState
                     color: AppColors.pointBrown,
                     size: 20,
                   ),
-                  const const SizedBox(width: AppSpacing.sm),
+                  const const const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'アラームをオンにすると、設定した時間にお知らせを受け取ることができます',
@@ -169,7 +169,7 @@ class _PushNotificationScreenState
 
             const SectionHeaderComponent(title: 'アラーム種類'),
 
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
 
             AlarmToggleComponent(
               title: '食事アラーム',
@@ -182,7 +182,7 @@ class _PushNotificationScreenState
               },
             ),
 
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             AlarmToggleComponent(
               title: '散歩アラーム',
@@ -195,7 +195,7 @@ class _PushNotificationScreenState
               },
             ),
 
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             AlarmToggleComponent(
               title: 'システムアラーム',
@@ -208,11 +208,11 @@ class _PushNotificationScreenState
               },
             ),
 
-            const SizedBox(height: AppSpacing.xl * 2),
+            const const const SizedBox(height: AppSpacing.xl * 2),
 
             const SectionHeaderComponent(title: '詳細設定'),
 
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             SettingsTileComponent(
               title: 'アラーム時間設定',
@@ -221,7 +221,7 @@ class _PushNotificationScreenState
               },
             ),
 
-            const SizedBox(height: AppSpacing.xl * 3),
+            const const const SizedBox(height: AppSpacing.xl * 3),
 
             ActionButton.primary(
               text: '修正完了',
@@ -229,7 +229,7 @@ class _PushNotificationScreenState
               isEnabled: true,
             ),
 
-            const SizedBox(height: AppSpacing.xl),
+            const const const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),

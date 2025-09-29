@@ -96,7 +96,7 @@ abstract class BaseFacilityController {
                 height: 20,
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
-              const SizedBox(width: 12),
+              const const const SizedBox(width: 12),
               Text(message),
             ],
           ),

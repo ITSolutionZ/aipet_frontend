@@ -16,8 +16,8 @@ class AiDioService extends BaseLoggingService {
   late final Dio _dio;
 
   // API 설정 상수
-  static const Duration _connectTimeout = const Duration(seconds: 30);
-  static const Duration _receiveTimeout = const Duration(seconds: 60);
+  static const Duration _connectTimeout = Duration(seconds: 30);
+  static const Duration _receiveTimeout = Duration(seconds: 60);
   static const int _maxRetries = 3;
 
   AiDioService._() : super('ai_dio_service') {

@@ -145,13 +145,13 @@ class _GenericBreedSelectionScreenState<T>
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const const EdgeInsets.all(AppSpacing.lg),
+                padding: const const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // 프로그레스바
                     const PetRegistrationProgressBar(currentStep: 2),
-                    const SizedBox(height: AppSpacing.xl),
+                    const const const SizedBox(height: AppSpacing.xl),
 
                     // 품종 선택 그리드
                     GridView.builder(
@@ -181,9 +181,9 @@ class _GenericBreedSelectionScreenState<T>
                     // 커스텀 품종 입력
                     if (_selectedBreed == 'custom' ||
                         _selectedBreed == 'other') ...[
-                      const SizedBox(height: AppSpacing.lg),
+                      const const const SizedBox(height: AppSpacing.lg),
                       Container(
-                        padding: const const EdgeInsets.all(AppSpacing.lg),
+                        padding: const const const EdgeInsets.all(AppSpacing.lg),
                         decoration: BoxDecoration(
                           color: AppColors.pureWhite,
                           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -224,7 +224,7 @@ class _GenericBreedSelectionScreenState<T>
 
             // 하단 고정 버튼 영역
             Container(
-              padding: const const EdgeInsets.all(AppSpacing.lg),
+              padding: const const const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
@@ -289,7 +289,7 @@ class _GenericBreedSelectionScreenState<T>
           children: [
             // 품종 이름 (상단)
             Padding(
-              padding: const const EdgeInsets.only(top: AppSpacing.sm),
+              padding: const const const EdgeInsets.only(top: AppSpacing.sm),
               child: Text(
                 name,
                 style: AppFonts.bodyMedium.copyWith(
@@ -304,7 +304,7 @@ class _GenericBreedSelectionScreenState<T>
             // 강아지/고양이 이미지 (하단, 얼굴 중심)
             Expanded(
               child: Padding(
-                padding: const const EdgeInsets.all(AppSpacing.sm),
+                padding: const const const EdgeInsets.all(AppSpacing.sm),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(AppRadius.small),
                   child: Image.asset(

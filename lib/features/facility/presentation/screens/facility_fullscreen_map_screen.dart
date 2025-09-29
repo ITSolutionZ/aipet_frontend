@@ -280,7 +280,7 @@ class _FacilityFullscreenMapScreenState
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,7 +306,7 @@ class _FacilityFullscreenMapScreenState
                     size: 20,
                   ),
                 ),
-                const const SizedBox(width: AppSpacing.md),
+                const const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,7 +318,7 @@ class _FacilityFullscreenMapScreenState
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const const const SizedBox(height: 4),
                       Text(
                         _selectedFacility!.type == FacilityType.grooming
                             ? 'トリミング'
@@ -340,7 +340,7 @@ class _FacilityFullscreenMapScreenState
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const const const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 const Icon(
@@ -348,7 +348,7 @@ class _FacilityFullscreenMapScreenState
                   color: AppColors.pointGray,
                   size: 16,
                 ),
-                const const SizedBox(width: 4),
+                const const const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     _selectedFacility!.address,
@@ -361,11 +361,11 @@ class _FacilityFullscreenMapScreenState
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const const const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 const Icon(Icons.star, color: Colors.amber, size: 16),
-                const const SizedBox(width: 4),
+                const const const SizedBox(width: 4),
                 Text(
                   '${_selectedFacility!.rating} (${_selectedFacility!.reviewCount})',
                   style: AppFonts.bodyMedium.copyWith(
@@ -386,7 +386,7 @@ class _FacilityFullscreenMapScreenState
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBlue,
                     foregroundColor: Colors.white,
-                    padding: const const EdgeInsets.symmetric(
+                    padding: const const const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
                       vertical: AppSpacing.sm,
                     ),

@@ -24,8 +24,8 @@ class PetActivitiesMockService extends BaseMockService {
         ],
         'videoUrl': 'https://youtube.com/watch?v=example1',
         'imagePath': 'assets/images/tricks/sit.png',
-        'createdAt': DateTime.now().subtract(Duration(days: 20)),
-        'completedAt': DateTime.now().subtract(Duration(days: 5)),
+        'createdAt': DateTime.now().subtract(const Duration(days: 20)),
+        'completedAt': DateTime.now().subtract(const Duration(days: 5)),
       },
       {
         'id': '2',
@@ -39,7 +39,7 @@ class PetActivitiesMockService extends BaseMockService {
         'instructions': ['앉은 상태에서 시작', '손을 펫 앞에 내밀기', '"손" 명령과 함께 발 유도'],
         'videoUrl': 'https://youtube.com/watch?v=example2',
         'imagePath': 'assets/images/tricks/shake.png',
-        'createdAt': DateTime.now().subtract(Duration(days: 8)),
+        'createdAt': DateTime.now().subtract(const Duration(days: 8)),
       },
       {
         'id': '3',
@@ -53,7 +53,7 @@ class PetActivitiesMockService extends BaseMockService {
         'instructions': ['간식으로 원형 유도', '"돌아" 명령 사용', '천천히 속도 조절'],
         'videoUrl': 'https://youtube.com/watch?v=example3',
         'imagePath': 'assets/images/tricks/spin.png',
-        'createdAt': DateTime.now().subtract(Duration(days: 12)),
+        'createdAt': DateTime.now().subtract(const Duration(days: 12)),
       },
     ];
   }
@@ -84,7 +84,7 @@ class PetActivitiesMockService extends BaseMockService {
         'duration': '05:32',
         'thumbnailUrl': 'https://img.youtube.com/vi/abc123def456/mqdefault.jpg',
         'url': 'https://youtube.com/watch?v=abc123def456',
-        'addedAt': DateTime.now().subtract(Duration(days: 3)),
+        'addedAt': DateTime.now().subtract(const Duration(days: 3)),
         'category': 'basic_training',
         'tags': ['기초', '앉기', '훈련'],
       },
@@ -96,7 +96,7 @@ class PetActivitiesMockService extends BaseMockService {
         'duration': '08:15',
         'thumbnailUrl': 'https://img.youtube.com/vi/xyz789ghi012/mqdefault.jpg',
         'url': 'https://youtube.com/watch?v=xyz789ghi012',
-        'addedAt': DateTime.now().subtract(Duration(days: 7)),
+        'addedAt': DateTime.now().subtract(const Duration(days: 7)),
         'category': 'play',
         'tags': ['고양이', '놀이', '운동'],
       },
@@ -113,7 +113,7 @@ class PetActivitiesMockService extends BaseMockService {
         'watchedSeconds': 245,
         'totalSeconds': 332,
         'progress': 0.74, // 74%
-        'lastWatched': DateTime.now().subtract(Duration(hours: 2)),
+        'lastWatched': DateTime.now().subtract(const Duration(hours: 2)),
         'completed': false,
       },
       'xyz789ghi012': {
@@ -121,7 +121,7 @@ class PetActivitiesMockService extends BaseMockService {
         'watchedSeconds': 495,
         'totalSeconds': 495,
         'progress': 1.0, // 100%
-        'lastWatched': DateTime.now().subtract(Duration(days: 1)),
+        'lastWatched': DateTime.now().subtract(const Duration(days: 1)),
         'completed': true,
       },
     };
@@ -142,7 +142,7 @@ class PetActivitiesMockService extends BaseMockService {
         'viewCount': 125000,
         'likeCount': 3200,
         'thumbnailUrl': 'https://img.youtube.com/vi/$videoId/mqdefault.jpg',
-        'publishedAt': DateTime.now().subtract(Duration(days: 30)),
+        'publishedAt': DateTime.now().subtract(const Duration(days: 30)),
         'tags': ['강아지훈련', '펫트레이닝', '기초훈련', '앉기'],
       },
       'def456ghi789': {
@@ -154,7 +154,7 @@ class PetActivitiesMockService extends BaseMockService {
         'viewCount': 89000,
         'likeCount': 2100,
         'thumbnailUrl': 'https://img.youtube.com/vi/$videoId/mqdefault.jpg',
-        'publishedAt': DateTime.now().subtract(Duration(days: 15)),
+        'publishedAt': DateTime.now().subtract(const Duration(days: 15)),
         'tags': ['고양이놀이', '스트레스해소', '실내고양이'],
       },
     };
@@ -196,7 +196,7 @@ class PetActivitiesMockService extends BaseMockService {
         {
           'name': '첫 번째 트릭 완성',
           'description': '첫 번째 트릭을 성공적으로 완료했습니다!',
-          'earnedAt': DateTime.now().subtract(Duration(days: 5)),
+          'earnedAt': DateTime.now().subtract(const Duration(days: 5)),
           'icon': Icons.star,
         },
       ],

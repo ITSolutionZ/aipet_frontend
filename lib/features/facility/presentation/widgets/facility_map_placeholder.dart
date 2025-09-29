@@ -27,7 +27,7 @@ class FacilityMapPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 200,
-      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      margin: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -70,7 +70,7 @@ class FacilityMapPlaceholder extends StatelessWidget {
               bottom: AppSpacing.md,
               left: AppSpacing.md,
               child: Container(
-                padding: const const EdgeInsets.symmetric(
+                padding: const const const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
                   vertical: AppSpacing.xs,
                 ),
@@ -151,10 +151,10 @@ class FacilityMapPlaceholder extends StatelessWidget {
           ),
           child: const Icon(Icons.content_cut, color: Colors.white, size: 18),
         ),
-        const SizedBox(height: 2),
+        const const const SizedBox(height: 2),
         // 거리 표시
         Container(
-          padding: const const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          padding: const const const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
@@ -265,7 +265,7 @@ class _FullScreenMapDialog extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('現在位置に移動'),
-                  duration: const Duration(seconds: 1),
+                  duration: Duration(seconds: 1),
                 ),
               );
             },
@@ -275,7 +275,7 @@ class _FullScreenMapDialog extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        margin: const const EdgeInsets.all(AppSpacing.md),
+        margin: const const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Colors.grey[100],
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -306,16 +306,16 @@ class _FullScreenMapDialog extends StatelessWidget {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('地図を拡大'),
-                          duration: const Duration(seconds: 1),
+                          duration: Duration(seconds: 1),
                         ),
                       );
                     }),
-                    const SizedBox(height: 8),
+                    const const const SizedBox(height: 8),
                     _buildZoomButton(Icons.remove, () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('地図を縮小'),
-                          duration: const Duration(seconds: 1),
+                          duration: Duration(seconds: 1),
                         ),
                       );
                     }),
@@ -328,7 +328,7 @@ class _FullScreenMapDialog extends StatelessWidget {
                 bottom: AppSpacing.md,
                 left: AppSpacing.md,
                 child: Container(
-                  padding: const const EdgeInsets.all(AppSpacing.md),
+                  padding: const const const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.8),
                     borderRadius: BorderRadius.circular(12),
@@ -344,14 +344,14 @@ class _FullScreenMapDialog extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const const const SizedBox(height: 4),
                       Text(
                         '合計 ${facilities.length}件の施設',
                         style: AppFonts.bodySmall.copyWith(
                           color: Colors.white70,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const const const SizedBox(height: 4),
                       Text(
                         'マーカーをタップして詳細情報を確認してください',
                         style: AppFonts.bodySmall.copyWith(
@@ -426,11 +426,11 @@ class _FullScreenMapDialog extends StatelessWidget {
             size: 24,
           ),
         ),
-        const SizedBox(height: 4),
+        const const const SizedBox(height: 4),
         // 시설 이름과 거리
         Container(
           constraints: const BoxConstraints(maxWidth: 120),
-          padding: const const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const const const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),

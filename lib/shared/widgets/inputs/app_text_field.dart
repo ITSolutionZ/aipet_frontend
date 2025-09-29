@@ -133,7 +133,7 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
                     : null,
               ),
             ),
-            const SizedBox(height: AppSpacing.xs),
+            const const const SizedBox(height: AppSpacing.xs),
           ],
 
           // 텍스트 필드
@@ -183,7 +183,7 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
                 prefixIcon: widget.prefixIcon,
                 suffixIcon: widget.suffixIcon,
                 border: InputBorder.none,
-                contentPadding: const const EdgeInsets.symmetric(
+                contentPadding: const const const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
                 ),
@@ -200,7 +200,7 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
 
           // 에러 메시지
           if (widget.errorText != null) ...[
-            const SizedBox(height: AppSpacing.xs),
+            const const const SizedBox(height: AppSpacing.xs),
             Text(
               widget.errorText!,
               style: AppFonts.bodySmall.copyWith(color: Colors.red),
@@ -209,7 +209,7 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
 
           // 문자 수 표시
           if (widget.maxLength != null) ...[
-            const SizedBox(height: AppSpacing.xs),
+            const const const SizedBox(height: AppSpacing.xs),
             Align(
               alignment: Alignment.centerRight,
               child: Text(

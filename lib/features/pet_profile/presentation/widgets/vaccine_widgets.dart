@@ -16,8 +16,8 @@ class VaccineCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -47,7 +47,7 @@ class VaccineCard extends StatelessWidget {
                 size: 28,
               ),
             ),
-            const const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
 
             // 백신 정보
             Expanded(
@@ -61,7 +61,7 @@ class VaccineCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xs),
+                  const const const SizedBox(height: AppSpacing.xs),
                   Text(
                     vaccine['description'] ?? 'No description',
                     style: AppFonts.bodySmall.copyWith(
@@ -69,7 +69,7 @@ class VaccineCard extends StatelessWidget {
                     ),
                   ),
                   if (nextDue != null) ...[
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Next: $nextDue',
                       style: AppFonts.bodySmall.copyWith(
@@ -87,7 +87,7 @@ class VaccineCard extends StatelessWidget {
             // 완료 상태 배지
             if (isCompleted)
               Container(
-                padding: const const EdgeInsets.symmetric(
+                padding: const const const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
                   vertical: AppSpacing.xs,
                 ),
@@ -122,7 +122,7 @@ class VaccineDetailModal extends StatelessWidget {
       backgroundColor: Colors.transparent,
       child: Container(
         constraints: const BoxConstraints(maxHeight: 600),
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -148,7 +148,7 @@ class VaccineDetailModal extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 내용
             Flexible(
@@ -169,7 +169,7 @@ class VaccineDetailModal extends StatelessWidget {
                       ),
                     ]),
 
-                    const SizedBox(height: AppSpacing.lg),
+                    const const const SizedBox(height: AppSpacing.lg),
 
                     // 일정 정보
                     _buildDetailSection('スケジュール', [
@@ -178,7 +178,7 @@ class VaccineDetailModal extends StatelessWidget {
                       _buildDetailRow('間隔', vaccine['interval'] ?? '未設定'),
                     ]),
 
-                    const SizedBox(height: AppSpacing.lg),
+                    const const const SizedBox(height: AppSpacing.lg),
 
                     // 수의사 정보
                     VeterinarianCard(
@@ -191,7 +191,7 @@ class VaccineDetailModal extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 액션 버튼들
             Row(
@@ -204,7 +204,7 @@ class VaccineDetailModal extends StatelessWidget {
                     },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppColors.pointBrown),
-                      padding: const const EdgeInsets.symmetric(
+                      padding: const const const EdgeInsets.symmetric(
                         vertical: AppSpacing.md,
                       ),
                     ),
@@ -217,7 +217,7 @@ class VaccineDetailModal extends StatelessWidget {
                     ),
                   ),
                 ),
-                const const SizedBox(width: AppSpacing.md),
+                const const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -226,7 +226,7 @@ class VaccineDetailModal extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.pointGreen,
-                      padding: const const EdgeInsets.symmetric(
+                      padding: const const const EdgeInsets.symmetric(
                         vertical: AppSpacing.md,
                       ),
                     ),
@@ -258,7 +258,7 @@ class VaccineDetailModal extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         ...children,
       ],
     );
@@ -266,7 +266,7 @@ class VaccineDetailModal extends StatelessWidget {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -279,7 +279,7 @@ class VaccineDetailModal extends StatelessWidget {
               ),
             ),
           ),
-          const const SizedBox(width: AppSpacing.md),
+          const const const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
               value,
@@ -304,7 +304,7 @@ class VeterinarianCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.pointBlue.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -320,7 +320,7 @@ class VeterinarianCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               Container(
@@ -336,7 +336,7 @@ class VeterinarianCard extends StatelessWidget {
                   size: 24,
                 ),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,7 +349,7 @@ class VeterinarianCard extends StatelessWidget {
                       ),
                     ),
                     if (veterinarian['clinic'] != null) ...[
-                      const SizedBox(height: AppSpacing.xs),
+                      const const const SizedBox(height: AppSpacing.xs),
                       Text(
                         veterinarian['clinic'],
                         style: AppFonts.bodySmall.copyWith(

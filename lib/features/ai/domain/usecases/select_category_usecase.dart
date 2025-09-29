@@ -2,8 +2,8 @@ import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.da
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 class SelectCategoryResult {
   final List<AiMessageEntity> messages;

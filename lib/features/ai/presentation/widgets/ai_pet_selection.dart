@@ -20,7 +20,7 @@ class AiPetSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -43,11 +43,11 @@ class AiPetSelection extends StatelessWidget {
               color: AppColors.pointDark,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
 
           if (pets.isEmpty) _buildNoPetsCard() else _buildPetSelectionGrid(),
 
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           _buildGeneralConsultationOption(),
         ],
       ),
@@ -57,7 +57,7 @@ class AiPetSelection extends StatelessWidget {
   Widget _buildNoPetsCard() {
     return Container(
       width: double.infinity,
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.2)),
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -69,7 +69,7 @@ class AiPetSelection extends StatelessWidget {
             size: 48,
             color: AppColors.pointBrown.withValues(alpha: 0.5),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           Text(
             '登録されたペットがありません',
             style: AppFonts.bodyMedium.copyWith(
@@ -77,7 +77,7 @@ class AiPetSelection extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Text(
             'ペットを登録すると、より具体的な\nアドバイスが受けられます',
             style: AppFonts.bodySmall.copyWith(
@@ -85,7 +85,7 @@ class AiPetSelection extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
           if (onAddPet != null)
             ElevatedButton.icon(
               onPressed: onAddPet,
@@ -94,7 +94,7 @@ class AiPetSelection extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBrown,
                 foregroundColor: AppColors.pureWhite,
-                padding: const const EdgeInsets.symmetric(
+                padding: const const const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
                 ),
@@ -119,7 +119,7 @@ class AiPetSelection extends StatelessWidget {
     return GestureDetector(
       onTap: () => onPetSelected(isSelected ? null : pet),
       child: Container(
-        padding: const const EdgeInsets.symmetric(
+        padding: const const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
@@ -156,7 +156,7 @@ class AiPetSelection extends StatelessWidget {
                 size: 20,
                 color: isSelected ? AppColors.pureWhite : AppColors.pointBrown,
               ),
-            const const SizedBox(width: AppSpacing.xs),
+            const const const SizedBox(width: AppSpacing.xs),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -193,7 +193,7 @@ class AiPetSelection extends StatelessWidget {
       onTap: () => onPetSelected(null),
       child: Container(
         width: double.infinity,
-        padding: const const EdgeInsets.symmetric(
+        padding: const const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
@@ -218,7 +218,7 @@ class AiPetSelection extends StatelessWidget {
                   ? AppColors.pointBrown
                   : AppColors.pointDark.withValues(alpha: 0.7),
             ),
-            const const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
             Text(
               '一般的なペット相談',
               style: AppFonts.bodySmall.copyWith(

@@ -80,11 +80,11 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         children: [
           Container(
-            padding: const const EdgeInsets.all(AppSpacing.sm),
+            padding: const const const EdgeInsets.all(AppSpacing.sm),
             decoration: const BoxDecoration(
               color: AppColors.pointBrown,
               shape: BoxShape.circle,
@@ -96,9 +96,9 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
               color: Colors.white,
             ),
           ),
-          const const SizedBox(width: AppSpacing.sm),
+          const const const SizedBox(width: AppSpacing.sm),
           Container(
-            padding: const const EdgeInsets.symmetric(
+            padding: const const const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.sm,
             ),
@@ -119,9 +119,9 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildDot(0),
-                const const SizedBox(width: 4),
+                const const const SizedBox(width: 4),
                 _buildDot(1),
-                const const SizedBox(width: 4),
+                const const const SizedBox(width: 4),
                 _buildDot(2),
               ],
             ),

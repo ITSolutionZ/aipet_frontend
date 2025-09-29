@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/shared/core/services/image_management_service.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/services/image_management_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -39,7 +39,9 @@ class SavedImagesNotifier extends _$SavedImagesNotifier {
 
     if (deleteResult.isSuccess) {
       final currentState = await future;
-      state = AsyncData(currentState.where((path) => path != imagePath).toList());
+      state = AsyncData(
+        currentState.where((path) => path != imagePath).toList(),
+      );
     } else {
       throw Exception(deleteResult.errorOrNull);
     }
@@ -201,10 +203,7 @@ class ImageCompressionNotifier extends _$ImageCompressionNotifier {
       );
 
       if (result.isSuccess) {
-        state = state.copyWith(
-          isCompressing: false,
-          currentImagePath: null,
-        );
+        state = state.copyWith(isCompressing: false, currentImagePath: null);
         return result;
       } else {
         state = state.copyWith(
@@ -263,13 +262,14 @@ Future<StorageStats> storageStats(Ref ref) async {
   final imagesResult = await service.getAllSavedImages();
   final totalSizeResult = await service.getTotalStorageSize();
 
-  final imageCount = imagesResult.isSuccess ? (imagesResult.dataOrNull?.length ?? 0) : 0;
-  final totalSize = totalSizeResult.isSuccess ? (totalSizeResult.dataOrNull ?? 0) : 0;
+  final imageCount = imagesResult.isSuccess
+      ? (imagesResult.dataOrNull?.length ?? 0)
+      : 0;
+  final totalSize = totalSizeResult.isSuccess
+      ? (totalSizeResult.dataOrNull ?? 0)
+      : 0;
 
-  return StorageStats(
-    imageCount: imageCount,
-    totalSizeInBytes: totalSize,
-  );
+  return StorageStats(imageCount: imageCount, totalSizeInBytes: totalSize);
 }
 
 /// 저장소 통계 클래스

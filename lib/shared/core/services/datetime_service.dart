@@ -287,10 +287,10 @@ class DateTimeService {
   }
 
   /// 어제 날짜
-  static DateTime get yesterday => today.subtract(Duration(days: 1));
+  static DateTime get yesterday => today.subtract(const Duration(days: 1));
 
   /// 내일 날짜
-  static DateTime get tomorrow => today.add(Duration(days: 1));
+  static DateTime get tomorrow => today.add(const Duration(days: 1));
 
   /// 이번 주 시작일 (월요일)
   static DateTime get thisWeekStart {
@@ -300,7 +300,7 @@ class DateTimeService {
 
   /// 이번 주 종료일 (일요일)
   static DateTime get thisWeekEnd {
-    return thisWeekStart.add(Duration(days: 6));
+    return thisWeekStart.add(const Duration(days: 6));
   }
 
   /// 이번 달 시작일

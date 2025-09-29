@@ -91,13 +91,13 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
               Text(
                 'トリックの読み込みに失敗しました: $error',
                 style: AppFonts.bodyMedium.copyWith(color: Colors.red),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
               ElevatedButton(
                 onPressed: () => ref.refresh(allTricksProvider),
                 child: const Text('再試行'),
@@ -144,7 +144,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
     }
 
     return ListView.builder(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       itemCount: groupedTricks.length,
       itemBuilder: (context, index) {
         final category = groupedTricks.keys.elementAt(index);

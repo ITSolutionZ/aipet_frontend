@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 class GetPetByIdUseCase {
   final PetRepository repository;

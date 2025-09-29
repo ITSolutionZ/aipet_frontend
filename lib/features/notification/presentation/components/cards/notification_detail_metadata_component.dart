@@ -20,12 +20,12 @@ class NotificationDetailMetadataComponent extends StatelessWidget {
     }
 
     return Container(
-      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      margin: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Card(
         color: Colors.white,
         elevation: 2,
         child: Padding(
-          padding: const const EdgeInsets.all(AppSpacing.lg),
+          padding: const const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -36,7 +36,7 @@ class NotificationDetailMetadataComponent extends StatelessWidget {
                   color: AppColors.pointDark,
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
               ..._buildMetadataWidgets(),
             ],
           ),
@@ -140,7 +140,7 @@ class NotificationDetailMetadataComponent extends StatelessWidget {
 
   Widget _buildMetadataRow(String label, String value) {
     return Padding(
-      padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
           SizedBox(

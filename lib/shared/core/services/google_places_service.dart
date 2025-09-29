@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 /// Google Places API 통합 서비스
 class GooglePlacesService {
   static const String _baseUrl = 'https://maps.googleapis.com/maps/api/place';
-  static const Duration _timeout = const Duration(seconds: 10);
+  static const Duration _timeout = Duration(seconds: 10);
 
   /// 주변 반려동물 관련 시설 검색
   Future<Result<List<Facility>>> searchNearbyPetFacilities({
@@ -37,9 +37,9 @@ class GooglePlacesService {
         'language': 'ja', // 일본어
       };
 
-      final uri = Uri.parse('$_baseUrl/nearbysearch/json').replace(
-        queryParameters: params,
-      );
+      final uri = Uri.parse(
+        '$_baseUrl/nearbysearch/json',
+      ).replace(queryParameters: params);
 
       debugPrint('🗺️ Google Places API 요청: $uri');
 
@@ -51,19 +51,24 @@ class GooglePlacesService {
         if (data['status'] == 'OK') {
           final results = data['results'] as List<dynamic>;
           final facilities = results
-              .map((result) => _mapPlaceToFacility(result as Map<String, dynamic>))
+              .map(
+                (result) => _mapPlaceToFacility(result as Map<String, dynamic>),
+              )
               .where((facility) => facility != null)
               .cast<Facility>()
               .toList();
 
           return Success(facilities, '주변 시설을 성공적으로 찾았습니다');
         } else {
-          final errorMessage = data['error_message'] as String? ??
+          final errorMessage =
+              data['error_message'] as String? ??
               'Google Places API 오류: ${data['status']}';
           return Result.failure(errorMessage);
         }
       } else {
-        return Result.failure('Google Places API 요청 실패: ${response.statusCode}');
+        return Result.failure(
+          'Google Places API 요청 실패: ${response.statusCode}',
+        );
       }
     } catch (error) {
       debugPrint('Google Places API 오류: $error');
@@ -102,9 +107,9 @@ class GooglePlacesService {
         params['radius'] = radius.toString();
       }
 
-      final uri = Uri.parse('$_baseUrl/textsearch/json').replace(
-        queryParameters: params,
-      );
+      final uri = Uri.parse(
+        '$_baseUrl/textsearch/json',
+      ).replace(queryParameters: params);
 
       debugPrint('🔍 Google Places 텍스트 검색: $uri');
 
@@ -116,19 +121,24 @@ class GooglePlacesService {
         if (data['status'] == 'OK') {
           final results = data['results'] as List<dynamic>;
           final facilities = results
-              .map((result) => _mapPlaceToFacility(result as Map<String, dynamic>))
+              .map(
+                (result) => _mapPlaceToFacility(result as Map<String, dynamic>),
+              )
               .where((facility) => facility != null)
               .cast<Facility>()
               .toList();
 
           return Success(facilities, '검색 결과를 성공적으로 가져왔습니다');
         } else {
-          final errorMessage = data['error_message'] as String? ??
+          final errorMessage =
+              data['error_message'] as String? ??
               'Google Places API 오류: ${data['status']}';
           return Result.failure(errorMessage);
         }
       } else {
-        return Result.failure('Google Places API 요청 실패: ${response.statusCode}');
+        return Result.failure(
+          'Google Places API 요청 실패: ${response.statusCode}',
+        );
       }
     } catch (error) {
       debugPrint('Google Places 텍스트 검색 오류: $error');
@@ -149,14 +159,15 @@ class GooglePlacesService {
 
       final Map<String, String> params = {
         'place_id': placeId,
-        'fields': 'name,formatted_address,formatted_phone_number,website,opening_hours,rating,reviews,geometry,types',
+        'fields':
+            'name,formatted_address,formatted_phone_number,website,opening_hours,rating,reviews,geometry,types',
         'key': apiKey,
         'language': 'ja',
       };
 
-      final uri = Uri.parse('$_baseUrl/details/json').replace(
-        queryParameters: params,
-      );
+      final uri = Uri.parse(
+        '$_baseUrl/details/json',
+      ).replace(queryParameters: params);
 
       final response = await http.get(uri).timeout(_timeout);
 
@@ -173,12 +184,15 @@ class GooglePlacesService {
             return const Failure('시설 정보를 파싱할 수 없습니다');
           }
         } else {
-          final errorMessage = data['error_message'] as String? ??
+          final errorMessage =
+              data['error_message'] as String? ??
               'Google Places API 오류: ${data['status']}';
           return Result.failure(errorMessage);
         }
       } else {
-        return Result.failure('Google Places API 요청 실패: ${response.statusCode}');
+        return Result.failure(
+          'Google Places API 요청 실패: ${response.statusCode}',
+        );
       }
     } catch (error) {
       debugPrint('Google Places 상세 정보 오류: $error');
@@ -200,8 +214,10 @@ class GooglePlacesService {
       return Facility(
         id: place['place_id'] as String? ?? '',
         name: place['name'] as String? ?? '알 수 없는 시설',
-        address: place['formatted_address'] as String? ??
-                 place['vicinity'] as String? ?? '주소 정보 없음',
+        address:
+            place['formatted_address'] as String? ??
+            place['vicinity'] as String? ??
+            '주소 정보 없음',
         phone: place['formatted_phone_number'] as String?,
         website: place['website'] as String?,
         latitude: (location['lat'] as num).toDouble(),
@@ -209,7 +225,9 @@ class GooglePlacesService {
         rating: (place['rating'] as num?)?.toDouble() ?? 0.0,
         reviewCount: (place['user_ratings_total'] as int?) ?? 0,
         type: facilityType,
-        isOpen: _isCurrentlyOpen(place['opening_hours'] as Map<String, dynamic>?),
+        isOpen: _isCurrentlyOpen(
+          place['opening_hours'] as Map<String, dynamic>?,
+        ),
         description: _generateDescription(place),
         isFavorite: false,
         hasHistory: false,

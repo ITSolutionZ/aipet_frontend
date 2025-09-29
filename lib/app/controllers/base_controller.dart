@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/services/error_handling_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// 모든 Controller는 이 클래스를 상속받아야 하며, 공통 기능을 제공합니다.
 abstract class BaseController {
   final WidgetRef ref;
-  final ErrorService _errorService;
 
   bool _disposed = false;
 
@@ -19,8 +18,7 @@ abstract class BaseController {
   final List<Timer> _timers = [];
   final List<ChangeNotifier> _notifiers = [];
 
-  BaseController(this.ref, {ErrorService? errorService})
-    : _errorService = errorService ?? ErrorService();
+  BaseController(this.ref);
 
   /// 에러를 처리합니다.
   ///
@@ -29,7 +27,11 @@ abstract class BaseController {
   /// [error] 처리할 에러 객체
   /// [stackTrace] 스택 트레이스 (선택사항)
   void handleError(Object error, [StackTrace? stackTrace]) {
-    _errorService.handleError(error, stackTrace);
+    ErrorHandlingService.handleSync(
+      () => throw error,
+      context: 'BaseController',
+      showUserMessage: true,
+    );
   }
 
   /// 심각도별 에러를 처리합니다.
@@ -44,7 +46,11 @@ abstract class BaseController {
     dynamic severity, [
     StackTrace? stackTrace,
   ]) {
-    _errorService.handleErrorWithSeverity(error, severity, stackTrace);
+    ErrorHandlingService.handleSync(
+      () => throw error,
+      context: 'BaseController - Severity: $severity',
+      showUserMessage: true,
+    );
   }
 
   /// 사용자에게 보여줄 친화적인 에러 메시지를 생성합니다.
@@ -54,7 +60,10 @@ abstract class BaseController {
   /// [error] 원본 에러 객체
   /// [return] 사용자 친화적인 에러 메시지
   String getUserFriendlyErrorMessage(Object error) {
-    return _errorService.getUserFriendlyMessage(error);
+    if (error is Exception) {
+      return '처리 중 오류가 발생했습니다.';
+    }
+    return '알 수 없는 오류가 발생했습니다.';
   }
 
   /// Controller가 이미 dispose되었는지 확인합니다.
@@ -150,197 +159,50 @@ abstract class BaseController {
     Future<T> Function() action, {
     String? errorMessage,
   }) async {
-    try {
-      return await action();
-    } catch (error, stackTrace) {
-      final errorToHandle = errorMessage != null
-          ? '$errorMessage: $error'
-          : error;
-      handleError(errorToHandle, stackTrace);
-      return null;
-    }
+    return ErrorHandlingService.handleAsync(
+      action(),
+      context: errorMessage ?? 'BaseController async operation',
+      showUserMessage: true,
+    );
   }
 
   /// 타임아웃이 있는 안전한 비동기 작업 실행
   Future<T?> safeExecuteWithTimeout<T>(
     Future<T> Function() action, {
-    Duration timeout = const const Duration(seconds: 30),
+    Duration timeout = const Duration(seconds: 30),
     String? errorMessage,
   }) async {
-    try {
-      return await action().timeout(timeout);
-    } catch (error, stackTrace) {
-      String errorToHandle;
-      if (error is TimeoutException) {
-        errorToHandle = errorMessage != null
-            ? '$errorMessage: 操作がタイムアウトしました'
-            : '操作がタイムアウトしました';
-      } else {
-        errorToHandle = errorMessage != null
-            ? '$errorMessage: $error'
-            : error.toString();
-      }
-      handleError(errorToHandle, stackTrace);
-      return null;
-    }
+    return ErrorHandlingService.handleAsync(
+      action().timeout(timeout),
+      context: errorMessage ?? 'BaseController timeout operation',
+      showUserMessage: true,
+    );
   }
 
   /// 재시도 로직이 있는 안전한 비동기 작업 실행
   Future<T?> safeExecuteWithRetry<T>(
     Future<T> Function() action, {
     int maxRetries = 3,
-    Duration retryDelay = const const Duration(seconds: 1),
+    Duration retryDelay = const Duration(seconds: 1),
     String? errorMessage,
   }) async {
     int attempts = 0;
     while (attempts < maxRetries) {
-      try {
-        return await action();
-      } catch (error, stackTrace) {
-        attempts++;
-        if (attempts >= maxRetries) {
-          final errorToHandle = errorMessage != null
-              ? '$errorMessage: $error (再試行 $maxRetries回失敗)'
-              : '$error (再試行 $maxRetries回失敗)';
-          handleError(errorToHandle, stackTrace);
-          return null;
-        }
+      final result = await ErrorHandlingService.handleAsync(
+        action(),
+        context: '${errorMessage ?? 'BaseController'} - Attempt ${attempts + 1}',
+        showUserMessage: attempts == maxRetries - 1, // 마지막 시도에서만 UI 메시지 표시
+      );
+
+      if (result != null) {
+        return result;
+      }
+
+      attempts++;
+      if (attempts < maxRetries) {
         await Future.delayed(retryDelay * attempts);
       }
     }
     return null;
   }
-
-  // ========== Result 패턴 헬퍼 메서드들 ==========
-
-  /// 성공 결과 생성 헬퍼
-  Result<T> success<T>(String message, T data) {
-    return Result.success(message, data);
-  }
-
-  /// 실패 결과 생성 헬퍼
-  Result<T> failure<T>(String message, [Exception? error]) {
-    return Result.failure(message);
-  }
-
-  /// 비동기 작업을 Result로 래핑
-  Future<Result<T>> wrapAsync<T>(
-    Future<T> Function() asyncFunction, {
-    String? successMessage,
-    String? failureMessage,
-  }) async {
-    try {
-      final data = await asyncFunction();
-      return Result.success(successMessage ?? '操作が完了しました', data);
-    } catch (e) {
-      return Result.failure(
-        failureMessage ?? '操作に失敗しました: ${e.toString()}',
-      );
-    }
-  }
-
-  /// 동기 작업을 Result로 래핑
-  Result<T> wrapSync<T>(
-    T Function() syncFunction, {
-    String? successMessage,
-    String? failureMessage,
-  }) {
-    try {
-      final data = syncFunction();
-      return Result.success(successMessage ?? '操作が完了しました', data);
-    } catch (e) {
-      return Result.failure(
-        failureMessage ?? '操作に失敗しました: ${e.toString()}',
-      );
-    }
-  }
-
-  /// 조건부 성공/실패 Result 생성
-  Result<T> conditional<T>(
-    bool condition,
-    T data, {
-    String? successMessage,
-    String? failureMessage,
-  }) {
-    if (condition) {
-      return Result.success(successMessage ?? '操作が完了しました', data);
-    } else {
-      return Result.failure(failureMessage ?? '条件が満たされていません');
-    }
-  }
-
-  /// null 체크 후 Result 생성
-  Result<T> fromNullable<T>(
-    T? data, {
-    String? successMessage,
-    String? failureMessage,
-  }) {
-    if (data != null) {
-      return Result.success(successMessage ?? 'データが見つかりました', data);
-    } else {
-      return Result.failure(failureMessage ?? 'データが見つかりませんでした');
-    }
-  }
-
-  // ========== 공통 성공/실패 메시지들 ==========
-
-  /// 공통 성공 메시지들
-  Result<T> successSaved<T>(T data) =>
-      Result.success(AppTexts.saved, data);
-  Result<T> successUpdated<T>(T data) =>
-      Result.success(AppTexts.updated, data);
-  Result<T> successDeleted<T>(T data) =>
-      Result.success(AppTexts.deleted, data);
-  Result<T> successAdded<T>(T data) =>
-      Result.success(AppTexts.added, data);
-  Result<T> successCompleted<T>(T data) =>
-      Result.success(AppTexts.completed, data);
-
-  /// 공통 실패 메시지들
-  Result<T> failureSave<T>([Exception? error]) =>
-      Result.failure(AppTexts.error);
-  Result<T> failureUpdate<T>([Exception? error]) =>
-      Result.failure(AppTexts.error);
-  Result<T> failureDelete<T>([Exception? error]) =>
-      Result.failure(AppTexts.error);
-  Result<T> failureAdd<T>([Exception? error]) =>
-      Result.failure(AppTexts.error);
-  Result<T> failureLoad<T>([Exception? error]) =>
-      Result.failure(AppTexts.error);
-
-  /// 네트워크 관련 Result 생성
-  Result<T> networkError<T>([Exception? error]) =>
-      Result.failure(AppTexts.networkError);
-  Result<T> serverError<T>([Exception? error]) =>
-      Result.failure(AppTexts.serverError);
-  Result<T> timeoutError<T>([Exception? error]) =>
-      Result.failure(AppTexts.timeoutError);
-  Result<T> connectionError<T>([Exception? error]) =>
-      Result.failure(AppTexts.connectionError);
-
-  /// 검증 관련 Result 생성
-  Result<T> validationError<T>(String message) =>
-      Result.failure(message);
-  Result<T> requiredFieldError<T>(String fieldName) =>
-      Result.failure('$fieldName${AppTexts.requiredField}');
-  Result<T> invalidFormatError<T>(String fieldName) =>
-      Result.failure('$fieldName${AppTexts.invalidFormat}');
-
-  /// 권한 관련 Result 생성
-  Result<T> permissionError<T>([Exception? error]) =>
-      Result.failure(AppTexts.permissionError);
-  Result<T> unauthorizedError<T>([Exception? error]) =>
-      Result.failure(AppTexts.unauthorizedError);
-  Result<T> forbiddenError<T>([Exception? error]) =>
-      Result.failure(AppTexts.forbiddenError);
-
-  /// 파일 관련 Result 생성
-  Result<T> fileUploadError<T>([Exception? error]) =>
-      Result.failure(AppTexts.fileUploadFailed);
-  Result<T> fileDownloadError<T>([Exception? error]) =>
-      Result.failure(AppTexts.fileDownloadFailed);
-  Result<T> fileNotFoundError<T>([Exception? error]) =>
-      Result.failure(AppTexts.fileNotFound);
-  Result<T> fileSizeError<T>([Exception? error]) =>
-      Result.failure(AppTexts.fileSizeExceeded);
 }

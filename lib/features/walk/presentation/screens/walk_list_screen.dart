@@ -100,7 +100,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                     color: AppColors.pointOffWhite,
                   ),
                 ),
-                const const SizedBox(width: AppSpacing.xs),
+                const const const SizedBox(width: AppSpacing.xs),
                 Text(
                   selectedPet.name,
                   style: AppFonts.fredoka(
@@ -114,7 +114,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                   color: AppColors.pointOffWhite,
                   size: 16,
                 ),
-                const const SizedBox(width: AppSpacing.md),
+                const const const SizedBox(width: AppSpacing.md),
               ],
             )
           : null,
@@ -127,7 +127,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
     return Container(
       height: mapExpanded ? MediaQuery.of(context).size.height * 0.6 : 200,
-      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      margin: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Stack(
         children: [
           // 지도 위젯
@@ -165,13 +165,13 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     }
 
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 페이지 인디케이터
           _buildPageIndicator(),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
 
           // 산책 기록 리스트
           Expanded(
@@ -180,7 +180,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
               itemBuilder: (context, index) {
                 final walkRecord = walkRecords[index];
                 return Padding(
-                  padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
+                  padding: const const const EdgeInsets.only(bottom: AppSpacing.sm),
                   child: GestureDetector(
                     onTap: () => _showWalkDetails(walkRecord),
                     onLongPress: () => _showWalkOptions(walkRecord),
@@ -210,7 +210,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
             shape: BoxShape.circle,
           ),
         ),
-        const const SizedBox(width: AppSpacing.xs),
+        const const const SizedBox(width: AppSpacing.xs),
         Container(
           width: 8,
           height: 8,
@@ -219,7 +219,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
             shape: BoxShape.circle,
           ),
         ),
-        const const SizedBox(width: AppSpacing.xs),
+        const const const SizedBox(width: AppSpacing.xs),
         Container(
           width: 8,
           height: 8,
@@ -242,12 +242,12 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
             size: 64,
             color: AppColors.pointGray.withValues(alpha: 0.5),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
           Text(
             '散歩記録がありません。',
             style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           Text(
             '一番目の散歩を始めてみてください。',
             style: AppFonts.bodySmall.copyWith(

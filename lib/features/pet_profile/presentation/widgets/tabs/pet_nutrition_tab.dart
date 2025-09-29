@@ -11,15 +11,15 @@ class PetNutritionTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
           _buildFoodPreferencesSection(),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildNutritionInfoSection(),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildFeedingScheduleSection(),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildDietaryRestrictionsSection(),
         ],
       ),
@@ -37,7 +37,7 @@ class PetNutritionTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         Row(
           children: [
             Expanded(
@@ -47,7 +47,7 @@ class PetNutritionTab extends ConsumerWidget {
                 isSelected: true,
               ),
             ),
-            const const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: _buildFoodTypeCard(
                 icon: Icons.water_drop,
@@ -57,7 +57,7 @@ class PetNutritionTab extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         Row(
           children: [
             Expanded(
@@ -67,7 +67,7 @@ class PetNutritionTab extends ConsumerWidget {
                 isSelected: false,
               ),
             ),
-            const const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: _buildFoodTypeCard(
                 icon: Icons.kitchen,
@@ -92,21 +92,21 @@ class PetNutritionTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildNutritionItem(
           icon: Icons.speed,
           title: '1日の必要カロリー',
           value: '800 kcal',
           iconColor: AppColors.pointBrown,
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildNutritionItem(
           icon: Icons.fitness_center,
           title: 'タンパク質',
           value: '25%',
           iconColor: AppColors.pointBlue,
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildNutritionItem(
           icon: Icons.water,
           title: '水分',
@@ -128,21 +128,21 @@ class PetNutritionTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildScheduledMealCard(
           title: '朝食',
           schedule: '毎日',
           time: '7:00',
           amount: '200g',
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildScheduledMealCard(
           title: '昼食',
           schedule: '毎日',
           time: '12:00',
           amount: '150g',
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildScheduledMealCard(
           title: '夕食',
           schedule: '毎日',
@@ -164,7 +164,7 @@ class PetNutritionTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         GenericInfoCard.withIcon(
           icon: Icons.warning,
           iconColor: AppColors.pointPink,
@@ -174,7 +174,7 @@ class PetNutritionTab extends ConsumerWidget {
           badge: '注意',
           badgeColor: AppColors.pointPink,
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         GenericInfoCard.withIcon(
           icon: Icons.block,
           iconColor: AppColors.pointGray,
@@ -194,7 +194,7 @@ class PetNutritionTab extends ConsumerWidget {
     required bool isSelected,
   }) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: isSelected
             ? AppColors.pointBrown.withValues(alpha: 0.1)
@@ -212,7 +212,7 @@ class PetNutritionTab extends ConsumerWidget {
             size: 32,
             color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Text(
             title,
             style: AppFonts.bodySmall.copyWith(

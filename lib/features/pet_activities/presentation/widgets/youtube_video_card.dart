@@ -35,7 +35,7 @@ class YouTubeVideoCard extends StatelessWidget {
 
             // 비디오 정보
             Padding(
-              padding: const const EdgeInsets.all(AppSpacing.md),
+              padding: const const const EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -48,7 +48,7 @@ class YouTubeVideoCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: AppSpacing.xs),
+                  const const const SizedBox(height: AppSpacing.xs),
 
                   // 설명
                   if (video.description != null) ...[
@@ -60,7 +60,7 @@ class YouTubeVideoCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                   ],
 
                   // 태그
@@ -73,7 +73,7 @@ class YouTubeVideoCard extends StatelessWidget {
                           .map((tag) => _buildTagChip(tag))
                           .toList(),
                     ),
-                    const SizedBox(height: AppSpacing.sm),
+                    const const const SizedBox(height: AppSpacing.sm),
                   ],
 
                   // 하단 정보
@@ -81,7 +81,7 @@ class YouTubeVideoCard extends StatelessWidget {
                     children: [
                       // 재생 시간
                       Container(
-                        padding: const const EdgeInsets.symmetric(
+                        padding: const const const EdgeInsets.symmetric(
                           horizontal: AppSpacing.sm,
                           vertical: AppSpacing.xs,
                         ),
@@ -179,7 +179,7 @@ class YouTubeVideoCard extends StatelessWidget {
             top: AppSpacing.sm,
             right: AppSpacing.sm,
             child: Container(
-              padding: const const EdgeInsets.symmetric(
+              padding: const const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
                 vertical: AppSpacing.xs,
               ),
@@ -222,7 +222,7 @@ class YouTubeVideoCard extends StatelessWidget {
 
   Widget _buildTagChip(String tag) {
     return Container(
-      padding: const const EdgeInsets.symmetric(
+      padding: const const const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),

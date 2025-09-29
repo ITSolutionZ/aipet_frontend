@@ -157,7 +157,7 @@ class PerformanceMonitor {
     }
 
     // 오래된 메트릭 정리
-    final cutoffTime = DateTime.now().subtract(Duration(hours: 1));
+    final cutoffTime = DateTime.now().subtract(const Duration(hours: 1));
     _metrics.removeWhere((metric) => metric.timestamp.isBefore(cutoffTime));
 
     // 가비지 컬렉션 강제 실행 (가능한 경우)
@@ -170,7 +170,7 @@ class PerformanceMonitor {
   /// 성능 리포트 생성
   PerformanceReport generateReport() {
     final now = DateTime.now();
-    final lastHour = now.subtract(Duration(hours: 1));
+    final lastHour = now.subtract(const Duration(hours: 1));
 
     // 최근 1시간 메트릭 필터링
     final recentMetrics = _metrics
@@ -265,7 +265,9 @@ class PerformanceMonitor {
     debugPrint(
       'Avg API Response Time: ${report.avgApiResponseTime.toStringAsFixed(2)}ms',
     );
-    debugPrint('Avg Memory Usage: ${report.avgMemoryUsage.toStringAsFixed(2)}MB');
+    debugPrint(
+      'Avg Memory Usage: ${report.avgMemoryUsage.toStringAsFixed(2)}MB',
+    );
     debugPrint(
       'Avg Widget Build Time: ${report.avgWidgetBuildTime.toStringAsFixed(2)}ms',
     );

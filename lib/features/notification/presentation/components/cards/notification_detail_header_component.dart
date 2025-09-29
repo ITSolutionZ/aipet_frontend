@@ -17,12 +17,12 @@ class NotificationDetailHeaderComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const const EdgeInsets.all(AppSpacing.lg),
+      margin: const const const EdgeInsets.all(AppSpacing.lg),
       child: Card(
         color: Colors.white,
         elevation: 2,
         child: Padding(
-          padding: const const EdgeInsets.all(AppSpacing.lg),
+          padding: const const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -30,7 +30,7 @@ class NotificationDetailHeaderComponent extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: const const EdgeInsets.all(AppSpacing.sm),
+                    padding: const const const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
                       color: notification.type.color.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -41,7 +41,7 @@ class NotificationDetailHeaderComponent extends StatelessWidget {
                       size: 20,
                     ),
                   ),
-                  const const SizedBox(width: AppSpacing.md),
+                  const const const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +64,7 @@ class NotificationDetailHeaderComponent extends StatelessWidget {
                   ),
                   if (notification.petName != null)
                     Container(
-                      padding: const const EdgeInsets.symmetric(
+                      padding: const const const EdgeInsets.symmetric(
                         horizontal: AppSpacing.sm,
                         vertical: AppSpacing.xs,
                       ),
@@ -83,7 +83,7 @@ class NotificationDetailHeaderComponent extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 제목
               Text(
@@ -94,7 +94,7 @@ class NotificationDetailHeaderComponent extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
 
               // 메시지
               Text(

@@ -14,7 +14,7 @@ class NotificationMockService extends BaseMockService {
         body: 'MAX의 건강검진이 내일 오후 2시에 예약되었습니다.',
         type: NotificationType.appointment,
         status: NotificationStatus.unread,
-        createdAt: DateTime.now().subtract(Duration(hours: 2)),
+        createdAt: DateTime.now().subtract(const Duration(hours: 2)),
         data: {
           'petId': '1',
           'appointmentType': '건강검진',
@@ -27,7 +27,7 @@ class NotificationMockService extends BaseMockService {
         body: 'LUNA의 저녁 식사 시간입니다.',
         type: NotificationType.feeding,
         status: NotificationStatus.read,
-        createdAt: DateTime.now().subtract(Duration(hours: 1)),
+        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
         readAt: DateTime.now().subtract(const Duration(minutes: 30)),
         data: {'petId': '2', 'mealType': '저녁식사', 'scheduledTime': '18:00'},
       ),
@@ -37,7 +37,7 @@ class NotificationMockService extends BaseMockService {
         body: 'MOMO의 연간 예방접종 일정이 일주일 후입니다.',
         type: NotificationType.health,
         status: NotificationStatus.unread,
-        createdAt: DateTime.now().subtract(Duration(days: 1)),
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
         data: {'petId': '3', 'vaccineType': '종합백신', 'facilityName': '우리동물병원'},
       ),
       NotificationModel(
@@ -46,8 +46,8 @@ class NotificationMockService extends BaseMockService {
         body: 'MAX가 "오스와리" 트릭을 완전히 마스터했습니다!',
         type: NotificationType.general,
         status: NotificationStatus.read,
-        createdAt: DateTime.now().subtract(Duration(hours: 4)),
-        readAt: DateTime.now().subtract(Duration(hours: 4)),
+        createdAt: DateTime.now().subtract(const Duration(hours: 4)),
+        readAt: DateTime.now().subtract(const Duration(hours: 4)),
         data: {'petId': '1', 'trickName': '오스와리', 'progress': 100},
       ),
     ];

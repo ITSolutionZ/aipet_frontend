@@ -20,7 +20,7 @@ class CommonWidgets {
           label,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 8),
+        const const const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           obscureText: obscureText,
@@ -38,7 +38,7 @@ class CommonWidgets {
   /// 섹션 헤더 위젯
   static Widget sectionHeader({required String title, Widget? action}) {
     return Padding(
-      padding: const const EdgeInsets.symmetric(vertical: 16),
+      padding: const const const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

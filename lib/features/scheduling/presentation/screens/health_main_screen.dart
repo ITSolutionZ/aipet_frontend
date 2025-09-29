@@ -10,7 +10,7 @@ class HealthMainScreen extends StatelessWidget {
     return Scaffold(
       appBar: const SoftGradientAppBar(title: '健康管理'),
       body: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -18,7 +18,7 @@ class HealthMainScreen extends StatelessWidget {
               'ペットの健康状態を管理しましょう',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             Expanded(
               child: GridView.count(
@@ -75,25 +75,25 @@ class HealthMainScreen extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
-          padding: const const EdgeInsets.all(AppSpacing.md),
+          padding: const const const EdgeInsets.all(AppSpacing.md),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const const EdgeInsets.all(AppSpacing.md),
+                padding: const const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: color, size: 32),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
               Text(
                 title,
                 style: AppFonts.titleMedium,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacing.xs),
+              const const const SizedBox(height: AppSpacing.xs),
               Text(
                 subtitle,
                 style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
@@ -125,14 +125,14 @@ class HealthMainScreen extends StatelessWidget {
               Container(
                 width: 40,
                 height: 4,
-                margin: const const EdgeInsets.symmetric(vertical: 12),
+                margin: const const const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.pointGray,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               Padding(
-                padding: const const EdgeInsets.all(AppSpacing.lg),
+                padding: const const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -143,28 +143,28 @@ class HealthMainScreen extends StatelessWidget {
                         color: AppColors.pointDark,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     Text(
                       'ペットの健康状態をチェックしましょう',
                       style: AppFonts.bodyMedium.copyWith(
                         color: AppColors.pointGray,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const const const SizedBox(height: AppSpacing.lg),
                     _buildHealthCheckItem(
                       icon: Icons.thermostat,
                       title: '体温測定',
                       subtitle: '正常体温: 38-39°C',
                       onTap: () => _showTemperatureDialog(context),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildHealthCheckItem(
                       icon: Icons.favorite,
                       title: '心拍数チェック',
                       subtitle: '正常心拍数: 70-120 bpm',
                       onTap: () => _showHeartRateDialog(context),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildHealthCheckItem(
                       icon: Icons.water_drop,
                       title: '水分摂取量',
@@ -191,7 +191,7 @@ class HealthMainScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('ペットの薬のスケジュールを管理しましょう'),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
             ElevatedButton.icon(
               onPressed: () => _showAddMedicationDialog(context),
               icon: const Icon(Icons.add),
@@ -201,7 +201,7 @@ class HealthMainScreen extends StatelessWidget {
                 foregroundColor: Colors.white,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             ElevatedButton.icon(
               onPressed: () => _showMedicationSchedule(context),
               icon: const Icon(Icons.schedule),
@@ -242,14 +242,14 @@ class HealthMainScreen extends StatelessWidget {
               Container(
                 width: 40,
                 height: 4,
-                margin: const const EdgeInsets.symmetric(vertical: 12),
+                margin: const const const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.pointGray,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               Padding(
-                padding: const const EdgeInsets.all(AppSpacing.lg),
+                padding: const const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -260,28 +260,28 @@ class HealthMainScreen extends StatelessWidget {
                         color: AppColors.pointDark,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     Text(
                       'ペットの運動と活動を記録しましょう',
                       style: AppFonts.bodyMedium.copyWith(
                         color: AppColors.pointGray,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const const const SizedBox(height: AppSpacing.lg),
                     _buildExerciseItem(
                       icon: Icons.directions_walk,
                       title: '散歩',
                       subtitle: '今日の散歩を記録',
                       onTap: () => _recordWalk(context),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildExerciseItem(
                       icon: Icons.sports,
                       title: '遊び',
                       subtitle: '運動や遊びの時間',
                       onTap: () => _recordPlay(context),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildExerciseItem(
                       icon: Icons.timeline,
                       title: '活動記録',
@@ -308,7 +308,7 @@ class HealthMainScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('ペットの健康データを分析しましょう'),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
             ElevatedButton.icon(
               onPressed: () => _showHealthTrends(context),
               icon: const Icon(Icons.trending_up),
@@ -318,7 +318,7 @@ class HealthMainScreen extends StatelessWidget {
                 foregroundColor: Colors.white,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             ElevatedButton.icon(
               onPressed: () => _showHealthReport(context),
               icon: const Icon(Icons.assessment),
@@ -349,7 +349,7 @@ class HealthMainScreen extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Container(
-          padding: const const EdgeInsets.all(AppSpacing.sm),
+          padding: const const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBrown.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
@@ -373,7 +373,7 @@ class HealthMainScreen extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Container(
-          padding: const const EdgeInsets.all(AppSpacing.sm),
+          padding: const const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointGreen.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),

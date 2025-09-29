@@ -15,12 +15,12 @@ class WalkRecordCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const const const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const const EdgeInsets.all(16),
+          padding: const const const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -31,7 +31,7 @@ class WalkRecordCardWidget extends StatelessWidget {
                     Icons.pets,
                     color: Colors.blue,
                   ),
-                  const SizedBox(width: 8),
+                  const const const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       '산책 기록',
@@ -46,7 +46,7 @@ class WalkRecordCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const const const SizedBox(height: 12),
 
               // 산책 정보
               const Row(
@@ -59,7 +59,7 @@ class WalkRecordCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
+              const const const SizedBox(height: 4),
               const Row(
                 children: [
                   Icon(Icons.route, size: 16, color: Colors.grey),

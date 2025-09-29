@@ -149,7 +149,7 @@ class MainSchedulingController extends BaseController {
       }
 
       // 건강 검진이 필요한 경우 (Mock 데이터)
-      final lastCheckup = now.subtract(Duration(days: 95));
+      final lastCheckup = now.subtract(const Duration(days: 95));
       if (now.difference(lastCheckup).inDays > 90) {
         notifications.add({
           'type': 'health',

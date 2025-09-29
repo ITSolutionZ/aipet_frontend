@@ -45,7 +45,7 @@ class ProgressBar extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
         ],
 
         Container(
@@ -69,7 +69,7 @@ class ProgressBar extends StatelessWidget {
         ),
 
         if (stepLabels != null && stepLabels!.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: stepLabels!.asMap().entries.map((entry) {

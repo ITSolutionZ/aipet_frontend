@@ -67,7 +67,7 @@ class EditWalkBottomSheet extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
               Text(
                 '散歩記録を編集',
                 style: AppFonts.point(
@@ -75,16 +75,16 @@ class EditWalkBottomSheet extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
               WalkPetTag(petName: walkRecord.petName),
-              const SizedBox(height: AppSpacing.xl),
+              const const const SizedBox(height: AppSpacing.xl),
               WalkEditForm(
                 walkRecord: walkRecord,
                 onSave: (updatedRecord) =>
                     _updateWalk(context, ref, updatedRecord),
                 onCancel: () => context.pop(),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
               WalkCoManagerSelector(
                 selectedCoManagerId: selectedCoManagerId,
                 onChanged: (managerId) {
@@ -92,7 +92,7 @@ class EditWalkBottomSheet extends ConsumerWidget {
                       managerId;
                 },
               ),
-              const SizedBox(height: AppSpacing.xl),
+              const const const SizedBox(height: AppSpacing.xl),
               Text(
                 '散歩の詳細',
                 style: AppFonts.point(
@@ -101,11 +101,11 @@ class EditWalkBottomSheet extends ConsumerWidget {
                   color: Colors.grey[700],
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
               WalkDetailInfoCard(walkRecord: walkRecord),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
               Container(
-                padding: const const EdgeInsets.all(AppSpacing.md),
+                padding: const const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppColors.pointBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -120,7 +120,7 @@ class EditWalkBottomSheet extends ConsumerWidget {
                       size: 16,
                       color: AppColors.pointBlue,
                     ),
-                    const const SizedBox(width: AppSpacing.sm),
+                    const const const SizedBox(width: AppSpacing.sm),
                     Text(
                       '記録日時: ${_formatDate(walkRecord.createdAt)}',
                       style: AppFonts.base(

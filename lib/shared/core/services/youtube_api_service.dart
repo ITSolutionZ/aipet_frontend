@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 /// YouTube API 통합 서비스
 class YouTubeApiService {
   static const String _baseUrl = 'https://www.googleapis.com/youtube/v3';
-  static const Duration _timeout = const Duration(seconds: 10);
+  static const Duration _timeout = Duration(seconds: 10);
 
   /// 반려동물 훈련 비디오 검색
   Future<Result<List<YouTubeVideo>>> searchPetTrainingVideos({
@@ -40,9 +40,9 @@ class YouTubeApiService {
         'videoSyndicated': 'true',
       };
 
-      final uri = Uri.parse('$_baseUrl/search').replace(
-        queryParameters: params,
-      );
+      final uri = Uri.parse(
+        '$_baseUrl/search',
+      ).replace(queryParameters: params);
 
       debugPrint('🎥 YouTube API 검색: $searchQuery');
 
@@ -94,9 +94,9 @@ class YouTubeApiService {
         'key': apiKey,
       };
 
-      final uri = Uri.parse('$_baseUrl/videos').replace(
-        queryParameters: params,
-      );
+      final uri = Uri.parse(
+        '$_baseUrl/videos',
+      ).replace(queryParameters: params);
 
       debugPrint('🏆 YouTube 인기 동물 비디오 요청');
 
@@ -139,9 +139,9 @@ class YouTubeApiService {
         'key': apiKey,
       };
 
-      final uri = Uri.parse('$_baseUrl/videos').replace(
-        queryParameters: params,
-      );
+      final uri = Uri.parse(
+        '$_baseUrl/videos',
+      ).replace(queryParameters: params);
 
       final response = await http.get(uri).timeout(_timeout);
 
@@ -183,7 +183,8 @@ class YouTubeApiService {
 
       final thumbnails = snippet['thumbnails'] as Map<String, dynamic>?;
       final highThumbnail = thumbnails?['high'] as Map<String, dynamic>?;
-      final thumbnailUrl = highThumbnail?['url'] as String? ??
+      final thumbnailUrl =
+          highThumbnail?['url'] as String? ??
           thumbnails?['medium']?['url'] as String? ??
           thumbnails?['default']?['url'] as String?;
 
@@ -195,8 +196,10 @@ class YouTubeApiService {
         channelTitle: snippet['channelTitle'] as String? ?? '알 수 없는 채널',
         publishedAt: _parseDateTime(snippet['publishedAt'] as String?),
         duration: _parseDuration(contentDetails?['duration'] as String?),
-        viewCount: int.tryParse(statistics?['viewCount'] as String? ?? '0') ?? 0,
-        likeCount: int.tryParse(statistics?['likeCount'] as String? ?? '0') ?? 0,
+        viewCount:
+            int.tryParse(statistics?['viewCount'] as String? ?? '0') ?? 0,
+        likeCount:
+            int.tryParse(statistics?['likeCount'] as String? ?? '0') ?? 0,
         url: 'https://www.youtube.com/watch?v=$videoId',
         embedUrl: 'https://www.youtube.com/embed/$videoId',
       );
@@ -244,7 +247,7 @@ class YouTubeApiService {
         description: '강아지 기본 훈련 방법을 자세히 설명합니다. 초보자도 쉽게 따라할 수 있습니다.',
         thumbnailUrl: 'https://img.youtube.com/vi/mock_video_1/hqdefault.jpg',
         channelTitle: '펫 트레이닝 마스터',
-        publishedAt: DateTime.now().subtract(Duration(days: 7)),
+        publishedAt: DateTime.now().subtract(const Duration(days: 7)),
         duration: 480, // 8분
         viewCount: 125340,
         likeCount: 3420,
@@ -257,7 +260,7 @@ class YouTubeApiService {
         description: '고양이가 화장실을 올바르게 사용하도록 훈련하는 방법을 알려드립니다.',
         thumbnailUrl: 'https://img.youtube.com/vi/mock_video_2/hqdefault.jpg',
         channelTitle: '캣맘 TV',
-        publishedAt: DateTime.now().subtract(Duration(days: 3)),
+        publishedAt: DateTime.now().subtract(const Duration(days: 3)),
         duration: 360, // 6분
         viewCount: 89760,
         likeCount: 2156,
@@ -270,7 +273,7 @@ class YouTubeApiService {
         description: '집에서 쉽게 할 수 있는 반려동물 놀이 활동들을 소개합니다.',
         thumbnailUrl: 'https://img.youtube.com/vi/mock_video_3/hqdefault.jpg',
         channelTitle: '해피펫 라이프',
-        publishedAt: DateTime.now().subtract(Duration(days: 1)),
+        publishedAt: DateTime.now().subtract(const Duration(days: 1)),
         duration: 720, // 12분
         viewCount: 234580,
         likeCount: 5670,

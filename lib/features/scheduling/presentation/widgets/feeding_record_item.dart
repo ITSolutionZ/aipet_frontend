@@ -9,7 +9,7 @@ class FeedingRecordItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         leading: Container(
           width: 50,
@@ -45,7 +45,7 @@ class FeedingRecordItem extends StatelessWidget {
           ],
         ),
         trailing: Container(
-          padding: const const EdgeInsets.symmetric(
+          padding: const const const EdgeInsets.symmetric(
             horizontal: AppSpacing.sm,
             vertical: AppSpacing.xs,
           ),

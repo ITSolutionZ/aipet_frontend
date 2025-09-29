@@ -18,7 +18,7 @@ class CaretakerCard extends StatelessWidget {
     final displayName = name ?? ownerId;
 
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -41,7 +41,7 @@ class CaretakerCard extends StatelessWidget {
               size: 20,
             ),
           ),
-          const const SizedBox(width: AppSpacing.md),
+          const const const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

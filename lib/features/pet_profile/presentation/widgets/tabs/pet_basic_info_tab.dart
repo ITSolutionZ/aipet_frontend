@@ -111,19 +111,19 @@ class PetBasicInfoTab extends ConsumerWidget {
     });
 
     return SingleChildScrollView(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
           _buildProfileImageSection(context),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildBasicInfoCards(context, ref, tabId),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildMicrochipCard(context, ref, tabId),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildDateCard(),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildCaretakerSection(),
-          const SizedBox(height: AppSpacing.xl),
+          const const const SizedBox(height: AppSpacing.xl),
           _buildActionButtons(context, ref, tabId),
         ],
       ),
@@ -167,7 +167,7 @@ class PetBasicInfoTab extends ConsumerWidget {
           isEditMode ? (tabState.nameController?.text ?? pet.name) : pet.name,
           type: 'name',
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildEditableAttributeCard(
           context,
           ref,
@@ -176,7 +176,7 @@ class PetBasicInfoTab extends ConsumerWidget {
           isEditMode ? (tabState.editingGender ?? pet.gender) : pet.gender,
           type: 'gender',
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildEditableAttributeCard(
           context,
           ref,
@@ -187,7 +187,7 @@ class PetBasicInfoTab extends ConsumerWidget {
               : '${pet.weight ?? 0}kg',
           type: 'weight',
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildEditableAttributeCard(
           context,
           ref,
@@ -286,9 +286,9 @@ class PetBasicInfoTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildCaretakerCard('田中 太郎', 'tanaka@example.com'),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildCaretakerCard('田中 花子', 'hanako@example.com'),
       ],
     );

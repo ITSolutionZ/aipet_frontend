@@ -12,7 +12,7 @@ class ServiceSectionWidget extends StatelessWidget {
       children: [
         // Service 헤더
         const Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
               Icon(Icons.settings, color: Colors.white, size: 20),
@@ -77,12 +77,12 @@ class ServiceSectionWidget extends StatelessWidget {
             context.go(AppRouter.settingsRoute); // 설정 페이지로 이동
           },
         ),
-        const SizedBox(height: 16),
+        const const const SizedBox(height: 16),
         // 구분선
         Container(
           height: 1,
           color: Colors.white.withValues(alpha: 0.2),
-          margin: const const EdgeInsets.symmetric(horizontal: 16),
+          margin: const const const EdgeInsets.symmetric(horizontal: 16),
         ),
       ],
     );

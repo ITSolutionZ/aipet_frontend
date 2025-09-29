@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/ai/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 abstract class AiRepository {
   /// 채팅 기록 가져오기
@@ -120,8 +120,6 @@ abstract class AiRepository {
   Future<Result<bool>> toggleFavoriteMessage(String messageId);
 
   /// 파라미터와 함께 제안 질문 가져오기
-  Future<Result<List<AiSuggestedQuestionEntity>>> getSuggestedQuestionsWithParams({
-    String? petId,
-    String? categoryId,
-  });
+  Future<Result<List<AiSuggestedQuestionEntity>>>
+  getSuggestedQuestionsWithParams({String? petId, String? categoryId});
 }

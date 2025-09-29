@@ -17,7 +17,7 @@ class AiCategorySelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -28,12 +28,12 @@ class AiCategorySelection extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
           Text(
             '相談内容のカテゴリを選択してください',
             style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildCategoryGrid(categories),
         ],
       ),
@@ -97,18 +97,18 @@ class AiCategorySelection extends StatelessWidget {
                   ),
                 ],
         ),
-        padding: const const EdgeInsets.all(AppSpacing.sm),
+        padding: const const const EdgeInsets.all(AppSpacing.sm),
         child: Row(
           children: [
             Container(
-              padding: const const EdgeInsets.all(AppSpacing.xs),
+              padding: const const const EdgeInsets.all(AppSpacing.xs),
               decoration: BoxDecoration(
                 color: category.color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppRadius.small),
               ),
               child: Icon(category.icon, color: category.color, size: 20),
             ),
-            const const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

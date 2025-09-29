@@ -10,10 +10,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: SelectionCard.basic(
-              child: testChild,
-              isSelected: false,
-            ),
+            body: SelectionCard.basic(isSelected: false, child: testChild),
           ),
         ),
       );
@@ -27,8 +24,8 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: SelectionCard.basic(
-              child: Text('Selected Item'),
               isSelected: true,
+              child: Text('Selected Item'),
             ),
           ),
         ),
@@ -45,8 +42,8 @@ void main() {
             body: SelectionCard.titled(
               title: 'Card Title',
               subtitle: 'Card Subtitle',
-              child: Text('Card Content'),
               isSelected: false,
+              child: Text('Card Content'),
             ),
           ),
         ),
@@ -64,9 +61,9 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: SelectionCard.basic(
-              child: const Text('Tappable Card'),
               isSelected: false,
               onTap: () => tapped = true,
+              child: const Text('Tappable Card'),
             ),
           ),
         ),
@@ -83,8 +80,8 @@ void main() {
             body: SelectionCard.titled(
               title: 'Card with Icon',
               icon: Icon(Icons.pets),
-              child: Text('Content'),
               isSelected: false,
+              child: Text('Content'),
             ),
           ),
         ),
@@ -99,9 +96,9 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: SelectionCard.basic(
-              child: Text('Accessible Card'),
               isSelected: false,
               semanticLabel: 'Pet selection card',
+              child: Text('Accessible Card'),
             ),
           ),
         ),
@@ -118,9 +115,9 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: SelectionCard.basic(
-              child: Text('Card with Tooltip'),
               isSelected: false,
               tooltip: 'This is a helpful tooltip',
+              child: Text('Card with Tooltip'),
             ),
           ),
         ),

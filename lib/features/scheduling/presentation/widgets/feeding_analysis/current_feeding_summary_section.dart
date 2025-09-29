@@ -11,8 +11,8 @@ class CurrentFeedingSummarySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const const EdgeInsets.all(AppSpacing.lg),
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      margin: const const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -35,7 +35,7 @@ class CurrentFeedingSummarySection extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
               Expanded(
@@ -45,7 +45,7 @@ class CurrentFeedingSummarySection extends StatelessWidget {
                   color: AppColors.pointBrown,
                 ),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: _CurrentFeedingCard(
                   value:
@@ -54,7 +54,7 @@ class CurrentFeedingSummarySection extends StatelessWidget {
                   color: AppColors.pointGreen,
                 ),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: _CurrentFeedingCard(
                   value: '${analysisData['targetAmount'].toInt()}g',
@@ -85,7 +85,7 @@ class _CurrentFeedingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -101,7 +101,7 @@ class _CurrentFeedingCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             style: AppFonts.fredoka(

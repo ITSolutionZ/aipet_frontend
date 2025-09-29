@@ -10,7 +10,7 @@ class TrainingMainScreen extends StatelessWidget {
     return Scaffold(
       appBar: const SoftGradientAppBar(title: '学習・トレーニング'),
       body: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -18,7 +18,7 @@ class TrainingMainScreen extends StatelessWidget {
               'ペットの学習とトレーニングを管理しましょう',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             Expanded(
               child: GridView.count(
@@ -75,25 +75,25 @@ class TrainingMainScreen extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
-          padding: const const EdgeInsets.all(AppSpacing.md),
+          padding: const const const EdgeInsets.all(AppSpacing.md),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const const EdgeInsets.all(AppSpacing.md),
+                padding: const const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: color, size: 32),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
               Text(
                 title,
                 style: AppFonts.titleMedium,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacing.xs),
+              const const const SizedBox(height: AppSpacing.xs),
               Text(
                 subtitle,
                 style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
@@ -125,14 +125,14 @@ class TrainingMainScreen extends StatelessWidget {
               Container(
                 width: 40,
                 height: 4,
-                margin: const const EdgeInsets.symmetric(vertical: 12),
+                margin: const const const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.pointGray,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               Padding(
-                padding: const const EdgeInsets.all(AppSpacing.lg),
+                padding: const const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -143,14 +143,14 @@ class TrainingMainScreen extends StatelessWidget {
                         color: AppColors.pointDark,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     Text(
                       'ペットの基本的なコマンドを練習しましょう',
                       style: AppFonts.bodyMedium.copyWith(
                         color: AppColors.pointGray,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const const const SizedBox(height: AppSpacing.lg),
                     _buildTrainingCommand(
                       icon: Icons.pets,
                       title: '座る',
@@ -158,7 +158,7 @@ class TrainingMainScreen extends StatelessWidget {
                       description: 'お座りのコマンド',
                       onTap: () => _startTraining(context, '座る'),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildTrainingCommand(
                       icon: Icons.pause_circle,
                       title: '待て',
@@ -166,7 +166,7 @@ class TrainingMainScreen extends StatelessWidget {
                       description: 'その場で待つコマンド',
                       onTap: () => _startTraining(context, '待て'),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildTrainingCommand(
                       icon: Icons.pets,
                       title: '来い',
@@ -174,7 +174,7 @@ class TrainingMainScreen extends StatelessWidget {
                       description: '呼び寄せるコマンド',
                       onTap: () => _startTraining(context, '来い'),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildTrainingCommand(
                       icon: Icons.stop,
                       title: '止まれ',
@@ -202,7 +202,7 @@ class TrainingMainScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('ペットの高度なスキルを練習しましょう'),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
             ElevatedButton.icon(
               onPressed: () => _showAdvancedSkills(context),
               icon: const Icon(Icons.sports_gymnastics),
@@ -212,7 +212,7 @@ class TrainingMainScreen extends StatelessWidget {
                 foregroundColor: Colors.white,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             ElevatedButton.icon(
               onPressed: () => _showAgilityTraining(context),
               icon: const Icon(Icons.fitness_center),
@@ -222,7 +222,7 @@ class TrainingMainScreen extends StatelessWidget {
                 foregroundColor: Colors.white,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             ElevatedButton.icon(
               onPressed: () => _showObedienceTraining(context),
               icon: const Icon(Icons.psychology),
@@ -263,14 +263,14 @@ class TrainingMainScreen extends StatelessWidget {
               Container(
                 width: 40,
                 height: 4,
-                margin: const const EdgeInsets.symmetric(vertical: 12),
+                margin: const const const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.pointGray,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               Padding(
-                padding: const const EdgeInsets.all(AppSpacing.lg),
+                padding: const const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -281,35 +281,35 @@ class TrainingMainScreen extends StatelessWidget {
                         color: AppColors.pointDark,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     Text(
                       'ペットの練習の進捗と成果を確認しましょう',
                       style: AppFonts.bodyMedium.copyWith(
                         color: AppColors.pointGray,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const const const SizedBox(height: AppSpacing.lg),
                     _buildRecordItem(
                       title: '今週の練習時間',
                       value: '2時間 30分',
                       icon: Icons.access_time,
                       color: AppColors.pointBlue,
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildRecordItem(
                       title: '習得済みコマンド',
                       value: '5個',
                       icon: Icons.check_circle,
                       color: AppColors.pointGreen,
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildRecordItem(
                       title: '練習日数',
                       value: '12日',
                       icon: Icons.calendar_today,
                       color: AppColors.pointBrown,
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const const const SizedBox(height: AppSpacing.lg),
                     ElevatedButton.icon(
                       onPressed: () => _viewDetailedRecords(context),
                       icon: const Icon(Icons.history),
@@ -339,7 +339,7 @@ class TrainingMainScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('ペットの練習スケジュールを管理しましょう'),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
             ElevatedButton.icon(
               onPressed: () => _createNewSchedule(context),
               icon: const Icon(Icons.add),
@@ -349,7 +349,7 @@ class TrainingMainScreen extends StatelessWidget {
                 foregroundColor: Colors.white,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             ElevatedButton.icon(
               onPressed: () => _viewWeeklySchedule(context),
               icon: const Icon(Icons.calendar_view_week),
@@ -359,7 +359,7 @@ class TrainingMainScreen extends StatelessWidget {
                 foregroundColor: Colors.white,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             ElevatedButton.icon(
               onPressed: () => _setTrainingReminders(context),
               icon: const Icon(Icons.notifications),
@@ -391,7 +391,7 @@ class TrainingMainScreen extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Container(
-          padding: const const EdgeInsets.all(AppSpacing.sm),
+          padding: const const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
@@ -404,7 +404,7 @@ class TrainingMainScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const const EdgeInsets.symmetric(
+              padding: const const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
                 vertical: 4,
               ),
@@ -437,7 +437,7 @@ class TrainingMainScreen extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Container(
-          padding: const const EdgeInsets.all(AppSpacing.sm),
+          padding: const const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
@@ -466,7 +466,7 @@ class TrainingMainScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('$command のコマンドを練習しましょう'),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
             ElevatedButton.icon(
               onPressed: () => _recordTrainingSession(context, command),
               icon: const Icon(Icons.play_arrow),

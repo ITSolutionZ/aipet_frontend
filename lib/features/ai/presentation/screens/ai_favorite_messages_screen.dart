@@ -69,7 +69,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const const EdgeInsets.all(AppSpacing.xl),
+            padding: const const const EdgeInsets.all(AppSpacing.xl),
             decoration: BoxDecoration(
               color: Colors.amber.withValues(alpha: 0.1),
               shape: BoxShape.circle,
@@ -80,7 +80,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
               color: Colors.amber.withValues(alpha: 0.5),
             ),
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           Text(
             'お気に入りがありません',
             style: AppFonts.titleLarge.copyWith(
@@ -88,7 +88,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           Text(
             'AIの回答を長押しして\nお気に入りに追加できます',
             style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
@@ -106,7 +106,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
     final petGroups = groupedFavorites.entries.toList();
 
     return ListView.builder(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       itemCount: petGroups.length,
       itemBuilder: (context, index) {
         final petGroup = petGroups[index];
@@ -124,7 +124,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
     WidgetRef ref,
   ) {
     return Card(
-      margin: const const EdgeInsets.only(bottom: AppSpacing.lg),
+      margin: const const const EdgeInsets.only(bottom: AppSpacing.lg),
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -136,7 +136,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
           tilePadding: EdgeInsets.zero,
           childrenPadding: EdgeInsets.zero,
           title: Container(
-            padding: const const EdgeInsets.all(AppSpacing.md),
+            padding: const const const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: AppColors.pointBrown.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(AppRadius.large),
@@ -144,7 +144,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
             child: Row(
               children: [
                 Container(
-                  padding: const const EdgeInsets.all(AppSpacing.sm),
+                  padding: const const const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
                     color: AppColors.pointBrown.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
@@ -155,7 +155,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                     size: 20,
                   ),
                 ),
-                const const SizedBox(width: AppSpacing.md),
+                const const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,12 +170,12 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const const const SizedBox(height: 4),
                       Flexible(
                         child: Row(
                           children: [
                             Container(
-                              padding: const const EdgeInsets.symmetric(
+                              padding: const const const EdgeInsets.symmetric(
                                 horizontal: 8,
                                 vertical: 4,
                               ),
@@ -191,7 +191,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                                     color: Colors.amber,
                                     size: 12,
                                   ),
-                                  const const SizedBox(width: 4),
+                                  const const const SizedBox(width: 4),
                                   Text(
                                     '${favorites.length}件',
                                     style: AppFonts.bodySmall.copyWith(
@@ -202,7 +202,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                                 ],
                               ),
                             ),
-                            const const SizedBox(width: AppSpacing.sm),
+                            const const const SizedBox(width: AppSpacing.sm),
                             Text(
                               'のお気に入り',
                               style: AppFonts.bodySmall.copyWith(
@@ -210,14 +210,14 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                               ),
                             ),
                             if (favorites.isNotEmpty) ...[
-                              const const SizedBox(width: AppSpacing.sm),
+                              const const const SizedBox(width: AppSpacing.sm),
                               Text(
                                 '•',
                                 style: AppFonts.bodySmall.copyWith(
                                   color: AppColors.pointGray,
                                 ),
                               ),
-                              const const SizedBox(width: AppSpacing.sm),
+                              const const const SizedBox(width: AppSpacing.sm),
                               Flexible(
                                 child: Text(
                                   _getLatestActivityText(favorites),
@@ -236,7 +236,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                 ),
                 // 확장 상태 표시
                 Container(
-                  padding: const const EdgeInsets.all(6),
+                  padding: const const const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: AiColors.petSelectionBackground,
                     shape: BoxShape.circle,
@@ -261,7 +261,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                   final index = entry.key;
                   final favorite = entry.value;
                   return Container(
-                    padding: const const EdgeInsets.symmetric(
+                    padding: const const const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
                       vertical: AppSpacing.xs,
                     ),
@@ -288,7 +288,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
     return Theme(
       data: ThemeData().copyWith(dividerColor: Colors.transparent),
       child: Container(
-        margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
+        margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -307,7 +307,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.medium),
           child: ExpansionTile(
-            tilePadding: const const EdgeInsets.all(AppSpacing.md),
+            tilePadding: const const const EdgeInsets.all(AppSpacing.md),
             childrenPadding: EdgeInsets.zero,
             expandedAlignment: Alignment.topLeft,
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +319,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const const EdgeInsets.all(6),
+                      padding: const const const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         color: Colors.blue.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
@@ -330,7 +330,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                         size: 16,
                       ),
                     ),
-                    const const SizedBox(width: AppSpacing.sm),
+                    const const const SizedBox(width: AppSpacing.sm),
                     Text(
                       '질문',
                       style: AppFonts.bodySmall.copyWith(
@@ -343,7 +343,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                     GestureDetector(
                       onTap: () => _showDeleteDialog(favorite, ref),
                       child: Container(
-                        padding: const const EdgeInsets.all(6),
+                        padding: const const const EdgeInsets.all(6),
                         decoration: BoxDecoration(
                           color: Colors.red.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(6),
@@ -357,11 +357,11 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const const const SizedBox(height: AppSpacing.sm),
                 // 질문 내용
                 Container(
                   width: double.infinity,
-                  padding: const const EdgeInsets.all(AppSpacing.sm),
+                  padding: const const const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
                     color: Colors.blue.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(AppRadius.small),
@@ -379,7 +379,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const const const SizedBox(height: AppSpacing.sm),
                 // 메타 정보
                 Row(
                   children: [
@@ -388,7 +388,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                       size: 14,
                       color: AppColors.pointGray,
                     ),
-                    const const SizedBox(width: 4),
+                    const const const SizedBox(width: 4),
                     Text(
                       _formatTime(favorite.createdAt),
                       style: AppFonts.bodySmall.copyWith(
@@ -396,10 +396,10 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                       ),
                     ),
                     if (favorite.categoryName != null) ...[
-                      const const SizedBox(width: AppSpacing.sm),
+                      const const const SizedBox(width: AppSpacing.sm),
                       Flexible(
                         child: Container(
-                          padding: const const EdgeInsets.symmetric(
+                          padding: const const const EdgeInsets.symmetric(
                             horizontal: 8,
                             vertical: 4,
                           ),
@@ -433,7 +433,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const const SizedBox(width: 4),
+                        const const const SizedBox(width: 4),
                         const Icon(
                           Icons.expand_more,
                           size: 16,
@@ -455,7 +455,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                   ),
                 ),
                 child: Container(
-                  padding: const const EdgeInsets.all(AppSpacing.md),
+                  padding: const const const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: AppColors.pointBrown.withValues(alpha: 0.03),
                   ),
@@ -466,7 +466,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                       Row(
                         children: [
                           Container(
-                            padding: const const EdgeInsets.all(6),
+                            padding: const const const EdgeInsets.all(6),
                             decoration: BoxDecoration(
                               color: AiColors.favoriteBackground,
                               borderRadius: BorderRadius.circular(6),
@@ -478,7 +478,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                               color: AppColors.pointBrown,
                             ),
                           ),
-                          const const SizedBox(width: AppSpacing.sm),
+                          const const const SizedBox(width: AppSpacing.sm),
                           Text(
                             'AI 답변',
                             style: AppFonts.bodyMedium.copyWith(
@@ -488,11 +488,11 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: AppSpacing.md),
+                      const const const SizedBox(height: AppSpacing.md),
                       // 답변 내용
                       Container(
                         width: double.infinity,
-                        padding: const const EdgeInsets.all(AppSpacing.md),
+                        padding: const const const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(AppRadius.small),
@@ -509,7 +509,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.md),
+                      const const const SizedBox(height: AppSpacing.md),
                       // 액션 버튼들
                       Wrap(
                         alignment: WrapAlignment.end,
@@ -526,7 +526,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                               side: BorderSide(
                                 color: AiColors.selectedBorderColor,
                               ),
-                              padding: const const EdgeInsets.symmetric(
+                              padding: const const const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.md,
                                 vertical: AppSpacing.sm,
                               ),
@@ -541,7 +541,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.pointBrown,
                               foregroundColor: Colors.white,
-                              padding: const const EdgeInsets.symmetric(
+                              padding: const const const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.md,
                                 vertical: AppSpacing.sm,
                               ),
@@ -567,7 +567,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
         title: Row(
           children: [
             const Icon(Icons.delete, color: Colors.red),
-            const const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
             Text(
               'お気に入りを削除',
               style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark),

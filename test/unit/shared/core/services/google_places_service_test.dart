@@ -24,7 +24,7 @@ void main() {
     const double testLongitude = 139.6503;
     const int testRadius = 5000;
 
-    final mockPlacesResponse = '''
+    const mockPlacesResponse = '''
 {
   "status": "OK",
   "results": [
@@ -141,7 +141,9 @@ void main() {
     group('getFacilityDetails', () {
       test('should return failure when API key is missing', () async {
         // Act
-        final result = await googlePlacesService.getFacilityDetails('test_place_id');
+        final result = await googlePlacesService.getFacilityDetails(
+          'test_place_id',
+        );
 
         // Assert
         expect(result, isA<Result<Facility>>());
@@ -194,23 +196,26 @@ void main() {
         }
       });
 
-      test('should include facilities with proper geographic coordinates', () async {
-        // Act
-        final result = await googlePlacesService.searchNearbyPetFacilities(
-          latitude: testLatitude,
-          longitude: testLongitude,
-        );
+      test(
+        'should include facilities with proper geographic coordinates',
+        () async {
+          // Act
+          final result = await googlePlacesService.searchNearbyPetFacilities(
+            latitude: testLatitude,
+            longitude: testLongitude,
+          );
 
-        // Assert
-        expect(result.isSuccess, isTrue);
-        final facilities = result.dataOrNull!;
+          // Assert
+          expect(result.isSuccess, isTrue);
+          final facilities = result.dataOrNull!;
 
-        for (final facility in facilities) {
-          // Coordinates should be reasonable for Tokyo area
-          expect(facility.latitude, inInclusiveRange(35.0, 36.0));
-          expect(facility.longitude, inInclusiveRange(139.0, 140.0));
-        }
-      });
+          for (final facility in facilities) {
+            // Coordinates should be reasonable for Tokyo area
+            expect(facility.latitude, inInclusiveRange(35.0, 36.0));
+            expect(facility.longitude, inInclusiveRange(139.0, 140.0));
+          }
+        },
+      );
     });
   });
 }

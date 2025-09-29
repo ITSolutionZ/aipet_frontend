@@ -20,7 +20,7 @@ class LearnTrickCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppSpacing.md),
         child: Padding(
-          padding: const const EdgeInsets.all(AppSpacing.md),
+          padding: const const const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
               // 트릭 이미지
@@ -42,7 +42,7 @@ class LearnTrickCard extends StatelessWidget {
                         size: 30,
                       ),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
 
               // 트릭 정보
               Expanded(
@@ -55,7 +55,7 @@ class LearnTrickCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Text(
                       trick.description,
                       style: AppFonts.bodySmall.copyWith(
@@ -64,11 +64,11 @@ class LearnTrickCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         _buildDifficultyChip(trick.difficulty),
-                        const const SizedBox(width: AppSpacing.sm),
+                        const const const SizedBox(width: AppSpacing.sm),
                         Text(
                           '${trick.estimatedTime}分',
                           style: AppFonts.bodySmall.copyWith(
@@ -83,7 +83,7 @@ class LearnTrickCard extends StatelessWidget {
 
               // 학습 시작 버튼
               Container(
-                padding: const const EdgeInsets.all(AppSpacing.sm),
+                padding: const const const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: AppColors.pointGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.sm),
@@ -125,7 +125,7 @@ class LearnTrickCard extends StatelessWidget {
     }
 
     return Container(
-      padding: const const EdgeInsets.symmetric(
+      padding: const const const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),

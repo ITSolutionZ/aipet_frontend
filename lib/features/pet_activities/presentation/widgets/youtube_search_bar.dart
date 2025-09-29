@@ -10,7 +10,7 @@ class YouTubeSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       color: Colors.white,
       child: TextField(
         onChanged: onSearchChanged,
@@ -26,7 +26,7 @@ class YouTubeSearchBar extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(AppSpacing.md)),
             borderSide: BorderSide(color: AppColors.pointBlue),
           ),
-          contentPadding: const EdgeInsets.symmetric(
+          contentPadding: EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
           ),

@@ -109,7 +109,7 @@ class ApiSecurityManager {
     }
 
     // 1시간 이내 요청 수 확인
-    final oneHourAgo = now.subtract(Duration(hours: 1));
+    final oneHourAgo = now.subtract(const Duration(hours: 1));
     final hourlyRequests = clientHistory
         .where((time) => time.isAfter(oneHourAgo))
         .length;
@@ -199,7 +199,7 @@ class ApiSecurityManager {
     _requestHistory[clientId]!.add(now);
 
     // 오래된 기록 정리 (1시간 이상)
-    final oneHourAgo = now.subtract(Duration(hours: 1));
+    final oneHourAgo = now.subtract(const Duration(hours: 1));
     _requestHistory[clientId]!.removeWhere((time) => time.isBefore(oneHourAgo));
 
     // 요청 수 증가
@@ -269,7 +269,7 @@ class ApiSecurityManager {
       }
 
       // 1시간당 1000회 이상 요청
-      final oneHourAgo = now.subtract(Duration(hours: 1));
+      final oneHourAgo = now.subtract(const Duration(hours: 1));
       final hourlyRequests = clientHistory
           .where((time) => time.isAfter(oneHourAgo))
           .length;

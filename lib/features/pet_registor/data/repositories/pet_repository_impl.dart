@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/database_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,8 +15,8 @@ class PetRepositoryImpl implements PetRepository {
   final Logger _logger = Logger();
 
   /// Mock 모드 여부 확인
-  bool get _isMockMode => AppConfig.current.isMockMode ||
-      AppConfig.current.environment == 'test';
+  bool get _isMockMode =>
+      AppConfig.current.isMockMode || AppConfig.current.environment == 'test';
 
   @override
   Future<Result<List<PetProfileEntity>>> getAllPets() async {
@@ -98,7 +98,9 @@ class PetRepositoryImpl implements PetRepository {
   Future<Result<PetProfileEntity>> createPet(PetProfileEntity pet) async {
     try {
       final newPet = pet.copyWith(
-        id: pet.id.isEmpty ? DateTime.now().millisecondsSinceEpoch.toString() : pet.id,
+        id: pet.id.isEmpty
+            ? DateTime.now().millisecondsSinceEpoch.toString()
+            : pet.id,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );

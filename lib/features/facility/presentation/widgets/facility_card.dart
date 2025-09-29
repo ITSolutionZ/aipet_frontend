@@ -17,7 +17,7 @@ class FacilityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: GestureDetector(
         onTap: onTap,
         child: InfoCard(child: _buildContent(context)),
@@ -32,7 +32,7 @@ class FacilityCard extends StatelessWidget {
         Row(
           children: [
             Container(
-              padding: const const EdgeInsets.all(AppSpacing.xs),
+              padding: const const const EdgeInsets.all(AppSpacing.xs),
               decoration: BoxDecoration(
                 color: _getTypeColor(facility.type).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppRadius.small),
@@ -43,7 +43,7 @@ class FacilityCard extends StatelessWidget {
                 size: 24,
               ),
             ),
-            const const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +57,7 @@ class FacilityCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: AppSpacing.xs / 2),
+                  const const const SizedBox(height: AppSpacing.xs / 2),
                   Text(
                     _getTypeName(facility.type),
                     style: AppFonts.bodySmall.copyWith(
@@ -79,7 +79,7 @@ class FacilityCard extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
 
         Text(
           facility.description ?? '',
@@ -90,12 +90,12 @@ class FacilityCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
 
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
 
         Row(
           children: [
             const Icon(Icons.location_on, size: 16, color: AppColors.pointGray),
-            const const SizedBox(width: AppSpacing.xs / 2),
+            const const const SizedBox(width: AppSpacing.xs / 2),
             Expanded(
               child: Text(
                 facility.address,
@@ -107,12 +107,12 @@ class FacilityCard extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
 
         Row(
           children: [
             const Icon(Icons.star, size: 16, color: Colors.amber),
-            const const SizedBox(width: AppSpacing.xs / 2),
+            const const const SizedBox(width: AppSpacing.xs / 2),
             Text(
               facility.rating.toStringAsFixed(1),
               style: AppFonts.bodySmall.copyWith(
@@ -120,7 +120,7 @@ class FacilityCard extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const const SizedBox(width: AppSpacing.xs),
+            const const const SizedBox(width: AppSpacing.xs),
             Text(
               '(${facility.reviewCount}件)',
               style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
@@ -134,7 +134,7 @@ class FacilityCard extends StatelessWidget {
                     size: 14,
                     color: AppColors.pointGray,
                   ),
-                  const const SizedBox(width: AppSpacing.xs / 2),
+                  const const const SizedBox(width: AppSpacing.xs / 2),
                   Text(
                     '最後の訪問',
                     style: AppFonts.bodySmall.copyWith(

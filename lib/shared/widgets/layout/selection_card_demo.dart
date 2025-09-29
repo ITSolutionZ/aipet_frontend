@@ -43,7 +43,7 @@ class SelectionCardDemo extends ConsumerWidget {
       backgroundColor: Colors.grey[50],
       appBar: AppBar(title: const Text('Selection Card Demo')),
       body: SingleChildScrollView(
-        padding: const const EdgeInsets.all(16),
+        padding: const const const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -69,7 +69,7 @@ class SelectionCardDemo extends ConsumerWidget {
               ],
             ),
 
-            const SizedBox(height: 32),
+            const const const SizedBox(height: 32),
 
             // 支払い方法選択 예시
             SelectionCardList<String>(

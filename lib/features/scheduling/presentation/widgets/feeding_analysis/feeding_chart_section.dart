@@ -12,8 +12,8 @@ class FeedingChartSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      padding: const const EdgeInsets.all(AppSpacing.xl),
+      margin: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -36,15 +36,15 @@ class FeedingChartSection extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: AppSpacing.xl),
-          SizedBox(height: 200, child: _buildFeedingChart()),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: 200, child: _buildFeedingChart()),
+          const const const SizedBox(height: AppSpacing.lg),
           // 범례
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildLegendItem('実際の量', AppColors.pointBrown),
-              const const SizedBox(width: AppSpacing.lg),
+              const const const SizedBox(width: AppSpacing.lg),
               _buildLegendItem('目標量', AppColors.pointBlue),
             ],
           ),
@@ -261,7 +261,7 @@ class FeedingChartSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(6),
           ),
         ),
-        const const SizedBox(width: AppSpacing.xs),
+        const const const SizedBox(width: AppSpacing.xs),
         Text(
           label,
           style: AppFonts.fredoka(

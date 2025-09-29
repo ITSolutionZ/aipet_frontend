@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/shared/core/services/validation_service.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/services/validation_service.dart';
 import 'package:flutter/foundation.dart';
 
 /// 🛡️ 입력 검증 강화 서비스
@@ -351,7 +351,9 @@ class InputValidationService {
     }
 
     // URL 형식 검증
-    final urlValidation = ValidationService.validateUrl(securityResult.dataOrThrow);
+    final urlValidation = ValidationService.validateUrl(
+      securityResult.dataOrThrow,
+    );
     if (!urlValidation.isSuccess) {
       return Result.failure(urlValidation.message);
     }

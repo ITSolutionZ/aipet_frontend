@@ -21,7 +21,7 @@ class AllTricksCategoriesSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         TrickCategoryCard(
           title: '基本トリック',
           description: 'お手、お座り、伏せなど',
@@ -29,7 +29,7 @@ class AllTricksCategoriesSection extends StatelessWidget {
           color: AppColors.pointGreen,
           onTap: () => onCategoryTap('基本トリック'),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         TrickCategoryCard(
           title: '高度なトリック',
           description: '回転、ジャンプ、ダンスなど',
@@ -37,7 +37,7 @@ class AllTricksCategoriesSection extends StatelessWidget {
           color: AppColors.pointBlue,
           onTap: () => onCategoryTap('高度なトリック'),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         TrickCategoryCard(
           title: '芸術的トリック',
           description: '絵を描く、楽器を演奏するなど',
@@ -45,7 +45,7 @@ class AllTricksCategoriesSection extends StatelessWidget {
           color: AppColors.pointBrown,
           onTap: () => onCategoryTap('芸術的トリック'),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         TrickCategoryCard(
           title: 'スポーツトリック',
           description: 'アジリティ、フリスビーなど',

@@ -30,7 +30,7 @@ class YearMonthSelectorWidget extends StatelessWidget {
       children: [
         Container(
           height: 45,
-          padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+          padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -39,7 +39,7 @@ class YearMonthSelectorWidget extends StatelessWidget {
                     (year) => GestureDetector(
                       onTap: () => onYearChanged(year),
                       child: Container(
-                        margin: const const EdgeInsets.only(right: AppSpacing.sm),
+                        margin: const const const EdgeInsets.only(right: AppSpacing.sm),
                         padding: const EdgeInsets.symmetric(
                           horizontal: selectedYear == year ? 14 : 10,
                           vertical: selectedYear == year ? 8 : 6,
@@ -74,10 +74,10 @@ class YearMonthSelectorWidget extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         Container(
           height: 45,
-          padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+          padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -86,7 +86,7 @@ class YearMonthSelectorWidget extends StatelessWidget {
                     (month) => GestureDetector(
                       onTap: () => onMonthChanged(month),
                       child: Container(
-                        margin: const const EdgeInsets.only(right: AppSpacing.sm),
+                        margin: const const const EdgeInsets.only(right: AppSpacing.sm),
                         padding: const EdgeInsets.symmetric(
                           horizontal: selectedMonth == month ? 14 : 10,
                           vertical: selectedMonth == month ? 8 : 6,

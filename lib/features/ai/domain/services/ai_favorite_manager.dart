@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/ai/domain/domain.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/foundation.dart';
 
 /// ⭐ AI 즐겨찾기 관리 서비스
@@ -226,10 +226,7 @@ class AiFavoriteManager {
         );
       }
 
-      return Result.success(
-        filteredList,
-        'Favorites filtered successfully',
-      );
+      return Result.success(filteredList, 'Favorites filtered successfully');
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error searching favorites: $error\n$stackTrace');
@@ -347,10 +344,7 @@ class AiFavoriteManager {
         }
       }
 
-      return Result.success(
-        validationResult,
-        'Favorite validation completed',
-      );
+      return Result.success(validationResult, 'Favorite validation completed');
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error validating favorites: $error\n$stackTrace');

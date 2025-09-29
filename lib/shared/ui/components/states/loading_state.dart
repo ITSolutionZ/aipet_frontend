@@ -27,7 +27,7 @@ class LoadingState extends StatelessWidget {
     return LoadingState(
       message: message,
       size: size,
-      padding: const const EdgeInsets.all(AppSpacing.xl),
+      padding: const const const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -38,7 +38,7 @@ class LoadingState extends StatelessWidget {
       size: 24,
       color: color,
       showMessage: message != null,
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
     );
   }
 
@@ -48,7 +48,7 @@ class LoadingState extends StatelessWidget {
       message: message,
       size: 60,
       color: color,
-      padding: const const EdgeInsets.all(AppSpacing.xl),
+      padding: const const const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -57,7 +57,7 @@ class LoadingState extends StatelessWidget {
     return LoadingState(
       message: message,
       size: 50,
-      padding: const const EdgeInsets.all(AppSpacing.xl),
+      padding: const const const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -67,7 +67,7 @@ class LoadingState extends StatelessWidget {
       message: message,
       size: size,
       showMessage: false,
-      padding: const const EdgeInsets.all(AppSpacing.sm),
+      padding: const const const EdgeInsets.all(AppSpacing.sm),
     );
   }
 
@@ -80,14 +80,14 @@ class LoadingState extends StatelessWidget {
     return LoadingState(
       customIndicator: indicator,
       message: message,
-      padding: padding ?? const const EdgeInsets.all(AppSpacing.lg),
+      padding: padding ?? const const const EdgeInsets.all(AppSpacing.lg),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? const const EdgeInsets.all(AppSpacing.lg),
+      padding: padding ?? const const const EdgeInsets.all(AppSpacing.lg),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -95,7 +95,7 @@ class LoadingState extends StatelessWidget {
           children: [
             _buildIndicator(),
             if (showMessage && message != null) ...[
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
               Text(
                 message!,
                 style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),

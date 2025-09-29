@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/features/notification/data/services/notification_service.dart';
 import 'package:aipet_frontend/features/onboarding/data/data.dart';
-import 'package:aipet_frontend/shared/core/services/error_handler_service.dart';
 import 'package:aipet_frontend/shared/core/services/performance_monitor_service.dart';
 import 'package:aipet_frontend/shared/core/services/user_experience_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -75,10 +74,9 @@ class AppInitialization extends _$AppInitialization {
   /// 에러 핸들러, 성능 모니터링, 사용자 경험, 알림 서비스를 초기화합니다.
   Future<void> _initializeServices() async {
     try {
-      // 에러 핸들러 서비스 초기화
-      await ErrorHandlerService().initialize();
+      // 에러 핸들러 서비스는 정적 메서드이므로 별도 초기화 불필요
       if (kDebugMode) {
-        debugPrint('✅ ErrorHandlerService 초기화 완료');
+        debugPrint('✅ ErrorHandlingService 사용 가능');
       }
 
       // 성능 모니터링 서비스 초기화
@@ -190,6 +188,7 @@ class AppInitialization extends _$AppInitialization {
       final onboardingRepository = ref.read(onboardingRepositoryProvider);
       final onboardingCompletedResult = await onboardingRepository
           .isOnboardingCompleted();
+
       final isOnboardingCompleted = onboardingCompletedResult.isSuccess
           ? (onboardingCompletedResult.dataOrNull ?? false)
           : false;

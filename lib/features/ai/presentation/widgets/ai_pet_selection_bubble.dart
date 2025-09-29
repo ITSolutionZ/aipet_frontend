@@ -18,14 +18,14 @@ class AiPetSelectionBubble extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      margin: const const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // AI 아바타
           Container(
-            padding: const const EdgeInsets.all(AppSpacing.sm),
+            padding: const const const EdgeInsets.all(AppSpacing.sm),
             decoration: const BoxDecoration(
               color: AppColors.pointBrown,
               shape: BoxShape.circle,
@@ -37,12 +37,12 @@ class AiPetSelectionBubble extends ConsumerWidget {
               color: Colors.white,
             ),
           ),
-          const const SizedBox(width: AppSpacing.sm),
+          const const const SizedBox(width: AppSpacing.sm),
 
           // 메시지 버블
           Flexible(
             child: Container(
-              padding: const const EdgeInsets.all(AppSpacing.md),
+              padding: const const const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(
@@ -68,7 +68,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                       height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const const const SizedBox(height: AppSpacing.sm),
 
                   Text(
                     'ペットに関連する内容をより具体的にご質問ください',
@@ -77,7 +77,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                       height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const const const SizedBox(height: AppSpacing.sm),
 
                   Text(
                     '以下のような内容についてご質問ください：',
@@ -86,7 +86,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                       height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xs),
+                  const const const SizedBox(height: AppSpacing.xs),
 
                   // 질문 예시 목록
                   _buildQuestionExample('• ペットの健康と病気について'),
@@ -95,7 +95,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                   _buildQuestionExample('• グルーミングとケア'),
                   _buildQuestionExample('• ペット用品と環境'),
 
-                  const SizedBox(height: AppSpacing.md),
+                  const const const SizedBox(height: AppSpacing.md),
 
                   // 펫 선택 질문
                   Text(
@@ -105,7 +105,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  const const const SizedBox(height: AppSpacing.md),
 
                   // 펫 선택 위젯
                   Consumer(
@@ -120,7 +120,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                     },
                   ),
 
-                  const SizedBox(height: AppSpacing.sm),
+                  const const const SizedBox(height: AppSpacing.sm),
 
                   // 타임스탬프
                   Text(
@@ -140,7 +140,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
 
   Widget _buildQuestionExample(String text) {
     return Padding(
-      padding: const const EdgeInsets.only(bottom: AppSpacing.xs),
+      padding: const const const EdgeInsets.only(bottom: AppSpacing.xs),
       child: Text(
         text,
         style: AppFonts.bodyMedium.copyWith(
@@ -160,7 +160,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
         else
           _buildNoPetsCard(),
 
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildGeneralConsultationOption(),
       ],
     );
@@ -169,7 +169,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
   Widget _buildNoPetsCard() {
     return Container(
       width: double.infinity,
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.2)),
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -181,7 +181,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
             size: 48,
             color: AppColors.pointBrown.withValues(alpha: 0.5),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           Text(
             '登録されたペットがありません',
             style: AppFonts.bodyMedium.copyWith(
@@ -189,7 +189,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Text(
             'ペットを登録すると、より具体的な\nアドバイスが受けられます',
             style: AppFonts.bodySmall.copyWith(
@@ -216,7 +216,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
     return GestureDetector(
       onTap: () => onPetSelected(isSelected ? null : pet),
       child: Container(
-        padding: const const EdgeInsets.symmetric(
+        padding: const const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
@@ -253,7 +253,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                 size: 20,
                 color: isSelected ? Colors.white : AppColors.pointBrown,
               ),
-            const const SizedBox(width: AppSpacing.xs),
+            const const const SizedBox(width: AppSpacing.xs),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -288,7 +288,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
       onTap: () => onPetSelected(null),
       child: Container(
         width: double.infinity,
-        padding: const const EdgeInsets.symmetric(
+        padding: const const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
@@ -313,7 +313,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                   ? AppColors.pointBrown
                   : AppColors.pointDark.withValues(alpha: 0.7),
             ),
-            const const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
             Text(
               '一般的なペット相談',
               style: AppFonts.bodySmall.copyWith(

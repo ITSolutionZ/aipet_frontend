@@ -24,8 +24,8 @@ class AnniversarySelectionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
-        margin: const const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
+        margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -52,7 +52,7 @@ class AnniversarySelectionCard extends StatelessWidget {
               ),
               child: Icon(icon, color: AppColors.pointBrown, size: 20),
             ),
-            const const SizedBox(width: AppSpacing.lg),
+            const const const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +64,7 @@ class AnniversarySelectionCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const const const SizedBox(height: 4),
                   Text(
                     selectedDate != null
                         ? '${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日'
@@ -79,7 +79,7 @@ class AnniversarySelectionCard extends StatelessWidget {
               ),
             ),
             if (badge != null) badge!,
-            const const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
             const Icon(
               Icons.arrow_forward_ios,
               color: AppColors.pointGray,

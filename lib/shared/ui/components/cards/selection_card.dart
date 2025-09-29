@@ -133,7 +133,7 @@ class SelectionCard extends StatelessWidget {
         : (borderColor ?? AppColors.borderGray);
 
     final widget = Container(
-      margin: margin ?? const const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      margin: margin ?? const const const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: effectiveBackgroundColor,
         borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.md),
@@ -163,17 +163,17 @@ class SelectionCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.md),
           child: Padding(
-            padding: padding ?? const const EdgeInsets.all(AppSpacing.md),
+            padding: padding ?? const const const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (title != null) _buildHeader(),
-                if (title != null) const SizedBox(height: AppSpacing.sm),
+                if (title != null) const const const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
                     Expanded(child: child),
                     if (isSelected) ...[
-                      const const SizedBox(width: AppSpacing.sm),
+                      const const const SizedBox(width: AppSpacing.sm),
                       Icon(
                         Icons.check_circle,
                         color: selectedColor ?? AppColors.primary,
@@ -219,7 +219,7 @@ class SelectionCard extends StatelessWidget {
             ),
             child: icon!,
           ),
-          const const SizedBox(width: AppSpacing.sm),
+          const const const SizedBox(width: AppSpacing.sm),
         ],
         Expanded(
           child: Column(
@@ -235,7 +235,7 @@ class SelectionCard extends StatelessWidget {
                 ),
               ),
               if (subtitle != null) ...[
-                const SizedBox(height: AppSpacing.xs),
+                const const const SizedBox(height: AppSpacing.xs),
                 Text(
                   subtitle!,
                   style: AppTextStyles.bodySmall.copyWith(

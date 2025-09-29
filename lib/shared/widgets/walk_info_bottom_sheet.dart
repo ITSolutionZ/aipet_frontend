@@ -26,7 +26,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      padding: const const EdgeInsets.all(20),
+      padding: const const const EdgeInsets.all(20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +42,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const const const SizedBox(height: 20),
 
           // 제목
           const Text(
@@ -52,7 +52,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
+          const const const SizedBox(height: 16),
 
           // 산책 정보 표시
           const Row(
@@ -62,7 +62,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
               Text('산책 정보가 여기에 표시됩니다'),
             ],
           ),
-          const SizedBox(height: 16),
+          const const const SizedBox(height: 16),
 
           // 닫기 버튼
           SizedBox(

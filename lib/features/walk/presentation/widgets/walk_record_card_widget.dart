@@ -37,7 +37,7 @@ class WalkRecordCardWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const const EdgeInsets.all(AppSpacing.xs),
+          padding: const const const EdgeInsets.all(AppSpacing.xs),
           decoration: BoxDecoration(
             color: AppColors.pointBrown.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),
@@ -48,7 +48,7 @@ class WalkRecordCardWidget extends StatelessWidget {
             color: AppColors.pointBrown,
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
         Text(
           walkRecord.formattedDistance,
           style: AppFonts.bodySmall.copyWith(

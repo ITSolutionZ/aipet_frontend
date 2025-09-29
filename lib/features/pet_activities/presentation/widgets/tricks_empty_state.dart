@@ -12,7 +12,7 @@ class TricksEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.xl),
+        padding: const const const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -30,7 +30,7 @@ class TricksEmptyState extends StatelessWidget {
                 color: AppColors.pointBrown,
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
+            const const const SizedBox(height: AppSpacing.xl),
 
             // 메시지
             Text(
@@ -41,7 +41,7 @@ class TricksEmptyState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
 
             Text(
               '新しいトリックを探してみましょう',
@@ -50,7 +50,7 @@ class TricksEmptyState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppSpacing.xl),
+            const const const SizedBox(height: AppSpacing.xl),
 
             // 새로고침 버튼
             if (onRefresh != null)

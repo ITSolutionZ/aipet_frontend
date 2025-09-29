@@ -146,7 +146,7 @@ class _NotificationDetailScreenState
               formatCurrency: _controller.formatCurrency,
             ),
 
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 액션 버튼들
             NotificationDetailActionsComponent(
@@ -155,7 +155,7 @@ class _NotificationDetailScreenState
               onDeletePressed: _handleDelete,
             ),
 
-            const SizedBox(height: AppSpacing.xl),
+            const const const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),

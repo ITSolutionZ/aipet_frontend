@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 /// 추천 질문 조회 UseCase
 class GetSuggestedQuestionsUseCase {
@@ -13,7 +13,9 @@ class GetSuggestedQuestionsUseCase {
   /// 기본 추천 질문 조회
   ///
   /// Returns: 추천 질문 목록
-  Future<Result<List<AiSuggestedQuestionEntity>>> call(GetSuggestedQuestionsParams params) async {
+  Future<Result<List<AiSuggestedQuestionEntity>>> call(
+    GetSuggestedQuestionsParams params,
+  ) async {
     try {
       final questionsResult = await _repository.getSuggestedQuestionsWithParams(
         petId: params.petProfile.id,
@@ -47,10 +49,7 @@ class GetSuggestedQuestionsUseCase {
         category: category,
         pet: pet,
       );
-      return Result.success(
-        questions,
-        'カスタマイズされた推奨質問を取得しました',
-      );
+      return Result.success(questions, 'カスタマイズされた推奨質問を取得しました');
     } catch (error) {
       return Result.failure<List<AiSuggestedQuestionEntity>>(
         '推奨質問の取得に失敗しました (personalized): ${error.toString()}',
@@ -64,8 +63,5 @@ class GetSuggestedQuestionsParams {
   final PetProfileEntity petProfile;
   final AiCategoryEntity? category;
 
-  const GetSuggestedQuestionsParams({
-    required this.petProfile,
-    this.category,
-  });
+  const GetSuggestedQuestionsParams({required this.petProfile, this.category});
 }

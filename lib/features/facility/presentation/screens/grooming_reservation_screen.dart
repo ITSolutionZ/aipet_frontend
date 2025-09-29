@@ -61,7 +61,7 @@ class _GroomingReservationScreenState
             children: [
               // 검색바
               Padding(
-                padding: const const EdgeInsets.all(AppSpacing.lg),
+                padding: const const const EdgeInsets.all(AppSpacing.lg),
                 child: SearchBarWidget(
                   controller: _searchController,
                   onChanged: _onSearchChanged,
@@ -71,14 +71,14 @@ class _GroomingReservationScreenState
 
               // 필터 칩
               Padding(
-                padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 child: FilterChips(
                   currentFilter: state.currentFilter,
                   onFilterChanged: _onFilterChanged,
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 시설 목록
               Expanded(
@@ -92,7 +92,7 @@ class _GroomingReservationScreenState
                               size: 64,
                               color: Colors.grey[400],
                             ),
-                            const SizedBox(height: AppSpacing.md),
+                            const const const SizedBox(height: AppSpacing.md),
                             Text(
                               '検索結果がありません',
                               style: AppFonts.bodyMedium.copyWith(
@@ -103,14 +103,14 @@ class _GroomingReservationScreenState
                         ),
                       )
                     : ListView.builder(
-                        padding: const const EdgeInsets.symmetric(
+                        padding: const const const EdgeInsets.symmetric(
                           horizontal: AppSpacing.lg,
                         ),
                         itemCount: state.filteredFacilities.length,
                         itemBuilder: (context, index) {
                           final facility = state.filteredFacilities[index];
                           return Padding(
-                            padding: const const EdgeInsets.only(
+                            padding: const const const EdgeInsets.only(
                               bottom: AppSpacing.md,
                             ),
                             child: FacilityCard(
@@ -128,7 +128,7 @@ class _GroomingReservationScreenState
 
               // 찾아보기 버튼
               Padding(
-                padding: const const EdgeInsets.all(AppSpacing.lg),
+                padding: const const const EdgeInsets.all(AppSpacing.lg),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
@@ -139,7 +139,7 @@ class _GroomingReservationScreenState
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.blue,
                       elevation: 2,
-                      padding: const const EdgeInsets.symmetric(
+                      padding: const const const EdgeInsets.symmetric(
                         vertical: AppSpacing.lg,
                       ),
                       shape: RoundedRectangleBorder(

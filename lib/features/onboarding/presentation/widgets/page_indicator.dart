@@ -23,7 +23,7 @@ class PageIndicator extends StatelessWidget {
             label: '${index + 1}페이지${index == currentPage ? ', 현재 페이지' : ''}',
             button: true,
             child: Container(
-              margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+              margin: const const const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
               child: Icon(
                 index == currentPage ? Icons.pets : Icons.pets_outlined,
                 size: 20,

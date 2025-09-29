@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -72,7 +72,11 @@ class DatabaseService {
   }
 
   /// 데이터베이스 업그레이드
-  Future<void> _upgradeDatabase(Database db, int oldVersion, int newVersion) async {
+  Future<void> _upgradeDatabase(
+    Database db,
+    int oldVersion,
+    int newVersion,
+  ) async {
     // 향후 스키마 변경 시 여기에 마이그레이션 로직 추가
   }
 
@@ -146,7 +150,9 @@ class DatabaseService {
   }
 
   /// Owner ID로 Pet Profile 조회
-  Future<Result<List<PetProfileEntity>>> getPetProfilesByOwnerId(String ownerId) async {
+  Future<Result<List<PetProfileEntity>>> getPetProfilesByOwnerId(
+    String ownerId,
+  ) async {
     try {
       final db = await database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -220,7 +226,10 @@ class DatabaseService {
   }
 
   /// Temporary Pet Data 저장
-  Future<Result<void>> saveTemporaryPetData(String step, Map<String, dynamic> data) async {
+  Future<Result<void>> saveTemporaryPetData(
+    String step,
+    Map<String, dynamic> data,
+  ) async {
     try {
       final db = await database;
 
@@ -258,7 +267,8 @@ class DatabaseService {
         return const Success(null, '임시 데이터를 찾을 수 없습니다');
       }
 
-      final data = jsonDecode(maps.first['data'] as String) as Map<String, dynamic>;
+      final data =
+          jsonDecode(maps.first['data'] as String) as Map<String, dynamic>;
       return Success(data, '임시 데이터를 성공적으로 조회했습니다');
     } catch (e) {
       return Result.failure('임시 데이터 조회에 실패했습니다: ${e.toString()}');

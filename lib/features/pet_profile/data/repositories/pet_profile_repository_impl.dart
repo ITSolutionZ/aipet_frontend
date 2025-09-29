@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/pet_profile/domain/repositories/pet_profile_repository.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart';
 import 'package:flutter/foundation.dart';
 
@@ -10,13 +10,14 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   final HttpClientService _httpClient;
 
   PetProfileRepositoryImpl({HttpClientService? httpClient})
-      : _httpClient = httpClient ?? HttpClientService.instance;
+    : _httpClient = httpClient ?? HttpClientService.instance;
 
   @override
   Future<Result<List<PetProfileEntity>>> getAllPets() async {
     try {
       // Mock 모드 또는 테스트 환경에서는 Mock 데이터 사용
-      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode ||
+          AppConfig.current.environment == 'test') {
         return _getMockPets();
       }
 
@@ -87,7 +88,8 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<PetProfileEntity?>> getPetById(String id) async {
     try {
       // Mock 모드 또는 테스트 환경에서는 getAllPets에서 찾기
-      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode ||
+          AppConfig.current.environment == 'test') {
         final result = await getAllPets();
         if (result.isSuccess) {
           final pets = result.dataOrNull!;
@@ -124,7 +126,8 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<PetProfileEntity>> createPet(PetProfileEntity pet) async {
     try {
       // Mock 모드 또는 테스트 환경에서는 Mock 생성
-      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode ||
+          AppConfig.current.environment == 'test') {
         if (AppConfig.current.environment == 'test') {
           await Future.delayed(const Duration(milliseconds: 1));
         } else {
@@ -162,7 +165,8 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<PetProfileEntity>> updatePet(PetProfileEntity pet) async {
     try {
       // Mock 모드 또는 테스트 환경에서는 Mock 업데이트
-      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode ||
+          AppConfig.current.environment == 'test') {
         if (AppConfig.current.environment == 'test') {
           await Future.delayed(const Duration(milliseconds: 1));
         } else {
@@ -196,7 +200,8 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<void>> deletePet(String id) async {
     try {
       // Mock 모드 또는 테스트 환경에서는 Mock 삭제
-      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode ||
+          AppConfig.current.environment == 'test') {
         if (AppConfig.current.environment == 'test') {
           await Future.delayed(const Duration(milliseconds: 1));
         } else {
@@ -223,7 +228,8 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<String>> uploadPetImage(String petId, String imagePath) async {
     try {
       // Mock 모드 또는 테스트 환경에서는 Mock 업로드
-      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode ||
+          AppConfig.current.environment == 'test') {
         await Future.delayed(const Duration(milliseconds: 500));
         final imageUrl = 'https://example.com/images/$petId.jpg';
         return Success(imageUrl, '이미지가 성공적으로 업로드되었습니다');

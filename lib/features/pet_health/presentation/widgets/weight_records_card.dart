@@ -102,7 +102,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
-      padding: const const EdgeInsets.all(AppSpacing.xl),
+      padding: const const const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -120,7 +120,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
           Row(
             children: [
               Container(
-                padding: const const EdgeInsets.all(AppSpacing.sm),
+                padding: const const const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: AppColors.pointBrown.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -131,7 +131,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
                   size: 20,
                 ),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
               Text(
                 '体重記録',
                 style: AppFonts.titleLarge.copyWith(
@@ -141,7 +141,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           // 년도 선택 칩
           if (availableYears.length > 1) ...[
             SingleChildScrollView(
@@ -150,7 +150,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
                 children: availableYears.map((year) {
                   final isSelected = year == state.selectedYear;
                   return Padding(
-                    padding: const const EdgeInsets.only(right: AppSpacing.sm),
+                    padding: const const const EdgeInsets.only(right: AppSpacing.sm),
                     child: FilterChip(
                       selected: isSelected,
                       label: Text('$year年'),
@@ -178,7 +178,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
                 }).toList(),
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
           ],
           // 월별 아코디언
           Column(
@@ -251,7 +251,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
         recordCount;
 
     return Container(
-      margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -268,7 +268,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
             borderRadius: BorderRadius.circular(AppRadius.medium),
             child: Container(
               width: double.infinity,
-              padding: const const EdgeInsets.all(AppSpacing.md),
+              padding: const const const EdgeInsets.all(AppSpacing.md),
               child: Row(
                 children: [
                   Container(
@@ -284,7 +284,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
                       size: 20,
                     ),
                   ),
-                  const const SizedBox(width: AppSpacing.md),
+                  const const const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,7 +296,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
                             color: AppColors.pointDark,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.xs),
+                        const const const SizedBox(height: AppSpacing.xs),
                         Text(
                           '$recordCount件の記録 • 平均 ${avgWeight.toStringAsFixed(1)}kg',
                           style: AppFonts.bodySmall.copyWith(
@@ -348,7 +348,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
         : AppColors.pointGray;
 
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -374,7 +374,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
               size: 20,
             ),
           ),
-          const const SizedBox(width: AppSpacing.md),
+          const const const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,7 +386,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
                     color: AppColors.pointDark,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                const const const SizedBox(height: AppSpacing.xs),
                 Text(
                   _formatDate(record['recordedDate'] as DateTime),
                   style: AppFonts.bodySmall.copyWith(
@@ -406,7 +406,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
           ),
           if (index < weightRecords.length - 1)
             Container(
-              padding: const const EdgeInsets.symmetric(
+              padding: const const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
                 vertical: AppSpacing.xs,
               ),

@@ -22,7 +22,7 @@ class RecipeScreen extends ConsumerWidget {
         actions: [
           // 펫 선택 드롭다운
           Container(
-            margin: const const EdgeInsets.only(right: AppSpacing.md),
+            margin: const const const EdgeInsets.only(right: AppSpacing.md),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -35,7 +35,7 @@ class RecipeScreen extends ConsumerWidget {
                     color: AppColors.pointBrown,
                   ),
                 ),
-                const const SizedBox(width: AppSpacing.xs),
+                const const const SizedBox(width: AppSpacing.xs),
                 Text(
                   'Maxi',
                   style: AppFonts.bodyMedium.copyWith(
@@ -54,7 +54,7 @@ class RecipeScreen extends ConsumerWidget {
       ),
       body: recipesAsync.when(
         data: (recipes) => GridView.builder(
-          padding: const const EdgeInsets.all(AppSpacing.lg),
+          padding: const const const EdgeInsets.all(AppSpacing.lg),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: AppSpacing.md,
@@ -73,12 +73,12 @@ class RecipeScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
               Text(
                 'レシピの読み込みに失敗しました',
                 style: AppFonts.bodyLarge.copyWith(color: Colors.red),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const const const SizedBox(height: AppSpacing.sm),
               ElevatedButton(
                 onPressed: () {
                   ref.read(recipesNotifierProvider.notifier).refresh();
@@ -90,7 +90,7 @@ class RecipeScreen extends ConsumerWidget {
         ),
       ),
       bottomNavigationBar: Container(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
@@ -110,7 +110,7 @@ class RecipeScreen extends ConsumerWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.pointBlue,
               foregroundColor: Colors.white,
-              padding: const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+              padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.large),
               ),
@@ -169,7 +169,7 @@ class RecipeScreen extends ConsumerWidget {
             Expanded(
               flex: 2,
               child: Padding(
-                padding: const const EdgeInsets.all(AppSpacing.md),
+                padding: const const const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -182,7 +182,7 @@ class RecipeScreen extends ConsumerWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Text(
                       recipe.description,
                       style: AppFonts.bodySmall.copyWith(
@@ -199,7 +199,7 @@ class RecipeScreen extends ConsumerWidget {
                           size: 14,
                           color: AppColors.pointBlue,
                         ),
-                        const const SizedBox(width: AppSpacing.xs),
+                        const const const SizedBox(width: AppSpacing.xs),
                         Text(
                           recipe.cookingTime,
                           style: AppFonts.bodySmall.copyWith(
@@ -209,7 +209,7 @@ class RecipeScreen extends ConsumerWidget {
                         ),
                         const Spacer(),
                         Container(
-                          padding: const const EdgeInsets.symmetric(
+                          padding: const const const EdgeInsets.symmetric(
                             horizontal: AppSpacing.xs,
                             vertical: 2,
                           ),
@@ -273,14 +273,14 @@ class RecipeScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('説明: ${recipe.description}'),
-            const SizedBox(height: AppSpacing.sm),
+            const const const SizedBox(height: AppSpacing.sm),
             Text('調理時間: ${recipe.cookingTime}'),
-            const SizedBox(height: AppSpacing.sm),
+            const const const SizedBox(height: AppSpacing.sm),
             Text('難易度: ${recipe.difficulty}'),
-            const SizedBox(height: AppSpacing.sm),
+            const const const SizedBox(height: AppSpacing.sm),
             Text('評価: ${recipe.rating}'),
             if (recipe.ingredients.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.sm),
+              const const const SizedBox(height: AppSpacing.sm),
               const Text('材料:', style: TextStyle(fontWeight: FontWeight.bold)),
               ...recipe.ingredients.map((ingredient) => Text('• $ingredient')),
             ],

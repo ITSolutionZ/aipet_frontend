@@ -16,8 +16,8 @@ class MealStatusWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      margin: const const const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: isCompleted
             ? AppColors.pointGreen.withValues(alpha: 0.1)
@@ -36,14 +36,14 @@ class MealStatusWidget extends StatelessWidget {
               color: isCompleted ? AppColors.pointGreen : AppColors.pointGray,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Text(
             time,
             style: AppFonts.bodySmall.copyWith(
               color: isCompleted ? AppColors.pointGreen : AppColors.pointGray,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Icon(
             isCompleted ? Icons.check_circle : Icons.schedule,
             color: isCompleted ? AppColors.pointGreen : AppColors.pointGray,

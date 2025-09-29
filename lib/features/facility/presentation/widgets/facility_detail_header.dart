@@ -48,8 +48,8 @@ class FacilityDetailHeader extends StatelessWidget {
           left: 0,
           right: 0,
           child: Container(
-            margin: const const EdgeInsets.all(AppSpacing.lg),
-            padding: const const EdgeInsets.all(AppSpacing.lg),
+            margin: const const const EdgeInsets.all(AppSpacing.lg),
+            padding: const const const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -76,7 +76,7 @@ class FacilityDetailHeader extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.xs),
+                      const const const SizedBox(height: AppSpacing.xs),
                       Text(
                         facility.type == FacilityType.grooming
                             ? 'トリミング'
@@ -85,7 +85,7 @@ class FacilityDetailHeader extends StatelessWidget {
                           color: AppColors.pointGray,
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.sm),
+                      const const const SizedBox(height: AppSpacing.sm),
                       Row(
                         children: [
                           Text(
@@ -95,7 +95,7 @@ class FacilityDetailHeader extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const const SizedBox(width: AppSpacing.xs),
+                          const const const SizedBox(width: AppSpacing.xs),
                           // 별점
                           Row(
                             children: List.generate(5, (index) {
@@ -121,7 +121,7 @@ class FacilityDetailHeader extends StatelessWidget {
                               }
                             }),
                           ),
-                          const const SizedBox(width: AppSpacing.xs),
+                          const const const SizedBox(width: AppSpacing.xs),
                           Text(
                             '${facility.reviewCount} レビュー',
                             style: AppFonts.bodySmall.copyWith(
