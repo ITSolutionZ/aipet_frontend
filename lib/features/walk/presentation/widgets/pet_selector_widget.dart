@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import '../../../../shared/shared.dart';
-import '../../data/walk_providers.dart';
 
 class PetSelectorWidget extends StatelessWidget {
   final PetInfo? selectedPet;
@@ -46,7 +46,7 @@ class PetSelectorWidget extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
-                  selectedPet?.imagePath ?? 'assets/images/dogs/shiba.png',
+                  selectedPet?.imageUrl ?? 'assets/images/dogs/shiba.png',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -108,18 +108,21 @@ class _PetSelectorBottomSheet extends StatelessWidget {
     final pets = [
       const PetInfo(
         id: 'pet1',
+        type: 'dog',
         name: 'Maxi',
-        imagePath: 'assets/images/dogs/shiba.png',
+        imageUrl: 'assets/images/dogs/shiba.png',
       ),
       const PetInfo(
         id: 'pet2',
+        type: 'dog',
         name: 'Luna',
-        imagePath: 'assets/images/dogs/poodle.jpg',
+        imageUrl: 'assets/images/dogs/poodle.jpg',
       ),
       const PetInfo(
         id: 'pet3',
+        type: 'dog',
         name: 'Buddy',
-        imagePath: 'assets/images/dogs/chiwawa.png',
+        imageUrl: 'assets/images/dogs/chiwawa.png',
       ),
     ];
 
@@ -179,7 +182,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(24),
                 child: Image.asset(
-                  pet.imagePath,
+                  pet.imageUrl ?? '',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(

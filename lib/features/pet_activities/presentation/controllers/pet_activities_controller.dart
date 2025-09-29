@@ -1,9 +1,9 @@
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/video_bookmark_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/video_progress_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet_activities/pet_activities_mock_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/trick_entity.dart';
-import '../../domain/entities/video_bookmark_entity.dart';
-import '../../domain/entities/video_progress_entity.dart';
 
 /// 펫 활동 컨트롤러
 class PetActivitiesController extends StateNotifier<PetActivitiesState> {
@@ -17,15 +17,23 @@ class PetActivitiesController extends StateNotifier<PetActivitiesState> {
           (trickData) => TrickEntity(
             id: trickData['id'] as String,
             name: trickData['name'] as String,
+            description: trickData['description'] as String? ?? '',
+            category: trickData['category'] as String? ?? 'General',
+            difficulty: DifficultyLevel.easy, // TODO: 실제 난이도 매핑 필요
+            estimatedTime: trickData['estimatedTime'] as int? ?? 30,
+            imageUrl: trickData['imagePath'] as String?,
+            imagePath: trickData['imagePath'] as String?,
+            videoUrl: trickData['videoUrl'] as String?,
+            isLearned: trickData['isCompleted'] as bool? ?? false,
+            learnedAt: trickData['completedAt'] as DateTime?,
+            practiceCount: trickData['progress'] as int? ?? 0,
+            status: (trickData['isCompleted'] as bool?) == true
+                ? TrickStatus.completed
+                : TrickStatus.available,
+            createdAt: trickData['createdAt'] as DateTime? ?? DateTime.now(),
+            updatedAt: DateTime.now(),
             petId: trickData['petId'] as String?,
-            progress: trickData['progress'] as int?,
-            imagePath: trickData['imagePath'] as String,
-            isCompleted: trickData['isCompleted'] as bool,
-            difficulty: trickData['difficulty'] as String?,
-            youtubeUrl: trickData['videoUrl'] as String?,
-            description: trickData['description'] as String?,
-            createdAt: trickData['createdAt'] as DateTime,
-            date: trickData['completedAt'] as DateTime?,
+            date: trickData['date'] as DateTime?,
           ),
         )
         .toList();
@@ -40,11 +48,11 @@ class PetActivitiesController extends StateNotifier<PetActivitiesState> {
           (bookmarkData) => VideoBookmarkEntity(
             id: bookmarkData['id'] as String,
             videoId: bookmarkData['videoId'] as String,
-            youtubeVideoId: bookmarkData['youtubeVideoId'] as String,
+            title: bookmarkData['label'] as String? ?? 'Bookmark',
             positionSec: bookmarkData['positionSec'] as int,
-            label: bookmarkData['label'] as String?,
             description: bookmarkData['description'] as String?,
-            createdAt: bookmarkData['createdAt'] as DateTime,
+            createdAt: bookmarkData['createdAt'] as DateTime? ?? DateTime.now(),
+            updatedAt: DateTime.now(),
           ),
         )
         .toList();
@@ -59,8 +67,12 @@ class PetActivitiesController extends StateNotifier<PetActivitiesState> {
         key,
         VideoProgressEntity(
           videoId: value['videoId'] as String,
-          lastPositionSec: value['lastPositionSec'] as int,
-          updatedAt: value['updatedAt'] as DateTime,
+          currentPositionSec: value['lastPositionSec'] as int? ?? 0,
+          totalDurationSec: value['totalDurationSec'] as int? ?? 0,
+          progress: value['progress'] as double? ?? 0.0,
+          isCompleted: value['isCompleted'] as bool? ?? false,
+          lastWatchedAt: value['lastWatchedAt'] as DateTime? ?? DateTime.now(),
+          updatedAt: value['updatedAt'] as DateTime? ?? DateTime.now(),
         ),
       ),
     );
@@ -80,6 +92,28 @@ class PetActivitiesController extends StateNotifier<PetActivitiesState> {
         .where((trick) => trick.id != trickId)
         .toList();
     state = state.copyWith(tricks: newTricks);
+  }
+
+  /// 트릭 진행률 업데이트
+  void updateTrickProgress(String trickId, int progress) {
+    final updatedTricks = state.tricks.map((trick) {
+      if (trick.id == trickId) {
+        return trick.updateProgress(progress);
+      }
+      return trick;
+    }).toList();
+    state = state.copyWith(tricks: updatedTricks);
+  }
+
+  /// 트릭 완료 처리
+  void completeTrick(String trickId) {
+    final updatedTricks = state.tricks.map((trick) {
+      if (trick.id == trickId) {
+        return trick.markAsCompleted();
+      }
+      return trick;
+    }).toList();
+    state = state.copyWith(tricks: updatedTricks);
   }
 }
 

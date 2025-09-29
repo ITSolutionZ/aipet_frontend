@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../shared.dart';
 
 /// 성능 모니터링 위젯
 ///
@@ -122,7 +121,7 @@ class _PerformanceMonitorWidgetState
         children: [
           _buildHeader(),
           const SizedBox(height: AppSpacing.sm),
-          _buildMetrics(),
+          _buildMetrics(_currentMetric),
           if (widget.showDetails) ...[
             const SizedBox(height: AppSpacing.sm),
             _buildDetails(),
@@ -171,8 +170,8 @@ class _PerformanceMonitorWidgetState
     );
   }
 
-  Widget _buildMetrics() {
-    if (_currentMetric == null) {
+  Widget _buildMetrics(PerformanceMetric? currentMetric) {
+    if (currentMetric == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -181,7 +180,7 @@ class _PerformanceMonitorWidgetState
         Expanded(
           child: _buildMetricCard(
             '메모리',
-            '${_currentMetric!.memoryUsage.toStringAsFixed(1)}MB',
+            '${currentMetric.memoryUsage.toStringAsFixed(1)}MB',
             Icons.memory,
             _getMemoryColor(),
           ),
@@ -190,7 +189,7 @@ class _PerformanceMonitorWidgetState
         Expanded(
           child: _buildMetricCard(
             'FPS',
-            _currentMetric!.frameRate.toStringAsFixed(0),
+            currentMetric.frameRate.toStringAsFixed(0),
             Icons.speed,
             _getFrameRateColor(),
           ),
@@ -199,7 +198,7 @@ class _PerformanceMonitorWidgetState
         Expanded(
           child: _buildMetricCard(
             'CPU',
-            '${_currentMetric!.cpuUsage.toStringAsFixed(1)}%',
+            '${currentMetric.cpuUsage.toStringAsFixed(1)}%',
             Icons.memory_outlined,
             _getCpuColor(),
           ),

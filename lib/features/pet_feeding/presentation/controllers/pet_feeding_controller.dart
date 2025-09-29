@@ -1,7 +1,7 @@
+import 'package:aipet_frontend/features/pet_feeding/domain/domain.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet_feeding/pet_feeding_mock_service.dart'
+    as PetFeedingMock;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/domain.dart';
 
 /// 펫 급여 컨트롤러
 class PetFeedingController extends StateNotifier<PetFeedingState> {
@@ -9,9 +9,8 @@ class PetFeedingController extends StateNotifier<PetFeedingState> {
 
   /// 급여 기록 로드
   void loadFeedingRecords(String petId) {
-    final mockRecords = PetFeedingMockService.getMockFeedingRecords(
-      petId: petId,
-    );
+    final mockRecords = PetFeedingMock
+        .PetFeedingMockService.getMockFeedingRecords(petId: petId);
     final records = mockRecords
         .map(
           (recordData) => FeedingRecordEntity(

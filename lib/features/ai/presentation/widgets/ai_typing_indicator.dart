@@ -1,16 +1,34 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/shared.dart';
+/// 🎯 AI Typing Indicator Animation State Provider
+final aiTypingIndicatorProvider =
+    StateNotifierProvider<AiTypingIndicatorController, bool>(
+      (ref) => AiTypingIndicatorController(),
+    );
+
+class AiTypingIndicatorController extends StateNotifier<bool> {
+  AiTypingIndicatorController() : super(false);
+
+  void startAnimation() {
+    state = true;
+  }
+
+  void stopAnimation() {
+    state = false;
+  }
+}
 
 /// AI 타이핑 인디케이터 위젯
-class AiTypingIndicator extends StatefulWidget {
+class AiTypingIndicator extends ConsumerStatefulWidget {
   const AiTypingIndicator({super.key});
 
   @override
-  State<AiTypingIndicator> createState() => _AiTypingIndicatorState();
+  ConsumerState<AiTypingIndicator> createState() => _AiTypingIndicatorState();
 }
 
-class _AiTypingIndicatorState extends State<AiTypingIndicator>
+class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
     with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
@@ -27,11 +45,20 @@ class _AiTypingIndicatorState extends State<AiTypingIndicator>
     );
 
     _animations = _controllers.map((controller) {
-      return Tween<double>(begin: 0.3, end: 1.0).animate(
-        CurvedAnimation(parent: controller, curve: Curves.easeInOut),
-      );
+      return Tween<double>(
+        begin: 0.3,
+        end: 1.0,
+      ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
     }).toList();
 
+    // Riverpod 상태 변경 시 애니메이션 시작/종료
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(aiTypingIndicatorProvider.notifier).startAnimation();
+      _startAnimations();
+    });
+  }
+
+  void _startAnimations() {
     // 애니메이션 시작 - 각각 다른 시간에 시작
     for (int i = 0; i < _controllers.length; i++) {
       Future.delayed(Duration(milliseconds: i * 200), () {
@@ -112,7 +139,9 @@ class _AiTypingIndicatorState extends State<AiTypingIndicator>
           width: 8,
           height: 8,
           decoration: BoxDecoration(
-            color: AppColors.pointBrown.withValues(alpha: _animations[index].value),
+            color: AppColors.pointBrown.withValues(
+              alpha: _animations[index].value,
+            ),
             shape: BoxShape.circle,
           ),
         );

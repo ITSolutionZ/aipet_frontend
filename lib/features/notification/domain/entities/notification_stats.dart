@@ -375,7 +375,6 @@ class UserEngagement {
 /// 통계 팩토리
 /// Note: Mock data generation moved to data layer to maintain clean architecture
 class NotificationStatsEntityFactory {
-
   /// 통계 요약 생성
   static Map<String, double> generateSummary(List<NotificationStats> stats) {
     if (stats.isEmpty) return {};

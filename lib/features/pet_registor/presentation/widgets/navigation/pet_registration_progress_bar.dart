@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class PetRegistrationProgressBar extends StatelessWidget {
   final int currentStep;
@@ -15,7 +14,7 @@ class PetRegistrationProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final progressPercentage = ((currentStep / totalSteps) * 100).round();
-    
+
     return Semantics(
       label: 'ペット登録の進行状況',
       hint: 'ステップ$currentStepの$totalSteps、$progressPercentage%完了',

@@ -1,1 +1,1 @@
-genhtml coverage/lcov.info -o coverage/html --title 'AI Pet Frontend - Full Project Test Coverage Report'
+genhtml coverage/lcov.info -o coverage/html --show-details --num-spaces 2 --quiet

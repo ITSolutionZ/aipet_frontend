@@ -1,11 +1,11 @@
+// import 'package:aipet_frontend/features/home/data/providers/home_providers.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/appointment_summary_entity.dart';
+import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
+import 'package:aipet_frontend/shared/widgets/soft_gradient_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/features/pet/pet_mock_data.dart';
-import '../../../../shared/widgets/soft_gradient_app_bar.dart';
-import '../../../home/data/providers/home_providers.dart';
-import '../../../home/domain/entities/home_dashboard_entity.dart';
 
 /// 오늘의 예약 화면
 class TodayAppointmentsScreen extends ConsumerWidget {
@@ -13,11 +13,8 @@ class TodayAppointmentsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 현재 선택된 펫 정보 가져오기
-    final selectedPet = ref.watch(homeSelectedPetNotifierProvider);
-    final todayAppointments = PetMockData.getMockTodayAppointmentsByPet(
-      petId: selectedPet?.id,
-    );
+    final todayAppointments =
+        SchedulingMock.SchedulingMockService.getMockTodayMealsForSchedule();
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,

@@ -1,8 +1,7 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../design/design.dart';
 
 /// 범용 이미지 표시 위젯
 class ImageDisplay extends StatelessWidget {
@@ -66,10 +65,7 @@ class ImageDisplay extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.pointBrown,
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.pureWhite,
-                    width: 2,
-                  ),
+                  border: Border.all(color: AppColors.pureWhite, width: 2),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.2),
@@ -87,12 +83,7 @@ class ImageDisplay extends StatelessWidget {
             ),
 
           // 배지
-          if (badge != null)
-            Positioned(
-              top: 8,
-              right: 8,
-              child: badge!,
-            ),
+          if (badge != null) Positioned(top: 8, right: 8, child: badge!),
         ],
       ),
     );
@@ -125,7 +116,7 @@ class ImageDisplay extends StatelessWidget {
               child: CircularProgressIndicator(
                 value: loadingProgress.expectedTotalBytes != null
                     ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
+                          loadingProgress.expectedTotalBytes!
                     : null,
                 color: AppColors.pointBrown,
               ),

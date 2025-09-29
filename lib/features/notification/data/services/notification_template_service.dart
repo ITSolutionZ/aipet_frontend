@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/domain.dart';
-import 'notification_service.dart';
+import 'notification_service.dart' as local;
 
 /// 알림 템플릿 서비스
 class NotificationTemplateService {
   static const String _templatesKey = 'notification_templates';
 
-  final NotificationService _notificationService;
+  final local.NotificationService _notificationService;
   bool _isInitialized = false;
 
   // 템플릿 스트림
@@ -35,13 +35,9 @@ class NotificationTemplateService {
       }
 
       _isInitialized = true;
-      if (kDebugMode) {
-        print('알림 템플릿 서비스 초기화 완료');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('알림 템플릿 서비스 초기화 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -53,13 +49,9 @@ class NotificationTemplateService {
       await _saveTemplates(defaultTemplates);
       _templatesController.add(defaultTemplates);
 
-      if (kDebugMode) {
-        print('기본 템플릿 생성 완료: ${defaultTemplates.length}개');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('기본 템플릿 생성 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -71,13 +63,9 @@ class NotificationTemplateService {
       await _saveTemplates(templates);
       _templatesController.add(templates);
 
-      if (kDebugMode) {
-        print('템플릿 추가됨: ${template.name}');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 추가 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -92,14 +80,10 @@ class NotificationTemplateService {
         await _saveTemplates(templates);
         _templatesController.add(templates);
 
-        if (kDebugMode) {
-          print('템플릿 업데이트됨: ${template.name}');
-        }
+        if (kDebugMode) {}
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 업데이트 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -111,13 +95,9 @@ class NotificationTemplateService {
       await _saveTemplates(templates);
       _templatesController.add(templates);
 
-      if (kDebugMode) {
-        print('템플릿 삭제됨: $templateId');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 삭제 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -132,14 +112,10 @@ class NotificationTemplateService {
         await _saveTemplates(templates);
         _templatesController.add(templates);
 
-        if (kDebugMode) {
-          print('템플릿 상태 변경됨: $templateId, 활성화: $isActive');
-        }
+        if (kDebugMode) {}
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 상태 변경 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -154,9 +130,7 @@ class NotificationTemplateService {
             .toList();
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 로드 실패: $e');
-      }
+      if (kDebugMode) {}
     }
     return [];
   }
@@ -198,9 +172,7 @@ class NotificationTemplateService {
       final template = templates.firstWhere((t) => t.id == templateId);
 
       if (!template.isActive) {
-        if (kDebugMode) {
-          print('비활성화된 템플릿: $templateId');
-        }
+        if (kDebugMode) {}
         return;
       }
 
@@ -224,13 +196,9 @@ class NotificationTemplateService {
       final updatedTemplate = template.copyWith(lastUsed: DateTime.now());
       await updateTemplate(updatedTemplate);
 
-      if (kDebugMode) {
-        print('템플릿으로 알림 발송됨: ${template.name}');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 알림 발송 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -271,13 +239,9 @@ class NotificationTemplateService {
 
       await addTemplate(duplicatedTemplate);
 
-      if (kDebugMode) {
-        print('템플릿 복제됨: ${originalTemplate.name}');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 복제 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -309,9 +273,7 @@ class NotificationTemplateService {
         'byNotificationType': notificationTypeStats,
       };
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 통계 가져오기 실패: $e');
-      }
+      if (kDebugMode) {}
       return {};
     }
   }
@@ -328,9 +290,7 @@ class NotificationTemplateService {
             template.bodyTemplate.toLowerCase().contains(lowercaseQuery);
       }).toList();
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 검색 실패: $e');
-      }
+      if (kDebugMode) {}
       return [];
     }
   }
@@ -341,13 +301,9 @@ class NotificationTemplateService {
       await SecureStorageService.remove(_templatesKey);
       _templatesController.add([]);
 
-      if (kDebugMode) {
-        print('모든 템플릿 삭제됨');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 삭제 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -359,9 +315,7 @@ class NotificationTemplateService {
       );
       await SecureStorageService.setString(_templatesKey, templatesJson);
     } catch (e) {
-      if (kDebugMode) {
-        print('템플릿 저장 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 

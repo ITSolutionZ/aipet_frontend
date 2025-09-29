@@ -1,45 +1,24 @@
 library;
 
-export 'branding/branding.dart';
-export 'constants/ai_constants.dart';
-export 'design/ai_colors.dart';
-export 'design/design.dart';
-export 'mock_data/features/ai/ai_categories_mock_data.dart';
-export 'mock_data/features/ai/ai_config_mock_data.dart';
-export 'mock_data/features/ai/ai_keywords_mock_data.dart';
-export 'mock_data/features/facility/booking_mock_data.dart';
-export 'mock_data/features/home/appointment_mock_data.dart';
-export 'mock_data/features/pet/pet_mock_data.dart';
-export 'mock_data/features/pet/vaccine_mock_data.dart';
-export 'mock_data/features/pet_feeding/recipe_difficulty_mock_data.dart';
-export 'mock_data/features/scheduling/meal_types_mock_data.dart';
-export 'mock_data/mock_data.dart';
-export 'mock_data/mock_data_service.dart' hide MockDataService;
-export 'services/encryption_service.dart';
-export 'services/error_handler_service.dart';
-export 'services/error_service.dart' hide ErrorSeverity;
-export 'services/image_cache_service.dart';
-export 'services/microchip_reminder_service.dart';
-export 'services/performance_monitor_service.dart';
-export 'services/performance_optimizer_service.dart';
-export 'services/secure_storage_service.dart';
-export 'services/ui_service.dart';
-export 'services/user_experience_service.dart';
-export 'utils/ai_logger.dart';
-export 'utils/loading_state.dart';
-export 'utils/mock_helper.dart' hide MockHelper;
-export 'utils/utils.dart';
-export 'utils/validation_utils.dart';
-// Accessibility widgets
-export 'widgets/accessibility/accessibility_widgets.dart';
-// Animation widgets
-export 'widgets/animation/animation_widgets.dart';
-// Common widgets
-export 'widgets/common_app_bar.dart';
-// Modal widgets
-export 'widgets/modals/microchip_registration_modal.dart';
-// Pet management widgets
-export 'widgets/pet_status_selection_dialog.dart';
-// Responsive widgets
-export 'widgets/responsive/responsive_widgets.dart';
-export 'widgets/widgets.dart';
+// ignore_for_file: deprecated_member_use_from_same_package
+
+/// AI 기능 보조 모듈
+export 'ai_support.dart';
+
+/// 공유 도메인 모듈
+export 'core/domain/domain.dart';
+
+/// 공유 엔티티 모듈
+export 'entities/entities.dart';
+
+/// 핵심 공통 기능 모듈
+export 'foundation.dart';
+
+/// 서비스 계층 모듈
+export 'services.dart';
+
+/// 테스트 및 데모용 리소스 (프로덕션에서 사용 시 주의)
+export 'testing.dart';
+
+/// UI 관련 공통 리소스
+export 'ui.dart';

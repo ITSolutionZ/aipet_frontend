@@ -1,4 +1,4 @@
 // Presentation
-export 'controllers/controllers.dart';
-export 'screens/screens.dart';
-export 'widgets/widgets.dart';
+export 'controllers/scheduling_controllers.dart';
+export 'screens/scheduling_screens.dart';
+export 'widgets/scheduling_widgets.dart';

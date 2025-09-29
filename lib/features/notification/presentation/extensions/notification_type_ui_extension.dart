@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
 import 'package:flutter/material.dart';
-import '../../domain/entities/notification_model.dart';
 
 /// NotificationType UI Extensions (Presentation Layer)
 extension NotificationTypeUIExtension on NotificationType {

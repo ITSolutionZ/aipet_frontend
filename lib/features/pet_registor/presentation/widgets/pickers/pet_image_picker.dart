@@ -1,10 +1,23 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../../../shared/shared.dart';
-
+/// ⚠️ DEPRECATED: 중복 펫 이미지 선택 위젯
+///
+/// 이 클래스는 통합된 ImagePickerWidget으로 대체되었습니다.
+/// 새로운 코드에서는 ImagePickerWidget.petProfile()을 사용하세요.
+///
+/// 마이그레이션 예시:
+/// ```dart
+/// // Before (DEPRECATED)
+/// PetImagePicker(onImageChanged: callback)
+///
+/// // After (RECOMMENDED)
+/// ImagePickerWidget.petProfile(onImageChanged: callback)
+/// ```
+@Deprecated('Use ImagePickerWidget.petProfile() instead')
 class PetImagePicker extends StatelessWidget {
   final String? selectedImagePath;
   final String? defaultImagePath;
@@ -160,22 +173,12 @@ class PetImagePicker extends StatelessWidget {
       if (image != null) {
         onImageChanged(image.path);
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('이미지가 선택되었습니다.'),
-              duration: Duration(seconds: 2),
-            ),
-          );
+          SnackBarService.showSuccess(context, '이미지가 선택되었습니다');
         }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('갤러리 접근 중 오류가 발생했습니다. 설정에서 권한을 확인해주세요.'),
-            duration: Duration(seconds: 3),
-          ),
-        );
+        SnackBarService.showPermissionRequired(context, '갤러리 접근');
       }
     }
   }
@@ -193,24 +196,17 @@ class PetImagePicker extends StatelessWidget {
       if (image != null) {
         onImageChanged(image.path);
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('사진이 촬영되었습니다.'),
-              duration: Duration(seconds: 2),
-            ),
-          );
+          SnackBarService.showSuccess(context, '사진이 촬영되었습니다');
         }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '카메라 접근 중 오류가 발생했습니다. ${e.toString().contains('simulator') ? '시뮬레이터에서는 카메라를 사용할 수 없습니다.' : '설정에서 권한을 확인해주세요.'}',
-            ),
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        final isSimulator = e.toString().contains('simulator');
+        if (isSimulator) {
+          SnackBarService.showWarning(context, '시뮬레이터에서는 카메라를 사용할 수 없습니다');
+        } else {
+          SnackBarService.showPermissionRequired(context, '카메라 접근');
+        }
       }
     }
   }

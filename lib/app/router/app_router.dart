@@ -21,6 +21,8 @@ class AppRouter {
   static const String loginRoute = RouteConstants.loginRoute;
   static const String signupRoute = RouteConstants.signupRoute;
   static const String welcomeRoute = RouteConstants.welcomeRoute;
+  static const String tokenExchangeRoute =
+      RouteConstants.tokenExchangeRoute; // Changed
   static const String schedulingRoute = RouteConstants.schedulingRoute;
   static const String aiRoute = RouteConstants.aiRoute;
   static const String aiFavoriteMessagesRoute =
@@ -54,6 +56,20 @@ class AppRouter {
   static const String feedingMainRoute = RouteConstants.feedingMainRoute;
   static const String trainingMainRoute = RouteConstants.trainingMainRoute;
   static const String wateringMainRoute = RouteConstants.wateringMainRoute;
+  static const String wateringScheduleRoute =
+      RouteConstants.wateringScheduleRoute;
+  static const String wateringRecordsRoute =
+      RouteConstants.wateringRecordsRoute;
+  static const String wateringAnalysisRoute =
+      RouteConstants.wateringAnalysisRoute;
+  static const String wateringSettingsRoute =
+      RouteConstants.wateringSettingsRoute;
+  static const String addWateringRecordRoute =
+      RouteConstants.addWateringRecordRoute;
+  static const String editWateringRecordRoute =
+      RouteConstants.editWateringRecordRoute;
+  static const String wateringScheduleEditRoute =
+      RouteConstants.wateringScheduleEditRoute;
   static const String healthMainRoute = RouteConstants.healthMainRoute;
   static const String vaccinesRoute = RouteConstants.vaccinesRoute;
   static const String hospitalReservationRoute =
@@ -61,6 +77,8 @@ class AppRouter {
   static const String groomingReservationRoute =
       RouteConstants.groomingReservationRoute;
   static const String facilityDetailRoute = RouteConstants.facilityDetailRoute;
+  static const String facilityFullscreenMapRoute =
+      RouteConstants.facilityFullscreenMapRoute;
   static const String bookingRoute = RouteConstants.bookingRoute;
   static const String recipesRoute = RouteConstants.recipesRoute;
   static const String addRecipeRoute = RouteConstants.addRecipeRoute;

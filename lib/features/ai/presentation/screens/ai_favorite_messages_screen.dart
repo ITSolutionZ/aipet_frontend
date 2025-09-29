@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
+import 'package:aipet_frontend/features/ai/presentation/controllers/ai_chat_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/ai_favorite_qa_entity.dart';
-import '../controllers/ai_chat_controller.dart';
 
 /// AI 즐겨찾기 질문-답변 목록 화면 (펫별 그룹화)
 class AiFavoriteMessagesScreen extends ConsumerWidget {
@@ -15,7 +14,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final chatState = ref.watch(aiChatNotifierProvider);
 
-    // 임시로 빈 목록 사용 (향후 실제 데이터로 교체)
+    // 채팅 상태에서 즐겨찾기 QA 목록 가져오기
     final favoriteQAs = chatState.favoriteQAs;
 
     // 펫별로 그룹화
@@ -607,47 +606,11 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
   }
 
   void _showClearAllDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
+    ConfirmationDialogComponent.showClear(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            const Icon(Icons.warning, color: Colors.orange),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              '確認',
-              style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark),
-            ),
-          ],
-        ),
-        content: Text(
-          '全てのお気に入りを削除しますか？\nこの操作は取り消せません。',
-          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'キャンセル',
-              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _clearAllFavorites(ref);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(
-              '削除する',
-              style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
+      title: 'お気に入りクリア',
+      message: '全てのお気に入りを削除しますか？\nこの操作は取り消せません。',
+      onConfirm: () => _clearAllFavorites(ref),
     );
   }
 

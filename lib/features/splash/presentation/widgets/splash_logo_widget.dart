@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-
-import '../../domain/domain.dart';
 
 class SplashLogoWidget extends StatelessWidget {
   final SplashState splashState;
@@ -19,27 +18,24 @@ class SplashLogoWidget extends StatelessWidget {
       case SplashPhase.loading:
         // 로딩 단계: Lottie 애니메이션 표시
         return _buildLoadingAnimation();
-      case SplashPhase.companyLogo:
-        // 회사 로고 단계: ITZ 로고 표시
-        return _buildCompanyLogo();
       case SplashPhase.appLogo:
-        // 앱 로고 단계: AI Pet 로고 표시
-        return _buildAppLogo();
+        // 앱 로고 단계: AI Pet 로고 + 회사 로고 표시
+        return _buildAppLogoWithCompanyLogo();
       case SplashPhase.initializing:
         // 초기화 중: 로딩 애니메이션 표시 (첫 번째 단계 준비)
         return _buildLoadingAnimation();
       case SplashPhase.completed:
-        // 완료: 앱 로고 표시 (마지막 표시된 로고 유지)
-        return _buildAppLogo();
+        // 완료: 앱 로고 + 회사 로고 표시 (마지막 표시된 로고 유지)
+        return _buildAppLogoWithCompanyLogo();
     }
   }
 
   /// 로딩 애니메이션 위젯 - 카드 없이 깔끔하게 표시
   Widget _buildLoadingAnimation() {
     return Lottie.asset(
-      SplashConstants.loadingLottiePath,
-      width: SplashConstants.loadingLottieSize,
-      height: SplashConstants.loadingLottieSize,
+      AppConstants.splashLoadingLottiePath,
+      width: AppConstants.splashLoadingLottieSize,
+      height: AppConstants.splashLoadingLottieSize,
       fit: BoxFit.contain,
       repeat: true,
       errorBuilder: (context, error, stackTrace) {
@@ -48,60 +44,72 @@ class SplashLogoWidget extends StatelessWidget {
     );
   }
 
-  /// 회사 로고 위젯
-  Widget _buildCompanyLogo() {
-    return Container(
-      width: SplashConstants.companyLogoWidth,
-      height: SplashConstants.companyLogoHeight,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(SplashConstants.companyLogoRadius),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(SplashConstants.companyLogoRadius),
-        child: Image.asset(
-          SplashConstants.companyLogoPath,
-          fit: BoxFit.contain,
-          errorBuilder: _buildErrorWidget,
-        ),
-      ),
-    );
-  }
-
-  /// 앱 로고 위젯
-  Widget _buildAppLogo() {
-    return Container(
-      width: SplashConstants.appLogoSize,
-      height: SplashConstants.appLogoSize,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withValues(
-              alpha: SplashConstants.gradientAlpha1 / 255,
+  /// 앱 로고 + 회사 로고 위젯 (앱 로고 하단에 작은 회사 로고)
+  Widget _buildAppLogoWithCompanyLogo() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // 앱 로고
+        Container(
+          width: AppConstants.splashAppLogoSize,
+          height: AppConstants.splashAppLogoSize,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withValues(
+                  alpha: AppConstants.splashGradientAlpha1 / 255,
+                ),
+                Colors.white.withValues(
+                  alpha: AppConstants.splashGradientAlpha2 / 255,
+                ),
+              ],
             ),
-            Colors.white.withValues(
-              alpha: SplashConstants.gradientAlpha2 / 255,
+            borderRadius: BorderRadius.circular(AppConstants.splashLogoRadius),
+            border: Border.all(
+              color: Colors.white.withValues(
+                alpha: AppConstants.splashBorderAlpha / 255,
+              ),
+              width: 1,
             ),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(SplashConstants.logoRadius),
-        border: Border.all(
-          color: Colors.white.withValues(
-            alpha: SplashConstants.borderAlpha / 255,
           ),
-          width: 1,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppConstants.splashLogoRadius),
+            child: Image.asset(
+              AppConstants.splashAppLogoPath,
+              fit: BoxFit.contain,
+              errorBuilder: _buildErrorWidget,
+            ),
+          ),
         ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(SplashConstants.logoRadius),
-        child: Image.asset(
-          SplashConstants.appLogoPath,
-          fit: BoxFit.contain,
-          errorBuilder: _buildErrorWidget,
+
+        const SizedBox(height: AppSpacing.lg), // 앱 로고와 회사 로고 사이 간격
+        // 회사 로고 (작게)
+        Container(
+          width: AppConstants.splashCompanyLogoWidth,
+          height: AppConstants.splashCompanyLogoHeight,
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.9),
+            borderRadius: BorderRadius.circular(8.0), // companyLogoRadius 상수화
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.asset(
+              AppConstants.splashCompanyLogoPath,
+              fit: BoxFit.contain,
+              errorBuilder: _buildErrorWidget,
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 

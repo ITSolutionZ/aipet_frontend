@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/trick_entity.dart';
 
 /// 다음에 배울 트릭 카드 위젯
 ///
@@ -36,11 +35,23 @@ class LearnNextTrickCard extends StatelessWidget {
                 height: 60,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppSpacing.sm),
-                  image: DecorationImage(
-                    image: AssetImage(trick.imagePath),
-                    fit: BoxFit.cover,
-                  ),
+                  image: trick.imagePath != null
+                      ? DecorationImage(
+                          image: AssetImage(trick.imagePath!),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                  color: trick.imagePath == null
+                      ? AppColors.pointBrown.withValues(alpha: 0.1)
+                      : null,
                 ),
+                child: trick.imagePath == null
+                    ? const Icon(
+                        Icons.pets,
+                        color: AppColors.pointBrown,
+                        size: 30,
+                      )
+                    : null,
               ),
               if (trick.isVideo)
                 Positioned.fill(
@@ -87,11 +98,11 @@ class LearnNextTrickCard extends StatelessWidget {
                         vertical: AppSpacing.xs,
                       ),
                       decoration: BoxDecoration(
-                        color: _getDifficultyColor(trick.difficulty),
+                        color: _getDifficultyColor(trick.difficulty.name),
                         borderRadius: BorderRadius.circular(AppSpacing.xs),
                       ),
                       child: Text(
-                        _getDifficultyText(trick.difficulty),
+                        _getDifficultyText(trick.difficulty.name),
                         style: AppFonts.bodySmall.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -101,32 +112,31 @@ class LearnNextTrickCard extends StatelessWidget {
                     const SizedBox(width: AppSpacing.sm),
 
                     // 소요 시간
-                    if (trick.duration != null)
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.access_time,
-                            size: 14,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: AppColors.pointDark.withValues(alpha: 0.6),
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          '${trick.estimatedTime}分',
+                          style: AppFonts.bodySmall.copyWith(
                             color: AppColors.pointDark.withValues(alpha: 0.6),
                           ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Text(
-                            trick.duration!,
-                            style: AppFonts.bodySmall.copyWith(
-                              color: AppColors.pointDark.withValues(alpha: 0.6),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
 
                 // 트릭 설명
-                if (trick.description != null) ...[
+                ...[
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    trick.description!,
+                    trick.description,
                     style: AppFonts.bodySmall.copyWith(
                       color: AppColors.pointDark.withValues(alpha: 0.7),
                     ),
@@ -171,15 +181,15 @@ class LearnNextTrickCard extends StatelessWidget {
     switch (difficulty?.toLowerCase()) {
       case 'easy':
       case 'beginner':
-        return 'Beginner';
+        return '初級';
       case 'medium':
       case 'intermediate':
-        return 'Intermediate';
+        return '中級';
       case 'hard':
       case 'advanced':
-        return 'Advanced';
+        return '上級';
       default:
-        return 'Beginner';
+        return '初級';
     }
   }
 }

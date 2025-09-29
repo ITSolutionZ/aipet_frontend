@@ -1,10 +1,13 @@
+import 'package:aipet_frontend/features/walk/presentation/controllers/start_walk_form_controller.dart';
+import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/start_walk_info_section.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/start_walk_pet_selector.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../shared/shared.dart';
-import '../../controllers/walk_controller.dart';
-
-class StartWalkBottomSheet extends StatefulWidget {
+class StartWalkBottomSheet extends ConsumerWidget {
   final WalkController controller;
 
   const StartWalkBottomSheet({super.key, required this.controller});
@@ -22,22 +25,10 @@ class StartWalkBottomSheet extends StatefulWidget {
   }
 
   @override
-  State<StartWalkBottomSheet> createState() => _StartWalkBottomSheetState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formState = ref.watch(startWalkFormProvider);
+    final formController = ref.read(startWalkFormProvider.notifier);
 
-class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
-  final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  String _selectedPetId = 'pet1';
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -47,13 +38,17 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: AppSpacing.lg,
           right: AppSpacing.lg,
           top: AppSpacing.md,
-          bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.lg,
+          // const 사용 불가: MediaQuery.of(context) 호출 필요
         ),
+        // Padding 위젯을 SingleChildScrollView로 감싸서, viewInsets.bottom 동적 적용
         child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.lg,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -105,225 +100,59 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
               ),
 
               // 입력 섹션
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 산책 제목
-                    Text(
-                      '散歩のタイトル',
-                      style: AppFonts.fredoka(
-                        fontSize: AppFonts.lg,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[700],
-                      ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 산책 제목
+                  Text(
+                    '散歩のタイトル',
+                    style: AppFonts.fredoka(
+                      fontSize: AppFonts.lg,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[700],
                     ),
-                    const SizedBox(height: AppSpacing.sm),
-                    TextFormField(
-                      controller: _titleController,
-                      decoration: InputDecoration(
-                        hintText: '例：朝の散歩、公園散歩',
-                        prefixIcon: const Icon(Icons.edit_note),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.medium),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[50],
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'タイトルを入力してください。';
-                        }
-                        return null;
-                      },
-                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  WalkFormFields.buildTitleField(
+                    initialValue: formState.title,
+                    onChanged: (value) =>
+                        formController.updateTitle(value ?? ''),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'タイトルを入力してください。';
+                      }
+                      return null;
+                    },
+                  ),
 
-                    const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.xl),
 
-                    // 펫 선택
-                    Text(
-                      'ペットを選択',
-                      style: AppFonts.fredoka(
-                        fontSize: AppFonts.lg,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[700],
-                      ),
+                  // 펫 선택
+                  Text(
+                    'ペットを選択',
+                    style: AppFonts.fredoka(
+                      fontSize: AppFonts.lg,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[700],
                     ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.sm),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: BorderRadius.circular(AppRadius.medium),
-                        border: Border.all(color: Colors.grey[200]!),
-                      ),
-                      child: Column(
-                        children: [
-                          _buildPetOption('pet1', 'Maxi', Icons.pets, '元気な柴犬'),
-                          const SizedBox(height: AppSpacing.sm),
-                          _buildPetOption(
-                            'pet2',
-                            'Luna',
-                            Icons.pets,
-                            '優しいゴールデン',
-                          ),
-                        ],
-                      ),
-                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  StartWalkPetSelector(
+                    selectedPetId: formState.selectedPetId,
+                    onSelectPet: formController.selectPet,
+                  ),
 
-                    const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.xl),
 
-                    // 散歩 정보
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.lg),
-                      decoration: BoxDecoration(
-                        color: AppColors.pointGreen.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(AppRadius.medium),
-                        border: Border.all(
-                          color: AppColors.pointGreen.withValues(alpha: 0.2),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.info_outline,
-                                size: 18,
-                                color: AppColors.pointGreen,
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Text(
-                                '散歩について',
-                                style: AppFonts.fredoka(
-                                  fontSize: AppFonts.baseSize,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.pointGreen,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on,
-                                size: 16,
-                                color: AppColors.pointGreen,
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Text(
-                                'GPS位置情報を使用してルートを記録',
-                                style: AppFonts.base(
-                                  fontSize: AppFonts.sm,
-                                  color: AppColors.pointGreen,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.timer,
-                                size: 16,
-                                color: AppColors.pointGreen,
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Text(
-                                '歩いた時間と距離を自動測定',
-                                style: AppFonts.base(
-                                  fontSize: AppFonts.sm,
-                                  color: AppColors.pointGreen,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.camera_alt,
-                                size: 16,
-                                color: AppColors.pointGreen,
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Text(
-                                '散歩中の思い出を写真で記録可能',
-                                style: AppFonts.base(
-                                  fontSize: AppFonts.sm,
-                                  color: AppColors.pointGreen,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  // 散歩 정보
+                  const StartWalkInfoSection(),
+                ],
               ),
 
               const SizedBox(height: AppSpacing.xl),
 
               // 버튼 섹션
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () => context.pop(),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.lg,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.medium),
-                        ),
-                      ),
-                      child: Text(
-                        'キャンセル',
-                        style: AppFonts.base(
-                          fontSize: AppFonts.baseSize,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: _startWalk,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.pointBlue,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.lg,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.medium),
-                        ),
-                        elevation: 2,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.play_arrow, size: 20),
-                          const SizedBox(width: AppSpacing.sm),
-                          Text(
-                            '散歩を始める',
-                            style: AppFonts.fredoka(
-                              fontSize: AppFonts.baseSize,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              _buildActionButtons(context, ref, formState, formController),
             ],
           ),
         ),
@@ -331,128 +160,71 @@ class _StartWalkBottomSheetState extends State<StartWalkBottomSheet> {
     );
   }
 
-  Widget _buildPetOption(
-    String petId,
-    String name,
-    IconData icon,
-    String description,
+  Widget _buildActionButtons(
+    BuildContext context,
+    WidgetRef ref,
+    StartWalkFormState formState,
+    StartWalkFormController formController,
   ) {
-    final isSelected = _selectedPetId == petId;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedPetId = petId;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.pointBlue.withValues(alpha: 0.1)
-              : Colors.white,
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(
-            color: isSelected ? AppColors.pointBlue : Colors.grey[300]!,
-            width: isSelected ? 2 : 1,
+    return Container(
+      margin: EdgeInsets.zero,
+      child: Row(
+        children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: () => context.pop(),
+              icon: const Icon(Icons.close),
+              label: const Text('キャンセル'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.pointGray,
+                side: const BorderSide(color: AppColors.pointGray),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.medium),
+                ),
+              ),
+            ),
           ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.pointBlue : Colors.grey[200],
-                borderRadius: BorderRadius.circular(AppRadius.small),
-              ),
-              child: Icon(
-                icon,
-                size: 20,
-                color: isSelected ? Colors.white : Colors.grey[600],
-              ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: AppFonts.fredoka(
-                      fontSize: AppFonts.baseSize,
-                      fontWeight: FontWeight.bold,
-                      color: isSelected
-                          ? AppColors.pointBlue
-                          : Colors.grey[800],
-                    ),
-                  ),
-                  Text(
-                    description,
-                    style: AppFonts.base(
-                      fontSize: AppFonts.sm,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            flex: 2,
+            child: ElevatedButton.icon(
+              onPressed: formController.isFormValid()
+                  ? () => _startWalk(context, formState)
+                  : null,
+              icon: const Icon(Icons.play_arrow),
+              label: const Text('散歩を始める'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.pointBlue,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.medium),
+                ),
+                elevation: 2,
               ),
             ),
-            if (isSelected)
-              const Icon(
-                Icons.check_circle,
-                color: AppColors.pointBlue,
-                size: 24,
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  void _startWalk() async {
-    if (_formKey.currentState!.validate()) {
-      final result = await widget.controller.startNewWalk(
-        title: _titleController.text,
-        petId: _selectedPetId,
-        petName: _selectedPetId == 'pet1' ? 'Maxi' : 'Luna',
-        petImage: 'assets/images/dogs/shiba.png',
-      );
+  void _startWalk(BuildContext context, StartWalkFormState formState) async {
+    if (formState.title.trim().isEmpty) return;
 
-      if (result.isSuccess && mounted) {
-        context.pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.check_circle, color: Colors.white),
-                const SizedBox(width: AppSpacing.sm),
-                Text(result.message),
-              ],
-            ),
-            backgroundColor: AppColors.pointGreen,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-            ),
-          ),
-        );
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.error, color: Colors.white),
-                const SizedBox(width: AppSpacing.sm),
-                Text(result.message),
-              ],
-            ),
-            backgroundColor: AppColors.pointPink,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-            ),
-          ),
-        );
-      }
+    final result = await controller.startNewWalk(
+      title: formState.title,
+      petId: formState.selectedPetId,
+      petName: formState.selectedPetId == 'pet1' ? 'Maxi' : 'Luna',
+      petImage: 'assets/images/dogs/shiba.png',
+    );
+
+    if (result.isSuccess && context.mounted) {
+      context.pop();
+      UiService.showSuccess(context, result.message);
+    } else if (context.mounted) {
+      UiService.showError(context, result.message);
     }
   }
 }

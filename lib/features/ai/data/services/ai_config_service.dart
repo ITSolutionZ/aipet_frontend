@@ -1,94 +1,118 @@
-import '../../../../app/config/app_config.dart';
-import '../../../../shared/mock_data/features/ai/ai_config_mock_data.dart';
+import '../../../../app/app.dart';
 import '../../domain/domain.dart';
+import 'ai_cache_service.dart';
+import 'ai_data_service.dart';
+import 'ai_dio_service.dart';
 
-/// AI 기능 환경별 설정 서비스
+/// 🎯 AI 설정 서비스 (의존성 주입 패턴으로 리팩토링됨)
 ///
-/// Mock 모드와 실제 API 모드를 구분하여 적절한 데이터 소스를 선택합니다.
+/// 기존의 static 패턴을 의존성 주입 패턴으로 변경하여
+/// 테스트 가능하고 유연한 구조로 개선했습니다.
 class AiConfigService {
+  final AiDataService _dataService;
+  final AiCacheService _cacheService;
+
+  /// 생성자 - 의존성 주입
+  const AiConfigService({
+    required AiDataService dataService,
+    required AiCacheService cacheService,
+  }) : _dataService = dataService,
+       _cacheService = cacheService;
+
+  /// 팩토리 생성자 - 기본 설정으로 인스턴스 생성
+  factory AiConfigService.createDefault() {
+    final dioService = AiDioService.instance;
+    final cacheService = AiCacheService();
+    final dataService = AiDataService(cacheService, dioService);
+
+    return AiConfigService(
+      dataService: dataService,
+      cacheService: cacheService,
+    );
+  }
+
   /// 현재 Mock 모드 여부
-  static bool get isMockMode => AppConfig.current.isMockMode;
+  bool get isMockMode => AppConfig.current.isMockMode;
 
   /// AI 카테고리 데이터 가져오기
-  static Future<List<AiCategoryEntity>> getCategories() async {
-    if (isMockMode) {
-      // Mock 모드: 정적 데이터 반환
-      return _getMockCategories();
-    } else {
-      // 실제 API 모드: API에서 데이터 로드 (향후 구현)
-      return _loadCategoriesFromApi();
+  Future<List<AiCategoryEntity>> getCategories() async {
+    try {
+      return await _dataService.getCategories();
+    } catch (e) {
+      throw AiConfigException(
+        AiErrorKeys.configError,
+        configKey: 'categories',
+        originalError: e,
+      );
     }
   }
 
   /// AI 추천 질문 가져오기
-  static Future<List<AiSuggestedQuestionEntity>> getSuggestedQuestions() async {
-    if (isMockMode) {
-      // Mock 모드: 정적 데이터 반환
-      return _getMockSuggestedQuestions();
-    } else {
-      // 실제 API 모드: API에서 데이터 로드 (향후 구현)
-      return _loadSuggestedQuestionsFromApi();
+  Future<List<AiSuggestedQuestionEntity>> getSuggestedQuestions() async {
+    try {
+      return await _dataService.getSuggestedQuestions();
+    } catch (e) {
+      throw AiConfigException(
+        AiErrorKeys.configError,
+        configKey: 'suggested_questions',
+        originalError: e,
+      );
     }
   }
 
   /// AI 응답 템플릿 가져오기
-  static Future<Map<String, String>> getResponseTemplates() async {
-    if (isMockMode) {
-      // Mock 모드: 정적 데이터 반환
-      return _getMockResponseTemplates();
-    } else {
-      // 실제 API 모드: API에서 데이터 로드 (향후 구현)
-      return _loadResponseTemplatesFromApi();
+  Future<Map<String, String>> getResponseTemplates() async {
+    try {
+      return await _dataService.getResponseTemplates();
+    } catch (e) {
+      throw AiConfigException(
+        AiErrorKeys.configError,
+        configKey: 'response_templates',
+        originalError: e,
+      );
     }
   }
 
   /// 키워드 매핑 가져오기
-  static Future<Map<String, List<String>>> getKeywordMapping() async {
-    if (isMockMode) {
-      // Mock 모드: 정적 데이터 반환
-      return _getMockKeywordMapping();
-    } else {
-      // 실제 API 모드: API에서 데이터 로드 (향후 구현)
-      return _loadKeywordMappingFromApi();
+  Future<Map<String, List<String>>> getKeywordMapping() async {
+    try {
+      return await _dataService.getKeywordMapping();
+    } catch (e) {
+      throw AiConfigException(
+        AiErrorKeys.configError,
+        configKey: 'keyword_mapping',
+        originalError: e,
+      );
     }
   }
 
-  // Private methods for Mock data
-  static List<AiCategoryEntity> _getMockCategories() {
-    return AiConfigMockData.getMockCategories();
+  /// 캐시 관리 메서드들
+  void clearCache() {
+    _cacheService.clearCache();
   }
 
-  static List<AiSuggestedQuestionEntity> _getMockSuggestedQuestions() {
-    return AiConfigMockData.getMockSuggestedQuestions();
+  void clearCacheForKey(String key) {
+    _cacheService.clearCacheForKey(key);
   }
 
-  static Map<String, String> _getMockResponseTemplates() {
-    return AiConfigMockData.getMockResponseTemplates();
+  Map<String, dynamic> getCacheStatus() {
+    return _cacheService.getCacheStatus();
   }
 
-  static Map<String, List<String>> _getMockKeywordMapping() {
-    return AiConfigMockData.getMockKeywordMapping();
+  void cleanupExpiredCache() {
+    _cacheService.cleanupExpiredCache();
   }
 
-  // Private methods for API calls (향후 구현)
-  static Future<List<AiCategoryEntity>> _loadCategoriesFromApi() async {
-    // TODO: 실제 API 호출 구현
-    throw UnimplementedError('API 연동 후 구현 예정');
-  }
-
-  static Future<List<AiSuggestedQuestionEntity>>
-  _loadSuggestedQuestionsFromApi() async {
-    // TODO: 실제 API 호출 구현
-    throw UnimplementedError('API 연동 후 구현 예정');
-  }
-
-  static Future<Map<String, String>> _loadResponseTemplatesFromApi() async {
-    // TODO: 실제 API 호출 구현
-    throw UnimplementedError('API 연동 후 구현 예정');
-  }
-
-  static Future<Map<String, List<String>>> _loadKeywordMappingFromApi() async {
-    // TODO: 실제 API 호출 구현
-    throw UnimplementedError('API 연동 후 구현 예정');
+  /// 서비스 상태 확인
+  Future<Map<String, dynamic>> getServiceStatus() async {
+    try {
+      return {
+        'isMockMode': isMockMode,
+        'cacheStatus': _cacheService.getCacheStatus(),
+        'lastCheck': DateTime.now().toIso8601String(),
+      };
+    } catch (e) {
+      throw AiConfigException('Failed to get service status', originalError: e);
+    }
   }
 }

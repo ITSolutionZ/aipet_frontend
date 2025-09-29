@@ -1,19 +1,16 @@
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../shared/shared.dart';
-import '../../../../pet_registor/data/providers/pet_providers.dart';
-import '../../../../pet_registor/domain/entities/pet_profile_entity.dart';
 import 'pet_selection_modal.dart';
 import 'pet_selection_widget.dart';
 
 class ProfileAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final PetProfileEntity pet;
 
-  const ProfileAppBar({
-    super.key,
-    required this.pet,
-  });
+  const ProfileAppBar({super.key, required this.pet});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -34,9 +31,9 @@ class ProfileAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
     petsAsyncValue.whenData((pets) {
       if (pets.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No pets available')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('No pets available')));
         return;
       }
 

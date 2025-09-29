@@ -1,3 +1,0 @@
-library;
-
-export 'button.dart';

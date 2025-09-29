@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class FacilityFilterChip extends StatelessWidget {
+class FilterChip extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const FacilityFilterChip({
+  const FilterChip({
     super.key,
     required this.label,
     required this.isSelected,

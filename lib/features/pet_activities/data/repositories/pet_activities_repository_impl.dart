@@ -1,9 +1,10 @@
-import '../../../../shared/mock_data/mock_data_service.dart';
-import '../../domain/entities/trick_entity.dart';
-import '../../domain/entities/video_bookmark_entity.dart';
-import '../../domain/entities/video_progress_entity.dart';
-import '../../domain/entities/youtube_video_entity.dart';
-import '../../domain/repositories/pet_activities_repository.dart';
+// TODO: 추후 PetActivitiesMockService로 마이그레이션 필요
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/video_bookmark_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/video_progress_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/repositories/pet_activities_repository.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/mock_data_service.dart';
 
 class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
   // 메모리 기반 저장소 (MockDataService의 데이터로 초기화)
@@ -13,7 +14,7 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
   late final List<YouTubeVideoEntity> _youtubeVideos;
 
   PetActivitiesRepositoryImpl() {
-    // MockDataService에서 초기 데이터 로드
+    // MockDataService에서 초기 데이터 로드 (deprecated - 추후 마이그레이션 필요)
     _bookmarks = List.from(MockDataService.getMockVideoBookmarks());
     _progress = Map.from(MockDataService.getMockVideoProgress());
     _tricks = List.from(MockDataService.getMockTricks());
@@ -88,7 +89,7 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
 
     if (MockDataService.isEnabled) {
       for (int i = 0; i < _tricks.length; i++) {
-        _tricks[i] = _tricks[i].copyWith(progress: null);
+        _tricks[i] = _tricks[i].copyWith(practiceCount: 0);
       }
       return;
     }

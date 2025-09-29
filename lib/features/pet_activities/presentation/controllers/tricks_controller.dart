@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../app/controllers/base_controller.dart';
-import '../../../../shared/shared.dart';
-import '../../data/providers/pet_activities_providers.dart';
-import '../../domain/entities/trick_entity.dart';
 
 /// 펫 트릭 컨트롤러
 ///
@@ -88,39 +87,21 @@ class TricksController extends BaseController {
   /// 성공 메시지를 표시합니다.
   void showSuccess(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: AppColors.pointGreen,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      UiService.showSuccess(context, message);
     }
   }
 
   /// 경고 메시지를 표시합니다.
   void showWarning(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: AppColors.pointBrown,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      UiService.showWarning(context, message);
     }
   }
 
   /// 정보 메시지를 표시합니다.
   void showInfo(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: AppColors.pointBlue,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      UiService.showInfo(context, message);
     }
   }
 }

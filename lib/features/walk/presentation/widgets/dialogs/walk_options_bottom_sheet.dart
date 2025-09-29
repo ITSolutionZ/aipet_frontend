@@ -1,9 +1,12 @@
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../shared/shared.dart';
-import '../../../walk.dart';
+import '../../presentation.dart';
+import 'dialogs.dart';
 
 class WalkOptionsBottomSheet extends ConsumerWidget {
   final WalkRecordEntity walkRecord;
@@ -35,7 +38,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
             title: const Text('共有'),
             onTap: () {
               context.pop();
-              _showShareDialog(context, ref, walkRecord);
+              WalkShareDialog.show(context, walkRecord);
             },
           ),
           ListTile(
@@ -46,7 +49,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
             ),
             onTap: () {
               context.pop();
-              controller.deleteWalkRecord(walkRecord.id);
+              WalkDeleteDialog.show(context, walkRecord, controller);
             },
           ),
         ],
@@ -54,105 +57,8 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
     );
   }
 
-  /// 산책 기록 공유 다이얼로그 표시
-  void _showShareDialog(
-    BuildContext context,
-    WidgetRef ref,
-    WalkRecordEntity walkRecord,
-  ) {
-    // TODO: shareTextProvider 구현 필요
-    final shareText =
-        '散歩記録: ${walkRecord.title} - ${walkRecord.formattedDistance}';
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('共有'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.copy),
-              title: const Text('テキストをコピー'),
-              onTap: () {
-                context.pop();
-                _copyToClipboard(context, shareText);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.image),
-              title: const Text('画像を保存'),
-              onTap: () {
-                context.pop();
-                _saveAsImage(context, walkRecord);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.share),
-              title: const Text('システム共有'),
-              onTap: () {
-                context.pop();
-                _systemShare(context, shareText);
-              },
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('キャンセル'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 클립보드에 복사
-  Future<void> _copyToClipboard(BuildContext context, String text) async {
-    // TODO: 클립보드 복사 로직 구현
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('テキストがコピーされました'),
-          backgroundColor: AppColors.pointGreen,
-        ),
-      );
-    }
-  }
-
-  /// 이미지로 저장
-  Future<void> _saveAsImage(
-    BuildContext context,
-    WalkRecordEntity walkRecord,
-  ) async {
-    // TODO: 이미지 저장 로직 구현
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('画像が保存されました'),
-          backgroundColor: AppColors.pointGreen,
-        ),
-      );
-    }
-  }
-
-  /// 시스템 공유
-  Future<void> _systemShare(BuildContext context, String text) async {
-    // TODO: 시스템 공유 로직 구현
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('共有が完了しました'),
-          backgroundColor: AppColors.pointGreen,
-        ),
-      );
-    }
-  }
-
   /// 산책 기록 수정 바텀 시트 표시
   void _showEditWalkDialog(BuildContext context, WalkRecordEntity walkRecord) {
     EditWalkBottomSheet.show(context, walkRecord, controller);
   }
 }
-
-// EditWalkBottomSheet는 별도 파일에서 import됨

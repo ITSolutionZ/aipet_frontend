@@ -1,64 +1,42 @@
+import 'package:aipet_frontend/features/pet_health/presentation/widgets/current_weight_summary_card.dart';
+import 'package:aipet_frontend/features/pet_health/presentation/widgets/weight_chart_card.dart';
+import 'package:aipet_frontend/features/pet_health/presentation/widgets/weight_records_card.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/design/design.dart';
-import '../../../../shared/widgets/soft_gradient_app_bar.dart';
-import '../widgets/current_weight_summary_card.dart';
-import '../widgets/weight_chart_card.dart';
-import '../widgets/weight_records_card.dart';
-
 /// 체중 추적 화면
-class WeightTrackingScreen extends ConsumerStatefulWidget {
+class WeightTrackingScreen extends ConsumerWidget {
   const WeightTrackingScreen({super.key});
 
   @override
-  ConsumerState<WeightTrackingScreen> createState() =>
-      _WeightTrackingScreenState();
-}
-
-class _WeightTrackingScreenState extends ConsumerState<WeightTrackingScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CommonScreenPatterns.buildStandardScreen(
+      title: '体重管理',
       backgroundColor: AppColors.pureWhite,
       appBar: const SoftGradientBackAppBar(title: '体重管理'),
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 현재 체중 요약 카드
-            CurrentWeightSummaryCard(),
-            SizedBox(height: AppSpacing.xl),
+      body: CommonScreenPatterns.buildScrollableContent(
+        children: [
+          // 현재 체중 요약 카드
+          const CurrentWeightSummaryCard(),
+          const SizedBox(height: AppSpacing.xl),
 
-            // 체중 변화 차트 카드
-            WeightChartCard(),
-            SizedBox(height: AppSpacing.xl),
+          // 체중 변화 차트 카드
+          const WeightChartCard(),
+          const SizedBox(height: AppSpacing.xl),
 
-            // 체중 기록 목록
-            WeightRecordsCard(),
-            SizedBox(height: AppSpacing.xl),
-          ],
-        ),
+          // 체중 기록 목록
+          const WeightRecordsCard(),
+          const SizedBox(height: AppSpacing.xl),
+        ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // 체중 기록 추가 다이얼로그 표시
-          _showAddWeightDialog(context);
-        },
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add),
-        label: const Text(
-          '体重記録',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+      floatingActionButtonLabel: '体重記録',
+      onFloatingActionButtonPressed: () {
+        // 체중 기록 추가 다이얼로그 표시
+        _showAddWeightDialog(context);
+      },
     );
   }
-
 
   void _showAddWeightDialog(BuildContext context) {
     showDialog(

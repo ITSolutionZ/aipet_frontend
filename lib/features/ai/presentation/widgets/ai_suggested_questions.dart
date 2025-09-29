@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/ai_message_entity.dart';
 
 /// AI 추천 질문 위젯
 class AiSuggestedQuestions extends StatelessWidget {
@@ -17,11 +16,15 @@ class AiSuggestedQuestions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 디버그: 질문 목록 확인
-    debugPrint('AiSuggestedQuestions: Building with ${questions.length} questions');
+    debugPrint(
+      'AiSuggestedQuestions: Building with ${questions.length} questions',
+    );
     for (int i = 0; i < questions.length; i++) {
-      debugPrint('Question $i: "${questions[i].question}" (icon: ${questions[i].icon})');
+      debugPrint(
+        'Question $i: "${questions[i].question}" (icon: ${questions[i].icon})',
+      );
     }
-    
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
@@ -75,7 +78,9 @@ class AiSuggestedQuestions extends StatelessWidget {
                       const SizedBox(width: AppSpacing.xs),
                       Flexible(
                         child: Text(
-                          question.question.isEmpty ? 'No question text' : question.question,
+                          question.question.isEmpty
+                              ? 'No question text'
+                              : question.question,
                           style: AppFonts.bodyMedium.copyWith(
                             color: AppColors.pointDark,
                             fontWeight: FontWeight.w500,

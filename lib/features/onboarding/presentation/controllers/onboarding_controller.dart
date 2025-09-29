@@ -1,24 +1,15 @@
-import '../../../../app/controllers/base_controller.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/onboarding/data/data.dart';
+import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
-class OnboardingResult {
-  final bool isSuccess;
-  final String message;
-  final dynamic data;
-
-  const OnboardingResult._(this.isSuccess, this.message, this.data);
-
-  factory OnboardingResult.success(String message, [dynamic data]) =>
-      OnboardingResult._(true, message, data);
-  factory OnboardingResult.failure(String message) =>
-      OnboardingResult._(false, message, null);
-}
-
+/// 🎯 Professional UseCase-Driven Onboarding Controller
+///
+/// All actions go through UseCases following Clean Architecture principles
 class OnboardingController extends BaseController {
   OnboardingController(super.ref);
 
-  // UseCases
+  // ✅ All UseCases properly injected
   late final CompleteOnboardingUseCase _completeUseCase =
       CompleteOnboardingUseCase(ref.read(onboardingRepositoryProvider));
   late final CheckOnboardingStatusUseCase _checkStatusUseCase =
@@ -27,66 +18,105 @@ class OnboardingController extends BaseController {
       LoadOnboardingDataUseCase(ref.read(onboardingRepositoryProvider));
   late final RestartOnboardingUseCase _restartUseCase =
       RestartOnboardingUseCase(ref.read(onboardingRepositoryProvider));
+  late final NextPageUseCase _nextPageUseCase = NextPageUseCase(
+    ref.read(onboardingRepositoryProvider),
+  );
+  late final PreviousPageUseCase _previousPageUseCase = PreviousPageUseCase(
+    ref.read(onboardingRepositoryProvider),
+  );
+  late final GoToPageUseCase _goToPageUseCase = GoToPageUseCase(
+    ref.read(onboardingRepositoryProvider),
+  );
+  late final NavigateAfterOnboardingUseCase _navigationUseCase =
+      NavigateAfterOnboardingUseCase(ref.read(onboardingRepositoryProvider));
 
-  void nextPage() {
-    ref.read(onboardingNotifierProvider.notifier).nextPage();
+  /// ✅ Navigate to next page through UseCase
+  Future<Result<void>> nextPage() async {
+    final result = await _nextPageUseCase();
+    if (result.isSuccess) {
+      // Update UI state after successful navigation
+      ref.read(onboardingNotifierProvider.notifier).nextPage();
+    }
+    return result;
   }
 
-  void previousPage() {
-    ref.read(onboardingNotifierProvider.notifier).previousPage();
+  /// ✅ Navigate to previous page through UseCase
+  Future<Result<void>> previousPage() async {
+    final result = await _previousPageUseCase();
+    if (result.isSuccess) {
+      // Update UI state after successful navigation
+      ref.read(onboardingNotifierProvider.notifier).previousPage();
+    }
+    return result;
   }
 
-  void goToPage(int page) {
-    ref.read(onboardingNotifierProvider.notifier).goToPage(page);
+  /// ✅ Navigate to specific page through UseCase
+  Future<Result<void>> goToPage(int page) async {
+    final result = await _goToPageUseCase(page);
+    if (result.isSuccess) {
+      // Update UI state after successful navigation
+      ref.read(onboardingNotifierProvider.notifier).goToPage(page);
+    }
+    return result;
   }
 
-  void completeOnboarding() {
-    ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
+  /// ✅ Load onboarding data through UseCase
+  Future<Result<List<OnboardingPage>>> loadOnboardingData() async {
+    final result = await _loadDataUseCase();
+    return result;
   }
 
-  /// 온보딩 데이터 로드
-  Future<OnboardingResult> loadOnboardingData() async {
+  /// ✅ Complete onboarding through UseCase and update state
+  Future<Result<void>> finishOnboarding() async {
+    final result = await _completeUseCase();
+    if (result.isSuccess) {
+      // Update UI state after successful completion
+      ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
+    }
+    return result;
+  }
+
+  /// ✅ Check onboarding status through UseCase
+  Future<Result<OnboardingState>> checkOnboardingStatus() async {
+    final result = await _checkStatusUseCase();
+    return result;
+  }
+
+  /// ✅ Restart onboarding through UseCase and reset state
+  Future<Result<void>> restartOnboarding() async {
+    final result = await _restartUseCase();
+    if (result.isSuccess) {
+      // Reset UI state after successful restart
+      await goToPage(0);
+    }
+    return result;
+  }
+
+  /// ✅ Initialize onboarding state
+  Future<Result<void>> initializeOnboarding() async {
     try {
-      final pages = await _loadDataUseCase();
-      return OnboardingResult.success('온보딩 데이터가 로드되었습니다', pages);
+      // Start onboarding tracking
+      ref.read(onboardingNotifierProvider.notifier).startOnboarding();
+      return Result.success(null.toString(), '온보딩이 시작되었습니다');
     } catch (error) {
-      handleError(error);
-      return OnboardingResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.failure('온보딩 초기화 중 오류가 발생했습니다: $error');
     }
   }
 
-  /// 온보딩 완료 처리
-  Future<OnboardingResult> finishOnboarding() async {
-    try {
-      await _completeUseCase();
-      completeOnboarding();
-      return OnboardingResult.success('온보딩이 완료되었습니다');
-    } catch (error) {
-      handleError(error);
-      return OnboardingResult.failure(getUserFriendlyErrorMessage(error));
-    }
+  /// ✅ Get navigation route after onboarding completion
+  Future<Result<String>> getNavigationRoute() async {
+    final result = await _navigationUseCase();
+    return result;
   }
 
-  /// 온보딩 상태 확인
-  Future<OnboardingResult> checkOnboardingStatus() async {
-    try {
-      final status = await _checkStatusUseCase();
-      return OnboardingResult.success('온보딩 상태를 확인했습니다', status);
-    } catch (error) {
-      handleError(error);
-      return OnboardingResult.failure(getUserFriendlyErrorMessage(error));
+  /// ✅ Complete onboarding and get navigation route
+  Future<Result<String>> completeAndNavigate() async {
+    final completeResult = await finishOnboarding();
+    if (!completeResult.isSuccess) {
+      return Result.failure('온보딩 완료에 실패했습니다');
     }
-  }
 
-  /// 온보딩 재시작
-  Future<OnboardingResult> restartOnboarding() async {
-    try {
-      await _restartUseCase();
-      goToPage(0);
-      return OnboardingResult.success('온보딩이 재시작되었습니다');
-    } catch (error) {
-      handleError(error);
-      return OnboardingResult.failure(getUserFriendlyErrorMessage(error));
-    }
+    final navigationResult = await getNavigationRoute();
+    return navigationResult;
   }
 }

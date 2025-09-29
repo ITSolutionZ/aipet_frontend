@@ -1,5 +1,5 @@
-import '../entities/pet_profile_entity.dart';
-import '../entities/pet_registration_data_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_registration_data_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 /// 펫 등록 데이터를 PetProfileEntity로 변환하는 유틸리티
 class PetRegistrationConverter {
@@ -20,7 +20,6 @@ class PetRegistrationConverter {
       type: data.selectedPetType!,
       breed: _getBreedString(data),
       birthDate: birthDate,
-      age: _calculateAge(birthDate),
       gender: data.petGender ?? 'unknown',
       weight: data.petWeight ?? 0.0,
       imagePath: _getImagePath(data),
@@ -162,16 +161,5 @@ class PetRegistrationConverter {
     }
 
     return additionalInfo;
-  }
-
-  /// 생년월일로부터 나이 계산
-  static int _calculateAge(DateTime birthDate) {
-    final now = DateTime.now();
-    int age = now.year - birthDate.year;
-    if (now.month < birthDate.month ||
-        (now.month == birthDate.month && now.day < birthDate.day)) {
-      age--;
-    }
-    return age;
   }
 }

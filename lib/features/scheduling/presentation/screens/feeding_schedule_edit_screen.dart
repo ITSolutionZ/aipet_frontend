@@ -1,11 +1,14 @@
 import 'dart:developer' as developer;
 
+import 'package:aipet_frontend/features/scheduling/presentation/widgets/scheduling_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart'
+    as pet_feature_mock;
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as SchedulingMock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../widgets/widgets.dart';
 
 /// 급여 스케줄 편집 페이지
 class FeedingScheduleEditScreen extends ConsumerStatefulWidget {
@@ -37,10 +40,12 @@ class _FeedingScheduleEditScreenState
   late Map<String, dynamic>? _petSizeGuide;
   late List<String> _selectedStatuses;
   late Map<String, String> _statusValues;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     _selectedMealType = widget.mealType;
     _selectedPetId = widget.petId;
 
@@ -61,17 +66,19 @@ class _FeedingScheduleEditScreenState
 
   /// 펫 정보 및 사이즈 가이드 로드
   void _loadPetInfo() {
-    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes =
+        SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     _selectedPetInfo = petSizes[_selectedPetId];
 
     if (_selectedPetInfo != null) {
       final size = _selectedPetInfo!['size'] as String;
-      final sizeGuide = SchedulingMockService.getPetSizeFeedingGuide();
+      final sizeGuide =
+          SchedulingMock.SchedulingMockService.getPetSizeFeedingGuide();
       _petSizeGuide = sizeGuide[size];
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = PetMockData.getPetCurrentStatus(_selectedPetId);
+    final currentStatus = MockDataService.getPetCurrentStatus(_selectedPetId);
     _selectedStatuses = List<String>.from(
       currentStatus['selectedStatuses'] ?? [],
     );
@@ -83,12 +90,14 @@ class _FeedingScheduleEditScreenState
   @override
   void dispose() {
     _amountController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   /// 펫 선택 처리
   void _onPetSelected(String petId) {
-    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes =
+        SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     setState(() {
       _selectedPetId = petId;
       _selectedPetInfo = petSizes[petId];
@@ -101,10 +110,13 @@ class _FeedingScheduleEditScreenState
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final statusOptions =
+            pet_feature_mock.PetMockService.getPetStatusOptions();
         return PetStatusSelectionDialog(
           petInfo: petInfo,
           selectedStatuses: List<String>.from(_selectedStatuses),
           statusValues: Map<String, String>.from(_statusValues),
+          statusOptions: statusOptions,
           onStatusUpdated:
               (
                 List<String> selectedStatuses,
@@ -115,11 +127,7 @@ class _FeedingScheduleEditScreenState
                   _statusValues = statusValues;
 
                   // MockDataService에 상태 업데이트
-                  PetMockData.updatePetStatus(
-                    petId,
-                    selectedStatuses,
-                    statusValues,
-                  );
+                  MockDataService.updatePetStatus(petId, statusValues);
                 });
               },
         );
@@ -178,7 +186,11 @@ class _FeedingScheduleEditScreenState
   /// 목업 데이터 업데이트
   void _updateMockData(String mealType, String time, String amount) {
     // MockDataService의 데이터를 실제로 업데이트
-    SchedulingMockService.updateFeedingSchedule(mealType, time, amount);
+    SchedulingMock.SchedulingMockService.updateFeedingSchedule(
+      mealType,
+      time,
+      amount,
+    );
 
     // 변경사항을 사용자에게 알림
     developer.log('목업 데이터 업데이트: $mealType - $time - $amount');
@@ -188,7 +200,8 @@ class _FeedingScheduleEditScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: SoftGradientAppBar(
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
         title: '$_selectedMealTypeスケジュール編集',
         actions: [
           TextButton(
@@ -203,61 +216,74 @@ class _FeedingScheduleEditScreenState
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 펫 선택 그리드
-            PetSelectionGrid(
-              selectedPetId: _selectedPetId,
-              selectedStatuses: _selectedStatuses,
-              onPetSelected: _onPetSelected,
-              onPetStatusDialog: _showPetStatusDialog,
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 펫 선택 그리드
+                    PetSelectionGrid(
+                      selectedPetId: _selectedPetId,
+                      selectedStatuses: _selectedStatuses,
+                      onPetSelected: _onPetSelected,
+                      onPetStatusDialog: _showPetStatusDialog,
+                    ),
+
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // 식사 타입 선택
+                    MealTypeDropdown(
+                      selectedMealType: _selectedMealType,
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _selectedMealType = newValue;
+                          });
+                        }
+                      },
+                    ),
+
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // 시간 설정
+                    TimeSelector(
+                      title: '時間設定',
+                      selectedTime: _selectedTime,
+                      onTimeTap: _selectTime,
+                    ),
+
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // 양 설정
+                    AmountInput(controller: _amountController),
+
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // 급여 가이드 카드
+                    if (_selectedPetInfo != null && _petSizeGuide != null)
+                      FeedingGuideCard(
+                        petInfo: _selectedPetInfo!,
+                        sizeGuide: _petSizeGuide!,
+                      ),
+
+                    const SizedBox(height: AppSpacing.lg),
+
+                    ActionButton.primary(
+                      text: '保存',
+                      onPressed: _saveSchedule,
+                      isEnabled: true,
+                    ),
+                  ],
+                ),
+              ]),
             ),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // 식사 타입 선택
-            MealTypeDropdown(
-              selectedMealType: _selectedMealType,
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    _selectedMealType = newValue;
-                  });
-                }
-              },
-            ),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // 시간 설정
-            TimeSelector(
-              title: '時間設定',
-              selectedTime: _selectedTime,
-              onTimeTap: _selectTime,
-            ),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // 양 설정
-            AmountInput(controller: _amountController),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // 급여 가이드 카드
-            if (_selectedPetInfo != null && _petSizeGuide != null)
-              FeedingGuideCard(
-                petInfo: _selectedPetInfo!,
-                sizeGuide: _petSizeGuide!,
-              ),
-
-            const Spacer(),
-
-            SaveButton(onPressed: _saveSchedule),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import '../../shared.dart';
 
 /// 설정 타일 컴포넌트 (범용)
 class SettingsTileComponent extends StatelessWidget {

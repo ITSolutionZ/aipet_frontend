@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -11,6 +11,8 @@ void main() {
           name: 'Test Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -38,6 +40,8 @@ void main() {
           type: 'dog',
           breed: 'Golden Retriever',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           imagePath: 'path/to/image.jpg',
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
@@ -69,6 +73,8 @@ void main() {
           name: 'Original Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -105,6 +111,8 @@ void main() {
           name: 'Original Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -134,6 +142,8 @@ void main() {
           name: 'Young Pet',
           type: 'dog',
           birthDate: DateTime(now.year, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: now,
           updatedAt: now,
@@ -152,6 +162,8 @@ void main() {
           name: 'One Year Old Pet',
           type: 'dog',
           birthDate: DateTime(now.year - 1, now.month, now.day),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: now,
           updatedAt: now,
@@ -173,6 +185,8 @@ void main() {
             now.month + 1,
             now.day,
           ), // Birthday next month
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: now,
           updatedAt: now,
@@ -204,6 +218,8 @@ void main() {
             name: 'Test Pet',
             type: entry.key,
             birthDate: DateTime(2020, 1, 1),
+            gender: 'male',
+            weight: 25.0,
             ownerId: 'owner-123',
             createdAt: DateTime(2023, 1, 1),
             updatedAt: DateTime(2023, 1, 1),
@@ -223,6 +239,8 @@ void main() {
           name: 'Test Pet',
           type: 'DOG',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -250,6 +268,8 @@ void main() {
             name: 'Test Pet',
             type: entry.key,
             birthDate: DateTime(2020, 1, 1),
+            gender: 'male',
+            weight: 25.0,
             ownerId: 'owner-123',
             createdAt: DateTime(2023, 1, 1),
             updatedAt: DateTime(2023, 1, 1),
@@ -265,13 +285,15 @@ void main() {
     });
 
     group('equality and hashCode', () {
-      test('should be equal when ids are same', () {
+      test('should be equal when all fields are same', () {
         // Arrange
         final pet1 = PetProfileEntity(
           id: 'same-id',
-          name: 'Pet One',
+          name: 'Same Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -279,12 +301,14 @@ void main() {
 
         final pet2 = PetProfileEntity(
           id: 'same-id',
-          name: 'Pet Two',
-          type: 'cat',
-          birthDate: DateTime(2021, 1, 1),
-          ownerId: 'owner-456',
-          createdAt: DateTime(2023, 2, 1),
-          updatedAt: DateTime(2023, 2, 1),
+          name: 'Same Pet',
+          type: 'dog',
+          birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
+          ownerId: 'owner-123',
+          createdAt: DateTime(2023, 1, 1),
+          updatedAt: DateTime(2023, 1, 1),
         );
 
         // Act & Assert
@@ -299,6 +323,8 @@ void main() {
           name: 'Same Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -309,6 +335,8 @@ void main() {
           name: 'Same Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),
@@ -329,6 +357,8 @@ void main() {
           type: 'dog',
           breed: 'Golden Retriever',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'owner-123',
           createdAt: DateTime(2023, 1, 1),
           updatedAt: DateTime(2023, 1, 1),

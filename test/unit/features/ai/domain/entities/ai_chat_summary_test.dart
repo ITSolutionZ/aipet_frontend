@@ -1,7 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart';
-import 'package:aipet_frontend/shared/mock_data/test/test_data_helper.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/test/test_data_helper.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AiChatSummary', () {
@@ -18,7 +17,10 @@ void main() {
 
         // Assert
         expect(summary.title, equals('ペットの健康相談'));
-        expect(summary.content, equals('ペットの健康管理について相談し、定期的な健康診断と適切な食事の重要性について学びました。'));
+        expect(
+          summary.content,
+          equals('ペットの健康管理について相談し、定期的な健康診断と適切な食事の重要性について学びました。'),
+        );
       });
     });
 

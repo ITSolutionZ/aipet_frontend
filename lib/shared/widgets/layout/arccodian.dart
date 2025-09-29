@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/shared/widgets/layout/card.dart'; // GlassCard
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// AccordionItem: 단일 아코디언 항목 정의
 class AccordionItem {
@@ -16,10 +17,38 @@ class AccordionItem {
   });
 }
 
+/// 🎯 Glass Accordion State Provider
+final glassAccordionProvider =
+    StateNotifierProvider.family<GlassAccordionController, List<bool>, String>(
+      (ref, accordionId) => GlassAccordionController(),
+    );
+
+class GlassAccordionController extends StateNotifier<List<bool>> {
+  GlassAccordionController() : super([]);
+
+  void initialize(List<AccordionItem> items) {
+    state = items.map((e) => e.initiallyOpen).toList();
+  }
+
+  void toggle(int index, bool multiOpen) {
+    final newState = List<bool>.from(state);
+
+    if (multiOpen) {
+      newState[index] = !newState[index];
+    } else {
+      for (int i = 0; i < newState.length; i++) {
+        newState[i] = i == index ? !newState[i] : false;
+      }
+    }
+
+    state = newState;
+  }
+}
+
 /// 재사용 가능한 글라스 아코디언
 /// - FAQ에 최적화: 키보드 접근/애니메이션/다중 오픈 지원
 /// - GlassCard 스타일을 감싸서 일관된 룩 앤드 필 유지
-class GlassAccordion extends StatefulWidget {
+class GlassAccordion extends ConsumerWidget {
   final List<AccordionItem> items;
   final bool multiOpen; // 여러 개 동시 오픈
   final EdgeInsetsGeometry itemMargin;
@@ -27,6 +56,7 @@ class GlassAccordion extends StatefulWidget {
   final Curve animationCurve;
   final double borderRadius;
   final double dividerOpacity; // 아이템 사이 얇은 디바이더 느낌
+  final String? accordionId; // 각 아코디언을 구분하는 ID
 
   const GlassAccordion({
     super.key,
@@ -37,6 +67,7 @@ class GlassAccordion extends StatefulWidget {
     this.animationCurve = Curves.easeOutCubic,
     this.borderRadius = 14,
     this.dividerOpacity = 0.08,
+    this.accordionId,
   });
 
   /// FAQ용 간단 생성자 (Q/A 문자열)
@@ -44,6 +75,7 @@ class GlassAccordion extends StatefulWidget {
     Key? key,
     required List<MapEntry<String, String>> qa,
     bool multiOpen = true,
+    String? accordionId,
   }) {
     final items = qa
         .map(
@@ -53,52 +85,43 @@ class GlassAccordion extends StatefulWidget {
           ),
         )
         .toList();
-    return GlassAccordion(key: key, items: items, multiOpen: multiOpen);
+    return GlassAccordion(
+      key: key,
+      items: items,
+      multiOpen: multiOpen,
+      accordionId: accordionId,
+    );
   }
 
   @override
-  State<GlassAccordion> createState() => _GlassAccordionState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final effectiveId = accordionId ?? 'default_accordion';
+    final openStates = ref.watch(glassAccordionProvider(effectiveId));
 
-class _GlassAccordionState extends State<GlassAccordion> {
-  late final List<bool> _open; // 각 아이템의 오픈 상태
-
-  @override
-  void initState() {
-    super.initState();
-    _open = widget.items.map((e) => e.initiallyOpen).toList(growable: false);
-  }
-
-  void _toggle(int index) {
-    setState(() {
-      if (widget.multiOpen) {
-        _open[index] = !_open[index];
-      } else {
-        for (int i = 0; i < _open.length; i++) {
-          _open[i] = i == index ? !_open[i] : false;
-        }
+    // Initialize the accordion state if it's empty
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (openStates.isEmpty && items.isNotEmpty) {
+        ref
+            .read(glassAccordionProvider(effectiveId).notifier)
+            .initialize(items);
       }
     });
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return Column(
       children: [
-        for (int i = 0; i < widget.items.length; i++) ...[
+        for (int i = 0; i < items.length; i++) ...[
           _AccordionItemCard(
-            item: widget.items[i],
-            isOpen: _open[i],
-            onToggle: () => _toggle(i),
-            duration: widget.animationDuration,
-            curve: widget.animationCurve,
-            borderRadius: widget.borderRadius,
+            item: items[i],
+            isOpen: i < openStates.length ? openStates[i] : false,
+            onToggle: () => ref
+                .read(glassAccordionProvider(effectiveId).notifier)
+                .toggle(i, multiOpen),
+            duration: animationDuration,
+            curve: animationCurve,
+            borderRadius: borderRadius,
           ),
-          if (i != widget.items.length - 1)
-            Opacity(
-              opacity: widget.dividerOpacity,
-              child: const Divider(height: 12),
-            ),
+          if (i != items.length - 1)
+            Opacity(opacity: dividerOpacity, child: const Divider(height: 12)),
         ],
       ],
     );

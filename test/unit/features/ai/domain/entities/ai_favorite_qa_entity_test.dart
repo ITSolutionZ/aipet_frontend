@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -15,6 +15,9 @@ void main() {
         name: 'テストペット',
         type: 'dog',
         breed: 'ゴールデンレトリバー',
+        age: 4,
+        weight: 25.0,
+        gender: 'male',
         birthDate: DateTime(2020, 1, 1),
         ownerId: 'owner-1',
         createdAt: DateTime(2020, 1, 1),
@@ -46,26 +49,32 @@ void main() {
         expect(testFavoriteQa.originalTimestamp, equals(testOriginalTimestamp));
       });
 
-      test('should create AiFavoriteQaEntity with minimal required parameters', () {
-        // Act
-        final minimalFavoriteQa = AiFavoriteQaEntity(
-          id: 'fav-qa-2',
-          question: 'テスト質問',
-          answer: 'テスト回答',
-          createdAt: testDateTime,
-          originalTimestamp: testOriginalTimestamp,
-        );
+      test(
+        'should create AiFavoriteQaEntity with minimal required parameters',
+        () {
+          // Act
+          final minimalFavoriteQa = AiFavoriteQaEntity(
+            id: 'fav-qa-2',
+            question: 'テスト質問',
+            answer: 'テスト回答',
+            createdAt: testDateTime,
+            originalTimestamp: testOriginalTimestamp,
+          );
 
-        // Assert
-        expect(minimalFavoriteQa.id, equals('fav-qa-2'));
-        expect(minimalFavoriteQa.question, equals('テスト質問'));
-        expect(minimalFavoriteQa.answer, equals('テスト回答'));
-        expect(minimalFavoriteQa.pet, isNull);
-        expect(minimalFavoriteQa.categoryId, isNull);
-        expect(minimalFavoriteQa.categoryName, isNull);
-        expect(minimalFavoriteQa.createdAt, equals(testDateTime));
-        expect(minimalFavoriteQa.originalTimestamp, equals(testOriginalTimestamp));
-      });
+          // Assert
+          expect(minimalFavoriteQa.id, equals('fav-qa-2'));
+          expect(minimalFavoriteQa.question, equals('テスト質問'));
+          expect(minimalFavoriteQa.answer, equals('テスト回答'));
+          expect(minimalFavoriteQa.pet, isNull);
+          expect(minimalFavoriteQa.categoryId, isNull);
+          expect(minimalFavoriteQa.categoryName, isNull);
+          expect(minimalFavoriteQa.createdAt, equals(testDateTime));
+          expect(
+            minimalFavoriteQa.originalTimestamp,
+            equals(testOriginalTimestamp),
+          );
+        },
+      );
     });
 
     group('copyWith', () {
@@ -84,7 +93,10 @@ void main() {
         expect(updatedFavoriteQa.categoryId, equals('health')); // unchanged
         expect(updatedFavoriteQa.categoryName, equals('更新されたカテゴリ'));
         expect(updatedFavoriteQa.createdAt, equals(testDateTime)); // unchanged
-        expect(updatedFavoriteQa.originalTimestamp, equals(testOriginalTimestamp)); // unchanged
+        expect(
+          updatedFavoriteQa.originalTimestamp,
+          equals(testOriginalTimestamp),
+        ); // unchanged
       });
 
       test('should keep original values when no parameters provided', () {
@@ -97,9 +109,15 @@ void main() {
         expect(copiedFavoriteQa.answer, equals(testFavoriteQa.answer));
         expect(copiedFavoriteQa.pet, equals(testFavoriteQa.pet));
         expect(copiedFavoriteQa.categoryId, equals(testFavoriteQa.categoryId));
-        expect(copiedFavoriteQa.categoryName, equals(testFavoriteQa.categoryName));
+        expect(
+          copiedFavoriteQa.categoryName,
+          equals(testFavoriteQa.categoryName),
+        );
         expect(copiedFavoriteQa.createdAt, equals(testFavoriteQa.createdAt));
-        expect(copiedFavoriteQa.originalTimestamp, equals(testFavoriteQa.originalTimestamp));
+        expect(
+          copiedFavoriteQa.originalTimestamp,
+          equals(testFavoriteQa.originalTimestamp),
+        );
       });
     });
 
@@ -150,6 +168,9 @@ void main() {
           id: 'pet-2',
           name: '品種なしペット',
           type: 'cat',
+          age: 2,
+          weight: 4.5,
+          gender: 'female',
           birthDate: DateTime(2021, 1, 1),
           ownerId: 'owner-1',
           createdAt: DateTime(2021, 1, 1),
@@ -179,7 +200,10 @@ void main() {
         expect(json['categoryId'], equals('health'));
         expect(json['categoryName'], equals('健康管理'));
         expect(json['createdAt'], equals(testDateTime.toIso8601String()));
-        expect(json['originalTimestamp'], equals(testOriginalTimestamp.toIso8601String()));
+        expect(
+          json['originalTimestamp'],
+          equals(testOriginalTimestamp.toIso8601String()),
+        );
       });
 
       test('should handle null pet in JSON conversion', () {
@@ -245,7 +269,10 @@ void main() {
 
         // Assert
         expect(testFavoriteQa, isNot(equals(differentFavoriteQa)));
-        expect(testFavoriteQa.hashCode, isNot(equals(differentFavoriteQa.hashCode)));
+        expect(
+          testFavoriteQa.hashCode,
+          isNot(equals(differentFavoriteQa.hashCode)),
+        );
       });
     });
 
@@ -264,7 +291,9 @@ void main() {
       test('should handle long questions in toString', () {
         // Arrange
         const longQuestion = 'とても長い質問で20文字を超える内容を含んでいます。これはどのように表示されるでしょうか？';
-        final longQuestionFavoriteQa = testFavoriteQa.copyWith(question: longQuestion);
+        final longQuestionFavoriteQa = testFavoriteQa.copyWith(
+          question: longQuestion,
+        );
 
         // Act
         final stringRepresentation = longQuestionFavoriteQa.toString();

@@ -62,7 +62,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 
 // 서비스만 사용
-import 'package:aipet_frontend/shared/services/services.dart';
+import 'package:aipet_frontend/shared/core/services/services.dart';
 
 // Mock 데이터만 사용
 import 'package:aipet_frontend/shared/mock_data/mock_data.dart';
@@ -178,7 +178,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 
 // サービスのみ使用
-import 'package:aipet_frontend/shared/services/services.dart';
+import 'package:aipet_frontend/shared/core/services/services.dart';
 
 // Mockデータのみ使用
 import 'package:aipet_frontend/shared/mock_data/mock_data.dart';

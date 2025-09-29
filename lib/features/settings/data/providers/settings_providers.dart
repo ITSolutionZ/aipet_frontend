@@ -1,12 +1,16 @@
+import 'package:aipet_frontend/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/change_password_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/clear_app_cache_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/delete_account_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/export_app_data_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/get_app_settings_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/get_user_profile_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/import_app_data_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/save_app_settings_usecase.dart';
+import 'package:aipet_frontend/features/settings/domain/usecases/update_user_profile_usecase.dart';
+import 'package:aipet_frontend/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../domain/entities/user_profile_entity.dart';
-import '../../domain/usecases/get_app_settings_usecase.dart';
-import '../../domain/usecases/get_user_profile_usecase.dart';
-import '../../domain/usecases/save_app_settings_usecase.dart';
-import '../../domain/usecases/update_user_profile_usecase.dart';
-import '../repositories/settings_repository_impl.dart';
 
 part 'settings_providers.g.dart';
 
@@ -41,13 +45,48 @@ SaveAppSettingsUseCase saveAppSettingsUseCase(Ref ref) {
   return SaveAppSettingsUseCase(repository);
 }
 
+@riverpod
+ChangePasswordUseCase changePasswordUseCase(Ref ref) {
+  final repository = ref.watch(settingsRepositoryProvider);
+  return ChangePasswordUseCase(repository);
+}
+
+@riverpod
+DeleteAccountUseCase deleteAccountUseCase(Ref ref) {
+  final repository = ref.watch(settingsRepositoryProvider);
+  return DeleteAccountUseCase(repository);
+}
+
+@riverpod
+ExportAppDataUseCase exportAppDataUseCase(Ref ref) {
+  final repository = ref.watch(settingsRepositoryProvider);
+  return ExportAppDataUseCase(repository);
+}
+
+@riverpod
+ImportAppDataUseCase importAppDataUseCase(Ref ref) {
+  final repository = ref.watch(settingsRepositoryProvider);
+  return ImportAppDataUseCase(repository);
+}
+
+@riverpod
+ClearAppCacheUseCase clearAppCacheUseCase(Ref ref) {
+  final repository = ref.watch(settingsRepositoryProvider);
+  return ClearAppCacheUseCase(repository);
+}
+
 // 사용자 프로필 프로바이더
 @riverpod
 class UserProfileNotifier extends _$UserProfileNotifier {
   @override
-  Future<UserProfileEntity> build() async {
+  Future<Map<String, dynamic>> build() async {
     final useCase = ref.watch(getUserProfileUseCaseProvider);
-    return useCase();
+    final result = await useCase();
+    if (result.isSuccess) {
+      return result.dataOrNull!;
+    } else {
+      throw Exception(result.error);
+    }
   }
 
   /// 프로필 새로고침
@@ -55,18 +94,25 @@ class UserProfileNotifier extends _$UserProfileNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final useCase = ref.read(getUserProfileUseCaseProvider);
-      return useCase();
+      final result = await useCase();
+      if (result.isSuccess) {
+        return result.dataOrNull!;
+      } else {
+        throw Exception(result.error);
+      }
     });
   }
 
   /// 프로필 업데이트
-  Future<bool> updateProfile(UserProfileEntity profile) async {
+  Future<bool> updateProfile(Map<String, dynamic> profile) async {
     final useCase = ref.read(updateUserProfileUseCaseProvider);
-    final success = await useCase(profile);
-    if (success) {
+    final result = await useCase(profile);
+    if (result.isSuccess) {
       await refresh();
+      return true;
+    } else {
+      return false;
     }
-    return success;
   }
 }
 
@@ -74,9 +120,14 @@ class UserProfileNotifier extends _$UserProfileNotifier {
 @riverpod
 class AppSettingsNotifier extends _$AppSettingsNotifier {
   @override
-  Future<AppSettingsEntity> build() async {
+  Future<Map<String, dynamic>> build() async {
     final useCase = ref.watch(getAppSettingsUseCaseProvider);
-    return useCase();
+    final result = await useCase();
+    if (result.isSuccess) {
+      return result.dataOrNull!;
+    } else {
+      throw Exception(result.error);
+    }
   }
 
   /// 설정 새로고침
@@ -84,17 +135,30 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final useCase = ref.read(getAppSettingsUseCaseProvider);
-      return useCase();
+      final result = await useCase();
+      if (result.isSuccess) {
+        return result.dataOrNull!;
+      } else {
+        throw Exception(result.error);
+      }
     });
   }
 
   /// 설정 저장
-  Future<bool> saveSettings(AppSettingsEntity settings) async {
+  Future<bool> saveSettings(Map<String, dynamic> settings) async {
     final useCase = ref.read(saveAppSettingsUseCaseProvider);
-    final success = await useCase(settings);
-    if (success) {
+    final result = await useCase(settings);
+    if (result.isSuccess) {
       state = AsyncValue.data(settings);
+      return true;
+    } else {
+      return false;
     }
-    return success;
   }
+}
+
+// Settings Controller 프로바이더
+@riverpod
+SettingsController settingsController(Ref ref) {
+  return SettingsController(ref as WidgetRef);
 }

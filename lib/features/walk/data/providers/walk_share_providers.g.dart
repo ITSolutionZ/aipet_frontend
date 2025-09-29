@@ -113,7 +113,7 @@ final generateShareTextUseCaseProvider =
 // ignore: unused_element
 typedef GenerateShareTextUseCaseRef =
     AutoDisposeProviderRef<GenerateShareTextUseCase>;
-String _$shareTextHash() => r'9adb4c8846e7c6ebd87eba4189dc13de65bf2808';
+String _$shareTextHash() => r'bf44cd31a08b720cbae18c060799e2ea9039c9fd';
 
 /// Copied from Dart SDK
 class _SystemHash {

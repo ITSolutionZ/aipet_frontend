@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_registration_data_entity.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/routes/route_constants.dart';
-import '../entities/pet_registration_data_entity.dart';
 
 /// 펫 등록 네비게이션 서비스
 /// 등록 상태에 따른 적절한 화면 전환을 담당

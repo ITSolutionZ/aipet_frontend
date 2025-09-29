@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart';
+// UserProfileEntity is imported via shared/shared.dart
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
 import 'package:aipet_frontend/features/settings/domain/usecases/get_user_profile_usecase.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -31,27 +32,34 @@ void main() {
           lastLoginAt: DateTime.now(),
         );
 
-        when(
-          mockRepository.getUserProfile(),
-        ).thenAnswer((_) async => mockUserProfile);
+        when(mockRepository.getUserProfile()).thenAnswer(
+          (_) async => Result.success('ユーザープロフィールを取得しました', mockUserProfile),
+        );
 
         // Act
         final result = await useCase();
 
         // Assert
-        expect(result, equals(mockUserProfile));
+        expect(result, isA<Result<UserProfileEntity>>());
+        expect(result.isSuccess, isTrue);
+        expect(result.data, equals(mockUserProfile));
         verify(mockRepository.getUserProfile()).called(1);
       },
     );
 
-    test('should throw exception when repository call fails', () async {
+    test('should return failure when repository call fails', () async {
       // Arrange
       when(
         mockRepository.getUserProfile(),
-      ).thenThrow(Exception('Failed to load user profile'));
+      ).thenAnswer((_) async => Result.failure('プロフィールの取得に失敗しました'));
 
-      // Act & Assert
-      expect(() => useCase(), throwsA(isA<Exception>()));
+      // Act
+      final result = await useCase();
+
+      // Assert
+      expect(result, isA<Result<UserProfileEntity>>());
+      expect(result.isSuccess, isFalse);
+      expect(result.message, contains('プロフィールの取得に失敗しました'));
       verify(mockRepository.getUserProfile()).called(1);
     });
   });

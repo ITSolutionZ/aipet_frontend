@@ -1,30 +1,24 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/pet_feeding/data/data.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/domain.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
-
-class RecipeScreen extends ConsumerStatefulWidget {
+class RecipeScreen extends ConsumerWidget {
   final String petId;
 
   const RecipeScreen({super.key, required this.petId});
 
   @override
-  ConsumerState<RecipeScreen> createState() => _RecipeScreenState();
-}
-
-class _RecipeScreenState extends ConsumerState<RecipeScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final recipesAsync = ref.watch(recipesNotifierProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       appBar: SoftGradientAppBar(
-        title: 'Recipes',
+        title: 'レシピ',
         actions: [
           // 펫 선택 드롭다운
           Container(
@@ -44,7 +38,9 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   'Maxi',
-                  style: AppFonts.bodyMedium.copyWith(color: const Color(0xFF5B4034)),
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: const Color(0xFF5B4034),
+                  ),
                 ),
                 const Icon(
                   Icons.keyboard_arrow_down,
@@ -68,7 +64,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
           itemCount: recipes.length,
           itemBuilder: (context, index) {
             final recipe = recipes[index];
-            return _buildRecipeCard(recipe);
+            return _buildRecipeCard(context, ref, recipe);
           },
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -79,7 +75,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: AppSpacing.md),
               Text(
-                '레시피를 불러오는데 실패했습니다',
+                'レシピの読み込みに失敗しました',
                 style: AppFonts.bodyLarge.copyWith(color: Colors.red),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -87,7 +83,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
                 onPressed: () {
                   ref.read(recipesNotifierProvider.notifier).refresh();
                 },
-                child: const Text('다시 시도'),
+                child: const Text('再試行'),
               ),
             ],
           ),
@@ -104,7 +100,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
             },
             icon: const Icon(Icons.add, color: Colors.white),
             label: Text(
-              'Add recipe',
+              'レシピを追加',
               style: AppFonts.fredoka(
                 fontSize: AppFonts.lg,
                 fontWeight: FontWeight.w600,
@@ -125,11 +121,15 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
     );
   }
 
-  Widget _buildRecipeCard(RecipeEntity recipe) {
+  Widget _buildRecipeCard(
+    BuildContext context,
+    WidgetRef ref,
+    RecipeEntity recipe,
+  ) {
     return GestureDetector(
       onTap: () {
         // 레시피 상세 화면으로 이동
-        _showRecipeDetailDialog(context, recipe);
+        _showRecipeDetailDialog(context, ref, recipe);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -259,7 +259,11 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
     context.push(AppRouter.addRecipeRoute);
   }
 
-  void _showRecipeDetailDialog(BuildContext context, RecipeEntity recipe) {
+  void _showRecipeDetailDialog(
+    BuildContext context,
+    WidgetRef ref,
+    RecipeEntity recipe,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -268,16 +272,16 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('설명: ${recipe.description}'),
+            Text('説明: ${recipe.description}'),
             const SizedBox(height: AppSpacing.sm),
-            Text('조리시간: ${recipe.cookingTime}'),
+            Text('調理時間: ${recipe.cookingTime}'),
             const SizedBox(height: AppSpacing.sm),
-            Text('난이도: ${recipe.difficulty}'),
+            Text('難易度: ${recipe.difficulty}'),
             const SizedBox(height: AppSpacing.sm),
-            Text('평점: ${recipe.rating}'),
+            Text('評価: ${recipe.rating}'),
             if (recipe.ingredients.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm),
-              const Text('재료:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text('材料:', style: TextStyle(fontWeight: FontWeight.bold)),
               ...recipe.ingredients.map((ingredient) => Text('• $ingredient')),
             ],
           ],
@@ -285,31 +289,31 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('닫기'),
+            child: const Text('閉じる'),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              _deleteRecipe(recipe.id);
+              _deleteRecipe(context, ref, recipe.id);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('삭제'),
+            child: const Text('削除'),
           ),
         ],
       ),
     );
   }
 
-  void _deleteRecipe(String recipeId) {
+  void _deleteRecipe(BuildContext context, WidgetRef ref, String recipeId) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('레시피 삭제'),
-        content: const Text('이 레시피를 삭제하시겠습니까?'),
+        title: const Text('レシピを削除'),
+        content: const Text('このレシピを削除しますか？'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('취소'),
+            child: const Text('キャンセル'),
           ),
           TextButton(
             onPressed: () {
@@ -317,7 +321,7 @@ class _RecipeScreenState extends ConsumerState<RecipeScreen> {
               ref.read(recipesNotifierProvider.notifier).deleteRecipe(recipeId);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('삭제'),
+            child: const Text('削除'),
           ),
         ],
       ),

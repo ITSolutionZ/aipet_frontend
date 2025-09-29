@@ -1,17 +1,23 @@
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 
 enum FacilityType {
   hospital, // 동물병원
+  veterinary, // 수의사 (동물병원과 유사)
   grooming, // 트리밍샵
   petShop, // 펫샵
+  petStore, // 펫 상점
   dogRun, // 도그런
   park, // 공원
+  petPark, // 반려동물 공원
   cafe, // 펫카페
   hotel, // 펫호텔
+  petFriendlyAccommodation, // 반려동물 친화 숙박
   training, // 훈련소
+  other, // 기타
 }
 
-class FacilityEntity {
+class Facility {
   final String id;
   final String name;
   final FacilityType type;
@@ -19,8 +25,14 @@ class FacilityEntity {
   final double latitude;
   final double longitude;
   final String? phoneNumber;
+  final String? phone; // 추가
+  final String? email; // 추가
   final String? website;
   final String? description;
+  final String? imagePath; // 추가
+  final bool isFavorite; // 추가
+  final bool hasHistory; // 추가
+  final DateTime? lastVisit; // 추가
   final double rating;
   final int reviewCount;
   final List<String> images;
@@ -31,7 +43,7 @@ class FacilityEntity {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  const FacilityEntity({
+  const Facility({
     required this.id,
     required this.name,
     required this.type,
@@ -39,8 +51,14 @@ class FacilityEntity {
     required this.latitude,
     required this.longitude,
     this.phoneNumber,
+    this.phone,
+    this.email,
     this.website,
     this.description,
+    this.imagePath,
+    this.isFavorite = false,
+    this.hasHistory = false,
+    this.lastVisit,
     this.rating = 0.0,
     this.reviewCount = 0,
     this.images = const [],
@@ -52,7 +70,7 @@ class FacilityEntity {
     this.updatedAt,
   });
 
-  FacilityEntity copyWith({
+  Facility copyWith({
     String? id,
     String? name,
     FacilityType? type,
@@ -60,8 +78,14 @@ class FacilityEntity {
     double? latitude,
     double? longitude,
     String? phoneNumber,
+    String? phone,
+    String? email,
     String? website,
     String? description,
+    String? imagePath,
+    bool? isFavorite,
+    bool? hasHistory,
+    DateTime? lastVisit,
     double? rating,
     int? reviewCount,
     List<String>? images,
@@ -72,7 +96,7 @@ class FacilityEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
-    return FacilityEntity(
+    return Facility(
       id: id ?? this.id,
       name: name ?? this.name,
       type: type ?? this.type,
@@ -80,8 +104,14 @@ class FacilityEntity {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
       website: website ?? this.website,
       description: description ?? this.description,
+      imagePath: imagePath ?? this.imagePath,
+      isFavorite: isFavorite ?? this.isFavorite,
+      hasHistory: hasHistory ?? this.hasHistory,
+      lastVisit: lastVisit ?? this.lastVisit,
       rating: rating ?? this.rating,
       reviewCount: reviewCount ?? this.reviewCount,
       images: images ?? this.images,
@@ -99,20 +129,30 @@ class FacilityEntity {
     switch (type) {
       case FacilityType.hospital:
         return Icons.medical_services;
+      case FacilityType.veterinary:
+        return Icons.medical_services;
       case FacilityType.grooming:
         return Icons.content_cut;
       case FacilityType.petShop:
         return Icons.shopping_bag;
+      case FacilityType.petStore:
+        return Icons.store;
       case FacilityType.dogRun:
         return Icons.directions_run;
       case FacilityType.park:
         return Icons.park;
+      case FacilityType.petPark:
+        return Icons.pets;
       case FacilityType.cafe:
         return Icons.local_cafe;
       case FacilityType.hotel:
         return Icons.hotel;
+      case FacilityType.petFriendlyAccommodation:
+        return Icons.home;
       case FacilityType.training:
         return Icons.school;
+      case FacilityType.other:
+        return Icons.place;
     }
   }
 
@@ -121,20 +161,30 @@ class FacilityEntity {
     switch (type) {
       case FacilityType.hospital:
         return Colors.red;
+      case FacilityType.veterinary:
+        return Colors.red;
       case FacilityType.grooming:
         return Colors.purple;
       case FacilityType.petShop:
+        return Colors.orange;
+      case FacilityType.petStore:
         return Colors.orange;
       case FacilityType.dogRun:
         return Colors.green;
       case FacilityType.park:
         return Colors.lightGreen;
+      case FacilityType.petPark:
+        return Colors.lightGreen;
       case FacilityType.cafe:
         return Colors.brown;
       case FacilityType.hotel:
         return Colors.blue;
+      case FacilityType.petFriendlyAccommodation:
+        return Colors.blue;
       case FacilityType.training:
         return Colors.indigo;
+      case FacilityType.other:
+        return Colors.grey;
     }
   }
 
@@ -142,27 +192,37 @@ class FacilityEntity {
   String get typeName {
     switch (type) {
       case FacilityType.hospital:
-        return '동물병원';
+        return '動物病院';
+      case FacilityType.veterinary:
+        return '獣医院';
       case FacilityType.grooming:
-        return '트리밍샵';
+        return 'トリミング';
       case FacilityType.petShop:
-        return '펫샵';
+        return 'ペットショップ';
+      case FacilityType.petStore:
+        return 'ペット用品店';
       case FacilityType.dogRun:
-        return '도그런';
+        return 'ドッグラン';
       case FacilityType.park:
-        return '공원';
+        return '公園';
+      case FacilityType.petPark:
+        return 'ペット公園';
       case FacilityType.cafe:
-        return '펫카페';
+        return 'ペットカフェ';
       case FacilityType.hotel:
-        return '펫호텔';
+        return 'ペットホテル';
+      case FacilityType.petFriendlyAccommodation:
+        return 'ペット可宿泊施設';
       case FacilityType.training:
-        return '훈련소';
+        return 'ホームトレーニング';
+      case FacilityType.other:
+        return 'その他';
     }
   }
 
   /// 거리 포맷팅
   String get formattedDistance {
-    if (distance == null) return '거리 정보 없음';
+    if (distance == null) return '距離情報がありません';
     if (distance! < 1) {
       return '${(distance! * 1000).round()}m';
     } else {
@@ -177,11 +237,11 @@ class FacilityEntity {
 
   /// 영업 상태 텍스트
   String get openStatusText {
-    return isOpen ? '영업중' : '영업종료';
+    return isOpen ? 'OPEN' : 'CLOSED';
   }
 
   /// 영업 상태 색상
   Color get openStatusColor {
-    return isOpen ? Colors.green : Colors.red;
+    return isOpen ? AppColors.pointGreen : AppColors.pointGray;
   }
 }

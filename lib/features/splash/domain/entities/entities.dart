@@ -1,3 +1,1 @@
-export 'splash_entity.dart';
-export 'splash_result.dart';
-export 'splash_state.dart';
+// splash entities는 shared/entities로 이동됨

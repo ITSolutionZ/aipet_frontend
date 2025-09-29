@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/ai/presentation/controllers/ai_chat_controller.dart';
+import 'package:aipet_frontend/features/ai/presentation/widgets/ai_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../controllers/ai_chat_controller.dart';
-import '../widgets/widgets.dart';
 
 class AiChatScreen extends ConsumerStatefulWidget {
   const AiChatScreen({super.key});
@@ -130,46 +129,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
   }
 
   Widget _buildDateSeparator(DateTime date) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(const Duration(days: 1));
-    final messageDate = DateTime(date.year, date.month, date.day);
-
-    String dateText;
-    if (messageDate.isAtSameMomentAs(today)) {
-      dateText = '今日';
-    } else if (messageDate.isAtSameMomentAs(yesterday)) {
-      dateText = '昨日';
-    } else {
-      dateText = '${date.month}月${date.day}日';
-    }
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-      child: Row(
-        children: [
-          const Expanded(child: Divider()),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.pointGray.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(AppRadius.large),
-            ),
-            child: Text(
-              dateText,
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointGray,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          const Expanded(child: Divider()),
-        ],
-      ),
-    );
+    return DateSeparatorWidget(date: date);
   }
 
   int _getTotalItemCount(AiChatState chatState) {
@@ -263,8 +223,10 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
           AiMessageBubble(
             message: message,
             isFavorite: chatState.favoriteMessageIds.contains(message.id),
-            onFavoriteToggle: (msg) {
-              ref.read(aiChatNotifierProvider.notifier).toggleFavorite(msg);
+            onFavoriteToggle: (msg) async {
+              await ref
+                  .read(aiChatNotifierProvider.notifier)
+                  .toggleFavorite(msg);
             },
           ),
         ],
@@ -337,7 +299,8 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: SoftGradientAppBar(
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
         title: 'AIアシスタント',
         leading: IconButton(
           onPressed: _navigateToChatHistory,

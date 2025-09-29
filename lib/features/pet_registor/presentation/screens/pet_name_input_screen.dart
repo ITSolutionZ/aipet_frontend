@@ -1,14 +1,18 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_registration_provider.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/constants/pet_registration_texts.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/utils/pet_image_utils.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/inputs/gender_selection.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/inputs/microchip_input.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/navigation/next_button.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/navigation/pet_registration_progress_bar.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pickers/pet_image_picker.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/shared.dart';
-import '../../data/providers/providers.dart';
-import '../constants/pet_registration_texts.dart';
-import '../utils/pet_image_utils.dart';
-import '../widgets/widgets.dart';
-
+/// Pet Name Input Screen - 펫 이름, 성별, 중성화 상태, 이미지, 마이크로칩 입력
 class PetNameInputScreen extends ConsumerStatefulWidget {
   const PetNameInputScreen({super.key});
 
@@ -17,17 +21,19 @@ class PetNameInputScreen extends ConsumerStatefulWidget {
 }
 
 class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _microchipController = TextEditingController();
-  bool _isValid = false;
+  // 상태 변수들
+  late TextEditingController _nameController;
+  late TextEditingController _microchipController;
   String? _selectedGender;
   bool _isNeutered = false;
   String? _selectedImagePath;
+  bool _isValid = false; // 이름 유효성
 
   @override
   void initState() {
     super.initState();
-    _nameController.addListener(_validateName);
+    _nameController = TextEditingController();
+    _microchipController = TextEditingController();
 
     // 기존 데이터 복원
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -70,6 +76,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
       if (registrationState.petImagePath != null) {
         _selectedImagePath = registrationState.petImagePath;
       }
+      _validateName(); // 복원 후 이름 유효성 검사
     });
   }
 
@@ -137,6 +144,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                     const SizedBox(height: AppSpacing.lg),
 
                     // 펫 이미지
+                    // ignore: deprecated_member_use_from_same_package
                     PetImagePicker(
                       selectedImagePath: _selectedImagePath,
                       defaultImagePath: _getDefaultImagePath(),
@@ -204,6 +212,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                           ),
                         ),
                         onChanged: (value) {
+                          _validateName();
                           _saveData();
                         },
                       ),

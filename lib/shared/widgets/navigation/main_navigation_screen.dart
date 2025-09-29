@@ -4,17 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import 'custom_bottom_navigation.dart';
 
-class MainNavigationScreen extends ConsumerStatefulWidget {
+class MainNavigationScreen extends ConsumerWidget {
   final Widget child;
 
   const MainNavigationScreen({super.key, required this.child});
-
-  @override
-  ConsumerState<MainNavigationScreen> createState() =>
-      _MainNavigationScreenState();
-}
-
-class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   int _getCurrentIndex(BuildContext context) {
     final String location = GoRouterState.of(context).matchedLocation;
 
@@ -59,9 +52,9 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: widget.child,
+      body: child,
       bottomNavigationBar: CustomBottomNavigation(
         selectedIndex: _getCurrentIndex(context),
         onItemTapped: (index) => _onItemTapped(context, index),

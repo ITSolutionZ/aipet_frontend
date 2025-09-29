@@ -1,13 +1,31 @@
 /// 인증 폼의 UI 상태만 관리하는 클래스
-/// 민감한 정보(패스워드)는 저장하지 않고 UI 상태만 관리
+///
+/// 폼의 UI 상태와 사용자 입력을 관리합니다.
+/// 보안상 민감한 정보(패스워드)는 저장하지 않고 UI 상태만 관리합니다.
+/// 실제 인증 처리는 AuthRepository를 통해 수행됩니다.
 class AuthFormState {
+  /// 사용자 이메일 주소
   final String email;
+
+  /// 사용자 이름/닉네임
   final String username;
-  final String password; // 로그인용 패스워드 필드 추가
+
+  /// 로그인용 패스워드 (UI에서만 사용, 저장하지 않음)
+  final String password;
+
+  /// 패스워드 가시성 상태
   final bool isPasswordVisible;
+
+  /// 확인 패스워드 가시성 상태
   final bool isConfirmPasswordVisible;
+
+  /// 로그인 정보 기억하기 옵션
   final bool rememberMe;
+
+  /// 로딩 상태
   final bool isLoading;
+
+  /// 에러 메시지
   final String? error;
 
   const AuthFormState({

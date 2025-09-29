@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class GenderSelection extends StatelessWidget {
   final String? selectedGender;
@@ -52,39 +51,39 @@ class GenderSelection extends StatelessWidget {
         child: GestureDetector(
           onTap: () => onGenderChanged(gender),
           child: Container(
-          height: 50,
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.pointBrown : Colors.white,
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-            border: Border.all(
-              color: isSelected
-                  ? AppColors.pointBrown
-                  : AppColors.pointBrown.withValues(alpha: 0.3),
-              width: 1,
+            height: 50,
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.pointBrown : Colors.white,
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+              border: Border.all(
+                color: isSelected
+                    ? AppColors.pointBrown
+                    : AppColors.pointBrown.withValues(alpha: 0.3),
+                width: 1,
+              ),
             ),
-          ),
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  symbol,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: isSelected ? Colors.white : AppColors.pointDark,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    symbol,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : AppColors.pointDark,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  label,
-                  style: AppFonts.bodyMedium.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: isSelected ? Colors.white : AppColors.pointDark,
+                  const SizedBox(width: 8),
+                  Text(
+                    label,
+                    style: AppFonts.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: isSelected ? Colors.white : AppColors.pointDark,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             ),
           ),
         ),

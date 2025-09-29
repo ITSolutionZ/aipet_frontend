@@ -26,87 +26,7 @@ final notificationRepositoryProvider =
 // ignore: unused_element
 typedef NotificationRepositoryRef =
     AutoDisposeProviderRef<NotificationRepositoryImpl>;
-String _$getNotificationsUseCaseHash() =>
-    r'b65eef3e175ea70d4f18d0f31cc16d4764abba9b';
-
-/// See also [getNotificationsUseCase].
-@ProviderFor(getNotificationsUseCase)
-final getNotificationsUseCaseProvider =
-    AutoDisposeProvider<GetNotificationsUseCase>.internal(
-      getNotificationsUseCase,
-      name: r'getNotificationsUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$getNotificationsUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef GetNotificationsUseCaseRef =
-    AutoDisposeProviderRef<GetNotificationsUseCase>;
-String _$getNotificationByIdUseCaseHash() =>
-    r'cd5d704d140f627bbece6b6e92cf5d828e8cd6e7';
-
-/// See also [getNotificationByIdUseCase].
-@ProviderFor(getNotificationByIdUseCase)
-final getNotificationByIdUseCaseProvider =
-    AutoDisposeProvider<GetNotificationByIdUseCase>.internal(
-      getNotificationByIdUseCase,
-      name: r'getNotificationByIdUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$getNotificationByIdUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef GetNotificationByIdUseCaseRef =
-    AutoDisposeProviderRef<GetNotificationByIdUseCase>;
-String _$markNotificationAsReadUseCaseHash() =>
-    r'396840422471720054bf6ae03eae2a1de998d131';
-
-/// See also [markNotificationAsReadUseCase].
-@ProviderFor(markNotificationAsReadUseCase)
-final markNotificationAsReadUseCaseProvider =
-    AutoDisposeProvider<MarkNotificationAsReadUseCase>.internal(
-      markNotificationAsReadUseCase,
-      name: r'markNotificationAsReadUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$markNotificationAsReadUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef MarkNotificationAsReadUseCaseRef =
-    AutoDisposeProviderRef<MarkNotificationAsReadUseCase>;
-String _$deleteNotificationUseCaseHash() =>
-    r'476cb2747d3222508e06f944d299e1fd3a85a006';
-
-/// See also [deleteNotificationUseCase].
-@ProviderFor(deleteNotificationUseCase)
-final deleteNotificationUseCaseProvider =
-    AutoDisposeProvider<DeleteNotificationUseCase>.internal(
-      deleteNotificationUseCase,
-      name: r'deleteNotificationUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$deleteNotificationUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef DeleteNotificationUseCaseRef =
-    AutoDisposeProviderRef<DeleteNotificationUseCase>;
-String _$notificationByIdHash() => r'4cc400fa9f22064a78ddf61e188d79501a7d6237';
+String _$notificationByIdHash() => r'94fc19802148e34144efa20a2facf4099e62a6d7';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -249,7 +169,7 @@ class _NotificationByIdProviderElement
 }
 
 String _$unreadNotificationCountHash() =>
-    r'490b1dd3862c47d10e69f68a9c5ebaa455e88fc5';
+    r'1b7342c5955756ea13e347a0003d50e1e289c554';
 
 /// See also [unreadNotificationCount].
 @ProviderFor(unreadNotificationCount)
@@ -267,7 +187,7 @@ final unreadNotificationCountProvider = AutoDisposeFutureProvider<int>.internal(
 // ignore: unused_element
 typedef UnreadNotificationCountRef = AutoDisposeFutureProviderRef<int>;
 String _$notificationsNotifierHash() =>
-    r'2d7cb162ce48b0ac5cede90b95b41a7907459da1';
+    r'8ea79bf85456b5bd65e4c763236fcb0d83e84276';
 
 /// See also [NotificationsNotifier].
 @ProviderFor(NotificationsNotifier)
@@ -288,14 +208,14 @@ final notificationsNotifierProvider =
 typedef _$NotificationsNotifier =
     AutoDisposeAsyncNotifier<List<NotificationModel>>;
 String _$notificationSettingsNotifierHash() =>
-    r'3986e8aeef49d80ed0d12044a7d86e025e10a333';
+    r'857be3d10af1adf8868df9e12ec1a98e51182e7c';
 
 /// See also [NotificationSettingsNotifier].
 @ProviderFor(NotificationSettingsNotifier)
 final notificationSettingsNotifierProvider =
     AutoDisposeAsyncNotifierProvider<
       NotificationSettingsNotifier,
-      NotificationSettings
+      Map<String, dynamic>
     >.internal(
       NotificationSettingsNotifier.new,
       name: r'notificationSettingsNotifierProvider',
@@ -307,6 +227,6 @@ final notificationSettingsNotifierProvider =
     );
 
 typedef _$NotificationSettingsNotifier =
-    AutoDisposeAsyncNotifier<NotificationSettings>;
+    AutoDisposeAsyncNotifier<Map<String, dynamic>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

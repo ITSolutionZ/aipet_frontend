@@ -1,72 +1,45 @@
-import 'package:dio/dio.dart';
+import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/features/ai/domain/constants/ai_constants.dart';
+import 'package:aipet_frontend/features/ai/domain/services/token_usage_service.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
+import 'package:aipet_frontend/shared/core/services/unified_error_handler.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 
-import '../../../../app/config/app_config.dart';
-import '../../../pet_registor/pet_registor.dart';
 import 'pet_content_filter_service.dart';
 
 /// OpenAI API와 통신하는 서비스
-class OpenAIService {
-  late final Dio _dio;
+class OpenAIService extends BaseLoggingService {
   final PetContentFilterService _contentFilter = PetContentFilterService();
-  
-  // API 안정성을 위한 설정
-  static const int _maxRetries = 3;
-  static const Duration _connectTimeout = Duration(seconds: 30);
-  static const Duration _receiveTimeout = Duration(seconds: 60);
+  final AiHttpClientService _httpClient;
 
-  OpenAIService() {
-    _dio = Dio();
-    _dio.options.baseUrl = 'https://api.openai.com/v1';
-    _dio.options.headers['Content-Type'] = 'application/json';
-    _dio.options.connectTimeout = _connectTimeout;
-    _dio.options.receiveTimeout = _receiveTimeout;
-    
-    // 인터셉터 추가로 요청/응답 로깅 및 에러 처리 개선
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          // API 키 확인
-          if (!options.headers.containsKey('Authorization')) {
-            final apiKey = AppConfig.current.openaiApiKey;
-            if (apiKey.isNotEmpty) {
-              options.headers['Authorization'] = 'Bearer $apiKey';
-            }
-          }
-          handler.next(options);
-        },
-        onError: (error, handler) {
-          // 상세한 에러 정보 로깅 (프로덕션에서는 실제 로깅 프레임워크 사용)
-          // TODO: Replace with proper logging framework in production
-          // ignore: avoid_print
-          print('OpenAI API Error: ${error.message}');
-          if (error.response != null) {
-            // ignore: avoid_print
-            print('Status: ${error.response?.statusCode}');
-            // ignore: avoid_print
-            print('Data: ${error.response?.data}');
-          }
-          handler.next(error);
-        },
-      ),
-    );
-  }
+  OpenAIService({AiHttpClientService? httpClient})
+    : _httpClient = httpClient ?? AiHttpClientService(),
+      super('openai_service');
 
   /// OpenAI ChatGPT API를 사용하여 메시지에 대한 응답 생성 (재시도 로직 포함)
-  Future<String> generateResponse(
+  Future<Result<String>> generateResponse(
     String message, {
     PetProfileEntity? petContext,
   }) async {
     final apiKey = AppConfig.current.openaiApiKey;
 
     if (apiKey.isEmpty) {
-      throw Exception('OpenAI API key is not configured');
+      return Result.failure('OpenAI API 키가 설정되지 않았습니다');
     }
 
     // ペット関連コンテンツ検証 (펫 컨텍스트가 있으면 스킵)
     if (petContext == null) {
-      final validationResult = await _contentFilter.validatePetContent(message);
-      if (!validationResult.isValid) {
-        return '''こんにちは！私はペット専門のAIアシスタントです。🐶🐱
+      try {
+        final validationResult = await _contentFilter.validatePetContent(
+          message,
+        );
+        if (!validationResult.isValid) {
+          logInfo(
+            'Non-pet related content detected: ${validationResult.reason}',
+          );
+          return Result.success('''こんにちは！私はペット専門のAIアシスタントです。🐶🐱
 
 ${_translateReasonToJapanese(validationResult.reason)}
 
@@ -78,109 +51,94 @@ ${_translateReasonToJapanese(validationResult.reason)}
 • ペット用品と環境
 • 保護と譲渡相談
 
-具体的な状況を教えていただければ、より正確なサポートを提供できます！😊''';
+具体的な状況を教えていただければ、より正確なサポートを提供できます！😊''');
+        }
+      } catch (e) {
+        logError('Content filter validation failed: $e');
+        // 통합 에러 핸들러로 에러 처리
+        await UnifiedErrorHandler.handleUnifiedError(
+          e,
+          context: {'operation': 'content_filter_validation'},
+        );
+        // 컨텐츠 필터링 실패 시에도 계속 진행
       }
     }
 
-    return _executeWithRetry(() async {
-      final response = await _dio.post(
+    return _httpClient.executeWithRetry(() async {
+      // 🪙 토큰 사용량 사전 체크
+      final canMakeRequest = TokenUsageService.canMakeRequest(
+        estimatedTokens: AiApiConstants.openaiMaxTokens,
+      );
+      if (!canMakeRequest.isSuccess) {
+        return Result.failure(
+          canMakeRequest.error?.toString() ?? 'Token limit exceeded',
+        );
+      }
+
+      final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
         '/chat/completions',
-        options: Options(headers: {'Authorization': 'Bearer $apiKey'}),
         data: {
-          'model': 'gpt-3.5-turbo',
+          'model': AiApiConstants.openaiModel,
           'messages': [
             {'role': 'system', 'content': _buildSystemPrompt(petContext)},
             {'role': 'user', 'content': message},
           ],
-          'max_tokens': 1000,
-          'temperature': 0.7,
+          'max_tokens': AiApiConstants.openaiMaxTokens,
+          'temperature': AiApiConstants.openaiTemperature,
         },
       );
 
-      final data = response.data;
-      if (data['choices'] != null && data['choices'].isNotEmpty) {
-        return data['choices'][0]['message']['content'].toString().trim();
-      } else {
-        throw Exception('No response from OpenAI API');
+      if (!response.isSuccess) {
+        return Result.failure(response.message);
       }
-    });
-  }
 
-  /// 재시도 로직이 포함된 API 호출 실행
-  Future<T> _executeWithRetry<T>(Future<T> Function() apiCall) async {
-    int retryCount = 0;
-    late Exception lastException;
+      final responseData = response.dataOrNull!;
 
-    while (retryCount < _maxRetries) {
-      try {
-        return await apiCall();
-      } on DioException catch (e) {
-        lastException = _handleDioException(e);
-        
-        // 재시도하지 않을 에러들
-        if (e.response?.statusCode == 401 || // Invalid API key
-            e.response?.statusCode == 403 || // Forbidden
-            e.response?.statusCode == 400) { // Bad request
-          throw lastException;
+      // 🪙 토큰 사용량 기록
+      if (responseData['usage'] != null) {
+        final usage = responseData['usage'] as Map<String, dynamic>;
+        final promptTokens = usage['prompt_tokens'] as int? ?? 0;
+        final completionTokens = usage['completion_tokens'] as int? ?? 0;
+
+        final usageResult = TokenUsageService.recordUsage(
+          promptTokens: promptTokens,
+          completionTokens: completionTokens,
+          model: AiApiConstants.openaiModel,
+          userId: petContext?.id, // 펫 ID를 사용자 식별자로 사용
+        );
+
+        if (usageResult.isSuccess) {
+          logInfo(
+            'Token usage recorded: ${usageResult.dataOrNull!.totalTokens} tokens',
+          );
+        } else {
+          logWarning(
+            'Failed to record token usage: ${usageResult.error?.toString() ?? 'Unknown error'}',
+          );
         }
-        
-        // 429(Rate limit) 또는 5xx 서버 에러의 경우 재시도
-        final statusCode = e.response?.statusCode;
-        if (statusCode == 429 || (statusCode != null && statusCode >= 500)) {
-          retryCount++;
-          if (retryCount < _maxRetries) {
-            final delay = Duration(seconds: retryCount * 2); // 지수 백오프
-            // TODO: Replace with proper logging framework in production
-            // ignore: avoid_print
-            print('Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$_maxRetries)');
-            await Future.delayed(delay);
-            continue;
+      }
+
+      if (responseData['choices'] != null &&
+          responseData['choices'] is List &&
+          responseData['choices'].isNotEmpty) {
+        final choice = responseData['choices'][0];
+        if (choice is Map<String, dynamic> &&
+            choice['message'] != null &&
+            choice['message']['content'] != null) {
+          final content = choice['message']['content'].toString().trim();
+          if (content.isEmpty) {
+            return Result.failure('Empty response content from OpenAI API');
           }
+          return Result.success('OpenAI API 응답이 성공적으로 생성되었습니다', content);
         }
-        
-        throw lastException;
-      } catch (e) {
-        lastException = Exception('Unexpected error: $e');
-        retryCount++;
-        if (retryCount < _maxRetries) {
-          final delay = Duration(seconds: retryCount * 2);
-          // TODO: Replace with proper logging framework in production
-          // ignore: avoid_print
-          print('Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$_maxRetries)');
-          await Future.delayed(delay);
-          continue;
-        }
-        throw lastException;
       }
-    }
-    
-    throw lastException;
-  }
 
-  /// Dio 예외를 사용자 친화적인 메시지로 변환
-  Exception _handleDioException(DioException e) {
-    switch (e.response?.statusCode) {
-      case 401:
-        return Exception('OpenAI API key가 유효하지 않습니다. 설정을 확인해주세요.');
-      case 429:
-        return Exception('API 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.');
-      case 500:
-      case 502:
-      case 503:
-      case 504:
-        return Exception('OpenAI 서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
-      case null:
-        if (e.type == DioExceptionType.connectionTimeout) {
-          return Exception('연결 시간이 초과되었습니다. 네트워크 연결을 확인해주세요.');
-        } else if (e.type == DioExceptionType.receiveTimeout) {
-          return Exception('응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.');
-        } else if (e.type == DioExceptionType.connectionError) {
-          return Exception('네트워크 연결에 문제가 있습니다. 인터넷 연결을 확인해주세요.');
-        }
-        return Exception('네트워크 오류가 발생했습니다: ${e.message}');
-      default:
-        return Exception('OpenAI API 오류 (${e.response?.statusCode}): ${e.message}');
-    }
+      // 에러 정보가 있는 경우 포함
+      final errorInfo = responseData['error'] != null
+          ? ' Error: ${responseData['error']}'
+          : '';
+      return Result.failure('No valid response from OpenAI API$errorInfo');
+    });
   }
 
   /// 検証理由を日本語に翻訳 (필터 서비스와 동일한 메시지)
@@ -189,7 +147,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
       case 'ペットと関連していない話題です':
         return 'ペットと関連していない話題です';
       case 'ペットに関連する内容を含めてご質問ください':
-        return 'ペットに関連する内容を含めてご질問ください';
+        return 'ペットに関連する内容を含めてご質問ください';
       case 'ペットに関連していないご質問です':
         return 'ペットに関連していないご質問です';
       case 'ペットに関連する内容をより具体的にご質問ください':

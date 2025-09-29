@@ -1,4 +1,4 @@
-import '../../domain/entities/temporary_pet_data_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart';
 
 class TemporaryPetData {
   final String? id;

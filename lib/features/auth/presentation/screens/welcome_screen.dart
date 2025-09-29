@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/shared.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -142,8 +141,6 @@ class WelcomeScreen extends StatelessWidget {
               // 완료메시지 카드
               Expanded(
                 child: WhiteCard(
-                  borderWidth: 2,
-                  borderColor: AppColors.pointBrown.withValues(alpha: 0.3),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

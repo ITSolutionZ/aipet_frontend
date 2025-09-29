@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart';
+// UserProfileEntity is imported via shared/shared.dart
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
 import 'package:aipet_frontend/features/settings/domain/usecases/update_user_profile_usecase.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -18,7 +19,7 @@ void main() {
   });
 
   group('UpdateUserProfileUseCase', () {
-    test('should return true when repository call is successful', () async {
+    test('should return success when repository call is successful', () async {
       // Arrange
       final userProfile = UserProfileEntity(
         id: 'user-1',
@@ -31,17 +32,19 @@ void main() {
 
       when(
         mockRepository.updateUserProfile(userProfile),
-      ).thenAnswer((_) async => true);
+      ).thenAnswer((_) async => Result.success('プロフィールが更新されました', userProfile));
 
       // Act
       final result = await useCase(userProfile);
 
       // Assert
-      expect(result, isTrue);
+      expect(result, isA<Result<UserProfileEntity>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data, equals(userProfile));
       verify(mockRepository.updateUserProfile(userProfile)).called(1);
     });
 
-    test('should return false when repository call fails', () async {
+    test('should return failure when repository call fails', () async {
       // Arrange
       final userProfile = UserProfileEntity(
         id: 'user-1',
@@ -54,13 +57,15 @@ void main() {
 
       when(
         mockRepository.updateUserProfile(userProfile),
-      ).thenAnswer((_) async => false);
+      ).thenAnswer((_) async => Result.failure('プロフィールの更新に失敗しました'));
 
       // Act
       final result = await useCase(userProfile);
 
       // Assert
-      expect(result, isFalse);
+      expect(result, isA<Result<UserProfileEntity>>());
+      expect(result.isSuccess, isFalse);
+      expect(result.message, contains('プロフィールの更新に失敗しました'));
       verify(mockRepository.updateUserProfile(userProfile)).called(1);
     });
   });

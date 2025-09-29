@@ -1,10 +1,9 @@
+import 'package:aipet_frontend/features/pet_profile/data/providers/usecase_providers.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/usecases/get_pet_profile_usecase.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../data/providers/pet_profile_providers.dart';
-import '../../domain/entities/pet_profile_entity.dart';
-import '../../domain/usecases/get_pet_profile_usecase.dart';
-import '../constants/pet_profile_constants.dart';
 
 part 'pet_profile_controller.g.dart';
 
@@ -44,62 +43,58 @@ class PetProfileState {
 /// 펫 프로필 컨트롤러 (Clean Architecture 적용)
 @riverpod
 class PetProfileNotifier extends _$PetProfileNotifier {
-  GetPetProfileUseCase get _getPetProfileUseCase => ref.read(getPetProfileUseCaseProvider);
+  GetPetProfileUseCase get _getPetProfileUseCase =>
+      ref.read(getPetProfileUseCaseProvider);
 
   @override
   PetProfileState build() => const PetProfileState();
 
-  /// 탭 컨트롤러 설정
+  /// 탭 컨트롤러 초기화
+  void initializeTabController(TabController tabController) {
+    state = state.copyWith(tabController: tabController);
+  }
+
+  /// 탭 컨트롤러 설정 (기존 호환성)
   void setTabController(TabController tabController) {
     state = state.copyWith(tabController: tabController);
   }
 
+  /// 탭 컨트롤러 해제
+  void disposeTabController() {
+    state = state.copyWith(tabController: null);
+  }
+
+  /// 펫 선택
+  void selectPet(PetProfileEntity pet) {
+    state = state.copyWith(selectedPet: pet);
+  }
+
   /// 펫 프로필 로드
-  Future<void> loadPetProfile({
+  Future<Result<void>> loadPetProfile({
     required String petId,
     required String requesterId,
   }) async {
-    state = state.copyWith(
-      isLoading: true,
-      errorMessage: null,
-    );
+    state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
-      final result = await _getPetProfileUseCase.execute(
-        petId: petId,
-        requesterId: requesterId,
-      );
+      final result = await _getPetProfileUseCase.call(petId);
 
-      switch (result) {
-        case GetPetProfileSuccess():
-          state = state.copyWith(
-            selectedPet: result.profile,
-            isLoading: false,
-          );
-
-        case GetPetProfileNotFound():
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: '${PetProfileConstants.loadError}: Profile not found',
-          );
-
-        case GetPetProfileAccessDenied():
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: PetProfileConstants.accessDeniedMessage,
-          );
-
-        case GetPetProfileError():
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: '${PetProfileConstants.loadError}: ${result.message}',
-          );
+      if (result.isSuccess) {
+        state = state.copyWith(
+          selectedPet: result.dataOrNull,
+          isLoading: false,
+        );
+        return Result.success('Pet profile loaded successfully');
+      } else {
+        state = state.copyWith(isLoading: false, errorMessage: result.message);
+        return Result.failure(result.message);
       }
     } catch (error) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: '${PetProfileConstants.loadError}: $error',
+        errorMessage: 'Failed to load pet profile: $error',
       );
+      return Result.failure('Failed to load pet profile: $error');
     }
   }
 
@@ -109,14 +104,12 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   }
 
   /// 프로필 새로고침
-  Future<void> refreshProfile(String requesterId) async {
+  Future<Result<void>> refreshProfile(String requesterId) async {
     final currentPet = state.selectedPet;
     if (currentPet != null) {
-      await loadPetProfile(
-        petId: currentPet.id,
-        requesterId: requesterId,
-      );
+      return loadPetProfile(petId: currentPet.id, requesterId: requesterId);
     }
+    return Result.failure('No pet selected for refresh');
   }
 
   /// 에러 메시지 클리어
@@ -136,13 +129,13 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   String getTabTitle(int index) {
     switch (index) {
       case 0:
-        return PetProfileConstants.basicInfoTab;
+        return '基本情報';
       case 1:
-        return PetProfileConstants.healthTab;
+        return '健康';
       case 2:
-        return PetProfileConstants.nutritionTab;
+        return '栄養';
       case 3:
-        return PetProfileConstants.shareTab;
+        return '共有';
       default:
         return '';
     }
@@ -151,35 +144,67 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   /// 편집 권한 확인
   bool canEditProfile(String userId) {
     final pet = state.selectedPet;
-    return pet?.canBeEditedBy(userId) ?? false;
+    // 펫의 오너와 같은 경우 편집 가능
+    return pet?.ownerId == userId;
   }
 
   /// 공유 가능 여부 확인
   bool get canShareProfile {
-    return state.selectedPet?.isShareable ?? false;
+    // 펫이 활성화된 경우 공유 가능
+    return state.selectedPet?.isActive ?? false;
   }
 
   /// 프로필 타입 아이콘
   String get profileTypeIcon {
     final petType = state.selectedPet?.type ?? '';
-    return PetTypeConstants.getIcon(petType);
+    return _getPetTypeIcon(petType);
   }
 
   /// 프로필 타입 이름
   String get profileTypeName {
     final petType = state.selectedPet?.type ?? '';
-    return PetTypeConstants.getName(petType);
+    return _getPetTypeName(petType);
   }
 
   /// 공개 수준 표시명
   String get visibilityLevelName {
-    final level = state.selectedPet?.visibilityLevel.name ?? 'private';
-    return VisibilityLevelConstants.getName(level);
+    return 'Private';
   }
 
   /// 공개 수준 아이콘
   IconData get visibilityLevelIcon {
-    final level = state.selectedPet?.visibilityLevel.name ?? 'private';
-    return VisibilityLevelConstants.getIcon(level);
+    return Icons.lock;
+  }
+
+  /// 펫 타입 아이콘 반환
+  String _getPetTypeIcon(String petType) {
+    switch (petType.toLowerCase()) {
+      case 'dog':
+        return '🐕';
+      case 'cat':
+        return '🐱';
+      case 'bird':
+        return '🐦';
+      case 'fish':
+        return '🐠';
+      default:
+        return '🐾';
+    }
+  }
+
+  /// 펫 타입 이름 반환
+  String _getPetTypeName(String petType) {
+    switch (petType.toLowerCase()) {
+      case 'dog':
+        return '犬';
+      case 'cat':
+        return '猫';
+      case 'bird':
+        return '鳥';
+      case 'fish':
+        return '魚';
+      default:
+        return 'ペット';
+    }
   }
 }

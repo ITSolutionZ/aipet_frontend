@@ -1,5 +1,5 @@
-import '../entities/walk_record_entity.dart';
-import '../repositories/walk_repository.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
 
 /// 산책 시작 UseCase
 class StartWalkUseCase {
@@ -13,7 +13,7 @@ class StartWalkUseCase {
       throw ArgumentError('산책 제목은 필수입니다.');
     }
 
-    if (walkRecord.petId == null || walkRecord.petId!.isEmpty) {
+    if (walkRecord.petId.isEmpty) {
       throw ArgumentError('펫 ID는 필수입니다.');
     }
 

@@ -16,18 +16,18 @@ class ImageSelectionDialog extends StatelessWidget {
       title: const Text('写真選択'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: availableImages.map((imagePath) =>
-          ListTile(
-            leading: CircleAvatar(
-              backgroundImage: AssetImage(imagePath),
-            ),
-            title: Text(imagePath.split('/').last.split('.').first),
-            onTap: () {
-              onImageSelected(imagePath);
-              Navigator.pop(context);
-            },
-          ),
-        ).toList(),
+        children: availableImages
+            .map(
+              (imagePath) => ListTile(
+                leading: CircleAvatar(backgroundImage: AssetImage(imagePath)),
+                title: Text(imagePath.split('/').last.split('.').first),
+                onTap: () {
+                  onImageSelected(imagePath);
+                  Navigator.pop(context);
+                },
+              ),
+            )
+            .toList(),
       ),
       actions: [
         TextButton(

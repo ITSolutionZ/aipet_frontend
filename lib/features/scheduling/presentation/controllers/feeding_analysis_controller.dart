@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as scheduling_mock;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 급여 분석 컨트롤러
 class FeedingAnalysisController extends StateNotifier<FeedingAnalysisState> {
@@ -11,7 +11,8 @@ class FeedingAnalysisController extends StateNotifier<FeedingAnalysisState> {
 
   /// 분석 데이터 로드
   void _loadAnalysisData() {
-    final analysisData = SchedulingMockService.getMockFeedingAnalysisData();
+    final analysisData =
+        scheduling_mock.SchedulingMockService.getMockFeedingAnalysisData();
     state = state.copyWith(analysisData: analysisData);
   }
 

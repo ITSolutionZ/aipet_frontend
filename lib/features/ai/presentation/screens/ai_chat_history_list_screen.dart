@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
 
 /// AI 채팅 히스토리 리스트 화면
 class AiChatHistoryListScreen extends ConsumerStatefulWidget {
@@ -106,18 +105,12 @@ class _AiChatHistoryListScreenState
                 ),
                 unselectedLabelStyle: AppFonts.titleSmall,
                 tabs: const [
-                  Tab(
-                    height: 50,
-                    child: Text('すべて'),
-                  ),
-                  Tab(
-                    height: 50, 
-                    child: Text('保存済み'),
-                  ),
+                  Tab(height: 50, child: Text('すべて')),
+                  Tab(height: 50, child: Text('保存済み')),
                 ],
               ),
             ),
-            
+
             // 검색 바
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),

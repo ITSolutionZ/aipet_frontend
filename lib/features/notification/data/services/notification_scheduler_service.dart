@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/domain.dart';
-import 'notification_service.dart';
+import 'notification_service.dart' as local;
 
 /// 알림 스케줄링 서비스
 class NotificationSchedulerService {
   static const String _schedulesKey = 'notification_schedules';
   static const String _schedulerEnabledKey = 'scheduler_enabled';
 
-  final NotificationService _notificationService;
+  final local.NotificationService _notificationService;
   Timer? _schedulerTimer;
   bool _isInitialized = false;
   bool _isEnabled = true;
@@ -41,13 +41,9 @@ class NotificationSchedulerService {
       }
 
       _isInitialized = true;
-      if (kDebugMode) {
-        print('알림 스케줄러 초기화 완료');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('알림 스케줄러 초기화 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -60,9 +56,7 @@ class NotificationSchedulerService {
       _checkSchedules();
     });
 
-    if (kDebugMode) {
-      print('알림 스케줄러 시작됨');
-    }
+    if (kDebugMode) {}
   }
 
   /// 스케줄러 중지
@@ -70,9 +64,7 @@ class NotificationSchedulerService {
     _schedulerTimer?.cancel();
     _schedulerTimer = null;
 
-    if (kDebugMode) {
-      print('알림 스케줄러 중지됨');
-    }
+    if (kDebugMode) {}
   }
 
   /// 스케줄 확인 및 실행
@@ -94,9 +86,7 @@ class NotificationSchedulerService {
         }
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 확인 중 오류: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -127,13 +117,9 @@ class NotificationSchedulerService {
       final updatedSchedule = schedule.copyWith(lastExecuted: DateTime.now());
       await updateSchedule(updatedSchedule);
 
-      if (kDebugMode) {
-        print('스케줄 실행됨: ${schedule.title}');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 실행 실패: ${schedule.title}, 오류: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -145,13 +131,9 @@ class NotificationSchedulerService {
       await _saveSchedules(schedules);
       _schedulesController.add(schedules);
 
-      if (kDebugMode) {
-        print('스케줄 추가됨: ${schedule.title}');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 추가 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -166,14 +148,10 @@ class NotificationSchedulerService {
         await _saveSchedules(schedules);
         _schedulesController.add(schedules);
 
-        if (kDebugMode) {
-          print('스케줄 업데이트됨: ${schedule.title}');
-        }
+        if (kDebugMode) {}
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 업데이트 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -185,13 +163,9 @@ class NotificationSchedulerService {
       await _saveSchedules(schedules);
       _schedulesController.add(schedules);
 
-      if (kDebugMode) {
-        print('스케줄 삭제됨: $scheduleId');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 삭제 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -206,14 +180,10 @@ class NotificationSchedulerService {
         await _saveSchedules(schedules);
         _schedulesController.add(schedules);
 
-        if (kDebugMode) {
-          print('스케줄 상태 변경됨: $scheduleId, 활성화: $isActive');
-        }
+        if (kDebugMode) {}
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 상태 변경 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -228,9 +198,7 @@ class NotificationSchedulerService {
             .toList();
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 로드 실패: $e');
-      }
+      if (kDebugMode) {}
     }
     return [];
   }
@@ -263,13 +231,9 @@ class NotificationSchedulerService {
         await _stopScheduler();
       }
 
-      if (kDebugMode) {
-        print('스케줄러 ${enabled ? '활성화' : '비활성화'}됨');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄러 상태 변경 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -284,9 +248,7 @@ class NotificationSchedulerService {
       );
       await SecureStorageService.setString(_schedulesKey, schedulesJson);
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 저장 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -296,13 +258,9 @@ class NotificationSchedulerService {
       await SecureStorageService.remove(_schedulesKey);
       _schedulesController.add([]);
 
-      if (kDebugMode) {
-        print('모든 스케줄 삭제됨');
-      }
+      if (kDebugMode) {}
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 삭제 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -323,14 +281,10 @@ class NotificationSchedulerService {
         await _saveSchedules(validSchedules);
         _schedulesController.add(validSchedules);
 
-        if (kDebugMode) {
-          print('만료된 스케줄 정리됨: ${schedules.length - validSchedules.length}개');
-        }
+        if (kDebugMode) {}
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 정리 실패: $e');
-      }
+      if (kDebugMode) {}
     }
   }
 
@@ -354,9 +308,7 @@ class NotificationSchedulerService {
         'byType': typeStats,
       };
     } catch (e) {
-      if (kDebugMode) {
-        print('스케줄 통계 가져오기 실패: $e');
-      }
+      if (kDebugMode) {}
       return {};
     }
   }

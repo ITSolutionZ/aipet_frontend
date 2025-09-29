@@ -1,47 +1,35 @@
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/mock_data_service.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/mock_data_service.dart';
-
-class FeedingRecordsResult {
-  final bool isSuccess;
-  final String message;
-  final dynamic data;
-
-  const FeedingRecordsResult._(this.isSuccess, this.message, this.data);
-
-  factory FeedingRecordsResult.success(String message, [dynamic data]) =>
-      FeedingRecordsResult._(true, message, data);
-  factory FeedingRecordsResult.failure(String message) =>
-      FeedingRecordsResult._(false, message, null);
-}
-
-class FeedingRecordsController {
-  FeedingRecordsController();
+class FeedingRecordsController extends BaseController {
+  FeedingRecordsController(super.ref);
 
   /// 급여 기록 데이터 로드
-  Future<FeedingRecordsResult> loadFeedingRecords() async {
+  Future<Result<List<dynamic>>> loadFeedingRecords() async {
     try {
-      final feedingRecords = MockDataService.getMockFeedingRecords();
-      return FeedingRecordsResult.success('급여 기록이 로드되었습니다', feedingRecords);
+      final records = MockDataService.getMockFeedingRecords();
+      return Result.success('급여 기록이 로드되었습니다', records);
     } catch (error) {
-      return FeedingRecordsResult.failure('급여 기록 로드 실패: $error');
+      return Result.failure('급여 기록 로드 실패: $error');
     }
   }
 
   /// 급여 통계 데이터 로드
-  Future<FeedingRecordsResult> loadFeedingStatistics() async {
+  Future<Result<Map<String, dynamic>>> loadFeedingStatistics() async {
     try {
       final statistics = MockDataService.getMockFeedingStatistics();
-      return FeedingRecordsResult.success('급여 통계가 로드되었습니다', statistics);
+      return Result.success('급여 통계가 로드되었습니다', statistics);
     } catch (error) {
-      return FeedingRecordsResult.failure('급여 통계 로드 실패: $error');
+      return Result.failure('급여 통계 로드 실패: $error');
     }
   }
 
   /// 차트 데이터 생성
-  FeedingRecordsResult generateChartData(List<dynamic> feedingRecords) {
+  Result<Map<String, dynamic>> generateChartData(List<dynamic> feedingRecords) {
     try {
       final now = DateTime.now();
       final chartData = <FlSpot>[];
@@ -72,11 +60,12 @@ class FeedingRecordsController {
         targetData.add(FlSpot((6 - i).toDouble(), targetAmount));
       }
 
-      final data = {'chartData': chartData, 'targetData': targetData};
-
-      return FeedingRecordsResult.success('차트 데이터가 생성되었습니다', data);
+      return Result.success('차트 데이터가 생성되었습니다', {
+        'chartData': chartData,
+        'targetData': targetData,
+      });
     } catch (error) {
-      return FeedingRecordsResult.failure('차트 데이터 생성 실패: $error');
+      return Result.failure('차트 데이터 생성 실패: $error');
     }
   }
 
@@ -282,7 +271,7 @@ class FeedingRecordsController {
   }
 
   /// 새 급여 기록 추가
-  Future<FeedingRecordsResult> addFeedingRecord({
+  Future<Result<Map<String, dynamic>>> addFeedingRecord({
     required String petName,
     required String foodType,
     required String foodBrand,
@@ -303,25 +292,25 @@ class FeedingRecordsController {
         'status': 'completed',
       };
 
-      return FeedingRecordsResult.success('급여 기록이 추가되었습니다', record);
+      return Result.success('급여 기록이 추가되었습니다', record);
     } catch (error) {
-      return FeedingRecordsResult.failure('급여 기록 추가 실패: $error');
+      return Result.failure('급여 기록 추가 실패: $error');
     }
   }
 
   /// 급여 기록 삭제
-  Future<FeedingRecordsResult> deleteFeedingRecord(String recordId) async {
+  Future<Result<void>> deleteFeedingRecord(String recordId) async {
     try {
       // Mock delete logic
       await Future.delayed(const Duration(milliseconds: 300));
-      return FeedingRecordsResult.success('급여 기록이 삭제되었습니다');
+      return Result.success('급여 기록이 삭제되었습니다', null);
     } catch (error) {
-      return FeedingRecordsResult.failure('급여 기록 삭제 실패: $error');
+      return Result.failure('급여 기록 삭제 실패: $error');
     }
   }
 
   /// 급여 기록 수정
-  Future<FeedingRecordsResult> updateFeedingRecord({
+  Future<Result<Map<String, dynamic>>> updateFeedingRecord({
     required String recordId,
     required String petName,
     required String foodType,
@@ -343,9 +332,9 @@ class FeedingRecordsController {
         'status': 'completed',
       };
 
-      return FeedingRecordsResult.success('급여 기록이 수정되었습니다', updatedRecord);
+      return Result.success('급여 기록이 수정되었습니다', updatedRecord);
     } catch (error) {
-      return FeedingRecordsResult.failure('급여 기록 수정 실패: $error');
+      return Result.failure('급여 기록 수정 실패: $error');
     }
   }
 

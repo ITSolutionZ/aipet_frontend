@@ -1,5 +1,2 @@
-library;
-
-export 'controllers/controllers.dart';
-export 'screens/screens.dart';
-export 'widgets/widgets.dart';
+export 'controllers/home_dashboard_controller.dart';
+export 'screens/home_screen.dart';

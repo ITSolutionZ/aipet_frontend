@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/design/design.dart';
 
 class ScheduleItemWidget extends StatelessWidget {
   final String meal;

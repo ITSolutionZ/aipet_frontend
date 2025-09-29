@@ -1,14 +1,13 @@
+import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/notification/presentation/components/cards/notification_detail_header_component.dart';
+import 'package:aipet_frontend/features/notification/presentation/components/cards/notification_detail_metadata_component.dart';
+import 'package:aipet_frontend/features/notification/presentation/components/forms/notification_detail_actions_component.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_detail_controller.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../data/providers/notification_controller_providers.dart';
-import '../../domain/entities/entities.dart';
-import '../components/cards/notification_detail_header_component.dart';
-import '../components/cards/notification_detail_metadata_component.dart';
-import '../components/forms/notification_detail_actions_component.dart';
-import '../controllers/notification_detail_controller.dart';
-import '../controllers/notification_ui_controller.dart';
 
 /// 알림 상세 화면 (리팩토링됨)
 class NotificationDetailScreen extends ConsumerStatefulWidget {
@@ -51,6 +50,7 @@ class _NotificationDetailScreenState
 
     try {
       final notification = await _controller.loadNotification(
+        'default_user_id',
         widget.notificationId,
       );
 
@@ -82,7 +82,7 @@ class _NotificationDetailScreenState
   }
 
   Future<void> _markAsRead(NotificationModel notification) async {
-    await _controller.markAsRead(context, notification);
+    await _controller.markAsRead(context, 'default_user_id', notification);
 
     // 알림 상태를 읽음으로 업데이트
     setState(() {
@@ -100,7 +100,11 @@ class _NotificationDetailScreenState
   void _handleDelete() {
     final notification = _notification;
     if (notification != null) {
-      _controller.deleteNotification(context, notification.id);
+      _controller.deleteNotification(
+        context,
+        'default_user_id',
+        notification.id,
+      );
     }
   }
 

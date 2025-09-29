@@ -1,8 +1,8 @@
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/pet_registor.dart';
 
 /// AI 메시지 버블 형태의 펫 선택 위젯
 class AiPetSelectionBubble extends ConsumerWidget {

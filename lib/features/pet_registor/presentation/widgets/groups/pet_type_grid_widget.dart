@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/cards/pet_type_card.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
-import '../cards/pet_type_card.dart';
 
 class PetTypeGridWidget extends StatelessWidget {
   final String? selectedPetType;
@@ -76,7 +75,7 @@ class PetTypeGridWidget extends StatelessWidget {
 
               return PetTypeCard(
                 imagePath: petType['imagePath'],
-                color: petType['color'],
+                selectionColor: petType['color'],
                 isSelected: isSelected,
                 petType: petType['type'],
                 onTap: () => onPetTypeSelected(petType['type']),
@@ -90,9 +89,7 @@ class PetTypeGridWidget extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('カスタムペットタイプは近日公開予定です'),
-                ),
+                const SnackBar(content: Text('カスタムペットタイプは近日公開予定です')),
               );
             },
             style: OutlinedButton.styleFrom(
