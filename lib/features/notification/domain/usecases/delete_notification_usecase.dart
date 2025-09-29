@@ -76,7 +76,7 @@ class DeleteNotificationUseCase {
   }
 
   /// 사용자의 모든 알림 삭제
-  Future<Result<Map<String, int>>> deleteAllUserNotifications(
+  Future<Result<Map<String, dynamic>>> deleteAllUserNotifications(
     String userId,
   ) async {
     try {
