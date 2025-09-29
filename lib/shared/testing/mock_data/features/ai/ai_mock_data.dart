@@ -157,7 +157,7 @@ class AiMockDataService {
         id: '1',
         title: 'ゆうくん食事問題相談',
         messages: getChatHistory(),
-        createdAt: DateTime.now().subtract(Duration(hours: 1)),
+        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
         updatedAt: DateTime.now().subtract(const Duration(minutes: 7)),
         petId: '1',
       ),

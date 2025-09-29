@@ -8,7 +8,7 @@ import 'http_client_service.dart';
 /// 백엔드 API 통신을 담당하는 서비스
 class ApiService {
   static const String baseUrl = 'https://api.aipet.com'; // 실제 백엔드 URL로 교체
-  static const Duration timeout = const Duration(seconds: 30);
+  static const Duration timeout = Duration(seconds: 30);
 
   /// GET 요청
   static Future<ApiResponse<T>> get<T>(

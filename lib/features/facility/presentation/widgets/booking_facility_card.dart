@@ -23,7 +23,7 @@ class BookingFacilityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCard(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -66,7 +66,7 @@ class BookingFacilityCard extends StatelessWidget {
                     size: 32,
                   ),
                 ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
 
               // 시설 정보
               Expanded(
@@ -81,7 +81,7 @@ class BookingFacilityCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         const Icon(
@@ -89,7 +89,7 @@ class BookingFacilityCard extends StatelessWidget {
                           size: 16,
                           color: AppColors.textSecondary,
                         ),
-                        const const SizedBox(width: AppSpacing.xs),
+                        const const const SizedBox(width: AppSpacing.xs),
                         Expanded(
                           child: Text(
                             facilityAddress,
@@ -102,7 +102,7 @@ class BookingFacilityCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         const Icon(
@@ -110,7 +110,7 @@ class BookingFacilityCard extends StatelessWidget {
                           size: 16,
                           color: AppColors.textSecondary,
                         ),
-                        const const SizedBox(width: AppSpacing.xs),
+                        const const const SizedBox(width: AppSpacing.xs),
                         Text(
                           facilityPhoneNumber,
                           style: AppTextStyles.bodySmall.copyWith(

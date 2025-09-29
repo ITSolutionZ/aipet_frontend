@@ -150,7 +150,7 @@ class MetricCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widget = Container(
-      margin: margin ?? const const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      margin: margin ?? const const const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.cardBackgroundGray,
         borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.md),
@@ -171,15 +171,15 @@ class MetricCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.md),
           child: Padding(
-            padding: padding ?? const const EdgeInsets.all(AppSpacing.md),
+            padding: padding ?? const const const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildHeader(),
-                const SizedBox(height: AppSpacing.sm),
+                const const const SizedBox(height: AppSpacing.sm),
                 _buildValue(),
                 if (change != null) ...[
-                  const SizedBox(height: AppSpacing.xs),
+                  const const const SizedBox(height: AppSpacing.xs),
                   _buildChange(),
                 ],
               ],
@@ -217,7 +217,7 @@ class MetricCard extends StatelessWidget {
             ),
             child: icon!,
           ),
-          const const SizedBox(width: AppSpacing.sm),
+          const const const SizedBox(width: AppSpacing.sm),
         ],
         Expanded(
           child: Text(
@@ -244,7 +244,7 @@ class MetricCard extends StatelessWidget {
           ),
         ),
         if (unit != null) ...[
-          const const SizedBox(width: AppSpacing.xs),
+          const const const SizedBox(width: AppSpacing.xs),
           Text(
             unit!,
             style: AppTextStyles.bodyMedium.copyWith(
@@ -268,7 +268,7 @@ class MetricCard extends StatelessWidget {
           size: 16,
           color: changeColor,
         ),
-        const const SizedBox(width: AppSpacing.xs),
+        const const const SizedBox(width: AppSpacing.xs),
         Text(
           change!,
           style: AppTextStyles.bodySmall.copyWith(

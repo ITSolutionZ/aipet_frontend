@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_registration_data_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/services/pet_validation_service.dart';
-import 'package:aipet_frontend/shared/core/services/validation_service.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/services/validation_service.dart';
 
 /// 펫 등록 검증 서비스 구현체
 ///

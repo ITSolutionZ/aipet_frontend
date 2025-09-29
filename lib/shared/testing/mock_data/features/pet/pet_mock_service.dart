@@ -89,7 +89,7 @@ class PetMockService extends BaseMockService {
           'petName': 'MAX',
           'message': '예방접종 일정이 다가왔습니다',
           'severity': 'medium',
-          'dueDate': DateTime.now().add(Duration(days: 7)),
+          'dueDate': DateTime.now().add(const Duration(days: 7)),
         },
       ],
       'lastUpdated': DateTime.now(),
@@ -107,7 +107,7 @@ class PetMockService extends BaseMockService {
         'petName': 'MAX',
         'title': '건강검진',
         'type': '병원',
-        'scheduledTime': DateTime.now().add(Duration(days: 2, hours: 14)),
+        'scheduledTime': DateTime.now().add(const Duration(days: 2, hours: 14)),
         'location': '우리동물병원',
         'notes': '연간 건강검진 예약',
       },
@@ -117,7 +117,7 @@ class PetMockService extends BaseMockService {
         'petName': 'LUNA',
         'title': '미용 예약',
         'type': '미용',
-        'scheduledTime': DateTime.now().add(Duration(days: 5, hours: 10)),
+        'scheduledTime': DateTime.now().add(const Duration(days: 5, hours: 10)),
         'location': '펫샵 루나',
         'notes': '털 정리 및 목욕',
       },
@@ -127,7 +127,7 @@ class PetMockService extends BaseMockService {
         'petName': 'MOMO',
         'title': '예방접종',
         'type': '병원',
-        'scheduledTime': DateTime.now().add(Duration(days: 7, hours: 16)),
+        'scheduledTime': DateTime.now().add(const Duration(days: 7, hours: 16)),
         'location': '우리동물병원',
         'notes': '연간 종합백신 접종',
       },
@@ -341,7 +341,7 @@ class PetMockService extends BaseMockService {
       'petId': petId,
       'selectedStatuses': ['health', 'mood'],
       'statusValues': {'health': '좋음', 'mood': '활발'},
-      'lastUpdated': DateTime.now().subtract(Duration(hours: 2)),
+      'lastUpdated': DateTime.now().subtract(const Duration(hours: 2)),
     };
   }
 
@@ -370,7 +370,7 @@ class PetMockService extends BaseMockService {
         'imageUrl': 'assets/images/dogs/golden.png',
       },
       'registeredAt': DateTime.now(),
-      'linkExpiry': DateTime.now().add(Duration(days: 30)),
+      'linkExpiry': DateTime.now().add(const Duration(days: 30)),
     };
   }
 

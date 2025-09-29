@@ -159,7 +159,7 @@ class _PetAnniversarySummaryScreenState
                     controller: _scrollController,
                     slivers: [
                       SliverPadding(
-                        padding: const const EdgeInsets.all(AppSpacing.lg),
+                        padding: const const const EdgeInsets.all(AppSpacing.lg),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
                             Column(
@@ -167,7 +167,7 @@ class _PetAnniversarySummaryScreenState
                               children: [
                                 // 프로그레스바
                                 _buildProgressBar(),
-                                const SizedBox(height: AppSpacing.lg),
+                                const const const SizedBox(height: AppSpacing.lg),
 
                                 // 제목
                                 Text(
@@ -178,7 +178,7 @@ class _PetAnniversarySummaryScreenState
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
-                                const SizedBox(height: AppSpacing.xl),
+                                const const const SizedBox(height: AppSpacing.xl),
 
                                 // 펫 이미지
                                 PetImageDisplay(
@@ -190,7 +190,7 @@ class _PetAnniversarySummaryScreenState
                                   width: 200,
                                   height: 200,
                                 ),
-                                const SizedBox(height: AppSpacing.xl),
+                                const const const SizedBox(height: AppSpacing.xl),
 
                                 // 정보 카드들
                                 PetInfoCard(
@@ -217,7 +217,7 @@ class _PetAnniversarySummaryScreenState
                                   icon: Icons.cake,
                                   badge: _calculateAge().isNotEmpty
                                       ? Container(
-                                          padding: const const EdgeInsets.symmetric(
+                                          padding: const const const EdgeInsets.symmetric(
                                             horizontal: 12,
                                             vertical: 6,
                                           ),
@@ -282,7 +282,7 @@ class _PetAnniversarySummaryScreenState
 
                 // 하단 등록완료 버튼
                 Container(
-                  padding: const const EdgeInsets.all(AppSpacing.lg),
+                  padding: const const const EdgeInsets.all(AppSpacing.lg),
                   decoration: BoxDecoration(
                     color: AppColors.pureWhite,
                     border: Border(
@@ -299,7 +299,7 @@ class _PetAnniversarySummaryScreenState
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.pointPink,
                         foregroundColor: AppColors.pureWhite,
-                        padding: const const EdgeInsets.symmetric(
+                        padding: const const const EdgeInsets.symmetric(
                           vertical: AppSpacing.lg,
                         ),
                         shape: RoundedRectangleBorder(

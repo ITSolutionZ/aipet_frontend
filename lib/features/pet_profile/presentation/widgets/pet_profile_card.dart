@@ -29,7 +29,7 @@ class PetProfileCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -59,7 +59,7 @@ class PetProfileCard extends StatelessWidget {
                   size: 20,
                 ),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
             ],
             Expanded(
               child: Column(
@@ -71,7 +71,7 @@ class PetProfileCard extends StatelessWidget {
                       color: AppColors.pointDark.withValues(alpha: 0.7),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xs),
+                  const const const SizedBox(height: AppSpacing.xs),
                   Text(
                     value,
                     style: AppFonts.bodyMedium.copyWith(
@@ -109,7 +109,7 @@ class EditableAttributeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -253,7 +253,7 @@ class PetProfileHeader extends StatelessWidget {
               ),
           ],
         ),
-        const const SizedBox(width: AppSpacing.lg),
+        const const const SizedBox(width: AppSpacing.lg),
 
         // 이름과 종류
         Expanded(
@@ -271,7 +271,7 @@ class PetProfileHeader extends StatelessWidget {
                         ),
                       ),
                       if (!isEditMode) ...[
-                        const const SizedBox(width: AppSpacing.sm),
+                        const const const SizedBox(width: AppSpacing.sm),
                         const Icon(
                           Icons.edit,
                           size: 20,
@@ -280,7 +280,7 @@ class PetProfileHeader extends StatelessWidget {
                       ],
                     ],
                   ),
-              const SizedBox(height: AppSpacing.xs),
+              const const const SizedBox(height: AppSpacing.xs),
               Text(
                 typeAndBreed,
                 style: AppFonts.bodyMedium.copyWith(

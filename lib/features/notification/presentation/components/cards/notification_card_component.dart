@@ -32,14 +32,14 @@ class NotificationCardComponent extends StatelessWidget {
       onDismissed: (direction) => onDismiss(),
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const const EdgeInsets.only(right: AppSpacing.md),
+        padding: const const const EdgeInsets.only(right: AppSpacing.md),
         color: AppColors.pointPink,
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const const EdgeInsets.all(AppSpacing.md),
+          padding: const const const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -64,7 +64,7 @@ class NotificationCardComponent extends StatelessWidget {
                 ),
                 child: Icon(icon, color: iconColor, size: 20),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
               // 알림 내용
               Expanded(
                 child: Column(
@@ -92,7 +92,7 @@ class NotificationCardComponent extends StatelessWidget {
                           ),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Text(
                       body,
                       style: AppFonts.bodyMedium.copyWith(
@@ -101,7 +101,7 @@ class NotificationCardComponent extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Text(
                       formattedTime,
                       style: AppFonts.bodySmall.copyWith(
@@ -111,7 +111,7 @@ class NotificationCardComponent extends StatelessWidget {
                   ],
                 ),
               ),
-              const const SizedBox(width: AppSpacing.sm),
+              const const const SizedBox(width: AppSpacing.sm),
               // 더보기 버튼
               Icon(
                 Icons.chevron_right,

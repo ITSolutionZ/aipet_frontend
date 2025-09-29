@@ -244,7 +244,7 @@ class TestMockService {
     return WalkSummary(
       todayWalks: todayWalks ?? 3,
       todayDistance: todayDistance ?? 2.5,
-      todayDuration: todayDuration ?? Duration(hours: 1, minutes: 30),
+      todayDuration: todayDuration ?? const Duration(hours: 1, minutes: 30),
       weeklyGoal: weeklyGoal ?? 20.0,
       weeklyProgress: weeklyProgress ?? 15.0,
     );

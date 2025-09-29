@@ -11,15 +11,15 @@ class PetHealthTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
           _buildVaccinationSection(),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildMedicalRecordsSection(),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildWeightTrackingSection(),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildAppointmentsSection(),
         ],
       ),
@@ -37,7 +37,7 @@ class PetHealthTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildHealthCard(
           icon: Icons.vaccines,
           title: 'コアワクチン',
@@ -46,7 +46,7 @@ class PetHealthTab extends ConsumerWidget {
           lastDate: '2024年3月15日',
           nextDate: '2025年3月15日',
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildHealthCard(
           icon: Icons.healing,
           title: '狂犬病予防接種',
@@ -55,7 +55,7 @@ class PetHealthTab extends ConsumerWidget {
           lastDate: '2024年4月10日',
           nextDate: '2025年4月10日',
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildHealthCard(
           icon: Icons.bug_report,
           title: 'フィラリア予防',
@@ -79,7 +79,7 @@ class PetHealthTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         GenericInfoCard.withIcon(
           icon: Icons.local_hospital,
           iconColor: AppColors.pointPink,
@@ -89,7 +89,7 @@ class PetHealthTab extends ConsumerWidget {
           badge: '正常',
           badgeColor: AppColors.pointGreen,
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         GenericInfoCard.withIcon(
           icon: Icons.cleaning_services,
           iconColor: AppColors.pointBlue,
@@ -114,7 +114,7 @@ class PetHealthTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         GenericInfoCard.withIcon(
           icon: Icons.monitor_weight,
           iconColor: AppColors.pointBrown,
@@ -124,7 +124,7 @@ class PetHealthTab extends ConsumerWidget {
           badge: '適正',
           badgeColor: AppColors.pointGreen,
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         Container(
           height: 120,
           decoration: BoxDecoration(
@@ -161,7 +161,7 @@ class PetHealthTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         GenericInfoCard.withIcon(
           icon: Icons.schedule,
           iconColor: AppColors.pointBlue,
@@ -171,7 +171,7 @@ class PetHealthTab extends ConsumerWidget {
           badge: '予約済み',
           badgeColor: AppColors.pointBlue,
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         GenericInfoCard.withIcon(
           icon: Icons.content_cut,
           iconColor: AppColors.pointPink,

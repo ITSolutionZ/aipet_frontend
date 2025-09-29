@@ -10,6 +10,7 @@ Claude에게 이 프로젝트에 대한 상세 정보를 제공하여 더 나은
 **언어**: Dart
 **상태관리**: Riverpod 2.5+
 **라우팅**: Go Router 14.6+
+**린터에러 해결** : markdownlnt 사용하여 md파일 수정시 적용
 
 ## 🏗️ 아키텍처 & 디렉토리 구조
 
@@ -326,6 +327,7 @@ class PetProfileScreen extends ConsumerWidget {
 - **DRY 원칙**: ❌ 중복 코드 다수 (카드 위젯, 편집 필드 등)
 
 **주요 위반사항:**
+
 1. `PetProfileScreen` 1,641라인 - 단일 책임 원칙 위반
 2. UI 컴포넌트 하드코딩 - 재사용성 부족
 3. 편집 로직이 Screen에 직접 구현 - 관심사 분리 미흡

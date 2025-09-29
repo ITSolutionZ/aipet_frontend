@@ -12,7 +12,7 @@ class PetRegistrationConverter {
     }
 
     final birthDate =
-        data.petBirthday ?? DateTime.now().subtract(Duration(days: 365));
+        data.petBirthday ?? DateTime.now().subtract(const Duration(days: 365));
 
     return PetProfileEntity(
       id: (++_idCounter).toString(),

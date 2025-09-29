@@ -251,7 +251,7 @@ class ProfileEditScreen extends ConsumerWidget {
       drawer: const AppDrawer(),
       appBar: const SoftGradientDrawerAppBar(title: 'プロフィール編集'),
       body: SingleChildScrollView(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         child: Form(
           key: formState.formKey,
           child: Column(
@@ -278,7 +278,7 @@ class ProfileEditScreen extends ConsumerWidget {
                 },
               ),
 
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
 
               FormFieldWidget(
                 label: 'メールアドレス',
@@ -295,7 +295,7 @@ class ProfileEditScreen extends ConsumerWidget {
                 },
               ),
 
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
 
               FormFieldWidget(
                 label: 'フリガナ',
@@ -304,7 +304,7 @@ class ProfileEditScreen extends ConsumerWidget {
                 validator: (value) => null, // Optional field
               ),
 
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
 
               FormFieldWidget(
                 label: '連絡先',
@@ -313,7 +313,7 @@ class ProfileEditScreen extends ConsumerWidget {
                 validator: (value) => null, // Optional field
               ),
 
-              const SizedBox(height: AppSpacing.xl),
+              const const const SizedBox(height: AppSpacing.xl),
 
               // 保存ボタン
               SizedBox(
@@ -325,7 +325,7 @@ class ProfileEditScreen extends ConsumerWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,
-                    padding: const const EdgeInsets.symmetric(
+                    padding: const const const EdgeInsets.symmetric(
                       vertical: AppSpacing.md,
                     ),
                     shape: RoundedRectangleBorder(

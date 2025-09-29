@@ -186,7 +186,7 @@ class InfoCard extends StatelessWidget {
         children: [
           if (leading != null) ...[
             leading!,
-            const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
           ],
           Expanded(
             child: Column(
@@ -204,7 +204,7 @@ class InfoCard extends StatelessWidget {
             ),
           ),
           if (trailing != null) ...[
-            const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
             trailing!,
           ],
         ],
@@ -248,7 +248,7 @@ class SummaryCard extends StatelessWidget {
               if (icon != null) Icon(icon, color: accentColor, size: 20),
             ],
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Text(
             value,
             style: AppTextStyles.headlineMedium.copyWith(
@@ -257,7 +257,7 @@ class SummaryCard extends StatelessWidget {
             ),
           ),
           if (subtitle != null) ...[
-            const SizedBox(height: AppSpacing.xs),
+            const const const SizedBox(height: AppSpacing.xs),
             Text(
               subtitle!,
               style: AppTextStyles.bodySmall.copyWith(

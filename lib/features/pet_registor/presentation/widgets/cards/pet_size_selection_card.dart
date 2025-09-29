@@ -66,7 +66,7 @@ class PetSizeSelectionCard extends StatelessWidget {
                 size: 24,
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const const const SizedBox(height: AppSpacing.sm),
             Text(
               label,
               style: AppFonts.bodyMedium.copyWith(
@@ -74,7 +74,7 @@ class PetSizeSelectionCard extends StatelessWidget {
                 color: isSelected ? AppColors.pointBrown : AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: 4),
+            const const const SizedBox(height: 4),
             Text(
               weightRange,
               style: AppFonts.bodySmall.copyWith(

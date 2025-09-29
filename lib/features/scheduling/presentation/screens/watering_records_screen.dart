@@ -77,13 +77,13 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientAppBar(title: '給水記録'),
       body: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 통계 카드
             _buildStatsCard(),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 기록 목록
             Text(
@@ -93,7 +93,7 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
                 color: AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             Expanded(
               child: _wateringRecords != null
                   ? ListView.builder(
@@ -134,7 +134,7 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
 
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             Expanded(
@@ -174,7 +174,7 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
     return Column(
       children: [
         Icon(icon, color: color, size: 24),
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
         Text(
           value,
           style: AppFonts.titleMedium.copyWith(
@@ -194,10 +194,10 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
   /// 기록 아이템 위젯
   Widget _buildRecordItemWidget(Map<String, dynamic> record) {
     return Card(
-      margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         leading: Container(
-          padding: const const EdgeInsets.all(AppSpacing.sm),
+          padding: const const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             shape: BoxShape.circle,

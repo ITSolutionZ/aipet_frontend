@@ -145,7 +145,7 @@ class _PetRegistrationCompleteScreenState
                               color: AppColors.pointPink,
                             ),
                           ),
-                          const SizedBox(height: AppSpacing.xl),
+                          const const const SizedBox(height: AppSpacing.xl),
 
                           // 완료 메시지
                           Text(
@@ -156,7 +156,7 @@ class _PetRegistrationCompleteScreenState
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: AppSpacing.lg),
+                          const const const SizedBox(height: AppSpacing.lg),
 
                           Text(
                             '$petNameの登録が完了しました',
@@ -165,7 +165,7 @@ class _PetRegistrationCompleteScreenState
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: AppSpacing.md),
+                          const const const SizedBox(height: AppSpacing.md),
 
                           Text(
                             'プロフィールページで詳細を\n確認できます',
@@ -174,7 +174,7 @@ class _PetRegistrationCompleteScreenState
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: AppSpacing.xl),
+                          const const const SizedBox(height: AppSpacing.xl),
 
                           // 펫 이미지
                           Container(
@@ -195,7 +195,7 @@ class _PetRegistrationCompleteScreenState
 
                   // 하단 버튼 영역
                   Container(
-                    padding: const const EdgeInsets.all(AppSpacing.lg),
+                    padding: const const const EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
                       color: AppColors.pureWhite,
                       border: Border(
@@ -227,7 +227,7 @@ class _PetRegistrationCompleteScreenState
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.pointPink,
                               foregroundColor: AppColors.pureWhite,
-                              padding: const const EdgeInsets.symmetric(
+                              padding: const const const EdgeInsets.symmetric(
                                 vertical: AppSpacing.lg,
                               ),
                               shape: RoundedRectangleBorder(
@@ -249,7 +249,7 @@ class _PetRegistrationCompleteScreenState
                             ),
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.md),
+                        const const const SizedBox(height: AppSpacing.md),
 
                         // 홈으로 돌아가기 버튼
                         SizedBox(
@@ -263,7 +263,7 @@ class _PetRegistrationCompleteScreenState
                               context.go('/home');
                             },
                             style: TextButton.styleFrom(
-                              padding: const const EdgeInsets.symmetric(
+                              padding: const const const EdgeInsets.symmetric(
                                 vertical: AppSpacing.lg,
                               ),
                             ),

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
-import 'package:aipet_frontend/shared/core/utils/string_utils.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/utils/string_utils.dart';
 import 'package:flutter/foundation.dart';
 
 /// 에러 심각도 레벨

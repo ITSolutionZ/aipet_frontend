@@ -116,18 +116,18 @@ class NotificationSchedule {
       case ScheduleType.once:
         return baseTime.isAfter(now)
             ? baseTime
-            : baseTime.add(Duration(days: 1));
+            : baseTime.add(const Duration(days: 1));
 
       case ScheduleType.daily:
         if (baseTime.isAfter(now)) {
           return baseTime;
         } else {
-          return baseTime.add(Duration(days: 1));
+          return baseTime.add(const Duration(days: 1));
         }
 
       case ScheduleType.weekly:
         if (weekDays == null || weekDays!.isEmpty) {
-          return baseTime.add(Duration(days: 1));
+          return baseTime.add(const Duration(days: 1));
         }
 
         // 현재 요일 (1=월요일, 7=일요일)
@@ -151,7 +151,7 @@ class NotificationSchedule {
 
       case ScheduleType.monthly:
         if (dayOfMonth == null) {
-          return baseTime.add(Duration(days: 1));
+          return baseTime.add(const Duration(days: 1));
         }
 
         // 이번 달의 해당 날짜
@@ -197,7 +197,7 @@ class NotificationSchedule {
         if (baseTime.isAfter(now)) {
           return baseTime;
         } else {
-          return baseTime.add(Duration(days: 1));
+          return baseTime.add(const Duration(days: 1));
         }
     }
   }

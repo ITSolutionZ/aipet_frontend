@@ -2,7 +2,7 @@ import 'package:aipet_frontend/features/auth/data/services/firebase_token_servic
 import 'package:aipet_frontend/features/auth/data/services/token_storage_auth_token_repository.dart';
 import 'package:aipet_frontend/firebase_options.dart';
 import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -264,7 +264,7 @@ class AIPetApp extends ConsumerWidget {
         backgroundColor: AppColors.pointOffWhite,
         body: Center(
           child: Padding(
-            padding: const const EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -299,7 +299,7 @@ class AIPetApp extends ConsumerWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: AppColors.pointOffWhite,
-                    padding: const const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.lg,
                       vertical: AppSpacing.md,
                     ),

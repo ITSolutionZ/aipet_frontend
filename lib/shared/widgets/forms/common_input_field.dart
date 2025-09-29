@@ -214,14 +214,14 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
         // 라벨
         _buildLabel(),
 
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
 
         // 입력 필드
         _buildInputField(fieldState),
 
         // 에러 메시지 또는 도움말
         if (widget.errorText != null || widget.helpText != null) ...[
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           _buildHelperText(),
         ],
       ],
@@ -241,7 +241,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
           ),
         ),
         if (widget.required) ...[
-          const SizedBox(width: AppSpacing.xs),
+          const const const SizedBox(width: AppSpacing.xs),
           Text(
             '*',
             style: AppFonts.bodyMedium.copyWith(
@@ -327,7 +327,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
             width: 1,
           ),
         ),
-        contentPadding: const const EdgeInsets.symmetric(
+        contentPadding: const const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),

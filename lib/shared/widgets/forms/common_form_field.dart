@@ -64,7 +64,7 @@ class CommonFormField extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
 
         // 입력 필드
         TextFormField(
@@ -130,7 +130,7 @@ class CommonFormField extends StatelessWidget {
           width: 1.0,
         ),
       ),
-      contentPadding: const const EdgeInsets.symmetric(
+      contentPadding: const const const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),

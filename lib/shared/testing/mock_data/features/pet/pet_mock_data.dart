@@ -20,7 +20,7 @@ class PetMockData {
       weight: 15.8,
       imagePath: MockDataConstants.defaultPetImages['dog']!,
       ownerId: 'user1',
-      createdAt: DateTime.now().subtract(Duration(days: 30)),
+      createdAt: DateTime.now().subtract(const Duration(days: 30)),
       updatedAt: DateTime.now(),
       isActive: true,
       additionalInfo: {
@@ -45,7 +45,7 @@ class PetMockData {
       weight: 4.2,
       imagePath: MockDataConstants.defaultPetImages['cat']!,
       ownerId: 'user1',
-      createdAt: DateTime.now().subtract(Duration(days: 15)),
+      createdAt: DateTime.now().subtract(const Duration(days: 15)),
       updatedAt: DateTime.now(),
       isActive: true,
       additionalInfo: {

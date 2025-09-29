@@ -81,7 +81,7 @@ class WalkEditFormController extends StateNotifier<WalkEditFormState> {
 
         // 종료 시간이 시작 시간보다 이르면 다음날로 간주
         if (endDateTime.isBefore(startDateTime)) {
-          endDateTime = endDateTime.add(Duration(days: 1));
+          endDateTime = endDateTime.add(const Duration(days: 1));
         }
 
         duration = endDateTime.difference(startDateTime);
@@ -231,7 +231,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
             },
           ),
 
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
 
           // 거리 필드
           WalkFormFields.buildDistanceField(
@@ -249,7 +249,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
             },
           ),
 
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
 
           // 시간 필드들
           Row(
@@ -262,7 +262,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
                       .updateStartTime(time),
                 ),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: WalkFormFields.buildStartTimeField(
                   initialValue: formState.endTime,
@@ -274,12 +274,12 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
             ],
           ),
 
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
 
           // 메모 필드
           WalkFormFields.buildNotesField(controller: _notesController),
 
-          const SizedBox(height: AppSpacing.xl),
+          const const const SizedBox(height: AppSpacing.xl),
 
           // 버튼들
           CommonFormPatterns.buildFormButtons(

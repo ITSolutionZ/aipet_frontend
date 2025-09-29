@@ -1,7 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:aipet_frontend/shared/core/services/database_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
   late DatabaseService databaseService;
@@ -175,7 +175,9 @@ void main() {
 
         // When
         final updateResult = await databaseService.updatePetProfile(updatedPet);
-        final getResult = await databaseService.getPetProfileById('update-test');
+        final getResult = await databaseService.getPetProfileById(
+          'update-test',
+        );
 
         // Then
         expect(updateResult.isSuccess, isTrue);
@@ -202,8 +204,12 @@ void main() {
         await databaseService.savePetProfile(pet);
 
         // When
-        final deleteResult = await databaseService.deletePetProfile('delete-test');
-        final getResult = await databaseService.getPetProfileById('delete-test');
+        final deleteResult = await databaseService.deletePetProfile(
+          'delete-test',
+        );
+        final getResult = await databaseService.getPetProfileById(
+          'delete-test',
+        );
 
         // Then
         expect(deleteResult.isSuccess, isTrue);
@@ -216,14 +222,13 @@ void main() {
       test('should save and retrieve temporary pet data', () async {
         // Given
         const step = 'name_input';
-        final data = {
-          'name': 'Test Pet',
-          'type': 'dog',
-          'progress': 0.5,
-        };
+        final data = {'name': 'Test Pet', 'type': 'dog', 'progress': 0.5};
 
         // When
-        final saveResult = await databaseService.saveTemporaryPetData(step, data);
+        final saveResult = await databaseService.saveTemporaryPetData(
+          step,
+          data,
+        );
         final getResult = await databaseService.getTemporaryPetData(step);
 
         // Then
@@ -237,7 +242,9 @@ void main() {
 
       test('should return null for non-existent temporary data', () async {
         // When
-        final result = await databaseService.getTemporaryPetData('non-existent');
+        final result = await databaseService.getTemporaryPetData(
+          'non-existent',
+        );
 
         // Then
         expect(result.isSuccess, isTrue);
@@ -318,7 +325,9 @@ void main() {
 
       test('should fail to delete non-existent pet', () async {
         // When
-        final result = await databaseService.deletePetProfile('non-existent-delete');
+        final result = await databaseService.deletePetProfile(
+          'non-existent-delete',
+        );
 
         // Then
         expect(result.isSuccess, isFalse);

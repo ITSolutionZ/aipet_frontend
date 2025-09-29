@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 /// 앱 전체에서 일관된 SnackBar UI/UX를 제공하며,
 /// 80+개의 중복된 ScaffoldMessenger 호출을 통합합니다.
 class SnackBarService {
-  static const Duration _defaultDuration = const Duration(seconds: 4);
-  static const Duration _shortDuration = const Duration(seconds: 2);
-  static const Duration _longDuration = const Duration(seconds: 6);
+  static const Duration _defaultDuration = Duration(seconds: 4);
+  static const Duration _shortDuration = Duration(seconds: 2);
+  static const Duration _longDuration = Duration(seconds: 6);
 
   /// 성공 메시지 표시
   ///
@@ -148,7 +148,7 @@ class SnackBarService {
         children: [
           if (icon != null) ...[
             Icon(icon, color: textColor ?? AppColors.pointOffWhite, size: 20),
-            const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
           ],
           Expanded(
             child: Text(
@@ -167,7 +167,7 @@ class SnackBarService {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
-      margin: const const EdgeInsets.all(AppSpacing.md),
+      margin: const const const EdgeInsets.all(AppSpacing.md),
       action: action,
       elevation: 6,
     );

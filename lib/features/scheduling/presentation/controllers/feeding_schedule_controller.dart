@@ -231,7 +231,7 @@ class FeedingScheduleController extends BaseController {
       if (firstItem.isEnabled) {
         final hour = _parseHour(firstItem.time);
         final minute = _parseMinute(firstItem.time);
-        final tomorrow = today.add(Duration(days: 1));
+        final tomorrow = today.add(const Duration(days: 1));
         return tomorrow.add(Duration(hours: hour, minutes: minute));
       }
     }

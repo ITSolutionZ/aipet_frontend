@@ -26,7 +26,7 @@ class BookingDateSelector extends StatelessWidget {
         children: [
           // 섹션 헤더
           Padding(
-            padding: const const EdgeInsets.all(AppSpacing.md),
+            padding: const const const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
                 const Icon(
@@ -34,7 +34,7 @@ class BookingDateSelector extends StatelessWidget {
                   size: 20,
                   color: AppColors.primary,
                 ),
-                const const SizedBox(width: AppSpacing.xs),
+                const const const SizedBox(width: AppSpacing.xs),
                 Text(
                   '日付を選択してください',
                   style: AppTextStyles.titleMedium.copyWith(
@@ -42,9 +42,9 @@ class BookingDateSelector extends StatelessWidget {
                   ),
                 ),
                 if (selectedDate != null) ...[
-                  const const SizedBox(width: AppSpacing.sm),
+                  const const const SizedBox(width: AppSpacing.sm),
                   Container(
-                    padding: const const EdgeInsets.symmetric(
+                    padding: const const const EdgeInsets.symmetric(
                       horizontal: AppSpacing.sm,
                       vertical: AppSpacing.xs,
                     ),
@@ -67,17 +67,17 @@ class BookingDateSelector extends StatelessWidget {
 
           // 달력 위젯
           Padding(
-            padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: CalendarDatePicker(
               initialDate: selectedDate ?? DateTime.now(),
               firstDate: minimumDate ?? DateTime.now(),
               lastDate:
-                  maximumDate ?? DateTime.now().add(Duration(days: 90)),
+                  maximumDate ?? DateTime.now().add(const Duration(days: 90)),
               onDateChanged: onDateSelected,
             ),
           ),
 
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
         ],
       ),
     );
@@ -113,7 +113,7 @@ class CompactDateSelector extends StatelessWidget {
       children: [
         // 헤더
         Padding(
-          padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Text(
             '날짜 선택',
             style: AppTextStyles.titleMedium.copyWith(
@@ -121,14 +121,14 @@ class CompactDateSelector extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
 
         // 날짜 선택 칩들
         SizedBox(
           height: 80,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             itemCount: dates.length,
             itemBuilder: (context, index) {
               final date = dates[index];
@@ -139,12 +139,12 @@ class CompactDateSelector extends StatelessWidget {
               final isToday = _isToday(date);
 
               return Padding(
-                padding: const const EdgeInsets.only(right: AppSpacing.sm),
+                padding: const const const EdgeInsets.only(right: AppSpacing.sm),
                 child: GestureDetector(
                   onTap: () => onDateSelected(date),
                   child: Container(
                     width: 60,
-                    padding: const const EdgeInsets.all(AppSpacing.sm),
+                    padding: const const const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? AppColors.primary
@@ -166,7 +166,7 @@ class CompactDateSelector extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.xs),
+                        const const const SizedBox(height: AppSpacing.xs),
                         Text(
                           date.day.toString(),
                           style: AppTextStyles.headlineSmall.copyWith(

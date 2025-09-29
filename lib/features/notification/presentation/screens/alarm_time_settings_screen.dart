@@ -73,15 +73,15 @@ class _AlarmTimeSettingsScreenState
           backgroundColor: AppColors.pointOffWhite,
           appBar: const SoftGradientDrawerAppBar(title: 'アラーム時間設定'),
           body: SingleChildScrollView(
-            padding: const const EdgeInsets.all(AppSpacing.lg),
+            padding: const const const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: AppSpacing.md),
+                const const const SizedBox(height: AppSpacing.md),
 
                 const SectionHeaderComponent(title: '食事アラーム時間'),
 
-                const SizedBox(height: AppSpacing.lg),
+                const const const SizedBox(height: AppSpacing.lg),
 
                 _buildTimeSettingTile(
                   title: '朝食',
@@ -95,7 +95,7 @@ class _AlarmTimeSettingsScreenState
                       }),
                 ),
 
-                const SizedBox(height: AppSpacing.lg),
+                const const const SizedBox(height: AppSpacing.lg),
 
                 _buildTimeSettingTile(
                   title: '昼食',
@@ -109,7 +109,7 @@ class _AlarmTimeSettingsScreenState
                       }),
                 ),
 
-                const SizedBox(height: AppSpacing.lg),
+                const const const SizedBox(height: AppSpacing.lg),
 
                 _buildTimeSettingTile(
                   title: '夕食',
@@ -123,11 +123,11 @@ class _AlarmTimeSettingsScreenState
                       }),
                 ),
 
-                const SizedBox(height: AppSpacing.xl * 2),
+                const const const SizedBox(height: AppSpacing.xl * 2),
 
                 const SectionHeaderComponent(title: '散歩アラーム時間'),
 
-                const SizedBox(height: AppSpacing.lg),
+                const const const SizedBox(height: AppSpacing.lg),
 
                 _buildTimeSettingTile(
                   title: '散歩時間',
@@ -141,7 +141,7 @@ class _AlarmTimeSettingsScreenState
                       }),
                 ),
 
-                const SizedBox(height: AppSpacing.xl * 3),
+                const const const SizedBox(height: AppSpacing.xl * 3),
 
                 ActionButton.primary(
                   text: '保存',
@@ -153,7 +153,7 @@ class _AlarmTimeSettingsScreenState
                   },
                 ),
 
-                const SizedBox(height: AppSpacing.xl),
+                const const const SizedBox(height: AppSpacing.xl),
               ],
             ),
           ),
@@ -170,7 +170,7 @@ class _AlarmTimeSettingsScreenState
   }) {
     return GlassCard(
       child: ListTile(
-        contentPadding: const const EdgeInsets.symmetric(
+        contentPadding: const const const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.md,
         ),
@@ -187,7 +187,7 @@ class _AlarmTimeSettingsScreenState
           style: TextStyle(fontSize: 14, color: Colors.grey[600]),
         ),
         trailing: Container(
-          padding: const const EdgeInsets.symmetric(
+          padding: const const const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
           ),

@@ -27,7 +27,7 @@ class ToggleSwitchUI extends StatelessWidget {
           Container(
             width: 48,
             height: 48,
-            margin: const const EdgeInsets.only(right: AppSpacing.md),
+            margin: const const const EdgeInsets.only(right: AppSpacing.md),
             decoration: BoxDecoration(
               color: AppColors.pointBrown.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -45,7 +45,7 @@ class ToggleSwitchUI extends StatelessWidget {
                     color: AppColors.pointDark,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                const const const SizedBox(height: AppSpacing.xs),
                 Text(
                   subtitle,
                   style: AppFonts.bodyMedium.copyWith(

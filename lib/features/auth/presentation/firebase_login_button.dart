@@ -104,13 +104,13 @@ class FirebaseLoginButton extends ConsumerWidget {
       return Card(
         color: Colors.green.shade100,
         child: Padding(
-          padding: const const EdgeInsets.all(16.0),
+          padding: const const const EdgeInsets.all(16.0),
           child: Column(
             children: [
               Row(
                 children: [
                   const Icon(Icons.check_circle, color: Colors.green, size: 32),
-                  const const SizedBox(width: 16),
+                  const const const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +122,7 @@ class FirebaseLoginButton extends ConsumerWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const const const SizedBox(height: 4),
                         Text(
                           'UID: ${authState.currentUser!.uid}',
                           style: TextStyle(
@@ -135,7 +135,7 @@ class FirebaseLoginButton extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const const const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
@@ -156,13 +156,13 @@ class FirebaseLoginButton extends ConsumerWidget {
     return Card(
       color: Colors.blue.shade100,
       child: Padding(
-        padding: const const EdgeInsets.all(16.0),
+        padding: const const const EdgeInsets.all(16.0),
         child: Column(
           children: [
             const Row(
               children: [
                 Icon(Icons.login, color: Colors.blue, size: 32),
-                const SizedBox(width: 16),
+                SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +184,7 @@ class FirebaseLoginButton extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const const const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

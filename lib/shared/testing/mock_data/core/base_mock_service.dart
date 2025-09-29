@@ -3,7 +3,7 @@
 /// 모든 feature별 mock 서비스가 구현해야 할 기본 인터페이스
 abstract class BaseMockService {
   /// Mock 데이터 로딩 지연 시간 시뮬레이션
-  static const Duration defaultDelay = const Duration(milliseconds: 300);
+  static const Duration defaultDelay = Duration(milliseconds: 300);
 
   /// API 지연 시뮬레이션
   ///

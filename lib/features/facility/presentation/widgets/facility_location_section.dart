@@ -23,7 +23,7 @@ class FacilityLocationSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
 
         // 주소 정보
         Column(
@@ -33,12 +33,12 @@ class FacilityLocationSection extends StatelessWidget {
               '住所: ${facility.address}',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
             ),
-            const SizedBox(height: AppSpacing.xs),
+            const const const SizedBox(height: AppSpacing.xs),
             Text(
               '市区町村: ${facility.address}',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
             ),
-            const SizedBox(height: AppSpacing.xs),
+            const const const SizedBox(height: AppSpacing.xs),
             Text(
               '国: ${facility.address}',
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
@@ -46,7 +46,7 @@ class FacilityLocationSection extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
 
         // Google Maps 지도
         FacilityGoogleMapWidget(

@@ -26,8 +26,8 @@ class SplashEntity {
   factory SplashEntity.defaultConfig() {
     return const SplashEntity(
       logoPath: 'assets/icons/aipet_logo.png',
-      animationDuration: const Duration(milliseconds: 2000),
-      displayDuration: const Duration(seconds: 3),
+      animationDuration: Duration(milliseconds: 2000),
+      displayDuration: Duration(seconds: 3),
       nextRoute: '/onboarding',
     );
   }

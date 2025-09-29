@@ -63,29 +63,29 @@ class _EditWateringRecordScreenState
       body: Form(
         key: _formKey,
         child: Padding(
-          padding: const const EdgeInsets.all(AppSpacing.lg),
+          padding: const const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 기록 정보 카드
               _buildRecordInfoCard(),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 급수량 입력
               _buildAmountInput(),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 시간 선택
               _buildTimeSelector(),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 급수 타입 선택
               _buildTypeSelector(),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 메모 입력
               _buildNotesInput(),
-              const SizedBox(height: AppSpacing.xl),
+              const const const SizedBox(height: AppSpacing.xl),
 
               // 버튼들
               _buildActionButtons(),
@@ -100,11 +100,11 @@ class _EditWateringRecordScreenState
   Widget _buildRecordInfoCard() {
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             Container(
-              padding: const const EdgeInsets.all(AppSpacing.md),
+              padding: const const const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.pointBlue.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
@@ -115,7 +115,7 @@ class _EditWateringRecordScreenState
                 size: 32,
               ),
             ),
-            const const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +146,7 @@ class _EditWateringRecordScreenState
   Widget _buildAmountInput() {
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -157,7 +157,7 @@ class _EditWateringRecordScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _amountController,
               keyboardType: TextInputType.number,
@@ -188,7 +188,7 @@ class _EditWateringRecordScreenState
   Widget _buildTimeSelector() {
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -199,7 +199,7 @@ class _EditWateringRecordScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             ListTile(
               leading: const Icon(
                 Icons.access_time,
@@ -223,7 +223,7 @@ class _EditWateringRecordScreenState
   Widget _buildTypeSelector() {
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -234,7 +234,7 @@ class _EditWateringRecordScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             ..._wateringTypes.map(
               (type) => RadioListTile<String>(
                 title: Text(type),
@@ -258,7 +258,7 @@ class _EditWateringRecordScreenState
   Widget _buildNotesInput() {
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -269,7 +269,7 @@ class _EditWateringRecordScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _notesController,
               maxLines: 3,
@@ -299,11 +299,11 @@ class _EditWateringRecordScreenState
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.pointBrown,
               side: const BorderSide(color: AppColors.pointBrown),
-              padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
 
         // 저장/취소 버튼
         Row(
@@ -312,19 +312,19 @@ class _EditWateringRecordScreenState
               child: OutlinedButton(
                 onPressed: () => context.pop(),
                 style: OutlinedButton.styleFrom(
-                  padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
                 child: const Text('キャンセル'),
               ),
             ),
-            const const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: ElevatedButton(
                 onPressed: _saveRecord,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBlue,
                   foregroundColor: Colors.white,
-                  padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
                 child: const Text('保存'),
               ),

@@ -55,7 +55,6 @@ class GlassButton extends StatelessWidget {
   const GlassButton.dense({
     super.key,
     required this.label,
-    required VoidCallback onPressed,
     this.isPrimary = true,
     this.isLoading = false,
     this.expand = false,
@@ -69,13 +68,12 @@ class GlassButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.constraints,
-  }) : padding = const const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+  }) : padding = const const EdgeInsets.symmetric(horizontal = 12, {super.key}),
        onPressed = isLoading ? null : onPressed;
 
   const GlassButton.medium({
     super.key,
     required this.label,
-    required VoidCallback onPressed,
     this.isPrimary = true,
     this.isLoading = false,
     this.expand = false,
@@ -89,13 +87,12 @@ class GlassButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.constraints,
-  }) : padding = const const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+  }) : padding = const const EdgeInsets.symmetric(horizontal = 20, {super.key}),
        onPressed = isLoading ? null : onPressed;
 
   const GlassButton.large({
     super.key,
     required this.label,
-    required VoidCallback onPressed,
     this.isPrimary = true,
     this.isLoading = false,
     this.expand = false,
@@ -109,7 +106,7 @@ class GlassButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.constraints,
-  }) : padding = const const EdgeInsets.symmetric(vertical: 18, horizontal: 28),
+  }) : padding = const const EdgeInsets.symmetric(horizontal = 28, {super.key}),
        onPressed = isLoading ? null : onPressed;
 
   @override
@@ -126,7 +123,7 @@ class GlassButton extends StatelessWidget {
       backgroundColor: isPrimary ? null : Colors.transparent,
       borderColor: borderColor,
       padding:
-          padding != const const EdgeInsets.symmetric(vertical: 14, horizontal: 20)
+          padding != const const const EdgeInsets.symmetric(vertical: 14, horizontal: 20)
           ? padding
           : null,
       textStyle: textStyle,
@@ -177,7 +174,6 @@ class PointButton extends StatelessWidget {
   const PointButton.small({
     super.key,
     required this.label,
-    required VoidCallback onPressed,
     this.isLoading = false,
     this.expand = false,
     this.leading,
@@ -186,13 +182,12 @@ class PointButton extends StatelessWidget {
     this.foregroundColor,
     this.textStyle,
     this.borderRadius = 10,
-  }) : padding = const const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+  }) : padding = const const EdgeInsets.symmetric(horizontal = 12, {super.key}),
        onPressed = isLoading ? null : onPressed;
 
   const PointButton.medium({
     super.key,
     required this.label,
-    required VoidCallback onPressed,
     this.isLoading = false,
     this.expand = false,
     this.leading,
@@ -201,13 +196,12 @@ class PointButton extends StatelessWidget {
     this.foregroundColor,
     this.textStyle,
     this.borderRadius = 12,
-  }) : padding = const const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+  }) : padding = const const EdgeInsets.symmetric(horizontal = 20, {super.key}),
        onPressed = isLoading ? null : onPressed;
 
   const PointButton.large({
     super.key,
     required this.label,
-    required VoidCallback onPressed,
     this.isLoading = false,
     this.expand = false,
     this.leading,
@@ -216,7 +210,7 @@ class PointButton extends StatelessWidget {
     this.foregroundColor,
     this.textStyle,
     this.borderRadius = 14,
-  }) : padding = const const EdgeInsets.symmetric(vertical: 18, horizontal: 28),
+  }) : padding = const const EdgeInsets.symmetric(horizontal = 28, {super.key}),
        onPressed = isLoading ? null : onPressed;
 
   @override
@@ -249,9 +243,9 @@ class PointButton extends StatelessWidget {
 
   bool _isCustomPadding() {
     return padding !=
-            const const EdgeInsets.symmetric(vertical: 14, horizontal: 20) &&
-        padding != const const EdgeInsets.symmetric(vertical: 8, horizontal: 12) &&
-        padding != const const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
+            const const const EdgeInsets.symmetric(vertical: 14, horizontal: 20) &&
+        padding != const const const EdgeInsets.symmetric(vertical: 8, horizontal: 12) &&
+        padding != const const const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
   }
 }
 

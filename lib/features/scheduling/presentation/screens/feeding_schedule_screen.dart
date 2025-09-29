@@ -69,7 +69,7 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
         controller: _scrollController,
         slivers: [
           SliverPadding(
-            padding: const const EdgeInsets.all(AppSpacing.lg),
+            padding: const const const EdgeInsets.all(AppSpacing.lg),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 Column(
@@ -78,7 +78,7 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                     // 오늘의 급여 요약
                     if (_todayMeals != null)
                       TodayMealsCard(todayMeals: _todayMeals!),
-                    const SizedBox(height: AppSpacing.lg),
+                    const const const SizedBox(height: AppSpacing.lg),
 
                     // 스케줄 설정
                     Text(
@@ -88,7 +88,7 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                         color: AppColors.pointDark,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     // 스케줄 목록
                     if (_scheduleItems != null)
                       ...(_scheduleItems!.map(
@@ -99,7 +99,7 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                         ),
                       )),
 
-                    const SizedBox(height: AppSpacing.lg),
+                    const const const SizedBox(height: AppSpacing.lg),
 
                     // 급여 기록 추가 버튼
                     SizedBox(
@@ -111,7 +111,7 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.pointBrown,
                           foregroundColor: Colors.white,
-                          padding: const const EdgeInsets.symmetric(
+                          padding: const const const EdgeInsets.symmetric(
                             vertical: AppSpacing.md,
                           ),
                         ),

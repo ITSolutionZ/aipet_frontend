@@ -21,7 +21,7 @@ class TrickDetailDialog extends StatelessWidget {
           children: [
             // 헤더
             Container(
-              padding: const const EdgeInsets.all(AppSpacing.lg),
+              padding: const const const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.pointBrown.withValues(alpha: 0.1),
                 borderRadius: const BorderRadius.only(
@@ -53,7 +53,7 @@ class TrickDetailDialog extends StatelessWidget {
                             size: 30,
                           ),
                   ),
-                  const const SizedBox(width: AppSpacing.md),
+                  const const const SizedBox(width: AppSpacing.md),
 
                   // 트릭 정보
                   Expanded(
@@ -66,7 +66,7 @@ class TrickDetailDialog extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.xs),
+                        const const const SizedBox(height: AppSpacing.xs),
                         Text(
                           trick.description,
                           style: AppFonts.bodyMedium.copyWith(
@@ -89,38 +89,38 @@ class TrickDetailDialog extends StatelessWidget {
             // 내용
             Flexible(
               child: SingleChildScrollView(
-                padding: const const EdgeInsets.all(AppSpacing.lg),
+                padding: const const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 난이도와 시간
                     _buildInfoRow(),
-                    const SizedBox(height: AppSpacing.lg),
+                    const const const SizedBox(height: AppSpacing.lg),
 
                     // 단계별 설명
                     if (trick.steps.isNotEmpty) ...[
                       _buildSectionTitle('学習ステップ'),
-                      const SizedBox(height: AppSpacing.md),
+                      const const const SizedBox(height: AppSpacing.md),
                       ...trick.steps.asMap().entries.map(
                         (entry) => _buildStepItem(entry.key + 1, entry.value),
                       ),
-                      const SizedBox(height: AppSpacing.lg),
+                      const const const SizedBox(height: AppSpacing.lg),
                     ],
 
                     // 팁
                     if (trick.tips.isNotEmpty) ...[
                       _buildSectionTitle('コツ'),
-                      const SizedBox(height: AppSpacing.md),
+                      const const const SizedBox(height: AppSpacing.md),
                       ...trick.tips.map((tip) => _buildTipItem(tip)),
-                      const SizedBox(height: AppSpacing.lg),
+                      const const const SizedBox(height: AppSpacing.lg),
                     ],
 
                     // 비디오 링크
                     if (trick.videoUrl != null) ...[
                       _buildSectionTitle('参考動画'),
-                      const SizedBox(height: AppSpacing.md),
+                      const const const SizedBox(height: AppSpacing.md),
                       _buildVideoLink(),
-                      const SizedBox(height: AppSpacing.lg),
+                      const const const SizedBox(height: AppSpacing.lg),
                     ],
                   ],
                 ),
@@ -129,7 +129,7 @@ class TrickDetailDialog extends StatelessWidget {
 
             // 하단 버튼
             Container(
-              padding: const const EdgeInsets.all(AppSpacing.lg),
+              padding: const const const EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
                   Expanded(
@@ -138,7 +138,7 @@ class TrickDetailDialog extends StatelessWidget {
                       child: const Text('閉じる'),
                     ),
                   ),
-                  const const SizedBox(width: AppSpacing.md),
+                  const const const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
@@ -169,7 +169,7 @@ class TrickDetailDialog extends StatelessWidget {
           label: _getDifficultyText(trick.difficulty),
           color: _getDifficultyColor(trick.difficulty),
         ),
-        const const SizedBox(width: AppSpacing.sm),
+        const const const SizedBox(width: AppSpacing.sm),
         _buildInfoChip(
           icon: Icons.access_time,
           label: '${trick.estimatedTime}分',
@@ -185,7 +185,7 @@ class TrickDetailDialog extends StatelessWidget {
     required Color color,
   }) {
     return Container(
-      padding: const const EdgeInsets.symmetric(
+      padding: const const const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),
@@ -197,7 +197,7 @@ class TrickDetailDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 16, color: color),
-          const const SizedBox(width: AppSpacing.xs),
+          const const const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: AppFonts.bodySmall.copyWith(
@@ -222,7 +222,7 @@ class TrickDetailDialog extends StatelessWidget {
 
   Widget _buildStepItem(int stepNumber, String step) {
     return Padding(
-      padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -243,7 +243,7 @@ class TrickDetailDialog extends StatelessWidget {
               ),
             ),
           ),
-          const const SizedBox(width: AppSpacing.sm),
+          const const const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(step, style: AppFonts.bodyMedium)),
         ],
       ),
@@ -252,7 +252,7 @@ class TrickDetailDialog extends StatelessWidget {
 
   Widget _buildTipItem(String tip) {
     return Padding(
-      padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -261,7 +261,7 @@ class TrickDetailDialog extends StatelessWidget {
             color: AppColors.pointBrown,
             size: 20,
           ),
-          const const SizedBox(width: AppSpacing.sm),
+          const const const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(tip, style: AppFonts.bodyMedium)),
         ],
       ),
@@ -270,7 +270,7 @@ class TrickDetailDialog extends StatelessWidget {
 
   Widget _buildVideoLink() {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.pointBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.sm),
@@ -282,7 +282,7 @@ class TrickDetailDialog extends StatelessWidget {
             color: AppColors.pointBlue,
             size: 24,
           ),
-          const const SizedBox(width: AppSpacing.sm),
+          const const const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               '参考動画を見る',

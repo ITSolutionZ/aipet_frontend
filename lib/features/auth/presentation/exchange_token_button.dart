@@ -19,23 +19,23 @@ class ExchangeTokenButton extends ConsumerWidget {
         foregroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const const EdgeInsets.all(24.0),
+        padding: const const const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 상태 표시 카드
             _buildStatusCard(tokenState),
-            const SizedBox(height: 32),
+            const const const SizedBox(height: 32),
 
             // 교환 버튼
             _buildExchangeButton(context, ref, tokenState),
-            const SizedBox(height: 16),
+            const const const SizedBox(height: 16),
 
             // 리셋 버튼
             if (tokenState.isSuccess || tokenState.errorMessage != null)
               _buildResetButton(ref),
-            const SizedBox(height: 32),
+            const const const SizedBox(height: 32),
 
             // 설명 텍스트
             _buildInstructionText(),
@@ -77,20 +77,20 @@ class ExchangeTokenButton extends ConsumerWidget {
     return Card(
       color: cardColor,
       child: Padding(
-        padding: const const EdgeInsets.all(16.0),
+        padding: const const const EdgeInsets.all(16.0),
         child: Column(
           children: [
             if (state.isLoading)
               const CircularProgressIndicator()
             else
               Icon(icon, size: 48, color: Colors.grey.shade700),
-            const SizedBox(height: 12),
+            const const const SizedBox(height: 12),
             Text(
               title,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             ...[
-              const SizedBox(height: 8),
+              const const const SizedBox(height: 8),
               Text(
                 subtitle ?? '',
                 style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
@@ -141,7 +141,7 @@ class ExchangeTokenButton extends ConsumerWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        padding: const const EdgeInsets.symmetric(vertical: 16),
+        padding: const const const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
@@ -158,7 +158,7 @@ class ExchangeTokenButton extends ConsumerWidget {
         ref.read(authControllerProvider.notifier).reset();
       },
       style: OutlinedButton.styleFrom(
-        padding: const const EdgeInsets.symmetric(vertical: 12),
+        padding: const const const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: const Text(
@@ -171,7 +171,7 @@ class ExchangeTokenButton extends ConsumerWidget {
   /// 설명 텍스트
   Widget _buildInstructionText() {
     return Container(
-      padding: const const EdgeInsets.all(16),
+      padding: const const const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.blue.shade50,
         borderRadius: BorderRadius.circular(8),

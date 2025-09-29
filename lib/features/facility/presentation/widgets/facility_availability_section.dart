@@ -20,28 +20,28 @@ class FacilityAvailabilitySection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
 
         // 요일 칩
         Row(
           children: [
             _buildDayChip('月', true),
-            const const SizedBox(width: AppSpacing.xs),
+            const const const SizedBox(width: AppSpacing.xs),
             _buildDayChip('火', true),
-            const const SizedBox(width: AppSpacing.xs),
+            const const const SizedBox(width: AppSpacing.xs),
             _buildDayChip('水', true),
-            const const SizedBox(width: AppSpacing.xs),
+            const const const SizedBox(width: AppSpacing.xs),
             _buildDayChip('木', true),
-            const const SizedBox(width: AppSpacing.xs),
+            const const const SizedBox(width: AppSpacing.xs),
             _buildDayChip('金', true),
-            const const SizedBox(width: AppSpacing.xs),
+            const const const SizedBox(width: AppSpacing.xs),
             _buildDayChip('土', false),
-            const const SizedBox(width: AppSpacing.xs),
+            const const const SizedBox(width: AppSpacing.xs),
             _buildDayChip('日', false),
           ],
         ),
 
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
 
         // 영업시간
         Text(

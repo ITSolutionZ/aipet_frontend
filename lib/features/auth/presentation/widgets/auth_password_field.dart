@@ -32,7 +32,7 @@ class AuthPasswordField extends StatelessWidget {
             color: labelColor ?? AppColors.pointGray,
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: controller,
           obscureText: !isVisible,
@@ -72,7 +72,7 @@ class AuthPasswordField extends StatelessWidget {
             ),
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const const EdgeInsets.symmetric(
+            contentPadding: const const const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.md,
             ),

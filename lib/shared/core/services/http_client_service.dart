@@ -9,8 +9,8 @@ import 'auth_token_repository.dart';
 /// 자동 토큰 갱신, 재시도, 인터셉터 기능 포함
 class HttpClientService {
   static const String baseUrl = 'https://api.aipet.com'; // 실제 백엔드 URL로 교체
-  static const Duration connectTimeout = const Duration(seconds: 30);
-  static const Duration receiveTimeout = const Duration(seconds: 30);
+  static const Duration connectTimeout = Duration(seconds: 30);
+  static const Duration receiveTimeout = Duration(seconds: 30);
   static const int maxRetries = 3;
 
   late final Dio _dio;

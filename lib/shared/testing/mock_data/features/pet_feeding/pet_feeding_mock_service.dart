@@ -39,8 +39,8 @@ class PetFeedingMockService extends BaseMockService {
         },
         'tags': ['저지방', '고단백', '수제'],
         'category': 'main_meal',
-        'createdAt': DateTime.now().subtract(Duration(days: 10)),
-        'updatedAt': DateTime.now().subtract(Duration(days: 2)),
+        'createdAt': DateTime.now().subtract(const Duration(days: 10)),
+        'updatedAt': DateTime.now().subtract(const Duration(days: 2)),
       },
       {
         'id': 'recipe_2',
@@ -68,8 +68,8 @@ class PetFeedingMockService extends BaseMockService {
         },
         'tags': ['오메가3', '항산화', '면역력'],
         'category': 'treat',
-        'createdAt': DateTime.now().subtract(Duration(days: 15)),
-        'updatedAt': DateTime.now().subtract(Duration(days: 5)),
+        'createdAt': DateTime.now().subtract(const Duration(days: 15)),
+        'updatedAt': DateTime.now().subtract(const Duration(days: 5)),
       },
       {
         'id': 'recipe_3',
@@ -97,8 +97,8 @@ class PetFeedingMockService extends BaseMockService {
         },
         'tags': ['무설탕', '천연감미', '소화촉진'],
         'category': 'snack',
-        'createdAt': DateTime.now().subtract(Duration(days: 20)),
-        'updatedAt': DateTime.now().subtract(Duration(days: 8)),
+        'createdAt': DateTime.now().subtract(const Duration(days: 20)),
+        'updatedAt': DateTime.now().subtract(const Duration(days: 8)),
       },
     ];
   }
@@ -159,7 +159,7 @@ class PetFeedingMockService extends BaseMockService {
         'type': 'dry',
         'flavor': '연어&쌀',
         'packageSize': '3kg',
-        'expiryDate': DateTime.now().add(Duration(days: 180)),
+        'expiryDate': DateTime.now().add(const Duration(days: 180)),
       },
       'feedingHistory': [
         {
@@ -298,7 +298,7 @@ class PetFeedingMockService extends BaseMockService {
       {
         'id': MockHelper.generateId(),
         'petId': '1',
-        'feedTime': DateTime.now().subtract(Duration(hours: 2)),
+        'feedTime': DateTime.now().subtract(const Duration(hours: 2)),
         'foodType': '건사료',
         'amount': '160g',
         'calories': 320,
@@ -309,7 +309,7 @@ class PetFeedingMockService extends BaseMockService {
       {
         'id': MockHelper.generateId(),
         'petId': '1',
-        'feedTime': DateTime.now().subtract(Duration(hours: 14)),
+        'feedTime': DateTime.now().subtract(const Duration(hours: 14)),
         'foodType': '건사료',
         'amount': '160g',
         'calories': 320,
@@ -320,7 +320,7 @@ class PetFeedingMockService extends BaseMockService {
       {
         'id': MockHelper.generateId(),
         'petId': '2',
-        'feedTime': DateTime.now().subtract(Duration(hours: 1)),
+        'feedTime': DateTime.now().subtract(const Duration(hours: 1)),
         'foodType': '습식',
         'amount': '85g',
         'calories': 95,

@@ -1,9 +1,8 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/features/home/data/data.dart';
 import 'package:aipet_frontend/features/home/domain/domain.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart' as app_result;
 import 'package:aipet_frontend/shared/core/services/error_handling_service.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart'
-    as app_result;
 
 class HomeDashboardController extends BaseController {
   final HomeRepository _repository;
@@ -35,9 +34,7 @@ class HomeDashboardController extends BaseController {
       return app_result.Result.success(dashboard, '홈 화면 초기화가 완료되었습니다');
     } catch (error) {
       handleError(error);
-      return app_result.Result.failure(
-        getUserFriendlyErrorMessage(error),
-      );
+      return app_result.Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
@@ -51,9 +48,7 @@ class HomeDashboardController extends BaseController {
       );
     } catch (error) {
       handleError(error);
-      return app_result.Result.failure(
-        getUserFriendlyErrorMessage(error),
-      );
+      return app_result.Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
@@ -70,9 +65,7 @@ class HomeDashboardController extends BaseController {
       return app_result.Result.success(weather, '天気情報がロードされました');
     } catch (error) {
       handleError(error);
-      return app_result.Result.failure(
-        getUserFriendlyErrorMessage(error),
-      );
+      return app_result.Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 
@@ -134,9 +127,7 @@ class HomeDashboardController extends BaseController {
       return app_result.Result.success(result, 'プロフィールが更新されました');
     } catch (error) {
       handleError(error);
-      return app_result.Result.failure(
-        getUserFriendlyErrorMessage(error),
-      );
+      return app_result.Result.failure(getUserFriendlyErrorMessage(error));
     }
   }
 }

@@ -42,7 +42,7 @@ class BaseSummaryCard extends ConsumerWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: backgroundColor ?? Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -72,7 +72,7 @@ class BaseSummaryCard extends ConsumerWidget {
           children: [
             if (icon != null) ...[
               Icon(icon, color: iconColor ?? AppColors.pointDark, size: 24),
-              const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
             ],
             Expanded(
               child: Text(
@@ -86,14 +86,14 @@ class BaseSummaryCard extends ConsumerWidget {
           ],
         ),
         if (subtitle != null) ...[
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Text(
             subtitle!,
             style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
           ),
         ],
         if (value != null) ...[
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
@@ -113,7 +113,7 @@ class BaseSummaryCard extends ConsumerWidget {
                   ),
                 ),
               if (unit != null && !isLoading) ...[
-                const SizedBox(width: AppSpacing.xs),
+                const const const SizedBox(width: AppSpacing.xs),
                 Text(
                   unit!,
                   style: AppFonts.bodyMedium.copyWith(

@@ -7,8 +7,8 @@ import 'package:aipet_frontend/features/ai/domain/services/ai_chat_state_manager
 import 'package:aipet_frontend/features/ai/domain/services/ai_favorite_manager.dart';
 import 'package:aipet_frontend/features/ai/domain/services/ai_message_manager.dart';
 import 'package:aipet_frontend/features/ai/domain/services/message_pagination_service.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

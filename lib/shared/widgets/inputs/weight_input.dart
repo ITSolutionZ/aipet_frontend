@@ -201,7 +201,7 @@ class _WeightInputState extends ConsumerState<WeightInput> {
             ],
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: const const EdgeInsets.symmetric(
+              contentPadding: const const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,
                 vertical: AppSpacing.lg,
               ),
@@ -225,7 +225,7 @@ class _WeightInputState extends ConsumerState<WeightInput> {
           ),
         ),
         if (widget.errorText != null) ...[
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Text(
             widget.errorText!,
             style: AppFonts.bodySmall.copyWith(color: AppColors.pointPink),

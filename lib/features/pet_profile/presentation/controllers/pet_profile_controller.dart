@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/usecase_providers.dart';
 import 'package:aipet_frontend/features/pet_profile/domain/usecases/get_pet_profile_usecase.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

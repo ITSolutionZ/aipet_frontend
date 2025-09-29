@@ -21,14 +21,14 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     return Scaffold(
       appBar: const SoftGradientAppBar(title: 'スケジュール管理'),
       body: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 알람 설정 섹션
             _buildAlarmSection(),
 
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 카테고리 섹션
             _buildCategorySection(),
@@ -42,11 +42,11 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   Widget _buildAlarmSection() {
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             const Icon(Icons.alarm, color: AppColors.pointBrown, size: 24),
-            const const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,7 +91,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('カテゴリー', style: AppFonts.titleLarge),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
 
         GridView.count(
           shrinkWrap: true,
@@ -147,25 +147,25 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
-          padding: const const EdgeInsets.all(AppSpacing.md),
+          padding: const const const EdgeInsets.all(AppSpacing.md),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const const EdgeInsets.all(AppSpacing.md),
+                padding: const const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: color, size: 32),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
               Text(
                 title,
                 style: AppFonts.titleMedium,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacing.xs),
+              const const const SizedBox(height: AppSpacing.xs),
               Text(
                 subtitle,
                 style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),

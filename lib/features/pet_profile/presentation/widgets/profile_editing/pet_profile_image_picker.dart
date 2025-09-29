@@ -37,7 +37,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
             Container(
               width: 40,
               height: 4,
-              margin: const const EdgeInsets.only(top: AppSpacing.sm),
+              margin: const const const EdgeInsets.only(top: AppSpacing.sm),
               decoration: BoxDecoration(
                 color: AppColors.pointDark.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
@@ -46,7 +46,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
 
             // 타이틀
             Padding(
-              padding: const const EdgeInsets.all(AppSpacing.lg),
+              padding: const const const EdgeInsets.all(AppSpacing.lg),
               child: Text(
                 '프로필 이미지 선택',
                 style: AppFonts.headlineSmall.copyWith(
@@ -58,7 +58,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
 
             // 옵션들
             Padding(
-              padding: const const EdgeInsets.symmetric(
+              padding: const const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.md,
               ),
@@ -76,7 +76,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                     },
                   ),
 
-                  const SizedBox(height: AppSpacing.sm),
+                  const const const SizedBox(height: AppSpacing.sm),
 
                   // 카메라로 촬영
                   _buildOptionTile(
@@ -90,7 +90,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                     },
                   ),
 
-                  const SizedBox(height: AppSpacing.sm),
+                  const const const SizedBox(height: AppSpacing.sm),
 
                   // 기본 이미지 선택
                   _buildOptionTile(
@@ -104,7 +104,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                     },
                   ),
 
-                  const SizedBox(height: AppSpacing.lg),
+                  const const const SizedBox(height: AppSpacing.lg),
 
                   // 취소 버튼
                   CommonButton(
@@ -115,7 +115,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                   ),
 
-                  const SizedBox(height: AppSpacing.md),
+                  const const const SizedBox(height: AppSpacing.md),
                 ],
               ),
             ),
@@ -136,7 +136,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.medium),
       child: Container(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.pointDark.withValues(alpha: 0.1)),
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -152,7 +152,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
               ),
               child: Icon(icon, color: AppColors.pointBrown, size: 24),
             ),
-            const const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +164,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                       color: AppColors.pointDark,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xs / 2),
+                  const const const SizedBox(height: AppSpacing.xs / 2),
                   Text(
                     subtitle,
                     style: AppFonts.bodySmall.copyWith(

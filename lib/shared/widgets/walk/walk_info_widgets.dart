@@ -32,14 +32,14 @@ class WalkInfoWidgets {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           child: Padding(
-            padding: const const EdgeInsets.all(AppSpacing.md),
+            padding: const const const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
                     Container(
-                      padding: const const EdgeInsets.all(AppSpacing.xs),
+                      padding: const const const EdgeInsets.all(AppSpacing.xs),
                       decoration: BoxDecoration(
                         color: (iconColor ?? AppColors.pointBlue).withValues(
                           alpha: 0.1,
@@ -61,7 +61,7 @@ class WalkInfoWidgets {
                       ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const const const SizedBox(height: AppSpacing.sm),
                 Text(
                   value,
                   style: AppFonts.headlineMedium.copyWith(
@@ -69,7 +69,7 @@ class WalkInfoWidgets {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                const const const SizedBox(height: AppSpacing.xs),
                 Text(
                   label,
                   style: AppFonts.bodySmall.copyWith(
@@ -94,11 +94,11 @@ class WalkInfoWidgets {
     FontWeight? fontWeight,
   }) {
     return Padding(
-      padding: const const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
         children: [
           Icon(icon, size: 20, color: iconColor ?? AppColors.pointGray),
-          const SizedBox(width: AppSpacing.sm),
+          const const const SizedBox(width: AppSpacing.sm),
           Text(
             label,
             style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
@@ -124,7 +124,7 @@ class WalkInfoWidgets {
     Color? textColor,
   }) {
     return Container(
-      padding: const const EdgeInsets.symmetric(
+      padding: const const const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),
@@ -171,13 +171,13 @@ class WalkInfoWidgets {
           ],
         ),
         if (subtitle != null) ...[
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Text(
             subtitle,
             style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
           ),
         ],
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         LinearProgressIndicator(
           value: progress.clamp(0.0, 1.0),
           backgroundColor:
@@ -239,10 +239,10 @@ class WalkInfoWidgets {
               ),
           ],
         ),
-        const SizedBox(width: AppSpacing.md),
+        const const const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Padding(
-            padding: const const EdgeInsets.only(top: 4),
+            padding: const const const EdgeInsets.only(top: 4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -266,7 +266,7 @@ class WalkInfoWidgets {
                   ],
                 ),
                 if (subtitle != null) ...[
-                  const SizedBox(height: AppSpacing.xs),
+                  const const const SizedBox(height: AppSpacing.xs),
                   Text(
                     subtitle,
                     style: AppFonts.bodySmall.copyWith(
@@ -274,7 +274,7 @@ class WalkInfoWidgets {
                     ),
                   ),
                 ],
-                const SizedBox(height: AppSpacing.md),
+                const const const SizedBox(height: AppSpacing.md),
               ],
             ),
           ),

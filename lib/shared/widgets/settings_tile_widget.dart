@@ -60,7 +60,7 @@ class SettingsTileWidget extends StatelessWidget {
       tileColor: tileColor,
       contentPadding:
           contentPadding ??
-          const const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          const const const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     );
   }

@@ -12,10 +12,10 @@ class WelcomeScreen extends StatelessWidget {
       backgroundColor: AppColors.pointOffWhite,
       body: SafeArea(
         child: Padding(
-          padding: const const EdgeInsets.all(AppSpacing.lg),
+          padding: const const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // ロゴエリア
               SizedBox(
@@ -87,7 +87,7 @@ class WelcomeScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: AppSpacing.xs),
+                            const const const SizedBox(height: AppSpacing.xs),
                             Icon(
                               Icons.pets,
                               size: 20,
@@ -103,7 +103,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.sm),
+              const const const SizedBox(height: AppSpacing.sm),
 
               // aipet ロゴテキスト
               Text(
@@ -115,7 +115,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 区切り線
               Container(
@@ -124,7 +124,7 @@ class WelcomeScreen extends StatelessWidget {
                 color: AppColors.pointBrown.withValues(alpha: 0.3),
               ),
 
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // Welcome テキスト
               Text(
@@ -136,7 +136,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 완료메시지 카드
               Expanded(
@@ -156,7 +156,7 @@ class WelcomeScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
 
-                      const SizedBox(height: AppSpacing.md),
+                      const const const SizedBox(height: AppSpacing.md),
 
                       const Text(
                         'ホームに戻り、ログインしてください。',
@@ -168,7 +168,7 @@ class WelcomeScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
 
-                      const SizedBox(height: AppSpacing.lg),
+                      const const const SizedBox(height: AppSpacing.lg),
 
                       Text(
                         '詳しい情報登録、修正は設定画面で登録してください。',
@@ -184,7 +184,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // ペット登録へボタン
               SizedBox(
@@ -196,7 +196,7 @@ class WelcomeScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,
-                    padding: const const EdgeInsets.symmetric(
+                    padding: const const const EdgeInsets.symmetric(
                       vertical: AppSpacing.lg,
                     ),
                     shape: RoundedRectangleBorder(
@@ -213,13 +213,13 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
 
               // 後で登録ボタン
               TextButton(
                 onPressed: () => context.go(RouteConstants.homeRoute),
                 style: TextButton.styleFrom(
-                  padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
                 child: Text(
                   '後で登録する',
@@ -231,7 +231,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
             ],
           ),
         ),

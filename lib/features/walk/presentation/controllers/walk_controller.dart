@@ -1,10 +1,11 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/features/walk/data/data.dart';
 import 'package:aipet_frontend/features/walk/domain/domain.dart';
-import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart' as domain;
+import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart'
+    as domain;
 import 'package:aipet_frontend/features/walk/domain/usecases/update_walk_record_usecase.dart';
-import 'package:aipet_frontend/shared/core/utils/geo_utils.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/utils/geo_utils.dart';
 
 /// 산책 작업 결과 (shared의 Result 패턴 사용)
 typedef WalkResult<T> = Result<T>;
@@ -233,7 +234,9 @@ class WalkController extends BaseController {
     try {
       // domain.PetInfo를 data.PetInfo로 변환 (같은 구조이므로 안전)
       if (pet != null) {
-        ref.read(selectedPetNotifierProvider.notifier).setSelectedPet(pet as dynamic);
+        ref
+            .read(selectedPetNotifierProvider.notifier)
+            .setSelectedPet(pet as dynamic);
       } else {
         ref.read(selectedPetNotifierProvider.notifier).setSelectedPet(null);
       }

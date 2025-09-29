@@ -49,13 +49,13 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientDrawerAppBar(title: 'ワクチン記録'),
       body: SingleChildScrollView(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 헤더 정보
             _buildHeaderCard(),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
 
             // 백신 목록
             Text(
@@ -65,12 +65,12 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
 
             // 백신 카드들
             ..._vaccines.map((vaccine) => _buildVaccineCard(vaccine)),
 
-            const SizedBox(height: AppSpacing.xl),
+            const const const SizedBox(height: AppSpacing.xl),
 
             // 새 백신 추가 버튼
             SizedBox(
@@ -82,7 +82,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBrown,
                   foregroundColor: Colors.white,
-                  padding: const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                  padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.large),
                   ),
@@ -98,7 +98,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
   Widget _buildHeaderCard() {
     return Container(
       width: double.infinity,
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -129,7 +129,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                   size: 28,
                 ),
               ),
-              const const SizedBox(width: AppSpacing.md),
+              const const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +141,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const const const SizedBox(height: AppSpacing.xs),
                     Text(
                       '愛犬の健康を守るワクチン記録を管理',
                       style: AppFonts.bodySmall.copyWith(
@@ -153,7 +153,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
 
           // 통계 정보
           Row(
@@ -188,7 +188,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
         Text(
           label,
           style: AppFonts.bodySmall.copyWith(
@@ -210,8 +210,8 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
     return GestureDetector(
       onTap: () => _showVaccineDetailModal(vaccine),
       child: Container(
-        margin: const const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -247,7 +247,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                     size: 20,
                   ),
                 ),
-                const const SizedBox(width: AppSpacing.md),
+                const const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,7 +259,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.xs),
+                      const const const SizedBox(height: AppSpacing.xs),
                       Text(
                         vaccine['description'] as String,
                         style: AppFonts.bodySmall.copyWith(
@@ -280,7 +280,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 Expanded(
@@ -310,7 +310,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
             color: AppColors.pointDark.withValues(alpha: 0.7),
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
+        const const const SizedBox(height: AppSpacing.xs),
         Text(
           value,
           style: AppFonts.bodyMedium.copyWith(
@@ -336,7 +336,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                 color: AppColors.pointDark.withValues(alpha: 0.8),
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
             _buildDetailItem('前回接種日', vaccine['lastDate'] as String),
             _buildDetailItem('次回予定日', vaccine['nextDue'] as String),
             _buildDetailItem('接種間隔', vaccine['interval'] as String),
@@ -359,7 +359,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
 
   Widget _buildDetailItem(String label, String value) {
     return Padding(
-      padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

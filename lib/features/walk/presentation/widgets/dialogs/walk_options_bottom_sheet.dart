@@ -26,7 +26,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -87,14 +87,14 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
               Container(
                 width: 40,
                 height: 4,
-                margin: const const EdgeInsets.symmetric(vertical: 12),
+                margin: const const const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.pointGray,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               Padding(
-                padding: const const EdgeInsets.all(AppSpacing.lg),
+                padding: const const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -105,7 +105,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
                         color: AppColors.pointDark,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildShareOption(
                       icon: Icons.copy,
                       title: 'テキストをコピー',
@@ -115,7 +115,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
                         _copyToClipboard(context, shareText);
                       },
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildShareOption(
                       icon: Icons.image,
                       title: 'ファイルとして保存',
@@ -125,7 +125,7 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
                         _saveAsFile(context, walkRecord);
                       },
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const const const SizedBox(height: AppSpacing.md),
                     _buildShareOption(
                       icon: Icons.share,
                       title: 'システム共有',
@@ -285,7 +285,7 @@ AI Pet アプリで記録 📱''';
     return Card(
       child: ListTile(
         leading: Container(
-          padding: const const EdgeInsets.all(AppSpacing.sm),
+          padding: const const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),

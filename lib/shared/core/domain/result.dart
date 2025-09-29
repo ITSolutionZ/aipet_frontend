@@ -95,14 +95,3 @@ class Result<T> {
 /// 실패 결과를 빠르게 생성하는 헬퍼 함수
 Result<T> Failure<T>(String message, [Exception? error]) =>
     Result<T>.failure(message, error);
-
-/// Result 생성 팩토리 클래스
-class Result {
-  /// 성공 결과 생성
-  static Result<T> success<T>(T data, [String? message]) =>
-      Result.success(message ?? 'Success', data);
-
-  /// 실패 결과 생성
-  static Result<T> failure<T>(String message, [Exception? error]) =>
-      Result.failure(message, error);
-}

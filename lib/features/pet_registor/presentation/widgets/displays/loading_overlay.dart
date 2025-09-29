@@ -27,7 +27,7 @@ class LoadingOverlay extends StatelessWidget {
             color: backgroundColor ?? Colors.black.withValues(alpha: 0.3),
             child: Center(
               child: Container(
-                padding: const const EdgeInsets.all(AppSpacing.lg),
+                padding: const const const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: AppColors.pureWhite,
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -48,7 +48,7 @@ class LoadingOverlay extends StatelessWidget {
                       ),
                     ),
                     if (message != null) ...[
-                      const SizedBox(height: AppSpacing.md),
+                      const const const SizedBox(height: AppSpacing.md),
                       Text(
                         message!,
                         style: AppFonts.bodyMedium.copyWith(
@@ -97,7 +97,7 @@ class InlineLoadingIndicator extends StatelessWidget {
           ),
         ),
         if (message != null) ...[
-          const const SizedBox(width: 8),
+          const const const SizedBox(width: 8),
           Text(
             message!,
             style: AppFonts.bodySmall.copyWith(
@@ -145,7 +145,7 @@ class ButtonLoadingState extends StatelessWidget {
                   ),
                 ),
                 if (loadingText != null) ...[
-                  const const SizedBox(width: 8),
+                  const const const SizedBox(width: 8),
                   Text(loadingText!),
                 ],
               ],

@@ -43,7 +43,7 @@ class NotificationMockData {
       type: NotificationType.walk,
       priority: NotificationPriority.normal,
       status: NotificationStatus.unread,
-      createdAt: DateTime.now().subtract(Duration(hours: 1)),
+      createdAt: DateTime.now().subtract(const Duration(hours: 1)),
       data: {
         'petName': 'ポチ',
         'petId': 'pet_001',
@@ -75,8 +75,8 @@ class NotificationMockData {
       type: NotificationType.health,
       priority: NotificationPriority.normal,
       status: NotificationStatus.read,
-      createdAt: DateTime.now().subtract(Duration(days: 1)),
-      readAt: DateTime.now().subtract(Duration(hours: 2)),
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
+      readAt: DateTime.now().subtract(const Duration(hours: 2)),
       data: {
         'petName': 'ポチ',
         'petId': 'pet_001',
@@ -138,7 +138,7 @@ class NotificationMockData {
       type: NotificationType.reservation,
       priority: NotificationPriority.normal,
       status: NotificationStatus.unread,
-      createdAt: DateTime.now().subtract(Duration(days: 1)),
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
       data: {
         'petName': 'ポチ',
         'petId': 'pet_001',
@@ -178,7 +178,7 @@ class NotificationMockData {
       type: NotificationType.system,
       priority: NotificationPriority.low,
       status: NotificationStatus.unread,
-      createdAt: DateTime.now().subtract(Duration(hours: 3)),
+      createdAt: DateTime.now().subtract(const Duration(hours: 3)),
       data: {
         'version': '2.1.0',
         'updateSize': '15.2MB',
@@ -240,7 +240,7 @@ class NotificationMockData {
       type: NotificationType.reminder,
       priority: NotificationPriority.low,
       status: NotificationStatus.unread,
-      createdAt: DateTime.now().subtract(Duration(hours: 2)),
+      createdAt: DateTime.now().subtract(const Duration(hours: 2)),
       data: {
         'petName': 'ポチ',
         'petId': 'pet_001',
@@ -272,8 +272,8 @@ class NotificationMockData {
       type: NotificationType.grooming,
       priority: NotificationPriority.normal,
       status: NotificationStatus.read,
-      createdAt: DateTime.now().subtract(Duration(days: 2)),
-      readAt: DateTime.now().subtract(Duration(hours: 1)),
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+      readAt: DateTime.now().subtract(const Duration(hours: 1)),
       data: {
         'petName': 'ポチ',
         'petId': 'pet_001',
@@ -305,7 +305,7 @@ class NotificationMockData {
       type: NotificationType.general,
       priority: NotificationPriority.low,
       status: NotificationStatus.unread,
-      createdAt: DateTime.now().subtract(Duration(hours: 4)),
+      createdAt: DateTime.now().subtract(const Duration(hours: 4)),
       data: {'category': 'ペット用品', 'actionUrl': '/shop'},
       actions: [
         const NotificationAction(
@@ -344,7 +344,7 @@ class NotificationMockData {
   static List<NotificationModel> get todayNotifications {
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);
-    final endOfDay = startOfDay.add(Duration(days: 1));
+    final endOfDay = startOfDay.add(const Duration(days: 1));
 
     return notifications
         .where(

@@ -11,7 +11,7 @@ class PetSelectionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const const EdgeInsets.only(right: AppSpacing.md),
+      margin: const const const EdgeInsets.only(right: AppSpacing.md),
       child: GestureDetector(
         onTap: onTap,
         child: Row(
@@ -31,7 +31,7 @@ class PetSelectionWidget extends StatelessWidget {
                     )
                   : null,
             ),
-            const const SizedBox(width: AppSpacing.xs),
+            const const const SizedBox(width: AppSpacing.xs),
             Text(
               pet.name,
               style: AppFonts.bodyMedium.copyWith(

@@ -22,7 +22,7 @@ class InfoCardComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const const EdgeInsets.all(AppSpacing.md),
+      margin: const const const EdgeInsets.all(AppSpacing.md),
       child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -34,7 +34,7 @@ class InfoCardComponent extends StatelessWidget {
           },
           borderRadius: BorderRadius.circular(AppRadius.medium),
           child: Padding(
-            padding: const const EdgeInsets.all(AppSpacing.md),
+            padding: const const const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
                 Container(
@@ -50,7 +50,7 @@ class InfoCardComponent extends StatelessWidget {
                     size: 20,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const const const SizedBox(width: AppSpacing.md),
                 const Expanded(
                   child: Text(
                     '通知設定を行い、役立つ通知を\n受け取ってください。',

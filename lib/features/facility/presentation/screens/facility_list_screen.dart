@@ -72,14 +72,14 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
           ],
           child: const Icon(Icons.sort),
         ),
-        const const SizedBox(width: 8),
+        const const const SizedBox(width: 8),
       ],
     );
   }
 
   Widget _buildSearchSection() {
     return Padding(
-      padding: const const EdgeInsets.all(16.0),
+      padding: const const const EdgeInsets.all(16.0),
       child: SearchBarWidget(
         controller: _searchController,
         onChanged: _controller.handleSearchChanged,
@@ -97,7 +97,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
 
     return Container(
       height: 50,
-      padding: const const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const const const EdgeInsets.symmetric(horizontal: 16.0),
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
@@ -106,10 +106,10 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
             isSelected: selectedType == null,
             onTap: () => _controller.handleFilterChanged(null),
           ),
-          const const SizedBox(width: 8),
+          const const const SizedBox(width: 8),
           for (final type in FacilityType.values)
             Padding(
-              padding: const const EdgeInsets.only(right: 8.0),
+              padding: const const const EdgeInsets.only(right: 8.0),
               child: FacilityFilterChip(
                 label: _controller.getFacilityTypeLabel(type),
                 isSelected: selectedType == type,
@@ -127,7 +127,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
     FacilityType? selectedType,
   ) {
     return Padding(
-      padding: const const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const const const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: [
           Text(
@@ -161,12 +161,12 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
       child: searchResults.isEmpty
           ? _buildEmptyState()
           : ListView.builder(
-              padding: const const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const const const EdgeInsets.symmetric(horizontal: 16.0),
               itemCount: searchResults.length,
               itemBuilder: (context, index) {
                 final facility = searchResults[index];
                 return Padding(
-                  padding: const const EdgeInsets.only(bottom: 12.0),
+                  padding: const const const EdgeInsets.only(bottom: 12.0),
                   child: FacilityCard(
                     facility: facility,
                     onFavoriteToggle: () =>

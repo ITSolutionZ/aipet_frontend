@@ -49,10 +49,10 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
         .where(
           (schedule) =>
               schedule.startDateTime.isAfter(
-                startDate.subtract(Duration(days: 1)),
+                startDate.subtract(const Duration(days: 1)),
               ) &&
               schedule.startDateTime.isBefore(
-                endDate.add(Duration(days: 1)),
+                endDate.add(const Duration(days: 1)),
               ),
         )
         .map((model) => model.toEntity())
@@ -189,7 +189,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<List<ScheduleEntity>> getTomorrowSchedules() async {
-    final tomorrow = DateTime.now().add(Duration(days: 1));
+    final tomorrow = DateTime.now().add(const Duration(days: 1));
     return getSchedulesByDate(tomorrow);
   }
 
@@ -197,7 +197,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   Future<List<ScheduleEntity>> getThisWeekSchedules() async {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(Duration(days: 6));
+    final endOfWeek = startOfWeek.add(const Duration(days: 6));
     return getSchedulesByDateRange(startOfWeek, endOfWeek);
   }
 
@@ -205,7 +205,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   Future<List<ScheduleEntity>> getNextWeekSchedules() async {
     final now = DateTime.now();
     final startOfNextWeek = now.add(Duration(days: 8 - now.weekday));
-    final endOfNextWeek = startOfNextWeek.add(Duration(days: 6));
+    final endOfNextWeek = startOfNextWeek.add(const Duration(days: 6));
     return getSchedulesByDateRange(startOfNextWeek, endOfNextWeek);
   }
 
@@ -329,7 +329,9 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       final newStart = schedule.startDateTime;
       final newEnd =
           schedule.endDateTime ??
-          schedule.startDateTime.add(const Duration(minutes: schedule.totalMinutes));
+          schedule.startDateTime.add(
+            const Duration(minutes: schedule.totalMinutes),
+          );
 
       return (newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart));
     });

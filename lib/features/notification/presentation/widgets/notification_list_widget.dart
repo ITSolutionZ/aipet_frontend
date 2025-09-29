@@ -67,7 +67,7 @@ class _NotificationListWidgetState
         itemCount:
             filteredNotifications.length +
             (filteredNotifications.length >= widget.maxItems ? 1 : 0),
-        separatorBuilder: (context, index) => const SizedBox(height: 1),
+        separatorBuilder: (context, index) => const const const SizedBox(height: 1),
         itemBuilder: (context, index) {
           // 더보기 버튼 표시
           if (index == filteredNotifications.length) {
@@ -151,7 +151,7 @@ class _NotificationListWidgetState
 
   Widget _buildLoadMoreButton() {
     return Container(
-      margin: const const EdgeInsets.symmetric(
+      margin: const const const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
@@ -161,7 +161,7 @@ class _NotificationListWidgetState
         },
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Container(
-          padding: const const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.sm),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -194,12 +194,12 @@ class _NotificationListWidgetState
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(Icons.error_outline, size: 64, color: AppColors.pointGray),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
           Text(
             'エラーが発生しました',
             style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           Text(
             '通知の読み込みに失敗しました',
             style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
@@ -219,12 +219,12 @@ class _NotificationListWidgetState
             size: 64,
             color: AppColors.pointGray,
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
           Text(
             '通知がありません',
             style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           Text(
             '新しい通知が届くとここに表示されます',
             style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
@@ -240,7 +240,7 @@ class _NotificationListWidgetState
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const const EdgeInsets.only(right: AppSpacing.md),
+        padding: const const const EdgeInsets.only(right: AppSpacing.md),
         color: Colors.red,
         child: const Icon(Icons.delete, color: Colors.white),
       ),
@@ -251,7 +251,7 @@ class _NotificationListWidgetState
         _deleteNotification(notification);
       },
       child: Container(
-        margin: const const EdgeInsets.symmetric(
+        margin: const const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.xs,
         ),
@@ -280,14 +280,14 @@ class _NotificationListWidgetState
             },
             borderRadius: BorderRadius.circular(AppRadius.medium),
             child: Padding(
-              padding: const const EdgeInsets.symmetric(
+              padding: const const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,
                 vertical: AppSpacing.md,
               ),
               child: Row(
                 children: [
                   NotificationUIUtils.buildNotificationIcon(notification.type),
-                  const const SizedBox(width: AppSpacing.md),
+                  const const const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,7 +300,7 @@ class _NotificationListWidgetState
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 4),
+                        const const const SizedBox(height: 4),
                         Text(
                           notification.body,
                           style: NotificationUIUtils.bodyStyle,
@@ -310,7 +310,7 @@ class _NotificationListWidgetState
                       ],
                     ),
                   ),
-                  const const SizedBox(width: AppSpacing.sm),
+                  const const const SizedBox(width: AppSpacing.sm),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -321,7 +321,7 @@ class _NotificationListWidgetState
                         style: NotificationUIUtils.timeStyle,
                       ),
                       if (notification.isUnread) ...[
-                        const SizedBox(height: 4),
+                        const const const SizedBox(height: 4),
                         NotificationUIUtils.buildUnreadIndicator(),
                       ],
                     ],

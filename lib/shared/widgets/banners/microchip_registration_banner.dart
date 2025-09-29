@@ -95,7 +95,7 @@ class MicrochipRegistrationBanner extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Padding(
-                  padding: const const EdgeInsets.all(AppSpacing.lg),
+                  padding: const const const EdgeInsets.all(AppSpacing.lg),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -107,7 +107,7 @@ class MicrochipRegistrationBanner extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.pointBrown,
                             foregroundColor: Colors.white,
-                            padding: const const EdgeInsets.symmetric(
+                            padding: const const const EdgeInsets.symmetric(
                               vertical: AppSpacing.md,
                             ),
                             shape: RoundedRectangleBorder(
@@ -128,7 +128,7 @@ class MicrochipRegistrationBanner extends StatelessWidget {
 
                       // 닫기 버튼
                       if (onDismiss != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
+                        const const const SizedBox(height: AppSpacing.sm),
                         Center(
                           child: TextButton(
                             onPressed: () {
@@ -158,7 +158,7 @@ class MicrochipRegistrationBanner extends StatelessWidget {
   /// 배너 콘텐츠 빌드
   Widget _buildBannerContent() {
     return Container(
-      margin: const const EdgeInsets.symmetric(
+      margin: const const const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
       ),
@@ -209,7 +209,7 @@ class MicrochipRegistrationBanner extends StatelessWidget {
 
           // 하단 버튼 섹션
           Padding(
-            padding: const const EdgeInsets.all(AppSpacing.lg),
+            padding: const const const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               children: [
                 // 등록 버튼
@@ -220,7 +220,7 @@ class MicrochipRegistrationBanner extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.pointBrown,
                       foregroundColor: Colors.white,
-                      padding: const const EdgeInsets.symmetric(
+                      padding: const const const EdgeInsets.symmetric(
                         vertical: AppSpacing.md,
                       ),
                       shape: RoundedRectangleBorder(
@@ -239,7 +239,7 @@ class MicrochipRegistrationBanner extends StatelessWidget {
 
                 // 닫기 버튼
                 if (onDismiss != null) ...[
-                  const SizedBox(height: AppSpacing.sm),
+                  const const const SizedBox(height: AppSpacing.sm),
                   Center(
                     child: TextButton(
                       onPressed: onDismiss,

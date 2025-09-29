@@ -196,7 +196,7 @@ class ImagePickerButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.medium),
       child: Container(
-        padding: const const EdgeInsets.symmetric(
+        padding: const const const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.md,
         ),
@@ -208,7 +208,7 @@ class ImagePickerButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, color: color ?? AppColors.pointBrown, size: 20),
-            const const SizedBox(width: AppSpacing.sm),
+            const const const SizedBox(width: AppSpacing.sm),
             Text(
               label,
               style: AppFonts.bodyMedium.copyWith(

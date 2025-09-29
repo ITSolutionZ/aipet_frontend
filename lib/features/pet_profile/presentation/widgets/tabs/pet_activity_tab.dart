@@ -29,15 +29,15 @@ class PetActivityTab extends ConsumerWidget {
         .toList();
 
     return SingleChildScrollView(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
           _buildActivityStatsSection(learnedTricks.length, tricks.length),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildLearnedTricksSection(learnedTricks),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildAvailableTricksSection(availableTricks),
-          const SizedBox(height: AppSpacing.lg),
+          const const const SizedBox(height: AppSpacing.lg),
           _buildExerciseLogSection(),
         ],
       ),
@@ -59,7 +59,7 @@ class PetActivityTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         GenericInfoCard.withIcon(
           icon: Icons.psychology,
           iconColor: AppColors.pointBlue,
@@ -69,7 +69,7 @@ class PetActivityTab extends ConsumerWidget {
           badge: '${progressPercentage.toStringAsFixed(0)}%',
           badgeColor: AppColors.pointBlue,
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         GenericInfoCard.withIcon(
           icon: Icons.directions_walk,
           iconColor: AppColors.pointGreen,
@@ -94,10 +94,10 @@ class PetActivityTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         if (learnedTricks.isEmpty)
           Container(
-            padding: const const EdgeInsets.all(AppSpacing.lg),
+            padding: const const const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -119,7 +119,7 @@ class PetActivityTab extends ConsumerWidget {
         else
           ...learnedTricks.map(
             (trick) => Padding(
-              padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
+              padding: const const const EdgeInsets.only(bottom: AppSpacing.sm),
               child: _buildTrickCard(trick, isLearned: true),
             ),
           ),
@@ -138,12 +138,12 @@ class PetActivityTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         ...availableTricks
             .take(3)
             .map(
               (trick) => Padding(
-                padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
+                padding: const const const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: _buildTrickCard(trick, isLearned: false),
               ),
             ),
@@ -174,7 +174,7 @@ class PetActivityTab extends ConsumerWidget {
             color: AppColors.pointDark,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         GenericInfoCard.withIcon(
           icon: Icons.today,
           iconColor: AppColors.pointBrown,
@@ -184,7 +184,7 @@ class PetActivityTab extends ConsumerWidget {
           badge: '完了',
           badgeColor: AppColors.pointGreen,
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         GenericInfoCard.withIcon(
           icon: Icons.timeline,
           iconColor: AppColors.pointPink,

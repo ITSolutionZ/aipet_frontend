@@ -158,7 +158,7 @@ class _WateringScheduleEditScreenState
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Form(
           key: state.formKey,
           child: Column(
@@ -166,15 +166,15 @@ class _WateringScheduleEditScreenState
             children: [
               // 현재 설정 표시
               _buildCurrentSettings(state),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 급수량 입력
               _buildAmountInput(state, controller),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 시간 선택
               _buildTimeSelector(state, controller),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 저장 버튼
               _buildSaveButton(state, controller),
@@ -189,11 +189,11 @@ class _WateringScheduleEditScreenState
   Widget _buildCurrentSettings(WateringScheduleEditState state) {
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             const Icon(Icons.water_drop, color: AppColors.pointBlue, size: 32),
-            const const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,7 +227,7 @@ class _WateringScheduleEditScreenState
   ) {
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -238,7 +238,7 @@ class _WateringScheduleEditScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const const const SizedBox(height: AppSpacing.sm),
             TextFormField(
               controller: state.amountController,
               decoration: const InputDecoration(
@@ -272,7 +272,7 @@ class _WateringScheduleEditScreenState
   ) {
     return Card(
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -283,7 +283,7 @@ class _WateringScheduleEditScreenState
                 color: AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const const const SizedBox(height: AppSpacing.sm),
             ListTile(
               leading: const Icon(
                 Icons.access_time,
@@ -329,7 +329,7 @@ class _WateringScheduleEditScreenState
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.pointBlue,
           foregroundColor: Colors.white,
-          padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
         ),
         child: state.isLoading
             ? const CircularProgressIndicator(color: Colors.white)

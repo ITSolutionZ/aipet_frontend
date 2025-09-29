@@ -98,7 +98,7 @@ class WalkFormFields {
     return CommonFormPatterns.buildDateField(
       label: '散歩日',
       initialValue: initialValue,
-      firstDate: DateTime.now().subtract(Duration(days: 365)),
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
       lastDate: DateTime.now(),
       onChanged: onChanged,
       onSaved: onSaved,

@@ -53,14 +53,14 @@ class _EnhancedExchangeTokenButtonState
         foregroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const const EdgeInsets.all(24.0),
+        padding: const const const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // API 연결 상태 확인 // Changed
             const ApiConnectionChecker(),
-            const SizedBox(height: 24),
+            const const const SizedBox(height: 24),
 
             // Firebase 로그인 버튼 // Changed
             FirebaseLoginButton(
@@ -69,23 +69,23 @@ class _EnhancedExchangeTokenButtonState
                 _checkTokenStatus();
               },
             ),
-            const SizedBox(height: 24),
+            const const const SizedBox(height: 24),
 
             // 토큰 상태 카드 // Changed
             _buildTokenStatusCard(),
-            const SizedBox(height: 24),
+            const const const SizedBox(height: 24),
 
             // 기존 상태 표시 카드
             _buildStatusCard(tokenState),
-            const SizedBox(height: 32),
+            const const const SizedBox(height: 32),
 
             // 교환 버튼
             _buildExchangeButton(context, ref, tokenState),
-            const SizedBox(height: 16),
+            const const const SizedBox(height: 16),
 
             // 상태 새로고침 버튼 // Changed
             _buildRefreshButton(),
-            const SizedBox(height: 16),
+            const const const SizedBox(height: 16),
 
             // 리셋 버튼
             if (tokenState.isSuccess || tokenState.errorMessage != null)
@@ -128,11 +128,11 @@ class _EnhancedExchangeTokenButtonState
     return Card(
       color: cardColor,
       child: Padding(
-        padding: const const EdgeInsets.all(16.0),
+        padding: const const const EdgeInsets.all(16.0),
         child: Row(
           children: [
             Icon(icon, size: 32, color: Colors.grey.shade700),
-            const const SizedBox(width: 16),
+            const const const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,7 +144,7 @@ class _EnhancedExchangeTokenButtonState
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const const const SizedBox(height: 4),
                   Text(
                     subtitle,
                     style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
@@ -165,7 +165,7 @@ class _EnhancedExchangeTokenButtonState
       icon: const Icon(Icons.refresh),
       label: const Text('토큰 상태 새로고침'),
       style: OutlinedButton.styleFrom(
-        padding: const const EdgeInsets.symmetric(vertical: 12),
+        padding: const const const EdgeInsets.symmetric(vertical: 12),
       ),
     );
   }
@@ -217,20 +217,20 @@ class _EnhancedExchangeTokenButtonState
     return Card(
       color: cardColor,
       child: Padding(
-        padding: const const EdgeInsets.all(16.0),
+        padding: const const const EdgeInsets.all(16.0),
         child: Column(
           children: [
             if (state.isLoading)
               const CircularProgressIndicator()
             else
               Icon(icon, size: 48, color: Colors.grey.shade700),
-            const SizedBox(height: 12),
+            const const const SizedBox(height: 12),
             Text(
               title,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             ...[
-              const SizedBox(height: 8),
+              const const const SizedBox(height: 8),
               Text(
                 subtitle ?? '',
                 style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
@@ -281,7 +281,7 @@ class _EnhancedExchangeTokenButtonState
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        padding: const const EdgeInsets.symmetric(vertical: 16),
+        padding: const const const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
@@ -298,7 +298,7 @@ class _EnhancedExchangeTokenButtonState
         _checkTokenStatus(); // Changed: 상태 새로고침
       },
       style: OutlinedButton.styleFrom(
-        padding: const const EdgeInsets.symmetric(vertical: 12),
+        padding: const const const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: const Text(

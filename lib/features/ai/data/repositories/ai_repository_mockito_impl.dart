@@ -88,10 +88,7 @@ class AiRepositoryMockitoImpl implements AiRepository {
         timestamp: DateTime.now(),
       );
 
-      return Result.success(
-        aiMessage,
-        '펫 컨텍스트와 함께 AI 응답이 생성되었습니다',
-      ).toFuture();
+      return Result.success(aiMessage, '펫 컨텍스트와 함께 AI 응답이 생성되었습니다').toFuture();
     } catch (error) {
       AiLogger.logApiError(error.toString());
       return Result.failure<AiMessageEntity>(
@@ -301,7 +298,7 @@ class AiRepositoryMockitoImpl implements AiRepository {
         id: 'session-1',
         title: 'ペットの健康相談',
         messages: [],
-        createdAt: DateTime.now().subtract(Duration(hours: 1)),
+        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
         updatedAt: DateTime.now().subtract(const Duration(minutes: 5)),
         petId: 'pet-1',
       ),
@@ -350,14 +347,14 @@ class AiRepositoryMockitoImpl implements AiRepository {
           id: 'msg-1',
           content: '便利な情報',
           type: MessageType.assistant,
-          timestamp: DateTime.now().subtract(Duration(days: 1)),
+          timestamp: DateTime.now().subtract(const Duration(days: 1)),
         ),
         category: category ?? 'general',
         petId: petId,
         petName: 'Mock Pet',
         userNote: '便利な情報',
-        createdAt: DateTime.now().subtract(Duration(days: 1)),
-        updatedAt: DateTime.now().subtract(Duration(days: 1)),
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        updatedAt: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ];
   }
@@ -370,8 +367,8 @@ class AiRepositoryMockitoImpl implements AiRepository {
         answer: '定期的な健康診断が重要です',
         categoryId: 'health',
         categoryName: '健康',
-        createdAt: DateTime.now().subtract(Duration(days: 2)),
-        originalTimestamp: DateTime.now().subtract(Duration(days: 2)),
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
+        originalTimestamp: DateTime.now().subtract(const Duration(days: 2)),
       ),
     ];
   }
@@ -389,8 +386,8 @@ class AiRepositoryMockitoImpl implements AiRepository {
         petId: petId,
         petName: 'Mock Pet',
         messages: [],
-        createdAt: DateTime.now().subtract(Duration(hours: 2)),
-        updatedAt: DateTime.now().subtract(Duration(hours: 2)),
+        createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+        updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
         messageCount: 0,
         hasFavorites: false,
       ),
@@ -411,7 +408,7 @@ class AiRepositoryMockitoImpl implements AiRepository {
         pet: null, // PetProfileEntity는 null로 설정
         isManualSaved: onlyManualSaved ?? false,
         messageCount: _getMockChatHistory().length,
-        createdAt: DateTime.now().subtract(Duration(hours: 1)),
+        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
       ),
     ];
   }

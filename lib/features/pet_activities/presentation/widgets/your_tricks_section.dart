@@ -39,7 +39,7 @@ class YourTricksSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
 
         // 트릭 목록
         if (learnedTricks.isEmpty)
@@ -49,7 +49,7 @@ class YourTricksSection extends StatelessWidget {
               .take(3)
               .map(
                 (trick) => Padding(
-                  padding: const const EdgeInsets.only(bottom: AppSpacing.md),
+                  padding: const const const EdgeInsets.only(bottom: AppSpacing.md),
                   child: TrickProgressCard(trick: trick),
                 ),
               ),
@@ -59,7 +59,7 @@ class YourTricksSection extends StatelessWidget {
 
   Widget _buildEmptyState() {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.pointBrown.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -72,7 +72,7 @@ class YourTricksSection extends StatelessWidget {
             size: 48,
             color: AppColors.pointBrown.withValues(alpha: 0.6),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const const const SizedBox(height: AppSpacing.md),
           Text(
             'まだ学習したトリックがありません',
             style: AppFonts.bodyMedium.copyWith(
@@ -81,7 +81,7 @@ class YourTricksSection extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           Text(
             '新しいトリックを学んでみましょう！',
             style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),

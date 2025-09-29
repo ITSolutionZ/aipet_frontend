@@ -23,7 +23,7 @@ class SectionHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-          padding ?? const const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding ?? const const const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -41,7 +41,7 @@ class SectionHeaderWidget extends StatelessWidget {
                       ),
                 ),
                 if (subtitle != null) ...[
-                  const SizedBox(height: 4),
+                  const const const SizedBox(height: 4),
                   Text(
                     subtitle!,
                     style:
@@ -54,7 +54,7 @@ class SectionHeaderWidget extends StatelessWidget {
               ],
             ),
           ),
-          if (action != null) ...[const SizedBox(width: 16), action!],
+          if (action != null) ...[const const const SizedBox(width: 16), action!],
         ],
       ),
     );

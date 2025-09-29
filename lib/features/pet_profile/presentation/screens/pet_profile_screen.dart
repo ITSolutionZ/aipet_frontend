@@ -95,7 +95,7 @@ class _ErrorScreen extends StatelessWidget {
               size: 64,
               color: AppColors.pointPink,
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
             Text(
               '펫을 찾을 수 없습니다',
               style: AppFonts.headlineSmall.copyWith(
@@ -103,7 +103,7 @@ class _ErrorScreen extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const const const SizedBox(height: AppSpacing.md),
             Text(
               error.toString(),
               style: AppFonts.bodyMedium.copyWith(
@@ -111,7 +111,7 @@ class _ErrorScreen extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppSpacing.xl),
+            const const const SizedBox(height: AppSpacing.xl),
             CommonButton(
               text: '홈으로 돌아가기',
               type: ButtonType.primary,
@@ -137,7 +137,7 @@ class _PetNotFoundScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.pets, size: 64, color: AppColors.pointBrown),
-            const SizedBox(height: AppSpacing.lg),
+            const const const SizedBox(height: AppSpacing.lg),
             Text(
               '펫을 찾을 수 없습니다',
               style: AppFonts.headlineSmall.copyWith(
@@ -145,7 +145,7 @@ class _PetNotFoundScreen extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
+            const const const SizedBox(height: AppSpacing.xl),
             CommonButton(
               text: '홈으로 돌아가기',
               type: ButtonType.primary,
@@ -223,7 +223,7 @@ class _PetProfileContentState extends ConsumerState<_PetProfileContent> {
         ],
       ),
       bottomNavigationBar: Container(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         child: ElevatedButton(
           onPressed: () {
             // 편집 기능 구현
@@ -299,7 +299,7 @@ class _BasicInfoTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      padding: const const EdgeInsets.only(bottom: 100), // 하단 버튼 공간 확보
+      padding: const const const EdgeInsets.only(bottom: 100), // 하단 버튼 공간 확보
       child: Column(
         children: [
           Text('名前: ${pet.name}'),

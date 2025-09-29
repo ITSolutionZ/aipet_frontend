@@ -32,7 +32,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const const EdgeInsets.all(AppSpacing.lg),
+          padding: const const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -45,7 +45,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 제목
               Text(
@@ -54,7 +54,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 메뉴 항목들
               _buildMenuItem(
@@ -67,7 +67,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
                 },
                 color: AppColors.pointBrown,
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
 
               _buildMenuItem(
                 icon: Icons.help_outline,
@@ -79,7 +79,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
                 },
                 color: AppColors.pointBlue,
               ),
-              const SizedBox(height: AppSpacing.md),
+              const const const SizedBox(height: AppSpacing.md),
 
               _buildMenuItem(
                 icon: Icons.settings,
@@ -91,7 +91,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
                 },
                 color: AppColors.textSecondary,
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 취소 버튼
               SizedBox(
@@ -119,7 +119,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppSpacing.sm),
       child: Padding(
-        padding: const const EdgeInsets.all(AppSpacing.sm),
+        padding: const const const EdgeInsets.all(AppSpacing.sm),
         child: Row(
           children: [
             Container(
@@ -131,7 +131,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
               ),
               child: Icon(icon, color: color, size: 20),
             ),
-            const const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

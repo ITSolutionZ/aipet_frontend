@@ -37,7 +37,7 @@ class RetryInterceptor extends Interceptor {
         }
 
         // 지연 시간 대기
-        await Future.delayed(const Duration(milliseconds: delayMs));
+        await Future.delayed(Duration(milliseconds: delayMs));
 
         // 재시도 실행
         final response = await Dio().fetch(err.requestOptions);

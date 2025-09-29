@@ -13,13 +13,13 @@ class AiChatMessagesMockData {
         id: 'system_1',
         content: 'こんにちは！ペット専門AIアシスタントです。🐾\\n\\nまず、どのペットについて相談したいですか？',
         type: MessageType.assistant,
-        timestamp: now.subtract(Duration(hours: 3)),
+        timestamp: now.subtract(const Duration(hours: 3)),
       ),
       AiMessageEntity(
         id: 'user_1',
         content: 'ポチについて相談したいです',
         type: MessageType.user,
-        timestamp: now.subtract(Duration(hours: 2, minutes: 58)),
+        timestamp: now.subtract(const Duration(hours: 2, minutes: 58)),
       ),
 
       // 카테고리 선택 과정
@@ -28,13 +28,13 @@ class AiChatMessagesMockData {
         content:
             'ポチについてですね！🐕\\n\\nどのような内容でお困りですか？カテゴリを選択してください：\\n\\n• 健康 - 病気、怪我、健康管理\\n• 食事 - フード、栄養、給餌\\n• 行動 - しつけ、問題行動\\n• グルーミング - お手入れ、毛づくろい\\n• その他',
         type: MessageType.assistant,
-        timestamp: now.subtract(Duration(hours: 2, minutes: 55)),
+        timestamp: now.subtract(const Duration(hours: 2, minutes: 55)),
       ),
       AiMessageEntity(
         id: 'user_2',
         content: '健康について相談したいです',
         type: MessageType.user,
-        timestamp: now.subtract(Duration(hours: 2, minutes: 50)),
+        timestamp: now.subtract(const Duration(hours: 2, minutes: 50)),
       ),
 
       // 구체적인 질문 안내
@@ -43,14 +43,14 @@ class AiChatMessagesMockData {
         content:
             'ポチの健康について、どのような症状や心配事がありますか？\\n\\nポチの状況を詳しく教えてください。症状、期間、食欲の変化なども含めて説明していただけると、より正確なアドバイスができます。',
         type: MessageType.assistant,
-        timestamp: now.subtract(Duration(hours: 2, minutes: 45)),
+        timestamp: now.subtract(const Duration(hours: 2, minutes: 45)),
       ),
       // 오늘 대화
       AiMessageEntity(
         id: 'msg_1',
         content: 'ポチが最近食事を拒否していて心配です。どうしたら良いでしょうか？',
         type: MessageType.user,
-        timestamp: now.subtract(Duration(hours: 2, minutes: 30)),
+        timestamp: now.subtract(const Duration(hours: 2, minutes: 30)),
       ),
       AiMessageEntity(
         id: 'msg_2',
@@ -69,13 +69,13 @@ class AiChatMessagesMockData {
 
 などが考えられます。2-3日続くようでしたら獣医師にご相談されることをお勧めします。''',
         type: MessageType.assistant,
-        timestamp: now.subtract(Duration(hours: 2, minutes: 28)),
+        timestamp: now.subtract(const Duration(hours: 2, minutes: 28)),
       ),
       AiMessageEntity(
         id: 'msg_3',
         content: 'フードは変えていませんが、最近引っ越しをしました。それが関係しているのでしょうか？',
         type: MessageType.user,
-        timestamp: now.subtract(Duration(hours: 2, minutes: 25)),
+        timestamp: now.subtract(const Duration(hours: 2, minutes: 25)),
       ),
       AiMessageEntity(
         id: 'msg_4',
@@ -93,13 +93,13 @@ class AiChatMessagesMockData {
 
 ポチが新しい環境に早く慣れることを願っています！''',
         type: MessageType.assistant,
-        timestamp: now.subtract(Duration(hours: 2, minutes: 20)),
+        timestamp: now.subtract(const Duration(hours: 2, minutes: 20)),
       ),
       AiMessageEntity(
         id: 'msg_5',
         content: 'ありがとうございます！安心しました。様子を見てみます。',
         type: MessageType.user,
-        timestamp: now.subtract(Duration(hours: 2, minutes: 15)),
+        timestamp: now.subtract(const Duration(hours: 2, minutes: 15)),
       ),
 
       // 어제 대화
@@ -107,7 +107,7 @@ class AiChatMessagesMockData {
         id: 'msg_6',
         content: '子犬の適切な食事量はどのくらいですか？生後3ヶ月のトイプードルです。',
         type: MessageType.user,
-        timestamp: now.subtract(Duration(days: 1, hours: 3)),
+        timestamp: now.subtract(const Duration(days: 1, hours: 3)),
       ),
       AiMessageEntity(
         id: 'msg_7',
@@ -129,7 +129,7 @@ class AiChatMessagesMockData {
 
 元気に成長してくれるといいですね！''',
         type: MessageType.assistant,
-        timestamp: now.subtract(Duration(days: 1, hours: 2, minutes: 55)),
+        timestamp: now.subtract(const Duration(days: 1, hours: 2, minutes: 55)),
       ),
 
       // 3일 전 대화
@@ -137,7 +137,7 @@ class AiChatMessagesMockData {
         id: 'msg_8',
         content: '無駄吠えがひどくて困っています。しつけ方法を教えてください。',
         type: MessageType.user,
-        timestamp: now.subtract(Duration(days: 3, hours: 5)),
+        timestamp: now.subtract(const Duration(days: 3, hours: 5)),
       ),
       AiMessageEntity(
         id: 'msg_9',
@@ -166,7 +166,7 @@ class AiChatMessagesMockData {
 
 根気強く続けることが大切です！''',
         type: MessageType.assistant,
-        timestamp: now.subtract(Duration(days: 3, hours: 4, minutes: 50)),
+        timestamp: now.subtract(const Duration(days: 3, hours: 4, minutes: 50)),
       ),
     ];
   }

@@ -79,7 +79,7 @@ class FacilityContactSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
 
         // 전화번호
         Row(
@@ -97,7 +97,7 @@ class FacilityContactSection extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
 
         // 이메일
         Row(

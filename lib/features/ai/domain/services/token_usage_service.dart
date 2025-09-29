@@ -54,9 +54,7 @@ class TokenUsageService {
       // 시간당 사용량 체크
       final currentHourlyUsage = _hourlyUsage[hourKey] ?? 0;
       if (currentHourlyUsage + totalTokens > hourlyTokenLimit) {
-        return Result.failure(
-          '시간당 토큰 사용량 한도 초과 ($hourlyTokenLimit 토큰)',
-        );
+        return Result.failure('시간당 토큰 사용량 한도 초과 ($hourlyTokenLimit 토큰)');
       }
 
       // 사용량 기록
@@ -154,7 +152,7 @@ class TokenUsageService {
   /// 오래된 사용량 데이터 정리
   static void cleanupOldData() {
     final now = DateTime.now();
-    final cutoffDate = now.subtract(Duration(days: 7));
+    final cutoffDate = now.subtract(const Duration(days: 7));
 
     // 7일 이전 데이터 제거
     _dailyUsage.removeWhere((key, _) {
@@ -163,7 +161,7 @@ class TokenUsageService {
     });
 
     // 1일 이전 시간별 데이터 제거
-    final hourCutoffDate = now.subtract(Duration(days: 1));
+    final hourCutoffDate = now.subtract(const Duration(days: 1));
     _hourlyUsage.removeWhere((key, _) {
       final parts = key.split('-');
       if (parts.length >= 4) {

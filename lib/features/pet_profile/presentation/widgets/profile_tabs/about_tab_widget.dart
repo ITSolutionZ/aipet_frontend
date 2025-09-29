@@ -63,29 +63,29 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
         }
 
         return SingleChildScrollView(
-          padding: const const EdgeInsets.all(AppSpacing.lg),
+          padding: const const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ペット基本情報
               _buildPetBasicInfo(pet),
-              const SizedBox(height: AppSpacing.xl),
+              const const const SizedBox(height: AppSpacing.xl),
 
               // 外見と特徴
               _buildAppearanceSection(pet),
-              const SizedBox(height: AppSpacing.xl),
+              const const const SizedBox(height: AppSpacing.xl),
 
               // 主要属性
               _buildMainAttributesSection(pet),
-              const SizedBox(height: AppSpacing.xl),
+              const const const SizedBox(height: AppSpacing.xl),
 
               // マイクロチップ情報
               _buildMicrochipSection(pet),
-              const SizedBox(height: AppSpacing.xl),
+              const const const SizedBox(height: AppSpacing.xl),
 
               // 記念日情報
               _buildAnniversarySection(pet),
-              const SizedBox(height: AppSpacing.xl),
+              const const const SizedBox(height: AppSpacing.xl),
 
               // 保護者情報
               _buildCaretakerSection(pet),
@@ -147,7 +147,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
               ),
           ],
         ),
-        const const SizedBox(width: AppSpacing.lg),
+        const const const SizedBox(width: AppSpacing.lg),
 
         // 名前と種類
         Expanded(
@@ -166,7 +166,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
                         ),
                         decoration: const InputDecoration(
                           border: UnderlineInputBorder(),
-                          contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                          contentPadding: EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),
                     )
@@ -178,7 +178,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const const SizedBox(width: AppSpacing.sm),
+                    const const const SizedBox(width: AppSpacing.sm),
                     const Icon(
                       Icons.edit,
                       size: 20,
@@ -187,7 +187,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
                   ],
                 ],
               ),
-              const SizedBox(height: AppSpacing.xs),
+              const const const SizedBox(height: AppSpacing.xs),
               Text(
                 '${pet.type == 'dog'
                     ? '犬'
@@ -216,7 +216,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         if (widget.isEditMode)
           TextField(
             controller: widget.appearanceController,
@@ -229,7 +229,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
-              contentPadding: const const EdgeInsets.all(AppSpacing.md),
+              contentPadding: const const const EdgeInsets.all(AppSpacing.md),
             ),
           )
         else
@@ -255,16 +255,16 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildAttributeCard(
           '性別',
           _getGenderString(
             widget.isEditMode ? widget.editingGender : pet.gender,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildAttributeCard('サイズ', pet.size ?? '未設定'),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildAttributeCard(
           '体重',
           _getWeightString(
@@ -286,7 +286,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildAttributeCard('マイクロチップ番号', pet.microchipNumber ?? '未登録'),
       ],
     );
@@ -303,9 +303,9 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildDateCard('誕生日', pet.birthDate, Icons.cake, AppColors.pointPink),
-        const SizedBox(height: AppSpacing.sm),
+        const const const SizedBox(height: AppSpacing.sm),
         _buildDateCard(
           '家に来た日',
           pet.arrivalDate,
@@ -327,7 +327,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const const const SizedBox(height: AppSpacing.md),
         _buildAttributeCard('保護者ID', pet.ownerId),
       ],
     );
@@ -335,7 +335,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
 
   Widget _buildAttributeCard(String label, String value) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.sm),
@@ -367,7 +367,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
     Color color,
   ) {
     return Container(
-      padding: const const EdgeInsets.all(AppSpacing.md),
+      padding: const const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.sm),
@@ -376,7 +376,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
       child: Row(
         children: [
           Icon(icon, color: color, size: 20),
-          const const SizedBox(width: AppSpacing.sm),
+          const const const SizedBox(width: AppSpacing.sm),
           Text(
             title,
             style: AppFonts.bodyMedium.copyWith(

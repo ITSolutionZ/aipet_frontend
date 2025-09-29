@@ -15,7 +15,7 @@ class MicrochipInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -26,7 +26,7 @@ class MicrochipInput extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const const const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: controller,
             maxLength: 15,
@@ -50,7 +50,7 @@ class MicrochipInput extends StatelessWidget {
                   width: 2,
                 ),
               ),
-              contentPadding: const const EdgeInsets.all(AppSpacing.md),
+              contentPadding: const const const EdgeInsets.all(AppSpacing.md),
               counterText: '',
             ),
             onChanged: (value) {
@@ -64,7 +64,7 @@ class MicrochipInput extends StatelessWidget {
               onChanged();
             },
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const const const SizedBox(height: AppSpacing.xs),
           Text(
             '※ 15桁の数字を入力してください',
             style: AppFonts.bodySmall.copyWith(color: Colors.grey),

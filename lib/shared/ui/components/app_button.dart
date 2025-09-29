@@ -255,7 +255,7 @@ class AppButton extends StatelessWidget {
     final leadingWidget = leading ?? icon;
     if (leadingWidget != null) {
       widgets.add(leadingWidget);
-      widgets.add(const const SizedBox(width: 8));
+      widgets.add(const const const SizedBox(width: 8));
     }
 
     // 텍스트
@@ -263,7 +263,7 @@ class AppButton extends StatelessWidget {
 
     // Trailing
     if (trailing != null) {
-      widgets.add(const const SizedBox(width: 8));
+      widgets.add(const const const SizedBox(width: 8));
       widgets.add(trailing!);
     }
 
@@ -365,11 +365,11 @@ class AppButton extends StatelessWidget {
 
     switch (size) {
       case ButtonSize.small:
-        return const const EdgeInsets.symmetric(vertical: 8, horizontal: 12);
+        return const const const EdgeInsets.symmetric(vertical: 8, horizontal: 12);
       case ButtonSize.medium:
-        return const const EdgeInsets.symmetric(vertical: 14, horizontal: 20);
+        return const const const EdgeInsets.symmetric(vertical: 14, horizontal: 20);
       case ButtonSize.large:
-        return const const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
+        return const const const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
     }
   }
 

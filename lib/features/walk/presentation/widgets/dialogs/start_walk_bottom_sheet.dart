@@ -92,13 +92,13 @@ class StartWalkBottomSheet extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const const const SizedBox(height: AppSpacing.lg),
 
               // 헤더 섹션
               Column(
                 children: [
                   Container(
-                    padding: const const EdgeInsets.all(AppSpacing.md),
+                    padding: const const const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: AppColors.pointBlue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppRadius.large),
@@ -109,7 +109,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                       color: AppColors.pointBlue,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  const const const SizedBox(height: AppSpacing.md),
                   Text(
                     '新しい散歩を始める',
                     style: AppFonts.fredoka(
@@ -117,7 +117,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const const const SizedBox(height: AppSpacing.sm),
                   Text(
                     '愛犬との楽しい散歩時間を記録しましょう',
                     style: AppFonts.base(
@@ -126,7 +126,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const const const SizedBox(height: AppSpacing.xl),
                 ],
               ),
 
@@ -143,7 +143,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                       color: Colors.grey[700],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const const const SizedBox(height: AppSpacing.sm),
                   WalkFormFields.buildTitleField(
                     initialValue: formState.title,
                     onChanged: (value) =>
@@ -156,7 +156,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                     },
                   ),
 
-                  const SizedBox(height: AppSpacing.xl),
+                  const const const SizedBox(height: AppSpacing.xl),
 
                   // 펫 선택
                   Text(
@@ -167,9 +167,9 @@ class StartWalkBottomSheet extends ConsumerWidget {
                       color: Colors.grey[700],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const const const SizedBox(height: AppSpacing.sm),
                   Container(
-                    padding: const const EdgeInsets.all(AppSpacing.sm),
+                    padding: const const const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
                       color: Colors.grey[50],
                       borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -185,7 +185,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                           formState.selectedPetId,
                           formController.selectPet,
                         ),
-                        const SizedBox(height: AppSpacing.sm),
+                        const const const SizedBox(height: AppSpacing.sm),
                         _buildPetOption(
                           'pet2',
                           'Luna',
@@ -198,11 +198,11 @@ class StartWalkBottomSheet extends ConsumerWidget {
                     ),
                   ),
 
-                  const SizedBox(height: AppSpacing.xl),
+                  const const const SizedBox(height: AppSpacing.xl),
 
                   // 散歩 정보
                   Container(
-                    padding: const const EdgeInsets.all(AppSpacing.lg),
+                    padding: const const const EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
                       color: AppColors.pointGreen.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -219,7 +219,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                               size: 18,
                               color: AppColors.pointGreen,
                             ),
-                            const const SizedBox(width: AppSpacing.sm),
+                            const const const SizedBox(width: AppSpacing.sm),
                             Text(
                               '散歩について',
                               style: AppFonts.fredoka(
@@ -230,7 +230,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.sm),
+                        const const const SizedBox(height: AppSpacing.sm),
                         Row(
                           children: [
                             const Icon(
@@ -238,7 +238,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                               size: 16,
                               color: AppColors.pointGreen,
                             ),
-                            const const SizedBox(width: AppSpacing.sm),
+                            const const const SizedBox(width: AppSpacing.sm),
                             Text(
                               'GPS位置情報を使用してルートを記録',
                               style: AppFonts.base(
@@ -248,7 +248,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.xs),
+                        const const const SizedBox(height: AppSpacing.xs),
                         Row(
                           children: [
                             const Icon(
@@ -256,7 +256,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                               size: 16,
                               color: AppColors.pointGreen,
                             ),
-                            const const SizedBox(width: AppSpacing.sm),
+                            const const const SizedBox(width: AppSpacing.sm),
                             Text(
                               '歩いた時間と距離を自動測定',
                               style: AppFonts.base(
@@ -266,7 +266,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.xs),
+                        const const const SizedBox(height: AppSpacing.xs),
                         Row(
                           children: [
                             const Icon(
@@ -274,7 +274,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                               size: 16,
                               color: AppColors.pointGreen,
                             ),
-                            const const SizedBox(width: AppSpacing.sm),
+                            const const const SizedBox(width: AppSpacing.sm),
                             Text(
                               '散歩中の思い出を写真で記録可能',
                               style: AppFonts.base(
@@ -290,7 +290,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                 ],
               ),
 
-              const SizedBox(height: AppSpacing.xl),
+              const const const SizedBox(height: AppSpacing.xl),
 
               // 버튼 섹션
               _buildActionButtons(context, ref, formState, formController),
@@ -319,14 +319,14 @@ class StartWalkBottomSheet extends ConsumerWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.pointGray,
                 side: const BorderSide(color: AppColors.pointGray),
-                padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.medium),
                 ),
               ),
             ),
           ),
-          const const SizedBox(width: AppSpacing.md),
+          const const const SizedBox(width: AppSpacing.md),
           Expanded(
             flex: 2,
             child: ElevatedButton.icon(
@@ -338,7 +338,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBlue,
                 foregroundColor: Colors.white,
-                padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                padding: const const const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.medium),
                 ),
@@ -364,7 +364,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
     return GestureDetector(
       onTap: () => onSelectPet(petId),
       child: Container(
-        padding: const const EdgeInsets.all(AppSpacing.md),
+        padding: const const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.pointBlue.withValues(alpha: 0.1)
@@ -378,7 +378,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
         child: Row(
           children: [
             Container(
-              padding: const const EdgeInsets.all(AppSpacing.sm),
+              padding: const const const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.pointBlue : Colors.grey[200],
                 borderRadius: BorderRadius.circular(AppRadius.small),
@@ -389,7 +389,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                 color: isSelected ? Colors.white : Colors.grey[600],
               ),
             ),
-            const const SizedBox(width: AppSpacing.md),
+            const const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

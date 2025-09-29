@@ -100,7 +100,7 @@ class CentralizedMockManager {
         'duration': 3600,
         'distance': 2.5,
         'date': DateTime.now()
-            .subtract(Duration(hours: 2))
+            .subtract(const Duration(hours: 2))
             .toIso8601String(),
       },
     ];
@@ -135,7 +135,7 @@ class CentralizedMockManager {
         'id': 'walk_001',
         'petId': 'pet_001',
         'startTime': DateTime.now()
-            .subtract(Duration(hours: 1))
+            .subtract(const Duration(hours: 1))
             .toIso8601String(),
         'endTime': DateTime.now().toIso8601String(),
         'distance': 1.8,

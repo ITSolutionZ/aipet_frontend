@@ -25,7 +25,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
         rating: recipe['rating'].toDouble(),
         isFavorite: recipe['isFavorite'],
         userId: null, // 기본 목업 데이터는 사용자 ID 없음
-        createdAt: DateTime.now().subtract(Duration(days: 30)),
+        createdAt: DateTime.now().subtract(const Duration(days: 30)),
         updatedAt: DateTime.now(),
       );
     }).toList();

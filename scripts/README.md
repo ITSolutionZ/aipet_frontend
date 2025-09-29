@@ -13,7 +13,7 @@
 
 이 폴더는 AI Pet Frontend 프로젝트의 개발 및 테스트를 위한 자동화 스크립트들을 포함합니다.
 
-### 🚀 사용 가능한 스크립트
+### 🚀 핵심 스크립트
 
 #### 1. **개발 환경 설정** (`dev_setup.sh`)
 
@@ -49,7 +49,18 @@
 - Flutter analyze 실행
 - 불필요한 import 정리
 
-#### 4. **Mockito 테스트 실행** (`run_mockito_tests.sh`)
+#### 4. **통합 에러 수정** (`fix_all_errors.sh`)
+
+```bash
+./scripts/fix_all_errors.sh
+```
+
+- Result 패턴 에러 수정
+- const 생성자 추가
+- deprecated API 수정
+- 자동 코드 포맷팅
+
+#### 5. **Mockito 테스트 실행** (`run_mockito_tests.sh`)
 
 ```bash
 # 기본 테스트 실행
@@ -59,16 +70,34 @@
 ./scripts/run_mockito_tests.sh --coverage
 ```
 
-**Mockito 테스트 스크립트 기능:**
+### 🔧 특수 목적 스크립트
 
-- Mock 파일 자동 생성
-- AI 기능별 테스트 실행
-- 간단한 Mockito 테스트 (✅ 작동 확인됨)
-- AI Repository 테스트
-- AI Service 테스트
-- AI Controller 테스트
-- Mock 데이터 서비스 테스트
-- Pet Content Filter 테스트
+#### 6. **테스트 생성** (`generate_tests.sh`)
+
+```bash
+./scripts/generate_tests.sh
+```
+
+- 자동 테스트 파일 생성
+- 테스트 템플릿 적용
+
+#### 7. **성능 최적화** (`optimize_performance.sh`)
+
+```bash
+./scripts/optimize_performance.sh
+```
+
+- 코드 최적화
+- 성능 개선 적용
+
+#### 8. **const 생성자 추가** (`add_const_constructors.sh`)
+
+```bash
+./scripts/add_const_constructors.sh
+```
+
+- const 생성자 자동 추가
+- 코드 품질 개선
 
 ### 🧪 Mockito 테스트 사용법
 
@@ -84,7 +113,7 @@ flutter test test/unit/features/ai/simple_mockito_test.dart
 
 #### 테스트 구조
 
-```
+```text
 test/unit/features/ai/
 ├── simple_mockito_test.dart              # ✅ 간단한 Mockito 테스트 (작동 확인됨)
 ├── data/
@@ -132,27 +161,36 @@ test('should send message and return AI response', () async {
 });
 ```
 
-### 📊 테스트 결과
+### 📊 스크립트 정리 현황
 
-#### ✅ 성공한 테스트
+#### ✅ 현재 활성 스크립트 (15개)
 
-- **간단한 Mockito 테스트**: 6개 테스트 모두 통과
-- **Mock 파일 생성**: 정상 작동
-- **Clean Code 원칙**: 완벽 준수
-- **Clean Architecture**: 의존성 역전 원칙 준수
+- `dev_setup.sh` - 개발 환경 설정
+- `build_runner.sh` - 코드 생성
+- `format_code.sh` - 코드 포맷팅
+- `fix_all_errors.sh` - 통합 에러 수정 (신규)
+- `run_mockito_tests.sh` - 테스트 실행
+- `generate_tests.sh` - 테스트 생성
+- `optimize_performance.sh` - 성능 최적화
+- `add_const_constructors.sh` - const 생성자 추가
+- `consolidate_pet_entities.sh` - Pet Entity 통합
+- `fix_missing_pet_entity_imports.sh` - Pet Entity import 수정
+- `fix_notification_imports.sh` - 알림 import 수정
+- `standardize_result_pattern.sh` - Result 패턴 표준화
+- `README.md` - 스크립트 문서
 
-#### ⚠️ 수정 필요한 테스트
+#### 🗑️ 정리된 스크립트 (18개 삭제)
 
-- 일부 테스트에서 import 누락 (PetType, PetGender 등)
-- Provider 참조 문제 (aiRepositoryProvider, aiChatControllerProvider)
-- 엔티티 필드 누락 (gender, ownerId, updatedAt 등)
+- 01-10번 임포트 수정 스크립트 (10개)
+- 중복 에러 수정 스크립트 (4개)
+- 완료된 임시 스크립트 (4개)
 
-### 🎯 다음 단계
+### 🎯 사용 권장사항
 
-1. **에러 수정**: import 누락 및 엔티티 필드 문제 해결
-2. **Provider 테스트**: Riverpod Provider 테스트 개선
-3. **통합 테스트**: 전체 AI 기능 통합 테스트 추가
-4. **커버리지 향상**: 테스트 커버리지 90% 이상 달성
+1. **개발 시작 시**: `dev_setup.sh` 실행
+2. **에러 발생 시**: `fix_all_errors.sh` 실행
+3. **코드 변경 후**: `format_code.sh` 실행
+4. **테스트 실행**: `run_mockito_tests.sh` 실행
 
 ---
 
@@ -162,7 +200,7 @@ test('should send message and return AI response', () async {
 
 このフォルダには、AI Pet Frontend プロジェクトの開発とテストのための自動化スクリプトが含まれています。
 
-### 🚀 利用可能なスクリプト
+### 🚀 コアスクリプト
 
 #### 1. **開発環境設定** (`dev_setup.sh`)
 
@@ -198,7 +236,18 @@ test('should send message and return AI response', () async {
 - Flutter analyze 実行
 - 不要な import の整理
 
-#### 4. **Mockito テスト実行** (`run_mockito_tests.sh`)
+#### 4. **統合エラー修正** (`fix_all_errors.sh`)
+
+```bash
+./scripts/fix_all_errors.sh
+```
+
+- Result パターンエラー修正
+- const コンストラクタ追加
+- deprecated API 修正
+- 自動コードフォーマット
+
+#### 5. **Mockito テスト実行** (`run_mockito_tests.sh`)
 
 ```bash
 # 基本テスト実行
@@ -207,17 +256,6 @@ test('should send message and return AI response', () async {
 # カバレッジ含むテスト実行
 ./scripts/run_mockito_tests.sh --coverage
 ```
-
-**Mockito テストスクリプト機能:**
-
-- Mock ファイル自動生成
-- AI 機能別テスト実行
-- 簡単な Mockito テスト (✅ 動作確認済み)
-- AI Repository テスト
-- AI Service テスト
-- AI Controller テスト
-- Mock データサービステスト
-- Pet Content Filter テスト
 
 ### 🧪 Mockito テスト使用方法
 
@@ -233,7 +271,7 @@ flutter test test/unit/features/ai/simple_mockito_test.dart
 
 #### テスト構造
 
-```
+```text
 test/unit/features/ai/
 ├── simple_mockito_test.dart              # ✅ 簡単なMockitoテスト (動作確認済み)
 ├── data/
@@ -281,27 +319,18 @@ test('should send message and return AI response', () async {
 });
 ```
 
-### 📊 テスト結果
+### 📊 スクリプト整理状況
 
-#### ✅ 成功したテスト
+#### ✅ 現在のアクティブスクリプト (15個)
 
-- **簡単な Mockito テスト**: 6 個のテストすべて通過
-- **Mock ファイル生成**: 正常動作
-- **Clean Code 原則**: 完全準拠
-- **Clean Architecture**: 依存性逆転原則準拠
+統合および整理により、33個から15個に削減されました。
 
-#### ⚠️ 修正が必要なテスト
+#### 🎯 使用推奨事項
 
-- 一部のテストで import 不足 (PetType, PetGender など)
-- Provider 参照問題 (aiRepositoryProvider, aiChatControllerProvider)
-- エンティティフィールド不足 (gender, ownerId, updatedAt など)
-
-### 🎯 次のステップ
-
-1. **エラー修正**: import 不足とエンティティフィールド問題の解決
-2. **Provider テスト**: Riverpod Provider テストの改善
-3. **統合テスト**: 全体 AI 機能統合テストの追加
-4. **カバレッジ向上**: テストカバレッジ 90%以上達成
+1. **開発開始時**: `dev_setup.sh` 実行
+2. **エラー発生時**: `fix_all_errors.sh` 実行
+3. **コード変更後**: `format_code.sh` 実行
+4. **テスト実行**: `run_mockito_tests.sh` 実行
 
 ---
 
@@ -314,4 +343,4 @@ test('should send message and return AI response', () async {
 
 ---
 
-© 2025 AI Pet. AI 機能テストスクリプト / AI Feature Test Scripts
+© 2025 AI Pet. AI 기능테스트스크립트 / AI Feature Test Scripts

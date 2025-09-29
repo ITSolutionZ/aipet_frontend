@@ -17,8 +17,8 @@ class MockDataService {
         'difficulty': 'easy',
         'videoUrl': 'https://youtube.com/watch?v=example1',
         'description': '基本的なトリックです',
-        'createdAt': DateTime.now().subtract(Duration(days: 5)),
-        'completedAt': DateTime.now().subtract(Duration(days: 3)),
+        'createdAt': DateTime.now().subtract(const Duration(days: 5)),
+        'completedAt': DateTime.now().subtract(const Duration(days: 3)),
       },
       {
         'id': 'trick-2',
@@ -30,7 +30,7 @@ class MockDataService {
         'difficulty': 'easy',
         'videoUrl': 'https://youtube.com/watch?v=example2',
         'description': '座ることを教えるトリック',
-        'createdAt': DateTime.now().subtract(Duration(days: 3)),
+        'createdAt': DateTime.now().subtract(const Duration(days: 3)),
         'completedAt': null,
       },
       {
@@ -43,7 +43,7 @@ class MockDataService {
         'difficulty': 'medium',
         'videoUrl': null,
         'description': '伏せることを教えるトリック',
-        'createdAt': DateTime.now().subtract(Duration(days: 1)),
+        'createdAt': DateTime.now().subtract(const Duration(days: 1)),
         'completedAt': null,
       },
     ];
@@ -59,7 +59,7 @@ class MockDataService {
         'positionSec': 120,
         'label': '重要なポイント',
         'description': 'ここから重要な説明が始まります',
-        'createdAt': DateTime.now().subtract(Duration(hours: 2)),
+        'createdAt': DateTime.now().subtract(const Duration(hours: 2)),
       },
       {
         'id': 'bookmark-2',
@@ -68,7 +68,7 @@ class MockDataService {
         'positionSec': 300,
         'label': '実践編',
         'description': '実際の練習方法の説明',
-        'createdAt': DateTime.now().subtract(Duration(hours: 1)),
+        'createdAt': DateTime.now().subtract(const Duration(hours: 1)),
       },
     ];
   }
@@ -84,7 +84,7 @@ class MockDataService {
       'video-2': {
         'videoId': 'video-2',
         'lastPositionSec': 450,
-        'updatedAt': DateTime.now().subtract(Duration(hours: 1)),
+        'updatedAt': DateTime.now().subtract(const Duration(hours: 1)),
       },
     };
   }
@@ -165,12 +165,12 @@ class MockDataService {
   static Map<String, dynamic> getPetCurrentStatus(String petId) {
     return {
       'petId': petId,
-      'lastFeedingTime': DateTime.now().subtract(Duration(hours: 6)),
-      'nextFeedingTime': DateTime.now().add(Duration(hours: 2)),
+      'lastFeedingTime': DateTime.now().subtract(const Duration(hours: 6)),
+      'nextFeedingTime': DateTime.now().add(const Duration(hours: 2)),
       'currentWeight': 15.5,
       'targetWeight': 16.0,
       'healthStatus': 'good',
-      'lastVetVisit': DateTime.now().subtract(Duration(days: 30)),
+      'lastVetVisit': DateTime.now().subtract(const Duration(days: 30)),
     };
   }
 
@@ -192,7 +192,7 @@ class MockDataService {
         'petId': 'pet-1',
         'amount': 100.0,
         'foodType': 'ドライフード',
-        'feedingTime': DateTime.now().subtract(Duration(hours: 6)),
+        'feedingTime': DateTime.now().subtract(const Duration(hours: 6)),
         'notes': '通常の給餌',
       },
       {
@@ -200,7 +200,7 @@ class MockDataService {
         'petId': 'pet-1',
         'amount': 80.0,
         'foodType': 'ウェットフード',
-        'feedingTime': DateTime.now().subtract(Duration(days: 1)),
+        'feedingTime': DateTime.now().subtract(const Duration(days: 1)),
         'notes': 'おやつとして少量',
       },
     ];
@@ -227,10 +227,10 @@ class MockDataService {
       'age': 3,
       'weight': 15.5,
       'gender': 'male',
-      'birthDate': DateTime.now().subtract(Duration(days: 1095)),
+      'birthDate': DateTime.now().subtract(const Duration(days: 1095)),
       'profileImage': 'assets/images/dogs/shiba.png',
       'isActive': true,
-      'createdAt': DateTime.now().subtract(Duration(days: 365)),
+      'createdAt': DateTime.now().subtract(const Duration(days: 365)),
       'updatedAt': DateTime.now(),
     };
   }

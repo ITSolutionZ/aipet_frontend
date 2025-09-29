@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 class WalkDetailMapWidget extends StatelessWidget {
   final WalkRecordEntity walkRecord;
 
-  const WalkDetailMapWidget({
-    super.key,
-    required this.walkRecord,
-  });
+  const WalkDetailMapWidget({super.key, required this.walkRecord});
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +19,11 @@ class WalkDetailMapWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.map,
-              size: 48,
-              color: Colors.grey,
-            ),
+            Icon(Icons.map, size: 48, color: Colors.grey),
             SizedBox(height: 8),
             Text(
               '지도 위젯 구현 예정',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
           ],
         ),

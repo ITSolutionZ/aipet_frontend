@@ -22,7 +22,7 @@ class TrickCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const const EdgeInsets.all(AppSpacing.lg),
+        padding: const const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -48,7 +48,7 @@ class TrickCard extends StatelessWidget {
       children: [
         // 트릭 이미지
         _buildTrickImage(),
-        const const SizedBox(width: AppSpacing.md),
+        const const const SizedBox(width: AppSpacing.md),
 
         // 트릭 정보
         Expanded(
@@ -66,7 +66,7 @@ class TrickCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
 
-              const SizedBox(height: AppSpacing.xs),
+              const const const SizedBox(height: AppSpacing.xs),
 
               // 설명 (있는 경우)
               if (trick.description.isNotEmpty == true) ...[
@@ -78,7 +78,7 @@ class TrickCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const const const SizedBox(height: AppSpacing.sm),
               ],
 
               // 난이도와 진행도
@@ -95,7 +95,7 @@ class TrickCard extends StatelessWidget {
           ),
         ),
 
-        const const SizedBox(width: AppSpacing.sm),
+        const const const SizedBox(width: AppSpacing.sm),
 
         // 액션 버튼
         _buildActionButton(),
@@ -139,7 +139,7 @@ class TrickCard extends StatelessWidget {
     final color = _getDifficultyColor(difficulty);
 
     return Container(
-      padding: const const EdgeInsets.symmetric(
+      padding: const const const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: 2,
       ),
@@ -169,7 +169,7 @@ class TrickCard extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const const SizedBox(width: AppSpacing.xs),
+        const const const SizedBox(width: AppSpacing.xs),
         SizedBox(
           width: 40,
           height: 4,
@@ -191,7 +191,7 @@ class TrickCard extends StatelessWidget {
 
     if (isLearned) {
       return Container(
-        padding: const const EdgeInsets.all(AppSpacing.sm),
+        padding: const const const EdgeInsets.all(AppSpacing.sm),
         decoration: const BoxDecoration(
           color: AppColors.pointGreen,
           shape: BoxShape.circle,
