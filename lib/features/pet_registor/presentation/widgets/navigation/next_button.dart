@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/constants/pet_registration_texts.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/constants/pet_registration_texts.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +28,7 @@ class NextButton extends StatelessWidget {
               ? AppColors.pointBrown
               : AppColors.pointPink.withValues(alpha: 0.3),
           foregroundColor: AppColors.pureWhite,
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+          padding: const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.medium),
           ),

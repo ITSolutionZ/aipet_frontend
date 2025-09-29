@@ -11,7 +11,7 @@ class RetryInterceptor extends Interceptor {
   final List<int> retryDelays;
   final List<int> retryStatusCodes;
 
-  RetryInterceptor({
+  const RetryInterceptor({
     this.maxRetries = 3,
     this.retryDelays = const [1000, 2000, 4000], // ms
     this.retryStatusCodes = const [500, 502, 503, 504], // 재시도할 HTTP 상태코드
@@ -37,7 +37,7 @@ class RetryInterceptor extends Interceptor {
         }
 
         // 지연 시간 대기
-        await Future.delayed(Duration(milliseconds: delayMs));
+        await Future.delayed(const Duration(milliseconds: delayMs));
 
         // 재시도 실행
         final response = await Dio().fetch(err.requestOptions);

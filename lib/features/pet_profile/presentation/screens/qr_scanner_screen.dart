@@ -143,7 +143,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
   Widget _buildPermissionDenied() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: const const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -177,7 +177,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBlue,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
+                padding: const const EdgeInsets.symmetric(
                   horizontal: AppSpacing.xl,
                   vertical: AppSpacing.md,
                 ),

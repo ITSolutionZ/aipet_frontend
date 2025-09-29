@@ -55,7 +55,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       return Success(_defaultUserProfile, 'デフォルトプロフィールを取得しました');
     } catch (e) {
-      return Failure('プロフィールの取得に失敗しました: ${e.toString()}');
+      return Result.failure('プロフィールの取得に失敗しました: ${e.toString()}');
     }
   }
 
@@ -77,7 +77,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       await prefs.setString(_keyUserProfile, jsonEncode(profileMap));
       return Success(profile, 'プロフィールが更新されました');
     } catch (e) {
-      return Failure('プロフィールの更新に失敗しました: ${e.toString()}');
+      return Result.failure('プロフィールの更新に失敗しました: ${e.toString()}');
     }
   }
 
@@ -95,7 +95,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       return const Success(null, 'パスワードが変更されました');
     } catch (e) {
-      return Failure('パスワードの変更に失敗しました: ${e.toString()}');
+      return Result.failure('パスワードの変更に失敗しました: ${e.toString()}');
     }
   }
 
@@ -113,7 +113,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       return const Success(null, 'アカウントが削除されました');
     } catch (e) {
-      return Failure('アカウントの削除に失敗しました: ${e.toString()}');
+      return Result.failure('アカウントの削除に失敗しました: ${e.toString()}');
     }
   }
 
@@ -144,7 +144,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       return Success(_defaultAppSettings, 'デフォルト設定を取得しました');
     } catch (e) {
-      return Failure('アプリ設定の取得に失敗しました: ${e.toString()}');
+      return Result.failure('アプリ設定の取得に失敗しました: ${e.toString()}');
     }
   }
 
@@ -166,7 +166,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       await prefs.setString(_keyAppSettings, jsonEncode(settingsMap));
       return Success(settings, 'アプリ設定が保存されました');
     } catch (e) {
-      return Failure('アプリ設定の保存に失敗しました: ${e.toString()}');
+      return Result.failure('アプリ設定の保存に失敗しました: ${e.toString()}');
     }
   }
 
@@ -192,7 +192,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       );
       return Success(result, 'アプリデータがエクスポートされました');
     } catch (e) {
-      return Failure('アプリデータのエクスポートに失敗しました: ${e.toString()}');
+      return Result.failure('アプリデータのエクスポートに失敗しました: ${e.toString()}');
     }
   }
 
@@ -219,7 +219,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       return const Failure('インポートするデータが見つかりません');
     } catch (e) {
-      return Failure('アプリデータのインポートに失敗しました: ${e.toString()}');
+      return Result.failure('アプリデータのインポートに失敗しました: ${e.toString()}');
     }
   }
 
@@ -234,7 +234,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       return const Success(null, 'キャッシュがクリアされました');
     } catch (e) {
-      return Failure('キャッシュのクリアに失敗しました: ${e.toString()}');
+      return Result.failure('キャッシュのクリアに失敗しました: ${e.toString()}');
     }
   }
 
@@ -254,7 +254,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       return const Success(defaultSize, 'デフォルトキャッシュサイズを取得しました');
     } catch (e) {
-      return Failure('キャッシュサイズの取得に失敗しました: ${e.toString()}');
+      return Result.failure('キャッシュサイズの取得に失敗しました: ${e.toString()}');
     }
   }
 }

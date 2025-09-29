@@ -119,7 +119,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
   Widget _buildContent() {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -147,7 +147,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: FacilityContactSection(facility: _facility!),
       ),
     );
@@ -161,7 +161,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: FacilityLocationSection(facility: _facility!),
       ),
     );
@@ -175,7 +175,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: FacilityAvailabilitySection(facility: _facility!),
       ),
     );
@@ -189,7 +189,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: FacilityServicesSection(facility: _facility!),
       ),
     );
@@ -215,7 +215,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.pointBlue,
               foregroundColor: AppColors.pureWhite,
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+              padding: const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.medium),
               ),

@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/ai/domain/domain.dart';
 import 'package:aipet_frontend/features/ai/domain/services/message_pagination_service.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 
 /// 🧠 AI 메시지 관리 서비스
@@ -23,7 +23,7 @@ class AiMessageManager {
   ) {
     try {
       if (newMessages.isEmpty) {
-        return ResultFactory.success(currentMessages, 'No new messages to add');
+        return Result.success(currentMessages, 'No new messages to add');
       }
 
       // 중복 메시지 제거
@@ -54,7 +54,7 @@ class AiMessageManager {
           '[$_tag] Optimization failed, returning unoptimized messages',
         );
       }
-      return ResultFactory.success(
+      return Result.success(
         combinedMessages,
         'Messages added without optimization',
       );
@@ -62,7 +62,7 @@ class AiMessageManager {
       if (kDebugMode) {
         debugPrint('[$_tag] Error adding messages: $error\n$stackTrace');
       }
-      return ResultFactory.failure('메시지 추가 중 오류 발생: $error');
+      return Result.failure('메시지 추가 중 오류 발생: $error');
     }
   }
 
@@ -86,17 +86,17 @@ class AiMessageManager {
     try {
       // 기본 필드 검증
       if (message.id.isEmpty) {
-        return ResultFactory.failure('메시지 ID가 비어있습니다');
+        return Result.failure('메시지 ID가 비어있습니다');
       }
 
       if (message.content.trim().isEmpty) {
-        return ResultFactory.failure('메시지 내용이 비어있습니다');
+        return Result.failure('메시지 내용이 비어있습니다');
       }
 
       // 메시지 길이 제한
       const maxContentLength = 10000;
       if (message.content.length > maxContentLength) {
-        return ResultFactory.failure(
+        return Result.failure(
           '메시지가 너무 깁니다 (${message.content.length}/$maxContentLength자)',
         );
       }
@@ -111,7 +111,7 @@ class AiMessageManager {
           return _validateSystemMessage(message);
       }
     } catch (error) {
-      return ResultFactory.failure('메시지 검증 중 오류: $error');
+      return Result.failure('메시지 검증 중 오류: $error');
     }
   }
 
@@ -160,7 +160,7 @@ class AiMessageManager {
       }
 
       // 최적화 실패 시 정리된 메시지 반환
-      return ResultFactory.success(
+      return Result.success(
         cleanedMessages,
         'Messages cleaned up without optimization',
       );
@@ -168,7 +168,7 @@ class AiMessageManager {
       if (kDebugMode) {
         debugPrint('[$_tag] Error cleaning up messages: $error\n$stackTrace');
       }
-      return ResultFactory.failure('메시지 정리 중 오류 발생: $error');
+      return Result.failure('메시지 정리 중 오류 발생: $error');
     }
   }
 
@@ -189,7 +189,7 @@ class AiMessageManager {
             index: i,
             found: true,
           );
-          return ResultFactory.success(result, 'Message found at index $i');
+          return Result.success(result, 'Message found at index $i');
         }
       }
 
@@ -198,9 +198,9 @@ class AiMessageManager {
         index: -1,
         found: false,
       );
-      return ResultFactory.success(result, 'Message not found');
+      return Result.success(result, 'Message not found');
     } catch (error) {
-      return ResultFactory.failure('메시지 검색 중 오류: $error');
+      return Result.failure('메시지 검색 중 오류: $error');
     }
   }
 
@@ -252,16 +252,16 @@ class AiMessageManager {
   static Result<bool> _validateUserMessage(AiMessageEntity message) {
     // 사용자 메시지는 반드시 내용이 있어야 함
     if (message.content.trim().length < 2) {
-      return ResultFactory.failure('사용자 메시지가 너무 짧습니다');
+      return Result.failure('사용자 메시지가 너무 짧습니다');
     }
 
-    return ResultFactory.success(true, 'User message valid');
+    return Result.success(true, 'User message valid');
   }
 
   static Result<bool> _validateAssistantMessage(AiMessageEntity message) {
     // AI 응답은 반드시 의미있는 내용이 있어야 함
     if (message.content.trim().length < 5) {
-      return ResultFactory.failure('AI 응답이 너무 짧습니다');
+      return Result.failure('AI 응답이 너무 짧습니다');
     }
 
     // 일반적인 에러 응답 패턴 체크
@@ -272,19 +272,19 @@ class AiMessageManager {
       (pattern) => contentLower.contains(pattern),
     );
     if (hasErrorPattern && message.content.length < 50) {
-      return ResultFactory.failure('AI 응답에 오류 패턴이 감지되었습니다');
+      return Result.failure('AI 응답에 오류 패턴이 감지되었습니다');
     }
 
-    return ResultFactory.success(true, 'Assistant message valid');
+    return Result.success(true, 'Assistant message valid');
   }
 
   static Result<bool> _validateSystemMessage(AiMessageEntity message) {
     // 시스템 메시지는 특별한 형식을 가져야 함
     if (!message.content.startsWith('[') || !message.content.endsWith(']')) {
-      return ResultFactory.failure('시스템 메시지 형식이 올바르지 않습니다');
+      return Result.failure('시스템 메시지 형식이 올바르지 않습니다');
     }
 
-    return ResultFactory.success(true, 'System message valid');
+    return Result.success(true, 'System message valid');
   }
 
   static String _getMemoryRecommendation(bool isHigh, bool shouldCleanup) {

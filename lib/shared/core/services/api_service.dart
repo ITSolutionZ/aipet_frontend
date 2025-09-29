@@ -8,7 +8,7 @@ import 'http_client_service.dart';
 /// 백엔드 API 통신을 담당하는 서비스
 class ApiService {
   static const String baseUrl = 'https://api.aipet.com'; // 실제 백엔드 URL로 교체
-  static const Duration timeout = Duration(seconds: 30);
+  static const Duration timeout = const Duration(seconds: 30);
 
   /// GET 요청
   static Future<ApiResponse<T>> get<T>(
@@ -124,9 +124,9 @@ class ApiService {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (fromJson != null) {
-        return ApiResponse.success(fromJson(data['data'] ?? data));
+        return ApiResponseResult.success(fromJson(data['data'] ?? data));
       } else {
-        return ApiResponse.success(data as T);
+        return ApiResponseResult.success(data as T);
       }
     } else {
       return ApiResponse.error(
@@ -154,9 +154,9 @@ class ApiService {
     }
 
     if (fromJson != null) {
-      return ApiResponse.success(fromJson(mockData));
+      return ApiResponseResult.success(fromJson(mockData));
     } else {
-      return ApiResponse.success(mockData as T);
+      return ApiResponseResult.success(mockData as T);
     }
   }
 
@@ -174,9 +174,9 @@ class ApiService {
     }
 
     if (fromJson != null) {
-      return ApiResponse.success(fromJson(mockData));
+      return ApiResponseResult.success(fromJson(mockData));
     } else {
-      return ApiResponse.success(mockData as T);
+      return ApiResponseResult.success(mockData as T);
     }
   }
 
@@ -194,9 +194,9 @@ class ApiService {
     }
 
     if (fromJson != null) {
-      return ApiResponse.success(fromJson(mockData));
+      return ApiResponseResult.success(fromJson(mockData));
     } else {
-      return ApiResponse.success(mockData as T);
+      return ApiResponseResult.success(mockData as T);
     }
   }
 
@@ -213,9 +213,9 @@ class ApiService {
     }
 
     if (fromJson != null) {
-      return ApiResponse.success(fromJson(mockData));
+      return ApiResponseResult.success(fromJson(mockData));
     } else {
-      return ApiResponse.success(mockData as T);
+      return ApiResponseResult.success(mockData as T);
     }
   }
 

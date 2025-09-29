@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/features/onboarding/data/data.dart';
 import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 🎯 Professional UseCase-Driven Onboarding Controller
 ///
@@ -97,9 +97,9 @@ class OnboardingController extends BaseController {
     try {
       // Start onboarding tracking
       ref.read(onboardingNotifierProvider.notifier).startOnboarding();
-      return ResultFactory.success(null, '온보딩이 시작되었습니다');
+      return Result.success(null, '온보딩이 시작되었습니다');
     } catch (error) {
-      return ResultFactory.failure('온보딩 초기화 중 오류가 발생했습니다: $error');
+      return Result.failure('온보딩 초기화 중 오류가 발생했습니다: $error');
     }
   }
 
@@ -113,7 +113,7 @@ class OnboardingController extends BaseController {
   Future<Result<String>> completeAndNavigate() async {
     final completeResult = await finishOnboarding();
     if (!completeResult.isSuccess) {
-      return ResultFactory.failure('온보딩 완료에 실패했습니다');
+      return Result.failure('온보딩 완료에 실패했습니다');
     }
 
     final navigationResult = await getNavigationRoute();

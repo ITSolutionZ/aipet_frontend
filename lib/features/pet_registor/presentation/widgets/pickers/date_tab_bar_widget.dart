@@ -9,7 +9,7 @@ class DateTabBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.pointGray.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -29,7 +29,7 @@ class DateTabBarWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.cake, size: 14),
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
                 Text('誕生日'),
               ],
             ),
@@ -39,7 +39,7 @@ class DateTabBarWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.home, size: 14),
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
                 Text('家に来た日'),
               ],
             ),

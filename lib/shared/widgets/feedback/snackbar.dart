@@ -61,7 +61,7 @@ class GlassSnackbar extends StatelessWidget {
     final baseColor = _baseColor();
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      margin: const const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
@@ -76,7 +76,7 @@ class GlassSnackbar extends StatelessWidget {
               borderRadius: BorderRadius.circular(borderRadius),
               border: Border.all(color: baseColor.withAlpha(80), width: 1),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: const const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

@@ -1,80 +1,143 @@
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-/// 학습 트릭 카드 위젯
+/// 학습할 트릭 카드
 class LearnTrickCard extends StatelessWidget {
-  final String title;
-  final String description;
-  final String imagePath;
-  final int difficulty;
-  final VoidCallback onTap;
+  final TrickEntity trick;
+  final VoidCallback? onTap;
 
-  const LearnTrickCard({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.imagePath,
-    required this.difficulty,
-    required this.onTap,
-  });
+  const LearnTrickCard({super.key, required this.trick, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 160,
-      margin: const EdgeInsets.only(right: AppSpacing.md),
-      child: Card(
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 100,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.pointGreen.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppRadius.medium),
-                  ),
-                  child: const Icon(
-                    Icons.pets,
-                    size: 40,
-                    color: AppColors.pointGreen,
-                  ),
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+        child: Padding(
+          padding: const const EdgeInsets.all(AppSpacing.md),
+          child: Row(
+            children: [
+              // 트릭 이미지
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: AppColors.pointBrown.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.sm),
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  title,
-                  style: AppFonts.bodyMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.pointDark,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  description,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointGray,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Row(
-                  children: List.generate(
-                    3,
-                    (index) => Icon(
-                      Icons.star,
-                      size: 12,
-                      color: index < difficulty
-                          ? AppColors.pointGreen
-                          : AppColors.pointGray.withValues(alpha: 0.3),
+                child: trick.imagePath != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(AppSpacing.sm),
+                        child: Image.asset(trick.imagePath!, fit: BoxFit.cover),
+                      )
+                    : const Icon(
+                        Icons.pets,
+                        color: AppColors.pointBrown,
+                        size: 30,
+                      ),
+              ),
+              const const SizedBox(width: AppSpacing.md),
+
+              // 트릭 정보
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      trick.name,
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      trick.description,
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Row(
+                      children: [
+                        _buildDifficultyChip(trick.difficulty),
+                        const const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          '${trick.estimatedTime}分',
+                          style: AppFonts.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+
+              // 학습 시작 버튼
+              Container(
+                padding: const const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.pointGreen.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.sm),
+                ),
+                child: const Icon(
+                  Icons.play_arrow,
+                  color: AppColors.pointGreen,
+                  size: 24,
+                ),
+              ),
+            ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDifficultyChip(DifficultyLevel difficulty) {
+    Color color;
+    String text;
+
+    switch (difficulty) {
+      case DifficultyLevel.easy:
+        color = AppColors.pointGreen;
+        text = '簡単';
+        break;
+      case DifficultyLevel.medium:
+        color = AppColors.pointBlue;
+        text = '普通';
+        break;
+      case DifficultyLevel.hard:
+        color = AppColors.pointBrown;
+        text = '難しい';
+        break;
+      case DifficultyLevel.expert:
+        color = AppColors.pointPink;
+        text = '専門家';
+        break;
+    }
+
+    return Container(
+      padding: const const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.sm),
+      ),
+      child: Text(
+        text,
+        style: AppFonts.bodySmall.copyWith(
+          color: color,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );

@@ -410,7 +410,7 @@ class AppCard extends StatelessWidget {
       children: [
         if (icon != null) ...[
           _buildIconContainer(),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
         ],
         Expanded(
           child: Column(
@@ -438,7 +438,7 @@ class AppCard extends StatelessWidget {
           ),
         ),
         if (trailing != null) ...[
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
           trailing!,
         ],
       ],
@@ -454,7 +454,7 @@ class AppCard extends StatelessWidget {
           children: [
             if (icon != null) ...[
               _buildIconContainer(),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
             ],
             Expanded(
               child: Text(
@@ -478,7 +478,7 @@ class AppCard extends StatelessWidget {
               ),
             ),
             if (unit != null) ...[
-              const SizedBox(width: 4),
+              const const SizedBox(width: 4),
               Text(
                 unit!,
                 style: AppFonts.bodySmall.copyWith(
@@ -507,7 +507,7 @@ class AppCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null) ...[icon!, const SizedBox(width: AppSpacing.sm)],
+          if (icon != null) ...[icon!, const const SizedBox(width: AppSpacing.sm)],
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -540,11 +540,11 @@ class AppCard extends StatelessWidget {
       children: [
         if (leading != null) ...[
           leading!,
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
         ],
         if (icon != null) ...[
           _buildIconContainer(),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
         ],
         Expanded(
           child: Column(
@@ -572,7 +572,7 @@ class AppCard extends StatelessWidget {
           ),
         ),
         if (value != null) ...[
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
@@ -595,7 +595,7 @@ class AppCard extends StatelessWidget {
           ),
         ],
         if (trailing != null) ...[
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
           trailing!,
         ],
       ],
@@ -606,7 +606,7 @@ class AppCard extends StatelessWidget {
     if (icon == null) return const SizedBox.shrink();
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.xs),
+      padding: const const EdgeInsets.all(AppSpacing.xs),
       decoration: BoxDecoration(
         color: (iconColor ?? AppColors.pointBrown).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
@@ -629,7 +629,7 @@ class AppCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(iconData, size: 16, color: color),
-        const SizedBox(width: 2),
+        const const SizedBox(width: 2),
         Text(
           change!,
           style: AppFonts.bodySmall.copyWith(
@@ -724,13 +724,13 @@ class AppCard extends StatelessWidget {
 
     switch (size) {
       case CardSize.small:
-        return const EdgeInsets.all(AppSpacing.sm);
+        return const const EdgeInsets.all(AppSpacing.sm);
       case CardSize.medium:
-        return const EdgeInsets.all(AppSpacing.md);
+        return const const EdgeInsets.all(AppSpacing.md);
       case CardSize.large:
-        return const EdgeInsets.all(AppSpacing.lg);
+        return const const EdgeInsets.all(AppSpacing.lg);
       case CardSize.expanded:
-        return const EdgeInsets.all(AppSpacing.md);
+        return const const EdgeInsets.all(AppSpacing.md);
     }
   }
 

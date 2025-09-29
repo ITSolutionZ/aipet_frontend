@@ -10,7 +10,7 @@ class AddYouTubeVideoButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
+      margin: const const EdgeInsets.all(AppSpacing.md),
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: onPressed,
@@ -19,7 +19,7 @@ class AddYouTubeVideoButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.pointBlue,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.md),
           ),

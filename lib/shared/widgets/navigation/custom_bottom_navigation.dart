@@ -17,7 +17,7 @@ class CustomBottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        margin: const EdgeInsets.only(
+        margin: const const EdgeInsets.only(
           left: AppSpacing.lg,
           right: AppSpacing.lg,
           bottom: AppSpacing.sm, // SafeArea 위로 띄운 플로팅 스타일
@@ -77,7 +77,7 @@ class CustomBottomNavigation extends StatelessWidget {
     return GestureDetector(
       onTap: () => onItemTapped(index),
       child: Container(
-        padding: const EdgeInsets.symmetric(
+        padding: const const EdgeInsets.symmetric(
           horizontal: AppSpacing.sm,
           vertical: AppSpacing.xs,
         ),

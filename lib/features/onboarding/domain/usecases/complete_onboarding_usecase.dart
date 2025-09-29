@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/onboarding/domain/usecases/base_usecase.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 온보딩 완료 UseCase
 class CompleteOnboardingUseCase extends BaseUseCaseNoParams<void> {
@@ -17,7 +17,7 @@ class CompleteOnboardingUseCase extends BaseUseCaseNoParams<void> {
       // 온보딩 상태를 완료로 업데이트
       final stateResult = await repository.loadOnboardingState();
       if (!stateResult.isSuccess) {
-        return ResultFactory.failure('온보딩 상태 로드에 실패했습니다');
+        return Result.failure('온보딩 상태 로드에 실패했습니다');
       }
 
       final currentState = stateResult.dataOrNull!;
@@ -26,7 +26,7 @@ class CompleteOnboardingUseCase extends BaseUseCaseNoParams<void> {
 
       return saveResult;
     } catch (e) {
-      return ResultFactory.failure('온보딩 완료 처리 중 오류가 발생했습니다: $e');
+      return Result.failure('온보딩 완료 처리 중 오류가 발생했습니다: $e');
     }
   }
 }

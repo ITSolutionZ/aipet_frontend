@@ -16,8 +16,8 @@ class VaccineCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        margin: const const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -47,7 +47,7 @@ class VaccineCard extends StatelessWidget {
                 size: 28,
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const const SizedBox(width: AppSpacing.md),
 
             // 백신 정보
             Expanded(
@@ -87,7 +87,7 @@ class VaccineCard extends StatelessWidget {
             // 완료 상태 배지
             if (isCompleted)
               Container(
-                padding: const EdgeInsets.symmetric(
+                padding: const const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
                   vertical: AppSpacing.xs,
                 ),
@@ -122,7 +122,7 @@ class VaccineDetailModal extends StatelessWidget {
       backgroundColor: Colors.transparent,
       child: Container(
         constraints: const BoxConstraints(maxHeight: 600),
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -204,7 +204,7 @@ class VaccineDetailModal extends StatelessWidget {
                     },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppColors.pointBrown),
-                      padding: const EdgeInsets.symmetric(
+                      padding: const const EdgeInsets.symmetric(
                         vertical: AppSpacing.md,
                       ),
                     ),
@@ -217,7 +217,7 @@ class VaccineDetailModal extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -226,7 +226,7 @@ class VaccineDetailModal extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.pointGreen,
-                      padding: const EdgeInsets.symmetric(
+                      padding: const const EdgeInsets.symmetric(
                         vertical: AppSpacing.md,
                       ),
                     ),
@@ -266,7 +266,7 @@ class VaccineDetailModal extends StatelessWidget {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -279,7 +279,7 @@ class VaccineDetailModal extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
               value,
@@ -304,7 +304,7 @@ class VeterinarianCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.pointBlue.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -336,7 +336,7 @@ class VeterinarianCard extends StatelessWidget {
                   size: 24,
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

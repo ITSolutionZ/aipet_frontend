@@ -1,11 +1,11 @@
 import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
-import 'package:aipet_frontend/features/scheduling/presentation/controllers/tricks_controller.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/controllers/tricks_controller.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/learn_next_section.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/trick_action_buttons.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/trick_management_bottom_sheet.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/your_tricks_section.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/learn_next_section.dart';
-import 'package:aipet_frontend/shared/widgets/trick_action_buttons.dart';
-import 'package:aipet_frontend/shared/widgets/trick_management_bottom_sheet.dart';
-import 'package:aipet_frontend/shared/widgets/your_tricks_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -82,14 +82,14 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
 
   Widget _buildContent(List<TrickEntity> tricks) {
     final learnedTricks = tricks
-        .where((trick) => trick.progress != null)
+        .where((trick) => trick.practiceCount > 0)
         .toList();
     final availableTricks = tricks
-        .where((trick) => trick.progress == null)
+        .where((trick) => trick.practiceCount == 0)
         .toList();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

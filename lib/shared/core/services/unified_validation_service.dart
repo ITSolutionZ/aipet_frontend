@@ -12,14 +12,14 @@ class UnifiedValidationService extends BaseLoggingService {
   /// 이메일 유효성 검사
   UnifiedValidationResult validateEmail(String email) {
     if (email.isEmpty) {
-      return UnifiedValidationResult.failure('メールアドレスを入力してください');
+      return UnifiedValidationFailure('メールアドレスを入力してください');
     }
 
     final emailRegex = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     );
     if (!emailRegex.hasMatch(email)) {
-      return UnifiedValidationResult.failure('有効なメールアドレスを入力してください');
+      return UnifiedValidationFailure('有効なメールアドレスを入力してください');
     }
 
     return UnifiedValidationResult.success();
@@ -28,15 +28,15 @@ class UnifiedValidationService extends BaseLoggingService {
   /// 비밀번호 유효성 검사
   UnifiedValidationResult validatePassword(String password) {
     if (password.isEmpty) {
-      return UnifiedValidationResult.failure('パスワードを入力してください');
+      return UnifiedValidationFailure('パスワードを入力してください');
     }
 
     if (password.length < 6) {
-      return UnifiedValidationResult.failure('パスワードは6文字以上で入力してください');
+      return UnifiedValidationFailure('パスワードは6文字以上で入力してください');
     }
 
     if (password.length > 128) {
-      return UnifiedValidationResult.failure('パスワードは128文字以内で入力してください');
+      return UnifiedValidationFailure('パスワードは128文字以内で入力してください');
     }
 
     return UnifiedValidationResult.success();
@@ -45,15 +45,15 @@ class UnifiedValidationService extends BaseLoggingService {
   /// 사용자명 유효성 검사
   UnifiedValidationResult validateUsername(String username) {
     if (username.isEmpty) {
-      return UnifiedValidationResult.failure('ユーザー名を入力してください');
+      return UnifiedValidationFailure('ユーザー名を入力してください');
     }
 
     if (username.length < 2) {
-      return UnifiedValidationResult.failure('ユーザー名は2文字以上で入力してください');
+      return UnifiedValidationFailure('ユーザー名は2文字以上で入力してください');
     }
 
     if (username.length > 50) {
-      return UnifiedValidationResult.failure('ユーザー名は50文字以内で入力してください');
+      return UnifiedValidationFailure('ユーザー名は50文字以内で入力してください');
     }
 
     // 특수문자 검사
@@ -61,7 +61,7 @@ class UnifiedValidationService extends BaseLoggingService {
       r'^[a-zA-Z0-9_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+$',
     );
     if (!usernameRegex.hasMatch(username)) {
-      return UnifiedValidationResult.failure(
+      return UnifiedValidationFailure(
         'ユーザー名は英数字、ひらがな、カタカナ、漢字、アンダースコアのみ使用できます',
       );
     }
@@ -72,11 +72,11 @@ class UnifiedValidationService extends BaseLoggingService {
   /// 메시지 유효성 검사 (AI 채팅용)
   UnifiedValidationResult validateMessage(String message) {
     if (message.isEmpty) {
-      return UnifiedValidationResult.failure('メッセージを入力してください');
+      return UnifiedValidationFailure('メッセージを入力してください');
     }
 
     if (message.length > 2000) {
-      return UnifiedValidationResult.failure('メッセージは2000文字以内で入力してください');
+      return UnifiedValidationFailure('メッセージは2000文字以内で入力してください');
     }
 
     return UnifiedValidationResult.success();
@@ -85,11 +85,11 @@ class UnifiedValidationService extends BaseLoggingService {
   /// 펫 이름 유효성 검사
   UnifiedValidationResult validatePetName(String petName) {
     if (petName.isEmpty) {
-      return UnifiedValidationResult.failure('ペットの名前を入力してください');
+      return UnifiedValidationFailure('ペットの名前を入力してください');
     }
 
     if (petName.length > 50) {
-      return UnifiedValidationResult.failure('ペットの名前は50文字以内で入力してください');
+      return UnifiedValidationFailure('ペットの名前は50文字以内で入力してください');
     }
 
     return UnifiedValidationResult.success();
@@ -98,13 +98,13 @@ class UnifiedValidationService extends BaseLoggingService {
   /// 전화번호 유효성 검사
   UnifiedValidationResult validatePhoneNumber(String phoneNumber) {
     if (phoneNumber.isEmpty) {
-      return UnifiedValidationResult.failure('電話番号を入力してください');
+      return UnifiedValidationFailure('電話番号を入力してください');
     }
 
     // 일본 전화번호 형식 검사
     final phoneRegex = RegExp(r'^(\+81|0)[0-9]{1,4}[0-9]{1,4}[0-9]{4}$');
     if (!phoneRegex.hasMatch(phoneNumber.replaceAll('-', ''))) {
-      return UnifiedValidationResult.failure('有効な電話番号を入力してください');
+      return UnifiedValidationFailure('有効な電話番号を入力してください');
     }
 
     return UnifiedValidationResult.success();
@@ -137,7 +137,7 @@ class UnifiedValidationService extends BaseLoggingService {
           result = validatePhoneNumber(value);
           break;
         default:
-          result = UnifiedValidationResult.failure('未知のフィールド: $fieldName');
+          result = UnifiedValidationFailure('未知のフィールド: $fieldName');
       }
 
       if (!result.isValid) {
@@ -158,7 +158,7 @@ class UnifiedValidationResult {
 
   factory UnifiedValidationResult.success() =>
       const UnifiedValidationResult._(true, null);
-  factory UnifiedValidationResult.failure(String message) =>
+  factory UnifiedValidationFailure(String message) =>
       UnifiedValidationResult._(false, message);
 
   @override

@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// ⚙️ 설정 리포지토리 인터페이스
 ///

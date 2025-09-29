@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_session_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 채팅 세션 관리 UseCase
 class ChatSessionUseCase {
@@ -14,9 +14,9 @@ class ChatSessionUseCase {
   Future<Result<List<AiChatSessionEntity>>> getSessions() async {
     try {
       final sessions = await _repository.getChatSessions();
-      return ResultFactory.success(sessions, 'チャットセッション一覧を取得しました').toFuture();
+      return Result.success(sessions, 'チャットセッション一覧を取得しました').toFuture();
     } catch (error) {
-      return ResultFactory.failure<List<AiChatSessionEntity>>(
+      return Result.failure<List<AiChatSessionEntity>>(
         'チャットセッション一覧の取得に失敗しました: ${error.toString()}',
       ).toFuture();
     }
@@ -35,21 +35,21 @@ class ChatSessionUseCase {
     try {
       // 입력 유효성 검사
       if (title.trim().isEmpty) {
-        return ResultFactory.failure<AiChatSessionEntity>(
+        return Result.failure<AiChatSessionEntity>(
           'セッションタイトルを入力してください',
         ).toFuture();
       }
 
       if (title.length > 100) {
-        return ResultFactory.failure<AiChatSessionEntity>(
+        return Result.failure<AiChatSessionEntity>(
           'セッションタイトルは100文字以内で入力してください',
         ).toFuture();
       }
 
       final session = await _repository.createChatSession(title, petId: petId);
-      return ResultFactory.success(session, 'チャットセッションを作成しました').toFuture();
+      return Result.success(session, 'チャットセッションを作成しました').toFuture();
     } catch (error) {
-      return ResultFactory.failure<AiChatSessionEntity>(
+      return Result.failure<AiChatSessionEntity>(
         'チャットセッションの作成に失敗しました: ${error.toString()}',
       ).toFuture();
     }
@@ -64,13 +64,13 @@ class ChatSessionUseCase {
     try {
       // 입력 유효성 검사
       if (sessionId.trim().isEmpty) {
-        return ResultFactory.failure<void>('セッションIDが無効です').toFuture();
+        return Result.failure<void>('セッションIDが無効です').toFuture();
       }
 
       await _repository.deleteChatSession(sessionId);
-      return ResultFactory.success(null, 'チャットセッションを削除しました').toFuture();
+      return Result.success(null, 'チャットセッションを削除しました').toFuture();
     } catch (error) {
-      return ResultFactory.failure<void>(
+      return Result.failure<void>(
         'チャットセッションの削除に失敗しました: ${error.toString()}',
       ).toFuture();
     }

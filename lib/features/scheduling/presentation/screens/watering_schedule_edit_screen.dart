@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 /// 급수 스케줄 편집 화면 상태 관리
 final wateringScheduleEditProvider =
@@ -31,96 +30,154 @@ class WateringScheduleEditController
     }
 
     state = state.copyWith(
-      formKey: formKey,
       amountController: amountController,
+      formKey: formKey,
       selectedTime: selectedTime,
+      currentAmount: currentAmount,
+      currentTime: currentTime,
     );
+  }
+
+  void updateAmount(String amount) {
+    state = state.copyWith(amount: amount);
   }
 
   void updateTime(TimeOfDay time) {
     state = state.copyWith(selectedTime: time);
   }
 
-  @override
-  void dispose() {
-    state.amountController?.dispose();
-    super.dispose();
+  void updateMealType(String mealType) {
+    state = state.copyWith(mealType: mealType);
+  }
+
+  Future<void> saveSchedule() async {
+    if (state.formKey?.currentState?.validate() ?? false) {
+      // 저장 로직
+      state = state.copyWith(isLoading: true);
+
+      // Mock 저장 로직
+      await Future.delayed(const Duration(seconds: 1));
+
+      state = state.copyWith(isLoading: false, isSaved: true);
+    }
   }
 }
 
+/// 급수 스케줄 편집 상태
 class WateringScheduleEditState {
-  final GlobalKey<FormState>? formKey;
   final TextEditingController? amountController;
+  final GlobalKey<FormState>? formKey;
   final TimeOfDay selectedTime;
+  final String amount;
+  final String mealType;
+  final String currentAmount;
+  final String currentTime;
+  final bool isLoading;
+  final bool isSaved;
 
   const WateringScheduleEditState({
-    this.formKey,
     this.amountController,
-    this.selectedTime = const TimeOfDay(hour: 9, minute: 0),
+    this.formKey,
+    this.selectedTime = const TimeOfDay(hour: 8, minute: 0),
+    this.amount = '',
+    this.mealType = '朝食',
+    this.currentAmount = '200ml',
+    this.currentTime = '08:00',
+    this.isLoading = false,
+    this.isSaved = false,
   });
 
   WateringScheduleEditState copyWith({
-    GlobalKey<FormState>? formKey,
     TextEditingController? amountController,
+    GlobalKey<FormState>? formKey,
     TimeOfDay? selectedTime,
+    String? amount,
+    String? mealType,
+    String? currentAmount,
+    String? currentTime,
+    bool? isLoading,
+    bool? isSaved,
   }) {
     return WateringScheduleEditState(
-      formKey: formKey ?? this.formKey,
       amountController: amountController ?? this.amountController,
+      formKey: formKey ?? this.formKey,
       selectedTime: selectedTime ?? this.selectedTime,
+      amount: amount ?? this.amount,
+      mealType: mealType ?? this.mealType,
+      currentAmount: currentAmount ?? this.currentAmount,
+      currentTime: currentTime ?? this.currentTime,
+      isLoading: isLoading ?? this.isLoading,
+      isSaved: isSaved ?? this.isSaved,
     );
   }
 }
 
 /// 급수 스케줄 편집 화면
-class WateringScheduleEditScreen extends ConsumerWidget {
-  final String mealType;
-  final String currentTime;
+class WateringScheduleEditScreen extends ConsumerStatefulWidget {
+  final String scheduleId;
   final String currentAmount;
+  final String currentTime;
+  final String mealType;
 
   const WateringScheduleEditScreen({
     super.key,
-    required this.mealType,
-    required this.currentTime,
+    required this.scheduleId,
     required this.currentAmount,
+    required this.currentTime,
+    required this.mealType,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final scheduleId = DateTime.now().millisecondsSinceEpoch.toString();
-    final state = ref.watch(wateringScheduleEditProvider(scheduleId));
+  ConsumerState<WateringScheduleEditScreen> createState() =>
+      _WateringScheduleEditScreenState();
+}
 
-    // Initialize after first frame
+class _WateringScheduleEditScreenState
+    extends ConsumerState<WateringScheduleEditScreen> {
+  @override
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
-          .read(wateringScheduleEditProvider(scheduleId).notifier)
-          .initialize(currentAmount, currentTime);
+          .read(wateringScheduleEditProvider(widget.scheduleId).notifier)
+          .initialize(widget.currentAmount, widget.currentTime);
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(wateringScheduleEditProvider(widget.scheduleId));
+    final controller = ref.read(
+      wateringScheduleEditProvider(widget.scheduleId).notifier,
+    );
 
     return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientAppBar(title: '給水スケジュール編集'),
-      body: Form(
-        key: state.formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+      appBar: AppBar(
+        title: const Text('급수 스케줄 편집'),
+        backgroundColor: AppColors.pointBlue,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        padding: const const EdgeInsets.all(AppSpacing.md),
+        child: Form(
+          key: state.formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 스케줄 정보 카드
-              _buildScheduleInfoCard(),
-              const SizedBox(height: AppSpacing.lg),
-
-              // 시간 선택
-              _buildTimeSelector(state),
+              // 현재 설정 표시
+              _buildCurrentSettings(state),
               const SizedBox(height: AppSpacing.lg),
 
               // 급수량 입력
-              _buildAmountInput(state),
-              const SizedBox(height: AppSpacing.xl),
+              _buildAmountInput(state, controller),
+              const SizedBox(height: AppSpacing.lg),
 
-              // 버튼들
-              _buildActionButtons(state),
+              // 시간 선택
+              _buildTimeSelector(state, controller),
+              const SizedBox(height: AppSpacing.lg),
+
+              // 저장 버튼
+              _buildSaveButton(state, controller),
             ],
           ),
         ),
@@ -128,39 +185,28 @@ class WateringScheduleEditScreen extends ConsumerWidget {
     );
   }
 
-  /// 스케줄 정보 카드
-  Widget _buildScheduleInfoCard() {
+  /// 현재 설정 표시
+  Widget _buildCurrentSettings(WateringScheduleEditState state) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: AppColors.pointBlue.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.water_drop,
-                color: AppColors.pointBlue,
-                size: 32,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.md),
+            const Icon(Icons.water_drop, color: AppColors.pointBlue, size: 32),
+            const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.mealType,
+                    state.mealType,
                     style: AppFonts.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.pointDark,
                     ),
                   ),
                   Text(
-                    '現在の設定: ${widget.currentTime} - ${widget.currentAmount}',
+                    '現在の設定: ${state.currentTime} - ${state.currentAmount}',
                     style: AppFonts.bodyMedium.copyWith(
                       color: AppColors.pointGray,
                     ),
@@ -174,22 +220,70 @@ class WateringScheduleEditScreen extends ConsumerWidget {
     );
   }
 
-  /// 시간 선택 위젯
-  Widget _buildTimeSelector(WateringScheduleEditState state) {
+  /// 급수량 입력 위젯
+  Widget _buildAmountInput(
+    WateringScheduleEditState state,
+    WateringScheduleEditController controller,
+  ) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '給水時間',
+              '급수량 설정',
               style: AppFonts.titleMedium.copyWith(
                 fontWeight: FontWeight.bold,
                 color: AppColors.pointDark,
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.sm),
+            TextFormField(
+              controller: state.amountController,
+              decoration: const InputDecoration(
+                labelText: '급수량 (ml)',
+                border: OutlineInputBorder(),
+                suffixText: 'ml',
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '급수량을 입력해주세요';
+                }
+                final amount = int.tryParse(value);
+                if (amount == null || amount <= 0) {
+                  return '올바른 급수량을 입력해주세요';
+                }
+                return null;
+              },
+              onChanged: controller.updateAmount,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 시간 선택 위젯
+  Widget _buildTimeSelector(
+    WateringScheduleEditState state,
+    WateringScheduleEditController controller,
+  ) {
+    return Card(
+      child: Padding(
+        padding: const const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '시간 설정',
+              style: AppFonts.titleMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.pointDark,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
             ListTile(
               leading: const Icon(
                 Icons.access_time,
@@ -201,119 +295,46 @@ class WateringScheduleEditScreen extends ConsumerWidget {
                 style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
               ),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () => _selectTime(state),
+              onTap: () => _selectTime(state, controller),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  /// 급수량 입력 위젯
-  Widget _buildAmountInput(WateringScheduleEditState state) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '給水量',
-              style: AppFonts.titleMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.pointDark,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            TextFormField(
-              controller: state.amountController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: '給水量 (ml)',
-                hintText: '例: 200',
-                suffixText: 'ml',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return '給水量を入力してください';
-                }
-                final amount = int.tryParse(value);
-                if (amount == null || amount <= 0) {
-                  return '有効な給水量を入力してください';
-                }
-                return null;
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// 액션 버튼들
-  Widget _buildActionButtons(WateringScheduleEditState state) {
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: () => context.pop(),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-            ),
-            child: const Text('キャンセル'),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () => _saveSchedule(state),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.pointBlue,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-            ),
-            child: const Text('保存'),
-          ),
-        ),
-      ],
     );
   }
 
   /// 시간 선택
-  Future<void> _selectTime(WateringScheduleEditState state) async {
+  Future<void> _selectTime(
+    WateringScheduleEditState state,
+    WateringScheduleEditController controller,
+  ) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: state.selectedTime,
     );
-    if (picked != null && picked != state.selectedTime) {
-      ref
-          .read(wateringScheduleEditProvider(_scheduleId).notifier)
-          .updateTime(picked);
+    if (picked != null) {
+      controller.updateTime(picked);
     }
   }
 
-  /// 스케줄 저장
-  void _saveSchedule(WateringScheduleEditState state) {
-    if (state.formKey?.currentState?.validate() ?? false) {
-      final updatedSchedule = {
-        'mealType': widget.mealType,
-        'time': state.selectedTime.format(context),
-        'amount': '${state.amountController?.text ?? ''}ml',
-      };
-
-      // Mock 저장 로직 (실제로는 API 호출)
-
-      // 성공 메시지 표시
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('給水スケジュールを更新しました'),
-          backgroundColor: AppColors.pointGreen,
+  /// 저장 버튼
+  Widget _buildSaveButton(
+    WateringScheduleEditState state,
+    WateringScheduleEditController controller,
+  ) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: state.isLoading ? null : controller.saveSchedule,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.pointBlue,
+          foregroundColor: Colors.white,
+          padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
         ),
-      );
-
-      // 이전 화면으로 돌아가기
-      context.pop();
-    }
+        child: state.isLoading
+            ? const CircularProgressIndicator(color: Colors.white)
+            : const Text('保存'),
+      ),
+    );
   }
 }

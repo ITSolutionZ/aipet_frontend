@@ -130,7 +130,7 @@ class CommonFormField extends StatelessWidget {
           width: 1.0,
         ),
       ),
-      contentPadding: const EdgeInsets.symmetric(
+      contentPadding: const const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),

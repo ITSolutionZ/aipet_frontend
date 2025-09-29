@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/onboarding/domain/repositories/feeding_repository.dart';
+import 'package:aipet_frontend/features/scheduling/domain/repositories/feeding_repository.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 /// 급여 관리 Repository 구현체
@@ -9,7 +9,7 @@ class FeedingRepositoryImpl implements FeedingRepository {
     try {
       await Future.delayed(const Duration(milliseconds: 200));
       final data = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
-      return Result.success('펫 사이즈 급여량 정보를 가져왔습니다', data);
+      return Success(data);
     } catch (error) {
       return Result.failure('펫 사이즈 급여량 정보를 가져오는데 실패했습니다: ${error.toString()}');
     }
@@ -20,7 +20,7 @@ class FeedingRepositoryImpl implements FeedingRepository {
     try {
       await Future.delayed(const Duration(milliseconds: 150));
       final guide = SchedulingMockService.getPetSizeFeedingGuide();
-      return Result.success('펫 사이즈 급여량 가이드를 가져왔습니다', guide);
+      return Success(guide);
     } catch (error) {
       return Result.failure('펫 사이즈 급여량 가이드를 가져오는데 실패했습니다: ${error.toString()}');
     }
@@ -31,7 +31,7 @@ class FeedingRepositoryImpl implements FeedingRepository {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
       SchedulingMockService.addMockFeedingRecord(record);
-      return Result.success('급여 기록이 성공적으로 추가되었습니다', null);
+      return const Success('급여 기록이 성공적으로 추가되었습니다', null);
     } catch (error) {
       return Result.failure('급여 기록 추가에 실패했습니다: ${error.toString()}');
     }
@@ -42,7 +42,7 @@ class FeedingRepositoryImpl implements FeedingRepository {
     try {
       await Future.delayed(const Duration(milliseconds: 100));
       final options = ['건강함', '배고픔', '활발함', '피곤함', '스트레스', '기타'];
-      return Result.success('펫 상태 옵션을 가져왔습니다', options);
+      return Success(options);
     } catch (error) {
       return Result.failure('펫 상태 옵션을 가져오는데 실패했습니다: ${error.toString()}');
     }
@@ -59,9 +59,9 @@ class FeedingRepositoryImpl implements FeedingRepository {
       );
 
       if (pet != null) {
-        return Result.success('펫 정보를 가져왔습니다', pet);
+        return Success(pet);
       } else {
-        return Result.success('펫 정보를 찾을 수 없습니다', null);
+        return const Success(null);
       }
     } catch (error) {
       return Result.failure('펫 정보를 가져오는데 실패했습니다: ${error.toString()}');
@@ -81,7 +81,7 @@ class FeedingRepositoryImpl implements FeedingRepository {
       final filteredRecords = petId != null
           ? records.where((record) => record['petId'] == petId).toList()
           : records;
-      return Result.success('급여 기록을 가져왔습니다', filteredRecords);
+      return Success(filteredRecords);
     } catch (error) {
       return Result.failure('급여 기록을 가져오는데 실패했습니다: ${error.toString()}');
     }
@@ -97,7 +97,7 @@ class FeedingRepositoryImpl implements FeedingRepository {
       await Future.delayed(const Duration(milliseconds: 300));
       final analysisData =
           SchedulingMockService.getMockFeedingStatisticsForRecords();
-      return Result.success('급여 분석 데이터를 가져왔습니다', analysisData);
+      return Success(analysisData);
     } catch (error) {
       return Result.failure('급여 분석 데이터를 가져오는데 실패했습니다: ${error.toString()}');
     }

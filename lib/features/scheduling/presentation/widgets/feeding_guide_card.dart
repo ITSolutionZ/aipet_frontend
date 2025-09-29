@@ -15,7 +15,7 @@ class FeedingGuideCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -45,7 +45,7 @@ class FeedingGuideCard extends StatelessWidget {
               radius: 20,
               backgroundImage: AssetImage(petInfo['imagePath']),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +71,7 @@ class FeedingGuideCard extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: const const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppColors.tonePeach.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),

@@ -30,7 +30,7 @@ class CustomCalendarWidget extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: ['月', '火', '水', '木', '金', '土', '日']
@@ -104,7 +104,7 @@ class CustomCalendarWidget extends StatelessWidget {
               },
               child: Container(
                 alignment: Alignment.center,
-                margin: const EdgeInsets.all(1),
+                margin: const const EdgeInsets.all(1),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppColors.pointPink.withValues(alpha: 0.2)

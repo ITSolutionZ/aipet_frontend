@@ -1,10 +1,10 @@
 import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/trick_category_section.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/trick_detail_dialog.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/tricks_empty_state.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/tricks_search_and_filter.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/trick_category_section.dart';
-import 'package:aipet_frontend/shared/widgets/trick_detail_dialog.dart';
-import 'package:aipet_frontend/shared/widgets/tricks_empty_state.dart';
-import 'package:aipet_frontend/shared/widgets/tricks_search_and_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -36,7 +36,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
     // 카테고리 필터링
     if (_selectedCategory != 'all') {
       filtered = filtered
-          .where((trick) => trick.difficulty == _selectedCategory)
+          .where((trick) => trick.difficulty.name == _selectedCategory)
           .toList();
     }
 
@@ -46,10 +46,9 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
           .where(
             (trick) =>
                 trick.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                (trick.description.toLowerCase().contains(
-                      _searchQuery.toLowerCase(),
-                    ) ??
-                    false),
+                trick.description.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                ),
           )
           .toList();
     }
@@ -63,7 +62,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
     final Map<String, List<TrickEntity>> grouped = {};
 
     for (final trick in tricks) {
-      final category = trick.difficulty ?? 'unknown';
+      final category = trick.difficulty.name;
       if (!grouped.containsKey(category)) {
         grouped[category] = [];
       }
@@ -145,7 +144,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       itemCount: groupedTricks.length,
       itemBuilder: (context, index) {
         final category = groupedTricks.keys.elementAt(index);

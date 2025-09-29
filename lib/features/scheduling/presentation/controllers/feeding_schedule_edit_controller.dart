@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// 급여 스케줄 편집 컨트롤러
 class FeedingScheduleEditController
     extends StateNotifier<FeedingScheduleEditState> {
-  FeedingScheduleEditController({
+  const FeedingScheduleEditController({
     required String mealType,
     required String currentTime,
     required String currentAmount,
@@ -115,7 +115,7 @@ class FeedingScheduleEditState {
   final List<String> selectedStatuses;
   final Map<String, String> statusValues;
 
-  FeedingScheduleEditState({
+  const FeedingScheduleEditState({
     required this.mealType,
     required String currentTime,
     required String currentAmount,

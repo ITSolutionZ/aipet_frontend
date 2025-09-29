@@ -10,8 +10,7 @@ import 'package:aipet_frontend/features/ai/data/services/ai_mock_data_service_im
 import 'package:aipet_frontend/features/ai/data/services/openai_service.dart'
     as _i4;
 import 'package:aipet_frontend/features/ai/domain/domain.dart' as _i8;
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
-    as _i5;
+import 'package:aipet_frontend/shared/domain/entities/entities.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
 import 'package:riverpod/src/internals.dart' as _i3;

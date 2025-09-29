@@ -195,7 +195,7 @@ class _PetRegistrationCompleteScreenState
 
                   // 하단 버튼 영역
                   Container(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    padding: const const EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
                       color: AppColors.pureWhite,
                       border: Border(
@@ -227,7 +227,7 @@ class _PetRegistrationCompleteScreenState
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.pointPink,
                               foregroundColor: AppColors.pureWhite,
-                              padding: const EdgeInsets.symmetric(
+                              padding: const const EdgeInsets.symmetric(
                                 vertical: AppSpacing.lg,
                               ),
                               shape: RoundedRectangleBorder(
@@ -263,7 +263,7 @@ class _PetRegistrationCompleteScreenState
                               context.go('/home');
                             },
                             style: TextButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
+                              padding: const const EdgeInsets.symmetric(
                                 vertical: AppSpacing.lg,
                               ),
                             ),

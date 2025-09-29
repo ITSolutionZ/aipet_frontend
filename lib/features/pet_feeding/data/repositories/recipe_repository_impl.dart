@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/onboarding/domain/entities/recipe_entity.dart';
-import 'package:aipet_frontend/features/onboarding/domain/repositories/recipe_repository.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/entities/recipe_entity.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/repositories/recipe_repository.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/pet_feeding/pet_feeding_mock_service.dart';
 
 // Mock 데이터 사용 여부
@@ -25,7 +25,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
         rating: recipe['rating'].toDouble(),
         isFavorite: recipe['isFavorite'],
         userId: null, // 기본 목업 데이터는 사용자 ID 없음
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
+        createdAt: DateTime.now().subtract(Duration(days: 30)),
         updatedAt: DateTime.now(),
       );
     }).toList();

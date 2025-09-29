@@ -1,7 +1,8 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/features/onboarding/data/providers/pet_registration_provider.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_registration_provider.dart';
+import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_registration_step.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/constants/pet_registration_texts.dart';
 import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pet_registor_widgets.dart';
-import 'package:aipet_frontend/shared/constants/pet_registration_texts.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,7 +74,7 @@ class _PetTypeSelectionScreenState
             // 스크롤 가능한 상단 영역
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -112,7 +113,7 @@ class _PetTypeSelectionScreenState
 
             // 하단 고정 버튼 영역
             Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: const const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
@@ -130,7 +131,7 @@ class _PetTypeSelectionScreenState
                       petRegistrationStateProvider,
                     );
                     final hasDataBeyond = registrationState.hasDataBeyondStep(
-                      1,
+                      PetRegistrationStep.typeSelection,
                     );
 
                     return NextButton(

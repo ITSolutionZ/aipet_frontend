@@ -215,7 +215,7 @@ class AppButton extends StatelessWidget {
 
     // 전체 너비
     if (expand) {
-      button = SizedBox(width: double.infinity, child: button);
+      button = const SizedBox(width: double.infinity, child: button);
     }
 
     // 비활성화 시 투명도 적용
@@ -255,7 +255,7 @@ class AppButton extends StatelessWidget {
     final leadingWidget = leading ?? icon;
     if (leadingWidget != null) {
       widgets.add(leadingWidget);
-      widgets.add(const SizedBox(width: 8));
+      widgets.add(const const SizedBox(width: 8));
     }
 
     // 텍스트
@@ -263,7 +263,7 @@ class AppButton extends StatelessWidget {
 
     // Trailing
     if (trailing != null) {
-      widgets.add(const SizedBox(width: 8));
+      widgets.add(const const SizedBox(width: 8));
       widgets.add(trailing!);
     }
 
@@ -365,11 +365,11 @@ class AppButton extends StatelessWidget {
 
     switch (size) {
       case ButtonSize.small:
-        return const EdgeInsets.symmetric(vertical: 8, horizontal: 12);
+        return const const EdgeInsets.symmetric(vertical: 8, horizontal: 12);
       case ButtonSize.medium:
-        return const EdgeInsets.symmetric(vertical: 14, horizontal: 20);
+        return const const EdgeInsets.symmetric(vertical: 14, horizontal: 20);
       case ButtonSize.large:
-        return const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
+        return const const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
     }
   }
 
@@ -463,7 +463,7 @@ class AppButton extends StatelessWidget {
 
     // width가 지정된 경우 Container로 감싸기
     if (width != null) {
-      button = SizedBox(width: width, height: height, child: button);
+      button = const SizedBox(width: width, height: height, child: button);
     }
 
     return button;

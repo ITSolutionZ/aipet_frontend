@@ -37,7 +37,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
             Container(
               width: 40,
               height: 4,
-              margin: const EdgeInsets.only(top: AppSpacing.sm),
+              margin: const const EdgeInsets.only(top: AppSpacing.sm),
               decoration: BoxDecoration(
                 color: AppColors.pointDark.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
@@ -46,7 +46,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
 
             // 타이틀
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: const const EdgeInsets.all(AppSpacing.lg),
               child: Text(
                 '프로필 이미지 선택',
                 style: AppFonts.headlineSmall.copyWith(
@@ -58,7 +58,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
 
             // 옵션들
             Padding(
-              padding: const EdgeInsets.symmetric(
+              padding: const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.md,
               ),
@@ -136,7 +136,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.medium),
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.pointDark.withValues(alpha: 0.1)),
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -152,7 +152,7 @@ class _ImagePickerBottomSheet extends StatelessWidget {
               ),
               child: Icon(icon, color: AppColors.pointBrown, size: 24),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

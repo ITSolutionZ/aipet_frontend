@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 
 /// 🧠 AI 채팅 메시지 페이징 및 메모리 관리 서비스
@@ -32,7 +32,7 @@ class MessagePaginationService {
   ) {
     try {
       if (messages.length <= maxMessagesInMemory) {
-        return ResultFactory.success(messages, 'Messages within memory limit');
+        return Result.success(messages, 'Messages within memory limit');
       }
 
       // 최신 메시지부터 maxMessagesInMemory개만 유지
@@ -49,7 +49,7 @@ class MessagePaginationService {
         debugPrint('[$_tag] Memory messages count: ${limitedMessages.length}');
       }
 
-      return ResultFactory.success(
+      return Result.success(
         limitedMessages,
         'Memory limit applied: $removedCount messages archived',
       );
@@ -57,7 +57,7 @@ class MessagePaginationService {
       if (kDebugMode) {
         debugPrint('[$_tag] Error limiting messages: $error\n$stackTrace');
       }
-      return ResultFactory.failure('メッセージ制限適用中にエラーが発生しました');
+      return Result.failure('メッセージ制限適用中にエラーが発生しました');
     }
   }
 
@@ -80,12 +80,12 @@ class MessagePaginationService {
   ) {
     try {
       if (pageIndex < 0) {
-        return ResultFactory.failure('페이지 인덱스는 0 이상이어야 합니다');
+        return Result.failure('페이지 인덱스는 0 이상이어야 합니다');
       }
 
       final startIndex = pageIndex * messagesPerPage;
       if (startIndex >= messages.length) {
-        return ResultFactory.success([], 'Empty page');
+        return Result.success([], 'Empty page');
       }
 
       final endIndex = (startIndex + messagesPerPage).clamp(
@@ -94,12 +94,12 @@ class MessagePaginationService {
       );
       final pageMessages = messages.sublist(startIndex, endIndex);
 
-      return ResultFactory.success(
+      return Result.success(
         pageMessages,
         'Page $pageIndex loaded with ${pageMessages.length} messages',
       );
     } catch (error) {
-      return ResultFactory.failure('페이지 로드 중 에러가 발생했습니다: $error');
+      return Result.failure('페이지 로드 중 에러가 발생했습니다: $error');
     }
   }
 
@@ -129,12 +129,12 @@ class MessagePaginationService {
         return ascending ? comparison : -comparison;
       });
 
-      return ResultFactory.success(
+      return Result.success(
         sortedMessages,
         'Messages sorted by time (${ascending ? 'ascending' : 'descending'})',
       );
     } catch (error) {
-      return ResultFactory.failure('메시지 정렬 중 에러가 발생했습니다: $error');
+      return Result.failure('메시지 정렬 중 에러가 발생했습니다: $error');
     }
   }
 
@@ -162,12 +162,12 @@ class MessagePaginationService {
         debugPrint('[$_tag] Removed $removedCount duplicate messages');
       }
 
-      return ResultFactory.success(
+      return Result.success(
         uniqueMessages,
         'Duplicates removed: $removedCount messages',
       );
     } catch (error) {
-      return ResultFactory.failure('중복 제거 중 에러가 발생했습니다: $error');
+      return Result.failure('중복 제거 중 에러가 발생했습니다: $error');
     }
   }
 
@@ -232,7 +232,7 @@ class MessagePaginationService {
       // 2. 시간순 정렬
       final sortedResult = sortMessagesByTime(deduplicatedResult.dataOrNull!);
       if (!sortedResult.isSuccess) {
-        return ResultFactory.failure(
+        return Result.failure(
           '정렬 실패: ${sortedResult.errorOrNull ?? 'Unknown error'}',
         );
       }
@@ -240,7 +240,7 @@ class MessagePaginationService {
       // 3. 메모리 제한 적용
       final limitedResult = limitMessagesInMemory(sortedResult.dataOrNull!);
       if (!limitedResult.isSuccess) {
-        return ResultFactory.failure(
+        return Result.failure(
           '메모리 제한 적용 실패: ${limitedResult.errorOrNull ?? 'Unknown error'}',
         );
       }
@@ -258,7 +258,7 @@ class MessagePaginationService {
         );
       }
 
-      return ResultFactory.success(
+      return Result.success(
         optimizedMessages,
         'Messages optimized: ${optimizedMessages.length} messages, ${memoryUsageMB.toStringAsFixed(1)}MB',
       );
@@ -266,7 +266,7 @@ class MessagePaginationService {
       if (kDebugMode) {
         debugPrint('[$_tag] Error optimizing messages: $error\n$stackTrace');
       }
-      return ResultFactory.failure('메시지 최적화 중 에러가 발생했습니다');
+      return Result.failure('메시지 최적화 중 에러가 발생했습니다');
     }
   }
 

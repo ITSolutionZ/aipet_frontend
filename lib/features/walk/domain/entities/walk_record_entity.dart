@@ -1,4 +1,5 @@
-import 'package:aipet_frontend/features/walk/domain/entities/walk_location.dart';
+import 'dart:math' as math;
+import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 
 /// 산책 기록 엔티티
 class WalkRecordEntity {
@@ -74,18 +75,130 @@ class WalkRecordEntity {
   ) {
     const double earthRadius = 6371000; // 지구 반지름 (미터)
 
+    final double lat1Rad = _toRadians(lat1);
+    final double lat2Rad = _toRadians(lat2);
     final double dLat = _toRadians(lat2 - lat1);
     final double dLon = _toRadians(lon2 - lon1);
 
     final double a =
-        (dLat / 2).sin() * (dLat / 2).sin() +
-        lat1.cos() * lat2.cos() * (dLon / 2).sin() * (dLon / 2).sin();
-    final double c = 2 * (a.sqrt()).asin();
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(lat1Rad) * math.cos(lat2Rad) * math.sin(dLon / 2) * math.sin(dLon / 2);
+    final double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
     return earthRadius * c;
   }
 
   double _toRadians(double degrees) => degrees * (3.14159265359 / 180);
+
+  /// UI에서 사용할 제목
+  String get title => '$petName의 산책';
+
+  /// UI에서 사용할 날짜 문자열
+  String get dateString {
+    final date = startTime;
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  /// 펫 이미지 경로 (기본값)
+  String? get petImage => null; // TODO: 펫 이미지 시스템 구현 시 수정
+
+  /// 시간 문자열 (HH:MM 형식)
+  String get timeString {
+    final hour = startTime.hour.toString().padLeft(2, '0');
+    final minute = startTime.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
+
+  /// 전체 날짜시간 문자열
+  String get fullDateTimeString {
+    return '$dateString $timeString';
+  }
+
+  /// 포맷된 거리 문자열
+  String get formattedDistance {
+    final dist = calculatedDistance;
+    if (dist < 1000) {
+      return '${dist.toStringAsFixed(0)}m';
+    } else {
+      return '${(dist / 1000).toStringAsFixed(2)}km';
+    }
+  }
+
+  /// 포맷된 시간 문자열
+  String get formattedDuration {
+    final duration = calculatedDuration;
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+
+    if (hours > 0) {
+      return '$hours시간 $minutes분';
+    } else {
+      return '$minutes분';
+    }
+  }
+
+  /// 소유자 이름 (기본값)
+  String get ownerName => '소유자'; // TODO: 실제 소유자 정보 연동
+
+  /// 소유자 아바타 (기본값)
+  String? get ownerAvatar => null; // TODO: 실제 소유자 아바타 연동
+
+  /// JSON에서 엔티티 생성
+  factory WalkRecordEntity.fromJson(Map<String, dynamic> json) {
+    return WalkRecordEntity(
+      id: json['id'] as String,
+      petId: json['petId'] as String,
+      petName: json['petName'] as String,
+      startTime: json['startTime'] is DateTime
+          ? json['startTime'] as DateTime
+          : DateTime.parse(json['startTime'] as String),
+      endTime: json['endTime'] is DateTime
+          ? json['endTime'] as DateTime?
+          : json['endTime'] != null
+              ? DateTime.parse(json['endTime'] as String)
+              : null,
+      duration: json['duration'] is Duration
+          ? json['duration'] as Duration?
+          : json['duration'] != null
+              ? const Duration(milliseconds: json['duration'] as int)
+              : null,
+      distance: json['distance'] as double?,
+      route: (json['route'] as List<dynamic>?)
+          ?.map((e) => WalkLocation.fromJson(e as Map<String, dynamic>))
+          .toList() ?? [],
+      notes: json['notes'] as String?,
+      status: json['status'] is WalkStatus
+          ? json['status'] as WalkStatus
+          : WalkStatus.values.firstWhere(
+              (s) => s.toString().split('.').last == json['status'],
+              orElse: () => WalkStatus.completed,
+            ),
+      createdAt: json['createdAt'] is DateTime
+          ? json['createdAt'] as DateTime
+          : DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] is DateTime
+          ? json['updatedAt'] as DateTime
+          : DateTime.parse(json['updatedAt'] as String),
+    );
+  }
+
+  /// 엔티티를 JSON으로 변환
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'petId': petId,
+      'petName': petName,
+      'startTime': startTime.toIso8601String(),
+      'endTime': endTime?.toIso8601String(),
+      'duration': duration?.inMilliseconds,
+      'distance': distance,
+      'route': route.map((e) => e.toJson()).toList(),
+      'notes': notes,
+      'status': status.toString().split('.').last,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+    };
+  }
 
   /// 엔티티 복사
   WalkRecordEntity copyWith({

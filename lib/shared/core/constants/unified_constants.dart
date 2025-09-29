@@ -62,8 +62,8 @@ class UnifiedValidationRules {
 
   // API 제한
   static const int maxRetryAttempts = 3;
-  static const Duration retryDelay = Duration(seconds: 2);
-  static const Duration apiTimeout = Duration(seconds: 30);
+  static const Duration retryDelay = const Duration(seconds: 2);
+  static const Duration apiTimeout = const Duration(seconds: 30);
 }
 
 /// 공통 상태 코드
@@ -145,8 +145,8 @@ class UnifiedCacheKeys {
 /// 공통 설정값
 class UnifiedSettings {
   static const Duration sessionTimeout = Duration(hours: 24);
-  static const Duration tokenRefreshThreshold = Duration(minutes: 5);
-  static const Duration cacheExpiry = Duration(minutes: 30);
+  static const Duration tokenRefreshThreshold = const Duration(minutes: 5);
+  static const Duration cacheExpiry = const Duration(minutes: 30);
   static const int maxCacheSize = 100;
   static const int maxHistoryItems = 100;
 }

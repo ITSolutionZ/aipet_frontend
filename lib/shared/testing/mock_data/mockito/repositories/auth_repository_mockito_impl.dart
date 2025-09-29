@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/core/base_mock_service.dart';
 import 'package:mockito/mockito.dart';
 
@@ -25,9 +25,9 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
         isEmailVerified: true,
         creationTime: DateTime.now(),
       );
-      return ResultFactory.success(mockUser, 'Mockito 로그인 성공');
+      return Result.success(mockUser, 'Mockito 로그인 성공');
     } else {
-      return ResultFactory.failure<AuthUser>('이메일과 패스워드를 입력해주세요');
+      return Result.failure<AuthUser>('이메일과 패스워드를 입력해주세요');
     }
   }
 
@@ -45,7 +45,7 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
       isEmailVerified: false,
       creationTime: DateTime.now(),
     );
-    return ResultFactory.success(mockUser, 'Mockito 회원가입 성공');
+    return Result.success(mockUser, 'Mockito 회원가입 성공');
   }
 
   @override
@@ -59,7 +59,7 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
       isEmailVerified: true,
       creationTime: DateTime.now(),
     );
-    return ResultFactory.success(mockUser, 'Mockito Google 로그인 성공');
+    return Result.success(mockUser, 'Mockito Google 로그인 성공');
   }
 
   @override
@@ -73,7 +73,7 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
       isEmailVerified: true,
       creationTime: DateTime.now(),
     );
-    return ResultFactory.success(mockUser, 'Mockito Apple 로그인 성공');
+    return Result.success(mockUser, 'Mockito Apple 로그인 성공');
   }
 
   @override
@@ -87,7 +87,7 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
       isEmailVerified: true,
       creationTime: DateTime.now(),
     );
-    return ResultFactory.success(mockUser, 'Mockito LINE 로그인 성공');
+    return Result.success(mockUser, 'Mockito LINE 로그인 성공');
   }
 
   @override

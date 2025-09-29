@@ -14,7 +14,7 @@ class AuthMockData {
         'displayName': 'Test User',
         'photoUrl': null,
         'provider': 'email',
-        'createdAt': DateTime.now().subtract(const Duration(days: 30)),
+        'createdAt': DateTime.now().subtract(Duration(days: 30)),
         'lastLoginAt': DateTime.now(),
         'isEmailVerified': true,
       },
@@ -25,8 +25,8 @@ class AuthMockData {
         'displayName': 'Demo User',
         'photoUrl': null,
         'provider': 'email',
-        'createdAt': DateTime.now().subtract(const Duration(days: 15)),
-        'lastLoginAt': DateTime.now().subtract(const Duration(hours: 2)),
+        'createdAt': DateTime.now().subtract(Duration(days: 15)),
+        'lastLoginAt': DateTime.now().subtract(Duration(hours: 2)),
         'isEmailVerified': true,
       },
     ];
@@ -108,7 +108,7 @@ class AuthMockData {
     final refreshToken =
         'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}';
     final expiresAt = DateTime.now().add(
-      const Duration(hours: 24),
+      Duration(hours: 24),
     ); // 24시간 후 만료
 
     final user = {
@@ -152,7 +152,7 @@ class AuthMockData {
         'mock_signup_token_${DateTime.now().millisecondsSinceEpoch}';
     final refreshToken =
         'mock_signup_refresh_${DateTime.now().millisecondsSinceEpoch}';
-    final expiresAt = DateTime.now().add(const Duration(hours: 24));
+    final expiresAt = DateTime.now().add(Duration(hours: 24));
 
     final user = {
       'id': 'dev_signup_${DateTime.now().millisecondsSinceEpoch}',
@@ -190,7 +190,7 @@ class AuthMockData {
         'mock_${provider}_token_${DateTime.now().millisecondsSinceEpoch}';
     final refreshToken =
         'mock_${provider}_refresh_${DateTime.now().millisecondsSinceEpoch}';
-    final expiresAt = DateTime.now().add(const Duration(hours: 24));
+    final expiresAt = DateTime.now().add(Duration(hours: 24));
 
     final user = generateSocialUser(provider);
     final providerName =
@@ -245,7 +245,7 @@ class AuthMockData {
       'displayName': 'Current Developer',
       'photoUrl': null,
       'provider': 'email',
-      'createdAt': DateTime.now().subtract(const Duration(days: 30)),
+      'createdAt': DateTime.now().subtract(Duration(days: 30)),
       'lastLoginAt': DateTime.now().subtract(const Duration(minutes: 5)),
       'isEmailVerified': true,
     };
@@ -268,7 +268,7 @@ class AuthMockData {
     // Mock JWT 토큰 생성 (실제로는 백엔드에서 생성)
     final accessToken = 'jwt_access_${DateTime.now().millisecondsSinceEpoch}';
     final refreshToken = 'jwt_refresh_${DateTime.now().millisecondsSinceEpoch}';
-    final expiresAt = DateTime.now().add(const Duration(hours: 24));
+    final expiresAt = DateTime.now().add(Duration(hours: 24));
 
     // Mock 사용자 정보 (ID Token에서 추출된 정보 기반)
     final user = {
@@ -278,7 +278,7 @@ class AuthMockData {
       'displayName': 'Firebase User',
       'photoUrl': null,
       'provider': 'firebase',
-      'createdAt': DateTime.now().subtract(const Duration(days: 10)),
+      'createdAt': DateTime.now().subtract(Duration(days: 10)),
       'lastLoginAt': DateTime.now(),
       'isEmailVerified': true,
       'firebaseUid':
@@ -316,7 +316,7 @@ class AuthMockData {
     final accessToken = 'jwt_register_${DateTime.now().millisecondsSinceEpoch}';
     final refreshToken =
         'jwt_register_refresh_${DateTime.now().millisecondsSinceEpoch}';
-    final expiresAt = DateTime.now().add(const Duration(hours: 24));
+    final expiresAt = DateTime.now().add(Duration(hours: 24));
 
     // Mock 새 사용자 정보
     final user = {
@@ -364,7 +364,7 @@ class AuthMockData {
         'jwt_refreshed_${DateTime.now().millisecondsSinceEpoch}';
     final newRefreshToken =
         'jwt_refresh_new_${DateTime.now().millisecondsSinceEpoch}';
-    final expiresAt = DateTime.now().add(const Duration(hours: 24));
+    final expiresAt = DateTime.now().add(Duration(hours: 24));
 
     return {
       'success': true,

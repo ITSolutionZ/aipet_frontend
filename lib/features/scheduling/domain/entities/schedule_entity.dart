@@ -289,7 +289,7 @@ class ScheduleEntity {
 
   /// 스케줄이 내일인지 확인
   bool get isTomorrow {
-    final tomorrow = DateTime.now().add(const Duration(days: 1));
+    final tomorrow = DateTime.now().add(Duration(days: 1));
     return startDateTime.year == tomorrow.year &&
         startDateTime.month == tomorrow.month &&
         startDateTime.day == tomorrow.day;
@@ -299,11 +299,11 @@ class ScheduleEntity {
   bool get isThisWeek {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(const Duration(days: 6));
+    final endOfWeek = startOfWeek.add(Duration(days: 6));
     return startDateTime.isAfter(
-          startOfWeek.subtract(const Duration(days: 1)),
+          startOfWeek.subtract(Duration(days: 1)),
         ) &&
-        startDateTime.isBefore(endOfWeek.add(const Duration(days: 1)));
+        startDateTime.isBefore(endOfWeek.add(Duration(days: 1)));
   }
 
   @override

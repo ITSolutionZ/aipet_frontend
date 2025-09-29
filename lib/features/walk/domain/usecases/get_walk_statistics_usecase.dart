@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/features/walk/domain/entities/walk_statistics_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
-import 'package:aipet_frontend/shared/entities/walk_statistics_entity.dart';
 
 /// 산책 통계 조회 UseCase
 class GetWalkStatisticsUseCase {
@@ -36,7 +36,7 @@ class GetWalkStatisticsUseCase {
   Future<WalkStatistics> getTodayStatistics({String? petId}) async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = today.add(const Duration(days: 1));
+    final tomorrow = today.add(Duration(days: 1));
 
     return call(petId: petId, startDate: today, endDate: tomorrow);
   }
@@ -45,7 +45,7 @@ class GetWalkStatisticsUseCase {
   Future<WalkStatistics> getThisWeekStatistics({String? petId}) async {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(const Duration(days: 7));
+    final endOfWeek = startOfWeek.add(Duration(days: 7));
 
     return call(petId: petId, startDate: startOfWeek, endDate: endOfWeek);
   }

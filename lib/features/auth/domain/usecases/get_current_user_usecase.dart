@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 /// 현재 사용자 정보 가져오기 UseCase
@@ -14,12 +14,12 @@ class GetCurrentUserUseCase {
       final user = await _repository.getCurrentUser();
 
       if (user != null) {
-        return ResultFactory.success(user, 'ユーザー情報を取得しました');
+        return Result.success(user, 'ユーザー情報を取得しました');
       } else {
-        return ResultFactory.success(null, 'ログインしていません');
+        return Result.success(null, 'ログインしていません');
       }
     } catch (error) {
-      return ResultFactory.failure('ユーザー情報の取得に失敗しました: ${error.toString()}');
+      return Result.failure('ユーザー情報の取得に失敗しました: ${error.toString()}');
     }
   }
 
@@ -27,9 +27,9 @@ class GetCurrentUserUseCase {
   Future<Result<bool>> isLoggedIn() async {
     try {
       final user = await _repository.getCurrentUser();
-      return ResultFactory.success(user != null, 'ログイン状態を確認しました');
+      return Result.success(user != null, 'ログイン状態を確認しました');
     } catch (error) {
-      return ResultFactory.failure('ログイン状態の確認に失敗しました: ${error.toString()}');
+      return Result.failure('ログイン状態の確認に失敗しました: ${error.toString()}');
     }
   }
 
@@ -39,12 +39,12 @@ class GetCurrentUserUseCase {
       final user = await _repository.getCurrentUser();
 
       if (user != null) {
-        return ResultFactory.success(user.isEmailVerified, 'メール認証状態を確認しました');
+        return Result.success(user.isEmailVerified, 'メール認証状態を確認しました');
       } else {
-        return ResultFactory.failure('ログインしていません');
+        return Result.failure('ログインしていません');
       }
     } catch (error) {
-      return ResultFactory.failure('メール認証状態の確認に失敗しました: ${error.toString()}');
+      return Result.failure('メール認証状態の確認に失敗しました: ${error.toString()}');
     }
   }
 }

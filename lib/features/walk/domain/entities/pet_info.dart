@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 /// 산책에서 사용되는 펫 정보 엔티티
 class PetInfo {
@@ -23,8 +23,8 @@ class PetInfo {
     return PetInfo(
       id: pet.id,
       name: pet.name,
-      type: pet.type.name,
-      imageUrl: pet.imageUrl,
+      type: pet.type, // type은 이미 String입니다
+      imageUrl: pet.imagePath, // imagePath -> imageUrl
       lastWalkTime: null,
       isSelected: false,
     );

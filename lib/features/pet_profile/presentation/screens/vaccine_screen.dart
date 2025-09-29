@@ -49,7 +49,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientDrawerAppBar(title: 'ワクチン記録'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -82,7 +82,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBrown,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                  padding: const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.large),
                   ),
@@ -98,7 +98,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
   Widget _buildHeaderCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -129,7 +129,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                   size: 28,
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,8 +210,8 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
     return GestureDetector(
       onTap: () => _showVaccineDetailModal(vaccine),
       child: Container(
-        margin: const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        margin: const const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -247,7 +247,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                     size: 20,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,7 +359,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
 
   Widget _buildDetailItem(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

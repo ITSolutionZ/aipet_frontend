@@ -1,38 +1,36 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-/// YouTube 영상 검색 바
+/// YouTube 검색 바
 class YouTubeSearchBar extends StatelessWidget {
-  final ValueChanged<String> onSearchChanged;
+  final Function(String) onSearchChanged;
 
   const YouTubeSearchBar({super.key, required this.onSearchChanged});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
+      color: Colors.white,
       child: TextField(
+        onChanged: onSearchChanged,
         decoration: const InputDecoration(
-          hintText: 'トレーニング動画を検索...',
-          prefixIcon: Icon(Icons.search, color: AppColors.pointDark),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
+          hintText: 'ビデオを検索...',
+          prefixIcon: Icon(Icons.search),
+          suffixIcon: Icon(Icons.filter_list),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(AppSpacing.md)),
+            borderSide: BorderSide(color: AppColors.borderGray),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(AppSpacing.md)),
+            borderSide: BorderSide(color: AppColors.pointBlue),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
           ),
         ),
-        onChanged: onSearchChanged,
       ),
     );
   }

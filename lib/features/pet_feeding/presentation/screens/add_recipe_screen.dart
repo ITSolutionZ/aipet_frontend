@@ -1,5 +1,6 @@
-import 'package:aipet_frontend/features/onboarding/data/data.dart';
-import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/features/pet_feeding/data/data.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/domain.dart';
+import 'package:aipet_frontend/shared/core/services/current_user_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,6 +38,13 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
     super.dispose();
   }
 
+  /// 현재 사용자 ID 가져오기
+  Future<String?> _getCurrentUserId() async {
+    final userService = ref.read(currentUserServiceProvider);
+    final result = await userService.getCurrentUserId();
+    return result.isSuccess ? result.dataOrNull : null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +53,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           children: [
             // 기본 정보 섹션
             _buildSectionTitle('基本情報'),
@@ -93,7 +101,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                     },
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: CommonFormPatterns.buildDropdownField<String>(
                     label: '難易度 *',
@@ -133,7 +141,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                     label: '材料を追加',
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                const const SizedBox(width: AppSpacing.sm),
                 ElevatedButton(
                   onPressed: _addIngredient,
                   child: const Text('追加'),
@@ -145,7 +153,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
             // 재료 목록
             if (_ingredients.isNotEmpty) ...[
               Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -195,7 +203,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                     maxLines: 2,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                const const SizedBox(width: AppSpacing.sm),
                 ElevatedButton(
                   onPressed: _addInstruction,
                   child: const Text('追加'),
@@ -207,7 +215,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
             // 조리 방법 목록
             if (_instructions.isNotEmpty) ...[
               Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -262,7 +270,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBlue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                  padding: const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.large),
                   ),
@@ -325,7 +333,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
     });
   }
 
-  void _saveRecipe() async {
+  Future<void> _saveRecipe() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -343,7 +351,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
         servings: int.tryParse(_servingsController.text) ?? 1,
         rating: 0.0,
         isFavorite: false,
-        userId: 'current_user_id', // TODO: 실제 사용자 ID로 변경
+        userId: await _getCurrentUserId() ?? 'anonymous', // 동적 사용자 ID
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );

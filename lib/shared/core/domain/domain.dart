@@ -5,9 +5,12 @@
 library;
 
 // Repository 인터페이스
-export '../domain/repositories/settings_repository.dart';
+// export '../domain/repositories/settings_repository.dart'; // 각 feature에서 자체 관리
 // 엔티티
 export 'entities/pet_entity.dart';
+
+// 결과 패턴
+export 'result.dart';
 
 // 값 객체 (향후 확장)
 // export 'value_objects/pet_id.dart';

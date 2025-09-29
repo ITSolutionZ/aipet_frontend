@@ -5,7 +5,7 @@ import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart'
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/ai/ai_mock_service.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/home/home_mock_service.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_data.dart';

@@ -114,7 +114,7 @@ class TestCaseAutomator {
         stopwatch.stop();
 
         results.add(
-          TestResult.failure(
+          TestFailure(
             input: input,
             error: e.toString(),
             duration: stopwatch.elapsed,
@@ -230,7 +230,7 @@ class TestCaseAutomator {
         iterationStopwatch.stop();
 
         results.add(
-          TestResult.failure(
+          TestFailure(
             input: null,
             error: e.toString(),
             duration: iterationStopwatch.elapsed,
@@ -281,7 +281,7 @@ class TestResult {
     );
   }
 
-  factory TestResult.failure({
+  factory TestFailure({
     required dynamic input,
     required String error,
     required Duration duration,
@@ -305,7 +305,7 @@ class PerformanceTestResult {
   final int errorCount;
   final List<String> errors;
 
-  PerformanceTestResult({
+  const PerformanceTestResult({
     required this.totalDuration,
     required this.iterations,
     required this.averageDuration,
@@ -338,7 +338,7 @@ class StressTestResult {
   final Duration averageDuration;
   final List<TestResult> results;
 
-  StressTestResult({
+  const StressTestResult({
     required this.totalDuration,
     required this.totalTasks,
     required this.successfulTasks,

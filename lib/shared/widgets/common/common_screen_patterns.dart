@@ -83,7 +83,7 @@ class CommonScreenPatterns {
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
   }) {
     return SingleChildScrollView(
-      padding: padding ?? const EdgeInsets.all(AppConstants.spacingLG),
+      padding: padding ?? const const EdgeInsets.all(AppConstants.spacingLG),
       child: Column(crossAxisAlignment: crossAxisAlignment, children: children),
     );
   }
@@ -95,7 +95,7 @@ class CommonScreenPatterns {
     double spacing = AppConstants.spacingLG,
   }) {
     return SingleChildScrollView(
-      padding: padding ?? const EdgeInsets.all(AppConstants.spacingLG),
+      padding: padding ?? const const EdgeInsets.all(AppConstants.spacingLG),
       child: Column(
         children: cards
             .expand((card) => [card, SizedBox(height: spacing)])
@@ -130,7 +130,7 @@ class CommonCardPatterns {
       color: backgroundColor,
       margin: margin,
       child: Padding(
-        padding: padding ?? const EdgeInsets.all(AppConstants.spacingMD),
+        padding: padding ?? const const EdgeInsets.all(AppConstants.spacingMD),
         child: child,
       ),
     );
@@ -211,7 +211,7 @@ class CommonCardPatterns {
 
     return buildCard(
       onTap: onTap,
-      backgroundColor: isSelected ? color.withOpacity(0.1) : null,
+      backgroundColor: isSelected ? color.withValues(alpha: 0.1) : null,
       child: Column(
         children: [
           Icon(icon, color: color, size: AppConstants.defaultIconSize * 1.5),
@@ -229,7 +229,7 @@ class CommonCardPatterns {
             const SizedBox(height: 4),
             Text(
               subtitle,
-              style: TextStyle(fontSize: 14, color: color.withOpacity(0.7)),
+              style: TextStyle(fontSize: 14, color: color.withValues(alpha: 0.7)),
               textAlign: TextAlign.center,
             ),
           ],

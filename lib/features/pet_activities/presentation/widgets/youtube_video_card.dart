@@ -2,7 +2,7 @@ import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_v
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-/// YouTube 비디오 카드 위젯
+/// YouTube 비디오 카드
 class YouTubeVideoCard extends StatelessWidget {
   final YouTubeVideoEntity video;
   final VoidCallback? onTap;
@@ -21,74 +21,99 @@ class YouTubeVideoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
+        borderRadius: BorderRadius.circular(AppSpacing.md),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
         onTap: onTap,
+        borderRadius: BorderRadius.circular(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 썸네일 영역
+            // 썸네일
             _buildThumbnail(),
 
-            // 비디오 정보 영역
+            // 비디오 정보
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const const EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 제목과 액션 버튼
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          video.title,
-                          style: AppFonts.bodyLarge.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.pointDark,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      _buildActionButtons(),
-                    ],
+                  // 제목
+                  Text(
+                    video.title,
+                    style: AppFonts.bodyMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  const SizedBox(height: AppSpacing.xs),
 
-                  if (video.description?.isNotEmpty == true) ...[
-                    const SizedBox(height: AppSpacing.xs),
+                  // 설명
+                  if (video.description != null) ...[
                     Text(
                       video.description!,
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointDark.withValues(alpha: 0.7),
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    const SizedBox(height: AppSpacing.xs),
                   ],
 
-                  const SizedBox(height: AppSpacing.sm),
+                  // 태그
+                  if (video.tags.isNotEmpty) ...[
+                    Wrap(
+                      spacing: AppSpacing.xs,
+                      runSpacing: AppSpacing.xs,
+                      children: video.tags
+                          .take(3)
+                          .map((tag) => _buildTagChip(tag))
+                          .toList(),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                  ],
 
-                  // 지속 시간과 태그
+                  // 하단 정보
                   Row(
                     children: [
-                      Icon(
-                        Icons.access_time,
-                        size: 16,
-                        color: AppColors.pointDark.withValues(alpha: 0.6),
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        video.formattedDuration,
-                        style: AppFonts.bodySmall.copyWith(
-                          color: AppColors.pointDark.withValues(alpha: 0.6),
+                      // 재생 시간
+                      Container(
+                        padding: const const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.sm,
+                          vertical: AppSpacing.xs,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.7),
+                          borderRadius: BorderRadius.circular(AppSpacing.xs),
+                        ),
+                        child: Text(
+                          video.formattedDuration,
+                          style: AppFonts.bodySmall.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       const Spacer(),
-                      if (video.tags.isNotEmpty) _buildTags(),
+
+                      // 액션 버튼들
+                      if (onBookmarkTap != null)
+                        IconButton(
+                          onPressed: onBookmarkTap,
+                          icon: const Icon(Icons.bookmark_border),
+                          color: AppColors.pointBrown,
+                          iconSize: 20,
+                        ),
+                      if (onDeleteTap != null)
+                        IconButton(
+                          onPressed: onDeleteTap,
+                          icon: const Icon(Icons.delete_outline),
+                          color: AppColors.error,
+                          iconSize: 20,
+                        ),
                     ],
                   ),
                 ],
@@ -101,153 +126,117 @@ class YouTubeVideoCard extends StatelessWidget {
   }
 
   Widget _buildThumbnail() {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(AppRadius.medium),
-            topRight: Radius.circular(AppRadius.medium),
-          ),
-          child: AspectRatio(
-            aspectRatio: 16 / 9,
-            child: video.thumbnailUrl != null
-                ? Image.network(
-                    video.thumbnailUrl!,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: AppColors.pointOffWhite,
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.pointBrown,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) =>
-                        _buildErrorThumbnail(),
-                  )
-                : _buildErrorThumbnail(),
-          ),
+    return Container(
+      height: 200,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.pointBrown.withValues(alpha: 0.1),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(AppSpacing.md),
+          topRight: Radius.circular(AppSpacing.md),
         ),
+      ),
+      child: Stack(
+        children: [
+          // 썸네일 이미지
+          if (video.thumbnailUrl != null)
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(AppSpacing.md),
+                topRight: Radius.circular(AppSpacing.md),
+              ),
+              child: Image.network(
+                video.thumbnailUrl!,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildPlaceholder(),
+              ),
+            )
+          else
+            _buildPlaceholder(),
 
-        // 재생 버튼
-        Positioned.fill(
-          child: Center(
+          // 재생 버튼
+          Center(
             child: Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
+              width: 60,
+              height: 60,
               decoration: BoxDecoration(
                 color: Colors.black.withValues(alpha: 0.7),
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(30),
               ),
               child: const Icon(
                 Icons.play_arrow,
                 color: Colors.white,
-                size: 32,
+                size: 30,
               ),
             ),
           ),
-        ),
-      ],
-    );
-  }
 
-  Widget _buildErrorThumbnail() {
-    return Container(
-      color: AppColors.pointOffWhite,
-      child: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.video_library, size: 48, color: AppColors.pointBrown),
-            SizedBox(height: AppSpacing.xs),
-            Text(
-              'YouTube動画',
-              style: TextStyle(
-                color: AppColors.pointBrown,
-                fontWeight: FontWeight.w500,
+          // YouTube 로고
+          Positioned(
+            top: AppSpacing.sm,
+            right: AppSpacing.sm,
+            child: Container(
+              padding: const const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(AppSpacing.xs),
+              ),
+              child: Text(
+                'YouTube',
+                style: AppFonts.bodySmall.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildActionButtons() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (onBookmarkTap != null)
-          IconButton(
-            onPressed: onBookmarkTap,
-            icon: const Icon(
-              Icons.bookmark,
-              size: 20,
-              color: AppColors.pointBlue,
-            ),
-            tooltip: 'ブックマーク',
-            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-          ),
-        if (onDeleteTap != null)
-          IconButton(
-            onPressed: onDeleteTap,
-            icon: const Icon(Icons.delete_outline, size: 20, color: Colors.red),
-            tooltip: '削除',
-            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-          ),
-      ],
+  Widget _buildPlaceholder() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.pointBrown.withValues(alpha: 0.1),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(AppSpacing.md),
+          topRight: Radius.circular(AppSpacing.md),
+        ),
+      ),
+      child: const Icon(
+        Icons.video_library,
+        color: AppColors.pointBrown,
+        size: 48,
+      ),
     );
   }
 
-  Widget _buildTags() {
-    final displayTags = video.tags.take(3).toList();
-
-    return Wrap(
-      spacing: AppSpacing.xs,
-      runSpacing: AppSpacing.xs,
-      children: [
-        ...displayTags.map(
-          (tag) => Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.xs,
-              vertical: 2,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.pointBrown.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(AppRadius.small),
-            ),
-            child: Text(
-              tag,
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointBrown,
-                fontSize: 10,
-              ),
-            ),
-          ),
+  Widget _buildTagChip(String tag) {
+    return Container(
+      padding: const const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.pointBlue.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.sm),
+      ),
+      child: Text(
+        tag,
+        style: AppFonts.bodySmall.copyWith(
+          color: AppColors.pointBlue,
+          fontWeight: FontWeight.bold,
         ),
-        if (video.tags.length > 3)
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.xs,
-              vertical: 2,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.pointDark.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(AppRadius.small),
-            ),
-            child: Text(
-              '+${video.tags.length - 3}',
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointDark,
-                fontSize: 10,
-              ),
-            ),
-          ),
-      ],
+      ),
     );
   }
 }

@@ -1,45 +1,111 @@
-import 'package:aipet_frontend/features/onboarding/domain/repositories/pet_profile_repository.dart';
-import 'package:aipet_frontend/features/onboarding/domain/services/pet_profile_domain_service.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/get_pet_profile_usecase.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/manage_family_managers_usecase.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/update_pet_profile_usecase.dart';
-import 'package:aipet_frontend/shared/repositories/pet_profile_repository_impl.dart';
+import 'package:aipet_frontend/features/pet_profile/data/repositories/pet_profile_repository_impl.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/repositories/pet_profile_repository.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// Pet Profile Data Layer Providers
-///
-/// Pet Profile 기능의 Data Layer 의존성 주입을 담당
+part 'pet_profile_providers.g.dart';
 
-// Repository Provider
-final petProfileRepositoryProvider = Provider<PetProfileRepository>((ref) {
+/// PetProfileRepository 프로바이더
+@riverpod
+PetProfileRepository petProfileRepository(Ref ref) {
   return PetProfileRepositoryImpl();
-});
+}
 
-// Domain Service Provider
-final petProfileDomainServiceProvider = Provider<PetProfileDomainService>((
-  ref,
-) {
-  return PetProfileDomainServiceImpl();
-});
+/// 모든 펫 목록 프로바이더
+@riverpod
+class PetProfilesNotifier extends _$PetProfilesNotifier {
+  @override
+  Future<List<PetProfileEntity>> build() async {
+    try {
+      final repository = ref.read(petProfileRepositoryProvider);
+      final result = await repository.getAllPets();
+      if (result.isSuccess) {
+        return result.dataOrNull ?? [];
+      } else {
+        throw Exception(result.errorOrNull);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-// UseCase Providers
-final getPetProfileUseCaseProvider = Provider<GetPetProfileUseCase>((ref) {
-  return GetPetProfileUseCase(ref.read(petProfileRepositoryProvider));
-});
-
-final updatePetProfileUseCaseProvider = Provider<UpdatePetProfileUseCase>((
-  ref,
-) {
-  return UpdatePetProfileUseCase(
-    ref.read(petProfileRepositoryProvider),
-    ref.read(petProfileDomainServiceProvider),
-  );
-});
-
-final manageFamilyManagersUseCaseProvider =
-    Provider<ManageFamilyManagersUseCase>((ref) {
-      return ManageFamilyManagersUseCase(
-        ref.read(petProfileRepositoryProvider),
-        ref.read(petProfileDomainServiceProvider),
-      );
+  /// 펫 목록 새로고침
+  Future<void> refresh() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final repository = ref.read(petProfileRepositoryProvider);
+      final result = await repository.getAllPets();
+      if (result.isSuccess) {
+        return result.dataOrNull ?? [];
+      } else {
+        throw Exception(result.errorOrNull);
+      }
     });
+  }
+
+  /// 펫 생성
+  Future<PetProfileEntity> createPet(PetProfileEntity pet) async {
+    final repository = ref.read(petProfileRepositoryProvider);
+    final result = await repository.createPet(pet);
+    if (result.isSuccess) {
+      await refresh();
+      return result.dataOrNull!;
+    } else {
+      throw Exception(result.errorOrNull);
+    }
+  }
+
+  /// 펫 업데이트
+  Future<void> updatePet(PetProfileEntity pet) async {
+    final repository = ref.read(petProfileRepositoryProvider);
+    final result = await repository.updatePet(pet);
+    if (result.isSuccess) {
+      await refresh();
+    } else {
+      throw Exception(result.errorOrNull);
+    }
+  }
+
+  /// 펫 삭제
+  Future<void> deletePet(String id) async {
+    final repository = ref.read(petProfileRepositoryProvider);
+    final result = await repository.deletePet(id);
+    if (result.isSuccess) {
+      await refresh();
+    } else {
+      throw Exception(result.errorOrNull);
+    }
+  }
+}
+
+/// 개별 펫 프로바이더
+@riverpod
+Future<PetProfileEntity?> petProfileById(Ref ref, String id) async {
+  final repository = ref.watch(petProfileRepositoryProvider);
+  final result = await repository.getPetById(id);
+  if (result.isSuccess) {
+    return result.dataOrNull;
+  } else {
+    throw Exception(result.errorOrNull);
+  }
+}
+
+/// 현재 선택된 펫 프로바이더
+@riverpod
+class SelectedPetProfileNotifier extends _$SelectedPetProfileNotifier {
+  @override
+  PetProfileEntity? build() {
+    return null;
+  }
+
+  /// 펫 선택
+  void selectPet(PetProfileEntity pet) {
+    state = pet;
+  }
+
+  /// 선택 해제
+  void clearSelection() {
+    state = null;
+  }
+}

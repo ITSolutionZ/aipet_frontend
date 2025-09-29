@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/onboarding/domain/entities/feeding_record_entity.dart';
-import 'package:aipet_frontend/features/onboarding/domain/repositories/pet_feeding_repository.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/entities/feeding_record_entity.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/repositories/pet_feeding_repository.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/mock_data_service.dart';
 
 class PetFeedingRepositoryImpl implements PetFeedingRepository {

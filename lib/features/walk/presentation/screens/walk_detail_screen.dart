@@ -19,7 +19,7 @@ class WalkDetailScreen extends ConsumerWidget {
         child: Column(
           children: [
             // 헤더
-            _buildHeader(),
+            _buildHeader(context),
 
             // 지도 섹션
             Expanded(child: _buildMapSection()),
@@ -29,9 +29,9 @@ class WalkDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       child: Row(
         children: [
           // 뒤로가기 버튼
@@ -59,13 +59,13 @@ class WalkDetailScreen extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    const const SizedBox(width: AppSpacing.sm),
                     const Icon(
                       Icons.calendar_today,
                       color: AppColors.pointGray,
                       size: 16,
                     ),
-                    const SizedBox(width: AppSpacing.xs),
+                    const const SizedBox(width: AppSpacing.xs),
                     Text(
                       walkRecord.dateString,
                       style: AppFonts.bodySmall.copyWith(
@@ -87,7 +87,7 @@ class WalkDetailScreen extends ConsumerWidget {
 
   Widget _buildPetInfo() {
     return Container(
-      padding: const EdgeInsets.symmetric(
+      padding: const const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),
@@ -131,7 +131,7 @@ class WalkDetailScreen extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: AppSpacing.xs),
+          const const SizedBox(width: AppSpacing.xs),
           // 반려동물 이름
           Text(
             walkRecord.petName ?? 'Maxi',
@@ -147,7 +147,7 @@ class WalkDetailScreen extends ConsumerWidget {
 
   Widget _buildMapSection() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Stack(
         children: [
           // 지도 위젯

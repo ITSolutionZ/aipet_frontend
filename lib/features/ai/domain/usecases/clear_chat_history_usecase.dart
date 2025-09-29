@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 class ClearChatHistoryUseCase {
   final AiRepository _repository;
@@ -9,9 +9,9 @@ class ClearChatHistoryUseCase {
   Future<Result<void>> call() async {
     try {
       await _repository.clearChatHistory();
-      return ResultFactory.success(null, 'チャット履歴をクリアしました');
+      return Result.success(null, 'チャット履歴をクリアしました');
     } catch (error) {
-      return ResultFactory.failure<void>(
+      return Result.failure<void>(
         'チャット履歴のクリアに失敗しました: ${error.toString()}',
       );
     }

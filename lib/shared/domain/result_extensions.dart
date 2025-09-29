@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// Result 타입 확장 메서드들
 ///
@@ -11,11 +11,11 @@ extension ResultExtensions<T> on Result<T> {
 class ResultUtils {
   /// 성공 결과 생성 (유틸리티 메서드)
   static Result<T> createSuccess<T>(T data, [String? message]) {
-    return ResultFactory.success(data, message ?? 'Success');
+    return Result.success(data, message ?? 'Success');
   }
 
   /// 실패 결과 생성 (유틸리티 메서드)
   static Result<T> createFailure<T>(String error) {
-    return ResultFactory.failure<T>(error);
+    return Result.failure<T>(error);
   }
 }

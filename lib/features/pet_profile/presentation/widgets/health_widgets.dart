@@ -21,7 +21,7 @@ class HealthCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -45,7 +45,7 @@ class HealthCard extends StatelessWidget {
               ),
               child: Icon(icon, color: iconColor, size: 24),
             ),
-            const SizedBox(width: AppSpacing.lg),
+            const const SizedBox(width: AppSpacing.lg),
 
             // 제목
             Expanded(
@@ -88,7 +88,7 @@ class HealthTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
           HealthCard(
@@ -172,8 +172,8 @@ class MedicalRecordCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.md),
+        margin: const const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -196,7 +196,7 @@ class MedicalRecordCard extends StatelessWidget {
               ),
               child: Icon(icon, color: iconColor, size: 20),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,7 +235,7 @@ class MedicalRecordCard extends StatelessWidget {
                           size: 14,
                           color: AppColors.pointBlue,
                         ),
-                        const SizedBox(width: AppSpacing.xs),
+                        const const SizedBox(width: AppSpacing.xs),
                         Text(
                           veterinarian!,
                           style: AppFonts.bodySmall.copyWith(
@@ -270,7 +270,7 @@ class HealthSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -301,7 +301,7 @@ class HealthSummaryCard extends StatelessWidget {
                   size: 20,
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
               Text(
                 '健康状態',
                 style: AppFonts.titleMedium.copyWith(
@@ -342,7 +342,7 @@ class HealthSummaryCard extends StatelessWidget {
         Row(
           children: [
             Icon(icon, size: 16, color: AppColors.pointGreen),
-            const SizedBox(width: AppSpacing.xs),
+            const const SizedBox(width: AppSpacing.xs),
             Text(
               label,
               style: AppFonts.bodySmall.copyWith(

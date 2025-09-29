@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
-import 'package:aipet_frontend/features/onboarding/domain/repositories/walk_share_repository.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/repositories/walk_share_repository.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,10 +17,12 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
   Future<WalkShareResult> copyToClipboard(String text) async {
     try {
       await Clipboard.setData(ClipboardData(text: text));
-      return WalkShareResult.success('텍스트가 클립보드에 복사되었습니다');
+      return Result.success('텍스트가 클립보드에 복사되었습니다');
     } catch (e) {
-      if (kDebugMode) {}
-      return WalkShareResult.failure('클립보드 복사에 실패했습니다');
+      if (kDebugMode) {
+        print('클립보드 복사 에러: $e');
+      }
+      return const Failure('클립보드 복사에 실패했습니다');
     }
   }
 
@@ -45,18 +48,17 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       await file.writeAsString(content, encoding: const Utf8Codec());
 
       // 실제 이미지 생성 및 저장
-      final imagePath = await _generateWalkRecordImage(
+      await _generateWalkRecordImage(
         walkRecord,
         imagesDir.path,
       );
 
-      return WalkShareResult.success(
-        '산책 기록 이미지가 생성되었습니다',
-        imagePath: imagePath,
-      );
+      return Result.success('산책 기록 이미지가 생성되었습니다');
     } catch (e) {
-      if (kDebugMode) {}
-      return WalkShareResult.failure('이미지 저장에 실패했습니다');
+      if (kDebugMode) {
+        print('이미지 저장 에러: $e');
+      }
+      return const Failure('이미지 저장에 실패했습니다');
     }
   }
 
@@ -64,10 +66,12 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
   Future<WalkShareResult> systemShare(String text, {String? subject}) async {
     try {
       await Share.share(text, subject: subject ?? 'AI Pet 산책 기록');
-      return WalkShareResult.success('시스템 공유가 실행되었습니다');
+      return Result.success('시스템 공유가 실행되었습니다');
     } catch (e) {
-      if (kDebugMode) {}
-      return WalkShareResult.failure('시스템 공유에 실패했습니다');
+      if (kDebugMode) {
+        print('시스템 공유 에러: $e');
+      }
+      return const Failure('시스템 공유에 실패했습니다');
     }
   }
 

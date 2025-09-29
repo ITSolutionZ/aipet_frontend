@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +21,7 @@ class MicrochipCard extends StatelessWidget {
         : pet.additionalInfo?['microchipId'] ?? '';
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -48,7 +48,7 @@ class MicrochipCard extends StatelessWidget {
               size: 20,
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +70,7 @@ class MicrochipCard extends StatelessWidget {
                     decoration: InputDecoration(
                       hintText: 'マイクロチップ番号を入力',
                       isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
+                      contentPadding: const const EdgeInsets.symmetric(
                         vertical: 8,
                         horizontal: 12,
                       ),

@@ -5,11 +5,12 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
-    as _i5;
+import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart'
+    as _i7;
 import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart'
     as _i2;
-import 'package:aipet_frontend/shared/shared.dart' as _i4;
+import 'package:aipet_frontend/shared/domain/entities/entities.dart' as _i5;
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
 
@@ -106,7 +107,7 @@ class MockPetRepository extends _i1.Mock implements _i2.PetRepository {
           as _i3.Future<_i4.Result<void>>);
 
   @override
-  _i3.Future<void> saveTemporaryPetData(dynamic data) =>
+  _i3.Future<void> saveTemporaryPetData(_i7.TemporaryPetDataEntity? data) =>
       (super.noSuchMethod(
             Invocation.method(#saveTemporaryPetData, [data]),
             returnValue: _i3.Future<void>.value(),
@@ -115,12 +116,12 @@ class MockPetRepository extends _i1.Mock implements _i2.PetRepository {
           as _i3.Future<void>);
 
   @override
-  _i3.Future<dynamic> getTemporaryPetData() =>
+  _i3.Future<_i7.TemporaryPetDataEntity?> getTemporaryPetData() =>
       (super.noSuchMethod(
             Invocation.method(#getTemporaryPetData, []),
-            returnValue: _i3.Future<dynamic>.value(),
+            returnValue: _i3.Future<_i7.TemporaryPetDataEntity?>.value(),
           )
-          as _i3.Future<dynamic>);
+          as _i3.Future<_i7.TemporaryPetDataEntity?>);
 
   @override
   _i3.Future<void> clearTemporaryPetData() =>

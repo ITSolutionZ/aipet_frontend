@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/onboarding/domain/repositories/feeding_repository.dart';
-import 'package:aipet_frontend/shared/repositories/feeding_repository_impl.dart';
+import 'package:aipet_frontend/features/scheduling/data/repositories/feeding_repository_impl.dart';
+import 'package:aipet_frontend/features/scheduling/domain/repositories/feeding_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 급여 관리 Repository Provider
@@ -15,9 +15,9 @@ final petSizeFeedingInfoProvider = FutureProvider<Map<String, dynamic>>((
   final result = await repository.getPetSizeFeedingInfo();
 
   if (result.isSuccess) {
-    return result.data!;
+    return result.dataOrNull!;
   } else {
-    throw Exception(result.message);
+    throw Exception(result.errorOrNull);
   }
 });
 
@@ -29,9 +29,9 @@ final petSizeFeedingGuideProvider = FutureProvider<Map<String, dynamic>>((
   final result = await repository.getPetSizeFeedingGuide();
 
   if (result.isSuccess) {
-    return result.data!;
+    return result.dataOrNull!;
   } else {
-    throw Exception(result.message);
+    throw Exception(result.errorOrNull);
   }
 });
 
@@ -41,9 +41,9 @@ final petStatusOptionsProvider = FutureProvider<List<String>>((ref) async {
   final result = await repository.getPetStatusOptions();
 
   if (result.isSuccess) {
-    return result.data!;
+    return result.dataOrNull!;
   } else {
-    throw Exception(result.message);
+    throw Exception(result.errorOrNull);
   }
 });
 
@@ -56,9 +56,9 @@ final petInfoProvider = FutureProvider.family<Map<String, dynamic>?, String>((
   final result = await repository.getPetInfo(petId);
 
   if (result.isSuccess) {
-    return result.data;
+    return result.dataOrNull;
   } else {
-    throw Exception(result.message);
+    throw Exception(result.errorOrNull);
   }
 });
 
@@ -69,9 +69,9 @@ final feedingRecordsProvider =
       final result = await repository.getFeedingRecords();
 
       if (result.isSuccess) {
-        return result.data!;
+        return result.dataOrNull!;
       } else {
-        throw Exception(result.message);
+        throw Exception(result.errorOrNull);
       }
     });
 
@@ -82,8 +82,8 @@ final feedingAnalysisDataProvider =
       final result = await repository.getFeedingAnalysisData();
 
       if (result.isSuccess) {
-        return result.data!;
+        return result.dataOrNull!;
       } else {
-        throw Exception(result.message);
+        throw Exception(result.errorOrNull);
       }
     });

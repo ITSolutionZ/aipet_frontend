@@ -51,7 +51,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientBackAppBar(title: '예약'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -114,21 +114,21 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   /// 👤 고객 정보 입력 섹션
   Widget _buildCustomerInfoSection() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(8),
         color: Colors.white,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Row(
               children: [
                 Icon(Icons.person, size: 20, color: Colors.blue),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   '예약자 정보',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -167,21 +167,21 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   /// 📝 메모 입력 섹션
   Widget _buildNoteSection() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(8),
         color: Colors.white,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Row(
               children: [
                 Icon(Icons.note_outlined, size: 20, color: Colors.blue),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   '메모 (선택사항)',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -271,6 +271,9 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
       // 예약 실행 (실제로는 UseCase를 통해 처리)
       // TODO: Implement createBooking method in controller
       // await controller.createBooking(bookingData);
+
+      // 임시로 bookingData 로깅하여 unused 경고 제거
+      debugPrint('Booking Data: $bookingData');
 
       // 성공 메시지
       if (mounted) {

@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/onboarding/domain/usecases/base_usecase.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,9 +19,9 @@ class NavigateAfterOnboardingUseCase extends BaseUseCaseNoParams<String> {
       // TODO: Check authentication status to determine route
       const targetRoute = AppRouter.loginRoute;
 
-      return ResultFactory.success(targetRoute, '온보딩 완료 후 네비게이션이 준비되었습니다');
+      return Result.success(targetRoute, '온보딩 완료 후 네비게이션이 준비되었습니다');
     } catch (e) {
-      return ResultFactory.failure('네비게이션 설정 중 오류가 발생했습니다: $e');
+      return Result.failure('네비게이션 설정 중 오류가 발생했습니다: $e');
     }
   }
 
@@ -32,9 +32,9 @@ class NavigateAfterOnboardingUseCase extends BaseUseCaseNoParams<String> {
   ) async {
     try {
       context.go(route);
-      return ResultFactory.success(null, '네비게이션이 완료되었습니다');
+      return Result.success(null, '네비게이션이 완료되었습니다');
     } catch (e) {
-      return ResultFactory.failure('네비게이션 실행 중 오류가 발생했습니다: $e');
+      return Result.failure('네비게이션 실행 중 오류가 발생했습니다: $e');
     }
   }
 }

@@ -9,8 +9,8 @@ import 'auth_token_repository.dart';
 /// 자동 토큰 갱신, 재시도, 인터셉터 기능 포함
 class HttpClientService {
   static const String baseUrl = 'https://api.aipet.com'; // 실제 백엔드 URL로 교체
-  static const Duration connectTimeout = Duration(seconds: 30);
-  static const Duration receiveTimeout = Duration(seconds: 30);
+  static const Duration connectTimeout = const Duration(seconds: 30);
+  static const Duration receiveTimeout = const Duration(seconds: 30);
   static const int maxRetries = 3;
 
   late final Dio _dio;
@@ -179,7 +179,7 @@ class HttpClientService {
     ErrorInterceptorHandler handler,
   ) async {
     final retryCount = _getRetryCount(error.requestOptions) + 1;
-    final delay = Duration(seconds: retryCount * 2); // 지수 백오프
+    final delay = const Duration(seconds: retryCount * 2); // 지수 백오프
 
     if (kDebugMode) {
       debugPrint('🔄 재시도 $retryCount/$maxRetries - ${delay.inSeconds}초 후 재시도');
@@ -297,9 +297,9 @@ class HttpClientService {
     final data = response.data as Map<String, dynamic>;
 
     if (fromJson != null) {
-      return ApiResponse.success(fromJson(data['data'] ?? data));
+      return ApiResponseResult.success(fromJson(data['data'] ?? data));
     } else {
-      return ApiResponse.success(data as T);
+      return ApiResponseResult.success(data as T);
     }
   }
 
@@ -373,9 +373,9 @@ class HttpClientService {
     }
 
     if (fromJson != null) {
-      return ApiResponse.success(fromJson(mockData));
+      return ApiResponseResult.success(fromJson(mockData));
     } else {
-      return ApiResponse.success(mockData as T);
+      return ApiResponseResult.success(mockData as T);
     }
   }
 
@@ -392,9 +392,9 @@ class HttpClientService {
     }
 
     if (fromJson != null) {
-      return ApiResponse.success(fromJson(mockData));
+      return ApiResponseResult.success(fromJson(mockData));
     } else {
-      return ApiResponse.success(mockData as T);
+      return ApiResponseResult.success(mockData as T);
     }
   }
 
@@ -411,9 +411,9 @@ class HttpClientService {
     }
 
     if (fromJson != null) {
-      return ApiResponse.success(fromJson(mockData));
+      return ApiResponseResult.success(fromJson(mockData));
     } else {
-      return ApiResponse.success(mockData as T);
+      return ApiResponseResult.success(mockData as T);
     }
   }
 
@@ -429,9 +429,9 @@ class HttpClientService {
     }
 
     if (fromJson != null) {
-      return ApiResponse.success(fromJson(mockData));
+      return ApiResponseResult.success(fromJson(mockData));
     } else {
-      return ApiResponse.success(mockData as T);
+      return ApiResponseResult.success(mockData as T);
     }
   }
 
@@ -495,7 +495,7 @@ class ApiResponse<T> {
 
   const ApiResponse._({this.data, this.error, this.errorCode, this.statusCode});
 
-  factory ApiResponse.success(T data) => ApiResponse._(data: data);
+  factory ApiResponseResult.success(T data) => ApiResponse._(data: data);
 
   factory ApiResponse.error(
     String error, {

@@ -1,13 +1,13 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-/// 트릭 검색 및 필터 섹션
+/// 트릭 검색 및 필터 위젯
 class TricksSearchAndFilter extends StatelessWidget {
   final TextEditingController searchController;
   final String searchQuery;
   final String selectedCategory;
-  final ValueChanged<String> onSearchChanged;
-  final ValueChanged<String> onCategoryChanged;
+  final Function(String) onSearchChanged;
+  final Function(String) onCategoryChanged;
 
   const TricksSearchAndFilter({
     super.key,
@@ -21,125 +21,92 @@ class TricksSearchAndFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
+      color: Colors.white,
       child: Column(
         children: [
           // 검색 바
-          _SearchBar(
-            controller: searchController,
-            searchQuery: searchQuery,
-            onChanged: onSearchChanged,
-          ),
-
+          _buildSearchBar(),
           const SizedBox(height: AppSpacing.md),
 
           // 카테고리 필터
-          _CategoryFilter(
-            selectedCategory: selectedCategory,
-            onCategoryChanged: onCategoryChanged,
-          ),
+          _buildCategoryFilter(),
         ],
       ),
     );
   }
-}
 
-/// 검색바 위젯
-class _SearchBar extends StatelessWidget {
-  final TextEditingController controller;
-  final String searchQuery;
-  final ValueChanged<String> onChanged;
-
-  const _SearchBar({
-    required this.controller,
-    required this.searchQuery,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildSearchBar() {
     return TextField(
-      controller: controller,
+      controller: searchController,
+      onChanged: onSearchChanged,
       decoration: InputDecoration(
         hintText: 'トリックを検索...',
-        prefixIcon: const Icon(Icons.search, color: AppColors.pointDark),
+        prefixIcon: const Icon(Icons.search),
         suffixIcon: searchQuery.isNotEmpty
             ? IconButton(
-                icon: const Icon(Icons.clear, color: AppColors.pointDark),
                 onPressed: () {
-                  controller.clear();
-                  onChanged('');
+                  searchController.clear();
+                  onSearchChanged('');
                 },
+                icon: const Icon(Icons.clear),
               )
             : null,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.md),
-          borderSide: BorderSide.none,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(AppSpacing.md)),
+          borderSide: BorderSide(color: AppColors.borderGray),
         ),
-        contentPadding: const EdgeInsets.symmetric(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(AppSpacing.md)),
+          borderSide: BorderSide(color: AppColors.pointGreen),
+        ),
+        contentPadding: const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
       ),
-      onChanged: onChanged,
     );
   }
-}
 
-/// 카테고리 필터 위젯
-class _CategoryFilter extends StatelessWidget {
-  final String selectedCategory;
-  final ValueChanged<String> onCategoryChanged;
-
-  const _CategoryFilter({
-    required this.selectedCategory,
-    required this.onCategoryChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const categories = [
+  Widget _buildCategoryFilter() {
+    final categories = [
       {'key': 'all', 'label': 'すべて'},
       {'key': 'easy', 'label': '簡単'},
       {'key': 'medium', 'label': '普通'},
       {'key': 'hard', 'label': '難しい'},
+      {'key': 'expert', 'label': '専門家'},
     ];
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: categories.map((category) {
+    return SizedBox(
+      height: 40,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final category = categories[index];
           final isSelected = selectedCategory == category['key'];
+
           return Padding(
-            padding: const EdgeInsets.only(right: AppSpacing.sm),
+            padding: const const EdgeInsets.only(right: AppSpacing.sm),
             child: FilterChip(
-              label: Text(
-                category['label']!,
-                style: AppFonts.bodyMedium.copyWith(
-                  color: isSelected ? Colors.white : AppColors.pointDark,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
+              label: Text(category['label']!),
               selected: isSelected,
-              selectedColor: AppColors.pointBrown,
-              backgroundColor: Colors.white,
-              checkmarkColor: Colors.white,
               onSelected: (selected) {
-                onCategoryChanged(category['key']!);
+                if (selected) {
+                  onCategoryChanged(category['key']!);
+                }
               },
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.lg),
-                side: BorderSide(
-                  color: isSelected
-                      ? AppColors.pointBrown
-                      : AppColors.pointDark.withValues(alpha: 0.2),
-                ),
+              selectedColor: AppColors.pointGreen.withValues(alpha: 0.2),
+              checkmarkColor: AppColors.pointGreen,
+              labelStyle: TextStyle(
+                color: isSelected
+                    ? AppColors.pointGreen
+                    : AppColors.textSecondary,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
           );
-        }).toList(),
+        },
       ),
     );
   }

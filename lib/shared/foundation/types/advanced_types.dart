@@ -333,20 +333,20 @@ class TypeSafeBuilder<T> {
   /// 빌드
   Result<T> build() {
     if (_errors.isNotEmpty) {
-      return ResultFactory.failure(
+      return Result.failure(
         'Validation failed: ${_errors.join(', ')}',
         code: 'VALIDATION_FAILED',
       );
     }
 
     if (_value == null) {
-      return ResultFactory.failure(
+      return Result.failure(
         'Value is required',
         code: 'REQUIRED_VALUE_MISSING',
       );
     }
 
-    return ResultFactory.success(_value as T);
+    return Result.success(_value as T);
   }
 }
 

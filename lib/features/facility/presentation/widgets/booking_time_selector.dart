@@ -22,15 +22,19 @@ class BookingTimeSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppCard(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 섹션 헤더
             Row(
               children: [
-                Icon(Icons.access_time, size: 20, color: AppColors.primary),
-                const SizedBox(width: AppSpacing.xs),
+                const Icon(
+                  Icons.access_time,
+                  size: 20,
+                  color: AppColors.primary,
+                ),
+                const const SizedBox(width: AppSpacing.xs),
                 Text(
                   '시간 선택',
                   style: AppTextStyles.titleMedium.copyWith(
@@ -38,14 +42,14 @@ class BookingTimeSelector extends StatelessWidget {
                   ),
                 ),
                 if (selectedTime != null) ...[
-                  const SizedBox(width: AppSpacing.sm),
+                  const const SizedBox(width: AppSpacing.sm),
                   Container(
-                    padding: const EdgeInsets.symmetric(
+                    padding: const const EdgeInsets.symmetric(
                       horizontal: AppSpacing.sm,
                       vertical: AppSpacing.xs,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppSpacing.sm),
                     ),
                     child: Text(
@@ -98,11 +102,11 @@ class BookingTimeSelector extends StatelessWidget {
   Widget _buildLegend() {
     return Row(
       children: [
-        _LegendItem(color: AppColors.primary, label: '선택됨'),
-        const SizedBox(width: AppSpacing.md),
-        _LegendItem(color: AppColors.cardBackgroundGray, label: '이용 가능'),
-        const SizedBox(width: AppSpacing.md),
-        _LegendItem(color: AppColors.error.withOpacity(0.2), label: '예약 불가'),
+        const _LegendItem(color: AppColors.primary, label: '선택됨'),
+        const const SizedBox(width: AppSpacing.md),
+        const _LegendItem(color: AppColors.cardBackgroundGray, label: '이용 가능'),
+        const const SizedBox(width: AppSpacing.md),
+        _LegendItem(color: AppColors.error.withValues(alpha: 0.2), label: '예약 불가'),
       ],
     );
   }
@@ -130,9 +134,9 @@ class BookingTimeChip extends StatelessWidget {
     Color borderColor;
 
     if (isUnavailable) {
-      backgroundColor = AppColors.error.withOpacity(0.1);
+      backgroundColor = AppColors.error.withValues(alpha: 0.1);
       textColor = AppColors.error;
-      borderColor = AppColors.error.withOpacity(0.3);
+      borderColor = AppColors.error.withValues(alpha: 0.3);
     } else if (isSelected) {
       backgroundColor = AppColors.primary;
       textColor = Colors.white;
@@ -163,7 +167,7 @@ class BookingTimeChip extends StatelessWidget {
               ),
             ),
             if (isUnavailable)
-              Positioned(
+              const Positioned(
                 top: 2,
                 right: 2,
                 child: Icon(Icons.block, size: 12, color: AppColors.error),
@@ -195,7 +199,7 @@ class _LegendItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(2),
           ),
         ),
-        const SizedBox(width: AppSpacing.xs),
+        const const SizedBox(width: AppSpacing.xs),
         Text(
           label,
           style: AppTextStyles.bodySmall.copyWith(

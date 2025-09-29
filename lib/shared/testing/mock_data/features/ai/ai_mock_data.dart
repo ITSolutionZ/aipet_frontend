@@ -157,7 +157,7 @@ class AiMockDataService {
         id: '1',
         title: 'ゆうくん食事問題相談',
         messages: getChatHistory(),
-        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+        createdAt: DateTime.now().subtract(Duration(hours: 1)),
         updatedAt: DateTime.now().subtract(const Duration(minutes: 7)),
         petId: '1',
       ),
@@ -184,6 +184,6 @@ class AiMockDataService {
 
   /// API 지연 시뮬레이션
   static Future<void> simulateApiDelay({int seconds = 1}) async {
-    await Future.delayed(Duration(seconds: seconds));
+    await Future.delayed(const Duration(seconds: seconds));
   }
 }

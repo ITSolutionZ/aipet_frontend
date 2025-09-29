@@ -100,16 +100,25 @@ class LegacyInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InfoCard(
+    return InfoCard.titled(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      iconColor: iconColor,
       onTap: onTap,
       semanticLabel: semanticLabel,
-      child: Row(
+      child: const SizedBox.shrink(),
+    );
+  }
+
+  Widget _buildOldContent(BuildContext context) {
+    return Row(
         children: [
           if (icon != null) ...[
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: (iconColor ?? Colors.blue).withValues(alpha: 0.1),
+                color: (iconColor ?? Colors.blue).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: IconTheme(
@@ -143,8 +152,7 @@ class LegacyInfoCard extends StatelessWidget {
           ),
           if (trailing != null) ...[const SizedBox(width: 12), trailing!],
         ],
-      ),
-    );
+      );
   }
 }
 

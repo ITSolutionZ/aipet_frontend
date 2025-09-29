@@ -1,7 +1,7 @@
-import 'package:aipet_frontend/features/onboarding/domain/repositories/walk_share_repository.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/walk_share_usecases.dart';
+import 'package:aipet_frontend/features/walk/data/repositories/walk_share_repository_impl.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/shared/repositories/walk_share_repository_impl.dart';
+import 'package:aipet_frontend/features/walk/domain/repositories/walk_share_repository.dart';
+import 'package:aipet_frontend/features/walk/domain/usecases/walk_share_usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -44,6 +44,9 @@ GenerateShareTextUseCase generateShareTextUseCase(Ref ref) {
 /// 공유 텍스트 프로바이더
 @riverpod
 String shareText(Ref ref, WalkRecordEntity walkRecord) {
-  final useCase = ref.watch(generateShareTextUseCaseProvider);
-  return useCase(walkRecord);
+  // 기본 공유 텍스트 생성
+  return '${walkRecord.petName}와 함께한 산책\n'
+      '시간: ${walkRecord.formattedDuration}\n'
+      '거리: ${walkRecord.formattedDistance}\n'
+      '날짜: ${walkRecord.dateString}';
 }

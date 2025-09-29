@@ -32,14 +32,14 @@ class WalkInfoWidgets {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(AppSpacing.xs),
+                      padding: const const EdgeInsets.all(AppSpacing.xs),
                       decoration: BoxDecoration(
                         color: (iconColor ?? AppColors.pointBlue).withValues(
                           alpha: 0.1,
@@ -94,7 +94,7 @@ class WalkInfoWidgets {
     FontWeight? fontWeight,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      padding: const const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
         children: [
           Icon(icon, size: 20, color: iconColor ?? AppColors.pointGray),
@@ -124,7 +124,7 @@ class WalkInfoWidgets {
     Color? textColor,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(
+      padding: const const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),
@@ -242,7 +242,7 @@ class WalkInfoWidgets {
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(top: 4),
+            padding: const const EdgeInsets.only(top: 4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

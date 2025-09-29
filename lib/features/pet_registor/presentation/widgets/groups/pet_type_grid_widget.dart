@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/cards/pet_type_card.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/cards/pet_type_card.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -93,7 +93,7 @@ class PetTypeGridWidget extends StatelessWidget {
               );
             },
             style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.medium),
               ),

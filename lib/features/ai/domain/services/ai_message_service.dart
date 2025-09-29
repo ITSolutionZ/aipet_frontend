@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:aipet_frontend/features/ai/data/providers/ai_usecase_providers.dart';
 import 'package:aipet_frontend/features/ai/domain/domain.dart';
-// import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'; // 임시 제거
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+// import 'package:aipet_frontend/shared/domain/entities/entities.dart'; // 임시 제거
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,7 +57,7 @@ class AiMessageService {
       return result;
     } catch (e) {
       debugPrint('❌ Failed to send message: $e');
-      return ResultFactory.failure('메시지 전송 중 오류가 발생했습니다: $e');
+      return Result.failure('메시지 전송 중 오류가 발생했습니다: $e');
     }
   }
 
@@ -69,7 +69,7 @@ class AiMessageService {
   }) async {
     try {
       // 임시로 분석 결과를 반환하도록 수정 (실제로는 _analyzeMessageUseCase 호출)
-      return ResultFactory.success(
+      return Result.success(
         MessageAnalysis(
           response: AiMessageEntity(
             id: 'analysis_${DateTime.now().millisecondsSinceEpoch}',
@@ -83,7 +83,7 @@ class AiMessageService {
       );
     } catch (e) {
       debugPrint('❌ Failed to analyze message: $e');
-      return ResultFactory.failure('메시지 분석 중 오류가 발생했습니다: $e');
+      return Result.failure('메시지 분석 중 오류가 발생했습니다: $e');
     }
   }
 
@@ -104,7 +104,7 @@ class AiMessageService {
       return await _loadHistoryUseCase.call(params);
     } catch (e) {
       debugPrint('❌ Failed to load chat history: $e');
-      return ResultFactory.failure('채팅 기록 로드 중 오류가 발생했습니다: $e');
+      return Result.failure('채팅 기록 로드 중 오류가 발생했습니다: $e');
     }
   }
 
@@ -132,28 +132,28 @@ class AiMessageService {
         ),
       ];
 
-      return ResultFactory.success(suggestions);
+      return Result.success(suggestions);
     } catch (e) {
       debugPrint('❌ Failed to get suggested questions: $e');
-      return ResultFactory.failure('제안 질문 로드 중 오류가 발생했습니다: $e');
+      return Result.failure('제안 질문 로드 중 오류가 발생했습니다: $e');
     }
   }
 
   /// ✅ 메시지 검증
   Result<void> validateMessage(String message) {
     if (message.trim().isEmpty) {
-      return ResultFactory.failure('메시지를 입력해주세요');
+      return Result.failure('메시지를 입력해주세요');
     }
 
     if (message.length > 2000) {
-      return ResultFactory.failure('메시지는 2000자를 초과할 수 없습니다');
+      return Result.failure('메시지는 2000자를 초과할 수 없습니다');
     }
 
     if (message.trim().length < 2) {
-      return ResultFactory.failure('최소 2글자 이상 입력해주세요');
+      return Result.failure('최소 2글자 이상 입력해주세요');
     }
 
-    return ResultFactory.success(null);
+    return Result.success(null);
   }
 
   /// ✅ 메시지 통계 계산

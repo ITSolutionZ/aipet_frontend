@@ -81,7 +81,7 @@ class WalkEditFormController extends StateNotifier<WalkEditFormState> {
 
         // 종료 시간이 시작 시간보다 이르면 다음날로 간주
         if (endDateTime.isBefore(startDateTime)) {
-          endDateTime = endDateTime.add(const Duration(days: 1));
+          endDateTime = endDateTime.add(Duration(days: 1));
         }
 
         duration = endDateTime.difference(startDateTime);
@@ -89,7 +89,6 @@ class WalkEditFormController extends StateNotifier<WalkEditFormState> {
     }
 
     return originalWalk.copyWith(
-      title: state.title.trim(),
       distance: distance,
       notes: state.notes.trim().isEmpty ? null : state.notes.trim(),
       startTime: startDateTime ?? originalWalk.startTime,
@@ -263,7 +262,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
                       .updateStartTime(time),
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: WalkFormFields.buildStartTimeField(
                   initialValue: formState.endTime,

@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_registration_provider.dart';
 import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pet_registor_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +96,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('0.5kg ~ 50.0kg 사이의 값을 입력해주세요'),
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -209,7 +209,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                 controller: _scrollController,
                 slivers: [
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(
+                    padding: const const EdgeInsets.symmetric(
                       horizontal: AppSpacing.lg,
                     ),
                     sliver: SliverList(
@@ -249,7 +249,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                               height: 100,
                               badge: _isNeutered
                                   ? Container(
-                                      padding: const EdgeInsets.symmetric(
+                                      padding: const const EdgeInsets.symmetric(
                                         horizontal: 6,
                                         vertical: 3,
                                       ),
@@ -323,7 +323,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
 
             // 하단 고정 버튼 영역
             Container(
-              padding: const EdgeInsets.symmetric(
+              padding: const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.md,
               ),

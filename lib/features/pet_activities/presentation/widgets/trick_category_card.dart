@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-/// 트릭 카테고리 카드 위젯
+/// 트릭 카테고리 카드
 class TrickCategoryCard extends StatelessWidget {
   final String title;
   final String description;
@@ -21,29 +21,48 @@ class TrickCategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+      ),
       child: InkWell(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+        child: Container(
+          padding: const const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppSpacing.md),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                color.withValues(alpha: 0.1),
+                color.withValues(alpha: 0.05),
+              ],
+            ),
+          ),
           child: Row(
             children: [
+              // 아이콘
               Container(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(25),
+                  color: color.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(30),
                 ),
-                child: Icon(icon, color: color, size: 25),
+                child: Icon(icon, color: color, size: 30),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
+
+              // 텍스트 정보
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: AppFonts.bodyLarge.copyWith(
+                      style: AppFonts.titleMedium.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.pointDark,
                       ),
@@ -51,18 +70,16 @@ class TrickCategoryCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       description,
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointGray,
+                      style: AppFonts.bodyMedium.copyWith(
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(
-                Icons.arrow_forward_ios,
-                color: AppColors.pointGray,
-                size: 16,
-              ),
+
+              // 화살표 아이콘
+              Icon(Icons.arrow_forward_ios, color: color, size: 20),
             ],
           ),
         ),

@@ -291,7 +291,7 @@ class ValidationResult {
   }
 
   /// 실패 결과 생성
-  factory ValidationResult.failure(List<ValidationError> errors) {
+  factory ValidationFailure(List<ValidationError> errors) {
     return ValidationResult(isValid: false, errors: errors);
   }
 

@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 즐겨찾기 메시지 관리 UseCase
 class FavoriteMessageUseCase {
@@ -28,7 +28,7 @@ class FavoriteMessageUseCase {
     try {
       // 입력 유효성 검사
       if (category.trim().isEmpty) {
-        return ResultFactory.failure<AiFavoriteEntity>(
+        return Result.failure<AiFavoriteEntity>(
           'カテゴリを入力してください',
         ).toFuture();
       }
@@ -40,9 +40,9 @@ class FavoriteMessageUseCase {
         petName: petName,
         userNote: userNote,
       );
-      return ResultFactory.success(favorite, 'お気に入りに追加しました').toFuture();
+      return Result.success(favorite, 'お気に入りに追加しました').toFuture();
     } catch (error) {
-      return ResultFactory.failure<AiFavoriteEntity>(
+      return Result.failure<AiFavoriteEntity>(
         'お気に入りの追加に失敗しました: ${error.toString()}',
       ).toFuture();
     }
@@ -57,13 +57,13 @@ class FavoriteMessageUseCase {
     try {
       // 입력 유효성 검사
       if (favoriteId.trim().isEmpty) {
-        return ResultFactory.failure<void>('お気に入りIDが無効です').toFuture();
+        return Result.failure<void>('お気に入りIDが無効です').toFuture();
       }
 
       await _repository.removeFavoriteMessage(favoriteId);
-      return ResultFactory.success(null, 'お気に入りを削除しました').toFuture();
+      return Result.success(null, 'お気に入りを削除しました').toFuture();
     } catch (error) {
-      return ResultFactory.failure<void>(
+      return Result.failure<void>(
         'お気に入りの削除に失敗しました: ${error.toString()}',
       ).toFuture();
     }
@@ -84,9 +84,9 @@ class FavoriteMessageUseCase {
         petId: petId,
         category: category,
       );
-      return ResultFactory.success(favorites, 'お気に入り一覧を取得しました').toFuture();
+      return Result.success(favorites, 'お気に入り一覧を取得しました').toFuture();
     } catch (error) {
-      return ResultFactory.failure<List<AiFavoriteEntity>>(
+      return Result.failure<List<AiFavoriteEntity>>(
         'お気に入り一覧の取得に失敗しました: ${error.toString()}',
       ).toFuture();
     }

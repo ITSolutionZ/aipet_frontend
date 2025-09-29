@@ -134,7 +134,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
           backgroundColor: AppColors.pointOffWhite,
           appBar: const SoftGradientBackAppBar(title: '予約'),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            padding: const const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -180,7 +180,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
         return Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.blue,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -217,7 +217,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                               color: Colors.white,
                               size: 16,
                             ),
-                            const SizedBox(width: AppSpacing.xs),
+                            const const SizedBox(width: AppSpacing.xs),
                             Text(
                               state.facility!.address,
                               style: AppFonts.bodyMedium.copyWith(
@@ -298,7 +298,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
         return Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -342,8 +342,8 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                     return GestureDetector(
                       onTap: () => _selectDate(date),
                       child: Container(
-                        margin: const EdgeInsets.only(right: AppSpacing.sm),
-                        padding: const EdgeInsets.symmetric(
+                        margin: const const EdgeInsets.only(right: AppSpacing.sm),
+                        padding: const const EdgeInsets.symmetric(
                           horizontal: AppSpacing.md,
                           vertical: AppSpacing.sm,
                         ),
@@ -382,7 +382,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
         return Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -414,7 +414,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   return GestureDetector(
                     onTap: () => _selectTime(time),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
+                      padding: const const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
                         vertical: AppSpacing.sm,
                       ),
@@ -452,7 +452,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
         return Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -483,8 +483,8 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                   final isSelected = service['selected'];
 
                   return Container(
-                    margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                    padding: const EdgeInsets.all(AppSpacing.md),
+                    margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
+                    padding: const const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -515,7 +515,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                                 : null,
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.md),
+                        const const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: Text(
                             service['name'],
@@ -552,7 +552,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   Widget _buildNoteSection() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -609,7 +609,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   Widget _buildConfirmButton() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -628,7 +628,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+            padding: const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
             ),

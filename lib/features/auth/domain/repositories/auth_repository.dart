@@ -85,7 +85,7 @@ class AuthResult {
     return AuthResult._(isSuccess: true, message: message, user: user);
   }
 
-  factory AuthResult.failure(String message, {String? errorCode}) {
+  factory AuthFailure(String message, {String? errorCode}) {
     return AuthResult._(
       isSuccess: false,
       message: message,
@@ -96,9 +96,9 @@ class AuthResult {
   /// 공통 Result 패턴으로 변환
   Result<AuthUser> toResult() {
     if (isSuccess && user != null) {
-      return ResultFactory.success(user!, message);
+      return Result.success(user!, message);
     } else {
-      return ResultFactory.failure(message);
+      return Result.failure(message);
     }
   }
 }

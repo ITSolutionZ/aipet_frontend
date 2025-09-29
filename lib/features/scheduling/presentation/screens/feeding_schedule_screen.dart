@@ -69,7 +69,7 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
         controller: _scrollController,
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            padding: const const EdgeInsets.all(AppSpacing.lg),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 Column(
@@ -111,7 +111,7 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.pointBrown,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
+                          padding: const const EdgeInsets.symmetric(
                             vertical: AppSpacing.md,
                           ),
                         ),

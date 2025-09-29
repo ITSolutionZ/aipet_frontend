@@ -37,7 +37,7 @@ class AppCard extends StatelessWidget {
   /// 기본 카드 (가장 일반적인 사용)
   factory AppCard({
     required Widget child,
-    EdgeInsetsGeometry? padding = const EdgeInsets.all(AppSpacing.md),
+    EdgeInsetsGeometry? padding = const const EdgeInsets.all(AppSpacing.md),
     EdgeInsetsGeometry? margin,
     VoidCallback? onTap,
   }) {
@@ -55,7 +55,7 @@ class AppCard extends StatelessWidget {
   /// 강조된 카드 (그림자 있음)
   factory AppCard.elevated({
     required Widget child,
-    EdgeInsetsGeometry? padding = const EdgeInsets.all(AppSpacing.md),
+    EdgeInsetsGeometry? padding = const const EdgeInsets.all(AppSpacing.md),
     EdgeInsetsGeometry? margin,
     double elevation = 4,
     VoidCallback? onTap,
@@ -74,7 +74,7 @@ class AppCard extends StatelessWidget {
   /// 테두리가 있는 카드
   factory AppCard.outlined({
     required Widget child,
-    EdgeInsetsGeometry? padding = const EdgeInsets.all(AppSpacing.md),
+    EdgeInsetsGeometry? padding = const const EdgeInsets.all(AppSpacing.md),
     EdgeInsetsGeometry? margin,
     Color borderColor = AppColors.borderGray,
     VoidCallback? onTap,
@@ -94,7 +94,7 @@ class AppCard extends StatelessWidget {
   /// 플랫 카드 (그림자 없음)
   factory AppCard.flat({
     required Widget child,
-    EdgeInsetsGeometry? padding = const EdgeInsets.all(AppSpacing.md),
+    EdgeInsetsGeometry? padding = const const EdgeInsets.all(AppSpacing.md),
     EdgeInsetsGeometry? margin,
     Color? backgroundColor = AppColors.cardBackgroundGray,
     VoidCallback? onTap,
@@ -114,7 +114,7 @@ class AppCard extends StatelessWidget {
   factory AppCard.selectable({
     required Widget child,
     required bool isSelected,
-    EdgeInsetsGeometry? padding = const EdgeInsets.all(AppSpacing.md),
+    EdgeInsetsGeometry? padding = const const EdgeInsets.all(AppSpacing.md),
     EdgeInsetsGeometry? margin,
     VoidCallback? onTap,
   }) {
@@ -122,7 +122,7 @@ class AppCard extends StatelessWidget {
       padding: padding,
       margin: margin,
       backgroundColor: isSelected
-          ? AppColors.primary.withOpacity(0.1)
+          ? AppColors.primary.withValues(alpha: 0.1)
           : AppColors.cardBackgroundWhite,
       elevation: isSelected ? 4 : 1,
       borderRadius: BorderRadius.circular(AppSpacing.md),

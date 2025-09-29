@@ -28,7 +28,7 @@ class TokenExchangeState {
       serverToken = null;
 
   /// 성공 상태
-  const TokenExchangeState.success(String token)
+  const TokenExchangeStateResult.success(String token)
     : isLoading = false,
       isSuccess = true,
       errorMessage = null,
@@ -98,7 +98,7 @@ class AuthController extends StateNotifier<TokenExchangeState> {
       // 서버 JWT로 교환
       final serverJWT = await _authRepository.exchangeServerToken(idToken);
 
-      state = TokenExchangeState.success(serverJWT);
+      state = TokenExchangeStateResult.success(serverJWT);
 
       if (kDebugMode) {}
     } catch (e) {

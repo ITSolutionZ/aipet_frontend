@@ -45,9 +45,12 @@ dependencies:
   image_picker: ^1.0.7
   logger: ^2.0.2+1
   sentry_flutter: ^9.6.0
+  sqflite: ^2.3.3
+  path: ^1.8.3
 
   mockito: ^5.4.4
   freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
   meta: any
 dev_dependencies:
   sentry_dart_plugin: ^3.1.1
@@ -56,8 +59,10 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   riverpod_generator: ^2.4.0
   freezed: ^2.5.7
+  json_serializable: ^6.8.0
   build_runner: ^2.4.13
   test: ^1.25.2
+  sqflite_common_ffi: ^2.3.3
 
   riverpod: any
 flutter:

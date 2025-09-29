@@ -18,7 +18,7 @@ class AuthConfigService {
       isMockMode ? AuthMode.mock : AuthMode.firebase;
 
   /// 토큰 만료 시간 (Mock 모드용)
-  static Duration get mockTokenExpiry => const Duration(hours: 24);
+  static Duration get mockTokenExpiry => Duration(hours: 24);
 
   /// 토큰 갱신 임계값
   static Duration get tokenRefreshThreshold => const Duration(minutes: 5);

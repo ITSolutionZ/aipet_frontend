@@ -38,7 +38,7 @@ class ContainerCard extends StatelessWidget {
     String? semanticLabel,
   }) {
     return ContainerCard(
-      padding: padding ?? const EdgeInsets.all(AppSpacing.md),
+      padding: padding ?? const const EdgeInsets.all(AppSpacing.md),
       backgroundColor: AppColors.pureWhite,
       borderRadius: AppRadius.medium,
       elevation: 2,
@@ -58,7 +58,7 @@ class ContainerCard extends StatelessWidget {
     String? semanticLabel,
   }) {
     return ContainerCard(
-      padding: padding ?? const EdgeInsets.all(AppSpacing.md),
+      padding: padding ?? const const EdgeInsets.all(AppSpacing.md),
       backgroundColor: backgroundColor ?? AppColors.pureWhite,
       borderColor: borderColor ?? AppColors.pointDark.withValues(alpha: 0.1),
       borderRadius: AppRadius.medium,
@@ -78,7 +78,7 @@ class ContainerCard extends StatelessWidget {
     String? semanticLabel,
   }) {
     return ContainerCard(
-      padding: padding ?? const EdgeInsets.all(AppSpacing.lg),
+      padding: padding ?? const const EdgeInsets.all(AppSpacing.lg),
       backgroundColor: backgroundColor ?? AppColors.pureWhite,
       borderRadius: AppRadius.large,
       elevation: 8,
@@ -97,7 +97,7 @@ class ContainerCard extends StatelessWidget {
     String? semanticLabel,
   }) {
     return ContainerCard(
-      padding: padding ?? const EdgeInsets.all(AppSpacing.md),
+      padding: padding ?? const const EdgeInsets.all(AppSpacing.md),
       backgroundColor: backgroundColor ?? AppColors.pureWhite,
       borderRadius: AppRadius.large,
       elevation: 4,
@@ -111,7 +111,7 @@ class ContainerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget card = Container(
       margin: margin,
-      padding: padding ?? const EdgeInsets.all(AppSpacing.md),
+      padding: padding ?? const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.pureWhite,
         borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.medium),

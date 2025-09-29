@@ -211,7 +211,7 @@ class MonitoringEvent {
   final Map<String, dynamic>? data;
   final DateTime timestamp;
 
-  MonitoringEvent({
+  const MonitoringEvent({
     required this.type,
     required this.severity,
     required this.message,

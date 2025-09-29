@@ -11,7 +11,7 @@ class GetSplashConfigUseCase {
     try {
       return await repository.getSplashConfig();
     } catch (error) {
-      return Failure(
+      return Result.failure(
         'スプラッシュ設定の取得に失敗しました: ${error.toString()}',
         exception: error is Exception ? error : Exception(error.toString()),
       );

@@ -4,7 +4,7 @@ import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart'
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 /// 테스트 전용 Mock 데이터 서비스
 ///
@@ -244,7 +244,7 @@ class TestMockService {
     return WalkSummary(
       todayWalks: todayWalks ?? 3,
       todayDistance: todayDistance ?? 2.5,
-      todayDuration: todayDuration ?? const Duration(hours: 1, minutes: 30),
+      todayDuration: todayDuration ?? Duration(hours: 1, minutes: 30),
       weeklyGoal: weeklyGoal ?? 20.0,
       weeklyProgress: weeklyProgress ?? 15.0,
     );

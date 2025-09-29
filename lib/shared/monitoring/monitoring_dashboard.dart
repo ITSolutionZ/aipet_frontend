@@ -391,7 +391,7 @@ class MonitoringMetric {
   final DateTime timestamp;
   final Map<String, dynamic> metadata;
 
-  MonitoringMetric({
+  const MonitoringMetric({
     required this.type,
     required this.name,
     required this.value,
@@ -407,7 +407,7 @@ class ErrorLog {
   final String? context;
   final DateTime timestamp;
 
-  ErrorLog({
+  const ErrorLog({
     required this.error,
     required this.stackTrace,
     this.context,
@@ -422,7 +422,7 @@ class SecurityAlert {
   final DateTime timestamp;
   final SecuritySeverity severity;
 
-  SecurityAlert({
+  const SecurityAlert({
     required this.type,
     required this.message,
     required this.timestamp,
@@ -441,7 +441,7 @@ class DashboardStatus {
   final Duration uptime;
   final DateTime lastUpdated;
 
-  DashboardStatus({
+  const DashboardStatus({
     required this.isHealthy,
     required this.totalMetrics,
     required this.recentErrors,

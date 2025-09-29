@@ -131,7 +131,7 @@ class _PetStatusSelectionDialogContentState
     return Dialog(
       child: Container(
         width: MediaQuery.of(context).size.width * 0.9,
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +143,7 @@ class _PetStatusSelectionDialogContentState
                   radius: 25,
                   backgroundImage: AssetImage(widget.petInfo['imagePath']),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,12 +167,12 @@ class _PetStatusSelectionDialogContentState
               child: SingleChildScrollView(
                 child: Column(
                   children: widget.statusOptions.map((statusOption) {
-                    final isSelected = _selectedStatuses.contains(
+                    final isSelected = state.selectedStatuses.contains(
                       statusOption['id'],
                     );
 
                     return Card(
-                      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                      margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
                       child: ExpansionTile(
                         leading: Icon(
                           statusOption['icon'],
@@ -202,7 +202,7 @@ class _PetStatusSelectionDialogContentState
                           children: [
                             if (isSelected)
                               Container(
-                                padding: const EdgeInsets.symmetric(
+                                padding: const const EdgeInsets.symmetric(
                                   horizontal: AppSpacing.xs,
                                   vertical: 2,
                                 ),
@@ -223,11 +223,11 @@ class _PetStatusSelectionDialogContentState
                                   ),
                                 ),
                               ),
-                            const SizedBox(width: AppSpacing.xs),
+                            const const SizedBox(width: AppSpacing.xs),
                             InkWell(
                               onTap: () {
                                 if (!isSelected &&
-                                    _selectedStatuses.length >= 2) {
+                                    state.selectedStatuses.length >= 2) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text('最大2つまで選択できます'),
@@ -237,16 +237,11 @@ class _PetStatusSelectionDialogContentState
                                   return;
                                 }
 
-                                setState(() {
-                                  if (isSelected) {
-                                    _selectedStatuses.remove(
-                                      statusOption['id'],
-                                    );
-                                    _statusValues.remove(statusOption['id']);
-                                  } else {
-                                    _selectedStatuses.add(statusOption['id']);
-                                  }
-                                });
+                                // 상태 토글 로직은 상위 위젯에서 처리
+                                widget.onStatusUpdated(
+                                  widget.selectedStatuses,
+                                  widget.statusValues,
+                                );
                               },
                               child: Container(
                                 width: 24,
@@ -277,11 +272,12 @@ class _PetStatusSelectionDialogContentState
                         children: [
                           if (isSelected)
                             Padding(
-                              padding: const EdgeInsets.all(AppSpacing.md),
+                              padding: const const EdgeInsets.all(AppSpacing.md),
                               child: Column(
                                 children: [
                                   DropdownButtonFormField<String>(
-                                    value: _statusValues[statusOption['id']],
+                                    value:
+                                        state.statusValues[statusOption['id']],
                                     decoration: InputDecoration(
                                       labelText: '状態選択',
                                       border: OutlineInputBorder(
@@ -302,10 +298,11 @@ class _PetStatusSelectionDialogContentState
                                             .toList(),
                                     onChanged: (String? value) {
                                       if (value != null) {
-                                        setState(() {
-                                          _statusValues[statusOption['id']] =
-                                              value;
-                                        });
+                                        // 상태 값 업데이트는 상위 위젯에서 처리
+                                        widget.onStatusUpdated(
+                                          widget.selectedStatuses,
+                                          widget.statusValues,
+                                        );
                                       }
                                     },
                                   ),
@@ -339,7 +336,10 @@ class _PetStatusSelectionDialogContentState
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      widget.onStatusUpdated(_selectedStatuses, _statusValues);
+                      widget.onStatusUpdated(
+                        state.selectedStatuses,
+                        state.statusValues,
+                      );
                       context.pop();
                     },
                     style: ElevatedButton.styleFrom(

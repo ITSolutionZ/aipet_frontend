@@ -11,7 +11,7 @@ class CurrentWeightSummaryCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -29,7 +29,7 @@ class CurrentWeightSummaryCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSpacing.sm),
+                padding: const const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: AppColors.pointGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -40,7 +40,7 @@ class CurrentWeightSummaryCard extends StatelessWidget {
                   size: 20,
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
               Text(
                 '現在の体重',
                 style: AppFonts.titleLarge.copyWith(
@@ -72,7 +72,7 @@ class CurrentWeightSummaryCard extends StatelessWidget {
   Widget _buildWeightInfo(String label, String value, Color color) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -89,7 +89,7 @@ class CurrentWeightSummaryCard extends StatelessWidget {
             ),
             child: Icon(_getIconForLabel(label), color: color, size: 20),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

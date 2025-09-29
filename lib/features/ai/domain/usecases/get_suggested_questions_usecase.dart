@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 추천 질문 조회 UseCase
 class GetSuggestedQuestionsUseCase {
@@ -20,12 +20,12 @@ class GetSuggestedQuestionsUseCase {
         categoryId: params.category?.id,
       );
       if (questionsResult.isSuccess) {
-        return ResultFactory.success(questionsResult.dataOrNull!, '推奨質問を取得しました');
+        return Result.success(questionsResult.dataOrNull!, '推奨質問を取得しました');
       } else {
-        return ResultFactory.failure(questionsResult.errorOrNull ?? '推奨質問の取得に失敗しました');
+        return Result.failure(questionsResult.errorOrNull ?? '推奨質問の取得に失敗しました');
       }
     } catch (error) {
-      return ResultFactory.failure<List<AiSuggestedQuestionEntity>>(
+      return Result.failure<List<AiSuggestedQuestionEntity>>(
         '推奨質問の取得に失敗しました: ${error.toString()}',
       );
     }
@@ -47,12 +47,12 @@ class GetSuggestedQuestionsUseCase {
         category: category,
         pet: pet,
       );
-      return ResultFactory.success(
+      return Result.success(
         questions,
         'カスタマイズされた推奨質問を取得しました',
       );
     } catch (error) {
-      return ResultFactory.failure<List<AiSuggestedQuestionEntity>>(
+      return Result.failure<List<AiSuggestedQuestionEntity>>(
         '推奨質問の取得に失敗しました (personalized): ${error.toString()}',
       );
     }

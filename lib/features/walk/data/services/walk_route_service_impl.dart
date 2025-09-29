@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:aipet_frontend/features/onboarding/domain/entities/walk_location_entity.dart';
-import 'package:aipet_frontend/features/onboarding/domain/services/walk_route_service.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/services/walk_route_service.dart';
 
 /// 디코딩 결과를 담는 클래스
 class _DecodeResult {
@@ -117,7 +117,7 @@ class WalkRouteServiceImpl implements WalkRouteService {
         WalkLocation(
           latitude: latitude,
           longitude: longitude,
-          timestamp: now.add(Duration(minutes: locations.length)),
+          timestamp: now.add(const Duration(minutes: locations.length)),
         ),
       );
     }

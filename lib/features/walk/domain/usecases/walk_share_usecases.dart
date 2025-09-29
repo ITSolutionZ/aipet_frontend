@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/shared/repositories/walk_share_repository.dart';
+import 'package:aipet_frontend/features/walk/domain/repositories/walk_share_repository.dart';
 
 /// 클립보드 복사 UseCase
 class CopyToClipboardUseCase {

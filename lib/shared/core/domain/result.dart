@@ -50,36 +50,6 @@ class Result<T> {
     throw error ?? Exception(message);
   }
 
-  /// 결과에 따라 다른 함수 실행
-  R when<R>({
-    required R Function(T data) success,
-    required R Function(String message, Exception? error) failure,
-  }) {
-    if (isSuccess) {
-      return success(data as T);
-    } else {
-      return failure(message, error);
-    }
-  }
-
-  /// 성공 시에만 함수 실행
-  Result<T> onSuccess<R>(R Function(T data) callback) {
-    if (isSuccess && data != null) {
-      callback(data as T);
-    }
-    return this;
-  }
-
-  /// 실패 시에만 함수 실행
-  Result<T> onFailure<R>(
-    R Function(String message, Exception? error) callback,
-  ) {
-    if (!isSuccess) {
-      callback(message, error);
-    }
-    return this;
-  }
-
   /// 사용자 친화적인 에러 메시지 생성
   static String _getUserFriendlyErrorMessage(Exception exception) {
     final message = exception.toString().toLowerCase();
@@ -120,4 +90,19 @@ class Result<T> {
   int get hashCode {
     return Object.hash(isSuccess, message, data, error);
   }
+}
+
+/// 실패 결과를 빠르게 생성하는 헬퍼 함수
+Result<T> Failure<T>(String message, [Exception? error]) =>
+    Result<T>.failure(message, error);
+
+/// Result 생성 팩토리 클래스
+class Result {
+  /// 성공 결과 생성
+  static Result<T> success<T>(T data, [String? message]) =>
+      Result.success(message ?? 'Success', data);
+
+  /// 실패 결과 생성
+  static Result<T> failure<T>(String message, [Exception? error]) =>
+      Result.failure(message, error);
 }

@@ -13,7 +13,8 @@ import 'package:aipet_frontend/features/scheduling/presentation/presentation.dar
 import 'package:aipet_frontend/features/scheduling/presentation/screens/today_appointments_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/settings_screens.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/features/walk/presentation/screens/walk_screens.dart';
+import 'package:aipet_frontend/features/walk/presentation/screens/walk_detail_screen.dart';
+import 'package:aipet_frontend/features/walk/presentation/screens/walk_list_screen.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart';
 import 'package:aipet_frontend/shared/widgets/navigation/main_navigation_screen.dart';
 import 'package:flutter/material.dart';
@@ -174,6 +175,8 @@ class ShellRoutes {
                       final amount =
                           state.uri.queryParameters['amount'] ?? '200ml';
                       return WateringScheduleEditScreen(
+                        scheduleId:
+                            state.uri.queryParameters['scheduleId'] ?? '',
                         mealType: mealType,
                         currentTime: time,
                         currentAmount: amount,

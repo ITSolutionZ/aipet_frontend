@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/ai/domain/domain.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// ⭐ 즐겨찾기 토글 UseCase
 class ToggleFavoriteUseCase {
@@ -11,12 +11,12 @@ class ToggleFavoriteUseCase {
     try {
       final result = await _repository.toggleFavoriteMessage(params.messageId);
       if (result.isSuccess) {
-        return ResultFactory.success(null);
+        return Result.success(null);
       } else {
-        return ResultFactory.failure(result.errorOrNull ?? 'Unknown error');
+        return Result.failure(result.errorOrNull ?? 'Unknown error');
       }
     } catch (e) {
-      return ResultFactory.failure('즐겨찾기 설정 중 오류가 발생했습니다: $e');
+      return Result.failure('즐겨찾기 설정 중 오류가 발생했습니다: $e');
     }
   }
 }

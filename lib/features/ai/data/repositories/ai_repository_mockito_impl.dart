@@ -9,8 +9,8 @@ import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/shared.dart' hide Result;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +22,7 @@ class AiRepositoryMockitoImpl implements AiRepository {
   final OpenAIService _openAIService; // 실제 OpenAI API 사용
   final Ref ref;
 
-  AiRepositoryMockitoImpl({
+  const AiRepositoryMockitoImpl({
     required OpenAIService openAIService,
     required this.ref,
   }) : _openAIService = openAIService;
@@ -53,10 +53,10 @@ class AiRepositoryMockitoImpl implements AiRepository {
         timestamp: DateTime.now(),
       );
 
-      return ResultFactory.success(aiMessage, 'AI 응답이 생성되었습니다').toFuture();
+      return Result.success(aiMessage, 'AI 응답이 생성되었습니다').toFuture();
     } catch (error) {
       AiLogger.logApiError(error.toString());
-      return ResultFactory.failure<AiMessageEntity>(
+      return Result.failure<AiMessageEntity>(
         'AI 응답 생성에 실패했습니다: ${error.toString()}',
       ).toFuture();
     }
@@ -88,13 +88,13 @@ class AiRepositoryMockitoImpl implements AiRepository {
         timestamp: DateTime.now(),
       );
 
-      return ResultFactory.success(
+      return Result.success(
         aiMessage,
         '펫 컨텍스트와 함께 AI 응답이 생성되었습니다',
       ).toFuture();
     } catch (error) {
       AiLogger.logApiError(error.toString());
-      return ResultFactory.failure<AiMessageEntity>(
+      return Result.failure<AiMessageEntity>(
         'AI 응답 생성에 실패했습니다: ${error.toString()}',
       ).toFuture();
     }
@@ -301,7 +301,7 @@ class AiRepositoryMockitoImpl implements AiRepository {
         id: 'session-1',
         title: 'ペットの健康相談',
         messages: [],
-        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+        createdAt: DateTime.now().subtract(Duration(hours: 1)),
         updatedAt: DateTime.now().subtract(const Duration(minutes: 5)),
         petId: 'pet-1',
       ),
@@ -350,14 +350,14 @@ class AiRepositoryMockitoImpl implements AiRepository {
           id: 'msg-1',
           content: '便利な情報',
           type: MessageType.assistant,
-          timestamp: DateTime.now().subtract(const Duration(days: 1)),
+          timestamp: DateTime.now().subtract(Duration(days: 1)),
         ),
         category: category ?? 'general',
         petId: petId,
         petName: 'Mock Pet',
         userNote: '便利な情報',
-        createdAt: DateTime.now().subtract(const Duration(days: 1)),
-        updatedAt: DateTime.now().subtract(const Duration(days: 1)),
+        createdAt: DateTime.now().subtract(Duration(days: 1)),
+        updatedAt: DateTime.now().subtract(Duration(days: 1)),
       ),
     ];
   }
@@ -370,8 +370,8 @@ class AiRepositoryMockitoImpl implements AiRepository {
         answer: '定期的な健康診断が重要です',
         categoryId: 'health',
         categoryName: '健康',
-        createdAt: DateTime.now().subtract(const Duration(days: 2)),
-        originalTimestamp: DateTime.now().subtract(const Duration(days: 2)),
+        createdAt: DateTime.now().subtract(Duration(days: 2)),
+        originalTimestamp: DateTime.now().subtract(Duration(days: 2)),
       ),
     ];
   }
@@ -389,8 +389,8 @@ class AiRepositoryMockitoImpl implements AiRepository {
         petId: petId,
         petName: 'Mock Pet',
         messages: [],
-        createdAt: DateTime.now().subtract(const Duration(hours: 2)),
-        updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
+        createdAt: DateTime.now().subtract(Duration(hours: 2)),
+        updatedAt: DateTime.now().subtract(Duration(hours: 2)),
         messageCount: 0,
         hasFavorites: false,
       ),
@@ -411,7 +411,7 @@ class AiRepositoryMockitoImpl implements AiRepository {
         pet: null, // PetProfileEntity는 null로 설정
         isManualSaved: onlyManualSaved ?? false,
         messageCount: _getMockChatHistory().length,
-        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+        createdAt: DateTime.now().subtract(Duration(hours: 1)),
       ),
     ];
   }
@@ -425,7 +425,7 @@ class AiRepositoryMockitoImpl implements AiRepository {
     int? offset,
   }) async {
     final messages = _getMockChatHistory();
-    return ResultFactory.success(messages);
+    return Result.success(messages);
   }
 
   /// 메시지 분석 (UseCase용)
@@ -440,7 +440,7 @@ class AiRepositoryMockitoImpl implements AiRepository {
       analysis: 'Mock 메시지 분석 결과',
       topics: ['Mock'],
     );
-    return ResultFactory.success(analysis);
+    return Result.success(analysis);
   }
 
   /// 파라미터와 함께 메시지 전송
@@ -457,7 +457,7 @@ class AiRepositoryMockitoImpl implements AiRepository {
   /// 즐겨찾기 토글
   @override
   Future<Result<bool>> toggleFavoriteMessage(String messageId) async {
-    return ResultFactory.success(true);
+    return Result.success(true);
   }
 
   /// 파라미터와 함께 제안 질문 가져오기
@@ -465,6 +465,6 @@ class AiRepositoryMockitoImpl implements AiRepository {
   Future<Result<List<AiSuggestedQuestionEntity>>>
   getSuggestedQuestionsWithParams({String? petId, String? categoryId}) async {
     final suggestions = await getSuggestedQuestions();
-    return ResultFactory.success(suggestions);
+    return Result.success(suggestions);
   }
 }

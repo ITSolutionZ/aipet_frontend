@@ -201,7 +201,7 @@ class _WeightInputState extends ConsumerState<WeightInput> {
             ],
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding: const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,
                 vertical: AppSpacing.lg,
               ),

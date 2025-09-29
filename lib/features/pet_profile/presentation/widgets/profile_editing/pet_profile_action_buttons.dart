@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_form_controller.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,7 +32,7 @@ class PetProfileActionButtons extends ConsumerWidget {
     PetProfileFormController formController,
   ) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       child: CommonButton(
         text: '편집',
         icon: Icons.edit,
@@ -50,14 +50,14 @@ class PetProfileActionButtons extends ConsumerWidget {
     PetProfileFormController formController,
   ) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       child: Column(
         children: [
           // 에러 메시지 표시
           if (formState.errorMessage != null) ...[
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.sm),
+              padding: const const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
                 color: AppColors.pointPink.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppRadius.small),
@@ -70,7 +70,7 @@ class PetProfileActionButtons extends ConsumerWidget {
                     color: AppColors.pointPink,
                     size: 20,
                   ),
-                  const SizedBox(width: AppSpacing.xs),
+                  const const SizedBox(width: AppSpacing.xs),
                   Expanded(
                     child: Text(
                       formState.errorMessage!,
@@ -102,7 +102,7 @@ class PetProfileActionButtons extends ConsumerWidget {
                         },
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
 
               // 저장 버튼
               Expanded(

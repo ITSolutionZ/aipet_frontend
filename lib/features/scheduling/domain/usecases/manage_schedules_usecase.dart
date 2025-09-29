@@ -13,11 +13,11 @@ class CreateScheduleUseCase {
       // 스케줄 충돌 확인
       final hasConflict = await repository.hasScheduleConflict(schedule);
       if (hasConflict) {
-        return Result.failure('スケジュールの時間が重複しています。');
+        return const Failure('スケジュールの時間が重複しています。');
       }
 
       final createdSchedule = await repository.createSchedule(schedule);
-      return Result.success('스케줄이 생성되었습니다', createdSchedule);
+      return Success(createdSchedule);
     } catch (error) {
       return Result.failure('스케줄 생성 실패: $error');
     }
@@ -35,11 +35,11 @@ class UpdateScheduleUseCase {
       // 스케줄 충돌 확인 (자신 제외)
       final hasConflict = await repository.hasScheduleConflict(schedule);
       if (hasConflict) {
-        return Result.failure('スケジュールの時間が重複しています。');
+        return const Failure('スケジュールの時間が重複しています。');
       }
 
       final updatedSchedule = await repository.updateSchedule(schedule);
-      return Result.success('스케줄이 업데이트되었습니다', updatedSchedule);
+      return Success(updatedSchedule);
     } catch (error) {
       return Result.failure('스케줄 업데이트 실패: $error');
     }
@@ -128,7 +128,7 @@ class CreateRecurringScheduleUseCase {
         startDateTime: occurrence,
         endDateTime: baseSchedule.duration != null
             ? occurrence.add(baseSchedule.duration!)
-            : occurrence.add(const Duration(hours: 1)),
+            : occurrence.add(Duration(hours: 1)),
         createdAt: DateTime.now(),
       );
       schedules.add(schedule);

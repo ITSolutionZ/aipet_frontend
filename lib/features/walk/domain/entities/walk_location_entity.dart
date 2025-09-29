@@ -73,6 +73,20 @@ class WalkLocation {
     );
   }
 
+  /// WalkLocation을 JSON으로 변환
+  Map<String, dynamic> toJson() {
+    return {
+      'latitude': latitude,
+      'longitude': longitude,
+      'timestamp': timestamp.toIso8601String(),
+      if (altitude != null) 'altitude': altitude,
+      if (accuracy != null) 'accuracy': accuracy,
+      if (speed != null) 'speed': speed,
+      if (heading != null) 'heading': heading,
+      if (address != null) 'address': address,
+    };
+  }
+
   /// 복사본 생성
   WalkLocation copyWith({
     double? latitude,

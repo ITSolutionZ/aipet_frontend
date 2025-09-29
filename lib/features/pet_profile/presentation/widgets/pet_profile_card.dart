@@ -22,10 +22,14 @@ class PetProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+    return Semantics(
+      button: onTap != null,
+      label: '$label: $value',
+      hint: onTap != null ? 'タップして編集' : null,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+        padding: const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -55,7 +59,7 @@ class PetProfileCard extends StatelessWidget {
                   size: 20,
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
             ],
             Expanded(
               child: Column(
@@ -81,6 +85,7 @@ class PetProfileCard extends StatelessWidget {
             if (trailing != null) trailing!,
           ],
         ),
+        ),
       ),
     );
   }
@@ -104,7 +109,7 @@ class EditableAttributeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -248,7 +253,7 @@ class PetProfileHeader extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(width: AppSpacing.lg),
+        const const SizedBox(width: AppSpacing.lg),
 
         // 이름과 종류
         Expanded(
@@ -266,7 +271,7 @@ class PetProfileHeader extends StatelessWidget {
                         ),
                       ),
                       if (!isEditMode) ...[
-                        const SizedBox(width: AppSpacing.sm),
+                        const const SizedBox(width: AppSpacing.sm),
                         const Icon(
                           Icons.edit,
                           size: 20,

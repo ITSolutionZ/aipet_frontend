@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
 import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart'
     as optimizer;
-import 'package:aipet_frontend/shared/domain/entities/walk_location_entity.dart';
-import 'package:aipet_frontend/shared/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/shared/domain/repositories/walk_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

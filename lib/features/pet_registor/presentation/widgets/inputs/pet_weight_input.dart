@@ -141,7 +141,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('0.5kg ~ 50.0kg 사이의 값을 입력해주세요'),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -194,7 +194,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
                   color: AppColors.pointGray.withValues(alpha: 0.5),
                 ),
                 suffixIcon: Padding(
-                  padding: const EdgeInsets.only(right: AppSpacing.md),
+                  padding: const const EdgeInsets.only(right: AppSpacing.md),
                   child: Center(
                     widthFactor: 0.0,
                     child: Text(
@@ -207,7 +207,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
                   ),
                 ),
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
+                contentPadding: const const EdgeInsets.symmetric(
                   vertical: AppSpacing.md,
                   horizontal: AppSpacing.md,
                 ),

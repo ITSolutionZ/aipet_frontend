@@ -13,7 +13,7 @@ class AiConfigService {
   final AiCacheService _cacheService;
 
   /// 생성자 - 의존성 주입
-  AiConfigService({
+  const AiConfigService({
     required AiDataService dataService,
     required AiCacheService cacheService,
   }) : _dataService = dataService,

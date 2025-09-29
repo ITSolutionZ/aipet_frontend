@@ -74,6 +74,16 @@ class VideoBookmarkEntity {
   @override
   int get hashCode => id.hashCode;
 
+  /// 표시용 라벨 (title과 동일하지만 호환성을 위해 별도 제공)
+  String get displayLabel => title;
+
+  /// 포맷된 시간 (MM:SS 형식)
+  String get formattedTime {
+    final minutes = positionSec ~/ 60;
+    final seconds = positionSec % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
   @override
   String toString() {
     return 'VideoBookmarkEntity(id: $id, videoId: $videoId, title: $title, positionSec: $positionSec)';

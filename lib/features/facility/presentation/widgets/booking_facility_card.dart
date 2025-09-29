@@ -23,7 +23,7 @@ class BookingFacilityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCard(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -45,7 +45,7 @@ class BookingFacilityCard extends StatelessWidget {
                         color: AppColors.cardBackgroundGray,
                         borderRadius: BorderRadius.circular(AppSpacing.sm),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.business,
                         color: AppColors.textSecondary,
                       ),
@@ -60,13 +60,13 @@ class BookingFacilityCard extends StatelessWidget {
                     color: AppColors.cardBackgroundGray,
                     borderRadius: BorderRadius.circular(AppSpacing.sm),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.business,
                     color: AppColors.textSecondary,
                     size: 32,
                   ),
                 ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
 
               // 시설 정보
               Expanded(
@@ -84,12 +84,12 @@ class BookingFacilityCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.location_on_outlined,
                           size: 16,
                           color: AppColors.textSecondary,
                         ),
-                        const SizedBox(width: AppSpacing.xs),
+                        const const SizedBox(width: AppSpacing.xs),
                         Expanded(
                           child: Text(
                             facilityAddress,
@@ -105,12 +105,12 @@ class BookingFacilityCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.phone_outlined,
                           size: 16,
                           color: AppColors.textSecondary,
                         ),
-                        const SizedBox(width: AppSpacing.xs),
+                        const const SizedBox(width: AppSpacing.xs),
                         Text(
                           facilityPhoneNumber,
                           style: AppTextStyles.bodySmall.copyWith(

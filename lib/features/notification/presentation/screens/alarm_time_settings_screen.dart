@@ -73,7 +73,7 @@ class _AlarmTimeSettingsScreenState
           backgroundColor: AppColors.pointOffWhite,
           appBar: const SoftGradientDrawerAppBar(title: 'アラーム時間設定'),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            padding: const const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -170,7 +170,7 @@ class _AlarmTimeSettingsScreenState
   }) {
     return GlassCard(
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: const const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.md,
         ),
@@ -187,7 +187,7 @@ class _AlarmTimeSettingsScreenState
           style: TextStyle(fontSize: 14, color: Colors.grey[600]),
         ),
         trailing: Container(
-          padding: const EdgeInsets.symmetric(
+          padding: const const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
           ),

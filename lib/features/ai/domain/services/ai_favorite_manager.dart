@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/ai/domain/domain.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 
 /// ⭐ AI 즐겨찾기 관리 서비스
@@ -32,13 +32,13 @@ class AiFavoriteManager {
     try {
       // 이미 즐겨찾기에 있는지 확인
       if (currentFavoriteIds.contains(message.id)) {
-        return ResultFactory.failure('이미 즐겨찾기에 추가된 메시지입니다');
+        return Result.failure('이미 즐겨찾기에 추가된 메시지입니다');
       }
 
       // 유효성 검증
       final validationResult = _validateForFavorite(message, userQuestion);
       if (!validationResult.isSuccess) {
-        return ResultFactory.failure(
+        return Result.failure(
           validationResult.errorOrNull ?? 'Validation failed',
         );
       }
@@ -93,12 +93,12 @@ class AiFavoriteManager {
         );
       }
 
-      return ResultFactory.success(result, result.message);
+      return Result.success(result, result.message);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error adding to favorites: $error\n$stackTrace');
       }
-      return ResultFactory.failure('즐겨찾기 추가 중 오류 발생: $error');
+      return Result.failure('즐겨찾기 추가 중 오류 발생: $error');
     }
   }
 
@@ -116,7 +116,7 @@ class AiFavoriteManager {
     try {
       // 즐겨찾기에 있는지 확인
       if (!currentFavoriteIds.contains(messageId)) {
-        return ResultFactory.failure('즐겨찾기에 없는 메시지입니다');
+        return Result.failure('즐겨찾기에 없는 메시지입니다');
       }
 
       // 제거할 QA 항목 찾기
@@ -146,14 +146,14 @@ class AiFavoriteManager {
         );
       }
 
-      return ResultFactory.success(result, result.message);
+      return Result.success(result, result.message);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint(
           '[$_tag] Error removing from favorites: $error\n$stackTrace',
         );
       }
-      return ResultFactory.failure('즐겨찾기 제거 중 오류 발생: $error');
+      return Result.failure('즐겨찾기 제거 중 오류 발생: $error');
     }
   }
 
@@ -174,9 +174,9 @@ class AiFavoriteManager {
         debugPrint('[$_tag] 🗑️ All favorites cleared');
       }
 
-      return ResultFactory.success(result, result.message);
+      return Result.success(result, result.message);
     } catch (error) {
-      return ResultFactory.failure('즐겨찾기 전체 삭제 중 오류 발생: $error');
+      return Result.failure('즐겨찾기 전체 삭제 중 오류 발생: $error');
     }
   }
 
@@ -226,7 +226,7 @@ class AiFavoriteManager {
         );
       }
 
-      return ResultFactory.success(
+      return Result.success(
         filteredList,
         'Favorites filtered successfully',
       );
@@ -234,7 +234,7 @@ class AiFavoriteManager {
       if (kDebugMode) {
         debugPrint('[$_tag] Error searching favorites: $error\n$stackTrace');
       }
-      return ResultFactory.failure('즐겨찾기 검색 중 오류 발생: $error');
+      return Result.failure('즐겨찾기 검색 중 오류 발생: $error');
     }
   }
 
@@ -347,7 +347,7 @@ class AiFavoriteManager {
         }
       }
 
-      return ResultFactory.success(
+      return Result.success(
         validationResult,
         'Favorite validation completed',
       );
@@ -355,7 +355,7 @@ class AiFavoriteManager {
       if (kDebugMode) {
         debugPrint('[$_tag] Error validating favorites: $error\n$stackTrace');
       }
-      return ResultFactory.failure('즐겨찾기 검증 중 오류 발생: $error');
+      return Result.failure('즐겨찾기 검증 중 오류 발생: $error');
     }
   }
 
@@ -365,18 +365,18 @@ class AiFavoriteManager {
     String userQuestion,
   ) {
     if (message.type != MessageType.assistant) {
-      return ResultFactory.failure('AI 응답 메시지만 즐겨찾기에 추가할 수 있습니다');
+      return Result.failure('AI 응답 메시지만 즐겨찾기에 추가할 수 있습니다');
     }
 
     if (message.content.trim().length < 10) {
-      return ResultFactory.failure('메시지가 너무 짧아 즐겨찾기에 적합하지 않습니다');
+      return Result.failure('메시지가 너무 짧아 즐겨찾기에 적합하지 않습니다');
     }
 
     if (userQuestion.trim().length < 3) {
-      return ResultFactory.failure('질문이 너무 짧습니다');
+      return Result.failure('질문이 너무 짧습니다');
     }
 
-    return ResultFactory.success(true, 'Valid for favorite');
+    return Result.success(true, 'Valid for favorite');
   }
 
   static String? _getTopEntry(Map<String, int> distribution) {

@@ -261,17 +261,17 @@ class CommonButton extends StatelessWidget {
   EdgeInsets _getPadding() {
     switch (size) {
       case ButtonSize.small:
-        return const EdgeInsets.symmetric(
+        return const const EdgeInsets.symmetric(
           horizontal: AppSpacing.sm,
           vertical: AppSpacing.xs,
         );
       case ButtonSize.medium:
-        return const EdgeInsets.symmetric(
+        return const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         );
       case ButtonSize.large:
-        return const EdgeInsets.symmetric(
+        return const const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.md,
         );

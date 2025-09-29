@@ -74,7 +74,7 @@ class _NotificationListScreenState
 
           // 필터 섹션 제목
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: const Text(
               '通知の種類',
               style: TextStyle(

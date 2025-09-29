@@ -48,7 +48,7 @@ class WeightChartCard extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
+      padding: const const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xl,
       ), // 좌우 패딩 줄여서 차트 너비 확대
@@ -69,7 +69,7 @@ class WeightChartCard extends ConsumerWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSpacing.sm),
+                padding: const const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: AppColors.pointBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -80,7 +80,7 @@ class WeightChartCard extends ConsumerWidget {
                   size: 20,
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
               Text(
                 '体重推移',
                 style: AppFonts.titleLarge.copyWith(
@@ -96,21 +96,21 @@ class WeightChartCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildLegendItem('今年', AppColors.pointGreen),
-              const SizedBox(width: AppSpacing.lg),
+              const const SizedBox(width: AppSpacing.lg),
               _buildLegendItem('去年', AppColors.pointBrown),
             ],
           ),
           const SizedBox(height: AppSpacing.lg),
           Container(
             height: 320, // 높이 더욱 증가 (280 → 320)
-            padding: const EdgeInsets.symmetric(
+            padding: const const EdgeInsets.symmetric(
               horizontal: 8.0,
               vertical: 20.0,
             ), // 좌우 패딩 줄이고 상하 패딩 유지
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.small),
               child: Padding(
-                padding: const EdgeInsets.all(
+                padding: const const EdgeInsets.all(
                   2.0,
                 ), // 차트 주변 여백 더 감소하여 그래프 영역 최대화
                 child: _buildWeightChart(
@@ -138,7 +138,7 @@ class WeightChartCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(2),
           ),
         ),
-        const SizedBox(width: AppSpacing.xs),
+        const const SizedBox(width: AppSpacing.xs),
         Text(
           label,
           style: AppFonts.bodySmall.copyWith(
@@ -251,7 +251,7 @@ class WeightChartCard extends ConsumerWidget {
                 touchTooltipData: BarTouchTooltipData(
                   tooltipBorder: BorderSide.none,
                   tooltipRoundedRadius: 8,
-                  tooltipPadding: const EdgeInsets.all(8),
+                  tooltipPadding: const const EdgeInsets.all(8),
                   fitInsideHorizontally: true,
                   fitInsideVertically: true,
                   getTooltipItem: (group, groupIndex, rod, rodIndex) {
@@ -351,7 +351,7 @@ class WeightChartCard extends ConsumerWidget {
           ),
           // 라인 차트 (현재 연도 데이터)
           Padding(
-            padding: const EdgeInsets.only(
+            padding: const const EdgeInsets.only(
               left: 50,
               bottom: 32,
               right: 2,
@@ -396,7 +396,7 @@ class WeightChartCard extends ConsumerWidget {
                   touchTooltipData: LineTouchTooltipData(
                     tooltipBorder: BorderSide.none,
                     tooltipRoundedRadius: 8,
-                    tooltipPadding: const EdgeInsets.all(8),
+                    tooltipPadding: const const EdgeInsets.all(8),
                     fitInsideHorizontally: true,
                     fitInsideVertically: true,
                     getTooltipItems: (List<LineBarSpot> touchedBarSpots) {

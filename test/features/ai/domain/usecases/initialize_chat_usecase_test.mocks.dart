@@ -9,8 +9,7 @@ import 'package:aipet_frontend/features/ai/domain/entities/entities.dart'
     as _i2;
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart'
     as _i3;
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
-    as _i7;
+import 'package:aipet_frontend/shared/domain/entities/entities.dart' as _i7;
 import 'package:aipet_frontend/shared/foundation/result/app_result.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;

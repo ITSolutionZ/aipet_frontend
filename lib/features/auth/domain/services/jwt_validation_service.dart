@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 
 /// 🔐 JWT 토큰 구조 검증 서비스
@@ -16,7 +16,7 @@ class JwtValidationService {
   static Result<JwtValidationResult> validateJwtStructure(String? token) {
     try {
       if (token == null || token.isEmpty) {
-        return ResultFactory.failure('토큰이 제공되지 않았습니다');
+        return Result.failure('토큰이 제공되지 않았습니다');
       }
 
       // 1. 기본 형식 검증: JWT는 3개의 부분으로 구성 (header.payload.signature)
@@ -25,20 +25,20 @@ class JwtValidationService {
         if (kDebugMode) {
           debugPrint('[$_tag] ❌ JWT 형식 오류: ${parts.length}개 부분 (3개 필요)');
         }
-        return ResultFactory.failure('잘못된 JWT 형식: ${parts.length}개 부분 (3개 필요)');
+        return Result.failure('잘못된 JWT 형식: ${parts.length}개 부분 (3개 필요)');
       }
 
       // 2. 각 부분이 비어있지 않은지 확인
       for (int i = 0; i < parts.length; i++) {
         if (parts[i].isEmpty) {
-          return ResultFactory.failure('JWT의 ${i + 1}번째 부분이 비어있습니다');
+          return Result.failure('JWT의 ${i + 1}번째 부분이 비어있습니다');
         }
       }
 
       // 3. Header 검증
       final headerResult = _validateJwtPart(parts[0], 'header');
       if (!headerResult.isSuccess) {
-        return ResultFactory.failure(
+        return Result.failure(
           'Header 검증 실패: ${headerResult.errorOrNull ?? 'Unknown error'}',
         );
       }
@@ -46,7 +46,7 @@ class JwtValidationService {
       // 4. Payload 검증
       final payloadResult = _validateJwtPart(parts[1], 'payload');
       if (!payloadResult.isSuccess) {
-        return ResultFactory.failure(
+        return Result.failure(
           'Payload 검증 실패: ${payloadResult.errorOrNull ?? 'Unknown error'}',
         );
       }
@@ -54,7 +54,7 @@ class JwtValidationService {
       // 5. Signature 검증 (길이 및 형식만)
       final signatureResult = _validateSignature(parts[2]);
       if (!signatureResult.isSuccess) {
-        return ResultFactory.failure(
+        return Result.failure(
           'Signature 검증 실패: ${signatureResult.errorOrNull ?? 'Unknown error'}',
         );
       }
@@ -62,11 +62,11 @@ class JwtValidationService {
       // 6. Header 내용 검증
       final header = headerResult.dataOrNull!;
       if (!header.containsKey('alg') || !header.containsKey('typ')) {
-        return ResultFactory.failure('Header에 필수 필드(alg, typ)가 없습니다');
+        return Result.failure('Header에 필수 필드(alg, typ)가 없습니다');
       }
 
       if (header['typ'] != 'JWT') {
-        return ResultFactory.failure('토큰 타입이 JWT가 아닙니다: ${header['typ']}');
+        return Result.failure('토큰 타입이 JWT가 아닙니다: ${header['typ']}');
       }
 
       // 7. Payload 내용 검증
@@ -77,7 +77,7 @@ class JwtValidationService {
       if (payload.containsKey('exp')) {
         final exp = payload['exp'];
         if (exp is int && exp < now) {
-          return ResultFactory.failure('토큰이 만료되었습니다');
+          return Result.failure('토큰이 만료되었습니다');
         }
       }
 
@@ -86,7 +86,7 @@ class JwtValidationService {
         final iat = payload['iat'];
         if (iat is int && iat > now + 300) {
           // 5분 허용 오차
-          return ResultFactory.failure('토큰 발행 시간이 미래입니다');
+          return Result.failure('토큰 발행 시간이 미래입니다');
         }
       }
 
@@ -94,7 +94,7 @@ class JwtValidationService {
       if (payload.containsKey('nbf')) {
         final nbf = payload['nbf'];
         if (nbf is int && nbf > now) {
-          return ResultFactory.failure('토큰이 아직 유효하지 않습니다');
+          return Result.failure('토큰이 아직 유효하지 않습니다');
         }
       }
 
@@ -126,12 +126,12 @@ class JwtValidationService {
         );
       }
 
-      return ResultFactory.success(validationResult, 'JWT 구조 검증 성공');
+      return Result.success(validationResult, 'JWT 구조 검증 성공');
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] JWT 검증 중 예외 발생: $error\n$stackTrace');
       }
-      return ResultFactory.failure('JWT 검증 중 오류 발생: $error');
+      return Result.failure('JWT 검증 중 오류 발생: $error');
     }
   }
 
@@ -149,17 +149,17 @@ class JwtValidationService {
 
     // Firebase 특화 검증
     if (result.issuer?.contains('securetoken.google.com') != true) {
-      return ResultFactory.failure('Firebase ID 토큰이 아닙니다 (잘못된 발행자)');
+      return Result.failure('Firebase ID 토큰이 아닙니다 (잘못된 발행자)');
     }
 
     if (result.audience == null || result.audience!.isEmpty) {
-      return ResultFactory.failure('Firebase ID 토큰에 audience가 없습니다');
+      return Result.failure('Firebase ID 토큰에 audience가 없습니다');
     }
 
     // Firebase 전용 클레임 검증
     final authTime = result.payload['auth_time'];
     if (authTime == null) {
-      return ResultFactory.failure('Firebase ID 토큰에 auth_time이 없습니다');
+      return Result.failure('Firebase ID 토큰에 auth_time이 없습니다');
     }
 
     if (kDebugMode) {
@@ -195,12 +195,12 @@ class JwtValidationService {
       final decoded = jsonDecode(jsonString) as Map<String, dynamic>;
 
       if (decoded.isEmpty) {
-        return ResultFactory.failure('$partName가 비어있습니다');
+        return Result.failure('$partName가 비어있습니다');
       }
 
-      return ResultFactory.success(decoded, '$partName 디코딩 성공');
+      return Result.success(decoded, '$partName 디코딩 성공');
     } catch (error) {
-      return ResultFactory.failure('$partName 디코딩 실패: $error');
+      return Result.failure('$partName 디코딩 실패: $error');
     }
   }
 
@@ -208,25 +208,25 @@ class JwtValidationService {
   static Result<bool> _validateSignature(String signature) {
     try {
       if (signature.isEmpty) {
-        return ResultFactory.failure('Signature가 비어있습니다');
+        return Result.failure('Signature가 비어있습니다');
       }
 
       // Base64URL 문자 검증
       final validChars = RegExp(r'^[A-Za-z0-9_-]+$');
       if (!validChars.hasMatch(signature)) {
-        return ResultFactory.failure('Signature에 유효하지 않은 문자가 포함되어 있습니다');
+        return Result.failure('Signature에 유효하지 않은 문자가 포함되어 있습니다');
       }
 
       // 최소 길이 검증 (일반적인 signature는 최소 20자 이상)
       if (signature.length < 20) {
-        return ResultFactory.failure(
+        return Result.failure(
           'Signature가 너무 짧습니다 (${signature.length}자)',
         );
       }
 
-      return ResultFactory.success(true, 'Signature 기본 형식 검증 성공');
+      return Result.success(true, 'Signature 기본 형식 검증 성공');
     } catch (error) {
-      return ResultFactory.failure('Signature 검증 중 오류: $error');
+      return Result.failure('Signature 검증 중 오류: $error');
     }
   }
 

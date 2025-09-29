@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 채팅 히스토리 조회 UseCase
 class GetChatHistoryUseCase {
@@ -14,9 +14,9 @@ class GetChatHistoryUseCase {
   Future<Result<List<AiMessageEntity>>> call() async {
     try {
       final messages = await _repository.getChatHistory();
-      return ResultFactory.success(messages, 'チャット履歴を取得しました').toFuture();
+      return Result.success(messages, 'チャット履歴を取得しました').toFuture();
     } catch (error) {
-      return ResultFactory.failure<List<AiMessageEntity>>(
+      return Result.failure<List<AiMessageEntity>>(
         'チャット履歴の取得に失敗しました: ${error.toString()}',
       ).toFuture();
     }

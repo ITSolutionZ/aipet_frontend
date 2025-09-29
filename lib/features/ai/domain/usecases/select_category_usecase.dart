@@ -2,8 +2,8 @@ import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.da
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_suggested_question_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 class SelectCategoryResult {
   final List<AiMessageEntity> messages;
@@ -53,9 +53,9 @@ class SelectCategoryUseCase {
         suggestedQuestions: personalizedQuestions,
       );
 
-      return ResultFactory.success(result, 'カテゴリを選択しました');
+      return Result.success(result, 'カテゴリを選択しました');
     } catch (error) {
-      return ResultFactory.failure<SelectCategoryResult>(
+      return Result.failure<SelectCategoryResult>(
         'カテゴリ選択に失敗しました: ${error.toString()}',
       );
     }

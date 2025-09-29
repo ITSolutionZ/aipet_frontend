@@ -27,19 +27,18 @@ class VideoBookmarkController {
   /// 북마크 추가
   Future<void> addBookmark({
     required String videoId,
-    required String youtubeVideoId,
-    required String label,
+    required String title,
     required int positionSec,
     String? description,
   }) async {
     final bookmark = VideoBookmarkEntity(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       videoId: videoId,
-      youtubeVideoId: youtubeVideoId,
+      title: title.isNotEmpty ? title : 'Bookmark',
       positionSec: positionSec,
-      label: label.isNotEmpty ? label : null,
       description: description,
       createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
 
     final repository = ref.read(petActivitiesRepositoryProvider);
@@ -76,9 +75,14 @@ class VideoBookmarkList extends ConsumerWidget {
       context: context,
       builder: (context) => _AddBookmarkDialog(
         videoId: videoId,
-        youtubeVideoId: youtubeVideoId,
-        onAdd: (label, positionSec, description) =>
-            _addBookmark(context, ref, label, positionSec, description),
+        onAdd: (label, positionSec, description) => _addBookmark(
+          context,
+          ref,
+          videoId,
+          label,
+          positionSec,
+          description,
+        ),
       ),
     );
   }
@@ -86,18 +90,20 @@ class VideoBookmarkList extends ConsumerWidget {
   Future<void> _addBookmark(
     BuildContext context,
     WidgetRef ref,
+    String videoId,
     String label,
     int positionSec,
     String? description,
   ) async {
     try {
-      await ref.read(videoBookmarkControllerProvider).addBookmark(
-        videoId: videoId,
-        youtubeVideoId: youtubeVideoId,
-        label: label,
-        positionSec: positionSec,
-        description: description,
-      );
+      await ref
+          .read(videoBookmarkControllerProvider)
+          .addBookmark(
+            videoId: videoId,
+            title: label,
+            positionSec: positionSec,
+            description: description,
+          );
 
       if (context.mounted) {
         UiService.showSuccess(context, 'ブックマークが追加されました.');
@@ -135,10 +141,9 @@ class VideoBookmarkList extends ConsumerWidget {
 
     if (confirmed == true) {
       try {
-        await ref.read(videoBookmarkControllerProvider).deleteBookmark(
-          bookmark.id,
-          videoId,
-        );
+        await ref
+            .read(videoBookmarkControllerProvider)
+            .deleteBookmark(bookmark.id, videoId);
 
         if (context.mounted) {
           UiService.showSuccess(context, 'ブックマークが削除されました.');
@@ -166,7 +171,7 @@ class VideoBookmarkList extends ConsumerWidget {
           Container(
             width: 40,
             height: 4,
-            margin: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+            margin: const const EdgeInsets.symmetric(vertical: AppSpacing.sm),
             decoration: BoxDecoration(
               color: Colors.grey[300],
               borderRadius: BorderRadius.circular(2),
@@ -175,7 +180,7 @@ class VideoBookmarkList extends ConsumerWidget {
 
           // 헤더
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Row(
               children: [
                 const Text(
@@ -205,7 +210,8 @@ class VideoBookmarkList extends ConsumerWidget {
                 ),
               ),
               child: bookmarksState.when(
-                data: (bookmarks) => _buildBookmarkList(bookmarks, context, ref),
+                data: (bookmarks) =>
+                    _buildBookmarkList(bookmarks, context, ref),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) => Center(
                   child: Column(
@@ -235,7 +241,11 @@ class VideoBookmarkList extends ConsumerWidget {
     );
   }
 
-  Widget _buildBookmarkList(List<VideoBookmarkEntity> bookmarks, BuildContext context, WidgetRef ref) {
+  Widget _buildBookmarkList(
+    List<VideoBookmarkEntity> bookmarks,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     if (bookmarks.isEmpty) {
       return const Center(
         child: Column(
@@ -259,16 +269,20 @@ class VideoBookmarkList extends ConsumerWidget {
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       itemCount: bookmarks.length,
       separatorBuilder: (context, index) =>
           const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, index) {
         final bookmark = bookmarks[index];
-        return _BookmarkCard(
-          bookmark: bookmark,
-          onTap: () => onBookmarkTap(bookmark),
-          onDelete: () => _deleteBookmark(context, ref, bookmark),
+        return RepaintBoundary(
+          key: ValueKey('bookmark_${bookmark.id}_$index'),
+          child: _BookmarkCard(
+            key: ValueKey('bookmark_card_${bookmark.id}'),
+            bookmark: bookmark,
+            onTap: () => onBookmarkTap(bookmark),
+            onDelete: () => _deleteBookmark(context, ref, bookmark),
+          ),
         );
       },
     );
@@ -282,6 +296,7 @@ class _BookmarkCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   const _BookmarkCard({
+    super.key,
     required this.bookmark,
     required this.onTap,
     required this.onDelete,
@@ -344,20 +359,22 @@ class _BookmarkCard extends StatelessWidget {
 }
 
 /// 🎯 북마크 추가 Form State Provider
-final bookmarkFormControllerProvider = StateNotifierProvider<BookmarkFormController, BookmarkFormState>(
-  (ref) => BookmarkFormController(),
-);
+final bookmarkFormControllerProvider =
+    StateNotifierProvider<BookmarkFormController, BookmarkFormState>(
+      (ref) => BookmarkFormController(),
+    );
 
 class BookmarkFormController extends StateNotifier<BookmarkFormState> {
-  BookmarkFormController() : super(
-    const BookmarkFormState(
-      label: '',
-      description: '',
-      minutes: 0,
-      seconds: 0,
-      isValid: true,
-    ),
-  );
+  BookmarkFormController()
+    : super(
+        const BookmarkFormState(
+          label: '',
+          description: '',
+          minutes: 0,
+          seconds: 0,
+          isValid: true,
+        ),
+      );
 
   void updateLabel(String label) {
     final newState = state.copyWith(label: label);
@@ -379,7 +396,9 @@ class BookmarkFormController extends StateNotifier<BookmarkFormState> {
   }
 
   bool _isFormValid(BookmarkFormState checkState) {
-    return checkState.minutes >= 0 && checkState.seconds >= 0 && checkState.seconds < 60;
+    return checkState.minutes >= 0 &&
+        checkState.seconds >= 0 &&
+        checkState.seconds < 60;
   }
 
   int get totalSeconds => state.minutes * 60 + state.seconds;
@@ -421,14 +440,9 @@ class BookmarkFormState {
 /// 북마크 추가 다이얼로그
 class _AddBookmarkDialog extends ConsumerWidget {
   final String videoId;
-  final String youtubeVideoId;
   final Function(String label, int positionSec, String? description) onAdd;
 
-  const _AddBookmarkDialog({
-    required this.videoId,
-    required this.youtubeVideoId,
-    required this.onAdd,
-  });
+  const _AddBookmarkDialog({required this.videoId, required this.onAdd});
 
   void _submit(BuildContext context, WidgetRef ref) {
     final formController = ref.read(bookmarkFormControllerProvider.notifier);
@@ -468,7 +482,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
                   decoration: const InputDecoration(
                     labelText: '分',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 8,
                     ),
@@ -488,7 +502,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
                   decoration: const InputDecoration(
                     labelText: '秒',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 8,
                     ),

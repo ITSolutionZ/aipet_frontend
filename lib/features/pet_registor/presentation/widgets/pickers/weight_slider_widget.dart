@@ -32,7 +32,7 @@ class WeightSliderWidget extends StatelessWidget {
           },
           child: Container(
             height: 60,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const const EdgeInsets.symmetric(horizontal: 16),
             child: Stack(
               children: [
                 ...List.generate(15, (index) {
@@ -89,7 +89,7 @@ class WeightSliderWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
-                          const SizedBox(width: 2),
+                          const const SizedBox(width: 2),
                           Container(
                             width: 1.5,
                             height: 12,
@@ -98,7 +98,7 @@ class WeightSliderWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(1),
                             ),
                           ),
-                          const SizedBox(width: 2),
+                          const const SizedBox(width: 2),
                           Container(
                             width: 1.5,
                             height: 12,

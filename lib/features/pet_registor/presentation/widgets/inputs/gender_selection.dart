@@ -24,7 +24,7 @@ class GenderSelection extends StatelessWidget {
             label: 'オス',
             isSelected: selectedGender == 'male',
           ),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
           _buildGenderButton(
             gender: 'female',
             symbol: '♀',
@@ -74,7 +74,7 @@ class GenderSelection extends StatelessWidget {
                     color: isSelected ? Colors.white : AppColors.pointDark,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const const SizedBox(width: 8),
                 Text(
                   label,
                   style: AppFonts.bodyMedium.copyWith(

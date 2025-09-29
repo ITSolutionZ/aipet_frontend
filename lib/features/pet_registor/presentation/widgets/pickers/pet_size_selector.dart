@@ -77,8 +77,8 @@ class PetSizeSelector extends StatelessWidget {
         onTap: () => onSizeChanged(sizeKey),
         child: Container(
           width: double.infinity,
-          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-          padding: const EdgeInsets.all(AppSpacing.md),
+          margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
+          padding: const const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: isSelected
                 ? (sizeInfo['color'] as Color).withValues(alpha: 0.1)
@@ -110,7 +110,7 @@ class PetSizeSelector extends StatelessWidget {
                   size: 24,
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

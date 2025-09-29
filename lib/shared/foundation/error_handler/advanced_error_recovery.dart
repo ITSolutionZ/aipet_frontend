@@ -12,9 +12,9 @@ extension FutureToResult<T> on Future<T> {
   Future<Result<T>> toResult() async {
     try {
       final result = await this;
-      return ResultFactory.success(result);
+      return Result.success(result);
     } catch (error) {
-      return ResultFactory.failure<T>(error.toString());
+      return Result.failure<T>(error.toString());
     }
   }
 }
@@ -30,7 +30,7 @@ class CircuitBreaker {
   int _failureCount = 0;
   DateTime? _nextAttemptTime;
 
-  CircuitBreaker({
+  const CircuitBreaker({
     required this.name,
     this.failureThreshold = 5,
     this.timeout = const Duration(seconds: 30),
@@ -42,7 +42,7 @@ class CircuitBreaker {
     if (_state == CircuitState.open) {
       if (_nextAttemptTime != null &&
           DateTime.now().isBefore(_nextAttemptTime!)) {
-        return ResultFactory.failure(
+        return Result.failure(
           'Circuit breaker is open. Next attempt at $_nextAttemptTime',
           code: 'CIRCUIT_BREAKER_OPEN',
         );
@@ -53,10 +53,10 @@ class CircuitBreaker {
     try {
       final result = await operation().timeout(timeout);
       _onSuccess();
-      return ResultFactory.success(result);
+      return Result.success(result);
     } catch (e) {
       _onFailure();
-      return ResultFactory.fromException(Exception(e.toString()));
+      return Result.fromException(Exception(e.toString()));
     }
   }
 
@@ -89,7 +89,7 @@ class ExponentialBackoffRetry {
   final Duration maxDelay;
   final bool Function(Exception)? retryCondition;
 
-  ExponentialBackoffRetry({
+  const ExponentialBackoffRetry({
     this.maxRetries = 3,
     this.initialDelay = const Duration(seconds: 1),
     this.backoffMultiplier = 2.0,
@@ -106,7 +106,7 @@ class ExponentialBackoffRetry {
     while (attempt <= maxRetries) {
       try {
         final result = await operation();
-        return ResultFactory.success(result);
+        return Result.success(result);
       } catch (e) {
         lastException = e is Exception ? e : Exception(e.toString());
         attempt++;
@@ -128,7 +128,7 @@ class ExponentialBackoffRetry {
       }
     }
 
-    return ResultFactory.fromException(lastException!);
+    return Result.fromException(lastException!);
   }
 }
 
@@ -138,7 +138,7 @@ class FallbackStrategy {
   final Duration timeout;
   final Map<String, dynamic>? context;
 
-  FallbackStrategy({
+  const FallbackStrategy({
     required this.name,
     this.timeout = const Duration(seconds: 5),
     this.context,
@@ -151,16 +151,16 @@ class FallbackStrategy {
   ) async {
     try {
       final result = await primaryOperation().timeout(timeout);
-      return ResultFactory.success(result);
+      return Result.success(result);
     } catch (e) {
       try {
         final fallbackResult = await fallbackOperation().timeout(timeout);
-        return ResultFactory.success(
+        return Result.success(
           fallbackResult,
           'Fallback operation succeeded: $name',
         );
       } catch (fallbackError) {
-        return ResultFactory.failure(
+        return Result.failure(
           'Both primary and fallback operations failed. Primary: ${e.toString()}, Fallback: ${fallbackError.toString()}',
           code: 'FALLBACK_FAILED',
         );
@@ -175,16 +175,16 @@ class FallbackStrategy {
   ) {
     try {
       final result = primaryOperation();
-      return ResultFactory.success(result);
+      return Result.success(result);
     } catch (e) {
       try {
         final fallbackResult = fallbackOperation();
-        return ResultFactory.success(
+        return Result.success(
           fallbackResult,
           'Fallback operation succeeded: $name',
         );
       } catch (fallbackError) {
-        return ResultFactory.failure(
+        return Result.failure(
           'Both primary and fallback operations failed. Primary: ${e.toString()}, Fallback: ${fallbackError.toString()}',
           code: 'FALLBACK_FAILED',
         );
@@ -370,9 +370,9 @@ extension SyncAdvancedErrorRecoveryExtensions<T> on T Function() {
     if (fallbackStrategy == null) {
       try {
         final result = this();
-        return ResultFactory.success(result);
+        return Result.success(result);
       } catch (error) {
-        return ResultFactory.failure<T>(error.toString());
+        return Result.failure<T>(error.toString());
       }
     }
 

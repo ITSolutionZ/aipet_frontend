@@ -1,9 +1,8 @@
-import 'package:aipet_frontend/features/pet_registor/data/mock_data/pet_mock_data.dart'
-    as pet_mock_data;
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart';
 
 /// Pet Repository Mockito 구현체
 ///
@@ -18,23 +17,24 @@ class PetRepositoryMockitoImpl implements PetRepository {
   }
 
   void _initializeMockData() {
-    final mockData = pet_mock_data.PetMockData.getMockPets();
+    final mockData = PetMockService.getMockPetProfiles();
     _pets.addAll(
       mockData
           .map(
             (data) => PetProfileEntity(
               id: data['id'] as String,
               name: data['name'] as String,
-              type: data['type'] as String,
+              type: data['typeName'] as String,
               breed: data['breed'] as String?,
               weight: (data['weight'] as num).toDouble(),
               gender: data['gender'] as String,
               birthDate: DateTime.parse(data['birthDate'] as String),
               imagePath: data['imagePath'] as String?,
-              ownerId: data['ownerId'] as String,
+              ownerId: data['ownerId'] as String? ?? 'unknown',
               createdAt: DateTime.parse(data['createdAt'] as String),
-              updatedAt: DateTime.parse(data['updatedAt'] as String),
+              updatedAt: DateTime.now(),
               isActive: data['isActive'] as bool? ?? true,
+              additionalInfo: data['additionalInfo'] as Map<String, dynamic>?,
             ),
           )
           .toList(),
@@ -47,7 +47,7 @@ class PetRepositoryMockitoImpl implements PetRepository {
       // API 지연 시뮬레이션
       await Future.delayed(const Duration(milliseconds: 300));
 
-      return Result.success('펫 목록을 성공적으로 조회했습니다', List.from(_pets));
+      return Success(List.from(_pets), '펫 목록을 성공적으로 조회했습니다');
     } catch (error) {
       return Result.failure('펫 목록 조회에 실패했습니다: ${error.toString()}');
     }
@@ -59,7 +59,7 @@ class PetRepositoryMockitoImpl implements PetRepository {
       await Future.delayed(const Duration(milliseconds: 200));
 
       final pet = _pets.where((pet) => pet.id == id).firstOrNull;
-      return Result.success('펫 정보를 성공적으로 조회했습니다', pet);
+      return Success(pet, '펫 정보를 성공적으로 조회했습니다');
     } catch (error) {
       return Result.failure('펫 조회에 실패했습니다: ${error.toString()}');
     }
@@ -79,7 +79,7 @@ class PetRepositoryMockitoImpl implements PetRepository {
 
       _pets.add(newPet);
 
-      return Result.success('펫이 성공적으로 생성되었습니다', newPet);
+      return Success(newPet, '펫이 성공적으로 생성되었습니다');
     } catch (error) {
       return Result.failure('펫 생성에 실패했습니다: ${error.toString()}');
     }
@@ -92,13 +92,13 @@ class PetRepositoryMockitoImpl implements PetRepository {
 
       final index = _pets.indexWhere((p) => p.id == pet.id);
       if (index == -1) {
-        return Result.failure('펫을 찾을 수 없습니다');
+        return const Failure('펫을 찾을 수 없습니다');
       }
 
       final updatedPet = pet.copyWith(updatedAt: DateTime.now());
       _pets[index] = updatedPet;
 
-      return Result.success('펫 정보가 성공적으로 업데이트되었습니다', updatedPet);
+      return Success(updatedPet, '펫 정보가 성공적으로 업데이트되었습니다');
     } catch (error) {
       return Result.failure('펫 업데이트에 실패했습니다: ${error.toString()}');
     }
@@ -111,12 +111,12 @@ class PetRepositoryMockitoImpl implements PetRepository {
 
       final index = _pets.indexWhere((pet) => pet.id == id);
       if (index == -1) {
-        return Result.failure('펫을 찾을 수 없습니다');
+        return const Failure('펫을 찾을 수 없습니다');
       }
 
       _pets.removeAt(index);
 
-      return Result.success('펫이 성공적으로 삭제되었습니다');
+      return const Success(null, '펫이 성공적으로 삭제되었습니다');
     } catch (error) {
       return Result.failure('펫 삭제에 실패했습니다: ${error.toString()}');
     }

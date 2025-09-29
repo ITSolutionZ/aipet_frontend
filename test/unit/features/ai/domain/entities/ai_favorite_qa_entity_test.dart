@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

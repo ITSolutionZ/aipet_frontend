@@ -2,9 +2,9 @@ import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/ai/domain/constants/ai_constants.dart';
 import 'package:aipet_frontend/features/ai/domain/errors/ai_errors.dart';
 import 'package:aipet_frontend/features/ai/domain/services/token_usage_service.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
 import 'package:aipet_frontend/shared/core/services/unified_error_handler.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 
 import 'pet_content_filter_service.dart';

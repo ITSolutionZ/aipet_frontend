@@ -24,8 +24,8 @@ class AnniversarySelectionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        margin: const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
+        margin: const const EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -52,7 +52,7 @@ class AnniversarySelectionCard extends StatelessWidget {
               ),
               child: Icon(icon, color: AppColors.pointBrown, size: 20),
             ),
-            const SizedBox(width: AppSpacing.lg),
+            const const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +79,7 @@ class AnniversarySelectionCard extends StatelessWidget {
               ),
             ),
             if (badge != null) badge!,
-            const SizedBox(width: AppSpacing.sm),
+            const const SizedBox(width: AppSpacing.sm),
             const Icon(
               Icons.arrow_forward_ios,
               color: AppColors.pointGray,

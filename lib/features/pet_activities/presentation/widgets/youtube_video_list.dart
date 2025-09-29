@@ -1,7 +1,7 @@
-import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/youtube_video_card.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/youtube_videos_empty_state.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/youtube_video_card.dart';
-import 'package:aipet_frontend/shared/widgets/youtube_videos_empty_state.dart';
 import 'package:flutter/material.dart';
 
 /// YouTube 영상 목록 위젯
@@ -30,24 +30,25 @@ class YouTubeVideoList extends StatelessWidget {
     final filteredVideos = _filterVideos();
 
     if (filteredVideos.isEmpty) {
-      return YouTubeVideosEmptyState(
-        hasFilters: searchQuery.isNotEmpty || selectedTags.isNotEmpty,
-        onAddVideo: onAddVideo,
-      );
+      return YouTubeVideosEmptyState(onAddVideo: onAddVideo);
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       itemCount: filteredVideos.length,
       itemBuilder: (context, index) {
         final video = filteredVideos[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-          child: YouTubeVideoCard(
-            video: video,
-            onTap: () => onVideoTap(video),
-            onBookmarkTap: () => onBookmarkTap(video),
-            onDeleteTap: () => onDeleteTap(video),
+        return RepaintBoundary(
+          key: ValueKey('youtube_video_${video.id}_$index'),
+          child: Padding(
+            padding: const const EdgeInsets.only(bottom: AppSpacing.md),
+            child: YouTubeVideoCard(
+              key: ValueKey('youtube_card_${video.id}'),
+              video: video,
+              onTap: () => onVideoTap(video),
+              onBookmarkTap: () => onBookmarkTap(video),
+              onDeleteTap: () => onDeleteTap(video),
+            ),
           ),
         );
       },

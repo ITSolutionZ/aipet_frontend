@@ -12,7 +12,10 @@ class SaveVideoProgressUseCase {
   }) async {
     final progress = VideoProgressEntity(
       videoId: videoId,
-      lastPositionSec: positionSec,
+      currentPositionSec: positionSec,
+      totalDurationSec: 0, // TODO: 실제 비디오 길이를 가져와야 함
+      progress: 0.0, // TODO: 실제 진행률을 계산해야 함
+      lastWatchedAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
 

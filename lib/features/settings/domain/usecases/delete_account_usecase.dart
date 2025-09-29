@@ -11,7 +11,7 @@ class DeleteAccountUseCase {
     if (result.isSuccess) {
       return Success(null, result.errorOrNull);
     } else {
-      return Failure(result.errorOrNull ?? 'Unknown error');
+      return Result.failure(result.errorOrNull ?? 'Unknown error');
     }
   }
 }

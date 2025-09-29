@@ -75,7 +75,7 @@ class GenericInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return WhiteCard(
       onTap: onTap,
-      padding: padding ?? const EdgeInsets.all(AppSpacing.md),
+      padding: padding ?? const const EdgeInsets.all(AppSpacing.md),
       child: InkWell(
         onLongPress: onLongPress,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -104,7 +104,7 @@ class GenericInfoCard extends StatelessWidget {
                         if (badge != null) ...[
                           const SizedBox(width: AppSpacing.sm),
                           Container(
-                            padding: const EdgeInsets.symmetric(
+                            padding: const const EdgeInsets.symmetric(
                               horizontal: AppSpacing.sm,
                               vertical: AppSpacing.xs,
                             ),

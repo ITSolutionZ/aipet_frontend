@@ -42,7 +42,7 @@ class LegacySelectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (title != null || subtitle != null) {
-      return SelectionCard.option(
+      return SelectionCard.titled(
         title: title!,
         subtitle: subtitle,
         icon: icon,
@@ -51,9 +51,10 @@ class LegacySelectionCard extends StatelessWidget {
         selectedColor: selectedColor,
         onTap: onTap,
         semanticLabel: semanticLabel,
+        child: child,
       );
     } else {
-      return SelectionCard(
+      return SelectionCard.basic(
         isSelected: isSelected,
         selectedColor: selectedColor,
         onTap: onTap,
@@ -98,15 +99,16 @@ class MediaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (title != null || subtitle != null) {
-      return SelectionCard.option(
+      return SelectionCard.titled(
         title: title!,
         subtitle: subtitle,
         isSelected: isSelected,
         selectedColor: selectedColor,
         onTap: onTap,
+        child: child,
       );
     } else {
-      return SelectionCard(
+      return SelectionCard.basic(
         isSelected: isSelected,
         selectedColor: selectedColor,
         onTap: onTap,

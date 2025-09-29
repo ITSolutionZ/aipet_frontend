@@ -16,8 +16,8 @@ class AiDioService extends BaseLoggingService {
   late final Dio _dio;
 
   // API 설정 상수
-  static const Duration _connectTimeout = Duration(seconds: 30);
-  static const Duration _receiveTimeout = Duration(seconds: 60);
+  static const Duration _connectTimeout = const Duration(seconds: 30);
+  static const Duration _receiveTimeout = const Duration(seconds: 60);
   static const int _maxRetries = 3;
 
   AiDioService._() : super('ai_dio_service') {
@@ -159,7 +159,7 @@ class AiDioService extends BaseLoggingService {
         if (statusCode == 429 || (statusCode != null && statusCode >= 500)) {
           retryCount++;
           if (retryCount < retries) {
-            final delay = Duration(seconds: retryCount * 2); // 지수 백오프
+            final delay = const Duration(seconds: retryCount * 2); // 지수 백오프
             logInfo(
               'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$retries)',
             );
@@ -173,7 +173,7 @@ class AiDioService extends BaseLoggingService {
         lastException = Exception('Unexpected error: $e');
         retryCount++;
         if (retryCount < retries) {
-          final delay = Duration(seconds: retryCount * 2);
+          final delay = const Duration(seconds: retryCount * 2);
           logInfo(
             'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$retries)',
           );

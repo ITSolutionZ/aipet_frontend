@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
-import 'package:aipet_frontend/features/onboarding/data/data.dart';
-import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/features/pet_feeding/data/data.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +22,7 @@ class RecipeScreen extends ConsumerWidget {
         actions: [
           // 펫 선택 드롭다운
           Container(
-            margin: const EdgeInsets.only(right: AppSpacing.md),
+            margin: const const EdgeInsets.only(right: AppSpacing.md),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -35,7 +35,7 @@ class RecipeScreen extends ConsumerWidget {
                     color: AppColors.pointBrown,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.xs),
+                const const SizedBox(width: AppSpacing.xs),
                 Text(
                   'Maxi',
                   style: AppFonts.bodyMedium.copyWith(
@@ -54,7 +54,7 @@ class RecipeScreen extends ConsumerWidget {
       ),
       body: recipesAsync.when(
         data: (recipes) => GridView.builder(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: AppSpacing.md,
@@ -64,7 +64,7 @@ class RecipeScreen extends ConsumerWidget {
           itemCount: recipes.length,
           itemBuilder: (context, index) {
             final recipe = recipes[index];
-            return _buildRecipeCard(recipe);
+            return _buildRecipeCard(context, ref, recipe);
           },
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -90,7 +90,7 @@ class RecipeScreen extends ConsumerWidget {
         ),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
@@ -110,7 +110,7 @@ class RecipeScreen extends ConsumerWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.pointBlue,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+              padding: const const EdgeInsets.symmetric(vertical: AppSpacing.lg),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.large),
               ),
@@ -121,11 +121,15 @@ class RecipeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecipeCard(RecipeEntity recipe) {
+  Widget _buildRecipeCard(
+    BuildContext context,
+    WidgetRef ref,
+    RecipeEntity recipe,
+  ) {
     return GestureDetector(
       onTap: () {
         // 레시피 상세 화면으로 이동
-        _showRecipeDetailDialog(context, recipe);
+        _showRecipeDetailDialog(context, ref, recipe);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -165,7 +169,7 @@ class RecipeScreen extends ConsumerWidget {
             Expanded(
               flex: 2,
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: const const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -195,7 +199,7 @@ class RecipeScreen extends ConsumerWidget {
                           size: 14,
                           color: AppColors.pointBlue,
                         ),
-                        const SizedBox(width: AppSpacing.xs),
+                        const const SizedBox(width: AppSpacing.xs),
                         Text(
                           recipe.cookingTime,
                           style: AppFonts.bodySmall.copyWith(
@@ -205,7 +209,7 @@ class RecipeScreen extends ConsumerWidget {
                         ),
                         const Spacer(),
                         Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: const const EdgeInsets.symmetric(
                             horizontal: AppSpacing.xs,
                             vertical: 2,
                           ),
@@ -255,7 +259,11 @@ class RecipeScreen extends ConsumerWidget {
     context.push(AppRouter.addRecipeRoute);
   }
 
-  void _showRecipeDetailDialog(BuildContext context, RecipeEntity recipe) {
+  void _showRecipeDetailDialog(
+    BuildContext context,
+    WidgetRef ref,
+    RecipeEntity recipe,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -286,7 +294,7 @@ class RecipeScreen extends ConsumerWidget {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              _deleteRecipe(recipe.id);
+              _deleteRecipe(context, ref, recipe.id);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: const Text('削除'),
@@ -296,7 +304,7 @@ class RecipeScreen extends ConsumerWidget {
     );
   }
 
-  void _deleteRecipe(String recipeId) {
+  void _deleteRecipe(BuildContext context, WidgetRef ref, String recipeId) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

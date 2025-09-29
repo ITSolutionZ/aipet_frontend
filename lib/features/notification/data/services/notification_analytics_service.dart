@@ -168,8 +168,8 @@ class NotificationAnalyticsService {
     try {
       final allStats = await getStats();
       return allStats.where((stat) {
-        return stat.date.isAfter(startDate.subtract(const Duration(days: 1))) &&
-            stat.date.isBefore(endDate.add(const Duration(days: 1)));
+        return stat.date.isAfter(startDate.subtract(Duration(days: 1))) &&
+            stat.date.isBefore(endDate.add(Duration(days: 1)));
       }).toList();
     } catch (e) {
       if (kDebugMode) {}
@@ -194,7 +194,7 @@ class NotificationAnalyticsService {
   ) async {
     try {
       final now = DateTime.now();
-      final startDate = now.subtract(const Duration(days: 30));
+      final startDate = now.subtract(Duration(days: 30));
       final endDate = now;
 
       // 타입별 통계 그룹화
@@ -312,14 +312,14 @@ class NotificationAnalyticsService {
       // 최근 7일 vs 이전 7일 비교
       final now = DateTime.now();
       final recentStats = stats
-          .where((s) => s.date.isAfter(now.subtract(const Duration(days: 7))))
+          .where((s) => s.date.isAfter(now.subtract(Duration(days: 7))))
           .toList();
 
       final previousStats = stats
           .where(
             (s) =>
-                s.date.isAfter(now.subtract(const Duration(days: 14))) &&
-                s.date.isBefore(now.subtract(const Duration(days: 7))),
+                s.date.isAfter(now.subtract(Duration(days: 14))) &&
+                s.date.isBefore(now.subtract(Duration(days: 7))),
           )
           .toList();
 

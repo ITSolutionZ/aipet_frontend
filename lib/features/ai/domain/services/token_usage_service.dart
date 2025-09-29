@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 
 /// 🪙 OpenAI 토큰 사용량 추적 및 관리 서비스
@@ -48,13 +48,13 @@ class TokenUsageService {
       // 일일 사용량 체크
       final currentDailyUsage = _dailyUsage[dateKey] ?? 0;
       if (currentDailyUsage + totalTokens > dailyTokenLimit) {
-        return ResultFactory.failure('일일 토큰 사용량 한도 초과 ($dailyTokenLimit 토큰)');
+        return Result.failure('일일 토큰 사용량 한도 초과 ($dailyTokenLimit 토큰)');
       }
 
       // 시간당 사용량 체크
       final currentHourlyUsage = _hourlyUsage[hourKey] ?? 0;
       if (currentHourlyUsage + totalTokens > hourlyTokenLimit) {
-        return ResultFactory.failure(
+        return Result.failure(
           '시간당 토큰 사용량 한도 초과 ($hourlyTokenLimit 토큰)',
         );
       }
@@ -93,12 +93,12 @@ class TokenUsageService {
         );
       }
 
-      return ResultFactory.success(usageRecord, '토큰 사용량 기록 완료');
+      return Result.success(usageRecord, '토큰 사용량 기록 완료');
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error recording token usage: $error\n$stackTrace');
       }
-      return ResultFactory.failure('토큰 사용량 기록 중 오류 발생');
+      return Result.failure('토큰 사용량 기록 중 오류 발생');
     }
   }
 
@@ -154,7 +154,7 @@ class TokenUsageService {
   /// 오래된 사용량 데이터 정리
   static void cleanupOldData() {
     final now = DateTime.now();
-    final cutoffDate = now.subtract(const Duration(days: 7));
+    final cutoffDate = now.subtract(Duration(days: 7));
 
     // 7일 이전 데이터 제거
     _dailyUsage.removeWhere((key, _) {
@@ -163,7 +163,7 @@ class TokenUsageService {
     });
 
     // 1일 이전 시간별 데이터 제거
-    final hourCutoffDate = now.subtract(const Duration(days: 1));
+    final hourCutoffDate = now.subtract(Duration(days: 1));
     _hourlyUsage.removeWhere((key, _) {
       final parts = key.split('-');
       if (parts.length >= 4) {
@@ -193,14 +193,14 @@ class TokenUsageService {
     final currentHourlyUsage = _hourlyUsage[hourKey] ?? 0;
 
     if (currentDailyUsage + estimatedTokens > dailyTokenLimit) {
-      return ResultFactory.failure('일일 토큰 한도 초과');
+      return Result.failure('일일 토큰 한도 초과');
     }
 
     if (currentHourlyUsage + estimatedTokens > hourlyTokenLimit) {
-      return ResultFactory.failure('시간당 토큰 한도 초과');
+      return Result.failure('시간당 토큰 한도 초과');
     }
 
-    return ResultFactory.success(true, '요청 가능');
+    return Result.success(true, '요청 가능');
   }
 
   // 내부 헬퍼 메서드들

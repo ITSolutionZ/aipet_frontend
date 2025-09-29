@@ -18,7 +18,7 @@ class SettingsScreen extends ConsumerWidget {
       appBar: SoftGradientDrawerAppBar(
         title: '設定',
         selectedPetInfo: Container(
-          margin: const EdgeInsets.only(right: 16),
+          margin: const const EdgeInsets.only(right: 16),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Image.asset(
@@ -39,12 +39,12 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         children: [
           // ユーザー情報カード
           Container(
-            margin: const EdgeInsets.only(bottom: AppSpacing.xl),
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            margin: const const EdgeInsets.only(bottom: AppSpacing.xl),
+            padding: const const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -71,7 +71,7 @@ class SettingsScreen extends ConsumerWidget {
                     },
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

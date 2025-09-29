@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,7 +20,7 @@ class NotificationCacheService {
   // Note: Last updated tracking removed for simplified frontend-centric approach
 
   // 캐시 만료 시간 (30분)
-  static const Duration _cacheExpiration = Duration(minutes: 30);
+  static const Duration _cacheExpiration = const Duration(minutes: 30);
 
   static SharedPreferences? _prefs;
 
@@ -56,12 +56,12 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 알림 캐시 저장 완료: ${notifications.length}개');
       }
 
-      return ResultFactory.success(true, 'Notifications cached successfully');
+      return Result.success(true, 'Notifications cached successfully');
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 알림 캐시 저장 실패: $error');
       }
-      return ResultFactory.failure('캐시 저장 중 오류 발생: $error');
+      return Result.failure('캐시 저장 중 오류 발생: $error');
     }
   }
 
@@ -77,7 +77,7 @@ class NotificationCacheService {
 
       final cachedDataString = prefs.getString(cacheKey);
       if (cachedDataString == null) {
-        return ResultFactory.failure('캐시된 데이터가 없습니다');
+        return Result.failure('캐시된 데이터가 없습니다');
       }
 
       final cacheData = json.decode(cachedDataString);
@@ -90,7 +90,7 @@ class NotificationCacheService {
         if (kDebugMode) {
           debugPrint('[$_tag] ⚠️ 캐시가 만료되었습니다');
         }
-        return ResultFactory.failure('캐시가 만료되었습니다');
+        return Result.failure('캐시가 만료되었습니다');
       }
 
       final notifications = (cacheData['data'] as List)
@@ -101,7 +101,7 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 캐시된 알림 조회 성공: ${notifications.length}개');
       }
 
-      return ResultFactory.success(
+      return Result.success(
         notifications,
         'Cached notifications retrieved',
       );
@@ -109,7 +109,7 @@ class NotificationCacheService {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 캐시 조회 실패: $error');
       }
-      return ResultFactory.failure('캐시 조회 중 오류 발생: $error');
+      return Result.failure('캐시 조회 중 오류 발생: $error');
     }
   }
 
@@ -136,12 +136,12 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 설정 캐시 저장 완료');
       }
 
-      return ResultFactory.success(true, 'Settings cached successfully');
+      return Result.success(true, 'Settings cached successfully');
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 설정 캐시 저장 실패: $error');
       }
-      return ResultFactory.failure('설정 캐시 저장 중 오류 발생: $error');
+      return Result.failure('설정 캐시 저장 중 오류 발생: $error');
     }
   }
 
@@ -157,7 +157,7 @@ class NotificationCacheService {
 
       final cachedDataString = prefs.getString(cacheKey);
       if (cachedDataString == null) {
-        return ResultFactory.failure('캐시된 설정이 없습니다');
+        return Result.failure('캐시된 설정이 없습니다');
       }
 
       final cacheData = json.decode(cachedDataString);
@@ -170,7 +170,7 @@ class NotificationCacheService {
         if (kDebugMode) {
           debugPrint('[$_tag] ⚠️ 설정 캐시가 만료되었습니다');
         }
-        return ResultFactory.failure('설정 캐시가 만료되었습니다');
+        return Result.failure('설정 캐시가 만료되었습니다');
       }
 
       final settings = cacheData['data'] as Map<String, dynamic>;
@@ -179,12 +179,12 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 캐시된 설정 조회 성공');
       }
 
-      return ResultFactory.success(settings, 'Cached settings retrieved');
+      return Result.success(settings, 'Cached settings retrieved');
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 설정 캐시 조회 실패: $error');
       }
-      return ResultFactory.failure('설정 캐시 조회 중 오류 발생: $error');
+      return Result.failure('설정 캐시 조회 중 오류 발생: $error');
     }
   }
 
@@ -203,12 +203,12 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 사용자 캐시 삭제 완료: $userId');
       }
 
-      return ResultFactory.success(true, 'User cache cleared successfully');
+      return Result.success(true, 'User cache cleared successfully');
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 캐시 삭제 실패: $error');
       }
-      return ResultFactory.failure('캐시 삭제 중 오류 발생: $error');
+      return Result.failure('캐시 삭제 중 오류 발생: $error');
     }
   }
 
@@ -230,12 +230,12 @@ class NotificationCacheService {
         debugPrint('[$_tag] ✅ 전체 캐시 삭제 완료');
       }
 
-      return ResultFactory.success(true, 'All cache cleared successfully');
+      return Result.success(true, 'All cache cleared successfully');
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 전체 캐시 삭제 실패: $error');
       }
-      return ResultFactory.failure('전체 캐시 삭제 중 오류 발생: $error');
+      return Result.failure('전체 캐시 삭제 중 오류 발생: $error');
     }
   }
 

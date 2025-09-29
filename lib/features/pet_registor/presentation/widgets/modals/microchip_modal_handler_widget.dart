@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/data/providers/microchip_service_provider.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/microchip_service_provider.dart';
 import 'package:aipet_frontend/shared/widgets/banners/microchip_registration_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

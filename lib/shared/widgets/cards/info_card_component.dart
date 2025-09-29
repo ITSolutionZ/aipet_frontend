@@ -22,7 +22,7 @@ class InfoCardComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.all(AppSpacing.md),
+      margin: const const EdgeInsets.all(AppSpacing.md),
       child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -34,7 +34,7 @@ class InfoCardComponent extends StatelessWidget {
           },
           borderRadius: BorderRadius.circular(AppRadius.medium),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
                 Container(

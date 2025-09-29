@@ -148,7 +148,7 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
     if (widget.customValidator != null) {
       final customError = widget.customValidator!(input);
       if (customError != null) {
-        return ResultFactory.failure(customError);
+        return Result.failure(customError);
       }
     }
 
@@ -234,7 +234,7 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
         if (_hasSecurityThreat && widget.realtimeValidation) ...[
           const SizedBox(height: 4),
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.red[50],
               borderRadius: BorderRadius.circular(4),

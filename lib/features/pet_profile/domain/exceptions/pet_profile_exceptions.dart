@@ -21,7 +21,7 @@ class PetProfileAccessDeniedException implements Exception {
 /// Pet Profile Validation Exception
 class PetProfileValidationException implements Exception {
   final String message;
-  PetProfileValidationException(this.message);
+  PetProfileconst ValidationException(this.message);
 
   @override
   String toString() => 'PetProfileValidationException: $message';

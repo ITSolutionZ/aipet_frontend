@@ -15,7 +15,7 @@ class MicrochipInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -50,7 +50,7 @@ class MicrochipInput extends StatelessWidget {
                   width: 2,
                 ),
               ),
-              contentPadding: const EdgeInsets.all(AppSpacing.md),
+              contentPadding: const const EdgeInsets.all(AppSpacing.md),
               counterText: '',
             ),
             onChanged: (value) {

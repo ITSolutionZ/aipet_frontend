@@ -100,7 +100,7 @@ class ActionButtonGroup extends StatelessWidget {
       children: [
         if (_shouldShowSecondaryButton) ...[
           Expanded(child: _buildSecondaryButton()),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
         ],
         Expanded(child: _buildPrimaryButton()),
       ],
@@ -123,7 +123,7 @@ class ActionButtonGroup extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.medium),
         ),
@@ -143,7 +143,7 @@ class ActionButtonGroup extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         foregroundColor: color,
         side: BorderSide(color: color, width: 1.5),
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.medium),
         ),

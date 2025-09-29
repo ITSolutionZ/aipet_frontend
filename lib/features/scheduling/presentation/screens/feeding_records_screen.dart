@@ -48,7 +48,7 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
         controller: _scrollController,
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            padding: const const EdgeInsets.all(AppSpacing.lg),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 Column(

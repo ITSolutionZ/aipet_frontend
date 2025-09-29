@@ -1,7 +1,7 @@
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/pet_registor/data/repositories/pet_repository_impl.dart';
+import 'package:aipet_frontend/features/pet_registor/data/repositories/pet_repository_mockito_impl.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
-import 'package:aipet_frontend/shared/repositories/pet_repository_impl.dart';
-import 'package:aipet_frontend/shared/repositories/pet_repository_mockito_impl.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -32,9 +32,9 @@ class PetsNotifier extends _$PetsNotifier {
       final repository = ref.read(petRepositoryProvider);
       final result = await repository.getAllPets();
       if (result.isSuccess) {
-        return result.data ?? [];
+        return result.dataOrNull ?? [];
       } else {
-        throw Exception(result.message);
+        throw Exception(result.errorOrNull);
       }
     } catch (e) {
       rethrow;
@@ -48,9 +48,9 @@ class PetsNotifier extends _$PetsNotifier {
       final repository = ref.read(petRepositoryProvider);
       final result = await repository.getAllPets();
       if (result.isSuccess) {
-        return result.data ?? [];
+        return result.dataOrNull ?? [];
       } else {
-        throw Exception(result.message);
+        throw Exception(result.errorOrNull);
       }
     });
   }
@@ -61,9 +61,9 @@ class PetsNotifier extends _$PetsNotifier {
     final result = await repository.createPet(pet);
     if (result.isSuccess) {
       await refresh();
-      return result.data!;
+      return result.dataOrNull!;
     } else {
-      throw Exception(result.message);
+      throw Exception(result.errorOrNull);
     }
   }
 
@@ -74,7 +74,7 @@ class PetsNotifier extends _$PetsNotifier {
     if (result.isSuccess) {
       await refresh();
     } else {
-      throw Exception(result.message);
+      throw Exception(result.errorOrNull);
     }
   }
 
@@ -85,7 +85,7 @@ class PetsNotifier extends _$PetsNotifier {
     if (result.isSuccess) {
       await refresh();
     } else {
-      throw Exception(result.message);
+      throw Exception(result.errorOrNull);
     }
   }
 }
@@ -96,9 +96,9 @@ Future<PetProfileEntity?> petById(Ref ref, String id) async {
   final repository = ref.watch(petRepositoryProvider);
   final result = await repository.getPetById(id);
   if (result.isSuccess) {
-    return result.data;
+    return result.dataOrNull;
   } else {
-    throw Exception(result.message);
+    throw Exception(result.errorOrNull);
   }
 }
 

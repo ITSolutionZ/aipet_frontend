@@ -11,14 +11,14 @@ class SplashRepositoryImpl implements SplashRepository {
 
       const config = SplashEntity(
         logoPath: 'assets/icons/aipet_logo.png',
-        animationDuration: Duration(milliseconds: 2000),
-        displayDuration: Duration(seconds: 3),
+        animationDuration: const Duration(milliseconds: 2000),
+        displayDuration: const Duration(seconds: 3),
         nextRoute: '/onboarding',
       );
 
       return const Success(config, 'スプラッシュ設定を取得しました');
     } catch (error) {
-      return Failure(
+      return Result.failure(
         'スプラッシュ設定の取得に失敗しました: ${error.toString()}',
         exception: error is Exception ? error : Exception(error.toString()),
       );
@@ -32,7 +32,7 @@ class SplashRepositoryImpl implements SplashRepository {
       await Future.delayed(const Duration(milliseconds: 200));
       return const Success(null, 'アプリ初期化が完了しました');
     } catch (error) {
-      return Failure(
+      return Result.failure(
         'アプリ初期化に失敗しました: ${error.toString()}',
         exception: error is Exception ? error : Exception(error.toString()),
       );
@@ -93,7 +93,7 @@ class SplashRepositoryImpl implements SplashRepository {
       // 다른 조건이나 분기 없이 고정 경로 반환
       return const Success('/onboarding', 'オンボーディング画面へ移動');
     } catch (error) {
-      return Failure(
+      return Result.failure(
         'ルート決定に失敗しました: ${error.toString()}',
         exception: error is Exception ? error : Exception(error.toString()),
       );

@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -19,14 +19,14 @@ class AiQuestionRequestBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // AI 아바타
           Container(
-            padding: const EdgeInsets.all(AppSpacing.sm),
+            padding: const const EdgeInsets.all(AppSpacing.sm),
             decoration: const BoxDecoration(
               color: AppColors.pointBrown,
               shape: BoxShape.circle,
@@ -38,12 +38,12 @@ class AiQuestionRequestBubble extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          const SizedBox(width: AppSpacing.sm),
+          const const SizedBox(width: AppSpacing.sm),
 
           // 메시지 버블
           Flexible(
             child: Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(
@@ -261,7 +261,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
       children: examples.map((example) {
         if (example.startsWith('💡')) {
           return Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
             child: Text(
               example,
               style: AppFonts.bodySmall.copyWith(
@@ -292,7 +292,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
     debugPrint('Cleaned question text: "$questionText"');
 
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.xs),
+      margin: const const EdgeInsets.only(bottom: AppSpacing.xs),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -308,7 +308,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.medium),
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(
+            padding: const const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.sm,
             ),

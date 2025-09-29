@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aipet_frontend/features/pet_registor/pet_registor.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/base/mock_data_constants.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +20,7 @@ class PetMockData {
       weight: 15.8,
       imagePath: MockDataConstants.defaultPetImages['dog']!,
       ownerId: 'user1',
-      createdAt: DateTime.now().subtract(const Duration(days: 30)),
+      createdAt: DateTime.now().subtract(Duration(days: 30)),
       updatedAt: DateTime.now(),
       isActive: true,
       additionalInfo: {
@@ -45,7 +45,7 @@ class PetMockData {
       weight: 4.2,
       imagePath: MockDataConstants.defaultPetImages['cat']!,
       ownerId: 'user1',
-      createdAt: DateTime.now().subtract(const Duration(days: 15)),
+      createdAt: DateTime.now().subtract(Duration(days: 15)),
       updatedAt: DateTime.now(),
       isActive: true,
       additionalInfo: {

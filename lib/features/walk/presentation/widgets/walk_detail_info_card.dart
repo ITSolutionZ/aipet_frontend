@@ -12,7 +12,7 @@ class WalkDetailInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.grey[50],
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -44,7 +44,7 @@ class WalkDetailInfoCard extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          padding: const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),
@@ -55,7 +55,7 @@ class WalkDetailInfoCard extends StatelessWidget {
             color: AppColors.pointBlue,
           ),
         ),
-        const SizedBox(width: AppSpacing.md),
+        const const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Row(
             children: [
@@ -85,7 +85,7 @@ class WalkDetailInfoCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(AppSpacing.xs),
+                      padding: const const EdgeInsets.all(AppSpacing.xs),
                       decoration: BoxDecoration(
                         color: AppColors.pointBlue.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppRadius.small),
@@ -96,7 +96,7 @@ class WalkDetailInfoCard extends StatelessWidget {
                         color: AppColors.pointBlue,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    const const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,7 +133,7 @@ class WalkDetailInfoCard extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          padding: const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),
@@ -144,7 +144,7 @@ class WalkDetailInfoCard extends StatelessWidget {
             color: AppColors.pointBlue,
           ),
         ),
-        const SizedBox(width: AppSpacing.md),
+        const const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Row(
             children: [
@@ -174,7 +174,7 @@ class WalkDetailInfoCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(AppSpacing.xs),
+                      padding: const const EdgeInsets.all(AppSpacing.xs),
                       decoration: BoxDecoration(
                         color: AppColors.pointBlue.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppRadius.small),
@@ -185,7 +185,7 @@ class WalkDetailInfoCard extends StatelessWidget {
                         color: AppColors.pointBlue,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    const const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,14 +222,14 @@ class WalkDetailInfoCard extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          padding: const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),
           ),
           child: Icon(icon, size: 16, color: AppColors.pointBlue),
         ),
-        const SizedBox(width: AppSpacing.md),
+        const const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

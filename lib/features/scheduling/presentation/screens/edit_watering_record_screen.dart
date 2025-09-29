@@ -63,7 +63,7 @@ class _EditWateringRecordScreenState
       body: Form(
         key: _formKey,
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -100,11 +100,11 @@ class _EditWateringRecordScreenState
   Widget _buildRecordInfoCard() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.pointBlue.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
@@ -115,7 +115,7 @@ class _EditWateringRecordScreenState
                 size: 32,
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +146,7 @@ class _EditWateringRecordScreenState
   Widget _buildAmountInput() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -188,7 +188,7 @@ class _EditWateringRecordScreenState
   Widget _buildTimeSelector() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -223,7 +223,7 @@ class _EditWateringRecordScreenState
   Widget _buildTypeSelector() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -258,7 +258,7 @@ class _EditWateringRecordScreenState
   Widget _buildNotesInput() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -299,7 +299,7 @@ class _EditWateringRecordScreenState
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.pointBrown,
               side: const BorderSide(color: AppColors.pointBrown),
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
             ),
           ),
         ),
@@ -312,19 +312,19 @@ class _EditWateringRecordScreenState
               child: OutlinedButton(
                 onPressed: () => context.pop(),
                 style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
                 child: const Text('キャンセル'),
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: ElevatedButton(
                 onPressed: _saveRecord,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBlue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
                 child: const Text('保存'),
               ),

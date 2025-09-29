@@ -1,123 +1,55 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-/// 트릭 관련 액션 버튼들
+/// 트릭 액션 버튼들
 class TrickActionButtons extends StatelessWidget {
-  final VoidCallback? onOpenTrainingVideos;
+  final VoidCallback onOpenTrainingVideos;
 
-  const TrickActionButtons({super.key, this.onOpenTrainingVideos});
+  const TrickActionButtons({super.key, required this.onOpenTrainingVideos});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Learn new tricks 버튼
-        _LearnNewTricksButton(),
-        const SizedBox(height: AppSpacing.lg),
-        // Training videos 버튼
-        _TrainingVideosButton(onPressed: onOpenTrainingVideos),
-        const SizedBox(height: AppSpacing.lg),
-        // Pet profile 카드
-        const _PetProfileCard(),
-      ],
-    );
-  }
-}
-
-/// 새 트릭 학습 버튼
-class _LearnNewTricksButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: () {
-          context.push('/learn-trick');
-        },
-        style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.pointBlue, width: 2),
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.md),
-          ),
-        ),
-        child: Text(
-          '新しいトリックを学ぶ',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointBlue,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// 트레이닝 비디오 버튼
-class _TrainingVideosButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-
-  const _TrainingVideosButton({this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: onPressed ?? () => context.push('/training-videos'),
-        style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.pointBlue, width: 2),
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.md),
-          ),
-        ),
-        child: Text(
-          'トレーニング動画',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: AppColors.pointBlue,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// 펫 프로필 카드
-class _PetProfileCard extends StatelessWidget {
-  const _PetProfileCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.pointBrown.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppSpacing.md),
-      ),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 20,
-            backgroundImage: AssetImage('assets/images/dogs/shiba.png'),
-            backgroundColor: AppColors.pointBrown,
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Text(
-            'Maxi',
-            style: AppFonts.fredoka(
-              fontSize: AppFonts.lg,
-              color: AppColors.pointDark,
-              fontWeight: FontWeight.w600,
+        // 유튜브 교육 영상 버튼
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: onOpenTrainingVideos,
+            icon: const Icon(Icons.video_library),
+            label: const Text('トレーニングビデオ'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.pointBlue,
+              foregroundColor: Colors.white,
+              padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.md),
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+
+        // 모든 트릭 보기 버튼
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              // TODO: 모든 트릭 보기 화면으로 이동
+            },
+            icon: const Icon(Icons.list),
+            label: const Text('すべてのトリック'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.pointBrown,
+              side: const BorderSide(color: AppColors.pointBrown),
+              padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.md),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

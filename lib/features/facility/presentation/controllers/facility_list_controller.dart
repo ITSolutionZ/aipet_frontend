@@ -160,20 +160,30 @@ class FacilityListController {
     switch (type) {
       case FacilityType.hospital:
         return '動物病院';
+      case FacilityType.veterinary:
+        return '獣医院';
       case FacilityType.grooming:
         return 'トリミング';
       case FacilityType.petShop:
         return 'ペットショップ';
+      case FacilityType.petStore:
+        return 'ペット用品店';
       case FacilityType.dogRun:
         return 'ドッグラン';
       case FacilityType.park:
         return '公園';
+      case FacilityType.petPark:
+        return 'ペット公園';
       case FacilityType.cafe:
         return 'ペットカフェ';
       case FacilityType.hotel:
         return 'ペットホテル';
+      case FacilityType.petFriendlyAccommodation:
+        return 'ペット可宿泊施設';
       case FacilityType.training:
         return '訓練所';
+      case FacilityType.other:
+        return 'その他';
     }
   }
 

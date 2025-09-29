@@ -1,9 +1,7 @@
-import 'package:aipet_frontend/features/onboarding/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/get_pet_profile_usecase.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart'
-    as pet_registor_entity;
-import 'package:aipet_frontend/shared/constants/pet_profile_constants.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/features/pet_profile/data/providers/usecase_providers.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/usecases/get_pet_profile_usecase.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -12,7 +10,7 @@ part 'pet_profile_controller.g.dart';
 /// 펫 프로필 상태
 class PetProfileState {
   final TabController? tabController;
-  final pet_registor_entity.PetProfileEntity? selectedPet;
+  final PetProfileEntity? selectedPet;
   final bool isLoading;
   final String? errorMessage;
 
@@ -25,7 +23,7 @@ class PetProfileState {
 
   PetProfileState copyWith({
     TabController? tabController,
-    pet_registor_entity.PetProfileEntity? selectedPet,
+    PetProfileEntity? selectedPet,
     bool? isLoading,
     String? errorMessage,
   }) {
@@ -67,7 +65,7 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   }
 
   /// 펫 선택
-  void selectPet(pet_registor_entity.PetProfileEntity pet) {
+  void selectPet(PetProfileEntity pet) {
     state = state.copyWith(selectedPet: pet);
   }
 
@@ -79,32 +77,34 @@ class PetProfileNotifier extends _$PetProfileNotifier {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
-      final result = await _getPetProfileUseCase.execute(
-        petId: petId,
-        requesterId: requesterId,
-      );
+      final result = await _getPetProfileUseCase.call(petId);
 
       if (result.isSuccess) {
         state = state.copyWith(
-          selectedPet: result.data as pet_registor_entity.PetProfileEntity,
+          selectedPet: result.dataOrNull,
           isLoading: false,
         );
         return Result.success('Pet profile loaded successfully');
       } else {
-        state = state.copyWith(isLoading: false, errorMessage: result.message);
-        return Result.failure(result.message);
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: result.errorOrNull,
+        );
+        return Result.failure(
+          result.errorOrNull ?? 'Failed to load pet profile',
+        );
       }
     } catch (error) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: '${PetProfileConstants.loadError}: $error',
+        errorMessage: 'Failed to load pet profile: $error',
       );
       return Result.failure('Failed to load pet profile: $error');
     }
   }
 
   /// 펫 프로필 직접 설정 (기존 호환성용)
-  void setPetProfile(pet_registor_entity.PetProfileEntity pet) {
+  void setPetProfile(PetProfileEntity pet) {
     state = state.copyWith(selectedPet: pet);
   }
 
@@ -134,13 +134,13 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   String getTabTitle(int index) {
     switch (index) {
       case 0:
-        return PetProfileConstants.basicInfoTab;
+        return '基本情報';
       case 1:
-        return PetProfileConstants.healthTab;
+        return '健康';
       case 2:
-        return PetProfileConstants.nutritionTab;
+        return '栄養';
       case 3:
-        return PetProfileConstants.shareTab;
+        return '共有';
       default:
         return '';
     }
@@ -162,24 +162,54 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   /// 프로필 타입 아이콘
   String get profileTypeIcon {
     final petType = state.selectedPet?.type ?? '';
-    return PetTypeConstants.getIcon(petType);
+    return _getPetTypeIcon(petType);
   }
 
   /// 프로필 타입 이름
   String get profileTypeName {
     final petType = state.selectedPet?.type ?? '';
-    return PetTypeConstants.getName(petType);
+    return _getPetTypeName(petType);
   }
 
   /// 공개 수준 표시명
   String get visibilityLevelName {
-    // pet_registor 엔티티에는 visibilityLevel이 없으므로 기본값 사용
     return 'Private';
   }
 
   /// 공개 수준 아이콘
   IconData get visibilityLevelIcon {
-    // pet_registor 엔티티에는 visibilityLevel이 없으므로 기본 아이콘 사용
     return Icons.lock;
+  }
+
+  /// 펫 타입 아이콘 반환
+  String _getPetTypeIcon(String petType) {
+    switch (petType.toLowerCase()) {
+      case 'dog':
+        return '🐕';
+      case 'cat':
+        return '🐱';
+      case 'bird':
+        return '🐦';
+      case 'fish':
+        return '🐠';
+      default:
+        return '🐾';
+    }
+  }
+
+  /// 펫 타입 이름 반환
+  String _getPetTypeName(String petType) {
+    switch (petType.toLowerCase()) {
+      case 'dog':
+        return '犬';
+      case 'cat':
+        return '猫';
+      case 'bird':
+        return '鳥';
+      case 'fish':
+        return '魚';
+      default:
+        return 'ペット';
+    }
   }
 }
