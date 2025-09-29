@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
 import 'package:aipet_frontend/features/notification/presentation/extensions/notification_type_ui_extension.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
-import '../../../domain/entities/notification_model.dart';
 
 /// 알림 상세 헤더 컴포넌트
 class NotificationDetailHeaderComponent extends StatelessWidget {

@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import '../../../../../shared/shared.dart';
 
 /// 순수 UI 전용 알림 카드 위젯
 class NotificationCardComponent extends StatelessWidget {
@@ -62,11 +62,7 @@ class NotificationCardComponent extends StatelessWidget {
                   color: iconColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Icon(
-                  icon,
-                  color: iconColor,
-                  size: 20,
-                ),
+                child: Icon(icon, color: iconColor, size: 20),
               ),
               const SizedBox(width: AppSpacing.md),
               // 알림 내용

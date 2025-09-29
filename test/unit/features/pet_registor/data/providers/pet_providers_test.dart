@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -27,13 +27,31 @@ void main() {
 
       test('should load pets successfully', () async {
         // Act
-        await container.read(petsNotifierProvider.future);
+        try {
+          // Wait for the provider to complete
+          final pets = await container.read(petsNotifierProvider.future);
+          print('Pets loaded: ${pets.length}');
 
-        // Assert
-        final petsAsync = container.read(petsNotifierProvider);
-        expect(petsAsync.hasValue, isTrue);
-        expect(petsAsync.value, isA<List<PetProfileEntity>>());
-        // Mock 데이터가 비어있을 수 있으므로 제거
+          // Wait a bit for the provider state to update
+          await Future.delayed(const Duration(milliseconds: 100));
+
+          // Assert
+          final petsAsync = container.read(petsNotifierProvider);
+          print('Provider state: ${petsAsync.runtimeType}');
+          print('Has value: ${petsAsync.hasValue}');
+          print('Is loading: ${petsAsync.isLoading}');
+          print('Has error: ${petsAsync.hasError}');
+          if (petsAsync.hasError) {
+            print('Error: ${petsAsync.error}');
+          }
+          expect(petsAsync.hasValue, isTrue);
+          expect(petsAsync.value, isA<List<PetProfileEntity>>());
+          // Mock 데이터가 비어있을 수 있으므로 제거
+        } catch (e, stackTrace) {
+          print('Error in test: $e');
+          print('StackTrace: $stackTrace');
+          rethrow;
+        }
       });
 
       test('should refresh pets', () async {
@@ -87,6 +105,8 @@ void main() {
           name: 'Test Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'user1',
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
@@ -112,6 +132,8 @@ void main() {
           name: 'Updated Pet',
           type: 'dog',
           birthDate: DateTime(2020, 1, 1),
+          gender: 'male',
+          weight: 25.0,
           ownerId: 'user1',
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),

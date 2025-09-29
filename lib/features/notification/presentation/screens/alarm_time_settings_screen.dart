@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/features/notification/presentation/controllers/alarm_time_settings_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../controllers/alarm_time_settings_controller.dart';
 
 class AlarmTimeSettingsScreen extends ConsumerStatefulWidget {
   const AlarmTimeSettingsScreen({super.key});
@@ -19,7 +18,9 @@ class _AlarmTimeSettingsScreenState
     super.initState();
     // 컨트롤러를 통해 알림 시간 로드
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(alarmTimeSettingsControllerProvider.notifier).loadAlarmTimes();
+      ref
+          .read(alarmTimeSettingsControllerProvider.notifier)
+          .loadAlarmTimes('default_user_id');
     });
   }
 
@@ -142,8 +143,9 @@ class _AlarmTimeSettingsScreenState
 
                 const SizedBox(height: AppSpacing.xl * 3),
 
-                SaveButtonComponent(
+                ActionButton.primary(
                   text: '保存',
+                  isEnabled: true,
                   onPressed: () {
                     ref
                         .read(alarmTimeSettingsControllerProvider.notifier)

@@ -3,13 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart'
-    as _i2;
+    as _i5;
 import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart'
-    as _i3;
+    as _i2;
+import 'package:aipet_frontend/shared/foundation/result/app_result.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,139 +27,165 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeNotificationModel_0 extends _i1.SmartFake
-    implements _i2.NotificationModel {
-  _FakeNotificationModel_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeNotificationSettings_1 extends _i1.SmartFake
-    implements _i2.NotificationSettings {
-  _FakeNotificationSettings_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
 /// A class which mocks [NotificationRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockNotificationRepository extends _i1.Mock
-    implements _i3.NotificationRepository {
+    implements _i2.NotificationRepository {
   MockNotificationRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<List<_i2.NotificationModel>> getAllNotifications() =>
+  _i3.Future<_i4.Result<List<_i5.NotificationModel>>> getAllNotifications({
+    required String? userId,
+    int? page = 0,
+    int? limit = 20,
+    bool? isRead,
+    String? type,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getAllNotifications, []),
-            returnValue: _i4.Future<List<_i2.NotificationModel>>.value(
-              <_i2.NotificationModel>[],
-            ),
+            Invocation.method(#getAllNotifications, [], {
+              #userId: userId,
+              #page: page,
+              #limit: limit,
+              #isRead: isRead,
+              #type: type,
+            }),
+            returnValue:
+                _i3.Future<_i4.Result<List<_i5.NotificationModel>>>.value(
+                  _i6.dummyValue<_i4.Result<List<_i5.NotificationModel>>>(
+                    this,
+                    Invocation.method(#getAllNotifications, [], {
+                      #userId: userId,
+                      #page: page,
+                      #limit: limit,
+                      #isRead: isRead,
+                      #type: type,
+                    }),
+                  ),
+                ),
           )
-          as _i4.Future<List<_i2.NotificationModel>>);
+          as _i3.Future<_i4.Result<List<_i5.NotificationModel>>>);
 
   @override
-  _i4.Future<_i2.NotificationModel?> getNotificationById(String? id) =>
+  _i3.Future<_i4.Result<_i5.NotificationModel?>> getNotificationById({
+    required String? userId,
+    required String? notificationId,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getNotificationById, [id]),
-            returnValue: _i4.Future<_i2.NotificationModel?>.value(),
-          )
-          as _i4.Future<_i2.NotificationModel?>);
-
-  @override
-  _i4.Future<_i2.NotificationModel> createNotification(
-    _i2.NotificationModel? notification,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#createNotification, [notification]),
-            returnValue: _i4.Future<_i2.NotificationModel>.value(
-              _FakeNotificationModel_0(
+            Invocation.method(#getNotificationById, [], {
+              #userId: userId,
+              #notificationId: notificationId,
+            }),
+            returnValue: _i3.Future<_i4.Result<_i5.NotificationModel?>>.value(
+              _i6.dummyValue<_i4.Result<_i5.NotificationModel?>>(
                 this,
-                Invocation.method(#createNotification, [notification]),
+                Invocation.method(#getNotificationById, [], {
+                  #userId: userId,
+                  #notificationId: notificationId,
+                }),
               ),
             ),
           )
-          as _i4.Future<_i2.NotificationModel>);
+          as _i3.Future<_i4.Result<_i5.NotificationModel?>>);
 
   @override
-  _i4.Future<_i2.NotificationModel> updateNotification(
-    _i2.NotificationModel? notification,
-  ) =>
+  _i3.Future<_i4.Result<bool>> markAsRead({
+    required String? userId,
+    required String? notificationId,
+    required bool? isRead,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#updateNotification, [notification]),
-            returnValue: _i4.Future<_i2.NotificationModel>.value(
-              _FakeNotificationModel_0(
+            Invocation.method(#markAsRead, [], {
+              #userId: userId,
+              #notificationId: notificationId,
+              #isRead: isRead,
+            }),
+            returnValue: _i3.Future<_i4.Result<bool>>.value(
+              _i6.dummyValue<_i4.Result<bool>>(
                 this,
-                Invocation.method(#updateNotification, [notification]),
+                Invocation.method(#markAsRead, [], {
+                  #userId: userId,
+                  #notificationId: notificationId,
+                  #isRead: isRead,
+                }),
               ),
             ),
           )
-          as _i4.Future<_i2.NotificationModel>);
+          as _i3.Future<_i4.Result<bool>>);
 
   @override
-  _i4.Future<void> deleteNotification(String? id) =>
+  _i3.Future<_i4.Result<bool>> deleteNotification({
+    required String? userId,
+    required String? notificationId,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteNotification, [id]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
-  _i4.Future<void> markAsRead(String? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#markAsRead, [id]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
-  _i4.Future<int> getUnreadCount() =>
-      (super.noSuchMethod(
-            Invocation.method(#getUnreadCount, []),
-            returnValue: _i4.Future<int>.value(0),
-          )
-          as _i4.Future<int>);
-
-  @override
-  _i4.Future<_i2.NotificationSettings> getNotificationSettings() =>
-      (super.noSuchMethod(
-            Invocation.method(#getNotificationSettings, []),
-            returnValue: _i4.Future<_i2.NotificationSettings>.value(
-              _FakeNotificationSettings_1(
+            Invocation.method(#deleteNotification, [], {
+              #userId: userId,
+              #notificationId: notificationId,
+            }),
+            returnValue: _i3.Future<_i4.Result<bool>>.value(
+              _i6.dummyValue<_i4.Result<bool>>(
                 this,
-                Invocation.method(#getNotificationSettings, []),
+                Invocation.method(#deleteNotification, [], {
+                  #userId: userId,
+                  #notificationId: notificationId,
+                }),
               ),
             ),
           )
-          as _i4.Future<_i2.NotificationSettings>);
+          as _i3.Future<_i4.Result<bool>>);
 
   @override
-  _i4.Future<void> saveNotificationSettings(
-    _i2.NotificationSettings? settings,
+  _i3.Future<_i4.Result<Map<String, dynamic>>> getNotificationSettings(
+    String? userId,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#saveNotificationSettings, [settings]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            Invocation.method(#getNotificationSettings, [userId]),
+            returnValue: _i3.Future<_i4.Result<Map<String, dynamic>>>.value(
+              _i6.dummyValue<_i4.Result<Map<String, dynamic>>>(
+                this,
+                Invocation.method(#getNotificationSettings, [userId]),
+              ),
+            ),
           )
-          as _i4.Future<void>);
+          as _i3.Future<_i4.Result<Map<String, dynamic>>>);
 
   @override
-  _i4.Future<bool> requestNotificationPermission() =>
+  _i3.Future<_i4.Result<bool>> updateNotificationSettings({
+    required String? userId,
+    required Map<String, dynamic>? settings,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#requestNotificationPermission, []),
-            returnValue: _i4.Future<bool>.value(false),
+            Invocation.method(#updateNotificationSettings, [], {
+              #userId: userId,
+              #settings: settings,
+            }),
+            returnValue: _i3.Future<_i4.Result<bool>>.value(
+              _i6.dummyValue<_i4.Result<bool>>(
+                this,
+                Invocation.method(#updateNotificationSettings, [], {
+                  #userId: userId,
+                  #settings: settings,
+                }),
+              ),
+            ),
           )
-          as _i4.Future<bool>);
+          as _i3.Future<_i4.Result<bool>>);
 
   @override
-  _i4.Future<void> sendTestNotification() =>
+  _i3.Future<_i4.Result<Map<String, dynamic>>> getNotificationStats(
+    String? userId,
+  ) =>
       (super.noSuchMethod(
-            Invocation.method(#sendTestNotification, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            Invocation.method(#getNotificationStats, [userId]),
+            returnValue: _i3.Future<_i4.Result<Map<String, dynamic>>>.value(
+              _i6.dummyValue<_i4.Result<Map<String, dynamic>>>(
+                this,
+                Invocation.method(#getNotificationStats, [userId]),
+              ),
+            ),
           )
-          as _i4.Future<void>);
+          as _i3.Future<_i4.Result<Map<String, dynamic>>>);
 }

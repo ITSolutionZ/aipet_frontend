@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/facility.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:flutter/material.dart';
 
 class FacilityMapPlaceholder extends StatelessWidget {
   final List<Facility> facilities;

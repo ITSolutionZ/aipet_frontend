@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-
-import '../design/design.dart';
 
 /// 스크롤 화면용 감성적인 브라운 그라데이션 SliverAppBar
 class SoftGradientSliverAppBar extends StatelessWidget {

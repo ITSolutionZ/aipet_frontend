@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/services/error_handler_service.dart';
+import 'package:aipet_frontend/shared/core/services/error_handler_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

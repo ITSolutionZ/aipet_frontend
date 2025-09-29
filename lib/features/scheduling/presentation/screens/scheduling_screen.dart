@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
 
 /// 스케줄링 메인 화면
 /// 식사, 학습, 급수 카테고리와 알람 설정을 제공합니다.
@@ -20,9 +19,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SoftGradientAppBar(
-        title: 'スケジュール管理',
-      ),
+      appBar: const SoftGradientAppBar(title: 'スケジュール管理'),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -54,9 +51,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('アラーム設定', style: AppFonts.titleMedium),
+                  Text(AppTexts.alarmSettings, style: AppFonts.titleMedium),
                   Text(
-                    'スケジュール通知を受け取りますか？',
+                    AppTexts.scheduleNotification,
                     style: AppFonts.bodySmall.copyWith(
                       color: AppColors.pointGray,
                     ),
@@ -74,7 +71,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      _isAlarmEnabled ? 'アラームを有効にしました' : 'アラームを無効にしました',
+                      _isAlarmEnabled
+                          ? AppTexts.alarmEnabled
+                          : AppTexts.alarmDisabled,
                     ),
                   ),
                 );
@@ -103,29 +102,29 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
           children: [
             _buildCategoryCard(
               icon: Icons.restaurant,
-              title: '食事',
-              subtitle: '給餌スケジュール',
+              title: AppTexts.feedingSchedule,
+              subtitle: AppTexts.feedingScheduleDescription,
               color: AppColors.pointGreen,
               onTap: () => context.go(AppRouter.feedingMainRoute),
             ),
             _buildCategoryCard(
               icon: Icons.school,
-              title: '学習',
-              subtitle: 'トレーニング',
+              title: AppTexts.training,
+              subtitle: AppTexts.trainingDescription,
               color: AppColors.pointBlue,
               onTap: () => context.go(AppRouter.trainingMainRoute),
             ),
             _buildCategoryCard(
               icon: Icons.water_drop,
-              title: '給水',
-              subtitle: '水分補給',
+              title: AppTexts.watering,
+              subtitle: AppTexts.wateringDescription,
               color: AppColors.tonePeach,
               onTap: () => context.go(AppRouter.wateringMainRoute),
             ),
             _buildCategoryCard(
               icon: Icons.medical_services,
-              title: '健康',
-              subtitle: '健康管理',
+              title: AppTexts.healthManagement,
+              subtitle: AppTexts.healthManagementDescription,
               color: AppColors.pointBrown,
               onTap: () => context.go(AppRouter.healthMainRoute),
             ),

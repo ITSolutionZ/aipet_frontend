@@ -5,7 +5,7 @@ void main() {
   group('Environment Config Classes Test', () {
     test('DevelopmentConfig should have correct environment settings', () {
       final config = DevelopmentConfig();
-      
+
       expect(config.environment, equals('development'));
       expect(config.isDebugMode, isTrue);
       expect(config.enableLogging, isTrue);
@@ -16,7 +16,7 @@ void main() {
 
     test('StagingConfig should have correct environment settings', () {
       final config = StagingConfig();
-      
+
       expect(config.environment, equals('staging'));
       expect(config.isDebugMode, isTrue);
       expect(config.enableLogging, isTrue);
@@ -27,7 +27,7 @@ void main() {
 
     test('ProductionConfig should have correct environment settings', () {
       final config = ProductionConfig();
-      
+
       expect(config.environment, equals('production'));
       expect(config.isDebugMode, isFalse);
       expect(config.enableLogging, isFalse);
@@ -39,17 +39,17 @@ void main() {
     test('AppConfig initialization should work correctly', () {
       // Test current default (DevelopmentConfig)
       expect(AppConfig.current, isA<DevelopmentConfig>());
-      
+
       // Test initialization with StagingConfig
       AppConfig.initialize(StagingConfig());
       expect(AppConfig.current, isA<StagingConfig>());
       expect(AppConfig.current.environment, equals('staging'));
-      
+
       // Test initialization with ProductionConfig
       AppConfig.initialize(ProductionConfig());
       expect(AppConfig.current, isA<ProductionConfig>());
       expect(AppConfig.current.environment, equals('production'));
-      
+
       // Reset to DevelopmentConfig for other tests
       AppConfig.initialize(DevelopmentConfig());
     });

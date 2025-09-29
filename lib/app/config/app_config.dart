@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+// Centralized env accessor
+String _env(String key, [String fallback = '']) =>
+    dotenv.env[key] ?? fallback; // Added
 
 /// 앱 설정 관리 클래스
 ///
@@ -11,6 +15,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 abstract class AppConfig {
   /// API 베이스 URL
   String get apiBaseUrl;
+
+  /// 환경변수에서 API URL 가져오기
+  static String get apiBaseUrlFromEnv =>
+      _env('API_BASE_URL', 'http://localhost:3000'); // Changed
 
   /// 앱 환경 (development, staging, production)
   String get environment;
@@ -60,6 +68,15 @@ abstract class AppConfig {
   /// LINE 채널 ID
   String get lineChannelId;
 
+  /// LINE OAuth Client ID
+  String get lineClientId;
+
+  /// LINE OAuth Client Secret
+  String get lineClientSecret;
+
+  /// LINE OAuth Redirect URI
+  String get lineRedirectUri;
+
   /// OpenAI API 키
   String get openaiApiKey;
 
@@ -71,6 +88,34 @@ abstract class AppConfig {
 
   /// Google Cloud Map Platform API 키
   String get googleMapsApiKey;
+
+  /// Google Public API 키 (예: 일부 웹 SDK 등에서 사용)
+  String get googlePublicApiKey; // Added
+
+  /// YouTube API 키
+  String get youtubeApiKey;
+
+  /// Google Calendar API 키
+  String get googleCalendarApiKey;
+
+  // ----------------------
+  // Firebase (.env 기반)
+  // Note: Most Flutter apps also rely on firebase_options.dart for initialization,
+  // but these keys are provided here for services that need raw keys at runtime.
+  // ----------------------
+  String get firebaseProjectId; // Added
+  String get firebaseMessagingSenderId; // Added
+  String get firebaseApiKeyAndroid; // Added
+  String get firebaseApiKeyIos; // Added
+  String get firebaseApiKeyWeb; // Added
+  String get firebaseAppIdAndroid; // Added
+  String get firebaseAppIdIos; // Added
+
+  /// Firebase Auth 로그인 엔드포인트
+  String get firebaseAuthLoginEndpoint => '/api/firebase-auth/login';
+
+  /// 전체 Firebase Auth 로그인 URL
+  String get firebaseAuthLoginUrl => apiBaseUrl + firebaseAuthLoginEndpoint;
 
   /// 환경 변수 로드 확인
   bool get isEnvLoaded => dotenv.isInitialized;
@@ -91,21 +136,24 @@ abstract class AppConfig {
         lineChannelId.isNotEmpty;
   }
 
-  /// API 키 설정 상태 로그 출력 (디버그용)
+  /// 🛡️ API 키 설정 상태 확인 (보안 강화)
+  ///
+  /// 실제 키 값은 절대 로그에 출력하지 않으며, 존재 여부만 확인합니다.
   void logApiKeyStatus() {
-    if (isEnvLoaded) {
-      debugPrint('🔑 API Key Status:');
-      debugPrint('  Google Maps: ${googleMapsApiKey.isNotEmpty ? '✅' : '❌'}');
-      debugPrint('  OpenAI: ${openaiApiKey.isNotEmpty ? '✅' : '❌'}');
-      debugPrint('  Weather: ${weatherApiKey.isNotEmpty ? '✅' : '❌'}');
-      debugPrint('  LINE: ${lineChannelId.isNotEmpty ? '✅' : '❌'}');
+    if (!kDebugMode) return; // 릴리즈 모드에서는 실행하지 않음
 
-      // Google Maps API 키 특별 검사
-      if (googleMapsApiKey.isNotEmpty) {
-        debugPrint(
-          '  📍 Google Maps API Key: ${googleMapsApiKey.substring(0, 10)}...',
-        );
-      }
+    if (isEnvLoaded) {
+      debugPrint('🔑 API Key Status (키 값은 보안상 표시되지 않습니다):');
+      debugPrint(
+        '  Google Maps: ${googleMapsApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}',
+      );
+      debugPrint('  OpenAI: ${openaiApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint('  Weather: ${weatherApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint('  LINE: ${lineChannelId.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint('  YouTube: ${youtubeApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
+      debugPrint(
+        '  Google Calendar: ${googleCalendarApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}',
+      );
     } else {
       debugPrint('❌ Environment variables not loaded');
     }
@@ -140,6 +188,15 @@ abstract class AppConfig {
   static void initialize(AppConfig config) {
     _current = config;
   }
+
+  /// .env 를 먼저 로드하고 기본 설정(개발)을 초기화하는 헬퍼
+  static Future<void> bootstrap({AppConfig? override}) async {
+    // Added
+    if (!dotenv.isInitialized) {
+      await dotenv.load();
+    }
+    initialize(override ?? DevelopmentConfig());
+  }
 }
 
 /// 개발 환경 설정
@@ -148,7 +205,7 @@ abstract class AppConfig {
 /// 디버그 모드가 활성화되고 로깅이 상세하게 출력됩니다.
 class DevelopmentConfig extends AppConfig {
   @override
-  String get apiBaseUrl => 'https://dev-api.aipet.com';
+  String get apiBaseUrl => AppConfig.apiBaseUrlFromEnv; // Changed
 
   @override
   String get environment => 'development';
@@ -196,19 +253,53 @@ class DevelopmentConfig extends AppConfig {
   int get databaseVersion => 1;
 
   @override
-  String get lineChannelId => dotenv.env['LINE_CHANNEL_ID'] ?? '';
+  String get lineChannelId => _env('LINE_CHANNEL_ID'); // Changed
 
   @override
-  String get openaiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
+  String get lineClientId => _env('LINE_CLIENT_ID'); // Changed
+
+  @override
+  String get lineClientSecret => _env('LINE_CLIENT_SECRET'); // Changed
+
+  @override
+  String get lineRedirectUri => _env('LINE_REDIRECT_URI'); // Changed
+
+  @override
+  String get openaiApiKey => _env('OPENAI_API_KEY'); // Changed
 
   @override
   String get openaiModel => 'gpt-3.5-turbo';
 
   @override
-  String get weatherApiKey => dotenv.env['WEATHER_API_KEY'] ?? '';
+  String get weatherApiKey => _env('WEATHER_API_KEY'); // Changed
 
   @override
-  String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
+  String get googleMapsApiKey => _env('GOOGLE_MAPS_API_KEY'); // Changed
+
+  @override
+  String get googlePublicApiKey => _env('GOOGLE_PUBLIC_API_KEY'); // Added
+
+  @override
+  String get youtubeApiKey => _env('YOUTUBE_API_KEY'); // Added
+
+  @override
+  String get googleCalendarApiKey => _env('GOOGLE_CALENDAR_API_KEY'); // Added
+
+  // Firebase
+  @override
+  String get firebaseProjectId => _env('FIREBASE_PROJECT_ID'); // Added
+  @override
+  String get firebaseMessagingSenderId => _env('FIREBASE_MESSAGING_SENDER_ID'); // Added
+  @override
+  String get firebaseApiKeyAndroid => _env('FIREBASE_API_KEY_ANDROID'); // Added
+  @override
+  String get firebaseApiKeyIos => _env('FIREBASE_API_KEY_IOS'); // Added
+  @override
+  String get firebaseApiKeyWeb => _env('FIREBASE_API_KEY_WEB'); // Added
+  @override
+  String get firebaseAppIdAndroid => _env('FIREBASE_APP_ID_ANDROID'); // Added
+  @override
+  String get firebaseAppIdIos => _env('FIREBASE_APP_ID_IOS'); // Added
 }
 
 /// 스테이징 환경 설정
@@ -265,19 +356,52 @@ class StagingConfig extends AppConfig {
   int get databaseVersion => 1;
 
   @override
-  String get lineChannelId => dotenv.env['LINE_CHANNEL_ID'] ?? '';
+  String get lineChannelId => _env('LINE_CHANNEL_ID'); // Changed
 
   @override
-  String get openaiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
+  String get lineClientId => _env('LINE_CLIENT_ID'); // Changed
+
+  @override
+  String get lineClientSecret => _env('LINE_CLIENT_SECRET'); // Changed
+
+  @override
+  String get lineRedirectUri => _env('LINE_REDIRECT_URI'); // Changed
+
+  @override
+  String get openaiApiKey => _env('OPENAI_API_KEY'); // Changed
 
   @override
   String get openaiModel => 'gpt-4';
 
   @override
-  String get weatherApiKey => dotenv.env['WEATHER_API_KEY'] ?? '';
+  String get weatherApiKey => _env('WEATHER_API_KEY'); // Changed
 
   @override
-  String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
+  String get googleMapsApiKey => _env('GOOGLE_MAPS_API_KEY'); // Changed
+
+  @override
+  String get googlePublicApiKey => _env('GOOGLE_PUBLIC_API_KEY'); // Added
+
+  @override
+  String get youtubeApiKey => _env('YOUTUBE_API_KEY'); // Added
+
+  @override
+  String get googleCalendarApiKey => _env('GOOGLE_CALENDAR_API_KEY'); // Added
+
+  @override
+  String get firebaseProjectId => _env('FIREBASE_PROJECT_ID'); // Added
+  @override
+  String get firebaseMessagingSenderId => _env('FIREBASE_MESSAGING_SENDER_ID'); // Added
+  @override
+  String get firebaseApiKeyAndroid => _env('FIREBASE_API_KEY_ANDROID'); // Added
+  @override
+  String get firebaseApiKeyIos => _env('FIREBASE_API_KEY_IOS'); // Added
+  @override
+  String get firebaseApiKeyWeb => _env('FIREBASE_API_KEY_WEB'); // Added
+  @override
+  String get firebaseAppIdAndroid => _env('FIREBASE_APP_ID_ANDROID'); // Added
+  @override
+  String get firebaseAppIdIos => _env('FIREBASE_APP_ID_IOS'); // Added
 }
 
 /// 프로덕션 환경 설정
@@ -334,19 +458,52 @@ class ProductionConfig extends AppConfig {
   int get databaseVersion => 1;
 
   @override
-  String get lineChannelId => dotenv.env['LINE_CHANNEL_ID'] ?? '';
+  String get lineChannelId => _env('LINE_CHANNEL_ID'); // Changed
 
   @override
-  String get openaiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
+  String get lineClientId => _env('LINE_CLIENT_ID'); // Changed
+
+  @override
+  String get lineClientSecret => _env('LINE_CLIENT_SECRET'); // Changed
+
+  @override
+  String get lineRedirectUri => _env('LINE_REDIRECT_URI'); // Changed
+
+  @override
+  String get openaiApiKey => _env('OPENAI_API_KEY'); // Changed
 
   @override
   String get openaiModel => 'gpt-4';
 
   @override
-  String get weatherApiKey => dotenv.env['WEATHER_API_KEY'] ?? '';
+  String get weatherApiKey => _env('WEATHER_API_KEY'); // Changed
 
   @override
-  String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
+  String get googleMapsApiKey => _env('GOOGLE_MAPS_API_KEY'); // Changed
+
+  @override
+  String get googlePublicApiKey => _env('GOOGLE_PUBLIC_API_KEY'); // Added
+
+  @override
+  String get youtubeApiKey => _env('YOUTUBE_API_KEY'); // Added
+
+  @override
+  String get googleCalendarApiKey => _env('GOOGLE_CALENDAR_API_KEY'); // Added
+
+  @override
+  String get firebaseProjectId => _env('FIREBASE_PROJECT_ID'); // Added
+  @override
+  String get firebaseMessagingSenderId => _env('FIREBASE_MESSAGING_SENDER_ID'); // Added
+  @override
+  String get firebaseApiKeyAndroid => _env('FIREBASE_API_KEY_ANDROID'); // Added
+  @override
+  String get firebaseApiKeyIos => _env('FIREBASE_API_KEY_IOS'); // Added
+  @override
+  String get firebaseApiKeyWeb => _env('FIREBASE_API_KEY_WEB'); // Added
+  @override
+  String get firebaseAppIdAndroid => _env('FIREBASE_APP_ID_ANDROID'); // Added
+  @override
+  String get firebaseAppIdIos => _env('FIREBASE_APP_ID_IOS'); // Added
 }
 
 /// 테스트 환경 설정
@@ -403,17 +560,50 @@ class TestConfig extends AppConfig {
   int get databaseVersion => 1;
 
   @override
-  String get lineChannelId => 'test_line_channel_id';
+  String get lineChannelId => '';
 
   @override
-  String get openaiApiKey => 'test_openai_api_key';
+  String get lineClientId => '';
+
+  @override
+  String get lineClientSecret => '';
+
+  @override
+  String get lineRedirectUri => '';
+
+  @override
+  String get openaiApiKey => '';
 
   @override
   String get openaiModel => 'gpt-3.5-turbo';
 
   @override
-  String get weatherApiKey => 'test_weather_api_key';
+  String get weatherApiKey => '';
 
   @override
-  String get googleMapsApiKey => 'test_google_maps_api_key';
+  String get googleMapsApiKey => '';
+
+  @override
+  String get googlePublicApiKey => '';
+
+  @override
+  String get youtubeApiKey => '';
+
+  @override
+  String get googleCalendarApiKey => '';
+
+  @override
+  String get firebaseProjectId => '';
+  @override
+  String get firebaseMessagingSenderId => '';
+  @override
+  String get firebaseApiKeyAndroid => '';
+  @override
+  String get firebaseApiKeyIos => '';
+  @override
+  String get firebaseApiKeyWeb => '';
+  @override
+  String get firebaseAppIdAndroid => '';
+  @override
+  String get firebaseAppIdIos => '';
 }

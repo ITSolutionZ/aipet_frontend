@@ -1,15 +1,107 @@
+import 'dart:async';
+
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/splash/data/data.dart';
+import 'package:aipet_frontend/features/splash/presentation/widgets/splash_logo_widget.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../app/router/app_router.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
-import '../controllers/controllers.dart';
-import '../widgets/widgets.dart';
+part 'splash_screen.g.dart';
 
+/// 스플래시 애니메이션 상태 관리
+@riverpod
+class SplashAnimationNotifier extends _$SplashAnimationNotifier {
+  @override
+  SplashAnimationState build() => const SplashAnimationState();
+
+  void initializeAnimations(TickerProvider vsync) {
+    final animationController = AnimationController(
+      duration: AppConstants.splashAnimationDuration,
+      vsync: vsync,
+    );
+
+    // ✅ 애니메이션 최적화 - 메모리 효율적인 생성
+    final fadeAnimation = _createFadeAnimation(animationController);
+    final scaleAnimation = _createScaleAnimation(animationController);
+
+    state = state.copyWith(
+      animationController: animationController,
+      fadeAnimation: fadeAnimation,
+      scaleAnimation: scaleAnimation,
+    );
+  }
+
+  /// Fade 애니메이션 생성
+  Animation<double> _createFadeAnimation(AnimationController controller) {
+    return Tween<double>(
+      begin: AppConstants.splashFadeStart,
+      end: AppConstants.splashFadeEnd,
+    ).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: AppConstants.splashFadeInterval,
+      ),
+    );
+  }
+
+  /// Scale 애니메이션 생성
+  Animation<double> _createScaleAnimation(AnimationController controller) {
+    return Tween<double>(
+      begin: AppConstants.splashScaleStart,
+      end: AppConstants.splashScaleEnd,
+    ).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: AppConstants.splashScaleInterval,
+      ),
+    );
+  }
+
+  void startAnimation() {
+    state.animationController?.forward();
+  }
+
+  void dispose() {
+    state.animationController?.dispose();
+  }
+}
+
+/// 스플래시 애니메이션 상태
+class SplashAnimationState {
+  final AnimationController? animationController;
+  final Animation<double>? fadeAnimation;
+  final Animation<double>? scaleAnimation;
+
+  const SplashAnimationState({
+    this.animationController,
+    this.fadeAnimation,
+    this.scaleAnimation,
+  });
+
+  SplashAnimationState copyWith({
+    AnimationController? animationController,
+    Animation<double>? fadeAnimation,
+    Animation<double>? scaleAnimation,
+  }) {
+    return SplashAnimationState(
+      animationController: animationController ?? this.animationController,
+      fadeAnimation: fadeAnimation ?? this.fadeAnimation,
+      scaleAnimation: scaleAnimation ?? this.scaleAnimation,
+    );
+  }
+}
+
+/// 스플래시 화면
 class SplashScreen extends ConsumerStatefulWidget {
-  const SplashScreen({super.key});
+  const SplashScreen({
+    super.key,
+    this.testMode = false, // 테스트 모드 지원
+  });
+
+  final bool testMode;
 
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
@@ -17,80 +109,155 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
-  late SplashController _controller;
+  StreamSubscription<Result<SplashState>>? _splashSequenceSubscription;
 
   @override
   void initState() {
     super.initState();
-    _controller = SplashController(ref);
-    _initializeAnimations();
-    _startSplashSequence();
-  }
 
-  void _initializeAnimations() {
-    _animationController = AnimationController(
-      duration: SplashConstants.animationDuration,
-      vsync: this,
-    );
-
-    _fadeAnimation = Tween<double>(
-      begin: SplashConstants.fadeStart,
-      end: SplashConstants.fadeEnd,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: SplashConstants.fadeInterval,
-    ));
-
-    _scaleAnimation = Tween<double>(
-      begin: SplashConstants.scaleStart,
-      end: SplashConstants.scaleEnd,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: SplashConstants.scaleInterval,
-    ));
-  }
-
-  void _startSplashSequence() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _animationController.forward();
-      _listenToSplashSequence();
+      if (widget.testMode) {
+        // 테스트 모드에서는 즉시 완료
+        _navigateToNext();
+      } else {
+        _initializeSplash();
+      }
     });
   }
 
-  void _listenToSplashSequence() {
-    _controller.startSplashSequence().listen(
-      (result) {
-        if (result.isSuccess && result.data != null) {
-          // 상태 업데이트
-          ref.read(splashSequenceNotifierProvider.notifier).updateState(result.data!);
-          
-          // 완료 시 다음 화면으로 이동
-          if (result.data!.isCompleted) {
-            _navigateToNext();
-          }
-        }
-      },
-      onError: (error) {
-        // 에러 발생 시에도 다음 화면으로 이동
-        _navigateToNext();
-      },
+  /// 이미지 프리로딩
+  Future<void> _preloadImages() async {
+    try {
+      await Future.wait([
+        precacheImage(
+          const AssetImage(AppConstants.splashAppLogoPath),
+          context,
+        ),
+        precacheImage(
+          const AssetImage(AppConstants.splashCompanyLogoPath),
+          context,
+        ),
+      ]);
+    } catch (error) {
+      // 이미지 프리로딩 실패는 치명적이지 않으므로 로그만 남김
+      debugPrint('Image preloading failed: $error');
+    }
+  }
+
+  /// 스플래시 초기화
+  void _initializeSplash() async {
+    // 이미지 프리로딩
+    await _preloadImages();
+
+    // 애니메이션 초기화
+    ref
+        .read(splashAnimationNotifierProvider.notifier)
+        .initializeAnimations(this);
+    ref.read(splashAnimationNotifierProvider.notifier).startAnimation();
+
+    // 스플래시 시퀀스 시작
+    _startSplashSequence();
+  }
+
+  /// 스플래시 시퀀스 시작
+  void _startSplashSequence() {
+    final controller = ref.read(splashControllerProvider);
+    _splashSequenceSubscription = controller.startSplashSequence().listen(
+      (result) => _handleSplashResult(result),
+      onError: (error) => _handleSplashError(error),
     );
   }
 
+  /// 스플래시 결과 처리
+  void _handleSplashResult(Result<SplashState> result) {
+    if (result.isSuccess && result.dataOrNull != null) {
+      // 상태 업데이트
+      ref.read(splashControllerProvider).updateSplashState(result.dataOrNull!);
+
+      // 완료 시 다음 화면으로 이동
+      if (result.dataOrNull!.isCompleted) {
+        _navigateToNext();
+      }
+    } else {
+      _handleSplashError(Exception(result.error ?? 'Unknown error'));
+    }
+  }
+
+  /// 스플래시 에러 처리
+  void _handleSplashError(Object error) {
+    // 에러 로깅
+    debugPrint('Splash sequence error: $error');
+
+    if (mounted) {
+      // 에러 상태를 UI에 반영
+      ref
+          .read(splashStateNotifierProvider.notifier)
+          .updateState(
+            SplashState.loading(), // 에러 시 로딩 상태로 표시
+          );
+
+      // 기본 시퀀스로 fallback
+      _startFallbackSequence();
+    }
+  }
+
+  /// Fallback 시퀀스 시작
+  void _startFallbackSequence() {
+    // 에러 복구를 위한 간단한 시퀀스
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        ref.read(splashStateNotifierProvider.notifier).setLoading();
+      }
+    });
+
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted) {
+        ref.read(splashStateNotifierProvider.notifier).setAppLogo();
+      }
+    });
+
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        ref.read(splashStateNotifierProvider.notifier).setCompleted();
+        if (mounted) {
+          _navigateToNext();
+        }
+      }
+    });
+  }
+
+  /// 다음 화면으로 이동
   Future<void> _navigateToNext() async {
     if (!mounted) return;
-    
-    // 스플래시 완료 후 무조건 온보딩으로 이동
-    // 다른 조건이나 분기 로직 없음
-    context.go(AppRouter.onboardingRoute);
+
+    try {
+      final controller = ref.read(splashControllerProvider);
+      final routeResult = await controller.determineNextRoute();
+      if (routeResult.isSuccess && routeResult.dataOrNull != null) {
+        if (mounted) {
+          context.go(routeResult.dataOrNull!);
+        }
+      } else {
+        // 기본 경로로 이동
+        if (mounted) {
+          context.go(AppRouter.onboardingRoute);
+        }
+      }
+    } catch (error) {
+      // 에러 발생 시 기본 경로로 이동
+      if (mounted) {
+        context.go(AppRouter.onboardingRoute);
+      }
+    }
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    // StreamSubscription 명시적 해제
+    _splashSequenceSubscription?.cancel();
+    _splashSequenceSubscription = null;
+
+    // Riverpod Notifier는 자동으로 dispose되므로 별도 호출 불필요
     super.dispose();
   }
 
@@ -98,26 +265,52 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(child: _buildContent()),
+      body: Semantics(
+        label: 'スプラッシュ画面',
+        child: Center(
+          child: Consumer(
+            builder: (context, ref, child) {
+              final animationState = ref.watch(splashAnimationNotifierProvider);
+              final splashState = ref.watch(splashStateNotifierProvider);
+
+              return animationState.animationController != null
+                  ? AnimatedBuilder(
+                      animation: animationState.animationController!,
+                      builder: (context, child) {
+                        return FadeTransition(
+                          opacity: animationState.fadeAnimation!,
+                          child: ScaleTransition(
+                            scale: animationState.scaleAnimation!,
+                            child: Semantics(
+                              label: _getSemanticLabel(splashState),
+                              child: SplashLogoWidget(splashState: splashState),
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : Semantics(
+                      label: _getSemanticLabel(splashState),
+                      child: SplashLogoWidget(splashState: splashState),
+                    );
+            },
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildContent() {
-    final splashState = ref.watch(splashSequenceNotifierProvider);
-    
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        return FadeTransition(
-          opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: SplashLogoWidget(
-              splashState: splashState,
-            ),
-          ),
-        );
-      },
-    );
+  /// 접근성을 위한 시맨틱 라벨 생성
+  String _getSemanticLabel(SplashState state) {
+    switch (state.phase) {
+      case SplashPhase.initializing:
+        return 'アプリを初期化しています';
+      case SplashPhase.loading:
+        return '読み込み中です';
+      case SplashPhase.appLogo:
+        return 'AI Petアプリロゴを表示しています';
+      case SplashPhase.completed:
+        return 'スプラッシュが完了しました';
+    }
   }
 }

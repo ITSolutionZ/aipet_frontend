@@ -5,7 +5,7 @@ void main() {
   group('AppConfig API Keys Test', () {
     test('DevelopmentConfig should return empty strings for API keys', () {
       final config = DevelopmentConfig();
-      
+
       expect(config.openaiApiKey, equals(''));
       expect(config.weatherApiKey, equals(''));
       expect(config.googleMapsApiKey, equals(''));
@@ -14,7 +14,7 @@ void main() {
 
     test('StagingConfig should return empty strings for API keys', () {
       final config = StagingConfig();
-      
+
       expect(config.openaiApiKey, equals(''));
       expect(config.weatherApiKey, equals(''));
       expect(config.googleMapsApiKey, equals(''));
@@ -23,7 +23,7 @@ void main() {
 
     test('ProductionConfig should return empty strings for API keys', () {
       final config = ProductionConfig();
-      
+
       expect(config.openaiApiKey, equals(''));
       expect(config.weatherApiKey, equals(''));
       expect(config.googleMapsApiKey, equals(''));

@@ -1,9 +1,10 @@
 import 'dart:developer' as developer;
 
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as scheduling_mock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 급여 기록 추가 컨트롤러
 class AddFeedingRecordController extends StateNotifier<AddFeedingRecordState> {
@@ -11,13 +12,15 @@ class AddFeedingRecordController extends StateNotifier<AddFeedingRecordState> {
 
   /// 펫 정보 및 사이즈 가이드 로드
   void loadPetInfo(String petId) {
-    final petSizes = MockDataService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = scheduling_mock
+        .SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     final selectedPetInfo = petSizes[petId];
     Map<String, dynamic>? petSizeGuide;
 
     if (selectedPetInfo != null) {
       final size = selectedPetInfo['size'] as String;
-      final sizeGuide = MockDataService.getPetSizeFeedingGuide(petId);
+      final sizeGuide =
+          scheduling_mock.SchedulingMockService.getPetSizeFeedingGuide();
       petSizeGuide = sizeGuide[size];
     }
 
@@ -69,7 +72,7 @@ class AddFeedingRecordController extends StateNotifier<AddFeedingRecordState> {
     Map<String, String> statusValues,
   ) {
     // MockDataService에 상태 업데이트
-    MockDataService.updatePetStatus(petId, selectedStatuses, statusValues);
+    MockDataService.updatePetStatus(petId, statusValues);
 
     state = state.copyWith(
       selectedStatuses: selectedStatuses,

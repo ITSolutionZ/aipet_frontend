@@ -7,7 +7,7 @@ part of 'pet_profile_controller.dart';
 // **************************************************************************
 
 String _$petProfileNotifierHash() =>
-    r'2c4f72e7983a014bb2c67049f17a3aeda52006e0';
+    r'f68e2c81f987f1fd98a14ef28d1f392483e575f0';
 
 /// 펫 프로필 컨트롤러 (Clean Architecture 적용)
 ///

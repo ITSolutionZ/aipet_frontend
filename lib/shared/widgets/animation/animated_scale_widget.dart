@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 스케일 애니메이션 위젯
-class AnimatedScaleWidget extends StatefulWidget {
+class AnimatedScaleWidget extends ConsumerStatefulWidget {
   final Widget child;
   final Duration duration;
   final Duration delay;
@@ -26,10 +27,11 @@ class AnimatedScaleWidget extends StatefulWidget {
   });
 
   @override
-  State<AnimatedScaleWidget> createState() => _AnimatedScaleWidgetState();
+  ConsumerState<AnimatedScaleWidget> createState() =>
+      _AnimatedScaleWidgetState();
 }
 
-class _AnimatedScaleWidgetState extends State<AnimatedScaleWidget>
+class _AnimatedScaleWidgetState extends ConsumerState<AnimatedScaleWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -116,7 +118,7 @@ class _AnimatedScaleWidgetState extends State<AnimatedScaleWidget>
 }
 
 /// 순차적 스케일 애니메이션 위젯
-class StaggeredScaleWidget extends StatefulWidget {
+class StaggeredScaleWidget extends ConsumerStatefulWidget {
   final List<Widget> children;
   final Duration duration;
   final Duration staggerDelay;
@@ -139,10 +141,11 @@ class StaggeredScaleWidget extends StatefulWidget {
   });
 
   @override
-  State<StaggeredScaleWidget> createState() => _StaggeredScaleWidgetState();
+  ConsumerState<StaggeredScaleWidget> createState() =>
+      _StaggeredScaleWidgetState();
 }
 
-class _StaggeredScaleWidgetState extends State<StaggeredScaleWidget>
+class _StaggeredScaleWidgetState extends ConsumerState<StaggeredScaleWidget>
     with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
   late List<Animation<double>> _scaleAnimations;
@@ -251,7 +254,7 @@ class _StaggeredScaleWidgetState extends State<StaggeredScaleWidget>
 }
 
 /// 버튼 스케일 애니메이션 위젯
-class AnimatedButtonWidget extends StatefulWidget {
+class AnimatedButtonWidget extends ConsumerStatefulWidget {
   final Widget child;
   final VoidCallback? onPressed;
   final Duration duration;
@@ -270,10 +273,11 @@ class AnimatedButtonWidget extends StatefulWidget {
   });
 
   @override
-  State<AnimatedButtonWidget> createState() => _AnimatedButtonWidgetState();
+  ConsumerState<AnimatedButtonWidget> createState() =>
+      _AnimatedButtonWidgetState();
 }
 
-class _AnimatedButtonWidgetState extends State<AnimatedButtonWidget>
+class _AnimatedButtonWidgetState extends ConsumerState<AnimatedButtonWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;

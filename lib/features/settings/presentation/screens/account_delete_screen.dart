@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 class AccountDeleteScreen extends StatelessWidget {
   const AccountDeleteScreen({super.key});
@@ -93,32 +92,12 @@ class AccountDeleteScreen extends StatelessWidget {
               children: [
                 // 削除ボタン
                 Expanded(
-                  child: ElevatedButton(
+                  child: CommonButton(
+                    text: '削除',
                     onPressed: () => _showDeleteConfirmationDialog(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red[400],
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.lg,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.medium),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.delete_forever, size: 20),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          '削除',
-                          style: AppFonts.fredoka(
-                            fontSize: AppFonts.lg,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
+                    type: ButtonType.danger,
+                    size: ButtonSize.large,
+                    icon: Icons.delete_forever,
                   ),
                 ),
 
@@ -126,32 +105,12 @@ class AccountDeleteScreen extends StatelessWidget {
 
                 // 戻るボタン
                 Expanded(
-                  child: ElevatedButton(
+                  child: CommonButton(
+                    text: '戻る',
                     onPressed: () => Navigator.of(context).pop(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[300],
-                      foregroundColor: Colors.grey[700],
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.lg,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.medium),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.undo, size: 20),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          '戻る',
-                          style: AppFonts.fredoka(
-                            fontSize: AppFonts.lg,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
+                    type: ButtonType.secondary,
+                    size: ButtonSize.large,
+                    icon: Icons.undo,
                   ),
                 ),
               ],

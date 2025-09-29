@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/notification_schedule.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../shared/shared.dart';
-import '../../domain/entities/notification_model.dart';
-import '../../domain/entities/notification_schedule.dart';
-
 /// 알림 스케줄 목록 위젯
-class NotificationScheduleListWidget extends StatefulWidget {
+class NotificationScheduleListWidget extends StatelessWidget {
   final List<NotificationSchedule> schedules;
   final Function(NotificationSchedule)? onScheduleTap;
   final Function(String)? onScheduleToggle;
@@ -24,29 +23,22 @@ class NotificationScheduleListWidget extends StatefulWidget {
   });
 
   @override
-  State<NotificationScheduleListWidget> createState() =>
-      _NotificationScheduleListWidgetState();
-}
-
-class _NotificationScheduleListWidgetState
-    extends State<NotificationScheduleListWidget> {
-  @override
   Widget build(BuildContext context) {
-    if (widget.isLoading) {
+    if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(color: AppColors.pointBlue),
       );
     }
 
-    if (widget.schedules.isEmpty) {
+    if (schedules.isEmpty) {
       return _buildEmptyState();
     }
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppSpacing.md),
-      itemCount: widget.schedules.length,
+      itemCount: schedules.length,
       itemBuilder: (context, index) {
-        final schedule = widget.schedules[index];
+        final schedule = schedules[index];
         return _buildScheduleItem(schedule);
       },
     );
@@ -60,7 +52,7 @@ class _NotificationScheduleListWidgetState
           const Icon(Icons.schedule, size: 64, color: AppColors.pointGray),
           const SizedBox(height: AppSpacing.md),
           Text(
-            widget.emptyMessage ?? '예약된 알림이 없습니다',
+            emptyMessage ?? '예약된 알림이 없습니다',
             style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -84,7 +76,7 @@ class _NotificationScheduleListWidgetState
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       onDismissed: (direction) {
-        widget.onScheduleDelete?.call(schedule.id);
+        onScheduleDelete?.call(schedule.id);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(
@@ -105,7 +97,7 @@ class _NotificationScheduleListWidgetState
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: () => widget.onScheduleTap?.call(schedule),
+            onTap: () => onScheduleTap?.call(schedule),
             borderRadius: BorderRadius.circular(AppRadius.medium),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.md),
@@ -330,7 +322,7 @@ class _NotificationScheduleListWidgetState
         Switch(
           value: schedule.isActive,
           onChanged: (value) {
-            widget.onScheduleToggle?.call(schedule.id);
+            onScheduleToggle?.call(schedule.id);
           },
           activeColor: AppColors.pointBlue,
         ),

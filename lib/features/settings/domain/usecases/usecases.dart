@@ -1,3 +1,6 @@
+/// 설정 도메인 레이어 UseCase들
+library;
+
 export 'change_password_usecase.dart';
 export 'clear_app_cache_usecase.dart';
 export 'delete_account_usecase.dart';

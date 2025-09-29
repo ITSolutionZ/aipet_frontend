@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class ImageSourceSelectionWidget extends StatelessWidget {
   final VoidCallback onGallerySelected;
@@ -21,9 +20,7 @@ class ImageSourceSelectionWidget extends StatelessWidget {
         children: [
           Text(
             'プロフィール写真変更',
-            style: AppFonts.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           Row(
@@ -68,11 +65,7 @@ class ImageSourceSelectionWidget extends StatelessWidget {
               color: color.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 30,
-            ),
+            child: Icon(icon, color: color, size: 30),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),

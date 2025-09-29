@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/cards/pet_size_selection_card.dart';
 import 'package:flutter/material.dart';
-
-import '../cards/pet_size_selection_card.dart';
 
 class PetSizeSelectionGroupWidget extends StatelessWidget {
   final String? selectedSize;

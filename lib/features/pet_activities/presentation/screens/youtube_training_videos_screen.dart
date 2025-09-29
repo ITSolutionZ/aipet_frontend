@@ -1,14 +1,16 @@
+import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/controllers/youtube_videos_controller.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/add_youtube_video_button.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/add_youtube_video_dialog.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/video_bookmark_list.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/youtube_search_bar.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/youtube_tag_filter.dart';
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/youtube_video_list.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../../../shared/shared.dart';
-import '../../data/providers/pet_activities_providers.dart';
-import '../../domain/entities/entities.dart';
-import '../controllers/youtube_videos_controller.dart';
-import '../widgets/add_youtube_video_dialog.dart';
-import '../widgets/video_bookmark_list.dart';
-import '../widgets/youtube_video_card.dart';
 
 /// YouTube 교육 영상 관리 화면
 class YouTubeTrainingVideosScreen extends ConsumerStatefulWidget {
@@ -68,7 +70,7 @@ class _YouTubeTrainingVideosScreenState
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('YouTube 앱을 열 수 없습니다.')));
+        ).showSnackBar(const SnackBar(content: Text('YouTubeアプリケーションを開きません。')));
       }
     }
   }
@@ -95,22 +97,36 @@ class _YouTubeTrainingVideosScreenState
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientBackAppBar(title: 'Training Videos'),
+      appBar: const SoftGradientBackAppBar(title: 'トレーニングビデオ'),
       body: Column(
         children: [
           // 검색 바
-          _buildSearchBar(),
+          YouTubeSearchBar(
+            onSearchChanged: (value) {
+              setState(() {
+                _searchQuery = value;
+              });
+            },
+          ),
 
           // 태그 필터
           _buildTagFilter(),
 
           // Add Video 버튼
-          _buildAddVideoButton(),
+          AddYouTubeVideoButton(onPressed: _addVideo),
 
           // 비디오 목록
           Expanded(
             child: videosState.when(
-              data: (videos) => _buildVideoList(videos),
+              data: (videos) => YouTubeVideoList(
+                videos: videos,
+                searchQuery: _searchQuery,
+                selectedTags: _selectedTags,
+                onVideoTap: _openVideo,
+                onBookmarkTap: _showBookmarks,
+                onDeleteTap: _deleteVideo,
+                onAddVideo: _addVideo,
+              ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stack) => Center(
                 child: Column(
@@ -123,7 +139,7 @@ class _YouTubeTrainingVideosScreenState
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      'Error loading videos',
+                      'ビデオの読み込みに失敗しました',
                       style: AppFonts.bodyMedium.copyWith(
                         color: AppColors.pointDark,
                       ),
@@ -131,7 +147,7 @@ class _YouTubeTrainingVideosScreenState
                     const SizedBox(height: AppSpacing.md),
                     ElevatedButton(
                       onPressed: _loadVideos,
-                      child: const Text('Retry'),
+                      child: const Text('再試行'),
                     ),
                   ],
                 ),
@@ -139,39 +155,6 @@ class _YouTubeTrainingVideosScreenState
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextField(
-        decoration: const InputDecoration(
-          hintText: 'Search training videos...',
-          prefixIcon: Icon(Icons.search, color: AppColors.pointDark),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
-        ),
-        onChanged: (value) {
-          setState(() {
-            _searchQuery = value;
-          });
-        },
       ),
     );
   }
@@ -187,153 +170,30 @@ class _YouTubeTrainingVideosScreenState
       }
     });
 
-    if (allTags.isEmpty) return const SizedBox.shrink();
-
-    return Container(
-      height: 50,
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: allTags.length,
-        itemBuilder: (context, index) {
-          final tag = allTags.elementAt(index);
-          final isSelected = _selectedTags.contains(tag);
-
-          return Container(
-            margin: const EdgeInsets.only(right: AppSpacing.sm),
-            child: FilterChip(
-              label: Text(tag),
-              selected: isSelected,
-              onSelected: (selected) {
-                setState(() {
-                  if (selected) {
-                    _selectedTags.add(tag);
-                  } else {
-                    _selectedTags.remove(tag);
-                  }
-                });
-              },
-              selectedColor: AppColors.pointBrown.withValues(alpha: 0.2),
-              checkmarkColor: AppColors.pointBrown,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildVideoList(List<YouTubeVideoEntity> videos) {
-    // 필터링된 비디오 목록
-    var filteredVideos = videos;
-
-    // 검색어 필터
-    if (_searchQuery.isNotEmpty) {
-      final query = _searchQuery.toLowerCase();
-      filteredVideos = filteredVideos.where((video) {
-        return video.title.toLowerCase().contains(query) ||
-            video.description?.toLowerCase().contains(query) == true ||
-            video.tags.any((tag) => tag.toLowerCase().contains(query));
-      }).toList();
-    }
-
-    // 태그 필터
-    if (_selectedTags.isNotEmpty) {
-      filteredVideos = filteredVideos.where((video) {
-        return video.tags.any((tag) => _selectedTags.contains(tag));
-      }).toList();
-    }
-
-    if (filteredVideos.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.video_library_outlined,
-              size: 64,
-              color: AppColors.pointBrown,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              _searchQuery.isNotEmpty || _selectedTags.isNotEmpty
-                  ? 'No videos found for the current filters'
-                  : 'No training videos yet',
-              style: AppFonts.bodyMedium.copyWith(
-                color: AppColors.pointDark.withValues(alpha: 0.6),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            ElevatedButton.icon(
-              onPressed: _addVideo,
-              icon: const Icon(Icons.add),
-              label: const Text('Add First Video'),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      itemCount: filteredVideos.length,
-      itemBuilder: (context, index) {
-        final video = filteredVideos[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-          child: YouTubeVideoCard(
-            video: video,
-            onTap: () => _openVideo(video),
-            onBookmarkTap: () => _showBookmarks(video),
-            onDeleteTap: () => _deleteVideo(video),
-          ),
-        );
+    return YouTubeTagFilter(
+      allTags: allTags,
+      selectedTags: _selectedTags,
+      onTagToggle: (tag) {
+        setState(() {
+          if (_selectedTags.contains(tag)) {
+            _selectedTags.remove(tag);
+          } else {
+            _selectedTags.add(tag);
+          }
+        });
       },
     );
   }
 
   Future<void> _deleteVideo(YouTubeVideoEntity video) async {
-    final confirmed = await showDialog<bool>(
+    await ConfirmationDialogComponent.showDelete(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Video'),
-        content: Text('Are you sure you want to delete "${video.title}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      await _controller.deleteVideo(video.id);
-      _loadVideos();
-    }
-  }
-
-  Widget _buildAddVideoButton() {
-    return Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: _addVideo,
-        icon: const Icon(Icons.add),
-        label: const Text('Add New Video'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.pointBlue,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.md),
-          ),
-        ),
-      ),
+      title: 'ビデオを削除しますか？',
+      message: '「${video.title}」を削除しますか？',
+      onConfirm: () async {
+        await _controller.deleteVideo(video.id);
+        _loadVideos();
+      },
     );
   }
 }

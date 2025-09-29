@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/pet_registor/data/repositories/pet_repository_impl.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/temporary_pet_data_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -16,10 +16,10 @@ void main() {
       final result = await repository.getAllPets();
 
       // Assert
-      expect(result, isA<List<PetProfileEntity>>());
-      expect(result, isNotEmpty);
-      expect(result.length, equals(2));
-      expect(result.first, isA<PetProfileEntity>());
+      expect(result, isA<Result<List<PetProfileEntity>>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data!.length, equals(2));
+      expect(result.data!.first, isA<PetProfileEntity>());
     });
 
     test('should return pet when getPetById is called with valid id', () async {
@@ -30,10 +30,11 @@ void main() {
       final result = await repository.getPetById(petId);
 
       // Assert
-      expect(result, isNotNull);
-      expect(result!.id, equals(petId));
-      expect(result.name, equals('멍멍이'));
-      expect(result.type, equals('dog'));
+      expect(result, isA<Result<PetProfileEntity?>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data!.id, equals(petId));
+      expect(result.data!.name, equals('멍멍이'));
+      expect(result.data!.type, equals('dog'));
     });
 
     test(
@@ -57,6 +58,9 @@ void main() {
         name: 'Test Pet',
         type: 'cat',
         breed: 'Test Breed',
+        age: 2,
+        gender: 'female',
+        weight: 5.0,
         birthDate: DateTime(2022, 1, 1),
         imagePath: 'assets/images/test.jpg',
         ownerId: 'user1',
@@ -68,10 +72,11 @@ void main() {
       final result = await repository.createPet(pet);
 
       // Assert
-      expect(result, isA<PetProfileEntity>());
-      expect(result.name, equals('Test Pet'));
-      expect(result.id, isNotEmpty);
-      expect(result.createdAt, isNotNull);
+      expect(result, isA<Result<PetProfileEntity>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data!.name, equals('Test Pet'));
+      expect(result.data!.id, isNotEmpty);
+      expect(result.data!.createdAt, isNotNull);
     });
 
     test('should update pet when updatePet is called', () async {
@@ -81,6 +86,9 @@ void main() {
         name: 'Updated Pet',
         type: 'dog',
         breed: 'Updated Breed',
+        age: 4,
+        gender: 'male',
+        weight: 15.0,
         birthDate: DateTime(2020, 1, 1),
         imagePath: 'assets/images/updated.jpg',
         ownerId: 'user1',
@@ -92,9 +100,10 @@ void main() {
       final result = await repository.updatePet(pet);
 
       // Assert
-      expect(result, isA<PetProfileEntity>());
-      expect(result.name, equals('Updated Pet'));
-      expect(result.updatedAt, isNotNull);
+      expect(result, isA<Result<PetProfileEntity>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data!.name, equals('Updated Pet'));
+      expect(result.data!.updatedAt, isNotNull);
     });
 
     test('should delete pet when deletePet is called', () async {
@@ -130,7 +139,9 @@ void main() {
       final result = await repository.getTemporaryPetData();
 
       // Assert
-      expect(result, isNull);
+      expect(result, isA<Result<PetProfileEntity?>>());
+      expect(result.isSuccess, isTrue);
+      expect(result.data, isNull);
     });
 
     test(

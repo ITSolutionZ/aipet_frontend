@@ -1,8 +1,7 @@
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/facility.dart';
 
 class FacilityContactSection extends StatelessWidget {
   final Facility facility;
@@ -87,7 +86,7 @@ class FacilityContactSection extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                facility.phone,
+                facility.phone ?? '',
                 style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
               ),
             ),
@@ -105,7 +104,7 @@ class FacilityContactSection extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                facility.email,
+                facility.email ?? '',
                 style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
               ),
             ),

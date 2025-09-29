@@ -1,19 +1,8 @@
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/shared/core/constants/app_texts.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/design/design.dart';
-
-class SchedulingNavigationResult {
-  final bool isSuccess;
-  final String message;
-  final dynamic data;
-
-  const SchedulingNavigationResult._(this.isSuccess, this.message, this.data);
-
-  factory SchedulingNavigationResult.success(String message, [dynamic data]) =>
-      SchedulingNavigationResult._(true, message, data);
-  factory SchedulingNavigationResult.failure(String message) =>
-      SchedulingNavigationResult._(false, message, null);
-}
 
 class ScheduleCardData {
   final String title;
@@ -33,61 +22,61 @@ class ScheduleCardData {
   });
 }
 
-class MainSchedulingController {
-  MainSchedulingController();
+class MainSchedulingController extends BaseController {
+  MainSchedulingController(super.ref);
 
   /// 스케줄링 메인 화면의 카드 데이터 로드
-  Future<SchedulingNavigationResult> loadScheduleCards() async {
+  Future<Result<List<ScheduleCardData>>> loadScheduleCards() async {
     try {
       final cards = [
         const ScheduleCardData(
-          title: '食事スケジュール',
+          title: AppTexts.feedingSchedule,
           icon: Icons.restaurant,
           color: AppColors.pointBrown,
           route: '/scheduling/feeding-schedule',
-          description: 'ペットの食事時間と量を管理します',
+          description: AppTexts.feedingScheduleDescription,
         ),
         const ScheduleCardData(
-          title: '食事記録',
+          title: AppTexts.feedingRecords,
           icon: Icons.history,
           color: AppColors.pointGreen,
           route: '/scheduling/feeding-records',
-          description: 'これまでの食事記録を確認できます',
+          description: AppTexts.feedingRecordsDescription,
         ),
         const ScheduleCardData(
-          title: '食事分析',
+          title: AppTexts.feedingAnalysis,
           icon: Icons.analytics,
           color: AppColors.pointBlue,
           route: '/scheduling/feeding-analysis',
-          description: '食事パターンと健康状態を分析します',
+          description: AppTexts.feedingAnalysisDescription,
         ),
         const ScheduleCardData(
-          title: '健康管理',
+          title: AppTexts.healthManagement,
           icon: Icons.favorite,
           color: AppColors.pointPink,
           route: '/home/vaccines',
-          description: 'ワクチンと健康診断を管理します',
+          description: AppTexts.healthManagementDescription,
         ),
       ];
 
-      return SchedulingNavigationResult.success('스케줄 카드가 로드되었습니다', cards);
+      return Result.success('스케줄 카드가 로드되었습니다', cards);
     } catch (error) {
-      return SchedulingNavigationResult.failure('스케줄 카드 로드 실패: $error');
+      return Result.failure('스케줄 카드 로드 실패: $error');
     }
   }
 
   /// 카드 탭 처리
-  Future<SchedulingNavigationResult> handleCardTap(String route) async {
+  Future<Result<String>> handleCardTap(String route) async {
     try {
       // 네비게이션 전 유효성 검사나 추가 로직 수행 가능
-      return SchedulingNavigationResult.success('네비게이션 준비 완료', route);
+      return Result.success('네비게이션이 성공했습니다', route);
     } catch (error) {
-      return SchedulingNavigationResult.failure('네비게이션 실패: $error');
+      return Result.failure('네비게이션 실패: $error');
     }
   }
 
   /// 오늘의 할 일 요약 로드
-  Future<SchedulingNavigationResult> loadTodayTasks() async {
+  Future<Result<Map<String, dynamic>>> loadTodayTasks() async {
     try {
       final now = DateTime.now();
       final tasks = <Map<String, dynamic>>[];
@@ -103,19 +92,19 @@ class MainSchedulingController {
       // 완료되지 않은 작업만 필터링
       final pendingTasks = tasks.where((task) => !task['completed']).toList();
 
-      return SchedulingNavigationResult.success('오늘의 할 일이 로드되었습니다', {
+      return Result.success('오늘의 할 일이 로드되었습니다', {
         'totalTasks': tasks.length,
         'pendingTasks': pendingTasks.length,
         'completedTasks': tasks.length - pendingTasks.length,
         'tasks': tasks,
       });
     } catch (error) {
-      return SchedulingNavigationResult.failure('오늘의 할 일 로드 실패: $error');
+      return Result.failure('오늘의 할 일 로드 실패: $error');
     }
   }
 
   /// 스케줄 통계 로드
-  Future<SchedulingNavigationResult> loadScheduleStatistics() async {
+  Future<Result<Map<String, dynamic>>> loadScheduleStatistics() async {
     try {
       final stats = {
         'thisWeek': {
@@ -137,14 +126,14 @@ class MainSchedulingController {
         },
       };
 
-      return SchedulingNavigationResult.success('스케줄 통계가 로드되었습니다', stats);
+      return Result.success('스케줄 통계가 로드되었습니다', stats);
     } catch (error) {
-      return SchedulingNavigationResult.failure('스케줄 통계 로드 실패: $error');
+      return Result.failure('스케줄 통계 로드 실패: $error');
     }
   }
 
   /// 긴급 알림 확인
-  Future<SchedulingNavigationResult> checkUrgentNotifications() async {
+  Future<Result<List<Map<String, dynamic>>>> checkUrgentNotifications() async {
     try {
       final notifications = <Map<String, dynamic>>[];
       final now = DateTime.now();
@@ -174,14 +163,14 @@ class MainSchedulingController {
         });
       }
 
-      return SchedulingNavigationResult.success('긴급 알림 확인 완료', notifications);
+      return Result.success('긴급 알림이 확인되었습니다', notifications);
     } catch (error) {
-      return SchedulingNavigationResult.failure('긴급 알림 확인 실패: $error');
+      return Result.failure('긴급 알림 확인 실패: $error');
     }
   }
 
   /// 스케줄 백업 및 동기화
-  Future<SchedulingNavigationResult> syncScheduleData() async {
+  Future<Result<Map<String, dynamic>>> syncScheduleData() async {
     try {
       // Mock sync logic
       await Future.delayed(const Duration(seconds: 2));
@@ -193,9 +182,9 @@ class MainSchedulingController {
         'status': 'success',
       };
 
-      return SchedulingNavigationResult.success('스케줄 동기화 완료', syncResult);
+      return Result.success('스케줄 동기화가 완료되었습니다', syncResult);
     } catch (error) {
-      return SchedulingNavigationResult.failure('스케줄 동기화 실패: $error');
+      return Result.failure('스케줄 동기화 실패: $error');
     }
   }
 
@@ -264,22 +253,24 @@ class MainSchedulingController {
   }
 
   /// 작업 완료 처리
-  Future<SchedulingNavigationResult> markTaskAsCompleted(String taskId) async {
+  Future<Result<Map<String, dynamic>>> markTaskAsCompleted(
+    String taskId,
+  ) async {
     try {
       // Mock complete task logic
       await Future.delayed(const Duration(milliseconds: 300));
 
-      return SchedulingNavigationResult.success('작업이 완료되었습니다', {
-        'taskId': taskId,
+      return Result.success('작업이 완료되었습니다', {
         'completedAt': DateTime.now(),
+        'taskId': taskId,
       });
     } catch (error) {
-      return SchedulingNavigationResult.failure('작업 완료 처리 실패: $error');
+      return Result.failure('작업 완료 처리 실패: $error');
     }
   }
 
   /// 작업 연기 처리
-  Future<SchedulingNavigationResult> postponeTask(
+  Future<Result<Map<String, dynamic>>> postponeTask(
     String taskId,
     Duration delay,
   ) async {
@@ -289,18 +280,18 @@ class MainSchedulingController {
 
       final newTime = DateTime.now().add(delay);
 
-      return SchedulingNavigationResult.success('작업이 연기되었습니다', {
+      return Result.success('작업이 연기되었습니다', {
         'taskId': taskId,
         'newScheduledTime': newTime,
         'delay': delay,
       });
     } catch (error) {
-      return SchedulingNavigationResult.failure('작업 연기 처리 실패: $error');
+      return Result.failure('작업 연기 처리 실패: $error');
     }
   }
 
   /// 주간 요약 생성
-  Future<SchedulingNavigationResult> generateWeeklySummary() async {
+  Future<Result<Map<String, dynamic>>> generateWeeklySummary() async {
     try {
       final now = DateTime.now();
       final weekStart = now.subtract(Duration(days: now.weekday - 1));
@@ -318,9 +309,9 @@ class MainSchedulingController {
         'achievements': ['今週は毎日夕食を時間通りに与えました', '体重が理想的な範囲を維持しています'],
       };
 
-      return SchedulingNavigationResult.success('주간 요약이 생성되었습니다', summary);
+      return Result.success('주간 요약이 생성되었습니다', summary);
     } catch (error) {
-      return SchedulingNavigationResult.failure('주간 요약 생성 실패: $error');
+      return Result.failure('주간 요약 생성 실패: $error');
     }
   }
 }

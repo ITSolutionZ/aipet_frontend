@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import '../../../../shared/shared.dart';
 
 /// 재사용 가능한 펫 프로필 카드 위젯
 class PetProfileCard extends StatelessWidget {
@@ -22,62 +22,69 @@ class PetProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            if (icon != null) ...[
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  icon,
-                  color: iconColor ?? AppColors.pointBlue,
-                  size: 20,
-                ),
+    return Semantics(
+      button: onTap != null,
+      label: '$label: $value',
+      hint: onTap != null ? 'タップして編集' : null,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(AppRadius.medium),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-              const SizedBox(width: AppSpacing.md),
             ],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointDark.withValues(alpha: 0.7),
+          ),
+          child: Row(
+            children: [
+              if (icon != null) ...[
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: (iconColor ?? AppColors.pointBlue).withValues(
+                      alpha: 0.1,
                     ),
+                    shape: BoxShape.circle,
                   ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    value,
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointDark,
-                      fontWeight: FontWeight.w600,
+                  child: Icon(
+                    icon,
+                    color: iconColor ?? AppColors.pointBlue,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointDark.withValues(alpha: 0.7),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      value,
+                      style: AppFonts.bodyMedium.copyWith(
+                        color: AppColors.pointDark,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            if (trailing != null) trailing!,
-          ],
+              if (trailing != null) trailing!,
+            ],
+          ),
         ),
       ),
     );

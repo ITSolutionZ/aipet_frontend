@@ -1,13 +1,13 @@
+import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/features/home/data/mappers/pet_mapper.dart';
+import 'package:aipet_frontend/features/home/data/mappers/weather_mapper.dart';
+import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
+import 'package:aipet_frontend/features/home/data/services/weather_service.dart';
 import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/mock_data/features/home/home_mock_service.dart';
-import 'package:aipet_frontend/shared/mock_data/features/pet/pet_mock_data.dart';
-
-import '../mappers/pet_mapper.dart';
-import '../mappers/weather_mapper.dart';
-import '../models/weather_model.dart';
-import '../services/weather_service.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/home/home_mock_service.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final WeatherService _weatherService = WeatherService();
@@ -80,17 +80,18 @@ class HomeRepositoryImpl implements HomeRepository {
 
   @override
   Future<List<PetSummaryEntity>> getPetSummaries() async {
-    // 통합된 PetMockData에서 PetProfileEntity 리스트를 직접 가져옴
+    // 통합된 PetMockService에서 PetProfileEntity 리스트를 직접 가져옴
     await Future.delayed(_mockDelay);
-    final petProfiles = PetMockData.getMockPets();
-    return PetMapper.toSummaryEntityList(petProfiles);
+    final petProfiles = PetMockService.getMockPetProfiles();
+    return PetMapper.toSummaryEntityListFromMaps(petProfiles);
   }
 
   // 기존 호환성을 위해 유지
   Future<List<PetProfileEntity>> getPetProfiles() async {
-    // 통합된 PetMockData 사용 (실제 API 연동 전까지)
+    // 통합된 PetMockService 사용 (실제 API 연동 전까지)
     await Future.delayed(_mockDelay);
-    return PetMockData.getMockPets();
+    final petMockData = PetMockService.getMockPetProfiles();
+    return PetMapper.fromMapList(petMockData);
   }
 
   @override
@@ -112,8 +113,8 @@ class HomeRepositoryImpl implements HomeRepository {
     // Mock 데이터 사용
     await Future.delayed(_mockDelay);
     final healthSummaryData = HomeMockService.getMockHealthSummary();
-    final alertsData =
-        healthSummaryData['alerts'] as List<Map<String, dynamic>>;
+    final alertsData = (healthSummaryData['alerts'] as List)
+        .cast<Map<String, dynamic>>();
     final alerts = alertsData
         .map(
           (alert) => HealthAlert(
@@ -133,44 +134,30 @@ class HomeRepositoryImpl implements HomeRepository {
 
   @override
   Future<List<AppointmentSummary>> getUpcomingAppointments() async {
-    // Mock 데이터 사용
+    // Mock 데이터 사용 - HomeMockService로 변경
     await Future.delayed(_mockDelay);
-    final appointmentsData = PetMockData.getMockAppointments();
-    return appointmentsData
-        .map(
-          (data) => AppointmentSummary(
-            id: data['id'] as String,
-            title: data['title'] as String,
-            scheduledTime: data['scheduledTime'] as DateTime,
-            type: data['type'] as String,
-            petName: data['petName'] as String,
-          ),
-        )
-        .toList();
+
+    // 임시로 Mock 데이터 생성
+    return [
+      AppointmentSummary(
+        id: 'app-1',
+        title: '健康診断',
+        scheduledTime: DateTime.now().add(const Duration(days: 3)),
+        type: 'health_check',
+        petName: 'マックス',
+      ),
+      AppointmentSummary(
+        id: 'app-2',
+        title: '予防接種',
+        scheduledTime: DateTime.now().add(const Duration(days: 7)),
+        type: 'vaccination',
+        petName: 'ルナ',
+      ),
+    ];
   }
 
   // 개발 모드용 지연 시간 상수
-  static const Duration _mockDelay = Duration(milliseconds: 250);
-
-  /// PetMockService의 Map 데이터를 PetProfileEntity로 변환
-  PetProfileEntity _convertMockDataToPetProfileEntity(
-    Map<String, dynamic> petData,
-  ) {
-    return PetProfileEntity(
-      id: petData['id'] as String,
-      name: petData['name'] as String,
-      type: petData['typeName'] as String, // typeName을 type으로 매핑
-      breed: petData['breed'] as String?,
-      birthDate: DateTime.parse(petData['birthDate'] as String),
-      age: petData['age'] as int? ?? 0,
-      gender: petData['gender'] as String? ?? 'unknown',
-      weight: (petData['weight'] as num?)?.toDouble() ?? 0.0,
-      imagePath: null, // Mock 데이터에 이미지 경로가 없으므로 null
-      ownerId: 'user1', // Mock 데이터에 ownerId가 없으므로 기본값 사용
-      createdAt: DateTime.parse(petData['createdAt'] as String),
-      updatedAt: DateTime.now(), // Mock 데이터에 updatedAt이 없으므로 현재 시간 사용
-      isActive: true, // 기본값으로 활성 상태
-      additionalInfo: petData['additionalInfo'] as Map<String, dynamic>?,
-    );
-  }
+  static Duration get _mockDelay => AppConfig.current.environment == 'test'
+      ? const Duration(milliseconds: 1)
+      : const Duration(milliseconds: 250);
 }

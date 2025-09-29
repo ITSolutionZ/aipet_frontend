@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/services/encryption_service.dart';
+import 'package:aipet_frontend/shared/core/services/encryption_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

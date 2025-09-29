@@ -14,6 +14,7 @@ class RouteConstants {
   static const String loginRoute = '/login';
   static const String signupRoute = '/signup';
   static const String welcomeRoute = '/welcome';
+  static const String tokenExchangeRoute = '/auth/token-exchange'; // Changed
 
   // ===== MAIN APP TABS =====
   static const String homeRoute = '/home';
@@ -45,6 +46,16 @@ class RouteConstants {
   static const String addFeedingRecordRoute = '/scheduling/add-feeding-record';
   static const String trainingMainRoute = '/scheduling/training';
   static const String wateringMainRoute = '/scheduling/watering';
+  static const String wateringScheduleRoute = '/scheduling/watering/schedule';
+  static const String wateringRecordsRoute = '/scheduling/watering/records';
+  static const String wateringAnalysisRoute = '/scheduling/watering/analysis';
+  static const String wateringSettingsRoute = '/scheduling/watering/settings';
+  static const String addWateringRecordRoute =
+      '/scheduling/watering/add-record';
+  static const String editWateringRecordRoute =
+      '/scheduling/watering/edit-record';
+  static const String wateringScheduleEditRoute =
+      '/scheduling/watering/schedule/edit';
   static const String healthMainRoute = '/scheduling/health';
 
   // ===== CALENDAR TAB SUB-ROUTES =====
@@ -53,6 +64,7 @@ class RouteConstants {
   static const String hospitalReservationRoute =
       '/calendar/hospital-reservation';
   static const String facilityDetailRoute = '/calendar/facility-detail';
+  static const String facilityFullscreenMapRoute = '/facility/fullscreen-map';
   static const String bookingRoute = '/calendar/booking';
 
   // ===== SETTINGS TAB SUB-ROUTES =====

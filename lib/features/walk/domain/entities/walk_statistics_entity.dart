@@ -27,6 +27,20 @@ class WalkStatistics {
     );
   }
 
+  /// JSON에서 WalkStatistics 생성
+  factory WalkStatistics.fromJson(Map<String, dynamic> json) {
+    return WalkStatistics(
+      totalWalks: json['totalWalks'] as int,
+      totalDistance: (json['totalDistance'] as num).toDouble(),
+      totalDuration: Duration(milliseconds: json['totalDuration'] as int),
+      averageDistance: (json['averageDistance'] as num).toDouble(),
+      averageDuration: Duration(milliseconds: json['averageDuration'] as int),
+      lastWalkDate: json['lastWalkDate'] != null
+          ? DateTime.parse(json['lastWalkDate'] as String)
+          : null,
+    );
+  }
+
   /// 복사본 생성
   WalkStatistics copyWith({
     int? totalWalks,

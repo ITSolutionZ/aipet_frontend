@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/auth/presentation/presentation.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../features/auth/presentation/presentation.dart';
 import 'route_constants.dart';
 
 /// 인증 관련 라우트 설정
@@ -23,6 +23,11 @@ class AuthRoutes {
       path: RouteConstants.welcomeRoute,
       name: 'welcome',
       builder: (context, state) => const WelcomeScreen(),
+    ),
+    GoRoute(
+      path: RouteConstants.tokenExchangeRoute,
+      name: 'tokenExchange',
+      builder: (context, state) => const EnhancedExchangeTokenButton(),
     ),
   ];
 }

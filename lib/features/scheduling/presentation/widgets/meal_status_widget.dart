@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/design/design.dart';
 
 class MealStatusWidget extends StatelessWidget {
   final String meal;

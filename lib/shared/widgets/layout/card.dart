@@ -52,7 +52,7 @@ class GlassCard extends StatelessWidget {
     this.onTap,
     this.clipBehavior = Clip.antiAlias,
     this.constraints,
-  }) : padding = const EdgeInsets.symmetric(vertical: 10, horizontal: 12);
+  }) : padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 
   /// Panel preset for larger sections
   const GlassCard.panel({
@@ -69,7 +69,7 @@ class GlassCard extends StatelessWidget {
     this.onTap,
     this.clipBehavior = Clip.antiAlias,
     this.constraints,
-  }) : padding = const EdgeInsets.all(20);
+  }) : padding = const EdgeInsets.all(16);
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +168,7 @@ class WhiteCard extends StatelessWidget {
     this.onTap,
     this.clipBehavior = Clip.antiAlias,
     this.constraints,
-  }) : padding = const EdgeInsets.symmetric(vertical: 10, horizontal: 12);
+  }) : padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 
   /// Panel preset for larger sections
   const WhiteCard.panel({
@@ -183,7 +183,7 @@ class WhiteCard extends StatelessWidget {
     this.onTap,
     this.clipBehavior = Clip.antiAlias,
     this.constraints,
-  }) : padding = const EdgeInsets.all(20);
+  }) : padding = const EdgeInsets.all(16);
 
   /// Elevated preset for prominent cards
   const WhiteCard.elevated({

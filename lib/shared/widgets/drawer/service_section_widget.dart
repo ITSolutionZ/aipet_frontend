@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../app/router/app_router.dart';
 
 class ServiceSectionWidget extends StatelessWidget {
   const ServiceSectionWidget({super.key});

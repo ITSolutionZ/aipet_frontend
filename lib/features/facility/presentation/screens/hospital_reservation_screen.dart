@@ -1,12 +1,12 @@
+import 'package:aipet_frontend/features/facility/presentation/controllers/hospital_reservation_controller.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/facility_card.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/filter_chips.dart';
+import 'package:aipet_frontend/features/facility/presentation/widgets/search_bar_widget.dart';
+import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/widgets/soft_gradient_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/facility.dart';
-import '../widgets/facility_card.dart';
-import '../widgets/filter_chips.dart';
-import '../widgets/search_bar_widget.dart';
 
 class HospitalReservationScreen extends ConsumerStatefulWidget {
   const HospitalReservationScreen({super.key});
@@ -19,31 +19,16 @@ class HospitalReservationScreen extends ConsumerStatefulWidget {
 class _HospitalReservationScreenState
     extends ConsumerState<HospitalReservationScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String _currentFilter = 'All';
-  String _searchQuery = '';
-
-  // 목업 데이터 서비스에서 가져오기
-  late List<Facility> _facilities;
+  late HospitalReservationController _controller;
 
   @override
   void initState() {
     super.initState();
-    final facilitiesData = FacilityMockService.getMockHospitalFacilities();
-    _facilities = facilitiesData.map((data) => Facility(
-      id: data['id'] as String,
-      name: data['name'] as String,
-      description: data['description'] as String,
-      address: data['address'] as String,
-      phone: data['phone'] as String,
-      email: data['email'] as String,
-      type: data['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
-      rating: (data['rating'] as num).toDouble(),
-      reviewCount: data['reviewCount'] as int,
-      imagePath: data['imagePath'] as String,
-      isFavorite: data['isFavorite'] as bool? ?? false,
-      hasHistory: data['hasHistory'] as bool? ?? false,
-      lastVisit: data['lastVisit'] as DateTime?,
-    )).toList();
+    _controller = HospitalReservationController(ref, context);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.loadHospitalFacilities();
+    });
   }
 
   @override
@@ -52,165 +37,133 @@ class _HospitalReservationScreenState
     super.dispose();
   }
 
-  List<Facility> get _filteredFacilities {
-    List<Facility> filtered = _facilities;
+  void _onSearchChanged(String query) {
+    _controller.updateSearchQuery(query);
+  }
 
-    // 검색 필터
-    if (_searchQuery.isNotEmpty) {
-      filtered = filtered
-          .where(
-            (facility) =>
-                facility.name.toLowerCase().contains(
-                  _searchQuery.toLowerCase(),
-                ) ||
-                facility.description.toLowerCase().contains(
-                  _searchQuery.toLowerCase(),
-                ),
-          )
-          .toList();
-    }
-
-    // 카테고리 필터
-    switch (_currentFilter) {
-      case 'Favorites':
-        filtered = filtered.where((facility) => facility.isFavorite).toList();
-        break;
-      case 'History':
-        filtered = filtered.where((facility) => facility.hasHistory).toList();
-        break;
-      case 'All':
-      default:
-        break;
-    }
-
-    return filtered;
+  void _onFilterChanged(String filter) {
+    _controller.updateFilter(filter);
   }
 
   void _toggleFavorite(String facilityId) {
-    setState(() {
-      final index = _facilities.indexWhere((f) => f.id == facilityId);
-      if (index != -1) {
-        _facilities[index] = _facilities[index].copyWith(
-          isFavorite: !_facilities[index].isFavorite,
-        );
-      }
-    });
+    _controller.toggleFavorite(facilityId);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientBackAppBar(
-        title: 'Hospital',
-      ),
-      body: Column(
-        children: [
-          // 검색바
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: SearchBarWidget(
-              controller: _searchController,
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-              hintText: 'Search by hospital name',
-            ),
-          ),
+    return Consumer(
+      builder: (context, ref, child) {
+        final state = ref.watch(hospitalReservationControllerProvider);
 
-          // 필터 칩
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: FilterChips(
-              currentFilter: _currentFilter,
-              onFilterChanged: (filter) {
-                setState(() {
-                  _currentFilter = filter;
-                });
-              },
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // 시설 목록
-          Expanded(
-            child: _filteredFacilities.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_off,
-                          size: 64,
-                          color: Colors.grey[400],
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        Text(
-                          '검색 결과가 없습니다',
-                          style: AppFonts.bodyMedium.copyWith(
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
-                    itemCount: _filteredFacilities.length,
-                    itemBuilder: (context, index) {
-                      final facility = _filteredFacilities[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                        child: FacilityCard(
-                          facility: facility,
-                          onFavoriteToggle: () => _toggleFavorite(facility.id),
-                          onTap: () {
-                            context.push('/facility-detail/${facility.id}');
-                          },
-                        ),
-                      );
-                    },
-                  ),
-          ),
-
-          // 찾아보기 버튼
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  context.push('/facility-list');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.blue,
-                  elevation: 2,
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.medium),
-                    side: const BorderSide(color: Colors.blue, width: 1),
-                  ),
+        return Scaffold(
+          backgroundColor: AppColors.pointOffWhite,
+          appBar: const SoftGradientBackAppBar(title: '動物病院'),
+          body: Column(
+            children: [
+              // 검색바
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: SearchBarWidget(
+                  controller: _searchController,
+                  onChanged: _onSearchChanged,
+                  hintText: '病院名で検索...',
                 ),
-                icon: const Icon(Icons.add, color: Colors.blue),
-                label: Text(
-                  '찾아보기',
-                  style: AppFonts.fredoka(
-                    fontSize: AppFonts.lg,
-                    color: Colors.blue,
-                    fontWeight: FontWeight.w600,
+              ),
+
+              // 필터 칩
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: FilterChips(
+                  currentFilter: state.currentFilter,
+                  onFilterChanged: _onFilterChanged,
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
+
+              // 시설 목록
+              Expanded(
+                child: state.filteredFacilities.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search_off,
+                              size: 64,
+                              color: Colors.grey[400],
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            Text(
+                              '検索結果がありません',
+                              style: AppFonts.bodyMedium.copyWith(
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.lg,
+                        ),
+                        itemCount: state.filteredFacilities.length,
+                        itemBuilder: (context, index) {
+                          final facility = state.filteredFacilities[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSpacing.md,
+                            ),
+                            child: FacilityCard(
+                              facility: facility,
+                              onFavoriteToggle: () =>
+                                  _toggleFavorite(facility.id),
+                              onTap: () {
+                                context.push('/facility-detail/${facility.id}');
+                              },
+                            ),
+                          );
+                        },
+                      ),
+              ),
+
+              // 찾아보기 버튼
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      context.push('/facility-list');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.blue,
+                      elevation: 2,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.lg,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.medium),
+                        side: const BorderSide(color: Colors.blue, width: 1),
+                      ),
+                    ),
+                    icon: const Icon(Icons.add, color: Colors.blue),
+                    label: Text(
+                      'もっと探す',
+                      style: AppFonts.fredoka(
+                        fontSize: AppFonts.lg,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../shared.dart';
 
 /// 마이크로칩 등록 권고 모달
 class MicrochipRegistrationModal extends StatelessWidget {

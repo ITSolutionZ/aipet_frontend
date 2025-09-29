@@ -1,5 +1,5 @@
-import '../entities/user_profile_entity.dart';
-import '../repositories/settings_repository.dart';
+import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 class GetAppSettingsUseCase {
   final SettingsRepository _repository;
@@ -7,7 +7,12 @@ class GetAppSettingsUseCase {
   const GetAppSettingsUseCase(this._repository);
 
   /// 앱 설정 가져오기
-  Future<AppSettingsEntity> call() async {
-    return _repository.getAppSettings();
+  Future<Result<Map<String, dynamic>>> call() async {
+    final result = await _repository.getAppSettings();
+    if (result.isSuccess) {
+      return Result.success('アプリ設定を取得しました', result.dataOrNull);
+    } else {
+      return Result.failure('アプリ設定の取得に失敗しました');
+    }
   }
 }

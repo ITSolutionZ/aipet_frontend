@@ -1,23 +1,26 @@
-import '../entities/weather_entity.dart';
-import '../repositories/home_repository.dart';
+import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
+import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
-/// 날씨 데이터 조회 UseCase
+/// 날씨 데이터 조회 유스케이스
 class GetWeatherDataUseCase {
-  final HomeRepository repository;
+  final HomeRepository _repository;
 
-  GetWeatherDataUseCase(this.repository);
+  GetWeatherDataUseCase(this._repository);
 
-  /// 현재 날씨 정보 조회
-  /// 
-  /// [location] 위치 정보 (선택사항)
-  /// [userTriggered] 사용자가 직접 요청했는지 여부
-  Future<WeatherEntity?> call({
+  /// 날씨 데이터 조회 실행
+  Future<Result<WeatherEntity?>> call({
     WeatherLocationEntity? location,
     bool userTriggered = false,
   }) async {
-    return repository.getCurrentWeather(
-      location: location,
-      userTriggered: userTriggered,
-    );
+    try {
+      final result = await _repository.getCurrentWeather(
+        location: location,
+        userTriggered: userTriggered,
+      );
+      return Result.success('天気データを取得しました', result);
+    } catch (error) {
+      return Result.failure('天気データの取得に失敗しました: ${error.toString()}');
+    }
   }
 }

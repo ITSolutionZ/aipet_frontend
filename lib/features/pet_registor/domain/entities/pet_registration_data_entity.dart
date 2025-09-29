@@ -1,84 +1,117 @@
+import 'pet_registration_step.dart';
+
 /// 펫 등록 데이터 엔티티
-/// Data Layer에서 Domain Layer로 이동하여 의존성 방향 수정
 class PetRegistrationDataEntity {
+  final String? id;
+  final String? name;
+  final String? type;
+  final String? breed;
+  final DateTime? birthDate;
+  final String? imagePath;
+  final String? ownerId;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final bool isActive;
+  final Map<String, dynamic>? additionalInfo;
+
+  // 펫 등록 과정에서 사용되는 필드들
   final String? selectedPetType;
-  final String? selectedDogBreed;
-  final String? selectedCatBreed;
-  final String? customBreed;
   final String? petName;
+  final String? petGender;
+  final DateTime? petBirthday;
   final String? petSize;
   final double? petWeight;
   final DateTime? petAnniversary;
-  final DateTime? petBirthday;
-  final DateTime? petArrivalDate;
-  final String? petGender;
-  final bool? isNeutered;
+  final String? selectedDogBreed;
+  final String? selectedCatBreed;
+  final String? customBreed;
   final String? petImagePath;
-  final String? customDefaultImagePath;
   final String? microchipNumber;
+  final bool? isNeutered;
+  final DateTime? petArrivalDate;
 
   const PetRegistrationDataEntity({
+    this.id,
+    this.name,
+    this.type,
+    this.breed,
+    this.birthDate,
+    this.imagePath,
+    this.ownerId,
+    this.createdAt,
+    this.updatedAt,
+    this.isActive = true,
+    this.additionalInfo,
     this.selectedPetType,
-    this.selectedDogBreed,
-    this.selectedCatBreed,
-    this.customBreed,
     this.petName,
+    this.petGender,
+    this.petBirthday,
     this.petSize,
     this.petWeight,
     this.petAnniversary,
-    this.petBirthday,
-    this.petArrivalDate,
-    this.petGender,
-    this.isNeutered,
+    this.selectedDogBreed,
+    this.selectedCatBreed,
+    this.customBreed,
     this.petImagePath,
-    this.customDefaultImagePath,
     this.microchipNumber,
+    this.isNeutered,
+    this.petArrivalDate,
   });
 
   PetRegistrationDataEntity copyWith({
+    String? id,
+    String? name,
+    String? type,
+    String? breed,
+    DateTime? birthDate,
+    String? imagePath,
+    String? ownerId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    Map<String, dynamic>? additionalInfo,
     String? selectedPetType,
-    String? selectedDogBreed,
-    String? selectedCatBreed,
-    String? customBreed,
     String? petName,
+    String? petGender,
+    DateTime? petBirthday,
     String? petSize,
     double? petWeight,
     DateTime? petAnniversary,
-    DateTime? petBirthday,
-    DateTime? petArrivalDate,
-    String? petGender,
-    bool? isNeutered,
+    String? selectedDogBreed,
+    String? selectedCatBreed,
+    String? customBreed,
     String? petImagePath,
-    String? customDefaultImagePath,
     String? microchipNumber,
+    bool? isNeutered,
+    DateTime? petArrivalDate,
   }) {
     return PetRegistrationDataEntity(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      breed: breed ?? this.breed,
+      birthDate: birthDate ?? this.birthDate,
+      imagePath: imagePath ?? this.imagePath,
+      ownerId: ownerId ?? this.ownerId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      additionalInfo: additionalInfo ?? this.additionalInfo,
       selectedPetType: selectedPetType ?? this.selectedPetType,
-      selectedDogBreed: selectedDogBreed ?? this.selectedDogBreed,
-      selectedCatBreed: selectedCatBreed ?? this.selectedCatBreed,
-      customBreed: customBreed ?? this.customBreed,
       petName: petName ?? this.petName,
+      petGender: petGender ?? this.petGender,
+      petBirthday: petBirthday ?? this.petBirthday,
       petSize: petSize ?? this.petSize,
       petWeight: petWeight ?? this.petWeight,
       petAnniversary: petAnniversary ?? this.petAnniversary,
-      petBirthday: petBirthday ?? this.petBirthday,
-      petArrivalDate: petArrivalDate ?? this.petArrivalDate,
-      petGender: petGender ?? this.petGender,
-      isNeutered: isNeutered ?? this.isNeutered,
+      selectedDogBreed: selectedDogBreed ?? this.selectedDogBreed,
+      selectedCatBreed: selectedCatBreed ?? this.selectedCatBreed,
+      customBreed: customBreed ?? this.customBreed,
       petImagePath: petImagePath ?? this.petImagePath,
-      customDefaultImagePath: customDefaultImagePath ?? this.customDefaultImagePath,
       microchipNumber: microchipNumber ?? this.microchipNumber,
+      isNeutered: isNeutered ?? this.isNeutered,
+      petArrivalDate: petArrivalDate ?? this.petArrivalDate,
     );
-  }
-
-  /// 현재 선택된 품종 반환 (일반 품종 또는 커스텀 품종)
-  String? get currentBreed {
-    if (selectedPetType == 'dog') {
-      return selectedDogBreed == 'custom' ? customBreed : selectedDogBreed;
-    } else if (selectedPetType == 'cat') {
-      return selectedCatBreed == 'custom' ? customBreed : selectedCatBreed;
-    }
-    return null;
   }
 
   @override
@@ -86,15 +119,65 @@ class PetRegistrationDataEntity {
       identical(this, other) ||
       other is PetRegistrationDataEntity &&
           runtimeType == other.runtimeType &&
-          selectedPetType == other.selectedPetType &&
-          petName == other.petName &&
-          petBirthday == other.petBirthday;
+          id == other.id;
 
   @override
-  int get hashCode => selectedPetType.hashCode ^ petName.hashCode ^ petBirthday.hashCode;
+  int get hashCode => id.hashCode;
+
+  /// 현재 선택된 품종 반환
+  String? get currentBreed {
+    if (customBreed != null && customBreed!.isNotEmpty) {
+      return customBreed;
+    }
+    if (selectedPetType == 'dog' && selectedDogBreed != null) {
+      return selectedDogBreed;
+    }
+    if (selectedPetType == 'cat' && selectedCatBreed != null) {
+      return selectedCatBreed;
+    }
+    return null;
+  }
+
+  /// 등록이 완료되었는지 확인
+  bool get isRegistrationComplete {
+    return selectedPetType != null &&
+        petName != null &&
+        petGender != null &&
+        petBirthday != null &&
+        petSize != null &&
+        petWeight != null &&
+        petImagePath != null;
+  }
+
+  /// 특정 단계 이후에 데이터가 있는지 확인
+  bool hasDataBeyondStep(PetRegistrationStep step) {
+    switch (step) {
+      case PetRegistrationStep.typeSelection:
+        return selectedPetType != null;
+      case PetRegistrationStep.breedSelection:
+        return selectedPetType != null && currentBreed != null;
+      case PetRegistrationStep.nameInput:
+        return selectedPetType != null &&
+            currentBreed != null &&
+            petName != null;
+      case PetRegistrationStep.birthDateInput:
+        return selectedPetType != null &&
+            currentBreed != null &&
+            petName != null &&
+            petBirthday != null;
+      case PetRegistrationStep.imageUpload:
+        return selectedPetType != null &&
+            currentBreed != null &&
+            petName != null &&
+            petBirthday != null &&
+            petImagePath != null;
+      case PetRegistrationStep.complete:
+        return isRegistrationComplete;
+    }
+  }
 
   @override
   String toString() {
-    return 'PetRegistrationDataEntity(petType: $selectedPetType, name: $petName, breed: $currentBreed)';
+    return 'PetRegistrationDataEntity(id: $id, name: $name, type: $type)';
   }
 }

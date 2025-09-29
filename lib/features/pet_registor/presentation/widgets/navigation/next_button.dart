@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_registor/presentation/constants/pet_registration_texts.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
-import '../../constants/pet_registration_texts.dart';
 
 /// 다음 버튼 위젯
 ///

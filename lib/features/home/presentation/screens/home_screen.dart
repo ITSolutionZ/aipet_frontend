@@ -1,217 +1,423 @@
+import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
+import 'package:aipet_frontend/features/home/domain/entities/pet_summary_entity.dart';
+import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
+import 'package:aipet_frontend/features/home/presentation/controllers/home_dashboard_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../shared/shared.dart';
-import '../../../../app/router/routes/route_constants.dart';
-import '../controllers/controllers.dart';
-import '../widgets/widgets.dart';
+// 임시 프로바이더 (실제 구현에서는 별도 파일로 분리)
+final homeDashboardControllerProvider = FutureProvider<HomeDashboardEntity>((
+  ref,
+) async {
+  final controller = HomeDashboardController(ref as WidgetRef);
+  final result = await controller.initializeHome();
+  if (result.isSuccess) {
+    return result.dataOrNull!;
+  } else {
+    throw Exception(result.error?.toString());
+  }
+});
 
-class HomeScreen extends ConsumerStatefulWidget {
+/// 🏠 홈 스크린
+///
+/// 앱의 메인 홈 화면으로 대시보드 정보를 표시합니다.
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dashboardState = ref.watch(homeDashboardControllerProvider);
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
-  late HomeDashboardController _dashboardController;
-  late HomeNotificationController _notificationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _dashboardController = HomeDashboardController(ref);
-    _notificationController = HomeNotificationController(ref);
-
-    // 화면이 로드된 후 펫 목록을 확인하여 리다이렉트
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkPetsAndRedirect();
-      _showInitialNotificationSnackBar();
-    });
-  }
-
-  /// 펫 목록을 확인하고 홈 화면 초기화
-  Future<void> _checkPetsAndRedirect() async {
-    try {
-      await _dashboardController.hasPets();
-      await _initializeHomeScreen();
-    } catch (error) {
-      await _initializeHomeScreen();
-    }
-  }
-
-  /// 홈 화면 초기화
-  Future<void> _initializeHomeScreen() async {
-    try {
-      final result = await _dashboardController.initializeHome();
-      if (mounted && !result.isSuccess) {
-        _showErrorSnackBar(result.message);
-      }
-    } catch (error) {
-      if (mounted) {
-        _showErrorSnackBar('홈 화면을 불러오는 중 오류가 발생했습니다.');
-      }
-    }
-  }
-
-  /// 알림 아이콘 탭 처리
-  Future<void> _handleNotificationTap() async {
-    try {
-      final notificationResult = await _notificationController
-          .handleNotification();
-      if (mounted) {
-        _handleNotificationResult(notificationResult);
-        _showNotificationSnackBar();
-        context.go(RouteConstants.notificationListRoute);
-      }
-    } catch (error) {
-      if (mounted) {
-        _showErrorSnackBar('알림을 확인하는 중 오류가 발생했습니다.');
-      }
-    }
-  }
-
-  /// 알림 결과 처리
-  void _handleNotificationResult(dynamic notificationResult) {
-    if (notificationResult.isSuccess && notificationResult.data != null) {
-      final notifications = notificationResult.data as List<String>;
-      if (notifications.isNotEmpty) {
-        _showSuccessSnackBar(notificationResult.message);
-      }
-    }
-  }
-
-  /// 에러 스낵바 표시
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointPink),
-    );
-  }
-
-  /// 성공 스낵바 표시
-  void _showSuccessSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.pointBlue,
-        duration: const Duration(seconds: 2),
+    return Scaffold(
+      backgroundColor: AppColors.pointOffWhite,
+      body: SafeArea(
+        child: dashboardState.when(
+          data: (dashboard) => _buildDashboard(context, ref, dashboard),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => _buildErrorView(context, ref, error),
+        ),
       ),
     );
   }
 
-  /// 알림 스낵바 표시
-  void _showNotificationSnackBar() {
-    final notificationCount =
-        NotificationMockService.getMockNotifications().length;
+  /// 대시보드 UI 빌드
+  Widget _buildDashboard(
+    BuildContext context,
+    WidgetRef ref,
+    HomeDashboardEntity dashboard,
+  ) {
+    if (!dashboard.hasPets) {
+      return _buildEmptyPetState(context);
+    }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
+    return RefreshIndicator(
+      onRefresh: () => ref.refresh(homeDashboardControllerProvider.future),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.notifications, color: Colors.white, size: 20),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                '$notificationCount件の通知があります',
-                style: AppFonts.bodyMedium.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+            // 헤더
+            _buildHeader(context, dashboard),
+            const SizedBox(height: AppSpacing.lg),
+
+            // 날씨 정보
+            _buildWeatherCard(dashboard.weather),
+            const SizedBox(height: AppSpacing.lg),
+
+            // 펫 요약 카드들
+            _buildPetSummaryGrid(dashboard.petProfiles),
+            const SizedBox(height: AppSpacing.lg),
+
+            // 오늘의 예약 (있을 경우)
+            if (dashboard.hasTodayAppointments) ...[
+              _buildTodayAppointments(dashboard.upcomingAppointments),
+              const SizedBox(height: AppSpacing.lg),
+            ],
+
+            // 산책 요약
+            _buildWalkSummary(
+              context,
+              dashboard.walkSummary.todayDuration.inMinutes,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 헤더 섹션
+  Widget _buildHeader(BuildContext context, HomeDashboardEntity dashboard) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'おかえりなさい！',
+              style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '今日も一緒に頑張りましょう',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
               ),
             ),
           ],
         ),
-        backgroundColor: AppColors.pointBlue,
-        duration: const Duration(seconds: 3),
-        action: SnackBarAction(
-          label: '確認する',
-          textColor: Colors.white,
-          onPressed: () {
-            context.go(RouteConstants.notificationListRoute);
-          },
+        CircleAvatar(
+          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+          child: const Icon(Icons.person, color: AppColors.primary),
         ),
-      ),
+      ],
     );
   }
 
-  /// 초기 알림 스낵바 표시 (알림이 있을 때만)
-  void _showInitialNotificationSnackBar() {
-    final notificationCount =
-        NotificationMockService.getMockNotifications().length;
-
-    // 알림이 있을 때만 스낵바 표시
-    if (notificationCount > 0) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted) {
-          _showNotificationSnackBar();
-        }
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
-      drawer: const AppDrawer(),
-      appBar: SoftGradientDrawerAppBar(
-        title: 'ホーム',
-        selectedPetInfo: Row(
+  /// 펫이 없는 상태 UI
+  Widget _buildEmptyPetState(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildNotificationButton(),
-            const SizedBox(width: AppSpacing.xs),
-            _buildMenuButton(context),
+            Icon(
+              Icons.pets,
+              size: 80,
+              color: AppColors.textSecondary.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Text(
+              'まだペットが登録されていません',
+              style: AppTextStyles.headlineSmall,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              '最初のペットを登録して、\nAIPetを始めましょう！',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            ElevatedButton(
+              onPressed: () => context.push('/pet-type-selection'),
+              child: const Text('ペット登録'),
+            ),
           ],
         ),
       ),
-      body: Column(children: [_buildMainContent()]),
     );
   }
 
-  Widget _buildNotificationButton() {
-    return IconButton(
-      onPressed: _handleNotificationTap,
-      icon: const Stack(
-        children: [
-          Icon(
-            Icons.notifications_outlined,
-            color: AppColors.pointOffWhite,
-            size: 24,
+  /// 날씨 카드
+  Widget _buildWeatherCard(WeatherEntity weather) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            spreadRadius: 1,
           ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: Icon(Icons.circle, color: AppColors.pointPink, size: 8),
+        ],
+      ),
+      child: Row(
+        children: [
+          Text(weather.iconCode, style: const TextStyle(fontSize: 40)),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${weather.temperature.round()}°C',
+                  style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  weather.location,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (weather.isGoodForWalking)
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.pointGreen.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(AppSpacing.sm),
+              ),
+              child: Text(
+                '散歩日和',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.pointGreen,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// 펫 요약 그리드
+  Widget _buildPetSummaryGrid(List<PetSummaryEntity> pets) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'ペット一覧',
+          style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 1.2,
+            crossAxisSpacing: AppSpacing.md,
+            mainAxisSpacing: AppSpacing.md,
+          ),
+          itemCount: pets.length,
+          itemBuilder: (context, index) => _buildPetCard(pets[index]),
+        ),
+      ],
+    );
+  }
+
+  /// 펫 카드
+  Widget _buildPetCard(PetSummaryEntity pet) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+            backgroundImage: pet.profileImageUrl != null
+                ? NetworkImage(pet.profileImageUrl!)
+                : null,
+            child: pet.profileImageUrl == null
+                ? const Icon(Icons.pets, color: AppColors.primary, size: 30)
+                : null,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            pet.name,
+            style: AppTextStyles.titleMedium.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            '${pet.age}歳',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMenuButton(BuildContext context) {
-    return Builder(
-      builder: (context) => IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () => Scaffold.of(context).openDrawer(),
-        tooltip: 'メニュー',
+  /// 오늘의 예약 섹션
+  Widget _buildTodayAppointments(List<AppointmentSummary> appointments) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '今日の予約',
+          style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        ...appointments.map(
+          (appointment) => _buildAppointmentCard(appointment),
+        ),
+      ],
+    );
+  }
+
+  /// 예약 카드
+  Widget _buildAppointmentCard(AppointmentSummary appointment) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.sm),
+        border: Border.all(color: AppColors.borderGray),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.schedule, color: AppColors.primary),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  appointment.title,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  appointment.petName,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Text(
+            '${appointment.scheduledTime.hour}:${appointment.scheduledTime.minute.toString().padLeft(2, '0')}',
+            style: AppTextStyles.titleMedium.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildMainContent() {
-    return const Expanded(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.lg),
+  /// 산책 요약 섹션
+  Widget _buildWalkSummary(BuildContext context, int totalMinutes) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.directions_walk, color: AppColors.primary, size: 32),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '今日の散歩',
+                  style: AppTextStyles.titleMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '$totalMinutes分',
+                  style: AppTextStyles.headlineSmall.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () => GoRouter.of(context).push('/walk'),
+            child: const Text('詳細'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 에러 상태 UI
+  Widget _buildErrorView(BuildContext context, WidgetRef ref, Object error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: AppSpacing.md),
-            PetProfileCard(),
-            SizedBox(height: AppSpacing.lg),
-            WeatherCard(),
-            SizedBox(height: AppSpacing.lg),
-            HomeSummaryGrid(),
+            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
+            const SizedBox(height: AppSpacing.lg),
+            Text(
+              'データの読み込みに失敗しました',
+              style: AppTextStyles.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              error.toString(),
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            ElevatedButton(
+              onPressed: () => ref.invalidate(homeDashboardControllerProvider),
+              child: const Text('再試行'),
+            ),
           ],
         ),
       ),

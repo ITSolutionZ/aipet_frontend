@@ -1,8 +1,7 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class PetImageDisplay extends StatelessWidget {
   final String? imagePath;
@@ -95,7 +94,7 @@ class PetImageDisplay extends StatelessWidget {
         );
       }
     }
-    
+
     if (imagePath != null) {
       // 먼저 파일 경로인지 확인
       if (imagePath!.startsWith('/') || imagePath!.contains('\\')) {
@@ -118,7 +117,7 @@ class PetImageDisplay extends StatelessWidget {
         );
       }
     }
-    
+
     return _buildDefaultImage();
   }
 

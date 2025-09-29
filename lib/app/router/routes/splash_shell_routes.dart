@@ -1,7 +1,7 @@
+import 'package:aipet_frontend/features/onboarding/presentation/presentation.dart';
+import 'package:aipet_frontend/features/splash/presentation/presentation.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../features/onboarding/presentation/presentation.dart';
-import '../../../features/splash/presentation/presentation.dart';
 import 'route_constants.dart';
 
 /// Splash Shell 라우터

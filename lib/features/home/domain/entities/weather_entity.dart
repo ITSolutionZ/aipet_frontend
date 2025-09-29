@@ -1,55 +1,58 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+/// 날씨 엔티티
+class WeatherEntity {
+  final double temperature;
+  final String location;
+  final int weatherId;
+  final String description;
+  final double feelsLike;
+  final int humidity;
+  final double windSpeed;
+  final String iconCode;
+  final double uvIndex;
+  final int visibility;
+  final double pressure;
 
-part 'weather_entity.freezed.dart';
+  const WeatherEntity({
+    required this.temperature,
+    required this.location,
+    required this.weatherId,
+    required this.description,
+    required this.feelsLike,
+    required this.humidity,
+    required this.windSpeed,
+    required this.iconCode,
+    required this.uvIndex,
+    required this.visibility,
+    required this.pressure,
+  });
 
-/// Domain layer의 날씨 엔티티
-///
-/// Data layer의 WeatherData와 독립적으로 동작하는 도메인 모델
-@freezed
-class WeatherEntity with _$WeatherEntity {
-  const factory WeatherEntity({
-    required double temperature,
-    required String location,
-    required int weatherId,
-    required String description,
-    required double feelsLike,
-    required int humidity,
-    required double windSpeed,
-    required String iconCode,
-    required double uvIndex,
-    required int visibility,
-    required double pressure,
-  }) = _WeatherEntity;
-
-  const WeatherEntity._();
-
-  /// 날씨 상태 판별 메서드들
-  bool get isSunny => weatherId == 800;
-  bool get isRainy => weatherId >= 200 && weatherId < 600;
-  bool get isCloudy => weatherId >= 801 && weatherId <= 804;
-  bool get isSnowy => weatherId >= 600 && weatherId < 700;
-
-  /// UV 지수에 따른 위험도 판별
-  String get uvRiskLevel {
-    if (uvIndex <= 2) return 'low';
-    if (uvIndex <= 5) return 'moderate';
-    if (uvIndex <= 7) return 'high';
-    if (uvIndex <= 10) return 'very_high';
-    return 'extreme';
+  /// 산책하기 좋은 날씨인지 판단
+  bool get isGoodForWalking {
+    return temperature >= 10 &&
+        temperature <= 30 &&
+        !description.toLowerCase().contains('rain') &&
+        windSpeed <= 10.0;
   }
 
-  /// 산책하기 좋은 날씨인지 판별
-  bool get isGoodForWalk {
-    return !isRainy && !isSnowy && temperature >= 10 && temperature <= 30;
+  /// UV 지수 위험도
+  String get uvIndexLevel {
+    if (uvIndex <= 2) return '低い';
+    if (uvIndex <= 5) return '中程度';
+    if (uvIndex <= 7) return '高い';
+    if (uvIndex <= 10) return '非常に高い';
+    return '極めて高い';
   }
 }
 
 /// 날씨 위치 엔티티
-@freezed
-class WeatherLocationEntity with _$WeatherLocationEntity {
-  const factory WeatherLocationEntity({
-    required double latitude,
-    required double longitude,
-    required String name,
-  }) = _WeatherLocationEntity;
+class WeatherLocationEntity {
+  final double latitude;
+  final double longitude;
+  final String name;
+
+  const WeatherLocationEntity({
+    required this.latitude,
+    required this.longitude,
+    required this.name,
+  });
 }

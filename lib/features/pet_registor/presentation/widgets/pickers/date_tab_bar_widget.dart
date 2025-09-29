@@ -1,14 +1,10 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class DateTabBarWidget extends StatelessWidget {
   final TabController tabController;
 
-  const DateTabBarWidget({
-    super.key,
-    required this.tabController,
-  });
+  const DateTabBarWidget({super.key, required this.tabController});
 
   @override
   Widget build(BuildContext context) {

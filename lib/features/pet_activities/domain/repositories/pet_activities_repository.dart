@@ -1,7 +1,7 @@
-import '../entities/trick_entity.dart';
-import '../entities/video_bookmark_entity.dart';
-import '../entities/video_progress_entity.dart';
-import '../entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/video_bookmark_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/video_progress_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
 
 abstract class PetActivitiesRepository {
   // Trick 관련

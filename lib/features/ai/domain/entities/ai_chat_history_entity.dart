@@ -1,4 +1,4 @@
-import '../../../pet_registor/pet_registor.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'ai_category_entity.dart';
 import 'ai_message_entity.dart';
 

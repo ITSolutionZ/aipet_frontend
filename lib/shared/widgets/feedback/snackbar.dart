@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'banner_type.dart';
 
@@ -121,7 +122,25 @@ class GlassSnackbar extends StatelessWidget {
   }
 }
 
-class GlassSnackbarWidget extends StatefulWidget {
+/// 🎯 Snackbar Visibility State Provider
+final snackbarVisibilityProvider =
+    StateNotifierProvider.family<SnackbarVisibilityController, bool, String>(
+      (ref, snackbarId) => SnackbarVisibilityController(),
+    );
+
+class SnackbarVisibilityController extends StateNotifier<bool> {
+  SnackbarVisibilityController() : super(false);
+
+  void show() {
+    state = true;
+  }
+
+  void hide() {
+    state = false;
+  }
+}
+
+class GlassSnackbarWidget extends ConsumerStatefulWidget {
   final GlassSnackbar snackbar;
   final OverlayEntry overlayEntry;
 
@@ -132,22 +151,21 @@ class GlassSnackbarWidget extends StatefulWidget {
   });
 
   @override
-  State<GlassSnackbarWidget> createState() => _GlassSnackbarWidgetState();
+  ConsumerState<GlassSnackbarWidget> createState() =>
+      _GlassSnackbarWidgetState();
 }
 
-class _GlassSnackbarWidgetState extends State<GlassSnackbarWidget>
-    with SingleTickerProviderStateMixin {
-  bool _visible = false;
+class _GlassSnackbarWidgetState extends ConsumerState<GlassSnackbarWidget> {
+  final String _snackbarId = DateTime.now().millisecondsSinceEpoch.toString();
 
   @override
   void initState() {
     super.initState();
-    // Start hidden
+    // Start hidden and then show
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _visible = true;
-      });
+      ref.read(snackbarVisibilityProvider(_snackbarId).notifier).show();
     });
+
     if (widget.snackbar.duration > Duration.zero) {
       Future.delayed(widget.snackbar.duration, () {
         _dismiss();
@@ -156,10 +174,10 @@ class _GlassSnackbarWidgetState extends State<GlassSnackbarWidget>
   }
 
   Future<void> _dismiss() async {
-    if (!_visible) return;
-    setState(() {
-      _visible = false;
-    });
+    final isVisible = ref.read(snackbarVisibilityProvider(_snackbarId));
+    if (!isVisible) return;
+
+    ref.read(snackbarVisibilityProvider(_snackbarId).notifier).hide();
     await Future.delayed(const Duration(milliseconds: 300));
     widget.overlayEntry.remove();
     widget.snackbar.onDismissed?.call();
@@ -168,6 +186,7 @@ class _GlassSnackbarWidgetState extends State<GlassSnackbarWidget>
   @override
   Widget build(BuildContext context) {
     final snackbar = widget.snackbar;
+    final isVisible = ref.watch(snackbarVisibilityProvider(_snackbarId));
 
     final snackbarWithClose = snackbar.onClose == null
         ? snackbar
@@ -193,11 +212,11 @@ class _GlassSnackbarWidgetState extends State<GlassSnackbarWidget>
       right: 0,
       child: Center(
         child: AnimatedSlide(
-          offset: _visible ? Offset.zero : const Offset(0, 1),
+          offset: isVisible ? Offset.zero : const Offset(0, 1),
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
           child: AnimatedOpacity(
-            opacity: _visible ? 1 : 0,
+            opacity: isVisible ? 1 : 0,
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOut,
             child: snackbarWithClose,

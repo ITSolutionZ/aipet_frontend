@@ -1,23 +1,49 @@
+import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/pet_health/pet_health_mock_service.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/design/design.dart';
-import '../../../../shared/mock_data/features/pet_health/pet_health_mock_service.dart';
+/// 🎯 Weight Chart State Provider
+final weightChartStateProvider =
+    StateNotifierProvider<WeightChartController, WeightChartState>(
+      (ref) => WeightChartController(),
+    );
 
-class WeightChartCard extends StatefulWidget {
-  const WeightChartCard({super.key});
+class WeightChartController extends StateNotifier<WeightChartState> {
+  WeightChartController() : super(const WeightChartState());
 
-  @override
-  State<WeightChartCard> createState() => _WeightChartCardState();
+  void updateMonthOffset(int offset) {
+    state = state.copyWith(currentMonthOffset: offset);
+  }
+
+  void setDragStart(double x) {
+    state = state.copyWith(dragStartX: x);
+  }
 }
 
-class _WeightChartCardState extends State<WeightChartCard> {
-  int _currentMonthOffset = 0; // 현재월로부터의 오프셋
+class WeightChartState {
+  final int currentMonthOffset;
+  final double dragStartX;
+
+  const WeightChartState({this.currentMonthOffset = 0, this.dragStartX = 0});
+
+  WeightChartState copyWith({int? currentMonthOffset, double? dragStartX}) {
+    return WeightChartState(
+      currentMonthOffset: currentMonthOffset ?? this.currentMonthOffset,
+      dragStartX: dragStartX ?? this.dragStartX,
+    );
+  }
+}
+
+class WeightChartCard extends ConsumerWidget {
+  const WeightChartCard({super.key});
+
   static const int _monthsPerPage = 6;
-  double _dragStartX = 0;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chartState = ref.watch(weightChartStateProvider);
     final weightRecords = PetHealthMockService.getMockWeightRecords();
 
     return Container(
@@ -87,7 +113,11 @@ class _WeightChartCardState extends State<WeightChartCard> {
                 padding: const EdgeInsets.all(
                   2.0,
                 ), // 차트 주변 여백 더 감소하여 그래프 영역 최대화
-                child: _buildWeightChart(weightRecords, _currentMonthOffset),
+                child: _buildWeightChart(
+                  weightRecords,
+                  chartState.currentMonthOffset,
+                  ref,
+                ),
               ),
             ),
           ),
@@ -120,7 +150,11 @@ class _WeightChartCardState extends State<WeightChartCard> {
     );
   }
 
-  Widget _buildWeightChart(List<dynamic> weightRecords, int monthOffset) {
+  Widget _buildWeightChart(
+    List<dynamic> weightRecords,
+    int monthOffset,
+    WidgetRef ref,
+  ) {
     // Mock 데이터에서 차트 데이터 가져오기
     final chartData = PetHealthMockService.getMockWeightChartData();
     final currentYearData = <FlSpot>[];
@@ -182,22 +216,25 @@ class _WeightChartCardState extends State<WeightChartCard> {
 
     return Listener(
       onPointerDown: (event) {
-        _dragStartX = event.localPosition.dx;
+        ref
+            .read(weightChartStateProvider.notifier)
+            .setDragStart(event.localPosition.dx);
       },
       onPointerUp: (event) {
-        final swipeDistance = event.localPosition.dx - _dragStartX;
+        final chartState = ref.read(weightChartStateProvider);
+        final swipeDistance = event.localPosition.dx - chartState.dragStartX;
         const swipeThreshold = 30.0; // 낮은 임계값
 
         if (swipeDistance > swipeThreshold) {
           // 오른쪽으로 스와이프 (이전 월)
-          setState(() {
-            _currentMonthOffset -= 1;
-          });
+          ref
+              .read(weightChartStateProvider.notifier)
+              .updateMonthOffset(chartState.currentMonthOffset - 1);
         } else if (swipeDistance < -swipeThreshold) {
           // 왼쪽으로 스와이프 (다음 월)
-          setState(() {
-            _currentMonthOffset += 1;
-          });
+          ref
+              .read(weightChartStateProvider.notifier)
+              .updateMonthOffset(chartState.currentMonthOffset + 1);
         }
       },
       child: Stack(

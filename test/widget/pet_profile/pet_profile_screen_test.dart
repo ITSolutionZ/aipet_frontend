@@ -5,13 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('PetProfileScreen Tests', () {
-
     testWidgets('PetProfileScreen이 올바르게 생성되어야 함', (tester) async {
       await tester.pumpWidget(
         const ProviderScope(
-          child: MaterialApp(
-            home: PetProfileScreen(petId: 'test-pet-1'),
-          ),
+          child: MaterialApp(home: PetProfileScreen(petId: 'test-pet-1')),
         ),
       );
 
@@ -24,9 +21,7 @@ void main() {
     testWidgets('CircularProgressIndicator가 로딩 중에 표시되어야 함', (tester) async {
       await tester.pumpWidget(
         const ProviderScope(
-          child: MaterialApp(
-            home: PetProfileScreen(petId: 'test-pet-1'),
-          ),
+          child: MaterialApp(home: PetProfileScreen(petId: 'test-pet-1')),
         ),
       );
 

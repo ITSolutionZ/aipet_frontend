@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/trick_entity.dart';
 
 /// 트릭 진행도 카드 위젯
 ///
@@ -34,11 +33,19 @@ class TrickProgressCard extends StatelessWidget {
             height: 60,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSpacing.sm),
-              image: DecorationImage(
-                image: AssetImage(trick.imagePath),
-                fit: BoxFit.cover,
-              ),
+              image: trick.imagePath != null
+                  ? DecorationImage(
+                      image: AssetImage(trick.imagePath!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+              color: trick.imagePath == null
+                  ? AppColors.pointBrown.withValues(alpha: 0.1)
+                  : null,
             ),
+            child: trick.imagePath == null
+                ? const Icon(Icons.pets, color: AppColors.pointBrown, size: 30)
+                : null,
           ),
           const SizedBox(width: AppSpacing.md),
 
@@ -75,7 +82,7 @@ class TrickProgressCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${trick.progress ?? 0}%',
+                      '${trick.progressPercentage.round()}%',
                       style: AppFonts.bodySmall.copyWith(
                         color: AppColors.pointDark.withValues(alpha: 0.7),
                         fontWeight: FontWeight.w500,

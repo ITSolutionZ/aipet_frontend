@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'notification_model.dart';
 
 /// 알림 스케줄 타입
@@ -24,7 +25,7 @@ class NotificationTimeOfDay {
 
   /// 문자열로 변환 (HH:mm 형식)
   String toTimeString() {
-    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatTime(DateTime(2024, 1, 1, hour, minute));
   }
 
   /// DateTime으로 변환 (오늘 날짜 기준)
@@ -35,14 +36,7 @@ class NotificationTimeOfDay {
 
   /// 다음 실행 시간 계산
   DateTime getNextExecutionTime() {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day, hour, minute);
-
-    if (today.isAfter(now)) {
-      return today;
-    } else {
-      return today.add(const Duration(days: 1));
-    }
+    return DateTimeUtils.getNextExecutionTime(hour, minute);
   }
 
   /// JSON으로 변환

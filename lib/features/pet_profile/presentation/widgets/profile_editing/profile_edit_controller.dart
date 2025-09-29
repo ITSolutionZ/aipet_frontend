@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../pet_registor/domain/entities/pet_profile_entity.dart';
 
 class ProfileEditController {
   final TextEditingController nameController;
@@ -60,7 +59,9 @@ class ProfileEditController {
 
   PetProfileEntity createUpdatedPet(PetProfileEntity originalPet) {
     return originalPet.copyWith(
-      name: nameController.text.trim().isNotEmpty ? nameController.text.trim() : originalPet.name,
+      name: nameController.text.trim().isNotEmpty
+          ? nameController.text.trim()
+          : originalPet.name,
       imagePath: selectedImagePath ?? originalPet.imagePath,
       additionalInfo: {
         ...?originalPet.additionalInfo,

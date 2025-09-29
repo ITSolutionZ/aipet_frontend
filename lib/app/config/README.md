@@ -129,7 +129,7 @@ LINE_CHANNEL_ID=your_line_channel_id
 
 ## 파일 구조
 
-```
+```txt
 lib/app/config/
 ├── README.md           # 이 파일
 ├── app_config.dart     # 메인 설정 클래스
@@ -317,7 +317,7 @@ LINE_CHANNEL_ID=your_line_channel_id
 
 ### ファイル構造 {#file-structure-1}
 
-```
+```txt
 lib/app/config/
 ├── README.md           # このファイル
 ├── app_config.dart     # メイン設定クラス

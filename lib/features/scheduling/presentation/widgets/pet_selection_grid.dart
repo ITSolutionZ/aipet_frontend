@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../shared/shared.dart';
 import 'pet_selection_card.dart';
 
 /// 펫 선택 그리드 위젯

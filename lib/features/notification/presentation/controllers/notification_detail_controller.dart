@@ -1,10 +1,10 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/notification/domain/usecases/notification_usecases.dart';
+import 'package:aipet_frontend/shared/core/services/date_format_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/services/date_format_service.dart';
-import '../../domain/entities/entities.dart';
-import '../../domain/usecases/usecases.dart';
 import 'notification_ui_controller.dart';
 
 /// 알림 상세 화면 컨트롤러 (클린 아키텍처 버전)
@@ -22,37 +22,51 @@ class NotificationDetailController {
   );
 
   /// 알림 데이터 로드
-  Future<NotificationModel?> loadNotification(String notificationId) async {
+  Future<NotificationModel?> loadNotification(
+    String userId,
+    String notificationId,
+  ) async {
     try {
-      return await _getNotificationByIdUseCase.call(notificationId);
+      final result = await _getNotificationByIdUseCase.call(
+        userId,
+        notificationId,
+      );
+      return result.dataOrNull;
     } catch (error) {
       rethrow;
     }
   }
 
   /// 알림을 읽음 상태로 변경
-  Future<void> markAsRead(BuildContext context, NotificationModel notification) async {
+  Future<void> markAsRead(
+    BuildContext context,
+    String userId,
+    NotificationModel notification,
+  ) async {
     try {
-      await _markAsReadUseCase.call(notification.id);
+      await _markAsReadUseCase.call(userId, notification.id);
       if (context.mounted) {
         _uiController.showSuccessSnackBar(context, '通知を読み取りました');
       }
     } catch (error) {
       if (context.mounted) {
-        _uiController.showErrorSnackBar(
-          context,
-          '読み取り処理中にエラーが発生しました: $error',
-        );
+        _uiController.showErrorSnackBar(context, '読み取り処理中にエラーが発生しました: $error');
       }
     }
   }
 
   /// 알림 삭제 확인 및 실행
-  Future<void> deleteNotification(BuildContext context, String notificationId) async {
+  Future<void> deleteNotification(
+    BuildContext context,
+    String userId,
+    String notificationId,
+  ) async {
     try {
-      final confirmed = await _uiController.showDeleteConfirmationDialog(context);
+      final confirmed = await _uiController.showDeleteConfirmationDialog(
+        context,
+      );
       if (confirmed && context.mounted) {
-        await _deleteNotificationUseCase.call(notificationId);
+        await _deleteNotificationUseCase.call(userId, notificationId);
         if (context.mounted) {
           _uiController.showSuccessSnackBar(context, '通知を削除しました');
           context.pop();
@@ -60,10 +74,7 @@ class NotificationDetailController {
       }
     } catch (error) {
       if (context.mounted) {
-        _uiController.showErrorSnackBar(
-          context,
-          '削除処理中にエラーが発生しました: $error',
-        );
+        _uiController.showErrorSnackBar(context, '削除処理中にエラーが発生しました: $error');
       }
     }
   }
@@ -100,10 +111,7 @@ class NotificationDetailController {
         context.push(actionUrl);
       }
     } catch (error) {
-      _uiController.showErrorSnackBar(
-        context,
-        '画面移動中にエラーが発生しました: $error',
-      );
+      _uiController.showErrorSnackBar(context, '画面移動中にエラーが発生しました: $error');
     }
   }
 

@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:aipet_frontend/features/auth/domain/domain.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../features/auth/domain/domain.dart';
-import '../../../../shared/shared.dart';
-import 'repositories/auth_repository_impl.dart';
-import 'repositories/firebase_auth_repository.dart';
+import 'repositories/firebase_auth_real_impl.dart';
 import 'services/auth_config_service.dart';
 
 part 'auth_providers.g.dart';
@@ -14,10 +13,9 @@ part 'auth_providers.g.dart';
 // Auth Repository 프로바이더
 @riverpod
 AuthRepository authRepository(Ref ref) {
-  return AuthRepositoryImpl(
-    firebaseRepository: FirebaseAuthRepositoryImpl(),
-    ref: ref,
-  );
+  // 실제 Firebase Auth 구현체 사용
+  // 개발 환경에서는 Mock 모드를 지원하지만, 기본적으로는 실제 Firebase Auth 사용
+  return FirebaseAuthRealImpl();
 }
 
 // 홈 화면으로 이동하는 콜백을 위한 프로바이더
@@ -38,7 +36,7 @@ Future<SharedPreferences> sharedPreferences(Ref ref) async {
     return await SharedPreferences.getInstance();
   } catch (e) {
     debugPrint('SharedPreferences 초기화 실패: $e');
-    // 에러 발생 시 null을 반환하여 메모리 저장 방식으로 fallback
+    // 에러 발생 시 rethrow
     rethrow;
   }
 }
@@ -79,6 +77,17 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
     state = const AuthFormState();
   }
 
+  /// 실제 로그인 성공 처리
+  ///
+  /// 인증 성공 시 호출되어 상태를 업데이트합니다.
+  /// 로딩 상태를 해제하고 에러를 초기화합니다.
+  void handleLoginSuccess() {
+    debugPrint('✅ AuthFormStateNotifier: 로그인 성공 처리');
+
+    // 로딩 상태 해제 및 에러 초기화
+    state = state.copyWith(isLoading: false, error: null);
+  }
+
   Future<void> login() async {
     state = state.copyWith(isLoading: true, error: null);
 
@@ -105,7 +114,10 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
           navigationCallback();
         }
       } else {
-        state = state.copyWith(isLoading: false, error: result.message);
+        state = state.copyWith(
+          isLoading: false,
+          error: result.error?.toString(),
+        );
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: 'ログインに失敗しました');
@@ -113,7 +125,10 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
     }
   }
 
-  // Remember Me - 이메일만 저장 (패스워드는 저장하지 않음)
+  /// Remember Me - 이메일만 저장 (패스워드는 저장하지 않음)
+  ///
+  /// 보안상 이메일만 저장하고 패스워드는 저장하지 않습니다.
+  /// SecureStorage 실패 시에도 안전하게 처리됩니다.
   Future<void> _saveLoginCredentials() async {
     try {
       // 보안상 이메일만 저장하고 패스워드는 저장하지 않음
@@ -125,16 +140,28 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
         AuthConfigConstants.rememberMeKey,
         'true',
       );
-      // 개발 모드에서만 디버그 출력
-      debugPrint('Remember Me 이메일 저장 완료');
+
+      if (kDebugMode) {
+        debugPrint('Remember Me 이메일 저장 완료');
+      }
     } catch (e) {
-      debugPrint('Remember Me 저장 실패: $e');
-      // 암호화 저장 실패 시 메모리에만 저장 (임시 해결책)
-      _saveToMemory();
+      if (kDebugMode) {
+        debugPrint('Remember Me 저장 실패: $e');
+      }
+
+      // SecureStorage 실패 시 상태만 업데이트 (메모리 저장 제거)
+      // 사용자가 다음에 앱을 재시작하면 다시 입력하도록 함
+      state = state.copyWith(rememberMe: false);
+
+      // 사용자에게 저장 실패 알림 (선택사항)
+      // showError('ログイン情報の保存に失敗しました');
     }
   }
 
-  // 저장된 Remember Me 정보 불러오기 (이메일만)
+  /// 저장된 Remember Me 정보 불러오기 (이메일만)
+  ///
+  /// SecureStorage에서 저장된 이메일 정보를 불러옵니다.
+  /// 패스워드는 보안상 이유로 저장하지 않습니다.
   Future<void> loadSavedCredentials() async {
     try {
       final savedEmail = await SecureStorageService.getString(
@@ -144,62 +171,51 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
         AuthConfigConstants.rememberMeKey,
       );
 
-      if (rememberMe == 'true' && savedEmail != null) {
+      if (rememberMe == 'true' && savedEmail != null && savedEmail.isNotEmpty) {
         state = state.copyWith(
           email: savedEmail,
           rememberMe: true,
           // 패스워드는 불러오지 않음 (보안상 이유)
         );
-        debugPrint('Remember Me 이메일 불러오기 완료');
+
+        if (kDebugMode) {
+          debugPrint('Remember Me 이메일 불러오기 완료');
+        }
       }
     } catch (e) {
-      debugPrint('Remember Me 정보 불러오기 실패: $e');
-      // 저장소 실패 시 메모리에서 불러오기 (임시 해결책)
-      _loadFromMemory();
+      if (kDebugMode) {
+        debugPrint('Remember Me 정보 불러오기 실패: $e');
+      }
+
+      // SecureStorage 실패 시 상태 초기화
+      state = state.copyWith(rememberMe: false);
     }
   }
 
-  // Remember Me 정보 삭제
+  /// Remember Me 정보 삭제
+  ///
+  /// SecureStorage와 상태에서 저장된 Remember Me 정보를 삭제합니다.
   Future<void> clearSavedCredentials() async {
     try {
       // 저장된 데이터 삭제
-      await SecureStorageService.remove(AuthConfigConstants.savedEmailKey);
-      await SecureStorageService.remove(AuthConfigConstants.rememberMeKey);
+      await Future.wait([
+        SecureStorageService.remove(AuthConfigConstants.savedEmailKey),
+        SecureStorageService.remove(AuthConfigConstants.rememberMeKey),
+      ]);
+
       state = state.copyWith(rememberMe: false);
-      debugPrint('Remember Me 정보 삭제 완료');
+
+      if (kDebugMode) {
+        debugPrint('Remember Me 정보 삭제 완료');
+      }
     } catch (e) {
-      debugPrint('Remember Me 정보 삭제 실패: $e');
-      // 저장소 실패 시 메모리에서 삭제 (임시 해결책)
-      _clearFromMemory();
+      if (kDebugMode) {
+        debugPrint('Remember Me 정보 삭제 실패: $e');
+      }
+
+      // SecureStorage 실패 시에도 상태는 초기화
+      state = state.copyWith(rememberMe: false);
     }
-  }
-
-  // 메모리에 임시 저장 (저장소 실패 시 대안) - 이메일만 저장
-  static String? _tempEmail;
-  static bool _tempRememberMe = false;
-
-  void _saveToMemory() {
-    _tempEmail = state.email;
-    // 패스워드는 메모리에도 저장하지 않음 (보안상 이유)
-    _tempRememberMe = true;
-  }
-
-  void _loadFromMemory() {
-    if (_tempRememberMe && _tempEmail != null) {
-      state = state.copyWith(
-        email: _tempEmail!,
-        rememberMe: true,
-        // 패스워드는 불러오지 않음
-      );
-      debugPrint('메모리에서 Remember Me 정보 불러오기 완료');
-    }
-  }
-
-  void _clearFromMemory() {
-    _tempEmail = null;
-    _tempRememberMe = false;
-    state = state.copyWith(rememberMe: false);
-    debugPrint('메모리에서 Remember Me 정보 삭제 완료');
   }
 
   void clearError() {

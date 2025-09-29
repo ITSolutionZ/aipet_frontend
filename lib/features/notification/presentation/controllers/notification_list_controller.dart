@@ -1,8 +1,8 @@
+import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/features/notification/domain/usecases/notification_usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/providers/notification_controller_providers.dart';
-import '../../domain/entities/notification_model.dart';
-import '../../domain/usecases/usecases.dart';
 import 'notification_ui_controller.dart';
 
 /// 알림 목록 화면 컨트롤러
@@ -17,9 +17,10 @@ class NotificationListController {
       );
 
   /// 알림 설정 상태 확인
-  Future<bool> checkNotificationSettings() async {
+  Future<bool> checkNotificationSettings(String userId) async {
     try {
-      final settings = await _getNotificationSettingsUseCase();
+      final result = await _getNotificationSettingsUseCase(userId);
+      final settings = result.dataOrNull ?? {};
 
       // 주요 알림 타입들이 모두 활성화되어 있는지 확인
       final mainTypes = [
@@ -28,9 +29,17 @@ class NotificationListController {
         NotificationType.system,
       ];
 
+      // settings가 Map<String, dynamic>이므로 적절히 처리
+      final enabled = settings['enabled'] as bool? ?? false;
+      final typeSettings =
+          settings['typeSettings'] as Map<String, dynamic>? ?? {};
+
       final allEnabled =
-          settings.enabled &&
-          mainTypes.every((type) => settings.isTypeEnabled(type));
+          enabled &&
+          mainTypes.every((type) {
+            final typeKey = type.toString().split('.').last;
+            return typeSettings[typeKey] as bool? ?? false;
+          });
 
       return !allEnabled; // 설정이 완료되지 않았으면 true (카드 표시)
     } catch (e) {

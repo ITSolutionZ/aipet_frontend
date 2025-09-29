@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_registration_provider.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pet_registor_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/routes/route_constants.dart';
-import '../../../../shared/shared.dart';
-import '../../data/providers/providers.dart';
-import '../widgets/widgets.dart';
 
 class PetSizeWeightScreen extends ConsumerStatefulWidget {
   const PetSizeWeightScreen({super.key});
@@ -23,10 +22,12 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
   // 체중 입력을 위한 컨트롤러와 포커스 노드
   TextEditingController? _weightController;
   FocusNode? _weightFocusNode;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
 
     // 컨트롤러와 포커스 노드 초기화
     _weightController = TextEditingController(text: _weight.toStringAsFixed(1));
@@ -49,6 +50,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
   void dispose() {
     _weightController?.dispose();
     _weightFocusNode?.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -183,13 +185,12 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
     return 'assets/images/pets/default.png';
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pureWhite,
-      appBar: SoftGradientAppBar(
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
         title: 'ペットのサイズと体重は？',
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
@@ -204,105 +205,119 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
           children: [
             // 상단 영역 (스크롤 제거)
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // 프로그레스바
-                    const PetRegistrationProgressBar(currentStep: 4),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // 제목
-                    Consumer(
-                      builder: (context, ref, child) {
-                        final registrationState = ref.watch(
-                          petRegistrationStateProvider,
-                        );
-                        final petName = registrationState.petName ?? 'ペット';
-
-                        return Text(
-                          '$petNameのサイズと体重は？',
-                          style: AppFonts.titleMedium.copyWith(
-                            color: AppColors.pointBrown,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        );
-                      },
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // 프로그레스바
+                            const PetRegistrationProgressBar(currentStep: 4),
+                            const SizedBox(height: AppSpacing.md),
 
-                    // 펫 이미지
-                    PetImageDisplay(
-                      imagePath: _getPetImagePath(),
-                      width: 100,
-                      height: 100,
-                      badge: _isNeutered
-                          ? Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 3,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                '去勢',
-                                style: AppFonts.bodySmall.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            )
-                          : null,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
+                            // 제목
+                            Consumer(
+                              builder: (context, ref, child) {
+                                final registrationState = ref.watch(
+                                  petRegistrationStateProvider,
+                                );
+                                final petName =
+                                    registrationState.petName ?? 'ペット';
 
-                    // 사이즈 선택 버튼들
-                    PetSizeSelectionGroupWidget(
-                      selectedSize: _selectedSize,
-                      onSizeSelected: (size) {
-                        setState(() {
-                          _selectedSize = size;
-                        });
-                        _updateWeightBasedOnSize();
-                      },
-                    ),
-                    const SizedBox(height: AppSpacing.md),
+                                return Text(
+                                  '$petNameのサイズと体重は？',
+                                  style: AppFonts.titleMedium.copyWith(
+                                    color: AppColors.pointBrown,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                );
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.md),
 
-                    // 체중 표시 (중앙) - 크기 축소
-                    WeightDisplayWidget(
-                      weight: _weight,
-                      weightController: _weightController,
-                      weightFocusNode: _weightFocusNode,
-                      onWeightChanged: (newWeight) {
-                        setState(() {
-                          _weight = newWeight;
-                          _updateSizeBasedOnWeight();
-                        });
-                        _saveToGlobalState();
-                      },
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
+                            // 펫 이미지
+                            PetImageDisplay(
+                              imagePath: _getPetImagePath(),
+                              width: 100,
+                              height: 100,
+                              badge: _isNeutered
+                                  ? Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        '去勢',
+                                        style: AppFonts.bodySmall.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                            const SizedBox(height: AppSpacing.md),
 
-                    // 체중 슬라이더 - 크기 축소
-                    WeightSliderWidget(
-                      weight: _weight,
-                      onWeightChanged: (newWeight) {
-                        setState(() {
-                          _weight = newWeight;
-                          _updateSizeBasedOnWeight();
-                          if (_weightController != null && !_weightFocusNode!.hasFocus) {
-                            _weightController!.text = _weight.toStringAsFixed(1);
-                          }
-                        });
-                        _saveToGlobalState();
-                      },
+                            // 사이즈 선택 버튼들
+                            PetSizeSelectionGroupWidget(
+                              selectedSize: _selectedSize,
+                              onSizeSelected: (size) {
+                                setState(() {
+                                  _selectedSize = size;
+                                });
+                                _updateWeightBasedOnSize();
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+
+                            // 체중 표시 (중앙) - 크기 축소
+                            WeightDisplayWidget(
+                              weight: _weight,
+                              weightController: _weightController,
+                              weightFocusNode: _weightFocusNode,
+                              onWeightChanged: (newWeight) {
+                                setState(() {
+                                  _weight = newWeight;
+                                  _updateSizeBasedOnWeight();
+                                });
+                                _saveToGlobalState();
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+
+                            // 체중 슬라이더 - 크기 축소
+                            WeightSliderWidget(
+                              weight: _weight,
+                              onWeightChanged: (newWeight) {
+                                setState(() {
+                                  _weight = newWeight;
+                                  _updateSizeBasedOnWeight();
+                                  if (_weightController != null &&
+                                      !_weightFocusNode!.hasFocus) {
+                                    _weightController!.text = _weight
+                                        .toStringAsFixed(1);
+                                  }
+                                });
+                                _saveToGlobalState();
+                              },
+                            ),
+                          ],
+                        ),
+                      ]),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
 

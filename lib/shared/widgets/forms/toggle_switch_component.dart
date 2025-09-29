@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import '../../shared.dart';
 
 /// 토글 스위치 컴포넌트
 class ToggleSwitchComponent extends StatelessWidget {
@@ -21,10 +21,7 @@ class ToggleSwitchComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: AppColors.pointBlue,
-      ),
+      leading: Icon(icon, color: AppColors.pointBlue),
       title: Text(
         title,
         style: AppFonts.bodyLarge.copyWith(

@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import '../../../../shared/shared.dart';
-import '../../domain/entities/entities.dart';
 
 /// 알림 아이콘 및 색상 서비스 (UI 전용 로직)
 class NotificationIconService {
@@ -102,7 +102,7 @@ class NotificationIconService {
     }
   }
 
-  /// 토글 위젯용 아이콘 가져오기 
+  /// 토글 위젯용 아이콘 가져오기
   static IconData getToggleIcon(String title) {
     if (title.contains('食事') || title.contains('feeding')) {
       return Icons.restaurant;

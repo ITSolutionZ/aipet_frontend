@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/features/pet_activities/data/repositories/pet_activities_repository_impl.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/repositories/pet_activities_repository.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/usecases/pet_activities_usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../domain/entities/trick_entity.dart';
-import '../../domain/entities/youtube_video_entity.dart';
-import '../../domain/repositories/pet_activities_repository.dart';
-import '../../domain/usecases/usecases.dart';
-import '../repositories/pet_activities_repository_impl.dart';
 
 part 'pet_activities_providers.g.dart';
 
@@ -47,5 +46,6 @@ final youTubeVideosProvider =
     FutureProvider.family<List<YouTubeVideoEntity>, String>((ref, petId) async {
       final repository = ref.read(petActivitiesRepositoryProvider);
       final useCase = GetYouTubeVideosUseCase(repository);
-      return useCase.call(petId);
+      final result = await useCase.call(petId);
+      return result.dataOrNull ?? [];
     });

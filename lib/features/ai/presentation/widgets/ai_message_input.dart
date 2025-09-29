@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// AI 메시지 입력 위젯
 class AiMessageInput extends StatelessWidget {
@@ -18,11 +17,11 @@ class AiMessageInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         left: AppSpacing.md,
         right: AppSpacing.md,
         top: AppSpacing.sm,
-        bottom: MediaQuery.of(context).padding.bottom + AppSpacing.sm,
+        bottom: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
         color: Colors.white,

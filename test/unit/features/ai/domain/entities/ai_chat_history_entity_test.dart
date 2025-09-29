@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_history_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -38,6 +38,9 @@ void main() {
         name: 'テストペット',
         type: 'dog',
         breed: 'ゴールデンレトリバー',
+        age: 4,
+        weight: 25.0,
+        gender: 'male',
         birthDate: DateTime(2020, 1, 1),
         ownerId: 'owner-1',
         createdAt: DateTime(2020, 1, 1),
@@ -79,28 +82,31 @@ void main() {
         expect(testChatHistory.messageCount, equals(2));
       });
 
-      test('should create AiChatHistoryEntity with minimal required parameters', () {
-        // Act
-        final minimalChatHistory = AiChatHistoryEntity(
-          id: 'chat-2',
-          title: 'シンプルな相談',
-          summary: 'シンプルな相談内容',
-          messages: [],
-          createdAt: testDateTime,
-          messageCount: 0,
-        );
+      test(
+        'should create AiChatHistoryEntity with minimal required parameters',
+        () {
+          // Act
+          final minimalChatHistory = AiChatHistoryEntity(
+            id: 'chat-2',
+            title: 'シンプルな相談',
+            summary: 'シンプルな相談内容',
+            messages: [],
+            createdAt: testDateTime,
+            messageCount: 0,
+          );
 
-        // Assert
-        expect(minimalChatHistory.id, equals('chat-2'));
-        expect(minimalChatHistory.title, equals('シンプルな相談'));
-        expect(minimalChatHistory.summary, equals('シンプルな相談内容'));
-        expect(minimalChatHistory.messages, isEmpty);
-        expect(minimalChatHistory.pet, isNull);
-        expect(minimalChatHistory.category, isNull);
-        expect(minimalChatHistory.createdAt, equals(testDateTime));
-        expect(minimalChatHistory.isManualSaved, isFalse); // default value
-        expect(minimalChatHistory.messageCount, equals(0));
-      });
+          // Assert
+          expect(minimalChatHistory.id, equals('chat-2'));
+          expect(minimalChatHistory.title, equals('シンプルな相談'));
+          expect(minimalChatHistory.summary, equals('シンプルな相談内容'));
+          expect(minimalChatHistory.messages, isEmpty);
+          expect(minimalChatHistory.pet, isNull);
+          expect(minimalChatHistory.category, isNull);
+          expect(minimalChatHistory.createdAt, equals(testDateTime));
+          expect(minimalChatHistory.isManualSaved, isFalse); // default value
+          expect(minimalChatHistory.messageCount, equals(0));
+        },
+      );
     });
 
     group('copyWith', () {
@@ -115,7 +121,10 @@ void main() {
         // Assert
         expect(updatedChatHistory.id, equals('chat-1')); // unchanged
         expect(updatedChatHistory.title, equals('更新されたタイトル'));
-        expect(updatedChatHistory.summary, equals('ペットの健康について相談した内容')); // unchanged
+        expect(
+          updatedChatHistory.summary,
+          equals('ペットの健康について相談した内容'),
+        ); // unchanged
         expect(updatedChatHistory.messages, equals(testMessages)); // unchanged
         expect(updatedChatHistory.pet, equals(testPet)); // unchanged
         expect(updatedChatHistory.category, equals(testCategory)); // unchanged
@@ -136,8 +145,14 @@ void main() {
         expect(copiedChatHistory.pet, equals(testChatHistory.pet));
         expect(copiedChatHistory.category, equals(testChatHistory.category));
         expect(copiedChatHistory.createdAt, equals(testChatHistory.createdAt));
-        expect(copiedChatHistory.isManualSaved, equals(testChatHistory.isManualSaved));
-        expect(copiedChatHistory.messageCount, equals(testChatHistory.messageCount));
+        expect(
+          copiedChatHistory.isManualSaved,
+          equals(testChatHistory.isManualSaved),
+        );
+        expect(
+          copiedChatHistory.messageCount,
+          equals(testChatHistory.messageCount),
+        );
       });
 
       test('should handle updating to null values', () {
@@ -150,7 +165,10 @@ void main() {
         // Assert
         expect(chatHistoryWithNulls.pet, isNull);
         expect(chatHistoryWithNulls.category, isNull);
-        expect(chatHistoryWithNulls.id, equals(testChatHistory.id)); // other fields unchanged
+        expect(
+          chatHistoryWithNulls.id,
+          equals(testChatHistory.id),
+        ); // other fields unchanged
         expect(chatHistoryWithNulls.title, equals(testChatHistory.title));
       });
     });
@@ -189,8 +207,14 @@ void main() {
         // Assert
         expect(chatHistoryWithManyMessages.messages, hasLength(100));
         expect(chatHistoryWithManyMessages.messageCount, equals(100));
-        expect(chatHistoryWithManyMessages.messages.first.content, equals('メッセージ 0'));
-        expect(chatHistoryWithManyMessages.messages.last.content, equals('メッセージ 99'));
+        expect(
+          chatHistoryWithManyMessages.messages.first.content,
+          equals('メッセージ 0'),
+        );
+        expect(
+          chatHistoryWithManyMessages.messages.last.content,
+          equals('メッセージ 99'),
+        );
       });
 
       test('should handle special characters in title and summary', () {
@@ -201,15 +225,23 @@ void main() {
         );
 
         // Assert
-        expect(specialCharChatHistory.title, equals('スペシャルタイトル: !@#\$%^&*()🎉'));
-        expect(specialCharChatHistory.summary, equals('特殊文字を含む要約: 日本語、English、한국어、中文'));
+        expect(
+          specialCharChatHistory.title,
+          equals('スペシャルタイトル: !@#\$%^&*()🎉'),
+        );
+        expect(
+          specialCharChatHistory.summary,
+          equals('特殊文字を含む要約: 日本語、English、한국어、中文'),
+        );
       });
 
       test('should handle very long title and summary', () {
         // Arrange
-        const longTitle = 'とても長いタイトルでペットの健康に関する詳細な相談内容を含んでいます。'
+        const longTitle =
+            'とても長いタイトルでペットの健康に関する詳細な相談内容を含んでいます。'
             'これは通常のタイトルよりもはるかに長く、複数の文章で構成されています。';
-        const longSummary = 'とても長い要約でペットの健康に関する詳細な相談内容を含んでいます。'
+        const longSummary =
+            'とても長い要約でペットの健康に関する詳細な相談内容を含んでいます。'
             'これは通常の要約よりもはるかに長く、複数の段落で構成されており、'
             '様々な健康問題や相談内容を詳細に記述しています。';
 
@@ -230,7 +262,9 @@ void main() {
         final pastDate = DateTime(1990, 1, 1);
 
         // Act
-        final futureChatHistory = testChatHistory.copyWith(createdAt: futureDate);
+        final futureChatHistory = testChatHistory.copyWith(
+          createdAt: futureDate,
+        );
         final pastChatHistory = testChatHistory.copyWith(createdAt: pastDate);
 
         // Assert
@@ -258,11 +292,16 @@ void main() {
 
       test('should not be equal when ids are different', () {
         // Arrange
-        final differentChatHistory = testChatHistory.copyWith(id: 'different-id');
+        final differentChatHistory = testChatHistory.copyWith(
+          id: 'different-id',
+        );
 
         // Assert
         expect(testChatHistory, isNot(equals(differentChatHistory)));
-        expect(testChatHistory.hashCode, isNot(equals(differentChatHistory.hashCode)));
+        expect(
+          testChatHistory.hashCode,
+          isNot(equals(differentChatHistory.hashCode)),
+        );
       });
     });
 

@@ -1,10 +1,9 @@
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/sharing_widgets.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../pet_registor/data/providers/pet_providers.dart';
-import '../../../pet_registor/domain/entities/pet_profile_entity.dart';
-import '../widgets/widgets.dart';
 
 class SharingProfilesScreen extends ConsumerStatefulWidget {
   const SharingProfilesScreen({super.key});
@@ -14,17 +13,14 @@ class SharingProfilesScreen extends ConsumerStatefulWidget {
       _SharingProfilesScreenState();
 }
 
-class _SharingProfilesScreenState
-    extends ConsumerState<SharingProfilesScreen>
+class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<PetProfileEntity> _pets = [];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _loadPets();
   }
 
   @override
@@ -33,75 +29,30 @@ class _SharingProfilesScreenState
     super.dispose();
   }
 
-  void _loadPets() {
-    // PetMockService에서 펫 데이터 로드
-    final petMaps = PetMockService.getMockPets();
-    _pets = petMaps
-        .map(
-          (petData) => PetProfileEntity(
-            id: petData['id'] as String,
-            name: petData['name'] as String,
-            type: petData['type'] as String,
-            breed: petData['breed'] as String?,
-            birthDate: petData['birthDate'] as DateTime? ?? DateTime.now(),
-            age: petData['age'] as int? ?? 0,
-            gender: petData['gender'] as String? ?? 'unknown',
-            weight: (petData['weight'] as num?)?.toDouble() ?? 0.0,
-            imagePath: petData['imagePath'] as String?,
-            ownerId: 'user_1', // 기본값 설정
-            createdAt: petData['createdAt'] as DateTime? ?? DateTime.now(),
-            updatedAt: petData['updatedAt'] as DateTime? ?? DateTime.now(),
-            isActive: true,
-            additionalInfo: {
-              'gender': petData['gender'],
-              'weight': petData['weight'],
-              'isNeutered': petData['isNeutered'],
-              'description': petData['description'],
-            },
-          ),
-        )
-        .toList();
-    setState(() {});
-  }
-
-  String _generateShareLink(PetProfileEntity pet) {
-    return 'https://aipet.app/share/${pet.name.toLowerCase()}-${pet.id}';
-  }
-
-  String _getGenderString(PetProfileEntity pet) {
-    // additionalInfo에서 성별 조회
-    return pet.additionalInfo?['gender'] ?? 'unknown';
-  }
-
   @override
   Widget build(BuildContext context) {
+    final petsAsync = ref.watch(petProfilesNotifierProvider);
+
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-<<<<<<< HEAD
-      appBar: const SoftGradientDrawerAppBar(
-        title: 'プロフィール共有',
-      ),
-=======
-      appBar: const SoftGradientBackAppBar(title: 'Sharing profiles'),
->>>>>>> feature/pet-registor_seperating
-      body: Column(
-        children: [
-          _buildTabControl(),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                GenerateCodeTab(
-                  pets: _pets,
-                  onPetTap: _showQRCodeModal,
-                ),
-                ScanCodeTab(
-                  onCodeScanned: _handleScannedCode,
-                ),
-              ],
+      appBar: const SoftGradientDrawerAppBar(title: 'プロフィール共有'),
+      body: petsAsync.when(
+        data: (pets) => Column(
+          children: [
+            _buildTabControl(),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  GenerateCodeTab(pets: pets, onPetTap: _showQRCodeModal),
+                  ScanCodeTab(onCodeScanned: _handleScannedCode),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('エラーが発生しました: $error')),
       ),
     );
   }
@@ -146,10 +97,7 @@ class _SharingProfilesScreenState
 
     showDialog(
       context: context,
-      builder: (context) => QRCodeModal(
-        pet: pet,
-        qrData: qrData,
-      ),
+      builder: (context) => QRCodeModal(pet: pet, qrData: qrData),
     );
   }
 

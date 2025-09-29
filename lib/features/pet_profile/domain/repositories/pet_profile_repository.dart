@@ -1,21 +1,31 @@
-import '../entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 abstract class PetProfileRepository {
-  /// 펫 프로필 상세 정보 가져오기
-  Future<PetProfileEntity> getPetProfile(String petId);
+  /// 모든 펫 목록 가져오기
+  Future<Result<List<PetProfileEntity>>> getAllPets();
 
-  /// 펫 프로필 업데이트
-  Future<PetProfileEntity> updatePetProfile(PetProfileEntity pet);
+  /// ID로 펫 가져오기
+  Future<Result<PetProfileEntity?>> getPetById(String id);
+
+  /// 펫 생성
+  Future<Result<PetProfileEntity>> createPet(PetProfileEntity pet);
+
+  /// 펫 업데이트
+  Future<Result<PetProfileEntity>> updatePet(PetProfileEntity pet);
+
+  /// 펫 삭제
+  Future<Result<void>> deletePet(String id);
 
   /// 펫 프로필 이미지 업로드
-  Future<String> uploadPetImage(String petId, String imagePath);
+  Future<Result<String>> uploadPetImage(String petId, String imagePath);
 
   /// 펫 프로필 공유 설정
-  Future<void> updateSharingSettings(String petId, bool isPublic);
+  Future<Result<void>> updateSharingSettings(String petId, bool isPublic);
 
   /// 가족 관리자 추가
-  Future<void> addFamilyManager(String petId, String userId);
+  Future<Result<void>> addFamilyManager(String petId, String userId);
 
   /// 가족 관리자 제거
-  Future<void> removeFamilyManager(String petId, String userId);
+  Future<Result<void>> removeFamilyManager(String petId, String userId);
 }

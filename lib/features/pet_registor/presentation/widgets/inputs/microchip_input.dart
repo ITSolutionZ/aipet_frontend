@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import '../../../../../shared/shared.dart';
 
 class MicrochipInput extends StatelessWidget {
   final TextEditingController controller;

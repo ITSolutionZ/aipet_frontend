@@ -1,5 +1,5 @@
 library;
 
-export 'controllers/controllers.dart';
-export 'screens/screens.dart';
-export 'widgets/widgets.dart';
+export 'controllers/splash_controllers.dart';
+export 'screens/splash_screens.dart';
+export 'widgets/splash_widgets.dart';

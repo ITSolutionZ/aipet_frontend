@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../design/design.dart';
 
 /// 범용 프로그레스 바 위젯
 class ProgressBar extends StatelessWidget {
@@ -42,9 +41,7 @@ class ProgressBar extends StatelessWidget {
               ),
               Text(
                 '$currentStep / $totalSteps',
-                style: AppFonts.bodySmall.copyWith(
-                  color: AppColors.pointGray,
-                ),
+                style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
               ),
             ],
           ),
@@ -55,7 +52,8 @@ class ProgressBar extends StatelessWidget {
           width: double.infinity,
           height: height,
           decoration: BoxDecoration(
-            color: backgroundColor ?? AppColors.pointGray.withValues(alpha: 0.2),
+            color:
+                backgroundColor ?? AppColors.pointGray.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(height / 2),
           ),
           child: FractionallySizedBox(
@@ -86,8 +84,8 @@ class ProgressBar extends StatelessWidget {
                   textAlign: index == 0
                       ? TextAlign.start
                       : index == stepLabels!.length - 1
-                          ? TextAlign.end
-                          : TextAlign.center,
+                      ? TextAlign.end
+                      : TextAlign.center,
                   style: AppFonts.bodySmall.copyWith(
                     color: isCompleted || isCurrent
                         ? AppColors.pointDark

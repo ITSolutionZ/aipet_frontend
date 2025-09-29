@@ -119,7 +119,8 @@ void main() {
         // Arrange
         const longId = 'very-long-category-id-that-exceeds-normal-length';
         const longName = 'とても長いカテゴリ名前で通常の長さを超えています';
-        const longDescription = 'とても長い説明文でペットの健康に関する詳細な情報を含んでいます。'
+        const longDescription =
+            'とても長い説明文でペットの健康に関する詳細な情報を含んでいます。'
             'これは通常の説明文よりもはるかに長く、複数の文章で構成されています。';
 
         // Act
@@ -170,7 +171,10 @@ void main() {
         // Assert
         expect(testCategory.id, isNot(equals(differentCategory.id)));
         expect(testCategory.name, isNot(equals(differentCategory.name)));
-        expect(testCategory.description, isNot(equals(differentCategory.description)));
+        expect(
+          testCategory.description,
+          isNot(equals(differentCategory.description)),
+        );
         expect(testCategory.icon, isNot(equals(differentCategory.icon)));
         expect(testCategory.color, isNot(equals(differentCategory.color)));
       });
@@ -189,13 +193,16 @@ void main() {
     });
 
     group('defaultCategories deprecation', () {
-      test('should throw UnimplementedError when accessing defaultCategories', () {
-        // Assert
-        expect(
-          () => AiCategoryEntity.defaultCategories,
-          throwsA(isA<UnimplementedError>()),
-        );
-      });
+      test(
+        'should throw UnimplementedError when accessing defaultCategories',
+        () {
+          // Assert
+          expect(
+            () => AiCategoryEntity.defaultCategories,
+            throwsA(isA<UnimplementedError>()),
+          );
+        },
+      );
     });
   });
 }

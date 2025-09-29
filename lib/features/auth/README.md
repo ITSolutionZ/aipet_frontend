@@ -8,7 +8,7 @@ Auth 기능은 AI Pet 앱의 사용자 인증을 담당합니다. Firebase Auth�
 
 ### Clean Architecture 구조
 
-```
+```txt
 lib/features/auth/
 ├── domain/                    # 도메인 레이어
 │   ├── entities/             # 엔티티 (AuthUser, AuthResult)
@@ -148,33 +148,28 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
 ```dart
 @riverpod
 AuthRepository authRepository(Ref ref) {
-  return AuthRepositoryImpl(
-    firebaseRepository: FirebaseAuthRepositoryImpl(),
-    mockRepository: MockAuthRepositoryImpl(),
-    ref: ref,
-  );
+  // 실제 Firebase Auth 구현체 사용
+  return FirebaseAuthRealImpl();
 }
 ```
 
 ### 서비스 주입
 
-- **SecureStorageServiceV2**: 토큰 보안 저장
+- **SecureStorageService**: 토큰 보안 저장
 - **AuthConfigService**: 환경별 설정 관리
-- **AuthMockDataService**: Mock 데이터 관리
+- **FirebaseTokenService**: Firebase ID 토큰 관리
+- **LineOAuthService**: LINE OAuth 2.0 연동
 
 ## 🧪 테스트
 
-### Mock Repository
+### 테스트 환경
 
 ```dart
-class MockAuthRepositoryImpl implements AuthRepository {
-  @override
-  Future<AuthResult> signInWithEmailAndPassword(
-    String email, String password,
-  ) async {
-    // Mock 데이터를 통한 테스트
-    final mockDataService = AuthMockDataServiceImpl();
-    return await mockDataService.mockLogin(email, password);
+// 테스트에서는 AuthModeService 사용 (Deprecated)
+@Deprecated('테스트 환경에서만 사용하세요')
+class AuthModeService {
+  static AuthUser createTempUser(String email) {
+    // 테스트용 임시 사용자 생성
   }
 }
 ```
@@ -199,9 +194,13 @@ flutter test
 
 ### 2단계: Firebase Auth 연동
 
-- [ ] 실제 Firebase Auth 호출
-- [ ] ID Token 관리
-- [ ] 백엔드 API 연동
+- [x] Firebase 초기화 상태 검증 로직 구현
+- [x] AuthErrorMapper HTTP 에러 처리 정교화
+- [x] 실제 Firebase Auth 구현체로 교체 완료
+- [x] LINE OAuth 서비스 연동 구현
+- [x] ID Token 관리 (Firebase Token Service)
+- [x] 중복 코드 정리 및 Mock 로직 개선
+- [ ] 백엔드 API 연동 (서버 토큰 교환 Mock → 실제 구현 필요)
 
 ### 3단계: 보안 강화
 

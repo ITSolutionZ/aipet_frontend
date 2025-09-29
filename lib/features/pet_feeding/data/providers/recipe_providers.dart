@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/features/pet_feeding/data/repositories/recipe_repository_impl.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/entities/recipe_entity.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/usecases/create_recipe_usecase.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/usecases/delete_recipe_usecase.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/usecases/get_all_recipes_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../domain/entities/recipe_entity.dart';
-import '../../domain/usecases/create_recipe_usecase.dart';
-import '../../domain/usecases/delete_recipe_usecase.dart';
-import '../../domain/usecases/get_all_recipes_usecase.dart';
-import '../repositories/recipe_repository_impl.dart';
 
 part 'recipe_providers.g.dart';
 
@@ -40,7 +39,8 @@ class RecipesNotifier extends _$RecipesNotifier {
   @override
   Future<List<RecipeEntity>> build() async {
     final useCase = ref.watch(getAllRecipesUseCaseProvider);
-    return useCase();
+    final result = await useCase();
+    return result.dataOrNull ?? [];
   }
 
   /// 레시피 새로고침
@@ -48,7 +48,8 @@ class RecipesNotifier extends _$RecipesNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final useCase = ref.read(getAllRecipesUseCaseProvider);
-      return useCase();
+      final result = await useCase();
+      return result.dataOrNull ?? [];
     });
   }
 

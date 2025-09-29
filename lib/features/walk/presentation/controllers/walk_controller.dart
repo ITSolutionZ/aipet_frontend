@@ -1,23 +1,14 @@
-import 'dart:math';
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/walk/data/data.dart';
+import 'package:aipet_frontend/features/walk/domain/domain.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart'
+    as domain;
+import 'package:aipet_frontend/features/walk/domain/usecases/update_walk_record_usecase.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/utils/geo_utils.dart';
 
-import '../../../../app/controllers/base_controller.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
-import '../../domain/usecases/update_walk_record_usecase.dart';
-
-/// 산책 작업 결과
-class WalkResult {
-  final bool isSuccess;
-  final String message;
-  final dynamic data;
-
-  const WalkResult._(this.isSuccess, this.message, this.data);
-
-  factory WalkResult.success(String message, [dynamic data]) =>
-      WalkResult._(true, message, data);
-  factory WalkResult.failure(String message) =>
-      WalkResult._(false, message, null);
-}
+/// 산책 작업 결과 (shared의 Result 패턴 사용)
+typedef WalkResult<T> = Result<T>;
 
 class WalkController extends BaseController {
   WalkController(super.ref);
@@ -33,153 +24,235 @@ class WalkController extends BaseController {
   late final UpdateWalkRecordUseCase _updateWalkRecordUseCase =
       UpdateWalkRecordUseCase(_repository);
 
-  /// 산책 기록 목록 로드
-  Future<WalkResult> loadWalkRecords() async {
+  /// 모든 산책 기록 조회
+  Future<Result<List<WalkRecordEntity>>> getAll() async {
     try {
       final walkRecords = await _getAllWalkRecordsUseCase();
       ref
           .read(walkRecordsNotifierProvider.notifier)
           .setWalkRecords(walkRecords);
-      return WalkResult.success('散歩記録が読み込まれました', walkRecords);
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.success('산책 기록이 로드되었습니다', walkRecords);
+    } catch (e) {
+      return Result.failure('산책 기록 로드에 실패했습니다: ${e.toString()}');
     }
   }
 
+  /// ID로 산책 기록 조회
+  Future<Result<WalkRecordEntity>> getById(String id) async {
+    try {
+      final walkRecord = await _repository.getWalkRecordById(id);
+      if (walkRecord != null) {
+        return Result.success('산책 기록을 가져왔습니다', walkRecord);
+      } else {
+        return Result.failure('해당 ID의 산책 기록을 찾을 수 없습니다');
+      }
+    } catch (e) {
+      return Result.failure('산책 기록 조회에 실패했습니다: ${e.toString()}');
+    }
+  }
+
+  /// 새 산책 기록 생성
+  Future<Result<WalkRecordEntity>> create(WalkRecordEntity item) async {
+    try {
+      final newWalk = await _startWalkUseCase(item);
+      ref.read(walkRecordsNotifierProvider.notifier).addWalkRecord(newWalk);
+      return Result.success('산책이 시작되었습니다', newWalk);
+    } catch (e) {
+      return Result.failure('산책 시작에 실패했습니다: ${e.toString()}');
+    }
+  }
+
+  /// 산책 기록 업데이트
+  Future<Result<WalkRecordEntity>> update(WalkRecordEntity item) async {
+    try {
+      await _updateWalkRecordUseCase(item);
+      ref.read(walkRecordsNotifierProvider.notifier).updateWalkRecord(item);
+      return Result.success('산책 기록이 업데이트되었습니다', item);
+    } catch (e) {
+      return Result.failure('산책 기록 업데이트에 실패했습니다: ${e.toString()}');
+    }
+  }
+
+  /// 산책 기록 삭제
+  Future<Result<void>> delete(String id) async {
+    try {
+      await _repository.deleteWalkRecord(id);
+      ref.read(walkRecordsNotifierProvider.notifier).removeWalkRecord(id);
+      return Result.success('산책 기록이 삭제되었습니다');
+    } catch (e) {
+      return Result.failure('산책 기록 삭제에 실패했습니다: ${e.toString()}');
+    }
+  }
+
+  /// 산책 기록 목록 로드
+  Future<WalkResult<List<WalkRecordEntity>>> loadWalkRecords() async {
+    return getAll();
+  }
+
   /// 새 산책 시작
-  Future<WalkResult> startNewWalk({
+  Future<WalkResult<WalkRecordEntity>> startNewWalk({
     required String title,
     required String petId,
     String? petName,
     String? petImage,
   }) async {
-    try {
-      final newWalkRecord = WalkRecordEntity(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: title,
-        startTime: DateTime.now(),
-        route: [],
-        petId: petId,
-        petName: petName,
-        petImage: petImage,
-        ownerName: 'Sarah',
-        ownerAvatar: 'assets/images/placeholder.png',
-        status: WalkStatus.inProgress,
-        createdAt: DateTime.now(),
-      );
+    final newWalkRecord = WalkRecordEntity(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      petId: petId,
+      petName: petName ?? '알 수 없는 펫',
+      startTime: DateTime.now(),
+      route: [],
+      status: WalkStatus.inProgress,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
 
-      final newWalk = await _startWalkUseCase(newWalkRecord);
+    try {
+      final walkRecord = await _startWalkUseCase.call(newWalkRecord);
 
       // Provider에 결과 저장
-      ref.read(currentWalkNotifierProvider.notifier).startWalk(newWalk);
-      ref.read(walkRecordsNotifierProvider.notifier).addWalkRecord(newWalk);
-      return WalkResult.success('散歩が開始されました', newWalk);
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+      ref.read(currentWalkNotifierProvider.notifier).startWalk(walkRecord);
+
+      // 실시간 위치 추적 시작 (별도 처리)
+      _startLocationTrackingWithRecovery();
+
+      return Result.success('산책을 시작했습니다', walkRecord);
+    } catch (e) {
+      return Result.failure('산책 시작에 실패했습니다: ${e.toString()}');
     }
+  }
+
+  /// 위치 추적 시작 (복구 기능 포함)
+  void _startLocationTrackingWithRecovery() {
+    safeExecute(() async {
+      await ref.read(locationTrackingNotifierProvider.notifier).startTracking();
+      return true;
+    }, errorMessage: '位置追跡開始');
   }
 
   /// 산책 종료
   Future<WalkResult> endCurrentWalk({double? distance, String? notes}) async {
-    try {
-      final currentWalk = ref.read(currentWalkNotifierProvider);
-      if (currentWalk == null) {
-        return WalkResult.failure('進行中の散歩がありません');
-      }
+    final currentWalk = ref.read(currentWalkNotifierProvider);
+    if (currentWalk == null) {
+      return Result.failure('진행 중인 산책이 없습니다');
+    }
 
-      final completedWalk = await _endWalkUseCase(
-        currentWalk.id,
-        distance: distance,
-        notes: notes,
-      );
+    final result = await safeExecuteWithTimeout(
+      () async {
+        final completedWalk = await _endWalkUseCase(
+          currentWalk.id,
+          distance: distance,
+          notes: notes,
+        );
 
-      // Provider에 결과 저장
-      ref.read(currentWalkNotifierProvider.notifier).endWalk();
-      ref
-          .read(walkRecordsNotifierProvider.notifier)
-          .updateWalkRecord(completedWalk);
-      return WalkResult.success('散歩が終了しました', completedWalk);
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+        // 실시간 위치 추적 중지
+        ref.read(locationTrackingNotifierProvider.notifier).stopTracking();
+
+        // Provider에 결과 저장
+        ref.read(currentWalkNotifierProvider.notifier).endWalk();
+        ref
+            .read(walkRecordsNotifierProvider.notifier)
+            .updateWalkRecord(completedWalk);
+
+        return completedWalk;
+      },
+      timeout: const Duration(seconds: 15),
+      errorMessage: '散歩終了',
+    );
+
+    if (result != null) {
+      return Result.success('산책이 종료되었습니다', result);
+    } else {
+      return Result.failure('산책 종료에 실패했습니다');
     }
   }
 
   /// 산책 기록 수정
   Future<WalkResult> updateWalkRecord(WalkRecordEntity walkRecord) async {
-    try {
-      await _updateWalkRecordUseCase(walkRecord);
+    final result = await safeExecuteWithRetry(
+      () async {
+        await _updateWalkRecordUseCase(walkRecord);
 
-      // Provider에 결과 저장
-      ref
-          .read(walkRecordsNotifierProvider.notifier)
-          .updateWalkRecord(walkRecord);
+        // Provider에 결과 저장
+        ref
+            .read(walkRecordsNotifierProvider.notifier)
+            .updateWalkRecord(walkRecord);
 
-      return WalkResult.success('散歩記録が更新されました', walkRecord);
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+        return walkRecord;
+      },
+      maxRetries: 2,
+      errorMessage: '散歩記録の更新',
+    );
+
+    if (result != null) {
+      return Result.success('산책 기록이 업데이트되었습니다', result);
+    } else {
+      return Result.failure('산책 기록 업데이트에 실패했습니다');
     }
   }
 
   /// 산책 일시정지
-  WalkResult pauseCurrentWalk() {
+  Result<bool> pauseCurrentWalk() {
     try {
       ref.read(currentWalkNotifierProvider.notifier).pauseWalk();
-      return WalkResult.success('散歩が一時停止されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.success('산책이 일시정지되었습니다', true);
+    } catch (e) {
+      return Result.failure('산책 일시정지에 실패했습니다: ${e.toString()}');
     }
   }
 
   /// 산책 재개
-  WalkResult resumeCurrentWalk() {
+  Result<bool> resumeCurrentWalk() {
     try {
       ref.read(currentWalkNotifierProvider.notifier).resumeWalk();
-      return WalkResult.success('散歩が再開されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.success('산책이 재개되었습니다', true);
+    } catch (e) {
+      return Result.failure('산책 재개에 실패했습니다: ${e.toString()}');
     }
   }
 
   /// 산책 기록 삭제
   Future<WalkResult> deleteWalkRecord(String recordId) async {
-    try {
+    final result = await safeExecute(() async {
       // Repository에서 실제 삭제 수행
       await _repository.deleteWalkRecord(recordId);
 
       // Provider에서도 제거
       ref.read(walkRecordsNotifierProvider.notifier).removeWalkRecord(recordId);
-      return WalkResult.success('散歩記録が削除されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+      return true;
+    }, errorMessage: '散歩記録の削除');
+
+    if (result != null && result) {
+      return Result.success('산책 기록이 삭제되었습니다');
+    } else {
+      return Result.failure('산책 기록 삭제에 실패했습니다');
     }
   }
 
   /// 선택된 반려동물 설정
-  WalkResult setSelectedPet(PetInfo pet) {
+  Result<bool> setSelectedPet(domain.PetInfo? pet) {
     try {
-      ref.read(selectedPetNotifierProvider.notifier).setSelectedPet(pet);
-      return WalkResult.success('ペットが選択されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+      // domain.PetInfo를 data.PetInfo로 변환 (같은 구조이므로 안전)
+      if (pet != null) {
+        ref
+            .read(selectedPetNotifierProvider.notifier)
+            .setSelectedPet(pet as dynamic);
+      } else {
+        ref.read(selectedPetNotifierProvider.notifier).setSelectedPet(null);
+      }
+      return Result.success('ペットが選択されました', true);
+    } catch (e) {
+      return Result.failure('ペット선택에 실패했습니다: ${e.toString()}');
     }
   }
 
   /// 지도 확장 상태 토글
-  WalkResult toggleMapExpanded() {
+  Result<bool> toggleMapExpanded() {
     try {
       ref.read(mapExpandedNotifierProvider.notifier).toggleExpanded();
-      return WalkResult.success('地図の拡大状態が変更されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.success('地図の拡大状態が変更されました', true);
+    } catch (e) {
+      return Result.failure('지도 상태 변경에 실패했습니다: ${e.toString()}');
     }
   }
 
@@ -195,12 +268,18 @@ class WalkController extends BaseController {
 
   /// 특정 반려동물의 산책 기록 가져오기
   Future<WalkResult> getWalkRecordsByPet(String petId) async {
-    try {
-      final records = await _getWalkRecordsByPetUseCase(petId);
-      return WalkResult.success('ペットの散歩記録を取得しました', records);
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+    final result = await safeExecuteWithRetry(
+      () async {
+        return _getWalkRecordsByPetUseCase(petId);
+      },
+      maxRetries: 2,
+      errorMessage: 'ペットの散歩記録取得',
+    );
+
+    if (result != null) {
+      return Result.success('반려동물 산책 기록을 가져왔습니다', result);
+    } else {
+      return Result.failure('반려동물 산책 기록 가져오기에 실패했습니다');
     }
   }
 
@@ -212,35 +291,36 @@ class WalkController extends BaseController {
   }
 
   /// 위치 정보 추가
-  WalkResult addLocationToCurrentWalk(WalkLocation location) {
+  Result<bool> addLocationToCurrentWalk(WalkLocation location) {
     try {
       ref
           .read(currentWalkNotifierProvider.notifier)
           .addLocationToCurrentWalk(location);
-      return WalkResult.success('位置情報が追加されました');
-    } catch (error, stackTrace) {
-      handleError(error, stackTrace);
-      return WalkResult.failure(getUserFriendlyErrorMessage(error));
+      return Result.success('位置情報が追加されました', true);
+    } catch (e) {
+      return Result.failure('위치 정보 추가에 실패했습니다: ${e.toString()}');
     }
   }
 
-  /// 거리 계산 (간단한 유클리드 거리)
+  /// 거리 계산 (Haversine 공식 사용)
   double calculateDistance(List<WalkLocation> route) {
     if (route.length < 2) return 0.0;
 
-    double totalDistance = 0.0;
+    double totalDistanceM = 0.0;
     for (int i = 1; i < route.length; i++) {
       final prev = route[i - 1];
       final curr = route[i];
 
-      final latDiff = curr.latitude - prev.latitude;
-      final lonDiff = curr.longitude - prev.longitude;
-
-      // 간단한 유클리드 거리 (실제로는 Haversine 공식 사용 권장)
-      totalDistance += sqrt(latDiff * latDiff + lonDiff * lonDiff);
+      // Haversine 공식을 사용한 정확한 거리 계산 (미터 단위)
+      totalDistanceM += GeoUtils.calculateDistanceM(
+        prev.latitude,
+        prev.longitude,
+        curr.latitude,
+        curr.longitude,
+      );
     }
 
-    // 대략적인 km 변환 (1도 ≈ 111km)
-    return totalDistance * 111.0;
+    // km 단위로 변환
+    return totalDistanceM / 1000.0;
   }
 }

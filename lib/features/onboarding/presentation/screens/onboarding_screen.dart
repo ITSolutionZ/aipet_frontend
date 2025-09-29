@@ -1,13 +1,12 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/onboarding/data/data.dart';
+import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/features/onboarding/presentation/controllers/onboarding_controller.dart';
+import 'package:aipet_frontend/features/onboarding/presentation/widgets/onboarding_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../data/data.dart';
-import '../../domain/domain.dart';
-import '../controllers/controllers.dart';
-import '../widgets/widgets.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -98,7 +97,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       Positioned(
                         top: MediaQuery.of(context).padding.top + AppSpacing.md,
                         right: AppSpacing.md,
-                        child: OnboardingSkipButton(
+                        child: ActionButton.secondary(
+                          isEnabled: true,
+                          text: OnboardingConstants.skipButtonText,
                           onPressed: _completeOnboarding,
                         ),
                       ),

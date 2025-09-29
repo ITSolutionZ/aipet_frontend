@@ -1,11 +1,10 @@
+import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/features/notification/presentation/components/lists/filter_chips_component.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_list_controller.dart';
+import 'package:aipet_frontend/features/notification/presentation/widgets/notification_list_widget.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/notification_model.dart';
-import '../components/lists/filter_chips_component.dart';
-import '../controllers/notification_list_controller.dart';
-import '../widgets/notification_list_widget.dart';
 
 /// 알림 목록 화면 (리팩토링됨)
 class NotificationListScreen extends ConsumerStatefulWidget {
@@ -44,7 +43,9 @@ class _NotificationListScreenState
 
   /// 알림 설정 상태 확인
   Future<void> _checkNotificationSettings() async {
-    final shouldShow = await _controller.checkNotificationSettings();
+    final shouldShow = await _controller.checkNotificationSettings(
+      'default_user_id',
+    );
     if (mounted) {
       setState(() {
         _shouldShowInfoCard = shouldShow;

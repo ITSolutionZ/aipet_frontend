@@ -55,6 +55,8 @@
 	<string>This app needs camera access to scan QR codes for pet profile sharing and take pet photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs photo library access to select pet photos from your gallery.</string>
+	<key>GMSApiKey</key>
+	<string>${GOOGLE_MAPS_API_KEY}</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
@@ -70,5 +72,17 @@
 	<string>This app needs location access to display maps and track pet walks.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs location access to display maps and track pet walks in the background.</string>
+	<!-- LINE OAuth Callback -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>aipet</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>aipet</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
-import '../../domain/entities/trick_entity.dart';
 
 /// 트릭 카드 위젯
 ///
@@ -20,76 +19,87 @@ class TrickCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+          border: Border.all(
+            color: AppColors.pointGray.withValues(alpha: 0.3),
+            width: 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: _buildContent(context),
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
+    return Row(
+      children: [
+        // 트릭 이미지
+        _buildTrickImage(),
+        const SizedBox(width: AppSpacing.md),
+
+        // 트릭 정보
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 트릭 이미지
-              _buildTrickImage(),
-              const SizedBox(width: AppSpacing.md),
-
-              // 트릭 정보
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 트릭 이름
-                    Text(
-                      trick.name,
-                      style: AppFonts.titleMedium.copyWith(
-                        color: AppColors.pointDark,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    const SizedBox(height: AppSpacing.xs),
-
-                    // 설명 (있는 경우)
-                    if (trick.description?.isNotEmpty == true) ...[
-                      Text(
-                        trick.description!,
-                        style: AppFonts.bodySmall.copyWith(
-                          color: AppColors.pointDark.withValues(alpha: 0.7),
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                    ],
-
-                    // 난이도와 진행도
-                    Row(
-                      children: [
-                        // 난이도 태그
-                        _buildDifficultyChip(),
-                        const Spacer(),
-                        // 진행도 (학습 중인 경우)
-                        if (trick.progress != null) _buildProgressIndicator(),
-                      ],
-                    ),
-                  ],
+              // 트릭 이름
+              Text(
+                trick.name,
+                style: AppFonts.titleMedium.copyWith(
+                  color: AppColors.pointDark,
+                  fontWeight: FontWeight.bold,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
 
-              const SizedBox(width: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.xs),
 
-              // 액션 버튼
-              _buildActionButton(),
+              // 설명 (있는 경우)
+              if (trick.description.isNotEmpty == true) ...[
+                Text(
+                  trick.description,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointDark.withValues(alpha: 0.7),
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+              ],
+
+              // 난이도와 진행도
+              Row(
+                children: [
+                  // 난이도 태그
+                  _buildDifficultyChip(),
+                  const Spacer(),
+                  // 진행도 (학습 중인 경우)
+                  if (trick.practiceCount > 0) _buildProgressIndicator(),
+                ],
+              ),
             ],
           ),
         ),
-      ),
+
+        const SizedBox(width: AppSpacing.sm),
+
+        // 액션 버튼
+        _buildActionButton(),
+      ],
     );
   }
 
@@ -103,12 +113,14 @@ class TrickCard extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.small),
-        child: Image.asset(
-          trick.imagePath,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) =>
-              _buildPlaceholderImage(),
-        ),
+        child: trick.imagePath != null
+            ? Image.asset(
+                trick.imagePath!,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildPlaceholderImage(),
+              )
+            : _buildPlaceholderImage(),
       ),
     );
   }
@@ -123,7 +135,7 @@ class TrickCard extends StatelessWidget {
   }
 
   Widget _buildDifficultyChip() {
-    final difficulty = trick.difficulty ?? 'unknown';
+    final difficulty = trick.difficulty.name;
     final color = _getDifficultyColor(difficulty);
 
     return Container(
@@ -147,8 +159,6 @@ class TrickCard extends StatelessWidget {
   }
 
   Widget _buildProgressIndicator() {
-    if (trick.progress == null) return const SizedBox.shrink();
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -164,7 +174,7 @@ class TrickCard extends StatelessWidget {
           width: 40,
           height: 4,
           child: LinearProgressIndicator(
-            value: (trick.progress ?? 0) / 100,
+            value: trick.progress,
             backgroundColor: AppColors.pointDark.withValues(alpha: 0.1),
             valueColor: const AlwaysStoppedAnimation<Color>(
               AppColors.pointBlue,
@@ -176,8 +186,8 @@ class TrickCard extends StatelessWidget {
   }
 
   Widget _buildActionButton() {
-    final isLearned = trick.progress != null && trick.progress! >= 100;
-    final isLearning = trick.progress != null && trick.progress! < 100;
+    final isLearned = trick.progress >= 100;
+    final isLearning = trick.progress < 100;
 
     if (isLearned) {
       return Container(
@@ -197,7 +207,7 @@ class TrickCard extends StatelessWidget {
         color: AppColors.pointBlue,
         size: 28,
       ),
-      tooltip: isLearning ? 'Continue learning' : 'Start learning',
+      tooltip: isLearning ? '学習を継続' : '学習を開始',
     );
   }
 

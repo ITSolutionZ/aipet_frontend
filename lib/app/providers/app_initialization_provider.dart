@@ -1,14 +1,12 @@
+import 'package:aipet_frontend/features/notification/data/services/notification_service.dart';
+import 'package:aipet_frontend/features/onboarding/data/data.dart';
+import 'package:aipet_frontend/shared/core/services/performance_monitor_service.dart';
+import 'package:aipet_frontend/shared/core/services/user_experience_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../features/notification/data/services/notification_service.dart';
-import '../../features/onboarding/data/data.dart';
-import '../../shared/services/error_handler_service.dart';
-import '../../shared/services/performance_monitor_service.dart';
-import '../../shared/services/user_experience_service.dart';
 
 part 'app_initialization_provider.g.dart';
 
@@ -76,10 +74,9 @@ class AppInitialization extends _$AppInitialization {
   /// 에러 핸들러, 성능 모니터링, 사용자 경험, 알림 서비스를 초기화합니다.
   Future<void> _initializeServices() async {
     try {
-      // 에러 핸들러 서비스 초기화
-      await ErrorHandlerService().initialize();
+      // 에러 핸들러 서비스는 정적 메서드이므로 별도 초기화 불필요
       if (kDebugMode) {
-        debugPrint('✅ ErrorHandlerService 초기화 완료');
+        debugPrint('✅ ErrorHandlingService 사용 가능');
       }
 
       // 성능 모니터링 서비스 초기화
@@ -189,8 +186,12 @@ class AppInitialization extends _$AppInitialization {
     try {
       // 온보딩 리포지토리를 통해 상태 확인
       final onboardingRepository = ref.read(onboardingRepositoryProvider);
-      final isOnboardingCompleted = await onboardingRepository
+      final onboardingCompletedResult = await onboardingRepository
           .isOnboardingCompleted();
+
+      final isOnboardingCompleted = onboardingCompletedResult.isSuccess
+          ? (onboardingCompletedResult.dataOrNull ?? false)
+          : false;
 
       // 온보딩 완료 버전 확인 (앱 업데이트 시 온보딩 재표시 여부 결정)
       final prefs = await SharedPreferences.getInstance();
@@ -206,8 +207,10 @@ class AppInitialization extends _$AppInitialization {
       final onboardingStateNotifier = ref.read(
         onboardingNotifierProvider.notifier,
       );
-      final savedState = await onboardingRepository.loadOnboardingState();
-      onboardingStateNotifier.state = savedState;
+      final savedStateResult = await onboardingRepository.loadOnboardingState();
+      if (savedStateResult.isSuccess) {
+        onboardingStateNotifier.state = savedStateResult.dataOrNull!;
+      }
 
       // 상태 업데이트
       state = state.copyWith(isOnboardingCompleted: finalOnboardingStatus);

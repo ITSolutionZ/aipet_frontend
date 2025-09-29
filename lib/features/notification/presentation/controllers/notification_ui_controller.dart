@@ -1,8 +1,8 @@
+import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/controllers/base_controller.dart';
-import '../../data/providers/notification_controller_providers.dart';
 import 'notification_controller.dart';
 
 /// 알림 UI 컨트롤러 - UI 로직 처리
@@ -24,9 +24,12 @@ class NotificationUIController extends BaseController {
   /// 알림 목록 가져오기 (UI 피드백 포함)
   Future<List<dynamic>> getNotificationsWithFeedback(
     BuildContext context,
+    String userId,
   ) async {
     try {
-      final notifications = await _notificationController.getNotifications();
+      final notifications = await _notificationController.getNotifications(
+        userId,
+      );
       return notifications;
     } catch (error) {
       if (context.mounted) {
@@ -37,9 +40,12 @@ class NotificationUIController extends BaseController {
   }
 
   /// 알림 새로고침 (UI 피드백 포함)
-  Future<void> refreshNotificationsWithFeedback(BuildContext context) async {
+  Future<void> refreshNotificationsWithFeedback(
+    BuildContext context,
+    String userId,
+  ) async {
     try {
-      await _notificationController.refreshNotifications();
+      await _notificationController.refreshNotifications(userId);
       if (context.mounted) {
         showSuccessSnackBar(context, 'アラーム通知が更新されました。');
       }
@@ -51,9 +57,13 @@ class NotificationUIController extends BaseController {
   }
 
   /// 알림 읽음 처리 (UI 피드백 포함)
-  Future<void> markAsReadWithFeedback(BuildContext context, String id) async {
+  Future<void> markAsReadWithFeedback(
+    BuildContext context,
+    String userId,
+    String id,
+  ) async {
     try {
-      await _notificationController.markAsRead(id);
+      await _notificationController.markAsRead(userId, id);
       if (context.mounted) {
         showSuccessSnackBar(context, 'アラーム通知を既読にしました。');
       }
@@ -67,10 +77,11 @@ class NotificationUIController extends BaseController {
   /// 알림 삭제 (UI 피드백 포함)
   Future<void> deleteNotificationWithFeedback(
     BuildContext context,
+    String userId,
     String id,
   ) async {
     try {
-      await _notificationController.deleteNotification(id);
+      await _notificationController.deleteNotification(userId, id);
       if (context.mounted) {
         showSuccessSnackBar(context, 'アラーム通知が削除されました。');
       }
@@ -84,10 +95,11 @@ class NotificationUIController extends BaseController {
   /// 알림 설정 저장 (UI 피드백 포함)
   Future<void> saveNotificationSettingsWithFeedback(
     BuildContext context,
-    dynamic settings,
+    String userId,
+    Map<String, dynamic> settings,
   ) async {
     try {
-      await _notificationController.saveNotificationSettings(settings);
+      await _notificationController.saveNotificationSettings(userId, settings);
       if (context.mounted) {
         showSuccessSnackBar(context, 'アラーム通知の設定が保存されました。');
       }

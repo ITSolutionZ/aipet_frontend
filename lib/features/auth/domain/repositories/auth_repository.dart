@@ -1,25 +1,30 @@
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+
 /// 인증 리포지토리 인터페이스
 ///
 /// Firebase Auth 구현을 위한 추상화된 인터페이스입니다.
 /// 추후 Mockito를 사용한 테스트와 실제 Firebase Auth 구현을 쉽게 전환할 수 있습니다.
 abstract class AuthRepository {
   /// 이메일/비밀번호로 로그인
-  Future<AuthResult> signInWithEmailAndPassword(String email, String password);
+  Future<Result<AuthUser>> signInWithEmailAndPassword(
+    String email,
+    String password,
+  );
 
   /// 이메일/비밀번호로 회원가입
-  Future<AuthResult> createUserWithEmailAndPassword(
+  Future<Result<AuthUser>> createUserWithEmailAndPassword(
     String email,
     String password,
   );
 
   /// 소셜 로그인 (Google)
-  Future<AuthResult> signInWithGoogle();
+  Future<Result<AuthUser>> signInWithGoogle();
 
   /// 소셜 로그인 (Apple)
-  Future<AuthResult> signInWithApple();
+  Future<Result<AuthUser>> signInWithApple();
 
   /// 소셜 로그인 (LINE)
-  Future<AuthResult> signInWithLine();
+  Future<Result<AuthUser>> signInWithLine();
 
   /// 로그아웃
   Future<void> signOut();
@@ -38,9 +43,30 @@ abstract class AuthRepository {
 
   /// 계정 삭제
   Future<void> deleteAccount();
+
+  /// Firebase 로그인을 통해 획득한 idToken을 서버 JWT로 교환
+  Future<String> exchangeServerToken(String idToken);
+
+  /// 현재 Firebase 사용자의 최신 idToken 획득
+  Future<String?> getCurrentUserIdToken();
+
+  /// 저장된 서버 JWT 토큰 확인
+  Future<String?> getStoredServerToken();
+
+  /// 서버 JWT 토큰 저장
+  Future<void> saveServerToken(String token);
+
+  /// 저장된 서버 JWT 토큰 삭제
+  Future<void> clearServerToken();
+
+  /// 사용자 인증 상태 확인 (Firebase + 서버 JWT 모두 유효)
+  Future<bool> isAuthenticated();
 }
 
-/// 인증 결과
+/// 인증 결과 (공통 Result 패턴 사용)
+///
+/// @deprecated 이 클래스는 더 이상 사용되지 않습니다.
+/// 대신 공통 `Result<AuthUser>` 패턴을 사용하세요.
 class AuthResult {
   final bool isSuccess;
   final String message;
@@ -64,6 +90,15 @@ class AuthResult {
       message: message,
       errorCode: errorCode,
     );
+  }
+
+  /// 공통 Result 패턴으로 변환
+  Result<AuthUser> toResult() {
+    if (isSuccess && user != null) {
+      return Result.success(message, user!);
+    } else {
+      return Result.failure(message);
+    }
   }
 }
 

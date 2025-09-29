@@ -1,14 +1,12 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
+import 'package:aipet_frontend/features/notification/presentation/components/forms/alarm_toggle_component.dart';
+import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../data/providers/notification_controller_providers.dart';
-import '../../domain/entities/entities.dart';
-import '../components/forms/alarm_toggle_component.dart';
-import '../controllers/notification_ui_controller.dart';
 // SectionHeader와 SettingsTile은 shared/widgets에서 가져옴 (이미 shared.dart에 포함됨)
 
 class PushNotificationScreen extends ConsumerStatefulWidget {
@@ -44,18 +42,19 @@ class _PushNotificationScreenState
   Future<void> _loadNotificationSettings() async {
     try {
       final useCase = ref.read(getNotificationSettingsUseCaseProvider);
-      final settings = await useCase();
+      final settings = await useCase('default_user_id'); // 임시 userId 사용
 
       setState(() {
-        _foodAlarmEnabled = settings.isTypeEnabled(NotificationType.feeding);
-        _walkAlarmEnabled = settings.isTypeEnabled(NotificationType.walk);
-        _systemAlarmEnabled = settings.isTypeEnabled(NotificationType.system);
+        // settings가 Map<String, dynamic>이므로 적절히 처리
+        final typeSettings =
+            settings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ?? {};
+        _foodAlarmEnabled = typeSettings['feeding'] as bool? ?? false;
+        _walkAlarmEnabled = typeSettings['walk'] as bool? ?? false;
+        _systemAlarmEnabled = typeSettings['system'] as bool? ?? true;
         _isLoading = false;
       });
     } catch (e) {
-      if (kDebugMode) {
-        print('알림 설정 로드 실패: $e');
-      }
+      if (kDebugMode) {}
       setState(() {
         _isLoading = false;
       });
@@ -70,28 +69,31 @@ class _PushNotificationScreenState
       final getSettingsUseCase = ref.read(
         getNotificationSettingsUseCaseProvider,
       );
-      final currentSettings = await getSettingsUseCase();
+      final currentSettings = await getSettingsUseCase('default_user_id');
 
       if (!mounted) return;
 
       // 새로운 타입 설정 생성
-      final newTypeSettings = Map<NotificationType, bool>.from(
-        currentSettings.typeSettings,
+      final newTypeSettings = Map<String, dynamic>.from(
+        currentSettings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ??
+            {},
       );
-      newTypeSettings[NotificationType.feeding] = _foodAlarmEnabled;
-      newTypeSettings[NotificationType.walk] = _walkAlarmEnabled;
-      newTypeSettings[NotificationType.system] = _systemAlarmEnabled;
+      newTypeSettings['feeding'] = _foodAlarmEnabled;
+      newTypeSettings['walk'] = _walkAlarmEnabled;
+      newTypeSettings['system'] = _systemAlarmEnabled;
 
       // 새로운 설정 생성
-      final newSettings = currentSettings.copyWith(
-        typeSettings: newTypeSettings,
+      final newSettings = Map<String, dynamic>.from(
+        currentSettings.dataOrNull ?? {},
       );
+      newSettings['typeSettings'] = newTypeSettings;
 
       if (!mounted) return;
 
       // UI 컨트롤러를 통해 설정 저장 (UI 피드백 포함)
       await _uiController.saveNotificationSettingsWithFeedback(
         context,
+        'default_user_id',
         newSettings,
       );
 
@@ -224,9 +226,10 @@ class _PushNotificationScreenState
 
             const SizedBox(height: AppSpacing.xl * 3),
 
-            SaveButtonComponent(
+            ActionButton.primary(
               text: '修正完了',
               onPressed: _saveNotificationSettings,
+              isEnabled: true,
             ),
 
             const SizedBox(height: AppSpacing.xl),

@@ -1,23 +1,18 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../shared/shared.dart';
 
 /// 백신 카드 위젯
 class VaccineCard extends StatelessWidget {
   final Map<String, dynamic> vaccine;
   final VoidCallback onTap;
 
-  const VaccineCard({
-    super.key,
-    required this.vaccine,
-    required this.onTap,
-  });
+  const VaccineCard({super.key, required this.vaccine, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final isCompleted = vaccine['isCompleted'] as bool? ?? false;
     final nextDue = vaccine['nextDue'] as String?;
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -78,7 +73,9 @@ class VaccineCard extends StatelessWidget {
                     Text(
                       'Next: $nextDue',
                       style: AppFonts.bodySmall.copyWith(
-                        color: isCompleted ? AppColors.pointGreen : AppColors.pointPink,
+                        color: isCompleted
+                            ? AppColors.pointGreen
+                            : AppColors.pointPink,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -117,10 +114,7 @@ class VaccineCard extends StatelessWidget {
 class VaccineDetailModal extends StatelessWidget {
   final Map<String, dynamic> vaccine;
 
-  const VaccineDetailModal({
-    super.key,
-    required this.vaccine,
-  });
+  const VaccineDetailModal({super.key, required this.vaccine});
 
   @override
   Widget build(BuildContext context) {
@@ -165,9 +159,14 @@ class VaccineDetailModal extends StatelessWidget {
                     // 백신 정보
                     _buildDetailSection('ワクチン情報', [
                       _buildDetailRow('名前', vaccine['name'] ?? 'Unknown'),
-                      _buildDetailRow('説明', vaccine['description'] ?? 'No description'),
-                      _buildDetailRow('状態', 
-                        vaccine['isCompleted'] == true ? '完了' : '未完了'),
+                      _buildDetailRow(
+                        '説明',
+                        vaccine['description'] ?? 'No description',
+                      ),
+                      _buildDetailRow(
+                        '状態',
+                        vaccine['isCompleted'] == true ? '完了' : '未完了',
+                      ),
                     ]),
 
                     const SizedBox(height: AppSpacing.lg),
@@ -183,7 +182,9 @@ class VaccineDetailModal extends StatelessWidget {
 
                     // 수의사 정보
                     VeterinarianCard(
-                      veterinarian: vaccine['veterinarian'] as Map<String, dynamic>? ?? {},
+                      veterinarian:
+                          vaccine['veterinarian'] as Map<String, dynamic>? ??
+                          {},
                     ),
                   ],
                 ),
@@ -203,7 +204,9 @@ class VaccineDetailModal extends StatelessWidget {
                     },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppColors.pointBrown),
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
                     ),
                     child: Text(
                       '編集',
@@ -223,7 +226,9 @@ class VaccineDetailModal extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.pointGreen,
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
                     ),
                     child: Text(
                       '접종 완료',
@@ -294,10 +299,7 @@ class VaccineDetailModal extends StatelessWidget {
 class VeterinarianCard extends StatelessWidget {
   final Map<String, dynamic> veterinarian;
 
-  const VeterinarianCard({
-    super.key,
-    required this.veterinarian,
-  });
+  const VeterinarianCard({super.key, required this.veterinarian});
 
   @override
   Widget build(BuildContext context) {
@@ -306,9 +308,7 @@ class VeterinarianCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.pointBlue.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(
-          color: AppColors.pointBlue.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: AppColors.pointBlue.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

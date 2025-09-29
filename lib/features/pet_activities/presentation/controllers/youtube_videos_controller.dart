@@ -1,9 +1,9 @@
+import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/usecases/get_youtube_videos_usecase.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/usecases/register_youtube_video_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../data/providers/pet_activities_providers.dart';
-import '../../domain/entities/youtube_video_entity.dart';
-import '../../domain/usecases/usecases.dart';
 
 /// YouTube 비디오 컨트롤러
 class YouTubeVideosController {
@@ -81,7 +81,8 @@ class YouTubeVideosController {
   ) async {
     final repository = ref.read(petActivitiesRepositoryProvider);
     final useCase = GetYouTubeVideosUseCase(repository);
-    return useCase.getByTags(petId, tags);
+    final result = await useCase.getByTags(petId, tags);
+    return result.dataOrNull ?? [];
   }
 
   /// 검색어로 비디오를 검색합니다.
@@ -91,6 +92,7 @@ class YouTubeVideosController {
   ) async {
     final repository = ref.read(petActivitiesRepositoryProvider);
     final useCase = GetYouTubeVideosUseCase(repository);
-    return useCase.search(petId, query);
+    final result = await useCase.search(petId, query);
+    return result.dataOrNull ?? [];
   }
 }

@@ -74,5 +74,10 @@ class HomeDashboardEntity {
     required this.petHealthSummary,
     required this.walkSummary,
   });
-}
 
+  /// 펫이 있는지 확인
+  bool get hasPets => petProfiles.isNotEmpty;
+
+  /// 오늘의 예약이 있는지 확인
+  bool get hasTodayAppointments => upcomingAppointments.isNotEmpty;
+}

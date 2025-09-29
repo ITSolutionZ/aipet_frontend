@@ -59,6 +59,34 @@ class WalkLocation {
     return earthRadius * c;
   }
 
+  /// JSON에서 WalkLocation 생성
+  factory WalkLocation.fromJson(Map<String, dynamic> json) {
+    return WalkLocation(
+      latitude: (json['latitude'] as num).toDouble(),
+      longitude: (json['longitude'] as num).toDouble(),
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      altitude: (json['altitude'] as num?)?.toDouble(),
+      accuracy: (json['accuracy'] as num?)?.toDouble(),
+      speed: (json['speed'] as num?)?.toDouble(),
+      heading: (json['heading'] as num?)?.toDouble(),
+      address: json['address'] as String?,
+    );
+  }
+
+  /// WalkLocation을 JSON으로 변환
+  Map<String, dynamic> toJson() {
+    return {
+      'latitude': latitude,
+      'longitude': longitude,
+      'timestamp': timestamp.toIso8601String(),
+      if (altitude != null) 'altitude': altitude,
+      if (accuracy != null) 'accuracy': accuracy,
+      if (speed != null) 'speed': speed,
+      if (heading != null) 'heading': heading,
+      if (address != null) 'address': address,
+    };
+  }
+
   /// 복사본 생성
   WalkLocation copyWith({
     double? latitude,

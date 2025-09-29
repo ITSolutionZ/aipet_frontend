@@ -33,7 +33,7 @@ class WeatherData {
   ) {
     final current = json['current'] as Map<String, dynamic>? ?? {};
     final weatherList = current['weather'] as List? ?? [];
-    final weather = weatherList.isNotEmpty 
+    final weather = weatherList.isNotEmpty
         ? weatherList.first as Map<String, dynamic>? ?? {}
         : <String, dynamic>{};
 
@@ -80,7 +80,7 @@ class WeatherData {
   factory WeatherData.fromJson(Map<String, dynamic> json, String location) {
     final main = json['main'] as Map<String, dynamic>? ?? {};
     final weatherList = json['weather'] as List? ?? [];
-    final weather = weatherList.isNotEmpty 
+    final weather = weatherList.isNotEmpty
         ? weatherList.first as Map<String, dynamic>? ?? {}
         : <String, dynamic>{};
     final wind = json['wind'] as Map<String, dynamic>? ?? {};

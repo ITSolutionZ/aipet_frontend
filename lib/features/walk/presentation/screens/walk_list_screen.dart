@@ -1,15 +1,14 @@
+import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/walk_widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart'
+    hide MapWidget, WalkRecordCardWidget;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../app/router/app_router.dart';
-import '../../../../shared/shared.dart';
-import '../../data/walk_providers.dart';
-import '../../domain/entities/walk_record_entity.dart';
-import '../controllers/walk_controller.dart';
-import '../widgets/dialogs/dialogs.dart';
-import '../widgets/map_widget.dart';
-import '../widgets/walk_record_card_widget.dart';
 
 class WalkListScreen extends ConsumerStatefulWidget {
   final bool showBackButton;
@@ -45,7 +44,8 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
       const PetInfo(
         id: 'pet1',
         name: 'Maxi',
-        imagePath: 'assets/images/dogs/shiba.png',
+        type: 'dog',
+        imageUrl: 'assets/images/dogs/shiba.png',
       ),
     );
   }
@@ -123,16 +123,16 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   }
 
   Widget _buildMapSection(bool mapExpanded) {
+    final walkRecords = ref.watch(walkRecordsNotifierProvider);
+    final selectedPet = ref.watch(selectedPetNotifierProvider);
+
     return Container(
       height: mapExpanded ? MediaQuery.of(context).size.height * 0.6 : 200,
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Stack(
         children: [
           // 지도 위젯
-          MapWidget(
-            walkRecords: ref.watch(walkRecordsNotifierProvider),
-            selectedPet: ref.watch(selectedPetNotifierProvider),
-          ),
+          MapWidget(walkRecords: walkRecords, selectedPet: selectedPet),
 
           // 지도 확장 버튼
           Positioned(
@@ -182,10 +182,13 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                 final walkRecord = walkRecords[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: WalkRecordCardWidget(
-                    walkRecord: walkRecord,
+                  child: GestureDetector(
                     onTap: () => _showWalkDetails(walkRecord),
                     onLongPress: () => _showWalkOptions(walkRecord),
+                    child: WalkRecordCardWidget(
+                      walkRecord: walkRecord,
+                      onTap: () => _showWalkDetails(walkRecord),
+                    ),
                   ),
                 );
               },
@@ -284,7 +287,31 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   }
 
   void _showStartWalkDialog() {
-    StartWalkBottomSheet.show(context, _controller);
+    // TODO: StartWalkBottomSheet 구현 필요
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('산책 시작'),
+        content: const Text('산책을 시작하시겠습니까?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _controller.startNewWalk(
+                title: 'New Walk',
+                petId: 'pet1',
+                petName: 'Maxi',
+              );
+            },
+            child: const Text('시작'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showCurrentWalkDialog() {
@@ -292,8 +319,23 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     if (currentWalk != null) {
       showDialog(
         context: context,
-        builder: (context) =>
-            CurrentWalkDialog(walkRecord: currentWalk, controller: _controller),
+        builder: (context) => AlertDialog(
+          title: const Text('진행 중인 산책'),
+          content: Text('${currentWalk.petName}과(와) 산책 중입니다.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('계속'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _controller.endCurrentWalk();
+              },
+              child: const Text('종료'),
+            ),
+          ],
+        ),
       );
     }
   }
@@ -305,18 +347,27 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   void _showWalkOptions(WalkRecordEntity walkRecord) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => WalkOptionsBottomSheet(
-        walkRecord: walkRecord,
-        controller: _controller,
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.edit),
+            title: const Text('수정'),
+            onTap: () {
+              Navigator.of(context).pop();
+              // TODO: 수정 다이얼로그 구현
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete),
+            title: const Text('삭제'),
+            onTap: () {
+              Navigator.of(context).pop();
+              _controller.deleteWalkRecord(walkRecord.id);
+            },
+          ),
+        ],
       ),
     );
   }
 }
-
-// StartWalkDialog는 별도 파일로 분리됨
-
-// EditWalkDialog는 별도 파일로 분리됨
-
-// CurrentWalkDialog는 별도 파일로 분리됨
-
-// WalkOptionsBottomSheet는 별도 파일로 분리됨

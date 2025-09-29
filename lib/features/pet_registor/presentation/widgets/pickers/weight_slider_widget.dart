@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
 
 class WeightSliderWidget extends StatelessWidget {
   final double weight;
@@ -25,7 +24,10 @@ class WeightSliderWidget extends StatelessWidget {
             final relativeX = localPosition.dx - 16;
             final normalizedX = (relativeX / width).clamp(0.0, 1.0);
 
-            final newWeight = (0.5 + normalizedX * (50.0 - 0.5)).clamp(0.5, 50.0);
+            final newWeight = (0.5 + normalizedX * (50.0 - 0.5)).clamp(
+              0.5,
+              50.0,
+            );
 
             if ((newWeight - weight).abs() > 0.05) {
               onWeightChanged(newWeight);

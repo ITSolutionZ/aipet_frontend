@@ -1,17 +1,13 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../../shared/shared.dart';
 
 /// 성별 선택 드롭다운
 class GenderDropdown extends StatelessWidget {
   final String? value;
   final ValueChanged<String?> onChanged;
 
-  const GenderDropdown({
-    super.key,
-    this.value,
-    required this.onChanged,
-  });
+  const GenderDropdown({super.key, this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +28,7 @@ class SizeDropdown extends StatelessWidget {
   final String? value;
   final ValueChanged<String?> onChanged;
 
-  const SizeDropdown({
-    super.key,
-    this.value,
-    required this.onChanged,
-  });
+  const SizeDropdown({super.key, this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -125,10 +117,7 @@ class EditableTextField extends StatelessWidget {
 class NameEditField extends StatelessWidget {
   final TextEditingController controller;
 
-  const NameEditField({
-    super.key,
-    required this.controller,
-  });
+  const NameEditField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {

@@ -1,21 +1,16 @@
-import 'dart:io';
-
+import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/shared.dart';
-import '../../../settings/data/providers/settings_providers.dart';
-import '../../../settings/domain/entities/user_profile_entity.dart';
-import '../../domain/entities/ai_message_entity.dart';
 
 /// AI 채팅 메시지 버블 위젯
 class AiMessageBubble extends ConsumerWidget {
   final AiMessageEntity message;
-  final Function(AiMessageEntity)? onFavoriteToggle;
+  final Future<void> Function(AiMessageEntity)? onFavoriteToggle;
   final bool isFavorite;
 
   const AiMessageBubble({
-    super.key, 
+    super.key,
     required this.message,
     this.onFavoriteToggle,
     this.isFavorite = false,
@@ -24,7 +19,9 @@ class AiMessageBubble extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isUser = message.isUser;
-    final userProfileAsync = ref.watch(userProfileNotifierProvider);
+    // UserProfile 관련 코드는 현재 구현되지 않음
+    // 향후 사용자 프로필 기능이 필요하면 구현 예정
+    // final userProfileAsync = ref.watch(userProfileNotifierProvider);
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -52,7 +49,7 @@ class AiMessageBubble extends ConsumerWidget {
           ],
           Flexible(
             child: GestureDetector(
-              onLongPress: !isUser && onFavoriteToggle != null 
+              onLongPress: !isUser && onFavoriteToggle != null
                   ? () => _showFavoriteDialog(context)
                   : null,
               child: Container(
@@ -62,14 +59,15 @@ class AiMessageBubble extends ConsumerWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isUser ? AppColors.pointBrown : Colors.white,
-                  borderRadius: BorderRadius.circular(AppRadius.medium).copyWith(
-                    bottomLeft: isUser
-                        ? const Radius.circular(AppRadius.medium)
-                        : Radius.zero,
-                    bottomRight: isUser
-                        ? Radius.zero
-                        : const Radius.circular(AppRadius.medium),
-                  ),
+                  borderRadius: BorderRadius.circular(AppRadius.medium)
+                      .copyWith(
+                        bottomLeft: isUser
+                            ? const Radius.circular(AppRadius.medium)
+                            : Radius.zero,
+                        bottomRight: isUser
+                            ? Radius.zero
+                            : const Radius.circular(AppRadius.medium),
+                      ),
                   border: isFavorite && !isUser
                       ? Border.all(color: Colors.amber, width: 2)
                       : null,
@@ -93,7 +91,7 @@ class AiMessageBubble extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
-                    
+
                     // 하단 메타 정보 (시간, 즐겨찾기 등)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,15 +99,13 @@ class AiMessageBubble extends ConsumerWidget {
                         Text(
                           _formatTime(message.timestamp),
                           style: AppFonts.bodySmall.copyWith(
-                            color: isUser ? Colors.white70 : AppColors.pointGray,
+                            color: isUser
+                                ? Colors.white70
+                                : AppColors.pointGray,
                           ),
                         ),
                         if (isFavorite && !isUser)
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 16,
-                          ),
+                          const Icon(Icons.star, color: Colors.amber, size: 16),
                       ],
                     ),
                   ],
@@ -119,7 +115,7 @@ class AiMessageBubble extends ConsumerWidget {
           ),
           if (isUser) ...[
             const SizedBox(width: AppSpacing.sm),
-            _buildUserAvatar(userProfileAsync),
+            _buildDefaultUserIcon(),
           ],
         ],
       ),
@@ -136,32 +132,26 @@ class AiMessageBubble extends ConsumerWidget {
             const SizedBox(width: AppSpacing.sm),
             Text(
               'お気に入りに追加',
-              style: AppFonts.titleMedium.copyWith(
-                color: AppColors.pointDark,
-              ),
+              style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark),
             ),
           ],
         ),
         content: Text(
           'この回答をお気に入りに追加しますか？\n後で参考リストから確認できます。',
-          style: AppFonts.bodyMedium.copyWith(
-            color: AppColors.pointGray,
-          ),
+          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
               'キャンセル',
-              style: AppFonts.bodyMedium.copyWith(
-                color: AppColors.pointGray,
-              ),
+              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
             ),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).pop();
-              onFavoriteToggle?.call(message);
+              await onFavoriteToggle?.call(message);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.amber,
@@ -169,47 +159,10 @@ class AiMessageBubble extends ConsumerWidget {
             ),
             child: Text(
               '追加する',
-              style: AppFonts.bodyMedium.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildUserAvatar(AsyncValue<UserProfileEntity> userProfileAsync) {
-    return Container(
-      padding: const EdgeInsets.all(2), // 이미지 주변에 여백
-      decoration: BoxDecoration(
-        color: AppColors.pointGray.withValues(alpha: 0.2),
-        shape: BoxShape.circle,
-      ),
-      child: ClipOval(
-        child: SizedBox(
-          width: 28, // 16에서 28로 증가
-          height: 28,
-          child: userProfileAsync.when(
-            data: (userProfile) {
-              if (userProfile.avatarPath != null && userProfile.avatarPath!.isNotEmpty) {
-                final file = File(userProfile.avatarPath!);
-                if (file.existsSync()) {
-                  return Image.file(
-                    file,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return _buildDefaultUserIcon();
-                    },
-                  );
-                }
-              }
-              return _buildDefaultUserIcon();
-            },
-            loading: () => _buildDefaultUserIcon(),
-            error: (_, __) => _buildDefaultUserIcon(),
-          ),
-        ),
       ),
     );
   }

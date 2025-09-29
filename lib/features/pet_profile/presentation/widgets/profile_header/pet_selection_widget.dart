@@ -1,17 +1,12 @@
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../shared/shared.dart';
-import '../../../../pet_registor/domain/entities/pet_profile_entity.dart';
 
 class PetSelectionWidget extends StatelessWidget {
   final PetProfileEntity pet;
   final VoidCallback onTap;
 
-  const PetSelectionWidget({
-    super.key,
-    required this.pet,
-    required this.onTap,
-  });
+  const PetSelectionWidget({super.key, required this.pet, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
