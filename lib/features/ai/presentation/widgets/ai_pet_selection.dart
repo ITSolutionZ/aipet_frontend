@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +20,7 @@ class AiPetSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -57,7 +57,7 @@ class AiPetSelection extends StatelessWidget {
   Widget _buildNoPetsCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.2)),
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -94,7 +94,7 @@ class AiPetSelection extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBrown,
                 foregroundColor: AppColors.pureWhite,
-                padding: const EdgeInsets.symmetric(
+                padding: const const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
                 ),
@@ -119,7 +119,7 @@ class AiPetSelection extends StatelessWidget {
     return GestureDetector(
       onTap: () => onPetSelected(isSelected ? null : pet),
       child: Container(
-        padding: const EdgeInsets.symmetric(
+        padding: const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
@@ -156,7 +156,7 @@ class AiPetSelection extends StatelessWidget {
                 size: 20,
                 color: isSelected ? AppColors.pureWhite : AppColors.pointBrown,
               ),
-            const SizedBox(width: AppSpacing.xs),
+            const const SizedBox(width: AppSpacing.xs),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -193,7 +193,7 @@ class AiPetSelection extends StatelessWidget {
       onTap: () => onPetSelected(null),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(
+        padding: const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
@@ -218,7 +218,7 @@ class AiPetSelection extends StatelessWidget {
                   ? AppColors.pointBrown
                   : AppColors.pointDark.withValues(alpha: 0.7),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            const const SizedBox(width: AppSpacing.sm),
             Text(
               '一般的なペット相談',
               style: AppFonts.bodySmall.copyWith(

@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/mock_data_service.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -250,8 +250,8 @@ class FeedingRecordsController extends BaseController {
   ) {
     return records.where((record) {
       final recordDate = record.fedTime;
-      return recordDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
-          recordDate.isBefore(endDate.add(const Duration(days: 1)));
+      return recordDate.isAfter(startDate.subtract(Duration(days: 1))) &&
+          recordDate.isBefore(endDate.add(Duration(days: 1)));
     }).toList();
   }
 
@@ -289,7 +289,7 @@ class FeedingRecordsController extends BaseController {
         'status': 'completed',
       };
 
-      return Result.success('급여 기록이 추가되었습니다', record);
+      return Success(record);
     } catch (error) {
       return Result.failure('급여 기록 추가 실패: $error');
     }
@@ -300,7 +300,7 @@ class FeedingRecordsController extends BaseController {
     try {
       // Mock delete logic
       await Future.delayed(const Duration(milliseconds: 300));
-      return Result.success('급여 기록이 삭제되었습니다');
+      return const Success(null);
     } catch (error) {
       return Result.failure('급여 기록 삭제 실패: $error');
     }
@@ -329,7 +329,7 @@ class FeedingRecordsController extends BaseController {
         'status': 'completed',
       };
 
-      return Result.success('급여 기록이 수정되었습니다', updatedRecord);
+      return Success(updatedRecord);
     } catch (error) {
       return Result.failure('급여 기록 수정 실패: $error');
     }
@@ -339,7 +339,7 @@ class FeedingRecordsController extends BaseController {
   Map<String, dynamic> calculateWeeklyStatistics(List<dynamic> records) {
     final now = DateTime.now();
     final weekStart = now.subtract(Duration(days: now.weekday - 1));
-    final weekEnd = weekStart.add(const Duration(days: 6));
+    final weekEnd = weekStart.add(Duration(days: 6));
 
     final weeklyRecords = filterRecordsByDate(records, weekStart, weekEnd);
 

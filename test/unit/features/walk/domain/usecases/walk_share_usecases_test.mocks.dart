@@ -3,14 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart'
-    as _i4;
+    as _i5;
 import 'package:aipet_frontend/features/walk/domain/repositories/walk_share_repository.dart'
-    as _i2;
+    as _i3;
+import 'package:aipet_frontend/shared/core/domain/result.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i5;
+import 'package:mockito/src/dummies.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -26,9 +27,8 @@ import 'package:mockito/src/dummies.dart' as _i5;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeWalkShareResult_0 extends _i1.SmartFake
-    implements _i2.WalkShareResult {
-  _FakeWalkShareResult_0(Object parent, Invocation parentInvocation)
+class _FakeResult_0<T> extends _i1.SmartFake implements _i2.Result<T> {
+  _FakeResult_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -36,60 +36,55 @@ class _FakeWalkShareResult_0 extends _i1.SmartFake
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockWalkShareRepository extends _i1.Mock
-    implements _i2.WalkShareRepository {
+    implements _i3.WalkShareRepository {
   MockWalkShareRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<_i2.WalkShareResult> copyToClipboard(String? text) =>
+  _i4.Future<_i2.Result<void>> copyToClipboard(String? text) =>
       (super.noSuchMethod(
             Invocation.method(#copyToClipboard, [text]),
-            returnValue: _i3.Future<_i2.WalkShareResult>.value(
-              _FakeWalkShareResult_0(
+            returnValue: _i4.Future<_i2.Result<void>>.value(
+              _FakeResult_0<void>(
                 this,
                 Invocation.method(#copyToClipboard, [text]),
               ),
             ),
           )
-          as _i3.Future<_i2.WalkShareResult>);
+          as _i4.Future<_i2.Result<void>>);
 
   @override
-  _i3.Future<_i2.WalkShareResult> saveAsImage(
-    _i4.WalkRecordEntity? walkRecord,
-  ) =>
+  _i4.Future<_i2.Result<void>> saveAsImage(_i5.WalkRecordEntity? walkRecord) =>
       (super.noSuchMethod(
             Invocation.method(#saveAsImage, [walkRecord]),
-            returnValue: _i3.Future<_i2.WalkShareResult>.value(
-              _FakeWalkShareResult_0(
+            returnValue: _i4.Future<_i2.Result<void>>.value(
+              _FakeResult_0<void>(
                 this,
                 Invocation.method(#saveAsImage, [walkRecord]),
               ),
             ),
           )
-          as _i3.Future<_i2.WalkShareResult>);
+          as _i4.Future<_i2.Result<void>>);
 
   @override
-  _i3.Future<_i2.WalkShareResult> systemShare(
-    String? text, {
-    String? subject,
-  }) =>
+  _i4.Future<_i2.Result<void>> systemShare(String? text, {String? subject}) =>
       (super.noSuchMethod(
             Invocation.method(#systemShare, [text], {#subject: subject}),
-            returnValue: _i3.Future<_i2.WalkShareResult>.value(
-              _FakeWalkShareResult_0(
+            returnValue: _i4.Future<_i2.Result<void>>.value(
+              _FakeResult_0<void>(
                 this,
                 Invocation.method(#systemShare, [text], {#subject: subject}),
               ),
             ),
           )
-          as _i3.Future<_i2.WalkShareResult>);
+          as _i4.Future<_i2.Result<void>>);
 
   @override
-  String generateShareText(_i4.WalkRecordEntity? walkRecord) =>
+  String generateShareText(_i5.WalkRecordEntity? walkRecord) =>
       (super.noSuchMethod(
             Invocation.method(#generateShareText, [walkRecord]),
-            returnValue: _i5.dummyValue<String>(
+            returnValue: _i6.dummyValue<String>(
               this,
               Invocation.method(#generateShareText, [walkRecord]),
             ),

@@ -17,14 +17,14 @@ class AiCategorySelectionBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // AI 아바타
           Container(
-            padding: const EdgeInsets.all(AppSpacing.sm),
+            padding: const const EdgeInsets.all(AppSpacing.sm),
             decoration: const BoxDecoration(
               color: AppColors.pointBrown,
               shape: BoxShape.circle,
@@ -36,12 +36,12 @@ class AiCategorySelectionBubble extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          const SizedBox(width: AppSpacing.sm),
+          const const SizedBox(width: AppSpacing.sm),
 
           // 메시지 버블
           Flexible(
             child: Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(
@@ -116,7 +116,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
     return GestureDetector(
       onTap: () => onCategorySelected(category),
       child: Container(
-        padding: const EdgeInsets.symmetric(
+        padding: const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
@@ -147,7 +147,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
               size: 18,
               color: isSelected ? Colors.white : AppColors.pointBrown,
             ),
-            const SizedBox(width: AppSpacing.xs),
+            const const SizedBox(width: AppSpacing.xs),
             Text(
               category.name,
               style: AppFonts.bodySmall.copyWith(

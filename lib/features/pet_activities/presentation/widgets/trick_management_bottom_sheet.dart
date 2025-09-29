@@ -1,24 +1,22 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-/// 트릭 관리 바텀시트
+/// 트릭 관리 바텀 시트
 class TrickManagementBottomSheet extends StatelessWidget {
   final VoidCallback onResetProgress;
 
   const TrickManagementBottomSheet({super.key, required this.onResetProgress});
 
-  /// 바텀시트를 표시하는 정적 메서드
-  static Future<void> show(
+  static void show(
     BuildContext context, {
     required VoidCallback onResetProgress,
   }) {
-    return showModalBottomSheet<void>(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return TrickManagementBottomSheet(onResetProgress: onResetProgress);
-      },
+      builder: (context) =>
+          TrickManagementBottomSheet(onResetProgress: onResetProgress),
     );
   }
 
@@ -32,111 +30,134 @@ class TrickManagementBottomSheet extends StatelessWidget {
           topRight: Radius.circular(AppSpacing.lg),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // 핸들
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(top: AppSpacing.md),
-            decoration: BoxDecoration(
-              color: AppColors.pointDark.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(2),
-            ),
+      child: SafeArea(
+        child: Padding(
+          padding: const const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 핸들
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.borderGray,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // 제목
+              Text(
+                'トリック管理',
+                style: AppFonts.titleMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // 메뉴 항목들
+              _buildMenuItem(
+                icon: Icons.refresh,
+                title: '進捗をリセット',
+                subtitle: 'すべてのトリックの進捗をリセットします',
+                onTap: () {
+                  Navigator.pop(context);
+                  onResetProgress();
+                },
+                color: AppColors.pointBrown,
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              _buildMenuItem(
+                icon: Icons.help_outline,
+                title: 'ヘルプ',
+                subtitle: 'トリックの使い方について',
+                onTap: () {
+                  Navigator.pop(context);
+                  // TODO: 헬프 화면으로 이동
+                },
+                color: AppColors.pointBlue,
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              _buildMenuItem(
+                icon: Icons.settings,
+                title: '設定',
+                subtitle: 'トリックの設定を変更',
+                onTap: () {
+                  Navigator.pop(context);
+                  // TODO: 설정 화면으로 이동
+                },
+                color: AppColors.textSecondary,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // 취소 버튼
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('キャンセル'),
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              children: [
-                Text(
-                  'トリック管理',
-                  style: AppFonts.fredoka(
-                    fontSize: AppFonts.lg,
-                    color: AppColors.pointDark,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                _MenuOptionListTile(
-                  icon: Icons.edit,
-                  title: 'トリックを編集',
-                  subtitle: '学んだトリックを変更',
-                  onTap: () {
-                    Navigator.pop(context);
-                    context.push('/edit-tricks');
-                  },
-                ),
-                _MenuOptionListTile(
-                  icon: Icons.delete_outline,
-                  title: '進捗をリセット',
-                  subtitle: 'すべてのトリック進捗をクリア',
-                  onTap: () {
-                    Navigator.pop(context);
-                    onResetProgress();
-                  },
-                ),
-                _MenuOptionListTile(
-                  icon: Icons.analytics_outlined,
-                  title: '統計を表示',
-                  subtitle: '学習進整統計を確認',
-                  onTap: () {
-                    Navigator.pop(context);
-                    context.push('/trick-statistics');
-                  },
-                ),
-                const SizedBox(height: AppSpacing.md),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
-}
 
-/// 메뉴 옵션 리스트 타일
-class _MenuOptionListTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  const _MenuOptionListTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(AppSpacing.sm),
-        decoration: BoxDecoration(
-          color: AppColors.pointBlue.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(AppSpacing.sm),
-        ),
-        child: Icon(icon, color: AppColors.pointBlue, size: 24),
-      ),
-      title: Text(
-        title,
-        style: AppFonts.fredoka(
-          fontSize: AppFonts.baseSize,
-          color: AppColors.pointDark,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: AppFonts.bodySmall.copyWith(
-          color: AppColors.pointDark.withValues(alpha: 0.7),
-        ),
-      ),
+  Widget _buildMenuItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    required Color color,
+  }) {
+    return InkWell(
       onTap: onTap,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.sm),
+      borderRadius: BorderRadius.circular(AppSpacing.sm),
+      child: Padding(
+        padding: const const EdgeInsets.all(AppSpacing.sm),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppFonts.bodyMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: AppColors.textSecondary,
+            ),
+          ],
+        ),
       ),
     );
   }

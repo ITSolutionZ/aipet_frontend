@@ -48,7 +48,7 @@ class _WateringScheduleScreenState
       backgroundColor: AppColors.pointOffWhite,
       appBar: SoftGradientAppBar(title: '$petNameの給水スケジュール'),
       body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -93,7 +93,7 @@ class _WateringScheduleScreenState
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBlue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
               ),
             ),
@@ -107,7 +107,7 @@ class _WateringScheduleScreenState
   Widget _buildTodayWateringCard() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -121,7 +121,7 @@ class _WateringScheduleScreenState
             const SizedBox(height: AppSpacing.sm),
             ..._todayWaterings!.map(
               (watering) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                padding: const const EdgeInsets.only(bottom: AppSpacing.xs),
                 child: Row(
                   children: [
                     Icon(
@@ -133,7 +133,7 @@ class _WateringScheduleScreenState
                           : AppColors.pointGray,
                       size: 20,
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    const const SizedBox(width: AppSpacing.sm),
                     Text(
                       '${watering['time']} - ${watering['amount']}',
                       style: AppFonts.bodyMedium.copyWith(
@@ -159,10 +159,10 @@ class _WateringScheduleScreenState
     required String amount,
   }) {
     return Card(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         leading: Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          padding: const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             shape: BoxShape.circle,

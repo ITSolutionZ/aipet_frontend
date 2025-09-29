@@ -300,7 +300,7 @@ class ErrorHandlingService {
   /// 기본 에러 위젯 생성
   static Widget _buildDefaultErrorWidget() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const const EdgeInsets.all(16),
       child: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

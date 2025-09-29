@@ -10,7 +10,7 @@ class TrainingMainScreen extends StatelessWidget {
     return Scaffold(
       appBar: const SoftGradientAppBar(title: '学習・トレーニング'),
       body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -75,12 +75,12 @@ class TrainingMainScreen extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: const const EdgeInsets.all(AppSpacing.md),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
@@ -125,14 +125,14 @@ class TrainingMainScreen extends StatelessWidget {
               Container(
                 width: 40,
                 height: 4,
-                margin: const EdgeInsets.symmetric(vertical: 12),
+                margin: const const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.pointGray,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -263,14 +263,14 @@ class TrainingMainScreen extends StatelessWidget {
               Container(
                 width: 40,
                 height: 4,
-                margin: const EdgeInsets.symmetric(vertical: 12),
+                margin: const const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.pointGray,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -391,7 +391,7 @@ class TrainingMainScreen extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          padding: const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
@@ -404,7 +404,7 @@ class TrainingMainScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(
+              padding: const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
                 vertical: 4,
               ),
@@ -437,7 +437,7 @@ class TrainingMainScreen extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          padding: const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),

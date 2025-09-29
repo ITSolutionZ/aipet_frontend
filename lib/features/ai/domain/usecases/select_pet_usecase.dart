@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 class SelectPetUseCase {
   const SelectPetUseCase();
@@ -8,7 +8,7 @@ class SelectPetUseCase {
   Result<List<AiMessageEntity>> call(PetProfileEntity? pet) {
     try {
       if (pet == null) {
-        return ResultFactory.failure('ペットを選択してください');
+        return Result.failure('ペットを選択してください');
       }
 
       final userMessage = AiMessageEntity(
@@ -26,9 +26,9 @@ class SelectPetUseCase {
         timestamp: DateTime.now().add(const Duration(milliseconds: 500)),
       );
 
-      return ResultFactory.success([userMessage, aiMessage], 'ペットを選択しました');
+      return Result.success([userMessage, aiMessage], 'ペットを選択しました');
     } catch (error) {
-      return ResultFactory.failure<List<AiMessageEntity>>(
+      return Result.failure<List<AiMessageEntity>>(
         'ペット選択に失敗しました: ${error.toString()}',
       );
     }

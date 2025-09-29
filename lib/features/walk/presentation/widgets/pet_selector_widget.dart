@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class PetSelectorWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => _showPetSelector(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(
+        padding: const const EdgeInsets.symmetric(
           horizontal: AppSpacing.sm,
           vertical: AppSpacing.xs,
         ),
@@ -46,7 +46,7 @@ class PetSelectorWidget extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
-                  selectedPet?.imagePath ?? 'assets/images/dogs/shiba.png',
+                  selectedPet?.imageUrl ?? 'assets/images/dogs/shiba.png',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -61,7 +61,7 @@ class PetSelectorWidget extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacing.xs),
+            const const SizedBox(width: AppSpacing.xs),
             // 반려동물 이름
             Text(
               selectedPet?.name ?? 'Maxi',
@@ -70,7 +70,7 @@ class PetSelectorWidget extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(width: AppSpacing.xs),
+            const const SizedBox(width: AppSpacing.xs),
             // 드롭다운 아이콘
             const Icon(
               Icons.keyboard_arrow_down,
@@ -108,23 +108,26 @@ class _PetSelectorBottomSheet extends StatelessWidget {
     final pets = [
       const PetInfo(
         id: 'pet1',
+        type: 'dog',
         name: 'Maxi',
-        imagePath: 'assets/images/dogs/shiba.png',
+        imageUrl: 'assets/images/dogs/shiba.png',
       ),
       const PetInfo(
         id: 'pet2',
+        type: 'dog',
         name: 'Luna',
-        imagePath: 'assets/images/dogs/poodle.jpg',
+        imageUrl: 'assets/images/dogs/poodle.jpg',
       ),
       const PetInfo(
         id: 'pet3',
+        type: 'dog',
         name: 'Buddy',
-        imagePath: 'assets/images/dogs/chiwawa.png',
+        imageUrl: 'assets/images/dogs/chiwawa.png',
       ),
     ];
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -151,8 +154,8 @@ class _PetSelectorBottomSheet extends StatelessWidget {
         Navigator.of(context).pop();
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-        padding: const EdgeInsets.all(AppSpacing.md),
+        margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.pointBrown.withValues(alpha: 0.1)
@@ -179,7 +182,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(24),
                 child: Image.asset(
-                  pet.imagePath,
+                  pet.imageUrl ?? '',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -194,7 +197,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const const SizedBox(width: AppSpacing.md),
             // 반려동물 정보
             Expanded(
               child: Column(

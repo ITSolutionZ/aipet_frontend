@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -20,8 +20,8 @@ List<AiFavoriteQaEntity> aiFavoriteMockData(Ref ref) {
     gender: 'male',
     weight: 12.5,
     ownerId: 'user1',
-    createdAt: now.subtract(const Duration(days: 30)),
-    updatedAt: now.subtract(const Duration(days: 1)),
+    createdAt: now.subtract(Duration(days: 30)),
+    updatedAt: now.subtract(Duration(days: 1)),
     imagePath: null,
   );
 
@@ -34,8 +34,8 @@ List<AiFavoriteQaEntity> aiFavoriteMockData(Ref ref) {
     gender: 'female',
     weight: 3.8,
     ownerId: 'user1',
-    createdAt: now.subtract(const Duration(days: 20)),
-    updatedAt: now.subtract(const Duration(days: 1)),
+    createdAt: now.subtract(Duration(days: 20)),
+    updatedAt: now.subtract(Duration(days: 1)),
     imagePath: null,
   );
 
@@ -48,8 +48,8 @@ List<AiFavoriteQaEntity> aiFavoriteMockData(Ref ref) {
       pet: mockPet1,
       categoryId: 'health',
       categoryName: '健康',
-      createdAt: now.subtract(const Duration(days: 2)),
-      originalTimestamp: now.subtract(const Duration(days: 2, hours: 1)),
+      createdAt: now.subtract(Duration(days: 2)),
+      originalTimestamp: now.subtract(Duration(days: 2, hours: 1)),
     ),
     AiFavoriteQaEntity(
       id: 'fav2',
@@ -59,8 +59,8 @@ List<AiFavoriteQaEntity> aiFavoriteMockData(Ref ref) {
       pet: mockPet1,
       categoryId: 'exercise',
       categoryName: '運動',
-      createdAt: now.subtract(const Duration(days: 1)),
-      originalTimestamp: now.subtract(const Duration(days: 1, hours: 2)),
+      createdAt: now.subtract(Duration(days: 1)),
+      originalTimestamp: now.subtract(Duration(days: 1, hours: 2)),
     ),
     AiFavoriteQaEntity(
       id: 'fav3',
@@ -70,8 +70,8 @@ List<AiFavoriteQaEntity> aiFavoriteMockData(Ref ref) {
       pet: mockPet2,
       categoryId: 'feeding',
       categoryName: '食事',
-      createdAt: now.subtract(const Duration(hours: 5)),
-      originalTimestamp: now.subtract(const Duration(hours: 6)),
+      createdAt: now.subtract(Duration(hours: 5)),
+      originalTimestamp: now.subtract(Duration(hours: 6)),
     ),
     AiFavoriteQaEntity(
       id: 'fav4',
@@ -81,8 +81,8 @@ List<AiFavoriteQaEntity> aiFavoriteMockData(Ref ref) {
       pet: null,
       categoryId: 'general',
       categoryName: '一般',
-      createdAt: now.subtract(const Duration(hours: 3)),
-      originalTimestamp: now.subtract(const Duration(hours: 4)),
+      createdAt: now.subtract(Duration(hours: 3)),
+      originalTimestamp: now.subtract(Duration(hours: 4)),
     ),
     AiFavoriteQaEntity(
       id: 'fav5',
@@ -92,8 +92,8 @@ List<AiFavoriteQaEntity> aiFavoriteMockData(Ref ref) {
       pet: mockPet2,
       categoryId: 'behavior',
       categoryName: '行動',
-      createdAt: now.subtract(const Duration(hours: 8)),
-      originalTimestamp: now.subtract(const Duration(hours: 9)),
+      createdAt: now.subtract(Duration(hours: 8)),
+      originalTimestamp: now.subtract(Duration(hours: 9)),
     ),
     AiFavoriteQaEntity(
       id: 'fav6',
@@ -103,8 +103,8 @@ List<AiFavoriteQaEntity> aiFavoriteMockData(Ref ref) {
       pet: mockPet1,
       categoryId: 'grooming',
       categoryName: 'グルーミング',
-      createdAt: now.subtract(const Duration(hours: 12)),
-      originalTimestamp: now.subtract(const Duration(hours: 13)),
+      createdAt: now.subtract(Duration(hours: 12)),
+      originalTimestamp: now.subtract(Duration(hours: 13)),
     ),
   ];
 }

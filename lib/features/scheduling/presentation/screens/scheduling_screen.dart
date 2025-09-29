@@ -21,7 +21,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     return Scaffold(
       appBar: const SoftGradientAppBar(title: 'スケジュール管理'),
       body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -42,11 +42,11 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   Widget _buildAlarmSection() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             const Icon(Icons.alarm, color: AppColors.pointBrown, size: 24),
-            const SizedBox(width: AppSpacing.md),
+            const const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,12 +147,12 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: const const EdgeInsets.all(AppSpacing.md),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,

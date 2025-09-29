@@ -45,7 +45,7 @@ class UINotificationService {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: const const EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
@@ -80,7 +80,7 @@ class UINotificationService {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: const const EdgeInsets.all(AppSpacing.md),
         action: SnackBarAction(
           label: '닫기',
           textColor: Colors.white,
@@ -122,7 +122,7 @@ class UINotificationService {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: const const EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
@@ -157,7 +157,7 @@ class UINotificationService {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: const const EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
@@ -199,7 +199,7 @@ class UINotificationService {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.small),
         ),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: const const EdgeInsets.all(AppSpacing.md),
       ),
     );
   }

@@ -33,7 +33,7 @@ class ManageSplashSequenceUseCase {
     try {
       return await repository.determineNextRoute();
     } catch (error) {
-      return Failure(
+      return Result.failure(
         'ルート決定に失敗しました: ${error.toString()}',
         exception: error is Exception ? error : Exception(error.toString()),
       );

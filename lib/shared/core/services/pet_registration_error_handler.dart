@@ -110,7 +110,7 @@ class PetRegistrationErrorHandler {
         backgroundColor: Colors.red.shade600,
         duration: duration,
         behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(16),
+        margin: const const EdgeInsets.all(16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         action: SnackBarAction(
           label: '閉じる',
@@ -153,7 +153,7 @@ class PetRegistrationErrorHandler {
         backgroundColor: Colors.green.shade600,
         duration: duration,
         behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(16),
+        margin: const const EdgeInsets.all(16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );

@@ -38,15 +38,15 @@ class AdvancedAsyncUtils {
   }) async {
     try {
       final result = await future.timeout(timeout);
-      return ResultFactory.success(result);
+      return Result.success(result);
     } on TimeoutException {
-      return ResultFactory.failure(
+      return Result.failure(
         timeoutMessage ??
             'Operation timed out after ${timeout.inSeconds} seconds',
         code: 'TIMEOUT',
       );
     } catch (e) {
-      return ResultFactory.fromException(Exception(e.toString()));
+      return Result.fromException(Exception(e.toString()));
     }
   }
 
@@ -300,9 +300,9 @@ class AdvancedJsonUtils {
   static Result<String> toJson(dynamic object) {
     try {
       final json = jsonEncode(object);
-      return ResultFactory.success(json);
+      return Result.success(json);
     } catch (e) {
-      return ResultFactory.failure(
+      return Result.failure(
         'Failed to convert to JSON: ${e.toString()}',
         code: 'JSON_ENCODE_ERROR',
       );
@@ -317,9 +317,9 @@ class AdvancedJsonUtils {
     try {
       final json = jsonDecode(jsonString) as Map<String, dynamic>;
       final object = fromJsonConverter(json);
-      return ResultFactory.success(object);
+      return Result.success(object);
     } catch (e) {
-      return ResultFactory.failure(
+      return Result.failure(
         'Failed to parse JSON: ${e.toString()}',
         code: 'JSON_DECODE_ERROR',
       );
@@ -336,9 +336,9 @@ class AdvancedJsonUtils {
       final objects = jsonList
           .map((item) => fromJsonConverter(item as Map<String, dynamic>))
           .toList();
-      return ResultFactory.success(objects);
+      return Result.success(objects);
     } catch (e) {
-      return ResultFactory.failure(
+      return Result.failure(
         'Failed to parse JSON list: ${e.toString()}',
         code: 'JSON_DECODE_ERROR',
       );
@@ -354,7 +354,7 @@ class AdvancedJsonUtils {
       // TODO: 파일 읽기 구현 (path_provider 등 사용)
       throw UnimplementedError('File reading not implemented yet');
     } catch (e) {
-      return ResultFactory.failure(
+      return Result.failure(
         'Failed to load JSON from file: ${e.toString()}',
         code: 'FILE_READ_ERROR',
       );
@@ -506,7 +506,7 @@ extension DateTimeExtensions on DateTime {
 
   /// 날짜가 어제인지 확인
   bool get isYesterday {
-    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    final yesterday = DateTime.now().subtract(Duration(days: 1));
     return year == yesterday.year &&
         month == yesterday.month &&
         day == yesterday.day;
@@ -514,7 +514,7 @@ extension DateTimeExtensions on DateTime {
 
   /// 날짜가 내일인지 확인
   bool get isTomorrow {
-    final tomorrow = DateTime.now().add(const Duration(days: 1));
+    final tomorrow = DateTime.now().add(Duration(days: 1));
     return year == tomorrow.year &&
         month == tomorrow.month &&
         day == tomorrow.day;

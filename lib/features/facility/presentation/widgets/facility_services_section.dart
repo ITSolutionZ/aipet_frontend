@@ -33,8 +33,8 @@ class FacilityServicesSection extends StatelessWidget {
         Column(
           children: services.map((service) {
             return Container(
-              margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-              padding: const EdgeInsets.all(AppSpacing.md),
+              margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
+              padding: const const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(AppRadius.medium),

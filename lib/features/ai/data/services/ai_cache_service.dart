@@ -4,7 +4,7 @@ import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 ///
 /// AI 관련 데이터의 캐싱을 담당
 class AiCacheService extends BaseLoggingService {
-  static const Duration _cacheTimeout = Duration(minutes: 30);
+  static const Duration _cacheTimeout = const Duration(minutes: 30);
 
   // 캐시 저장소
   final Map<String, dynamic> _cache = {};

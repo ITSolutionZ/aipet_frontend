@@ -17,7 +17,7 @@ class AiCategorySelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -61,9 +61,14 @@ class AiCategorySelection extends StatelessWidget {
   }
 
   Widget _buildCategoryCard(AiCategoryEntity category, bool isSelected) {
-    return GestureDetector(
-      onTap: () => onCategorySelected(category),
-      child: AnimatedContainer(
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: '${category.name}カテゴリ: ${category.description}',
+      hint: isSelected ? '選択済み' : 'タップして選択',
+      child: GestureDetector(
+        onTap: () => onCategorySelected(category),
+        child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
           color: isSelected
@@ -92,18 +97,18 @@ class AiCategorySelection extends StatelessWidget {
                   ),
                 ],
         ),
-        padding: const EdgeInsets.all(AppSpacing.sm),
+        padding: const const EdgeInsets.all(AppSpacing.sm),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(AppSpacing.xs),
+              padding: const const EdgeInsets.all(AppSpacing.xs),
               decoration: BoxDecoration(
                 color: category.color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppRadius.small),
               ),
               child: Icon(category.icon, color: category.color, size: 20),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            const const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,6 +136,7 @@ class AiCategorySelection extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

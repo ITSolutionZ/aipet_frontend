@@ -113,7 +113,7 @@ class _AiChatHistoryListScreenState
 
             // 검색 바
             Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const const EdgeInsets.all(AppSpacing.md),
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
@@ -160,7 +160,7 @@ class _AiChatHistoryListScreenState
         // 검색 결과 수 표시
         if (_searchController.text.isNotEmpty)
           Container(
-            padding: const EdgeInsets.symmetric(
+            padding: const const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.sm,
             ),
@@ -171,7 +171,7 @@ class _AiChatHistoryListScreenState
                   size: 16,
                   color: AppColors.pointGray,
                 ),
-                const SizedBox(width: AppSpacing.xs),
+                const const SizedBox(width: AppSpacing.xs),
                 Text(
                   '$tabName: ${items.length}件のメッセージ',
                   style: AppFonts.bodySmall.copyWith(
@@ -189,7 +189,7 @@ class _AiChatHistoryListScreenState
               : items.isEmpty
               ? _buildEmptyTab(tabName)
               : ListView.builder(
-                  padding: const EdgeInsets.symmetric(
+                  padding: const const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                   ),
                   itemCount: items.length,
@@ -236,7 +236,7 @@ class _AiChatHistoryListScreenState
 
   Widget _buildHistoryItem(Map<String, dynamic> item) {
     return Card(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const const EdgeInsets.only(bottom: AppSpacing.md),
       elevation: 2,
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -246,7 +246,7 @@ class _AiChatHistoryListScreenState
         onTap: () => _openChatSession(item),
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: const const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -257,7 +257,7 @@ class _AiChatHistoryListScreenState
                     item['categoryIcon'] as IconData,
                     item['categoryColor'] as Color,
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  const const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,16 +277,16 @@ class _AiChatHistoryListScreenState
                               size: 14,
                               color: AppColors.pointGray,
                             ),
-                            const SizedBox(width: AppSpacing.xs),
+                            const const SizedBox(width: AppSpacing.xs),
                             Text(
                               item['petName'] as String,
                               style: AppFonts.bodySmall.copyWith(
                                 color: AppColors.pointGray,
                               ),
                             ),
-                            const SizedBox(width: AppSpacing.md),
+                            const const SizedBox(width: AppSpacing.md),
                             Container(
-                              padding: const EdgeInsets.symmetric(
+                              padding: const const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.sm,
                                 vertical: 2,
                               ),
@@ -336,20 +336,20 @@ class _AiChatHistoryListScreenState
                     size: 14,
                     color: AppColors.pointGray.withValues(alpha: 0.7),
                   ),
-                  const SizedBox(width: AppSpacing.xs),
+                  const const SizedBox(width: AppSpacing.xs),
                   Text(
                     _formatDateTime(item['lastMessageTime'] as DateTime),
                     style: AppFonts.bodySmall.copyWith(
                       color: AppColors.pointGray,
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.md),
+                  const const SizedBox(width: AppSpacing.md),
                   Icon(
                     Icons.chat_bubble_outline,
                     size: 14,
                     color: AppColors.pointGray.withValues(alpha: 0.7),
                   ),
-                  const SizedBox(width: AppSpacing.xs),
+                  const const SizedBox(width: AppSpacing.xs),
                   Text(
                     '${item['messageCount']}件のメッセージ',
                     style: AppFonts.bodySmall.copyWith(
@@ -367,7 +367,7 @@ class _AiChatHistoryListScreenState
 
   Widget _buildCategoryIcon(IconData iconData, Color color) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.sm),
+      padding: const const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),

@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/base_usecase_enhanced.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 📜 채팅 히스토리 로드 UseCase
 class LoadChatHistoryUseCase

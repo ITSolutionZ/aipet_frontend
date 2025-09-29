@@ -40,7 +40,7 @@ class ToggleSwitchComponent extends StatelessWidget {
         onChanged: onChanged,
         activeColor: AppColors.pointBlue,
       ),
-      contentPadding: const EdgeInsets.symmetric(
+      contentPadding: const const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.sm,
       ),

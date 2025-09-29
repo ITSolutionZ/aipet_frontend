@@ -26,16 +26,16 @@ class ProfileEditButtons extends StatelessWidget {
           // キャンセルボタン
           Expanded(
             child: ActionButton.outlined(
-              enabled: !isLoading,
+              isEnabled: !isLoading,
               onPressed: onCancel,
               text: 'キャンセル',
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
           // 保存ボタン
           Expanded(
             child: ActionButton.primary(
-              enabled: !isLoading,
+              isEnabled: !isLoading,
               onPressed: onSave,
               text: '保存',
               isLoading: isLoading,
@@ -45,10 +45,10 @@ class ProfileEditButtons extends StatelessWidget {
       );
     } else {
       return ActionButton.primary(
-        enabled: true,
+        isEnabled: true,
         onPressed: onEdit,
         text: '編集',
-        leading: const Icon(Icons.edit, color: Colors.white, size: 20),
+        icon: const Icon(Icons.edit, color: Colors.white, size: 20),
       );
     }
   }

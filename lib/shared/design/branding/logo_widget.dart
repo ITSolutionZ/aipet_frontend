@@ -28,7 +28,7 @@ class LogoWidget extends StatelessWidget {
           height: height,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) =>
-              SizedBox(width: width, height: height),
+              const SizedBox(width: width, height: height),
         ),
       ),
     );

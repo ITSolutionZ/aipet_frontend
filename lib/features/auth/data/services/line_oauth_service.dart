@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:http/http.dart' as http;
@@ -41,13 +41,13 @@ class LineOAuthService {
       // 4. 콜백 URL에서 인증 코드 추출
       final authCode = _extractAuthCode(result);
       if (authCode == null) {
-        return ResultFactory.failure('LINE ログインがキャンセルされました');
+        return Result.failure('LINE ログインがキャンセルされました');
       }
 
       // 5. 액세스 토큰 요청
       final tokenResult = await _requestAccessToken(authCode, state);
       if (!tokenResult.isSuccess) {
-        return ResultFactory.failure(
+        return Result.failure(
           tokenResult.errorOrNull ?? 'LINE ログインに失敗しました',
         );
       }
@@ -55,17 +55,17 @@ class LineOAuthService {
       // 6. 사용자 프로필 정보 요청
       final profileResult = await _requestUserProfile(tokenResult.dataOrNull!);
       if (!profileResult.isSuccess) {
-        return ResultFactory.failure(
+        return Result.failure(
           profileResult.errorOrNull ?? 'LINE プロフィールの取得に失敗しました',
         );
       }
 
-      return ResultFactory.success(
+      return Result.success(
         profileResult.dataOrNull!,
         'LINEログインが完了しました',
       );
     } catch (e) {
-      return ResultFactory.failure('LINE ログインに失敗しました: ${e.toString()}');
+      return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
     }
   }
 
@@ -159,12 +159,12 @@ class LineOAuthService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final tokenInfo = LineTokenInfo.fromJson(data);
-        return ResultFactory.success(tokenInfo, '토큰 획득 성공');
+        return Result.success(tokenInfo, '토큰 획득 성공');
       } else {
-        return ResultFactory.failure('LINE トークンの取得に失敗しました');
+        return Result.failure('LINE トークンの取得に失敗しました');
       }
     } catch (e) {
-      return ResultFactory.failure('LINE トークンの取得に失敗しました: ${e.toString()}');
+      return Result.failure('LINE トークンの取得に失敗しました: ${e.toString()}');
     }
   }
 
@@ -181,12 +181,12 @@ class LineOAuthService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final userInfo = LineUserInfo.fromJson(data);
-        return ResultFactory.success(userInfo, '프로필 정보 획득 성공');
+        return Result.success(userInfo, '프로필 정보 획득 성공');
       } else {
-        return ResultFactory.failure('LINE プロフィールの取得に失敗しました');
+        return Result.failure('LINE プロフィールの取得に失敗しました');
       }
     } catch (e) {
-      return ResultFactory.failure('LINE プロフィールの取得に失敗しました: ${e.toString()}');
+      return Result.failure('LINE プロフィールの取得に失敗しました: ${e.toString()}');
     }
   }
 }
@@ -200,7 +200,7 @@ class LineTokenInfo {
   final String scope;
   final String tokenType;
 
-  LineTokenInfo({
+  const LineTokenInfo({
     required this.accessToken,
     this.refreshToken,
     required this.expiresIn,
@@ -228,7 +228,7 @@ class LineUserInfo {
   final String? pictureUrl;
   final String? statusMessage;
 
-  LineUserInfo({
+  const LineUserInfo({
     required this.userId,
     required this.displayName,
     this.pictureUrl,

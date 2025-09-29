@@ -27,7 +27,7 @@ class ToggleSwitchUI extends StatelessWidget {
           Container(
             width: 48,
             height: 48,
-            margin: const EdgeInsets.only(right: AppSpacing.md),
+            margin: const const EdgeInsets.only(right: AppSpacing.md),
             decoration: BoxDecoration(
               color: AppColors.pointBrown.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.medium),

@@ -23,7 +23,7 @@ class MemoryOptimizer {
 
   // 최적화 설정
   static const int _maxHistorySize = 100;
-  static const Duration _optimizationInterval = Duration(seconds: 30);
+  static const Duration _optimizationInterval = const Duration(seconds: 30);
 
   /// 메모리 최적화 시작
   void startOptimization() {
@@ -296,7 +296,7 @@ class MemoryOptimizer {
 
   /// 오래된 스냅샷 정리
   void _cleanupOldSnapshots() {
-    final cutoffTime = DateTime.now().subtract(const Duration(hours: 1));
+    final cutoffTime = DateTime.now().subtract(Duration(hours: 1));
     _memoryHistory.removeWhere(
       (snapshot) => snapshot.timestamp.isBefore(cutoffTime),
     );
@@ -366,7 +366,7 @@ class MemoryOptimizer {
     }
 
     final now = DateTime.now();
-    final lastHour = now.subtract(const Duration(hours: 1));
+    final lastHour = now.subtract(Duration(hours: 1));
 
     // 최근 1시간 데이터 필터링
     final recentSnapshots = _memoryHistory

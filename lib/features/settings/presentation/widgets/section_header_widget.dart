@@ -9,7 +9,7 @@ class SectionHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
+      padding: const const EdgeInsets.only(
         left: AppSpacing.sm,
         bottom: AppSpacing.sm,
         top: AppSpacing.sm,

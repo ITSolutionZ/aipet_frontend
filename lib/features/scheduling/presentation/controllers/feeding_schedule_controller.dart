@@ -118,7 +118,7 @@ class FeedingScheduleController extends BaseController {
         ),
       ];
 
-      return Result.success('스케줄 설정이 로드되었습니다', scheduleItems);
+      return Success(scheduleItems);
     } catch (error) {
       return Result.failure('스케줄 설정 로드 실패: $error');
     }
@@ -129,7 +129,7 @@ class FeedingScheduleController extends BaseController {
     try {
       // Mock update logic - 실제로는 repository를 통해 저장
       await Future.delayed(const Duration(milliseconds: 500));
-      return Result.success('스케줄이 업데이트되었습니다', item);
+      return Success(item);
     } catch (error) {
       return Result.failure('스케줄 업데이트 실패: $error');
     }
@@ -153,7 +153,7 @@ class FeedingScheduleController extends BaseController {
         'timestamp': DateTime.now(),
       };
 
-      return Result.success('급여 기록이 추가되었습니다', record);
+      return Success(record);
     } catch (error) {
       return Result.failure('급여 기록 추가 실패: $error');
     }
@@ -231,7 +231,7 @@ class FeedingScheduleController extends BaseController {
       if (firstItem.isEnabled) {
         final hour = _parseHour(firstItem.time);
         final minute = _parseMinute(firstItem.time);
-        final tomorrow = today.add(const Duration(days: 1));
+        final tomorrow = today.add(Duration(days: 1));
         return tomorrow.add(Duration(hours: hour, minutes: minute));
       }
     }

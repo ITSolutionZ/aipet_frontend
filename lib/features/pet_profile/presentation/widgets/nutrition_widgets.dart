@@ -22,7 +22,7 @@ class FoodTypeCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.pointBrown.withValues(alpha: 0.1)
@@ -95,7 +95,7 @@ class NutritionItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
@@ -118,7 +118,7 @@ class NutritionItemCard extends StatelessWidget {
               ),
               child: Icon(icon, color: iconColor, size: 24),
             ),
-            const SizedBox(width: AppSpacing.lg),
+            const const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Text(
                 title,
@@ -168,7 +168,7 @@ class ScheduledMealCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -201,14 +201,14 @@ class ScheduledMealCard extends StatelessWidget {
                       size: 16,
                       color: Colors.grey,
                     ),
-                    const SizedBox(width: AppSpacing.xs),
+                    const const SizedBox(width: AppSpacing.xs),
                     Text(
                       schedule,
                       style: AppFonts.bodyMedium.copyWith(color: Colors.grey),
                     ),
-                    const SizedBox(width: AppSpacing.md),
+                    const const SizedBox(width: AppSpacing.md),
                     const Icon(Icons.access_time, size: 16, color: Colors.grey),
-                    const SizedBox(width: AppSpacing.xs),
+                    const const SizedBox(width: AppSpacing.xs),
                     Text(
                       time,
                       style: AppFonts.bodyMedium.copyWith(color: Colors.grey),
@@ -283,7 +283,7 @@ class NutritionTab extends ConsumerWidget {
     final notifier = ref.read(nutritionTabProvider(petId).notifier);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -298,7 +298,7 @@ class NutritionTab extends ConsumerWidget {
                   onTap: () => notifier.selectFoodType('kibble'),
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: FoodTypeCard(
                   icon: Icons.restaurant,

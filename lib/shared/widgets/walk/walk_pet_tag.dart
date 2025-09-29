@@ -15,7 +15,7 @@ class WalkPetTag extends StatelessWidget {
     final tagIcon = icon ?? Icons.pets;
 
     return Container(
-      padding: const EdgeInsets.symmetric(
+      padding: const const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),

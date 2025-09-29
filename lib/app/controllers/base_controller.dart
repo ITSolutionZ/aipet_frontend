@@ -164,7 +164,7 @@ abstract class BaseController {
   /// 타임아웃이 있는 안전한 비동기 작업 실행
   Future<T?> safeExecuteWithTimeout<T>(
     Future<T> Function() action, {
-    Duration timeout = const Duration(seconds: 30),
+    Duration timeout = const const Duration(seconds: 30),
     String? errorMessage,
   }) async {
     try {
@@ -189,7 +189,7 @@ abstract class BaseController {
   Future<T?> safeExecuteWithRetry<T>(
     Future<T> Function() action, {
     int maxRetries = 3,
-    Duration retryDelay = const Duration(seconds: 1),
+    Duration retryDelay = const const Duration(seconds: 1),
     String? errorMessage,
   }) async {
     int attempts = 0;
@@ -215,12 +215,12 @@ abstract class BaseController {
 
   /// 성공 결과 생성 헬퍼
   Result<T> success<T>(String message, T data) {
-    return ResultFactory.success(data, message);
+    return Result.success(message, data);
   }
 
   /// 실패 결과 생성 헬퍼
   Result<T> failure<T>(String message, [Exception? error]) {
-    return ResultFactory.failure(message);
+    return Result.failure(message);
   }
 
   /// 비동기 작업을 Result로 래핑
@@ -231,9 +231,9 @@ abstract class BaseController {
   }) async {
     try {
       final data = await asyncFunction();
-      return ResultFactory.success(data, successMessage ?? '操作が完了しました');
+      return Result.success(successMessage ?? '操作が完了しました', data);
     } catch (e) {
-      return ResultFactory.failure(
+      return Result.failure(
         failureMessage ?? '操作に失敗しました: ${e.toString()}',
       );
     }
@@ -247,9 +247,9 @@ abstract class BaseController {
   }) {
     try {
       final data = syncFunction();
-      return ResultFactory.success(data, successMessage ?? '操作が完了しました');
+      return Result.success(successMessage ?? '操作が完了しました', data);
     } catch (e) {
-      return ResultFactory.failure(
+      return Result.failure(
         failureMessage ?? '操作に失敗しました: ${e.toString()}',
       );
     }
@@ -263,9 +263,9 @@ abstract class BaseController {
     String? failureMessage,
   }) {
     if (condition) {
-      return ResultFactory.success(data, successMessage ?? '操作が完了しました');
+      return Result.success(successMessage ?? '操作が完了しました', data);
     } else {
-      return ResultFactory.failure(failureMessage ?? '条件が満たされていません');
+      return Result.failure(failureMessage ?? '条件が満たされていません');
     }
   }
 
@@ -276,9 +276,9 @@ abstract class BaseController {
     String? failureMessage,
   }) {
     if (data != null) {
-      return ResultFactory.success(data, successMessage ?? 'データが見つかりました');
+      return Result.success(successMessage ?? 'データが見つかりました', data);
     } else {
-      return ResultFactory.failure(failureMessage ?? 'データが見つかりませんでした');
+      return Result.failure(failureMessage ?? 'データが見つかりませんでした');
     }
   }
 
@@ -286,61 +286,61 @@ abstract class BaseController {
 
   /// 공통 성공 메시지들
   Result<T> successSaved<T>(T data) =>
-      ResultFactory.success(data, AppTexts.saved);
+      Result.success(AppTexts.saved, data);
   Result<T> successUpdated<T>(T data) =>
-      ResultFactory.success(data, AppTexts.updated);
+      Result.success(AppTexts.updated, data);
   Result<T> successDeleted<T>(T data) =>
-      ResultFactory.success(data, AppTexts.deleted);
+      Result.success(AppTexts.deleted, data);
   Result<T> successAdded<T>(T data) =>
-      ResultFactory.success(data, AppTexts.added);
+      Result.success(AppTexts.added, data);
   Result<T> successCompleted<T>(T data) =>
-      ResultFactory.success(data, AppTexts.completed);
+      Result.success(AppTexts.completed, data);
 
   /// 공통 실패 메시지들
   Result<T> failureSave<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.error);
+      Result.failure(AppTexts.error);
   Result<T> failureUpdate<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.error);
+      Result.failure(AppTexts.error);
   Result<T> failureDelete<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.error);
+      Result.failure(AppTexts.error);
   Result<T> failureAdd<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.error);
+      Result.failure(AppTexts.error);
   Result<T> failureLoad<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.error);
+      Result.failure(AppTexts.error);
 
   /// 네트워크 관련 Result 생성
   Result<T> networkError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.networkError);
+      Result.failure(AppTexts.networkError);
   Result<T> serverError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.serverError);
+      Result.failure(AppTexts.serverError);
   Result<T> timeoutError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.timeoutError);
+      Result.failure(AppTexts.timeoutError);
   Result<T> connectionError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.connectionError);
+      Result.failure(AppTexts.connectionError);
 
   /// 검증 관련 Result 생성
   Result<T> validationError<T>(String message) =>
-      ResultFactory.failure(message);
+      Result.failure(message);
   Result<T> requiredFieldError<T>(String fieldName) =>
-      ResultFactory.failure('$fieldName${AppTexts.requiredField}');
+      Result.failure('$fieldName${AppTexts.requiredField}');
   Result<T> invalidFormatError<T>(String fieldName) =>
-      ResultFactory.failure('$fieldName${AppTexts.invalidFormat}');
+      Result.failure('$fieldName${AppTexts.invalidFormat}');
 
   /// 권한 관련 Result 생성
   Result<T> permissionError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.permissionError);
+      Result.failure(AppTexts.permissionError);
   Result<T> unauthorizedError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.unauthorizedError);
+      Result.failure(AppTexts.unauthorizedError);
   Result<T> forbiddenError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.forbiddenError);
+      Result.failure(AppTexts.forbiddenError);
 
   /// 파일 관련 Result 생성
   Result<T> fileUploadError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.fileUploadFailed);
+      Result.failure(AppTexts.fileUploadFailed);
   Result<T> fileDownloadError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.fileDownloadFailed);
+      Result.failure(AppTexts.fileDownloadFailed);
   Result<T> fileNotFoundError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.fileNotFound);
+      Result.failure(AppTexts.fileNotFound);
   Result<T> fileSizeError<T>([Exception? error]) =>
-      ResultFactory.failure(AppTexts.fileSizeExceeded);
+      Result.failure(AppTexts.fileSizeExceeded);
 }

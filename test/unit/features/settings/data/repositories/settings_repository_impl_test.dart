@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/features/settings/data/repositories/settings_repository_impl.dart';
-import 'package:aipet_frontend/features/settings/domain/entities/user_profile_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,10 +21,10 @@ void main() {
       // Assert
       expect(result, isA<Result<UserProfileEntity>>());
       expect(result.isSuccess, isTrue);
-      expect(result.data, isA<UserProfileEntity>());
-      expect(result.data!.id, equals('user-1'));
-      expect(result.data!.name, equals('田中太郎'));
-      expect(result.data!.email, equals('tanaka@example.com'));
+      expect(result.dataOrNull, isA<UserProfileEntity>());
+      expect(result.dataOrNull!.id, equals('user-1'));
+      expect(result.dataOrNull!.name, equals('田中太郎'));
+      expect(result.dataOrNull!.email, equals('tanaka@example.com'));
     });
 
     test('should return app settings when getAppSettings is called', () async {
@@ -35,13 +34,13 @@ void main() {
       // Assert
       expect(result, isA<Result<AppSettingsEntity>>());
       expect(result.isSuccess, isTrue);
-      expect(result.data, isA<AppSettingsEntity>());
-      expect(result.data!.language, equals('ja'));
-      expect(result.data!.theme, equals(ThemeMode.light));
-      expect(result.data!.notificationsEnabled, isTrue);
-      expect(result.data!.autoBackup, isTrue);
-      expect(result.data!.biometricLogin, isFalse);
-      expect(result.data!.syncFrequency, equals(DataSyncFrequency.daily));
+      expect(result.dataOrNull, isA<AppSettingsEntity>());
+      expect(result.dataOrNull!.language, equals('ja'));
+      expect(result.dataOrNull!.theme, equals(ThemeMode.light));
+      expect(result.dataOrNull!.notificationsEnabled, isTrue);
+      expect(result.dataOrNull!.autoBackup, isTrue);
+      expect(result.dataOrNull!.biometricLogin, isFalse);
+      expect(result.dataOrNull!.syncFrequency, equals(DataSyncFrequency.daily));
     });
 
     test('should return success when updateUserProfile is called', () async {
@@ -61,7 +60,7 @@ void main() {
       // Assert
       expect(result, isA<Result<UserProfileEntity>>());
       expect(result.isSuccess, isTrue);
-      expect(result.data, isA<UserProfileEntity>());
+      expect(result.dataOrNull, isA<UserProfileEntity>());
     });
 
     test('should return success when saveAppSettings is called', () async {
@@ -81,7 +80,7 @@ void main() {
       // Assert
       expect(result, isA<Result<AppSettingsEntity>>());
       expect(result.isSuccess, isTrue);
-      expect(result.data, isA<AppSettingsEntity>());
+      expect(result.dataOrNull, isA<AppSettingsEntity>());
     });
 
     test(
@@ -119,7 +118,7 @@ void main() {
         // Assert
         expect(result, isA<Result<void>>());
         expect(result.isSuccess, isFalse);
-        expect(result.message, contains('無効なパスワード変更リクエストです'));
+        expect(result.errorOrNull, contains('無効なパスワード変更リクエストです'));
       },
     );
 
@@ -139,10 +138,10 @@ void main() {
       // Assert
       expect(result, isA<Result<DataExportResult>>());
       expect(result.isSuccess, isTrue);
-      expect(result.data, isA<DataExportResult>());
-      expect(result.data!.success, isTrue);
-      expect(result.data!.filePath, isNotNull);
-      expect(result.data!.exportedAt, isA<DateTime>());
+      expect(result.dataOrNull, isA<DataExportResult>());
+      expect(result.dataOrNull!.success, isTrue);
+      expect(result.dataOrNull!.filePath, isNotNull);
+      expect(result.dataOrNull!.exportedAt, isA<DateTime>());
     });
 
     test('should return success when importAppData is called', () async {
@@ -195,8 +194,8 @@ void main() {
       // Assert
       expect(result, isA<Result<int>>());
       expect(result.isSuccess, isTrue);
-      expect(result.data, isA<int>());
-      expect(result.data, equals(1024 * 1024 * 5)); // 5MB
+      expect(result.dataOrNull, isA<int>());
+      expect(result.dataOrNull, equals(1024 * 1024 * 5)); // 5MB
     });
   });
 }

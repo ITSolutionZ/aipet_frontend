@@ -1,6 +1,6 @@
-import 'package:aipet_frontend/features/onboarding/domain/entities/vaccine_record_entity.dart';
-import 'package:aipet_frontend/features/onboarding/domain/entities/weight_record_entity.dart';
-import 'package:aipet_frontend/features/onboarding/domain/repositories/pet_health_repository.dart';
+import 'package:aipet_frontend/features/pet_health/domain/entities/vaccine_record_entity.dart';
+import 'package:aipet_frontend/features/pet_health/domain/entities/weight_record_entity.dart';
+import 'package:aipet_frontend/features/pet_health/domain/repositories/pet_health_repository.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/pet_health/pet_health_mock_service.dart';
 
 class PetHealthRepositoryImpl implements PetHealthRepository {

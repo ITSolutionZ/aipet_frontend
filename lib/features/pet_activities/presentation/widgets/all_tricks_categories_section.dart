@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/features/pet_activities/presentation/widgets/trick_category_card.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/trick_category_card.dart';
 import 'package:flutter/material.dart';
 
 /// 모든 트릭 카테고리 섹션

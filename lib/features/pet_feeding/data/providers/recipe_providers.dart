@@ -1,8 +1,8 @@
-import 'package:aipet_frontend/features/onboarding/domain/entities/recipe_entity.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/create_recipe_usecase.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/delete_recipe_usecase.dart';
-import 'package:aipet_frontend/features/onboarding/domain/usecases/get_all_recipes_usecase.dart';
-import 'package:aipet_frontend/shared/repositories/recipe_repository_impl.dart';
+import 'package:aipet_frontend/features/pet_feeding/data/repositories/recipe_repository_impl.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/entities/recipe_entity.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/usecases/create_recipe_usecase.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/usecases/delete_recipe_usecase.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/usecases/get_all_recipes_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

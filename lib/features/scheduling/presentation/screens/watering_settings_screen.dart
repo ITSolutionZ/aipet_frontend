@@ -26,7 +26,7 @@ class _WateringSettingsScreenState
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientAppBar(title: '給水設定'),
       body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class _WateringSettingsScreenState
   Widget _buildAutoWateringSection() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -93,7 +93,7 @@ class _WateringSettingsScreenState
   Widget _buildWaterAmountSection() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -131,7 +131,7 @@ class _WateringSettingsScreenState
   Widget _buildNotificationSection() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -192,7 +192,7 @@ class _WateringSettingsScreenState
   Widget _buildWateringDeviceSection() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -242,7 +242,7 @@ class _WateringSettingsScreenState
   Widget _buildAdvancedSection() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

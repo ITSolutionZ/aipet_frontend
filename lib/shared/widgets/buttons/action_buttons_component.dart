@@ -23,12 +23,12 @@ class ActionButtonsComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Card(
         color: Colors.white,
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -49,7 +49,7 @@ class ActionButtonsComponent extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
+                    padding: const const EdgeInsets.symmetric(
                       vertical: AppSpacing.md,
                     ),
                   ),
@@ -65,7 +65,7 @@ class ActionButtonsComponent extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.pointPink,
                     side: const BorderSide(color: AppColors.pointPink),
-                    padding: const EdgeInsets.symmetric(
+                    padding: const const EdgeInsets.symmetric(
                       vertical: AppSpacing.md,
                     ),
                   ),

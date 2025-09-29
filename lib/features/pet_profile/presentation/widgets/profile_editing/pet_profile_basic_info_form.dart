@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_form_controller.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,9 +21,9 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
     final formController = ref.read(petProfileFormControllerProvider.notifier);
 
     return Card(
-      margin: const EdgeInsets.all(AppSpacing.md),
+      margin: const const EdgeInsets.all(AppSpacing.md),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           children: [
             // 프로필 이미지
@@ -134,7 +134,7 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
     return Row(
       children: [
         Icon(icon, color: AppColors.pointBrown, size: 20),
-        const SizedBox(width: AppSpacing.sm),
+        const const SizedBox(width: AppSpacing.sm),
         Text(
           '$label: ',
           style: AppFonts.bodyMedium.copyWith(

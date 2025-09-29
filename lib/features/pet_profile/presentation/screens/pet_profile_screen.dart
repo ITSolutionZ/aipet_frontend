@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_controller.dart';
-import 'package:aipet_frontend/features/pet_profile/presentation/widgets/pet_profile_widgets.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,7 +49,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    final petAsyncValue = ref.watch(petByIdProvider(widget.petId));
+    final petAsyncValue = ref.watch(petProfileByIdProvider(widget.petId));
 
     return petAsyncValue.when(
       loading: () => const _LoadingScreen(),
@@ -222,11 +222,14 @@ class _PetProfileContentState extends ConsumerState<_PetProfileContent> {
           Expanded(child: _PetProfileTabContent(pet: widget.pet)),
         ],
       ),
-      bottomNavigationBar: PetProfileActionButtons(
-        pet: widget.pet,
-        onEditComplete: () {
-          // 편집 완료 후 추가 작업이 필요하면 여기에 구현
-        },
+      bottomNavigationBar: Container(
+        padding: const const EdgeInsets.all(AppSpacing.lg),
+        child: ElevatedButton(
+          onPressed: () {
+            // 편집 기능 구현
+          },
+          child: const Text('編集'),
+        ),
       ),
     );
   }
@@ -296,10 +299,14 @@ class _BasicInfoTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 100), // 하단 버튼 공간 확보
-      child: PetProfileBasicInfoForm(
-        pet: pet,
-        onImageTap: () => PetProfileImagePicker.show(context, ref),
+      padding: const const EdgeInsets.only(bottom: 100), // 하단 버튼 공간 확보
+      child: Column(
+        children: [
+          Text('名前: ${pet.name}'),
+          Text('種類: ${pet.type}'),
+          Text('性別: ${pet.gender}'),
+          Text('体重: ${pet.weight}kg'),
+        ],
       ),
     );
   }

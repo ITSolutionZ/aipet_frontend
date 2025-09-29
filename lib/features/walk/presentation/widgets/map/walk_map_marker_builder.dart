@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/data/walk_providers.dart';
-import 'package:aipet_frontend/domain/entities/walk_location_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

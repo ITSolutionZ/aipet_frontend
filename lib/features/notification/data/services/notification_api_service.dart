@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
@@ -73,7 +73,7 @@ class NotificationApiService {
           debugPrint('[$_tag] ✅ 알림 조회 성공: ${notifications.length}개');
         }
 
-        return ResultFactory.success(
+        return Result.success(
           notifications,
           'Notifications fetched successfully',
         );
@@ -82,14 +82,14 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ❌ $errorMessage');
         }
-        return ResultFactory.failure(errorMessage);
+        return Result.failure(errorMessage);
       }
     } catch (error) {
       final errorMessage = '알림 조회 중 오류 발생: $error';
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ $errorMessage');
       }
-      return ResultFactory.failure(errorMessage);
+      return Result.failure(errorMessage);
     }
   }
 
@@ -119,20 +119,20 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 읽음 상태 업데이트 성공: $notificationId');
         }
-        return ResultFactory.success(true, 'Notification read status updated');
+        return Result.success(true, 'Notification read status updated');
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
         if (kDebugMode) {
           debugPrint('[$_tag] ❌ $errorMessage');
         }
-        return ResultFactory.failure(errorMessage);
+        return Result.failure(errorMessage);
       }
     } catch (error) {
       final errorMessage = '읽음 상태 업데이트 중 오류 발생: $error';
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ $errorMessage');
       }
-      return ResultFactory.failure(errorMessage);
+      return Result.failure(errorMessage);
     }
   }
 
@@ -155,20 +155,20 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 삭제 성공: $notificationId');
         }
-        return ResultFactory.success(true, 'Notification deleted successfully');
+        return Result.success(true, 'Notification deleted successfully');
       } else {
         final errorMessage = 'API 요청 실패: ${response.statusCode}';
         if (kDebugMode) {
           debugPrint('[$_tag] ❌ $errorMessage');
         }
-        return ResultFactory.failure(errorMessage);
+        return Result.failure(errorMessage);
       }
     } catch (error) {
       final errorMessage = '알림 삭제 중 오류 발생: $error';
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ $errorMessage');
       }
-      return ResultFactory.failure(errorMessage);
+      return Result.failure(errorMessage);
     }
   }
 
@@ -194,7 +194,7 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 설정 조회 성공');
         }
-        return ResultFactory.success(
+        return Result.success(
           settings,
           'Notification settings fetched successfully',
         );
@@ -203,14 +203,14 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ❌ $errorMessage');
         }
-        return ResultFactory.failure(errorMessage);
+        return Result.failure(errorMessage);
       }
     } catch (error) {
       final errorMessage = '알림 설정 조회 중 오류 발생: $error';
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ $errorMessage');
       }
-      return ResultFactory.failure(errorMessage);
+      return Result.failure(errorMessage);
     }
   }
 
@@ -238,7 +238,7 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 설정 업데이트 성공');
         }
-        return ResultFactory.success(
+        return Result.success(
           true,
           'Notification settings updated successfully',
         );
@@ -247,14 +247,14 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ❌ $errorMessage');
         }
-        return ResultFactory.failure(errorMessage);
+        return Result.failure(errorMessage);
       }
     } catch (error) {
       final errorMessage = '알림 설정 업데이트 중 오류 발생: $error';
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ $errorMessage');
       }
-      return ResultFactory.failure(errorMessage);
+      return Result.failure(errorMessage);
     }
   }
 
@@ -280,7 +280,7 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 알림 통계 조회 성공');
         }
-        return ResultFactory.success(
+        return Result.success(
           stats,
           'Notification stats fetched successfully',
         );
@@ -289,14 +289,14 @@ class NotificationApiService {
         if (kDebugMode) {
           debugPrint('[$_tag] ❌ $errorMessage');
         }
-        return ResultFactory.failure(errorMessage);
+        return Result.failure(errorMessage);
       }
     } catch (error) {
       final errorMessage = '알림 통계 조회 중 오류 발생: $error';
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ $errorMessage');
       }
-      return ResultFactory.failure(errorMessage);
+      return Result.failure(errorMessage);
     }
   }
 

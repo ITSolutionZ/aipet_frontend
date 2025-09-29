@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/validation_service.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 
 /// 🛡️ 입력 검증 강화 서비스
@@ -8,63 +8,6 @@ import 'package:flutter/foundation.dart';
 /// XSS, SQL Injection, 악성 스크립트 등 보안 위협을 차단합니다.
 class InputValidationService {
   static const _tag = 'InputValidationService';
-
-  /// XSS 공격 패턴 (확장된 패턴)
-  static final List<RegExp> _xssPatterns = [
-    RegExp(r'<script[^>]*>.*?</script>', caseSensitive: false),
-    RegExp(r'javascript:', caseSensitive: false),
-    RegExp(r'on\w+\s*=', caseSensitive: false),
-    RegExp(r'<iframe[^>]*>.*?</iframe>', caseSensitive: false),
-    RegExp(r'<object[^>]*>.*?</object>', caseSensitive: false),
-    RegExp(r'<embed[^>]*>', caseSensitive: false),
-    RegExp(r'<applet[^>]*>.*?</applet>', caseSensitive: false),
-    RegExp(r'expression\s*\(', caseSensitive: false),
-    RegExp(r'vbscript:', caseSensitive: false),
-    RegExp(r'data:text/html', caseSensitive: false),
-    RegExp(r'<img[^>]*src\s*=\s*["\']javascript:', caseSensitive: false),
-    RegExp(r'<link[^>]*href\s*=\s*["\']javascript:', caseSensitive: false),
-    RegExp(r'<meta[^>]*content\s*=.*?javascript:', caseSensitive: false),
-  ];
-
-  /// SQL Injection 패턴
-  static final List<RegExp> _sqlInjectionPatterns = [
-    RegExp(r'(\b(select|insert|update|delete|drop|create|alter|exec|execute)\b)', caseSensitive: false),
-    RegExp(r'(\bunion\s+select\b)', caseSensitive: false),
-    RegExp(r'(\bor\s+1\s*=\s*1\b)', caseSensitive: false),
-    RegExp(r'(\band\s+1\s*=\s*1\b)', caseSensitive: false),
-    RegExp(r'(\bhaving\s+\d+\s*=\s*\d+\b)', caseSensitive: false),
-    RegExp(r'(\bwaitfor\s+delay\b)', caseSensitive: false),
-    RegExp(r'([\'"]s*;s*drops+table)', caseSensitive: false),
-    RegExp(r'(--\s*$)', multiLine: true),
-    RegExp(r'(/\*.*?\*/)', dotAll: true),
-    RegExp(r'(\bcast\s*\()', caseSensitive: false),
-  ];
-
-  /// 명령어 실행 패턴
-  static final List<RegExp> _commandInjectionPatterns = [
-    RegExp(r'(\b(cmd|powershell|bash|sh|exec|system|eval)\s*[\("])', caseSensitive: false),
-    RegExp(r'(\|\s*(rm|del|format|fdisk))', caseSensitive: false),
-    RegExp(r'(&&\s*(rm|del|format))', caseSensitive: false),
-    RegExp(r'(;\s*(rm|del|format))', caseSensitive: false),
-    RegExp(r'(`.*?`)', caseSensitive: false),
-    RegExp(r'(\$\(.*?\))', caseSensitive: false),
-  ];
-
-  /// 파일 경로 탐색 패턴
-  static final List<RegExp> _pathTraversalPatterns = [
-    RegExp(r'\.\.[\\/]'),
-    RegExp(r'[\\/]\.\.[\\/]'),
-    RegExp(r'\.\.%2[fF]'),
-    RegExp(r'%2[eE]%2[eE]%2[fF]'),
-    RegExp(r'\.\.\\'),
-    RegExp(r'\\\.\.\\'),
-  ];
-
-  /// 특수 제어 문자 패턴
-  static final List<RegExp> _controlCharPatterns = [
-    RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]'), // 제어 문자
-    RegExp(r'[\uFEFF\uFFFE\uFFFF]'), // BOM 및 특수 문자
-  ];
 
   /// 포괄적 입력 검증
   ///
@@ -85,78 +28,167 @@ class InputValidationService {
       // 1. 기본 null/empty 검사
       if (input == null || input.trim().isEmpty) {
         if (isRequired) {
-          return ResultFactory.failure('$fieldNameは必須項目です');
+          return Result.failure('$fieldNameは必須項目です');
         }
-        return ResultFactory.success('', 'Empty input allowed');
+        return Result.success('', 'Empty input allowed');
       }
 
       final trimmedInput = input.trim();
 
       // 2. 길이 검사
       if (maxLength != null && trimmedInput.length > maxLength) {
-        return ResultFactory.failure('$fieldNameは$maxLength文字以下で入力してください');
+        return Result.failure('$fieldNameは$maxLength文字以下で入力してください');
       }
 
       // 3. XSS 공격 패턴 검사
       if (!allowHtml) {
-        for (final pattern in _xssPatterns) {
-          if (pattern.hasMatch(trimmedInput)) {
-            _logSecurityThreat('XSS attempt detected', fieldName, trimmedInput);
-            return ResultFactory.failure('$fieldNameに不正な文字が含まれています');
-          }
+        if (_containsXssPatterns(trimmedInput)) {
+          _logSecurityThreat('XSS attempt detected', fieldName, trimmedInput);
+          return Result.failure('$fieldNameに不正な文字が含まれています');
         }
       }
 
       // 4. SQL Injection 패턴 검사
-      for (final pattern in _sqlInjectionPatterns) {
-        if (pattern.hasMatch(trimmedInput)) {
-          _logSecurityThreat('SQL injection attempt detected', fieldName, trimmedInput);
-          return ResultFactory.failure('$fieldNameに不正なSQL文字列が含まれています');
-        }
+      if (_containsSqlInjectionPatterns(trimmedInput)) {
+        _logSecurityThreat(
+          'SQL injection attempt detected',
+          fieldName,
+          trimmedInput,
+        );
+        return Result.failure('$fieldNameに不正なSQL文字列が含まれています');
       }
 
       // 5. 명령어 실행 패턴 검사
-      for (final pattern in _commandInjectionPatterns) {
-        if (pattern.hasMatch(trimmedInput)) {
-          _logSecurityThreat('Command injection attempt detected', fieldName, trimmedInput);
-          return ResultFactory.failure('$fieldNameに不正なコマンドが含まれています');
-        }
+      if (_containsCommandInjectionPatterns(trimmedInput)) {
+        _logSecurityThreat(
+          'Command injection attempt detected',
+          fieldName,
+          trimmedInput,
+        );
+        return Result.failure('$fieldNameに不正なコマンドが含まれています');
       }
 
       // 6. 파일 경로 탐색 패턴 검사
-      for (final pattern in _pathTraversalPatterns) {
-        if (pattern.hasMatch(trimmedInput)) {
-          _logSecurityThreat('Path traversal attempt detected', fieldName, trimmedInput);
-          return ResultFactory.failure('$fieldNameに不正なパス文字列が含まれています');
-        }
+      if (_containsPathTraversalPatterns(trimmedInput)) {
+        _logSecurityThreat(
+          'Path traversal attempt detected',
+          fieldName,
+          trimmedInput,
+        );
+        return Result.failure('$fieldNameに不正なパス文字列が含まれています');
       }
 
       // 7. 제어 문자 검사
-      for (final pattern in _controlCharPatterns) {
-        if (pattern.hasMatch(trimmedInput)) {
-          _logSecurityThreat('Control character detected', fieldName, trimmedInput);
-          return ResultFactory.failure('$fieldNameに不正な制御文字が含まれています');
-        }
+      if (_containsControlCharacters(trimmedInput)) {
+        _logSecurityThreat(
+          'Control character detected',
+          fieldName,
+          trimmedInput,
+        );
+        return Result.failure('$fieldNameに不正な制御文字が含まれています');
       }
 
       // 8. 특수문자 제한 검사
       if (!allowSpecialChars) {
-        final hasSpecialChars = RegExp(r'[<>{}[\]\\|`~!@#$%^&*()+=]').hasMatch(trimmedInput);
-        if (hasSpecialChars) {
-          return ResultFactory.failure('$fieldNameに使用できない特殊文字が含まれています');
+        if (_containsSpecialCharacters(trimmedInput)) {
+          return Result.failure('$fieldNameに使用できない特殊文字が含まれています');
         }
       }
 
       // 9. 안전한 입력으로 확인됨
-      return ResultFactory.success(trimmedInput, '$fieldNameの検証が完了しました');
-
+      return Result.success(trimmedInput, '$fieldNameの検証が完了しました');
     } catch (error, stackTrace) {
       _logSecurityThreat('Input validation error', fieldName, input);
       if (kDebugMode) {
         debugPrint('[$_tag] Validation error: $error\n$stackTrace');
       }
-      return ResultFactory.failure('$fieldNameの検証中にエラーが発生しました');
+      return Result.failure('$fieldNameの検証中にエラーが発生しました');
     }
+  }
+
+  /// XSS 패턴 검사
+  static bool _containsXssPatterns(String input) {
+    final lowerInput = input.toLowerCase();
+    return lowerInput.contains('<script') ||
+        lowerInput.contains('javascript:') ||
+        lowerInput.contains('onload=') ||
+        lowerInput.contains('onclick=') ||
+        lowerInput.contains('<iframe') ||
+        lowerInput.contains('<object') ||
+        lowerInput.contains('<embed') ||
+        lowerInput.contains('<applet') ||
+        lowerInput.contains('expression(') ||
+        lowerInput.contains('vbscript:') ||
+        lowerInput.contains('data:text/html');
+  }
+
+  /// SQL Injection 패턴 검사
+  static bool _containsSqlInjectionPatterns(String input) {
+    final lowerInput = input.toLowerCase();
+    return lowerInput.contains('select ') ||
+        lowerInput.contains('insert ') ||
+        lowerInput.contains('update ') ||
+        lowerInput.contains('delete ') ||
+        lowerInput.contains('drop ') ||
+        lowerInput.contains('union select') ||
+        lowerInput.contains('or 1=1') ||
+        lowerInput.contains('and 1=1') ||
+        lowerInput.contains('--') ||
+        lowerInput.contains('/*') ||
+        lowerInput.contains('cast(');
+  }
+
+  /// 명령어 실행 패턴 검사
+  static bool _containsCommandInjectionPatterns(String input) {
+    final lowerInput = input.toLowerCase();
+    return lowerInput.contains('cmd ') ||
+        lowerInput.contains('powershell') ||
+        lowerInput.contains('bash') ||
+        lowerInput.contains('exec(') ||
+        lowerInput.contains('system(') ||
+        lowerInput.contains('eval(') ||
+        lowerInput.contains('rm ') ||
+        lowerInput.contains('del ') ||
+        lowerInput.contains('format') ||
+        lowerInput.contains('&&') ||
+        lowerInput.contains(';') ||
+        lowerInput.contains('`') ||
+        lowerInput.contains('\$(');
+  }
+
+  /// 파일 경로 탐색 패턴 검사
+  static bool _containsPathTraversalPatterns(String input) {
+    return input.contains('../') ||
+        input.contains('..\\') ||
+        input.contains('%2e%2e%2f') ||
+        input.contains('%2e%2e%5c') ||
+        input.contains('..%2f') ||
+        input.contains('..%5c');
+  }
+
+  /// 제어 문자 검사
+  static bool _containsControlCharacters(String input) {
+    for (int i = 0; i < input.length; i++) {
+      final char = input.codeUnitAt(i);
+      if (char < 32 && char != 9 && char != 10 && char != 13) {
+        return true;
+      }
+      if (char == 127) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// 특수문자 검사
+  static bool _containsSpecialCharacters(String input) {
+    const specialChars = '<>{}[]\\|`~!@#\$%^&*()+=';
+    for (int i = 0; i < input.length; i++) {
+      if (specialChars.contains(input[i])) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /// 이메일 입력 특별 검증
@@ -175,7 +207,13 @@ class InputValidationService {
     }
 
     // 기존 이메일 검증 로직 활용
-    return ValidationService.validateEmail(securityResult.data!);
+    final emailValidation = ValidationService.validateEmail(
+      securityResult.dataOrThrow,
+    );
+    if (!emailValidation.isSuccess) {
+      return Result.failure(emailValidation.message);
+    }
+    return securityResult;
   }
 
   /// 비밀번호 입력 특별 검증
@@ -194,7 +232,13 @@ class InputValidationService {
     }
 
     // 기존 비밀번호 검증 로직 활용
-    return ValidationService.validatePassword(securityResult.data!);
+    final passwordValidation = ValidationService.validatePassword(
+      securityResult.dataOrThrow,
+    );
+    if (!passwordValidation.isSuccess) {
+      return Result.failure(passwordValidation.message);
+    }
+    return securityResult;
   }
 
   /// 펫 이름 입력 특별 검증
@@ -213,7 +257,13 @@ class InputValidationService {
     }
 
     // 기존 펫 이름 검증 로직 활용
-    return ValidationService.validatePetName(securityResult.data!);
+    final petNameValidation = ValidationService.validatePetName(
+      securityResult.dataOrThrow,
+    );
+    if (!petNameValidation.isSuccess) {
+      return Result.failure(petNameValidation.message);
+    }
+    return securityResult;
   }
 
   /// 숫자 입력 특별 검증 (체중, 나이 등)
@@ -233,28 +283,28 @@ class InputValidationService {
     );
 
     if (!securityResult.isSuccess) {
-      return ResultFactory.failure(securityResult.message);
+      return Result.failure(securityResult.message);
     }
 
     // 숫자 형식 검증
     final validationResult = ValidationService.validateNumberField(
-      securityResult.data!,
+      securityResult.dataOrThrow,
       fieldName,
       min: min,
       max: max,
     );
 
     if (!validationResult.isSuccess) {
-      return ResultFactory.failure(validationResult.message);
+      return Result.failure(validationResult.message);
     }
 
     // 숫자로 변환
-    final number = double.tryParse(securityResult.data!);
+    final number = double.tryParse(securityResult.dataOrThrow);
     if (number == null) {
-      return ResultFactory.failure('$fieldNameは有効な数値ではありません');
+      return Result.failure('$fieldNameは有効な数値ではありません');
     }
 
-    return ResultFactory.success(number, '$fieldNameの検証が完了しました');
+    return Result.success(number, '$fieldNameの検証が完了しました');
   }
 
   /// 검색어 입력 검증
@@ -296,14 +346,14 @@ class InputValidationService {
       return securityResult;
     }
 
-    if (securityResult.data!.isEmpty) {
+    if (securityResult.dataOrThrow.isEmpty) {
       return securityResult;
     }
 
     // URL 형식 검증
-    final urlValidation = ValidationService.validateUrl(securityResult.data!);
+    final urlValidation = ValidationService.validateUrl(securityResult.dataOrThrow);
     if (!urlValidation.isSuccess) {
-      return ResultFactory.failure(urlValidation.message);
+      return Result.failure(urlValidation.message);
     }
 
     return securityResult;
@@ -325,31 +375,50 @@ class InputValidationService {
       return securityResult;
     }
 
-    if (securityResult.data!.isEmpty) {
+    if (securityResult.dataOrThrow.isEmpty) {
       return securityResult;
     }
 
     // 전화번호 패턴 검증 (숫자, 하이픈, 공백, 괄호만)
-    if (!RegExp(r'^[0-9\s\-\(\)+]+$').hasMatch(securityResult.data!)) {
-      return ResultFactory.failure('電話番号は数字、ハイフン、スペース、括弧のみ使用できます');
+    if (!_isValidPhoneNumber(securityResult.dataOrThrow)) {
+      return Result.failure('電話番号は数字、ハイフン、スペース、括弧のみ使用できます');
     }
 
     // 기존 전화번호 검증 로직 활용
-    final phoneValidation = ValidationService.validatePhoneNumber(securityResult.data!);
+    final phoneValidation = ValidationService.validatePhoneNumber(
+      securityResult.dataOrThrow,
+    );
     if (!phoneValidation.isSuccess) {
-      return ResultFactory.failure(phoneValidation.message);
+      return Result.failure(phoneValidation.message);
     }
 
     return securityResult;
   }
 
+  /// 전화번호 패턴 검증
+  static bool _isValidPhoneNumber(String phone) {
+    for (int i = 0; i < phone.length; i++) {
+      final char = phone[i];
+      if (!RegExp(r'[0-9\s\-\(\)+]').hasMatch(char)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   /// 보안 위협 로깅
-  static void _logSecurityThreat(String threatType, String fieldName, String? input) {
+  static void _logSecurityThreat(
+    String threatType,
+    String fieldName,
+    String? input,
+  ) {
     if (kDebugMode) {
       debugPrint('[$_tag] 🚨 SECURITY THREAT DETECTED 🚨');
       debugPrint('[$_tag] Type: $threatType');
       debugPrint('[$_tag] Field: $fieldName');
-      debugPrint('[$_tag] Input: ${input?.substring(0, (input.length).clamp(0, 100))}${input != null && input.length > 100 ? '...' : ''}');
+      debugPrint(
+        '[$_tag] Input: ${input?.substring(0, (input.length).clamp(0, 100))}${input != null && input.length > 100 ? '...' : ''}',
+      );
       debugPrint('[$_tag] Timestamp: ${DateTime.now().toIso8601String()}');
     }
   }
@@ -361,13 +430,13 @@ class InputValidationService {
       final actualHash = input.hashCode.toString();
 
       if (actualHash == expectedHash) {
-        return ResultFactory.success(true, 'Input integrity verified');
+        return Result.success(true, 'Input integrity verified');
       } else {
         _logSecurityThreat('Input integrity violation', 'hash_check', input);
-        return ResultFactory.failure('入力データの整合性に問題があります');
+        return Result.failure('入力データの整合性に問題があります');
       }
     } catch (error) {
-      return ResultFactory.failure('整合性検証中にエラーが発生しました');
+      return Result.failure('整合性検証中にエラーが発生しました');
     }
   }
 
@@ -376,11 +445,23 @@ class InputValidationService {
     try {
       return input
           .trim()
-          .replaceAll(RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]'), '') // 제어 문자 제거
+          .replaceAll(
+            RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]'),
+            '',
+          ) // 제어 문자 제거
           .replaceAll(RegExp(r'\s+'), ' ') // 연속 공백을 단일 공백으로
-          .replaceAll(RegExp(r'<script[^>]*>.*?</script>', caseSensitive: false), '') // 스크립트 태그 제거
-          .replaceAll(RegExp(r'javascript:', caseSensitive: false), '') // javascript: 제거
-          .replaceAll(RegExp(r'on\w+\s*=', caseSensitive: false), ''); // 이벤트 핸들러 제거
+          .replaceAll(
+            RegExp(r'<script[^>]*>.*?</script>', caseSensitive: false),
+            '',
+          ) // 스크립트 태그 제거
+          .replaceAll(
+            RegExp(r'javascript:', caseSensitive: false),
+            '',
+          ) // javascript: 제거
+          .replaceAll(
+            RegExp(r'on\w+\s*=', caseSensitive: false),
+            '',
+          ); // 이벤트 핸들러 제거
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] Sanitization error: $error');
@@ -403,7 +484,7 @@ class InputValidationService {
         final config = configs[fieldName];
 
         if (config == null) {
-          return ResultFactory.failure('設定が見つからないフィールドがあります: $fieldName');
+          return Result.failure('設定が見つからないフィールドがあります: $fieldName');
         }
 
         final result = validateUserInput(
@@ -416,15 +497,15 @@ class InputValidationService {
         );
 
         if (!result.isSuccess) {
-          return ResultFactory.failure(result.message);
+          return Result.failure(result.message);
         }
 
-        validatedInputs[fieldName] = result.data!;
+        validatedInputs[fieldName] = result.dataOrThrow;
       }
 
-      return ResultFactory.success(validatedInputs, '全ての入力検証が完了しました');
+      return Result.success(validatedInputs, '全ての入力検証が完了しました');
     } catch (error) {
-      return ResultFactory.failure('複数入力検証中にエラーが発生しました: $error');
+      return Result.failure('複数入力検証中にエラーが発生しました: $error');
     }
   }
 }

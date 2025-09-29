@@ -1,6 +1,6 @@
-import 'package:aipet_frontend/features/pet_profile/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/sharing_widgets.dart';
-import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,7 +31,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
 
   @override
   Widget build(BuildContext context) {
-    final petsAsync = ref.watch(petsNotifierProvider);
+    final petsAsync = ref.watch(petProfilesNotifierProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -72,7 +72,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.qr_code, size: 20),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text('コード生成'),
               ],
             ),
@@ -82,7 +82,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.qr_code_scanner, size: 20),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text('コードスキャン'),
               ],
             ),

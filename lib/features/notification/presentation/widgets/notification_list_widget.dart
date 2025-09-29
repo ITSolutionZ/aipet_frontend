@@ -75,7 +75,10 @@ class _NotificationListWidgetState
           }
 
           final notification = filteredNotifications[index];
-          return _buildNotificationItem(notification);
+          return RepaintBoundary(
+            key: ValueKey('notification_${notification.id}_$index'),
+            child: _buildNotificationItem(notification),
+          );
         },
       ),
     );
@@ -148,7 +151,7 @@ class _NotificationListWidgetState
 
   Widget _buildLoadMoreButton() {
     return Container(
-      margin: const EdgeInsets.symmetric(
+      margin: const const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
@@ -158,7 +161,7 @@ class _NotificationListWidgetState
         },
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          padding: const const EdgeInsets.symmetric(vertical: AppSpacing.sm),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -237,7 +240,7 @@ class _NotificationListWidgetState
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: AppSpacing.md),
+        padding: const const EdgeInsets.only(right: AppSpacing.md),
         color: Colors.red,
         child: const Icon(Icons.delete, color: Colors.white),
       ),
@@ -248,7 +251,7 @@ class _NotificationListWidgetState
         _deleteNotification(notification);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(
+        margin: const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.xs,
         ),
@@ -277,14 +280,14 @@ class _NotificationListWidgetState
             },
             borderRadius: BorderRadius.circular(AppRadius.medium),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
+              padding: const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,
                 vertical: AppSpacing.md,
               ),
               child: Row(
                 children: [
                   NotificationUIUtils.buildNotificationIcon(notification.type),
-                  const SizedBox(width: AppSpacing.md),
+                  const const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,7 +310,7 @@ class _NotificationListWidgetState
                       ],
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  const const SizedBox(width: AppSpacing.sm),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [

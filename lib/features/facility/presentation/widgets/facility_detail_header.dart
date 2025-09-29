@@ -48,8 +48,8 @@ class FacilityDetailHeader extends StatelessWidget {
           left: 0,
           right: 0,
           child: Container(
-            margin: const EdgeInsets.all(AppSpacing.lg),
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            margin: const const EdgeInsets.all(AppSpacing.lg),
+            padding: const const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -95,7 +95,7 @@ class FacilityDetailHeader extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const SizedBox(width: AppSpacing.xs),
+                          const const SizedBox(width: AppSpacing.xs),
                           // 별점
                           Row(
                             children: List.generate(5, (index) {
@@ -121,7 +121,7 @@ class FacilityDetailHeader extends StatelessWidget {
                               }
                             }),
                           ),
-                          const SizedBox(width: AppSpacing.xs),
+                          const const SizedBox(width: AppSpacing.xs),
                           Text(
                             '${facility.reviewCount} レビュー',
                             style: AppFonts.bodySmall.copyWith(

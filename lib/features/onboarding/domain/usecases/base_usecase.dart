@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/onboarding/domain/repositories/onboarding_repository.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// UseCase 기본 클래스 with parameters
 abstract class BaseUseCase<T, P> {

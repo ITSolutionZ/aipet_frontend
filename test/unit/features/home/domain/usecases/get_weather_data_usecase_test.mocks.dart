@@ -3,15 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
-import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart'
-    as _i5;
-import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart'
+import 'package:aipet_frontend/features/home/domain/entities/entities.dart'
     as _i2;
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart' as _i4;
+import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart'
+    as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -27,84 +25,97 @@ import 'package:mockito/src/dummies.dart' as _i6;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeHomeDashboardEntity_0 extends _i1.SmartFake
+    implements _i2.HomeDashboardEntity {
+  _FakeHomeDashboardEntity_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeWalkSummary_1 extends _i1.SmartFake implements _i2.WalkSummary {
+  _FakeWalkSummary_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeHealthSummary_2 extends _i1.SmartFake implements _i2.HealthSummary {
+  _FakeHealthSummary_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [HomeRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockHomeRepository extends _i1.Mock implements _i2.HomeRepository {
+class MockHomeRepository extends _i1.Mock implements _i3.HomeRepository {
   MockHomeRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<_i4.Result<_i5.HomeDashboardEntity>> getDashboardData(
-    String? userId,
-  ) =>
+  _i4.Future<_i2.HomeDashboardEntity> getDashboardData() =>
       (super.noSuchMethod(
-            Invocation.method(#getDashboardData, [userId]),
-            returnValue: _i3.Future<_i4.Result<_i5.HomeDashboardEntity>>.value(
-              _i6.dummyValue<_i4.Result<_i5.HomeDashboardEntity>>(
+            Invocation.method(#getDashboardData, []),
+            returnValue: _i4.Future<_i2.HomeDashboardEntity>.value(
+              _FakeHomeDashboardEntity_0(
                 this,
-                Invocation.method(#getDashboardData, [userId]),
+                Invocation.method(#getDashboardData, []),
               ),
             ),
           )
-          as _i3.Future<_i4.Result<_i5.HomeDashboardEntity>>);
+          as _i4.Future<_i2.HomeDashboardEntity>);
 
   @override
-  _i3.Future<_i4.Result<_i5.WeatherEntity?>> getWeatherData(String? location) =>
+  _i4.Future<_i2.WeatherEntity?> getCurrentWeather({
+    _i2.WeatherLocationEntity? location,
+    bool? userTriggered = false,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getWeatherData, [location]),
-            returnValue: _i3.Future<_i4.Result<_i5.WeatherEntity?>>.value(
-              _i6.dummyValue<_i4.Result<_i5.WeatherEntity?>>(
+            Invocation.method(#getCurrentWeather, [], {
+              #location: location,
+              #userTriggered: userTriggered,
+            }),
+            returnValue: _i4.Future<_i2.WeatherEntity?>.value(),
+          )
+          as _i4.Future<_i2.WeatherEntity?>);
+
+  @override
+  _i4.Future<List<_i2.PetSummaryEntity>> getPetSummaries() =>
+      (super.noSuchMethod(
+            Invocation.method(#getPetSummaries, []),
+            returnValue: _i4.Future<List<_i2.PetSummaryEntity>>.value(
+              <_i2.PetSummaryEntity>[],
+            ),
+          )
+          as _i4.Future<List<_i2.PetSummaryEntity>>);
+
+  @override
+  _i4.Future<_i2.WalkSummary> getWalkSummary() =>
+      (super.noSuchMethod(
+            Invocation.method(#getWalkSummary, []),
+            returnValue: _i4.Future<_i2.WalkSummary>.value(
+              _FakeWalkSummary_1(this, Invocation.method(#getWalkSummary, [])),
+            ),
+          )
+          as _i4.Future<_i2.WalkSummary>);
+
+  @override
+  _i4.Future<_i2.HealthSummary> getPetHealthSummary() =>
+      (super.noSuchMethod(
+            Invocation.method(#getPetHealthSummary, []),
+            returnValue: _i4.Future<_i2.HealthSummary>.value(
+              _FakeHealthSummary_2(
                 this,
-                Invocation.method(#getWeatherData, [location]),
+                Invocation.method(#getPetHealthSummary, []),
               ),
             ),
           )
-          as _i3.Future<_i4.Result<_i5.WeatherEntity?>>);
+          as _i4.Future<_i2.HealthSummary>);
 
   @override
-  _i3.Future<_i4.Result<List<_i5.PetSummaryEntity>>> getPetSummaries(
-    String? userId,
-  ) =>
+  _i4.Future<List<_i2.AppointmentSummary>> getUpcomingAppointments() =>
       (super.noSuchMethod(
-            Invocation.method(#getPetSummaries, [userId]),
-            returnValue:
-                _i3.Future<_i4.Result<List<_i5.PetSummaryEntity>>>.value(
-                  _i6.dummyValue<_i4.Result<List<_i5.PetSummaryEntity>>>(
-                    this,
-                    Invocation.method(#getPetSummaries, [userId]),
-                  ),
-                ),
-          )
-          as _i3.Future<_i4.Result<List<_i5.PetSummaryEntity>>>);
-
-  @override
-  _i3.Future<_i4.Result<List<_i5.TodayAppointmentEntity>>> getTodayAppointments(
-    String? userId,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getTodayAppointments, [userId]),
-            returnValue:
-                _i3.Future<_i4.Result<List<_i5.TodayAppointmentEntity>>>.value(
-                  _i6.dummyValue<_i4.Result<List<_i5.TodayAppointmentEntity>>>(
-                    this,
-                    Invocation.method(#getTodayAppointments, [userId]),
-                  ),
-                ),
-          )
-          as _i3.Future<_i4.Result<List<_i5.TodayAppointmentEntity>>>);
-
-  @override
-  _i3.Future<_i4.Result<int>> getTotalWalkMinutes(String? userId) =>
-      (super.noSuchMethod(
-            Invocation.method(#getTotalWalkMinutes, [userId]),
-            returnValue: _i3.Future<_i4.Result<int>>.value(
-              _i6.dummyValue<_i4.Result<int>>(
-                this,
-                Invocation.method(#getTotalWalkMinutes, [userId]),
-              ),
+            Invocation.method(#getUpcomingAppointments, []),
+            returnValue: _i4.Future<List<_i2.AppointmentSummary>>.value(
+              <_i2.AppointmentSummary>[],
             ),
           )
-          as _i3.Future<_i4.Result<int>>);
+          as _i4.Future<List<_i2.AppointmentSummary>>);
 }

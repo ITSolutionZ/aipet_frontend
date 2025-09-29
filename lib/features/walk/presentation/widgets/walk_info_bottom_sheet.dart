@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/onboarding/data/providers/walk_share_providers.dart';
+import 'package:aipet_frontend/features/walk/data/providers/walk_share_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
@@ -62,7 +62,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
           // 정보 내용 (스크롤 가능)
           Flexible(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+              padding: const const EdgeInsets.only(bottom: AppSpacing.lg),
               child: _buildContent(context, ref, isExpanded),
             ),
           ),
@@ -73,7 +73,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
 
   Widget _buildDragHandle() {
     return Container(
-      margin: const EdgeInsets.only(top: AppSpacing.sm),
+      margin: const const EdgeInsets.only(top: AppSpacing.sm),
       width: 40,
       height: 4,
       decoration: BoxDecoration(
@@ -90,7 +90,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     bool isExpanded,
   ) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       child: Row(
         children: [
           // 프로필 이미지
@@ -122,7 +122,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
 
           // 사용자 정보
           Expanded(
@@ -138,7 +138,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.xs),
+                    const const SizedBox(width: AppSpacing.xs),
                     Text(
                       '(3.5)',
                       style: AppFonts.bodySmall.copyWith(
@@ -176,7 +176,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
 
   Widget _buildContent(BuildContext context, WidgetRef ref, bool isExpanded) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -219,7 +219,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {

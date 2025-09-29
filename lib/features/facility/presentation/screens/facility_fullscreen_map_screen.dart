@@ -280,7 +280,7 @@ class _FacilityFullscreenMapScreenState
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,7 +306,7 @@ class _FacilityFullscreenMapScreenState
                     size: 20,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -348,7 +348,7 @@ class _FacilityFullscreenMapScreenState
                   color: AppColors.pointGray,
                   size: 16,
                 ),
-                const SizedBox(width: 4),
+                const const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     _selectedFacility!.address,
@@ -365,7 +365,7 @@ class _FacilityFullscreenMapScreenState
             Row(
               children: [
                 const Icon(Icons.star, color: Colors.amber, size: 16),
-                const SizedBox(width: 4),
+                const const SizedBox(width: 4),
                 Text(
                   '${_selectedFacility!.rating} (${_selectedFacility!.reviewCount})',
                   style: AppFonts.bodyMedium.copyWith(
@@ -386,7 +386,7 @@ class _FacilityFullscreenMapScreenState
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBlue,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
+                    padding: const const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
                       vertical: AppSpacing.sm,
                     ),

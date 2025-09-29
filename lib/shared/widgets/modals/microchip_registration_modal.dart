@@ -76,7 +76,7 @@ class MicrochipRegistrationModal extends StatelessWidget {
 
               // 버튼들
               Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: const const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -91,7 +91,7 @@ class MicrochipRegistrationModal extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.pointBlue,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
+                          padding: const const EdgeInsets.symmetric(
                             vertical: AppSpacing.md,
                           ),
                           elevation: 2,
@@ -126,7 +126,7 @@ class MicrochipRegistrationModal extends StatelessWidget {
                             color: AppColors.pointBlue,
                             width: 1.5,
                           ),
-                          padding: const EdgeInsets.symmetric(
+                          padding: const const EdgeInsets.symmetric(
                             vertical: AppSpacing.md,
                           ),
                           shape: RoundedRectangleBorder(
@@ -157,7 +157,7 @@ class MicrochipRegistrationModal extends StatelessWidget {
                         foregroundColor: AppColors.pointGray.withValues(
                           alpha: 0.7,
                         ),
-                        padding: const EdgeInsets.symmetric(
+                        padding: const const EdgeInsets.symmetric(
                           vertical: AppSpacing.xs,
                         ),
                       ),

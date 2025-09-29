@@ -22,7 +22,7 @@ class TrickCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -48,7 +48,7 @@ class TrickCard extends StatelessWidget {
       children: [
         // 트릭 이미지
         _buildTrickImage(),
-        const SizedBox(width: AppSpacing.md),
+        const const SizedBox(width: AppSpacing.md),
 
         // 트릭 정보
         Expanded(
@@ -88,14 +88,14 @@ class TrickCard extends StatelessWidget {
                   _buildDifficultyChip(),
                   const Spacer(),
                   // 진행도 (학습 중인 경우)
-                  _buildProgressIndicator(),
+                  if (trick.practiceCount > 0) _buildProgressIndicator(),
                 ],
               ),
             ],
           ),
         ),
 
-        const SizedBox(width: AppSpacing.sm),
+        const const SizedBox(width: AppSpacing.sm),
 
         // 액션 버튼
         _buildActionButton(),
@@ -113,12 +113,14 @@ class TrickCard extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.small),
-        child: Image.asset(
-          trick.imagePath,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) =>
-              _buildPlaceholderImage(),
-        ),
+        child: trick.imagePath != null
+            ? Image.asset(
+                trick.imagePath!,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildPlaceholderImage(),
+              )
+            : _buildPlaceholderImage(),
       ),
     );
   }
@@ -133,11 +135,11 @@ class TrickCard extends StatelessWidget {
   }
 
   Widget _buildDifficultyChip() {
-    final difficulty = trick.difficulty ?? 'unknown';
+    final difficulty = trick.difficulty.name;
     final color = _getDifficultyColor(difficulty);
 
     return Container(
-      padding: const EdgeInsets.symmetric(
+      padding: const const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: 2,
       ),
@@ -167,12 +169,12 @@ class TrickCard extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(width: AppSpacing.xs),
+        const const SizedBox(width: AppSpacing.xs),
         SizedBox(
           width: 40,
           height: 4,
           child: LinearProgressIndicator(
-            value: (trick.progress ?? 0) / 100,
+            value: trick.progress,
             backgroundColor: AppColors.pointDark.withValues(alpha: 0.1),
             valueColor: const AlwaysStoppedAnimation<Color>(
               AppColors.pointBlue,
@@ -189,7 +191,7 @@ class TrickCard extends StatelessWidget {
 
     if (isLearned) {
       return Container(
-        padding: const EdgeInsets.all(AppSpacing.sm),
+        padding: const const EdgeInsets.all(AppSpacing.sm),
         decoration: const BoxDecoration(
           color: AppColors.pointGreen,
           shape: BoxShape.circle,

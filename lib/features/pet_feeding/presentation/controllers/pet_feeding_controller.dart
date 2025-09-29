@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/domain.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/pet_feeding/pet_feeding_mock_service.dart'
     as PetFeedingMock;
 import 'package:flutter_riverpod/flutter_riverpod.dart';

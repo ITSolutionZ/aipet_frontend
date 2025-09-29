@@ -2,7 +2,7 @@ import 'dart:developer' as developer;
 
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
+    as scheduling_mock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,15 +12,15 @@ class AddFeedingRecordController extends StateNotifier<AddFeedingRecordState> {
 
   /// 펫 정보 및 사이즈 가이드 로드
   void loadPetInfo(String petId) {
-    final petSizes =
-        SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = scheduling_mock
+        .SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     final selectedPetInfo = petSizes[petId];
     Map<String, dynamic>? petSizeGuide;
 
     if (selectedPetInfo != null) {
       final size = selectedPetInfo['size'] as String;
       final sizeGuide =
-          SchedulingMock.SchedulingMockService.getPetSizeFeedingGuide();
+          scheduling_mock.SchedulingMockService.getPetSizeFeedingGuide();
       petSizeGuide = sizeGuide[size];
     }
 
@@ -135,7 +135,7 @@ class AddFeedingRecordState {
   final List<String> selectedStatuses;
   final Map<String, String> statusValues;
 
-  AddFeedingRecordState({
+  const AddFeedingRecordState({
     DateTime? selectedDate,
     this.selectedTime = const TimeOfDay(hour: 10, minute: 0),
     this.selectedMealType = '朝食',

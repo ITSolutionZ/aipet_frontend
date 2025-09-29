@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/ai/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 abstract class AiRepository {
   /// 채팅 기록 가져오기

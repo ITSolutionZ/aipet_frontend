@@ -2,7 +2,7 @@ import 'package:aipet_frontend/features/ai/domain/domain.dart';
 import 'package:aipet_frontend/features/ai/domain/usecases/get_chat_history_usecase.dart';
 import 'package:aipet_frontend/features/ai/domain/usecases/initialize_chat_usecase.dart';
 import 'package:aipet_frontend/features/ai/domain/usecases/send_message_usecase.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';

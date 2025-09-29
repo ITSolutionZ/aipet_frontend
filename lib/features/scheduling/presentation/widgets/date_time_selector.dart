@@ -20,7 +20,7 @@ class DateTimeSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -37,7 +37,7 @@ class DateTimeSelector extends StatelessWidget {
             InkWell(
               onTap: onDateTap,
               child: Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   border: Border.all(color: AppColors.pointGray),
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -48,7 +48,7 @@ class DateTimeSelector extends StatelessWidget {
                       Icons.calendar_today,
                       color: AppColors.pointBrown,
                     ),
-                    const SizedBox(width: AppSpacing.md),
+                    const const SizedBox(width: AppSpacing.md),
                     Text(
                       '${selectedDate.year}年${selectedDate.month}月${selectedDate.day}日',
                       style: AppFonts.bodyMedium.copyWith(
@@ -71,7 +71,7 @@ class DateTimeSelector extends StatelessWidget {
             InkWell(
               onTap: onTimeTap,
               child: Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   border: Border.all(color: AppColors.pointGray),
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -79,7 +79,7 @@ class DateTimeSelector extends StatelessWidget {
                 child: Row(
                   children: [
                     const Icon(Icons.access_time, color: AppColors.pointBrown),
-                    const SizedBox(width: AppSpacing.md),
+                    const const SizedBox(width: AppSpacing.md),
                     Text(
                       selectedTime.format(context),
                       style: AppFonts.bodyMedium.copyWith(

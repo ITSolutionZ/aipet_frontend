@@ -113,7 +113,7 @@ class FacilityDetailController extends BaseFacilityController {
               const Text('以下の連絡先を追加しますか？'),
               const SizedBox(height: 16),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(8),

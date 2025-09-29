@@ -103,7 +103,7 @@ class BookingState {
   final bool isBookingConfirmed;
   final String? error;
 
-  BookingState({
+  const BookingState({
     required this.facilityId,
     this.facility,
     this.selectedTime = '11:00',
@@ -115,7 +115,7 @@ class BookingState {
     ],
     this.isBookingConfirmed = false,
     this.error,
-  }) : selectedDate = DateTime.now().add(const Duration(days: 1));
+  }) : selectedDate = DateTime.now().add(Duration(days: 1));
 
   BookingState copyWith({
     String? facilityId,

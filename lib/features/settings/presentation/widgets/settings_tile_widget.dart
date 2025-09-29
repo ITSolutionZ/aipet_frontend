@@ -18,7 +18,7 @@ class SettingsTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
       onTap: onTap,
       child: ListTile(
         leading: Container(

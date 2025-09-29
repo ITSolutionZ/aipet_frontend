@@ -9,6 +9,7 @@ class TrickEntity {
   final List<String> steps;
   final List<String> tips;
   final String? imageUrl;
+  final String? imagePath; // imageUrl과 호환성을 위한 별칭
   final String? videoUrl;
   final bool isLearned;
   final DateTime? learnedAt;
@@ -16,6 +17,8 @@ class TrickEntity {
   final TrickStatus status;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? petId; // 펫 ID (선택적)
+  final DateTime? date; // 학습 날짜 (선택적)
 
   const TrickEntity({
     required this.id,
@@ -27,6 +30,7 @@ class TrickEntity {
     this.steps = const [],
     this.tips = const [],
     this.imageUrl,
+    this.imagePath,
     this.videoUrl,
     this.isLearned = false,
     this.learnedAt,
@@ -34,6 +38,8 @@ class TrickEntity {
     this.status = TrickStatus.available,
     required this.createdAt,
     required this.updatedAt,
+    this.petId,
+    this.date,
   });
 
   /// 트릭이 학습 가능한지 확인
@@ -53,6 +59,37 @@ class TrickEntity {
     // 난이도에 따른 필요 연습 횟수
     final requiredPractice = _getRequiredPracticeCount();
     return (practiceCount / requiredPractice).clamp(0.0, 1.0);
+  }
+
+  /// 진행률 퍼센트 (0 ~ 100)
+  double get progressPercentage => progress * 100;
+
+  /// 비디오가 있는지 확인
+  bool get isVideo => videoUrl != null && videoUrl!.isNotEmpty;
+
+  /// 지속 시간 (분)
+  Duration get duration => const Duration(minutes: estimatedTime);
+
+  /// 진행률 업데이트
+  TrickEntity updateProgress(int newProgress) {
+    return copyWith(
+      practiceCount: newProgress,
+      status: newProgress >= _getRequiredPracticeCount()
+          ? TrickStatus.completed
+          : TrickStatus.learning,
+      learnedAt: newProgress >= _getRequiredPracticeCount()
+          ? DateTime.now()
+          : learnedAt,
+    );
+  }
+
+  /// 완료 처리
+  TrickEntity markAsCompleted() {
+    return copyWith(
+      status: TrickStatus.completed,
+      isLearned: true,
+      learnedAt: DateTime.now(),
+    );
   }
 
   /// 난이도별 필요 연습 횟수
@@ -80,6 +117,7 @@ class TrickEntity {
     List<String>? steps,
     List<String>? tips,
     String? imageUrl,
+    String? imagePath,
     String? videoUrl,
     bool? isLearned,
     DateTime? learnedAt,
@@ -87,6 +125,8 @@ class TrickEntity {
     TrickStatus? status,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? petId,
+    DateTime? date,
   }) {
     return TrickEntity(
       id: id ?? this.id,
@@ -98,6 +138,7 @@ class TrickEntity {
       steps: steps ?? this.steps,
       tips: tips ?? this.tips,
       imageUrl: imageUrl ?? this.imageUrl,
+      imagePath: imagePath ?? this.imagePath,
       videoUrl: videoUrl ?? this.videoUrl,
       isLearned: isLearned ?? this.isLearned,
       learnedAt: learnedAt ?? this.learnedAt,
@@ -105,6 +146,8 @@ class TrickEntity {
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      petId: petId ?? this.petId,
+      date: date ?? this.date,
     );
   }
 

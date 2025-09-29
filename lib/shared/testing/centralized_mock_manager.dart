@@ -100,7 +100,7 @@ class CentralizedMockManager {
         'duration': 3600,
         'distance': 2.5,
         'date': DateTime.now()
-            .subtract(const Duration(hours: 2))
+            .subtract(Duration(hours: 2))
             .toIso8601String(),
       },
     ];
@@ -135,7 +135,7 @@ class CentralizedMockManager {
         'id': 'walk_001',
         'petId': 'pet_001',
         'startTime': DateTime.now()
-            .subtract(const Duration(hours: 1))
+            .subtract(Duration(hours: 1))
             .toIso8601String(),
         'endTime': DateTime.now().toIso8601String(),
         'distance': 1.8,
@@ -323,27 +323,27 @@ class CentralizedMockManager {
     switch (scenario) {
       case MockScenario.success:
         await Future.delayed(
-          Duration(milliseconds: 200 + _random.nextInt(300)),
+          const Duration(milliseconds: 200 + _random.nextInt(300)),
         );
         break;
       case MockScenario.delay:
         await Future.delayed(
-          Duration(milliseconds: 1000 + _random.nextInt(2000)),
+          const Duration(milliseconds: 1000 + _random.nextInt(2000)),
         );
         break;
       case MockScenario.partialSuccess:
         await Future.delayed(
-          Duration(milliseconds: 500 + _random.nextInt(500)),
+          const Duration(milliseconds: 500 + _random.nextInt(500)),
         );
         break;
       case MockScenario.error:
         await Future.delayed(
-          Duration(milliseconds: 100 + _random.nextInt(200)),
+          const Duration(milliseconds: 100 + _random.nextInt(200)),
         );
         break;
       case MockScenario.empty:
         await Future.delayed(
-          Duration(milliseconds: 100 + _random.nextInt(100)),
+          const Duration(milliseconds: 100 + _random.nextInt(100)),
         );
         break;
       case MockScenario.loading:

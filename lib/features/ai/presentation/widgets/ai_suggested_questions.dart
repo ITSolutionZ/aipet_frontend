@@ -26,7 +26,7 @@ class AiSuggestedQuestions extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -48,7 +48,7 @@ class AiSuggestedQuestions extends StatelessWidget {
                   onQuestionTap(question.question);
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
+                  padding: const const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                     vertical: AppSpacing.sm,
                   ),
@@ -75,7 +75,7 @@ class AiSuggestedQuestions extends StatelessWidget {
                         size: 16,
                         color: AppColors.pointBrown,
                       ),
-                      const SizedBox(width: AppSpacing.xs),
+                      const const SizedBox(width: AppSpacing.xs),
                       Flexible(
                         child: Text(
                           question.question.isEmpty

@@ -16,7 +16,7 @@ class ProfileHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.xl),
+      margin: const const EdgeInsets.only(bottom: AppSpacing.xl),
       child: Column(
         children: [
           Stack(
@@ -72,7 +72,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                   color: AppColors.pointBrown,
                 ),
               ),
-              const SizedBox(width: AppSpacing.xs),
+              const const SizedBox(width: AppSpacing.xs),
               const Text(
                 'さん',
                 style: TextStyle(fontSize: 18, color: AppColors.pointBrown),

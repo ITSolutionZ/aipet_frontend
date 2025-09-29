@@ -12,7 +12,7 @@ class ServiceSectionWidget extends StatelessWidget {
       children: [
         // Service 헤더
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
               Icon(Icons.settings, color: Colors.white, size: 20),
@@ -82,7 +82,7 @@ class ServiceSectionWidget extends StatelessWidget {
         Container(
           height: 1,
           color: Colors.white.withValues(alpha: 0.2),
-          margin: const EdgeInsets.symmetric(horizontal: 16),
+          margin: const const EdgeInsets.symmetric(horizontal: 16),
         ),
       ],
     );

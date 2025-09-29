@@ -5,7 +5,7 @@ import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
 import 'package:aipet_frontend/features/home/data/services/weather_service.dart';
 import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/home/home_mock_service.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart';
 
@@ -102,7 +102,7 @@ class HomeRepositoryImpl implements HomeRepository {
     return WalkSummary(
       todayWalks: walkSummaryData['todayWalks'] as int,
       todayDistance: walkSummaryData['todayDistance'] as double,
-      todayDuration: Duration(minutes: walkSummaryData['todayDuration'] as int),
+      todayDuration: const Duration(minutes: walkSummaryData['todayDuration'] as int),
       weeklyGoal: walkSummaryData['weeklyGoal'] as double,
       weeklyProgress: walkSummaryData['weeklyProgress'] as double,
     );
@@ -142,14 +142,14 @@ class HomeRepositoryImpl implements HomeRepository {
       AppointmentSummary(
         id: 'app-1',
         title: '健康診断',
-        scheduledTime: DateTime.now().add(const Duration(days: 3)),
+        scheduledTime: DateTime.now().add(Duration(days: 3)),
         type: 'health_check',
         petName: 'マックス',
       ),
       AppointmentSummary(
         id: 'app-2',
         title: '予防接種',
-        scheduledTime: DateTime.now().add(const Duration(days: 7)),
+        scheduledTime: DateTime.now().add(Duration(days: 7)),
         type: 'vaccination',
         petName: 'ルナ',
       ),

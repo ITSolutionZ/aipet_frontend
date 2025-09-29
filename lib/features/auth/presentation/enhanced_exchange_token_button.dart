@@ -53,7 +53,7 @@ class _EnhancedExchangeTokenButtonState
         foregroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -128,11 +128,11 @@ class _EnhancedExchangeTokenButtonState
     return Card(
       color: cardColor,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const const EdgeInsets.all(16.0),
         child: Row(
           children: [
             Icon(icon, size: 32, color: Colors.grey.shade700),
-            const SizedBox(width: 16),
+            const const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +165,7 @@ class _EnhancedExchangeTokenButtonState
       icon: const Icon(Icons.refresh),
       label: const Text('토큰 상태 새로고침'),
       style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const const EdgeInsets.symmetric(vertical: 12),
       ),
     );
   }
@@ -217,7 +217,7 @@ class _EnhancedExchangeTokenButtonState
     return Card(
       color: cardColor,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const const EdgeInsets.all(16.0),
         child: Column(
           children: [
             if (state.isLoading)
@@ -281,7 +281,7 @@ class _EnhancedExchangeTokenButtonState
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
@@ -298,7 +298,7 @@ class _EnhancedExchangeTokenButtonState
         _checkTokenStatus(); // Changed: 상태 새로고침
       },
       style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: const Text(

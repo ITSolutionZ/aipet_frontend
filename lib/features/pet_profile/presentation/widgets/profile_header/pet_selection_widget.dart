@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +11,7 @@ class PetSelectionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(right: AppSpacing.md),
+      margin: const const EdgeInsets.only(right: AppSpacing.md),
       child: GestureDetector(
         onTap: onTap,
         child: Row(
@@ -31,7 +31,7 @@ class PetSelectionWidget extends StatelessWidget {
                     )
                   : null,
             ),
-            const SizedBox(width: AppSpacing.xs),
+            const const SizedBox(width: AppSpacing.xs),
             Text(
               pet.name,
               style: AppFonts.bodyMedium.copyWith(

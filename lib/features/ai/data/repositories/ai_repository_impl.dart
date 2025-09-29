@@ -2,14 +2,14 @@ import 'dart:math';
 
 import 'package:aipet_frontend/shared/core/utils/ai_logger.dart';
 import 'package:aipet_frontend/shared/core/utils/mock_helper.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/ai/ai_config_mock_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/foundation/error_handler/error_handler.dart';
 import '../../../../shared/foundation/result/result.dart';
-import '../../../pet_registor/pet_registor.dart';
 import '../../domain/domain.dart';
 import '../services/ai_local_storage_service.dart';
 import '../services/ai_mock_data_service_impl.dart';
@@ -34,7 +34,7 @@ class AiRepositoryImpl implements AiRepository {
   final AiLocalStorageService _localStorageService;
   final Ref ref;
 
-  AiRepositoryImpl({
+  const AiRepositoryImpl({
     required OpenAIService openAIService,
     required AiMockDataServiceImpl aiMockDataService,
     required this.ref,
@@ -101,13 +101,13 @@ class AiRepositoryImpl implements AiRepository {
       // 로컬 저장소에 메시지 저장
       await _saveMessageToLocal(aiMessage);
 
-      return ResultFactory.success(aiMessage, 'AI応答を生成しました');
+      return Result.success(aiMessage, 'AI応答を生成しました');
     } catch (e) {
       // AI 로거를 사용한 에러 로그
       AiLogger.logApiError(e);
 
       final appException = AppErrorHandler.convertToAppException(e);
-      return ResultFactory.failure<AiMessageEntity>(
+      return Result.failure<AiMessageEntity>(
         'AI応答の生成に失敗しました: ${appException.message}',
       );
     }
@@ -159,13 +159,13 @@ class AiRepositoryImpl implements AiRepository {
       // 로컬 저장소에 메시지 저장
       await _saveMessageToLocal(aiMessage);
 
-      return ResultFactory.success(aiMessage, 'ペット情報を含むAI応答を生成しました');
+      return Result.success(aiMessage, 'ペット情報を含むAI応答を生成しました');
     } catch (e) {
       // AI 로거를 사용한 에러 로그
       AiLogger.logApiError(e);
 
       final appException = AppErrorHandler.convertToAppException(e);
-      return ResultFactory.failure<AiMessageEntity>(
+      return Result.failure<AiMessageEntity>(
         'AI応答の生成に失敗しました: ${appException.message}',
       );
     }
@@ -451,9 +451,9 @@ class AiRepositoryImpl implements AiRepository {
         filteredMessages = filteredMessages.take(limit).toList();
       }
 
-      return ResultFactory.success(filteredMessages);
+      return Result.success(filteredMessages);
     } catch (e) {
-      return ResultFactory.failure('채팅 히스토리 로드 실패: $e');
+      return Result.failure('채팅 히스토리 로드 실패: $e');
     }
   }
 
@@ -473,9 +473,9 @@ class AiRepositoryImpl implements AiRepository {
         confidenceScore: 0.8,
       );
 
-      return ResultFactory.success(analysis);
+      return Result.success(analysis);
     } catch (e) {
-      return ResultFactory.failure('메시지 분석 실패: $e');
+      return Result.failure('메시지 분석 실패: $e');
     }
   }
 
@@ -492,7 +492,7 @@ class AiRepositoryImpl implements AiRepository {
       final result = await sendMessage(message);
       return result;
     } catch (e) {
-      return ResultFactory.failure('메시지 전송 실패: $e');
+      return Result.failure('메시지 전송 실패: $e');
     }
   }
 
@@ -502,9 +502,9 @@ class AiRepositoryImpl implements AiRepository {
     try {
       // Mock 구현 - 실제로는 로컬 저장소나 서버에서 즐겨찾기 상태 토글
       final isFavorite = Random().nextBool();
-      return ResultFactory.success(isFavorite);
+      return Result.success(isFavorite);
     } catch (e) {
-      return ResultFactory.failure('즐겨찾기 토글 실패: $e');
+      return Result.failure('즐겨찾기 토글 실패: $e');
     }
   }
 
@@ -531,9 +531,9 @@ class AiRepositoryImpl implements AiRepository {
         ),
       ];
 
-      return ResultFactory.success(suggestions);
+      return Result.success(suggestions);
     } catch (e) {
-      return ResultFactory.failure('제안 질문 가져오기 실패: $e');
+      return Result.failure('제안 질문 가져오기 실패: $e');
     }
   }
 

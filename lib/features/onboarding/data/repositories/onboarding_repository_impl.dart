@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,10 +19,10 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   Future<Result<List<OnboardingPage>>> loadOnboardingData() async {
     try {
       // 로컬 정적 데이터 반환
-      return ResultFactory.success(OnboardingData.pages);
+      return Result.success(OnboardingData.pages);
     } catch (e) {
       debugPrint('❌ 온보딩 데이터 로드 실패: $e');
-      return ResultFactory.failure('온보딩 데이터 로드에 실패했습니다');
+      return Result.failure('온보딩 데이터 로드에 실패했습니다');
     }
   }
 
@@ -33,12 +33,12 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt(_keyOnboardingCurrentPage, state.currentPage);
       await prefs.setBool(_keyOnboardingCompleted, state.isCompleted);
-      return ResultFactory.success(null);
+      return Result.success(null);
     } catch (e) {
       debugPrint('❌ 온보딩 상태 저장 실패: $e');
       // 메모리 캐시는 유지
       _currentState = state;
-      return ResultFactory.failure('온보딩 상태 저장에 실패했습니다');
+      return Result.failure('온보딩 상태 저장에 실패했습니다');
     }
   }
 
@@ -54,10 +54,10 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
         isCompleted: isCompleted,
       );
 
-      return ResultFactory.success(_currentState!);
+      return Result.success(_currentState!);
     } catch (e) {
       debugPrint('❌ 온보딩 상태 로드 실패: $e');
-      return ResultFactory.failure('온보딩 상태 로드에 실패했습니다');
+      return Result.failure('온보딩 상태 로드에 실패했습니다');
     }
   }
 
@@ -69,10 +69,10 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_keyOnboardingCompleted, true);
       await prefs.setInt(_keyOnboardingCurrentPage, 0); // 완료시 페이지 리셋
-      return ResultFactory.success(null);
+      return Result.success(null);
     } catch (e) {
       debugPrint('❌ 온보딩 완료 실패: $e');
-      return ResultFactory.failure('온보딩 완료에 실패했습니다');
+      return Result.failure('온보딩 완료에 실패했습니다');
     }
   }
 
@@ -81,10 +81,10 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       final isCompleted = prefs.getBool(_keyOnboardingCompleted) ?? false;
-      return ResultFactory.success(isCompleted);
+      return Result.success(isCompleted);
     } catch (e) {
       debugPrint('❌ 온보딩 완료 상태 확인 실패: $e');
-      return ResultFactory.failure('온보딩 완료 상태 확인에 실패했습니다');
+      return Result.failure('온보딩 완료 상태 확인에 실패했습니다');
     }
   }
 
@@ -96,10 +96,10 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_keyOnboardingCompleted, false);
       await prefs.setInt(_keyOnboardingCurrentPage, 0);
-      return ResultFactory.success(null);
+      return Result.success(null);
     } catch (e) {
       debugPrint('❌ 온보딩 재시작 실패: $e');
-      return ResultFactory.failure('온보딩 재시작에 실패했습니다');
+      return Result.failure('온보딩 재시작에 실패했습니다');
     }
   }
 
@@ -112,7 +112,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       return result;
     } catch (e) {
       debugPrint('❌ 온보딩 진행률 저장 실패: $e');
-      return ResultFactory.failure('온보딩 진행률 저장에 실패했습니다');
+      return Result.failure('온보딩 진행률 저장에 실패했습니다');
     }
   }
 
@@ -121,10 +121,10 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       final progress = prefs.getInt(_keyOnboardingCurrentPage) ?? 0;
-      return ResultFactory.success(progress);
+      return Result.success(progress);
     } catch (e) {
       debugPrint('❌ 온보딩 진행률 로드 실패: $e');
-      return ResultFactory.failure('온보딩 진행률 로드에 실패했습니다');
+      return Result.failure('온보딩 진행률 로드에 실패했습니다');
     }
   }
 }

@@ -4,6 +4,11 @@ import 'package:aipet_frontend/shared/testing/mock_data/core/base_mock_service.d
 class SchedulingMockService extends BaseMockService {
   // ==================== 스케줄링 데이터 ====================
 
+  /// 펫 상태 옵션 목록
+  static List<String> getPetStatusOptions() {
+    return ['건강함', '배고픔', '활발함', '피곤함', '스트레스', '기타'];
+  }
+
   /// Mock 피딩 스케줄 목록
   static List<Map<String, dynamic>> getMockFeedingSchedules() {
     return [
@@ -17,7 +22,7 @@ class SchedulingMockService extends BaseMockService {
         'foodType': '건사료',
         'isActive': true,
         'repeatDays': [1, 2, 3, 4, 5, 6, 7], // 매일
-        'createdAt': DateTime.now().subtract(const Duration(days: 5)),
+        'createdAt': DateTime.now().subtract(Duration(days: 5)),
       },
       {
         'id': MockHelper.generateId(),
@@ -29,7 +34,7 @@ class SchedulingMockService extends BaseMockService {
         'foodType': '건사료',
         'isActive': true,
         'repeatDays': [1, 2, 3, 4, 5, 6, 7],
-        'createdAt': DateTime.now().subtract(const Duration(days: 5)),
+        'createdAt': DateTime.now().subtract(Duration(days: 5)),
       },
       {
         'id': MockHelper.generateId(),
@@ -41,7 +46,7 @@ class SchedulingMockService extends BaseMockService {
         'foodType': '습식사료',
         'isActive': true,
         'repeatDays': [1, 2, 3, 4, 5, 6, 7],
-        'createdAt': DateTime.now().subtract(const Duration(days: 3)),
+        'createdAt': DateTime.now().subtract(Duration(days: 3)),
       },
     ];
   }
@@ -90,15 +95,15 @@ class SchedulingMockService extends BaseMockService {
     return {
       'todayWater': 450, // ml
       'targetWater': 500,
-      'lastRefillTime': DateTime.now().subtract(const Duration(hours: 3)),
+      'lastRefillTime': DateTime.now().subtract(Duration(hours: 3)),
       'refillHistory': [
         {
-          'time': DateTime.now().subtract(const Duration(hours: 3)),
+          'time': DateTime.now().subtract(Duration(hours: 3)),
           'amount': 200,
           'bowlLevel': 'full',
         },
         {
-          'time': DateTime.now().subtract(const Duration(hours: 8)),
+          'time': DateTime.now().subtract(Duration(hours: 8)),
           'amount': 150,
           'bowlLevel': 'half',
         },
@@ -144,18 +149,18 @@ class SchedulingMockService extends BaseMockService {
       'totalMinutes': 45,
       'completedTricks': 3,
       'inProgressTricks': 2,
-      'nextSession': DateTime.now().add(const Duration(hours: 2)),
+      'nextSession': DateTime.now().add(Duration(hours: 2)),
       'weeklyGoal': 5, // 주간 세션 목표
       'weeklyProgress': 8, // 주간 완료 세션
       'recentSessions': [
         {
-          'date': DateTime.now().subtract(const Duration(hours: 2)),
+          'date': DateTime.now().subtract(Duration(hours: 2)),
           'duration': 20, // 분
           'tricksWorked': ['앉기', '기다리기'],
           'success': true,
         },
         {
-          'date': DateTime.now().subtract(const Duration(hours: 5)),
+          'date': DateTime.now().subtract(Duration(hours: 5)),
           'duration': 25,
           'tricksWorked': ['손 내밀기'],
           'success': true,
@@ -208,24 +213,24 @@ class SchedulingMockService extends BaseMockService {
           'type': 'vaccination',
           'message': 'MAX의 연간 예방접종이 다음 주에 예정되어 있습니다.',
           'priority': 'medium',
-          'dueDate': DateTime.now().add(const Duration(days: 7)),
+          'dueDate': DateTime.now().add(Duration(days: 7)),
         },
       ],
       'recentHealthRecords': [
         {
-          'date': DateTime.now().subtract(const Duration(days: 5)),
+          'date': DateTime.now().subtract(Duration(days: 5)),
           'type': '체중 측정',
           'value': '15.8kg',
           'note': '정상 범위 내',
         },
         {
-          'date': DateTime.now().subtract(const Duration(days: 10)),
+          'date': DateTime.now().subtract(Duration(days: 10)),
           'type': '건강 검진',
           'value': '양호',
           'note': '정기 검진 완료',
         },
       ],
-      'nextCheckup': DateTime.now().add(const Duration(days: 180)),
+      'nextCheckup': DateTime.now().add(Duration(days: 180)),
     };
   }
 
@@ -373,7 +378,7 @@ class SchedulingMockService extends BaseMockService {
         'id': MockHelper.generateId(),
         'petId': '1',
         'petName': 'MAX',
-        'date': DateTime.now().subtract(const Duration(days: 0)),
+        'date': DateTime.now().subtract(Duration(days: 0)),
         'mealType': '아침식사',
         'amount': '300g',
         'foodType': '건사료',
@@ -384,7 +389,7 @@ class SchedulingMockService extends BaseMockService {
         'id': MockHelper.generateId(),
         'petId': '1',
         'petName': 'MAX',
-        'date': DateTime.now().subtract(const Duration(days: 1)),
+        'date': DateTime.now().subtract(Duration(days: 1)),
         'mealType': '저녁식사',
         'amount': '300g',
         'foodType': '건사료',
@@ -395,7 +400,7 @@ class SchedulingMockService extends BaseMockService {
         'id': MockHelper.generateId(),
         'petId': '2',
         'petName': 'LUNA',
-        'date': DateTime.now().subtract(const Duration(days: 0)),
+        'date': DateTime.now().subtract(Duration(days: 0)),
         'mealType': '아침식사',
         'amount': '150g',
         'foodType': '습식사료',

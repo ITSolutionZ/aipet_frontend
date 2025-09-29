@@ -42,7 +42,7 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       iconData: icon ?? Icons.inbox_outlined,
       action: action,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -57,7 +57,7 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       iconData: Icons.search_off_outlined,
       action: action,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -72,7 +72,7 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       iconData: Icons.wifi_off_outlined,
       action: action,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -88,7 +88,7 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       iconData: icon ?? Icons.folder_open_outlined,
       action: action,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -104,7 +104,7 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       imagePath: imagePath,
       action: action,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
@@ -120,14 +120,14 @@ class EmptyState extends StatelessWidget {
       subtitle: subtitle,
       iconData: icon ?? Icons.add_circle_outline,
       action: action,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const const EdgeInsets.all(AppSpacing.xl),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? const EdgeInsets.all(AppSpacing.xl),
+      padding: padding ?? const const EdgeInsets.all(AppSpacing.xl),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

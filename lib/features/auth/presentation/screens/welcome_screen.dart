@@ -12,7 +12,7 @@ class WelcomeScreen extends StatelessWidget {
       backgroundColor: AppColors.pointOffWhite,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
               const SizedBox(height: AppSpacing.lg),
@@ -196,7 +196,7 @@ class WelcomeScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
+                    padding: const const EdgeInsets.symmetric(
                       vertical: AppSpacing.lg,
                     ),
                     shape: RoundedRectangleBorder(
@@ -219,7 +219,7 @@ class WelcomeScreen extends StatelessWidget {
               TextButton(
                 onPressed: () => context.go(RouteConstants.homeRoute),
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
                 child: Text(
                   '後で登録する',

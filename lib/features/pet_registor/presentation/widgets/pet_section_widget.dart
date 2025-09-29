@@ -15,11 +15,11 @@ class PetSectionWidget extends ConsumerWidget {
       children: [
         // Pet 헤더
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
               Icon(Icons.favorite, color: Colors.white, size: 20),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 'Pet',
                 style: TextStyle(
@@ -52,25 +52,25 @@ class PetSectionWidget extends ConsumerWidget {
                     ),
                   );
                   if (i < displayPets.length - 1) {
-                    children.add(const SizedBox(width: 12));
+                    children.add(const const SizedBox(width: 12));
                   }
                 }
 
                 // 펫 추가 버튼 (3개 미만일 때만)
                 if (pets.length < 3) {
                   if (children.isNotEmpty) {
-                    children.add(const SizedBox(width: 12));
+                    children.add(const const SizedBox(width: 12));
                   }
                   children.add(_buildAddPetButton(context));
                 }
 
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(children: children),
                 );
               },
               loading: () => const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
                     SizedBox(
@@ -82,7 +82,7 @@ class PetSectionWidget extends ConsumerWidget {
                 ),
               ),
               error: (error, stack) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(children: [_buildAddPetButton(context)]),
               ),
             );
@@ -93,7 +93,7 @@ class PetSectionWidget extends ConsumerWidget {
         Container(
           height: 1,
           color: Colors.white.withValues(alpha: 0.2),
-          margin: const EdgeInsets.symmetric(horizontal: 16),
+          margin: const const EdgeInsets.symmetric(horizontal: 16),
         ),
         const SizedBox(height: 16),
         // 대시보드 메뉴

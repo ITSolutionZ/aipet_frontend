@@ -175,7 +175,7 @@ class _AddYouTubeVideoDialogContentState
 
     return AlertDialog(
       title: const Text('YouTubeビデオを追加'),
-      contentPadding: const EdgeInsets.all(AppSpacing.lg),
+      contentPadding: const const EdgeInsets.all(AppSpacing.lg),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
         child: Form(
@@ -241,7 +241,7 @@ class _AddYouTubeVideoDialogContentState
           decoration: const InputDecoration(
             hintText: 'https://www.youtube.com/watch?v=...',
             border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.sm,
             ),
@@ -282,7 +282,7 @@ class _AddYouTubeVideoDialogContentState
           decoration: const InputDecoration(
             hintText: 'ビデオタイトルを入力してください',
             border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.sm,
             ),
@@ -309,7 +309,7 @@ class _AddYouTubeVideoDialogContentState
           decoration: const InputDecoration(
             hintText: '비디오에 대한 설명을 입력하세요 (선택사항)',
             border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.sm,
             ),
@@ -334,7 +334,7 @@ class _AddYouTubeVideoDialogContentState
                 decoration: const InputDecoration(
                   hintText: '태그를 입력하세요 (예: sit, stay, roll)',
                   border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.sm,
                     vertical: AppSpacing.sm,
                   ),
@@ -342,11 +342,11 @@ class _AddYouTubeVideoDialogContentState
                 onFieldSubmitted: (_) => _addTag(),
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            const const SizedBox(width: AppSpacing.sm),
             ElevatedButton(
               onPressed: _addTag,
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
+                padding: const const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
                   vertical: AppSpacing.sm,
                 ),

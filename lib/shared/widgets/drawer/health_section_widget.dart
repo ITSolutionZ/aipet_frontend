@@ -12,7 +12,7 @@ class HealthSectionWidget extends StatelessWidget {
       children: [
         // Health 헤더
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
               Icon(Icons.favorite, color: Colors.white, size: 20),
@@ -87,7 +87,7 @@ class HealthSectionWidget extends StatelessWidget {
         Container(
           height: 1,
           color: Colors.white.withAlpha(20),
-          margin: const EdgeInsets.symmetric(horizontal: 16),
+          margin: const const EdgeInsets.symmetric(horizontal: 16),
         ),
       ],
     );

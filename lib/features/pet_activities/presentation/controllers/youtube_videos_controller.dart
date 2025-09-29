@@ -1,5 +1,7 @@
 import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/usecases/get_youtube_videos_usecase.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/usecases/register_youtube_video_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

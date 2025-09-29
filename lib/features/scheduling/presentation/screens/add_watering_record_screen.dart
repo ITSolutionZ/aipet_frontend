@@ -37,7 +37,7 @@ class _AddWateringRecordScreenState
       body: Form(
         key: _formKey,
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -70,7 +70,7 @@ class _AddWateringRecordScreenState
   Widget _buildAmountInput() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -112,7 +112,7 @@ class _AddWateringRecordScreenState
   Widget _buildTimeSelector() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -147,7 +147,7 @@ class _AddWateringRecordScreenState
   Widget _buildTypeSelector() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -182,7 +182,7 @@ class _AddWateringRecordScreenState
   Widget _buildNotesInput() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -218,7 +218,7 @@ class _AddWateringRecordScreenState
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.pointBlue,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          padding: const const EdgeInsets.symmetric(vertical: AppSpacing.md),
         ),
         child: const Text('給水記録を保存'),
       ),

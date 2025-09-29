@@ -48,7 +48,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientAppBar(title: '給水分析'),
       body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -76,7 +76,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
   Widget _buildPeriodSelector(WateringAnalysisState state, WidgetRef ref) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -93,7 +93,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
                 final isSelected = state.selectedPeriod == period;
                 return Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(right: AppSpacing.xs),
+                    padding: const const EdgeInsets.only(right: AppSpacing.xs),
                     child: FilterChip(
                       label: Text(period),
                       selected: isSelected,
@@ -129,7 +129,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
   Widget _buildAnalysisChart() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -184,7 +184,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
   Widget _buildStatsSummary() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -251,8 +251,8 @@ class WateringAnalysisScreen extends ConsumerWidget {
     Color color,
   ) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      margin: const EdgeInsets.all(AppSpacing.xs),
+      padding: const const EdgeInsets.all(AppSpacing.md),
+      margin: const const EdgeInsets.all(AppSpacing.xs),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
@@ -282,7 +282,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
   Widget _buildDetailedAnalysis() {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -331,14 +331,14 @@ class WateringAnalysisScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.all(AppSpacing.xs),
+          padding: const const EdgeInsets.all(AppSpacing.xs),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 20),
         ),
-        const SizedBox(width: AppSpacing.sm),
+        const const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

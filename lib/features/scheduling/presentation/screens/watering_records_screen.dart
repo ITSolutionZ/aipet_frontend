@@ -77,7 +77,7 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientAppBar(title: '給水記録'),
       body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -134,7 +134,7 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             Expanded(
@@ -194,10 +194,10 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
   /// 기록 아이템 위젯
   Widget _buildRecordItemWidget(Map<String, dynamic> record) {
     return Card(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         leading: Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          padding: const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             shape: BoxShape.circle,

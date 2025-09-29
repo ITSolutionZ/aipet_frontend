@@ -1,9 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_controller.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/profile_cards/caretaker_card.dart';
-import 'package:aipet_frontend/shared/profile_cards/date_card.dart';
-import 'package:aipet_frontend/shared/profile_cards/editable_attribute_card.dart';
-import 'package:aipet_frontend/shared/profile_cards/microchip_card.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,20 +46,6 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
     return gender == 'male' ? 'オス' : 'メス';
   }
 
-  String _getSizeString(dynamic size) {
-    if (size == null) return '未設定';
-    switch (size) {
-      case 'small':
-        return '小型';
-      case 'medium':
-        return '中型';
-      case 'large':
-        return '大型';
-      default:
-        return size.toString();
-    }
-  }
-
   String _getWeightString(dynamic weight) {
     if (weight == null) return '未設定';
     return '${weight}kg';
@@ -81,7 +63,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
         }
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -165,7 +147,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
               ),
           ],
         ),
-        const SizedBox(width: AppSpacing.lg),
+        const const SizedBox(width: AppSpacing.lg),
 
         // 名前と種類
         Expanded(
@@ -184,7 +166,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
                         ),
                         decoration: const InputDecoration(
                           border: UnderlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(vertical: 8),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),
                     )
@@ -196,7 +178,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    const const SizedBox(width: AppSpacing.sm),
                     const Icon(
                       Icons.edit,
                       size: 20,
@@ -247,7 +229,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
-              contentPadding: const EdgeInsets.all(AppSpacing.md),
+              contentPadding: const const EdgeInsets.all(AppSpacing.md),
             ),
           )
         else
@@ -274,41 +256,20 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        EditableAttributeCard(
-          label: '性別',
-          value: _getGenderString(
-            widget.isEditMode
-                ? widget.editingGender
-                : pet.additionalInfo?['gender'],
+        _buildAttributeCard(
+          '性別',
+          _getGenderString(
+            widget.isEditMode ? widget.editingGender : pet.gender,
           ),
-          type: 'gender',
-          isEditMode: widget.isEditMode,
-          onGenderChanged: widget.onGenderChanged,
         ),
         const SizedBox(height: AppSpacing.sm),
-        EditableAttributeCard(
-          label: 'サイズ',
-          value: _getSizeString(
-            widget.isEditMode
-                ? widget.editingSize
-                : pet.additionalInfo?['size'],
-          ),
-          type: 'size',
-          isEditMode: widget.isEditMode,
-          onSizeChanged: widget.onSizeChanged,
-        ),
+        _buildAttributeCard('サイズ', pet.size ?? '未設定'),
         const SizedBox(height: AppSpacing.sm),
-        EditableAttributeCard(
-          label: '体重',
-          value: _getWeightString(
-            widget.isEditMode
-                ? widget.editingWeight
-                : pet.additionalInfo?['weight'],
+        _buildAttributeCard(
+          '体重',
+          _getWeightString(
+            widget.isEditMode ? widget.editingWeight : pet.weight,
           ),
-          type: 'weight',
-          isEditMode: widget.isEditMode,
-          onWeightChanged: widget.onWeightChanged,
-          weightController: widget.weightController,
         ),
       ],
     );
@@ -326,11 +287,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        MicrochipCard(
-          pet: pet,
-          isEditMode: widget.isEditMode,
-          microchipController: widget.microchipController,
-        ),
+        _buildAttributeCard('マイクロチップ番号', pet.microchipNumber ?? '未登録'),
       ],
     );
   }
@@ -347,18 +304,13 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        DateCard(
-          title: '誕生日',
-          date: pet.birthDate,
-          icon: Icons.cake,
-          color: AppColors.pointPink,
-        ),
+        _buildDateCard('誕生日', pet.birthDate, Icons.cake, AppColors.pointPink),
         const SizedBox(height: AppSpacing.sm),
-        DateCard(
-          title: '家に来た日',
-          date: pet.additionalInfo?['arrivalDate'] as DateTime?,
-          icon: Icons.home,
-          color: AppColors.pointBlue,
+        _buildDateCard(
+          '家に来た日',
+          pet.arrivalDate,
+          Icons.home,
+          AppColors.pointBlue,
         ),
       ],
     );
@@ -376,12 +328,69 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        CaretakerCard(
-          ownerId: pet.ownerId,
-          email: 'owner@example.com',
-          name: pet.ownerId,
-        ),
+        _buildAttributeCard('保護者ID', pet.ownerId),
       ],
+    );
+  }
+
+  Widget _buildAttributeCard(String label, String value) {
+    return Container(
+      padding: const const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.sm),
+        border: Border.all(color: AppColors.pointDark.withValues(alpha: 0.1)),
+      ),
+      child: Row(
+        children: [
+          Text(
+            label,
+            style: AppFonts.bodyMedium.copyWith(
+              color: AppColors.pointDark,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateCard(
+    String title,
+    DateTime? date,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      padding: const const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.sm),
+        border: Border.all(color: AppColors.pointDark.withValues(alpha: 0.1)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const const SizedBox(width: AppSpacing.sm),
+          Text(
+            title,
+            style: AppFonts.bodyMedium.copyWith(
+              color: AppColors.pointDark,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Spacer(),
+          Text(
+            date != null ? '${date.year}/${date.month}/${date.day}' : '未設定',
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
+          ),
+        ],
+      ),
     );
   }
 }

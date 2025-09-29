@@ -1,110 +1,52 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/shared/pet_registor.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_registration_provider.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/constants/pet_registration_texts.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/utils/pet_image_utils.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/inputs/gender_selection.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/inputs/microchip_input.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/navigation/next_button.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/navigation/pet_registration_progress_bar.dart';
+import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pickers/pet_image_picker.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/utils/pet_image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// Pet Name Input 상태 관리
-final petNameInputProvider =
-    StateNotifierProvider<PetNameInputController, PetNameInputState>(
-      (ref) => PetNameInputController(ref),
-    );
+/// Pet Name Input Screen - 펫 이름, 성별, 중성화 상태, 이미지, 마이크로칩 입력
+class PetNameInputScreen extends ConsumerStatefulWidget {
+  const PetNameInputScreen({super.key});
 
-class PetNameInputController extends StateNotifier<PetNameInputState> {
-  final Ref ref;
+  @override
+  ConsumerState<PetNameInputScreen> createState() => _PetNameInputScreenState();
+}
 
-  PetNameInputController(this.ref) : super(const PetNameInputState());
+class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
+  // 상태 변수들
+  late TextEditingController _nameController;
+  late TextEditingController _microchipController;
+  String? _selectedGender;
+  bool _isNeutered = false;
+  String? _selectedImagePath;
+  bool _isValid = false; // 이름 유효성
 
-  void initialize() {
-    final nameController = TextEditingController();
-    final microchipController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _microchipController = TextEditingController();
 
-    nameController.addListener(() {
-      validateName(nameController.text);
+    // 기존 데이터 복원
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _restoreData();
     });
-
-    state = state.copyWith(
-      nameController: nameController,
-      microchipController: microchipController,
-    );
-
-    _restoreData();
-  }
-
-  void validateName(String name) {
-    final isValid = name.trim().isNotEmpty;
-    state = state.copyWith(isValid: isValid);
-  }
-
-  void updateGender(String? gender) {
-    state = state.copyWith(selectedGender: gender);
-  }
-
-  void updateNeutered(bool isNeutered) {
-    state = state.copyWith(isNeutered: isNeutered);
-  }
-
-  void updateImagePath(String? imagePath) {
-    state = state.copyWith(selectedImagePath: imagePath);
-  }
-
-  void _restoreData() {
-    // Mock data restoration
-    final mockData = ref.read(temporaryPetDataProvider);
-    if (mockData.name.isNotEmpty) {
-      state.nameController?.text = mockData.name;
-      validateName(mockData.name);
-    }
   }
 
   @override
   void dispose() {
-    state.nameController?.dispose();
-    state.microchipController?.dispose();
+    _nameController.dispose();
+    _microchipController.dispose();
     super.dispose();
   }
-}
-
-class PetNameInputState {
-  final TextEditingController? nameController;
-  final TextEditingController? microchipController;
-  final bool isValid;
-  final String? selectedGender;
-  final bool isNeutered;
-  final String? selectedImagePath;
-
-  const PetNameInputState({
-    this.nameController,
-    this.microchipController,
-    this.isValid = false,
-    this.selectedGender,
-    this.isNeutered = false,
-    this.selectedImagePath,
-  });
-
-  PetNameInputState copyWith({
-    TextEditingController? nameController,
-    TextEditingController? microchipController,
-    bool? isValid,
-    String? selectedGender,
-    bool? isNeutered,
-    String? selectedImagePath,
-  }) {
-    return PetNameInputState(
-      nameController: nameController ?? this.nameController,
-      microchipController: microchipController ?? this.microchipController,
-      isValid: isValid ?? this.isValid,
-      selectedGender: selectedGender ?? this.selectedGender,
-      isNeutered: isNeutered ?? this.isNeutered,
-      selectedImagePath: selectedImagePath ?? this.selectedImagePath,
-    );
-  }
-}
-
-class PetNameInputScreen extends ConsumerWidget {
-  const PetNameInputScreen({super.key});
 
   void _validateName() {
     setState(() {
@@ -134,6 +76,7 @@ class PetNameInputScreen extends ConsumerWidget {
       if (registrationState.petImagePath != null) {
         _selectedImagePath = registrationState.petImagePath;
       }
+      _validateName(); // 복원 후 이름 유효성 검사
     });
   }
 
@@ -178,7 +121,7 @@ class PetNameInputScreen extends ConsumerWidget {
             // 상단 영역 (스크롤 추가)
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -201,6 +144,7 @@ class PetNameInputScreen extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.lg),
 
                     // 펫 이미지
+                    // ignore: deprecated_member_use_from_same_package
                     PetImagePicker(
                       selectedImagePath: _selectedImagePath,
                       defaultImagePath: _getDefaultImagePath(),
@@ -216,7 +160,7 @@ class PetNameInputScreen extends ConsumerWidget {
                     // 이름 입력 필드
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
+                      padding: const const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
                       ),
                       child: TextFormField(
@@ -262,12 +206,13 @@ class PetNameInputScreen extends ConsumerWidget {
                               width: 2,
                             ),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
+                          contentPadding: const const EdgeInsets.symmetric(
                             vertical: AppSpacing.md,
                             horizontal: AppSpacing.md,
                           ),
                         ),
                         onChanged: (value) {
+                          _validateName();
                           _saveData();
                         },
                       ),
@@ -323,7 +268,7 @@ class PetNameInputScreen extends ConsumerWidget {
 
             // 하단 고정 버튼 영역
             Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: const const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(

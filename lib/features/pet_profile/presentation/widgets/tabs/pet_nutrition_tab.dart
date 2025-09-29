@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +11,7 @@ class PetNutritionTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
           _buildFoodPreferencesSection(),
@@ -47,7 +47,7 @@ class PetNutritionTab extends ConsumerWidget {
                 isSelected: true,
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            const const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: _buildFoodTypeCard(
                 icon: Icons.water_drop,
@@ -67,7 +67,7 @@ class PetNutritionTab extends ConsumerWidget {
                 isSelected: false,
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            const const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: _buildFoodTypeCard(
                 icon: Icons.kitchen,
@@ -194,7 +194,7 @@ class PetNutritionTab extends ConsumerWidget {
     required bool isSelected,
   }) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: isSelected
             ? AppColors.pointBrown.withValues(alpha: 0.1)

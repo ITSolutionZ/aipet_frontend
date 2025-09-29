@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 
 class ProfileEditController {
@@ -12,7 +12,7 @@ class ProfileEditController {
   double? editingWeight;
   String? selectedImagePath;
 
-  ProfileEditController({
+  const ProfileEditController({
     required this.nameController,
     required this.appearanceController,
     required this.weightController,

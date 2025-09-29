@@ -56,15 +56,15 @@ class FirebaseAuthRealImpl implements AuthRepository {
       if (credential.user != null) {
         // Firebase User를 AuthUser로 변환
         final user = _mapFirebaseUserToAuthUser(credential.user!);
-        return ResultFactory.success(user, 'ログインが完了しました');
+        return Result.success(user, 'ログインが完了しました');
       } else {
-        return ResultFactory.failure('ログインに失敗しました');
+        return Result.failure('ログインに失敗しました');
       }
     } on FirebaseAuthException catch (e) {
       // Firebase Auth 에러를 사용자 친화적 메시지로 변환
-      return ResultFactory.failure(_getFirebaseErrorMessage(e));
+      return Result.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return ResultFactory.failure('ログインに失敗しました: ${e.toString()}');
+      return Result.failure('ログインに失敗しました: ${e.toString()}');
     }
   }
 
@@ -81,14 +81,14 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (credential.user != null) {
         final user = _mapFirebaseUserToAuthUser(credential.user!);
-        return ResultFactory.success(user, '会員登録が完了しました');
+        return Result.success(user, '会員登録が完了しました');
       } else {
-        return ResultFactory.failure('会員登録に失敗しました');
+        return Result.failure('会員登録に失敗しました');
       }
     } on FirebaseAuthException catch (e) {
-      return ResultFactory.failure(_getFirebaseErrorMessage(e));
+      return Result.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return ResultFactory.failure('会員登録に失敗しました: ${e.toString()}');
+      return Result.failure('会員登録に失敗しました: ${e.toString()}');
     }
   }
 
@@ -99,7 +99,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
-        return ResultFactory.failure('Google ログインがキャンセルされました');
+        return Result.failure('Google ログインがキャンセルされました');
       }
 
       final GoogleSignInAuthentication googleAuth =
@@ -115,14 +115,14 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
-        return ResultFactory.success(user, 'Googleログインが完了しました');
+        return Result.success(user, 'Googleログインが完了しました');
       } else {
-        return ResultFactory.failure('Google ログインに失敗しました');
+        return Result.failure('Google ログインに失敗しました');
       }
     } on FirebaseAuthException catch (e) {
-      return ResultFactory.failure(_getFirebaseErrorMessage(e));
+      return Result.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return ResultFactory.failure('Google ログインに失敗しました: ${e.toString()}');
+      return Result.failure('Google ログインに失敗しました: ${e.toString()}');
     }
   }
 
@@ -148,14 +148,14 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
-        return ResultFactory.success(user, 'Appleログインが完了しました');
+        return Result.success(user, 'Appleログインが完了しました');
       } else {
-        return ResultFactory.failure('Apple ログインに失敗しました');
+        return Result.failure('Apple ログインに失敗しました');
       }
     } on FirebaseAuthException catch (e) {
-      return ResultFactory.failure(_getFirebaseErrorMessage(e));
+      return Result.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
-      return ResultFactory.failure('Apple ログインに失敗しました: ${e.toString()}');
+      return Result.failure('Apple ログインに失敗しました: ${e.toString()}');
     }
   }
 
@@ -190,12 +190,12 @@ class FirebaseAuthRealImpl implements AuthRepository {
           },
         );
 
-        return ResultFactory.success(user, 'LINEログインが完了しました');
+        return Result.success(user, 'LINEログインが完了しました');
       } else {
-        return ResultFactory.failure(result.errorOrNull ?? 'LINE ログインに失敗しました');
+        return Result.failure(result.errorOrNull ?? 'LINE ログインに失敗しました');
       }
     } catch (e) {
-      return ResultFactory.failure('LINE ログインに失敗しました: ${e.toString()}');
+      return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
     }
   }
 

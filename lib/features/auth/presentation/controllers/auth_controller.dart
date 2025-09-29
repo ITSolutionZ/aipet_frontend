@@ -6,8 +6,7 @@ import 'package:aipet_frontend/features/auth/domain/usecases/login_usecase.dart'
 import 'package:aipet_frontend/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/social_login_usecase.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/shared.dart' hide Result;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 
 /// 인증 작업 결과 타입 (Result 패턴 사용)
@@ -129,7 +128,7 @@ class AuthController extends FormController<AuthFormState> {
       );
 
       if (result.isSuccess) {
-        return Result.success('ログインが完了しました');
+        return Result.success('ログインが完了しました', '');
       } else {
         return Result.failure(result.errorOrNull ?? 'ログインに失敗しました');
       }
@@ -160,7 +159,7 @@ class AuthController extends FormController<AuthFormState> {
       );
 
       if (result.isSuccess) {
-        return Result.success('회원가입이 완료되었습니다');
+        return Result.success('회원가입이 완료되었습니다', '');
       } else {
         return Result.failure('회원가입에 실패했습니다');
       }
@@ -176,7 +175,7 @@ class AuthController extends FormController<AuthFormState> {
       final result = await _socialLoginUseCase.loginWithGoogle();
 
       if (result.isSuccess) {
-        return Result.success('Googleログインが完了しました');
+        return Result.success('Googleログインが完了しました', '');
       } else {
         return Result.failure('Googleログインに失敗しました');
       }
@@ -192,7 +191,7 @@ class AuthController extends FormController<AuthFormState> {
       final result = await _socialLoginUseCase.loginWithApple();
 
       if (result.isSuccess) {
-        return Result.success('Appleログインが完了しました');
+        return Result.success('Appleログインが完了しました', '');
       } else {
         return Result.failure('Appleログインに失敗しました');
       }
@@ -208,7 +207,7 @@ class AuthController extends FormController<AuthFormState> {
       final result = await _socialLoginUseCase.loginWithLine();
 
       if (result.isSuccess) {
-        return Result.success('LINEログインが完了しました');
+        return Result.success('LINEログインが完了しました', '');
       } else {
         return Result.failure('LINEログインに失敗しました');
       }
@@ -255,7 +254,7 @@ class AuthController extends FormController<AuthFormState> {
         // 인증 상태 초기화
         ref.read(authFormStateNotifierProvider.notifier).resetState();
 
-        return Result.success('ログアウトが完了しました');
+        return Result.success('ログアウトが完了しました', '');
       } else {
         return Result.failure('ログアウトに失敗しました');
       }

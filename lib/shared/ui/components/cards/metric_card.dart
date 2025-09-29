@@ -1,9 +1,25 @@
+import 'package:aipet_frontend/shared/design/text_styles.dart';
 import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 
-/// 📊 메트릭 표시용 카드
+/// 📊 메트릭/통계 표시용 카드 컴포넌트
 ///
-/// 통계 및 수치 데이터 표시에 특화된 카드 컴포넌트
+/// ## 사용법
+/// ```dart
+/// MetricCard.value(
+///   title: 'Weight',
+///   value: '12.5',
+///   unit: 'kg',
+///   icon: Icons.monitor_weight,
+/// )
+///
+/// MetricCard.withChange(
+///   title: 'Daily Steps',
+///   value: '8,432',
+///   change: '+1,234',
+///   isPositiveChange: true,
+/// )
+/// ```
 class MetricCard extends StatelessWidget {
   final String title;
   final String value;
@@ -13,9 +29,15 @@ class MetricCard extends StatelessWidget {
   final Widget? icon;
   final Color? iconColor;
   final VoidCallback? onTap;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final double? borderRadius;
+  final Color? backgroundColor;
+  final Color? borderColor;
   final String? semanticLabel;
+  final String? tooltip;
 
-  const MetricCard({
+  const MetricCard._({
     super.key,
     required this.title,
     required this.value,
@@ -25,167 +47,232 @@ class MetricCard extends StatelessWidget {
     this.icon,
     this.iconColor,
     this.onTap,
+    this.padding,
+    this.margin,
+    this.borderRadius,
+    this.backgroundColor,
+    this.borderColor,
     this.semanticLabel,
+    this.tooltip,
   });
 
-  /// 간단한 메트릭 카드 팩토리
-  factory MetricCard.simple({
+  /// 값과 단위가 있는 메트릭 카드
+  const MetricCard.value({
+    Key? key,
     required String title,
     required String value,
     String? unit,
     Widget? icon,
+    Color? iconColor,
     VoidCallback? onTap,
+    EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? margin,
+    double? borderRadius,
+    Color? backgroundColor,
+    Color? borderColor,
     String? semanticLabel,
-  }) {
-    return MetricCard(
-      title: title,
-      value: value,
-      unit: unit,
-      icon: icon,
-      onTap: onTap,
-      semanticLabel: semanticLabel,
-    );
-  }
+    String? tooltip,
+  }) : this._(
+         key: key,
+         title: title,
+         value: value,
+         unit: unit,
+         icon: icon,
+         iconColor: iconColor,
+         onTap: onTap,
+         padding: padding,
+         margin: margin,
+         borderRadius: borderRadius,
+         backgroundColor: backgroundColor,
+         borderColor: borderColor,
+         semanticLabel: semanticLabel,
+         tooltip: tooltip,
+       );
 
-  /// 변화량이 포함된 메트릭 카드 팩토리
-  factory MetricCard.withChange({
+  /// 변화량이 있는 메트릭 카드
+  const MetricCard.withChange({
+    Key? key,
     required String title,
     required String value,
+    String? unit,
     required String change,
     required bool isPositiveChange,
+    Widget? icon,
+    Color? iconColor,
+    VoidCallback? onTap,
+    EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? margin,
+    double? borderRadius,
+    Color? backgroundColor,
+    Color? borderColor,
+    String? semanticLabel,
+    String? tooltip,
+  }) : this._(
+         key: key,
+         title: title,
+         value: value,
+         unit: unit,
+         change: change,
+         isPositiveChange: isPositiveChange,
+         icon: icon,
+         iconColor: iconColor,
+         onTap: onTap,
+         padding: padding,
+         margin: margin,
+         borderRadius: borderRadius,
+         backgroundColor: backgroundColor,
+         borderColor: borderColor,
+         semanticLabel: semanticLabel,
+         tooltip: tooltip,
+       );
+
+  /// 간단한 메트릭 카드
+  const MetricCard.simple({
+    Key? key,
+    required String title,
+    required String value,
     String? unit,
     Widget? icon,
     Color? iconColor,
     VoidCallback? onTap,
     String? semanticLabel,
-  }) {
-    return MetricCard(
-      title: title,
-      value: value,
-      unit: unit,
-      change: change,
-      isPositiveChange: isPositiveChange,
-      icon: icon,
-      iconColor: iconColor,
-      onTap: onTap,
-      semanticLabel: semanticLabel,
-    );
-  }
+  }) : this._(
+         key: key,
+         title: title,
+         value: value,
+         unit: unit,
+         icon: icon,
+         iconColor: iconColor,
+         onTap: onTap,
+         semanticLabel: semanticLabel,
+       );
 
   @override
   Widget build(BuildContext context) {
-    Widget card = Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+    final widget = Container(
+      margin: margin ?? const const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       decoration: BoxDecoration(
-        color: AppColors.pureWhite,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(
-          color: AppColors.pointDark.withValues(alpha: 0.1),
-          width: 1,
-        ),
+        color: backgroundColor ?? AppColors.cardBackgroundGray,
+        borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.md),
+        border: borderColor != null
+            ? Border.all(color: borderColor!)
+            : Border.all(color: AppColors.borderGray),
         boxShadow: [
           BoxShadow(
-            color: AppColors.pointDark.withValues(alpha: 0.1),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              if (icon != null) ...[
-                _buildIconContainer(),
-                const SizedBox(width: AppSpacing.md),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.md),
+          child: Padding(
+            padding: padding ?? const const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(),
+                const SizedBox(height: AppSpacing.sm),
+                _buildValue(),
+                if (change != null) ...[
+                  const SizedBox(height: AppSpacing.xs),
+                  _buildChange(),
+                ],
               ],
-              Expanded(
-                child: Text(
-                  title,
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: AppColors.pointDark.withValues(alpha: 0.7),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                value,
-                style: AppFonts.headlineMedium.copyWith(
-                  color: AppColors.pointDark,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              if (unit != null) ...[
-                const SizedBox(width: 4),
-                Text(
-                  unit!,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointDark.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
-              const Spacer(),
-              if (change != null) _buildChangeIndicator(),
-            ],
-          ),
-        ],
+        ),
       ),
     );
 
-    if (onTap != null) {
-      card = InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        child: card,
+    if (semanticLabel != null) {
+      return Semantics(
+        label: semanticLabel,
+        child: widget,
       );
     }
 
-    if (semanticLabel != null) {
-      card = Semantics(label: semanticLabel, child: card);
+    if (tooltip != null) {
+      return Tooltip(
+        message: tooltip!,
+        child: widget,
+      );
     }
 
-    return card;
+    return widget;
   }
 
-  Widget _buildIconContainer() {
-    if (icon == null) return const SizedBox.shrink();
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: (iconColor ?? AppColors.pointBrown).withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppRadius.small),
-      ),
-      child: IconTheme(
-        data: IconThemeData(color: iconColor ?? AppColors.pointBrown, size: 24),
-        child: icon!,
-      ),
+  Widget _buildHeader() {
+    return Row(
+      children: [
+        if (icon != null) ...[
+          IconTheme(
+            data: IconThemeData(
+              color: iconColor ?? AppColors.primary,
+              size: 20,
+            ),
+            child: icon!,
+          ),
+          const const SizedBox(width: AppSpacing.sm),
+        ],
+        Expanded(
+          child: Text(
+            title,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildChangeIndicator() {
-    if (change == null) return const SizedBox.shrink();
+  Widget _buildValue() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        Text(
+          value,
+          style: AppTextStyles.headlineMedium.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        if (unit != null) ...[
+          const const SizedBox(width: AppSpacing.xs),
+          Text(
+            unit!,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
 
-    final isPositive = isPositiveChange ?? true;
-    final color = isPositive ? Colors.green : Colors.red;
-    final iconData = isPositive ? Icons.trending_up : Icons.trending_down;
+  Widget _buildChange() {
+    final isPositive = isPositiveChange ?? false;
+    final changeColor = isPositive ? AppColors.success : AppColors.error;
+    final changeIcon = isPositive ? Icons.trending_up : Icons.trending_down;
 
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(iconData, size: 16, color: color),
-        const SizedBox(width: 2),
+        Icon(
+          changeIcon,
+          size: 16,
+          color: changeColor,
+        ),
+        const const SizedBox(width: AppSpacing.xs),
         Text(
           change!,
-          style: AppFonts.bodySmall.copyWith(
-            color: color,
+          style: AppTextStyles.bodySmall.copyWith(
+            color: changeColor,
             fontWeight: FontWeight.w600,
           ),
         ),

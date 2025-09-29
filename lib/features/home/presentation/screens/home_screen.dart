@@ -55,7 +55,7 @@ class HomeScreen extends ConsumerWidget {
     return RefreshIndicator(
       onRefresh: () => ref.refresh(homeDashboardControllerProvider.future),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -109,8 +109,8 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
         CircleAvatar(
-          backgroundColor: AppColors.primary.withOpacity(0.1),
-          child: Icon(Icons.person, color: AppColors.primary),
+          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+          child: const Icon(Icons.person, color: AppColors.primary),
         ),
       ],
     );
@@ -120,14 +120,14 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildEmptyPetState(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.pets,
               size: 80,
-              color: AppColors.textSecondary.withOpacity(0.5),
+              color: AppColors.textSecondary.withValues(alpha: 0.5),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
@@ -157,13 +157,13 @@ class HomeScreen extends ConsumerWidget {
   /// 날씨 카드
   Widget _buildWeatherCard(WeatherEntity weather) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             spreadRadius: 1,
           ),
@@ -172,7 +172,7 @@ class HomeScreen extends ConsumerWidget {
       child: Row(
         children: [
           Text(weather.iconCode, style: const TextStyle(fontSize: 40)),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,12 +192,12 @@ class HomeScreen extends ConsumerWidget {
           ),
           if (weather.isGoodForWalking)
             Container(
-              padding: const EdgeInsets.symmetric(
+              padding: const const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
                 vertical: AppSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: AppColors.pointGreen.withOpacity(0.1),
+                color: AppColors.pointGreen.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppSpacing.sm),
               ),
               child: Text(
@@ -242,13 +242,13 @@ class HomeScreen extends ConsumerWidget {
   /// 펫 카드
   Widget _buildPetCard(PetSummaryEntity pet) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             spreadRadius: 1,
           ),
@@ -259,12 +259,12 @@ class HomeScreen extends ConsumerWidget {
         children: [
           CircleAvatar(
             radius: 30,
-            backgroundColor: AppColors.primary.withOpacity(0.1),
+            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
             backgroundImage: pet.profileImageUrl != null
                 ? NetworkImage(pet.profileImageUrl!)
                 : null,
             child: pet.profileImageUrl == null
-                ? Icon(Icons.pets, color: AppColors.primary, size: 30)
+                ? const Icon(Icons.pets, color: AppColors.primary, size: 30)
                 : null,
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -307,8 +307,8 @@ class HomeScreen extends ConsumerWidget {
   /// 예약 카드
   Widget _buildAppointmentCard(AppointmentSummary appointment) {
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.sm),
@@ -316,8 +316,8 @@ class HomeScreen extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.schedule, color: AppColors.primary),
-          const SizedBox(width: AppSpacing.sm),
+          const Icon(Icons.schedule, color: AppColors.primary),
+          const const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,15 +352,15 @@ class HomeScreen extends ConsumerWidget {
   /// 산책 요약 섹션
   Widget _buildWalkSummary(BuildContext context, int totalMinutes) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.md),
       ),
       child: Row(
         children: [
-          Icon(Icons.directions_walk, color: AppColors.primary, size: 32),
-          const SizedBox(width: AppSpacing.md),
+          const Icon(Icons.directions_walk, color: AppColors.primary, size: 32),
+          const const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,11 +394,11 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildErrorView(BuildContext context, WidgetRef ref, Object error) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: AppColors.error),
+            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: AppSpacing.lg),
             Text(
               'データの読み込みに失敗しました',

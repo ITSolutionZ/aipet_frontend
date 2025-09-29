@@ -11,7 +11,7 @@ class ExportAppDataUseCase {
     if (result.isSuccess) {
       return Success(result.dataOrNull!, result.errorOrNull);
     } else {
-      return Failure(result.errorOrNull ?? 'Unknown error');
+      return Result.failure(result.errorOrNull ?? 'Unknown error');
     }
   }
 }

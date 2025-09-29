@@ -13,7 +13,7 @@ class LearnNextTrickCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -35,11 +35,23 @@ class LearnNextTrickCard extends StatelessWidget {
                 height: 60,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppSpacing.sm),
-                  image: DecorationImage(
-                    image: AssetImage(trick.imagePath),
-                    fit: BoxFit.cover,
-                  ),
+                  image: trick.imagePath != null
+                      ? DecorationImage(
+                          image: AssetImage(trick.imagePath!),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                  color: trick.imagePath == null
+                      ? AppColors.pointBrown.withValues(alpha: 0.1)
+                      : null,
                 ),
+                child: trick.imagePath == null
+                    ? const Icon(
+                        Icons.pets,
+                        color: AppColors.pointBrown,
+                        size: 30,
+                      )
+                    : null,
               ),
               if (trick.isVideo)
                 Positioned.fill(
@@ -59,7 +71,7 @@ class LearnNextTrickCard extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
 
           // 트릭 정보
           Expanded(
@@ -81,43 +93,42 @@ class LearnNextTrickCard extends StatelessWidget {
                   children: [
                     // 난이도 배지
                     Container(
-                      padding: const EdgeInsets.symmetric(
+                      padding: const const EdgeInsets.symmetric(
                         horizontal: AppSpacing.sm,
                         vertical: AppSpacing.xs,
                       ),
                       decoration: BoxDecoration(
-                        color: _getDifficultyColor(trick.difficulty),
+                        color: _getDifficultyColor(trick.difficulty.name),
                         borderRadius: BorderRadius.circular(AppSpacing.xs),
                       ),
                       child: Text(
-                        _getDifficultyText(trick.difficulty),
+                        _getDifficultyText(trick.difficulty.name),
                         style: AppFonts.bodySmall.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    const const SizedBox(width: AppSpacing.sm),
 
                     // 소요 시간
-                    if (trick.duration != null)
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.access_time,
-                            size: 14,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: AppColors.pointDark.withValues(alpha: 0.6),
+                        ),
+                        const const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          '${trick.estimatedTime}分',
+                          style: AppFonts.bodySmall.copyWith(
                             color: AppColors.pointDark.withValues(alpha: 0.6),
                           ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Text(
-                            trick.duration!,
-                            style: AppFonts.bodySmall.copyWith(
-                              color: AppColors.pointDark.withValues(alpha: 0.6),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
 

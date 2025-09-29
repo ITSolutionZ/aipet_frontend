@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:aipet_frontend/shared/entities/walk_location_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 
 /// 산책 추적 성능 최적화 서비스
 class WalkTrackingOptimizer {
@@ -8,7 +8,7 @@ class WalkTrackingOptimizer {
 
   /// 위치 업데이트 필터링 설정
   static const double minDistanceThreshold = 2.0; // 최소 이동 거리 (미터)
-  static const Duration minTimeThreshold = Duration(seconds: 3); // 최소 시간 간격
+  static const Duration minTimeThreshold = const Duration(seconds: 3); // 최소 시간 간격
   static const double maxAccuracyThreshold = 50.0; // 최대 허용 정확도 (미터)
   static const double minSpeedThreshold = 0.5; // 최소 속도 (m/s)
   static const double maxReasonableSpeed = 20.0; // 최대 합리적 속도 (m/s)
@@ -181,7 +181,7 @@ class WalkTrackingOptimizer {
   static List<WalkLocation> pruneRoute(
     List<WalkLocation> route, {
     int maxPoints = 1000,
-    Duration maxAge = const Duration(hours: 6),
+    Duration maxAge = Duration(hours: 6),
   }) {
     if (route.length <= maxPoints) {
       return route;

@@ -56,7 +56,7 @@ class AppErrorHandler extends BaseLoggingService {
       if (message.contains('validation') ||
           message.contains('invalid') ||
           message.contains('format')) {
-        return ValidationException(message, originalError: error);
+        return const ValidationException(message, originalError: error);
       }
 
       // 저장소 관련 에러 판별
@@ -140,25 +140,25 @@ class AppErrorHandler extends BaseLoggingService {
 
   /// 에러를 Result로 변환
   static Result<T> toResult<T>(AppException error) {
-    return ResultFactory.fromAppException(error);
+    return Result.fromAppException(error);
   }
 
   /// 예외를 Result로 변환
   static Result<T> exceptionToResult<T>(Exception exception) {
     final appException = convertToAppException(exception);
-    return ResultFactory.fromAppException(appException);
+    return Result.fromAppException(appException);
   }
 
   /// 동적 에러를 Result로 변환
   static Result<T> dynamicToResult<T>(dynamic error) {
     if (error is AppException) {
-      return ResultFactory.fromAppException(error);
+      return Result.fromAppException(error);
     } else if (error is Exception) {
       final appException = convertToAppException(error);
-      return ResultFactory.fromAppException(appException);
+      return Result.fromAppException(appException);
     } else {
       final appException = UnexpectedException('Unexpected error: $error');
-      return ResultFactory.fromAppException(appException);
+      return Result.fromAppException(appException);
     }
   }
 
@@ -175,7 +175,7 @@ class AppErrorHandler extends BaseLoggingService {
     while (attempts < maxRetries) {
       try {
         final result = await operation();
-        return ResultFactory.success(result);
+        return Result.success(result);
       } catch (e) {
         lastException = e is Exception ? e : Exception(e.toString());
         attempts++;
@@ -192,7 +192,7 @@ class AppErrorHandler extends BaseLoggingService {
       }
     }
 
-    return ResultFactory.fromException(lastException!);
+    return Result.fromException(lastException!);
   }
 
   /// 에러 복구 전략 (동기)
@@ -207,7 +207,7 @@ class AppErrorHandler extends BaseLoggingService {
     while (attempts < maxRetries) {
       try {
         final result = operation();
-        return ResultFactory.success(result);
+        return Result.success(result);
       } catch (e) {
         lastException = e is Exception ? e : Exception(e.toString());
         attempts++;
@@ -219,7 +219,7 @@ class AppErrorHandler extends BaseLoggingService {
       }
     }
 
-    return ResultFactory.fromException(lastException!);
+    return Result.fromException(lastException!);
   }
 
   /// 에러 처리 및 로깅
@@ -286,7 +286,7 @@ extension ErrorHandlingExtensions<T> on Future<T> Function() {
   Future<Result<T>> toResult() async {
     try {
       final result = await this();
-      return ResultFactory.success(result);
+      return Result.success(result);
     } catch (e) {
       return AppErrorHandler.dynamicToResult(e);
     }
@@ -313,7 +313,7 @@ extension SyncErrorHandlingExtensions<T> on T Function() {
   Result<T> toResult() {
     try {
       final result = this();
-      return ResultFactory.success(result);
+      return Result.success(result);
     } catch (e) {
       return AppErrorHandler.dynamicToResult(e);
     }

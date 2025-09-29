@@ -12,7 +12,7 @@ class SelectedPetNotifier extends _$SelectedPetNotifier {
     return null;
   }
 
-  void setSelectedPet(PetInfo pet) {
+  void setSelectedPet(PetInfo? pet) {
     state = pet;
   }
 

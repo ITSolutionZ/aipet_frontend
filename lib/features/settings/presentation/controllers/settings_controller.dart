@@ -46,7 +46,7 @@ class SettingsController extends BaseController {
       if (useCaseResult.isSuccess) {
         return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
       } else {
-        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
     });
 
@@ -62,7 +62,7 @@ class SettingsController extends BaseController {
       if (useCaseResult.isSuccess) {
         return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
       } else {
-        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
     });
 
@@ -95,7 +95,7 @@ class SettingsController extends BaseController {
       if (useCaseResult.isSuccess) {
         return Success(null, useCaseResult.errorOrNull);
       } else {
-        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
     });
 
@@ -109,7 +109,7 @@ class SettingsController extends BaseController {
       if (useCaseResult.isSuccess) {
         return Success(null, useCaseResult.errorOrNull);
       } else {
-        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
     });
 
@@ -123,7 +123,7 @@ class SettingsController extends BaseController {
       if (useCaseResult.isSuccess) {
         return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
       } else {
-        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
     });
 
@@ -139,7 +139,7 @@ class SettingsController extends BaseController {
       if (useCaseResult.isSuccess) {
         return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
       } else {
-        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
     });
 
@@ -153,7 +153,7 @@ class SettingsController extends BaseController {
       if (useCaseResult.isSuccess) {
         return Success(useCaseResult.dataOrNull!, useCaseResult.errorOrNull);
       } else {
-        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
     });
 
@@ -167,7 +167,7 @@ class SettingsController extends BaseController {
       if (useCaseResult.isSuccess) {
         return Success(null, useCaseResult.errorOrNull);
       } else {
-        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
     });
 
@@ -181,7 +181,7 @@ class SettingsController extends BaseController {
       if (useCaseResult.isSuccess) {
         return Success(null, useCaseResult.errorOrNull);
       } else {
-        return Failure(useCaseResult.errorOrNull ?? 'Unknown error');
+        return Result.failure(useCaseResult.errorOrNull ?? 'Unknown error');
       }
     });
 

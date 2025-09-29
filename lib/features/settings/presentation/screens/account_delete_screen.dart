@@ -11,7 +11,7 @@ class AccountDeleteScreen extends StatelessWidget {
       drawer: const AppDrawer(),
       appBar: const SoftGradientDrawerAppBar(title: 'アカウント削除'),
       body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           children: [
             const Spacer(),
@@ -47,7 +47,7 @@ class AccountDeleteScreen extends StatelessWidget {
 
             // 説明文
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               child: Column(
                 children: [
                   Text(
@@ -101,7 +101,7 @@ class AccountDeleteScreen extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
 
                 // 戻るボタン
                 Expanded(
@@ -135,7 +135,7 @@ class AccountDeleteScreen extends StatelessWidget {
           title: Row(
             children: [
               Icon(Icons.warning, color: Colors.red[400]),
-              const SizedBox(width: AppSpacing.xs),
+              const const SizedBox(width: AppSpacing.xs),
               const Text('最終確認'),
             ],
           ),

@@ -85,7 +85,7 @@ class ValidationException extends AppException {
   final String? field;
   final String? validationRule;
 
-  ValidationException(
+  const ValidationException(
     super.message, {
     super.code,
     super.originalError,

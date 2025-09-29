@@ -327,7 +327,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
             width: 1,
           ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),

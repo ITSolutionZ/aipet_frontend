@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/onboarding/domain/services/walk_error_handler.dart';
+import 'package:aipet_frontend/features/walk/domain/services/walk_error_handler.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,26 +44,22 @@ class LocationErrorBoundary extends ConsumerWidget {
           ),
           title: Text(
             _getErrorTitle(severity),
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                errorMessage,
-                style: const TextStyle(fontSize: 16),
-              ),
+              Text(errorMessage, style: const TextStyle(fontSize: 16)),
               const SizedBox(height: 16),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppColors.pointBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.pointBlue.withValues(alpha: 0.3)),
+                  border: Border.all(
+                    color: AppColors.pointBlue.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -72,7 +68,7 @@ class LocationErrorBoundary extends ConsumerWidget {
                       color: AppColors.pointBlue,
                       size: 20,
                     ),
-                    const SizedBox(width: 8),
+                    const const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         userAction,
@@ -176,7 +172,7 @@ class LocationErrorBoundary extends ConsumerWidget {
     final severity = WalkErrorHandler.getErrorSeverity(error);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: _getErrorColor(severity).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
@@ -211,10 +207,7 @@ class LocationErrorBoundary extends ConsumerWidget {
           Text(
             userAction,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 16),
           Row(
@@ -231,7 +224,7 @@ class LocationErrorBoundary extends ConsumerWidget {
                   ),
                 ),
               if (onRetry != null && onSettings != null)
-                const SizedBox(width: 12),
+                const const SizedBox(width: 12),
               if (onRetry != null && severity != WalkErrorSeverity.critical)
                 ElevatedButton.icon(
                   onPressed: onRetry,
@@ -291,6 +284,6 @@ class LocationErrorBoundary extends ConsumerWidget {
   static bool _shouldShowSettingsButton(dynamic error) {
     final errorString = error.toString().toLowerCase();
     return errorString.contains('permission') ||
-           errorString.contains('location service');
+        errorString.contains('location service');
   }
 }

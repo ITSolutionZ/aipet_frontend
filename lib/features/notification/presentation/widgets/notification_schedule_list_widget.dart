@@ -35,7 +35,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       itemCount: schedules.length,
       itemBuilder: (context, index) {
         final schedule = schedules[index];
@@ -71,7 +71,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: AppSpacing.md),
+        padding: const const EdgeInsets.only(right: AppSpacing.md),
         color: Colors.red,
         child: const Icon(Icons.delete, color: Colors.white),
       ),
@@ -79,7 +79,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
         onScheduleDelete?.call(schedule.id);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(
+        margin: const const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.xs,
         ),
@@ -100,12 +100,12 @@ class NotificationScheduleListWidget extends StatelessWidget {
             onTap: () => onScheduleTap?.call(schedule),
             borderRadius: BorderRadius.circular(AppRadius.medium),
             child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const const EdgeInsets.all(AppSpacing.md),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildScheduleIcon(schedule),
-                  const SizedBox(width: AppSpacing.sm),
+                  const const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +118,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  const const SizedBox(width: AppSpacing.sm),
                   _buildScheduleActions(schedule),
                 ],
               ),
@@ -217,7 +217,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
           ),
         ),
         Container(
-          padding: const EdgeInsets.symmetric(
+          padding: const const EdgeInsets.symmetric(
             horizontal: AppSpacing.xs,
             vertical: 2,
           ),
@@ -255,7 +255,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
         Row(
           children: [
             const Icon(Icons.access_time, size: 16, color: AppColors.pointGray),
-            const SizedBox(width: AppSpacing.xs),
+            const const SizedBox(width: AppSpacing.xs),
             Text(
               '${schedule.time}',
               style: AppFonts.bodySmall.copyWith(
@@ -263,7 +263,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            const const SizedBox(width: AppSpacing.sm),
             if (schedule.scheduleType == ScheduleType.weekly &&
                 schedule.weekDays != null) ...[
               const Icon(
@@ -271,7 +271,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
                 size: 16,
                 color: AppColors.pointGray,
               ),
-              const SizedBox(width: AppSpacing.xs),
+              const const SizedBox(width: AppSpacing.xs),
               Text(
                 _getWeekDaysText(schedule.weekDays!),
                 style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
@@ -297,7 +297,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
             shape: BoxShape.circle,
           ),
         ),
-        const SizedBox(width: AppSpacing.xs),
+        const const SizedBox(width: AppSpacing.xs),
         Text(
           isEnabled ? 'オン' : 'オフ',
           style: AppFonts.caption.copyWith(
@@ -306,7 +306,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
           ),
         ),
         ...[
-          const SizedBox(width: AppSpacing.sm),
+          const const SizedBox(width: AppSpacing.sm),
           Text(
             '次: ${_formatNextTrigger(nextTrigger)}',
             style: AppFonts.caption.copyWith(color: AppColors.pointGray),

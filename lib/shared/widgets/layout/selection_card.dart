@@ -33,7 +33,7 @@ class SelectionCardList<T> extends StatelessWidget {
     required this.items,
     this.selectedValue,
     this.onChanged,
-    this.itemMargin = const EdgeInsets.symmetric(vertical: 4),
+    this.itemMargin = const const EdgeInsets.symmetric(vertical: 4),
     this.borderRadius = 12,
     this.title,
   });
@@ -97,7 +97,7 @@ class _SelectionCard<T> extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: isSelected
                   ? theme.primaryColor.withValues(alpha: 0.1)
@@ -158,7 +158,7 @@ class _SelectionCard<T> extends StatelessWidget {
                           ),
                           if (isSelected && item.title == 'クレジットカード払い')
                             Container(
-                              padding: const EdgeInsets.symmetric(
+                              padding: const const EdgeInsets.symmetric(
                                 horizontal: 8,
                                 vertical: 4,
                               ),
@@ -217,7 +217,7 @@ class InfoCardList extends StatelessWidget {
   const InfoCardList({
     super.key,
     required this.items,
-    this.itemMargin = const EdgeInsets.symmetric(vertical: 4),
+    this.itemMargin = const const EdgeInsets.symmetric(vertical: 4),
     this.borderRadius = 12,
     this.title,
   });
@@ -287,7 +287,7 @@ class _InfoCard extends StatelessWidget {
           onTap: item.onTap,
           borderRadius: BorderRadius.circular(borderRadius),
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(borderRadius),

@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/foundation/controllers/form_controller.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 
 /// 🎯 통합 상태 관리 컨트롤러
@@ -55,7 +55,7 @@ abstract class UnifiedStateController<T> extends FormController<T> {
     );
     if (!emailRegex.hasMatch(email)) {
       setError('有効なメールアドレスを入力してください');
-      return Result.failure('有効なメールアドレスを入力してください');
+      return const Failure('有効なメールアドレスを入力してください');
     }
     return Result.success('', null);
   }
@@ -65,7 +65,7 @@ abstract class UnifiedStateController<T> extends FormController<T> {
   Result<void> validatePassword(String password) {
     if (password.length < 6) {
       setError('パスワードは6文字以上で入力してください');
-      return Result.failure('パスワードは6文字以上で入力してください');
+      return const Failure('パスワードは6文字以上で入力してください');
     }
     return Result.success('', null);
   }
@@ -75,7 +75,7 @@ abstract class UnifiedStateController<T> extends FormController<T> {
   Result<void> validateUsername(String username) {
     if (username.length < 2) {
       setError('ユーザー名は2文字以上で入力してください');
-      return Result.failure('ユーザー名は2文字以上で入力してください');
+      return const Failure('ユーザー名は2文字以上で入力してください');
     }
     return Result.success('', null);
   }

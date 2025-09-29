@@ -27,15 +27,15 @@ class NotificationFilterChipsComponent extends StatelessWidget {
     ];
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       height: 50,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+        padding: const const EdgeInsets.symmetric(vertical: AppSpacing.xs),
         children: [
           // 전체 필터
           Padding(
-            padding: const EdgeInsets.only(right: AppSpacing.sm),
+            padding: const const EdgeInsets.only(right: AppSpacing.sm),
             child: FilterChip(
               label: const Text('全て'),
               selected: selectedFilter == null,
@@ -60,13 +60,13 @@ class NotificationFilterChipsComponent extends StatelessWidget {
                     : FontWeight.normal,
                 fontSize: 14,
               ),
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             ),
           ),
           // 타입별 필터
           ...filterTypes.map(
             (type) => Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.sm),
+              padding: const const EdgeInsets.only(right: AppSpacing.sm),
               child: FilterChip(
                 avatar: Icon(
                   type.icon,
@@ -98,7 +98,7 @@ class NotificationFilterChipsComponent extends StatelessWidget {
                       : FontWeight.normal,
                   fontSize: 14,
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                padding: const const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
               ),
             ),
           ),

@@ -16,8 +16,8 @@ class MealStatusWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: isCompleted
             ? AppColors.pointGreen.withValues(alpha: 0.1)

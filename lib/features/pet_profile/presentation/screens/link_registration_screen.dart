@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/features/onboarding/data/services/link_registration_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -151,14 +150,14 @@ class _LinkRegistrationScreenState
         title: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
+              padding: const const EdgeInsets.all(AppSpacing.sm),
               decoration: const BoxDecoration(
                 color: AppColors.pointGreen,
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.check, color: Colors.white, size: 20),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const const SizedBox(width: AppSpacing.md),
             const Text('登録成功'),
           ],
         ),
@@ -187,14 +186,14 @@ class _LinkRegistrationScreenState
         title: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
+              padding: const const EdgeInsets.all(AppSpacing.sm),
               decoration: const BoxDecoration(
                 color: Colors.red,
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.error, color: Colors.white, size: 20),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const const SizedBox(width: AppSpacing.md),
             const Text('登録失敗'),
           ],
         ),
@@ -227,7 +226,7 @@ class _LinkRegistrationScreenState
       backgroundColor: AppColors.pointOffWhite,
       appBar: const SoftGradientBackAppBar(title: 'リンクで登録'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Form(
           key: _formKey,
           child: Column(
@@ -235,7 +234,7 @@ class _LinkRegistrationScreenState
             children: [
               // 안내 텍스트
               Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: const const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: AppColors.pointBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -251,7 +250,7 @@ class _LinkRegistrationScreenState
                       color: AppColors.pointBlue,
                       size: 24,
                     ),
-                    const SizedBox(width: AppSpacing.md),
+                    const const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
                         '他のユーザーが共有したペットプロフィールリンクを入力して追加できます。',
@@ -326,7 +325,7 @@ class _LinkRegistrationScreenState
 
               // 예시 링크
               Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: const const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: AppColors.toneOffWhite,
                   borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -348,7 +347,7 @@ class _LinkRegistrationScreenState
                       'https://instagram.com/my_cat_photos',
                     ].map(
                       (link) => Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                        padding: const const EdgeInsets.only(bottom: AppSpacing.xs),
                         child: Text(
                           link,
                           style: AppFonts.bodySmall.copyWith(
@@ -371,7 +370,7 @@ class _LinkRegistrationScreenState
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBlue,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
+                    padding: const const EdgeInsets.symmetric(
                       vertical: AppSpacing.lg,
                     ),
                     shape: RoundedRectangleBorder(

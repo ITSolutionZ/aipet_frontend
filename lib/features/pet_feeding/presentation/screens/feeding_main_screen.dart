@@ -18,7 +18,7 @@ class FeedingMainScreen extends ConsumerWidget {
       drawer: showBackButton ? null : const AppDrawer(),
       appBar: showBackButton ? _buildBackAppBar() : _buildDrawerAppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -151,7 +151,7 @@ class FeedingMainScreen extends ConsumerWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
               // 아이콘
@@ -164,7 +164,7 @@ class FeedingMainScreen extends ConsumerWidget {
                 ),
                 child: Icon(icon, color: color, size: 32),
               ),
-              const SizedBox(width: AppSpacing.lg),
+              const const SizedBox(width: AppSpacing.lg),
 
               // 텍스트 영역
               Expanded(

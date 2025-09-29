@@ -1,9 +1,11 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/shared/forms/walk_edit_form.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/forms/walk_edit_form.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../presentation.dart';
 
 /// 선택된 공동 관리자 ID 상태 Provider
 final selectedCoManagerProvider = StateProvider<String?>((ref) => null);
@@ -47,7 +49,7 @@ class EditWalkBottomSheet extends ConsumerWidget {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: AppSpacing.lg,
           right: AppSpacing.lg,
           top: AppSpacing.md,
@@ -103,7 +105,7 @@ class EditWalkBottomSheet extends ConsumerWidget {
               WalkDetailInfoCard(walkRecord: walkRecord),
               const SizedBox(height: AppSpacing.lg),
               Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: const const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppColors.pointBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -118,7 +120,7 @@ class EditWalkBottomSheet extends ConsumerWidget {
                       size: 16,
                       color: AppColors.pointBlue,
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    const const SizedBox(width: AppSpacing.sm),
                     Text(
                       '記録日時: ${_formatDate(walkRecord.createdAt)}',
                       style: AppFonts.base(

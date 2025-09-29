@@ -27,7 +27,7 @@ class PetSelectionCard extends StatelessWidget {
       onLongPress: onLongPress,
       child: Container(
         width: 100,
-        padding: const EdgeInsets.all(AppSpacing.sm),
+        padding: const const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.pointBrown.withValues(alpha: 0.1)
@@ -64,8 +64,8 @@ class PetSelectionCard extends StatelessWidget {
             // 상태 표시
             if (selectedStatuses.isNotEmpty && isSelected)
               Container(
-                margin: const EdgeInsets.only(top: AppSpacing.xs),
-                padding: const EdgeInsets.symmetric(
+                margin: const const EdgeInsets.only(top: AppSpacing.xs),
+                padding: const const EdgeInsets.symmetric(
                   horizontal: AppSpacing.xs,
                   vertical: 2,
                 ),

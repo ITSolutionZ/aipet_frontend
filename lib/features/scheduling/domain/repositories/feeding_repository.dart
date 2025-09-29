@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 급여 기록 관련 데이터 추상화 인터페이스
 abstract class FeedingRepository {

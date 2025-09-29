@@ -3,8 +3,8 @@ import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_history_entit
 import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart';
 import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 class SaveChatHistoryUseCase {
   final AiRepository _repository;
@@ -19,7 +19,7 @@ class SaveChatHistoryUseCase {
   }) async {
     try {
       if (messages.isEmpty) {
-        return ResultFactory.success('保存するメッセージがありません', null);
+        return Result.success('保存するメッセージがありません', null);
       }
 
       final summary = await _generateChatSummary(
@@ -41,9 +41,9 @@ class SaveChatHistoryUseCase {
       );
 
       await _repository.saveChatHistory(chatHistory);
-      return ResultFactory.success('チャット履歴を保存しました', null);
+      return Result.success('チャット履歴を保存しました', null);
     } catch (error) {
-      return ResultFactory.failure('チャット履歴の保存に失敗しました: ${error.toString()}');
+      return Result.failure('チャット履歴の保存に失敗しました: ${error.toString()}');
     }
   }
 

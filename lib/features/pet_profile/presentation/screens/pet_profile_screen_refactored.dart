@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/pet_profile_widgets.dart';
 import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,15 +110,31 @@ class _PetProfileScreenRefactoredState
             child: TabBarView(
               controller: _tabController,
               children: [
-                PetBasicInfoTabWidget(pet: pet),
-                PetHealthTabWidget(pet: pet),
-                PetNutritionTabWidget(pet: pet),
-                PetActivityTabWidget(pet: pet),
+                _buildBasicInfoTab(pet),
+                _buildHealthTab(pet),
+                _buildNutritionTab(pet),
+                _buildActivityTab(pet),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildBasicInfoTab(PetProfileEntity pet) {
+    return Center(child: Text('基本情報: ${pet.name}'));
+  }
+
+  Widget _buildHealthTab(PetProfileEntity pet) {
+    return Center(child: Text('健康情報: ${pet.name}'));
+  }
+
+  Widget _buildNutritionTab(PetProfileEntity pet) {
+    return Center(child: Text('栄養情報: ${pet.name}'));
+  }
+
+  Widget _buildActivityTab(PetProfileEntity pet) {
+    return Center(child: Text('活動情報: ${pet.name}'));
   }
 }

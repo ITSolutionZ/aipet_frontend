@@ -3,8 +3,8 @@ import 'package:aipet_frontend/features/ai/domain/services/ai_favorite_manager.d
 import 'package:aipet_frontend/features/ai/domain/services/ai_message_manager.dart';
 import 'package:aipet_frontend/features/ai/domain/services/message_pagination_service.dart';
 import 'package:aipet_frontend/features/ai/presentation/controllers/ai_chat_controller.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 
 /// 🎛️ AI 채팅 상태 관리 서비스
@@ -53,12 +53,12 @@ class AiChatStateManager {
         );
       }
 
-      return ResultFactory.success(updatedState, 'Pet selection updated');
+      return Result.success(updatedState, 'Pet selection updated');
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error updating pet selection: $error\n$stackTrace');
       }
-      return ResultFactory.failure('펫 선택 업데이트 중 오류 발생: $error');
+      return Result.failure('펫 선택 업데이트 중 오류 발생: $error');
     }
   }
 
@@ -102,14 +102,14 @@ class AiChatStateManager {
         );
       }
 
-      return ResultFactory.success(updatedState, 'Category selection updated');
+      return Result.success(updatedState, 'Category selection updated');
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint(
           '[$_tag] Error updating category selection: $error\n$stackTrace',
         );
       }
-      return ResultFactory.failure('카테고리 선택 업데이트 중 오류 발생: $error');
+      return Result.failure('카테고리 선택 업데이트 중 오류 발생: $error');
     }
   }
 
@@ -166,14 +166,14 @@ class AiChatStateManager {
         );
       }
 
-      return ResultFactory.success(updatedState, 'Message exchange updated');
+      return Result.success(updatedState, 'Message exchange updated');
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint(
           '[$_tag] Error updating message exchange: $error\n$stackTrace',
         );
       }
-      return ResultFactory.failure('메시지 교환 업데이트 중 오류 발생: $error');
+      return Result.failure('메시지 교환 업데이트 중 오류 발생: $error');
     }
   }
 
@@ -215,7 +215,7 @@ class AiChatStateManager {
       }
 
       if (!favoriteResult.isSuccess) {
-        return ResultFactory.failure(
+        return Result.failure(
           favoriteResult.errorOrNull ?? 'Favorite operation failed',
         );
       }
@@ -233,14 +233,14 @@ class AiChatStateManager {
         );
       }
 
-      return ResultFactory.success(updatedState, result.message);
+      return Result.success(updatedState, result.message);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint(
           '[$_tag] Error updating favorite toggle: $error\n$stackTrace',
         );
       }
-      return ResultFactory.failure('즐겨찾기 토글 중 오류 발생: $error');
+      return Result.failure('즐겨찾기 토글 중 오류 발생: $error');
     }
   }
 
@@ -260,9 +260,9 @@ class AiChatStateManager {
         );
       }
 
-      return ResultFactory.success(initialState, 'State initialized');
+      return Result.success(initialState, 'State initialized');
     } catch (error) {
-      return ResultFactory.failure('상태 초기화 중 오류 발생: $error');
+      return Result.failure('상태 초기화 중 오류 발생: $error');
     }
   }
 
@@ -350,7 +350,7 @@ class AiChatStateManager {
         summary: validationSummary,
       );
 
-      return ResultFactory.success(
+      return Result.success(
         resultData.state,
         needsUpdate ? 'State validated and updated' : 'State validation passed',
       );
@@ -358,7 +358,7 @@ class AiChatStateManager {
       if (kDebugMode) {
         debugPrint('[$_tag] Error validating state: $error\n$stackTrace');
       }
-      return ResultFactory.failure('상태 검증 중 오류 발생: $error');
+      return Result.failure('상태 검증 중 오류 발생: $error');
     }
   }
 
@@ -383,9 +383,9 @@ class AiChatStateManager {
         debugPrint('[$_tag] ❌ Error state set: $error');
       }
 
-      return ResultFactory.success(updatedState, 'Error state updated');
+      return Result.success(updatedState, 'Error state updated');
     } catch (error) {
-      return ResultFactory.failure('에러 상태 설정 중 오류 발생: $error');
+      return Result.failure('에러 상태 설정 중 오류 발생: $error');
     }
   }
 

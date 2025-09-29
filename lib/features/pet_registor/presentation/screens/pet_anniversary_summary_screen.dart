@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_registration_provider.dart';
 import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pet_registor_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -159,7 +159,7 @@ class _PetAnniversarySummaryScreenState
                     controller: _scrollController,
                     slivers: [
                       SliverPadding(
-                        padding: const EdgeInsets.all(AppSpacing.lg),
+                        padding: const const EdgeInsets.all(AppSpacing.lg),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
                             Column(
@@ -217,7 +217,7 @@ class _PetAnniversarySummaryScreenState
                                   icon: Icons.cake,
                                   badge: _calculateAge().isNotEmpty
                                       ? Container(
-                                          padding: const EdgeInsets.symmetric(
+                                          padding: const const EdgeInsets.symmetric(
                                             horizontal: 12,
                                             vertical: 6,
                                           ),
@@ -282,7 +282,7 @@ class _PetAnniversarySummaryScreenState
 
                 // 하단 등록완료 버튼
                 Container(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  padding: const const EdgeInsets.all(AppSpacing.lg),
                   decoration: BoxDecoration(
                     color: AppColors.pureWhite,
                     border: Border(
@@ -299,7 +299,7 @@ class _PetAnniversarySummaryScreenState
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.pointPink,
                         foregroundColor: AppColors.pureWhite,
-                        padding: const EdgeInsets.symmetric(
+                        padding: const const EdgeInsets.symmetric(
                           vertical: AppSpacing.lg,
                         ),
                         shape: RoundedRectangleBorder(

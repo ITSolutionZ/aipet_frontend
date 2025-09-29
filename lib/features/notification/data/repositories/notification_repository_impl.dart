@@ -2,7 +2,7 @@ import 'package:aipet_frontend/features/notification/data/services/notification_
 import 'package:aipet_frontend/features/notification/data/services/notification_cache_service.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 
 /// 📱 알림 Repository 구현체
@@ -79,7 +79,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 알림 조회 중 예외 발생: $error');
       }
-      return ResultFactory.failure('알림 조회 중 오류 발생: $error');
+      return Result.failure('알림 조회 중 오류 발생: $error');
     }
   }
 
@@ -101,7 +101,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
           if (kDebugMode) {
             debugPrint('[$_tag] 🗄️ 캐시에서 특정 알림 조회 성공: $notificationId');
           }
-          return ResultFactory.success(
+          return Result.success(
             notification,
             'Notification found in cache',
           );
@@ -119,7 +119,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
           if (kDebugMode) {
             debugPrint('[$_tag] ✅ API에서 특정 알림 조회 성공: $notificationId');
           }
-          return ResultFactory.success(
+          return Result.success(
             notification,
             'Notification found via API',
           );
@@ -129,12 +129,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
       if (kDebugMode) {
         debugPrint('[$_tag] ⚠️ 알림을 찾을 수 없음: $notificationId');
       }
-      return ResultFactory.success(null, 'Notification not found');
+      return Result.success(null, 'Notification not found');
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 특정 알림 조회 중 예외 발생: $error');
       }
-      return ResultFactory.failure('알림 조회 중 오류 발생: $error');
+      return Result.failure('알림 조회 중 오류 발생: $error');
     }
   }
 
@@ -165,7 +165,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 읽음 상태 업데이트 중 예외 발생: $error');
       }
-      return ResultFactory.failure('읽음 상태 업데이트 중 오류 발생: $error');
+      return Result.failure('읽음 상태 업데이트 중 오류 발생: $error');
     }
   }
 
@@ -192,7 +192,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 알림 삭제 중 예외 발생: $error');
       }
-      return ResultFactory.failure('알림 삭제 중 오류 발생: $error');
+      return Result.failure('알림 삭제 중 오류 발생: $error');
     }
   }
 
@@ -233,7 +233,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 설정 조회 중 예외 발생: $error');
       }
-      return ResultFactory.failure('설정 조회 중 오류 발생: $error');
+      return Result.failure('설정 조회 중 오류 발생: $error');
     }
   }
 
@@ -266,7 +266,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 설정 업데이트 중 예외 발생: $error');
       }
-      return ResultFactory.failure('설정 업데이트 중 오류 발생: $error');
+      return Result.failure('설정 업데이트 중 오류 발생: $error');
     }
   }
 
@@ -281,7 +281,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       if (kDebugMode) {
         debugPrint('[$_tag] ❌ 통계 조회 중 예외 발생: $error');
       }
-      return ResultFactory.failure('통계 조회 중 오류 발생: $error');
+      return Result.failure('통계 조회 중 오류 발생: $error');
     }
   }
 

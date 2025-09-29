@@ -1,9 +1,9 @@
 // TODO: 추후 PetActivitiesMockService로 마이그레이션 필요
-import 'package:aipet_frontend/features/onboarding/domain/entities/video_bookmark_entity.dart';
-import 'package:aipet_frontend/features/onboarding/domain/entities/video_progress_entity.dart';
-import 'package:aipet_frontend/features/onboarding/domain/repositories/pet_activities_repository.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/video_bookmark_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/entities/video_progress_entity.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/repositories/pet_activities_repository.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/mock_data_service.dart';
 
 class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
@@ -89,7 +89,7 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
 
     if (MockDataService.isEnabled) {
       for (int i = 0; i < _tricks.length; i++) {
-        _tricks[i] = _tricks[i].copyWith(progress: null);
+        _tricks[i] = _tricks[i].copyWith(practiceCount: 0);
       }
       return;
     }

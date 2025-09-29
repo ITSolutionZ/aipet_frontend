@@ -30,7 +30,7 @@ class ImageCacheConfig {
 
   const ImageCacheConfig({
     this.strategy = ImageCacheStrategy.hybrid,
-    this.maxAge = const Duration(days: 7),
+    this.maxAge = Duration(days: 7),
     this.maxSize = 100 * 1024 * 1024, // 100MB
     this.enableCompression = true,
     this.compressionQuality = 0.8,
@@ -45,7 +45,7 @@ class _CacheEntry {
   const _CacheEntry(this.data, this.timestamp);
 
   bool get isExpired =>
-      DateTime.now().difference(timestamp) > const Duration(hours: 1);
+      DateTime.now().difference(timestamp) > Duration(hours: 1);
 }
 
 /// 이미지 캐시 서비스
@@ -313,7 +313,7 @@ class ImageCacheService {
           if (file is File) {
             final stat = await file.stat();
             if (DateTime.now().difference(stat.modified) >
-                const Duration(days: 7)) {
+                Duration(days: 7)) {
               await file.delete();
             }
           }
@@ -363,7 +363,7 @@ class CachedImage extends StatelessWidget {
         }
 
         return Image.memory(
-          snapshot.data!,
+          snapshot.dataOrThrow,
           width: width,
           height: height,
           fit: fit,
@@ -443,7 +443,7 @@ class CachedAssetImage extends StatelessWidget {
         }
 
         return Image.memory(
-          snapshot.data!,
+          snapshot.dataOrThrow,
           width: width,
           height: height,
           fit: fit,

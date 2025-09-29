@@ -1,9 +1,10 @@
 import 'dart:developer' as developer;
 
-import 'package:aipet_frontend/features/onboarding/data/providers/feeding_providers.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/controllers/scheduling_controllers.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/widgets/scheduling_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
+    as scheduling_mock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -81,8 +82,8 @@ class _AddFeedingRecordScreenState
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime.now().subtract(const Duration(days: 30)),
-      lastDate: DateTime.now().add(const Duration(days: 1)),
+      firstDate: DateTime.now().subtract(Duration(days: 30)),
+      lastDate: DateTime.now().add(Duration(days: 1)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -187,12 +188,21 @@ class _AddFeedingRecordScreenState
       context: context,
       builder: (BuildContext context) {
         final statusOptions =
-            pet_feature_mock.PetMockService.getPetStatusOptions();
+            scheduling_mock.SchedulingMockService.getPetStatusOptions();
         return PetStatusSelectionDialog(
           petInfo: petInfo,
           selectedStatuses: List<String>.from(_selectedStatuses),
           statusValues: Map<String, String>.from(_statusValues),
-          statusOptions: statusOptions,
+          statusOptions: statusOptions
+              .map(
+                (option) => {
+                  'id': option,
+                  'title': option,
+                  'icon': Icons.pets,
+                  'options': [option],
+                },
+              )
+              .toList(),
           onStatusUpdated:
               (
                 List<String> selectedStatuses,
@@ -237,7 +247,7 @@ class _AddFeedingRecordScreenState
           controller: _scrollController,
           slivers: [
             SliverPadding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: const const EdgeInsets.all(AppSpacing.lg),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   Column(
@@ -321,7 +331,7 @@ class _AddFeedingRecordScreenState
                       ActionButton.primary(
                         text: '保存',
                         onPressed: _saveRecord,
-                        enabled: true,
+                        isEnabled: true,
                       ),
                     ],
                   ),

@@ -12,8 +12,8 @@ class FeedingChartSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      margin: const const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -44,7 +44,7 @@ class FeedingChartSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildLegendItem('実際の量', AppColors.pointBrown),
-              const SizedBox(width: AppSpacing.lg),
+              const const SizedBox(width: AppSpacing.lg),
               _buildLegendItem('目標量', AppColors.pointBlue),
             ],
           ),
@@ -261,7 +261,7 @@ class FeedingChartSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(6),
           ),
         ),
-        const SizedBox(width: AppSpacing.xs),
+        const const SizedBox(width: AppSpacing.xs),
         Text(
           label,
           style: AppFonts.fredoka(

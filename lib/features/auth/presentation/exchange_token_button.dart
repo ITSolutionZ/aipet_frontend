@@ -19,7 +19,7 @@ class ExchangeTokenButton extends ConsumerWidget {
         foregroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -77,7 +77,7 @@ class ExchangeTokenButton extends ConsumerWidget {
     return Card(
       color: cardColor,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const const EdgeInsets.all(16.0),
         child: Column(
           children: [
             if (state.isLoading)
@@ -141,7 +141,7 @@ class ExchangeTokenButton extends ConsumerWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
@@ -158,7 +158,7 @@ class ExchangeTokenButton extends ConsumerWidget {
         ref.read(authControllerProvider.notifier).reset();
       },
       style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: const Text(
@@ -171,7 +171,7 @@ class ExchangeTokenButton extends ConsumerWidget {
   /// 설명 텍스트
   Widget _buildInstructionText() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.blue.shade50,
         borderRadius: BorderRadius.circular(8),

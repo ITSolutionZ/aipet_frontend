@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/onboarding/domain/usecases/base_usecase.dart';
-import 'package:aipet_frontend/shared/foundation/result/app_result.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// ✅ Navigate to next onboarding page UseCase
 ///
@@ -13,7 +13,7 @@ class NextPageUseCase extends BaseUseCaseNoParams<void> {
       // Business logic: Save progress before moving to next page
       final stateResult = await repository.loadOnboardingState();
       if (!stateResult.isSuccess) {
-        return ResultFactory.failure('현재 상태를 로드할 수 없습니다');
+        return Result.failure('현재 상태를 로드할 수 없습니다');
       }
 
       final currentState = stateResult.dataOrNull!;
@@ -25,9 +25,9 @@ class NextPageUseCase extends BaseUseCaseNoParams<void> {
         return saveResult;
       }
 
-      return ResultFactory.success(null, '다음 페이지로 이동했습니다');
+      return Result.success(null, '다음 페이지로 이동했습니다');
     } catch (e) {
-      return ResultFactory.failure('페이지 이동 중 오류가 발생했습니다: $e');
+      return Result.failure('페이지 이동 중 오류가 발생했습니다: $e');
     }
   }
 }
@@ -42,12 +42,12 @@ class PreviousPageUseCase extends BaseUseCaseNoParams<void> {
       // Business logic: Save progress before moving to previous page
       final stateResult = await repository.loadOnboardingState();
       if (!stateResult.isSuccess) {
-        return ResultFactory.failure('현재 상태를 로드할 수 없습니다');
+        return Result.failure('현재 상태를 로드할 수 없습니다');
       }
 
       final currentState = stateResult.dataOrNull!;
       if (currentState.currentPage <= 0) {
-        return ResultFactory.failure('첫 번째 페이지입니다');
+        return Result.failure('첫 번째 페이지입니다');
       }
 
       final previousPage = currentState.currentPage - 1;
@@ -58,9 +58,9 @@ class PreviousPageUseCase extends BaseUseCaseNoParams<void> {
         return saveResult;
       }
 
-      return ResultFactory.success(null, '이전 페이지로 이동했습니다');
+      return Result.success(null, '이전 페이지로 이동했습니다');
     } catch (e) {
-      return ResultFactory.failure('페이지 이동 중 오류가 발생했습니다: $e');
+      return Result.failure('페이지 이동 중 오류가 발생했습니다: $e');
     }
   }
 }
@@ -73,7 +73,7 @@ class GoToPageUseCase extends BaseUseCase<void, int> {
   Future<Result<void>> call(int targetPage) async {
     try {
       if (targetPage < 0) {
-        return ResultFactory.failure('유효하지 않은 페이지입니다');
+        return Result.failure('유효하지 않은 페이지입니다');
       }
 
       // Save progress
@@ -82,9 +82,9 @@ class GoToPageUseCase extends BaseUseCase<void, int> {
         return saveResult;
       }
 
-      return ResultFactory.success(null, '페이지 $targetPage로 이동했습니다');
+      return Result.success(null, '페이지 $targetPage로 이동했습니다');
     } catch (e) {
-      return ResultFactory.failure('페이지 이동 중 오류가 발생했습니다: $e');
+      return Result.failure('페이지 이동 중 오류가 발생했습니다: $e');
     }
   }
 }

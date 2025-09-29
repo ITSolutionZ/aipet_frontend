@@ -132,14 +132,14 @@ class ApiConnectionChecker extends ConsumerWidget {
     return Card(
       color: Colors.grey.shade50,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Icon(Icons.api, color: connectionState.statusColor, size: 24),
-                const SizedBox(width: 12),
+                const const SizedBox(width: 12),
                 const Text(
                   'API 연결 상태',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -164,7 +164,7 @@ class ApiConnectionChecker extends ConsumerWidget {
             const SizedBox(height: 12),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(12),
+              padding: const const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: connectionState.statusColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),

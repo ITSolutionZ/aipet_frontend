@@ -16,7 +16,7 @@ class FeedingStatisticsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -36,12 +36,12 @@ class FeedingStatisticsCard extends StatelessWidget {
             Row(
               children: [
                 _buildStatItem('総食事回数', '${statistics['totalFeedings']}回'),
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
                 _buildStatItem(
                   '完了率',
                   '${(statistics['completionRate'] * 100).round()}%',
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
                 _buildStatItem(
                   '平均量',
                   '${statistics['averageAmount'].round()}g',
@@ -57,7 +57,7 @@ class FeedingStatisticsCard extends StatelessWidget {
   Widget _buildStatItem(String label, String value) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.pointBlue.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.medium),

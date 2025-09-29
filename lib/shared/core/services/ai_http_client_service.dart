@@ -206,7 +206,7 @@ class AiHttpClientService extends BaseLoggingService {
         if (statusCode == 429 || (statusCode != null && statusCode >= 500)) {
           retryCount++;
           if (retryCount < retries) {
-            final delay = Duration(seconds: retryCount * 2); // 지수 백오프
+            final delay = const Duration(seconds: retryCount * 2); // 지수 백오프
             logInfo(
               'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$retries)',
             );
@@ -220,7 +220,7 @@ class AiHttpClientService extends BaseLoggingService {
         lastException = Exception('Unexpected error: $e');
         retryCount++;
         if (retryCount < retries) {
-          final delay = Duration(seconds: retryCount * 2);
+          final delay = const Duration(seconds: retryCount * 2);
           logInfo(
             'Retrying API call in ${delay.inSeconds} seconds... (attempt $retryCount/$retries)',
           );

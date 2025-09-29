@@ -14,8 +14,8 @@ class FeedingRecordsSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.all(AppSpacing.lg),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      margin: const const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -44,7 +44,7 @@ class FeedingRecordsSection extends StatelessWidget {
               GestureDetector(
                 onTap: () => _showAddFeedingDialog(context),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
+                  padding: const const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                     vertical: AppSpacing.sm,
                   ),
@@ -56,7 +56,7 @@ class FeedingRecordsSection extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(Icons.add, color: Colors.white, size: 16),
-                      const SizedBox(width: AppSpacing.xs),
+                      const const SizedBox(width: AppSpacing.xs),
                       Text(
                         '追加',
                         style: AppFonts.fredoka(
@@ -126,7 +126,7 @@ class FeedingRecordsSection extends StatelessWidget {
                           context: context,
                           initialDate: selectedDate,
                           firstDate: DateTime.now().subtract(
-                            const Duration(days: 365),
+                            Duration(days: 365),
                           ),
                           lastDate: DateTime.now(),
                         );
@@ -214,7 +214,7 @@ class FeedingRecordItem extends StatelessWidget {
     final isPositive = change.startsWith('+');
 
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      margin: const const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
           Container(
@@ -230,7 +230,7 @@ class FeedingRecordItem extends StatelessWidget {
               size: 20,
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

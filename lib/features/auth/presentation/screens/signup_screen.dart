@@ -95,7 +95,7 @@ class SignupScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.xl),
+          padding: const const EdgeInsets.all(AppSpacing.xl),
           child: Form(
             key: formState.formKey,
             child: Column(

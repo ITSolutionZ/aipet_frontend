@@ -37,7 +37,7 @@ class WalkRecordCardWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const EdgeInsets.all(AppSpacing.xs),
+          padding: const const EdgeInsets.all(AppSpacing.xs),
           decoration: BoxDecoration(
             color: AppColors.pointBrown.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),

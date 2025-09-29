@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/ui/components/components.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +111,7 @@ class PetBasicInfoTab extends ConsumerWidget {
     });
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
           _buildProfileImageSection(context),
@@ -446,6 +446,8 @@ class PetBasicInfoTab extends ConsumerWidget {
     // TODO: API 호출로 실제 저장
     // await ref.read(petRepositoryProvider).updatePet(updatedPet);
     // updatedPet 변수는 추후 API 호출 시 사용됩니다
+    // ignore: unused_local_variable
+    final _ = updatedPet; // 사용하지 않는 변수 경고 제거
 
     SnackBarService.showSaved(context, itemName: 'ペット情報');
 

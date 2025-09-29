@@ -23,9 +23,9 @@ class DioClient {
     final dio = Dio(
       BaseOptions(
         baseUrl: config.apiBaseUrl,
-        connectTimeout: Duration(milliseconds: config.apiTimeoutMs),
-        receiveTimeout: Duration(milliseconds: config.apiTimeoutMs),
-        sendTimeout: Duration(milliseconds: config.apiTimeoutMs),
+        connectTimeout: const Duration(milliseconds: config.apiTimeoutMs),
+        receiveTimeout: const Duration(milliseconds: config.apiTimeoutMs),
+        sendTimeout: const Duration(milliseconds: config.apiTimeoutMs),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -35,7 +35,7 @@ class DioClient {
 
     // 인터셉터 추가 - 순서 중요! // Changed
     dio.interceptors.addAll([
-      RetryInterceptor(), // Changed: 재시도 인터셉터 먼저
+      const RetryInterceptor(), // Changed: 재시도 인터셉터 먼저
       TokenRefreshInterceptor(dio: dio), // Changed: 토큰 갱신 인터셉터
       _AuthInterceptor(), // 기존 인증 인터셉터
       if (config.enableLogging) _LoggingInterceptor(), // 로깅은 마지막

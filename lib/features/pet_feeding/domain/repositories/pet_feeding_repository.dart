@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/entities/feeding_record_entity.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/entities/feeding_record_entity.dart';
 
 abstract class PetFeedingRepository {
   Future<List<FeedingRecordEntity>> getFeedingRecords(String petId);

@@ -26,10 +26,12 @@ class AppColors {
   static const Color toneLightCream = Color(0xFFF4E9DF);
 
   // Semantic color getters for UI components
-  static Color get primary => pointBrown;
-  static Color get textPrimary => pointDark;
-  static Color get textSecondary => pointGray;
-  static Color get cardBackgroundGray => toneOffWhite;
-  static Color get borderGray => pointGray;
-  static Color get error => const Color(0xFFD32F2F);
+  static const Color primary = pointBrown;
+  static const Color textPrimary = pointDark;
+  static const Color textSecondary = pointGray;
+  static const Color cardBackgroundGray = toneOffWhite;
+  static const Color cardBackgroundWhite = pureWhite;
+  static const Color borderGray = pointGray;
+  static const Color error = Color(0xFFD32F2F);
+  static const Color success = Color(0xFF4CAF50);
 }

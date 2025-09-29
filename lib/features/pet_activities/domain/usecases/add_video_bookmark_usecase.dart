@@ -16,11 +16,11 @@ class AddVideoBookmarkUseCase {
     final bookmark = VideoBookmarkEntity(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       videoId: videoId,
-      youtubeVideoId: youtubeVideoId,
+      title: label ?? 'Bookmark',
       positionSec: positionSec,
-      label: label,
       description: description,
       createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
 
     return _repository.addVideoBookmark(bookmark);

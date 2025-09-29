@@ -251,7 +251,7 @@ class ProfileEditScreen extends ConsumerWidget {
       drawer: const AppDrawer(),
       appBar: const SoftGradientDrawerAppBar(title: 'プロフィール編集'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Form(
           key: formState.formKey,
           child: Column(
@@ -325,7 +325,7 @@ class ProfileEditScreen extends ConsumerWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
+                    padding: const const EdgeInsets.symmetric(
                       vertical: AppSpacing.md,
                     ),
                     shape: RoundedRectangleBorder(

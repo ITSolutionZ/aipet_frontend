@@ -45,7 +45,7 @@ class GlassButton extends StatelessWidget {
     this.opacity = 0.18,
     this.borderWidth = 1,
     this.borderColor,
-    this.padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+    this.padding = const const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
     this.textStyle,
     this.leading,
     this.trailing,
@@ -69,7 +69,7 @@ class GlassButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.constraints,
-  }) : padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+  }) : padding = const const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
        onPressed = isLoading ? null : onPressed;
 
   const GlassButton.medium({
@@ -89,7 +89,7 @@ class GlassButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.constraints,
-  }) : padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+  }) : padding = const const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
        onPressed = isLoading ? null : onPressed;
 
   const GlassButton.large({
@@ -109,7 +109,7 @@ class GlassButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.constraints,
-  }) : padding = const EdgeInsets.symmetric(vertical: 18, horizontal: 28),
+  }) : padding = const const EdgeInsets.symmetric(vertical: 18, horizontal: 28),
        onPressed = isLoading ? null : onPressed;
 
   @override
@@ -126,7 +126,7 @@ class GlassButton extends StatelessWidget {
       backgroundColor: isPrimary ? null : Colors.transparent,
       borderColor: borderColor,
       padding:
-          padding != const EdgeInsets.symmetric(vertical: 14, horizontal: 20)
+          padding != const const EdgeInsets.symmetric(vertical: 14, horizontal: 20)
           ? padding
           : null,
       textStyle: textStyle,
@@ -135,10 +135,10 @@ class GlassButton extends StatelessWidget {
   }
 
   ButtonSize _getSize() {
-    if (padding == const EdgeInsets.symmetric(vertical: 8, horizontal: 12)) {
+    if (padding == const const EdgeInsets.symmetric(vertical: 8, horizontal: 12)) {
       return ButtonSize.small;
     }
-    if (padding == const EdgeInsets.symmetric(vertical: 18, horizontal: 28)) {
+    if (padding == const const EdgeInsets.symmetric(vertical: 18, horizontal: 28)) {
       return ButtonSize.large;
     }
     return ButtonSize.medium;
@@ -169,7 +169,7 @@ class PointButton extends StatelessWidget {
     this.trailing,
     this.backgroundColor,
     this.foregroundColor,
-    this.padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+    this.padding = const const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
     this.textStyle,
     this.borderRadius = 12,
   }) : onPressed = isLoading ? null : onPressed;
@@ -186,7 +186,7 @@ class PointButton extends StatelessWidget {
     this.foregroundColor,
     this.textStyle,
     this.borderRadius = 10,
-  }) : padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+  }) : padding = const const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
        onPressed = isLoading ? null : onPressed;
 
   const PointButton.medium({
@@ -201,7 +201,7 @@ class PointButton extends StatelessWidget {
     this.foregroundColor,
     this.textStyle,
     this.borderRadius = 12,
-  }) : padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+  }) : padding = const const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
        onPressed = isLoading ? null : onPressed;
 
   const PointButton.large({
@@ -216,7 +216,7 @@ class PointButton extends StatelessWidget {
     this.foregroundColor,
     this.textStyle,
     this.borderRadius = 14,
-  }) : padding = const EdgeInsets.symmetric(vertical: 18, horizontal: 28),
+  }) : padding = const const EdgeInsets.symmetric(vertical: 18, horizontal: 28),
        onPressed = isLoading ? null : onPressed;
 
   @override
@@ -238,10 +238,10 @@ class PointButton extends StatelessWidget {
   }
 
   ButtonSize _getSize() {
-    if (padding == const EdgeInsets.symmetric(vertical: 8, horizontal: 12)) {
+    if (padding == const const EdgeInsets.symmetric(vertical: 8, horizontal: 12)) {
       return ButtonSize.small;
     }
-    if (padding == const EdgeInsets.symmetric(vertical: 18, horizontal: 28)) {
+    if (padding == const const EdgeInsets.symmetric(vertical: 18, horizontal: 28)) {
       return ButtonSize.large;
     }
     return ButtonSize.medium;
@@ -249,9 +249,9 @@ class PointButton extends StatelessWidget {
 
   bool _isCustomPadding() {
     return padding !=
-            const EdgeInsets.symmetric(vertical: 14, horizontal: 20) &&
-        padding != const EdgeInsets.symmetric(vertical: 8, horizontal: 12) &&
-        padding != const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
+            const const EdgeInsets.symmetric(vertical: 14, horizontal: 20) &&
+        padding != const const EdgeInsets.symmetric(vertical: 8, horizontal: 12) &&
+        padding != const const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
   }
 }
 
@@ -275,7 +275,7 @@ class PointTextButton extends StatelessWidget {
     this.trailing,
     this.textColor,
     this.textStyle,
-    this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+    this.padding = const const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
   }) : onPressed = isLoading ? null : onPressed;
 
   @override
@@ -318,7 +318,7 @@ class PointOutlinedButton extends StatelessWidget {
     this.borderColor,
     this.textColor,
     this.textStyle,
-    this.padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+    this.padding = const const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
     this.borderRadius = 12,
   }) : onPressed = isLoading ? null : onPressed;
 

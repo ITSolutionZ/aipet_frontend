@@ -58,7 +58,7 @@ class WalkCoManagerSelector extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          padding: const const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: Colors.grey[50],
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -80,7 +80,7 @@ class WalkCoManagerSelector extends ConsumerWidget {
               const SizedBox(height: AppSpacing.sm),
               ...coManagers.map(
                 (manager) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  padding: const const EdgeInsets.only(bottom: AppSpacing.sm),
                   child: _buildCoManagerOption(
                     manager['id'] as String,
                     manager['name'] as String,
@@ -114,7 +114,7 @@ class WalkCoManagerSelector extends ConsumerWidget {
     return GestureDetector(
       onTap: () => onSelect(managerId),
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.pointGreen.withValues(alpha: 0.1)
@@ -128,7 +128,7 @@ class WalkCoManagerSelector extends ConsumerWidget {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
+              padding: const const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.pointGreen : Colors.grey[200],
                 borderRadius: BorderRadius.circular(AppRadius.small),

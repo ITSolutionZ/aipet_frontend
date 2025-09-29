@@ -97,7 +97,7 @@ class ActionButton extends StatelessWidget {
     final effectiveHeight = height ?? 48.0;
     final effectivePadding =
         padding ??
-        const EdgeInsets.symmetric(
+        const const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.sm,
         );

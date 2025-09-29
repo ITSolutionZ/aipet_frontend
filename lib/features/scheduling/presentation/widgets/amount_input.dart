@@ -18,7 +18,7 @@ class AmountInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -40,7 +40,7 @@ class AmountInput extends StatelessWidget {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(AppRadius.medium),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
+                      contentPadding: const const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
                         vertical: AppSpacing.sm,
                       ),
@@ -49,9 +49,9 @@ class AmountInput extends StatelessWidget {
                     validator: validator,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const const SizedBox(width: AppSpacing.md),
                 Container(
-                  padding: const EdgeInsets.symmetric(
+                  padding: const const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                     vertical: AppSpacing.sm,
                   ),

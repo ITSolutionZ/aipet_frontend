@@ -56,7 +56,7 @@ class DateTimeUtils {
 
   /// 내일인지 확인
   static bool isTomorrow(DateTime dateTime) {
-    final tomorrow = DateTime.now().add(const Duration(days: 1));
+    final tomorrow = DateTime.now().add(Duration(days: 1));
     return dateTime.year == tomorrow.year &&
         dateTime.month == tomorrow.month &&
         dateTime.day == tomorrow.day;
@@ -66,10 +66,10 @@ class DateTimeUtils {
   static bool isThisWeek(DateTime dateTime) {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(const Duration(days: 6));
+    final endOfWeek = startOfWeek.add(Duration(days: 6));
 
-    return dateTime.isAfter(startOfWeek.subtract(const Duration(days: 1))) &&
-        dateTime.isBefore(endOfWeek.add(const Duration(days: 1)));
+    return dateTime.isAfter(startOfWeek.subtract(Duration(days: 1))) &&
+        dateTime.isBefore(endOfWeek.add(Duration(days: 1)));
   }
 
   /// 다음 실행 시간 계산 (오늘 시간이 지났으면 내일 같은 시간)
@@ -80,7 +80,7 @@ class DateTimeUtils {
     if (today.isAfter(now)) {
       return today;
     } else {
-      return today.add(const Duration(days: 1));
+      return today.add(Duration(days: 1));
     }
   }
 

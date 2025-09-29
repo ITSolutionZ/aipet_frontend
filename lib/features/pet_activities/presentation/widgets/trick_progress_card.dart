@@ -13,7 +13,7 @@ class TrickProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -33,13 +33,21 @@ class TrickProgressCard extends StatelessWidget {
             height: 60,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSpacing.sm),
-              image: DecorationImage(
-                image: AssetImage(trick.imagePath),
-                fit: BoxFit.cover,
-              ),
+              image: trick.imagePath != null
+                  ? DecorationImage(
+                      image: AssetImage(trick.imagePath!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+              color: trick.imagePath == null
+                  ? AppColors.pointBrown.withValues(alpha: 0.1)
+                  : null,
             ),
+            child: trick.imagePath == null
+                ? const Icon(Icons.pets, color: AppColors.pointBrown, size: 30)
+                : null,
           ),
-          const SizedBox(width: AppSpacing.md),
+          const const SizedBox(width: AppSpacing.md),
 
           // 트릭 정보
           Expanded(
@@ -74,7 +82,7 @@ class TrickProgressCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${trick.progress ?? 0}%',
+                      '${trick.progressPercentage.round()}%',
                       style: AppFonts.bodySmall.copyWith(
                         color: AppColors.pointDark.withValues(alpha: 0.7),
                         fontWeight: FontWeight.w500,
@@ -96,7 +104,7 @@ class TrickProgressCard extends StatelessWidget {
           // 완료 상태 아이콘
           if (trick.isCompleted)
             Container(
-              padding: const EdgeInsets.all(AppSpacing.xs),
+              padding: const const EdgeInsets.all(AppSpacing.xs),
               decoration: const BoxDecoration(
                 color: AppColors.pointGreen,
                 shape: BoxShape.circle,

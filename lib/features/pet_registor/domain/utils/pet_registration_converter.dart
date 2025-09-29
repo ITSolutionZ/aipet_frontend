@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_registration_data_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 /// 펫 등록 데이터를 PetProfileEntity로 변환하는 유틸리티
 class PetRegistrationConverter {
@@ -12,7 +12,7 @@ class PetRegistrationConverter {
     }
 
     final birthDate =
-        data.petBirthday ?? DateTime.now().subtract(const Duration(days: 365));
+        data.petBirthday ?? DateTime.now().subtract(Duration(days: 365));
 
     return PetProfileEntity(
       id: (++_idCounter).toString(),

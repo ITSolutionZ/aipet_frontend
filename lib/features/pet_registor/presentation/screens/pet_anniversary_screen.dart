@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_registration_provider.dart';
 import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pet_registor_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +85,7 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: const const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -139,7 +139,7 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
                                   registrationState.petBirthday != null &&
                                       _calculateAge().isNotEmpty
                                   ? Container(
-                                      padding: const EdgeInsets.symmetric(
+                                      padding: const const EdgeInsets.symmetric(
                                         horizontal: 12,
                                         vertical: 6,
                                       ),
@@ -186,7 +186,7 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
 
             // 하단 고정 버튼 영역
             Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: const const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(

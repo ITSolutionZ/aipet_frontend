@@ -67,7 +67,7 @@ class LoadingWidget extends StatelessWidget {
       color: Colors.black.withValues(alpha: 0.3),
       child: Center(
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -106,7 +106,7 @@ class LoadingWidget extends StatelessWidget {
   Widget _buildErrorWidget() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: const const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -134,7 +134,7 @@ class LoadingWidget extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pointBrown,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
+                  padding: const const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.md,
                   ),

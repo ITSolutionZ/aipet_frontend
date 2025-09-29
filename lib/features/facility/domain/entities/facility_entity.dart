@@ -4,13 +4,18 @@ import '../../../../shared/shared.dart';
 
 enum FacilityType {
   hospital, // 동물병원
+  veterinary, // 수의사 (동물병원과 유사)
   grooming, // 트리밍샵
   petShop, // 펫샵
+  petStore, // 펫 상점
   dogRun, // 도그런
   park, // 공원
+  petPark, // 반려동물 공원
   cafe, // 펫카페
   hotel, // 펫호텔
+  petFriendlyAccommodation, // 반려동물 친화 숙박
   training, // 훈련소
+  other, // 기타
 }
 
 class Facility {
@@ -125,20 +130,30 @@ class Facility {
     switch (type) {
       case FacilityType.hospital:
         return Icons.medical_services;
+      case FacilityType.veterinary:
+        return Icons.medical_services;
       case FacilityType.grooming:
         return Icons.content_cut;
       case FacilityType.petShop:
         return Icons.shopping_bag;
+      case FacilityType.petStore:
+        return Icons.store;
       case FacilityType.dogRun:
         return Icons.directions_run;
       case FacilityType.park:
         return Icons.park;
+      case FacilityType.petPark:
+        return Icons.pets;
       case FacilityType.cafe:
         return Icons.local_cafe;
       case FacilityType.hotel:
         return Icons.hotel;
+      case FacilityType.petFriendlyAccommodation:
+        return Icons.home;
       case FacilityType.training:
         return Icons.school;
+      case FacilityType.other:
+        return Icons.place;
     }
   }
 
@@ -147,20 +162,30 @@ class Facility {
     switch (type) {
       case FacilityType.hospital:
         return Colors.red;
+      case FacilityType.veterinary:
+        return Colors.red;
       case FacilityType.grooming:
         return Colors.purple;
       case FacilityType.petShop:
+        return Colors.orange;
+      case FacilityType.petStore:
         return Colors.orange;
       case FacilityType.dogRun:
         return Colors.green;
       case FacilityType.park:
         return Colors.lightGreen;
+      case FacilityType.petPark:
+        return Colors.lightGreen;
       case FacilityType.cafe:
         return Colors.brown;
       case FacilityType.hotel:
         return Colors.blue;
+      case FacilityType.petFriendlyAccommodation:
+        return Colors.blue;
       case FacilityType.training:
         return Colors.indigo;
+      case FacilityType.other:
+        return Colors.grey;
     }
   }
 
@@ -169,20 +194,30 @@ class Facility {
     switch (type) {
       case FacilityType.hospital:
         return '動物病院';
+      case FacilityType.veterinary:
+        return '獣医院';
       case FacilityType.grooming:
         return 'トリミング';
       case FacilityType.petShop:
         return 'ペットショップ';
+      case FacilityType.petStore:
+        return 'ペット用品店';
       case FacilityType.dogRun:
         return 'ドッグラン';
       case FacilityType.park:
         return '公園';
+      case FacilityType.petPark:
+        return 'ペット公園';
       case FacilityType.cafe:
         return 'ペットカフェ';
       case FacilityType.hotel:
         return 'ペットホテル';
+      case FacilityType.petFriendlyAccommodation:
+        return 'ペット可宿泊施設';
       case FacilityType.training:
         return 'ホームトレーニング';
+      case FacilityType.other:
+        return 'その他';
     }
   }
 

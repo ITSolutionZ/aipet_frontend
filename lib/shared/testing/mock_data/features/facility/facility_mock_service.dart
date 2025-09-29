@@ -147,13 +147,13 @@ class FacilityMockService extends BaseMockService {
           'author': '김**',
           'rating': 5,
           'comment': '정말 친절하고 전문적이에요!',
-          'date': DateTime.now().subtract(const Duration(days: 2)),
+          'date': DateTime.now().subtract(Duration(days: 2)),
         },
         {
           'author': '박**',
           'rating': 4,
           'comment': '시설이 깨끗하고 좋습니다.',
-          'date': DateTime.now().subtract(const Duration(days: 5)),
+          'date': DateTime.now().subtract(Duration(days: 5)),
         },
       ],
     };

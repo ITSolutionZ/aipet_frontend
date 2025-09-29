@@ -129,7 +129,7 @@ class _PushNotificationScreenState
       drawer: const AppDrawer(),
       appBar: const SoftGradientDrawerAppBar(title: 'プッシュ通知'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -137,8 +137,8 @@ class _PushNotificationScreenState
 
             // 페이지 설명 추가
             Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              margin: const EdgeInsets.only(bottom: AppSpacing.md),
+              padding: const const EdgeInsets.all(AppSpacing.md),
+              margin: const const EdgeInsets.only(bottom: AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.pointBrown.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -153,7 +153,7 @@ class _PushNotificationScreenState
                     color: AppColors.pointBrown,
                     size: 20,
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  const const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'アラームをオンにすると、設定した時間にお知らせを受け取ることができます',

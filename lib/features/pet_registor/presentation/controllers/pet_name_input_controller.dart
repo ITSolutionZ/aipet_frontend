@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/features/pet_registor/data/providers/pet_registration_provider.dart';
 import 'package:aipet_frontend/shared/core/services/error_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
