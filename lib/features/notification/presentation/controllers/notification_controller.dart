@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/notification/domain/usecases/usecases.dart';
+import 'package:aipet_frontend/features/notification/domain/usecases/notification_usecases.dart';
 
 /// 알림 컨트롤러 - UseCase를 통한 클린 아키텍처 구현
 class NotificationController extends BaseController {

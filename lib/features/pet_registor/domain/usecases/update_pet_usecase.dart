@@ -11,9 +11,9 @@ class UpdatePetUseCase {
     try {
       final result = await repository.updatePet(pet);
       if (result.isSuccess) {
-        return Success(result.dataOrNull!, 'ペット情報が更新されました');
+        return Result.success('ペット情報を更新しました', result.dataOrNull!);
       } else {
-        return Result.failure(result.errorOrNull!);
+        return Result.failure('ペット情報の更新に失敗しました');
       }
     } catch (error) {
       return Result.failure('ペットの更新に失敗しました: ${error.toString()}');

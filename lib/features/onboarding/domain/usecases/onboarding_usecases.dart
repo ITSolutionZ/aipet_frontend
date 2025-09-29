@@ -1,3 +1,5 @@
+library;
+
 export 'base_usecase.dart';
 export 'check_onboarding_status_usecase.dart';
 export 'complete_onboarding_usecase.dart';

@@ -91,7 +91,7 @@ class TokenUsageService {
         );
       }
 
-      return Result.success(usageRecord, '토큰 사용량 기록 완료');
+      return Result.success('토큰 사용량 기록 완료', usageRecord);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error recording token usage: $error\n$stackTrace');
@@ -198,7 +198,7 @@ class TokenUsageService {
       return Result.failure('시간당 토큰 한도 초과');
     }
 
-    return Result.success(true, '요청 가능');
+    return Result.success('요청 가능', true);
   }
 
   // 내부 헬퍼 메서드들

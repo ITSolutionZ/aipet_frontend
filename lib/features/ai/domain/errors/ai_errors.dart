@@ -61,7 +61,7 @@ class AiContentValidationException extends AiException {
   final String? reason;
   final double? confidence;
 
-  AiContentconst ValidationException(
+  AiContentValidationException(
     super.message, {
     super.code,
     super.originalError,
@@ -161,7 +161,7 @@ class AiInputValidationException extends AiException {
   final String? field;
   final String? validationRule;
 
-  AiInputconst ValidationException(
+  AiInputValidationException(
     super.message, {
     super.code,
     super.originalError,
@@ -230,7 +230,7 @@ class AiErrorHandler {
       if (message.contains('content') ||
           message.contains('validation') ||
           message.contains('pet')) {
-        return AiContentconst ValidationException(message, originalError: error);
+        return AiContentValidationException(message, originalError: error);
       }
 
       // 로컬 저장소 관련 에러 판별

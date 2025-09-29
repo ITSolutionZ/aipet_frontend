@@ -70,6 +70,7 @@ class AiMessageService {
     try {
       // 임시로 분석 결과를 반환하도록 수정 (실제로는 _analyzeMessageUseCase 호출)
       return Result.success(
+        '메시지 분석 완료',
         MessageAnalysis(
           response: AiMessageEntity(
             id: 'analysis_${DateTime.now().millisecondsSinceEpoch}',
@@ -132,7 +133,7 @@ class AiMessageService {
         ),
       ];
 
-      return Result.success(suggestions);
+      return Result.success('제안 질문 생성 완료', suggestions);
     } catch (e) {
       debugPrint('❌ Failed to get suggested questions: $e');
       return Result.failure('제안 질문 로드 중 오류가 발생했습니다: $e');
@@ -153,7 +154,7 @@ class AiMessageService {
       return Result.failure('최소 2글자 이상 입력해주세요');
     }
 
-    return Result.success(null);
+    return Result.success('채팅 기록 삭제 완료', null);
   }
 
   /// ✅ 메시지 통계 계산

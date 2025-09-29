@@ -17,14 +17,14 @@ class AiCategorySelectionBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // AI 아바타
           Container(
-            padding: const const const EdgeInsets.all(AppSpacing.sm),
+            padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: const BoxDecoration(
               color: AppColors.pointBrown,
               shape: BoxShape.circle,
@@ -36,12 +36,12 @@ class AiCategorySelectionBubble extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          const const const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.sm),
 
           // 메시지 버블
           Flexible(
             child: Container(
-              padding: const const const EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(
@@ -68,7 +68,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.sm),
 
                   Text(
                     '該当するカテゴリを選択してください：',
@@ -77,12 +77,12 @@ class AiCategorySelectionBubble extends StatelessWidget {
                       height: 1.4,
                     ),
                   ),
-                  const const const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.md),
 
                   // 카테고리 선택 위젯
                   _buildCategorySelection(),
 
-                  const const const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.sm),
 
                   // 타임스탬프
                   Text(
@@ -116,7 +116,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
     return GestureDetector(
       onTap: () => onCategorySelected(category),
       child: Container(
-        padding: const const const EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
@@ -147,7 +147,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
               size: 18,
               color: isSelected ? Colors.white : AppColors.pointBrown,
             ),
-            const const const SizedBox(width: AppSpacing.xs),
+            const SizedBox(width: AppSpacing.xs),
             Text(
               category.name,
               style: AppFonts.bodySmall.copyWith(

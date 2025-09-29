@@ -112,7 +112,7 @@ class FirebaseTokenService {
       if (!structureValidation.isSuccess) {
         if (kDebugMode) {
           debugPrint(
-            '🔐 JWT 구조 검증 실패: ${structureValidation.errorOrNull ?? 'Unknown error'}',
+            '🔐 JWT 구조 검증 실패: ${structureValidation.error?.toString() ?? 'Unknown error'}',
           );
         }
         return false;

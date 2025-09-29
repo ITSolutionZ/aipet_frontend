@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
-import 'package:aipet_frontend/features/notification/domain/usecases/usecases.dart';
+import 'package:aipet_frontend/features/notification/domain/usecases/notification_usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'notification_ui_controller.dart';
@@ -30,12 +30,15 @@ class NotificationListController {
 
       // settings가 Map<String, dynamic>이므로 적절히 처리
       final enabled = settings['enabled'] as bool? ?? false;
-      final typeSettings = settings['typeSettings'] as Map<String, dynamic>? ?? {};
-      
-      final allEnabled = enabled && mainTypes.every((type) {
-        final typeKey = type.toString().split('.').last;
-        return typeSettings[typeKey] as bool? ?? false;
-      });
+      final typeSettings =
+          settings['typeSettings'] as Map<String, dynamic>? ?? {};
+
+      final allEnabled =
+          enabled &&
+          mainTypes.every((type) {
+            final typeKey = type.toString().split('.').last;
+            return typeSettings[typeKey] as bool? ?? false;
+          });
 
       return !allEnabled; // 설정이 완료되지 않았으면 true (카드 표시)
     } catch (e) {

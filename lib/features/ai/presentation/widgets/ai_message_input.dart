@@ -17,7 +17,7 @@ class AiMessageInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(
+      padding: EdgeInsets.only(
         left: AppSpacing.md,
         right: AppSpacing.md,
         top: AppSpacing.sm,
@@ -54,7 +54,7 @@ class AiMessageInput extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.large),
                   borderSide: const BorderSide(color: AppColors.pointBrown),
                 ),
-                contentPadding: const const const EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
                 ),
@@ -64,7 +64,7 @@ class AiMessageInput extends StatelessWidget {
               onSubmitted: isLoading ? null : onSendMessage,
             ),
           ),
-          const const const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.sm),
           Container(
             decoration: BoxDecoration(
               color: isLoading ? AppColors.pointGray : AppColors.pointBrown,

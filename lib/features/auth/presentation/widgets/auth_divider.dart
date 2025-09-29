@@ -19,7 +19,7 @@ class AuthDivider extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const const const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Text(
               text!,
               style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),

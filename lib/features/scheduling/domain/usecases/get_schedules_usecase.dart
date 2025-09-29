@@ -11,7 +11,7 @@ class GetAllSchedulesUseCase {
   Future<Result<List<ScheduleEntity>>> call() async {
     try {
       final schedules = await repository.getAllSchedules();
-      return Success(schedules);
+      return Result.success('スケジュール一覧を取得しました', schedules);
     } catch (error) {
       return Result.failure('스케줄 목록 로드 실패: $error');
     }
@@ -27,7 +27,7 @@ class GetSchedulesByPetIdUseCase {
   Future<Result<List<ScheduleEntity>>> call(String petId) async {
     try {
       final schedules = await repository.getSchedulesByPetId(petId);
-      return Success(schedules);
+      return Result.success('ペットのスケジュールを取得しました', schedules);
     } catch (error) {
       return Result.failure('펫의 스케줄 로드 실패: $error');
     }

@@ -1,3 +1,6 @@
+/// 펫 활동 도메인 레이어 UseCase들
+library;
+
 export 'add_video_bookmark_usecase.dart';
 export 'get_video_bookmarks_usecase.dart';
 export 'get_video_progress_usecase.dart';

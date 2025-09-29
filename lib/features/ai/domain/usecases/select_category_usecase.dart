@@ -53,11 +53,9 @@ class SelectCategoryUseCase {
         suggestedQuestions: personalizedQuestions,
       );
 
-      return Result.success(result, 'カテゴリを選択しました');
+      return Result.success('カテゴリを選択しました', result);
     } catch (error) {
-      return Result.failure<SelectCategoryResult>(
-        'カテゴリ選択に失敗しました: ${error.toString()}',
-      );
+      return Result.failure('カテゴリ選択に失敗しました: ${error.toString()}');
     }
   }
 }

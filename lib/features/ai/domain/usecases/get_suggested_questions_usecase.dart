@@ -22,14 +22,12 @@ class GetSuggestedQuestionsUseCase {
         categoryId: params.category?.id,
       );
       if (questionsResult.isSuccess) {
-        return Result.success(questionsResult.dataOrNull!, '推奨質問を取得しました');
+        return Result.success('推奨質問を取得しました', questionsResult.dataOrNull!);
       } else {
-        return Result.failure(questionsResult.errorOrNull ?? '推奨質問の取得に失敗しました');
+        return Result.failure('推奨質問の取得に失敗しました');
       }
     } catch (error) {
-      return Result.failure<List<AiSuggestedQuestionEntity>>(
-        '推奨質問の取得に失敗しました: ${error.toString()}',
-      );
+      return Result.failure('推奨質問の取得に失敗しました: ${error.toString()}');
     }
   }
 
@@ -49,9 +47,9 @@ class GetSuggestedQuestionsUseCase {
         category: category,
         pet: pet,
       );
-      return Result.success(questions, 'カスタマイズされた推奨質問を取得しました');
+      return Result.success('カスタマイズされた推奨質問を取得しました', questions);
     } catch (error) {
-      return Result.failure<List<AiSuggestedQuestionEntity>>(
+      return Result.failure(
         '推奨質問の取得に失敗しました (personalized): ${error.toString()}',
       );
     }

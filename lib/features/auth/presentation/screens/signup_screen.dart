@@ -95,23 +95,23 @@ class SignupScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const const const EdgeInsets.all(AppSpacing.xl),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           child: Form(
             key: formState.formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const const const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
 
                 // 로고 영역
                 const AuthLogo(),
 
-                const const const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
 
                 // 구분선
                 const Divider(),
 
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // 부제목
                 Text(
@@ -122,7 +122,7 @@ class SignupScreen extends ConsumerWidget {
                   textAlign: TextAlign.center,
                 ),
 
-                const const const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
 
                 // 이메일 입력 필드
                 CommonInputField(
@@ -139,7 +139,7 @@ class SignupScreen extends ConsumerWidget {
                   },
                 ),
 
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // 패스워드 입력 필드
                 CommonInputField(
@@ -163,7 +163,7 @@ class SignupScreen extends ConsumerWidget {
                   },
                 ),
 
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // 패스워드 재입력 필드
                 CommonInputField(
@@ -188,7 +188,7 @@ class SignupScreen extends ConsumerWidget {
                   },
                 ),
 
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // 사용자명 입력 필드
                 CommonInputField(
@@ -207,14 +207,14 @@ class SignupScreen extends ConsumerWidget {
                   },
                 ),
 
-                const const const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
 
                 // 에러 메시지 (Mock)
                 // if (authState.error != null)
                 //   ErrorMessage(message: authState.error!),
 
                 // if (authState.error != null)
-                const const const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
                 // 회원가입 버튼
                 CommonButton(
@@ -231,7 +231,7 @@ class SignupScreen extends ConsumerWidget {
                   },
                 ),
 
-                const const const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
               ],
             ),
           ),

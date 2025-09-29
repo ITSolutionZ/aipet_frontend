@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 예약 요약 조회 유스케이스
 class GetAppointmentSummaryUseCase {
@@ -8,7 +9,12 @@ class GetAppointmentSummaryUseCase {
   GetAppointmentSummaryUseCase(this._repository);
 
   /// 예약 요약 목록 조회 실행
-  Future<List<AppointmentSummary>> call() async {
-    return _repository.getUpcomingAppointments();
+  Future<Result<List<AppointmentSummary>>> call() async {
+    try {
+      final result = await _repository.getUpcomingAppointments();
+      return Result.success('予約サマリーを取得しました', result);
+    } catch (error) {
+      return Result.failure('予約サマリーの取得に失敗しました: ${error.toString()}');
+    }
   }
 }

@@ -132,14 +132,14 @@ class ApiConnectionChecker extends ConsumerWidget {
     return Card(
       color: Colors.grey.shade50,
       child: Padding(
-        padding: const const const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Icon(Icons.api, color: connectionState.statusColor, size: 24),
-                const const const SizedBox(width: 12),
+                const SizedBox(width: 12),
                 const Text(
                   'API 연결 상태',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -161,10 +161,10 @@ class ApiConnectionChecker extends ConsumerWidget {
                   ),
               ],
             ),
-            const const const SizedBox(height: 12),
+            const SizedBox(height: 12),
             Container(
               width: double.infinity,
-              padding: const const const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: connectionState.statusColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
@@ -182,7 +182,7 @@ class ApiConnectionChecker extends ConsumerWidget {
                       fontFamily: 'monospace',
                     ),
                   ),
-                  const const const SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     'Status: ${connectionState.status}',
                     style: TextStyle(
@@ -192,7 +192,7 @@ class ApiConnectionChecker extends ConsumerWidget {
                     ),
                   ),
                   if (connectionState.errorMessage != null) ...[
-                    const const const SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       'Error: ${connectionState.errorMessage}',
                       style: TextStyle(
@@ -204,7 +204,7 @@ class ApiConnectionChecker extends ConsumerWidget {
                 ],
               ),
             ),
-            const const const SizedBox(height: 12),
+            const SizedBox(height: 12),
             const Text(
               '💡 팁: API 서버가 실행 중인지 확인하세요',
               style: TextStyle(

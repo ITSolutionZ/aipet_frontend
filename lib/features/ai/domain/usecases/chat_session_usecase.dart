@@ -14,11 +14,11 @@ class ChatSessionUseCase {
   Future<Result<List<AiChatSessionEntity>>> getSessions() async {
     try {
       final sessions = await _repository.getChatSessions();
-      return Result.success(sessions, 'チャットセッション一覧を取得しました').toFuture();
+      return Result.success('チャットセッション一覧を取得しました', sessions);
     } catch (error) {
-      return Result.failure<List<AiChatSessionEntity>>(
+      return Result.failure(
         'チャットセッション一覧の取得に失敗しました: ${error.toString()}',
-      ).toFuture();
+      );
     }
   }
 
@@ -35,23 +35,23 @@ class ChatSessionUseCase {
     try {
       // 입력 유효성 검사
       if (title.trim().isEmpty) {
-        return Result.failure<AiChatSessionEntity>(
+        return Result.failure(
           'セッションタイトルを入力してください',
-        ).toFuture();
+        );
       }
 
       if (title.length > 100) {
-        return Result.failure<AiChatSessionEntity>(
+        return Result.failure(
           'セッションタイトルは100文字以内で入力してください',
-        ).toFuture();
+        );
       }
 
       final session = await _repository.createChatSession(title, petId: petId);
-      return Result.success(session, 'チャットセッションを作成しました').toFuture();
+      return Result.success('チャットセッションを作成しました', session);
     } catch (error) {
-      return Result.failure<AiChatSessionEntity>(
+      return Result.failure(
         'チャットセッションの作成に失敗しました: ${error.toString()}',
-      ).toFuture();
+      );
     }
   }
 
@@ -64,15 +64,15 @@ class ChatSessionUseCase {
     try {
       // 입력 유효성 검사
       if (sessionId.trim().isEmpty) {
-        return Result.failure<void>('セッションIDが無効です').toFuture();
+        return Result.failure('セッションIDが無効です');
       }
 
       await _repository.deleteChatSession(sessionId);
-      return Result.success(null, 'チャットセッションを削除しました').toFuture();
+      return Result.success('チャットセッションを削除しました', null);
     } catch (error) {
-      return Result.failure<void>(
+      return Result.failure(
         'チャットセッションの削除に失敗しました: ${error.toString()}',
-      ).toFuture();
+      );
     }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/notification/data/repositories/notification_repository_impl.dart';
 import 'package:aipet_frontend/features/notification/data/services/notification_service.dart';
 import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
-import 'package:aipet_frontend/features/notification/domain/usecases/usecases.dart';
+import 'package:aipet_frontend/features/notification/domain/usecases/notification_usecases.dart';
 import 'package:aipet_frontend/features/notification/presentation/controllers/notification_controller.dart';
 import 'package:aipet_frontend/features/notification/presentation/controllers/notification_detail_controller.dart';
 import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';

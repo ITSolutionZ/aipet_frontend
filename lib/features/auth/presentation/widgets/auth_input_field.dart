@@ -32,7 +32,7 @@ class AuthInputField extends StatelessWidget {
             color: labelColor ?? AppColors.pointGray,
           ),
         ),
-        const const const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
@@ -60,7 +60,7 @@ class AuthInputField extends StatelessWidget {
             ),
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const const const EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.md,
             ),

@@ -1,5 +1,4 @@
-import '../../../../shared/foundation/result/app_result.dart';
-import '../../../../shared/shared.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 인증 리포지토리 인터페이스
 ///
@@ -96,7 +95,7 @@ class AuthResult {
   /// 공통 Result 패턴으로 변환
   Result<AuthUser> toResult() {
     if (isSuccess && user != null) {
-      return Result.success(user!, message);
+      return Result.success(message, user!);
     } else {
       return Result.failure(message);
     }

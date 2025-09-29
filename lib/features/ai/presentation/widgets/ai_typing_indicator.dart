@@ -39,7 +39,7 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
     _controllers = List.generate(
       3,
       (index) => AnimationController(
-        duration: const Duration(milliseconds: 600 + (index * 200)),
+        duration: Duration(milliseconds: 600 + (index * 200)),
         vsync: this,
       ),
     );
@@ -61,7 +61,7 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
   void _startAnimations() {
     // 애니메이션 시작 - 각각 다른 시간에 시작
     for (int i = 0; i < _controllers.length; i++) {
-      Future.delayed(const Duration(milliseconds: i * 200), () {
+      Future.delayed(Duration(milliseconds: i * 200), () {
         if (mounted) {
           _controllers[i].repeat(reverse: true);
         }
@@ -80,11 +80,11 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         children: [
           Container(
-            padding: const const const EdgeInsets.all(AppSpacing.sm),
+            padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: const BoxDecoration(
               color: AppColors.pointBrown,
               shape: BoxShape.circle,
@@ -96,9 +96,9 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
               color: Colors.white,
             ),
           ),
-          const const const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.sm),
           Container(
-            padding: const const const EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.sm,
             ),
@@ -119,9 +119,9 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildDot(0),
-                const const const SizedBox(width: 4),
+                const SizedBox(width: 4),
                 _buildDot(1),
-                const const const SizedBox(width: 4),
+                const SizedBox(width: 4),
                 _buildDot(2),
               ],
             ),

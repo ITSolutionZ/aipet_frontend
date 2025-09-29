@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 class ImportAppDataUseCase {
   final SettingsRepository repository;
@@ -9,9 +9,9 @@ class ImportAppDataUseCase {
   Future<Result<void>> call(String filePath) async {
     final result = await repository.importAppData(filePath);
     if (result.isSuccess) {
-      return Success(null, result.errorOrNull);
+      return Result.success('アプリデータをインポートしました', null);
     } else {
-      return Result.failure(result.errorOrNull ?? 'Unknown error');
+      return Result.failure('アプリデータのインポートに失敗しました');
     }
   }
 }

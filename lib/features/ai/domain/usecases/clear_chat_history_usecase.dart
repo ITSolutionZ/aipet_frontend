@@ -9,11 +9,9 @@ class ClearChatHistoryUseCase {
   Future<Result<void>> call() async {
     try {
       await _repository.clearChatHistory();
-      return Result.success(null, 'チャット履歴をクリアしました');
+      return Result.success('チャット履歴をクリアしました', null);
     } catch (error) {
-      return Result.failure<void>(
-        'チャット履歴のクリアに失敗しました: ${error.toString()}',
-      );
+      return Result.failure('チャット履歴のクリアに失敗しました: ${error.toString()}');
     }
   }
 }

@@ -1,3 +1,6 @@
+/// AI 도메인 레이어 UseCase들
+library;
+
 export 'analyze_message_usecase.dart';
 export 'chat_session_usecase.dart';
 export 'clear_chat_history_usecase.dart';

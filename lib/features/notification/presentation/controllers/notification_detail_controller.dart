@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/notification/domain/usecases/usecases.dart';
+import 'package:aipet_frontend/features/notification/domain/usecases/notification_usecases.dart';
 import 'package:aipet_frontend/shared/core/services/date_format_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

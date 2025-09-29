@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// 트릭 관리 바텀 시트
 class TrickManagementBottomSheet extends StatelessWidget {
@@ -32,7 +33,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const const const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -45,7 +46,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 제목
               Text(
@@ -54,7 +55,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 메뉴 항목들
               _buildMenuItem(
@@ -67,7 +68,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
                 },
                 color: AppColors.pointBrown,
               ),
-              const const const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
 
               _buildMenuItem(
                 icon: Icons.help_outline,
@@ -75,11 +76,11 @@ class TrickManagementBottomSheet extends StatelessWidget {
                 subtitle: 'トリックの使い方について',
                 onTap: () {
                   Navigator.pop(context);
-                  // TODO: 헬프 화면으로 이동
+                  context.push('/help');
                 },
                 color: AppColors.pointBlue,
               ),
-              const const const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
 
               _buildMenuItem(
                 icon: Icons.settings,
@@ -87,11 +88,11 @@ class TrickManagementBottomSheet extends StatelessWidget {
                 subtitle: 'トリックの設定を変更',
                 onTap: () {
                   Navigator.pop(context);
-                  // TODO: 설정 화면으로 이동
+                  context.push('/trick-settings');
                 },
                 color: AppColors.textSecondary,
               ),
-              const const const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               // 취소 버튼
               SizedBox(
@@ -119,7 +120,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppSpacing.sm),
       child: Padding(
-        padding: const const const EdgeInsets.all(AppSpacing.sm),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         child: Row(
           children: [
             Container(
@@ -131,7 +132,7 @@ class TrickManagementBottomSheet extends StatelessWidget {
               ),
               child: Icon(icon, color: color, size: 20),
             ),
-            const const const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
