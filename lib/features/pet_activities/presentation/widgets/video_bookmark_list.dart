@@ -252,12 +252,12 @@ class VideoBookmarkList extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.bookmark_outline, size: 64, color: Colors.grey),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(
               'ブックマークがありません',
               style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             Text(
               'ビデオの特定のモーメントにすばやく移動するには、ブックマークを追加してください',
               style: TextStyle(color: Colors.grey, fontSize: 12),
@@ -482,7 +482,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
                   decoration: const InputDecoration(
                     labelText: '分',
                     border: OutlineInputBorder(),
-                    contentPadding: const EdgeInsets.symmetric(
+                    contentPadding: EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 8,
                     ),
@@ -502,7 +502,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
                   decoration: const InputDecoration(
                     labelText: '秒',
                     border: OutlineInputBorder(),
-                    contentPadding: const EdgeInsets.symmetric(
+                    contentPadding: EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 8,
                     ),

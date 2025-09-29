@@ -6,12 +6,6 @@ import 'package:aipet_frontend/features/facility/presentation/widgets/facility_c
 import 'package:aipet_frontend/features/facility/presentation/widgets/filter_chip.dart';
 import 'package:aipet_frontend/features/facility/presentation/widgets/search_bar_widget.dart';
 import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
-import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
-
-import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
-import 'package:aipet_frontend/shared/foundation/error_handler/app_error_handler.dart';
-import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:aipet_frontend/shared/ui/components/states/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

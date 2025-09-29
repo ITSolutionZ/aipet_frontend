@@ -1,11 +1,9 @@
-import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:aipet_frontend/shared/core/services/google_places_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 
 import 'google_places_service_test.mocks.dart';
 

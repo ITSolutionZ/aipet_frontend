@@ -22,17 +22,17 @@ class FeedingAnalysisScreen extends ConsumerWidget {
             // 현재 급여량 요약 섹션
             Center(child: Text('급여 분석 화면')),
 
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
 
             // 급여량 추이 차트 섹션
             Center(child: Text('차트 섹션')),
 
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
 
             // 급여 기록 섹션
             Center(child: Text('기록 섹션')),
 
-            const SizedBox(height: AppSpacing.xl),
+            SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),

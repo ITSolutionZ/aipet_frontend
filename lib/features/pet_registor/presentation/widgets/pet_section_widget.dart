@@ -15,11 +15,11 @@ class PetSectionWidget extends ConsumerWidget {
       children: [
         // Pet 헤더
         const Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
               Icon(Icons.favorite, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(
                 'Pet',
                 style: TextStyle(
@@ -70,7 +70,7 @@ class PetSectionWidget extends ConsumerWidget {
                 );
               },
               loading: () => const Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
                     SizedBox(

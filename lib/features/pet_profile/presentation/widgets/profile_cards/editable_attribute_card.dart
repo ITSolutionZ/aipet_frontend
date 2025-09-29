@@ -97,10 +97,7 @@ class EditableAttributeCard extends StatelessWidget {
             decoration: const InputDecoration(
               suffix: Text('kg'),
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 8,
-              ),
+              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               border: OutlineInputBorder(),
             ),
             controller: weightController,

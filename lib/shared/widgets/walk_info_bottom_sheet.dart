@@ -52,7 +52,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
           const Row(
             children: [
               Icon(Icons.pets, color: Colors.blue),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text('산책 정보가 여기에 표시됩니다'),
             ],
           ),

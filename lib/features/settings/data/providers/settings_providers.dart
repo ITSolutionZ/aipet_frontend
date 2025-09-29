@@ -9,7 +9,6 @@ import 'package:aipet_frontend/features/settings/domain/usecases/import_app_data
 import 'package:aipet_frontend/features/settings/domain/usecases/save_app_settings_usecase.dart';
 import 'package:aipet_frontend/features/settings/domain/usecases/update_user_profile_usecase.dart';
 import 'package:aipet_frontend/features/settings/presentation/controllers/settings_controller.dart';
-import 'package:aipet_frontend/shared/entities/settings_entity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

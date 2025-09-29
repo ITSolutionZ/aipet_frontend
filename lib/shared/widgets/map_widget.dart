@@ -22,7 +22,7 @@ class MapWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.map_outlined, size: 48, color: Colors.grey),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Text('지도 위젯', style: TextStyle(color: Colors.grey, fontSize: 16)),
             ],
           ),

@@ -12,11 +12,11 @@ class HealthSectionWidget extends StatelessWidget {
       children: [
         // Health 헤더
         const Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
               Icon(Icons.favorite, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(
                 'Health',
                 style: TextStyle(

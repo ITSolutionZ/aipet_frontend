@@ -1,8 +1,6 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
 // import 'package:aipet_frontend/home/data/providers/home_providers.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/section_header_widget.dart';
-import 'package:aipet_frontend/shared/widgets/settings_tile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

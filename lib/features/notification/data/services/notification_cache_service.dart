@@ -20,7 +20,7 @@ class NotificationCacheService {
   // Note: Last updated tracking removed for simplified frontend-centric approach
 
   // 캐시 만료 시간 (30분)
-  static const Duration _cacheExpiration = const Duration(minutes: 30);
+  static const Duration _cacheExpiration = Duration(minutes: 30);
 
   static SharedPreferences? _prefs;
 

@@ -155,7 +155,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.bar_chart, size: 48, color: AppColors.pointGray),
-                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(height: AppSpacing.sm),
                     Text(
                       'チャート表示エリア',
                       style: TextStyle(

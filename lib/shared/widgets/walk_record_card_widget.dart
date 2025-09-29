@@ -42,7 +42,7 @@ class WalkRecordCardWidget extends StatelessWidget {
               const Row(
                 children: [
                   Icon(Icons.access_time, size: 16, color: Colors.grey),
-                  const SizedBox(width: 4),
+                  SizedBox(width: 4),
                   Text(
                     '시간 정보가 여기에 표시됩니다',
                     style: TextStyle(color: Colors.grey),
@@ -53,7 +53,7 @@ class WalkRecordCardWidget extends StatelessWidget {
               const Row(
                 children: [
                   Icon(Icons.route, size: 16, color: Colors.grey),
-                  const SizedBox(width: 4),
+                  SizedBox(width: 4),
                   Text(
                     '경로 정보가 여기에 표시됩니다',
                     style: TextStyle(color: Colors.grey),
