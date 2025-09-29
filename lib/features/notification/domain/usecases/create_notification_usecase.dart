@@ -184,11 +184,7 @@ class CreateNotificationUseCase {
         priority: NotificationPriority.normal,
         status: NotificationStatus.unread,
         createdAt: DateTime.now(),
-        data: {
-          'petId': petId,
-          'petName': petName,
-          'userId': 'current_user',
-        },
+        data: {'petId': petId, 'petName': petName, 'userId': 'current_user'},
       );
 
       return Result.success('散歩通知を作成しました', notification);
