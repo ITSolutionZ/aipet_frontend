@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/auth/domain/auth_token.dart';
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 import 'repositories/firebase_auth_real_impl.dart';
 import 'services/token_storage_service.dart';
@@ -28,9 +28,9 @@ class AuthService {
       if (result.isSuccess && result.dataOrNull != null) {
         // 백엔드 토큰 저장
         await _saveBackendTokenFromUser(result.dataOrNull!);
-        return Result.success(result.dataOrNull!, 'ログインが完了しました');
+        return Result.success('ログインが完了しました', result.dataOrNull!);
       } else {
-        return Result.failure('ログインに失敗しました: ${result.errorOrNull}');
+        return Result.failure('ログインに失敗しました: ${result.error?.toString()}');
       }
     } catch (error) {
       return Result.failure('ログインに失敗しました: ${error.toString()}');
@@ -51,9 +51,9 @@ class AuthService {
       if (result.isSuccess && result.dataOrNull != null) {
         // 백엔드 토큰 저장
         await _saveBackendTokenFromUser(result.dataOrNull!);
-        return Result.success(result.dataOrNull!, '会員登録が完了しました');
+        return Result.success('会員登録が完了しました', result.dataOrNull!);
       } else {
-        return Result.failure('会員登録に失敗しました: ${result.errorOrNull}');
+        return Result.failure('会員登録に失敗しました: ${result.error?.toString()}');
       }
     } catch (error) {
       return Result.failure('会員登録に失敗しました: ${error.toString()}');
@@ -83,12 +83,12 @@ class AuthService {
         // 백엔드 토큰 저장
         await _saveBackendTokenFromUser(result.dataOrNull!);
         return Result.success(
-          result.dataOrNull!,
           '$provider ログインが完了しました',
+          result.dataOrNull!,
         );
       } else {
         return Result.failure(
-          '$provider ログインに失敗しました: ${result.errorOrNull}',
+          '$provider ログインに失敗しました: ${result.error?.toString()}',
         );
       }
     } catch (error) {
@@ -104,7 +104,7 @@ class AuthService {
       await _repository.signOut();
       await TokenStorageService.clearToken();
       await TokenStorageService.clearRememberMe();
-      return Result.success(null, 'ログアウトが完了しました');
+      return Result.success('ログアウトが完了しました', null);
     } catch (error) {
       return Result.failure('ログアウトに失敗しました: ${error.toString()}');
     }
@@ -123,7 +123,7 @@ class AuthService {
   Future<Result<AuthUser?>> getCurrentUser() async {
     try {
       final user = await _repository.getCurrentUser();
-      return Result.success(user, 'ユーザー情報を取得しました');
+      return Result.success('ユーザー情報を取得しました', user);
     } catch (error) {
       return Result.failure('ユーザー情報の取得に失敗しました: ${error.toString()}');
     }
@@ -133,7 +133,7 @@ class AuthService {
   Future<Result<void>> sendPasswordResetEmail(String email) async {
     try {
       await _repository.sendPasswordResetEmail(email);
-      return Result.success(null, 'パスワードリセットメールを送信しました');
+      return Result.success('パスワードリセットメールを送信しました', null);
     } catch (error) {
       return Result.failure(
         'パスワードリセットメールの送信に失敗しました: ${error.toString()}',

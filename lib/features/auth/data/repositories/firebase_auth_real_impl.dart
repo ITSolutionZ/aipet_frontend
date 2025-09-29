@@ -5,7 +5,9 @@ import 'package:aipet_frontend/features/auth/data/services/line_oauth_service.da
 import 'package:aipet_frontend/features/auth/domain/auth_error.dart'
     as auth_errors;
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/app/services/secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -56,7 +58,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
       if (credential.user != null) {
         // Firebase User를 AuthUser로 변환
         final user = _mapFirebaseUserToAuthUser(credential.user!);
-        return Result.success(user, 'ログインが完了しました');
+        return Result.success('ログインが完了しました', user);
       } else {
         return Result.failure('ログインに失敗しました');
       }
@@ -81,7 +83,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (credential.user != null) {
         final user = _mapFirebaseUserToAuthUser(credential.user!);
-        return Result.success(user, '会員登録が完了しました');
+        return Result.success('会員登録が完了しました', user);
       } else {
         return Result.failure('会員登録に失敗しました');
       }
@@ -115,7 +117,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
-        return Result.success(user, 'Googleログインが完了しました');
+        return Result.success('Googleログインが完了しました', user);
       } else {
         return Result.failure('Google ログインに失敗しました');
       }
@@ -148,7 +150,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
-        return Result.success(user, 'Appleログインが完了しました');
+        return Result.success('Appleログインが完了しました', user);
       } else {
         return Result.failure('Apple ログインに失敗しました');
       }
@@ -190,9 +192,9 @@ class FirebaseAuthRealImpl implements AuthRepository {
           },
         );
 
-        return Result.success(user, 'LINEログインが完了しました');
+        return Result.success('LINEログインが完了しました', user);
       } else {
-        return Result.failure(result.errorOrNull ?? 'LINE ログインに失敗しました');
+        return Result.failure(result.error?.toString() ?? 'LINE ログインに失敗しました');
       }
     } catch (e) {
       return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
@@ -350,8 +352,8 @@ class FirebaseAuthRealImpl implements AuthRepository {
   @override
   Future<String?> getStoredServerToken() async {
     try {
-      final token = await SecureStorageService.getString(_serverTokenKey);
-      final expiresStr = await SecureStorageService.getString(
+      final token = await SecureStorage.getString(_serverTokenKey);
+      final expiresStr = await SecureStorage.getString(
         _serverTokenExpiresKey,
       );
 
@@ -386,8 +388,8 @@ class FirebaseAuthRealImpl implements AuthRepository {
       final expiresAt = DateTime.now().add(Duration(hours: expiresInHours));
 
       await Future.wait([
-        SecureStorageService.setString(_serverTokenKey, token),
-        SecureStorageService.setString(
+        SecureStorage.setString(_serverTokenKey, token),
+        SecureStorage.setString(
           _serverTokenExpiresKey,
           expiresAt.toIso8601String(),
         ),
@@ -411,8 +413,8 @@ class FirebaseAuthRealImpl implements AuthRepository {
   Future<void> clearServerToken() async {
     try {
       await Future.wait([
-        SecureStorageService.remove(_serverTokenKey),
-        SecureStorageService.remove(_serverTokenExpiresKey),
+        SecureStorage.remove(_serverTokenKey),
+        SecureStorage.remove(_serverTokenExpiresKey),
       ]);
 
       if (kDebugMode) {

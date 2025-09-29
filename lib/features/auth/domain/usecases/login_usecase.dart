@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/shared.dart';
 
 /// 로그인 UseCase
 class LoginUseCase {
@@ -39,9 +38,9 @@ class LoginUseCase {
       );
 
       if (authResult.isSuccess && authResult.dataOrNull != null) {
-        return Result.success(authResult.dataOrNull!, 'ログインが完了しました');
+        return Result.success('ログインが完了しました', authResult.dataOrNull!);
       } else {
-        return Result.failure(authResult.errorOrNull ?? 'ログインに失敗しました');
+        return Result.failure('ログインに失敗しました');
       }
     } catch (error) {
       return Result.failure('ログインに失敗しました: ${error.toString()}');

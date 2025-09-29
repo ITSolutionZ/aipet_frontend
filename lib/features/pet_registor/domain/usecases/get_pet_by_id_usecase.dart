@@ -11,12 +11,12 @@ class GetPetByIdUseCase {
     try {
       final result = await repository.getPetById(id);
       if (result.isSuccess) {
-        return Success(result.dataOrNull!, result.errorOrNull);
+        return Result.success('ペット情報を取得しました', result.dataOrNull!);
       } else {
-        return Result.failure(result.errorOrNull!);
+        return Result.failure('ペット情報の取得に失敗しました');
       }
     } catch (error) {
-      return Result.failure('Failed to get pet: ${error.toString()}');
+      return Result.failure('ペット情報の取得に失敗しました: ${error.toString()}');
     }
   }
 }

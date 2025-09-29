@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:http/http.dart' as http;
 
@@ -48,7 +47,7 @@ class LineOAuthService {
       final tokenResult = await _requestAccessToken(authCode, state);
       if (!tokenResult.isSuccess) {
         return Result.failure(
-          tokenResult.errorOrNull ?? 'LINE ログインに失敗しました',
+          tokenResult.error?.toString() ?? 'LINE ログインに失敗しました',
         );
       }
 
@@ -56,13 +55,13 @@ class LineOAuthService {
       final profileResult = await _requestUserProfile(tokenResult.dataOrNull!);
       if (!profileResult.isSuccess) {
         return Result.failure(
-          profileResult.errorOrNull ?? 'LINE プロフィールの取得に失敗しました',
+          profileResult.error?.toString() ?? 'LINE プロフィールの取得に失敗しました',
         );
       }
 
       return Result.success(
-        profileResult.dataOrNull!,
         'LINEログインが完了しました',
+        profileResult.dataOrNull!,
       );
     } catch (e) {
       return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
@@ -159,7 +158,7 @@ class LineOAuthService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final tokenInfo = LineTokenInfo.fromJson(data);
-        return Result.success(tokenInfo, '토큰 획득 성공');
+        return Result.success('토큰 획득 성공', tokenInfo);
       } else {
         return Result.failure('LINE トークンの取得に失敗しました');
       }
@@ -181,7 +180,7 @@ class LineOAuthService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final userInfo = LineUserInfo.fromJson(data);
-        return Result.success(userInfo, '프로필 정보 획득 성공');
+        return Result.success('프로필 정보 획득 성공', userInfo);
       } else {
         return Result.failure('LINE プロフィールの取得に失敗しました');
       }

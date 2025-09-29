@@ -2,7 +2,7 @@ import 'package:aipet_frontend/features/pet_activities/data/repositories/pet_act
 import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_entity.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/repositories/pet_activities_repository.dart';
-import 'package:aipet_frontend/features/pet_activities/domain/usecases/usecases.dart';
+import 'package:aipet_frontend/features/pet_activities/domain/usecases/pet_activities_usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

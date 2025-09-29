@@ -53,7 +53,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const const const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Form(
             key: _formKey,
             child: Column(
@@ -81,7 +81,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.sm),
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -106,7 +106,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             .updateEmail(value);
                       },
                     ),
-                    const const const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.md),
 
                     // 패스워드 입력
                     Text(
@@ -115,7 +115,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.sm),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: !_isPasswordVisible,
@@ -147,7 +147,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         return null;
                       },
                     ),
-                    const const const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.md),
 
                     // Remember Me 체크박스
                     Row(
@@ -167,7 +167,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         const Text('ログイン情報を保存'),
                       ],
                     ),
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 에러 메시지 표시
                     if (authState.error != null) ...[
@@ -180,7 +180,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               .clearError();
                         },
                       ),
-                      const const const SizedBox(height: AppSpacing.md),
+                      const SizedBox(height: AppSpacing.md),
                     ],
 
                     // 로그인 버튼
@@ -215,11 +215,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.md),
 
                     // 소셜 로그인 섹션
                     const AuthDivider(text: 'または'),
-                    const const const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.md),
 
                     // Google 로그인 버튼
                     SocialLoginButton(
@@ -233,7 +233,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ],
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.sm),
 
                     // Apple 로그인 버튼
                     SocialLoginButton(
@@ -247,7 +247,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ],
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.sm),
 
                     // LINE 로그인 버튼
                     SocialLoginButton(
@@ -261,7 +261,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ],
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // 회원가입 링크
                     Row(

@@ -24,7 +24,7 @@ class AiMessageBubble extends ConsumerWidget {
     // final userProfileAsync = ref.watch(userProfileNotifierProvider);
 
     return Container(
-      margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         mainAxisAlignment: isUser
             ? MainAxisAlignment.end
@@ -33,7 +33,7 @@ class AiMessageBubble extends ConsumerWidget {
         children: [
           if (!isUser) ...[
             Container(
-              padding: const const const EdgeInsets.all(AppSpacing.sm),
+              padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: const BoxDecoration(
                 color: AppColors.pointBrown,
                 shape: BoxShape.circle,
@@ -45,7 +45,7 @@ class AiMessageBubble extends ConsumerWidget {
                 color: Colors.white,
               ),
             ),
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
           ],
           Flexible(
             child: GestureDetector(
@@ -53,7 +53,7 @@ class AiMessageBubble extends ConsumerWidget {
                   ? () => _showFavoriteDialog(context)
                   : null,
               child: Container(
-                padding: const const const EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
                 ),
@@ -90,7 +90,7 @@ class AiMessageBubble extends ConsumerWidget {
                         height: 1.4,
                       ),
                     ),
-                    const const const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
 
                     // 하단 메타 정보 (시간, 즐겨찾기 등)
                     Row(
@@ -114,7 +114,7 @@ class AiMessageBubble extends ConsumerWidget {
             ),
           ),
           if (isUser) ...[
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             _buildDefaultUserIcon(),
           ],
         ],
@@ -129,7 +129,7 @@ class AiMessageBubble extends ConsumerWidget {
         title: Row(
           children: [
             const Icon(Icons.star, color: Colors.amber),
-            const const const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             Text(
               'お気に入りに追加',
               style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark),

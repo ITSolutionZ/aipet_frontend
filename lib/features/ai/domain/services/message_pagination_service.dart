@@ -32,7 +32,7 @@ class MessagePaginationService {
   ) {
     try {
       if (messages.length <= maxMessagesInMemory) {
-        return Result.success(messages, 'Messages within memory limit');
+        return Result.success('Messages within memory limit', messages);
       }
 
       // 최신 메시지부터 maxMessagesInMemory개만 유지
@@ -50,8 +50,8 @@ class MessagePaginationService {
       }
 
       return Result.success(
-        limitedMessages,
         'Memory limit applied: $removedCount messages archived',
+        limitedMessages,
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {
@@ -85,7 +85,7 @@ class MessagePaginationService {
 
       final startIndex = pageIndex * messagesPerPage;
       if (startIndex >= messages.length) {
-        return Result.success([], 'Empty page');
+        return Result.success('Empty page', []);
       }
 
       final endIndex = (startIndex + messagesPerPage).clamp(
@@ -95,8 +95,8 @@ class MessagePaginationService {
       final pageMessages = messages.sublist(startIndex, endIndex);
 
       return Result.success(
-        pageMessages,
         'Page $pageIndex loaded with ${pageMessages.length} messages',
+        pageMessages,
       );
     } catch (error) {
       return Result.failure('페이지 로드 중 에러가 발생했습니다: $error');
@@ -130,8 +130,8 @@ class MessagePaginationService {
       });
 
       return Result.success(
-        sortedMessages,
         'Messages sorted by time (${ascending ? 'ascending' : 'descending'})',
+        sortedMessages,
       );
     } catch (error) {
       return Result.failure('메시지 정렬 중 에러가 발생했습니다: $error');
@@ -163,8 +163,8 @@ class MessagePaginationService {
       }
 
       return Result.success(
-        uniqueMessages,
         'Duplicates removed: $removedCount messages',
+        uniqueMessages,
       );
     } catch (error) {
       return Result.failure('중복 제거 중 에러가 발생했습니다: $error');
@@ -233,7 +233,7 @@ class MessagePaginationService {
       final sortedResult = sortMessagesByTime(deduplicatedResult.dataOrNull!);
       if (!sortedResult.isSuccess) {
         return Result.failure(
-          '정렬 실패: ${sortedResult.errorOrNull ?? 'Unknown error'}',
+          '정렬 실패: ${sortedResult.error?.toString() ?? 'Unknown error'}',
         );
       }
 
@@ -241,7 +241,7 @@ class MessagePaginationService {
       final limitedResult = limitMessagesInMemory(sortedResult.dataOrNull!);
       if (!limitedResult.isSuccess) {
         return Result.failure(
-          '메모리 제한 적용 실패: ${limitedResult.errorOrNull ?? 'Unknown error'}',
+          '메모리 제한 적용 실패: ${limitedResult.error?.toString() ?? 'Unknown error'}',
         );
       }
 
@@ -259,8 +259,8 @@ class MessagePaginationService {
       }
 
       return Result.success(
-        optimizedMessages,
         'Messages optimized: ${optimizedMessages.length} messages, ${memoryUsageMB.toStringAsFixed(1)}MB',
+        optimizedMessages,
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {

@@ -133,7 +133,7 @@ class AiChatNotifier extends _$AiChatNotifier {
         state =
             AiChatStateManager.setErrorState(
               currentState: state,
-              error: initResult.errorOrNull ?? 'Init failed',
+              error: initResult.error?.toString() ?? 'Init failed',
             ).dataOrNull ??
             state;
       }
@@ -141,7 +141,7 @@ class AiChatNotifier extends _$AiChatNotifier {
       state =
           AiChatStateManager.setErrorState(
             currentState: state,
-            error: result.errorOrNull ?? 'Initialization failed',
+            error: result.error?.toString() ?? 'Initialization failed',
           ).dataOrNull ??
           state;
     }
@@ -165,7 +165,7 @@ class AiChatNotifier extends _$AiChatNotifier {
         state =
             AiChatStateManager.setErrorState(
               currentState: state,
-              error: updateResult.errorOrNull ?? 'Update failed',
+              error: updateResult.error?.toString() ?? 'Update failed',
             ).dataOrNull ??
             state;
       }
@@ -181,7 +181,7 @@ class AiChatNotifier extends _$AiChatNotifier {
       state =
           AiChatStateManager.setErrorState(
             currentState: state,
-            error: result.errorOrNull ?? 'Pet selection failed',
+            error: result.error?.toString() ?? 'Pet selection failed',
           ).dataOrNull ??
           state;
     }
@@ -209,7 +209,7 @@ class AiChatNotifier extends _$AiChatNotifier {
         state =
             AiChatStateManager.setErrorState(
               currentState: state,
-              error: updateResult.errorOrNull ?? 'Update failed',
+              error: updateResult.error?.toString() ?? 'Update failed',
             ).dataOrNull ??
             state;
       }
@@ -217,7 +217,7 @@ class AiChatNotifier extends _$AiChatNotifier {
       state =
           AiChatStateManager.setErrorState(
             currentState: state,
-            error: result.errorOrNull ?? 'Category selection failed',
+            error: result.error?.toString() ?? 'Category selection failed',
           ).dataOrNull ??
           state;
     }
@@ -246,7 +246,7 @@ class AiChatNotifier extends _$AiChatNotifier {
       state =
           AiChatStateManager.setErrorState(
             currentState: state,
-            error: updateResult.errorOrNull ?? 'Update failed',
+            error: updateResult.error?.toString() ?? 'Update failed',
           ).dataOrNull ??
           state;
     }
@@ -297,7 +297,7 @@ class AiChatNotifier extends _$AiChatNotifier {
             AiChatStateManager.setErrorState(
               currentState: state,
               error:
-                  assistantMessageResult.errorOrNull ??
+                  assistantMessageResult.error?.toString() ??
                   'Assistant message failed',
               clearTyping: true,
             ).dataOrNull ??
@@ -307,7 +307,7 @@ class AiChatNotifier extends _$AiChatNotifier {
       state =
           AiChatStateManager.setErrorState(
             currentState: state,
-            error: result.errorOrNull ?? 'Message send failed',
+            error: result.error?.toString() ?? 'Message send failed',
             clearTyping: true,
           ).dataOrNull ??
           state;
@@ -386,7 +386,7 @@ class AiChatNotifier extends _$AiChatNotifier {
         state =
             AiChatStateManager.setErrorState(
               currentState: state,
-              error: clearResult.errorOrNull ?? 'Clear chat failed',
+              error: clearResult.error?.toString() ?? 'Clear chat failed',
             ).dataOrNull ??
             state;
       }
@@ -408,7 +408,7 @@ class AiChatNotifier extends _$AiChatNotifier {
       state = state.copyWith(messages: optimizedResult.dataOrNull!);
       if (kDebugMode) {
         debugPrint(
-          '[AiChatController] Manual memory optimization completed: ${optimizedResult.errorOrNull ?? 'Success'}',
+          '[AiChatController] Manual memory optimization completed: ${optimizedResult.error?.toString() ?? 'Success'}',
         );
       }
     }
@@ -441,14 +441,13 @@ class AiChatController extends BaseController {
   }
 
   Future<Result<void>> initializeChat() async {
-    return wrapAsync(
-      () async {
-        final notifier = ref.read(aiChatNotifierProvider.notifier);
-        await notifier.initializeChat();
-      },
-      successMessage: 'チャットが初期化されました',
-      failureMessage: 'チャット初期化に失敗しました',
-    );
+    try {
+      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      await notifier.initializeChat();
+      return Result.success('チャットが初期化されました', null);
+    } catch (error) {
+      return Result.failure('チャット初期化に失敗しました: $error');
+    }
   }
 
   /// 펫 선택
@@ -459,28 +458,26 @@ class AiChatController extends BaseController {
 
   Future<Result<void>> sendMessage(String content) async {
     if (content.trim().isEmpty) {
-      return validationError('メッセージが空です');
+      return Result.failure('メッセージが空です');
     }
 
-    return wrapAsync(
-      () async {
-        final notifier = ref.read(aiChatNotifierProvider.notifier);
-        await notifier.sendMessage(content);
-      },
-      successMessage: 'メッセージが送信されました',
-      failureMessage: 'メッセージの送信に失敗しました',
-    );
+    try {
+      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      await notifier.sendMessage(content);
+      return Result.success('メッセージが送信されました', null);
+    } catch (error) {
+      return Result.failure('メッセージの送信に失敗しました: $error');
+    }
   }
 
   Future<Result<void>> clearChatHistory() async {
-    return wrapAsync(
-      () async {
-        final notifier = ref.read(aiChatNotifierProvider.notifier);
-        await notifier.clearChatHistory();
-      },
-      successMessage: 'チャット履歴がクリアされました',
-      failureMessage: 'チャット履歴のクリアに失敗しました',
-    );
+    try {
+      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      await notifier.clearChatHistory();
+      return Result.success('チャット履歴がクリアされました', null);
+    } catch (error) {
+      return Result.failure('チャット履歴のクリアに失敗しました: $error');
+    }
   }
 
   /// 현재 메시지 목록 가져오기
@@ -528,24 +525,22 @@ class AiChatController extends BaseController {
   }
 
   Future<Result<void>> saveCurrentChatManually() async {
-    return wrapAsync(
-      () async {
-        final notifier = ref.read(aiChatNotifierProvider.notifier);
-        await notifier.saveCurrentChatToHistory(isManualSave: true);
-      },
-      successMessage: 'チャット履歴が保存されました',
-      failureMessage: 'チャット履歴の保存に失敗しました',
-    );
+    try {
+      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      await notifier.saveCurrentChatToHistory(isManualSave: true);
+      return Result.success('チャット履歴が保存されました', null);
+    } catch (error) {
+      return Result.failure('チャット履歴の保存に失敗しました: $error');
+    }
   }
 
   Future<Result<void>> saveCurrentChatOnTabSwitch() async {
-    return wrapAsync(
-      () async {
-        final notifier = ref.read(aiChatNotifierProvider.notifier);
-        await notifier.saveCurrentChatToHistory(isManualSave: false);
-      },
-      successMessage: 'チャット履歴が自動保存されました',
-      failureMessage: 'チャット履歴の自動保存に失敗しました',
-    );
+    try {
+      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      await notifier.saveCurrentChatToHistory(isManualSave: false);
+      return Result.success('チャット履歴が自動保存されました', null);
+    } catch (error) {
+      return Result.failure('チャット履歴の自動保存に失敗しました: $error');
+    }
   }
 }

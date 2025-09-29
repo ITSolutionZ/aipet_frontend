@@ -11,12 +11,12 @@ class CreatePetUseCase {
     try {
       final result = await repository.createPet(pet);
       if (result.isSuccess) {
-        return Success(result.dataOrNull!, result.errorOrNull);
+        return Result.success('ペットを登録しました', result.dataOrNull!);
       } else {
-        return Result.failure(result.errorOrNull!);
+        return Result.failure('ペットの登録に失敗しました');
       }
     } catch (error) {
-      return Result.failure('ペットの作成に失敗しました: ${error.toString()}');
+      return Result.failure('ペットの登録に失敗しました: ${error.toString()}');
     }
   }
 }

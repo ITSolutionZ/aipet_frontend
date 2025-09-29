@@ -53,7 +53,7 @@ class AiChatStateManager {
         );
       }
 
-      return Result.success(updatedState, 'Pet selection updated');
+      return Result.success('Pet selection updated', updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error updating pet selection: $error\n$stackTrace');
@@ -102,7 +102,7 @@ class AiChatStateManager {
         );
       }
 
-      return Result.success(updatedState, 'Category selection updated');
+      return Result.success('Category selection updated', updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint(
@@ -166,7 +166,7 @@ class AiChatStateManager {
         );
       }
 
-      return Result.success(updatedState, 'Message exchange updated');
+      return Result.success('Message exchange updated', updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint(
@@ -216,7 +216,7 @@ class AiChatStateManager {
 
       if (!favoriteResult.isSuccess) {
         return Result.failure(
-          favoriteResult.errorOrNull ?? 'Favorite operation failed',
+          favoriteResult.error?.toString() ?? 'Favorite operation failed',
         );
       }
 
@@ -233,7 +233,7 @@ class AiChatStateManager {
         );
       }
 
-      return Result.success(updatedState, result.message);
+      return Result.success(result.message, updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint(
@@ -260,7 +260,7 @@ class AiChatStateManager {
         );
       }
 
-      return Result.success(initialState, 'State initialized');
+      return Result.success('State initialized', initialState);
     } catch (error) {
       return Result.failure('상태 초기화 중 오류 발생: $error');
     }
@@ -351,8 +351,8 @@ class AiChatStateManager {
       );
 
       return Result.success(
-        resultData.state,
         needsUpdate ? 'State validated and updated' : 'State validation passed',
+        resultData.state,
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {
@@ -383,7 +383,7 @@ class AiChatStateManager {
         debugPrint('[$_tag] ❌ Error state set: $error');
       }
 
-      return Result.success(updatedState, 'Error state updated');
+      return Result.success('Error state updated', updatedState);
     } catch (error) {
       return Result.failure('에러 상태 설정 중 오류 발생: $error');
     }

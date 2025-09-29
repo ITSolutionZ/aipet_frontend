@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 class SaveAppSettingsUseCase {
   final SettingsRepository _repository;
@@ -10,9 +11,9 @@ class SaveAppSettingsUseCase {
   Future<Result<AppSettingsEntity>> call(AppSettingsEntity settings) async {
     final result = await _repository.saveAppSettings(settings);
     if (result.isSuccess) {
-      return Success(result.dataOrNull!, result.errorOrNull);
+      return Result.success('アプリ設定を保存しました', result.dataOrNull!);
     } else {
-      return Result.failure(result.errorOrNull ?? 'Unknown error');
+      return Result.failure('アプリ設定の保存に失敗しました');
     }
   }
 }

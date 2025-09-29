@@ -10,12 +10,12 @@ class DeletePetUseCase {
     try {
       final result = await repository.deletePet(id);
       if (result.isSuccess) {
-        return const Success(null, '펫이 성공적으로 삭제되었습니다');
+        return Result.success('ペットを削除しました', null);
       } else {
-        return Result.failure(result.errorOrNull!);
+        return Result.failure('ペットの削除に失敗しました');
       }
     } catch (error) {
-      return Result.failure('펫 삭제에 실패했습니다: ${error.toString()}');
+      return Result.failure('ペットの削除に失敗しました: ${error.toString()}');
     }
   }
 }

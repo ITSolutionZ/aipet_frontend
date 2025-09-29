@@ -14,11 +14,9 @@ class GetChatHistoryUseCase {
   Future<Result<List<AiMessageEntity>>> call() async {
     try {
       final messages = await _repository.getChatHistory();
-      return Result.success(messages, 'チャット履歴を取得しました').toFuture();
+      return Result.success('チャット履歴を取得しました', messages);
     } catch (error) {
-      return Result.failure<List<AiMessageEntity>>(
-        'チャット履歴の取得に失敗しました: ${error.toString()}',
-      ).toFuture();
+      return Result.failure('チャット履歴の取得に失敗しました: ${error.toString()}');
     }
   }
 }

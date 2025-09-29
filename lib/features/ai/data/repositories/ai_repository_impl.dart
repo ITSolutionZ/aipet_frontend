@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/foundation/error_handler/error_handler.dart';
-import '../../../../shared/foundation/result/result.dart';
 import '../../domain/domain.dart';
 import '../services/ai_local_storage_service.dart';
 import '../services/ai_mock_data_service_impl.dart';
@@ -34,7 +33,7 @@ class AiRepositoryImpl implements AiRepository {
   final AiLocalStorageService _localStorageService;
   final Ref ref;
 
-  const AiRepositoryImpl({
+  AiRepositoryImpl({
     required OpenAIService openAIService,
     required AiMockDataServiceImpl aiMockDataService,
     required this.ref,
@@ -101,15 +100,13 @@ class AiRepositoryImpl implements AiRepository {
       // 로컬 저장소에 메시지 저장
       await _saveMessageToLocal(aiMessage);
 
-      return Result.success(aiMessage, 'AI応答を生成しました');
+      return Result.success('AI応答を生成しました', aiMessage);
     } catch (e) {
       // AI 로거를 사용한 에러 로그
       AiLogger.logApiError(e);
 
       final appException = AppErrorHandler.convertToAppException(e);
-      return Result.failure<AiMessageEntity>(
-        'AI応答の生成に失敗しました: ${appException.message}',
-      );
+      return Result.failure('AI応答の生成に失敗しました: ${appException.message}');
     }
   }
 
@@ -159,15 +156,13 @@ class AiRepositoryImpl implements AiRepository {
       // 로컬 저장소에 메시지 저장
       await _saveMessageToLocal(aiMessage);
 
-      return Result.success(aiMessage, 'ペット情報を含むAI応答を生成しました');
+      return Result.success('ペット情報を含むAI応答を生成しました', aiMessage);
     } catch (e) {
       // AI 로거를 사용한 에러 로그
       AiLogger.logApiError(e);
 
       final appException = AppErrorHandler.convertToAppException(e);
-      return Result.failure<AiMessageEntity>(
-        'AI応答の生成に失敗しました: ${appException.message}',
-      );
+      return Result.failure('AI応答の生成に失敗しました: ${appException.message}');
     }
   }
 
@@ -451,7 +446,7 @@ class AiRepositoryImpl implements AiRepository {
         filteredMessages = filteredMessages.take(limit).toList();
       }
 
-      return Result.success(filteredMessages);
+      return Result.success('채팅 히스토리 로드 완료', filteredMessages);
     } catch (e) {
       return Result.failure('채팅 히스토리 로드 실패: $e');
     }
@@ -473,7 +468,7 @@ class AiRepositoryImpl implements AiRepository {
         confidenceScore: 0.8,
       );
 
-      return Result.success(analysis);
+      return Result.success('메시지 분석 완료', analysis);
     } catch (e) {
       return Result.failure('메시지 분석 실패: $e');
     }
@@ -502,7 +497,7 @@ class AiRepositoryImpl implements AiRepository {
     try {
       // Mock 구현 - 실제로는 로컬 저장소나 서버에서 즐겨찾기 상태 토글
       final isFavorite = Random().nextBool();
-      return Result.success(isFavorite);
+      return Result.success('즐겨찾기 토글 완료', isFavorite);
     } catch (e) {
       return Result.failure('즐겨찾기 토글 실패: $e');
     }
@@ -531,7 +526,7 @@ class AiRepositoryImpl implements AiRepository {
         ),
       ];
 
-      return Result.success(suggestions);
+      return Result.success('제안 질문 로드 완료', suggestions);
     } catch (e) {
       return Result.failure('제안 질문 가져오기 실패: $e');
     }

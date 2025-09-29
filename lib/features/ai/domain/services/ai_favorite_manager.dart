@@ -39,7 +39,7 @@ class AiFavoriteManager {
       final validationResult = _validateForFavorite(message, userQuestion);
       if (!validationResult.isSuccess) {
         return Result.failure(
-          validationResult.errorOrNull ?? 'Validation failed',
+          validationResult.error?.toString() ?? 'Validation failed',
         );
       }
 
@@ -93,7 +93,7 @@ class AiFavoriteManager {
         );
       }
 
-      return Result.success(result, result.message);
+      return Result.success(result.message, result);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error adding to favorites: $error\n$stackTrace');
@@ -146,7 +146,7 @@ class AiFavoriteManager {
         );
       }
 
-      return Result.success(result, result.message);
+      return Result.success(result.message, result);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint(
@@ -174,7 +174,7 @@ class AiFavoriteManager {
         debugPrint('[$_tag] 🗑️ All favorites cleared');
       }
 
-      return Result.success(result, result.message);
+      return Result.success(result.message, result);
     } catch (error) {
       return Result.failure('즐겨찾기 전체 삭제 중 오류 발생: $error');
     }
@@ -226,7 +226,7 @@ class AiFavoriteManager {
         );
       }
 
-      return Result.success(filteredList, 'Favorites filtered successfully');
+      return Result.success('Favorites filtered successfully', filteredList);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error searching favorites: $error\n$stackTrace');
@@ -344,7 +344,7 @@ class AiFavoriteManager {
         }
       }
 
-      return Result.success(validationResult, 'Favorite validation completed');
+      return Result.success('Favorite validation completed', validationResult);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error validating favorites: $error\n$stackTrace');
@@ -370,7 +370,7 @@ class AiFavoriteManager {
       return Result.failure('질문이 너무 짧습니다');
     }
 
-    return Result.success(true, 'Valid for favorite');
+    return Result.success('Valid for favorite', true);
   }
 
   static String? _getTopEntry(Map<String, int> distribution) {

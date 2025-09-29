@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/shared.dart';
 
 /// 회원가입 UseCase
 class SignupUseCase {
@@ -24,7 +23,7 @@ class SignupUseCase {
       );
 
       if (!validationResult.isSuccess) {
-        return Result.failure(validationResult.errorOrNull ?? '入力が無効です');
+        return Result.failure('入力が無効です');
       }
 
       // Repository를 통한 회원가입 실행
@@ -43,11 +42,11 @@ class SignupUseCase {
         await _repository.sendEmailVerification();
 
         return Result.success(
-          authResult.dataOrNull!,
           '会員登録が完了しました。確認メールを送信しました。',
+          authResult.dataOrNull!,
         );
       } else {
-        return Result.failure(authResult.errorOrNull ?? '会員登録に失敗しました');
+        return Result.failure('会員登録に失敗しました');
       }
     } catch (error) {
       return Result.failure('会員登録に失敗しました: ${error.toString()}');
@@ -85,7 +84,7 @@ class SignupUseCase {
       return Result.failure('パスワードが一致しません');
     }
 
-    return Result.success(null, '入力が有効です');
+    return Result.success('入力が有効です', null);
   }
 
   /// 이메일 유효성 검사

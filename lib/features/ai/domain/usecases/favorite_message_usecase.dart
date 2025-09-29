@@ -28,9 +28,7 @@ class FavoriteMessageUseCase {
     try {
       // 입력 유효성 검사
       if (category.trim().isEmpty) {
-        return Result.failure<AiFavoriteEntity>(
-          'カテゴリを入力してください',
-        ).toFuture();
+        return Result.failure('カテゴリを入力してください');
       }
 
       final favorite = await _repository.addFavoriteMessage(
@@ -40,11 +38,9 @@ class FavoriteMessageUseCase {
         petName: petName,
         userNote: userNote,
       );
-      return Result.success(favorite, 'お気に入りに追加しました').toFuture();
+      return Result.success('お気に入りに追加しました', favorite);
     } catch (error) {
-      return Result.failure<AiFavoriteEntity>(
-        'お気に入りの追加に失敗しました: ${error.toString()}',
-      ).toFuture();
+      return Result.failure('お気に入りの追加に失敗しました: ${error.toString()}');
     }
   }
 
@@ -57,15 +53,13 @@ class FavoriteMessageUseCase {
     try {
       // 입력 유효성 검사
       if (favoriteId.trim().isEmpty) {
-        return Result.failure<void>('お気に入りIDが無効です').toFuture();
+        return Result.failure('お気に入りIDが無効です');
       }
 
       await _repository.removeFavoriteMessage(favoriteId);
-      return Result.success(null, 'お気に入りを削除しました').toFuture();
+      return Result.success('お気に入りを削除しました', null);
     } catch (error) {
-      return Result.failure<void>(
-        'お気に入りの削除に失敗しました: ${error.toString()}',
-      ).toFuture();
+      return Result.failure('お気に入りの削除に失敗しました: ${error.toString()}');
     }
   }
 
@@ -84,11 +78,9 @@ class FavoriteMessageUseCase {
         petId: petId,
         category: category,
       );
-      return Result.success(favorites, 'お気に入り一覧を取得しました').toFuture();
+      return Result.success('お気に入り一覧を取得しました', favorites);
     } catch (error) {
-      return Result.failure<List<AiFavoriteEntity>>(
-        'お気に入り一覧の取得に失敗しました: ${error.toString()}',
-      ).toFuture();
+      return Result.failure('お気に入り一覧の取得に失敗しました: ${error.toString()}');
     }
   }
 }

@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/shared.dart';
 
 /// 🎯 소셜 로그인 UseCase
 ///
@@ -21,14 +20,9 @@ class SocialLoginUseCase {
       final authResult = await _repository.signInWithGoogle();
 
       if (authResult.isSuccess && authResult.dataOrNull != null) {
-        return Result.success(
-          authResult.dataOrNull!,
-          'Googleログインが完了しました',
-        );
+        return Result.success('Googleログインが完了しました', authResult.dataOrNull!);
       } else {
-        return Result.failure(
-          authResult.errorOrNull ?? 'Googleログインに失敗しました',
-        );
+        return Result.failure('Googleログインに失敗しました');
       }
     } catch (error) {
       return Result.failure('Googleログインに失敗しました: ${error.toString()}');
@@ -46,14 +40,9 @@ class SocialLoginUseCase {
       final authResult = await _repository.signInWithApple();
 
       if (authResult.isSuccess && authResult.dataOrNull != null) {
-        return Result.success(
-          authResult.dataOrNull!,
-          'Appleログインが完了しました',
-        );
+        return Result.success('Appleログインが完了しました', authResult.dataOrNull!);
       } else {
-        return Result.failure(
-          authResult.errorOrNull ?? 'Appleログインに失敗しました',
-        );
+        return Result.failure('Appleログインに失敗しました');
       }
     } catch (error) {
       return Result.failure('Appleログインに失敗しました: ${error.toString()}');
@@ -71,11 +60,9 @@ class SocialLoginUseCase {
       final authResult = await _repository.signInWithLine();
 
       if (authResult.isSuccess && authResult.dataOrNull != null) {
-        return Result.success(authResult.dataOrNull!, 'LINEログインが完了しました');
+        return Result.success('LINEログインが完了しました', authResult.dataOrNull!);
       } else {
-        return Result.failure(
-          authResult.errorOrNull ?? 'LINEログインに失敗しました',
-        );
+        return Result.failure('LINEログインに失敗しました');
       }
     } catch (error) {
       return Result.failure('LINEログインに失敗しました: ${error.toString()}');

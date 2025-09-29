@@ -23,7 +23,7 @@ class AiMessageManager {
   ) {
     try {
       if (newMessages.isEmpty) {
-        return Result.success(currentMessages, 'No new messages to add');
+        return Result.success('No new messages to add', currentMessages);
       }
 
       // 중복 메시지 제거
@@ -55,8 +55,8 @@ class AiMessageManager {
         );
       }
       return Result.success(
-        combinedMessages,
         'Messages added without optimization',
+        combinedMessages,
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {
@@ -161,8 +161,8 @@ class AiMessageManager {
 
       // 최적화 실패 시 정리된 메시지 반환
       return Result.success(
-        cleanedMessages,
         'Messages cleaned up without optimization',
+        cleanedMessages,
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {
@@ -189,7 +189,7 @@ class AiMessageManager {
             index: i,
             found: true,
           );
-          return Result.success(result, 'Message found at index $i');
+          return Result.success('Message found at index $i', result);
         }
       }
 
@@ -198,7 +198,7 @@ class AiMessageManager {
         index: -1,
         found: false,
       );
-      return Result.success(result, 'Message not found');
+      return Result.success('Message not found', result);
     } catch (error) {
       return Result.failure('메시지 검색 중 오류: $error');
     }
@@ -255,7 +255,7 @@ class AiMessageManager {
       return Result.failure('사용자 메시지가 너무 짧습니다');
     }
 
-    return Result.success(true, 'User message valid');
+    return Result.success('User message valid', true);
   }
 
   static Result<bool> _validateAssistantMessage(AiMessageEntity message) {
@@ -275,7 +275,7 @@ class AiMessageManager {
       return Result.failure('AI 응답에 오류 패턴이 감지되었습니다');
     }
 
-    return Result.success(true, 'Assistant message valid');
+    return Result.success('Assistant message valid', true);
   }
 
   static Result<bool> _validateSystemMessage(AiMessageEntity message) {
@@ -284,7 +284,7 @@ class AiMessageManager {
       return Result.failure('시스템 메시지 형식이 올바르지 않습니다');
     }
 
-    return Result.success(true, 'System message valid');
+    return Result.success('System message valid', true);
   }
 
   static String _getMemoryRecommendation(bool isHigh, bool shouldCleanup) {

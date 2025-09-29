@@ -13,11 +13,11 @@ class CreateScheduleUseCase {
       // 스케줄 충돌 확인
       final hasConflict = await repository.hasScheduleConflict(schedule);
       if (hasConflict) {
-        return const Failure('スケジュールの時間が重複しています。');
+        return Result.failure('スケジュールの時間が重複しています。');
       }
 
       final createdSchedule = await repository.createSchedule(schedule);
-      return Success(createdSchedule);
+      return Result.success('スケジュールを作成しました', createdSchedule);
     } catch (error) {
       return Result.failure('스케줄 생성 실패: $error');
     }
@@ -35,11 +35,11 @@ class UpdateScheduleUseCase {
       // 스케줄 충돌 확인 (자신 제외)
       final hasConflict = await repository.hasScheduleConflict(schedule);
       if (hasConflict) {
-        return const Failure('スケジュールの時間が重複しています。');
+        return Result.failure('スケジュールの時間が重複しています。');
       }
 
       final updatedSchedule = await repository.updateSchedule(schedule);
-      return Success(updatedSchedule);
+      return Result.success('スケジュールを更新しました', updatedSchedule);
     } catch (error) {
       return Result.failure('스케줄 업데이트 실패: $error');
     }
@@ -52,8 +52,13 @@ class DeleteScheduleUseCase {
 
   DeleteScheduleUseCase(this.repository);
 
-  Future<void> call(String id) async {
-    await repository.deleteSchedule(id);
+  Future<Result<void>> call(String id) async {
+    try {
+      await repository.deleteSchedule(id);
+      return Result.success('スケジュールを削除しました', null);
+    } catch (error) {
+      return Result.failure('スケジュールの削除に失敗しました: ${error.toString()}');
+    }
   }
 }
 
@@ -63,8 +68,13 @@ class UpdateScheduleStatusUseCase {
 
   UpdateScheduleStatusUseCase(this.repository);
 
-  Future<ScheduleEntity> call(String id, ScheduleStatus status) async {
-    return repository.updateScheduleStatus(id, status);
+  Future<Result<ScheduleEntity>> call(String id, ScheduleStatus status) async {
+    try {
+      final result = await repository.updateScheduleStatus(id, status);
+      return Result.success('スケジュールの状態を更新しました', result);
+    } catch (error) {
+      return Result.failure('スケジュールの状態更新に失敗しました: ${error.toString()}');
+    }
   }
 }
 
@@ -74,8 +84,13 @@ class MarkScheduleAsCompletedUseCase {
 
   MarkScheduleAsCompletedUseCase(this.repository);
 
-  Future<ScheduleEntity> call(String id) async {
-    return repository.markScheduleAsCompleted(id);
+  Future<Result<ScheduleEntity>> call(String id) async {
+    try {
+      final result = await repository.markScheduleAsCompleted(id);
+      return Result.success('スケジュールを完了しました', result);
+    } catch (error) {
+      return Result.failure('スケジュールの完了処理に失敗しました: ${error.toString()}');
+    }
   }
 }
 
@@ -85,8 +100,13 @@ class CancelScheduleUseCase {
 
   CancelScheduleUseCase(this.repository);
 
-  Future<ScheduleEntity> call(String id, String reason) async {
-    return repository.cancelSchedule(id, reason);
+  Future<Result<ScheduleEntity>> call(String id, String reason) async {
+    try {
+      final result = await repository.cancelSchedule(id, reason);
+      return Result.success('スケジュールをキャンセルしました', result);
+    } catch (error) {
+      return Result.failure('スケジュールのキャンセルに失敗しました: ${error.toString()}');
+    }
   }
 }
 
@@ -96,8 +116,13 @@ class CheckScheduleConflictUseCase {
 
   CheckScheduleConflictUseCase(this.repository);
 
-  Future<bool> call(ScheduleEntity schedule) async {
-    return repository.hasScheduleConflict(schedule);
+  Future<Result<bool>> call(ScheduleEntity schedule) async {
+    try {
+      final result = await repository.hasScheduleConflict(schedule);
+      return Result.success('スケジュールの衝突を確認しました', result);
+    } catch (error) {
+      return Result.failure('スケジュールの衝突確認に失敗しました: ${error.toString()}');
+    }
   }
 }
 
@@ -107,38 +132,42 @@ class CreateRecurringScheduleUseCase {
 
   CreateRecurringScheduleUseCase(this.repository);
 
-  Future<List<ScheduleEntity>> call(
+  Future<Result<List<ScheduleEntity>>> call(
     ScheduleEntity baseSchedule,
     DateTime endDate,
     String recurrenceRule,
   ) async {
-    final schedules = <ScheduleEntity>[];
+    try {
+      final schedules = <ScheduleEntity>[];
 
-    // RRULE 파싱 및 반복 스케줄 생성
-    final parsedRule = _parseRRule(recurrenceRule);
-    final occurrences = _generateOccurrences(
-      baseSchedule.startDateTime,
-      endDate,
-      parsedRule,
-    );
-
-    for (final occurrence in occurrences) {
-      final schedule = baseSchedule.copyWith(
-        id: '${baseSchedule.id}_${occurrence.millisecondsSinceEpoch}',
-        startDateTime: occurrence,
-        endDateTime: baseSchedule.duration != null
-            ? occurrence.add(baseSchedule.duration!)
-            : occurrence.add(const Duration(hours: 1)),
-        createdAt: DateTime.now(),
+      // RRULE 파싱 및 반복 스케줄 생성
+      final parsedRule = _parseRRule(recurrenceRule);
+      final occurrences = _generateOccurrences(
+        baseSchedule.startDateTime,
+        endDate,
+        parsedRule,
       );
-      schedules.add(schedule);
-    }
 
-    for (final schedule in schedules) {
-      await repository.createSchedule(schedule);
-    }
+      for (final occurrence in occurrences) {
+        final schedule = baseSchedule.copyWith(
+          id: '${baseSchedule.id}_${occurrence.millisecondsSinceEpoch}',
+          startDateTime: occurrence,
+          endDateTime: baseSchedule.duration != null
+              ? occurrence.add(baseSchedule.duration!)
+              : occurrence.add(const Duration(hours: 1)),
+          createdAt: DateTime.now(),
+        );
+        schedules.add(schedule);
+      }
 
-    return schedules;
+      for (final schedule in schedules) {
+        await repository.createSchedule(schedule);
+      }
+
+      return Result.success('繰り返しスケジュールを作成しました', schedules);
+    } catch (error) {
+      return Result.failure('繰り返しスケジュールの作成に失敗しました: ${error.toString()}');
+    }
   }
 
   /// RRULE 파싱

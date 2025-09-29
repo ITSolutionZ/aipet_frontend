@@ -6,8 +6,14 @@ import 'package:aipet_frontend/features/auth/domain/usecases/login_usecase.dart'
 import 'package:aipet_frontend/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/social_login_usecase.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/foundation/controllers/base_facility_controller.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
+import 'package:aipet_frontend/shared/core/services/ui_service.dart';
+import 'package:aipet_frontend/shared/core/utils/validation_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 인증 작업 결과 타입 (Result 패턴 사용)
 ///
@@ -130,7 +136,7 @@ class AuthController extends FormController<AuthFormState> {
       if (result.isSuccess) {
         return Result.success('ログインが完了しました', '');
       } else {
-        return Result.failure(result.errorOrNull ?? 'ログインに失敗しました');
+        return Result.failure(result.error?.toString() ?? 'ログインに失敗しました');
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -320,7 +326,7 @@ class AuthController extends FormController<AuthFormState> {
         return Result.success('사용자 정보를 가져왔습니다', result.dataOrNull);
       } else {
         return Result.failure(
-          result.errorOrNull?.toString() ?? '사용자 정보를 가져오는데 실패했습니다',
+          result.error?.toString() ?? '사용자 정보를 가져오는데 실패했습니다',
         );
       }
     } catch (error, stackTrace) {
@@ -337,7 +343,7 @@ class AuthController extends FormController<AuthFormState> {
         return Result.success('로그인 상태를 확인했습니다', result.dataOrNull ?? false);
       } else {
         return Result.failure(
-          result.errorOrNull?.toString() ?? '로그인 상태 확인에 실패했습니다',
+          result.error?.toString() ?? '로그인 상태 확인에 실패했습니다',
         );
       }
     } catch (error, stackTrace) {
@@ -354,7 +360,7 @@ class AuthController extends FormController<AuthFormState> {
         return Result.success('이메일 인증 상태를 확인했습니다', result.dataOrNull ?? false);
       } else {
         return Result.failure(
-          result.errorOrNull?.toString() ?? '이메일 인증 상태 확인에 실패했습니다',
+          result.error?.toString() ?? '이메일 인증 상태 확인에 실패했습니다',
         );
       }
     } catch (error, stackTrace) {

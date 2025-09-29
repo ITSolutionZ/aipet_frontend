@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 class DeleteAccountUseCase {
   final SettingsRepository repository;
@@ -9,9 +9,9 @@ class DeleteAccountUseCase {
   Future<Result<void>> call() async {
     final result = await repository.deleteAccount();
     if (result.isSuccess) {
-      return Success(null, result.errorOrNull);
+      return Result.success('アカウントを削除しました', null);
     } else {
-      return Result.failure(result.errorOrNull ?? 'Unknown error');
+      return Result.failure('アカウントの削除に失敗しました');
     }
   }
 }

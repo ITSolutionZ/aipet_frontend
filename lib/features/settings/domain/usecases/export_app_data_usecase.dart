@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 class ExportAppDataUseCase {
   final SettingsRepository repository;
@@ -9,9 +9,9 @@ class ExportAppDataUseCase {
   Future<Result<DataExportResult>> call() async {
     final result = await repository.exportAppData();
     if (result.isSuccess) {
-      return Success(result.dataOrNull!, result.errorOrNull);
+      return Result.success('アプリデータをエクスポートしました', result.dataOrNull!);
     } else {
-      return Result.failure(result.errorOrNull ?? 'Unknown error');
+      return Result.failure('アプリデータのエクスポートに失敗しました');
     }
   }
 }

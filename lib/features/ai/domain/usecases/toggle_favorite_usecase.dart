@@ -11,9 +11,9 @@ class ToggleFavoriteUseCase {
     try {
       final result = await _repository.toggleFavoriteMessage(params.messageId);
       if (result.isSuccess) {
-        return Result.success(null);
+        return Result.success('お気に入りを設定しました', null);
       } else {
-        return Result.failure(result.errorOrNull ?? 'Unknown error');
+        return Result.failure('お気に入りの設定に失敗しました');
       }
     } catch (e) {
       return Result.failure('즐겨찾기 설정 중 오류가 발생했습니다: $e');

@@ -113,7 +113,7 @@ class _AiChatHistoryListScreenState
 
             // 검색 바
             Container(
-              padding: const const const EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
@@ -160,7 +160,7 @@ class _AiChatHistoryListScreenState
         // 검색 결과 수 표시
         if (_searchController.text.isNotEmpty)
           Container(
-            padding: const const const EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.sm,
             ),
@@ -171,7 +171,7 @@ class _AiChatHistoryListScreenState
                   size: 16,
                   color: AppColors.pointGray,
                 ),
-                const const const SizedBox(width: AppSpacing.xs),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   '$tabName: ${items.length}件のメッセージ',
                   style: AppFonts.bodySmall.copyWith(
@@ -189,7 +189,7 @@ class _AiChatHistoryListScreenState
               : items.isEmpty
               ? _buildEmptyTab(tabName)
               : ListView.builder(
-                  padding: const const const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                   ),
                   itemCount: items.length,
@@ -213,12 +213,12 @@ class _AiChatHistoryListScreenState
             size: 80,
             color: AppColors.pointGray.withValues(alpha: 0.5),
           ),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           Text(
             tabName == '保存済み' ? '保存済みの会話がありません' : '会話履歴がありません',
             style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
           ),
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             tabName == '保存済み'
                 ? 'チャット中に保存ボタンを押して\n会話を保存してください'
@@ -236,7 +236,7 @@ class _AiChatHistoryListScreenState
 
   Widget _buildHistoryItem(Map<String, dynamic> item) {
     return Card(
-      margin: const const const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       elevation: 2,
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -246,7 +246,7 @@ class _AiChatHistoryListScreenState
         onTap: () => _openChatSession(item),
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Padding(
-          padding: const const const EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -257,7 +257,7 @@ class _AiChatHistoryListScreenState
                     item['categoryIcon'] as IconData,
                     item['categoryColor'] as Color,
                   ),
-                  const const const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +269,7 @@ class _AiChatHistoryListScreenState
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const const const SizedBox(height: AppSpacing.xs),
+                        const SizedBox(height: AppSpacing.xs),
                         Row(
                           children: [
                             const Icon(
@@ -277,16 +277,16 @@ class _AiChatHistoryListScreenState
                               size: 14,
                               color: AppColors.pointGray,
                             ),
-                            const const const SizedBox(width: AppSpacing.xs),
+                            const SizedBox(width: AppSpacing.xs),
                             Text(
                               item['petName'] as String,
                               style: AppFonts.bodySmall.copyWith(
                                 color: AppColors.pointGray,
                               ),
                             ),
-                            const const const SizedBox(width: AppSpacing.md),
+                            const SizedBox(width: AppSpacing.md),
                             Container(
-                              padding: const const const EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.sm,
                                 vertical: 2,
                               ),
@@ -315,7 +315,7 @@ class _AiChatHistoryListScreenState
                 ],
               ),
 
-              const const const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
 
               // 요약 내용
               _buildHighlightedText(
@@ -326,7 +326,7 @@ class _AiChatHistoryListScreenState
                 ),
               ),
 
-              const const const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
 
               // 메타 정보
               Row(
@@ -336,20 +336,20 @@ class _AiChatHistoryListScreenState
                     size: 14,
                     color: AppColors.pointGray.withValues(alpha: 0.7),
                   ),
-                  const const const SizedBox(width: AppSpacing.xs),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     _formatDateTime(item['lastMessageTime'] as DateTime),
                     style: AppFonts.bodySmall.copyWith(
                       color: AppColors.pointGray,
                     ),
                   ),
-                  const const const SizedBox(width: AppSpacing.md),
+                  const SizedBox(width: AppSpacing.md),
                   Icon(
                     Icons.chat_bubble_outline,
                     size: 14,
                     color: AppColors.pointGray.withValues(alpha: 0.7),
                   ),
-                  const const const SizedBox(width: AppSpacing.xs),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     '${item['messageCount']}件のメッセージ',
                     style: AppFonts.bodySmall.copyWith(
@@ -367,7 +367,7 @@ class _AiChatHistoryListScreenState
 
   Widget _buildCategoryIcon(IconData iconData, Color color) {
     return Container(
-      padding: const const const EdgeInsets.all(AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
@@ -448,12 +448,12 @@ class _AiChatHistoryListScreenState
             size: 80,
             color: AppColors.pointGray.withValues(alpha: 0.5),
           ),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           Text(
             '検索結果が見つかりません',
             style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
           ),
-          const const const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             '「${_searchController.text}」に一致する\nチャット履歴がありません',
             textAlign: TextAlign.center,
@@ -462,7 +462,7 @@ class _AiChatHistoryListScreenState
               height: 1.4,
             ),
           ),
-          const const const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           TextButton(
             onPressed: () {
               _searchController.clear();

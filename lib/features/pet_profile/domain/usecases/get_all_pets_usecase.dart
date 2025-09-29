@@ -11,9 +11,9 @@ class GetAllPetsUseCase {
     try {
       final result = await repository.getAllPets();
       if (result.isSuccess) {
-        return Success(result.dataOrNull!, result.errorOrNull);
+        return Result.success('ペット一覧を取得しました', result.dataOrNull!);
       } else {
-        return Result.failure(result.errorOrNull!);
+        return Result.failure('ペット一覧の取得に失敗しました');
       }
     } catch (error) {
       return Result.failure('ペット一覧の取得に失敗しました: ${error.toString()}');

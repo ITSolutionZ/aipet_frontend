@@ -71,7 +71,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
       );
       if (!canMakeRequest.isSuccess) {
         throw AiOpenAIException(
-          canMakeRequest.errorOrNull ?? 'Token limit exceeded',
+          canMakeRequest.error?.toString() ?? 'Token limit exceeded',
           code: 'TOKEN_LIMIT_EXCEEDED',
         );
       }
@@ -108,7 +108,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
           );
         } else {
           logWarning(
-            'Failed to record token usage: ${usageResult.errorOrNull ?? 'Unknown error'}',
+            'Failed to record token usage: ${usageResult.error?.toString() ?? 'Unknown error'}',
           );
         }
       }

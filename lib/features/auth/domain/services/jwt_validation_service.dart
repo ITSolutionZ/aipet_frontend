@@ -39,7 +39,7 @@ class JwtValidationService {
       final headerResult = _validateJwtPart(parts[0], 'header');
       if (!headerResult.isSuccess) {
         return Result.failure(
-          'Header 검증 실패: ${headerResult.errorOrNull ?? 'Unknown error'}',
+          'Header 검증 실패: ${headerResult.error?.toString() ?? 'Unknown error'}',
         );
       }
 
@@ -47,7 +47,7 @@ class JwtValidationService {
       final payloadResult = _validateJwtPart(parts[1], 'payload');
       if (!payloadResult.isSuccess) {
         return Result.failure(
-          'Payload 검증 실패: ${payloadResult.errorOrNull ?? 'Unknown error'}',
+          'Payload 검증 실패: ${payloadResult.error?.toString() ?? 'Unknown error'}',
         );
       }
 
@@ -55,7 +55,7 @@ class JwtValidationService {
       final signatureResult = _validateSignature(parts[2]);
       if (!signatureResult.isSuccess) {
         return Result.failure(
-          'Signature 검증 실패: ${signatureResult.errorOrNull ?? 'Unknown error'}',
+          'Signature 검증 실패: ${signatureResult.error?.toString() ?? 'Unknown error'}',
         );
       }
 
@@ -126,7 +126,7 @@ class JwtValidationService {
         );
       }
 
-      return Result.success(validationResult, 'JWT 구조 검증 성공');
+      return Result.success('JWT 구조 검증 성공', validationResult);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] JWT 검증 중 예외 발생: $error\n$stackTrace');
@@ -198,7 +198,7 @@ class JwtValidationService {
         return Result.failure('$partName가 비어있습니다');
       }
 
-      return Result.success(decoded, '$partName 디코딩 성공');
+      return Result.success('$partName 디코딩 성공', decoded);
     } catch (error) {
       return Result.failure('$partName 디코딩 실패: $error');
     }
@@ -224,7 +224,7 @@ class JwtValidationService {
         );
       }
 
-      return Result.success(true, 'Signature 기본 형식 검증 성공');
+      return Result.success('Signature 기본 형식 검증 성공', true);
     } catch (error) {
       return Result.failure('Signature 검증 중 오류: $error');
     }
