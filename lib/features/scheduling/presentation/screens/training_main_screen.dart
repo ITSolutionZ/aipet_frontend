@@ -521,14 +521,14 @@ class TrainingMainScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('練習スケジュールを作成しましょう'),
-            const SizedBox(height: AppSpacing.lg),
+            SizedBox(height: AppSpacing.lg),
             TextField(
               decoration: InputDecoration(
                 labelText: 'スケジュール名',
                 hintText: '例: 毎日の基本練習',
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             TextField(
               decoration: InputDecoration(
                 labelText: '練習内容',

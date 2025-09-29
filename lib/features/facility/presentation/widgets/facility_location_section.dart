@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 
 import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
-import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

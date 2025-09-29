@@ -27,26 +27,26 @@ class AppConstants {
   static const double spacingXXL = 48.0;
 
   /// 패딩
-  static const EdgeInsets defaultPadding = const EdgeInsets.all(16.0);
-  static const EdgeInsets cardPadding = const EdgeInsets.all(12.0);
-  static const EdgeInsets buttonPadding = const EdgeInsets.symmetric(
+  static const EdgeInsets defaultPadding = EdgeInsets.all(16.0);
+  static const EdgeInsets cardPadding = EdgeInsets.all(12.0);
+  static const EdgeInsets buttonPadding = EdgeInsets.symmetric(
     horizontal: 24.0,
     vertical: 12.0,
   );
-  static const EdgeInsets screenPadding = const EdgeInsets.all(16.0);
+  static const EdgeInsets screenPadding = EdgeInsets.all(16.0);
 
   // ========== 애니메이션 관련 상수 ==========
 
   /// 기본 애니메이션 지속시간
-  static const Duration defaultAnimation = const Duration(milliseconds: 300);
-  static const Duration fastAnimation = const Duration(milliseconds: 150);
-  static const Duration slowAnimation = const Duration(milliseconds: 500);
-  static const Duration verySlowAnimation = const Duration(milliseconds: 1000);
+  static const Duration defaultAnimation = Duration(milliseconds: 300);
+  static const Duration fastAnimation = Duration(milliseconds: 150);
+  static const Duration slowAnimation = Duration(milliseconds: 500);
+  static const Duration verySlowAnimation = Duration(milliseconds: 1000);
 
   /// 특수 애니메이션 지속시간
-  static const Duration fadeAnimation = const Duration(milliseconds: 1000);
-  static const Duration scaleAnimation = const Duration(milliseconds: 1000);
-  static const Duration slideAnimation = const Duration(milliseconds: 400);
+  static const Duration fadeAnimation = Duration(milliseconds: 1000);
+  static const Duration scaleAnimation = Duration(milliseconds: 1000);
+  static const Duration slideAnimation = Duration(milliseconds: 400);
 
   /// 애니메이션 곡선
   static const Curve defaultCurve = Curves.easeInOut;
@@ -56,18 +56,18 @@ class AppConstants {
   // ========== API 관련 상수 ==========
 
   /// 타임아웃 설정
-  static const Duration apiTimeout = const Duration(seconds: 30);
-  static const Duration shortTimeout = const Duration(seconds: 10);
-  static const Duration longTimeout = const Duration(seconds: 60);
+  static const Duration apiTimeout = Duration(seconds: 30);
+  static const Duration shortTimeout = Duration(seconds: 10);
+  static const Duration longTimeout = Duration(seconds: 60);
 
   /// 재시도 설정
   static const int maxRetryAttempts = 3;
-  static const Duration retryDelay = const Duration(seconds: 1);
-  static const Duration exponentialBackoffBase = const Duration(seconds: 2);
+  static const Duration retryDelay = Duration(seconds: 1);
+  static const Duration exponentialBackoffBase = Duration(seconds: 2);
 
   /// API 호출 제한
-  static const Duration requestDebounce = const Duration(milliseconds: 300);
-  static const Duration cacheExpiry = const Duration(minutes: 5);
+  static const Duration requestDebounce = Duration(milliseconds: 300);
+  static const Duration cacheExpiry = Duration(minutes: 5);
 
   // ========== 파일 관련 상수 ==========
 
@@ -143,41 +143,37 @@ class AppConstants {
   /// 토큰 만료 시간
   static const Duration defaultTokenExpiry = Duration(hours: 24);
   static const Duration refreshTokenExpiry = Duration(days: 30);
-  static const Duration tokenRefreshThreshold = const Duration(minutes: 5);
+  static const Duration tokenRefreshThreshold = Duration(minutes: 5);
 
   /// 세션 타임아웃
   static const Duration sessionTimeout = Duration(hours: 2);
-  static const Duration idleTimeout = const Duration(minutes: 30);
+  static const Duration idleTimeout = Duration(minutes: 30);
 
   // ========== 네트워크 관련 상수 ==========
 
   /// 연결 상태 확인
-  static const Duration connectionCheckInterval = const Duration(seconds: 30);
-  static const Duration offlineRetryDelay = const Duration(seconds: 5);
+  static const Duration connectionCheckInterval = Duration(seconds: 30);
+  static const Duration offlineRetryDelay = Duration(seconds: 5);
 
   /// 데이터 동기화
   static const Duration syncFrequency = Duration(hours: 1);
-  static const Duration backgroundSyncInterval = const Duration(minutes: 15);
+  static const Duration backgroundSyncInterval = Duration(minutes: 15);
 
   // ========== UI 피드백 관련 상수 ==========
 
   /// 메시지 표시 시간
-  static const Duration errorDisplayDuration = const Duration(seconds: 5);
-  static const Duration successDisplayDuration = const Duration(seconds: 3);
-  static const Duration infoDisplayDuration = const Duration(seconds: 4);
+  static const Duration errorDisplayDuration = Duration(seconds: 5);
+  static const Duration successDisplayDuration = Duration(seconds: 3);
+  static const Duration infoDisplayDuration = Duration(seconds: 4);
 
   /// 로딩 표시 지연
-  static const Duration loadingDebounce = const Duration(milliseconds: 300);
-  static const Duration minimumLoadingDuration = const Duration(
-    milliseconds: 500,
-  );
+  static const Duration loadingDebounce = Duration(milliseconds: 300);
+  static const Duration minimumLoadingDuration = Duration(milliseconds: 500);
 
   // ========== 온보딩 관련 상수 ==========
 
   /// 페이지 전환 애니메이션
-  static const Duration pageTransitionDuration = const Duration(
-    milliseconds: 300,
-  );
+  static const Duration pageTransitionDuration = Duration(milliseconds: 300);
   static const Curve pageTransitionCurve = Curves.easeInOut;
 
   /// 버튼 투명도
@@ -208,10 +204,8 @@ class AppConstants {
   // ========== 스플래시 관련 상수 ==========
 
   /// 스플래시 타이밍
-  static const Duration splashLogoDisplayDuration = const Duration(seconds: 2);
-  static const Duration splashAnimationDuration = const Duration(
-    milliseconds: 2000,
-  );
+  static const Duration splashLogoDisplayDuration = Duration(seconds: 2);
+  static const Duration splashAnimationDuration = Duration(milliseconds: 2000);
   static const Duration splashFadeAnimationDuration = Duration(
     milliseconds: 1000,
   );

@@ -129,7 +129,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             const Row(
               children: [
                 Icon(Icons.person, size: 20, color: Colors.blue),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Text(
                   '예약자 정보',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -182,7 +182,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             const Row(
               children: [
                 Icon(Icons.note_outlined, size: 20, color: Colors.blue),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Text(
                   '메모 (선택사항)',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

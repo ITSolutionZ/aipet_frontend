@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/features/auth/domain/auth_token.dart';
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 import 'repositories/firebase_auth_real_impl.dart';
 import 'services/token_storage_service.dart';

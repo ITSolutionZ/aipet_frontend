@@ -29,7 +29,7 @@ class DateTabBarWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.cake, size: 14),
-                const SizedBox(width: 4),
+                SizedBox(width: 4),
                 Text('誕生日'),
               ],
             ),
@@ -39,7 +39,7 @@ class DateTabBarWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.home, size: 14),
-                const SizedBox(width: 4),
+                SizedBox(width: 4),
                 Text('家に来た日'),
               ],
             ),

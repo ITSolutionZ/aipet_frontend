@@ -6,8 +6,6 @@ import 'package:aipet_frontend/features/auth/domain/auth_error.dart'
     as auth_errors;
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/app/services/secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

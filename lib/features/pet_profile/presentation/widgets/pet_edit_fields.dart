@@ -69,10 +69,7 @@ class WeightInputField extends StatelessWidget {
         decoration: const InputDecoration(
           suffix: Text('kg'),
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 8,
-          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           border: OutlineInputBorder(),
         ),
         onChanged: (value) => onChanged(double.tryParse(value)),
@@ -132,7 +129,7 @@ class NameEditField extends StatelessWidget {
       ),
       decoration: const InputDecoration(
         border: UnderlineInputBorder(),
-        contentPadding: const EdgeInsets.symmetric(vertical: 8),
+        contentPadding: EdgeInsets.symmetric(vertical: 8),
       ),
     );
   }

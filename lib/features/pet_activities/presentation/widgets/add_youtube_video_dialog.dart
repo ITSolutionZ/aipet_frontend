@@ -241,7 +241,7 @@ class _AddYouTubeVideoDialogContentState
           decoration: const InputDecoration(
             hintText: 'https://www.youtube.com/watch?v=...',
             border: OutlineInputBorder(),
-            contentPadding: const EdgeInsets.symmetric(
+            contentPadding: EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.sm,
             ),
@@ -282,7 +282,7 @@ class _AddYouTubeVideoDialogContentState
           decoration: const InputDecoration(
             hintText: 'ビデオタイトルを入力してください',
             border: OutlineInputBorder(),
-            contentPadding: const EdgeInsets.symmetric(
+            contentPadding: EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.sm,
             ),
@@ -309,7 +309,7 @@ class _AddYouTubeVideoDialogContentState
           decoration: const InputDecoration(
             hintText: '비디오에 대한 설명을 입력하세요 (선택사항)',
             border: OutlineInputBorder(),
-            contentPadding: const EdgeInsets.symmetric(
+            contentPadding: EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.sm,
             ),
@@ -334,7 +334,7 @@ class _AddYouTubeVideoDialogContentState
                 decoration: const InputDecoration(
                   hintText: '태그를 입력하세요 (예: sit, stay, roll)',
                   border: OutlineInputBorder(),
-                  contentPadding: const EdgeInsets.symmetric(
+                  contentPadding: EdgeInsets.symmetric(
                     horizontal: AppSpacing.sm,
                     vertical: AppSpacing.sm,
                   ),

@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/ai/data/providers/ai_providers.dart';
-import 'package:aipet_frontend/features/ai/domain/usecases/toggle_favorite_usecase.dart';
 import 'package:aipet_frontend/features/ai/domain/usecases/ai_usecases.dart';
+import 'package:aipet_frontend/features/ai/domain/usecases/toggle_favorite_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

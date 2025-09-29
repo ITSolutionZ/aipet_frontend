@@ -7,8 +7,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../presentation.dart';
 import 'dialogs.dart';
-import 'walk_delete_dialog.dart';
-import 'walk_share_dialog.dart';
 
 class WalkOptionsBottomSheet extends ConsumerWidget {
   final WalkRecordEntity walkRecord;

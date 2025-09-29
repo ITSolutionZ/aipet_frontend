@@ -166,9 +166,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
                         ),
                         decoration: const InputDecoration(
                           border: UnderlineInputBorder(),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                          ),
+                          contentPadding: EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),
                     )

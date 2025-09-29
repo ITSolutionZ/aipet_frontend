@@ -158,7 +158,7 @@ class WeatherService {
       final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.medium,
-          timeLimit: const Duration(seconds: 10),
+          timeLimit: Duration(seconds: 10),
         ),
       );
 

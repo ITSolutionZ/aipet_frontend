@@ -62,11 +62,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 // 로고 섹션
                 const Column(
                   children: [
-                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(height: AppSpacing.lg),
                     AuthLogo(),
-                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(height: AppSpacing.lg),
                     Divider(),
-                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(height: AppSpacing.lg),
                   ],
                 ),
 
@@ -228,7 +228,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.login),
-                          const SizedBox(width: AppSpacing.sm),
+                          SizedBox(width: AppSpacing.sm),
                           Text('Googleでログイン'),
                         ],
                       ),
@@ -242,7 +242,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.apple),
-                          const SizedBox(width: AppSpacing.sm),
+                          SizedBox(width: AppSpacing.sm),
                           Text('Appleでログイン'),
                         ],
                       ),
@@ -256,7 +256,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.chat),
-                          const SizedBox(width: AppSpacing.sm),
+                          SizedBox(width: AppSpacing.sm),
                           Text('LINEでログイン'),
                         ],
                       ),
@@ -321,7 +321,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                result.isSuccess ? result.data ?? "" : result.message,
+                result.isSuccess ? result.data ?? '' : result.message,
               ),
               backgroundColor: Colors.green,
             ),
@@ -334,7 +334,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                result.isSuccess ? result.data ?? "" : result.message,
+                result.isSuccess ? result.data ?? '' : result.message,
               ),
               backgroundColor: Colors.red,
             ),
@@ -374,7 +374,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                result.isSuccess ? result.data ?? "" : result.message,
+                result.isSuccess ? result.data ?? '' : result.message,
               ),
               backgroundColor: Colors.green,
             ),
@@ -386,7 +386,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                result.isSuccess ? result.data ?? "" : result.message,
+                result.isSuccess ? result.data ?? '' : result.message,
               ),
               backgroundColor: Colors.red,
             ),
@@ -426,7 +426,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                result.isSuccess ? result.data ?? "" : result.message,
+                result.isSuccess ? result.data ?? '' : result.message,
               ),
               backgroundColor: Colors.green,
             ),
@@ -438,7 +438,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                result.isSuccess ? result.data ?? "" : result.message,
+                result.isSuccess ? result.data ?? '' : result.message,
               ),
               backgroundColor: Colors.red,
             ),
@@ -478,7 +478,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                result.isSuccess ? result.data ?? "" : result.message,
+                result.isSuccess ? result.data ?? '' : result.message,
               ),
               backgroundColor: Colors.green,
             ),
@@ -490,7 +490,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                result.isSuccess ? result.data ?? "" : result.message,
+                result.isSuccess ? result.data ?? '' : result.message,
               ),
               backgroundColor: Colors.red,
             ),

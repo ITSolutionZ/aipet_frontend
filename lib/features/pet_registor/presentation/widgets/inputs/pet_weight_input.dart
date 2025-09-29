@@ -141,7 +141,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('0.5kg ~ 50.0kg 사이의 값을 입력해주세요'),
-        duration: const Duration(seconds: 2),
+        duration: Duration(seconds: 2),
       ),
     );
   }
