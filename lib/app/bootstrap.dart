@@ -66,9 +66,8 @@ class AppBootstrap {
   ///
   /// 환경별 설정을 초기화하고 앱 실행에 필요한 기본 설정을 로드합니다.
   static Future<void> initialize() async {
-    // 환경 변수 로드 (Sentry 초기화 전에 먼저 로드)
-    await dotenv.load(fileName: '.env');
-    debugPrint('✅ Environment variables loaded from .env');
+    // 환경 변수는 main.dart에서 이미 로드됨
+    debugPrint('✅ Environment variables available');
 
     // 환경별 설정 초기화
     _initializeAppConfig();
@@ -81,6 +80,15 @@ class AppBootstrap {
 
     // API 키 설정 상태 로그 출력
     AppConfig.current.logApiKeyStatus();
+
+    // 환경 및 위치 관련 설정 로그 출력
+    debugPrint('🌍 =============[ 앱 환경 설정 ]=============');
+    debugPrint('🏗️ 현재 환경: ${AppConfig.current.environment}');
+    debugPrint('🐛 디버그 모드: ${AppConfig.current.isDebugMode}');
+    debugPrint('📍 위치 정확도 임계값: ${AppConfig.current.locationAccuracyThreshold}m');
+    debugPrint('🌤️ Weather API 키 설정: ${AppConfig.current.weatherApiKey.isNotEmpty ? '✅' : '❌'}');
+    debugPrint('🔄 Mock 모드: ${AppConfig.current.isMockMode}');
+    debugPrint('🔍 ===========================================');
 
     // 공통 HTTP 클라이언트에 토큰 저장소 연결
     HttpClientService.tokenRepository = const TokenStorageAuthTokenRepository();
@@ -194,19 +202,30 @@ class AppBootstrap {
 /// 메인 앱 위젯
 ///
 /// 앱의 최상위 위젯으로, 초기화 상태에 따라 적절한 UI를 표시합니다.
-class AIPetApp extends ConsumerWidget {
+class AIPetApp extends ConsumerStatefulWidget {
   const AIPetApp({super.key});
 
-  void _initializeAppIfNeeded(WidgetRef ref) {
+  @override
+  ConsumerState<AIPetApp> createState() => _AIPetAppState();
+}
+
+class _AIPetAppState extends ConsumerState<AIPetApp> {
+  bool _hasInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 앱이 처음 시작될 때만 초기화 실행
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(appInitializationProvider.notifier).initialize();
+      if (!_hasInitialized) {
+        _hasInitialized = true;
+        ref.read(appInitializationProvider.notifier).initialize();
+      }
     });
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    _initializeAppIfNeeded(ref);
-
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
     final initializationState = ref.watch(appInitializationProvider);
 

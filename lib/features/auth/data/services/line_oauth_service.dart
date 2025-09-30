@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
+// import 'package:flutter_web_auth/flutter_web_auth.dart'; // 의존성 충돌로 임시 비활성화
 import 'package:http/http.dart' as http;
 
 /// 🎯 LINE OAuth 서비스
@@ -86,28 +86,12 @@ class LineOAuthService {
     return uri.toString();
   }
 
-  /// OAuth URL 실행 (flutter_web_auth 사용)
+  /// OAuth URL 실행 (임시 비활성화)
   ///
-  /// flutter_web_auth 패키지를 사용하여 실제 OAuth 플로우를 처리합니다.
-  /// 웹뷰에서 인증을 진행하고 콜백 URL을 받아 처리합니다.
+  /// flutter_web_auth 패키지 의존성 충돌로 임시 비활성화
   Future<String> _launchOAuthUrl(String authUrl) async {
-    try {
-      // flutter_web_auth를 사용한 OAuth 플로우
-      final result = await FlutterWebAuth.authenticate(
-        url: authUrl,
-        callbackUrlScheme: _extractSchemeFromRedirectUri(_redirectUri),
-      );
-
-      // 콜백 URL에서 결과 반환
-      return result;
-    } catch (e) {
-      // 사용자가 취소한 경우 또는 OAuth 실패
-      if (e.toString().contains('CANCELLED') ||
-          e.toString().contains('canceled')) {
-        throw Exception('LINE ログインがキャンセルされました');
-      }
-      throw Exception('OAuth URL 실행 실패: $e');
-    }
+    // 임시로 에러 반환 (LINE OAuth 기능 비활성화)
+    throw Exception('LINE OAuth機能は現在利用できません');
   }
 
   /// 리다이렉트 URI에서 스키마 추출

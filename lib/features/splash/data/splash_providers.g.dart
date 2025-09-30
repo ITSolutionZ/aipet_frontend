@@ -67,7 +67,7 @@ final getSplashConfigUseCaseProvider =
 // ignore: unused_element
 typedef GetSplashConfigUseCaseRef =
     AutoDisposeProviderRef<GetSplashConfigUseCase>;
-String _$splashConfigHash() => r'944b909d7d1d3a3dd52c47ec93d53dc635f044db';
+String _$splashConfigHash() => r'2706786331e2026a3a99b8cd1a9567a74d81254e';
 
 /// 스플래시 설정 Provider
 ///
@@ -86,25 +86,6 @@ final splashConfigProvider = AutoDisposeFutureProvider<SplashEntity>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SplashConfigRef = AutoDisposeFutureProviderRef<SplashEntity>;
-String _$splashControllerHash() => r'950a154ea77b28434b27375d708080f4a079b12e';
-
-/// 스플래시 Controller Provider
-///
-/// Copied from [splashController].
-@ProviderFor(splashController)
-final splashControllerProvider = AutoDisposeProvider<SplashController>.internal(
-  splashController,
-  name: r'splashControllerProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$splashControllerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SplashControllerRef = AutoDisposeProviderRef<SplashController>;
 String _$splashStateNotifierHash() =>
     r'ce3c88494fae991c22fa7ae6d8b4b4eef192f5fe';
 
@@ -124,5 +105,24 @@ final splashStateNotifierProvider =
     );
 
 typedef _$SplashStateNotifier = AutoDisposeNotifier<SplashState>;
+String _$splashControllerNotifierHash() =>
+    r'b0ac8b58307f2e99b5a47b6a7905cfaf8353c619';
+
+/// 스플래시 Controller Provider
+///
+/// Copied from [SplashControllerNotifier].
+@ProviderFor(SplashControllerNotifier)
+final splashControllerNotifierProvider =
+    AutoDisposeNotifierProvider<SplashControllerNotifier, void>.internal(
+      SplashControllerNotifier.new,
+      name: r'splashControllerNotifierProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$splashControllerNotifierHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$SplashControllerNotifier = AutoDisposeNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

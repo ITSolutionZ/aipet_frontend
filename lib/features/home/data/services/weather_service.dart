@@ -17,6 +17,10 @@ class WeatherService {
     bool userTriggered = false,
   }) async {
     try {
+      debugPrint('🌤️ =============[ WeatherService 호출 ]=============');
+      debugPrint('📍 전달받은 위치: ${location != null ? '${location.name} (${location.latitude}, ${location.longitude})' : 'null - GPS 시도'}');
+      debugPrint('👤 사용자 직접 요청: $userTriggered');
+
       final weatherLocation = location ?? await _getCurrentLocation();
       if (weatherLocation == null) return null;
 
@@ -102,6 +106,11 @@ class WeatherService {
   }
 
   Future<WeatherLocation?> _getCurrentLocation() async {
+    // 현재 환경 및 설정 로깅
+    debugPrint('🔍 =============[ 위치 서비스 디버그 ]=============');
+    debugPrint('🌍 현재 환경: ${AppConfig.current.environment}');
+    debugPrint('🔑 Weather API 키 설정됨: ${AppConfig.current.weatherApiKey.isNotEmpty}');
+
     // 테스트 환경에서는 바로 기본 위치 사용
     if (AppConfig.current.environment == 'test') {
       debugPrint('🧪 테스트 환경 - 기본 위치(도쿄) 사용');

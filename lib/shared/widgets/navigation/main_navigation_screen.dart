@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/providers/drawer_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -53,12 +54,16 @@ class MainNavigationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDrawerOpen = ref.watch(drawerStateProvider);
+
     return Scaffold(
       body: child,
-      bottomNavigationBar: CustomBottomNavigation(
-        selectedIndex: _getCurrentIndex(context),
-        onItemTapped: (index) => _onItemTapped(context, index),
-      ),
+      bottomNavigationBar: isDrawerOpen
+          ? null // ドロワーが開いている時は非表示
+          : CustomBottomNavigation(
+              selectedIndex: _getCurrentIndex(context),
+              onItemTapped: (index) => _onItemTapped(context, index),
+            ),
     );
   }
 }

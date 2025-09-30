@@ -1,48 +1,72 @@
-import 'package:aipet_frontend/features/pet_registor/presentation/widgets/pet_section_widget.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+/// アプリドロワー
+/// アプリ全体のナビゲーションとユーザー情報を提供
 class AppDrawer extends ConsumerWidget {
   const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Drawer(
-      backgroundColor: const Color(0xFF56453F),
-      child: SafeArea(
-        child: Column(
-          children: [
-            // 헤더
-            const DrawerHeaderWidget(),
+    final topPadding = MediaQuery.of(context).padding.top;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
-            // 스크롤 가능한 콘텐츠
-            const Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Pet 섹션
-                    PetSectionWidget(),
+    return Container(
+      width: screenWidth,
+      height: screenHeight,
+      color: AppColors.pointBlue,
+      child: Column(
+        children: [
+          // 上部パディング（ステータスバー分）
+          SizedBox(height: topPadding),
 
-                    // Health 섹션
-                    HealthSectionWidget(),
+          // ヘッダー（プロフィール情報）
+          const DrawerHeaderWidget(
+            userImagePath: null, // TODO: ユーザー画像パスを渡す
+          ),
 
-                    // Service 섹션
-                    ServiceSectionWidget(),
-                  ],
-                ),
+          // スクロール可能なコンテンツ
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  // 情報バナー
+                  const DrawerInfoBannerWidget(),
+                  const SizedBox(height: 16),
+
+                  // ペットカードセクション
+                  const PetCardSectionWidget(),
+                  const SizedBox(height: 24),
+
+                  // マイブックマークセクション
+                  const MyBookmarkSectionWidget(),
+                  const SizedBox(height: 16),
+
+                  // サービスお問い合わせセクション
+                  const ServiceInquirySectionWidget(),
+                  const SizedBox(height: 16),
+
+                  // 下部余白（コンテンツ用）
+                  SizedBox(height: bottomPadding + 100),
+                ],
               ),
             ),
+          ),
 
-            // 로그아웃 버튼
-            LogoutButtonWidget(
-              onTap: () async {
-                await _handleLogout(context, ref);
-              },
-            ),
-          ],
-        ),
+          // ログアウトボタン
+          LogoutButtonWidget(
+            onTap: () async {
+              await _handleLogout(context, ref);
+            },
+          ),
+
+          // 下部余白（ホームインジケーター分）
+          SizedBox(height: bottomPadding > 0 ? bottomPadding + 8 : 16),
+        ],
       ),
     );
   }

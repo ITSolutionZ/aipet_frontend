@@ -62,7 +62,7 @@ final navigationCallbackNotifierProvider =
 
 typedef _$NavigationCallbackNotifier = AutoDisposeNotifier<Function()?>;
 String _$authFormStateNotifierHash() =>
-    r'da39b32270e30c9ab38df5ffec294854bac87392';
+    r'07e4cc377748b3aa3e2d97adf7d176167890a960';
 
 /// See also [AuthFormStateNotifier].
 @ProviderFor(AuthFormStateNotifier)

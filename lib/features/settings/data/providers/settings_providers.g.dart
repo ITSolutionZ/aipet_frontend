@@ -221,7 +221,7 @@ final settingsControllerProvider =
 // ignore: unused_element
 typedef SettingsControllerRef = AutoDisposeProviderRef<SettingsController>;
 String _$userProfileNotifierHash() =>
-    r'225ab27474887a97179d94446598265b89867ab0';
+    r'60cf08ac9bad8b9ec97de65eb297f59126ee53f9';
 
 /// See also [UserProfileNotifier].
 @ProviderFor(UserProfileNotifier)
@@ -241,7 +241,7 @@ final userProfileNotifierProvider =
 
 typedef _$UserProfileNotifier = AutoDisposeAsyncNotifier<Map<String, dynamic>>;
 String _$appSettingsNotifierHash() =>
-    r'e828eca78df445c0f6d3e6341108782958e209bf';
+    r'bfa26820abe310cf50e52dd472d4b7da549aaab0';
 
 /// See also [AppSettingsNotifier].
 @ProviderFor(AppSettingsNotifier)

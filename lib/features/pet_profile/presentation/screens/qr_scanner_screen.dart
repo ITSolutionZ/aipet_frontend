@@ -2,8 +2,6 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 /// 🎯 QR Scanner State Provider
 final qrScannerStateProvider =
@@ -16,35 +14,21 @@ class QRScannerController extends StateNotifier<QRScannerState> {
 
   Future<void> requestCameraPermission() async {
     state = state.copyWith(isLoading: true);
-    final status = await Permission.camera.request();
-    state = state.copyWith(hasPermission: status.isGranted, isLoading: false);
-  }
-
-  void setController(QRViewController controller) {
-    state = state.copyWith(qrController: controller);
+    // 임시로 항상 권한이 있다고 가정 (QR 스캐너 비활성화 상태)
+    state = state.copyWith(hasPermission: true, isLoading: false);
   }
 }
 
 class QRScannerState {
   final bool hasPermission;
   final bool isLoading;
-  final QRViewController? qrController;
 
-  const QRScannerState({
-    this.hasPermission = false,
-    this.isLoading = true,
-    this.qrController,
-  });
+  const QRScannerState({this.hasPermission = false, this.isLoading = true});
 
-  QRScannerState copyWith({
-    bool? hasPermission,
-    bool? isLoading,
-    QRViewController? qrController,
-  }) {
+  QRScannerState copyWith({bool? hasPermission, bool? isLoading}) {
     return QRScannerState(
       hasPermission: hasPermission ?? this.hasPermission,
       isLoading: isLoading ?? this.isLoading,
-      qrController: qrController ?? this.qrController,
     );
   }
 }
@@ -60,8 +44,6 @@ class QRScannerScreen extends ConsumerStatefulWidget {
 }
 
 class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-
   @override
   void initState() {
     super.initState();
@@ -70,29 +52,8 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    final state = ref.read(qrScannerStateProvider);
-    state.qrController?.dispose();
-    super.dispose();
-  }
-
-  /// QR 코드 스캔 결과 처리
-  void _onQRViewCreated(QRViewController controller) {
-    ref.read(qrScannerStateProvider.notifier).setController(controller);
-    controller.scannedDataStream.listen((scanData) {
-      if (scanData.code != null) {
-        _handleScannedCode(scanData.code!);
-      }
-    });
-  }
-
-  /// 스캔된 코드 처리
-  void _handleScannedCode(String code) {
-    final state = ref.read(qrScannerStateProvider);
-    // QR 코드 스캔 중지
-    state.qrController?.pauseCamera();
-
+  /// QR 코드 입력 처리
+  void _handleQRCodeInput(String code) {
     // 결과를 이전 화면으로 전달
     if (mounted) {
       context.pop(code);
@@ -210,48 +171,109 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
   }
 
   Widget _buildScanner() {
-    return Column(
-      children: [
-        Expanded(
-          flex: 5,
-          child: QRView(
-            key: qrKey,
-            onQRViewCreated: _onQRViewCreated,
-            overlay: QrScannerOverlayShape(
-              borderColor: AppColors.pointBlue,
-              borderRadius: 10,
-              borderLength: 30,
-              borderWidth: 10,
-              cutOutSize: 250,
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.qr_code_scanner,
+              size: 80,
+              color: Colors.white.withValues(alpha: 0.7),
             ),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Container(
-            color: Colors.black,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'QR 코드를 프레임 안에 맞춰주세요',
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  '자동으로 스캔됩니다',
-                  style: AppFonts.bodySmall.copyWith(
-                    color: Colors.white.withValues(alpha: 0.7),
-                  ),
-                ),
-              ],
+            const SizedBox(height: AppSpacing.lg),
+            Text(
+              'QRコード入力',
+              style: AppFonts.titleLarge.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'QRコードを手動で入力してください',
+              style: AppFonts.bodyMedium.copyWith(
+                color: Colors.white.withValues(alpha: 0.8),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            ElevatedButton(
+              onPressed: () => _showQRInputDialog(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.pointBlue,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.xl,
+                  vertical: AppSpacing.md,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.md),
+                ),
+              ),
+              child: Text(
+                'QRコードを入力',
+                style: AppFonts.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            TextButton(
+              onPressed: () => context.pop(),
+              child: Text(
+                'リンクで登録',
+                style: AppFonts.bodyMedium.copyWith(
+                  color: AppColors.pointBlue,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
+    );
+  }
+
+  void _showQRInputDialog() {
+    final controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('QRコード入力'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'QRコードを入力してください',
+            border: OutlineInputBorder(),
+          ),
+          autofocus: true,
+          onSubmitted: (value) {
+            if (value.isNotEmpty) {
+              Navigator.of(context).pop();
+              _handleQRCodeInput(value);
+            }
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (controller.text.isNotEmpty) {
+                Navigator.of(context).pop();
+                _handleQRCodeInput(controller.text);
+              }
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 }

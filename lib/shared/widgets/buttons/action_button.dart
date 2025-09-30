@@ -93,7 +93,7 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveWidth = width ?? double.infinity;
+    final effectiveWidth = width;
     final effectiveHeight = height ?? 48.0;
     final effectivePadding =
         padding ??
@@ -112,61 +112,70 @@ class ActionButton extends StatelessWidget {
         ? colors.foregroundColor
         : colors.disabledForegroundColor;
 
-    return SizedBox(
-      width: effectiveWidth,
-      height: effectiveHeight,
-      child: ElevatedButton(
-        onPressed: isEnabled && !isLoading ? onPressed : null,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: currentBackgroundColor,
-          foregroundColor: currentForegroundColor,
-          padding: effectivePadding,
-          shape: RoundedRectangleBorder(
-            borderRadius: effectiveBorderRadius,
-            side: variant == ActionButtonVariant.outlined
-                ? BorderSide(
-                    color: isEnabled
-                        ? AppColors.pointBrown
-                        : AppColors.pointGray,
-                    width: 1,
-                  )
-                : BorderSide.none,
-          ),
-          elevation: variant == ActionButtonVariant.outlined ? 0 : 2,
-          shadowColor: AppColors.pointBrown.withValues(alpha: 0.3),
+    return effectiveWidth != null
+        ? SizedBox(
+            width: effectiveWidth,
+            height: effectiveHeight,
+            child: _buildButton(currentBackgroundColor, currentForegroundColor, effectivePadding, effectiveBorderRadius),
+          )
+        : SizedBox(
+            height: effectiveHeight,
+            child: _buildButton(currentBackgroundColor, currentForegroundColor, effectivePadding, effectiveBorderRadius),
+          );
+  }
+
+  Widget _buildButton(Color currentBackgroundColor, Color currentForegroundColor, EdgeInsetsGeometry effectivePadding, BorderRadius effectiveBorderRadius) {
+    return ElevatedButton(
+      onPressed: isEnabled && !isLoading ? onPressed : null,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: currentBackgroundColor,
+        foregroundColor: currentForegroundColor,
+        padding: effectivePadding,
+        shape: RoundedRectangleBorder(
+          borderRadius: effectiveBorderRadius,
+          side: variant == ActionButtonVariant.outlined
+              ? BorderSide(
+                  color: isEnabled
+                      ? AppColors.pointBrown
+                      : AppColors.pointGray,
+                  width: 1,
+                )
+              : BorderSide.none,
         ),
-        child: isLoading
-            ? SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    currentForegroundColor,
+        elevation: variant == ActionButtonVariant.outlined ? 0 : 2,
+        shadowColor: AppColors.pointBrown.withValues(alpha: 0.3),
+      ),
+      child: isLoading
+          ? SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  currentForegroundColor,
+                ),
+              ),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (icon != null) ...[
+                  icon!,
+                  const SizedBox(width: AppSpacing.xs),
+                ],
+                Flexible(
+                  child: Text(
+                    text,
+                    style: AppFonts.titleMedium.copyWith(
+                      color: currentForegroundColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (icon != null) ...[
-                    icon!,
-                    const SizedBox(width: AppSpacing.xs),
-                  ],
-                  Flexible(
-                    child: Text(
-                      text,
-                      style: AppFonts.titleMedium.copyWith(
-                        color: currentForegroundColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-      ),
+              ],
+            ),
     );
   }
 
