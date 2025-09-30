@@ -25,10 +25,7 @@ class CustomBottomNavigation extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.large),
           child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 18,
-              sigmaY: 18,
-            ), // Glass 효과 blur 16~20
+            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18), // Glass 효과 blur 16~20
             child: Container(
               height: 56, // 적절한 높이로 조정
               decoration: BoxDecoration(
@@ -37,16 +34,12 @@ class CustomBottomNavigation extends StatelessWidget {
                     .withValues(alpha: 0.47), // 브라운 배경 opacity 0.45~0.5
                 borderRadius: BorderRadius.circular(AppRadius.circle),
                 border: Border.all(
-                  color: AppColors.pointCream.withValues(
-                    alpha: 0.35,
-                  ), // 흰색 테두리 opacity 0.35
+                  color: AppColors.pointCream.withValues(alpha: 0.35), // 흰색 테두리 opacity 0.35
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(
-                      alpha: 0.14,
-                    ), // 아래 방향 soft shadow
+                    color: Colors.black.withValues(alpha: 0.14), // 아래 방향 soft shadow
                     blurRadius: 24,
                     offset: const Offset(0, 10),
                     spreadRadius: 0,
@@ -77,10 +70,7 @@ class CustomBottomNavigation extends StatelessWidget {
     return GestureDetector(
       onTap: () => onItemTapped(index),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: AppSpacing.xs,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
         child: Icon(
           icon,
           color: isSelected

@@ -194,9 +194,7 @@ class AppButton extends StatelessWidget {
         label: semanticLabel,
         button: true,
         enabled: !isDisabled,
-        child: tooltip != null
-            ? Tooltip(message: tooltip!, child: button)
-            : button,
+        child: tooltip != null ? Tooltip(message: tooltip!, child: button) : button,
       );
     }
 

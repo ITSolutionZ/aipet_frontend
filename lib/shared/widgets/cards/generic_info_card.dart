@@ -65,11 +65,7 @@ class GenericInfoCard extends StatelessWidget {
     this.onLongPress,
     this.padding,
     this.showChevron = false,
-  }) : leading = _buildIcon(
-         icon: icon,
-         iconColor: iconColor,
-         backgroundColor: iconBackgroundColor,
-       );
+  }) : leading = _buildIcon(icon: icon, iconColor: iconColor, backgroundColor: iconBackgroundColor);
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +77,7 @@ class GenericInfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.medium),
         child: Row(
           children: [
-            if (leading != null) ...[
-              leading!,
-              const SizedBox(width: AppSpacing.md),
-            ],
+            if (leading != null) ...[leading!, const SizedBox(width: AppSpacing.md)],
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,11 +102,8 @@ class GenericInfoCard extends StatelessWidget {
                               vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
-                              color: (badgeColor ?? AppColors.pointBlue)
-                                  .withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(
-                                AppRadius.small,
-                              ),
+                              color: (badgeColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(AppRadius.small),
                             ),
                             child: Text(
                               badge!,
@@ -129,27 +119,15 @@ class GenericInfoCard extends StatelessWidget {
                   ],
                   if (subtitle != null) ...[
                     const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      subtitle!,
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointGray,
-                      ),
-                    ),
+                    Text(subtitle!, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
                   ],
                 ],
               ),
             ),
-            if (trailing != null) ...[
-              const SizedBox(width: AppSpacing.md),
-              trailing!,
-            ],
+            if (trailing != null) ...[const SizedBox(width: AppSpacing.md), trailing!],
             if (showChevron && onTap != null) ...[
               const SizedBox(width: AppSpacing.sm),
-              const Icon(
-                Icons.chevron_right,
-                color: AppColors.pointGray,
-                size: 20,
-              ),
+              const Icon(Icons.chevron_right, color: AppColors.pointGray, size: 20),
             ],
           ],
         ),
@@ -169,10 +147,7 @@ class GenericInfoCard extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          color: AppColors.pointGray.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3), width: 1),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(size / 2),
@@ -216,16 +191,10 @@ class GenericInfoCard extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color:
-            backgroundColor ??
-            (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
+        color: backgroundColor ?? (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(size / 2),
       ),
-      child: Icon(
-        icon,
-        color: iconColor ?? AppColors.pointBlue,
-        size: size * 0.5,
-      ),
+      child: Icon(icon, color: iconColor ?? AppColors.pointBlue, size: size * 0.5),
     );
   }
 }

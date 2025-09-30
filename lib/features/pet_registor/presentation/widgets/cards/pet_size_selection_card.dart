@@ -28,14 +28,10 @@ class PetSizeSelectionCard extends StatelessWidget {
         width: isSelected ? 100 : 80,
         height: isSelected ? 140 : 120,
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.pointPink.withValues(alpha: 0.1)
-              : AppColors.pureWhite,
+          color: isSelected ? AppColors.pointPink.withValues(alpha: 0.1) : AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
-            color: isSelected
-                ? AppColors.pointBrown
-                : AppColors.pointGray.withValues(alpha: 0.3),
+            color: isSelected ? AppColors.pointBrown : AppColors.pointGray.withValues(alpha: 0.3),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected

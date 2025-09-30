@@ -9,10 +9,7 @@ import 'package:mockito/mockito.dart';
 /// 프로덕션 배포 시 mockito/ 폴더를 삭제하면 자동으로 제거됩니다.
 class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
   @override
-  Future<Result<AuthUser>> signInWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
+  Future<Result<AuthUser>> signInWithEmailAndPassword(String email, String password) async {
     await BaseMockService.simulateApiDelay();
 
     // Mock 시나리오: 성공적인 로그인
@@ -32,10 +29,7 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
   }
 
   @override
-  Future<Result<AuthUser>> createUserWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
+  Future<Result<AuthUser>> createUserWithEmailAndPassword(String email, String password) async {
     await BaseMockService.simulateApiDelay();
     final mockUser = AuthUser(
       uid: 'mock_user_${DateTime.now().millisecondsSinceEpoch}',
@@ -112,10 +106,7 @@ class AuthRepositoryMockitoImpl extends Mock implements AuthRepository {
   }
 
   @override
-  Future<void> updateUserProfile({
-    String? displayName,
-    String? photoURL,
-  }) async {
+  Future<void> updateUserProfile({String? displayName, String? photoURL}) async {
     await BaseMockService.simulateApiDelay();
   }
 

@@ -11,19 +11,13 @@ class FacilityFullscreenMapScreen extends ConsumerStatefulWidget {
   final Facility facility;
   final List<Facility>? nearbyFacilities;
 
-  const FacilityFullscreenMapScreen({
-    super.key,
-    required this.facility,
-    this.nearbyFacilities,
-  });
+  const FacilityFullscreenMapScreen({super.key, required this.facility, this.nearbyFacilities});
 
   @override
-  ConsumerState<FacilityFullscreenMapScreen> createState() =>
-      _FacilityFullscreenMapScreenState();
+  ConsumerState<FacilityFullscreenMapScreen> createState() => _FacilityFullscreenMapScreenState();
 }
 
-class _FacilityFullscreenMapScreenState
-    extends ConsumerState<FacilityFullscreenMapScreen> {
+class _FacilityFullscreenMapScreenState extends ConsumerState<FacilityFullscreenMapScreen> {
   GoogleMapController? _mapController;
   Position? _currentPosition;
   final Set<Marker> _markers = {};
@@ -39,9 +33,7 @@ class _FacilityFullscreenMapScreenState
   Future<void> _getCurrentLocation() async {
     try {
       final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
       );
       setState(() {
         _currentPosition = position;
@@ -80,9 +72,7 @@ class _FacilityFullscreenMapScreenState
         ),
         infoWindow: InfoWindow(
           title: widget.facility.name,
-          snippet: widget.facility.type == FacilityType.grooming
-              ? 'トリミング'
-              : '動物病院',
+          snippet: widget.facility.type == FacilityType.grooming ? 'トリミング' : '動物病院',
         ),
         icon: BitmapDescriptor.defaultMarkerWithHue(
           widget.facility.type == FacilityType.grooming
@@ -100,15 +90,10 @@ class _FacilityFullscreenMapScreenState
           _markers.add(
             Marker(
               markerId: MarkerId(facility.id),
-              position: LatLng(
-                _getFacilityLatitude(facility),
-                _getFacilityLongitude(facility),
-              ),
+              position: LatLng(_getFacilityLatitude(facility), _getFacilityLongitude(facility)),
               infoWindow: InfoWindow(
                 title: facility.name,
-                snippet: facility.type == FacilityType.grooming
-                    ? 'トリミング'
-                    : '動物病院',
+                snippet: facility.type == FacilityType.grooming ? 'トリミング' : '動物病院',
               ),
               icon: BitmapDescriptor.defaultMarkerWithHue(
                 facility.type == FacilityType.grooming
@@ -127,10 +112,7 @@ class _FacilityFullscreenMapScreenState
       _markers.add(
         Marker(
           markerId: const MarkerId('current_location'),
-          position: LatLng(
-            _currentPosition!.latitude,
-            _currentPosition!.longitude,
-          ),
+          position: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
           infoWindow: const InfoWindow(title: '現在地', snippet: 'あなたの現在位置'),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
         ),
@@ -161,10 +143,7 @@ class _FacilityFullscreenMapScreenState
       _mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
-            target: LatLng(
-              _getFacilityLatitude(facility),
-              _getFacilityLongitude(facility),
-            ),
+            target: LatLng(_getFacilityLatitude(facility), _getFacilityLongitude(facility)),
             zoom: 16.0,
           ),
         ),
@@ -184,10 +163,7 @@ class _FacilityFullscreenMapScreenState
       _mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
-            target: LatLng(
-              _currentPosition!.latitude,
-              _currentPosition!.longitude,
-            ),
+            target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
             zoom: 15.0,
           ),
         ),
@@ -246,12 +222,7 @@ class _FacilityFullscreenMapScreenState
 
           // 선택된 시설 정보 카드
           if (_selectedFacility != null)
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: _buildSelectedFacilityCard(),
-            ),
+            Positioned(bottom: 20, left: 20, right: 20, child: _buildSelectedFacilityCard()),
         ],
       ),
     );
@@ -263,11 +234,7 @@ class _FacilityFullscreenMapScreenState
       child: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('地図を読み込み中...'),
-          ],
+          children: [CircularProgressIndicator(), SizedBox(height: 16), Text('地図を読み込み中...')],
         ),
       ),
     );
@@ -276,9 +243,7 @@ class _FacilityFullscreenMapScreenState
   Widget _buildSelectedFacilityCard() {
     return Card(
       elevation: 8,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -320,12 +285,8 @@ class _FacilityFullscreenMapScreenState
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        _selectedFacility!.type == FacilityType.grooming
-                            ? 'トリミング'
-                            : '動物病院',
-                        style: AppFonts.bodyMedium.copyWith(
-                          color: AppColors.pointGray,
-                        ),
+                        _selectedFacility!.type == FacilityType.grooming ? 'トリミング' : '動物病院',
+                        style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                       ),
                     ],
                   ),
@@ -343,18 +304,12 @@ class _FacilityFullscreenMapScreenState
             const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
-                const Icon(
-                  Icons.location_on,
-                  color: AppColors.pointGray,
-                  size: 16,
-                ),
+                const Icon(Icons.location_on, color: AppColors.pointGray, size: 16),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     _selectedFacility!.address,
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointGray,
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

@@ -46,34 +46,26 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   }
 
   void _toggleService(int index) {
-    ref
-        .read(bookingControllerProvider(widget.facilityId).notifier)
-        .toggleService(index);
+    ref.read(bookingControllerProvider(widget.facilityId).notifier).toggleService(index);
   }
 
   void _selectTime(String time) {
-    ref
-        .read(bookingControllerProvider(widget.facilityId).notifier)
-        .selectTime(time);
+    ref.read(bookingControllerProvider(widget.facilityId).notifier).selectTime(time);
   }
 
   void _selectDate(DateTime date) {
-    ref
-        .read(bookingControllerProvider(widget.facilityId).notifier)
-        .selectDate(date);
+    ref.read(bookingControllerProvider(widget.facilityId).notifier).selectDate(date);
   }
 
   void _confirmBooking() {
-    ref
-        .read(bookingControllerProvider(widget.facilityId).notifier)
-        .confirmBooking();
+    ref.read(bookingControllerProvider(widget.facilityId).notifier).confirmBooking();
 
     // 에러가 있는지 확인
     final error = ref.read(bookingControllerProvider(widget.facilityId)).error;
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error), backgroundColor: AppColors.pointPink),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error), backgroundColor: AppColors.pointPink));
       return;
     }
 
@@ -83,10 +75,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
         return AlertDialog(
           title: Text(
             '予約確認',
-            style: AppFonts.fredoka(
-              fontSize: AppFonts.lg,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.bold),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -94,9 +83,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             children: [
               Consumer(
                 builder: (context, ref, child) {
-                  final state = ref.watch(
-                    bookingControllerProvider(widget.facilityId),
-                  );
+                  final state = ref.watch(bookingControllerProvider(widget.facilityId));
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -120,18 +107,12 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             ],
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('キャンセル'),
-            ),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('キャンセル')),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('予約が完了しました。'),
-                    backgroundColor: Colors.green,
-                  ),
+                  const SnackBar(content: Text('予約が完了しました。'), backgroundColor: Colors.green),
                 );
                 context.pop();
               },
@@ -232,17 +213,11 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                         const SizedBox(height: AppSpacing.sm),
                         Row(
                           children: [
-                            const Icon(
-                              Icons.location_on,
-                              color: Colors.white,
-                              size: 16,
-                            ),
+                            const Icon(Icons.location_on, color: Colors.white, size: 16),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
                               state.facility!.address,
-                              style: AppFonts.bodyMedium.copyWith(
-                                color: Colors.white,
-                              ),
+                              style: AppFonts.bodyMedium.copyWith(color: Colors.white),
                             ),
                           ],
                         ),
@@ -260,11 +235,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                             Row(
                               children: List.generate(5, (index) {
                                 if (index < state.facility!.rating.floor()) {
-                                  return const Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                    size: 16,
-                                  );
+                                  return const Icon(Icons.star, color: Colors.amber, size: 16);
                                 } else {
                                   return const Icon(
                                     Icons.star_border,
@@ -277,9 +248,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                             const SizedBox(height: AppSpacing.sm),
                             Text(
                               '${state.facility!.reviewCount}件のレビュー',
-                              style: AppFonts.bodyMedium.copyWith(
-                                color: Colors.white,
-                              ),
+                              style: AppFonts.bodyMedium.copyWith(color: Colors.white),
                             ),
                           ],
                         ),
@@ -294,11 +263,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                       color: Colors.white.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.content_cut,
-                      color: Colors.white,
-                      size: 30,
-                    ),
+                    child: const Icon(Icons.content_cut, color: Colors.white, size: 30),
                   ),
                 ],
               ),
@@ -343,11 +308,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const Icon(
-                    Icons.keyboard_arrow_down,
-                    color: AppColors.pointDark,
-                    size: 20,
-                  ),
+                  const Icon(Icons.keyboard_arrow_down, color: AppColors.pointDark, size: 20),
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
@@ -370,17 +331,13 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                         decoration: BoxDecoration(
                           color: isSelected ? Colors.blue : Colors.white,
                           borderRadius: BorderRadius.circular(AppRadius.medium),
-                          border: Border.all(
-                            color: isSelected ? Colors.blue : Colors.grey[300]!,
-                          ),
+                          border: Border.all(color: isSelected ? Colors.blue : Colors.grey[300]!),
                         ),
                         child: Text(
                           '${date.day} $dayName',
                           style: AppFonts.bodyMedium.copyWith(
                             color: isSelected ? Colors.white : Colors.grey[600],
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.normal,
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                           ),
                         ),
                       ),
@@ -441,17 +398,13 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                       decoration: BoxDecoration(
                         color: isSelected ? Colors.orange : Colors.white,
                         borderRadius: BorderRadius.circular(AppRadius.medium),
-                        border: Border.all(
-                          color: isSelected ? Colors.orange : Colors.grey[300]!,
-                        ),
+                        border: Border.all(color: isSelected ? Colors.orange : Colors.grey[300]!),
                       ),
                       child: Text(
                         time,
                         style: AppFonts.bodyMedium.copyWith(
                           color: isSelected ? Colors.white : Colors.grey[600],
-                          fontWeight: isSelected
-                              ? FontWeight.w600
-                              : FontWeight.normal,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                         ),
                       ),
                     ),
@@ -521,17 +474,11 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                               color: isSelected ? Colors.blue : Colors.white,
                               borderRadius: BorderRadius.circular(4),
                               border: Border.all(
-                                color: isSelected
-                                    ? Colors.blue
-                                    : Colors.grey[400]!,
+                                color: isSelected ? Colors.blue : Colors.grey[400]!,
                               ),
                             ),
                             child: isSelected
-                                ? const Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 16,
-                                  )
+                                ? const Icon(Icons.check, color: Colors.white, size: 16)
                                 : null,
                           ),
                         ),
@@ -616,9 +563,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                 borderSide: const BorderSide(color: Colors.blue),
               ),
               counterText: '${_noteController.text.length}/250',
-              counterStyle: AppFonts.bodySmall.copyWith(
-                color: Colors.grey[600],
-              ),
+              counterStyle: AppFonts.bodySmall.copyWith(color: Colors.grey[600]),
             ),
           ),
         ],
@@ -649,9 +594,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
           ),
           child: Text(
             '予約確認',
@@ -667,20 +610,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   }
 
   String _getMonthName(int month) {
-    const months = [
-      '1月',
-      '2月',
-      '3月',
-      '4月',
-      '5月',
-      '6月',
-      '7月',
-      '8月',
-      '9月',
-      '10月',
-      '11月',
-      '12月',
-    ];
+    const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
     return months[month - 1];
   }
 }

@@ -13,9 +13,7 @@ class SecureStorageService {
       keyCipherAlgorithm: KeyCipherAlgorithm.RSA_ECB_PKCS1Padding,
       storageCipherAlgorithm: StorageCipherAlgorithm.AES_GCM_NoPadding,
     ),
-    iOptions: IOSOptions(
-      accessibility: KeychainAccessibility.first_unlock_this_device,
-    ),
+    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock_this_device),
   );
 
   /// 문자열 데이터를 안전하게 저장합니다
@@ -110,9 +108,7 @@ class SecureStorageService {
       return value != null;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint(
-          '❌ Secure storage contains key check failed: $key, error: $e',
-        );
+        debugPrint('❌ Secure storage contains key check failed: $key, error: $e');
       }
       return false;
     }
@@ -167,9 +163,7 @@ class SecureStorageService {
         if (retrievedValue == testValue) {
           debugPrint('🔐 Secure Storage validation: PASSED');
         } else {
-          debugPrint(
-            '⚠️  Secure Storage validation: FAILED - Data integrity issue',
-          );
+          debugPrint('⚠️  Secure Storage validation: FAILED - Data integrity issue');
         }
       } catch (e) {
         debugPrint('⚠️  Secure Storage validation: FAILED - $e');

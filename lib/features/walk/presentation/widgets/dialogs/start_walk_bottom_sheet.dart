@@ -17,9 +17,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.75,
-      ),
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.75),
       builder: (context) => StartWalkBottomSheet(controller: controller),
     );
   }
@@ -72,27 +70,17 @@ class StartWalkBottomSheet extends ConsumerWidget {
                       color: AppColors.pointBlue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppRadius.large),
                     ),
-                    child: const Icon(
-                      Icons.directions_walk,
-                      size: 32,
-                      color: AppColors.pointBlue,
-                    ),
+                    child: const Icon(Icons.directions_walk, size: 32, color: AppColors.pointBlue),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     '新しい散歩を始める',
-                    style: AppFonts.fredoka(
-                      fontSize: AppFonts.xxl,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppFonts.fredoka(fontSize: AppFonts.xxl, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
                     '愛犬との楽しい散歩時間を記録しましょう',
-                    style: AppFonts.base(
-                      fontSize: AppFonts.sm,
-                      color: Colors.grey[600],
-                    ),
+                    style: AppFonts.base(fontSize: AppFonts.sm, color: Colors.grey[600]),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.xl),
@@ -115,8 +103,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.sm),
                   WalkFormFields.buildTitleField(
                     initialValue: formState.title,
-                    onChanged: (value) =>
-                        formController.updateTitle(value ?? ''),
+                    onChanged: (value) => formController.updateTitle(value ?? ''),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'タイトルを入力してください。';
@@ -189,9 +176,7 @@ class StartWalkBottomSheet extends ConsumerWidget {
           Expanded(
             flex: 2,
             child: ElevatedButton.icon(
-              onPressed: formController.isFormValid()
-                  ? () => _startWalk(context, formState)
-                  : null,
+              onPressed: formController.isFormValid() ? () => _startWalk(context, formState) : null,
               icon: const Icon(Icons.play_arrow),
               label: const Text('散歩を始める'),
               style: ElevatedButton.styleFrom(

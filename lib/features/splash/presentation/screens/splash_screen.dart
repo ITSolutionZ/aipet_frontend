@@ -40,12 +40,7 @@ class SplashAnimationNotifier extends _$SplashAnimationNotifier {
     return Tween<double>(
       begin: AppConstants.splashFadeStart,
       end: AppConstants.splashFadeEnd,
-    ).animate(
-      CurvedAnimation(
-        parent: controller,
-        curve: AppConstants.splashFadeInterval,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: controller, curve: AppConstants.splashFadeInterval));
   }
 
   /// Scale 애니메이션 생성
@@ -53,12 +48,7 @@ class SplashAnimationNotifier extends _$SplashAnimationNotifier {
     return Tween<double>(
       begin: AppConstants.splashScaleStart,
       end: AppConstants.splashScaleEnd,
-    ).animate(
-      CurvedAnimation(
-        parent: controller,
-        curve: AppConstants.splashScaleInterval,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: controller, curve: AppConstants.splashScaleInterval));
   }
 
   void startAnimation() {
@@ -76,11 +66,7 @@ class SplashAnimationState {
   final Animation<double>? fadeAnimation;
   final Animation<double>? scaleAnimation;
 
-  const SplashAnimationState({
-    this.animationController,
-    this.fadeAnimation,
-    this.scaleAnimation,
-  });
+  const SplashAnimationState({this.animationController, this.fadeAnimation, this.scaleAnimation});
 
   SplashAnimationState copyWith({
     AnimationController? animationController,
@@ -108,8 +94,7 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
   StreamSubscription<Result<SplashState>>? _splashSequenceSubscription;
 
   @override
@@ -130,14 +115,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _preloadImages() async {
     try {
       await Future.wait([
-        precacheImage(
-          const AssetImage(AppConstants.splashAppLogoPath),
-          context,
-        ),
-        precacheImage(
-          const AssetImage(AppConstants.splashCompanyLogoPath),
-          context,
-        ),
+        precacheImage(const AssetImage(AppConstants.splashAppLogoPath), context),
+        precacheImage(const AssetImage(AppConstants.splashCompanyLogoPath), context),
       ]);
     } catch (error) {
       // 이미지 프리로딩 실패는 치명적이지 않으므로 로그만 남김
@@ -151,9 +130,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     await _preloadImages();
 
     // 애니메이션 초기화
-    ref
-        .read(splashAnimationNotifierProvider.notifier)
-        .initializeAnimations(this);
+    ref.read(splashAnimationNotifierProvider.notifier).initializeAnimations(this);
     ref.read(splashAnimationNotifierProvider.notifier).startAnimation();
 
     // 스플래시 시퀀스 시작
@@ -173,9 +150,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   void _handleSplashResult(Result<SplashState> result) {
     if (result.isSuccess && result.dataOrNull != null) {
       // 상태 업데이트 - SplashStateNotifier를 사용
-      ref
-          .read(splashStateNotifierProvider.notifier)
-          .updateState(result.dataOrNull!);
+      ref.read(splashStateNotifierProvider.notifier).updateState(result.dataOrNull!);
 
       // 완료 시 다음 화면으로 이동
       if (result.dataOrNull!.isCompleted) {

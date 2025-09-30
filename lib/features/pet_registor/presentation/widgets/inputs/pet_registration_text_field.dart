@@ -11,10 +11,8 @@ final petRegistrationTextFieldProvider =
       String
     >((ref, fieldId) => PetRegistrationTextFieldController());
 
-class PetRegistrationTextFieldController
-    extends StateNotifier<PetRegistrationTextFieldState> {
-  PetRegistrationTextFieldController()
-    : super(const PetRegistrationTextFieldState());
+class PetRegistrationTextFieldController extends StateNotifier<PetRegistrationTextFieldState> {
+  PetRegistrationTextFieldController() : super(const PetRegistrationTextFieldState());
 
   void setError(String? error) {
     state = state.copyWith(currentError: error);
@@ -58,15 +56,9 @@ class PetRegistrationTextFieldState {
   final String? currentError;
   final bool hasInteracted;
 
-  const PetRegistrationTextFieldState({
-    this.currentError,
-    this.hasInteracted = false,
-  });
+  const PetRegistrationTextFieldState({this.currentError, this.hasInteracted = false});
 
-  PetRegistrationTextFieldState copyWith({
-    String? currentError,
-    bool? hasInteracted,
-  }) {
+  PetRegistrationTextFieldState copyWith({String? currentError, bool? hasInteracted}) {
     return PetRegistrationTextFieldState(
       currentError: currentError ?? this.currentError,
       hasInteracted: hasInteracted ?? this.hasInteracted,
@@ -221,9 +213,7 @@ class _PetRegistrationTextFieldContentState
     final fieldState = ref.read(petRegistrationTextFieldProvider(_fieldId));
 
     if (!fieldState.hasInteracted && widget.controller.text.isNotEmpty) {
-      ref
-          .read(petRegistrationTextFieldProvider(_fieldId).notifier)
-          .setInteracted(true);
+      ref.read(petRegistrationTextFieldProvider(_fieldId).notifier).setInteracted(true);
     }
 
     if (fieldState.hasInteracted || widget.controller.text.isNotEmpty) {
@@ -248,8 +238,7 @@ class _PetRegistrationTextFieldContentState
 
   InputDecoration _buildDecoration() {
     final fieldState = ref.watch(petRegistrationTextFieldProvider(_fieldId));
-    final hasError =
-        fieldState.currentError != null || widget.errorText != null;
+    final hasError = fieldState.currentError != null || widget.errorText != null;
     final errorMessage = widget.errorText ?? fieldState.currentError;
 
     return InputDecoration(
@@ -259,17 +248,12 @@ class _PetRegistrationTextFieldContentState
       suffixIcon: widget.suffixIcon,
       errorText: hasError ? errorMessage : null,
       filled: true,
-      fillColor: widget.enabled
-          ? AppColors.pureWhite
-          : AppColors.pointGray.withValues(alpha: 0.1),
+      fillColor: widget.enabled ? AppColors.pureWhite : AppColors.pointGray.withValues(alpha: 0.1),
 
       // 기본 테두리
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: BorderSide(
-          color: AppColors.pointGray.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        borderSide: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.3), width: 1),
       ),
 
       // 활성화 상태 테두리
@@ -286,10 +270,7 @@ class _PetRegistrationTextFieldContentState
       // 포커스 상태 테두리
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: BorderSide(
-          color: hasError ? Colors.red : AppColors.pointBrown,
-          width: 2,
-        ),
+        borderSide: BorderSide(color: hasError ? Colors.red : AppColors.pointBrown, width: 2),
       ),
 
       // 에러 상태 테두리
@@ -305,10 +286,7 @@ class _PetRegistrationTextFieldContentState
       // 비활성화 상태 테두리
       disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: BorderSide(
-          color: AppColors.pointGray.withValues(alpha: 0.2),
-          width: 1,
-        ),
+        borderSide: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
       ),
 
       contentPadding: const EdgeInsets.symmetric(
@@ -318,15 +296,11 @@ class _PetRegistrationTextFieldContentState
 
       // 라벨 스타일
       labelStyle: AppFonts.bodyMedium.copyWith(
-        color: hasError
-            ? Colors.red
-            : AppColors.pointDark.withValues(alpha: 0.7),
+        color: hasError ? Colors.red : AppColors.pointDark.withValues(alpha: 0.7),
       ),
 
       // 힌트 스타일
-      hintStyle: AppFonts.bodyMedium.copyWith(
-        color: AppColors.pointGray.withValues(alpha: 0.6),
-      ),
+      hintStyle: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray.withValues(alpha: 0.6)),
 
       // 에러 스타일
       errorStyle: AppFonts.bodySmall.copyWith(color: Colors.red),
@@ -361,13 +335,9 @@ class _PetRegistrationTextFieldContentState
             ),
             decoration: _buildDecoration(),
             onTap: () {
-              final fieldState = ref.read(
-                petRegistrationTextFieldProvider(_fieldId),
-              );
+              final fieldState = ref.read(petRegistrationTextFieldProvider(_fieldId));
               if (!fieldState.hasInteracted) {
-                ref
-                    .read(petRegistrationTextFieldProvider(_fieldId).notifier)
-                    .setInteracted(true);
+                ref.read(petRegistrationTextFieldProvider(_fieldId).notifier).setInteracted(true);
               }
             },
           ),

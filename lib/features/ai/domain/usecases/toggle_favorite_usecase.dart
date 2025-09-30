@@ -26,8 +26,5 @@ class ToggleFavoriteParams {
   final String messageId;
   final bool isFavorite;
 
-  const ToggleFavoriteParams({
-    required this.messageId,
-    required this.isFavorite,
-  });
+  const ToggleFavoriteParams({required this.messageId, required this.isFavorite});
 }

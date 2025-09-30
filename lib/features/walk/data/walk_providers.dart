@@ -164,8 +164,7 @@ class LocationTrackingNotifier extends _$LocationTrackingNotifier {
           ).listen((Position position) {
             // 현재 진행 중인 산책에 위치 추가
             final currentWalk = ref.read(currentWalkNotifierProvider);
-            if (currentWalk != null &&
-                currentWalk.status == WalkStatus.inProgress) {
+            if (currentWalk != null && currentWalk.status == WalkStatus.inProgress) {
               final location = WalkLocation(
                 latitude: position.latitude,
                 longitude: position.longitude,
@@ -177,23 +176,17 @@ class LocationTrackingNotifier extends _$LocationTrackingNotifier {
               );
 
               // 성능 최적화: 유효하고 필요한 위치만 추가
-              if (optimizer.WalkTrackingOptimizer.shouldAddLocation(
-                location,
-                currentWalk.route,
-              )) {
+              if (optimizer.WalkTrackingOptimizer.shouldAddLocation(location, currentWalk.route)) {
                 // 위치 평활화 적용
-                final smoothedLocation =
-                    optimizer.WalkTrackingOptimizer.smoothLocation(
-                      location,
-                      currentWalk.route.takeLast(3),
-                    );
+                final smoothedLocation = optimizer.WalkTrackingOptimizer.smoothLocation(
+                  location,
+                  currentWalk.route.takeLast(3),
+                );
 
                 ref
                     .read(currentWalkNotifierProvider.notifier)
                     .addLocationToCurrentWalk(smoothedLocation);
-                ref
-                    .read(currentLocationNotifierProvider.notifier)
-                    .updateLocation(smoothedLocation);
+                ref.read(currentLocationNotifierProvider.notifier).updateLocation(smoothedLocation);
               }
             }
           });
@@ -274,10 +267,7 @@ class WalkStatsNotifier extends _$WalkStatsNotifier {
 
     final a =
         math.sin(deltaLat / 2) * math.sin(deltaLat / 2) +
-        math.cos(lat1Rad) *
-            math.cos(lat2Rad) *
-            math.sin(deltaLng / 2) *
-            math.sin(deltaLng / 2);
+        math.cos(lat1Rad) * math.cos(lat2Rad) * math.sin(deltaLng / 2) * math.sin(deltaLng / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
     return earthRadius * c / 1000; // km 단위로 반환
@@ -298,12 +288,7 @@ class WalkStats {
     this.steps = 0,
   });
 
-  WalkStats copyWith({
-    double? distance,
-    Duration? duration,
-    double? speed,
-    int? steps,
-  }) {
+  WalkStats copyWith({double? distance, Duration? duration, double? speed, int? steps}) {
     return WalkStats(
       distance: distance ?? this.distance,
       duration: duration ?? this.duration,
@@ -318,9 +303,5 @@ class PetInfo {
   final String name;
   final String imagePath;
 
-  const PetInfo({
-    required this.id,
-    required this.name,
-    required this.imagePath,
-  });
+  const PetInfo({required this.id, required this.name, required this.imagePath});
 }

@@ -37,11 +37,7 @@ class LocationErrorBoundary extends ConsumerWidget {
       barrierDismissible: severity != WalkErrorSeverity.critical,
       builder: (BuildContext context) {
         return AlertDialog(
-          icon: Icon(
-            _getErrorIcon(severity),
-            color: _getErrorColor(severity),
-            size: 48,
-          ),
+          icon: Icon(_getErrorIcon(severity), color: _getErrorColor(severity), size: 48),
           title: Text(
             _getErrorTitle(severity),
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -57,25 +53,16 @@ class LocationErrorBoundary extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: AppColors.pointBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: AppColors.pointBlue.withValues(alpha: 0.3),
-                  ),
+                  border: Border.all(color: AppColors.pointBlue.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.lightbulb_outline,
-                      color: AppColors.pointBlue,
-                      size: 20,
-                    ),
+                    const Icon(Icons.lightbulb_outline, color: AppColors.pointBlue, size: 20),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         userAction,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.pointBlue,
-                        ),
+                        style: const TextStyle(fontSize: 14, color: AppColors.pointBlue),
                       ),
                     ),
                   ],
@@ -138,11 +125,7 @@ class LocationErrorBoundary extends ConsumerWidget {
         errorMessage,
         duration: const Duration(seconds: 8),
         action: onRetry != null
-            ? SnackBarAction(
-                label: '再試行',
-                textColor: AppColors.pureWhite,
-                onPressed: onRetry,
-              )
+            ? SnackBarAction(label: '再試行', textColor: AppColors.pureWhite, onPressed: onRetry)
             : null,
       );
     } else {
@@ -151,11 +134,7 @@ class LocationErrorBoundary extends ConsumerWidget {
         errorMessage,
         duration: const Duration(seconds: 5),
         action: onRetry != null
-            ? SnackBarAction(
-                label: '再試行',
-                textColor: AppColors.pureWhite,
-                onPressed: onRetry,
-              )
+            ? SnackBarAction(label: '再試行', textColor: AppColors.pureWhite, onPressed: onRetry)
             : null,
       );
     }
@@ -176,18 +155,12 @@ class LocationErrorBoundary extends ConsumerWidget {
       decoration: BoxDecoration(
         color: _getErrorColor(severity).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: _getErrorColor(severity).withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: _getErrorColor(severity).withValues(alpha: 0.3)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            _getErrorIcon(severity),
-            color: _getErrorColor(severity),
-            size: 48,
-          ),
+          Icon(_getErrorIcon(severity), color: _getErrorColor(severity), size: 48),
           const SizedBox(height: 12),
           Text(
             _getErrorTitle(severity),
@@ -198,11 +171,7 @@ class LocationErrorBoundary extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            errorMessage,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14),
-          ),
+          Text(errorMessage, textAlign: TextAlign.center, style: const TextStyle(fontSize: 14)),
           const SizedBox(height: 8),
           Text(
             userAction,
@@ -223,8 +192,7 @@ class LocationErrorBoundary extends ConsumerWidget {
                     foregroundColor: Colors.white,
                   ),
                 ),
-              if (onRetry != null && onSettings != null)
-                const SizedBox(width: 12),
+              if (onRetry != null && onSettings != null) const SizedBox(width: 12),
               if (onRetry != null && severity != WalkErrorSeverity.critical)
                 ElevatedButton.icon(
                   onPressed: onRetry,
@@ -283,7 +251,6 @@ class LocationErrorBoundary extends ConsumerWidget {
 
   static bool _shouldShowSettingsButton(dynamic error) {
     final errorString = error.toString().toLowerCase();
-    return errorString.contains('permission') ||
-        errorString.contains('location service');
+    return errorString.contains('permission') || errorString.contains('location service');
   }
 }

@@ -4,29 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 급수 스케줄 편집 화면 상태 관리
 final wateringScheduleEditProvider =
-    StateNotifierProvider.family<
-      WateringScheduleEditController,
-      WateringScheduleEditState,
-      String
-    >((ref, scheduleId) => WateringScheduleEditController());
+    StateNotifierProvider.family<WateringScheduleEditController, WateringScheduleEditState, String>(
+      (ref, scheduleId) => WateringScheduleEditController(),
+    );
 
-class WateringScheduleEditController
-    extends StateNotifier<WateringScheduleEditState> {
+class WateringScheduleEditController extends StateNotifier<WateringScheduleEditState> {
   WateringScheduleEditController() : super(const WateringScheduleEditState());
 
   void initialize(String currentAmount, String currentTime) {
-    final amountController = TextEditingController(
-      text: currentAmount.replaceAll('ml', ''),
-    );
+    final amountController = TextEditingController(text: currentAmount.replaceAll('ml', ''));
     final formKey = GlobalKey<FormState>();
 
     TimeOfDay selectedTime = TimeOfDay.now();
     final timeParts = currentTime.split(':');
     if (timeParts.length == 2) {
-      selectedTime = TimeOfDay(
-        hour: int.parse(timeParts[0]),
-        minute: int.parse(timeParts[1]),
-      );
+      selectedTime = TimeOfDay(hour: int.parse(timeParts[0]), minute: int.parse(timeParts[1]));
     }
 
     state = state.copyWith(
@@ -128,12 +120,10 @@ class WateringScheduleEditScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<WateringScheduleEditScreen> createState() =>
-      _WateringScheduleEditScreenState();
+  ConsumerState<WateringScheduleEditScreen> createState() => _WateringScheduleEditScreenState();
 }
 
-class _WateringScheduleEditScreenState
-    extends ConsumerState<WateringScheduleEditScreen> {
+class _WateringScheduleEditScreenState extends ConsumerState<WateringScheduleEditScreen> {
   @override
   void initState() {
     super.initState();
@@ -147,9 +137,7 @@ class _WateringScheduleEditScreenState
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(wateringScheduleEditProvider(widget.scheduleId));
-    final controller = ref.read(
-      wateringScheduleEditProvider(widget.scheduleId).notifier,
-    );
+    final controller = ref.read(wateringScheduleEditProvider(widget.scheduleId).notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -207,9 +195,7 @@ class _WateringScheduleEditScreenState
                   ),
                   Text(
                     '現在の設定: ${state.currentTime} - ${state.currentAmount}',
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointGray,
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                   ),
                 ],
               ),
@@ -285,10 +271,7 @@ class _WateringScheduleEditScreenState
             ),
             const SizedBox(height: AppSpacing.sm),
             ListTile(
-              leading: const Icon(
-                Icons.access_time,
-                color: AppColors.pointBlue,
-              ),
+              leading: const Icon(Icons.access_time, color: AppColors.pointBlue),
               title: const Text('時間を選択'),
               subtitle: Text(
                 state.selectedTime.format(context),

@@ -8,11 +8,7 @@ class BannerSection extends StatelessWidget {
   final VoidCallback? onSearchTap;
   final ValueChanged<String>? onSearchChanged;
 
-  const BannerSection({
-    super.key,
-    this.onSearchTap,
-    this.onSearchChanged,
-  });
+  const BannerSection({super.key, this.onSearchTap, this.onSearchChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +23,7 @@ class BannerSection extends StatelessWidget {
           bottom: -30, // 배너 하단에서 위로 10px 위치
           left: AppSpacing.lg,
           right: AppSpacing.lg,
-          child: HomeSearchBarWidget(
-            onTap: onSearchTap,
-            onChanged: onSearchChanged,
-          ),
+          child: HomeSearchBarWidget(onTap: onSearchTap, onChanged: onSearchChanged),
         ),
       ],
     );

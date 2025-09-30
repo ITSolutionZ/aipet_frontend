@@ -9,8 +9,7 @@ import 'package:flutter/foundation.dart';
 /// 앱의 성능을 실시간으로 모니터링하고 최적화합니다.
 class PerformanceMonitor {
   static PerformanceMonitor? _instance;
-  static PerformanceMonitor get instance =>
-      _instance ??= PerformanceMonitor._();
+  static PerformanceMonitor get instance => _instance ??= PerformanceMonitor._();
 
   PerformanceMonitor._();
 
@@ -22,10 +21,7 @@ class PerformanceMonitor {
   void startMonitoring() {
     if (!EnvironmentConfig.isPerformanceMonitoringEnabled) return;
 
-    _monitoringTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (_) => _collectMetrics(),
-    );
+    _monitoringTimer = Timer.periodic(const Duration(seconds: 30), (_) => _collectMetrics());
   }
 
   /// 모니터링 중지
@@ -81,12 +77,7 @@ class PerformanceMonitor {
   }
 
   /// API 호출 성능 측정
-  void recordApiCall(
-    String endpoint,
-    int statusCode,
-    int duration, {
-    String? error,
-  }) {
+  void recordApiCall(String endpoint, int statusCode, int duration, {String? error}) {
     if (!EnvironmentConfig.isPerformanceMonitoringEnabled) return;
 
     _recordMetric(
@@ -94,12 +85,7 @@ class PerformanceMonitor {
         operationName: 'api_call',
         duration: duration,
         timestamp: DateTime.now(),
-        metadata: {
-          'endpoint': endpoint,
-          'statusCode': statusCode,
-          'error': error,
-          'type': 'api',
-        },
+        metadata: {'endpoint': endpoint, 'statusCode': statusCode, 'error': error, 'type': 'api'},
       ),
     );
   }
@@ -173,18 +159,13 @@ class PerformanceMonitor {
     final lastHour = now.subtract(const Duration(hours: 1));
 
     // 최근 1시간 메트릭 필터링
-    final recentMetrics = _metrics
-        .where((metric) => metric.timestamp.isAfter(lastHour))
-        .toList();
+    final recentMetrics = _metrics.where((metric) => metric.timestamp.isAfter(lastHour)).toList();
 
     // 평균 응답 시간 계산
-    final apiMetrics = recentMetrics
-        .where((metric) => metric.metadata['type'] == 'api')
-        .toList();
+    final apiMetrics = recentMetrics.where((metric) => metric.metadata['type'] == 'api').toList();
 
     final avgApiResponseTime = apiMetrics.isNotEmpty
-        ? apiMetrics.map((m) => m.duration).reduce((a, b) => a + b) /
-              apiMetrics.length
+        ? apiMetrics.map((m) => m.duration).reduce((a, b) => a + b) / apiMetrics.length
         : 0.0;
 
     // 메모리 사용량 통계
@@ -193,9 +174,7 @@ class PerformanceMonitor {
         .toList();
 
     final avgMemoryUsage = memoryMetrics.isNotEmpty
-        ? memoryMetrics
-                  .map((m) => m.metadata['memoryUsage'] as double)
-                  .reduce((a, b) => a + b) /
+        ? memoryMetrics.map((m) => m.metadata['memoryUsage'] as double).reduce((a, b) => a + b) /
               memoryMetrics.length
         : 0.0;
 
@@ -205,8 +184,7 @@ class PerformanceMonitor {
         .toList();
 
     final avgWidgetBuildTime = widgetMetrics.isNotEmpty
-        ? widgetMetrics.map((m) => m.duration).reduce((a, b) => a + b) /
-              widgetMetrics.length
+        ? widgetMetrics.map((m) => m.duration).reduce((a, b) => a + b) / widgetMetrics.length
         : 0.0;
 
     return PerformanceReport(
@@ -242,10 +220,7 @@ class PerformanceMonitor {
     const memoryThreshold = 100.0; // 100MB
 
     return memoryMetrics
-        .where(
-          (metric) =>
-              (metric.metadata['memoryUsage'] as double) > memoryThreshold,
-        )
+        .where((metric) => (metric.metadata['memoryUsage'] as double) > memoryThreshold)
         .map(
           (metric) => MemoryAlert(
             memoryUsage: metric.metadata['memoryUsage'] as double,
@@ -262,15 +237,9 @@ class PerformanceMonitor {
     final report = generateReport();
     debugPrint('=== Performance Report ===');
     debugPrint('Total Metrics: ${report.totalMetrics}');
-    debugPrint(
-      'Avg API Response Time: ${report.avgApiResponseTime.toStringAsFixed(2)}ms',
-    );
-    debugPrint(
-      'Avg Memory Usage: ${report.avgMemoryUsage.toStringAsFixed(2)}MB',
-    );
-    debugPrint(
-      'Avg Widget Build Time: ${report.avgWidgetBuildTime.toStringAsFixed(2)}ms',
-    );
+    debugPrint('Avg API Response Time: ${report.avgApiResponseTime.toStringAsFixed(2)}ms');
+    debugPrint('Avg Memory Usage: ${report.avgMemoryUsage.toStringAsFixed(2)}MB');
+    debugPrint('Avg Widget Build Time: ${report.avgWidgetBuildTime.toStringAsFixed(2)}ms');
     debugPrint('Slow Operations: ${report.slowOperations.length}');
     debugPrint('Memory Alerts: ${report.memoryAlerts.length}');
   }

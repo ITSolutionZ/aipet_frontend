@@ -9,10 +9,7 @@ class GetNotificationByIdUseCase {
   const GetNotificationByIdUseCase(this._repository);
 
   /// ID로 알림 가져오기
-  Future<Result<NotificationModel?>> call(
-    String userId,
-    String notificationId,
-  ) async {
+  Future<Result<NotificationModel?>> call(String userId, String notificationId) async {
     try {
       if (userId.trim().isEmpty) {
         return Result.failure('ユーザーIDが無効です');

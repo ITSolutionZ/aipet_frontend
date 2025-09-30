@@ -3,10 +3,7 @@ import 'package:aipet_frontend/features/pet_registor/domain/entities/pet_registr
 /// 펫 등록 검증 유틸리티
 class PetValidationUtils {
   /// 다음 단계로 진행 가능한지 확인
-  static bool canProceedToNextStep(
-    PetRegistrationDataEntity data,
-    int currentStep,
-  ) {
+  static bool canProceedToNextStep(PetRegistrationDataEntity data, int currentStep) {
     switch (currentStep) {
       case 1: // 펫 타입 선택
         return data.type != null;
@@ -34,10 +31,7 @@ class PetValidationUtils {
   }
 
   /// 현재 단계 이후에 더 많은 데이터가 있는지 확인
-  static bool hasDataBeyondStep(
-    PetRegistrationDataEntity data,
-    int currentStep,
-  ) {
+  static bool hasDataBeyondStep(PetRegistrationDataEntity data, int currentStep) {
     switch (currentStep) {
       case 1: // 펫 타입 선택 후
         return data.breed != null ||

@@ -36,21 +36,14 @@ class LearnNextTrickCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppSpacing.sm),
                   image: trick.imagePath != null
-                      ? DecorationImage(
-                          image: AssetImage(trick.imagePath!),
-                          fit: BoxFit.cover,
-                        )
+                      ? DecorationImage(image: AssetImage(trick.imagePath!), fit: BoxFit.cover)
                       : null,
                   color: trick.imagePath == null
                       ? AppColors.pointBrown.withValues(alpha: 0.1)
                       : null,
                 ),
                 child: trick.imagePath == null
-                    ? const Icon(
-                        Icons.pets,
-                        color: AppColors.pointBrown,
-                        size: 30,
-                      )
+                    ? const Icon(Icons.pets, color: AppColors.pointBrown, size: 30)
                     : null,
               ),
               if (trick.isVideo)
@@ -61,11 +54,7 @@ class LearnNextTrickCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSpacing.sm),
                     ),
                     child: const Center(
-                      child: Icon(
-                        Icons.play_arrow,
-                        color: Colors.white,
-                        size: 24,
-                      ),
+                      child: Icon(Icons.play_arrow, color: Colors.white, size: 24),
                     ),
                   ),
                 ),
@@ -149,11 +138,7 @@ class LearnNextTrickCard extends StatelessWidget {
           ),
 
           // 화살표 아이콘
-          const Icon(
-            Icons.arrow_forward_ios,
-            color: AppColors.pointDark,
-            size: 16,
-          ),
+          const Icon(Icons.arrow_forward_ios, color: AppColors.pointDark, size: 16),
         ],
       ),
     );

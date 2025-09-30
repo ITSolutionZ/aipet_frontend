@@ -148,8 +148,6 @@ class VisibilityLevelConstants {
     'public': Icons.public,
   };
 
-  static String getName(String level) =>
-      levelNames[level.toLowerCase()] ?? '非公開';
-  static IconData getIcon(String level) =>
-      levelIcons[level.toLowerCase()] ?? Icons.lock;
+  static String getName(String level) => levelNames[level.toLowerCase()] ?? '非公開';
+  static IconData getIcon(String level) => levelIcons[level.toLowerCase()] ?? Icons.lock;
 }

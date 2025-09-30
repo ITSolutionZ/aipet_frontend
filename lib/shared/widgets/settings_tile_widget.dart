@@ -36,31 +36,21 @@ class SettingsTileWidget extends StatelessWidget {
               ? Container(
                   width: 40,
                   height: 40,
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    shape: BoxShape.circle,
-                  ),
+                  decoration: BoxDecoration(color: backgroundColor, shape: BoxShape.circle),
                   child: Icon(icon, color: Colors.white, size: 20),
                 )
               : null),
-      title: Text(
-        title,
-        style: TextStyle(color: enabled ? null : Colors.grey.shade500),
-      ),
+      title: Text(title, style: TextStyle(color: enabled ? null : Colors.grey.shade500)),
       subtitle: subtitle != null
           ? Text(
               subtitle!,
-              style: TextStyle(
-                color: enabled ? Colors.grey.shade600 : Colors.grey.shade400,
-              ),
+              style: TextStyle(color: enabled ? Colors.grey.shade600 : Colors.grey.shade400),
             )
           : null,
       trailing: trailing,
       onTap: enabled ? onTap : null,
       tileColor: tileColor,
-      contentPadding:
-          contentPadding ??
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      contentPadding: contentPadding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     );
   }

@@ -85,9 +85,7 @@ class AiLocalStorageService extends BaseLoggingService {
       }
 
       final messagesJson = jsonDecode(jsonString) as List;
-      final messages = messagesJson
-          .map((json) => _messageFromJson(json))
-          .toList();
+      final messages = messagesJson.map((json) => _messageFromJson(json)).toList();
 
       logInfo('채팅 히스토리 로드 완료: ${messages.length}개 메시지');
       return messages;
@@ -121,9 +119,7 @@ class AiLocalStorageService extends BaseLoggingService {
       favorites.removeWhere((fav) => fav.id == favorite.id);
       favorites.add(favorite);
 
-      final favoritesJson = favorites
-          .map((fav) => _favoriteToJson(fav))
-          .toList();
+      final favoritesJson = favorites.map((fav) => _favoriteToJson(fav)).toList();
       final jsonString = jsonEncode(favoritesJson);
 
       await prefs.setString(_favoriteMessagesKey, jsonString);
@@ -145,9 +141,7 @@ class AiLocalStorageService extends BaseLoggingService {
       }
 
       final favoritesJson = jsonDecode(jsonString) as List;
-      final favorites = favoritesJson
-          .map((json) => _favoriteFromJson(json))
-          .toList();
+      final favorites = favoritesJson.map((json) => _favoriteFromJson(json)).toList();
 
       logInfo('즐겨찾기 메시지 로드 완료: ${favorites.length}개');
       return favorites;
@@ -165,9 +159,7 @@ class AiLocalStorageService extends BaseLoggingService {
 
       favorites.removeWhere((fav) => fav.id == favoriteId);
 
-      final favoritesJson = favorites
-          .map((fav) => _favoriteToJson(fav))
-          .toList();
+      final favoritesJson = favorites.map((fav) => _favoriteToJson(fav)).toList();
       final jsonString = jsonEncode(favoritesJson);
 
       await prefs.setString(_favoriteMessagesKey, jsonString);
@@ -212,9 +204,7 @@ class AiLocalStorageService extends BaseLoggingService {
       }
 
       final sessionsJson = jsonDecode(jsonString) as List;
-      final sessions = sessionsJson
-          .map((json) => _sessionFromJson(json))
-          .toList();
+      final sessions = sessionsJson.map((json) => _sessionFromJson(json)).toList();
 
       logInfo('채팅 세션 로드 완료: ${sessions.length}개');
       return sessions;
@@ -276,9 +266,7 @@ class AiLocalStorageService extends BaseLoggingService {
       }
 
       final summariesJson = jsonDecode(jsonString) as List;
-      final summaries = summariesJson
-          .map((json) => _summaryFromJson(json))
-          .toList();
+      final summaries = summariesJson.map((json) => _summaryFromJson(json)).toList();
 
       logInfo('채팅 요약 로드 완료: ${summaries.length}개');
       return summaries;
@@ -340,9 +328,7 @@ class AiLocalStorageService extends BaseLoggingService {
       }
 
       final qasJson = jsonDecode(jsonString) as List;
-      final favoriteQAs = qasJson
-          .map((json) => _favoriteQAFromJson(json))
-          .toList();
+      final favoriteQAs = qasJson.map((json) => _favoriteQAFromJson(json)).toList();
 
       logInfo('즐겨찾기 QA 로드 완료: ${favoriteQAs.length}개');
       return favoriteQAs;

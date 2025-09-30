@@ -3,10 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'selection_card.dart';
 
 /// 🎯 Selection Card Demo State Provider
-final selectionCardDemoProvider =
-    StateNotifierProvider<SelectionCardDemoController, String?>(
-      (ref) => SelectionCardDemoController(),
-    );
+final selectionCardDemoProvider = StateNotifierProvider<SelectionCardDemoController, String?>(
+  (ref) => SelectionCardDemoController(),
+);
 
 class SelectionCardDemoController extends StateNotifier<String?> {
   SelectionCardDemoController() : super(null);
@@ -51,21 +50,9 @@ class SelectionCardDemo extends ConsumerWidget {
             const InfoCardList(
               title: '受診記録一覧',
               items: [
-                InfoCardItem(
-                  title: '健康診断',
-                  subtitle: '2025年度',
-                  trailingText: '受診日：2025/04/30',
-                ),
-                InfoCardItem(
-                  title: '健康診断',
-                  subtitle: '2024年度',
-                  trailingText: '受診日：2024/11/24',
-                ),
-                InfoCardItem(
-                  title: '健康診断',
-                  subtitle: '2023年度',
-                  trailingText: '受診日：2023/10/13',
-                ),
+                InfoCardItem(title: '健康診断', subtitle: '2025年度', trailingText: '受診日：2025/04/30'),
+                InfoCardItem(title: '健康診断', subtitle: '2024年度', trailingText: '受診日：2024/11/24'),
+                InfoCardItem(title: '健康診断', subtitle: '2023年度', trailingText: '受診日：2023/10/13'),
               ],
             ),
 
@@ -77,11 +64,7 @@ class SelectionCardDemo extends ConsumerWidget {
               selectedValue: selectedPayment,
               onChanged: controller.selectPayment,
               items: const [
-                SelectionItem(
-                  value: 'credit',
-                  title: 'クレジットカード払い',
-                  subtitle: 'VISA, Master、JCB対応',
-                ),
+                SelectionItem(value: 'credit', title: 'クレジットカード払い', subtitle: 'VISA, Master、JCB対応'),
                 SelectionItem(
                   value: 'bank',
                   title: '銀行振込',
@@ -117,11 +100,7 @@ class PaymentSelectionExample extends ConsumerWidget {
           selectedValue: selectedPayment,
           onChanged: controller.selectPayment,
           items: const [
-            SelectionItem(
-              value: 'credit',
-              title: 'クレジットカード払い',
-              subtitle: 'VISA, Master、JCB対応',
-            ),
+            SelectionItem(value: 'credit', title: 'クレジットカード払い', subtitle: 'VISA, Master、JCB対応'),
             SelectionItem(
               value: 'bank',
               title: '銀行振込',

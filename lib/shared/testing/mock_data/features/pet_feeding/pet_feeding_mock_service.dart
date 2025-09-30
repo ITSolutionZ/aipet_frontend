@@ -17,13 +17,7 @@ class PetFeedingMockService extends BaseMockService {
         'servings': 4,
         'rating': 4.8,
         'isFavorite': true,
-        'ingredients': [
-          '닭가슴살 200g',
-          '고구마 100g',
-          '당근 50g',
-          '브로콜리 50g',
-          '현미 100g',
-        ],
+        'ingredients': ['닭가슴살 200g', '고구마 100g', '당근 50g', '브로콜리 50g', '현미 100g'],
         'instructions': [
           '닭가슴살을 잘게 썰어 삶아주세요',
           '고구마와 당근을 깍둑썰기 해주세요',
@@ -31,12 +25,7 @@ class PetFeedingMockService extends BaseMockService {
           '현미를 따로 삶아 준비해주세요',
           '모든 재료를 섞어 익혀서 완성합니다',
         ],
-        'nutritionInfo': {
-          'calories': 120,
-          'protein': 15.2,
-          'fat': 3.8,
-          'carbs': 8.5,
-        },
+        'nutritionInfo': {'calories': 120, 'protein': 15.2, 'fat': 3.8, 'carbs': 8.5},
         'tags': ['저지방', '고단백', '수제'],
         'category': 'main_meal',
         'createdAt': DateTime.now().subtract(const Duration(days: 10)),
@@ -60,12 +49,7 @@ class PetFeedingMockService extends BaseMockService {
           '모든 재료를 섞어 볼 모양으로 만들어주세요',
           '오븐에서 20분간 구워주세요',
         ],
-        'nutritionInfo': {
-          'calories': 95,
-          'protein': 12.8,
-          'fat': 2.3,
-          'carbs': 6.2,
-        },
+        'nutritionInfo': {'calories': 95, 'protein': 12.8, 'fat': 2.3, 'carbs': 6.2},
         'tags': ['오메가3', '항산화', '면역력'],
         'category': 'treat',
         'createdAt': DateTime.now().subtract(const Duration(days: 15)),
@@ -89,12 +73,7 @@ class PetFeedingMockService extends BaseMockService {
           '쿠키 모양으로 만들어주세요',
           '180도 오븐에서 15분간 구워주세요',
         ],
-        'nutritionInfo': {
-          'calories': 85,
-          'protein': 2.1,
-          'fat': 3.2,
-          'carbs': 14.8,
-        },
+        'nutritionInfo': {'calories': 85, 'protein': 2.1, 'fat': 3.2, 'carbs': 14.8},
         'tags': ['무설탕', '천연감미', '소화촉진'],
         'category': 'snack',
         'createdAt': DateTime.now().subtract(const Duration(days: 20)),
@@ -105,25 +84,19 @@ class PetFeedingMockService extends BaseMockService {
 
   /// 카테고리별 레시피 조회
   static List<Map<String, dynamic>> getMockRecipesByCategory(String category) {
-    return getMockRecipes()
-        .where((recipe) => recipe['category'] == category)
-        .toList();
+    return getMockRecipes().where((recipe) => recipe['category'] == category).toList();
   }
 
   /// 인기 레시피 조회
   static List<Map<String, dynamic>> getMockTopRatedRecipes({int limit = 5}) {
     final recipes = List<Map<String, dynamic>>.from(getMockRecipes());
-    recipes.sort(
-      (a, b) => (b['rating'] as double).compareTo(a['rating'] as double),
-    );
+    recipes.sort((a, b) => (b['rating'] as double).compareTo(a['rating'] as double));
     return recipes.take(limit).toList();
   }
 
   /// 즐겨찾기 레시피 조회
   static List<Map<String, dynamic>> getMockFavoriteRecipes() {
-    return getMockRecipes()
-        .where((recipe) => recipe['isFavorite'] == true)
-        .toList();
+    return getMockRecipes().where((recipe) => recipe['isFavorite'] == true).toList();
   }
 
   /// 빠른 요리 레시피 (30분 이하)
@@ -136,12 +109,8 @@ class PetFeedingMockService extends BaseMockService {
   }
 
   /// 난이도별 레시피 조회
-  static List<Map<String, dynamic>> getMockRecipesByDifficulty(
-    String difficulty,
-  ) {
-    return getMockRecipes()
-        .where((recipe) => recipe['difficulty'] == difficulty)
-        .toList();
+  static List<Map<String, dynamic>> getMockRecipesByDifficulty(String difficulty) {
+    return getMockRecipes().where((recipe) => recipe['difficulty'] == difficulty).toList();
   }
 
   // ==================== 급여 데이터 ====================
@@ -212,11 +181,7 @@ class PetFeedingMockService extends BaseMockService {
         '급여량은 펫의 활동량에 따라 조절하세요',
         '새로운 사료 교체 시 점진적으로 바꿔주세요',
       ],
-      'warningSignals': [
-        '식욕 부진이 2일 이상 계속될 때',
-        '급격한 체중 변화가 있을 때',
-        '소화불량 증상이 반복될 때',
-      ],
+      'warningSignals': ['식욕 부진이 2일 이상 계속될 때', '급격한 체중 변화가 있을 때', '소화불량 증상이 반복될 때'],
     };
   }
 
@@ -281,11 +246,7 @@ class PetFeedingMockService extends BaseMockService {
       'dinner': recipes[1],
       'snack': recipes[2],
       'totalCalories': 300,
-      'nutritionBalance': {
-        'protein': 'good',
-        'fat': 'optimal',
-        'carbs': 'balanced',
-      },
+      'nutritionBalance': {'protein': 'good', 'fat': 'optimal', 'carbs': 'balanced'},
       'preparation': {'totalTime': '45분', 'difficulty': '쉬움', 'steps': 3},
     };
   }

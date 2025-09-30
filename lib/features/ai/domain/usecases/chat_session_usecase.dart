@@ -26,10 +26,7 @@ class ChatSessionUseCase {
   /// [petId] 펫 ID (선택사항)
   ///
   /// Returns: 생성된 채팅 세션
-  Future<Result<AiChatSessionEntity>> createSession({
-    required String title,
-    String? petId,
-  }) async {
+  Future<Result<AiChatSessionEntity>> createSession({required String title, String? petId}) async {
     try {
       // 입력 유효성 검사
       if (title.trim().isEmpty) {

@@ -45,27 +45,18 @@ class YearMonthSelectorWidget extends StatelessWidget {
                           vertical: selectedYear == year ? 8 : 6,
                         ),
                         decoration: BoxDecoration(
-                          color: selectedYear == year
-                              ? AppColors.pointBrown
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(
-                            selectedYear == year ? 18 : 14,
-                          ),
+                          color: selectedYear == year ? AppColors.pointBrown : Colors.transparent,
+                          borderRadius: BorderRadius.circular(selectedYear == year ? 18 : 14),
                         ),
                         child: Text(
                           '$year',
-                          style:
-                              (selectedYear == year
-                                      ? AppFonts.bodyLarge
-                                      : AppFonts.bodyMedium)
-                                  .copyWith(
-                                    color: selectedYear == year
-                                        ? Colors.white
-                                        : AppColors.pointGray,
-                                    fontWeight: selectedYear == year
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                  ),
+                          style: (selectedYear == year ? AppFonts.bodyLarge : AppFonts.bodyMedium)
+                              .copyWith(
+                                color: selectedYear == year ? Colors.white : AppColors.pointGray,
+                                fontWeight: selectedYear == year
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
                         ),
                       ),
                     ),
@@ -92,27 +83,18 @@ class YearMonthSelectorWidget extends StatelessWidget {
                           vertical: selectedMonth == month ? 8 : 6,
                         ),
                         decoration: BoxDecoration(
-                          color: selectedMonth == month
-                              ? AppColors.pointBrown
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(
-                            selectedMonth == month ? 18 : 14,
-                          ),
+                          color: selectedMonth == month ? AppColors.pointBrown : Colors.transparent,
+                          borderRadius: BorderRadius.circular(selectedMonth == month ? 18 : 14),
                         ),
                         child: Text(
                           '$month月',
-                          style:
-                              (selectedMonth == month
-                                      ? AppFonts.bodyLarge
-                                      : AppFonts.bodyMedium)
-                                  .copyWith(
-                                    color: selectedMonth == month
-                                        ? Colors.white
-                                        : AppColors.pointGray,
-                                    fontWeight: selectedMonth == month
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                  ),
+                          style: (selectedMonth == month ? AppFonts.bodyLarge : AppFonts.bodyMedium)
+                              .copyWith(
+                                color: selectedMonth == month ? Colors.white : AppColors.pointGray,
+                                fontWeight: selectedMonth == month
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
                         ),
                       ),
                     ),

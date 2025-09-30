@@ -9,8 +9,8 @@ class WeatherOpenAIService extends BaseLoggingService {
   final AiHttpClientService _httpClient;
 
   WeatherOpenAIService({AiHttpClientService? httpClient})
-      : _httpClient = httpClient ?? AiHttpClientService(),
-        super('weather_openai_service');
+    : _httpClient = httpClient ?? AiHttpClientService(),
+      super('weather_openai_service');
 
   /// 날씨 정보를 바탕으로 산책 어드바이스 생성
   Future<Result<String>> generateWeatherAdvice(String prompt) async {
@@ -32,7 +32,7 @@ class WeatherOpenAIService extends BaseLoggingService {
               'role': 'system',
               'content': '''あなたは犬の散歩アドバイザーです。
 天気情報に基づいて、犬の散歩に関する簡潔で実用的なアドバイスを日本語で提供してください。
-回答は20文字以内の1行で、絵文字を含めて親しみやすく書いてください。'''
+回答は20文字以内の1行で、絵文字を含めて親しみやすく書いてください。''',
             },
             {'role': 'user', 'content': prompt},
           ],

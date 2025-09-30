@@ -29,9 +29,7 @@ final updatePetUseCaseProvider = Provider<UpdatePetUseCase>((ref) {
   return UpdatePetUseCase(repository);
 });
 
-final updatePetProfileUseCaseProvider = Provider<UpdatePetProfileUseCase>((
-  ref,
-) {
+final updatePetProfileUseCaseProvider = Provider<UpdatePetProfileUseCase>((ref) {
   final repository = ref.watch(petProfileRepositoryProvider);
   return UpdatePetProfileUseCase(repository);
 });
@@ -41,8 +39,7 @@ final deletePetUseCaseProvider = Provider<DeletePetUseCase>((ref) {
   return DeletePetUseCase(repository);
 });
 
-final manageFamilyManagersUseCaseProvider =
-    Provider<ManageFamilyManagersUseCase>((ref) {
-      final repository = ref.watch(petProfileRepositoryProvider);
-      return ManageFamilyManagersUseCase(repository);
-    });
+final manageFamilyManagersUseCaseProvider = Provider<ManageFamilyManagersUseCase>((ref) {
+  final repository = ref.watch(petProfileRepositoryProvider);
+  return ManageFamilyManagersUseCase(repository);
+});

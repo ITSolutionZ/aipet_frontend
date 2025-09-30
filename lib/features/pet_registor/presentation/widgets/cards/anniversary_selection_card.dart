@@ -29,10 +29,7 @@ class AnniversarySelectionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(
-            color: AppColors.pointGray.withValues(alpha: 0.2),
-            width: 1,
-          ),
+          border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
           boxShadow: [
             BoxShadow(
               color: AppColors.pointDark.withValues(alpha: 0.05),
@@ -70,9 +67,7 @@ class AnniversarySelectionCard extends StatelessWidget {
                         ? '${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日'
                         : '日付を選択してください',
                     style: AppFonts.bodyMedium.copyWith(
-                      color: selectedDate != null
-                          ? AppColors.pointDark
-                          : AppColors.pointGray,
+                      color: selectedDate != null ? AppColors.pointDark : AppColors.pointGray,
                     ),
                   ),
                 ],
@@ -80,11 +75,7 @@ class AnniversarySelectionCard extends StatelessWidget {
             ),
             if (badge != null) badge!,
             const SizedBox(width: AppSpacing.sm),
-            const Icon(
-              Icons.arrow_forward_ios,
-              color: AppColors.pointGray,
-              size: 16,
-            ),
+            const Icon(Icons.arrow_forward_ios, color: AppColors.pointGray, size: 16),
           ],
         ),
       ),

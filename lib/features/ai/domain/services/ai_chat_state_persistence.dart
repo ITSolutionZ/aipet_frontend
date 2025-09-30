@@ -20,10 +20,7 @@ class AiChatStatePersistence {
   Future<Result<void>> saveSelectedPet(String petId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final success = await prefs.setString(
-        '$_keyPrefix$_keySelectedPet',
-        petId,
-      );
+      final success = await prefs.setString('$_keyPrefix$_keySelectedPet', petId);
 
       if (success) {
         if (kDebugMode) {

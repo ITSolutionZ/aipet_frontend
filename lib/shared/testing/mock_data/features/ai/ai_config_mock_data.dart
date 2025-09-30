@@ -247,9 +247,7 @@ class AiConfigMockData {
   }
 
   /// 카테고리별 추천 질문 조회
-  static List<AiSuggestedQuestionEntity> getQuestionsByCategory(
-    String category,
-  ) {
+  static List<AiSuggestedQuestionEntity> getQuestionsByCategory(String category) {
     final allQuestions = getMockSuggestedQuestions();
     return allQuestions.where((q) => q.category == category).toList();
   }

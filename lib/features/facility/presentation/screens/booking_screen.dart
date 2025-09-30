@@ -44,9 +44,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(bookingControllerProvider(widget.facilityId));
-    final controller = ref.read(
-      bookingControllerProvider(widget.facilityId).notifier,
-    );
+    final controller = ref.read(bookingControllerProvider(widget.facilityId).notifier);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -86,11 +84,8 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             // 🛠️ 서비스 선택
             BookingServiceSelector(
               services: _getServices(),
-              selectedServiceIds: state.selectedServices
-                  .map((s) => s.toString())
-                  .toList(),
-              onServiceToggle: (serviceId) =>
-                  controller.toggleService(int.parse(serviceId)),
+              selectedServiceIds: state.selectedServices.map((s) => s.toString()).toList(),
+              onServiceToggle: (serviceId) => controller.toggleService(int.parse(serviceId)),
               allowMultipleSelection: true,
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -130,10 +125,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               children: [
                 Icon(Icons.person, size: 20, color: Colors.blue),
                 SizedBox(width: 8),
-                Text(
-                  '예약자 정보',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+                Text('예약자 정보', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: AppSpacing.md),
@@ -183,10 +175,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
               children: [
                 Icon(Icons.note_outlined, size: 20, color: Colors.blue),
                 SizedBox(width: 8),
-                Text(
-                  '메모 (선택사항)',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+                Text('메모 (선택사항)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 16),
@@ -210,9 +199,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   /// 📋 예약 버튼
   Widget _buildBookingButton(BookingController controller) {
     return ElevatedButton(
-      onPressed: _isBookingEnabled()
-          ? () => _showBookingConfirmation(controller)
-          : null,
+      onPressed: _isBookingEnabled() ? () => _showBookingConfirmation(controller) : null,
       child: const Text('예약하기'),
     );
   }
@@ -232,10 +219,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
         title: const Text('예약 확인'),
         content: const Text('예약을 진행하시겠습니까?'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('취소'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('취소')),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
@@ -258,12 +242,8 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             .read(bookingControllerProvider(widget.facilityId))
             .selectedDate
             .toIso8601String(),
-        'time': ref
-            .read(bookingControllerProvider(widget.facilityId))
-            .selectedTime,
-        'services': ref
-            .read(bookingControllerProvider(widget.facilityId))
-            .selectedServices,
+        'time': ref.read(bookingControllerProvider(widget.facilityId)).selectedTime,
+        'services': ref.read(bookingControllerProvider(widget.facilityId)).selectedServices,
         'customerName': _nameController.text.trim(),
         'customerPhone': _phoneController.text.trim(),
         'note': _noteController.text.trim(),
@@ -279,22 +259,16 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
       // 성공 메시지
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('예약이 완료되었습니다.'),
-            backgroundColor: Colors.green,
-          ),
+          const SnackBar(content: Text('예약이 완료되었습니다.'), backgroundColor: Colors.green),
         );
         context.pop();
       }
     } catch (e) {
       // 에러 처리
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('예약 중 오류가 발생했습니다: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('예약 중 오류가 발생했습니다: $e'), backgroundColor: Colors.red));
       }
     }
   }

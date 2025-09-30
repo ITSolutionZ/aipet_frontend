@@ -88,18 +88,14 @@ class PetTypeGridWidget extends StatelessWidget {
           width: double.infinity,
           child: OutlinedButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('カスタムペットタイプは近日公開予定です')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('カスタムペットタイプは近日公開予定です')));
             },
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-              ),
-              side: BorderSide(
-                color: AppColors.pointGray.withValues(alpha: 0.5),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+              side: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.5)),
             ),
             child: Text(
               '種類がない',

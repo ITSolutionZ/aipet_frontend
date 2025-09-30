@@ -8,12 +8,7 @@ class FacilityCard extends StatelessWidget {
   final VoidCallback? onFavoriteToggle;
   final VoidCallback? onTap;
 
-  const FacilityCard({
-    super.key,
-    required this.facility,
-    this.onTap,
-    this.onFavoriteToggle,
-  });
+  const FacilityCard({super.key, required this.facility, this.onTap, this.onFavoriteToggle});
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +56,7 @@ class FacilityCard extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xs / 2),
                   Text(
                     _getTypeName(facility.type),
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointGray,
-                    ),
+                    style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                   ),
                 ],
               ),
@@ -84,9 +77,7 @@ class FacilityCard extends StatelessWidget {
 
         Text(
           facility.description ?? '',
-          style: AppFonts.bodyMedium.copyWith(
-            color: AppColors.pointDark.withValues(alpha: 0.7),
-          ),
+          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark.withValues(alpha: 0.7)),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
@@ -130,18 +121,9 @@ class FacilityCard extends StatelessWidget {
             if (facility.lastVisit != null)
               Row(
                 children: [
-                  const Icon(
-                    Icons.history,
-                    size: 14,
-                    color: AppColors.pointGray,
-                  ),
+                  const Icon(Icons.history, size: 14, color: AppColors.pointGray),
                   const SizedBox(width: AppSpacing.xs / 2),
-                  Text(
-                    '最後の訪問',
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointGray,
-                    ),
-                  ),
+                  Text('最後の訪問', style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
                 ],
               ),
           ],

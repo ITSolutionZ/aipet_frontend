@@ -7,12 +7,7 @@ class WalkRecordCardWidget extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
 
-  const WalkRecordCardWidget({
-    super.key,
-    required this.walkRecord,
-    this.onTap,
-    this.onLongPress,
-  });
+  const WalkRecordCardWidget({super.key, required this.walkRecord, this.onTap, this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +37,7 @@ class WalkRecordCardWidget extends StatelessWidget {
             color: AppColors.pointBrown.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),
           ),
-          child: const Icon(
-            Icons.directions_walk,
-            size: 16,
-            color: AppColors.pointBrown,
-          ),
+          child: const Icon(Icons.directions_walk, size: 16, color: AppColors.pointBrown),
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(

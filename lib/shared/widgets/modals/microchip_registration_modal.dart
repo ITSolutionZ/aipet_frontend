@@ -62,11 +62,7 @@ class MicrochipRegistrationModal extends StatelessWidget {
                       return Container(
                         color: AppColors.pointOffWhite.withValues(alpha: 0.3),
                         child: const Center(
-                          child: Icon(
-                            Icons.pets,
-                            size: 100,
-                            color: AppColors.pointBlue,
-                          ),
+                          child: Icon(Icons.pets, size: 100, color: AppColors.pointBlue),
                         ),
                       );
                     },
@@ -91,21 +87,15 @@ class MicrochipRegistrationModal extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.pointBlue,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppSpacing.md,
-                          ),
+                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                           elevation: 2,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.medium,
-                            ),
+                            borderRadius: BorderRadius.circular(AppRadius.medium),
                           ),
                         ),
                         child: Text(
                           '今すぐ登録',
-                          style: AppFonts.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -122,17 +112,10 @@ class MicrochipRegistrationModal extends StatelessWidget {
                         },
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.pointBlue,
-                          side: const BorderSide(
-                            color: AppColors.pointBlue,
-                            width: 1.5,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppSpacing.md,
-                          ),
+                          side: const BorderSide(color: AppColors.pointBlue, width: 1.5),
+                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.medium,
-                            ),
+                            borderRadius: BorderRadius.circular(AppRadius.medium),
                           ),
                         ),
                         child: Text(
@@ -154,12 +137,8 @@ class MicrochipRegistrationModal extends StatelessWidget {
                         onDismiss?.call();
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor: AppColors.pointGray.withValues(
-                          alpha: 0.7,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.xs,
-                        ),
+                        foregroundColor: AppColors.pointGray.withValues(alpha: 0.7),
+                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
                       ),
                       child: Text(
                         '1週間後に再表示',

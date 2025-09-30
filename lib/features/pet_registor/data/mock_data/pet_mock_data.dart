@@ -19,13 +19,7 @@ class PetMockData {
   @Deprecated('Use PetMockService.getMockDogBreeds() instead')
   static List<Map<String, dynamic>> getDogBreeds() {
     return PetMockService.getMockDogBreeds()
-        .map(
-          (breed) => {
-            'id': breed['id'],
-            'name': breed['koreanName'],
-            'size': breed['size'],
-          },
-        )
+        .map((breed) => {'id': breed['id'], 'name': breed['koreanName'], 'size': breed['size']})
         .toList();
   }
 

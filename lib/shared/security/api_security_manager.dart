@@ -7,8 +7,7 @@ import 'package:flutter/foundation.dart';
 /// API 호출에 대한 Rate Limiting, DDoS 방어, 보안 헤더 검증을 제공합니다.
 class ApiSecurityManager {
   static ApiSecurityManager? _instance;
-  static ApiSecurityManager get instance =>
-      _instance ??= ApiSecurityManager._();
+  static ApiSecurityManager get instance => _instance ??= ApiSecurityManager._();
 
   ApiSecurityManager._();
 
@@ -100,9 +99,7 @@ class ApiSecurityManager {
 
     // 1분 이내 요청 수 확인
     final oneMinuteAgo = now.subtract(const Duration(minutes: 1));
-    final recentRequests = clientHistory
-        .where((time) => time.isAfter(oneMinuteAgo))
-        .length;
+    final recentRequests = clientHistory.where((time) => time.isAfter(oneMinuteAgo)).length;
 
     if (recentRequests >= _maxRequestsPerMinute) {
       return RateLimitResult.exceeded('Too many requests per minute');
@@ -110,9 +107,7 @@ class ApiSecurityManager {
 
     // 1시간 이내 요청 수 확인
     final oneHourAgo = now.subtract(const Duration(hours: 1));
-    final hourlyRequests = clientHistory
-        .where((time) => time.isAfter(oneHourAgo))
-        .length;
+    final hourlyRequests = clientHistory.where((time) => time.isAfter(oneHourAgo)).length;
 
     if (hourlyRequests >= _maxRequestsPerHour) {
       return RateLimitResult.exceeded('Too many requests per hour');
@@ -126,23 +121,17 @@ class ApiSecurityManager {
     for (final entry in _requiredSecurityHeaders.entries) {
       final headerValue = headers[entry.key];
       if (headerValue == null || headerValue.isEmpty) {
-        return SecurityHeaderResult.invalid(
-          'Missing required header: ${entry.key}',
-        );
+        return SecurityHeaderResult.invalid('Missing required header: ${entry.key}');
       }
 
       // Content-Type 검증
-      if (entry.key == 'Content-Type' &&
-          !headerValue.contains('application/json')) {
-        return SecurityHeaderResult.invalid(
-          'Invalid Content-Type: $headerValue',
-        );
+      if (entry.key == 'Content-Type' && !headerValue.contains('application/json')) {
+        return SecurityHeaderResult.invalid('Invalid Content-Type: $headerValue');
       }
     }
 
     // 추가 보안 헤더 검증
-    if (headers.containsKey('X-Forwarded-For') ||
-        headers.containsKey('X-Real-IP')) {
+    if (headers.containsKey('X-Forwarded-For') || headers.containsKey('X-Real-IP')) {
       return SecurityHeaderResult.invalid('Proxied request detected');
     }
 
@@ -161,12 +150,8 @@ class ApiSecurityManager {
     ];
 
     for (final pattern in forbiddenPatterns) {
-      if (endpoint.toLowerCase().contains(
-        RegExp(pattern, caseSensitive: false),
-      )) {
-        return EndpointSecurityResult.insecure(
-          'Forbidden pattern detected: $pattern',
-        );
+      if (endpoint.toLowerCase().contains(RegExp(pattern, caseSensitive: false))) {
+        return EndpointSecurityResult.insecure('Forbidden pattern detected: $pattern');
       }
     }
 
@@ -180,12 +165,8 @@ class ApiSecurityManager {
     ];
 
     for (final pattern in sqlPatterns) {
-      if (endpoint.toLowerCase().contains(
-        RegExp(pattern, caseSensitive: false),
-      )) {
-        return EndpointSecurityResult.insecure(
-          'SQL injection pattern detected: $pattern',
-        );
+      if (endpoint.toLowerCase().contains(RegExp(pattern, caseSensitive: false))) {
+        return EndpointSecurityResult.insecure('SQL injection pattern detected: $pattern');
       }
     }
 
@@ -208,14 +189,9 @@ class ApiSecurityManager {
 
   /// 보안 통계 생성
   ApiSecurityStats generateStats() {
-    final totalRequests = _requestCounts.values.fold(
-      0,
-      (sum, count) => sum + count,
-    );
+    final totalRequests = _requestCounts.values.fold(0, (sum, count) => sum + count);
     final uniqueClients = _requestHistory.keys.length;
-    final averageRequestsPerClient = uniqueClients > 0
-        ? totalRequests / uniqueClients
-        : 0;
+    final averageRequestsPerClient = uniqueClients > 0 ? totalRequests / uniqueClients : 0;
 
     return ApiSecurityStats(
       totalRequests: totalRequests,
@@ -251,9 +227,7 @@ class ApiSecurityManager {
       // 1분당 60회 이상 요청
       final now = DateTime.now();
       final oneMinuteAgo = now.subtract(const Duration(minutes: 1));
-      final recentRequests = clientHistory
-          .where((time) => time.isAfter(oneMinuteAgo))
-          .length;
+      final recentRequests = clientHistory.where((time) => time.isAfter(oneMinuteAgo)).length;
 
       if (recentRequests > _maxRequestsPerMinute) {
         activities.add(
@@ -261,8 +235,7 @@ class ApiSecurityManager {
             clientId: clientId,
             type: SuspiciousActivityType.highFrequency,
             severity: SuspiciousActivitySeverity.high,
-            description:
-                'High frequency requests detected: $recentRequests requests in 1 minute',
+            description: 'High frequency requests detected: $recentRequests requests in 1 minute',
             timestamp: now,
           ),
         );
@@ -270,9 +243,7 @@ class ApiSecurityManager {
 
       // 1시간당 1000회 이상 요청
       final oneHourAgo = now.subtract(const Duration(hours: 1));
-      final hourlyRequests = clientHistory
-          .where((time) => time.isAfter(oneHourAgo))
-          .length;
+      final hourlyRequests = clientHistory.where((time) => time.isAfter(oneHourAgo)).length;
 
       if (hourlyRequests > _maxRequestsPerHour) {
         activities.add(
@@ -280,8 +251,7 @@ class ApiSecurityManager {
             clientId: clientId,
             type: SuspiciousActivityType.excessiveRequests,
             severity: SuspiciousActivitySeverity.critical,
-            description:
-                'Excessive requests detected: $hourlyRequests requests in 1 hour',
+            description: 'Excessive requests detected: $hourlyRequests requests in 1 hour',
             timestamp: now,
           ),
         );
@@ -302,9 +272,7 @@ class ApiSecurityManager {
     debugPrint('Total Requests: ${stats.totalRequests}');
     debugPrint('Unique Clients: ${stats.uniqueClients}');
     debugPrint('Active Requests: ${stats.activeRequests}');
-    debugPrint(
-      'Avg Requests/Client: ${stats.averageRequestsPerClient.toStringAsFixed(2)}',
-    );
+    debugPrint('Avg Requests/Client: ${stats.averageRequestsPerClient.toStringAsFixed(2)}');
     debugPrint('Suspicious Activities: ${suspiciousActivities.length}');
 
     if (suspiciousActivities.isNotEmpty) {
@@ -322,23 +290,12 @@ class ApiSecurityResult {
   final String? reason;
   final ApiSecurityViolationType? violationType;
 
-  const ApiSecurityResult._({
-    required this.isAllowed,
-    this.reason,
-    this.violationType,
-  });
+  const ApiSecurityResult._({required this.isAllowed, this.reason, this.violationType});
 
-  factory ApiSecurityResult.allowed() =>
-      const ApiSecurityResult._(isAllowed: true);
+  factory ApiSecurityResult.allowed() => const ApiSecurityResult._(isAllowed: true);
 
-  factory ApiSecurityResult.blocked(
-    String reason,
-    ApiSecurityViolationType type,
-  ) => ApiSecurityResult._(
-    isAllowed: false,
-    reason: reason,
-    violationType: type,
-  );
+  factory ApiSecurityResult.blocked(String reason, ApiSecurityViolationType type) =>
+      ApiSecurityResult._(isAllowed: false, reason: reason, violationType: type);
 }
 
 /// Rate Limiting 결과
@@ -360,8 +317,7 @@ class SecurityHeaderResult {
 
   const SecurityHeaderResult._({required this.isValid, this.reason});
 
-  factory SecurityHeaderResult.valid() =>
-      const SecurityHeaderResult._(isValid: true);
+  factory SecurityHeaderResult.valid() => const SecurityHeaderResult._(isValid: true);
   factory SecurityHeaderResult.invalid(String reason) =>
       SecurityHeaderResult._(isValid: false, reason: reason);
 }
@@ -373,8 +329,7 @@ class EndpointSecurityResult {
 
   const EndpointSecurityResult._({required this.isSecure, this.reason});
 
-  factory EndpointSecurityResult.secure() =>
-      const EndpointSecurityResult._(isSecure: true);
+  factory EndpointSecurityResult.secure() => const EndpointSecurityResult._(isSecure: true);
   factory EndpointSecurityResult.insecure(String reason) =>
       EndpointSecurityResult._(isSecure: false, reason: reason);
 }
@@ -402,11 +357,7 @@ class ClientStats {
   final int requestCount;
   final DateTime? lastRequest;
 
-  const ClientStats({
-    required this.clientId,
-    required this.requestCount,
-    this.lastRequest,
-  });
+  const ClientStats({required this.clientId, required this.requestCount, this.lastRequest});
 }
 
 /// 의심스러운 활동
@@ -436,11 +387,7 @@ enum ApiSecurityViolationType {
 }
 
 /// 의심스러운 활동 타입
-enum SuspiciousActivityType {
-  highFrequency,
-  excessiveRequests,
-  suspiciousPattern,
-}
+enum SuspiciousActivityType { highFrequency, excessiveRequests, suspiciousPattern }
 
 /// 의심스러운 활동 심각도
 enum SuspiciousActivitySeverity { low, medium, high, critical }

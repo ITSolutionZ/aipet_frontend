@@ -35,11 +35,7 @@ class WalkDetailScreen extends ConsumerWidget {
           // 뒤로가기 버튼
           IconButton(
             onPressed: () => context.pop(),
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: AppColors.pointDark,
-              size: 20,
-            ),
+            icon: const Icon(Icons.arrow_back_ios, color: AppColors.pointDark, size: 20),
           ),
 
           // 제목과 날짜
@@ -58,17 +54,11 @@ class WalkDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    const Icon(
-                      Icons.calendar_today,
-                      color: AppColors.pointGray,
-                      size: 16,
-                    ),
+                    const Icon(Icons.calendar_today, color: AppColors.pointGray, size: 16),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       walkRecord.dateString,
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointGray,
-                      ),
+                      style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                     ),
                   ],
                 ),
@@ -85,17 +75,11 @@ class WalkDetailScreen extends ConsumerWidget {
 
   Widget _buildPetInfo() {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(
-          color: AppColors.pointBrown.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -106,10 +90,7 @@ class WalkDetailScreen extends ConsumerWidget {
             height: 24,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.pointBrown.withValues(alpha: 0.3),
-                width: 1,
-              ),
+              border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.3), width: 1),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
@@ -119,11 +100,7 @@ class WalkDetailScreen extends ConsumerWidget {
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     color: AppColors.pointGray.withValues(alpha: 0.3),
-                    child: const Icon(
-                      Icons.pets,
-                      color: AppColors.pointGray,
-                      size: 12,
-                    ),
+                    child: const Icon(Icons.pets, color: AppColors.pointGray, size: 12),
                   );
                 },
               ),

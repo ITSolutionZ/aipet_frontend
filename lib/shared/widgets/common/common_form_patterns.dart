@@ -43,18 +43,10 @@ class CommonFormPatterns {
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         border: const OutlineInputBorder(),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        errorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.red),
-        ),
+        enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+        focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+        errorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+        focusedErrorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
       ),
     );
   }
@@ -125,9 +117,7 @@ class CommonFormPatterns {
     return TextFormField(
       controller: controller,
       initialValue: initialValue,
-      keyboardType: TextInputType.numberWithOptions(
-        decimal: decimalPlaces != null,
-      ),
+      keyboardType: TextInputType.numberWithOptions(decimal: decimalPlaces != null),
       textInputAction: TextInputAction.next,
       validator: validator ?? (value) => _numberValidator(value, min, max),
       onChanged: onChanged,
@@ -143,18 +133,10 @@ class CommonFormPatterns {
         labelText: label,
         hintText: hint,
         border: const OutlineInputBorder(),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        errorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.red),
-        ),
+        enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+        focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+        errorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+        focusedErrorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
       ),
     );
   }
@@ -197,9 +179,7 @@ class CommonFormPatterns {
               initialValue != null
                   ? '${initialValue.year}/${initialValue.month.toString().padLeft(2, '0')}/${initialValue.day.toString().padLeft(2, '0')}'
                   : '日付を選択してください',
-              style: TextStyle(
-                color: initialValue != null ? Colors.black : Colors.grey,
-              ),
+              style: TextStyle(color: initialValue != null ? Colors.black : Colors.grey),
             ),
           ),
         );
@@ -241,9 +221,7 @@ class CommonFormPatterns {
               initialValue != null
                   ? '${initialValue.hour.toString().padLeft(2, '0')}:${initialValue.minute.toString().padLeft(2, '0')}'
                   : '時間を選択してください',
-              style: TextStyle(
-                color: initialValue != null ? Colors.black : Colors.grey,
-              ),
+              style: TextStyle(color: initialValue != null ? Colors.black : Colors.grey),
             ),
           ),
         );
@@ -279,10 +257,7 @@ class CommonFormPatterns {
               isDense: true,
               isExpanded: true,
               items: items.map((T item) {
-                return DropdownMenuItem<T>(
-                  value: item,
-                  child: Text(itemBuilder(item)),
-                );
+                return DropdownMenuItem<T>(value: item, child: Text(itemBuilder(item)));
               }).toList(),
               onChanged: (T? newValue) {
                 field.didChange(newValue);

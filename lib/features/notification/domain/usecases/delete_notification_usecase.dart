@@ -76,9 +76,7 @@ class DeleteNotificationUseCase {
   }
 
   /// 사용자의 모든 알림 삭제
-  Future<Result<Map<String, dynamic>>> deleteAllUserNotifications(
-    String userId,
-  ) async {
+  Future<Result<Map<String, dynamic>>> deleteAllUserNotifications(String userId) async {
     try {
       if (userId.trim().isEmpty) {
         return Result.failure('ユーザーIDが無効です');
@@ -99,9 +97,7 @@ class DeleteNotificationUseCase {
   }
 
   /// 읽지 않은 알림만 삭제
-  Future<Result<Map<String, dynamic>>> deleteUnreadNotifications(
-    String userId,
-  ) async {
+  Future<Result<Map<String, dynamic>>> deleteUnreadNotifications(String userId) async {
     try {
       if (userId.trim().isEmpty) {
         return Result.failure('ユーザーIDが無効です');

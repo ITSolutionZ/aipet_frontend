@@ -29,9 +29,7 @@ class MicrochipServiceImpl implements MicrochipService {
   }
 
   @override
-  Future<Result<Map<String, dynamic>?>> getPetInfoByMicrochip(
-    String microchipNumber,
-  ) async {
+  Future<Result<Map<String, dynamic>?>> getPetInfoByMicrochip(String microchipNumber) async {
     try {
       // TODO: 실제 마이크로칩 데이터베이스에서 펫 정보 조회
       // 현재는 Mock 데이터 반환
@@ -42,17 +40,12 @@ class MicrochipServiceImpl implements MicrochipService {
         'registrationDate': DateTime.now().toIso8601String(),
       });
     } catch (error) {
-      return Result.failure(
-        '마이크로칩으로 펫 정보 조회 중 오류가 발생했습니다: ${error.toString()}',
-      );
+      return Result.failure('마이크로칩으로 펫 정보 조회 중 오류가 발생했습니다: ${error.toString()}');
     }
   }
 
   @override
-  Future<Result<void>> registerMicrochipNumber(
-    String petId,
-    String microchipNumber,
-  ) async {
+  Future<Result<void>> registerMicrochipNumber(String petId, String microchipNumber) async {
     try {
       // TODO: 실제 마이크로칩 등록 API 호출
       return Result.success('마이크로칩 번호가 성공적으로 등록되었습니다', null);

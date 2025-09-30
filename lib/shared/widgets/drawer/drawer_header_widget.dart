@@ -24,9 +24,7 @@ class DrawerHeaderWidget extends StatelessWidget {
               color: userImagePath == null ? Colors.white : null,
               border: Border.all(color: Colors.white, width: 2),
               image: DecorationImage(
-                image: AssetImage(
-                  userImagePath ?? 'assets/icons/aipet_logo.png',
-                ),
+                image: AssetImage(userImagePath ?? 'assets/icons/aipet_logo.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -48,18 +46,11 @@ class DrawerHeaderWidget extends StatelessWidget {
                   },
                   child: Column(
                     children: [
-                      Icon(
-                        Icons.location_on,
-                        color: Colors.white.withValues(alpha: 0.9),
-                        size: 18,
-                      ),
+                      Icon(Icons.location_on, color: Colors.white.withValues(alpha: 0.9), size: 18),
                       const SizedBox(height: 2),
                       Text(
                         '位置設定',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          fontSize: 11,
-                        ),
+                        style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 11),
                       ),
                     ],
                   ),
@@ -86,20 +77,10 @@ class _StatItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 2),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.8),
-            fontSize: 11,
-          ),
-        ),
+        Text(label, style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 11)),
       ],
     );
   }

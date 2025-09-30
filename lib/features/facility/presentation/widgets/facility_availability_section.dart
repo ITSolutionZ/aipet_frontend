@@ -64,10 +64,7 @@ class FacilityAvailabilitySection extends StatelessWidget {
       child: Center(
         child: Text(
           day,
-          style: AppFonts.bodySmall.copyWith(
-            color: Colors.blue,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppFonts.bodySmall.copyWith(color: Colors.blue, fontWeight: FontWeight.w600),
         ),
       ),
     );

@@ -31,16 +31,8 @@ abstract class WalkRepository {
   Future<void> deleteWalkRecord(String id);
 
   /// 산책 종료
-  Future<WalkRecordEntity> endWalk(
-    String recordId, {
-    double? distance,
-    String? notes,
-  });
+  Future<WalkRecordEntity> endWalk(String recordId, {double? distance, String? notes});
 
   /// 산책 통계 조회
-  Future<WalkStatistics> getWalkStatistics({
-    String? petId,
-    DateTime? startDate,
-    DateTime? endDate,
-  });
+  Future<WalkStatistics> getWalkStatistics({String? petId, DateTime? startDate, DateTime? endDate});
 }

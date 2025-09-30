@@ -14,10 +14,7 @@ mixin RepositoryMixin<T, ID> {
   /// 공통 에러 처리
   Result<R> handleError<R>(dynamic error, String operation) {
     final errorMessage = _getErrorMessage(error, operation);
-    return Result.failure(
-      errorMessage,
-      error is Exception ? error : Exception(error.toString()),
-    );
+    return Result.failure(errorMessage, error is Exception ? error : Exception(error.toString()));
   }
 
   /// 에러 메시지 생성
@@ -26,8 +23,7 @@ mixin RepositoryMixin<T, ID> {
       final errorMessage = error.toString();
 
       // 네트워크 관련 에러
-      if (errorMessage.contains('SocketException') ||
-          errorMessage.contains('HandshakeException')) {
+      if (errorMessage.contains('SocketException') || errorMessage.contains('HandshakeException')) {
         return 'ネットワーク接続エラーが発生しました';
       }
 
@@ -113,9 +109,7 @@ mixin MemoryRepositoryMixin<T, ID> {
 
   /// 아이템 업데이트
   void updateItem(T item) {
-    final index = _items.indexWhere(
-      (existing) => _getId(existing) == _getId(item),
-    );
+    final index = _items.indexWhere((existing) => _getId(existing) == _getId(item));
     if (index != -1) {
       _items[index] = item;
     }

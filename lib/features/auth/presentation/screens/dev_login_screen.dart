@@ -40,10 +40,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
       // 성공 메시지 표시
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('開発モードでログインしました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
+          const SnackBar(content: Text('開発モードでログインしました'), backgroundColor: AppColors.pointGreen),
         );
 
         // 홈 화면으로 이동
@@ -52,10 +49,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('ログインエラー: $error'),
-            backgroundColor: AppColors.pointBrown,
-          ),
+          SnackBar(content: Text('ログインエラー: $error'), backgroundColor: AppColors.pointBrown),
         );
       }
     } finally {
@@ -124,11 +118,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
                 color: AppColors.pointBrown.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppSpacing.md),
               ),
-              child: const Icon(
-                Icons.pets,
-                size: 60,
-                color: AppColors.pointBrown,
-              ),
+              child: const Icon(Icons.pets, size: 60, color: AppColors.pointBrown),
             );
           },
         ),
@@ -146,9 +136,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
 
         Text(
           'ITSOLUTIONZ',
-          style: AppFonts.bodyMedium.copyWith(
-            color: AppColors.pointBrown.withValues(alpha: 0.7),
-          ),
+          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointBrown.withValues(alpha: 0.7)),
         ),
       ],
     );
@@ -161,18 +149,11 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
       decoration: BoxDecoration(
         color: AppColors.pointBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.md),
-        border: Border.all(
-          color: AppColors.pointBlue.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.pointBlue.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.developer_mode,
-            color: AppColors.pointBlue,
-            size: 20,
-          ),
+          const Icon(Icons.developer_mode, color: AppColors.pointBlue, size: 20),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -198,20 +179,14 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
           decoration: InputDecoration(
             labelText: 'メールアドレス',
             hintText: '任意のメールアドレスを入力',
-            prefixIcon: const Icon(
-              Icons.email_outlined,
-              color: AppColors.pointBrown,
-            ),
+            prefixIcon: const Icon(Icons.email_outlined, color: AppColors.pointBrown),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.md),
               borderSide: const BorderSide(color: AppColors.pointBrown),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.md),
-              borderSide: const BorderSide(
-                color: AppColors.pointBrown,
-                width: 2,
-              ),
+              borderSide: const BorderSide(color: AppColors.pointBrown, width: 2),
             ),
             filled: true,
             fillColor: Colors.white,
@@ -227,20 +202,14 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
           decoration: InputDecoration(
             labelText: 'パスワード',
             hintText: '任意のパスワードを入力',
-            prefixIcon: const Icon(
-              Icons.lock_outlined,
-              color: AppColors.pointBrown,
-            ),
+            prefixIcon: const Icon(Icons.lock_outlined, color: AppColors.pointBrown),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.md),
               borderSide: const BorderSide(color: AppColors.pointBrown),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.md),
-              borderSide: const BorderSide(
-                color: AppColors.pointBrown,
-                width: 2,
-              ),
+              borderSide: const BorderSide(color: AppColors.pointBrown, width: 2),
             ),
             filled: true,
             fillColor: Colors.white,
@@ -260,13 +229,8 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.pointBrown,
           foregroundColor: AppColors.pointOffWhite,
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.md,
-            horizontal: AppSpacing.lg,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.md),
-          ),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md, horizontal: AppSpacing.lg),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
           elevation: 2,
         ),
         child: _isLoading
@@ -275,17 +239,10 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
                 width: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.pointOffWhite,
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointOffWhite),
                 ),
               )
-            : Text(
-                '開発ログイン',
-                style: AppFonts.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+            : Text('開発ログイン', style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
       ),
     );
   }
@@ -300,18 +257,14 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
 
         Text(
           '開発モード',
-          style: AppFonts.bodySmall.copyWith(
-            color: AppColors.pointBrown.withValues(alpha: 0.6),
-          ),
+          style: AppFonts.bodySmall.copyWith(color: AppColors.pointBrown.withValues(alpha: 0.6)),
         ),
 
         const SizedBox(height: AppSpacing.xs),
 
         Text(
           '本番環境では実際の認証が必要です',
-          style: AppFonts.bodySmall.copyWith(
-            color: AppColors.pointBrown.withValues(alpha: 0.4),
-          ),
+          style: AppFonts.bodySmall.copyWith(color: AppColors.pointBrown.withValues(alpha: 0.4)),
         ),
       ],
     );

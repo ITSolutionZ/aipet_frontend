@@ -50,9 +50,7 @@ abstract class UnifiedStateController<T> extends FormController<T> {
   /// 이메일 유효성 검사 (공통)
   @override
   Result<void> validateEmail(String email) {
-    final emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     if (!emailRegex.hasMatch(email)) {
       setError('有効なメールアドレスを入力してください');
       return Result.failure('有効なメールアドレスを入力してください');

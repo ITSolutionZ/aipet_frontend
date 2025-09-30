@@ -20,17 +20,11 @@ class HomeErrorViewWidget extends ConsumerWidget {
           children: [
             const Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: AppSpacing.lg),
-            Text(
-              'データの読み込みに失敗しました',
-              style: AppTextStyles.titleMedium,
-              textAlign: TextAlign.center,
-            ),
+            Text('データの読み込みに失敗しました', style: AppTextStyles.titleMedium, textAlign: TextAlign.center),
             const SizedBox(height: AppSpacing.sm),
             Text(
               error.toString(),
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
-              ),
+              style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.lg),

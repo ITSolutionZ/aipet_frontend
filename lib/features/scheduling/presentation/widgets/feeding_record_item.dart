@@ -18,11 +18,7 @@ class FeedingRecordItem extends StatelessWidget {
             color: AppColors.pointGreen.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(25),
           ),
-          child: const Icon(
-            Icons.restaurant,
-            color: AppColors.pointGreen,
-            size: 25,
-          ),
+          child: const Icon(Icons.restaurant, color: AppColors.pointGreen, size: 25),
         ),
         title: Text(
           '${record.petName}の食事',
@@ -45,10 +41,7 @@ class FeedingRecordItem extends StatelessWidget {
           ],
         ),
         trailing: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm,
-            vertical: AppSpacing.xs,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
           decoration: BoxDecoration(
             color: record.status == 'completed'
                 ? AppColors.pointGreen.withValues(alpha: 0.1)
@@ -58,9 +51,7 @@ class FeedingRecordItem extends StatelessWidget {
           child: Text(
             record.status == 'completed' ? '完了' : '未完了',
             style: AppFonts.bodySmall.copyWith(
-              color: record.status == 'completed'
-                  ? AppColors.pointGreen
-                  : AppColors.pointGray,
+              color: record.status == 'completed' ? AppColors.pointGreen : AppColors.pointGray,
               fontWeight: FontWeight.w500,
             ),
           ),

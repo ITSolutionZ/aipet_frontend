@@ -99,9 +99,7 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
 
   // Video Bookmark 관련 구현
   @override
-  Future<VideoBookmarkEntity> addVideoBookmark(
-    VideoBookmarkEntity bookmark,
-  ) async {
+  Future<VideoBookmarkEntity> addVideoBookmark(VideoBookmarkEntity bookmark) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
     if (MockDataService.isEnabled) {
@@ -117,9 +115,7 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
     await Future.delayed(const Duration(milliseconds: 200));
 
     if (MockDataService.isEnabled) {
-      return _bookmarks
-          .where((bookmark) => bookmark.videoId == videoId)
-          .toList()
+      return _bookmarks.where((bookmark) => bookmark.videoId == videoId).toList()
         ..sort((a, b) => a.positionSec.compareTo(b.positionSec));
     }
 
@@ -140,9 +136,7 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
 
   // Video Progress 관련 구현
   @override
-  Future<VideoProgressEntity> saveVideoProgress(
-    VideoProgressEntity progress,
-  ) async {
+  Future<VideoProgressEntity> saveVideoProgress(VideoProgressEntity progress) async {
     await Future.delayed(const Duration(milliseconds: 100));
 
     if (MockDataService.isEnabled) {
@@ -166,9 +160,7 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
 
   // YouTube Video 관련 구현
   @override
-  Future<YouTubeVideoEntity> registerYouTubeVideo(
-    YouTubeVideoEntity video,
-  ) async {
+  Future<YouTubeVideoEntity> registerYouTubeVideo(YouTubeVideoEntity video) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (MockDataService.isEnabled) {
@@ -192,9 +184,7 @@ class PetActivitiesRepositoryImpl implements PetActivitiesRepository {
   }
 
   @override
-  Future<YouTubeVideoEntity> updateYouTubeVideo(
-    YouTubeVideoEntity video,
-  ) async {
+  Future<YouTubeVideoEntity> updateYouTubeVideo(YouTubeVideoEntity video) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (MockDataService.isEnabled) {

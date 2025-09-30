@@ -103,18 +103,10 @@ class PetHealthMockService extends BaseMockService {
 
     return {
       'chartData': weightRecords
-          .map(
-            (record) => {
-              'date': record['recordedDate'],
-              'weight': record['weight'],
-            },
-          )
+          .map((record) => {'date': record['recordedDate'], 'weight': record['weight']})
           .toList(),
       'idealWeight': petId == '1' ? 16.0 : 3.6,
-      'weightRange': {
-        'min': petId == '1' ? 14.0 : 3.0,
-        'max': petId == '1' ? 18.0 : 4.0,
-      },
+      'weightRange': {'min': petId == '1' ? 14.0 : 3.0, 'max': petId == '1' ? 18.0 : 4.0},
       'trend': 'stable', // stable, increasing, decreasing
       'trendPercentage': 2.1, // 변화율
       'recommendations': _getWeightRecommendations(petId),

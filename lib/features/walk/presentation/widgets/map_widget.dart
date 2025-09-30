@@ -12,11 +12,9 @@ import 'map/walk_map_marker_builder.dart';
 import 'map/walk_map_polyline_builder.dart';
 
 final mapWidgetProvider =
-    StateNotifierProvider.family<
-      MapWidgetController,
-      MapWidgetState,
-      MapWidgetParams
-    >((ref, params) => MapWidgetController(params));
+    StateNotifierProvider.family<MapWidgetController, MapWidgetState, MapWidgetParams>(
+      (ref, params) => MapWidgetController(params),
+    );
 
 class MapWidgetParams {
   final List<WalkRecordEntity> walkRecords;
@@ -90,9 +88,7 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
       debugPrint('🗺️ MapWidget: GPS 위치 취득 중...');
       final Position position =
           await Geolocator.getCurrentPosition(
-            locationSettings: const LocationSettings(
-              accuracy: LocationAccuracy.high,
-            ),
+            locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
           ).timeout(
             const Duration(seconds: 10),
             onTimeout: () {
@@ -101,16 +97,11 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
             },
           );
 
-      debugPrint(
-        '✅ MapWidget: GPS 위치 취득 성공 - ${position.latitude}, ${position.longitude}',
-      );
+      debugPrint('✅ MapWidget: GPS 위치 취득 성공 - ${position.latitude}, ${position.longitude}');
       state = state.copyWith(currentPosition: position);
 
       if (state.mapController != null) {
-        await WalkMapCameraController.moveToCurrentLocation(
-          state.mapController!,
-          position,
-        );
+        await WalkMapCameraController.moveToCurrentLocation(state.mapController!, position);
       }
     } catch (e) {
       debugPrint('❌ MapWidget: 위치 가져오기 실패 - $e');
@@ -135,8 +126,12 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
     );
 
     state = state.copyWith(currentPosition: defaultPosition);
-    debugPrint('🗺️ MapWidget: 기본 위치 설정 완료 - ${defaultPosition.latitude}, ${defaultPosition.longitude}');
-    debugPrint('🗺️ MapWidget: 현재 State - currentPosition: ${state.currentPosition != null ? "있음" : "없음"}');
+    debugPrint(
+      '🗺️ MapWidget: 기본 위치 설정 완료 - ${defaultPosition.latitude}, ${defaultPosition.longitude}',
+    );
+    debugPrint(
+      '🗺️ MapWidget: 현재 State - currentPosition: ${state.currentPosition != null ? "있음" : "없음"}',
+    );
   }
 
   void setupMarkersAndPolylines() {
@@ -174,14 +169,13 @@ class MapWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     debugPrint('🗺️ MapWidget: build() 호출됨');
-    final params = MapWidgetParams(
-      walkRecords: walkRecords,
-      selectedPet: selectedPet,
-    );
+    final params = MapWidgetParams(walkRecords: walkRecords, selectedPet: selectedPet);
     final controller = ref.read(mapWidgetProvider(params).notifier);
     final state = ref.watch(mapWidgetProvider(params));
 
-    debugPrint('🗺️ MapWidget: State 확인 - currentPosition: ${state.currentPosition != null ? "있음 (${state.currentPosition!.latitude}, ${state.currentPosition!.longitude})" : "없음"}');
+    debugPrint(
+      '🗺️ MapWidget: State 확인 - currentPosition: ${state.currentPosition != null ? "있음 (${state.currentPosition!.latitude}, ${state.currentPosition!.longitude})" : "없음"}',
+    );
 
     return state.currentPosition == null
         ? _buildLoadingState()
@@ -190,17 +184,13 @@ class MapWidget extends ConsumerWidget {
               controller.setMapController(mapController);
               controller.setupMarkersAndPolylines();
 
-              WalkMapCameraController.moveToCurrentLocation(
-                mapController,
-                state.currentPosition!,
-              );
+              WalkMapCameraController.moveToCurrentLocation(mapController, state.currentPosition!);
             },
-            initialCameraPosition:
-                WalkMapCameraController.createDefaultCameraPosition(
-                  latitude: state.currentPosition!.latitude,
-                  longitude: state.currentPosition!.longitude,
-                  zoom: 15.0,
-                ),
+            initialCameraPosition: WalkMapCameraController.createDefaultCameraPosition(
+              latitude: state.currentPosition!.latitude,
+              longitude: state.currentPosition!.longitude,
+              zoom: 15.0,
+            ),
             markers: state.markers,
             polylines: state.polylines,
             myLocationEnabled: true,

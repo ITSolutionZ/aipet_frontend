@@ -29,23 +29,16 @@ class PetSelectionCard extends StatelessWidget {
         width: 100,
         padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.pointBrown.withValues(alpha: 0.1)
-              : Colors.white,
+          color: isSelected ? AppColors.pointBrown.withValues(alpha: 0.1) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.small),
           border: Border.all(
-            color: isSelected
-                ? AppColors.pointBrown
-                : AppColors.pointGray.withValues(alpha: 0.3),
+            color: isSelected ? AppColors.pointBrown : AppColors.pointGray.withValues(alpha: 0.3),
             width: isSelected ? 2 : 1,
           ),
         ),
         child: Column(
           children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: AssetImage(petInfo['imagePath']),
-            ),
+            CircleAvatar(radius: 25, backgroundImage: AssetImage(petInfo['imagePath'])),
             const SizedBox(height: AppSpacing.xs),
             Text(
               petInfo['name'],
@@ -56,19 +49,13 @@ class PetSelectionCard extends StatelessWidget {
             ),
             Text(
               petInfo['size'],
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointGray,
-                fontSize: AppFonts.xs,
-              ),
+              style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray, fontSize: AppFonts.xs),
             ),
             // 상태 표시
             if (selectedStatuses.isNotEmpty && isSelected)
               Container(
                 margin: const EdgeInsets.only(top: AppSpacing.xs),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.xs,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: 2),
                 decoration: BoxDecoration(
                   color: AppColors.pointGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.small),

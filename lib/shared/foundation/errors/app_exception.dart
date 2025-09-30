@@ -12,13 +12,8 @@ abstract class AppException implements Exception {
   final DateTime timestamp;
   final Map<String, dynamic>? context;
 
-  AppException(
-    this.message, {
-    this.code,
-    this.originalError,
-    DateTime? timestamp,
-    this.context,
-  }) : timestamp = timestamp ?? DateTime.now();
+  AppException(this.message, {this.code, this.originalError, DateTime? timestamp, this.context})
+    : timestamp = timestamp ?? DateTime.now();
 
   @override
   String toString() {
@@ -96,8 +91,7 @@ class ValidationException extends AppException {
   });
 
   @override
-  String toString() =>
-      'ValidationException: $message${field != null ? ' (Field: $field)' : ''}';
+  String toString() => 'ValidationException: $message${field != null ? ' (Field: $field)' : ''}';
 }
 
 /// 데이터 저장소 관련 예외
@@ -136,8 +130,7 @@ class CacheException extends AppException {
   });
 
   @override
-  String toString() =>
-      'CacheException: $message${cacheKey != null ? ' (Key: $cacheKey)' : ''}';
+  String toString() => 'CacheException: $message${cacheKey != null ? ' (Key: $cacheKey)' : ''}';
 }
 
 /// 설정 관련 예외

@@ -13,8 +13,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final todayAppointments =
-        SchedulingMock.SchedulingMockService.getMockTodayMealsForSchedule();
+    final todayAppointments = SchedulingMock.SchedulingMockService.getMockTodayMealsForSchedule();
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -49,11 +48,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                           color: AppColors.pointBrown.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(AppRadius.medium),
                         ),
-                        child: const Icon(
-                          Icons.today,
-                          color: AppColors.pointBrown,
-                          size: 24,
-                        ),
+                        child: const Icon(Icons.today, color: AppColors.pointBrown, size: 24),
                       ),
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
@@ -70,9 +65,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                             const SizedBox(height: AppSpacing.xs),
                             Text(
                               '${DateTime.now().month}月${DateTime.now().day}日',
-                              style: AppFonts.bodyMedium.copyWith(
-                                color: AppColors.pointGray,
-                              ),
+                              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                             ),
                           ],
                         ),
@@ -111,10 +104,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                   itemCount: todayAppointments.length,
                   itemBuilder: (context, index) {
                     final appointment = todayAppointments[index];
-                    return _buildAppointmentCard(
-                      appointment as AppointmentSummary,
-                      context,
-                    );
+                    return _buildAppointmentCard(appointment as AppointmentSummary, context);
                   },
                 ),
               ),
@@ -137,11 +127,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 color: AppColors.pointGray.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(40),
               ),
-              child: const Icon(
-                Icons.event_available,
-                size: 40,
-                color: AppColors.pointGray,
-              ),
+              child: const Icon(Icons.event_available, size: 40, color: AppColors.pointGray),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
@@ -162,10 +148,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildAppointmentCard(
-    AppointmentSummary appointment,
-    BuildContext context,
-  ) {
+  Widget _buildAppointmentCard(AppointmentSummary appointment, BuildContext context) {
     final now = DateTime.now();
     final isPast = appointment.scheduledTime.isBefore(now);
 
@@ -211,9 +194,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: _getTypeColor(
-                      appointment.type,
-                    ).withValues(alpha: 0.1),
+                    color: _getTypeColor(appointment.type).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppRadius.medium),
                   ),
                   child: Icon(
@@ -236,9 +217,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                       ),
                       Text(
                         appointment.type,
-                        style: AppFonts.bodySmall.copyWith(
-                          color: AppColors.pointGray,
-                        ),
+                        style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                       ),
                     ],
                   ),
@@ -287,9 +266,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   appointment.petName,
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: AppColors.pointGray,
-                  ),
+                  style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                 ),
               ],
             ),

@@ -74,8 +74,7 @@ class AiChatState {
   }) {
     final updatedMessages = messages ?? this.messages;
     final updatedStats =
-        messageStats ??
-        MessagePaginationService.generateStatistics(updatedMessages);
+        messageStats ?? MessagePaginationService.generateStatistics(updatedMessages);
 
     return AiChatState(
       messages: updatedMessages,
@@ -123,9 +122,7 @@ class AiChatNotifier extends _$AiChatNotifier {
     final result = await useCase();
 
     if (result.isSuccess && result.dataOrNull != null) {
-      final initResult = AiChatStateManager.initializeState(
-        suggestedQuestions: result.dataOrNull!,
-      );
+      final initResult = AiChatStateManager.initializeState(suggestedQuestions: result.dataOrNull!);
 
       if (initResult.isSuccess) {
         state = initResult.dataOrNull!;
@@ -170,10 +167,7 @@ class AiChatNotifier extends _$AiChatNotifier {
             state;
       }
     } else if (pet == null) {
-      final updateResult = AiChatStateManager.updatePetSelection(
-        currentState: state,
-        pet: null,
-      );
+      final updateResult = AiChatStateManager.updatePetSelection(currentState: state, pet: null);
       if (updateResult.isSuccess) {
         state = updateResult.dataOrNull!;
       }
@@ -190,10 +184,7 @@ class AiChatNotifier extends _$AiChatNotifier {
   Future<void> selectCategory(AiCategoryEntity category) async {
     final useCase = ref.read(selectCategoryUseCaseProvider);
 
-    final result = await useCase(
-      category: category,
-      selectedPet: state.selectedPet,
-    );
+    final result = await useCase(category: category, selectedPet: state.selectedPet);
 
     if (result.isSuccess && result.dataOrNull != null) {
       final updateResult = AiChatStateManager.updateCategorySelection(
@@ -277,10 +268,7 @@ class AiChatNotifier extends _$AiChatNotifier {
       state = userMessageResult.dataOrNull!;
     }
 
-    final result = await useCase.callWithPetContext(
-      content.trim(),
-      petContext: state.selectedPet,
-    );
+    final result = await useCase.callWithPetContext(content.trim(), petContext: state.selectedPet);
 
     if (result.isSuccess && result.dataOrNull != null) {
       // AI 응답 추가
@@ -296,9 +284,7 @@ class AiChatNotifier extends _$AiChatNotifier {
         state =
             AiChatStateManager.setErrorState(
               currentState: state,
-              error:
-                  assistantMessageResult.error?.toString() ??
-                  'Assistant message failed',
+              error: assistantMessageResult.error?.toString() ?? 'Assistant message failed',
               clearTyping: true,
             ).dataOrNull ??
             state;
@@ -378,9 +364,7 @@ class AiChatNotifier extends _$AiChatNotifier {
             state = resetResult.dataOrNull!;
           }
         } else {
-          state =
-              AiChatStateManager.initializeState().dataOrNull ??
-              const AiChatState();
+          state = AiChatStateManager.initializeState().dataOrNull ?? const AiChatState();
         }
       } else {
         state =
@@ -484,8 +468,7 @@ class AiChatController extends BaseController {
   List<AiMessageEntity> get messages => chatState.messages;
 
   /// 추천 질문 목록 가져오기
-  List<AiSuggestedQuestionEntity> get suggestedQuestions =>
-      chatState.suggestedQuestions;
+  List<AiSuggestedQuestionEntity> get suggestedQuestions => chatState.suggestedQuestions;
 
   /// 타이핑 상태 확인
   bool get isTyping => chatState.isTyping;
@@ -509,8 +492,7 @@ class AiChatController extends BaseController {
   List<String> get favoriteMessageIds => chatState.favoriteMessageIds;
 
   /// 메시지 즐겨찾기 여부 확인
-  bool isFavorite(String messageId) =>
-      chatState.favoriteMessageIds.contains(messageId);
+  bool isFavorite(String messageId) => chatState.favoriteMessageIds.contains(messageId);
 
   /// 카테고리 선택
   void selectCategory(AiCategoryEntity category) {

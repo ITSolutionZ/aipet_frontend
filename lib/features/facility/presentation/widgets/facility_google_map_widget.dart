@@ -31,11 +31,7 @@ class FacilityGoogleMapState {
   final Position? currentPosition;
   final Set<Marker> markers;
 
-  const FacilityGoogleMapState({
-    this.mapController,
-    this.currentPosition,
-    this.markers = const {},
-  });
+  const FacilityGoogleMapState({this.mapController, this.currentPosition, this.markers = const {}});
 
   FacilityGoogleMapState copyWith({
     GoogleMapController? mapController,
@@ -50,21 +46,17 @@ class FacilityGoogleMapState {
   }
 }
 
-class FacilityGoogleMapController
-    extends StateNotifier<FacilityGoogleMapState> {
+class FacilityGoogleMapController extends StateNotifier<FacilityGoogleMapState> {
   final FacilityGoogleMapParams params;
 
-  FacilityGoogleMapController(this.params)
-    : super(const FacilityGoogleMapState()) {
+  FacilityGoogleMapController(this.params) : super(const FacilityGoogleMapState()) {
     getCurrentLocation();
   }
 
   Future<void> getCurrentLocation() async {
     try {
       final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
       );
       state = state.copyWith(currentPosition: position);
       setupMarkers();
@@ -99,9 +91,7 @@ class FacilityGoogleMapController
         ),
         infoWindow: InfoWindow(
           title: params.facility.name,
-          snippet: params.facility.type == FacilityType.grooming
-              ? 'トリミング'
-              : '動物病院',
+          snippet: params.facility.type == FacilityType.grooming ? 'トリミング' : '動物病院',
         ),
         icon: BitmapDescriptor.defaultMarkerWithHue(
           params.facility.type == FacilityType.grooming
@@ -117,15 +107,10 @@ class FacilityGoogleMapController
           markers.add(
             Marker(
               markerId: MarkerId(facility.id),
-              position: LatLng(
-                getFacilityLatitude(facility),
-                getFacilityLongitude(facility),
-              ),
+              position: LatLng(getFacilityLatitude(facility), getFacilityLongitude(facility)),
               infoWindow: InfoWindow(
                 title: facility.name,
-                snippet: facility.type == FacilityType.grooming
-                    ? 'トリミング'
-                    : '動物病院',
+                snippet: facility.type == FacilityType.grooming ? 'トリミング' : '動物病院',
               ),
               icon: BitmapDescriptor.defaultMarkerWithHue(
                 facility.type == FacilityType.grooming
@@ -143,10 +128,7 @@ class FacilityGoogleMapController
       markers.add(
         Marker(
           markerId: const MarkerId('current_location'),
-          position: LatLng(
-            state.currentPosition!.latitude,
-            state.currentPosition!.longitude,
-          ),
+          position: LatLng(state.currentPosition!.latitude, state.currentPosition!.longitude),
           infoWindow: const InfoWindow(title: '現在地', snippet: 'あなたの現在位置'),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
         ),
@@ -248,11 +230,7 @@ class FacilityGoogleMapWidget extends ConsumerWidget {
       child: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 8),
-            Text('地図を読み込み中...'),
-          ],
+          children: [CircularProgressIndicator(), SizedBox(height: 8), Text('地図を読み込み中...')],
         ),
       ),
     );

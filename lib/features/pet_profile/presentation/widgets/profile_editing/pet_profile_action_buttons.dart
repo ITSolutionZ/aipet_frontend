@@ -9,11 +9,7 @@ class PetProfileActionButtons extends ConsumerWidget {
   final PetProfileEntity pet;
   final VoidCallback? onEditComplete;
 
-  const PetProfileActionButtons({
-    super.key,
-    required this.pet,
-    this.onEditComplete,
-  });
+  const PetProfileActionButtons({super.key, required this.pet, this.onEditComplete});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,10 +23,7 @@ class PetProfileActionButtons extends ConsumerWidget {
     }
   }
 
-  Widget _buildViewModeButtons(
-    BuildContext context,
-    PetProfileFormController formController,
-  ) {
+  Widget _buildViewModeButtons(BuildContext context, PetProfileFormController formController) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: CommonButton(
@@ -65,18 +58,12 @@ class PetProfileActionButtons extends ConsumerWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.error_outline,
-                    color: AppColors.pointPink,
-                    size: 20,
-                  ),
+                  const Icon(Icons.error_outline, color: AppColors.pointPink, size: 20),
                   const SizedBox(width: AppSpacing.xs),
                   Expanded(
                     child: Text(
                       formState.errorMessage!,
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointPink,
-                      ),
+                      style: AppFonts.bodySmall.copyWith(color: AppColors.pointPink),
                     ),
                   ),
                 ],
@@ -111,8 +98,7 @@ class PetProfileActionButtons extends ConsumerWidget {
                   type: ButtonType.primary,
                   size: ButtonSize.large,
                   isLoading: formState.isLoading,
-                  onPressed:
-                      formState.isLoading || !formController.isFormValid()
+                  onPressed: formState.isLoading || !formController.isFormValid()
                       ? null
                       : () async {
                           await formController.saveChanges(pet);
@@ -127,9 +113,7 @@ class PetProfileActionButtons extends ConsumerWidget {
                                 backgroundColor: AppColors.pointGreen,
                                 behavior: SnackBarBehavior.floating,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    AppRadius.small,
-                                  ),
+                                  borderRadius: BorderRadius.circular(AppRadius.small),
                                 ),
                               ),
                             );

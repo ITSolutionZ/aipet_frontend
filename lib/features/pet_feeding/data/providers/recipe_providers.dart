@@ -91,10 +91,7 @@ Future<List<RecipeEntity>> searchRecipes(Ref ref, String query) async {
 
 // 난이도별 레시피 프로바이더
 @riverpod
-Future<List<RecipeEntity>> recipesByDifficulty(
-  Ref ref,
-  String difficulty,
-) async {
+Future<List<RecipeEntity>> recipesByDifficulty(Ref ref, String difficulty) async {
   final repository = ref.watch(recipeRepositoryProvider);
   return repository.getRecipesByDifficulty(difficulty);
 }

@@ -29,8 +29,7 @@ class WalkTrackingOptimizer {
     }
 
     // 정확도가 너무 낮은 경우 무시
-    if (location.accuracy != null &&
-        location.accuracy! > maxAccuracyThreshold) {
+    if (location.accuracy != null && location.accuracy! > maxAccuracyThreshold) {
       return false;
     }
 
@@ -38,10 +37,7 @@ class WalkTrackingOptimizer {
   }
 
   /// 새 위치를 추가해야 하는지 결정
-  static bool shouldAddLocation(
-    WalkLocation newLocation,
-    List<WalkLocation> existingRoute,
-  ) {
+  static bool shouldAddLocation(WalkLocation newLocation, List<WalkLocation> existingRoute) {
     if (!isValidLocation(newLocation)) {
       return false;
     }
@@ -145,9 +141,7 @@ class WalkTrackingOptimizer {
     // 긴 산책에서는 점진적으로 절약 모드로
     if (walkDuration.inHours > 2) {
       distanceFilter = (distanceFilter * 1.5).round();
-      updateInterval = Duration(
-        milliseconds: (updateInterval.inMilliseconds * 1.3).round(),
-      );
+      updateInterval = Duration(milliseconds: (updateInterval.inMilliseconds * 1.3).round());
     }
 
     return LocationTrackingConfig(
@@ -169,10 +163,8 @@ class WalkTrackingOptimizer {
 
     final window = [...recentLocations.takeLast(windowSize - 1), newLocation];
 
-    final avgLat =
-        window.map((l) => l.latitude).reduce((a, b) => a + b) / window.length;
-    final avgLng =
-        window.map((l) => l.longitude).reduce((a, b) => a + b) / window.length;
+    final avgLat = window.map((l) => l.latitude).reduce((a, b) => a + b) / window.length;
+    final avgLng = window.map((l) => l.longitude).reduce((a, b) => a + b) / window.length;
 
     return newLocation.copyWith(latitude: avgLat, longitude: avgLng);
   }
@@ -191,9 +183,7 @@ class WalkTrackingOptimizer {
     final cutoffTime = now.subtract(maxAge);
 
     // 오래된 점들 제거
-    final recentRoute = route
-        .where((location) => location.timestamp.isAfter(cutoffTime))
-        .toList();
+    final recentRoute = route.where((location) => location.timestamp.isAfter(cutoffTime)).toList();
 
     if (recentRoute.length <= maxPoints) {
       return recentRoute;
@@ -226,10 +216,7 @@ class WalkTrackingOptimizer {
 
     final a =
         math.sin(deltaLat / 2) * math.sin(deltaLat / 2) +
-        math.cos(lat1Rad) *
-            math.cos(lat2Rad) *
-            math.sin(deltaLng / 2) *
-            math.sin(deltaLng / 2);
+        math.cos(lat1Rad) * math.cos(lat2Rad) * math.sin(deltaLng / 2) * math.sin(deltaLng / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
     return earthRadius * c;

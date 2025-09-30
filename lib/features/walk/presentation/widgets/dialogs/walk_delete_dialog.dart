@@ -8,11 +8,7 @@ class WalkDeleteDialog extends StatelessWidget {
   final WalkRecordEntity walkRecord;
   final WalkController controller;
 
-  const WalkDeleteDialog({
-    super.key,
-    required this.walkRecord,
-    required this.controller,
-  });
+  const WalkDeleteDialog({super.key, required this.walkRecord, required this.controller});
 
   static Future<void> show(
     BuildContext context,
@@ -21,8 +17,7 @@ class WalkDeleteDialog extends StatelessWidget {
   ) {
     return showDialog(
       context: context,
-      builder: (context) =>
-          WalkDeleteDialog(walkRecord: walkRecord, controller: controller),
+      builder: (context) => WalkDeleteDialog(walkRecord: walkRecord, controller: controller),
     );
   }
 
@@ -32,20 +27,14 @@ class WalkDeleteDialog extends StatelessWidget {
       title: const Text('削除確認'),
       content: Text('「${walkRecord.title}」の散歩記録を削除しますか？\nこの操作は取り消せません。'),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('キャンセル'),
-        ),
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
         ElevatedButton(
           onPressed: () {
             Navigator.pop(context);
             controller.deleteWalkRecord(walkRecord.id);
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('散歩記録を削除しました'),
-                  backgroundColor: AppColors.pointGreen,
-                ),
+                const SnackBar(content: Text('散歩記録を削除しました'), backgroundColor: AppColors.pointGreen),
               );
             }
           },

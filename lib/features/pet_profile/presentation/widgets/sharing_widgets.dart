@@ -7,11 +7,7 @@ class GenerateCodeTab extends StatelessWidget {
   final List<PetProfileEntity> pets;
   final Function(PetProfileEntity) onPetTap;
 
-  const GenerateCodeTab({
-    super.key,
-    required this.pets,
-    required this.onPetTap,
-  });
+  const GenerateCodeTab({super.key, required this.pets, required this.onPetTap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +16,7 @@ class GenerateCodeTab extends StatelessWidget {
       child: Column(
         children: [
           // 펫 프로필 목록
-          ...pets.map(
-            (pet) => SharingPetCard(pet: pet, onTap: () => onPetTap(pet)),
-          ),
+          ...pets.map((pet) => SharingPetCard(pet: pet, onTap: () => onPetTap(pet))),
           const SizedBox(height: AppSpacing.xl),
 
           // 설명 텍스트
@@ -59,11 +53,7 @@ class ScanCodeTab extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.pointBrown.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.large),
-              border: Border.all(
-                color: AppColors.pointBrown,
-                width: 2,
-                style: BorderStyle.solid,
-              ),
+              border: Border.all(color: AppColors.pointBrown, width: 2, style: BorderStyle.solid),
             ),
             child: GestureDetector(
               onTap: () {
@@ -71,19 +61,14 @@ class ScanCodeTab extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        _QRScannerScreen(onScanned: onCodeScanned),
+                    builder: (context) => _QRScannerScreen(onScanned: onCodeScanned),
                   ),
                 );
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.qr_code_scanner,
-                    size: 80,
-                    color: AppColors.pointBrown,
-                  ),
+                  const Icon(Icons.qr_code_scanner, size: 80, color: AppColors.pointBrown),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     'Tap to Scan',
@@ -147,9 +132,7 @@ class SharingPetCard extends StatelessWidget {
             // 펫 프로필 이미지
             CircleAvatar(
               radius: 30,
-              backgroundImage: AssetImage(
-                pet.imagePath ?? 'assets/images/dogs/shiba.png',
-              ),
+              backgroundImage: AssetImage(pet.imagePath ?? 'assets/images/dogs/shiba.png'),
               backgroundColor: AppColors.pointBrown,
             ),
             const SizedBox(width: AppSpacing.md),
@@ -182,10 +165,7 @@ class SharingPetCard extends StatelessWidget {
             Container(
               width: 32,
               height: 32,
-              decoration: BoxDecoration(
-                color: _getGenderColor(pet),
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: _getGenderColor(pet), shape: BoxShape.circle),
               child: Icon(_getGenderIcon(pet), color: Colors.white, size: 20),
             ),
           ],
@@ -241,9 +221,7 @@ class QRCodeModal extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: AssetImage(
-                    pet.imagePath ?? 'assets/images/dogs/shiba.png',
-                  ),
+                  backgroundImage: AssetImage(pet.imagePath ?? 'assets/images/dogs/shiba.png'),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
@@ -266,10 +244,7 @@ class QRCodeModal extends StatelessWidget {
                     ],
                   ),
                 ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close),
-                ),
+                IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close)),
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -280,9 +255,7 @@ class QRCodeModal extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(AppRadius.medium),
-                border: Border.all(
-                  color: AppColors.pointGray.withValues(alpha: 0.3),
-                ),
+                border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3)),
               ),
               child: Container(
                 width: 200.0,

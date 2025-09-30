@@ -63,9 +63,7 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
   }
 
   void toggleConfirmPasswordVisibility() {
-    state = state.copyWith(
-      isConfirmPasswordVisible: !state.isConfirmPasswordVisible,
-    );
+    state = state.copyWith(isConfirmPasswordVisible: !state.isConfirmPasswordVisible);
   }
 
   void toggleRememberMe() {
@@ -94,10 +92,7 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
     try {
       // Auth Repository를 통한 로그인 처리
       final authRepository = ref.read(authRepositoryProvider);
-      final result = await authRepository.signInWithEmailAndPassword(
-        state.email,
-        state.password,
-      );
+      final result = await authRepository.signInWithEmailAndPassword(state.email, state.password);
 
       if (result.isSuccess) {
         // Remember Me가 체크되어 있으면 이메일만 저장
@@ -114,10 +109,7 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
           navigationCallback();
         }
       } else {
-        state = state.copyWith(
-          isLoading: false,
-          error: result.error?.toString(),
-        );
+        state = state.copyWith(isLoading: false, error: result.error?.toString());
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: 'ログインに失敗しました');
@@ -132,14 +124,8 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
   Future<void> _saveLoginCredentials() async {
     try {
       // 보안상 이메일만 저장하고 패스워드는 저장하지 않음
-      await SecureStorageService.setString(
-        AuthConfigConstants.savedEmailKey,
-        state.email,
-      );
-      await SecureStorageService.setString(
-        AuthConfigConstants.rememberMeKey,
-        'true',
-      );
+      await SecureStorageService.setString(AuthConfigConstants.savedEmailKey, state.email);
+      await SecureStorageService.setString(AuthConfigConstants.rememberMeKey, 'true');
 
       if (kDebugMode) {
         debugPrint('Remember Me 이메일 저장 완료');
@@ -164,12 +150,8 @@ class AuthFormStateNotifier extends _$AuthFormStateNotifier {
   /// 패스워드는 보안상 이유로 저장하지 않습니다.
   Future<void> loadSavedCredentials() async {
     try {
-      final savedEmail = await SecureStorageService.getString(
-        AuthConfigConstants.savedEmailKey,
-      );
-      final rememberMe = await SecureStorageService.getString(
-        AuthConfigConstants.rememberMeKey,
-      );
+      final savedEmail = await SecureStorageService.getString(AuthConfigConstants.savedEmailKey);
+      final rememberMe = await SecureStorageService.getString(AuthConfigConstants.rememberMeKey);
 
       if (rememberMe == 'true' && savedEmail != null && savedEmail.isNotEmpty) {
         state = state.copyWith(

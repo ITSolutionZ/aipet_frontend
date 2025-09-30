@@ -4,10 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 /// 🎯 QR Scanner State Provider
-final qrScannerStateProvider =
-    StateNotifierProvider<QRScannerController, QRScannerState>(
-      (ref) => QRScannerController(),
-    );
+final qrScannerStateProvider = StateNotifierProvider<QRScannerController, QRScannerState>(
+  (ref) => QRScannerController(),
+);
 
 class QRScannerController extends StateNotifier<QRScannerState> {
   QRScannerController() : super(const QRScannerState());
@@ -89,9 +88,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
     final state = ref.watch(qrScannerStateProvider);
 
     if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: Colors.white),
-      );
+      return const Center(child: CircularProgressIndicator(color: Colors.white));
     }
 
     if (!state.hasPermission) {
@@ -108,33 +105,22 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.camera_alt_outlined,
-              size: 80,
-              color: Colors.white.withValues(alpha: 0.7),
-            ),
+            Icon(Icons.camera_alt_outlined, size: 80, color: Colors.white.withValues(alpha: 0.7)),
             const SizedBox(height: AppSpacing.lg),
             Text(
               '카메라 권한이 필요합니다',
-              style: AppFonts.titleLarge.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppFonts.titleLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               'QR 코드를 스캔하기 위해 카메라 접근 권한을 허용해주세요.',
-              style: AppFonts.bodyMedium.copyWith(
-                color: Colors.white.withValues(alpha: 0.8),
-              ),
+              style: AppFonts.bodyMedium.copyWith(color: Colors.white.withValues(alpha: 0.8)),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),
             ElevatedButton(
-              onPressed: () => ref
-                  .read(qrScannerStateProvider.notifier)
-                  .requestCameraPermission(),
+              onPressed: () => ref.read(qrScannerStateProvider.notifier).requestCameraPermission(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBlue,
                 foregroundColor: Colors.white,
@@ -142,15 +128,11 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
                   horizontal: AppSpacing.xl,
                   vertical: AppSpacing.md,
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.md),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
               ),
               child: Text(
                 '권한 다시 요청',
-                style: AppFonts.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -177,26 +159,17 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.qr_code_scanner,
-              size: 80,
-              color: Colors.white.withValues(alpha: 0.7),
-            ),
+            Icon(Icons.qr_code_scanner, size: 80, color: Colors.white.withValues(alpha: 0.7)),
             const SizedBox(height: AppSpacing.lg),
             Text(
               'QRコード入力',
-              style: AppFonts.titleLarge.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppFonts.titleLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               'QRコードを手動で入力してください',
-              style: AppFonts.bodyMedium.copyWith(
-                color: Colors.white.withValues(alpha: 0.8),
-              ),
+              style: AppFonts.bodyMedium.copyWith(color: Colors.white.withValues(alpha: 0.8)),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),
@@ -209,15 +182,11 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
                   horizontal: AppSpacing.xl,
                   vertical: AppSpacing.md,
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.md),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
               ),
               child: Text(
                 'QRコードを入力',
-                style: AppFonts.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -259,10 +228,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
           },
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('キャンセル')),
           ElevatedButton(
             onPressed: () {
               if (controller.text.isNotEmpty) {

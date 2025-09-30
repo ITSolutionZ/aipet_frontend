@@ -36,10 +36,7 @@ class PetTypeCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: isSelected
               ? Border.all(color: selectionColor, width: 2.0)
-              : Border.all(
-                  color: AppColors.pointGray.withValues(alpha: 0.3),
-                  width: 1.0,
-                ),
+              : Border.all(color: AppColors.pointGray.withValues(alpha: 0.3), width: 1.0),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),

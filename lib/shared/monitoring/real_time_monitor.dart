@@ -14,8 +14,7 @@ class RealTimeMonitor {
 
   RealTimeMonitor._();
 
-  final StreamController<MonitoringEvent> _eventController =
-      StreamController.broadcast();
+  final StreamController<MonitoringEvent> _eventController = StreamController.broadcast();
   final List<MonitoringSubscription> _subscriptions = [];
   Timer? _monitoringTimer;
   final Duration _checkInterval = const Duration(seconds: 5);
@@ -126,9 +125,7 @@ class RealTimeMonitor {
     }
 
     // 로그 기록
-    BaseLoggingService.instance.logInfo(
-      'Monitoring event: ${event.type.name} - ${event.message}',
-    );
+    BaseLoggingService.instance.logInfo('Monitoring event: ${event.type.name} - ${event.message}');
   }
 
   /// 구독 추가
@@ -155,11 +152,7 @@ class RealTimeMonitor {
   }
 
   /// 성능 이벤트 발생
-  void emitPerformanceEvent(
-    String operation,
-    int duration, {
-    Map<String, dynamic>? metadata,
-  }) {
+  void emitPerformanceEvent(String operation, int duration, {Map<String, dynamic>? metadata}) {
     EventSeverity severity = EventSeverity.info;
     if (duration > 5000) {
       severity = EventSeverity.critical;
@@ -172,11 +165,7 @@ class RealTimeMonitor {
         type: EventType.performance,
         severity: severity,
         message: 'Performance issue detected',
-        data: {
-          'operation': operation,
-          'duration': duration,
-          'metadata': metadata,
-        },
+        data: {'operation': operation, 'duration': duration, 'metadata': metadata},
         timestamp: DateTime.now(),
       ),
     );
@@ -230,8 +219,7 @@ abstract class MonitoringSubscription {
 class ConsoleNotificationSubscription implements MonitoringSubscription {
   @override
   bool shouldNotify(MonitoringEvent event) {
-    return event.severity == EventSeverity.critical ||
-        event.severity == EventSeverity.warning;
+    return event.severity == EventSeverity.critical || event.severity == EventSeverity.warning;
   }
 
   @override
@@ -268,9 +256,7 @@ class FileLogSubscription implements MonitoringSubscription {
   @override
   void notify(MonitoringEvent event) {
     // 파일 로그 구현
-    BaseLoggingService.instance.logInfo(
-      'MONITORING: ${event.type.name} - ${event.message}',
-    );
+    BaseLoggingService.instance.logInfo('MONITORING: ${event.type.name} - ${event.message}');
   }
 }
 

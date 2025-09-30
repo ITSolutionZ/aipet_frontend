@@ -12,8 +12,7 @@ class PetAnniversaryScreen extends ConsumerStatefulWidget {
   const PetAnniversaryScreen({super.key});
 
   @override
-  ConsumerState<PetAnniversaryScreen> createState() =>
-      _PetAnniversaryScreenState();
+  ConsumerState<PetAnniversaryScreen> createState() => _PetAnniversaryScreenState();
 }
 
 class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
@@ -59,8 +58,7 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
     final now = DateTime.now();
 
     int years = now.year - birthday.year;
-    if (now.month < birthday.month ||
-        (now.month == birthday.month && now.day < birthday.day)) {
+    if (now.month < birthday.month || (now.month == birthday.month && now.day < birthday.day)) {
       years--;
     }
 
@@ -96,9 +94,7 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
                     // 제목
                     Consumer(
                       builder: (context, ref, child) {
-                        final registrationState = ref.watch(
-                          petRegistrationStateProvider,
-                        );
+                        final registrationState = ref.watch(petRegistrationStateProvider);
                         final petName = registrationState.petName ?? 'ぺこ';
 
                         return Text(
@@ -114,19 +110,13 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
                     const SizedBox(height: AppSpacing.xl),
 
                     // 펫 이미지
-                    PetImageDisplay(
-                      imagePath: _getPetImagePath(),
-                      width: 200,
-                      height: 200,
-                    ),
+                    PetImageDisplay(imagePath: _getPetImagePath(), width: 200, height: 200),
                     const SizedBox(height: AppSpacing.xl),
 
                     // 기념일 카드들
                     Consumer(
                       builder: (context, ref, child) {
-                        final registrationState = ref.watch(
-                          petRegistrationStateProvider,
-                        );
+                        final registrationState = ref.watch(petRegistrationStateProvider);
 
                         return Column(
                           children: [
@@ -190,28 +180,21 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
-                  top: BorderSide(
-                    color: AppColors.pointGray.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
+                  top: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
                 ),
               ),
               child: SizedBox(
                 width: double.infinity,
                 child: Consumer(
                   builder: (context, ref, child) {
-                    final registrationState = ref.watch(
-                      petRegistrationStateProvider,
-                    );
+                    final registrationState = ref.watch(petRegistrationStateProvider);
 
                     return NextButton(
                       text: '選択', // 기념일 화면은 항상 등록 확인으로 가므로 항상 '選택'
                       isEnabled: registrationState.petBirthday != null,
                       onPressed: registrationState.petBirthday != null
                           ? () {
-                              context.go(
-                                RouteConstants.petAnniversarySummaryRoute,
-                              );
+                              context.go(RouteConstants.petAnniversarySummaryRoute);
                             }
                           : null,
                     );
@@ -238,9 +221,7 @@ class _PetAnniversaryScreenState extends ConsumerState<PetAnniversaryScreen> {
           initialTab: _selectedCardType,
           onDateSelected: (date, tabType) {
             // Provider에 직접 저장
-            final registrationNotifier = ref.read(
-              petRegistrationStateProvider.notifier,
-            );
+            final registrationNotifier = ref.read(petRegistrationStateProvider.notifier);
             if (tabType == 'birthday') {
               registrationNotifier.setPetBirthday(date);
             } else {

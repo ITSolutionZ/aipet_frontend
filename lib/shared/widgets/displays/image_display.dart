@@ -43,10 +43,7 @@ class ImageDisplay extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.pointGray.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.large),
-              border: Border.all(
-                color: AppColors.pointGray.withValues(alpha: 0.2),
-                width: 1,
-              ),
+              border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.large),
@@ -74,11 +71,7 @@ class ImageDisplay extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.camera_alt,
-                  color: AppColors.pureWhite,
-                  size: 18,
-                ),
+                child: const Icon(Icons.camera_alt, color: AppColors.pureWhite, size: 18),
               ),
             ),
 
@@ -115,8 +108,7 @@ class ImageDisplay extends StatelessWidget {
             return Center(
               child: CircularProgressIndicator(
                 value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
+                    ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
                     : null,
                 color: AppColors.pointBrown,
               ),
@@ -167,12 +159,7 @@ class ImageDisplay extends StatelessWidget {
     }
 
     if (placeholderAsset != null) {
-      return Image.asset(
-        placeholderAsset!,
-        width: width,
-        height: height,
-        fit: fit,
-      );
+      return Image.asset(placeholderAsset!, width: width, height: height, fit: fit);
     }
 
     return Container(
@@ -193,9 +180,7 @@ class ImageDisplay extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'No Image',
-            style: AppFonts.bodySmall.copyWith(
-              color: AppColors.pointGray.withValues(alpha: 0.6),
-            ),
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray.withValues(alpha: 0.6)),
           ),
         ],
       ),

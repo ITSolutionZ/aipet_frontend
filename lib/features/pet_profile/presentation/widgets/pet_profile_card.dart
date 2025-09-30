@@ -48,16 +48,10 @@ class PetProfileCard extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: (iconColor ?? AppColors.pointBlue).withValues(
-                      alpha: 0.1,
-                    ),
+                    color: (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    icon,
-                    color: iconColor ?? AppColors.pointBlue,
-                    size: 20,
-                  ),
+                  child: Icon(icon, color: iconColor ?? AppColors.pointBlue, size: 20),
                 ),
                 const SizedBox(width: AppSpacing.md),
               ],
@@ -126,9 +120,7 @@ class EditableAttributeCard extends StatelessWidget {
         children: [
           Text(
             label,
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointDark.withValues(alpha: 0.7),
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark.withValues(alpha: 0.7)),
           ),
           if (isEditMode && editWidget != null)
             editWidget!
@@ -216,11 +208,7 @@ class PetProfileHeader extends StatelessWidget {
                   ? AssetImage(selectedImagePath ?? imagePath!)
                   : null,
               child: (selectedImagePath ?? imagePath) == null
-                  ? const Icon(
-                      Icons.pets,
-                      size: 50,
-                      color: AppColors.pointBrown,
-                    )
+                  ? const Icon(Icons.pets, size: 50, color: AppColors.pointBrown)
                   : null,
             ),
             if (isEditMode)
@@ -243,11 +231,7 @@ class PetProfileHeader extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                      size: 18,
-                    ),
+                    child: const Icon(Icons.camera_alt, color: Colors.white, size: 18),
                   ),
                 ),
               ),
@@ -272,11 +256,7 @@ class PetProfileHeader extends StatelessWidget {
                       ),
                       if (!isEditMode) ...[
                         const SizedBox(width: AppSpacing.sm),
-                        const Icon(
-                          Icons.edit,
-                          size: 20,
-                          color: AppColors.pointBlue,
-                        ),
+                        const Icon(Icons.edit, size: 20, color: AppColors.pointBlue),
                       ],
                     ],
                   ),

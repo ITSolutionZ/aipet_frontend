@@ -64,11 +64,7 @@ class GetNotificationSettingsUseCase {
         'walkReminders': true,
         'feedingReminders': true,
         'vaccinationReminders': true,
-        'quietHours': {
-          'enabled': false,
-          'startTime': '22:00',
-          'endTime': '08:00',
-        },
+        'quietHours': {'enabled': false, 'startTime': '22:00', 'endTime': '08:00'},
         'frequency': 'immediate',
       };
 
@@ -87,11 +83,7 @@ class GetNotificationSettingsUseCase {
       }
 
       // 필수 설정 확인
-      final requiredKeys = [
-        'pushNotifications',
-        'healthReminders',
-        'walkReminders',
-      ];
+      final requiredKeys = ['pushNotifications', 'healthReminders', 'walkReminders'];
       for (final key in requiredKeys) {
         if (!settings.containsKey(key)) {
           return Result.failure('必須設定が不足しています: $key');

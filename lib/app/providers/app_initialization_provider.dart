@@ -17,11 +17,7 @@ part 'app_initialization_provider.g.dart';
 class AppInitialization extends _$AppInitialization {
   @override
   AppInitializationState build() {
-    return const AppInitializationState(
-      isInitialized: false,
-      isLoading: true,
-      error: null,
-    );
+    return const AppInitializationState(isInitialized: false, isLoading: true, error: null);
   }
 
   /// 앱 초기화를 수행합니다.
@@ -114,8 +110,7 @@ class AppInitialization extends _$AppInitialization {
       // 기본 설정값들 로드
       final theme = prefs.getString('app_theme') ?? 'light';
       final language = prefs.getString('app_language') ?? 'ko';
-      final notificationsEnabled =
-          prefs.getBool('notifications_enabled') ?? true;
+      final notificationsEnabled = prefs.getBool('notifications_enabled') ?? true;
 
       if (kDebugMode) {
         debugPrint(
@@ -146,9 +141,7 @@ class AppInitialization extends _$AppInitialization {
       if (isAuthenticated) {
         final tokenExpiryTime = prefs.getInt('token_expiry_time');
         if (tokenExpiryTime != null) {
-          final expiryDateTime = DateTime.fromMillisecondsSinceEpoch(
-            tokenExpiryTime,
-          );
+          final expiryDateTime = DateTime.fromMillisecondsSinceEpoch(tokenExpiryTime);
           final isExpired = DateTime.now().isAfter(expiryDateTime);
           if (isExpired) {
             // 토큰이 만료된 경우 클리어
@@ -186,8 +179,7 @@ class AppInitialization extends _$AppInitialization {
     try {
       // 온보딩 리포지토리를 통해 상태 확인
       final onboardingRepository = ref.read(onboardingRepositoryProvider);
-      final onboardingCompletedResult = await onboardingRepository
-          .isOnboardingCompleted();
+      final onboardingCompletedResult = await onboardingRepository.isOnboardingCompleted();
 
       final isOnboardingCompleted = onboardingCompletedResult.isSuccess
           ? (onboardingCompletedResult.dataOrNull ?? false)
@@ -204,9 +196,7 @@ class AppInitialization extends _$AppInitialization {
       final finalOnboardingStatus = isOnboardingCompleted && isVersionMatched;
 
       // 온보딩 상태 로드 및 초기화
-      final onboardingStateNotifier = ref.read(
-        onboardingNotifierProvider.notifier,
-      );
+      final onboardingStateNotifier = ref.read(onboardingNotifierProvider.notifier);
       final savedStateResult = await onboardingRepository.loadOnboardingState();
       if (savedStateResult.isSuccess) {
         onboardingStateNotifier.state = savedStateResult.dataOrNull!;
@@ -218,9 +208,7 @@ class AppInitialization extends _$AppInitialization {
       if (kDebugMode) {
         debugPrint('✅ 온보딩 상태 확인 완료: $finalOnboardingStatus');
         debugPrint('   - 완료 플래그: $isOnboardingCompleted');
-        debugPrint(
-          '   - 버전 일치: $isVersionMatched ($onboardingVersion vs $currentAppVersion)',
-        );
+        debugPrint('   - 버전 일치: $isVersionMatched ($onboardingVersion vs $currentAppVersion)');
       }
     } catch (e) {
       if (kDebugMode) {
@@ -242,8 +230,7 @@ class AppInitialization extends _$AppInitialization {
       try {
         final connectivityResult = await Connectivity().checkConnectivity();
         isNetworkConnected =
-            connectivityResult.isNotEmpty &&
-            !connectivityResult.contains(ConnectivityResult.none);
+            connectivityResult.isNotEmpty && !connectivityResult.contains(ConnectivityResult.none);
       } catch (e) {
         isNetworkConnected = false;
       }
@@ -412,8 +399,7 @@ class AppInitializationState {
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
-      isOnboardingCompleted:
-          isOnboardingCompleted ?? this.isOnboardingCompleted,
+      isOnboardingCompleted: isOnboardingCompleted ?? this.isOnboardingCompleted,
       appVersion: appVersion ?? this.appVersion,
       isNetworkConnected: isNetworkConnected ?? this.isNetworkConnected,
     );

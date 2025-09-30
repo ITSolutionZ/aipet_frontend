@@ -1,6 +1,7 @@
 library;
 
 export 'app_drawer.dart';
+export 'drawer_controller.dart';
 export 'drawer_header_widget.dart';
 export 'drawer_info_banner_widget.dart';
 export 'drawer_menu_item.dart';

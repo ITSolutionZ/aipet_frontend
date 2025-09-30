@@ -5,20 +5,17 @@ import 'package:flutter/foundation.dart';
 
 /// 사용자 경험 개선 서비스
 class UserExperienceService {
-  static final UserExperienceService _instance =
-      UserExperienceService._internal();
+  static final UserExperienceService _instance = UserExperienceService._internal();
   factory UserExperienceService() => _instance;
   UserExperienceService._internal();
 
   // 로딩 상태 관리
-  final StreamController<bool> _loadingController =
-      StreamController<bool>.broadcast();
+  final StreamController<bool> _loadingController = StreamController<bool>.broadcast();
 
   Stream<bool> get loadingStream => _loadingController.stream;
 
   // 사용자 피드백 관리
-  final StreamController<String> _feedbackController =
-      StreamController<String>.broadcast();
+  final StreamController<String> _feedbackController = StreamController<String>.broadcast();
 
   Stream<String> get feedbackStream => _feedbackController.stream;
 
@@ -135,8 +132,7 @@ class UserExperienceService {
 
   /// 화면 체류 시간 기록
   void recordScreenTime(String screenName, Duration timeSpent) {
-    _screenTimeSpent[screenName] =
-        (_screenTimeSpent[screenName] ?? Duration.zero) + timeSpent;
+    _screenTimeSpent[screenName] = (_screenTimeSpent[screenName] ?? Duration.zero) + timeSpent;
 
     if (kDebugMode) {}
   }
@@ -187,9 +183,7 @@ class UserExperienceService {
   Map<String, dynamic> getUserExperienceStats() {
     return {
       'screenVisits': Map<String, int>.from(_screenVisitCount),
-      'screenTimeSpent': _screenTimeSpent.map(
-        (key, value) => MapEntry(key, value.inSeconds),
-      ),
+      'screenTimeSpent': _screenTimeSpent.map((key, value) => MapEntry(key, value.inSeconds)),
       'totalActions': _userActions.length,
       'averagePageLoadTime': _calculateAverage(_pageLoadTimes),
       'averageResponseTime': _calculateAverage(_interactionResponseTimes),
@@ -261,8 +255,7 @@ class UserExperienceService {
     return {
       'totalScreens': _screenVisitCount.length,
       'totalActions': _userActions.length,
-      'averageActionsPerSession':
-          _userActions.length / (_screenVisitCount.length + 1),
+      'averageActionsPerSession': _userActions.length / (_screenVisitCount.length + 1),
     };
   }
 

@@ -70,9 +70,7 @@ class PetMockData {
   /// 새 펫 추가
   static PetProfileEntity addPet(PetProfileEntity pet) {
     // ID가 비어있으면 새 ID 생성
-    final petWithId = pet.id.isEmpty
-        ? pet.copyWith(id: (_pets.length + 1).toString())
-        : pet;
+    final petWithId = pet.id.isEmpty ? pet.copyWith(id: (_pets.length + 1).toString()) : pet;
 
     _pets.add(petWithId);
     return petWithId;
@@ -110,41 +108,17 @@ class PetMockData {
   /// 강아지 품종 Mock 데이터
   static List<Map<String, dynamic>> getMockDogBreeds() {
     return [
-      {
-        'breed': 'poodle',
-        'name': 'プードル',
-        'image': 'assets/images/breeds/poodle.png',
-      },
+      {'breed': 'poodle', 'name': 'プードル', 'image': 'assets/images/breeds/poodle.png'},
       {
         'breed': 'golden_retriever',
         'name': 'ゴールデンレトリーバー',
         'image': 'assets/images/breeds/golden_retriever.png',
       },
-      {
-        'breed': 'labrador',
-        'name': 'ラブラドール',
-        'image': 'assets/images/breeds/labrador.png',
-      },
-      {
-        'breed': 'shiba_inu',
-        'name': '柴犬',
-        'image': 'assets/images/breeds/shiba_inu.png',
-      },
-      {
-        'breed': 'bulldog',
-        'name': 'ブルドッグ',
-        'image': 'assets/images/breeds/bulldog.png',
-      },
-      {
-        'breed': 'chihuahua',
-        'name': 'チワワ',
-        'image': 'assets/images/breeds/chihuahua.png',
-      },
-      {
-        'breed': 'beagle',
-        'name': 'ビーグル',
-        'image': 'assets/images/breeds/beagle.png',
-      },
+      {'breed': 'labrador', 'name': 'ラブラドール', 'image': 'assets/images/breeds/labrador.png'},
+      {'breed': 'shiba_inu', 'name': '柴犬', 'image': 'assets/images/breeds/shiba_inu.png'},
+      {'breed': 'bulldog', 'name': 'ブルドッグ', 'image': 'assets/images/breeds/bulldog.png'},
+      {'breed': 'chihuahua', 'name': 'チワワ', 'image': 'assets/images/breeds/chihuahua.png'},
+      {'breed': 'beagle', 'name': 'ビーグル', 'image': 'assets/images/breeds/beagle.png'},
       {
         'breed': 'german_shepherd',
         'name': 'ジャーマンシェパード',
@@ -155,37 +129,17 @@ class PetMockData {
         'name': 'ヨークシャーテリア',
         'image': 'assets/images/breeds/yorkshire_terrier.png',
       },
-      {
-        'breed': 'dachshund',
-        'name': 'ダックスフンド',
-        'image': 'assets/images/breeds/dachshund.png',
-      },
+      {'breed': 'dachshund', 'name': 'ダックスフンド', 'image': 'assets/images/breeds/dachshund.png'},
     ];
   }
 
   /// 고양이 품종 Mock 데이터
   static List<Map<String, dynamic>> getMockCatBreeds() {
     return [
-      {
-        'breed': 'persian',
-        'name': 'ペルシャ',
-        'image': 'assets/images/breeds/persian.png',
-      },
-      {
-        'breed': 'maine_coon',
-        'name': 'メインクーン',
-        'image': 'assets/images/breeds/maine_coon.png',
-      },
-      {
-        'breed': 'siamese',
-        'name': 'シャム',
-        'image': 'assets/images/breeds/siamese.png',
-      },
-      {
-        'breed': 'ragdoll',
-        'name': 'ラグドール',
-        'image': 'assets/images/breeds/ragdoll.png',
-      },
+      {'breed': 'persian', 'name': 'ペルシャ', 'image': 'assets/images/breeds/persian.png'},
+      {'breed': 'maine_coon', 'name': 'メインクーン', 'image': 'assets/images/breeds/maine_coon.png'},
+      {'breed': 'siamese', 'name': 'シャム', 'image': 'assets/images/breeds/siamese.png'},
+      {'breed': 'ragdoll', 'name': 'ラグドール', 'image': 'assets/images/breeds/ragdoll.png'},
       {
         'breed': 'british_shorthair',
         'name': 'ブリティッシュショートヘア',
@@ -239,26 +193,8 @@ class PetMockData {
 
   /// 펫 성별 판단 (이름 기반)
   static String getPetGenderByName(String petName) {
-    final maleNames = [
-      'max',
-      'buddy',
-      'charlie',
-      'rocky',
-      'jack',
-      'oscar',
-      'leo',
-      'milo',
-    ];
-    final femaleNames = [
-      'luna',
-      'bella',
-      'molly',
-      'lucy',
-      'sophie',
-      'chloe',
-      'zoe',
-      'ruby',
-    ];
+    final maleNames = ['max', 'buddy', 'charlie', 'rocky', 'jack', 'oscar', 'leo', 'milo'];
+    final femaleNames = ['luna', 'bella', 'molly', 'lucy', 'sophie', 'chloe', 'zoe', 'ruby'];
 
     final lowerName = petName.toLowerCase();
 

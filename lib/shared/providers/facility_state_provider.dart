@@ -102,10 +102,9 @@ class FacilityState {
 }
 
 /// Facility 상태 프로바이더
-final facilityStateProvider =
-    StateNotifierProvider<FacilityStateNotifier, FacilityState>(
-      (ref) => FacilityStateNotifier(),
-    );
+final facilityStateProvider = StateNotifierProvider<FacilityStateNotifier, FacilityState>(
+  (ref) => FacilityStateNotifier(),
+);
 
 /// Facility 상태 관리자
 class FacilityStateNotifier extends StateNotifier<FacilityState> {

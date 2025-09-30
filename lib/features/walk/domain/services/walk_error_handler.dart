@@ -12,9 +12,7 @@ class WalkErrorHandler {
       return '位置情報の権限が拒否されました。設定で権限を許可してください。';
     } else if (error.toString().contains('Location permission denied')) {
       return '位置情報の権限が必要です。設定で権限を許可してください。';
-    } else if (error.toString().contains(
-      'Location permission permanently denied',
-    )) {
+    } else if (error.toString().contains('Location permission permanently denied')) {
       return '位置情報の権限が永続的に拒否されています。設定アプリで権限を許可してください。';
     } else if (error.toString().contains('Location service disabled')) {
       return '位置サービスが無効になっています。設定で有効にしてください。';
@@ -31,8 +29,7 @@ class WalkErrorHandler {
       return 'ネットワーク接続を確認してください。';
     } else if (errorString.contains('timeout')) {
       return '処理がタイムアウトしました。もう一度お試しください。';
-    } else if (errorString.contains('storage') ||
-        errorString.contains('disk')) {
+    } else if (errorString.contains('storage') || errorString.contains('disk')) {
       return 'ストレージ容量が不足している可能性があります。';
     } else if (errorString.contains('battery')) {
       return 'バッテリー残量が少ないため、位置追跡が制限される可能性があります。';
@@ -45,8 +42,7 @@ class WalkErrorHandler {
   static String getMapErrorMessage(dynamic error) {
     final errorString = error.toString().toLowerCase();
 
-    if (errorString.contains('api_key') ||
-        errorString.contains('authentication')) {
+    if (errorString.contains('api_key') || errorString.contains('authentication')) {
       return 'Google Maps APIの認証に失敗しました。';
     } else if (errorString.contains('quota') || errorString.contains('limit')) {
       return 'Google Maps APIの使用量上限に達しました。';
@@ -63,8 +59,7 @@ class WalkErrorHandler {
 
     if (errorString.contains('not found')) {
       return '散歩記録が見つかりません。';
-    } else if (errorString.contains('invalid data') ||
-        errorString.contains('format')) {
+    } else if (errorString.contains('invalid data') || errorString.contains('format')) {
       return '散歩データの形式が正しくありません。';
     } else if (errorString.contains('save') || errorString.contains('write')) {
       return '散歩記録の保存に失敗しました。';

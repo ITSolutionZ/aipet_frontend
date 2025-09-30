@@ -37,9 +37,7 @@ class DrawerInfoBannerWidget extends StatelessWidget {
               backgroundColor: const Color(0xFF5A5EA6),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             ),
             child: const Text('情報設定', style: TextStyle(fontSize: 12)),
           ),

@@ -96,9 +96,7 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
 
   void _onFocusChanged() {
     if (widget.fieldId != null) {
-      ref
-          .read(appTextFieldFocusProvider(widget.fieldId!).notifier)
-          .setFocus(_focusNode.hasFocus);
+      ref.read(appTextFieldFocusProvider(widget.fieldId!).notifier).setFocus(_focusNode.hasFocus);
     }
   }
 
@@ -171,9 +169,7 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
               textAlign: widget.textAlign,
               maxLines: widget.maxLines,
               style: AppFonts.bodyMedium.copyWith(
-                color: widget.enabled
-                    ? AppColors.pointDark
-                    : AppColors.pointGray,
+                color: widget.enabled ? AppColors.pointDark : AppColors.pointGray,
               ),
               decoration: InputDecoration(
                 hintText: widget.hintText,
@@ -201,10 +197,7 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
           // 에러 메시지
           if (widget.errorText != null) ...[
             const SizedBox(height: AppSpacing.xs),
-            Text(
-              widget.errorText!,
-              style: AppFonts.bodySmall.copyWith(color: Colors.red),
-            ),
+            Text(widget.errorText!, style: AppFonts.bodySmall.copyWith(color: Colors.red)),
           ],
 
           // 문자 수 표시

@@ -136,10 +136,7 @@ class AiRepositoryImpl implements AiRepository {
       AiLogger.logPetContext(petContext?.name, petContext?.type);
 
       // 펫 정보와 함께 OpenAI API 호출
-      final response = await _openAIService.generateResponse(
-        message,
-        petContext: petContext,
-      );
+      final response = await _openAIService.generateResponse(message, petContext: petContext);
 
       // AI 로거를 사용한 응답 성공 로그
       AiLogger.logApiSuccess(response as String);
@@ -186,10 +183,7 @@ class AiRepositoryImpl implements AiRepository {
   }
 
   @override
-  Future<AiChatSessionEntity> createChatSession(
-    String title, {
-    String? petId,
-  }) async {
+  Future<AiChatSessionEntity> createChatSession(String title, {String? petId}) async {
     // 새로운 채팅 세션 생성
     final session = AiChatSessionEntity(
       id: _generateId(),
@@ -268,10 +262,7 @@ class AiRepositoryImpl implements AiRepository {
   }
 
   @override
-  Future<List<AiFavoriteEntity>> getFavoriteMessages({
-    String? petId,
-    String? category,
-  }) async {
+  Future<List<AiFavoriteEntity>> getFavoriteMessages({String? petId, String? category}) async {
     // 로컬 저장소에서 즐겨찾기 메시지 목록 가져오기
     final favorites = await _localStorageService.loadFavoriteMessages();
 
@@ -326,10 +317,7 @@ class AiRepositoryImpl implements AiRepository {
   }
 
   @override
-  Future<List<AiChatSummaryEntity>> getChatSummaries({
-    String? petId,
-    String? category,
-  }) async {
+  Future<List<AiChatSummaryEntity>> getChatSummaries({String? petId, String? category}) async {
     // 로컬 저장소에서 채팅 요약 목록 가져오기
     final summaries = await _localStorageService.loadChatSummaries();
 
@@ -397,9 +385,7 @@ class AiRepositoryImpl implements AiRepository {
           'title': '健康相談',
           'summary': 'ペットの健康について相談しました',
           'messageCount': 5,
-          'createdAt': DateTime.now()
-              .subtract(const Duration(days: 1))
-              .toIso8601String(),
+          'createdAt': DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
           'isManualSaved': false,
         },
         {
@@ -407,9 +393,7 @@ class AiRepositoryImpl implements AiRepository {
           'title': '食事相談',
           'summary': 'ペットの食事について相談しました',
           'messageCount': 3,
-          'createdAt': DateTime.now()
-              .subtract(const Duration(days: 2))
-              .toIso8601String(),
+          'createdAt': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
           'isManualSaved': true,
         },
       ];
@@ -544,8 +528,10 @@ class AiRepositoryImpl implements AiRepository {
 
   /// 파라미터와 함께 제안 질문 가져오기
   @override
-  Future<Result<List<AiSuggestedQuestionEntity>>>
-  getSuggestedQuestionsWithParams({String? petId, String? categoryId}) async {
+  Future<Result<List<AiSuggestedQuestionEntity>>> getSuggestedQuestionsWithParams({
+    String? petId,
+    String? categoryId,
+  }) async {
     try {
       // Mock 제안 질문들
       final suggestions = [

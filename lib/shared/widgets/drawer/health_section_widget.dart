@@ -19,11 +19,7 @@ class HealthSectionWidget extends StatelessWidget {
               SizedBox(width: 8),
               Text(
                 'Health',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -31,10 +27,7 @@ class HealthSectionWidget extends StatelessWidget {
         // Health 메뉴들
         ListTile(
           leading: const Icon(Icons.restaurant, color: Colors.white, size: 20),
-          title: const Text(
-            '食事&給水',
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
+          title: const Text('食事&給水', style: TextStyle(color: Colors.white, fontSize: 14)),
           onTap: () {
             context.pop(); // 드로어 닫기
             // 식사&급수 메인 페이지로 이동
@@ -42,30 +35,16 @@ class HealthSectionWidget extends StatelessWidget {
           },
         ),
         ListTile(
-          leading: const Icon(
-            Icons.directions_walk,
-            color: Colors.white,
-            size: 20,
-          ),
-          title: const Text(
-            '散歩',
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
+          leading: const Icon(Icons.directions_walk, color: Colors.white, size: 20),
+          title: const Text('散歩', style: TextStyle(color: Colors.white, fontSize: 14)),
           onTap: () {
             context.pop(); // 드로어 닫기
             context.go(AppRouter.walkRoute); // 산책 페이지로 이동
           },
         ),
         ListTile(
-          leading: const Icon(
-            Icons.local_hospital,
-            color: Colors.white,
-            size: 20,
-          ),
-          title: const Text(
-            '病院予約',
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
+          leading: const Icon(Icons.local_hospital, color: Colors.white, size: 20),
+          title: const Text('病院予約', style: TextStyle(color: Colors.white, fontSize: 14)),
           onTap: () {
             context.pop(); // 드로어 닫기
             context.push(AppRouter.hospitalReservationRoute); // 병원 예약 페이지로 이동
@@ -73,10 +52,7 @@ class HealthSectionWidget extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.content_cut, color: Colors.white, size: 20),
-          title: const Text(
-            'トリミング予約',
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
+          title: const Text('トリミング予約', style: TextStyle(color: Colors.white, fontSize: 14)),
           onTap: () {
             context.pop(); // 드로어 닫기
             context.push(AppRouter.groomingReservationRoute); // 트리밍 예약 페이지로 이동

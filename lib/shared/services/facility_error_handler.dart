@@ -12,80 +12,56 @@ class FacilityErrorHandler {
   static void handleLoadError(dynamic error, BuildContext context) {
     final errorMessage = _getErrorMessage(error, 'facility_load');
     _showErrorSnackBar(context, errorMessage);
-    UnifiedErrorHandler.handleUnifiedError(
-      error,
-      context: {'operation': 'facility_load'},
-    );
+    UnifiedErrorHandler.handleUnifiedError(error, context: {'operation': 'facility_load'});
   }
 
   /// 시설 검색 에러 처리
   static void handleSearchError(dynamic error, BuildContext context) {
     final errorMessage = _getErrorMessage(error, 'facility_search');
     _showErrorSnackBar(context, errorMessage);
-    UnifiedErrorHandler.handleUnifiedError(
-      error,
-      context: {'operation': 'facility_search'},
-    );
+    UnifiedErrorHandler.handleUnifiedError(error, context: {'operation': 'facility_search'});
   }
 
   /// 시설 필터링 에러 처리
   static void handleFilterError(dynamic error, BuildContext context) {
     final errorMessage = _getErrorMessage(error, 'facility_filter');
     _showErrorSnackBar(context, errorMessage);
-    UnifiedErrorHandler.handleUnifiedError(
-      error,
-      context: {'operation': 'facility_filter'},
-    );
+    UnifiedErrorHandler.handleUnifiedError(error, context: {'operation': 'facility_filter'});
   }
 
   /// 시설 즐겨찾기 에러 처리
   static void handleFavoriteError(dynamic error, BuildContext context) {
     final errorMessage = _getErrorMessage(error, 'facility_favorite');
     _showErrorSnackBar(context, errorMessage);
-    UnifiedErrorHandler.handleUnifiedError(
-      error,
-      context: {'operation': 'facility_favorite'},
-    );
+    UnifiedErrorHandler.handleUnifiedError(error, context: {'operation': 'facility_favorite'});
   }
 
   /// 시설 예약 에러 처리
   static void handleBookingError(dynamic error, BuildContext context) {
     final errorMessage = _getErrorMessage(error, 'facility_booking');
     _showErrorSnackBar(context, errorMessage);
-    UnifiedErrorHandler.handleUnifiedError(
-      error,
-      context: {'operation': 'facility_booking'},
-    );
+    UnifiedErrorHandler.handleUnifiedError(error, context: {'operation': 'facility_booking'});
   }
 
   /// 시설 연락처 에러 처리
   static void handleContactError(dynamic error, BuildContext context) {
     final errorMessage = _getErrorMessage(error, 'facility_contact');
     _showErrorSnackBar(context, errorMessage);
-    UnifiedErrorHandler.handleUnifiedError(
-      error,
-      context: {'operation': 'facility_contact'},
-    );
+    UnifiedErrorHandler.handleUnifiedError(error, context: {'operation': 'facility_contact'});
   }
 
   /// 시설 지도 에러 처리
   static void handleMapError(dynamic error, BuildContext context) {
     final errorMessage = _getErrorMessage(error, 'facility_map');
     _showErrorSnackBar(context, errorMessage);
-    UnifiedErrorHandler.handleUnifiedError(
-      error,
-      context: {'operation': 'facility_map'},
-    );
+    UnifiedErrorHandler.handleUnifiedError(error, context: {'operation': 'facility_map'});
   }
 
   /// 시설 위치 에러 처리
   static void handleLocationError(dynamic error, BuildContext context) {
     final errorMessage = _getErrorMessage(error, 'facility_location');
     _showErrorSnackBar(context, errorMessage);
-    UnifiedErrorHandler.handleUnifiedError(
-      error,
-      context: {'operation': 'facility_location'},
-    );
+    UnifiedErrorHandler.handleUnifiedError(error, context: {'operation': 'facility_location'});
   }
 
   /// 성공 메시지 표시

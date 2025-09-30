@@ -43,14 +43,11 @@ class AiChatSessionEntity {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AiChatSessionEntity &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
+      other is AiChatSessionEntity && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;
 
   @override
-  String toString() =>
-      'AiChatSessionEntity(id: $id, title: $title, messages: ${messages.length})';
+  String toString() => 'AiChatSessionEntity(id: $id, title: $title, messages: ${messages.length})';
 }

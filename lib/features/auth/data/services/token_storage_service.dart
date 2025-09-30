@@ -22,10 +22,7 @@ class TokenStorageService {
         SecureStorageService.setString(_accessTokenKey, token.accessToken),
         if (token.refreshToken != null)
           SecureStorageService.setString(_refreshTokenKey, token.refreshToken!),
-        SecureStorageService.setString(
-          _tokenExpiresAtKey,
-          token.expiresAt.toIso8601String(),
-        ),
+        SecureStorageService.setString(_tokenExpiresAtKey, token.expiresAt.toIso8601String()),
         SecureStorageService.setString(_tokenTypeKey, token.tokenType),
       ]);
 
@@ -108,8 +105,7 @@ class TokenStorageService {
   /// 저장된 Remember Me 정보 불러오기
   static Future<String?> getRememberMeEmail() async {
     try {
-      final isRememberMe =
-          await SecureStorageService.getBool(_rememberMeKey) ?? false;
+      final isRememberMe = await SecureStorageService.getBool(_rememberMeKey) ?? false;
       if (!isRememberMe) {
         return null;
       }

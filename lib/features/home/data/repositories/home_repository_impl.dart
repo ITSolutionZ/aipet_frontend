@@ -154,12 +154,7 @@ class HomeRepositoryImpl implements HomeRepository {
       const HealthAlert(petName: 'ルナ', message: 'ワクチン接種が必要です'),
     ];
 
-    return HealthSummary(
-      totalPets: 3,
-      healthyPets: 2,
-      petsNeedingAttention: 1,
-      alerts: alerts,
-    );
+    return HealthSummary(totalPets: 3, healthyPets: 2, petsNeedingAttention: 1, alerts: alerts);
   }
 
   @override

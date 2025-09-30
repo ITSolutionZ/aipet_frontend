@@ -46,7 +46,6 @@ class HomeDashboardNotifier extends _$HomeDashboardNotifier {
   @override
   Future<HomeDashboardEntity> build() async {
     try {
-      final repository = ref.read(homeRepositoryProvider);
       final getDashboardDataUseCase = ref.read(getDashboardDataUseCaseProvider);
 
       print('🔍 HomeDashboardNotifier: 대시보드 데이터 요청 시작');

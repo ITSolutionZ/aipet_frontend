@@ -93,10 +93,7 @@ class PetEditNotifier extends _$PetEditNotifier {
   }
 
   /// 변경사항 저장
-  Future<Result<bool>> saveChanges(
-    PetProfileEntity originalPet,
-    String currentUserId,
-  ) async {
+  Future<Result<bool>> saveChanges(PetProfileEntity originalPet, String currentUserId) async {
     // 입력 유효성 검증
     final validationError = _validateInput();
     if (validationError != null) {
@@ -125,10 +122,7 @@ class PetEditNotifier extends _$PetEditNotifier {
         return Result.failure(result.message);
       }
     } catch (error) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: 'Failed to save pet profile: $error',
-      );
+      state = state.copyWith(isLoading: false, errorMessage: 'Failed to save pet profile: $error');
       return Result.failure('Failed to save pet profile: $error');
     }
   }
@@ -187,8 +181,7 @@ class PetEditNotifier extends _$PetEditNotifier {
   }
 
   /// 편집된 값이 있는지 확인
-  bool get hasUnsavedChanges =>
-      state.editingValues.isNotEmpty && state.isEditMode;
+  bool get hasUnsavedChanges => state.editingValues.isNotEmpty && state.isEditMode;
 
   /// 현재 편집 중인 이름
   String get editingName => state.editingValues['name'] as String? ?? '';

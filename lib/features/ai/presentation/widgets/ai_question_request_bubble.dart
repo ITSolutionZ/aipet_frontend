@@ -27,10 +27,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
           // AI 아바타
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
-            decoration: const BoxDecoration(
-              color: AppColors.pointBrown,
-              shape: BoxShape.circle,
-            ),
+            decoration: const BoxDecoration(color: AppColors.pointBrown, shape: BoxShape.circle),
             child: Image.asset(
               'assets/icons/logo_notinclude_text.png',
               width: 20,
@@ -74,10 +71,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
 
                   Text(
                     _getCategorySpecificMessage(),
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointGray,
-                      height: 1.4,
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray, height: 1.4),
                   ),
                   const SizedBox(height: AppSpacing.md),
 
@@ -87,12 +81,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
                   const SizedBox(height: AppSpacing.sm),
 
                   // 타임스탬프
-                  Text(
-                    '今',
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointGray,
-                    ),
-                  ),
+                  Text('今', style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
                 ],
               ),
             ),
@@ -283,9 +272,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
 
     // 이모지를 제거하여 실제 질문 텍스트만 추출 (전송용)
     final questionText = question.replaceAll(
-      RegExp(
-        r'^[🍽️🚶💊✂️🎯🚫🏠🏥🌡️💡⚖️🩺⏰🎯🔊🛁💅👂🦷💩📍🥘🥗🍖🎂🍼🐾🛡️📚✈️👴👶🎉❓]+\s*',
-      ),
+      RegExp(r'^[🍽️🚶💊✂️🎯🚫🏠🏥🌡️💡⚖️🩺⏰🎯🔊🛁💅👂🦷💩📍🥘🥗🍖🎂🍼🐾🛡️📚✈️👴👶🎉❓]+\s*'),
       '',
     );
 
@@ -308,17 +295,11 @@ class AiQuestionRequestBubble extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.medium),
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(AppRadius.medium),
-              border: Border.all(
-                color: AppColors.pointBrown.withValues(alpha: 0.3),
-                width: 1,
-              ),
+              border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.3), width: 1),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.05),

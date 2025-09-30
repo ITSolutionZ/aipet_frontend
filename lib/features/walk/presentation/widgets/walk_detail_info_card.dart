@@ -25,11 +25,7 @@ class WalkDetailInfoCard extends StatelessWidget {
           _buildDistanceRow(),
           if (walkRecord.route.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.md),
-            _buildInfoRow(
-              'ルートポイント',
-              '${walkRecord.route.length}箇所',
-              Icons.location_on,
-            ),
+            _buildInfoRow('ルートポイント', '${walkRecord.route.length}箇所', Icons.location_on),
           ],
         ],
       ),
@@ -49,11 +45,7 @@ class WalkDetailInfoCard extends StatelessWidget {
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),
           ),
-          child: const Icon(
-            Icons.access_time,
-            size: 16,
-            color: AppColors.pointBlue,
-          ),
+          child: const Icon(Icons.access_time, size: 16, color: AppColors.pointBlue),
         ),
         const SizedBox(width: AppSpacing.md),
         Expanded(
@@ -73,10 +65,7 @@ class WalkDetailInfoCard extends StatelessWidget {
                     ),
                     Text(
                       walkRecord.timeString,
-                      style: AppFonts.fredoka(
-                        fontSize: AppFonts.lg,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -90,11 +79,7 @@ class WalkDetailInfoCard extends StatelessWidget {
                         color: AppColors.pointBlue.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppRadius.small),
                       ),
-                      child: const Icon(
-                        Icons.check_circle,
-                        size: 14,
-                        color: AppColors.pointBlue,
-                      ),
+                      child: const Icon(Icons.check_circle, size: 14, color: AppColors.pointBlue),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
@@ -138,11 +123,7 @@ class WalkDetailInfoCard extends StatelessWidget {
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),
           ),
-          child: const Icon(
-            Icons.route_rounded,
-            size: 16,
-            color: AppColors.pointBlue,
-          ),
+          child: const Icon(Icons.route_rounded, size: 16, color: AppColors.pointBlue),
         ),
         const SizedBox(width: AppSpacing.md),
         Expanded(
@@ -162,10 +143,7 @@ class WalkDetailInfoCard extends StatelessWidget {
                     ),
                     Text(
                       walkRecord.formattedDistance,
-                      style: AppFonts.fredoka(
-                        fontSize: AppFonts.lg,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -179,11 +157,7 @@ class WalkDetailInfoCard extends StatelessWidget {
                         color: AppColors.pointBlue.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppRadius.small),
                       ),
-                      child: const Icon(
-                        Icons.timer,
-                        size: 14,
-                        color: AppColors.pointBlue,
-                      ),
+                      child: const Icon(Icons.timer, size: 14, color: AppColors.pointBlue),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
@@ -244,10 +218,7 @@ class WalkDetailInfoCard extends StatelessWidget {
               ),
               Text(
                 value,
-                style: AppFonts.fredoka(
-                  fontSize: AppFonts.lg,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.bold),
               ),
             ],
           ),

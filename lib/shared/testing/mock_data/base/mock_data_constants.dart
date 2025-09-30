@@ -68,12 +68,7 @@ class MockDataConstants {
   // ==================== 기본 상태값 ====================
 
   /// 기본 건강 상태들
-  static const List<String> defaultHealthStatuses = [
-    '健康',
-    '疲れている',
-    '食欲不振',
-    '活発',
-  ];
+  static const List<String> defaultHealthStatuses = ['健康', '疲れている', '食欲不振', '活発'];
 
   /// 기본 식사 상태들
   static const List<String> defaultFeedingStatuses = ['完食', '残食', '拒食', '食欲旺盛'];

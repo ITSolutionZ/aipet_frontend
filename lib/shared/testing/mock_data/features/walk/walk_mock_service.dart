@@ -14,9 +14,7 @@ class WalkMockService extends BaseMockService {
         'petId': '1',
         'petName': 'ぺっと１',
         'startTime': DateTime.now().subtract(const Duration(hours: 2)),
-        'endTime': DateTime.now().subtract(
-          const Duration(hours: 1, minutes: 30),
-        ),
+        'endTime': DateTime.now().subtract(const Duration(hours: 1, minutes: 30)),
         'duration': const Duration(minutes: 30),
         'distance': 2.1, // km
         'steps': 2800,
@@ -29,12 +27,8 @@ class WalkMockService extends BaseMockService {
       {
         'id': MockHelper.generateId(),
         'petId': '1',
-        'startTime': DateTime.now().subtract(
-          const Duration(days: 1, hours: 10),
-        ),
-        'endTime': DateTime.now().subtract(
-          const Duration(days: 1, hours: 9, minutes: 45),
-        ),
+        'startTime': DateTime.now().subtract(const Duration(days: 1, hours: 10)),
+        'endTime': DateTime.now().subtract(const Duration(days: 1, hours: 9, minutes: 45)),
         'duration': const Duration(minutes: 15),
         'distance': 0.8,
         'steps': 1200,
@@ -48,9 +42,7 @@ class WalkMockService extends BaseMockService {
         'id': MockHelper.generateId(),
         'petId': '2',
         'startTime': DateTime.now().subtract(const Duration(hours: 4)),
-        'endTime': DateTime.now().subtract(
-          const Duration(hours: 3, minutes: 45),
-        ),
+        'endTime': DateTime.now().subtract(const Duration(hours: 3, minutes: 45)),
         'duration': const Duration(minutes: 15),
         'distance': 0.5,
         'steps': 800,
@@ -120,27 +112,19 @@ class WalkMockService extends BaseMockService {
         ),
       ),
       'averageDistance': weekRecords.isNotEmpty
-          ? (weekRecords.fold<double>(
-                      0.0,
-                      (sum, record) => sum + (record['distance'] as double),
-                    ) /
+          ? (weekRecords.fold<double>(0.0, (sum, record) => sum + (record['distance'] as double)) /
                     weekRecords.length)
                 .toStringAsFixed(1)
           : '0.0',
       'dailyGoal': 2.0, // km
       'goalAchieved':
-          weekRecords.fold<double>(
-            0.0,
-            (sum, record) => sum + (record['distance'] as double),
-          ) >=
+          weekRecords.fold<double>(0.0, (sum, record) => sum + (record['distance'] as double)) >=
           14.0, // 주간 목표 14km
     };
   }
 
   /// 산책 루트 추천
-  static List<Map<String, dynamic>> getMockWalkRouteRecommendations({
-    String? petId,
-  }) {
+  static List<Map<String, dynamic>> getMockWalkRouteRecommendations({String? petId}) {
     return [
       {
         'id': '1',
@@ -179,9 +163,7 @@ class WalkMockService extends BaseMockService {
 
   static bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    return date.year == now.year && date.month == now.month && date.day == now.day;
   }
 
   static bool _isThisWeek(DateTime date) {

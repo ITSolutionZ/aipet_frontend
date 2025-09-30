@@ -225,11 +225,7 @@ class ResponsiveText extends StatelessWidget {
 
         return Text(
           text,
-          style: TextStyle(
-            fontSize: fontSize,
-            fontWeight: fontWeight,
-            color: color,
-          ),
+          style: TextStyle(fontSize: fontSize, fontWeight: fontWeight, color: color),
           textAlign: textAlign,
           maxLines: maxLines,
           overflow: overflow,

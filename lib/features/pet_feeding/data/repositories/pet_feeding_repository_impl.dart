@@ -23,10 +23,7 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
   }
 
   @override
-  Future<List<FeedingRecordEntity>> getFeedingRecordsByDate(
-    String petId,
-    DateTime date,
-  ) async {
+  Future<List<FeedingRecordEntity>> getFeedingRecordsByDate(String petId, DateTime date) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
     if (MockDataService.isEnabled) {
@@ -45,9 +42,7 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
   }
 
   @override
-  Future<FeedingRecordEntity> addFeedingRecord(
-    FeedingRecordEntity record,
-  ) async {
+  Future<FeedingRecordEntity> addFeedingRecord(FeedingRecordEntity record) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (MockDataService.isEnabled) {
@@ -59,9 +54,7 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
   }
 
   @override
-  Future<FeedingRecordEntity> updateFeedingRecord(
-    FeedingRecordEntity record,
-  ) async {
+  Future<FeedingRecordEntity> updateFeedingRecord(FeedingRecordEntity record) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (MockDataService.isEnabled) {
@@ -93,27 +86,16 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
     await Future.delayed(const Duration(milliseconds: 300));
 
     if (MockDataService.isEnabled) {
-      final records = _feedingRecords
-          .where((record) => record.petId == petId)
-          .toList();
+      final records = _feedingRecords.where((record) => record.petId == petId).toList();
 
-      final completedRecords = records
-          .where((r) => r.status == FeedingStatus.completed)
-          .toList();
-      final skippedRecords = records
-          .where((r) => r.status == FeedingStatus.skipped)
-          .toList();
+      final completedRecords = records.where((r) => r.status == FeedingStatus.completed).toList();
+      final skippedRecords = records.where((r) => r.status == FeedingStatus.skipped).toList();
 
-      final totalAmount = completedRecords.fold<double>(
-        0,
-        (sum, record) => sum + record.amount,
-      );
+      final totalAmount = completedRecords.fold<double>(0, (sum, record) => sum + record.amount);
       final averageAmount = completedRecords.isNotEmpty
           ? totalAmount / completedRecords.length
           : 0.0;
-      final completionRate = records.isNotEmpty
-          ? completedRecords.length / records.length
-          : 0.0;
+      final completionRate = records.isNotEmpty ? completedRecords.length / records.length : 0.0;
 
       final feedingsByHour = <String, int>{};
       for (var record in records) {

@@ -19,10 +19,7 @@ class OpenAIService extends BaseLoggingService {
       super('openai_service');
 
   /// OpenAI ChatGPT API를 사용하여 메시지에 대한 응답 생성 (재시도 로직 포함)
-  Future<Result<String>> generateResponse(
-    String message, {
-    PetProfileEntity? petContext,
-  }) async {
+  Future<Result<String>> generateResponse(String message, {PetProfileEntity? petContext}) async {
     final apiKey = AppConfig.current.openaiApiKey;
 
     if (apiKey.isEmpty) {
@@ -32,13 +29,9 @@ class OpenAIService extends BaseLoggingService {
     // ペット関連コンテンツ検証 (펫 컨텍스트가 있으면 스킵)
     if (petContext == null) {
       try {
-        final validationResult = await _contentFilter.validatePetContent(
-          message,
-        );
+        final validationResult = await _contentFilter.validatePetContent(message);
         if (!validationResult.isValid) {
-          logInfo(
-            'Non-pet related content detected: ${validationResult.reason}',
-          );
+          logInfo('Non-pet related content detected: ${validationResult.reason}');
           return Result.success('''こんにちは！私はペット専門のAIアシスタントです。🐶🐱
 
 ${_translateReasonToJapanese(validationResult.reason)}
@@ -70,9 +63,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
         estimatedTokens: AiApiConstants.openaiMaxTokens,
       );
       if (!canMakeRequest.isSuccess) {
-        return Result.failure(
-          canMakeRequest.error?.toString() ?? 'Token limit exceeded',
-        );
+        return Result.failure(canMakeRequest.error?.toString() ?? 'Token limit exceeded');
       }
 
       final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
@@ -108,9 +99,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
         );
 
         if (usageResult.isSuccess) {
-          logInfo(
-            'Token usage recorded: ${usageResult.dataOrNull!.totalTokens} tokens',
-          );
+          logInfo('Token usage recorded: ${usageResult.dataOrNull!.totalTokens} tokens');
         } else {
           logWarning(
             'Failed to record token usage: ${usageResult.error?.toString() ?? 'Unknown error'}',
@@ -134,9 +123,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
       }
 
       // 에러 정보가 있는 경우 포함
-      final errorInfo = responseData['error'] != null
-          ? ' Error: ${responseData['error']}'
-          : '';
+      final errorInfo = responseData['error'] != null ? ' Error: ${responseData['error']}' : '';
       return Result.failure('No valid response from OpenAI API$errorInfo');
     });
   }
@@ -173,9 +160,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
 
     if (petContext != null) {
       final age = petContext.age;
-      final breedInfo = petContext.breed != null
-          ? '（品種：${petContext.breed}）'
-          : '';
+      final breedInfo = petContext.breed != null ? '（品種：${petContext.breed}）' : '';
       final birthYear = petContext.birthDate.year;
       final birthMonth = petContext.birthDate.month;
       final birthDay = petContext.birthDate.day;
@@ -185,8 +170,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
 
       // 추가 정보가 있는 경우 포함
       String additionalDetails = '';
-      if (petContext.additionalInfo != null &&
-          petContext.additionalInfo!.isNotEmpty) {
+      if (petContext.additionalInfo != null && petContext.additionalInfo!.isNotEmpty) {
         additionalDetails = '\n・追加情報：';
         petContext.additionalInfo!.forEach((key, value) {
           additionalDetails += '\n  - $key: $value';

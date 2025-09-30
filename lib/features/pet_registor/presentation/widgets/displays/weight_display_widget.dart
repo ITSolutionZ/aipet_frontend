@@ -45,27 +45,19 @@ class WeightDisplayWidget extends StatelessWidget {
                     child: TextField(
                       controller: weightController,
                       focusNode: weightFocusNode,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       textAlign: TextAlign.center,
                       style: const TextStyle(fontSize: 1),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                      ),
+                      decoration: const InputDecoration(border: InputBorder.none),
                       onChanged: (value) {
                         final newWeight = double.tryParse(value.trim());
-                        if (newWeight != null &&
-                            newWeight >= 0.5 &&
-                            newWeight <= 50.0) {
+                        if (newWeight != null && newWeight >= 0.5 && newWeight <= 50.0) {
                           onWeightChanged?.call(newWeight);
                         }
                       },
                       onSubmitted: (value) {
                         final newWeight = double.tryParse(value.trim());
-                        if (newWeight != null &&
-                            newWeight >= 0.5 &&
-                            newWeight <= 50.0) {
+                        if (newWeight != null && newWeight >= 0.5 && newWeight <= 50.0) {
                           onWeightChanged?.call(newWeight);
                         } else {
                           weightController!.text = weight.toStringAsFixed(1);

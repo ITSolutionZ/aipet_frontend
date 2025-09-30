@@ -29,12 +29,7 @@ class ImageSelectionDialog extends StatelessWidget {
             )
             .toList(),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('キャンセル'),
-        ),
-      ],
+      actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル'))],
     );
   }
 }

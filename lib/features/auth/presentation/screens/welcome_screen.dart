@@ -63,9 +63,7 @@ class WelcomeScreen extends StatelessWidget {
                                   width: 8,
                                   height: 12,
                                   decoration: BoxDecoration(
-                                    color: AppColors.pointBrown.withValues(
-                                      alpha: 0.6,
-                                    ),
+                                    color: AppColors.pointBrown.withValues(alpha: 0.6),
                                     borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(5),
                                       topRight: Radius.circular(5),
@@ -76,9 +74,7 @@ class WelcomeScreen extends StatelessWidget {
                                   width: 8,
                                   height: 12,
                                   decoration: BoxDecoration(
-                                    color: AppColors.pointBrown.withValues(
-                                      alpha: 0.6,
-                                    ),
+                                    color: AppColors.pointBrown.withValues(alpha: 0.6),
                                     borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(5),
                                       topRight: Radius.circular(5),
@@ -91,9 +87,7 @@ class WelcomeScreen extends StatelessWidget {
                             Icon(
                               Icons.pets,
                               size: 20,
-                              color: AppColors.pointBrown.withValues(
-                                alpha: 0.7,
-                              ),
+                              color: AppColors.pointBrown.withValues(alpha: 0.7),
                             ),
                           ],
                         ),
@@ -158,11 +152,7 @@ class WelcomeScreen extends StatelessWidget {
 
                       const Text(
                         'ホームに戻り、ログインしてください。',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.pointBrown,
-                          height: 1.4,
-                        ),
+                        style: TextStyle(fontSize: 16, color: AppColors.pointBrown, height: 1.4),
                         textAlign: TextAlign.center,
                       ),
 
@@ -170,11 +160,7 @@ class WelcomeScreen extends StatelessWidget {
 
                       Text(
                         '詳しい情報登録、修正は設定画面で登録してください。',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                          height: 1.4,
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600], height: 1.4),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -188,25 +174,19 @@ class WelcomeScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => context.go(
-                    '${RouteConstants.petEmptyRoute}?afterRegistration=true',
-                  ),
+                  onPressed: () =>
+                      context.go('${RouteConstants.petEmptyRoute}?afterRegistration=true'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.lg,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.large),
                     ),
                   ),
                   child: Text(
                     'ペット登録へ',
-                    style: AppFonts.fredoka(
-                      fontSize: AppFonts.lg,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),

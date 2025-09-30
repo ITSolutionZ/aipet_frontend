@@ -49,10 +49,7 @@ class FeedingRecordsController extends BaseController {
               recordDate.day == date.day;
         }).toList();
 
-        final actualAmount = dayRecords.fold<double>(
-          0.0,
-          (sum, record) => sum + record.amount,
-        );
+        final actualAmount = dayRecords.fold<double>(0.0, (sum, record) => sum + record.amount);
 
         const targetAmount = 300.0; // 목표량
 
@@ -60,10 +57,7 @@ class FeedingRecordsController extends BaseController {
         targetData.add(FlSpot((6 - i).toDouble(), targetAmount));
       }
 
-      return Result.success('차트 데이터가 생성되었습니다', {
-        'chartData': chartData,
-        'targetData': targetData,
-      });
+      return Result.success('차트 데이터가 생성되었습니다', {'chartData': chartData, 'targetData': targetData});
     } catch (error) {
       return Result.failure('차트 데이터 생성 실패: $error');
     }
@@ -79,16 +73,10 @@ class FeedingRecordsController extends BaseController {
           horizontalInterval: 50,
           verticalInterval: 1,
           getDrawingHorizontalLine: (value) {
-            return FlLine(
-              color: AppColors.pointGray.withValues(alpha: 0.2),
-              strokeWidth: 1,
-            );
+            return FlLine(color: AppColors.pointGray.withValues(alpha: 0.2), strokeWidth: 1);
           },
           getDrawingVerticalLine: (value) {
-            return FlLine(
-              color: AppColors.pointGray.withValues(alpha: 0.2),
-              strokeWidth: 1,
-            );
+            return FlLine(color: AppColors.pointGray.withValues(alpha: 0.2), strokeWidth: 1);
           },
         ),
         titlesData: _buildTitlesData(),
@@ -97,10 +85,7 @@ class FeedingRecordsController extends BaseController {
         maxX: 6,
         minY: 0,
         maxY: 350,
-        lineBarsData: [
-          _buildActualDataLine(chartData),
-          _buildTargetDataLine(targetData),
-        ],
+        lineBarsData: [_buildActualDataLine(chartData), _buildTargetDataLine(targetData)],
         lineTouchData: _buildTouchData(),
       ),
     );
@@ -123,10 +108,7 @@ class FeedingRecordsController extends BaseController {
               axisSide: meta.axisSide,
               child: Text(
                 days[value.toInt()],
-                style: AppFonts.bodySmall.copyWith(
-                  color: AppColors.pointGray,
-                  fontSize: 10,
-                ),
+                style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray, fontSize: 10),
               ),
             );
           },
@@ -139,10 +121,7 @@ class FeedingRecordsController extends BaseController {
           getTitlesWidget: (double value, TitleMeta meta) {
             return Text(
               '${value.toInt()}g',
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointGray,
-                fontSize: 10,
-              ),
+              style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray, fontSize: 10),
             );
           },
           reservedSize: 42,
@@ -155,10 +134,7 @@ class FeedingRecordsController extends BaseController {
   FlBorderData _buildBorderData() {
     return FlBorderData(
       show: true,
-      border: Border.all(
-        color: AppColors.pointGray.withValues(alpha: 0.2),
-        width: 1,
-      ),
+      border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
     );
   }
 
@@ -168,10 +144,7 @@ class FeedingRecordsController extends BaseController {
       spots: chartData,
       isCurved: true,
       gradient: LinearGradient(
-        colors: [
-          AppColors.pointGreen.withValues(alpha: 0.8),
-          AppColors.pointGreen,
-        ],
+        colors: [AppColors.pointGreen.withValues(alpha: 0.8), AppColors.pointGreen],
       ),
       barWidth: 3,
       isStrokeCapRound: true,
@@ -223,10 +196,7 @@ class FeedingRecordsController extends BaseController {
             final isTarget = barSpot.barIndex == 1;
             return LineTooltipItem(
               isTarget ? '목표량' : '실제 급여량',
-              AppFonts.bodyMedium.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+              AppFonts.bodyMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
               children: [
                 TextSpan(
                   text: '\n${barSpot.y.toInt()}g',
@@ -246,11 +216,7 @@ class FeedingRecordsController extends BaseController {
   }
 
   /// 급여 기록 필터링
-  List<dynamic> filterRecordsByDate(
-    List<dynamic> records,
-    DateTime startDate,
-    DateTime endDate,
-  ) {
+  List<dynamic> filterRecordsByDate(List<dynamic> records, DateTime startDate, DateTime endDate) {
     return records.where((record) {
       final recordDate = record.fedTime;
       return recordDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
@@ -347,18 +313,11 @@ class FeedingRecordsController extends BaseController {
     final weeklyRecords = filterRecordsByDate(records, weekStart, weekEnd);
 
     final totalFeedings = weeklyRecords.length;
-    final totalAmount = weeklyRecords.fold<double>(
-      0.0,
-      (sum, record) => sum + record.amount,
-    );
+    final totalAmount = weeklyRecords.fold<double>(0.0, (sum, record) => sum + record.amount);
 
     final averageAmount = totalFeedings > 0 ? totalAmount / totalFeedings : 0.0;
-    final completedFeedings = weeklyRecords
-        .where((r) => r.status == 'completed')
-        .length;
-    final completionRate = totalFeedings > 0
-        ? completedFeedings / totalFeedings
-        : 0.0;
+    final completedFeedings = weeklyRecords.where((r) => r.status == 'completed').length;
+    final completionRate = totalFeedings > 0 ? completedFeedings / totalFeedings : 0.0;
 
     return {
       'totalFeedings': totalFeedings,

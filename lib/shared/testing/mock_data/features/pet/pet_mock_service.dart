@@ -135,16 +135,12 @@ class PetMockService extends BaseMockService {
   }
 
   /// 펫별 오늘 예약 조회
-  static List<Map<String, dynamic>> getMockTodayAppointmentsByPet({
-    String? petId,
-  }) {
+  static List<Map<String, dynamic>> getMockTodayAppointmentsByPet({String? petId}) {
     final allAppointments = getMockAppointments();
     final today = DateTime.now();
 
     return allAppointments.where((appointment) {
-      final appointmentDate = DateTime.parse(
-        appointment['scheduledTime'].toIso8601String(),
-      );
+      final appointmentDate = DateTime.parse(appointment['scheduledTime'].toIso8601String());
       final isToday =
           appointmentDate.year == today.year &&
           appointmentDate.month == today.month &&
@@ -248,36 +244,11 @@ class PetMockService extends BaseMockService {
   /// 펫 타입 목록
   static List<Map<String, dynamic>> getMockPetTypes() {
     return [
-      {
-        'id': 'dog',
-        'name': '강아지',
-        'icon': '🐕',
-        'description': '충실하고 활발한 반려동물',
-      },
-      {
-        'id': 'cat',
-        'name': '고양이',
-        'icon': '🐱',
-        'description': '독립적이고 우아한 반려동물',
-      },
-      {
-        'id': 'rabbit',
-        'name': '토끼',
-        'icon': '🐰',
-        'description': '온순하고 깨끗한 반려동물',
-      },
-      {
-        'id': 'hamster',
-        'name': '햄스터',
-        'icon': '🐹',
-        'description': '작고 귀여운 반려동물',
-      },
-      {
-        'id': 'bird',
-        'name': '새',
-        'icon': '🐦',
-        'description': '지능적이고 사교적인 반려동물',
-      },
+      {'id': 'dog', 'name': '강아지', 'icon': '🐕', 'description': '충실하고 활발한 반려동물'},
+      {'id': 'cat', 'name': '고양이', 'icon': '🐱', 'description': '독립적이고 우아한 반려동물'},
+      {'id': 'rabbit', 'name': '토끼', 'icon': '🐰', 'description': '온순하고 깨끗한 반려동물'},
+      {'id': 'hamster', 'name': '햄스터', 'icon': '🐹', 'description': '작고 귀여운 반려동물'},
+      {'id': 'bird', 'name': '새', 'icon': '🐦', 'description': '지능적이고 사교적인 반려동물'},
     ];
   }
 

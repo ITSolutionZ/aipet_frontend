@@ -1,5 +1,7 @@
 import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 /// OpenWeatherMap One Call API 서비스
 class OpenWeatherMapService {
@@ -7,20 +9,19 @@ class OpenWeatherMapService {
   final String _apiKey;
   static const String _baseUrl = 'https://api.openweathermap.org/data/2.5';
 
-  OpenWeatherMapService({
-    required Dio dio,
-    required String apiKey,
-  }) : _dio = dio, _apiKey = apiKey;
+  OpenWeatherMapService({required Dio dio, required String apiKey})
+    : _dio = dio,
+      _apiKey = apiKey;
 
-  /// 현재 날씨 및 예보 정보 가져오기
-  Future<WeatherEntity> getCurrentWeather({
+  /// 현在天気および予報情報を取得
+  Future<Result<WeatherEntity>> getCurrentWeather({
     required double latitude,
     required double longitude,
     String units = 'metric',
     String lang = 'ko',
   }) async {
     try {
-      // 현재 날씨 정보 가져오기
+      // 現在天気情報を取得
       final weatherResponse = await _dio.get(
         '$_baseUrl/weather',
         queryParameters: {
@@ -33,10 +34,10 @@ class OpenWeatherMapService {
       );
 
       if (weatherResponse.statusCode != 200) {
-        throw Exception('Failed to load weather data: ${weatherResponse.statusCode}');
+        return Result.failure('天気情報の取得に失敗しました (${weatherResponse.statusCode})');
       }
 
-      // UV Index 정보 가져오기 (별도 API)
+      // UV Index 情報を取得（別API）
       double uvIndex = 0.0;
       try {
         final uvResponse = await _dio.get(
@@ -51,20 +52,65 @@ class OpenWeatherMapService {
           uvIndex = uvResponse.data['value']?.toDouble() ?? 0.0;
         }
       } catch (e) {
-        // UV 데이터 실패 시 기본값 사용
+        // UV데이터 실패時は기본값 사용
+        debugPrint('UV Index取得失敗: $e');
         uvIndex = 0.0;
       }
 
-      return _parseWeatherData(weatherResponse.data, latitude, longitude, uvIndex);
+      final weatherEntity = _parseWeatherData(
+        weatherResponse.data,
+        latitude,
+        longitude,
+        uvIndex,
+      );
+
+      return Result.success('天気情報を取得しました', weatherEntity);
     } on DioException catch (e) {
-      throw Exception('Network error: ${e.message}');
+      debugPrint('OpenWeatherMap API Error (Dio): ${e.message}');
+
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        return Result.failure(
+          'タイムアウトが発生しました',
+          Exception('Timeout: ${e.message}'),
+        );
+      } else if (e.type == DioExceptionType.connectionError) {
+        return Result.failure(
+          'ネットワーク接続エラーが発生しました',
+          Exception('Connection Error: ${e.message}'),
+        );
+      } else if (e.response?.statusCode == 401) {
+        return Result.failure(
+          'APIキーが無効です',
+          Exception('Unauthorized: ${e.message}'),
+        );
+      } else if (e.response?.statusCode == 404) {
+        return Result.failure(
+          '位置情報が見つかりません',
+          Exception('Not Found: ${e.message}'),
+        );
+      } else {
+        return Result.failure(
+          '天気情報の取得中にエラーが発生しました',
+          Exception('Dio Error: ${e.message}'),
+        );
+      }
     } catch (e) {
-      throw Exception('Unexpected error: $e');
+      debugPrint('OpenWeatherMap API Error: $e');
+      return Result.failure(
+        '予期しないエラーが発生しました',
+        e is Exception ? e : Exception(e.toString()),
+      );
     }
   }
 
   /// API 응답 데이터를 WeatherEntity로 변환
-  WeatherEntity _parseWeatherData(Map<String, dynamic> data, double lat, double lon, [double uvIndex = 0.0]) {
+  WeatherEntity _parseWeatherData(
+    Map<String, dynamic> data,
+    double lat,
+    double lon, [
+    double uvIndex = 0.0,
+  ]) {
     final main = data['main'] as Map<String, dynamic>;
     final weather = (data['weather'] as List).first as Map<String, dynamic>;
     final wind = data['wind'] as Map<String, dynamic>? ?? {};
@@ -148,20 +194,26 @@ class OpenWeatherMapService {
     // 2xx: 천둥번개
     if (weatherId >= 200 && weatherId < 300) {
       if (weatherId == 200 || weatherId == 201 || weatherId == 202) {
-        return isDayTime ? 'thunderstorms-day-rain' : 'thunderstorms-night-rain';
+        return isDayTime
+            ? 'thunderstorms-day-rain'
+            : 'thunderstorms-night-rain';
       }
       return isDayTime ? 'thunderstorms-day' : 'thunderstorms-night';
     }
 
     // 3xx: 이슬비
     if (weatherId >= 300 && weatherId < 400) {
-      return isDayTime ? 'partly-cloudy-day-drizzle' : 'partly-cloudy-night-drizzle';
+      return isDayTime
+          ? 'partly-cloudy-day-drizzle'
+          : 'partly-cloudy-night-drizzle';
     }
 
     // 5xx: 비
     if (weatherId >= 500 && weatherId < 600) {
       if (weatherId == 500 || weatherId == 501) {
-        return isDayTime ? 'partly-cloudy-day-rain' : 'partly-cloudy-night-rain';
+        return isDayTime
+            ? 'partly-cloudy-day-rain'
+            : 'partly-cloudy-night-rain';
       }
       return 'rain';
     }
@@ -169,7 +221,9 @@ class OpenWeatherMapService {
     // 6xx: 눈
     if (weatherId >= 600 && weatherId < 700) {
       if (weatherId == 600 || weatherId == 601) {
-        return isDayTime ? 'partly-cloudy-day-snow' : 'partly-cloudy-night-snow';
+        return isDayTime
+            ? 'partly-cloudy-day-snow'
+            : 'partly-cloudy-night-snow';
       }
       if (weatherId == 611 || weatherId == 612 || weatherId == 613) {
         return 'sleet';

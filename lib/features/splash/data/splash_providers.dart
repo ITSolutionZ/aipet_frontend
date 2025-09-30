@@ -85,9 +85,7 @@ class SplashControllerNotifier extends _$SplashControllerNotifier {
   /// 스플래시 시퀀스 시작
   Stream<Result<SplashState>> startSplashSequence() async* {
     try {
-      final manageSplashSequenceUseCase = ref.read(
-        manageSplashSequenceUseCaseProvider,
-      );
+      final manageSplashSequenceUseCase = ref.read(manageSplashSequenceUseCaseProvider);
 
       // UseCase에서 스트림을 가져와서 yield
       await for (final result in manageSplashSequenceUseCase.execute()) {
@@ -115,10 +113,7 @@ class SplashControllerNotifier extends _$SplashControllerNotifier {
     await Future.delayed(const Duration(seconds: 1));
 
     // 3. 앱 로고 표시
-    yield Result.success(
-      '앱 로고 표시',
-      SplashState.appLogo(AppConstants.splashAppLogoPath),
-    );
+    yield Result.success('앱 로고 표시', SplashState.appLogo(AppConstants.splashAppLogoPath));
     await Future.delayed(const Duration(seconds: 1));
 
     // 4. 완료

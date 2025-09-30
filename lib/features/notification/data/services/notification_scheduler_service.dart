@@ -22,8 +22,7 @@ class NotificationSchedulerService {
   final StreamController<List<NotificationSchedule>> _schedulesController =
       StreamController<List<NotificationSchedule>>.broadcast();
 
-  Stream<List<NotificationSchedule>> get schedulesStream =>
-      _schedulesController.stream;
+  Stream<List<NotificationSchedule>> get schedulesStream => _schedulesController.stream;
 
   NotificationSchedulerService(this._notificationService);
 
@@ -80,8 +79,7 @@ class NotificationSchedulerService {
 
         // 1분 이내에 실행될 스케줄 확인
         final timeUntilTrigger = nextTrigger.difference(now);
-        if (timeUntilTrigger.inMinutes <= 1 &&
-            timeUntilTrigger.inMinutes >= 0) {
+        if (timeUntilTrigger.inMinutes <= 1 && timeUntilTrigger.inMinutes >= 0) {
           await _executeSchedule(schedule);
         }
       }
@@ -193,9 +191,7 @@ class NotificationSchedulerService {
       final schedulesJson = await SecureStorageService.getString(_schedulesKey);
       if (schedulesJson != null) {
         final List<dynamic> schedulesList = jsonDecode(schedulesJson);
-        return schedulesList
-            .map((json) => NotificationSchedule.fromJson(json))
-            .toList();
+        return schedulesList.map((json) => NotificationSchedule.fromJson(json)).toList();
       }
     } catch (e) {
       if (kDebugMode) {}
@@ -210,9 +206,7 @@ class NotificationSchedulerService {
   }
 
   /// 특정 타입의 스케줄 가져오기
-  Future<List<NotificationSchedule>> getSchedulesByType(
-    NotificationType type,
-  ) async {
+  Future<List<NotificationSchedule>> getSchedulesByType(NotificationType type) async {
     final schedules = await getSchedules();
     return schedules.where((s) => s.type == type).toList();
   }
@@ -243,9 +237,7 @@ class NotificationSchedulerService {
   /// 스케줄 저장
   Future<void> _saveSchedules(List<NotificationSchedule> schedules) async {
     try {
-      final schedulesJson = jsonEncode(
-        schedules.map((s) => s.toJson()).toList(),
-      );
+      final schedulesJson = jsonEncode(schedules.map((s) => s.toJson()).toList());
       await SecureStorageService.setString(_schedulesKey, schedulesJson);
     } catch (e) {
       if (kDebugMode) {}

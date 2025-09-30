@@ -65,9 +65,7 @@ class HospitalReservationController {
               longitude: data['longitude'] as double? ?? 139.6503,
               phone: data['phone'] as String,
               email: data['email'] as String,
-              type: data['type'] == 'grooming'
-                  ? FacilityType.grooming
-                  : FacilityType.hospital,
+              type: data['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
               rating: (data['rating'] as num).toDouble(),
               reviewCount: data['reviewCount'] as int,
               imagePath: data['imagePath'] as String,
@@ -131,10 +129,7 @@ class HospitalReservationController {
       currentState.currentFilter,
     );
 
-    _updateState(
-      facilities: updatedFacilities,
-      filteredFacilities: filteredFacilities,
-    );
+    _updateState(facilities: updatedFacilities, filteredFacilities: filteredFacilities);
   }
 
   /// 필터 적용 로직
@@ -150,12 +145,8 @@ class HospitalReservationController {
       filtered = filtered
           .where(
             (facility) =>
-                facility.name.toLowerCase().contains(
-                  searchQuery.toLowerCase(),
-                ) ||
-                (facility.description?.toLowerCase() ?? '').contains(
-                  searchQuery.toLowerCase(),
-                ),
+                facility.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
+                (facility.description?.toLowerCase() ?? '').contains(searchQuery.toLowerCase()),
           )
           .toList();
     }
@@ -195,28 +186,24 @@ class HospitalReservationController {
       error: error,
     );
 
-    ref
-        .read(hospitalReservationControllerProvider.notifier)
-        .updateState(newState);
+    ref.read(hospitalReservationControllerProvider.notifier).updateState(newState);
   }
 
   /// 에러 메시지 표시
   void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointPink),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message), backgroundColor: AppColors.pointPink));
   }
 }
 
 /// 병원 예약 컨트롤러 프로바이더
 final hospitalReservationControllerProvider =
-    StateNotifierProvider<
-      HospitalReservationStateNotifier,
-      HospitalReservationState
-    >((ref) => HospitalReservationStateNotifier());
+    StateNotifierProvider<HospitalReservationStateNotifier, HospitalReservationState>(
+      (ref) => HospitalReservationStateNotifier(),
+    );
 
-class HospitalReservationStateNotifier
-    extends StateNotifier<HospitalReservationState> {
+class HospitalReservationStateNotifier extends StateNotifier<HospitalReservationState> {
   HospitalReservationStateNotifier() : super(const HospitalReservationState());
 
   void updateState(HospitalReservationState newState) {

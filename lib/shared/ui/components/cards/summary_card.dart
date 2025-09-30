@@ -97,10 +97,7 @@ class SummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(
-          color: AppColors.pointDark.withValues(alpha: 0.1),
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.pointDark.withValues(alpha: 0.1), width: 1),
         boxShadow: [
           BoxShadow(
             color: AppColors.pointDark.withValues(alpha: 0.1),
@@ -130,10 +127,7 @@ class SummaryCard extends StatelessWidget {
   Widget _buildLoadingContent() {
     return Row(
       children: [
-        if (icon != null) ...[
-          _buildIconContainer(),
-          const SizedBox(width: AppSpacing.md),
-        ],
+        if (icon != null) ...[_buildIconContainer(), const SizedBox(width: AppSpacing.md)],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,9 +158,7 @@ class SummaryCard extends StatelessWidget {
           height: 24,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(
-              iconColor ?? AppColors.pointBrown,
-            ),
+            valueColor: AlwaysStoppedAnimation<Color>(iconColor ?? AppColors.pointBrown),
           ),
         ),
       ],
@@ -176,14 +168,8 @@ class SummaryCard extends StatelessWidget {
   Widget _buildContent() {
     return Row(
       children: [
-        if (leading != null) ...[
-          leading!,
-          const SizedBox(width: AppSpacing.md),
-        ],
-        if (icon != null) ...[
-          _buildIconContainer(),
-          const SizedBox(width: AppSpacing.md),
-        ],
+        if (leading != null) ...[leading!, const SizedBox(width: AppSpacing.md)],
+        if (icon != null) ...[_buildIconContainer(), const SizedBox(width: AppSpacing.md)],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,10 +217,7 @@ class SummaryCard extends StatelessWidget {
             ],
           ),
         ],
-        if (trailing != null) ...[
-          const SizedBox(width: AppSpacing.md),
-          trailing!,
-        ],
+        if (trailing != null) ...[const SizedBox(width: AppSpacing.md), trailing!],
       ],
     );
   }

@@ -109,9 +109,7 @@ class AiMockService extends BaseMockService {
   }
 
   /// 카테고리별 추천 질문 조회
-  static List<Map<String, dynamic>> getMockSuggestedQuestionsByCategory(
-    String category,
-  ) {
+  static List<Map<String, dynamic>> getMockSuggestedQuestionsByCategory(String category) {
     final allQuestions = getMockAiSuggestedQuestions();
     return allQuestions.where((q) => q['category'] == category).toList();
   }
@@ -146,23 +144,17 @@ class AiMockService extends BaseMockService {
   static String _generateMockResponse(String userMessage) {
     final message = userMessage.toLowerCase();
 
-    if (message.contains('식욕') ||
-        message.contains('밥') ||
-        message.contains('사료')) {
+    if (message.contains('식욕') || message.contains('밥') || message.contains('사료')) {
       return '펫의 식욕 변화는 다양한 원인이 있을 수 있습니다. 스트레스, 환경 변화, 건강 상태 등을 확인해보시고, 지속될 경우 수의사 상담을 받아보세요.';
     } else if (message.contains('산책') || message.contains('운동')) {
       return '규칙적인 산책은 펫의 건강에 매우 중요합니다. 펫의 나이와 크기에 맞는 적절한 운동량을 유지하시고, 날씨가 너무 덥거나 추울 때는 주의해주세요.';
     } else if (message.contains('훈련') || message.contains('트릭')) {
       return '펫 훈련은 인내심과 일관성이 중요합니다. 짧고 빈번한 세션으로 시작하고, 성공할 때마다 즉시 보상을 주세요. 긍정적 강화가 가장 효과적입니다.';
-    } else if (message.contains('건강') ||
-        message.contains('병원') ||
-        message.contains('아프')) {
+    } else if (message.contains('건강') || message.contains('병원') || message.contains('아프')) {
       return '펫의 건강 이상 징후가 보이면 빠른 시일 내에 수의사와 상담하는 것이 좋습니다. 예방이 치료보다 중요하니 정기 검진도 잊지 마세요.';
     } else if (message.contains('고양이') || message.contains('cat')) {
       return '고양이는 독립적인 성격을 가지고 있으며, 개와는 다른 관리 방법이 필요합니다. 깨끗한 화장실, 수직 공간, 적절한 놀이 시간을 제공해주세요.';
-    } else if (message.contains('강아지') ||
-        message.contains('개') ||
-        message.contains('dog')) {
+    } else if (message.contains('강아지') || message.contains('개') || message.contains('dog')) {
       return '강아지는 사회적 동물로 꾸준한 관심과 훈련이 필요합니다. 적절한 사회화, 규칙적인 산책, 그리고 일관된 훈련을 통해 건강하고 행복한 반려견으로 키울 수 있습니다.';
     } else {
       return '반려동물에 대한 질문을 해주셔서 감사합니다. 더 구체적인 정보를 주시면 더 정확한 답변을 드릴 수 있어요. 언제든지 궁금한 것이 있으시면 물어보세요!';
@@ -180,11 +172,7 @@ class AiMockService extends BaseMockService {
         type: MessageType.assistant,
         timestamp: DateTime.now().subtract(const Duration(days: 1)),
         petId: '1',
-        metadata: {
-          'category': '건강상담',
-          'usefulness': 'high',
-          'isFavorite': true,
-        },
+        metadata: {'category': '건강상담', 'usefulness': 'high', 'isFavorite': true},
       ),
       AiMessageEntity(
         id: MockHelper.generateId(),
@@ -192,11 +180,7 @@ class AiMockService extends BaseMockService {
         type: MessageType.assistant,
         timestamp: DateTime.now().subtract(const Duration(days: 3)),
         petId: '2',
-        metadata: {
-          'category': '산책가이드',
-          'usefulness': 'high',
-          'isFavorite': true,
-        },
+        metadata: {'category': '산책가이드', 'usefulness': 'high', 'isFavorite': true},
       ),
     ];
   }
@@ -228,11 +212,7 @@ class AiMockService extends BaseMockService {
       'dataUsageConsent': true,
       'responseSpeed': 'normal', // fast, normal, thoughtful
       'expertiseAreas': ['건강', '영양', '훈련', '행동'],
-      'notificationSettings': {
-        'newTips': true,
-        'weeklyDigest': true,
-        'urgentAlerts': true,
-      },
+      'notificationSettings': {'newTips': true, 'weeklyDigest': true, 'urgentAlerts': true},
     };
   }
 

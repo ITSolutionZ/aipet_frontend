@@ -83,12 +83,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(
-    BuildContext context,
-    WidgetRef ref,
-    String sheetId,
-    bool isExpanded,
-  ) {
+  Widget _buildHeader(BuildContext context, WidgetRef ref, String sheetId, bool isExpanded) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Row(
@@ -99,10 +94,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
             height: 48,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.pointBrown.withValues(alpha: 0.3),
-                width: 2,
-              ),
+              border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.3), width: 2),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(24),
@@ -112,11 +104,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     color: AppColors.pointGray.withValues(alpha: 0.3),
-                    child: const Icon(
-                      Icons.person,
-                      color: AppColors.pointGray,
-                      size: 24,
-                    ),
+                    child: const Icon(Icons.person, color: AppColors.pointGray, size: 24),
                   );
                 },
               ),
@@ -139,21 +127,11 @@ class WalkInfoBottomSheet extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      '(3.5)',
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointGray,
-                      ),
-                    ),
+                    Text('(3.5)', style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.xs),
-                Text(
-                  'ドッグウォーカー',
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointGray,
-                  ),
-                ),
+                Text('ドッグウォーカー', style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
               ],
             ),
           ),
@@ -245,10 +223,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-        ),
+        Text(label, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
         Text(
           value,
           style: AppFonts.bodyMedium.copyWith(
@@ -274,11 +249,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
   }
 
   /// 산책 기록 공유 다이얼로그 표시
-  void _showShareDialog(
-    BuildContext context,
-    WidgetRef ref,
-    WalkRecordEntity walkRecord,
-  ) {
+  void _showShareDialog(BuildContext context, WidgetRef ref, WalkRecordEntity walkRecord) {
     final shareText = ref.read(shareTextProvider(walkRecord));
 
     showDialog(
@@ -314,22 +285,13 @@ class WalkInfoBottomSheet extends ConsumerWidget {
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('キャンセル'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => context.pop(), child: const Text('キャンセル'))],
       ),
     );
   }
 
   /// 클립보드에 복사
-  Future<void> _copyToClipboard(
-    BuildContext context,
-    WidgetRef ref,
-    String text,
-  ) async {
+  Future<void> _copyToClipboard(BuildContext context, WidgetRef ref, String text) async {
     final useCase = ref.read(copyToClipboardUseCaseProvider);
     final result = await useCase(text);
 
@@ -337,9 +299,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: result.isSuccess
-              ? AppColors.pointGreen
-              : AppColors.pointPink,
+          backgroundColor: result.isSuccess ? AppColors.pointGreen : AppColors.pointPink,
         ),
       );
     }
@@ -358,20 +318,14 @@ class WalkInfoBottomSheet extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: result.isSuccess
-              ? AppColors.pointGreen
-              : AppColors.pointPink,
+          backgroundColor: result.isSuccess ? AppColors.pointGreen : AppColors.pointPink,
         ),
       );
     }
   }
 
   /// 시스템 공유
-  Future<void> _systemShare(
-    BuildContext context,
-    WidgetRef ref,
-    String text,
-  ) async {
+  Future<void> _systemShare(BuildContext context, WidgetRef ref, String text) async {
     final useCase = ref.read(systemShareUseCaseProvider);
     final result = await useCase(text, subject: '散歩記録を共有');
 
@@ -379,20 +333,14 @@ class WalkInfoBottomSheet extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: result.isSuccess
-              ? AppColors.pointGreen
-              : AppColors.pointPink,
+          backgroundColor: result.isSuccess ? AppColors.pointGreen : AppColors.pointPink,
         ),
       );
     }
   }
 
   /// 산책 기록 수정 바텀 시트 표시
-  void _showEditWalkDialog(
-    BuildContext context,
-    WidgetRef ref,
-    WalkRecordEntity walkRecord,
-  ) {
+  void _showEditWalkDialog(BuildContext context, WidgetRef ref, WalkRecordEntity walkRecord) {
     EditWalkBottomSheet.show(context, walkRecord, WalkController(ref));
   }
 }

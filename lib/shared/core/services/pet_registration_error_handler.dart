@@ -100,10 +100,7 @@ class PetRegistrationErrorHandler {
             const Icon(Icons.error_outline, color: Colors.white, size: 20),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(
-                message,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-              ),
+              child: Text(message, style: const TextStyle(color: Colors.white, fontSize: 14)),
             ),
           ],
         ),
@@ -136,17 +133,10 @@ class PetRegistrationErrorHandler {
       SnackBar(
         content: Row(
           children: [
-            const Icon(
-              Icons.check_circle_outline,
-              color: Colors.white,
-              size: 20,
-            ),
+            const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(
-                message,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-              ),
+              child: Text(message, style: const TextStyle(color: Colors.white, fontSize: 14)),
             ),
           ],
         ),
@@ -175,21 +165,14 @@ class PetRegistrationErrorHandler {
         return AlertDialog(
           title: Row(
             children: [
-              Icon(
-                Icons.warning_amber_outlined,
-                color: Colors.orange.shade600,
-                size: 24,
-              ),
+              Icon(Icons.warning_amber_outlined, color: Colors.orange.shade600, size: 24),
               const SizedBox(width: 8),
               Text(title),
             ],
           ),
           content: Text(message),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(cancelText),
-            ),
+            TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(cancelText)),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
               child: Text(confirmText),
@@ -227,10 +210,7 @@ class PetRegistrationErrorHandler {
           ),
           content: Text(message),
           actions: [
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(buttonText),
-            ),
+            ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: Text(buttonText)),
           ],
         );
       },

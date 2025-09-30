@@ -5,12 +5,7 @@ class FilterChip extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const FilterChip({
-    super.key,
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
+  const FilterChip({super.key, required this.label, required this.isSelected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +16,7 @@ class FilterChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected ? Colors.blue : Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? Colors.blue : Colors.grey.shade300,
-          ),
+          border: Border.all(color: isSelected ? Colors.blue : Colors.grey.shade300),
         ),
         child: Text(
           label,

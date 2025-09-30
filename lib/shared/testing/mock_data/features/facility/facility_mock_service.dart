@@ -68,16 +68,12 @@ class FacilityMockService extends BaseMockService {
 
   /// 병원 시설만 조회
   static List<Map<String, dynamic>> getMockHospitalFacilities() {
-    return getMockFacilities()
-        .where((facility) => facility['type'] == 'hospital')
-        .toList();
+    return getMockFacilities().where((facility) => facility['type'] == 'hospital').toList();
   }
 
   /// 미용실 시설만 조회
   static List<Map<String, dynamic>> getMockGroomingFacilities() {
-    return getMockFacilities()
-        .where((facility) => facility['type'] == 'grooming')
-        .toList();
+    return getMockFacilities().where((facility) => facility['type'] == 'grooming').toList();
   }
 
   /// ID로 시설 조회

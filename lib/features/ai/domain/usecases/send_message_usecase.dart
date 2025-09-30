@@ -58,10 +58,7 @@ class SendMessageUseCase {
       }
 
       // Repository를 통한 펫 컨텍스트와 함께 메시지 전송
-      return await _repository.sendMessageWithPetContext(
-        message,
-        petContext: petContext,
-      );
+      return await _repository.sendMessageWithPetContext(message, petContext: petContext);
     } catch (error) {
       return Result.failure('メッセージの送信に失敗しました: ${error.toString()}');
     }

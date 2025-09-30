@@ -11,9 +11,5 @@ abstract class FacilityRepository {
     double longitude,
     double radius,
   );
-  Future<Result<void>> setCurrentLocation(
-    double latitude,
-    double longitude,
-    String address,
-  );
+  Future<Result<void>> setCurrentLocation(double latitude, double longitude, String address);
 }

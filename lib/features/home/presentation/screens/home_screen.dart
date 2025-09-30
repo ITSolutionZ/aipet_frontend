@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/home/data/data.dart';
 import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
+import 'package:aipet_frontend/features/home/presentation/controllers/home_controller.dart';
 import 'package:aipet_frontend/features/home/presentation/mixins/scroll_tracking_mixin.dart';
 import 'package:aipet_frontend/features/home/presentation/widgets/widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
@@ -217,39 +218,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   void _handleSearchChanged(String query) {
-    // TODO: 검색 쿼리 처리 (요청사항에 따라 제외)
-    debugPrint('검색어 변경: $query - 구현 예정');
+    final controller = ref.read(homeControllerProvider);
+    controller.handleSearch(query);
   }
 
   void _handleAppointmentTap(AppointmentSummary appointment) {
-    // 예약 상세 화면으로 이동
-    context.push('/appointment/${appointment.id}');
+    final controller = ref.read(homeControllerProvider);
+    controller.navigateToAppointmentDetail(context, appointment);
   }
 
   void _handleAppointmentComplete(AppointmentSummary appointment) {
-    // 예약 완료 처리
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('예약 완료'),
-        content: Text('${appointment.title} 예약을 완료하시겠습니까?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('취소'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // 실제 완료 처리 로직 구현 시 추가
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${appointment.title} 예약이 완료되었습니다')),
-              );
-            },
-            child: const Text('완료'),
-          ),
-        ],
-      ),
-    );
+    final controller = ref.read(homeControllerProvider);
+    controller.completeAppointment(context, appointment);
   }
 }

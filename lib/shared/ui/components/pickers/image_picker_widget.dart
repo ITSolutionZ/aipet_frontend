@@ -106,12 +106,7 @@ class ImagePickerWidget extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: borderRadius ?? BorderRadius.circular(AppRadius.large),
-          child: Stack(
-            children: [
-              _buildImageContent(),
-              if (showUploadIcon) _buildUploadIcon(),
-            ],
-          ),
+          child: Stack(children: [_buildImageContent(), if (showUploadIcon) _buildUploadIcon()]),
         ),
       ),
     );
@@ -147,11 +142,7 @@ class ImagePickerWidget extends StatelessWidget {
             ),
           ],
         ),
-        child: Icon(
-          Icons.camera_alt,
-          color: AppColors.pureWhite,
-          size: size * 0.15,
-        ),
+        child: Icon(Icons.camera_alt, color: AppColors.pureWhite, size: size * 0.15),
       ),
     );
   }
@@ -196,10 +187,7 @@ class ImagePickerButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.medium),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.md,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
         decoration: BoxDecoration(
           border: Border.all(color: color ?? AppColors.pointBrown, width: 2),
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -266,10 +254,7 @@ class ImagePreviewGrid extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppRadius.medium),
-              border: Border.all(
-                color: AppColors.pointGray.withValues(alpha: 0.3),
-                width: 1,
-              ),
+              border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3), width: 1),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -295,11 +280,7 @@ class ImagePreviewGrid extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: AppColors.pureWhite, width: 1),
                   ),
-                  child: const Icon(
-                    Icons.close,
-                    color: AppColors.pureWhite,
-                    size: 14,
-                  ),
+                  child: const Icon(Icons.close, color: AppColors.pureWhite, size: 14),
                 ),
               ),
             ),

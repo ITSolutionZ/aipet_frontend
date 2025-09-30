@@ -70,9 +70,7 @@ class NotificationDetailMetadataComponent extends StatelessWidget {
 
       case NotificationType.walk:
         if (metadata['recommendedDuration'] != null) {
-          widgets.add(
-            _buildMetadataRow('推奨時間', '${metadata['recommendedDuration']}分'),
-          );
+          widgets.add(_buildMetadataRow('推奨時間', '${metadata['recommendedDuration']}分'));
         }
         if (metadata['weather'] != null) {
           widgets.add(_buildMetadataRow('天気', metadata['weather']));
@@ -87,8 +85,7 @@ class NotificationDetailMetadataComponent extends StatelessWidget {
         if (metadata['vaccineType'] != null) {
           widgets.add(_buildMetadataRow('ワクチン種類', metadata['vaccineType']));
         }
-        if (metadata['appointmentDate'] != null &&
-            metadata['appointmentTime'] != null) {
+        if (metadata['appointmentDate'] != null && metadata['appointmentTime'] != null) {
           widgets.add(
             _buildMetadataRow(
               '予約日時',
@@ -111,23 +108,17 @@ class NotificationDetailMetadataComponent extends StatelessWidget {
           widgets.add(_buildMetadataRow('サービス', services));
         }
         if (metadata['price'] != null) {
-          widgets.add(
-            _buildMetadataRow('価格', '${formatCurrency(metadata['price'])}円'),
-          );
+          widgets.add(_buildMetadataRow('価格', '${formatCurrency(metadata['price'])}円'));
         }
         break;
 
       case NotificationType.system:
       case NotificationType.emergency:
         if (metadata['averageIntake'] != null) {
-          widgets.add(
-            _buildMetadataRow('平均摂取率', '${metadata['averageIntake']}%'),
-          );
+          widgets.add(_buildMetadataRow('平均摂取率', '${metadata['averageIntake']}%'));
         }
         if (metadata['daysObserved'] != null) {
-          widgets.add(
-            _buildMetadataRow('観察期間', '${metadata['daysObserved']}日'),
-          );
+          widgets.add(_buildMetadataRow('観察期間', '${metadata['daysObserved']}日'));
         }
         break;
 
@@ -145,10 +136,7 @@ class NotificationDetailMetadataComponent extends StatelessWidget {
         children: [
           SizedBox(
             width: 80,
-            child: Text(
-              label,
-              style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
-            ),
+            child: Text(label, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
           ),
           Expanded(
             child: Text(

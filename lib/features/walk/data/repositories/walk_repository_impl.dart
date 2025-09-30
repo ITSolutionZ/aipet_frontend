@@ -27,9 +27,7 @@ class WalkRepositoryImpl implements WalkRepository {
   Future<List<WalkRecordEntity>> getWalkRecordsByPetId(String petId) async {
     await Future.delayed(const Duration(milliseconds: 300));
     final mockData = WalkMockService.getMockWalkRecords();
-    final filteredData = mockData
-        .where((record) => record['petId'] == petId)
-        .toList();
+    final filteredData = mockData.where((record) => record['petId'] == petId).toList();
     return filteredData.map((data) => WalkRecordEntity.fromJson(data)).toList();
   }
 
@@ -58,11 +56,7 @@ class WalkRepositoryImpl implements WalkRepository {
   }
 
   @override
-  Future<WalkRecordEntity> endWalk(
-    String walkId, {
-    double? distance,
-    String? notes,
-  }) async {
+  Future<WalkRecordEntity> endWalk(String walkId, {double? distance, String? notes}) async {
     await Future.delayed(const Duration(milliseconds: 500));
     // Mock 데이터에서 해당 산책을 찾아서 업데이트
     final mockData = WalkMockService.getMockWalkRecords();
