@@ -5,11 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 🎯 Pet Weight Input State Provider
 final petWeightInputProvider =
-    StateNotifierProvider.family<
-      PetWeightInputController,
-      PetWeightInputState,
-      String
-    >((ref, inputId) => PetWeightInputController());
+    StateNotifierProvider.family<PetWeightInputController, PetWeightInputState, String>(
+      (ref, inputId) => PetWeightInputController(),
+    );
 
 class PetWeightInputController extends StateNotifier<PetWeightInputState> {
   PetWeightInputController() : super(const PetWeightInputState());
@@ -18,11 +16,7 @@ class PetWeightInputController extends StateNotifier<PetWeightInputState> {
     final controller = TextEditingController(text: weight.toStringAsFixed(1));
     final focusNode = FocusNode();
 
-    state = state.copyWith(
-      controller: controller,
-      focusNode: focusNode,
-      currentWeight: weight,
-    );
+    state = state.copyWith(controller: controller, focusNode: focusNode, currentWeight: weight);
   }
 
   void updateWeight(double weight) {
@@ -45,11 +39,7 @@ class PetWeightInputState {
   final FocusNode? focusNode;
   final double currentWeight;
 
-  const PetWeightInputState({
-    this.controller,
-    this.focusNode,
-    this.currentWeight = 0.0,
-  });
+  const PetWeightInputState({this.controller, this.focusNode, this.currentWeight = 0.0});
 
   PetWeightInputState copyWith({
     TextEditingController? controller,
@@ -88,9 +78,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(petWeightInputProvider(_inputId).notifier)
-          .initialize(widget.weight);
+      ref.read(petWeightInputProvider(_inputId).notifier).initialize(widget.weight);
 
       final state = ref.read(petWeightInputProvider(_inputId));
       state.focusNode?.addListener(() {
@@ -105,9 +93,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
   void didUpdateWidget(PetWeightInput oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.weight != widget.weight) {
-      ref
-          .read(petWeightInputProvider(_inputId).notifier)
-          .updateWeight(widget.weight);
+      ref.read(petWeightInputProvider(_inputId).notifier).updateWeight(widget.weight);
     }
   }
 
@@ -139,10 +125,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
   void _showErrorSnackBar() {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('0.5kg ~ 50.0kg 사이의 값을 입력해주세요'),
-        duration: Duration(seconds: 2),
-      ),
+      const SnackBar(content: Text('0.5kg ~ 50.0kg 사이의 값을 입력해주세요'), duration: Duration(seconds: 2)),
     );
   }
 
@@ -177,12 +160,8 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
             child: TextFormField(
               controller: inputState.controller,
               focusNode: inputState.focusNode,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}')),
-              ],
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}'))],
               style: AppFonts.titleLarge.copyWith(
                 color: AppColors.pointDark,
                 fontWeight: FontWeight.w600,
@@ -218,10 +197,7 @@ class _PetWeightInputState extends ConsumerState<PetWeightInput> {
         ),
         if (widget.errorText != null) ...[
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            widget.errorText!,
-            style: AppFonts.bodySmall.copyWith(color: Colors.red),
-          ),
+          Text(widget.errorText!, style: AppFonts.bodySmall.copyWith(color: Colors.red)),
         ],
         const SizedBox(height: AppSpacing.xs),
         Text(

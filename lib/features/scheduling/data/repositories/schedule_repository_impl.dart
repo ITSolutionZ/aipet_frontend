@@ -39,21 +39,14 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   }
 
   @override
-  Future<List<ScheduleEntity>> getSchedulesByDateRange(
-    DateTime startDate,
-    DateTime endDate,
-  ) async {
+  Future<List<ScheduleEntity>> getSchedulesByDateRange(DateTime startDate, DateTime endDate) async {
     // TODO: 실제 API 호출로 대체
     await Future.delayed(const Duration(milliseconds: 400));
     return _schedules
         .where(
           (schedule) =>
-              schedule.startDateTime.isAfter(
-                startDate.subtract(const Duration(days: 1)),
-              ) &&
-              schedule.startDateTime.isBefore(
-                endDate.add(const Duration(days: 1)),
-              ),
+              schedule.startDateTime.isAfter(startDate.subtract(const Duration(days: 1))) &&
+              schedule.startDateTime.isBefore(endDate.add(const Duration(days: 1))),
         )
         .map((model) => model.toEntity())
         .toList();
@@ -165,10 +158,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   }
 
   @override
-  Future<ScheduleEntity> updateScheduleStatus(
-    String id,
-    ScheduleStatus status,
-  ) async {
+  Future<ScheduleEntity> updateScheduleStatus(String id, ScheduleStatus status) async {
     // TODO: 실제 API 호출로 대체
     await Future.delayed(const Duration(milliseconds: 300));
     final index = _schedules.indexWhere((s) => s.id == id);
@@ -258,11 +248,9 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
         .where(
           (schedule) =>
               schedule.title.toLowerCase().contains(lowercaseQuery) ||
-              (schedule.description?.toLowerCase().contains(lowercaseQuery) ??
-                  false) ||
+              (schedule.description?.toLowerCase().contains(lowercaseQuery) ?? false) ||
               schedule.petName.toLowerCase().contains(lowercaseQuery) ||
-              (schedule.location?.toLowerCase().contains(lowercaseQuery) ??
-                  false),
+              (schedule.location?.toLowerCase().contains(lowercaseQuery) ?? false),
         )
         .map((model) => model.toEntity())
         .toList();
@@ -275,9 +263,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
     final totalSchedules = _schedules.length;
     final completedSchedules = _schedules.where((s) => s.isCompleted).length;
-    final pendingSchedules = _schedules
-        .where((s) => s.status == ScheduleStatus.pending)
-        .length;
+    final pendingSchedules = _schedules.where((s) => s.status == ScheduleStatus.pending).length;
     final cancelledSchedules = _schedules.where((s) => s.isCancelled).length;
     final missedSchedules = _schedules.where((s) => s.isMissed).length;
     final todaySchedules = _schedules.where((s) => s.isToday).length;
@@ -291,9 +277,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
     final schedulesByStatus = <ScheduleStatus, int>{};
     for (final status in ScheduleStatus.values) {
-      schedulesByStatus[status] = _schedules
-          .where((s) => s.status == status)
-          .length;
+      schedulesByStatus[status] = _schedules.where((s) => s.status == status).length;
     }
 
     return ScheduleStatistics(
@@ -322,9 +306,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       final existingStart = existingSchedule.startDateTime;
       final existingEnd =
           existingSchedule.endDateTime ??
-          existingSchedule.startDateTime.add(
-            Duration(minutes: existingSchedule.totalMinutes),
-          );
+          existingSchedule.startDateTime.add(Duration(minutes: existingSchedule.totalMinutes));
 
       final newStart = schedule.startDateTime;
       final newEnd =

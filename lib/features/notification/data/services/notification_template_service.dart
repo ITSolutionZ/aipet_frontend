@@ -18,8 +18,7 @@ class NotificationTemplateService {
   final StreamController<List<NotificationTemplate>> _templatesController =
       StreamController<List<NotificationTemplate>>.broadcast();
 
-  Stream<List<NotificationTemplate>> get templatesStream =>
-      _templatesController.stream;
+  Stream<List<NotificationTemplate>> get templatesStream => _templatesController.stream;
 
   NotificationTemplateService(this._notificationService);
 
@@ -44,8 +43,7 @@ class NotificationTemplateService {
   /// 기본 템플릿 생성
   Future<void> _createDefaultTemplates() async {
     try {
-      final defaultTemplates =
-          NotificationTemplateFactory.getDefaultTemplates();
+      final defaultTemplates = NotificationTemplateFactory.getDefaultTemplates();
       await _saveTemplates(defaultTemplates);
       _templatesController.add(defaultTemplates);
 
@@ -125,9 +123,7 @@ class NotificationTemplateService {
       final templatesJson = await SecureStorageService.getString(_templatesKey);
       if (templatesJson != null) {
         final List<dynamic> templatesList = jsonDecode(templatesJson);
-        return templatesList
-            .map((json) => NotificationTemplate.fromJson(json))
-            .toList();
+        return templatesList.map((json) => NotificationTemplate.fromJson(json)).toList();
       }
     } catch (e) {
       if (kDebugMode) {}
@@ -142,22 +138,15 @@ class NotificationTemplateService {
   }
 
   /// 특정 타입의 템플릿 가져오기
-  Future<List<NotificationTemplate>> getTemplatesByType(
-    TemplateType type,
-  ) async {
+  Future<List<NotificationTemplate>> getTemplatesByType(TemplateType type) async {
     final templates = await getTemplates();
     return NotificationTemplateFactory.filterByType(templates, type);
   }
 
   /// 특정 알림 타입의 템플릿 가져오기
-  Future<List<NotificationTemplate>> getTemplatesByNotificationType(
-    NotificationType type,
-  ) async {
+  Future<List<NotificationTemplate>> getTemplatesByNotificationType(NotificationType type) async {
     final templates = await getTemplates();
-    return NotificationTemplateFactory.filterByNotificationType(
-      templates,
-      type,
-    );
+    return NotificationTemplateFactory.filterByNotificationType(templates, type);
   }
 
   /// 템플릿으로 알림 생성 및 발송
@@ -203,14 +192,10 @@ class NotificationTemplateService {
   }
 
   /// 템플릿 미리보기 생성
-  String getTemplatePreview(
-    String templateId, {
-    Map<String, String>? variables,
-  }) {
+  String getTemplatePreview(String templateId, {Map<String, String>? variables}) {
     try {
       // 메모리에서 템플릿 찾기 (실제로는 getTemplates() 호출 필요)
-      final defaultTemplates =
-          NotificationTemplateFactory.getDefaultTemplates();
+      final defaultTemplates = NotificationTemplateFactory.getDefaultTemplates();
       final template = defaultTemplates.firstWhere((t) => t.id == templateId);
 
       return template.getPreview();
@@ -261,8 +246,7 @@ class NotificationTemplateService {
       final notificationTypeStats = <String, int>{};
       for (final template in templates) {
         final typeName = template.notificationType.name;
-        notificationTypeStats[typeName] =
-            (notificationTypeStats[typeName] ?? 0) + 1;
+        notificationTypeStats[typeName] = (notificationTypeStats[typeName] ?? 0) + 1;
       }
 
       return {
@@ -310,9 +294,7 @@ class NotificationTemplateService {
   /// 템플릿 저장
   Future<void> _saveTemplates(List<NotificationTemplate> templates) async {
     try {
-      final templatesJson = jsonEncode(
-        templates.map((t) => t.toJson()).toList(),
-      );
+      final templatesJson = jsonEncode(templates.map((t) => t.toJson()).toList());
       await SecureStorageService.setString(_templatesKey, templatesJson);
     } catch (e) {
       if (kDebugMode) {}

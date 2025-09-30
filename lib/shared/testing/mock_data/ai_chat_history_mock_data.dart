@@ -74,9 +74,7 @@ class AiChatHistoryMockData {
             'id': 'msg-2',
             'content': 'こんにちは！Maxiの健康について、どのようなご相談でしょうか？',
             'type': 'assistant',
-            'timestamp': DateTime.now().subtract(
-              const Duration(hours: 2, minutes: -1),
-            ),
+            'timestamp': DateTime.now().subtract(const Duration(hours: 2, minutes: -1)),
           },
         ],
         'category': 'health',
@@ -99,9 +97,7 @@ class AiChatHistoryMockData {
             'id': 'msg-4',
             'content': 'お手を教えるには、まずおやつを使って...',
             'type': 'assistant',
-            'timestamp': DateTime.now().subtract(
-              const Duration(days: 1, minutes: -2),
-            ),
+            'timestamp': DateTime.now().subtract(const Duration(days: 1, minutes: -2)),
           },
         ],
         'category': 'training',

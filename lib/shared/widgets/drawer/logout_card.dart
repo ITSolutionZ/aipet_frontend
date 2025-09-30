@@ -14,10 +14,7 @@ class DrawerLogoutCard extends StatelessWidget {
         leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
         title: Text(
           '로그아웃',
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.error,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),
         ),
         onTap: onTap,
       ),

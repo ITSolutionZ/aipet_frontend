@@ -5,11 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 🎯 Walk Edit Form State Provider
 final walkEditFormProvider =
-    StateNotifierProvider.family<
-      WalkEditFormController,
-      WalkEditFormState,
-      String
-    >((ref, formId) => WalkEditFormController());
+    StateNotifierProvider.family<WalkEditFormController, WalkEditFormState, String>(
+      (ref, formId) => WalkEditFormController(),
+    );
 
 class WalkEditFormController extends StateNotifier<WalkEditFormState> {
   WalkEditFormController() : super(const WalkEditFormState());
@@ -21,9 +19,7 @@ class WalkEditFormController extends StateNotifier<WalkEditFormState> {
       distance: walkRecord.distance?.toStringAsFixed(1) ?? '',
       notes: walkRecord.notes ?? '',
       startTime: TimeOfDay.fromDateTime(walkRecord.startTime),
-      endTime: walkRecord.endTime != null
-          ? TimeOfDay.fromDateTime(walkRecord.endTime!)
-          : null,
+      endTime: walkRecord.endTime != null ? TimeOfDay.fromDateTime(walkRecord.endTime!) : null,
     );
   }
 
@@ -145,12 +141,7 @@ class WalkEditForm extends ConsumerStatefulWidget {
   final void Function(WalkRecordEntity) onSave;
   final VoidCallback? onCancel;
 
-  const WalkEditForm({
-    super.key,
-    required this.walkRecord,
-    required this.onSave,
-    this.onCancel,
-  });
+  const WalkEditForm({super.key, required this.walkRecord, required this.onSave, this.onCancel});
 
   @override
   ConsumerState<WalkEditForm> createState() => _WalkEditFormState();
@@ -170,9 +161,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
 
     // Initialize Riverpod state
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(walkEditFormProvider(_formId).notifier)
-          .initialize(widget.walkRecord);
+      ref.read(walkEditFormProvider(_formId).notifier).initialize(widget.walkRecord);
     });
   }
 
@@ -181,25 +170,17 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
     _distanceController = TextEditingController(
       text: widget.walkRecord.distance?.toStringAsFixed(1) ?? '',
     );
-    _notesController = TextEditingController(
-      text: widget.walkRecord.notes ?? '',
-    );
+    _notesController = TextEditingController(text: widget.walkRecord.notes ?? '');
 
     // Add listeners to sync with Riverpod state
     _titleController.addListener(() {
-      ref
-          .read(walkEditFormProvider(_formId).notifier)
-          .updateTitle(_titleController.text);
+      ref.read(walkEditFormProvider(_formId).notifier).updateTitle(_titleController.text);
     });
     _distanceController.addListener(() {
-      ref
-          .read(walkEditFormProvider(_formId).notifier)
-          .updateDistance(_distanceController.text);
+      ref.read(walkEditFormProvider(_formId).notifier).updateDistance(_distanceController.text);
     });
     _notesController.addListener(() {
-      ref
-          .read(walkEditFormProvider(_formId).notifier)
-          .updateNotes(_notesController.text);
+      ref.read(walkEditFormProvider(_formId).notifier).updateNotes(_notesController.text);
     });
   }
 
@@ -257,18 +238,16 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
               Expanded(
                 child: WalkFormFields.buildStartTimeField(
                   initialValue: formState.startTime,
-                  onChanged: (time) => ref
-                      .read(walkEditFormProvider(_formId).notifier)
-                      .updateStartTime(time),
+                  onChanged: (time) =>
+                      ref.read(walkEditFormProvider(_formId).notifier).updateStartTime(time),
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: WalkFormFields.buildStartTimeField(
                   initialValue: formState.endTime,
-                  onChanged: (time) => ref
-                      .read(walkEditFormProvider(_formId).notifier)
-                      .updateEndTime(time),
+                  onChanged: (time) =>
+                      ref.read(walkEditFormProvider(_formId).notifier).updateEndTime(time),
                 ),
               ),
             ],
@@ -300,9 +279,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
     ref.read(walkEditFormProvider(_formId).notifier).setLoading(true);
 
     try {
-      final updatedWalk = ref
-          .read(walkEditFormProvider(_formId).notifier)
-          .buildUpdatedWalkRecord();
+      final updatedWalk = ref.read(walkEditFormProvider(_formId).notifier).buildUpdatedWalkRecord();
       widget.onSave(updatedWalk);
     } finally {
       if (mounted) {

@@ -72,10 +72,7 @@ abstract class BaseFacilityController {
   /// 통합 에러 처리
   void handleError(dynamic error, [String? context]) {
     final errorContext = context ?? 'Facility Controller';
-    UnifiedErrorHandler.handleUnifiedError(
-      error,
-      context: {'controller': errorContext},
-    );
+    UnifiedErrorHandler.handleUnifiedError(error, context: {'controller': errorContext});
     showErrorMessage('エラーが発生しました: ${error.toString()}');
   }
 

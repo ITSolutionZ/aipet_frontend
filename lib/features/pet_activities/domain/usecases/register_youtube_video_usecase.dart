@@ -31,9 +31,7 @@ class RegisterYouTubeVideoUseCase {
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         youtubeUrl: youtubeUrl,
         youtubeVideoId: videoId,
-        title: title.isNotEmpty
-            ? title
-            : videoInfo['title'] ?? 'Untitled Video',
+        title: title.isNotEmpty ? title : videoInfo['title'] ?? 'Untitled Video',
         description: description ?? videoInfo['description'],
         thumbnailUrl: YouTubeVideoEntity.generateThumbnailUrl(videoId),
         durationSeconds: videoInfo['duration'] ?? 0,

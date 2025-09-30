@@ -49,13 +49,8 @@ class FacilityRepositoryImpl implements FacilityRepository {
       await Future.delayed(const Duration(milliseconds: 300));
       final facilitiesData = FacilityMockService.getMockFacilities();
       final facilities = _convertToFacilityList(facilitiesData);
-      final filteredFacilities = facilities
-          .where((facility) => facility.type == type)
-          .toList();
-      return Result.success(
-        '${type.name} 타입 시설을 성공적으로 조회했습니다',
-        filteredFacilities,
-      );
+      final filteredFacilities = facilities.where((facility) => facility.type == type).toList();
+      return Result.success('${type.name} 타입 시설을 성공적으로 조회했습니다', filteredFacilities);
     } catch (e) {
       final appException = AppErrorHandler.convertToAppException(e);
       return Result.failure(appException.toString());
@@ -100,11 +95,7 @@ class FacilityRepositoryImpl implements FacilityRepository {
   }
 
   @override
-  Future<Result<void>> setCurrentLocation(
-    double latitude,
-    double longitude,
-    String address,
-  ) async {
+  Future<Result<void>> setCurrentLocation(double latitude, double longitude, String address) async {
     try {
       await Future.delayed(const Duration(milliseconds: 100));
       return Result.success('현재 위치를 성공적으로 설정했습니다', null);
@@ -115,9 +106,7 @@ class FacilityRepositoryImpl implements FacilityRepository {
   }
 
   /// Map 데이터를 Facility 객체 리스트로 변환
-  List<Facility> _convertToFacilityList(
-    List<Map<String, dynamic>> facilitiesData,
-  ) {
+  List<Facility> _convertToFacilityList(List<Map<String, dynamic>> facilitiesData) {
     return facilitiesData
         .map(
           (data) => Facility(
@@ -129,9 +118,7 @@ class FacilityRepositoryImpl implements FacilityRepository {
             longitude: data['longitude'] as double? ?? 139.6503,
             phone: data['phone'] as String,
             email: data['email'] as String,
-            type: data['type'] == 'grooming'
-                ? FacilityType.grooming
-                : FacilityType.hospital,
+            type: data['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
             rating: (data['rating'] as num).toDouble(),
             reviewCount: data['reviewCount'] as int,
             imagePath: data['imagePath'] as String,

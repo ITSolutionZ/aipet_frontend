@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 🎯 Weight Chart State Provider
-final weightChartStateProvider =
-    StateNotifierProvider<WeightChartController, WeightChartState>(
-      (ref) => WeightChartController(),
-    );
+final weightChartStateProvider = StateNotifierProvider<WeightChartController, WeightChartState>(
+  (ref) => WeightChartController(),
+);
 
 class WeightChartController extends StateNotifier<WeightChartState> {
   WeightChartController() : super(const WeightChartState());
@@ -74,11 +73,7 @@ class WeightChartCard extends ConsumerWidget {
                   color: AppColors.pointBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.medium),
                 ),
-                child: const Icon(
-                  Icons.show_chart,
-                  color: AppColors.pointBlue,
-                  size: 20,
-                ),
+                child: const Icon(Icons.show_chart, color: AppColors.pointBlue, size: 20),
               ),
               const SizedBox(width: AppSpacing.md),
               Text(
@@ -110,14 +105,8 @@ class WeightChartCard extends ConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.small),
               child: Padding(
-                padding: const EdgeInsets.all(
-                  2.0,
-                ), // 차트 주변 여백 더 감소하여 그래프 영역 최대화
-                child: _buildWeightChart(
-                  weightRecords,
-                  chartState.currentMonthOffset,
-                  ref,
-                ),
+                padding: const EdgeInsets.all(2.0), // 차트 주변 여백 더 감소하여 그래프 영역 최대화
+                child: _buildWeightChart(weightRecords, chartState.currentMonthOffset, ref),
               ),
             ),
           ),
@@ -133,10 +122,7 @@ class WeightChartCard extends ConsumerWidget {
         Container(
           width: 16,
           height: 3,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
-          ),
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
         ),
         const SizedBox(width: AppSpacing.xs),
         Text(
@@ -150,11 +136,7 @@ class WeightChartCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildWeightChart(
-    List<dynamic> weightRecords,
-    int monthOffset,
-    WidgetRef ref,
-  ) {
+  Widget _buildWeightChart(List<dynamic> weightRecords, int monthOffset, WidgetRef ref) {
     // Mock 데이터에서 차트 데이터 가져오기
     final chartData = PetHealthMockService.getMockWeightChartData();
     final currentYearData = <FlSpot>[];
@@ -216,9 +198,7 @@ class WeightChartCard extends ConsumerWidget {
 
     return Listener(
       onPointerDown: (event) {
-        ref
-            .read(weightChartStateProvider.notifier)
-            .setDragStart(event.localPosition.dx);
+        ref.read(weightChartStateProvider.notifier).setDragStart(event.localPosition.dx);
       },
       onPointerUp: (event) {
         final chartState = ref.read(weightChartStateProvider);
@@ -257,10 +237,7 @@ class WeightChartCard extends ConsumerWidget {
                   getTooltipItem: (group, groupIndex, rod, rodIndex) {
                     return BarTooltipItem(
                       '去年\n${rod.toY.toStringAsFixed(1)}kg',
-                      AppFonts.bodySmall.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      AppFonts.bodySmall.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                     );
                   },
                 ),
@@ -285,12 +262,8 @@ class WeightChartCard extends ConsumerWidget {
               ),
               titlesData: FlTitlesData(
                 show: true,
-                rightTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                topTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
+                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
                     showTitles: true,
@@ -298,13 +271,8 @@ class WeightChartCard extends ConsumerWidget {
                     getTitlesWidget: (double value, TitleMeta meta) {
                       if (value >= 1 && value <= _monthsPerPage) {
                         final now = DateTime.now();
-                        final targetMonthOffset =
-                            monthOffset + ((value.toInt() - 1) - 2);
-                        final targetDate = DateTime(
-                          now.year,
-                          now.month - targetMonthOffset,
-                          1,
-                        );
+                        final targetMonthOffset = monthOffset + ((value.toInt() - 1) - 2);
+                        final targetDate = DateTime(now.year, now.month - targetMonthOffset, 1);
                         final monthName = '${targetDate.month}月';
                         return SideTitleWidget(
                           axisSide: meta.axisSide,
@@ -341,21 +309,14 @@ class WeightChartCard extends ConsumerWidget {
               ),
               borderData: FlBorderData(
                 show: true,
-                border: Border.all(
-                  color: AppColors.pointGray.withValues(alpha: 0.2),
-                  width: 1,
-                ),
+                border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
               ),
               barGroups: lastYearBarData,
             ),
           ),
           // 라인 차트 (현재 연도 데이터)
           Padding(
-            padding: const EdgeInsets.only(
-              left: 50,
-              bottom: 32,
-              right: 2,
-            ), // Y축과 X축 라벨 영역 최적화
+            padding: const EdgeInsets.only(left: 50, bottom: 32, right: 2), // Y축과 X축 라벨 영역 최적화
             child: LineChart(
               LineChartData(
                 clipData: const FlClipData.all(), // 모든 방향으로 클리핑 적용

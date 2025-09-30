@@ -28,9 +28,7 @@ class MemoInput extends StatelessWidget {
               controller: controller,
               decoration: InputDecoration(
                 hintText: '特記事項があれば入力してください',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,

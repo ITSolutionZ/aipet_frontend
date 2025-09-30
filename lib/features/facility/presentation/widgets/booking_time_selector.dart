@@ -30,18 +30,9 @@ class BookingTimeSelector extends StatelessWidget {
             // 섹션 헤더
             Row(
               children: [
-                const Icon(
-                  Icons.access_time,
-                  size: 20,
-                  color: AppColors.primary,
-                ),
+                const Icon(Icons.access_time, size: 20, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.xs),
-                Text(
-                  '시간 선택',
-                  style: AppFonts.titleMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text('시간 선택', style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold)),
                 if (selectedTime != null) ...[
                   const SizedBox(width: AppSpacing.sm),
                   Container(
@@ -107,10 +98,7 @@ class BookingTimeSelector extends StatelessWidget {
         const SizedBox(width: AppSpacing.md),
         const _LegendItem(color: AppColors.cardBackgroundGray, label: '이용 가능'),
         const SizedBox(width: AppSpacing.md),
-        _LegendItem(
-          color: AppColors.error.withValues(alpha: 0.2),
-          label: '예약 불가',
-        ),
+        _LegendItem(color: AppColors.error.withValues(alpha: 0.2), label: '예약 불가'),
       ],
     );
   }
@@ -198,16 +186,10 @@ class _LegendItem extends StatelessWidget {
         Container(
           width: 12,
           height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
-          ),
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
         ),
         const SizedBox(width: AppSpacing.xs),
-        Text(
-          label,
-          style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
-        ),
+        Text(label, style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary)),
       ],
     );
   }

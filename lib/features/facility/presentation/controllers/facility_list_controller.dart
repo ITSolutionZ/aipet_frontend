@@ -54,9 +54,7 @@ class FacilityListController {
               .where(
                 (facility) =>
                     facility.name.toLowerCase().contains(query.toLowerCase()) ||
-                    (facility.description?.toLowerCase() ?? '').contains(
-                      query.toLowerCase(),
-                    ),
+                    (facility.description?.toLowerCase() ?? '').contains(query.toLowerCase()),
               )
               .toList();
         }
@@ -126,9 +124,7 @@ class FacilityListController {
               .where(
                 (facility) =>
                     facility.name.toLowerCase().contains(query.toLowerCase()) ||
-                    (facility.description?.toLowerCase() ?? '').contains(
-                      query.toLowerCase(),
-                    ),
+                    (facility.description?.toLowerCase() ?? '').contains(query.toLowerCase()),
               )
               .toList();
         }

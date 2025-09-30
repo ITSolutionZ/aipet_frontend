@@ -22,9 +22,7 @@ class TrickCategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.md),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -35,10 +33,7 @@ class TrickCategoryCard extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                color.withValues(alpha: 0.1),
-                color.withValues(alpha: 0.05),
-              ],
+              colors: [color.withValues(alpha: 0.1), color.withValues(alpha: 0.05)],
             ),
           ),
           child: Row(
@@ -70,9 +65,7 @@ class TrickCategoryCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       description,
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                      style: AppFonts.bodyMedium.copyWith(color: AppColors.textSecondary),
                     ),
                   ],
                 ),

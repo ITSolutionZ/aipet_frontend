@@ -54,10 +54,8 @@ class UnifiedValidationRules {
   static const int maxPetNameLength = 50;
 
   // 정규식 패턴
-  static const String emailPattern =
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-  static const String usernamePattern =
-      r'^[a-zA-Z0-9_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+$';
+  static const String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+  static const String usernamePattern = r'^[a-zA-Z0-9_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+$';
   static const String phonePattern = r'^(\+81|0)[0-9]{1,4}[0-9]{1,4}[0-9]{4}$';
 
   // API 제한
@@ -99,17 +97,7 @@ enum UnifiedErrorType {
 enum UnifiedLoadingState { idle, loading, success, error }
 
 /// 공통 폼 필드 타입
-enum UnifiedFormFieldType {
-  email,
-  password,
-  username,
-  message,
-  petName,
-  phone,
-  text,
-  number,
-  date,
-}
+enum UnifiedFormFieldType { email, password, username, message, petName, phone, text, number, date }
 
 /// 공통 API 엔드포인트
 class UnifiedApiEndpoints {

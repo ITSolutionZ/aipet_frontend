@@ -47,8 +47,7 @@ class ShellRoutes {
             name: 'pet-empty',
             redirect: (context, state) {
               // 쿼리 파라미터 확인
-              final afterRegistration =
-                  state.uri.queryParameters['afterRegistration'] == 'true';
+              final afterRegistration = state.uri.queryParameters['afterRegistration'] == 'true';
 
               // 신규 회원가입 후라면 펫 등록 플로우로 이동
               if (afterRegistration) {
@@ -110,18 +109,11 @@ class ShellRoutes {
                 path: 'edit',
                 name: 'feeding-schedule-edit',
                 builder: (context, state) {
-                  final defaults =
-                      SchedulingMockService.getDefaultFeedingScheduleParams();
-                  final mealType =
-                      state.uri.queryParameters['mealType'] ??
-                      defaults['mealType']!;
-                  final time =
-                      state.uri.queryParameters['time'] ?? defaults['time']!;
-                  final amount =
-                      state.uri.queryParameters['amount'] ??
-                      defaults['amount']!;
-                  final petId =
-                      state.uri.queryParameters['petId'] ?? defaults['petId']!;
+                  final defaults = SchedulingMockService.getDefaultFeedingScheduleParams();
+                  final mealType = state.uri.queryParameters['mealType'] ?? defaults['mealType']!;
+                  final time = state.uri.queryParameters['time'] ?? defaults['time']!;
+                  final amount = state.uri.queryParameters['amount'] ?? defaults['amount']!;
+                  final petId = state.uri.queryParameters['petId'] ?? defaults['petId']!;
                   return FeedingScheduleEditScreen(
                     mealType: mealType,
                     currentTime: time,
@@ -169,14 +161,11 @@ class ShellRoutes {
                     path: 'edit',
                     name: 'watering-schedule-edit',
                     builder: (context, state) {
-                      final mealType =
-                          state.uri.queryParameters['mealType'] ?? '朝の給水';
+                      final mealType = state.uri.queryParameters['mealType'] ?? '朝の給水';
                       final time = state.uri.queryParameters['time'] ?? '08:00';
-                      final amount =
-                          state.uri.queryParameters['amount'] ?? '200ml';
+                      final amount = state.uri.queryParameters['amount'] ?? '200ml';
                       return WateringScheduleEditScreen(
-                        scheduleId:
-                            state.uri.queryParameters['scheduleId'] ?? '',
+                        scheduleId: state.uri.queryParameters['scheduleId'] ?? '',
                         mealType: mealType,
                         currentTime: time,
                         currentAmount: amount,
@@ -193,8 +182,7 @@ class ShellRoutes {
                   GoRoute(
                     path: 'add',
                     name: 'add-watering-record',
-                    builder: (context, state) =>
-                        const AddWateringRecordScreen(),
+                    builder: (context, state) => const AddWateringRecordScreen(),
                   ),
                   GoRoute(
                     path: 'edit',
@@ -258,8 +246,7 @@ class ShellRoutes {
       GoRoute(
         path: RouteConstants.walkRoute,
         name: 'walk',
-        builder: (context, state) =>
-            const WalkListScreen(showBackButton: false),
+        builder: (context, state) => const WalkListScreen(showBackButton: false),
         routes: [
           // 산책 상세 화면
           GoRoute(
@@ -268,9 +255,7 @@ class ShellRoutes {
             builder: (context, state) {
               final walkRecord = state.extra as WalkRecordEntity?;
               if (walkRecord == null) {
-                return const Scaffold(
-                  body: Center(child: Text('산책 기록을 찾을 수 없습니다.')),
-                );
+                return const Scaffold(body: Center(child: Text('산책 기록을 찾을 수 없습니다.')));
               }
               return WalkDetailScreen(walkRecord: walkRecord);
             },
@@ -370,9 +355,7 @@ class ShellRoutes {
             path: 'alarm-time-settings',
             name: 'alarm-time-settings',
             builder: (context, state) => const Scaffold(
-              body: Center(
-                child: Text('Alarm Time Settings Screen - Coming Soon'),
-              ),
+              body: Center(child: Text('Alarm Time Settings Screen - Coming Soon')),
             ),
           ),
           GoRoute(

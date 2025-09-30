@@ -24,19 +24,12 @@ class SettingsTileWidget extends StatelessWidget {
         leading: Container(
           width: 40,
           height: 40,
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: backgroundColor, shape: BoxShape.circle),
           child: Icon(icon, color: Colors.white, size: 20),
         ),
         title: Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black87),
         ),
       ),
     );

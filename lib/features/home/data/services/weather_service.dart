@@ -8,8 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherService {
-  static const String _oneCallUrl =
-      'https://api.openweathermap.org/data/3.0/onecall';
+  static const String _oneCallUrl = 'https://api.openweathermap.org/data/3.0/onecall';
   static const String _geocodingUrl = 'https://api.openweathermap.org/geo/1.0';
 
   Future<WeatherData?> getCurrentWeather({
@@ -18,7 +17,9 @@ class WeatherService {
   }) async {
     try {
       debugPrint('🌤️ =============[ WeatherService 호출 ]=============');
-      debugPrint('📍 전달받은 위치: ${location != null ? '${location.name} (${location.latitude}, ${location.longitude})' : 'null - GPS 시도'}');
+      debugPrint(
+        '📍 전달받은 위치: ${location != null ? '${location.name} (${location.latitude}, ${location.longitude})' : 'null - GPS 시도'}',
+      );
       debugPrint('👤 사용자 직접 요청: $userTriggered');
 
       final weatherLocation = location ?? await _getCurrentLocation();
@@ -48,10 +49,7 @@ class WeatherService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
-        final weatherData = WeatherData.fromOneCallJson(
-          data,
-          weatherLocation.name,
-        );
+        final weatherData = WeatherData.fromOneCallJson(data, weatherLocation.name);
 
         // _lastRequestTime = DateTime.now();
         return weatherData;
@@ -78,9 +76,7 @@ class WeatherService {
   }
 
   // 기본 날씨 API로 폴백
-  Future<WeatherData?> _getCurrentWeatherFallback(
-    WeatherLocation weatherLocation,
-  ) async {
+  Future<WeatherData?> _getCurrentWeatherFallback(WeatherLocation weatherLocation) async {
     final apiKey = AppConfig.current.weatherApiKey;
     final url = Uri.parse(
       'https://api.openweathermap.org/data/2.5/weather?lat=${weatherLocation.latitude}&lon=${weatherLocation.longitude}&appid=$apiKey&units=metric&lang=ja',
@@ -173,10 +169,7 @@ class WeatherService {
 
       debugPrint('✅ GPS 위치 취득 성공: ${position.latitude}, ${position.longitude}');
 
-      final locationName = await _getLocationName(
-        position.latitude,
-        position.longitude,
-      );
+      final locationName = await _getLocationName(position.latitude, position.longitude);
 
       debugPrint('🏷️ 위치명: $locationName');
 
@@ -250,11 +243,7 @@ class WeatherService {
   WeatherLocation _getDefaultLocation() {
     // 東京都品川区をデフォルト位置とする
     debugPrint('🏙️ デフォルト位置를 사용: 東京都品川区');
-    return const WeatherLocation(
-      latitude: 35.6092,
-      longitude: 139.7301,
-      name: '東京都品川区',
-    );
+    return const WeatherLocation(latitude: 35.6092, longitude: 139.7301, name: '東京都品川区');
   }
 
   // 마지막 API 요청 시간 추적 (향후 사용 예정)
@@ -277,8 +266,7 @@ class WeatherService {
     } else if (hour >= 18 && hour < 22) {
       temperature = 24.0 - (hour - 18) * 1.0; // 저녁: 24-20도
     } else {
-      temperature =
-          20.0 - (hour >= 22 ? hour - 22 : hour + 2) * 0.5; // 밤: 20-16도
+      temperature = 20.0 - (hour >= 22 ? hour - 22 : hour + 2) * 0.5; // 밤: 20-16도
     }
 
     return WeatherData(

@@ -88,11 +88,7 @@ class TrainingMainScreen extends StatelessWidget {
                 child: Icon(icon, color: color, size: 32),
               ),
               const SizedBox(height: AppSpacing.md),
-              Text(
-                title,
-                style: AppFonts.titleMedium,
-                textAlign: TextAlign.center,
-              ),
+              Text(title, style: AppFonts.titleMedium, textAlign: TextAlign.center),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 subtitle,
@@ -146,9 +142,7 @@ class TrainingMainScreen extends StatelessWidget {
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       'ペットの基本的なコマンドを練習しましょう',
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointGray,
-                      ),
+                      style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     _buildTrainingCommand(
@@ -234,12 +228,7 @@ class TrainingMainScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('閉じる'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('閉じる'))],
       ),
     );
   }
@@ -284,9 +273,7 @@ class TrainingMainScreen extends StatelessWidget {
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       'ペットの練習の進捗と成果を確認しましょう',
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointGray,
-                      ),
+                      style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     _buildRecordItem(
@@ -371,12 +358,7 @@ class TrainingMainScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('閉じる'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('閉じる'))],
       ),
     );
   }
@@ -404,10 +386,7 @@ class TrainingMainScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 4),
               decoration: BoxDecoration(
                 color: AppColors.pointGreen.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
@@ -447,10 +426,7 @@ class TrainingMainScreen extends StatelessWidget {
         title: Text(title),
         trailing: Text(
           value,
-          style: AppFonts.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
+          style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold, color: color),
         ),
       ),
     );
@@ -478,12 +454,7 @@ class TrainingMainScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル'))],
       ),
     );
   }
@@ -523,25 +494,16 @@ class TrainingMainScreen extends StatelessWidget {
             Text('練習スケジュールを作成しましょう'),
             SizedBox(height: AppSpacing.lg),
             TextField(
-              decoration: InputDecoration(
-                labelText: 'スケジュール名',
-                hintText: '例: 毎日の基本練習',
-              ),
+              decoration: InputDecoration(labelText: 'スケジュール名', hintText: '例: 毎日の基本練習'),
             ),
             SizedBox(height: AppSpacing.md),
             TextField(
-              decoration: InputDecoration(
-                labelText: '練習内容',
-                hintText: '座る、待て、来い',
-              ),
+              decoration: InputDecoration(labelText: '練習内容', hintText: '座る、待て、来い'),
             ),
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);

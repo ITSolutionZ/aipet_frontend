@@ -79,9 +79,7 @@ class AppErrorHandler extends BaseLoggingService {
       }
 
       // 데이터 파싱 관련 에러 판별
-      if (message.contains('parsing') ||
-          message.contains('json') ||
-          message.contains('format')) {
+      if (message.contains('parsing') || message.contains('json') || message.contains('format')) {
         return DataParsingException(message, originalError: error);
       }
 
@@ -223,11 +221,7 @@ class AppErrorHandler extends BaseLoggingService {
   }
 
   /// 에러 처리 및 로깅
-  void handleError(
-    dynamic error, {
-    String? context,
-    Map<String, dynamic>? additionalContext,
-  }) {
+  void handleError(dynamic error, {String? context, Map<String, dynamic>? additionalContext}) {
     final appException = convertToAppException(error);
     final errorDetails = getErrorDetails(appException);
 
@@ -261,10 +255,7 @@ class AppErrorHandler extends BaseLoggingService {
       logInfo('Error reported to crash analytics: ${error.runtimeType}');
       logError('Error details for reporting: $details', error);
     } catch (reportingError) {
-      logError(
-        'Failed to report error to analytics: $reportingError',
-        reportingError,
-      );
+      logError('Failed to report error to analytics: $reportingError', reportingError);
     }
   }
 
@@ -352,10 +343,7 @@ extension SyncErrorHandlingExtensions<T> on T Function() {
   }
 
   /// 재시도 로직과 함께 실행
-  Result withRetry({
-    int maxRetries = 3,
-    bool Function(Exception)? retryCondition,
-  }) {
+  Result withRetry({int maxRetries = 3, bool Function(Exception)? retryCondition}) {
     return AppErrorHandler.withRetrySync(
       this,
       maxRetries: maxRetries,

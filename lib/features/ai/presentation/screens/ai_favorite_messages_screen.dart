@@ -42,9 +42,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
   }
 
   /// 펫별로 즐겨찾기를 그룹화
-  Map<String, List<AiFavoriteQaEntity>> _groupFavoritesByPet(
-    List<AiFavoriteQaEntity> favorites,
-  ) {
+  Map<String, List<AiFavoriteQaEntity>> _groupFavoritesByPet(List<AiFavoriteQaEntity> favorites) {
     final grouped = <String, List<AiFavoriteQaEntity>>{};
 
     for (final favorite in favorites) {
@@ -74,11 +72,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
               color: Colors.amber.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.star_border,
-              size: 80,
-              color: Colors.amber.withValues(alpha: 0.5),
-            ),
+            child: Icon(Icons.star_border, size: 80, color: Colors.amber.withValues(alpha: 0.5)),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
@@ -118,17 +112,11 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildPetSection(
-    String petName,
-    List<AiFavoriteQaEntity> favorites,
-    WidgetRef ref,
-  ) {
+  Widget _buildPetSection(String petName, List<AiFavoriteQaEntity> favorites, WidgetRef ref) {
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.large),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.large)),
       child: Theme(
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
@@ -175,10 +163,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                         child: Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
                                 color: AiColors.favoriteBackground,
                                 borderRadius: BorderRadius.circular(12),
@@ -186,11 +171,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                    size: 12,
-                                  ),
+                                  const Icon(Icons.star, color: Colors.amber, size: 12),
                                   const SizedBox(width: 4),
                                   Text(
                                     '${favorites.length}件',
@@ -205,25 +186,19 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                             const SizedBox(width: AppSpacing.sm),
                             Text(
                               'のお気に入り',
-                              style: AppFonts.bodySmall.copyWith(
-                                color: AppColors.pointGray,
-                              ),
+                              style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                             ),
                             if (favorites.isNotEmpty) ...[
                               const SizedBox(width: AppSpacing.sm),
                               Text(
                                 '•',
-                                style: AppFonts.bodySmall.copyWith(
-                                  color: AppColors.pointGray,
-                                ),
+                                style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                               ),
                               const SizedBox(width: AppSpacing.sm),
                               Flexible(
                                 child: Text(
                                   _getLatestActivityText(favorites),
-                                  style: AppFonts.bodySmall.copyWith(
-                                    color: AppColors.pointGray,
-                                  ),
+                                  style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -265,11 +240,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                       horizontal: AppSpacing.md,
                       vertical: AppSpacing.xs,
                     ),
-                    child: _buildQAAccordion(
-                      favorite,
-                      index == favorites.length - 1,
-                      ref,
-                    ),
+                    child: _buildQAAccordion(favorite, index == favorites.length - 1, ref),
                   );
                 }).toList(),
               ),
@@ -280,11 +251,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildQAAccordion(
-    AiFavoriteQaEntity favorite,
-    bool isLast,
-    WidgetRef ref,
-  ) {
+  Widget _buildQAAccordion(AiFavoriteQaEntity favorite, bool isLast, WidgetRef ref) {
     return Theme(
       data: ThemeData().copyWith(dividerColor: Colors.transparent),
       child: Container(
@@ -292,10 +259,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(
-            color: AppColors.pointGray.withValues(alpha: 0.2),
-            width: 1,
-          ),
+          border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
           boxShadow: [
             BoxShadow(
               color: AppColors.pointDark.withValues(alpha: 0.05),
@@ -324,11 +288,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                         color: Colors.blue.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Icon(
-                        Icons.help_outline,
-                        color: Colors.blue,
-                        size: 16,
-                      ),
+                      child: const Icon(Icons.help_outline, color: Colors.blue, size: 16),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
@@ -348,11 +308,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                           color: Colors.red.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: const Icon(
-                          Icons.delete_outline,
-                          color: Colors.red,
-                          size: 16,
-                        ),
+                        child: const Icon(Icons.delete_outline, color: Colors.red, size: 16),
                       ),
                     ),
                   ],
@@ -365,10 +321,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: Colors.blue.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(AppRadius.small),
-                    border: Border.all(
-                      color: Colors.blue.withValues(alpha: 0.2),
-                      width: 1,
-                    ),
+                    border: Border.all(color: Colors.blue.withValues(alpha: 0.2), width: 1),
                   ),
                   child: Text(
                     favorite.question,
@@ -383,31 +336,20 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                 // 메타 정보
                 Row(
                   children: [
-                    const Icon(
-                      Icons.access_time,
-                      size: 14,
-                      color: AppColors.pointGray,
-                    ),
+                    const Icon(Icons.access_time, size: 14, color: AppColors.pointGray),
                     const SizedBox(width: 4),
                     Text(
                       _formatTime(favorite.createdAt),
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointGray,
-                      ),
+                      style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                     ),
                     if (favorite.categoryName != null) ...[
                       const SizedBox(width: AppSpacing.sm),
                       Flexible(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: AppColors.pointBrown.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.small,
-                            ),
+                            borderRadius: BorderRadius.circular(AppRadius.small),
                           ),
                           child: Text(
                             favorite.categoryName!,
@@ -434,11 +376,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(width: 4),
-                        const Icon(
-                          Icons.expand_more,
-                          size: 16,
-                          color: AppColors.pointBrown,
-                        ),
+                        const Icon(Icons.expand_more, size: 16, color: AppColors.pointBrown),
                       ],
                     ),
                   ],
@@ -450,15 +388,11 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  border: Border(
-                    top: BorderSide(color: Colors.grey, width: 0.5),
-                  ),
+                  border: Border(top: BorderSide(color: Colors.grey, width: 0.5)),
                 ),
                 child: Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: AppColors.pointBrown.withValues(alpha: 0.03),
-                  ),
+                  decoration: BoxDecoration(color: AppColors.pointBrown.withValues(alpha: 0.03)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -523,9 +457,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                             label: const Text('コピー'),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: AppColors.pointBrown,
-                              side: BorderSide(
-                                color: AiColors.selectedBorderColor,
-                              ),
+                              side: BorderSide(color: AiColors.selectedBorderColor),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.md,
                                 vertical: AppSpacing.sm,
@@ -568,10 +500,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
           children: [
             const Icon(Icons.delete, color: Colors.red),
             const SizedBox(width: AppSpacing.sm),
-            Text(
-              'お気に入りを削除',
-              style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark),
-            ),
+            Text('お気に入りを削除', style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark)),
           ],
         ),
         content: Text(
@@ -581,10 +510,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'キャンセル',
-              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-            ),
+            child: Text('キャンセル', style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -595,10 +521,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
             ),
-            child: Text(
-              '削除する',
-              style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
-            ),
+            child: Text('削除する', style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -669,8 +592,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
 
     // 최신 즐겨찾기 찾기
     final latest = favorites.reduce(
-      (current, next) =>
-          current.createdAt.isAfter(next.createdAt) ? current : next,
+      (current, next) => current.createdAt.isAfter(next.createdAt) ? current : next,
     );
 
     return '最新: ${_formatTime(latest.createdAt)}';

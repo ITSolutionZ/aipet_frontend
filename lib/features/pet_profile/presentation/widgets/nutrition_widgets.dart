@@ -24,14 +24,10 @@ class FoodTypeCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.pointBrown.withValues(alpha: 0.1)
-              : Colors.white,
+          color: isSelected ? AppColors.pointBrown.withValues(alpha: 0.1) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(
-            color: isSelected
-                ? AppColors.pointBrown
-                : Colors.grey.withValues(alpha: 0.3),
+            color: isSelected ? AppColors.pointBrown : Colors.grey.withValues(alpha: 0.3),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
@@ -53,11 +49,7 @@ class FoodTypeCard extends StatelessWidget {
                     : Colors.grey.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                color: isSelected ? AppColors.pointBrown : Colors.grey,
-                size: 30,
-              ),
+              child: Icon(icon, color: isSelected ? AppColors.pointBrown : Colors.grey, size: 30),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
@@ -135,11 +127,7 @@ class NutritionItemCard extends StatelessWidget {
                 color: AppColors.pointBlue.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.add,
-                color: AppColors.pointBlue,
-                size: 20,
-              ),
+              child: const Icon(Icons.add, color: AppColors.pointBlue, size: 20),
             ),
           ],
         ),
@@ -196,33 +184,19 @@ class ScheduledMealCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
-                    const Icon(
-                      Icons.calendar_today,
-                      size: 16,
-                      color: Colors.grey,
-                    ),
+                    const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
                     const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      schedule,
-                      style: AppFonts.bodyMedium.copyWith(color: Colors.grey),
-                    ),
+                    Text(schedule, style: AppFonts.bodyMedium.copyWith(color: Colors.grey)),
                     const SizedBox(width: AppSpacing.md),
                     const Icon(Icons.access_time, size: 16, color: Colors.grey),
                     const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      time,
-                      style: AppFonts.bodyMedium.copyWith(color: Colors.grey),
-                    ),
+                    Text(time, style: AppFonts.bodyMedium.copyWith(color: Colors.grey)),
                   ],
                 ),
               ],
             ),
           ),
-          Switch(
-            value: isEnabled,
-            onChanged: onToggle,
-            activeColor: AppColors.pointBlue,
-          ),
+          Switch(value: isEnabled, onChanged: onToggle, activeColor: AppColors.pointBlue),
         ],
       ),
     );
@@ -231,11 +205,9 @@ class ScheduledMealCard extends StatelessWidget {
 
 /// 🎯 Nutrition Tab State Provider
 final nutritionTabProvider =
-    StateNotifierProvider.family<
-      NutritionTabController,
-      NutritionTabState,
-      String
-    >((ref, petId) => NutritionTabController());
+    StateNotifierProvider.family<NutritionTabController, NutritionTabState, String>(
+      (ref, petId) => NutritionTabController(),
+    );
 
 class NutritionTabController extends StateNotifier<NutritionTabState> {
   NutritionTabController() : super(const NutritionTabState());
@@ -260,10 +232,7 @@ class NutritionTabState {
     this.mealSchedules = const {'breakfast': true, 'dinner': true},
   });
 
-  NutritionTabState copyWith({
-    String? selectedFoodType,
-    Map<String, bool>? mealSchedules,
-  }) {
+  NutritionTabState copyWith({String? selectedFoodType, Map<String, bool>? mealSchedules}) {
     return NutritionTabState(
       selectedFoodType: selectedFoodType ?? this.selectedFoodType,
       mealSchedules: mealSchedules ?? this.mealSchedules,

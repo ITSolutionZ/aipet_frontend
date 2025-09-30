@@ -5,11 +5,7 @@ class PetRegistrationProgressBar extends StatelessWidget {
   final int currentStep;
   final int totalSteps;
 
-  const PetRegistrationProgressBar({
-    super.key,
-    required this.currentStep,
-    this.totalSteps = 7,
-  });
+  const PetRegistrationProgressBar({super.key, required this.currentStep, this.totalSteps = 7});
 
   @override
   Widget build(BuildContext context) {

@@ -6,11 +6,9 @@ enum SlideDirection { fromLeft, fromRight, fromTop, fromBottom }
 
 /// 🎯 Animated Slide State Provider
 final animatedSlideProvider =
-    StateNotifierProvider.family<
-      AnimatedSlideController,
-      AnimatedSlideState,
-      String
-    >((ref, animationId) => AnimatedSlideController());
+    StateNotifierProvider.family<AnimatedSlideController, AnimatedSlideState, String>(
+      (ref, animationId) => AnimatedSlideController(),
+    );
 
 class AnimatedSlideController extends StateNotifier<AnimatedSlideState> {
   AnimatedSlideController() : super(const AnimatedSlideState());
@@ -20,11 +18,7 @@ class AnimatedSlideController extends StateNotifier<AnimatedSlideState> {
     state = state.copyWith(controller: controller);
   }
 
-  void updateAnimations(
-    SlideDirection direction,
-    double slideDistance,
-    Curve curve,
-  ) {
+  void updateAnimations(SlideDirection direction, double slideDistance, Curve curve) {
     if (state.controller == null) return;
 
     final beginOffset = _getBeginOffset(direction, slideDistance);
@@ -39,10 +33,7 @@ class AnimatedSlideController extends StateNotifier<AnimatedSlideState> {
       end: 1.0,
     ).animate(CurvedAnimation(parent: state.controller!, curve: curve));
 
-    state = state.copyWith(
-      slideAnimation: slideAnimation,
-      fadeAnimation: fadeAnimation,
-    );
+    state = state.copyWith(slideAnimation: slideAnimation, fadeAnimation: fadeAnimation);
   }
 
   Offset _getBeginOffset(SlideDirection direction, double distance) {
@@ -82,11 +73,7 @@ class AnimatedSlideState {
   final Animation<Offset>? slideAnimation;
   final Animation<double>? fadeAnimation;
 
-  const AnimatedSlideState({
-    this.controller,
-    this.slideAnimation,
-    this.fadeAnimation,
-  });
+  const AnimatedSlideState({this.controller, this.slideAnimation, this.fadeAnimation});
 
   AnimatedSlideState copyWith({
     AnimationController? controller,
@@ -125,8 +112,7 @@ class AnimatedSlideWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<AnimatedSlideWidget> createState() =>
-      _AnimatedSlideWidgetState();
+  ConsumerState<AnimatedSlideWidget> createState() => _AnimatedSlideWidgetState();
 }
 
 class _AnimatedSlideWidgetState extends ConsumerState<AnimatedSlideWidget>
@@ -144,11 +130,7 @@ class _AnimatedSlideWidgetState extends ConsumerState<AnimatedSlideWidget>
           .initializeController(this, widget.duration);
       ref
           .read(animatedSlideProvider(_animationId).notifier)
-          .updateAnimations(
-            widget.direction,
-            widget.slideDistance,
-            widget.curve,
-          );
+          .updateAnimations(widget.direction, widget.slideDistance, widget.curve);
 
       // Add status listener
       final state = ref.read(animatedSlideProvider(_animationId));
@@ -159,9 +141,7 @@ class _AnimatedSlideWidgetState extends ConsumerState<AnimatedSlideWidget>
       });
 
       if (widget.show) {
-        ref
-            .read(animatedSlideProvider(_animationId).notifier)
-            .startAnimation(widget.delay);
+        ref.read(animatedSlideProvider(_animationId).notifier).startAnimation(widget.delay);
       }
     });
   }
@@ -174,22 +154,14 @@ class _AnimatedSlideWidgetState extends ConsumerState<AnimatedSlideWidget>
         widget.slideDistance != oldWidget.slideDistance) {
       ref
           .read(animatedSlideProvider(_animationId).notifier)
-          .updateAnimations(
-            widget.direction,
-            widget.slideDistance,
-            widget.curve,
-          );
+          .updateAnimations(widget.direction, widget.slideDistance, widget.curve);
     }
 
     if (widget.show != oldWidget.show) {
       if (widget.show) {
-        ref
-            .read(animatedSlideProvider(_animationId).notifier)
-            .startAnimation(widget.delay);
+        ref.read(animatedSlideProvider(_animationId).notifier).startAnimation(widget.delay);
       } else {
-        ref
-            .read(animatedSlideProvider(_animationId).notifier)
-            .reverseAnimation();
+        ref.read(animatedSlideProvider(_animationId).notifier).reverseAnimation();
       }
     }
   }
@@ -215,10 +187,7 @@ class _AnimatedSlideWidgetState extends ConsumerState<AnimatedSlideWidget>
       builder: (context, child) {
         return Transform.translate(
           offset: animationState.slideAnimation!.value * widget.slideDistance,
-          child: Opacity(
-            opacity: animationState.fadeAnimation!.value,
-            child: widget.child,
-          ),
+          child: Opacity(opacity: animationState.fadeAnimation!.value, child: widget.child),
         );
       },
     );
@@ -227,20 +196,14 @@ class _AnimatedSlideWidgetState extends ConsumerState<AnimatedSlideWidget>
 
 /// 🎯 Staggered Slide State Provider
 final staggeredSlideProvider =
-    StateNotifierProvider.family<
-      StaggeredSlideController,
-      StaggeredSlideState,
-      String
-    >((ref, staggeredId) => StaggeredSlideController());
+    StateNotifierProvider.family<StaggeredSlideController, StaggeredSlideState, String>(
+      (ref, staggeredId) => StaggeredSlideController(),
+    );
 
 class StaggeredSlideController extends StateNotifier<StaggeredSlideState> {
   StaggeredSlideController() : super(const StaggeredSlideState());
 
-  void initializeControllers(
-    TickerProvider vsync,
-    int childrenCount,
-    Duration duration,
-  ) {
+  void initializeControllers(TickerProvider vsync, int childrenCount, Duration duration) {
     final controllers = List.generate(
       childrenCount,
       (index) => AnimationController(duration: duration, vsync: vsync),
@@ -289,8 +252,7 @@ class StaggeredSlideWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<StaggeredSlideWidget> createState() =>
-      _StaggeredSlideWidgetState();
+  ConsumerState<StaggeredSlideWidget> createState() => _StaggeredSlideWidgetState();
 }
 
 class _StaggeredSlideWidgetState extends ConsumerState<StaggeredSlideWidget>
@@ -404,10 +366,7 @@ class _StaggeredSlideWidgetState extends ConsumerState<StaggeredSlideWidget>
           builder: (context, child) {
             return Transform.translate(
               offset: _slideAnimations[index].value * widget.slideDistance,
-              child: Opacity(
-                opacity: _fadeAnimations[index].value,
-                child: widget.children[index],
-              ),
+              child: Opacity(opacity: _fadeAnimations[index].value, child: widget.children[index]),
             );
           },
         ),

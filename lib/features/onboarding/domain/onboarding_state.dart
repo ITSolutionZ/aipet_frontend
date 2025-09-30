@@ -3,17 +3,9 @@ class OnboardingState {
   final bool isCompleted;
   final int viewCount; // 온보딩 시청 횟수
 
-  const OnboardingState({
-    this.currentPage = 0,
-    this.isCompleted = false,
-    this.viewCount = 0,
-  });
+  const OnboardingState({this.currentPage = 0, this.isCompleted = false, this.viewCount = 0});
 
-  OnboardingState copyWith({
-    int? currentPage,
-    bool? isCompleted,
-    int? viewCount,
-  }) {
+  OnboardingState copyWith({int? currentPage, bool? isCompleted, int? viewCount}) {
     return OnboardingState(
       currentPage: currentPage ?? this.currentPage,
       isCompleted: isCompleted ?? this.isCompleted,
@@ -34,6 +26,5 @@ class OnboardingState {
   }
 
   @override
-  int get hashCode =>
-      currentPage.hashCode ^ isCompleted.hashCode ^ viewCount.hashCode;
+  int get hashCode => currentPage.hashCode ^ isCompleted.hashCode ^ viewCount.hashCode;
 }

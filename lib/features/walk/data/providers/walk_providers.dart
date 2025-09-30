@@ -91,10 +91,7 @@ class CurrentWalkNotifier extends _$CurrentWalkNotifier {
 
   void endWalk() {
     if (state != null) {
-      state = state!.copyWith(
-        status: WalkStatus.completed,
-        endTime: DateTime.now(),
-      );
+      state = state!.copyWith(status: WalkStatus.completed, endTime: DateTime.now());
     }
   }
 

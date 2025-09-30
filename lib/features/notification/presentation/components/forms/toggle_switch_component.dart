@@ -48,10 +48,7 @@ class ToggleSwitchUI extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   subtitle,
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: AppColors.pointGray,
-                    height: 1.3,
-                  ),
+                  style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray, height: 1.3),
                 ),
               ],
             ),

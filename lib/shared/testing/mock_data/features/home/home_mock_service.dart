@@ -111,16 +111,10 @@ class HomeMockService extends BaseMockService {
   /// 오늘의 식사 요약 정보 조회 (Summary Card용)
   static Map<String, dynamic> getMockTodayMealsSummary({String? petId}) {
     final meals = getMockTodayMeals(petId: petId);
-    final completedMeals = meals
-        .where((meal) => meal['completed'] == true)
-        .length;
+    final completedMeals = meals.where((meal) => meal['completed'] == true).length;
     final totalMeals = meals.length;
 
-    return {
-      'completedMeals': completedMeals,
-      'totalMeals': totalMeals,
-      'meals': meals,
-    };
+    return {'completedMeals': completedMeals, 'totalMeals': totalMeals, 'meals': meals};
   }
 
   /// 산책 요약 정보 조회
@@ -136,10 +130,7 @@ class HomeMockService extends BaseMockService {
   }
 
   /// 체중 기록 조회
-  static List<Map<String, dynamic>> getMockWeightRecords({
-    String? petId,
-    int days = 30,
-  }) {
+  static List<Map<String, dynamic>> getMockWeightRecords({String? petId, int days = 30}) {
     final records = <Map<String, dynamic>>[];
     final baseWeight = petId == '2' ? 3.5 : (petId == '3' ? 4.2 : 15.8);
 
@@ -147,11 +138,7 @@ class HomeMockService extends BaseMockService {
       final date = DateTime.now().subtract(Duration(days: i));
       final variation = (i % 7 == 0) ? 0.1 : 0.0; // 주간 변동
 
-      records.add({
-        'date': date,
-        'weight': baseWeight + variation,
-        'petId': petId ?? '1',
-      });
+      records.add({'date': date, 'weight': baseWeight + variation, 'petId': petId ?? '1'});
     }
 
     return records;
@@ -163,10 +150,7 @@ class HomeMockService extends BaseMockService {
       'overall': 'good', // excellent, good, fair, poor
       'lastCheckup': DateTime.now().subtract(const Duration(days: 45)),
       'nextCheckup': DateTime.now().add(const Duration(days: 45)),
-      'vaccines': {
-        'upToDate': true,
-        'nextDue': DateTime.now().add(const Duration(days: 120)),
-      },
+      'vaccines': {'upToDate': true, 'nextDue': DateTime.now().add(const Duration(days: 120))},
       'weight': {
         'current': petId == '2' ? 3.5 : (petId == '3' ? 4.2 : 15.8),
         'target': petId == '2' ? 3.6 : (petId == '3' ? 4.3 : 16.0),

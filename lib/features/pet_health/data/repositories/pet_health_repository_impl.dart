@@ -46,18 +46,14 @@ class PetHealthRepositoryImpl implements PetHealthRepository {
   }
 
   @override
-  Future<VaccineRecordEntity> addVaccineRecord(
-    VaccineRecordEntity record,
-  ) async {
+  Future<VaccineRecordEntity> addVaccineRecord(VaccineRecordEntity record) async {
     await Future.delayed(const Duration(milliseconds: 500));
     _vaccineRecords.add(record);
     return record;
   }
 
   @override
-  Future<VaccineRecordEntity> updateVaccineRecord(
-    VaccineRecordEntity record,
-  ) async {
+  Future<VaccineRecordEntity> updateVaccineRecord(VaccineRecordEntity record) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     final index = _vaccineRecords.indexWhere((r) => r.id == record.id);
@@ -88,9 +84,7 @@ class PetHealthRepositoryImpl implements PetHealthRepository {
   }
 
   @override
-  Future<WeightRecordEntity> updateWeightRecord(
-    WeightRecordEntity record,
-  ) async {
+  Future<WeightRecordEntity> updateWeightRecord(WeightRecordEntity record) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     final index = _weightRecords.indexWhere((r) => r.id == record.id);
@@ -110,18 +104,14 @@ class PetHealthRepositoryImpl implements PetHealthRepository {
   @override
   Future<List<VaccineRecordEntity>> getUpcomingVaccines(String petId) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    return _vaccineRecords
-        .where((record) => record.isExpiringSoon || record.isExpired)
-        .toList();
+    return _vaccineRecords.where((record) => record.isExpiringSoon || record.isExpired).toList();
   }
 
   @override
   Future<WeightRecordEntity?> getLatestWeight(String petId) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    final petWeights = _weightRecords
-        .where((record) => record.petId == petId)
-        .toList();
+    final petWeights = _weightRecords.where((record) => record.petId == petId).toList();
     if (petWeights.isEmpty) return null;
 
     petWeights.sort((a, b) => b.recordedDate.compareTo(a.recordedDate));

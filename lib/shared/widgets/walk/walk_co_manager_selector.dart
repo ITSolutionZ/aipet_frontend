@@ -4,11 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 🎯 Walk Co-Manager Selection State Provider
 final walkCoManagerSelectorProvider =
-    StateNotifierProvider.family<
-      WalkCoManagerSelectorController,
-      String?,
-      String?
-    >((ref, initialValue) => WalkCoManagerSelectorController(initialValue));
+    StateNotifierProvider.family<WalkCoManagerSelectorController, String?, String?>(
+      (ref, initialValue) => WalkCoManagerSelectorController(initialValue),
+    );
 
 class WalkCoManagerSelectorController extends StateNotifier<String?> {
   WalkCoManagerSelectorController(super.initialValue);
@@ -23,20 +21,12 @@ class WalkCoManagerSelector extends ConsumerWidget {
   final String? selectedCoManagerId;
   final void Function(String?)? onChanged;
 
-  const WalkCoManagerSelector({
-    super.key,
-    this.selectedCoManagerId,
-    this.onChanged,
-  });
+  const WalkCoManagerSelector({super.key, this.selectedCoManagerId, this.onChanged});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(
-      walkCoManagerSelectorProvider(selectedCoManagerId).notifier,
-    );
-    final selectedId = ref.watch(
-      walkCoManagerSelectorProvider(selectedCoManagerId),
-    );
+    final controller = ref.read(walkCoManagerSelectorProvider(selectedCoManagerId).notifier);
+    final selectedId = ref.watch(walkCoManagerSelectorProvider(selectedCoManagerId));
 
     // TODO: 실제로는 API에서 공동관리자 목록을 가져와야 함
     final coManagers = [
@@ -66,17 +56,12 @@ class WalkCoManagerSelector extends ConsumerWidget {
           ),
           child: Column(
             children: [
-              _buildCoManagerOption(
-                null,
-                '記録者のみ',
-                Icons.person,
-                '自分だけの記録',
-                selectedId,
-                (managerId) {
-                  controller.selectCoManager(managerId);
-                  onChanged?.call(managerId);
-                },
-              ),
+              _buildCoManagerOption(null, '記録者のみ', Icons.person, '自分だけの記録', selectedId, (
+                managerId,
+              ) {
+                controller.selectCoManager(managerId);
+                onChanged?.call(managerId);
+              }),
               const SizedBox(height: AppSpacing.sm),
               ...coManagers.map(
                 (manager) => Padding(
@@ -116,9 +101,7 @@ class WalkCoManagerSelector extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.pointGreen.withValues(alpha: 0.1)
-              : Colors.white,
+          color: isSelected ? AppColors.pointGreen.withValues(alpha: 0.1) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
             color: isSelected ? AppColors.pointGreen : Colors.grey[300]!,
@@ -133,11 +116,7 @@ class WalkCoManagerSelector extends ConsumerWidget {
                 color: isSelected ? AppColors.pointGreen : Colors.grey[200],
                 borderRadius: BorderRadius.circular(AppRadius.small),
               ),
-              child: Icon(
-                icon,
-                size: 20,
-                color: isSelected ? Colors.white : Colors.grey[600],
-              ),
+              child: Icon(icon, size: 20, color: isSelected ? Colors.white : Colors.grey[600]),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -149,27 +128,17 @@ class WalkCoManagerSelector extends ConsumerWidget {
                     style: AppFonts.fredoka(
                       fontSize: AppFonts.baseSize,
                       fontWeight: FontWeight.bold,
-                      color: isSelected
-                          ? AppColors.pointGreen
-                          : Colors.grey[800],
+                      color: isSelected ? AppColors.pointGreen : Colors.grey[800],
                     ),
                   ),
                   Text(
                     description,
-                    style: AppFonts.base(
-                      fontSize: AppFonts.sm,
-                      color: Colors.grey[600],
-                    ),
+                    style: AppFonts.base(fontSize: AppFonts.sm, color: Colors.grey[600]),
                   ),
                 ],
               ),
             ),
-            if (isSelected)
-              const Icon(
-                Icons.check_circle,
-                color: AppColors.pointGreen,
-                size: 24,
-              ),
+            if (isSelected) const Icon(Icons.check_circle, color: AppColors.pointGreen, size: 24),
           ],
         ),
       ),

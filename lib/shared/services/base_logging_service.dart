@@ -7,8 +7,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 /// 모든 서비스에서 공통으로 사용하는 로깅 로직을 제공
 abstract class BaseLoggingService {
   static BaseLoggingService? _instance;
-  static BaseLoggingService get instance =>
-      _instance ??= _DefaultLoggingService();
+  static BaseLoggingService get instance => _instance ??= _DefaultLoggingService();
 
   late final Logger _logger;
   late final String _serviceName;
@@ -20,9 +19,7 @@ abstract class BaseLoggingService {
   /// Logger 초기화
   void _initializeLogger() {
     _logger = Logger(
-      filter: AppConfig.current.isDebugMode
-          ? DevelopmentFilter()
-          : ProductionFilter(),
+      filter: AppConfig.current.isDebugMode ? DevelopmentFilter() : ProductionFilter(),
       printer: PrettyPrinter(
         methodCount: AppConfig.current.isDebugMode ? 2 : 0,
         errorMethodCount: 3,
@@ -113,8 +110,7 @@ abstract class BaseLoggingService {
 
   /// 디버그 로깅
   void logDebug(String message) {
-    if (_currentLogLevel.index <= _LogLevel.debug.index &&
-        AppConfig.current.isDebugMode) {
+    if (_currentLogLevel.index <= _LogLevel.debug.index && AppConfig.current.isDebugMode) {
       _loggerInstance.d(message);
     }
   }
@@ -140,10 +136,7 @@ abstract class BaseLoggingService {
   }
 
   /// API 호출 성능 추적
-  Future<T> trackApiPerformance<T>(
-    String operation,
-    Future<T> Function() apiCall,
-  ) async {
+  Future<T> trackApiPerformance<T>(String operation, Future<T> Function() apiCall) async {
     final stopwatch = Stopwatch()..start();
 
     try {

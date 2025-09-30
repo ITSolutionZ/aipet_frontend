@@ -69,10 +69,7 @@ class LinkRegistrationState {
   const LinkRegistrationState({this.link = '', this.isLoading = false});
 
   LinkRegistrationState copyWith({String? link, bool? isLoading}) {
-    return LinkRegistrationState(
-      link: link ?? this.link,
-      isLoading: isLoading ?? this.isLoading,
-    );
+    return LinkRegistrationState(link: link ?? this.link, isLoading: isLoading ?? this.isLoading);
   }
 }
 
@@ -83,12 +80,10 @@ class LinkRegistrationScreen extends ConsumerStatefulWidget {
   const LinkRegistrationScreen({super.key});
 
   @override
-  ConsumerState<LinkRegistrationScreen> createState() =>
-      _LinkRegistrationScreenState();
+  ConsumerState<LinkRegistrationScreen> createState() => _LinkRegistrationScreenState();
 }
 
-class _LinkRegistrationScreenState
-    extends ConsumerState<LinkRegistrationScreen> {
+class _LinkRegistrationScreenState extends ConsumerState<LinkRegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _linkController = TextEditingController();
 
@@ -96,9 +91,7 @@ class _LinkRegistrationScreenState
   void initState() {
     super.initState();
     _linkController.addListener(() {
-      ref
-          .read(linkRegistrationProvider.notifier)
-          .updateLink(_linkController.text);
+      ref.read(linkRegistrationProvider.notifier).updateLink(_linkController.text);
     });
   }
 
@@ -144,17 +137,12 @@ class _LinkRegistrationScreenState
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.lg),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.lg)),
         title: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: const BoxDecoration(
-                color: AppColors.pointGreen,
-                shape: BoxShape.circle,
-              ),
+              decoration: const BoxDecoration(color: AppColors.pointGreen, shape: BoxShape.circle),
               child: const Icon(Icons.check, color: Colors.white, size: 20),
             ),
             const SizedBox(width: AppSpacing.md),
@@ -180,17 +168,12 @@ class _LinkRegistrationScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.lg),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.lg)),
         title: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
+              decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
               child: const Icon(Icons.error, color: Colors.white, size: 20),
             ),
             const SizedBox(width: AppSpacing.md),
@@ -199,10 +182,7 @@ class _LinkRegistrationScreenState
         ),
         content: Text('リンク登録に失敗しました。\n$error'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('確認'),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('確認')),
         ],
       ),
     );
@@ -213,9 +193,7 @@ class _LinkRegistrationScreenState
     final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
     if (clipboardData?.text != null) {
       _linkController.text = clipboardData!.text!;
-      ref
-          .read(linkRegistrationProvider.notifier)
-          .updateLink(clipboardData.text!);
+      ref.read(linkRegistrationProvider.notifier).updateLink(clipboardData.text!);
     }
   }
 
@@ -238,25 +216,16 @@ class _LinkRegistrationScreenState
                 decoration: BoxDecoration(
                   color: AppColors.pointBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.md),
-                  border: Border.all(
-                    color: AppColors.pointBlue.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
+                  border: Border.all(color: AppColors.pointBlue.withValues(alpha: 0.3), width: 1),
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.info_outline,
-                      color: AppColors.pointBlue,
-                      size: 24,
-                    ),
+                    const Icon(Icons.info_outline, color: AppColors.pointBlue, size: 24),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
                         '他のユーザーが共有したペットプロフィールリンクを入力して追加できます。',
-                        style: AppFonts.bodyMedium.copyWith(
-                          color: AppColors.pointDark,
-                        ),
+                        style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
                       ),
                     ),
                   ],
@@ -285,22 +254,15 @@ class _LinkRegistrationScreenState
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.md),
-                    borderSide: BorderSide(
-                      color: AppColors.pointDark.withValues(alpha: 0.2),
-                    ),
+                    borderSide: BorderSide(color: AppColors.pointDark.withValues(alpha: 0.2)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.md),
-                    borderSide: BorderSide(
-                      color: AppColors.pointDark.withValues(alpha: 0.2),
-                    ),
+                    borderSide: BorderSide(color: AppColors.pointDark.withValues(alpha: 0.2)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.md),
-                    borderSide: const BorderSide(
-                      color: AppColors.pointBlue,
-                      width: 2,
-                    ),
+                    borderSide: const BorderSide(color: AppColors.pointBlue, width: 2),
                   ),
                   errorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -370,15 +332,11 @@ class _LinkRegistrationScreenState
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBlue,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.lg,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.md),
                     ),
-                    disabledBackgroundColor: AppColors.pointDark.withValues(
-                      alpha: 0.3,
-                    ),
+                    disabledBackgroundColor: AppColors.pointDark.withValues(alpha: 0.3),
                   ),
                   child: linkState.isLoading
                       ? const SizedBox(
@@ -386,9 +344,7 @@ class _LinkRegistrationScreenState
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : Text(

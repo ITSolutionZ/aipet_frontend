@@ -41,8 +41,7 @@ class _BannerImageState extends State<BannerImage> {
     _timer = Timer.periodic(const Duration(seconds: 15), (timer) {
       if (mounted) {
         setState(() {
-          _currentBannerIndex =
-              (_currentBannerIndex + 1) % _bannerImages.length;
+          _currentBannerIndex = (_currentBannerIndex + 1) % _bannerImages.length;
         });
       }
     });

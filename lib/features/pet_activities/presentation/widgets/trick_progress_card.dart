@@ -34,14 +34,9 @@ class TrickProgressCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSpacing.sm),
               image: trick.imagePath != null
-                  ? DecorationImage(
-                      image: AssetImage(trick.imagePath!),
-                      fit: BoxFit.cover,
-                    )
+                  ? DecorationImage(image: AssetImage(trick.imagePath!), fit: BoxFit.cover)
                   : null,
-              color: trick.imagePath == null
-                  ? AppColors.pointBrown.withValues(alpha: 0.1)
-                  : null,
+              color: trick.imagePath == null ? AppColors.pointBrown.withValues(alpha: 0.1) : null,
             ),
             child: trick.imagePath == null
                 ? const Icon(Icons.pets, color: AppColors.pointBrown, size: 30)
@@ -69,9 +64,7 @@ class TrickProgressCard extends StatelessWidget {
                   value: trick.progressPercentage,
                   backgroundColor: AppColors.toneOffWhite,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    trick.isCompleted
-                        ? AppColors.pointGreen
-                        : AppColors.pointBlue,
+                    trick.isCompleted ? AppColors.pointGreen : AppColors.pointBlue,
                   ),
                   minHeight: 6,
                 ),
@@ -105,10 +98,7 @@ class TrickProgressCard extends StatelessWidget {
           if (trick.isCompleted)
             Container(
               padding: const EdgeInsets.all(AppSpacing.xs),
-              decoration: const BoxDecoration(
-                color: AppColors.pointGreen,
-                shape: BoxShape.circle,
-              ),
+              decoration: const BoxDecoration(color: AppColors.pointGreen, shape: BoxShape.circle),
               child: const Icon(Icons.check, color: Colors.white, size: 16),
             ),
         ],

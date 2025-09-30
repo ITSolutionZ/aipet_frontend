@@ -28,9 +28,7 @@ class MealContentInput extends StatelessWidget {
               controller: controller,
               decoration: InputDecoration(
                 hintText: '例: ドッグフード、鶏肉など',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,

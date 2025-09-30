@@ -29,9 +29,7 @@ class DeleteFacilityUseCase {
   }
 
   /// 여러 시설을 일괄 삭제합니다
-  Future<Result<Map<String, dynamic>>> deleteFacilities(
-    List<String> facilityIds,
-  ) async {
+  Future<Result<Map<String, dynamic>>> deleteFacilities(List<String> facilityIds) async {
     try {
       int successCount = 0;
       int failureCount = 0;
@@ -59,9 +57,7 @@ class DeleteFacilityUseCase {
   }
 
   /// 시설 타입별로 시설들을 삭제합니다
-  Future<Result<Map<String, dynamic>>> deleteFacilitiesByType(
-    String facilityType,
-  ) async {
+  Future<Result<Map<String, dynamic>>> deleteFacilitiesByType(String facilityType) async {
     try {
       // 해당 타입의 시설들을 조회
       final getResult = await _repository.getFacilitiesByType(
@@ -154,8 +150,7 @@ class DeleteFacilityUseCase {
       // 조건에 맞는 시설들 찾기
       for (final facility in allFacilities ?? []) {
         if (facility.rating < minRating) {
-          if (minReviewCount == null ||
-              facility.reviewCount >= minReviewCount) {
+          if (minReviewCount == null || facility.reviewCount >= minReviewCount) {
             facilitiesToDelete.add(facility.id);
           }
         }
@@ -178,9 +173,7 @@ class DeleteFacilityUseCase {
   }
 
   /// 오래된 시설들을 삭제합니다
-  Future<Result<Map<String, dynamic>>> deleteOldFacilities({
-    required int daysOld,
-  }) async {
+  Future<Result<Map<String, dynamic>>> deleteOldFacilities({required int daysOld}) async {
     try {
       final cutoffDate = DateTime.now().subtract(Duration(days: daysOld));
 
@@ -195,8 +188,7 @@ class DeleteFacilityUseCase {
 
       // 오래된 시설들 찾기
       for (final facility in allFacilities ?? []) {
-        if (facility.createdAt != null &&
-            facility.createdAt!.isBefore(cutoffDate)) {
+        if (facility.createdAt != null && facility.createdAt!.isBefore(cutoffDate)) {
           facilitiesToDelete.add(facility.id);
         }
       }
@@ -282,20 +274,13 @@ class DeleteFacilityUseCase {
   }
 
   /// 두 지점 간의 거리를 계산합니다 (Haversine 공식)
-  double _calculateDistance(
-    double lat1,
-    double lon1,
-    double lat2,
-    double lon2,
-  ) {
+  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const double earthRadius = 6371; // 지구 반지름 (km)
 
     final dLat = _degreesToRadians(lat2 - lat1);
     final dLon = _degreesToRadians(lon2 - lon1);
 
-    final a =
-        sin(dLat / 2) * sin(dLat / 2) +
-        cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
+    final a = sin(dLat / 2) * sin(dLat / 2) + cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
     final c = 2 * asin(sqrt(a));
 
     return earthRadius * c;

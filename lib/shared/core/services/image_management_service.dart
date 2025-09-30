@@ -17,8 +17,7 @@ class ImageManagementService {
   final ImagePicker _imagePicker = ImagePicker();
   final Logger _logger = Logger();
 
-  static final ImageManagementService _instance =
-      ImageManagementService._internal();
+  static final ImageManagementService _instance = ImageManagementService._internal();
   factory ImageManagementService() => _instance;
   ImageManagementService._internal();
 
@@ -102,9 +101,7 @@ class ImageManagementService {
         return Result.failure('최대 $maxImages개의 이미지만 선택할 수 있습니다');
       }
 
-      final List<File> imageFiles = images
-          .map((xFile) => File(xFile.path))
-          .toList();
+      final List<File> imageFiles = images.map((xFile) => File(xFile.path)).toList();
       return Result.success('${imageFiles.length}개의 이미지가 선택되었습니다', imageFiles);
     } catch (error) {
       _logger.e('다중 이미지 선택 실패', error: error);
@@ -113,10 +110,7 @@ class ImageManagementService {
   }
 
   /// 이미지를 앱 디렉토리에 저장
-  Future<Result<String>> saveImageToAppDirectory(
-    File imageFile, {
-    String? fileName,
-  }) async {
+  Future<Result<String>> saveImageToAppDirectory(File imageFile, {String? fileName}) async {
     try {
       final Directory appDocumentDir = await getApplicationDocumentsDirectory();
       final Directory imagesDir = Directory('${appDocumentDir.path}/images');
@@ -207,10 +201,7 @@ class ImageManagementService {
           .map((file) => file.path)
           .toList();
 
-      imagePaths.sort(
-        (a, b) =>
-            File(b).lastModifiedSync().compareTo(File(a).lastModifiedSync()),
-      );
+      imagePaths.sort((a, b) => File(b).lastModifiedSync().compareTo(File(a).lastModifiedSync()));
 
       return Result.success('${imagePaths.length}개의 이미지를 찾았습니다', imagePaths);
     } catch (error) {
@@ -229,9 +220,7 @@ class ImageManagementService {
         return Result.success('정리할 이미지가 없습니다', 0);
       }
 
-      final DateTime cutoffDate = DateTime.now().subtract(
-        Duration(days: maxAgeInDays),
-      );
+      final DateTime cutoffDate = DateTime.now().subtract(Duration(days: maxAgeInDays));
       final List<FileSystemEntity> entities = await imagesDir.list().toList();
 
       int deletedCount = 0;
@@ -320,9 +309,7 @@ class ImageManagementService {
       final Result<List<String>> allImagesResult = await getAllSavedImages();
 
       if (!allImagesResult.isSuccess) {
-        return Result.failure(
-          allImagesResult.error?.toString() ?? '저장된 이미지 목록 조회에 실패했습니다',
-        );
+        return Result.failure(allImagesResult.error?.toString() ?? '저장된 이미지 목록 조회에 실패했습니다');
       }
 
       int totalSize = 0;
@@ -341,10 +328,7 @@ class ImageManagementService {
   }
 
   /// 이미지 파일명 생성 (타임스탬프 기반)
-  String generateImageFileName({
-    String prefix = 'image',
-    String extension = 'jpg',
-  }) {
+  String generateImageFileName({String prefix = 'image', String extension = 'jpg'}) {
     final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     return '${prefix}_$timestamp.$extension';
   }

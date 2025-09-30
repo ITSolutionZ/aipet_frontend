@@ -33,8 +33,7 @@ class ExchangeTokenButton extends ConsumerWidget {
             const SizedBox(height: 16),
 
             // 리셋 버튼
-            if (tokenState.isSuccess || tokenState.errorMessage != null)
-              _buildResetButton(ref),
+            if (tokenState.isSuccess || tokenState.errorMessage != null) _buildResetButton(ref),
             const SizedBox(height: 32),
 
             // 설명 텍스트
@@ -85,10 +84,7 @@ class ExchangeTokenButton extends ConsumerWidget {
             else
               Icon(icon, size: 48, color: Colors.grey.shade700),
             const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ...[
               const SizedBox(height: 8),
               Text(
@@ -104,29 +100,20 @@ class ExchangeTokenButton extends ConsumerWidget {
   }
 
   /// 교환 버튼
-  Widget _buildExchangeButton(
-    BuildContext context,
-    WidgetRef ref,
-    TokenExchangeState state,
-  ) {
+  Widget _buildExchangeButton(BuildContext context, WidgetRef ref, TokenExchangeState state) {
     return ElevatedButton(
       onPressed: state.isLoading
           ? null
           : () async {
               // Changed: async 추가
-              await ref
-                  .read(authControllerProvider.notifier)
-                  .exchangeServerToken();
+              await ref.read(authControllerProvider.notifier).exchangeServerToken();
 
               // Changed: 성공/실패 토스트 표시
               if (context.mounted) {
                 final newState = ref.read(authControllerProvider);
                 if (newState.isSuccess) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('✅ 서버 JWT 저장 완료!'),
-                      backgroundColor: Colors.green,
-                    ),
+                    const SnackBar(content: Text('✅ 서버 JWT 저장 완료!'), backgroundColor: Colors.green),
                   );
                 } else if (newState.errorMessage != null) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -161,10 +148,7 @@ class ExchangeTokenButton extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
-      child: const Text(
-        '다시 시도',
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-      ),
+      child: const Text('다시 시도', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
     );
   }
 
@@ -182,11 +166,7 @@ class ExchangeTokenButton extends ConsumerWidget {
         children: [
           Text(
             '사용 방법:',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue),
           ),
           SizedBox(height: 8),
           Text(

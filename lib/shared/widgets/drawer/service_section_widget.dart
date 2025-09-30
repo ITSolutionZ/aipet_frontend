@@ -19,11 +19,7 @@ class ServiceSectionWidget extends StatelessWidget {
               SizedBox(width: 8),
               Text(
                 'Service',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -31,25 +27,15 @@ class ServiceSectionWidget extends StatelessWidget {
         // Service 메뉴들
         ListTile(
           leading: const Icon(Icons.chat_bubble, color: Colors.white, size: 20),
-          title: const Text(
-            'コミュニティー',
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
+          title: const Text('コミュニティー', style: TextStyle(color: Colors.white, fontSize: 14)),
           onTap: () {
             Navigator.of(context).pop(); // 드로어 닫기
             context.go(AppRouter.homeRoute); // 홈 페이지로 이동
           },
         ),
         ListTile(
-          leading: const Icon(
-            Icons.notifications,
-            color: Colors.white,
-            size: 20,
-          ),
-          title: const Text(
-            'アラーム',
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
+          leading: const Icon(Icons.notifications, color: Colors.white, size: 20),
+          title: const Text('アラーム', style: TextStyle(color: Colors.white, fontSize: 14)),
           onTap: () {
             Navigator.of(context).pop(); // 드로어 닫기
             context.go(AppRouter.pushNotificationRoute); // 푸시 알림 설정 페이지로 이동
@@ -57,10 +43,7 @@ class ServiceSectionWidget extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.person, color: Colors.white, size: 20),
-          title: const Text(
-            'アカウント',
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
+          title: const Text('アカウント', style: TextStyle(color: Colors.white, fontSize: 14)),
           onTap: () {
             Navigator.of(context).pop(); // 드로어 닫기
             context.go(AppRouter.profileEditRoute); // 프로필 편집 페이지로 이동
@@ -68,10 +51,7 @@ class ServiceSectionWidget extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.settings, color: Colors.white, size: 20),
-          title: const Text(
-            '設定',
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
+          title: const Text('設定', style: TextStyle(color: Colors.white, fontSize: 14)),
           onTap: () {
             Navigator.of(context).pop(); // 드로어 닫기
             context.go(AppRouter.settingsRoute); // 설정 페이지로 이동

@@ -23,12 +23,8 @@ class NotificationDetailActionsComponent extends StatelessWidget {
     }
 
     return ActionButtonsComponent(
-      primaryButtonText: NotificationIconService.getActionText(
-        notification.type,
-      ),
-      primaryButtonIcon: NotificationIconService.getActionIcon(
-        notification.type,
-      ),
+      primaryButtonText: NotificationIconService.getActionText(notification.type),
+      primaryButtonIcon: NotificationIconService.getActionIcon(notification.type),
       onPrimaryPressed: onActionPressed,
       secondaryButtonText: '通知を削除',
       secondaryButtonIcon: Icons.delete_outline,

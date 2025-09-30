@@ -110,10 +110,7 @@ class CreateFacilityUseCase {
   }
 
   /// 시설을 복사하여 새 시설을 생성합니다
-  Future<Result<Facility>> duplicateFacility(
-    String facilityId, {
-    String? newName,
-  }) async {
+  Future<Result<Facility>> duplicateFacility(String facilityId, {String? newName}) async {
     try {
       // 기존 시설 조회
       final getResult = await _repository.getFacilityById(facilityId);

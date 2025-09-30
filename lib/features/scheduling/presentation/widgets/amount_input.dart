@@ -7,12 +7,7 @@ class AmountInput extends StatelessWidget {
   final String? Function(String?)? validator;
   final String unit;
 
-  const AmountInput({
-    super.key,
-    required this.controller,
-    this.validator,
-    this.unit = 'g',
-  });
+  const AmountInput({super.key, required this.controller, this.validator, this.unit = 'g'});
 
   @override
   Widget build(BuildContext context) {

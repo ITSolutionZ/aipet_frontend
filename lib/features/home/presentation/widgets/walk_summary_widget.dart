@@ -7,11 +7,7 @@ class WalkSummaryWidget extends StatelessWidget {
   final int totalMinutes;
   final bool isWeeklyRecord; // 이번주 최장 기록 여부
 
-  const WalkSummaryWidget({
-    super.key,
-    required this.totalMinutes,
-    this.isWeeklyRecord = false,
-  });
+  const WalkSummaryWidget({super.key, required this.totalMinutes, this.isWeeklyRecord = false});
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +30,7 @@ class WalkSummaryWidget extends StatelessWidget {
                     // 이번주 최장 기록일 때 랭킹 스타 표시
                     if (isWeeklyRecord) ...[
                       const SizedBox(width: AppSpacing.sm),
-                      Image.asset(
-                        'assets/icons/ranking-star.png',
-                        width: 20,
-                        height: 20,
-                      ),
+                      Image.asset('assets/icons/ranking-star.png', width: 20, height: 20),
                       const SizedBox(width: 4),
                     ],
                   ],
@@ -53,10 +45,7 @@ class WalkSummaryWidget extends StatelessWidget {
               ],
             ),
           ),
-          TextButton(
-            onPressed: () => GoRouter.of(context).push('/walk'),
-            child: const Text('詳細'),
-          ),
+          TextButton(onPressed: () => GoRouter.of(context).push('/walk'), child: const Text('詳細')),
         ],
       ),
     );

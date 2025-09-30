@@ -29,9 +29,7 @@ class FirebaseManager {
 
     try {
       debugPrint('🚀 Attempting Firebase initialization with options...');
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       _isInitialized = true;
       _initializationError = null;
       debugPrint('✅ Firebase initialized successfully with options');
@@ -133,9 +131,7 @@ class AppBootstrap {
       await SentryFlutter.init(
         (options) {
           // DSN은 환경 변수에서 가져오거나 기본값 사용
-          final dsn =
-              dotenv.env['SENTRY_DSN'] ??
-              'https://your-sentry-dsn@sentry.io/project-id';
+          final dsn = dotenv.env['SENTRY_DSN'] ?? 'https://your-sentry-dsn@sentry.io/project-id';
           options.dsn = dsn;
 
           // 환경별 설정
@@ -176,10 +172,7 @@ class AppBootstrap {
   /// 환경 변수에 따라 개발/스테이징/프로덕션 설정을 선택합니다.
   static void _initializeAppConfig() {
     // 환경 변수에 따른 설정 선택
-    const environment = String.fromEnvironment(
-      'ENVIRONMENT',
-      defaultValue: 'development',
-    );
+    const environment = String.fromEnvironment('ENVIRONMENT', defaultValue: 'development');
 
     switch (environment) {
       case 'production':
@@ -259,10 +252,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
               SizedBox(
                 width: 200,
                 height: 200,
-                child: Lottie.asset(
-                  'assets/lottie/loading.json',
-                  fit: BoxFit.contain,
-                ),
+                child: Lottie.asset('assets/lottie/loading.json', fit: BoxFit.contain),
               ),
             ],
           ),
@@ -287,11 +277,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: AppColors.pointBrown,
-                ),
+                const Icon(Icons.error_outline, size: 64, color: AppColors.pointBrown),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
                   '앱 초기화 중 오류가 발생했습니다',
@@ -362,9 +348,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.pointBrown,
             foregroundColor: AppColors.pointOffWhite,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
           ),
         ),
       ),

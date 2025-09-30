@@ -69,8 +69,7 @@ class PetRoutes {
       path: RouteConstants.feedingMainRoute,
       name: 'feeding-main',
       builder: (context, state) {
-        final showBackButton =
-            state.uri.queryParameters['showBackButton'] == 'true';
+        final showBackButton = state.uri.queryParameters['showBackButton'] == 'true';
         return FeedingMainScreen(showBackButton: showBackButton);
       },
     ),

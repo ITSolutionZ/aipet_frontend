@@ -123,11 +123,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                   color: AppColors.pointGreen.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.medical_services,
-                  color: AppColors.pointGreen,
-                  size: 28,
-                ),
+                child: const Icon(Icons.medical_services, color: AppColors.pointGreen, size: 28),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
@@ -191,19 +187,14 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
         const SizedBox(height: AppSpacing.xs),
         Text(
           label,
-          style: AppFonts.bodySmall.copyWith(
-            color: AppColors.pointDark.withValues(alpha: 0.7),
-          ),
+          style: AppFonts.bodySmall.copyWith(color: AppColors.pointDark.withValues(alpha: 0.7)),
         ),
       ],
     );
   }
 
   void _showVaccineDetailModal(Map<String, dynamic> vaccine) {
-    showDialog(
-      context: context,
-      builder: (context) => _buildVaccineDetailModal(vaccine),
-    );
+    showDialog(context: context, builder: (context) => _buildVaccineDetailModal(vaccine));
   }
 
   Widget _buildVaccineCard(Map<String, dynamic> vaccine) {
@@ -238,9 +229,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    (vaccine['isCompleted'] as bool)
-                        ? Icons.check_circle
-                        : Icons.schedule,
+                    (vaccine['isCompleted'] as bool) ? Icons.check_circle : Icons.schedule,
                     color: (vaccine['isCompleted'] as bool)
                         ? AppColors.pointGreen
                         : AppColors.pointPink,
@@ -283,15 +272,9 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
             const SizedBox(height: AppSpacing.md),
             Row(
               children: [
-                Expanded(
-                  child: _buildInfoItem('前回', vaccine['lastDate'] as String),
-                ),
-                Expanded(
-                  child: _buildInfoItem('次回', vaccine['nextDue'] as String),
-                ),
-                Expanded(
-                  child: _buildInfoItem('間隔', vaccine['interval'] as String),
-                ),
+                Expanded(child: _buildInfoItem('前回', vaccine['lastDate'] as String)),
+                Expanded(child: _buildInfoItem('次回', vaccine['nextDue'] as String)),
+                Expanded(child: _buildInfoItem('間隔', vaccine['interval'] as String)),
               ],
             ),
           ],
@@ -306,9 +289,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
       children: [
         Text(
           label,
-          style: AppFonts.bodySmall.copyWith(
-            color: AppColors.pointDark.withValues(alpha: 0.7),
-          ),
+          style: AppFonts.bodySmall.copyWith(color: AppColors.pointDark.withValues(alpha: 0.7)),
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
@@ -341,19 +322,11 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
             _buildDetailItem('次回予定日', vaccine['nextDue'] as String),
             _buildDetailItem('接種間隔', vaccine['interval'] as String),
             _buildDetailItem('獣医師', vaccine['veterinarian']['name'] as String),
-            _buildDetailItem(
-              'クリニック',
-              vaccine['veterinarian']['clinic'] as String,
-            ),
+            _buildDetailItem('クリニック', vaccine['veterinarian']['clinic'] as String),
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('閉じる'),
-        ),
-      ],
+      actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('閉じる'))],
     );
   }
 
@@ -374,10 +347,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
-            ),
+            child: Text(value, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark)),
           ),
         ],
       ),
@@ -390,12 +360,7 @@ class _VaccineScreenState extends ConsumerState<VaccineScreen> {
       builder: (context) => AlertDialog(
         title: const Text('新しいワクチン記録'),
         content: const Text('ワクチン追加機能は開発中です。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('閉じる'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('閉じる'))],
       ),
     );
   }

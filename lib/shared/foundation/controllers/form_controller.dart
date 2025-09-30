@@ -76,15 +76,9 @@ abstract class FormController<T> extends BaseController {
   }
 
   /// 비밀번호 확인 검사
-  Result<void> validateConfirmPassword(
-    String password,
-    String confirmPassword,
-  ) {
+  Result<void> validateConfirmPassword(String password, String confirmPassword) {
     try {
-      final isValid = ValidationUtils.doPasswordsMatch(
-        password,
-        confirmPassword,
-      );
+      final isValid = ValidationUtils.doPasswordsMatch(password, confirmPassword);
       if (isValid) {
         return Result.success('パスワードが一致しています');
       } else {
@@ -114,12 +108,7 @@ abstract class FormController<T> extends BaseController {
   /// [min] 최소값
   /// [max] 최대값
   /// [return] 유효성 검사 결과
-  Result<void> validateNumberField(
-    String? value,
-    String fieldName, {
-    double? min,
-    double? max,
-  }) {
+  Result<void> validateNumberField(String? value, String fieldName, {double? min, double? max}) {
     if (value == null || value.trim().isEmpty) {
       return Result.failure('$fieldNameは必須項目です');
     }
@@ -167,9 +156,7 @@ abstract class FormController<T> extends BaseController {
   ///
   /// [submitFunction] 제출 함수
   /// [return] 제출 결과
-  Future<Result<void>> safeSubmit(
-    Future<Result<void>> Function() submitFunction,
-  ) async {
+  Future<Result<void>> safeSubmit(Future<Result<void>> Function() submitFunction) async {
     try {
       // 폼 유효성 검사
       if (!isFormValid) {
@@ -185,9 +172,7 @@ abstract class FormController<T> extends BaseController {
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return Result.failure(
-        '送信中にエラーが発生しました: ${getUserFriendlyErrorMessage(error)}',
-      );
+      return Result.failure('送信中にエラーが発生しました: ${getUserFriendlyErrorMessage(error)}');
     }
   }
 }

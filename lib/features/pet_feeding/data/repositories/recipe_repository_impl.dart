@@ -131,10 +131,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
 
     if (_isEnabled) {
       return _recipes
-          .where(
-            (recipe) =>
-                recipe.difficulty.toLowerCase() == difficulty.toLowerCase(),
-          )
+          .where((recipe) => recipe.difficulty.toLowerCase() == difficulty.toLowerCase())
           .toList();
     }
 
@@ -163,8 +160,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
         return recipe.name.toLowerCase().contains(query.toLowerCase()) ||
             recipe.description.toLowerCase().contains(query.toLowerCase()) ||
             recipe.ingredients.any(
-              (ingredient) =>
-                  ingredient.toLowerCase().contains(query.toLowerCase()),
+              (ingredient) => ingredient.toLowerCase().contains(query.toLowerCase()),
             );
       }).toList();
     }
@@ -226,10 +222,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
       final index = _recipes.indexWhere((recipe) => recipe.id == recipeId);
       if (index != -1) {
         final recipe = _recipes[index];
-        _recipes[index] = recipe.copyWith(
-          rating: rating,
-          updatedAt: DateTime.now(),
-        );
+        _recipes[index] = recipe.copyWith(rating: rating, updatedAt: DateTime.now());
       }
       return;
     }

@@ -10,12 +10,7 @@ class NextButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final String? text;
 
-  const NextButton({
-    super.key,
-    required this.isEnabled,
-    this.onPressed,
-    this.text,
-  });
+  const NextButton({super.key, required this.isEnabled, this.onPressed, this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +24,9 @@ class NextButton extends StatelessWidget {
               : AppColors.pointPink.withValues(alpha: 0.3),
           foregroundColor: AppColors.pureWhite,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
           elevation: isEnabled ? 2 : 0,
-          shadowColor: isEnabled
-              ? AppColors.pointBrown.withValues(alpha: 0.3)
-              : Colors.transparent,
+          shadowColor: isEnabled ? AppColors.pointBrown.withValues(alpha: 0.3) : Colors.transparent,
         ),
         child: Text(
           text ?? PetRegistrationTexts.next,

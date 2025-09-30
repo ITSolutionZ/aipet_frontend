@@ -13,9 +13,7 @@ Dio dio(Ref ref) {
     BaseOptions(
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
     ),
   );
 }
@@ -31,10 +29,7 @@ OpenWeatherMapService openWeatherMapService(Ref ref) {
     defaultValue: 'eaa2e523190e5b710c357125ad2c1ece', // fallback 키
   );
 
-  return OpenWeatherMapService(
-    dio: dio,
-    apiKey: apiKey,
-  );
+  return OpenWeatherMapService(dio: dio, apiKey: apiKey);
 }
 
 /// 현재 날씨 정보 프로바이더
@@ -47,30 +42,36 @@ class CurrentWeather extends _$CurrentWeather {
   }) async {
     final service = ref.watch(openWeatherMapServiceProvider);
 
-    try {
-      return await service.getCurrentWeather(
-        latitude: latitude,
-        longitude: longitude,
-      );
-    } catch (e) {
+    final result = await service.getCurrentWeather(
+      latitude: latitude,
+      longitude: longitude,
+    );
+
+    if (result.isSuccess && result.data != null) {
+      return result.data!;
+    } else {
       // 에러 발생 시 Mock 데이터 반환 (개발용)
       return _getMockWeatherData();
     }
   }
 
   /// 날씨 데이터 새로고침
-  Future<void> refresh({
-    double? latitude,
-    double? longitude,
-  }) async {
+  Future<void> refresh({double? latitude, double? longitude}) async {
     state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(() async {
       final service = ref.read(openWeatherMapServiceProvider);
-      return service.getCurrentWeather(
+      final result = await service.getCurrentWeather(
         latitude: latitude ?? 35.6762,
         longitude: longitude ?? 139.6503,
       );
+
+      if (result.isSuccess && result.data != null) {
+        return result.data!;
+      } else {
+        // 에러 발생 시 Mock 데이터 반환
+        return _getMockWeatherData();
+      }
     });
   }
 
@@ -100,10 +101,7 @@ class LocationBasedWeather extends _$LocationBasedWeather {
     // TODO: 위치 권한 요청 및 현재 위치 가져오기
     // 현재는 기본 위치 사용
     final currentWeather = ref.watch(
-      currentWeatherProvider(
-        latitude: 35.6762,
-        longitude: 139.6503,
-      ),
+      currentWeatherProvider(latitude: 35.6762, longitude: 139.6503),
     );
 
     return currentWeather.when(

@@ -8,8 +8,7 @@ class WateringRecordsScreen extends ConsumerStatefulWidget {
   const WateringRecordsScreen({super.key});
 
   @override
-  ConsumerState<WateringRecordsScreen> createState() =>
-      _WateringRecordsScreenState();
+  ConsumerState<WateringRecordsScreen> createState() => _WateringRecordsScreenState();
 }
 
 class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
@@ -39,34 +38,10 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
           'type': '定期的な給水',
           'notes': '少し残した',
         },
-        {
-          'date': '2024-01-15',
-          'time': '20:00',
-          'amount': '180ml',
-          'type': '定期的な給水',
-          'notes': '完食',
-        },
-        {
-          'date': '2024-01-14',
-          'time': '08:00',
-          'amount': '200ml',
-          'type': '定期的な給水',
-          'notes': '完食',
-        },
-        {
-          'date': '2024-01-14',
-          'time': '14:00',
-          'amount': '150ml',
-          'type': '定期的な給水',
-          'notes': '完食',
-        },
-        {
-          'date': '2024-01-14',
-          'time': '20:30',
-          'amount': '180ml',
-          'type': '定期的な給水',
-          'notes': '完食',
-        },
+        {'date': '2024-01-15', 'time': '20:00', 'amount': '180ml', 'type': '定期的な給水', 'notes': '完食'},
+        {'date': '2024-01-14', 'time': '08:00', 'amount': '200ml', 'type': '定期的な給水', 'notes': '完食'},
+        {'date': '2024-01-14', 'time': '14:00', 'amount': '150ml', 'type': '定期的な給水', 'notes': '完食'},
+        {'date': '2024-01-14', 'time': '20:30', 'amount': '180ml', 'type': '定期的な給水', 'notes': '完食'},
       ];
     });
   }
@@ -121,15 +96,11 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
   /// 통계 카드
   Widget _buildStatsCard() {
     final todayRecords =
-        _wateringRecords
-            ?.where((record) => record['date'] == '2024-01-15')
-            .toList() ??
-        [];
+        _wateringRecords?.where((record) => record['date'] == '2024-01-15').toList() ?? [];
 
     final totalAmount = todayRecords.fold<int>(
       0,
-      (sum, record) =>
-          sum + int.parse(record['amount'].toString().replaceAll('ml', '')),
+      (sum, record) => sum + int.parse(record['amount'].toString().replaceAll('ml', '')),
     );
 
     return Card(
@@ -145,11 +116,7 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
                 AppColors.pointBlue,
               ),
             ),
-            Container(
-              width: 1,
-              height: 40,
-              color: AppColors.pointGray.withValues(alpha: 0.3),
-            ),
+            Container(width: 1, height: 40, color: AppColors.pointGray.withValues(alpha: 0.3)),
             Expanded(
               child: _buildStatItem(
                 '今日の総摂取量',
@@ -165,12 +132,7 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
   }
 
   /// 통계 아이템
-  Widget _buildStatItem(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildStatItem(String label, String value, IconData icon, Color color) {
     return Column(
       children: [
         Icon(icon, color: color, size: 24),
@@ -202,11 +164,7 @@ class _WateringRecordsScreenState extends ConsumerState<WateringRecordsScreen> {
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
-          child: const Icon(
-            Icons.water_drop,
-            color: AppColors.pointBlue,
-            size: 20,
-          ),
+          child: const Icon(Icons.water_drop, color: AppColors.pointBlue, size: 20),
         ),
         title: Text(
           '${record['date']} ${record['time']}',

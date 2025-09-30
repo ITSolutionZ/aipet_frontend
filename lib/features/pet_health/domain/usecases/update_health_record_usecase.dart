@@ -10,9 +10,7 @@ class UpdateHealthRecordUseCase {
   UpdateHealthRecordUseCase(this.repository);
 
   /// 체중 기록 수정
-  Future<Result<WeightRecordEntity>> updateWeightRecord(
-    WeightRecordEntity weightRecord,
-  ) async {
+  Future<Result<WeightRecordEntity>> updateWeightRecord(WeightRecordEntity weightRecord) async {
     try {
       final result = await repository.updateWeightRecord(weightRecord);
       return Result.success('体重記録を更新しました', result);
@@ -22,9 +20,7 @@ class UpdateHealthRecordUseCase {
   }
 
   /// 백신 기록 수정
-  Future<Result<VaccineRecordEntity>> updateVaccineRecord(
-    VaccineRecordEntity vaccineRecord,
-  ) async {
+  Future<Result<VaccineRecordEntity>> updateVaccineRecord(VaccineRecordEntity vaccineRecord) async {
     try {
       final result = await repository.updateVaccineRecord(vaccineRecord);
       return Result.success('ワクチン記録を更新しました', result);
@@ -34,10 +30,7 @@ class UpdateHealthRecordUseCase {
   }
 
   /// 체중 기록 메모 수정
-  Future<Result<WeightRecordEntity>> updateWeightRecordNotes(
-    String recordId,
-    String notes,
-  ) async {
+  Future<Result<WeightRecordEntity>> updateWeightRecordNotes(String recordId, String notes) async {
     try {
       // 기존 기록 조회
       final weightRecords = await repository.getWeightRecords(recordId);
@@ -46,10 +39,7 @@ class UpdateHealthRecordUseCase {
       }
 
       final existingRecord = weightRecords.first;
-      final updatedRecord = existingRecord.copyWith(
-        notes: notes,
-        updatedAt: DateTime.now(),
-      );
+      final updatedRecord = existingRecord.copyWith(notes: notes, updatedAt: DateTime.now());
 
       final result = await repository.updateWeightRecord(updatedRecord);
       return Result.success('体重記録のメモを更新しました', result);
@@ -59,9 +49,7 @@ class UpdateHealthRecordUseCase {
   }
 
   /// 백신 접종 완료 처리
-  Future<Result<VaccineRecordEntity>> markVaccineAsCompleted(
-    String recordId,
-  ) async {
+  Future<Result<VaccineRecordEntity>> markVaccineAsCompleted(String recordId) async {
     try {
       // 기존 백신 기록 조회
       final vaccineRecords = await repository.getVaccineRecords(recordId);
@@ -71,8 +59,7 @@ class UpdateHealthRecordUseCase {
 
       final existingRecord = vaccineRecords.first;
       final updatedRecord = existingRecord.copyWith(
-        notes:
-            '${existingRecord.notes ?? ''}\n[접종 완료] ${DateTime.now().toIso8601String()}',
+        notes: '${existingRecord.notes ?? ''}\n[접종 완료] ${DateTime.now().toIso8601String()}',
       );
 
       final result = await repository.updateVaccineRecord(updatedRecord);
@@ -91,8 +78,7 @@ class UpdateHealthRecordUseCase {
 
       // 체중 기록 수정
       if (updates.containsKey('weightRecords')) {
-        final weightUpdates =
-            updates['weightRecords'] as List<Map<String, dynamic>>;
+        final weightUpdates = updates['weightRecords'] as List<Map<String, dynamic>>;
         for (final update in weightUpdates) {
           final recordId = update['id'] as String;
           final weightRecords = await repository.getWeightRecords(recordId);
@@ -111,8 +97,7 @@ class UpdateHealthRecordUseCase {
 
       // 백신 기록 수정
       if (updates.containsKey('vaccineRecords')) {
-        final vaccineUpdates =
-            updates['vaccineRecords'] as List<Map<String, dynamic>>;
+        final vaccineUpdates = updates['vaccineRecords'] as List<Map<String, dynamic>>;
         for (final update in vaccineUpdates) {
           final recordId = update['id'] as String;
           final vaccineRecords = await repository.getVaccineRecords(recordId);

@@ -71,13 +71,9 @@ class AiCategorySelection extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           decoration: BoxDecoration(
-            color: isSelected
-                ? category.color.withValues(alpha: 0.1)
-                : Colors.white,
+            color: isSelected ? category.color.withValues(alpha: 0.1) : Colors.white,
             border: Border.all(
-              color: isSelected
-                  ? category.color
-                  : AppColors.pointGray.withValues(alpha: 0.3),
+              color: isSelected ? category.color : AppColors.pointGray.withValues(alpha: 0.3),
               width: isSelected ? 2.0 : 1.0,
             ),
             borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -117,20 +113,14 @@ class AiCategorySelection extends StatelessWidget {
                     Text(
                       category.name,
                       style: AppFonts.bodyMedium.copyWith(
-                        color: isSelected
-                            ? category.color
-                            : AppColors.pointDark,
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.w500,
+                        color: isSelected ? category.color : AppColors.pointDark,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       category.description,
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointGray,
-                      ),
+                      style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),

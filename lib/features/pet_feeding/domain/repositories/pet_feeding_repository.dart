@@ -2,10 +2,7 @@ import 'package:aipet_frontend/features/pet_feeding/domain/entities/feeding_reco
 
 abstract class PetFeedingRepository {
   Future<List<FeedingRecordEntity>> getFeedingRecords(String petId);
-  Future<List<FeedingRecordEntity>> getFeedingRecordsByDate(
-    String petId,
-    DateTime date,
-  );
+  Future<List<FeedingRecordEntity>> getFeedingRecordsByDate(String petId, DateTime date);
   Future<FeedingRecordEntity> addFeedingRecord(FeedingRecordEntity record);
   Future<FeedingRecordEntity> updateFeedingRecord(FeedingRecordEntity record);
   Future<void> deleteFeedingRecord(String recordId);

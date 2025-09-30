@@ -102,10 +102,7 @@ class ApiService {
 
       final uri = Uri.parse('$baseUrl$endpoint');
       final response = await http
-          .delete(
-            uri,
-            headers: {'Content-Type': 'application/json', ...?headers},
-          )
+          .delete(uri, headers: {'Content-Type': 'application/json', ...?headers})
           .timeout(timeout);
 
       return _handleResponse(response, fromJson);
@@ -133,8 +130,7 @@ class ApiService {
   }
 
   // Mock 데이터 사용 여부 (개발 환경에서는 true)
-  static bool get _useMockData =>
-      const bool.fromEnvironment('USE_MOCK_DATA', defaultValue: true);
+  static bool get _useMockData => const bool.fromEnvironment('USE_MOCK_DATA', defaultValue: true);
 
   /// Mock GET 응답
   static Future<Result<T>> _getMockResponse<T>(
@@ -216,9 +212,7 @@ class ApiService {
   }
 
   /// GET 엔드포인트별 Mock 데이터
-  static Future<Map<String, dynamic>?> _getMockDataForEndpoint(
-    String endpoint,
-  ) async {
+  static Future<Map<String, dynamic>?> _getMockDataForEndpoint(String endpoint) async {
     // AuthMockData의 메서드들을 활용
     switch (endpoint) {
       case '/auth/me':
@@ -263,9 +257,7 @@ class ApiService {
   }
 
   /// DELETE 엔드포인트별 Mock 데이터
-  static Future<Map<String, dynamic>?> _deleteMockDataForEndpoint(
-    String endpoint,
-  ) async {
+  static Future<Map<String, dynamic>?> _deleteMockDataForEndpoint(String endpoint) async {
     // DELETE 요청에 대한 Mock 데이터
     return {'message': 'Deleted successfully'};
   }

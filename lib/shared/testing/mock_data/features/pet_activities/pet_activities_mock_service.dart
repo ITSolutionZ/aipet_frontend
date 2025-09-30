@@ -17,11 +17,7 @@ class PetActivitiesMockService extends BaseMockService {
         'isCompleted': true,
         'learningDays': 5,
         'description': '기본적인 앉기 자세 훈련',
-        'instructions': [
-          '간식을 펫의 코 위로 들어 올리기',
-          '"앉아" 명령과 함께 자세 유도',
-          '성공하면 즉시 보상하기',
-        ],
+        'instructions': ['간식을 펫의 코 위로 들어 올리기', '"앉아" 명령과 함께 자세 유도', '성공하면 즉시 보상하기'],
         'videoUrl': 'https://youtube.com/watch?v=example1',
         'imagePath': 'assets/images/tricks/sit.png',
         'createdAt': DateTime.now().subtract(const Duration(days: 20)),

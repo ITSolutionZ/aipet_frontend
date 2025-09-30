@@ -21,12 +21,7 @@ class GeoUtils {
   /// [lat2], [lon2]: 두 번째 지점의 위도, 경도
   ///
   /// Returns: 거리 (킬로미터)
-  static double calculateDistanceKm(
-    double lat1,
-    double lon1,
-    double lat2,
-    double lon2,
-  ) {
+  static double calculateDistanceKm(double lat1, double lon1, double lat2, double lon2) {
     final dLat = _toRadians(lat2 - lat1);
     final dLon = _toRadians(lon2 - lon1);
 
@@ -35,10 +30,7 @@ class GeoUtils {
 
     final a =
         math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.sin(dLon / 2) *
-            math.sin(dLon / 2) *
-            math.cos(lat1Rad) *
-            math.cos(lat2Rad);
+        math.sin(dLon / 2) * math.sin(dLon / 2) * math.cos(lat1Rad) * math.cos(lat2Rad);
 
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
@@ -51,12 +43,7 @@ class GeoUtils {
   /// [lat2], [lon2]: 두 번째 지점의 위도, 경도
   ///
   /// Returns: 거리 (미터)
-  static double calculateDistanceM(
-    double lat1,
-    double lon1,
-    double lat2,
-    double lon2,
-  ) {
+  static double calculateDistanceM(double lat1, double lon1, double lat2, double lon2) {
     return calculateDistanceKm(lat1, lon1, lat2, lon2) * 1000.0;
   }
 
@@ -100,12 +87,7 @@ class GeoUtils {
   /// [lat2], [lon2]: 도착점의 위도, 경도
   ///
   /// Returns: 베어링 (0-360도)
-  static double calculateBearing(
-    double lat1,
-    double lon1,
-    double lat2,
-    double lon2,
-  ) {
+  static double calculateBearing(double lat1, double lon1, double lat2, double lon2) {
     final dLon = _toRadians(lon2 - lon1);
     final lat1Rad = _toRadians(lat1);
     final lat2Rad = _toRadians(lat2);
@@ -128,12 +110,7 @@ class GeoUtils {
   /// [lat2], [lon2]: 두 번째 지점의 위도, 경도
   ///
   /// Returns: [위도, 경도] 형태의 중점 좌표
-  static List<double> calculateMidpoint(
-    double lat1,
-    double lon1,
-    double lat2,
-    double lon2,
-  ) {
+  static List<double> calculateMidpoint(double lat1, double lon1, double lat2, double lon2) {
     final lat1Rad = _toRadians(lat1);
     final lat2Rad = _toRadians(lat2);
     final dLon = _toRadians(lon2 - lon1);
@@ -174,10 +151,7 @@ class GeoUtils {
   ///
   /// Returns: 유효하면 true, 그렇지 않으면 false
   static bool isValidCoordinate(double latitude, double longitude) {
-    return latitude >= -90.0 &&
-        latitude <= 90.0 &&
-        longitude >= -180.0 &&
-        longitude <= 180.0;
+    return latitude >= -90.0 && latitude <= 90.0 && longitude >= -180.0 && longitude <= 180.0;
   }
 
   /// 거리 포맷팅 (미터 단위를 km로 변환하여 포맷팅)

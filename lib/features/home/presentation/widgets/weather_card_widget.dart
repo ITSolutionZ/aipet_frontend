@@ -191,11 +191,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, spreadRadius: 1),
         ],
       ),
       child: Column(
@@ -232,9 +228,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
                     // 두 번째 줄: 위치명만
                     Text(
                       widget.weather.location,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                      style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -263,9 +257,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
                 color: Colors.grey[100],
                 child: const Center(
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      AppColors.pointBrown,
-                    ),
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
                   ),
                 ),
               ),
@@ -286,9 +278,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
         SizedBox(
           width: 30,
           height: 30,
-          child: SvgPicture.asset(
-            'assets/meteocons/design/fill/animation-ready/celsius.svg',
-          ),
+          child: SvgPicture.asset('assets/meteocons/design/fill/animation-ready/celsius.svg'),
         ),
       ],
     );
@@ -313,10 +303,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
             const SizedBox(height: 2),
             Text(
               widget.weather.windSpeed.toStringAsFixed(1),
-              style: AppTextStyles.bodySmall.copyWith(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppTextStyles.bodySmall.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -328,17 +315,12 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
             SizedBox(
               width: 28,
               height: 28,
-              child: _uvLoaded
-                  ? WebViewWidget(controller: _uvWebViewController)
-                  : const SizedBox(),
+              child: _uvLoaded ? WebViewWidget(controller: _uvWebViewController) : const SizedBox(),
             ),
             const SizedBox(height: 2),
             Text(
               widget.weather.uvIndex.toStringAsFixed(1),
-              style: AppTextStyles.bodySmall.copyWith(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppTextStyles.bodySmall.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -369,11 +351,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
         break;
     }
 
-    return SizedBox(
-      width: 32,
-      height: 32,
-      child: Image.asset(walkIcon, fit: BoxFit.contain),
-    );
+    return SizedBox(width: 32, height: 32, child: Image.asset(walkIcon, fit: BoxFit.contain));
   }
 
   /// 산책 관련 어드바이스 (동적 생성)
@@ -403,10 +381,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
       decoration: BoxDecoration(
         color: recommendationColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.sm),
-        border: Border.all(
-          color: recommendationColor.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: recommendationColor.withValues(alpha: 0.3), width: 1),
       ),
       child: _adviceLoading
           ? Row(
@@ -416,9 +391,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
                   height: 16,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      recommendationColor,
-                    ),
+                    valueColor: AlwaysStoppedAnimation<Color>(recommendationColor),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -450,9 +423,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.md),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -466,10 +437,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
               const SizedBox(height: AppSpacing.md),
               Text(
                 '⚠️ 열사병 경고',
-                style: AppTextStyles.h2.copyWith(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTextStyles.h2.copyWith(color: Colors.red, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
@@ -485,9 +453,7 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.md,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.sm),
                     ),

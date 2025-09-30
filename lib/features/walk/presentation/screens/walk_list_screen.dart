@@ -4,8 +4,7 @@ import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_widgets.dart';
-import 'package:aipet_frontend/shared/shared.dart'
-    hide MapWidget, WalkRecordCardWidget;
+import 'package:aipet_frontend/shared/shared.dart' hide MapWidget, WalkRecordCardWidget;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,10 +75,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           Positioned.fill(
             top: MediaQuery.of(context).padding.top,
             bottom: MediaQuery.of(context).padding.bottom,
-            child: MapWidget(
-              walkRecords: walkRecords,
-              selectedPet: selectedPet,
-            ),
+            child: MapWidget(walkRecords: walkRecords, selectedPet: selectedPet),
           ),
 
           // 상단 네비게이션 (뒤로가기, 리스트 버튼)
@@ -138,11 +134,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                       ),
                       child: IconButton(
                         onPressed: _moveToCurrentLocation,
-                        icon: const Icon(
-                          Icons.my_location,
-                          color: AppColors.pointBrown,
-                          size: 20,
-                        ),
+                        icon: const Icon(Icons.my_location, color: AppColors.pointBrown, size: 20),
                       ),
                     ),
                   ],
@@ -165,11 +157,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                   ),
                   child: IconButton(
                     onPressed: _showWalkRecordsList,
-                    icon: const Icon(
-                      Icons.list,
-                      color: AppColors.textPrimary,
-                      size: 20,
-                    ),
+                    icon: const Icon(Icons.list, color: AppColors.textPrimary, size: 20),
                   ),
                 ),
               ],
@@ -204,9 +192,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                         child: TextButton(
                           onPressed: _showWalkRecordsList,
                           style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(28),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
                           ),
                           child: Text(
                             '당겨 기록',
@@ -227,9 +213,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                           borderRadius: BorderRadius.circular(28),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.pointBrown.withValues(
-                                alpha: 0.3,
-                              ),
+                              color: AppColors.pointBrown.withValues(alpha: 0.3),
                               blurRadius: 10,
                               offset: const Offset(0, 2),
                             ),
@@ -240,9 +224,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                               ? _showCurrentWalkDialog
                               : _showStartWalkDialog,
                           style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(28),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
                           ),
                           child: Text(
                             currentWalk != null ? '산책 중...' : '산책 시작',
@@ -291,9 +273,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
         width: 120,
         height: 56,
         decoration: BoxDecoration(
-          color: isPetSelected
-              ? AppColors.pointBrown
-              : AppColors.pointGray.withValues(alpha: 0.8),
+          color: isPetSelected ? AppColors.pointBrown : AppColors.pointGray.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
             color: isPetSelected ? AppColors.pointBrown : AppColors.pointGray,
@@ -301,9 +281,9 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color:
-                  (isPetSelected ? AppColors.pointBrown : AppColors.pointGray)
-                      .withValues(alpha: 0.3),
+              color: (isPetSelected ? AppColors.pointBrown : AppColors.pointGray).withValues(
+                alpha: 0.3,
+              ),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -323,21 +303,11 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2),
                   ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      selectedPet!.imageUrl!,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  child: ClipOval(child: Image.asset(selectedPet!.imageUrl!, fit: BoxFit.cover)),
                 ),
               )
             else
-              Image.asset(
-                'assets/icons/paw_show.png',
-                width: 28,
-                height: 28,
-                color: Colors.white,
-              ),
+              Image.asset('assets/icons/paw_show.png', width: 28, height: 28, color: Colors.white),
             const SizedBox(width: 8),
 
             // 선택 표시 아이콘
@@ -369,9 +339,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
               final pet = pets[index];
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: pet.imagePath != null
-                      ? AssetImage(pet.imagePath!)
-                      : null,
+                  backgroundImage: pet.imagePath != null ? AssetImage(pet.imagePath!) : null,
                   backgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
                   child: pet.imagePath == null
                       ? const Icon(Icons.pets, color: AppColors.pointBrown)
@@ -379,23 +347,13 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                 ),
                 title: Text(
                   pet.name,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
                 ),
-                subtitle: Text(
-                  '${pet.breed} · ${pet.weight}kg',
-                  style: AppTextStyles.bodySmall,
-                ),
+                subtitle: Text('${pet.breed} · ${pet.weight}kg', style: AppTextStyles.bodySmall),
                 onTap: () {
                   // PetProfileEntity를 PetInfo로 변환
                   _controller.setSelectedPet(
-                    PetInfo(
-                      id: pet.id,
-                      name: pet.name,
-                      type: pet.type,
-                      imageUrl: pet.imagePath,
-                    ),
+                    PetInfo(id: pet.id, name: pet.name, type: pet.type, imageUrl: pet.imagePath),
                   );
                   Navigator.of(context).pop();
                 },
@@ -404,10 +362,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('キャンセル')),
         ],
       ),
     );
@@ -427,10 +382,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
         leading: widget.showBackButton
             ? IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: AppColors.textPrimary,
-                ),
+                icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
               )
             : IconButton(
                 onPressed: () => Scaffold.of(context).openDrawer(),
@@ -517,11 +469,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
             child: ClipOval(
               child: selectedPet.imageUrl?.startsWith('assets/') == true
                   ? Image.asset(selectedPet.imageUrl!, fit: BoxFit.cover)
-                  : const Icon(
-                      Icons.pets,
-                      color: AppColors.pointBrown,
-                      size: 40,
-                    ),
+                  : const Icon(Icons.pets, color: AppColors.pointBrown, size: 40),
             ),
           ),
           const SizedBox(height: 12),
@@ -529,10 +477,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           // 반려동물 이름
           Text(
             selectedPet.name,
-            style: AppTextStyles.h2.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppTextStyles.h2.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
 
@@ -638,11 +583,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                       shape: BoxShape.circle,
                       color: AppColors.pointBrown,
                     ),
-                    child: const Icon(
-                      Icons.pets,
-                      size: 12,
-                      color: AppColors.pointOffWhite,
-                    ),
+                    child: const Icon(Icons.pets, size: 12, color: AppColors.pointOffWhite),
                   ),
                   const SizedBox(width: 6),
                   Text(
@@ -663,11 +604,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           MapWidget(walkRecords: walkRecords, selectedPet: selectedPet),
 
           // 하단 FAB
-          Positioned(
-            bottom: 30,
-            right: 20,
-            child: _buildFloatingActionButton(currentWalk),
-          ),
+          Positioned(bottom: 30, right: 20, child: _buildFloatingActionButton(currentWalk)),
         ],
       ),
     );
@@ -719,10 +656,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
         Container(
           width: 8,
           height: 8,
-          decoration: const BoxDecoration(
-            color: AppColors.pointBrown,
-            shape: BoxShape.circle,
-          ),
+          decoration: const BoxDecoration(color: AppColors.pointBrown, shape: BoxShape.circle),
         ),
         const SizedBox(width: AppSpacing.xs),
         Container(
@@ -751,22 +685,13 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.directions_walk,
-            size: 64,
-            color: AppColors.pointGray.withValues(alpha: 0.5),
-          ),
+          Icon(Icons.directions_walk, size: 64, color: AppColors.pointGray.withValues(alpha: 0.5)),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            '散歩記録がありません。',
-            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-          ),
+          Text('散歩記録がありません。', style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
           const SizedBox(height: AppSpacing.sm),
           Text(
             '一番目の散歩を始めてみてください。',
-            style: AppFonts.bodySmall.copyWith(
-              color: AppColors.pointGray.withValues(alpha: 0.7),
-            ),
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray.withValues(alpha: 0.7)),
           ),
         ],
       ),
@@ -780,10 +705,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
         onPressed: _showCurrentWalkDialog,
         backgroundColor: AppColors.pointBrown,
         icon: const Icon(Icons.pause, color: AppColors.pointOffWhite),
-        label: Text(
-          '散歩中...',
-          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointOffWhite),
-        ),
+        label: Text('散歩中...', style: AppFonts.bodyMedium.copyWith(color: AppColors.pointOffWhite)),
       );
     } else {
       // 새 산책 시작 버튼
@@ -791,10 +713,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
         onPressed: _showStartWalkDialog,
         backgroundColor: AppColors.pointBrown,
         icon: const Icon(Icons.directions_walk, color: AppColors.pointOffWhite),
-        label: Text(
-          '散歩始め',
-          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointOffWhite),
-        ),
+        label: Text('散歩始め', style: AppFonts.bodyMedium.copyWith(color: AppColors.pointOffWhite)),
       );
     }
   }
@@ -807,18 +726,11 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
         title: const Text('산책 시작'),
         content: const Text('산책을 시작하시겠습니까?'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('취소'),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('취소')),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              _controller.startNewWalk(
-                title: 'New Walk',
-                petId: 'pet1',
-                petName: 'Maxi',
-              );
+              _controller.startNewWalk(title: 'New Walk', petId: 'pet1', petName: 'Maxi');
             },
             child: const Text('시작'),
           ),
@@ -836,10 +748,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           title: const Text('진행 중인 산책'),
           content: Text('${currentWalk.petName}과(와) 산책 중입니다.'),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('계속'),
-            ),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('계속')),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -918,9 +827,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
               padding: const EdgeInsets.all(16),
               child: Text(
                 '散歩記録',
-                style: AppTextStyles.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
 
@@ -936,10 +843,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   Future<void> _moveToCurrentLocation() async {
     final walkRecords = ref.read(walkRecordsNotifierProvider);
     final selectedPet = ref.read(selectedPetNotifierProvider);
-    final params = MapWidgetParams(
-      walkRecords: walkRecords,
-      selectedPet: selectedPet,
-    );
+    final params = MapWidgetParams(walkRecords: walkRecords, selectedPet: selectedPet);
     final controller = ref.read(mapWidgetProvider(params).notifier);
 
     // 현재 위치 다시 가져오기

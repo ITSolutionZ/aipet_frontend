@@ -124,16 +124,11 @@ class AiDioService extends BaseLoggingService {
   }
 
   /// 재시도 로직이 포함된 API 호출 실행 (공통 HttpClientService 사용)
-  Future<T> executeWithRetry<T>(
-    Future<T> Function() apiCall, {
-    int? maxRetries,
-  }) async {
+  Future<T> executeWithRetry<T>(Future<T> Function() apiCall, {int? maxRetries}) async {
     // 공통 HttpClientService의 재시도 로직을 사용
     // 이 메서드는 하위 호환성을 위해 유지하지만,
     // 새로운 코드에서는 AiHttpClientService를 직접 사용하는 것을 권장
-    logWarning(
-      'executeWithRetry is deprecated. Use AiHttpClientService instead.',
-    );
+    logWarning('executeWithRetry is deprecated. Use AiHttpClientService instead.');
 
     // 임시로 기본 재시도 로직 구현
     final retries = maxRetries ?? _maxRetries;

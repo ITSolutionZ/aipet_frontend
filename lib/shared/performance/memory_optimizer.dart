@@ -163,24 +163,18 @@ class MemoryOptimizer {
       for (final line in lines) {
         if (line.startsWith('Mach Virtual Memory Statistics')) {
           // 페이지 크기 추출
-          final pageSizeMatch = RegExp(
-            r'page size of (\d+) bytes',
-          ).firstMatch(line);
+          final pageSizeMatch = RegExp(r'page size of (\d+) bytes').firstMatch(line);
           if (pageSizeMatch != null) {
             pageSize = int.tryParse(pageSizeMatch.group(1)!) ?? 4096;
           }
         } else if (line.startsWith('Pages free:')) {
-          freePages =
-              int.tryParse(line.split(':')[1].trim().split(' ')[0]) ?? 0;
+          freePages = int.tryParse(line.split(':')[1].trim().split(' ')[0]) ?? 0;
         } else if (line.startsWith('Pages active:')) {
-          activePages =
-              int.tryParse(line.split(':')[1].trim().split(' ')[0]) ?? 0;
+          activePages = int.tryParse(line.split(':')[1].trim().split(' ')[0]) ?? 0;
         } else if (line.startsWith('Pages inactive:')) {
-          inactivePages =
-              int.tryParse(line.split(':')[1].trim().split(' ')[0]) ?? 0;
+          inactivePages = int.tryParse(line.split(':')[1].trim().split(' ')[0]) ?? 0;
         } else if (line.startsWith('Pages wired down:')) {
-          wiredPages =
-              int.tryParse(line.split(':')[1].trim().split(' ')[0]) ?? 0;
+          wiredPages = int.tryParse(line.split(':')[1].trim().split(' ')[0]) ?? 0;
         }
       }
 
@@ -204,9 +198,7 @@ class MemoryOptimizer {
 
   /// 메모리 스냅샷 기록
   void _recordMemorySnapshot(MemoryInfo memoryInfo) {
-    _memoryHistory.add(
-      MemorySnapshot(memoryInfo: memoryInfo, timestamp: DateTime.now()),
-    );
+    _memoryHistory.add(MemorySnapshot(memoryInfo: memoryInfo, timestamp: DateTime.now()));
 
     // 오래된 기록 정리
     if (_memoryHistory.length > _maxHistorySize) {
@@ -229,9 +221,7 @@ class MemoryOptimizer {
       }
 
       if (kDebugMode && usageRatio >= _warningThreshold) {
-        debugPrint(
-          '🧠 Memory usage: ${(usageRatio * 100).toStringAsFixed(1)}%',
-        );
+        debugPrint('🧠 Memory usage: ${(usageRatio * 100).toStringAsFixed(1)}%');
       }
     } catch (e) {
       if (kDebugMode) {
@@ -299,9 +289,7 @@ class MemoryOptimizer {
   /// 오래된 스냅샷 정리
   void _cleanupOldSnapshots() {
     final cutoffTime = DateTime.now().subtract(const Duration(hours: 1));
-    _memoryHistory.removeWhere(
-      (snapshot) => snapshot.timestamp.isBefore(cutoffTime),
-    );
+    _memoryHistory.removeWhere((snapshot) => snapshot.timestamp.isBefore(cutoffTime));
   }
 
   /// 가비지 컬렉션 트리거
@@ -384,8 +372,7 @@ class MemoryOptimizer {
         .map((snapshot) => snapshot.memoryInfo.processMemory)
         .toList();
 
-    final averageMemory =
-        memoryValues.reduce((a, b) => a + b) / memoryValues.length;
+    final averageMemory = memoryValues.reduce((a, b) => a + b) / memoryValues.length;
     final maxMemory = memoryValues.reduce((a, b) => a > b ? a : b);
     final minMemory = memoryValues.reduce((a, b) => a < b ? a : b);
 
@@ -418,15 +405,9 @@ class MemoryOptimizer {
 
     final stats = generateStats();
     debugPrint('=== Memory Report ===');
-    debugPrint(
-      'Average Memory: ${(stats.averageMemory / 1024 / 1024).toStringAsFixed(2)} MB',
-    );
-    debugPrint(
-      'Max Memory: ${(stats.maxMemory / 1024 / 1024).toStringAsFixed(2)} MB',
-    );
-    debugPrint(
-      'Min Memory: ${(stats.minMemory / 1024 / 1024).toStringAsFixed(2)} MB',
-    );
+    debugPrint('Average Memory: ${(stats.averageMemory / 1024 / 1024).toStringAsFixed(2)} MB');
+    debugPrint('Max Memory: ${(stats.maxMemory / 1024 / 1024).toStringAsFixed(2)} MB');
+    debugPrint('Min Memory: ${(stats.minMemory / 1024 / 1024).toStringAsFixed(2)} MB');
     debugPrint('Total Snapshots: ${stats.totalSnapshots}');
     debugPrint('Memory Trend: ${stats.memoryTrend.name}');
   }
@@ -438,14 +419,9 @@ class MemoryInfo {
   final SystemMemoryInfo? systemMemory;
   final DateTime timestamp;
 
-  const MemoryInfo({
-    required this.processMemory,
-    this.systemMemory,
-    required this.timestamp,
-  });
+  const MemoryInfo({required this.processMemory, this.systemMemory, required this.timestamp});
 
-  factory MemoryInfo.unknown() =>
-      MemoryInfo(processMemory: 0, timestamp: DateTime.now());
+  factory MemoryInfo.unknown() => MemoryInfo(processMemory: 0, timestamp: DateTime.now());
 }
 
 /// 시스템 메모리 정보

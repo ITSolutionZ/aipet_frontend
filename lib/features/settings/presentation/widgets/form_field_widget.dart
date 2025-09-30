@@ -24,27 +24,17 @@ class FormFieldWidget extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black87),
         ),
         if (subtitle != null) ...[
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            subtitle!,
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-          ),
+          Text(subtitle!, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
         ],
         const SizedBox(height: AppSpacing.sm),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppRadius.small),
-            border: Border.all(
-              color: AppColors.pointBrown.withValues(alpha: 0.3),
-              width: 1,
-            ),
+            border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.3), width: 1),
           ),
           child: TextFormField(
             controller: controller,

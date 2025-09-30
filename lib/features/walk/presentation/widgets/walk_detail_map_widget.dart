@@ -11,8 +11,7 @@ class WalkDetailMapWidget extends ConsumerStatefulWidget {
   const WalkDetailMapWidget({super.key, required this.walkRecord});
 
   @override
-  ConsumerState<WalkDetailMapWidget> createState() =>
-      _WalkDetailMapWidgetState();
+  ConsumerState<WalkDetailMapWidget> createState() => _WalkDetailMapWidgetState();
 }
 
 class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
@@ -45,9 +44,7 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
 
       // 현재 위치 가져오기
       final Position position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
       );
 
       setState(() {
@@ -58,10 +55,7 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
       if (_mapController != null) {
         await _mapController!.animateCamera(
           CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(position.latitude, position.longitude),
-              zoom: 16.0,
-            ),
+            CameraPosition(target: LatLng(position.latitude, position.longitude), zoom: 16.0),
           ),
         );
       }
@@ -112,9 +106,7 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
             title: '${widget.walkRecord.title} 開始',
             snippet: '${widget.walkRecord.duration?.inMinutes ?? 0}分',
           ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueGreen,
-          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
         ),
       );
     }
@@ -127,8 +119,7 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
           position: LatLng(route.last.latitude, route.last.longitude),
           infoWindow: InfoWindow(
             title: '${widget.walkRecord.title} 終了',
-            snippet:
-                '${widget.walkRecord.distance?.toStringAsFixed(1) ?? '0.0'}km',
+            snippet: '${widget.walkRecord.distance?.toStringAsFixed(1) ?? '0.0'}km',
           ),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         ),
@@ -237,20 +228,14 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
                   controller.animateCamera(
                     CameraUpdate.newCameraPosition(
                       CameraPosition(
-                        target: LatLng(
-                          _currentPosition!.latitude,
-                          _currentPosition!.longitude,
-                        ),
+                        target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
                         zoom: 16.0,
                       ),
                     ),
                   );
                 },
                 initialCameraPosition: CameraPosition(
-                  target: LatLng(
-                    _currentPosition!.latitude,
-                    _currentPosition!.longitude,
-                  ),
+                  target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
                   zoom: 16.0,
                 ),
                 markers: _markers,
@@ -279,10 +264,7 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
               valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
             ),
             SizedBox(height: AppSpacing.md),
-            Text(
-              '地図を読み込み中...',
-              style: TextStyle(color: AppColors.pointGray, fontSize: 14),
-            ),
+            Text('地図を読み込み中...', style: TextStyle(color: AppColors.pointGray, fontSize: 14)),
           ],
         ),
       ),

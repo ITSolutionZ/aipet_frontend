@@ -32,13 +32,6 @@ class _LocationSettingScreenState extends ConsumerState<LocationSettingScreen> {
   Future<void> _searchPostalCode() async {
     final postalCode = _postalCodeController.text.trim();
 
-    if (postalCode.isEmpty) {
-      setState(() {
-        _errorMessage = '郵便番号を入力してください';
-      });
-      return;
-    }
-
     setState(() {
       _isSearching = true;
       _errorMessage = null;
@@ -51,14 +44,14 @@ class _LocationSettingScreenState extends ConsumerState<LocationSettingScreen> {
         _isSearching = false;
       });
 
-      if (result != null) {
-        _addressController.text = result['fullAddress'] as String;
+      if (result.isSuccess && result.data != null) {
+        _addressController.text = result.data!.fullAddress;
         setState(() {
           _errorMessage = null;
         });
       } else {
         setState(() {
-          _errorMessage = '郵便番号が見つかりませんでした';
+          _errorMessage = result.message;
         });
       }
     }
@@ -79,7 +72,8 @@ class _LocationSettingScreenState extends ConsumerState<LocationSettingScreen> {
     final confirmed = await UiService.showConfirmDialog(
       context,
       title: '位置情報の確認',
-      content: '以下の住所で保存します。\nよろしいですか？\n\n$address${detailAddress.isNotEmpty ? '\n$detailAddress' : ''}',
+      content:
+          '以下の住所で保存します。\nよろしいですか？\n\n$address${detailAddress.isNotEmpty ? '\n$detailAddress' : ''}',
       confirmText: '保存',
       cancelText: 'キャンセル',
     );

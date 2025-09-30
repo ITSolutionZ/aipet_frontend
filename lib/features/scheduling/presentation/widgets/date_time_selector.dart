@@ -44,22 +44,14 @@ class DateTimeSelector extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.calendar_today,
-                      color: AppColors.pointBrown,
-                    ),
+                    const Icon(Icons.calendar_today, color: AppColors.pointBrown),
                     const SizedBox(width: AppSpacing.md),
                     Text(
                       '${selectedDate.year}年${selectedDate.month}月${selectedDate.day}日',
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointDark,
-                      ),
+                      style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
                     ),
                     const Spacer(),
-                    const Icon(
-                      Icons.arrow_drop_down,
-                      color: AppColors.pointGray,
-                    ),
+                    const Icon(Icons.arrow_drop_down, color: AppColors.pointGray),
                   ],
                 ),
               ),
@@ -82,15 +74,10 @@ class DateTimeSelector extends StatelessWidget {
                     const SizedBox(width: AppSpacing.md),
                     Text(
                       selectedTime.format(context),
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointDark,
-                      ),
+                      style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
                     ),
                     const Spacer(),
-                    const Icon(
-                      Icons.arrow_drop_down,
-                      color: AppColors.pointGray,
-                    ),
+                    const Icon(Icons.arrow_drop_down, color: AppColors.pointGray),
                   ],
                 ),
               ),

@@ -87,14 +87,19 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ],
                 )
               else
-                IconButton(
-                  onPressed: onMenuTap,
-                  icon: Icon(
-                    Icons.menu,
-                    color: scrollOffset <= statusBarHeight
-                        ? AppColors.pureWhite
-                        : AppColors.pointDark,
-                    size: 24,
+                Semantics(
+                  label: 'メニューボタン',
+                  button: true,
+                  hint: 'タップしてドロワーメニューを開きます',
+                  child: IconButton(
+                    onPressed: onMenuTap,
+                    icon: Icon(
+                      Icons.menu,
+                      color: scrollOffset <= statusBarHeight
+                          ? AppColors.pureWhite
+                          : AppColors.pointDark,
+                      size: 24,
+                    ),
                   ),
                 ),
 
@@ -106,29 +111,39 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   // 드로워가 닫혀있을 때
                   if (!isDrawerOpen) ...[
                     // 하트 버튼 (즐겨찾기)
-                    IconButton(
-                      onPressed: onFavoriteTap,
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      constraints: const BoxConstraints(),
-                      icon: Icon(
-                        Icons.favorite_outline,
-                        color: scrollOffset <= statusBarHeight
-                            ? AppColors.pureWhite
-                            : AppColors.pointDark,
-                        size: 24,
+                    Semantics(
+                      label: 'お気に入りボタン',
+                      button: true,
+                      hint: 'タップしてお気に入りを表示します',
+                      child: IconButton(
+                        onPressed: onFavoriteTap,
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                        icon: Icon(
+                          Icons.favorite_outline,
+                          color: scrollOffset <= statusBarHeight
+                              ? AppColors.pureWhite
+                              : AppColors.pointDark,
+                          size: 24,
+                        ),
                       ),
                     ),
                     // 알림 버튼
-                    IconButton(
-                      onPressed: onNotificationTap,
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      constraints: const BoxConstraints(),
-                      icon: Icon(
-                        Icons.notifications_outlined,
-                        color: scrollOffset <= statusBarHeight
-                            ? AppColors.pureWhite
-                            : AppColors.pointDark,
-                        size: 24,
+                    Semantics(
+                      label: '通知ボタン',
+                      button: true,
+                      hint: 'タップして通知を表示します',
+                      child: IconButton(
+                        onPressed: onNotificationTap,
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                        icon: Icon(
+                          Icons.notifications_outlined,
+                          color: scrollOffset <= statusBarHeight
+                              ? AppColors.pureWhite
+                              : AppColors.pointDark,
+                          size: 24,
+                        ),
                       ),
                     ),
                   ],

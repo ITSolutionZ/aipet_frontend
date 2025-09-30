@@ -35,15 +35,13 @@ class PetProfileEntity with _$PetProfileEntity {
   const PetProfileEntity._();
 
   /// JSON 직렬화를 위한 팩토리 생성자
-  factory PetProfileEntity.fromJson(Map<String, dynamic> json) =>
-      _$PetProfileEntityFromJson(json);
+  factory PetProfileEntity.fromJson(Map<String, dynamic> json) => _$PetProfileEntityFromJson(json);
 
   /// 펫 나이 계산 (생년월일 기준)
   int get age {
     final now = DateTime.now();
     int calculatedAge = now.year - birthDate.year;
-    if (now.month < birthDate.month ||
-        (now.month == birthDate.month && now.day < birthDate.day)) {
+    if (now.month < birthDate.month || (now.month == birthDate.month && now.day < birthDate.day)) {
       calculatedAge--;
     }
     return calculatedAge;

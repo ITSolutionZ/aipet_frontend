@@ -24,22 +24,13 @@ class ToggleSwitchComponent extends StatelessWidget {
       leading: Icon(icon, color: AppColors.pointBlue),
       title: Text(
         title,
-        style: AppFonts.bodyLarge.copyWith(
-          fontWeight: FontWeight.w600,
-          color: AppColors.pointDark,
-        ),
+        style: AppFonts.bodyLarge.copyWith(fontWeight: FontWeight.w600, color: AppColors.pointDark),
       ),
       subtitle: Text(
         subtitle,
-        style: AppFonts.bodyMedium.copyWith(
-          color: AppColors.pointDark.withValues(alpha: 0.7),
-        ),
+        style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark.withValues(alpha: 0.7)),
       ),
-      trailing: Switch(
-        value: value,
-        onChanged: onChanged,
-        activeColor: AppColors.pointBlue,
-      ),
+      trailing: Switch(value: value, onChanged: onChanged, activeColor: AppColors.pointBlue),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.sm,

@@ -26,11 +26,7 @@ class FacilityController extends StateNotifier<FacilityState> {
 
     final result = await _loadFacilitiesUseCase();
     if (result.isSuccess) {
-      state = state.copyWith(
-        isLoading: false,
-        facilities: result.dataOrNull ?? [],
-        error: null,
-      );
+      state = state.copyWith(isLoading: false, facilities: result.dataOrNull ?? [], error: null);
     } else {
       state = state.copyWith(isLoading: false, error: result.message);
     }
@@ -46,11 +42,7 @@ class FacilityController extends StateNotifier<FacilityState> {
 
     final result = await _searchFacilitiesUseCase(query);
     if (result.isSuccess) {
-      state = state.copyWith(
-        isLoading: false,
-        facilities: result.dataOrNull ?? [],
-        error: null,
-      );
+      state = state.copyWith(isLoading: false, facilities: result.dataOrNull ?? [], error: null);
     } else {
       state = state.copyWith(isLoading: false, error: result.message);
     }
@@ -96,11 +88,7 @@ class FacilityController extends StateNotifier<FacilityState> {
     }
   }
 
-  Future<void> setCurrentLocation(
-    double latitude,
-    double longitude,
-    String address,
-  ) async {
+  Future<void> setCurrentLocation(double latitude, double longitude, String address) async {
     try {
       await _setCurrentLocationUseCase(latitude, longitude, address);
 
@@ -145,8 +133,7 @@ class FacilityState {
     this.currentAddress,
   });
 
-  factory FacilityState.initial() =>
-      const FacilityState(isLoading: false, facilities: []);
+  factory FacilityState.initial() => const FacilityState(isLoading: false, facilities: []);
 
   FacilityState copyWith({
     bool? isLoading,

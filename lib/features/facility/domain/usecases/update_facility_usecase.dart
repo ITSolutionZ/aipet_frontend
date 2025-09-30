@@ -360,9 +360,7 @@ class UpdateFacilityUseCase {
   }
 
   /// 시설을 일괄 수정합니다
-  Future<Result<List<Facility>>> updateFacilities(
-    List<Map<String, dynamic>> updates,
-  ) async {
+  Future<Result<List<Facility>>> updateFacilities(List<Map<String, dynamic>> updates) async {
     try {
       final updatedFacilities = <Facility>[];
 
@@ -413,11 +411,7 @@ class UpdateFacilityUseCase {
         return Result.failure('리뷰 수는 0 이상이어야 합니다');
       }
 
-      return await updateFacilityField(
-        facilityId: facilityId,
-        field: 'rating',
-        value: newRating,
-      );
+      return await updateFacilityField(facilityId: facilityId, field: 'rating', value: newRating);
     } catch (e) {
       return Result.failure('시설 평점 업데이트 중 오류가 발생했습니다: $e');
     }
@@ -435,11 +429,7 @@ class UpdateFacilityUseCase {
       final existingFacility = getResult.data;
       final newStatus = !(existingFacility?.isOpen ?? false);
 
-      return await updateFacilityField(
-        facilityId: facilityId,
-        field: 'isOpen',
-        value: newStatus,
-      );
+      return await updateFacilityField(facilityId: facilityId, field: 'isOpen', value: newStatus);
     } catch (e) {
       return Result.failure('시설 상태 변경 중 오류가 발생했습니다: $e');
     }

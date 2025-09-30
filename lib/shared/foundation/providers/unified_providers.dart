@@ -14,9 +14,7 @@ final unifiedErrorHandlerProvider = Provider<UnifiedErrorHandler>((ref) {
 });
 
 /// 통합 유효성 검사 서비스 프로바이더
-final unifiedValidationServiceProvider = Provider<UnifiedValidationService>((
-  ref,
-) {
+final unifiedValidationServiceProvider = Provider<UnifiedValidationService>((ref) {
   return UnifiedValidationService();
 });
 
@@ -36,10 +34,11 @@ class _LoggingService extends BaseLoggingService {
 }
 
 /// 공통 상태 관리 프로바이더
-final unifiedStateNotifierProvider =
-    StateNotifierProvider<UnifiedStateNotifier, UnifiedState>((ref) {
-      return UnifiedStateNotifier();
-    });
+final unifiedStateNotifierProvider = StateNotifierProvider<UnifiedStateNotifier, UnifiedState>((
+  ref,
+) {
+  return UnifiedStateNotifier();
+});
 
 /// 통합 상태 클래스
 sealed class UnifiedState {
@@ -100,10 +99,11 @@ class UnifiedStateNotifier extends StateNotifier<UnifiedState> {
 }
 
 /// 공통 폼 상태 프로바이더
-final unifiedFormNotifierProvider =
-    StateNotifierProvider<UnifiedFormNotifier, UnifiedFormState>((ref) {
-      return UnifiedFormNotifier();
-    });
+final unifiedFormNotifierProvider = StateNotifierProvider<UnifiedFormNotifier, UnifiedFormState>((
+  ref,
+) {
+  return UnifiedFormNotifier();
+});
 
 /// 통합 폼 상태 클래스
 class UnifiedFormState {
@@ -111,17 +111,9 @@ class UnifiedFormState {
   final bool isLoading;
   final String? error;
 
-  const UnifiedFormState({
-    this.fields = const {},
-    this.isLoading = false,
-    this.error,
-  });
+  const UnifiedFormState({this.fields = const {}, this.isLoading = false, this.error});
 
-  UnifiedFormState copyWith({
-    Map<String, String>? fields,
-    bool? isLoading,
-    String? error,
-  }) {
+  UnifiedFormState copyWith({Map<String, String>? fields, bool? isLoading, String? error}) {
     return UnifiedFormState(
       fields: fields ?? this.fields,
       isLoading: isLoading ?? this.isLoading,
@@ -133,8 +125,7 @@ class UnifiedFormState {
   String getField(String key) => fields[key] ?? '';
 
   /// 폼 유효성 검사
-  bool get isValid =>
-      error == null && fields.values.every((value) => value.isNotEmpty);
+  bool get isValid => error == null && fields.values.every((value) => value.isNotEmpty);
 }
 
 /// 공통 폼 상태 관리 노티파이어

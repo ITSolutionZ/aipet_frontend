@@ -7,11 +7,7 @@ class MenuItem {
   final String iconPath; // 아이콘 경로
   final VoidCallback onTap;
 
-  const MenuItem({
-    required this.title,
-    required this.iconPath,
-    required this.onTap,
-  });
+  const MenuItem({required this.title, required this.iconPath, required this.onTap});
 }
 
 /// 홈 메뉴 그리드 위젯 (Row + Column 조합)
@@ -33,9 +29,7 @@ class HomeMenuGridWidget extends StatelessWidget {
       rows.add(
         menuItems.sublist(
           i,
-          i + crossAxisCount > menuItems.length
-              ? menuItems.length
-              : i + crossAxisCount,
+          i + crossAxisCount > menuItems.length ? menuItems.length : i + crossAxisCount,
         ),
       );
     }
@@ -80,12 +74,7 @@ class _MenuItemWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // 아이콘 이미지
-            Image.asset(
-              item.iconPath,
-              width: 32,
-              height: 32,
-              fit: BoxFit.contain,
-            ),
+            Image.asset(item.iconPath, width: 32, height: 32, fit: BoxFit.contain),
             const SizedBox(height: 6),
             // 메뉴 이름
             Text(

@@ -26,10 +26,7 @@ class NavigateAfterOnboardingUseCase extends BaseUseCaseNoParams<String> {
   }
 
   /// Navigate with BuildContext
-  static Future<Result<void>> navigateWithContext(
-    BuildContext context,
-    String route,
-  ) async {
+  static Future<Result<void>> navigateWithContext(BuildContext context, String route) async {
     try {
       context.go(route);
       return Result.success(null.toString(), '네비게이션이 완료되었습니다');

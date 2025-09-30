@@ -25,9 +25,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.pointBlue),
-      );
+      return const Center(child: CircularProgressIndicator(color: AppColors.pointBlue));
     }
 
     if (schedules.isEmpty) {
@@ -79,10 +77,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
         onScheduleDelete?.call(schedule.id);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.xs,
-        ),
+        margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -217,14 +212,9 @@ class NotificationScheduleListWidget extends StatelessWidget {
           ),
         ),
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.xs,
-            vertical: 2,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: 2),
           decoration: BoxDecoration(
-            color: _getScheduleTypeColor(
-              schedule.scheduleType,
-            ).withValues(alpha: 0.1),
+            color: _getScheduleTypeColor(schedule.scheduleType).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),
           ),
           child: Text(
@@ -245,9 +235,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
       children: [
         Text(
           schedule.description,
-          style: AppFonts.bodyMedium.copyWith(
-            color: AppColors.pointDark.withValues(alpha: 0.7),
-          ),
+          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark.withValues(alpha: 0.7)),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
@@ -264,13 +252,8 @@ class NotificationScheduleListWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
-            if (schedule.scheduleType == ScheduleType.weekly &&
-                schedule.weekDays != null) ...[
-              const Icon(
-                Icons.calendar_view_week,
-                size: 16,
-                color: AppColors.pointGray,
-              ),
+            if (schedule.scheduleType == ScheduleType.weekly && schedule.weekDays != null) ...[
+              const Icon(Icons.calendar_view_week, size: 16, color: AppColors.pointGray),
               const SizedBox(width: AppSpacing.xs),
               Text(
                 _getWeekDaysText(schedule.weekDays!),

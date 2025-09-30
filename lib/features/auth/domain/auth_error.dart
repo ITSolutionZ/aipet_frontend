@@ -200,10 +200,7 @@ class AuthErrorMapper {
         if (statusCode >= 500) {
           return ServerError(statusCode: statusCode);
         } else if (statusCode >= 400) {
-          return ClientError(
-            statusCode: statusCode,
-            reason: _getHttpErrorMessage(statusCode),
-          );
+          return ClientError(statusCode: statusCode, reason: _getHttpErrorMessage(statusCode));
         }
       }
     }
@@ -225,14 +222,11 @@ class AuthErrorMapper {
     if (errorString.contains('token')) {
       if (errorString.contains('expired') || errorString.contains('expire')) {
         return const TokenError(TokenErrorType.expired);
-      } else if (errorString.contains('invalid') ||
-          errorString.contains('malformed')) {
+      } else if (errorString.contains('invalid') || errorString.contains('malformed')) {
         return const TokenError(TokenErrorType.invalid);
-      } else if (errorString.contains('missing') ||
-          errorString.contains('null')) {
+      } else if (errorString.contains('missing') || errorString.contains('null')) {
         return const TokenError(TokenErrorType.missing);
-      } else if (errorString.contains('refresh') ||
-          errorString.contains('renew')) {
+      } else if (errorString.contains('refresh') || errorString.contains('renew')) {
         return const TokenError(TokenErrorType.refreshFailed);
       }
     }

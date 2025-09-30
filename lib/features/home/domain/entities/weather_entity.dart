@@ -1,10 +1,10 @@
 /// WBGT 위험도 레벨
 enum WBGTRiskLevel {
-  safe,     // 안전
-  caution,  // 주의
-  alert,    // 경계
-  danger,   // 위험
-  extreme,  // 매우 위험
+  safe, // 안전
+  caution, // 주의
+  alert, // 경계
+  danger, // 위험
+  extreme, // 매우 위험
 }
 
 /// 날씨 엔티티
@@ -101,8 +101,7 @@ class WeatherEntity {
 
   /// 위험 상황 여부 (모달 표시 필요)
   bool get isDangerous {
-    return humanRiskLevel == WBGTRiskLevel.danger ||
-           humanRiskLevel == WBGTRiskLevel.extreme;
+    return humanRiskLevel == WBGTRiskLevel.danger || humanRiskLevel == WBGTRiskLevel.extreme;
   }
 
   /// 풍속 레벨

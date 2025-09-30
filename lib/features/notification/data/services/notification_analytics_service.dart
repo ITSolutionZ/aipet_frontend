@@ -26,10 +26,8 @@ class NotificationAnalyticsService {
       StreamController<List<UserEngagement>>.broadcast();
 
   Stream<List<NotificationStats>> get statsStream => _statsController.stream;
-  Stream<NotificationAnalytics> get analyticsStream =>
-      _analyticsController.stream;
-  Stream<List<UserEngagement>> get userEngagementStream =>
-      _userEngagementController.stream;
+  Stream<NotificationAnalytics> get analyticsStream => _analyticsController.stream;
+  Stream<List<UserEngagement>> get userEngagementStream => _userEngagementController.stream;
 
   NotificationAnalyticsService();
 
@@ -55,14 +53,12 @@ class NotificationAnalyticsService {
   Future<void> _createMockData() async {
     try {
       // 모의 통계 데이터 생성 (데이터 레이어의 팩토리 사용)
-      final mockStats =
-          data_factory.NotificationStatsFactory.generateMockStats();
+      final mockStats = data_factory.NotificationStatsFactory.generateMockStats();
       await _saveStats(mockStats);
       _statsController.add(mockStats);
 
       // 모의 사용자 참여도 데이터 생성
-      final mockUserEngagement =
-          data_factory.NotificationStatsFactory.generateMockUserEngagement();
+      final mockUserEngagement = data_factory.NotificationStatsFactory.generateMockUserEngagement();
       await _saveUserEngagement(mockUserEngagement);
       _userEngagementController.add(mockUserEngagement);
 
@@ -150,9 +146,7 @@ class NotificationAnalyticsService {
       final statsJson = await SecureStorageService.getString(_statsKey);
       if (statsJson != null) {
         final List<dynamic> statsList = jsonDecode(statsJson);
-        return statsList
-            .map((json) => NotificationStats.fromJson(json))
-            .toList();
+        return statsList.map((json) => NotificationStats.fromJson(json)).toList();
       }
     } catch (e) {
       if (kDebugMode) {}
@@ -161,10 +155,7 @@ class NotificationAnalyticsService {
   }
 
   /// 특정 기간의 통계 가져오기
-  Future<List<NotificationStats>> getStatsByDateRange(
-    DateTime startDate,
-    DateTime endDate,
-  ) async {
+  Future<List<NotificationStats>> getStatsByDateRange(DateTime startDate, DateTime endDate) async {
     try {
       final allStats = await getStats();
       return allStats.where((stat) {
@@ -189,9 +180,7 @@ class NotificationAnalyticsService {
   }
 
   /// 분석 데이터 생성
-  Future<NotificationAnalytics> _createAnalytics(
-    List<NotificationStats> stats,
-  ) async {
+  Future<NotificationAnalytics> _createAnalytics(List<NotificationStats> stats) async {
     try {
       final now = DateTime.now();
       final startDate = now.subtract(const Duration(days: 30));
@@ -240,14 +229,10 @@ class NotificationAnalyticsService {
   /// 사용자 참여도 데이터 가져오기
   Future<List<UserEngagement>> getUserEngagement() async {
     try {
-      final engagementJson = await SecureStorageService.getString(
-        _userEngagementKey,
-      );
+      final engagementJson = await SecureStorageService.getString(_userEngagementKey);
       if (engagementJson != null) {
         final List<dynamic> engagementList = jsonDecode(engagementJson);
-        return engagementList
-            .map((json) => UserEngagement.fromJson(json))
-            .toList();
+        return engagementList.map((json) => UserEngagement.fromJson(json)).toList();
       }
     } catch (e) {
       if (kDebugMode) {}
@@ -361,26 +346,13 @@ class NotificationAnalyticsService {
     if (stats.isEmpty) return {};
 
     final totalSent = stats.fold<int>(0, (sum, stat) => sum + stat.sentCount);
-    final totalOpened = stats.fold<int>(
-      0,
-      (sum, stat) => sum + stat.openedCount,
-    );
-    final totalClicked = stats.fold<int>(
-      0,
-      (sum, stat) => sum + stat.clickedCount,
-    );
-    final totalDismissed = stats.fold<int>(
-      0,
-      (sum, stat) => sum + stat.dismissedCount,
-    );
+    final totalOpened = stats.fold<int>(0, (sum, stat) => sum + stat.openedCount);
+    final totalClicked = stats.fold<int>(0, (sum, stat) => sum + stat.clickedCount);
+    final totalDismissed = stats.fold<int>(0, (sum, stat) => sum + stat.dismissedCount);
 
     final openRate = totalSent > 0 ? (totalOpened / totalSent) * 100 : 0.0;
-    final clickRate = totalOpened > 0
-        ? (totalClicked / totalOpened) * 100
-        : 0.0;
-    final engagementRate = totalSent > 0
-        ? ((totalOpened + totalClicked) / totalSent) * 100
-        : 0.0;
+    final clickRate = totalOpened > 0 ? (totalClicked / totalOpened) * 100 : 0.0;
+    final engagementRate = totalSent > 0 ? ((totalOpened + totalClicked) / totalSent) * 100 : 0.0;
 
     return {
       'totalSent': totalSent.toDouble(),
@@ -416,9 +388,7 @@ class NotificationAnalyticsService {
   /// 사용자 참여도 저장
   Future<void> _saveUserEngagement(List<UserEngagement> engagement) async {
     try {
-      final engagementJson = jsonEncode(
-        engagement.map((e) => e.toJson()).toList(),
-      );
+      final engagementJson = jsonEncode(engagement.map((e) => e.toJson()).toList());
       await SecureStorageService.setString(_userEngagementKey, engagementJson);
     } catch (e) {
       if (kDebugMode) {}

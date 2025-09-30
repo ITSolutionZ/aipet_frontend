@@ -1,8 +1,7 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/features/walk/data/data.dart';
 import 'package:aipet_frontend/features/walk/domain/domain.dart';
-import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart'
-    as domain;
+import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart' as domain;
 import 'package:aipet_frontend/features/walk/domain/usecases/update_walk_record_usecase.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/utils/geo_utils.dart';
@@ -15,22 +14,23 @@ class WalkController extends BaseController {
 
   // Repository 및 UseCase 인스턴스
   late final WalkRepository _repository = WalkRepositoryImpl();
-  late final GetAllWalkRecordsUseCase _getAllWalkRecordsUseCase =
-      GetAllWalkRecordsUseCase(_repository);
-  late final GetWalkRecordsByPetUseCase _getWalkRecordsByPetUseCase =
-      GetWalkRecordsByPetUseCase(_repository);
+  late final GetAllWalkRecordsUseCase _getAllWalkRecordsUseCase = GetAllWalkRecordsUseCase(
+    _repository,
+  );
+  late final GetWalkRecordsByPetUseCase _getWalkRecordsByPetUseCase = GetWalkRecordsByPetUseCase(
+    _repository,
+  );
   late final StartWalkUseCase _startWalkUseCase = StartWalkUseCase(_repository);
   late final EndWalkUseCase _endWalkUseCase = EndWalkUseCase(_repository);
-  late final UpdateWalkRecordUseCase _updateWalkRecordUseCase =
-      UpdateWalkRecordUseCase(_repository);
+  late final UpdateWalkRecordUseCase _updateWalkRecordUseCase = UpdateWalkRecordUseCase(
+    _repository,
+  );
 
   /// 모든 산책 기록 조회
   Future<Result<List<WalkRecordEntity>>> getAll() async {
     try {
       final walkRecords = await _getAllWalkRecordsUseCase();
-      ref
-          .read(walkRecordsNotifierProvider.notifier)
-          .setWalkRecords(walkRecords);
+      ref.read(walkRecordsNotifierProvider.notifier).setWalkRecords(walkRecords);
       return Result.success('산책 기록이 로드되었습니다', walkRecords);
     } catch (e) {
       return Result.failure('산책 기록 로드에 실패했습니다: ${e.toString()}');
@@ -150,9 +150,7 @@ class WalkController extends BaseController {
 
         // Provider에 결과 저장
         ref.read(currentWalkNotifierProvider.notifier).endWalk();
-        ref
-            .read(walkRecordsNotifierProvider.notifier)
-            .updateWalkRecord(completedWalk);
+        ref.read(walkRecordsNotifierProvider.notifier).updateWalkRecord(completedWalk);
 
         return completedWalk;
       },
@@ -174,9 +172,7 @@ class WalkController extends BaseController {
         await _updateWalkRecordUseCase(walkRecord);
 
         // Provider에 결과 저장
-        ref
-            .read(walkRecordsNotifierProvider.notifier)
-            .updateWalkRecord(walkRecord);
+        ref.read(walkRecordsNotifierProvider.notifier).updateWalkRecord(walkRecord);
 
         return walkRecord;
       },
@@ -234,9 +230,7 @@ class WalkController extends BaseController {
     try {
       // domain.PetInfo를 data.PetInfo로 변환 (같은 구조이므로 안전)
       if (pet != null) {
-        ref
-            .read(selectedPetNotifierProvider.notifier)
-            .setSelectedPet(pet as dynamic);
+        ref.read(selectedPetNotifierProvider.notifier).setSelectedPet(pet as dynamic);
       } else {
         ref.read(selectedPetNotifierProvider.notifier).setSelectedPet(null);
       }
@@ -285,17 +279,13 @@ class WalkController extends BaseController {
 
   /// 최근 산책 기록 가져오기
   List<WalkRecordEntity> getRecentWalkRecords({int limit = 10}) {
-    return ref
-        .read(walkRecordsNotifierProvider.notifier)
-        .getRecentWalkRecords(limit: limit);
+    return ref.read(walkRecordsNotifierProvider.notifier).getRecentWalkRecords(limit: limit);
   }
 
   /// 위치 정보 추가
   Result<bool> addLocationToCurrentWalk(WalkLocation location) {
     try {
-      ref
-          .read(currentWalkNotifierProvider.notifier)
-          .addLocationToCurrentWalk(location);
+      ref.read(currentWalkNotifierProvider.notifier).addLocationToCurrentWalk(location);
       return Result.success('位置情報が追加されました', true);
     } catch (e) {
       return Result.failure('위치 정보 추가에 실패했습니다: ${e.toString()}');

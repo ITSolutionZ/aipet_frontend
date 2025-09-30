@@ -51,9 +51,7 @@ class AppBootstrap {
 
       // 프로덕션 환경에서는 초기화 실패 시 앱 종료
       if (kReleaseMode) {
-        throw AppBootstrapException(
-          'App initialization failed: ${e.toString()}',
-        );
+        throw AppBootstrapException('App initialization failed: ${e.toString()}');
       }
     }
   }
@@ -138,9 +136,7 @@ class AppBootstrap {
     debugPrint(
       'Performance Monitoring: ${EnvironmentConfig.isPerformanceMonitoringEnabled ? 'Enabled' : 'Disabled'}',
     );
-    debugPrint(
-      'Mock Mode Allowed: ${EnvironmentConfig.isMockModeAllowed ? 'Yes' : 'No'}',
-    );
+    debugPrint('Mock Mode Allowed: ${EnvironmentConfig.isMockModeAllowed ? 'Yes' : 'No'}');
     debugPrint(
       'Debug Logging: ${EnvironmentConfig.isDebugLoggingAllowed ? 'Enabled' : 'Disabled'}',
     );
@@ -237,12 +233,9 @@ class AppBootstrap {
       if (EnvironmentConfig.isPerformanceMonitoringEnabled) {
         try {
           // 성능 모니터링 상태 체크
-          final performanceReport = PerformanceMonitor.instance
-              .generateReport();
+          final performanceReport = PerformanceMonitor.instance.generateReport();
           if (performanceReport.slowOperations.isNotEmpty) {
-            issues.add(
-              '${performanceReport.slowOperations.length} slow operations detected',
-            );
+            issues.add('${performanceReport.slowOperations.length} slow operations detected');
             healthScore -= 20;
           }
         } catch (e) {

@@ -10,12 +10,10 @@ class PetAnniversarySummaryScreen extends ConsumerStatefulWidget {
   const PetAnniversarySummaryScreen({super.key});
 
   @override
-  ConsumerState<PetAnniversarySummaryScreen> createState() =>
-      _PetAnniversarySummaryScreenState();
+  ConsumerState<PetAnniversarySummaryScreen> createState() => _PetAnniversarySummaryScreenState();
 }
 
-class _PetAnniversarySummaryScreenState
-    extends ConsumerState<PetAnniversarySummaryScreen> {
+class _PetAnniversarySummaryScreenState extends ConsumerState<PetAnniversarySummaryScreen> {
   late ScrollController _scrollController;
 
   @override
@@ -69,8 +67,7 @@ class _PetAnniversarySummaryScreenState
 
     final now = DateTime.now();
     int years = now.year - birthday.year;
-    if (now.month < birthday.month ||
-        (now.month == birthday.month && now.day < birthday.day)) {
+    if (now.month < birthday.month || (now.month == birthday.month && now.day < birthday.day)) {
       years--;
     }
 
@@ -183,8 +180,7 @@ class _PetAnniversarySummaryScreenState
                                 // 펫 이미지
                                 PetImageDisplay(
                                   imageFile: registrationState.petImagePath,
-                                  imagePath:
-                                      registrationState.petImagePath == null
+                                  imagePath: registrationState.petImagePath == null
                                       ? _getPetImagePath()
                                       : null,
                                   width: 200,
@@ -197,17 +193,13 @@ class _PetAnniversarySummaryScreenState
                                   title: '名前',
                                   value: registrationState.petName ?? 'Unknown',
                                   icon: Icons.pets,
-                                  onTap: () => context.go(
-                                    RouteConstants.petNameInputRoute,
-                                  ),
+                                  onTap: () => context.go(RouteConstants.petNameInputRoute),
                                 ),
                                 PetInfoCard(
                                   title: '性別',
                                   value: _getGenderText(),
                                   icon: Icons.wc,
-                                  onTap: () => context.go(
-                                    RouteConstants.petNameInputRoute,
-                                  ),
+                                  onTap: () => context.go(RouteConstants.petNameInputRoute),
                                 ),
                                 PetInfoCard(
                                   title: '誕生日',
@@ -223,9 +215,7 @@ class _PetAnniversarySummaryScreenState
                                           ),
                                           decoration: BoxDecoration(
                                             color: AppColors.pointPink,
-                                            borderRadius: BorderRadius.circular(
-                                              15,
-                                            ),
+                                            borderRadius: BorderRadius.circular(15),
                                           ),
                                           child: Text(
                                             _calculateAge(),
@@ -236,28 +226,21 @@ class _PetAnniversarySummaryScreenState
                                           ),
                                         )
                                       : null,
-                                  onTap: () => context.go(
-                                    RouteConstants.petAnniversaryRoute,
-                                  ),
+                                  onTap: () => context.go(RouteConstants.petAnniversaryRoute),
                                 ),
                                 PetInfoCard(
                                   title: '帰宅日',
-                                  value:
-                                      registrationState.petArrivalDate != null
+                                  value: registrationState.petArrivalDate != null
                                       ? '${registrationState.petArrivalDate!.year}年${registrationState.petArrivalDate!.month}月${registrationState.petArrivalDate!.day}日'
                                       : '未設定',
                                   icon: Icons.home,
-                                  onTap: () => context.go(
-                                    RouteConstants.petAnniversaryRoute,
-                                  ),
+                                  onTap: () => context.go(RouteConstants.petAnniversaryRoute),
                                 ),
                                 PetInfoCard(
                                   title: 'マイクロチップ',
                                   value: _getMicrochipText(),
                                   icon: Icons.qr_code,
-                                  onTap: () => context.go(
-                                    RouteConstants.petNameInputRoute,
-                                  ),
+                                  onTap: () => context.go(RouteConstants.petNameInputRoute),
                                 ),
                                 PetInfoCard(
                                   title: '体重・サイズ',
@@ -267,9 +250,7 @@ class _PetAnniversarySummaryScreenState
                                       ? '${registrationState.petWeight!.toStringAsFixed(1)}kg・${registrationState.petSize}'
                                       : '未設定',
                                   icon: Icons.monitor_weight,
-                                  onTap: () => context.go(
-                                    RouteConstants.petSizeWeightRoute,
-                                  ),
+                                  onTap: () => context.go(RouteConstants.petSizeWeightRoute),
                                 ),
                               ],
                             ),
@@ -286,10 +267,7 @@ class _PetAnniversarySummaryScreenState
                   decoration: BoxDecoration(
                     color: AppColors.pureWhite,
                     border: Border(
-                      top: BorderSide(
-                        color: AppColors.pointGray.withValues(alpha: 0.2),
-                        width: 1,
-                      ),
+                      top: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
                     ),
                   ),
                   child: SizedBox(
@@ -299,9 +277,7 @@ class _PetAnniversarySummaryScreenState
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.pointPink,
                         foregroundColor: AppColors.pureWhite,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.lg,
-                        ),
+                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppRadius.medium),
                         ),

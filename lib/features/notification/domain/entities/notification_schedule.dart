@@ -46,10 +46,7 @@ class NotificationTimeOfDay {
 
   /// JSON에서 생성
   factory NotificationTimeOfDay.fromJson(Map<String, dynamic> json) {
-    return NotificationTimeOfDay(
-      hour: json['hour'] ?? 0,
-      minute: json['minute'] ?? 0,
-    );
+    return NotificationTimeOfDay(hour: json['hour'] ?? 0, minute: json['minute'] ?? 0);
   }
 
   @override
@@ -60,9 +57,7 @@ class NotificationTimeOfDay {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is NotificationTimeOfDay &&
-        other.hour == hour &&
-        other.minute == minute;
+    return other is NotificationTimeOfDay && other.hour == hour && other.minute == minute;
   }
 
   @override
@@ -104,19 +99,11 @@ class NotificationSchedule {
   /// 다음 실행 시간 계산
   DateTime calculateNextExecutionTime() {
     final now = DateTime.now();
-    final baseTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      time.hour,
-      time.minute,
-    );
+    final baseTime = DateTime(now.year, now.month, now.day, time.hour, time.minute);
 
     switch (scheduleType) {
       case ScheduleType.once:
-        return baseTime.isAfter(now)
-            ? baseTime
-            : baseTime.add(const Duration(days: 1));
+        return baseTime.isAfter(now) ? baseTime : baseTime.add(const Duration(days: 1));
 
       case ScheduleType.daily:
         if (baseTime.isAfter(now)) {
@@ -136,8 +123,7 @@ class NotificationSchedule {
         // 다음 실행할 요일 찾기
         int? nextWeekDay;
         for (final weekDay in weekDays!) {
-          if (weekDay > currentWeekDay ||
-              (weekDay == currentWeekDay && baseTime.isAfter(now))) {
+          if (weekDay > currentWeekDay || (weekDay == currentWeekDay && baseTime.isAfter(now))) {
             nextWeekDay = weekDay;
             break;
           }
@@ -157,22 +143,10 @@ class NotificationSchedule {
         // 이번 달의 해당 날짜
         DateTime monthlyDate;
         try {
-          monthlyDate = DateTime(
-            now.year,
-            now.month,
-            dayOfMonth!,
-            time.hour,
-            time.minute,
-          );
+          monthlyDate = DateTime(now.year, now.month, dayOfMonth!, time.hour, time.minute);
         } catch (e) {
           // 해당 날짜가 존재하지 않는 경우 (예: 2월 30일)
-          monthlyDate = DateTime(
-            now.year,
-            now.month + 1,
-            1,
-            time.hour,
-            time.minute,
-          );
+          monthlyDate = DateTime(now.year, now.month + 1, 1, time.hour, time.minute);
         }
 
         if (monthlyDate.isAfter(now)) {
@@ -180,13 +154,7 @@ class NotificationSchedule {
         } else {
           // 다음 달의 해당 날짜
           try {
-            return DateTime(
-              now.year,
-              now.month + 1,
-              dayOfMonth!,
-              time.hour,
-              time.minute,
-            );
+            return DateTime(now.year, now.month + 1, dayOfMonth!, time.hour, time.minute);
           } catch (e) {
             return DateTime(now.year, now.month + 2, 1, time.hour, time.minute);
           }
@@ -269,25 +237,15 @@ class NotificationSchedule {
       title: json['title'],
       description: json['description'],
       type: NotificationType.values.firstWhere((e) => e.name == json['type']),
-      scheduleType: ScheduleType.values.firstWhere(
-        (e) => e.name == json['scheduleType'],
-      ),
+      scheduleType: ScheduleType.values.firstWhere((e) => e.name == json['scheduleType']),
       time: NotificationTimeOfDay.fromJson(json['time']),
-      weekDays: json['weekDays'] != null
-          ? List<int>.from(json['weekDays'])
-          : null,
+      weekDays: json['weekDays'] != null ? List<int>.from(json['weekDays']) : null,
       dayOfMonth: json['dayOfMonth'],
       isActive: json['isActive'] ?? true,
-      lastExecuted: json['lastExecuted'] != null
-          ? DateTime.parse(json['lastExecuted'])
-          : null,
-      nextExecution: json['nextExecution'] != null
-          ? DateTime.parse(json['nextExecution'])
-          : null,
+      lastExecuted: json['lastExecuted'] != null ? DateTime.parse(json['lastExecuted']) : null,
+      nextExecution: json['nextExecution'] != null ? DateTime.parse(json['nextExecution']) : null,
       createdAt: DateTime.parse(json['createdAt']),
-      metadata: json['metadata'] != null
-          ? Map<String, dynamic>.from(json['metadata'])
-          : null,
+      metadata: json['metadata'] != null ? Map<String, dynamic>.from(json['metadata']) : null,
     );
   }
 

@@ -7,7 +7,7 @@ class WeatherAdviceService {
   final WeatherOpenAIService _weatherOpenAIService;
 
   WeatherAdviceService({WeatherOpenAIService? weatherOpenAIService})
-      : _weatherOpenAIService = weatherOpenAIService ?? WeatherOpenAIService();
+    : _weatherOpenAIService = weatherOpenAIService ?? WeatherOpenAIService();
 
   /// 날씨 정보를 바탕으로 반려견 산책 어드바이스 생성
   Future<String> generateWalkingAdvice(WeatherEntity weather) async {

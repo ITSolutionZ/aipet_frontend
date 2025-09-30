@@ -9,8 +9,7 @@ class PetFeedingController extends StateNotifier<PetFeedingState> {
 
   /// 급여 기록 로드
   void loadFeedingRecords(String petId) {
-    final mockRecords = PetFeedingMock
-        .PetFeedingMockService.getMockFeedingRecords(petId: petId);
+    final mockRecords = PetFeedingMock.PetFeedingMockService.getMockFeedingRecords(petId: petId);
     final records = mockRecords
         .map(
           (recordData) => FeedingRecordEntity(
@@ -18,11 +17,7 @@ class PetFeedingController extends StateNotifier<PetFeedingState> {
             petId: recordData['petId'] as String,
             petName: '펫', // Mock 데이터에 petName이 없으므로 기본값 사용
             fedTime: recordData['feedTime'] as DateTime,
-            amount:
-                double.tryParse(
-                  (recordData['amount'] as String).replaceAll('g', ''),
-                ) ??
-                0.0,
+            amount: double.tryParse((recordData['amount'] as String).replaceAll('g', '')) ?? 0.0,
             foodType: recordData['foodType'] as String,
             foodBrand: recordData['foodBrand'] as String,
             status: FeedingStatus.completed, // Mock 데이터에 status가 없으므로 기본값 사용
@@ -31,9 +26,7 @@ class PetFeedingController extends StateNotifier<PetFeedingState> {
           ),
         )
         .toList();
-    final petRecords = records
-        .where((record) => record.petId == petId)
-        .toList();
+    final petRecords = records.where((record) => record.petId == petId).toList();
     state = state.copyWith(
       petId: petId,
       feedingRecords: petRecords
@@ -64,9 +57,7 @@ class PetFeedingController extends StateNotifier<PetFeedingState> {
 
   /// 급여 기록 삭제
   void deleteFeedingRecord(String recordId) {
-    final newRecords = state.feedingRecords
-        .where((record) => record['id'] != recordId)
-        .toList();
+    final newRecords = state.feedingRecords.where((record) => record['id'] != recordId).toList();
     state = state.copyWith(feedingRecords: newRecords);
   }
 }
@@ -78,10 +69,7 @@ class PetFeedingState {
 
   const PetFeedingState({this.petId = '', this.feedingRecords = const []});
 
-  PetFeedingState copyWith({
-    String? petId,
-    List<Map<String, dynamic>>? feedingRecords,
-  }) {
+  PetFeedingState copyWith({String? petId, List<Map<String, dynamic>>? feedingRecords}) {
     return PetFeedingState(
       petId: petId ?? this.petId,
       feedingRecords: feedingRecords ?? this.feedingRecords,
@@ -90,7 +78,8 @@ class PetFeedingState {
 }
 
 /// 컨트롤러 프로바이더
-final petFeedingControllerProvider =
-    StateNotifierProvider<PetFeedingController, PetFeedingState>((ref) {
-      return PetFeedingController();
-    });
+final petFeedingControllerProvider = StateNotifierProvider<PetFeedingController, PetFeedingState>((
+  ref,
+) {
+  return PetFeedingController();
+});

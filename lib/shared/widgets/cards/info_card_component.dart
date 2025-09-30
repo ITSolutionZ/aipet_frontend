@@ -44,28 +44,16 @@ class InfoCardComponent extends StatelessWidget {
                     color: AppColors.pointBlue.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(
-                    Icons.info_outline,
-                    color: AppColors.pointBlue,
-                    size: 20,
-                  ),
+                  child: const Icon(Icons.info_outline, color: AppColors.pointBlue, size: 20),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 const Expanded(
                   child: Text(
                     '通知設定を行い、役立つ通知を\n受け取ってください。',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.pointDark,
-                      height: 1.4,
-                    ),
+                    style: TextStyle(fontSize: 14, color: AppColors.pointDark, height: 1.4),
                   ),
                 ),
-                const Icon(
-                  Icons.chevron_right,
-                  color: AppColors.pointGray,
-                  size: 20,
-                ),
+                const Icon(Icons.chevron_right, color: AppColors.pointGray, size: 20),
               ],
             ),
           ),

@@ -25,10 +25,7 @@ class WateringAnalysisState {
     this.periods = const ['日間', '週間', '月間'],
   });
 
-  WateringAnalysisState copyWith({
-    String? selectedPeriod,
-    List<String>? periods,
-  }) {
+  WateringAnalysisState copyWith({String? selectedPeriod, List<String>? periods}) {
     return WateringAnalysisState(
       selectedPeriod: selectedPeriod ?? this.selectedPeriod,
       periods: periods ?? this.periods,
@@ -99,20 +96,14 @@ class WateringAnalysisScreen extends ConsumerWidget {
                       selected: isSelected,
                       onSelected: (selected) {
                         if (selected) {
-                          ref
-                              .read(wateringAnalysisProvider.notifier)
-                              .changePeriod(period);
+                          ref.read(wateringAnalysisProvider.notifier).changePeriod(period);
                         }
                       },
                       selectedColor: AppColors.pointBlue.withValues(alpha: 0.2),
                       checkmarkColor: AppColors.pointBlue,
                       labelStyle: TextStyle(
-                        color: isSelected
-                            ? AppColors.pointBlue
-                            : AppColors.pointGray,
-                        fontWeight: isSelected
-                            ? FontWeight.w600
-                            : FontWeight.normal,
+                        color: isSelected ? AppColors.pointBlue : AppColors.pointGray,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                       ),
                     ),
                   ),
@@ -146,9 +137,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: AppColors.pointOffWhite,
                 borderRadius: BorderRadius.circular(AppRadius.small),
-                border: Border.all(
-                  color: AppColors.pointGray.withValues(alpha: 0.3),
-                ),
+                border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3)),
               ),
               child: const Center(
                 child: Column(
@@ -156,19 +145,10 @@ class WateringAnalysisScreen extends ConsumerWidget {
                   children: [
                     Icon(Icons.bar_chart, size: 48, color: AppColors.pointGray),
                     SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'チャート表示エリア',
-                      style: TextStyle(
-                        color: AppColors.pointGray,
-                        fontSize: 16,
-                      ),
-                    ),
+                    Text('チャート表示エリア', style: TextStyle(color: AppColors.pointGray, fontSize: 16)),
                     Text(
                       '(Coming Soon)',
-                      style: TextStyle(
-                        color: AppColors.pointGray,
-                        fontSize: 12,
-                      ),
+                      style: TextStyle(color: AppColors.pointGray, fontSize: 12),
                     ),
                   ],
                 ),
@@ -199,20 +179,10 @@ class WateringAnalysisScreen extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: _buildStatItem(
-                    '平均摂取量',
-                    '180ml',
-                    Icons.water_drop,
-                    AppColors.pointBlue,
-                  ),
+                  child: _buildStatItem('平均摂取量', '180ml', Icons.water_drop, AppColors.pointBlue),
                 ),
                 Expanded(
-                  child: _buildStatItem(
-                    '最高摂取量',
-                    '250ml',
-                    Icons.trending_up,
-                    AppColors.pointGreen,
-                  ),
+                  child: _buildStatItem('最高摂取量', '250ml', Icons.trending_up, AppColors.pointGreen),
                 ),
               ],
             ),
@@ -227,14 +197,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
                     AppColors.pointBrown,
                   ),
                 ),
-                Expanded(
-                  child: _buildStatItem(
-                    '給水回数',
-                    '21回',
-                    Icons.repeat,
-                    AppColors.tonePeach,
-                  ),
-                ),
+                Expanded(child: _buildStatItem('給水回数', '21回', Icons.repeat, AppColors.tonePeach)),
               ],
             ),
           ],
@@ -244,12 +207,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
   }
 
   /// 통계 아이템
-  Widget _buildStatItem(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildStatItem(String label, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       margin: const EdgeInsets.all(AppSpacing.xs),
@@ -294,12 +252,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            _buildAnalysisItem(
-              '給水パターン',
-              '定期的な給水が習慣化されています。',
-              Icons.schedule,
-              AppColors.pointGreen,
-            ),
+            _buildAnalysisItem('給水パターン', '定期的な給水が習慣化されています。', Icons.schedule, AppColors.pointGreen),
             const SizedBox(height: AppSpacing.sm),
             _buildAnalysisItem(
               '推奨事項',
@@ -308,12 +261,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
               AppColors.pointBlue,
             ),
             const SizedBox(height: AppSpacing.sm),
-            _buildAnalysisItem(
-              '注意点',
-              '特に問題はありません。',
-              Icons.info,
-              AppColors.pointGray,
-            ),
+            _buildAnalysisItem('注意点', '特に問題はありません。', Icons.info, AppColors.pointGray),
           ],
         ),
       ),
@@ -321,21 +269,13 @@ class WateringAnalysisScreen extends ConsumerWidget {
   }
 
   /// 분석 아이템
-  Widget _buildAnalysisItem(
-    String title,
-    String description,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildAnalysisItem(String title, String description, IconData icon, Color color) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.all(AppSpacing.xs),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
           child: Icon(icon, color: color, size: 20),
         ),
         const SizedBox(width: AppSpacing.sm),
@@ -350,10 +290,7 @@ class WateringAnalysisScreen extends ConsumerWidget {
                   color: AppColors.pointDark,
                 ),
               ),
-              Text(
-                description,
-                style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
-              ),
+              Text(description, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
             ],
           ),
         ),

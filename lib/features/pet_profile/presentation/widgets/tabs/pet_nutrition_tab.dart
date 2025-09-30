@@ -41,11 +41,7 @@ class PetNutritionTab extends ConsumerWidget {
         Row(
           children: [
             Expanded(
-              child: _buildFoodTypeCard(
-                icon: Icons.pets,
-                title: 'ドライフード',
-                isSelected: true,
-              ),
+              child: _buildFoodTypeCard(icon: Icons.pets, title: 'ドライフード', isSelected: true),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
@@ -61,19 +57,11 @@ class PetNutritionTab extends ConsumerWidget {
         Row(
           children: [
             Expanded(
-              child: _buildFoodTypeCard(
-                icon: Icons.eco,
-                title: '生食',
-                isSelected: false,
-              ),
+              child: _buildFoodTypeCard(icon: Icons.eco, title: '生食', isSelected: false),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
-              child: _buildFoodTypeCard(
-                icon: Icons.kitchen,
-                title: '手作り',
-                isSelected: true,
-              ),
+              child: _buildFoodTypeCard(icon: Icons.kitchen, title: '手作り', isSelected: true),
             ),
           ],
         ),
@@ -129,26 +117,11 @@ class PetNutritionTab extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        _buildScheduledMealCard(
-          title: '朝食',
-          schedule: '毎日',
-          time: '7:00',
-          amount: '200g',
-        ),
+        _buildScheduledMealCard(title: '朝食', schedule: '毎日', time: '7:00', amount: '200g'),
         const SizedBox(height: AppSpacing.sm),
-        _buildScheduledMealCard(
-          title: '昼食',
-          schedule: '毎日',
-          time: '12:00',
-          amount: '150g',
-        ),
+        _buildScheduledMealCard(title: '昼食', schedule: '毎日', time: '12:00', amount: '150g'),
         const SizedBox(height: AppSpacing.sm),
-        _buildScheduledMealCard(
-          title: '夕食',
-          schedule: '毎日',
-          time: '18:00',
-          amount: '200g',
-        ),
+        _buildScheduledMealCard(title: '夕食', schedule: '毎日', time: '18:00', amount: '200g'),
       ],
     );
   }
@@ -196,9 +169,7 @@ class PetNutritionTab extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: isSelected
-            ? AppColors.pointBrown.withValues(alpha: 0.1)
-            : Colors.white,
+        color: isSelected ? AppColors.pointBrown.withValues(alpha: 0.1) : Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         border: Border.all(
           color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
@@ -207,11 +178,7 @@ class PetNutritionTab extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            icon,
-            size: 32,
-            color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
-          ),
+          Icon(icon, size: 32, color: isSelected ? AppColors.pointBrown : AppColors.pointGray),
           const SizedBox(height: AppSpacing.xs),
           Text(
             title,

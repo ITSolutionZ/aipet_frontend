@@ -46,13 +46,9 @@ class WeatherIconService {
     if (weatherId >= 300 && weatherId < 310) {
       return 'drizzle';
     } else if (weatherId >= 310 && weatherId < 320) {
-      return isDay
-          ? 'partly-cloudy-day-drizzle'
-          : 'partly-cloudy-night-drizzle';
+      return isDay ? 'partly-cloudy-day-drizzle' : 'partly-cloudy-night-drizzle';
     } else if (weatherId >= 320 && weatherId < 330) {
-      return isDay
-          ? 'partly-cloudy-day-drizzle'
-          : 'partly-cloudy-night-drizzle';
+      return isDay ? 'partly-cloudy-day-drizzle' : 'partly-cloudy-night-drizzle';
     } else {
       return 'drizzle';
     }

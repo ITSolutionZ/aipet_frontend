@@ -13,10 +13,7 @@ class MapWidget extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: height,
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(12),
-        ),
+        decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(12)),
         child: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

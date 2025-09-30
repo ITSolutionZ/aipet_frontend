@@ -5,11 +5,7 @@ class WeightSliderWidget extends StatelessWidget {
   final double weight;
   final ValueChanged<double> onWeightChanged;
 
-  const WeightSliderWidget({
-    super.key,
-    required this.weight,
-    required this.onWeightChanged,
-  });
+  const WeightSliderWidget({super.key, required this.weight, required this.onWeightChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +20,7 @@ class WeightSliderWidget extends StatelessWidget {
             final relativeX = localPosition.dx - 16;
             final normalizedX = (relativeX / width).clamp(0.0, 1.0);
 
-            final newWeight = (0.5 + normalizedX * (50.0 - 0.5)).clamp(
-              0.5,
-              50.0,
-            );
+            final newWeight = (0.5 + normalizedX * (50.0 - 0.5)).clamp(0.5, 50.0);
 
             if ((newWeight - weight).abs() > 0.05) {
               onWeightChanged(newWeight);
@@ -61,8 +54,7 @@ class WeightSliderWidget extends StatelessWidget {
                     final screenWidth = MediaQuery.of(context).size.width - 32;
                     const thumbWidth = 32.0;
                     final normalizedPosition = (weight - 0.5) / (50.0 - 0.5);
-                    final rawLeft =
-                        normalizedPosition * screenWidth - (thumbWidth / 2);
+                    final rawLeft = normalizedPosition * screenWidth - (thumbWidth / 2);
 
                     return rawLeft.clamp(0.0, screenWidth - thumbWidth);
                   }(),

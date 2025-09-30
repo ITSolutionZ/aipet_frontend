@@ -16,15 +16,13 @@ class EnvironmentConfig {
   }
 
   /// 개발 환경 여부
-  static bool get isDevelopment =>
-      currentEnvironment == EnvironmentType.development;
+  static bool get isDevelopment => currentEnvironment == EnvironmentType.development;
 
   /// 스테이징 환경 여부
   static bool get isStaging => currentEnvironment == EnvironmentType.staging;
 
   /// 프로덕션 환경 여부
-  static bool get isProduction =>
-      currentEnvironment == EnvironmentType.production;
+  static bool get isProduction => currentEnvironment == EnvironmentType.production;
 
   /// Mock 모드 허용 여부
   ///
@@ -71,20 +69,14 @@ class EnvironmentConfig {
   static String get firebaseProjectId {
     switch (currentEnvironment) {
       case EnvironmentType.development:
-        return const String.fromEnvironment(
-          'DEV_FIREBASE_PROJECT_ID',
-          defaultValue: 'aipet-dev',
-        );
+        return const String.fromEnvironment('DEV_FIREBASE_PROJECT_ID', defaultValue: 'aipet-dev');
       case EnvironmentType.staging:
         return const String.fromEnvironment(
           'STAGING_FIREBASE_PROJECT_ID',
           defaultValue: 'aipet-staging',
         );
       case EnvironmentType.production:
-        return const String.fromEnvironment(
-          'PROD_FIREBASE_PROJECT_ID',
-          defaultValue: 'aipet-prod',
-        );
+        return const String.fromEnvironment('PROD_FIREBASE_PROJECT_ID', defaultValue: 'aipet-prod');
     }
   }
 
@@ -92,20 +84,11 @@ class EnvironmentConfig {
   static String get openaiApiKey {
     switch (currentEnvironment) {
       case EnvironmentType.development:
-        return const String.fromEnvironment(
-          'DEV_OPENAI_API_KEY',
-          defaultValue: '',
-        );
+        return const String.fromEnvironment('DEV_OPENAI_API_KEY', defaultValue: '');
       case EnvironmentType.staging:
-        return const String.fromEnvironment(
-          'STAGING_OPENAI_API_KEY',
-          defaultValue: '',
-        );
+        return const String.fromEnvironment('STAGING_OPENAI_API_KEY', defaultValue: '');
       case EnvironmentType.production:
-        return const String.fromEnvironment(
-          'PROD_OPENAI_API_KEY',
-          defaultValue: '',
-        );
+        return const String.fromEnvironment('PROD_OPENAI_API_KEY', defaultValue: '');
     }
   }
 

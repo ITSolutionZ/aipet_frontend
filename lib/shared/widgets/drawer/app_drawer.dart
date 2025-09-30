@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 /// アプリドロワー
 /// アプリ全体のナビゲーションとユーザー情報を提供
@@ -60,7 +59,8 @@ class AppDrawer extends ConsumerWidget {
           // ログアウトボタン
           LogoutButtonWidget(
             onTap: () async {
-              await _handleLogout(context, ref);
+              final controller = ref.read(drawerControllerProvider);
+              await controller.logout(context);
             },
           ),
 
@@ -69,58 +69,5 @@ class AppDrawer extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  /// 로그아웃 처리
-  Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
-    try {
-      // 확인 다이얼로그 표시
-      final shouldLogout = await UiService.showConfirmDialog(
-        context,
-        title: 'ログアウト',
-        content: 'ログアウトしますか？',
-        confirmText: 'ログアウト',
-        cancelText: 'キャンセル',
-      );
-
-      if (!shouldLogout) return;
-
-      // 로딩 다이얼로그 표시
-      if (context.mounted) {
-        UiService.showLoadingDialog(context, 'ログアウト中...');
-      }
-
-      // 로그아웃 처리 (목업 구현)
-      await Future.delayed(const Duration(seconds: 1)); // 시뮬레이션
-      const isSuccess = true;
-      const message = 'ログアウトされました';
-
-      // 로딩 다이얼로그 닫기
-      if (context.mounted) {
-        UiService.hideLoadingDialog(context);
-      }
-
-      // 드로어 닫기
-      if (context.mounted) {
-        Navigator.of(context).pop();
-      }
-
-      // 결과에 따른 처리
-      if (isSuccess && context.mounted) {
-        UiService.showSuccess(context, message);
-        // 로그인 화면으로 이동
-        context.go('/login');
-      } else {
-        if (context.mounted) {
-          UiService.showError(context, message);
-        }
-      }
-    } catch (error) {
-      // 로딩 다이얼로그 닫기
-      if (context.mounted) {
-        UiService.hideLoadingDialog(context);
-        UiService.showError(context, 'ログアウト中にエラーが発生しました');
-      }
-    }
   }
 }

@@ -6,11 +6,7 @@ class FeedingStatisticsCard extends StatelessWidget {
   final List<dynamic> feedingRecords;
   final Map<String, dynamic> statistics;
 
-  const FeedingStatisticsCard({
-    super.key,
-    required this.feedingRecords,
-    required this.statistics,
-  });
+  const FeedingStatisticsCard({super.key, required this.feedingRecords, required this.statistics});
 
   @override
   Widget build(BuildContext context) {
@@ -28,24 +24,15 @@ class FeedingStatisticsCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            SizedBox(
-              height: 200,
-              child: FeedingChart(feedingRecords: feedingRecords),
-            ),
+            SizedBox(height: 200, child: FeedingChart(feedingRecords: feedingRecords)),
             const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 _buildStatItem('総食事回数', '${statistics['totalFeedings']}回'),
                 const SizedBox(width: AppSpacing.md),
-                _buildStatItem(
-                  '完了率',
-                  '${(statistics['completionRate'] * 100).round()}%',
-                ),
+                _buildStatItem('完了率', '${(statistics['completionRate'] * 100).round()}%'),
                 const SizedBox(width: AppSpacing.md),
-                _buildStatItem(
-                  '平均量',
-                  '${statistics['averageAmount'].round()}g',
-                ),
+                _buildStatItem('平均量', '${statistics['averageAmount'].round()}g'),
               ],
             ),
           ],
@@ -98,18 +85,11 @@ class FeedingChart extends StatelessWidget {
     for (int i = 6; i >= 0; i--) {
       final date = now.subtract(Duration(days: i));
       final dayRecords = feedingRecords.where((record) {
-        final recordDate = DateTime(
-          record.fedTime.year,
-          record.fedTime.month,
-          record.fedTime.day,
-        );
+        final recordDate = DateTime(record.fedTime.year, record.fedTime.month, record.fedTime.day);
         return recordDate.isAtSameMomentAs(date);
       }).toList();
 
-      final actualAmount = dayRecords.fold<double>(
-        0.0,
-        (sum, record) => sum + record.amount,
-      );
+      final actualAmount = dayRecords.fold<double>(0.0, (sum, record) => sum + record.amount);
 
       const targetAmount = 300.0;
 
@@ -125,26 +105,16 @@ class FeedingChart extends StatelessWidget {
           horizontalInterval: 50,
           verticalInterval: 1,
           getDrawingHorizontalLine: (value) {
-            return FlLine(
-              color: AppColors.pointGray.withValues(alpha: 0.2),
-              strokeWidth: 1,
-            );
+            return FlLine(color: AppColors.pointGray.withValues(alpha: 0.2), strokeWidth: 1);
           },
           getDrawingVerticalLine: (value) {
-            return FlLine(
-              color: AppColors.pointGray.withValues(alpha: 0.2),
-              strokeWidth: 1,
-            );
+            return FlLine(color: AppColors.pointGray.withValues(alpha: 0.2), strokeWidth: 1);
           },
         ),
         titlesData: FlTitlesData(
           show: true,
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
@@ -156,10 +126,7 @@ class FeedingChart extends StatelessWidget {
                   axisSide: meta.axisSide,
                   child: Text(
                     days[value.toInt()],
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointGray,
-                      fontSize: 10,
-                    ),
+                    style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray, fontSize: 10),
                   ),
                 );
               },
@@ -172,10 +139,7 @@ class FeedingChart extends StatelessWidget {
               getTitlesWidget: (double value, TitleMeta meta) {
                 return Text(
                   '${value.toInt()}g',
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointGray,
-                    fontSize: 10,
-                  ),
+                  style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray, fontSize: 10),
                 );
               },
               reservedSize: 42,
@@ -184,10 +148,7 @@ class FeedingChart extends StatelessWidget {
         ),
         borderData: FlBorderData(
           show: true,
-          border: Border.all(
-            color: AppColors.pointGray.withValues(alpha: 0.2),
-            width: 1,
-          ),
+          border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
         ),
         minX: 0,
         maxX: 6,
@@ -198,10 +159,7 @@ class FeedingChart extends StatelessWidget {
             spots: chartData,
             isCurved: true,
             gradient: LinearGradient(
-              colors: [
-                AppColors.pointGreen.withValues(alpha: 0.8),
-                AppColors.pointGreen,
-              ],
+              colors: [AppColors.pointGreen.withValues(alpha: 0.8), AppColors.pointGreen],
             ),
             barWidth: 3,
             isStrokeCapRound: true,
@@ -246,10 +204,7 @@ class FeedingChart extends StatelessWidget {
                 final isTarget = barSpot.barIndex == 1;
                 return LineTooltipItem(
                   isTarget ? '目標量' : '実際 급여량',
-                  AppFonts.bodyMedium.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  AppFonts.bodyMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                   children: [
                     TextSpan(
                       text: '\n${barSpot.y.toInt()}g',

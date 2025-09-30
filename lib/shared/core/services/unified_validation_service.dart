@@ -5,8 +5,7 @@ import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 ///
 /// AI와 Auth 기능에서 공통으로 사용하는 유효성 검사 로직을 제공합니다.
 class UnifiedValidationService extends BaseLoggingService {
-  static final UnifiedValidationService _instance =
-      UnifiedValidationService._internal();
+  static final UnifiedValidationService _instance = UnifiedValidationService._internal();
   factory UnifiedValidationService() => _instance;
   UnifiedValidationService._internal() : super('unified_validation');
 
@@ -16,9 +15,7 @@ class UnifiedValidationService extends BaseLoggingService {
       return Result.failure('メールアドレスを入力してください');
     }
 
-    final emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     if (!emailRegex.hasMatch(email)) {
       return Result.failure('有効なメールアドレスを入力してください');
     }
@@ -58,9 +55,7 @@ class UnifiedValidationService extends BaseLoggingService {
     }
 
     // 특수문자 검사
-    final usernameRegex = RegExp(
-      r'^[a-zA-Z0-9_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+$',
-    );
+    final usernameRegex = RegExp(r'^[a-zA-Z0-9_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+$');
     if (!usernameRegex.hasMatch(username)) {
       return Result.failure('ユーザー名は英数字、ひらがな、カタカナ、漢字、アンダースコアのみ使用できます');
     }

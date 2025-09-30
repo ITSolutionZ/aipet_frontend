@@ -43,17 +43,13 @@ class LoadingOverlay extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.pointPink,
-                      ),
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointPink),
                     ),
                     if (message != null) ...[
                       const SizedBox(height: AppSpacing.md),
                       Text(
                         message!,
-                        style: AppFonts.bodyMedium.copyWith(
-                          color: AppColors.pointDark,
-                        ),
+                        style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -74,12 +70,7 @@ class InlineLoadingIndicator extends StatelessWidget {
   final double size;
   final Color? color;
 
-  const InlineLoadingIndicator({
-    super.key,
-    this.message,
-    this.size = 20.0,
-    this.color,
-  });
+  const InlineLoadingIndicator({super.key, this.message, this.size = 20.0, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -91,17 +82,12 @@ class InlineLoadingIndicator extends StatelessWidget {
           height: size,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(
-              color ?? AppColors.pointPink,
-            ),
+            valueColor: AlwaysStoppedAnimation<Color>(color ?? AppColors.pointPink),
           ),
         ),
         if (message != null) ...[
           const SizedBox(width: 8),
-          Text(
-            message!,
-            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
-          ),
+          Text(message!, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
         ],
       ],
     );
@@ -142,10 +128,7 @@ class ButtonLoadingState extends StatelessWidget {
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 ),
-                if (loadingText != null) ...[
-                  const SizedBox(width: 8),
-                  Text(loadingText!),
-                ],
+                if (loadingText != null) ...[const SizedBox(width: 8), Text(loadingText!)],
               ],
             )
           : Text(text),

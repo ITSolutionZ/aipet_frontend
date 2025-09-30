@@ -26,10 +26,7 @@ class YouTubeSearchBar extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(AppSpacing.md)),
             borderSide: BorderSide(color: AppColors.pointBlue),
           ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         ),
       ),
     );

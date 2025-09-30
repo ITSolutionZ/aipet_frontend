@@ -11,8 +11,7 @@ class PetRegistrationConverter {
       throw ArgumentError('필수 정보가 누락되었습니다 (이름, 펫 타입)');
     }
 
-    final birthDate =
-        data.petBirthday ?? DateTime.now().subtract(const Duration(days: 365));
+    final birthDate = data.petBirthday ?? DateTime.now().subtract(const Duration(days: 365));
 
     return PetProfileEntity(
       id: (++_idCounter).toString(),
@@ -89,9 +88,7 @@ class PetRegistrationConverter {
 
     // 기본 이미지 경로 반환
     final petType = data.selectedPetType;
-    final breed = data.selectedPetType == 'dog'
-        ? data.selectedDogBreed
-        : data.selectedCatBreed;
+    final breed = data.selectedPetType == 'dog' ? data.selectedDogBreed : data.selectedCatBreed;
 
     if (petType == 'dog') {
       switch (breed) {
@@ -119,8 +116,7 @@ class PetRegistrationConverter {
 
   /// 등록 데이터 유효성 검사
   static bool isValidForRegistration(PetRegistrationDataEntity data) {
-    return data.petName?.isNotEmpty == true &&
-        data.selectedPetType?.isNotEmpty == true;
+    return data.petName?.isNotEmpty == true && data.selectedPetType?.isNotEmpty == true;
   }
 
   /// 등록 완료 여부 확인
@@ -131,9 +127,7 @@ class PetRegistrationConverter {
   }
 
   /// 추가 정보 빌드
-  static Map<String, dynamic> _buildAdditionalInfo(
-    PetRegistrationDataEntity data,
-  ) {
+  static Map<String, dynamic> _buildAdditionalInfo(PetRegistrationDataEntity data) {
     final additionalInfo = <String, dynamic>{};
 
     if (data.petArrivalDate != null) {

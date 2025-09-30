@@ -23,9 +23,7 @@ class FacilityListNotifier extends _$FacilityListNotifier {
             longitude: data['longitude'] as double? ?? 139.6503,
             phone: data['phone'] as String,
             email: data['email'] as String,
-            type: data['type'] == 'grooming'
-                ? FacilityType.grooming
-                : FacilityType.hospital,
+            type: data['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
             rating: (data['rating'] as num).toDouble(),
             reviewCount: data['reviewCount'] as int,
             imagePath: data['imagePath'] as String,
@@ -64,9 +62,7 @@ class FacilityListNotifier extends _$FacilityListNotifier {
         .where(
           (facility) =>
               facility.name.toLowerCase().contains(query.toLowerCase()) ||
-              (facility.description?.toLowerCase() ?? '').contains(
-                query.toLowerCase(),
-              ),
+              (facility.description?.toLowerCase() ?? '').contains(query.toLowerCase()),
         )
         .toList();
   }

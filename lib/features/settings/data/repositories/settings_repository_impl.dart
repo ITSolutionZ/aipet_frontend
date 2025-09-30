@@ -60,9 +60,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> updateUserProfile(
-    Map<String, dynamic> profile,
-  ) async {
+  Future<Result<Map<String, dynamic>>> updateUserProfile(Map<String, dynamic> profile) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final profileMap = {
@@ -149,9 +147,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> saveAppSettings(
-    Map<String, dynamic> settings,
-  ) async {
+  Future<Result<Map<String, dynamic>>> saveAppSettings(Map<String, dynamic> settings) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final settingsMap = {
@@ -203,8 +199,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       final exportedDataJson = prefs.getString(_keyExportedData);
 
       if (exportedDataJson != null) {
-        final exportedData =
-            jsonDecode(exportedDataJson) as Map<String, dynamic>;
+        final exportedData = jsonDecode(exportedDataJson) as Map<String, dynamic>;
 
         // 데이터 복원
         if (exportedData['userProfile'] != null) {

@@ -12,8 +12,9 @@ class SplashController extends BaseController {
   SplashController(super.ref);
 
   // ✅ Riverpod Provider를 통한 의존성 주입 (Mockito 데이터 사용)
-  late final ManageSplashSequenceUseCase _manageSplashSequenceUseCase = ref
-      .read(manageSplashSequenceUseCaseProvider);
+  late final ManageSplashSequenceUseCase _manageSplashSequenceUseCase = ref.read(
+    manageSplashSequenceUseCaseProvider,
+  );
   late final GetSplashConfigUseCase _getSplashConfigUseCase = ref.read(
     getSplashConfigUseCaseProvider,
   );
@@ -37,10 +38,7 @@ class SplashController extends BaseController {
     yield Result.success('ローディング中...', SplashState.loading());
     await Future.delayed(const Duration(milliseconds: 1500));
 
-    yield Result.success(
-      'AI Petアプリロゴ表示中...',
-      SplashState.appLogo(SplashConstants.logoImagePath),
-    );
+    yield Result.success('AI Petアプリロゴ表示中...', SplashState.appLogo(SplashConstants.logoImagePath));
     await Future.delayed(SplashConstants.splashDurationMs as Duration);
 
     yield Result.success('スプラッシュ完了', SplashState.completed());
@@ -49,8 +47,7 @@ class SplashController extends BaseController {
   /// 다음 화면 경로 결정
   Future<Result<String>> determineNextRoute() async {
     return await safeExecute(() async {
-          final result = await _manageSplashSequenceUseCase
-              .determineNextRoute();
+          final result = await _manageSplashSequenceUseCase.determineNextRoute();
           if (result.isSuccess) {
             // 성공 메시지는 필요시 UI에서 처리
           }

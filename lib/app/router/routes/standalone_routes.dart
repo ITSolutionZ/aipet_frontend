@@ -21,8 +21,7 @@ class StandaloneRoutes {
     GoRoute(
       path: RouteConstants.addFamilyManagerRoute,
       name: 'add-family-manager',
-      builder: (context, state) =>
-          const Scaffold(body: Center(child: Text('家族管理者追加画面 - 近日公開'))),
+      builder: (context, state) => const Scaffold(body: Center(child: Text('家族管理者追加画面 - 近日公開'))),
     ),
     GoRoute(
       path: RouteConstants.weightTrackingRoute,
@@ -67,8 +66,7 @@ class StandaloneRoutes {
     GoRoute(
       path: RouteConstants.eventDetailRoute,
       name: 'event-detail',
-      builder: (context, state) =>
-          const Scaffold(body: Center(child: Text('イベント詳細画面 - 近日公開'))),
+      builder: (context, state) => const Scaffold(body: Center(child: Text('イベント詳細画面 - 近日公開'))),
     ),
     GoRoute(
       path: RouteConstants.allTricksRoute,

@@ -15,9 +15,7 @@ class ManageSplashSequenceUseCase {
       yield* repository.executeSplashSequence();
     } catch (error) {
       // 에러 발생 시에도 순차적 진행 보장
-      yield Result.success(
-        'ローディングアニメーション表示中... (エラー復旧, SplashState.loading())',
-      );
+      yield Result.success('ローディングアニメーション表示中... (エラー復旧, SplashState.loading())');
       await Future.delayed(const Duration(milliseconds: 1500));
 
       yield Result.success(
