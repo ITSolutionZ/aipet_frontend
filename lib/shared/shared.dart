@@ -14,6 +14,9 @@ export 'entities/entities.dart';
 /// 핵심 공통 기능 모듈
 export 'foundation.dart';
 
+/// 프로바이더 모듈
+export 'providers/providers.dart';
+
 /// 서비스 계층 모듈
 export 'services.dart';
 

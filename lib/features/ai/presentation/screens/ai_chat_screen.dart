@@ -299,28 +299,29 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: DynamicAppBarStyles.brown(
-        scrollController: _scrollController,
-        title: 'AIアシスタント',
+      appBar: AppBar(
+        backgroundColor: AppColors.pointBrown,
+        elevation: 0,
+        title: const Text('AIアシスタント', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           onPressed: _navigateToChatHistory,
-          icon: const Icon(Icons.history),
+          icon: const Icon(Icons.history, color: Colors.white),
           tooltip: 'チャット履歴',
         ),
         actions: [
           IconButton(
             onPressed: _navigateToFavoriteMessages,
-            icon: const Icon(Icons.star),
+            icon: const Icon(Icons.star, color: Colors.white),
             tooltip: 'お気に入り',
           ),
           IconButton(
             onPressed: _saveCurrentChat,
-            icon: const Icon(Icons.save),
+            icon: const Icon(Icons.save, color: Colors.white),
             tooltip: '会話を保存',
           ),
           IconButton(
             onPressed: _clearChatHistory,
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh, color: Colors.white),
             tooltip: 'チャットをクリア',
           ),
         ],
@@ -333,6 +334,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
               child: ListView.builder(
                 controller: _scrollController,
                 padding: const EdgeInsets.all(AppSpacing.md),
+                reverse: false,
                 itemCount: _getTotalItemCount(chatState),
                 itemBuilder: (context, index) {
                   return _buildChatItem(context, ref, chatState, index);

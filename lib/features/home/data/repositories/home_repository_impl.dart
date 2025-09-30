@@ -14,22 +14,50 @@ class HomeRepositoryImpl implements HomeRepository {
 
   @override
   Future<HomeDashboardEntity> getDashboardData() async {
-    // 실제 구현에서는 API 호출이나 로컬 데이터 소스에서 데이터를 가져옴
-    final weather = await getCurrentWeather();
-    final petProfiles = await getPetSummaries();
+    try {
+      print('🏠 HomeRepositoryImpl: getDashboardData 시작');
 
-    final now = DateTime.now();
-    final currentTime =
-        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+      // 실제 구현에서는 API 호출이나 로컬 데이터 소스에서 데이터를 가져옴
+      print('🌤️ 날씨 데이터 조회 시작...');
+      final weather = await getCurrentWeather();
+      print('🌤️ 날씨 데이터 조회 완료: ${weather != null ? '성공' : '실패'}');
 
-    return HomeDashboardEntity(
-      currentTime: currentTime,
-      weather: weather ?? _getMockWeatherEntity(),
-      petProfiles: petProfiles,
-      upcomingAppointments: await getUpcomingAppointments(),
-      petHealthSummary: await getPetHealthSummary(),
-      walkSummary: await getWalkSummary(),
-    );
+      print('🐕 펫 프로필 조회 시작...');
+      final petProfiles = await getPetSummaries();
+      print('🐕 펫 프로필 조회 완료: ${petProfiles.length}개');
+
+      final now = DateTime.now();
+      final currentTime =
+          '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+
+      print('📅 예약 정보 조회 시작...');
+      final appointments = await getUpcomingAppointments();
+      print('📅 예약 정보 조회 완료: ${appointments.length}개');
+
+      print('🏥 건강 정보 조회 시작...');
+      final healthSummary = await getPetHealthSummary();
+      print('🏥 건강 정보 조회 완료');
+
+      print('🚶 산책 정보 조회 시작...');
+      final walkSummary = await getWalkSummary();
+      print('🚶 산책 정보 조회 완료');
+
+      final dashboard = HomeDashboardEntity(
+        currentTime: currentTime,
+        weather: weather ?? _getMockWeatherEntity(),
+        petProfiles: petProfiles,
+        upcomingAppointments: appointments,
+        petHealthSummary: healthSummary,
+        walkSummary: walkSummary,
+      );
+
+      print('✅ HomeRepositoryImpl: getDashboardData 완료');
+      return dashboard;
+    } catch (error, stackTrace) {
+      print('💥 HomeRepositoryImpl: getDashboardData 실패 - $error');
+      print('📍 StackTrace: $stackTrace');
+      rethrow;
+    }
   }
 
   @override
@@ -99,12 +127,18 @@ class HomeRepositoryImpl implements HomeRepository {
     // Mock 데이터 사용
     await Future.delayed(_mockDelay);
     final walkSummaryData = HomeMockService.getMockWalkSummary();
+
+    // 이번주 최장 기록 여부 계산 (예시: 30분 이상이면 최장 기록으로 처리)
+    final todayDuration = walkSummaryData['todayDuration'] as Duration;
+    final isWeeklyRecord = todayDuration.inMinutes >= 30;
+
     return WalkSummary(
       todayWalks: walkSummaryData['todayWalks'] as int,
       todayDistance: walkSummaryData['todayDistance'] as double,
-      todayDuration: Duration(minutes: walkSummaryData['todayDuration'] as int),
+      todayDuration: todayDuration,
       weeklyGoal: walkSummaryData['weeklyGoal'] as double,
       weeklyProgress: walkSummaryData['weeklyProgress'] as double,
+      isWeeklyRecord: isWeeklyRecord,
     );
   }
 
@@ -112,22 +146,18 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<HealthSummary> getPetHealthSummary() async {
     // Mock 데이터 사용
     await Future.delayed(_mockDelay);
-    final healthSummaryData = HomeMockService.getMockHealthSummary();
-    final alertsData = (healthSummaryData['alerts'] as List)
-        .cast<Map<String, dynamic>>();
-    final alerts = alertsData
-        .map(
-          (alert) => HealthAlert(
-            petName: alert['petName'] as String,
-            message: alert['message'] as String,
-          ),
-        )
-        .toList();
+
+    // HomeMockService.getMockHealthSummary()는 HealthSummary에 맞지 않는 구조를 반환하므로
+    // 직접 HealthSummary용 데이터를 생성
+    final alerts = [
+      const HealthAlert(petName: 'マックス', message: '健康診断が必要です'),
+      const HealthAlert(petName: 'ルナ', message: 'ワクチン接種が必要です'),
+    ];
 
     return HealthSummary(
-      totalPets: healthSummaryData['totalPets'] as int,
-      healthyPets: healthSummaryData['healthyPets'] as int,
-      petsNeedingAttention: healthSummaryData['petsNeedingAttention'] as int,
+      totalPets: 3,
+      healthyPets: 2,
+      petsNeedingAttention: 1,
       alerts: alerts,
     );
   }

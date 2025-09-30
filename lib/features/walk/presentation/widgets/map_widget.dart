@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lottie/lottie.dart' as lottie;
 
 import '../../domain/entities/pet_info.dart';
 import 'map/walk_map_camera_controller.dart';
@@ -56,30 +57,53 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
   final MapWidgetParams params;
 
   MapWidgetController(this.params) : super(const MapWidgetState()) {
+    debugPrint('🗺️ MapWidgetController: 초기화 시작');
+    // 즉시 기본 위치를 설정한 후 실제 위치를 가져오도록 변경
+    _setDefaultLocation();
     getCurrentLocation();
     setupMarkersAndPolylines();
+    debugPrint('🗺️ MapWidgetController: 초기화 완료');
   }
 
   Future<void> getCurrentLocation() async {
     try {
+      debugPrint('🗺️ MapWidget: 위치 권한 확인 시작');
       LocationPermission permission = await Geolocator.checkPermission();
+      debugPrint('🗺️ MapWidget: 현재 위치 권한 상태 - $permission');
+
       if (permission == LocationPermission.denied) {
+        debugPrint('🗺️ MapWidget: 위치 권한 요청 중...');
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
+          debugPrint('❌ MapWidget: 위치 권한 거부됨');
+          _setDefaultLocation();
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
+        debugPrint('❌ MapWidget: 위치 권한 영구 거부됨');
+        _setDefaultLocation();
         return;
       }
 
-      final Position position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      );
+      debugPrint('🗺️ MapWidget: GPS 위치 취득 중...');
+      final Position position =
+          await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+            ),
+          ).timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              debugPrint('⏰ MapWidget: GPS 위치 취득 타임아웃');
+              throw Exception('GPS 위치 취득 타임아웃');
+            },
+          );
 
+      debugPrint(
+        '✅ MapWidget: GPS 위치 취득 성공 - ${position.latitude}, ${position.longitude}',
+      );
       state = state.copyWith(currentPosition: position);
 
       if (state.mapController != null) {
@@ -89,8 +113,30 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
         );
       }
     } catch (e) {
-      debugPrint('위치 가져오기 실패: $e');
+      debugPrint('❌ MapWidget: 위치 가져오기 실패 - $e');
+      _setDefaultLocation();
     }
+  }
+
+  /// 기본 위치 설정 (도쿄)
+  void _setDefaultLocation() {
+    debugPrint('🗺️ MapWidget: 기본 위치(도쿄) 설정 시작');
+    final defaultPosition = Position(
+      latitude: 35.6762,
+      longitude: 139.6503,
+      timestamp: DateTime.now(),
+      accuracy: 0,
+      altitude: 0,
+      heading: 0,
+      speed: 0,
+      speedAccuracy: 0,
+      altitudeAccuracy: 0,
+      headingAccuracy: 0,
+    );
+
+    state = state.copyWith(currentPosition: defaultPosition);
+    debugPrint('🗺️ MapWidget: 기본 위치 설정 완료 - ${defaultPosition.latitude}, ${defaultPosition.longitude}');
+    debugPrint('🗺️ MapWidget: 현재 State - currentPosition: ${state.currentPosition != null ? "있음" : "없음"}');
   }
 
   void setupMarkersAndPolylines() {
@@ -127,66 +173,70 @@ class MapWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    debugPrint('🗺️ MapWidget: build() 호출됨');
     final params = MapWidgetParams(
       walkRecords: walkRecords,
       selectedPet: selectedPet,
     );
     final controller = ref.read(mapWidgetProvider(params).notifier);
     final state = ref.watch(mapWidgetProvider(params));
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        child: state.currentPosition == null
-            ? _buildLoadingState()
-            : GoogleMap(
-                onMapCreated: (GoogleMapController mapController) {
-                  controller.setMapController(mapController);
-                  controller.setupMarkersAndPolylines();
 
-                  WalkMapCameraController.moveToCurrentLocation(
-                    mapController,
-                    state.currentPosition!,
-                  );
-                },
-                initialCameraPosition:
-                    WalkMapCameraController.createDefaultCameraPosition(
-                      latitude: state.currentPosition!.latitude,
-                      longitude: state.currentPosition!.longitude,
-                      zoom: 15.0,
-                    ),
-                markers: state.markers,
-                polylines: state.polylines,
-                myLocationEnabled: true,
-                myLocationButtonEnabled: false,
-                zoomControlsEnabled: false,
-                mapToolbarEnabled: false,
-                compassEnabled: true,
-                onCameraMove: (CameraPosition position) {
-                  // 카메라 이동 시 추가 로직 (필요시)
-                },
-              ),
-      ),
-    );
+    debugPrint('🗺️ MapWidget: State 확인 - currentPosition: ${state.currentPosition != null ? "있음 (${state.currentPosition!.latitude}, ${state.currentPosition!.longitude})" : "없음"}');
+
+    return state.currentPosition == null
+        ? _buildLoadingState()
+        : GoogleMap(
+            onMapCreated: (GoogleMapController mapController) {
+              controller.setMapController(mapController);
+              controller.setupMarkersAndPolylines();
+
+              WalkMapCameraController.moveToCurrentLocation(
+                mapController,
+                state.currentPosition!,
+              );
+            },
+            initialCameraPosition:
+                WalkMapCameraController.createDefaultCameraPosition(
+                  latitude: state.currentPosition!.latitude,
+                  longitude: state.currentPosition!.longitude,
+                  zoom: 15.0,
+                ),
+            markers: state.markers,
+            polylines: state.polylines,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            mapToolbarEnabled: false,
+            compassEnabled: true,
+            onCameraMove: (CameraPosition position) {
+              // 카메라 이동 시 추가 로직 (필요시)
+            },
+          );
   }
 
   Widget _buildLoadingState() {
+    debugPrint('🗺️ MapWidget: _buildLoadingState() 호출됨 - 위치 정보가 없어서 로딩 화면 표시');
     return Container(
       color: Colors.grey[100],
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
+            // Lottie 로딩 애니메이션
+            lottie.Lottie.asset(
+              'assets/lottie/loading.json',
+              width: 120,
+              height: 120,
+              fit: BoxFit.contain,
             ),
-            SizedBox(height: AppSpacing.md),
-            Text(
+            const SizedBox(height: AppSpacing.md),
+            const Text(
               '地図を読み込み中...',
-              style: TextStyle(color: AppColors.pointGray, fontSize: 14),
+              style: TextStyle(
+                color: AppColors.pointGray,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),

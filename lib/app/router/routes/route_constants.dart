@@ -72,6 +72,7 @@ class RouteConstants {
   static const String accountDeleteRoute = '/settings/account-delete';
   static const String pushNotificationRoute = '/settings/push-notification';
   static const String alarmTimeSettingsRoute = '/settings/alarm-time-settings';
+  static const String locationSettingRoute = '/settings/location-setting';
 
   // ===== PET FEEDING =====
   static const String feedingMainRoute = '/feeding-main';

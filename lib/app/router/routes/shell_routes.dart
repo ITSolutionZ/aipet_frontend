@@ -375,6 +375,11 @@ class ShellRoutes {
               ),
             ),
           ),
+          GoRoute(
+            path: 'location-setting',
+            name: 'location-setting',
+            builder: (context, state) => const LocationSettingScreen(),
+          ),
         ],
       ),
 

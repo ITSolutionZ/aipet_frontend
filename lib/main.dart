@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -12,15 +13,18 @@ void main() async {
   // Flutter 위젯 바인딩 초기화
   WidgetsFlutterBinding.ensureInitialized();
 
+  // .env 파일 로드
+  try {
+    await dotenv.load(fileName: '.env');
+    debugPrint('✅ Environment variables loaded from .env');
+  } catch (e) {
+    // .env 파일이 없어도 앱이 계속 실행되도록 함
+    debugPrint('Warning: .env file not found: $e');
+  }
+
   // 앱 부트스트랩 초기화
   await AppBootstrap.initialize();
 
-  // 디버그 모드 렌더링
-  // debugPaintBaselinesEnabled = true;
-  // debugPaintPointersEnabled = true;
-  // debugPaintLayerBordersEnabled = true;
-  // debugPaintBaselinesEnabled = true;
-  // debugPaintBaselinesEnabled = true;
   // 앱 실행
   await SentryFlutter.init(
     (options) {

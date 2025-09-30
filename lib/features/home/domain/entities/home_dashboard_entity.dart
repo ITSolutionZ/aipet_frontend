@@ -48,6 +48,7 @@ class WalkSummary {
   final Duration todayDuration;
   final double weeklyGoal;
   final double weeklyProgress;
+  final bool isWeeklyRecord; // 이번주 최장 기록 여부
 
   const WalkSummary({
     required this.todayWalks,
@@ -55,6 +56,7 @@ class WalkSummary {
     required this.todayDuration,
     required this.weeklyGoal,
     required this.weeklyProgress,
+    this.isWeeklyRecord = false,
   });
 }
 
