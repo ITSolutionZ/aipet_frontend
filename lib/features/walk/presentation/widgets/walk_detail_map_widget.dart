@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'utils/custom_marker_builder.dart';
+
 class WalkDetailMapWidget extends ConsumerStatefulWidget {
   final WalkRecordEntity walkRecord;
 
@@ -25,6 +27,7 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
   final LocationCacheService _locationCache = LocationCacheService.instance;
   BitmapDescriptor? _poopIcon;
   BitmapDescriptor? _peeIcon;
+  BitmapDescriptor? _noEntryIcon;
 
   @override
   void initState() {
@@ -37,26 +40,33 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
   /// 커스텀 아이콘 로드
   Future<void> _loadCustomIcons() async {
     try {
-      final poopIcon = await BitmapDescriptor.asset(
-        const ImageConfiguration(size: Size(48, 48)),
-        'assets/icons/poop.png',
+      // 작은 사이즈로 원형 마커 생성
+      final poopIcon = await CustomMarkerBuilder.createCircleMarker(
+        iconPath: 'assets/icons/poop.png',
+        backgroundColor: const Color(0xFFFF9800),
+        size: 40,
       );
-      final peeIcon = await BitmapDescriptor.asset(
-        const ImageConfiguration(size: Size(48, 48)),
-        'assets/icons/marking.png',
+      final peeIcon = await CustomMarkerBuilder.createCircleMarker(
+        iconPath: 'assets/icons/marking.png',
+        backgroundColor: const Color(0xFF2196F3),
+        size: 40,
       );
-      
+      final noEntryIcon = await CustomMarkerBuilder.createCircleMarker(
+        iconPath: 'assets/icons/no-entry.png',
+        backgroundColor: const Color(0xFFF44336),
+        size: 40,
+      );
+
       setState(() {
         _poopIcon = poopIcon;
         _peeIcon = peeIcon;
+        _noEntryIcon = noEntryIcon;
       });
-      
-      // 아이콘 로드 후 마커 다시 생성
+
       _setupWalkDetailMap();
-      
-      debugPrint('✅ WalkDetailMap: 커스텀 아이콘 로드 완료');
+      debugPrint('✅ WalkDetailMap: 원형 마커 로드 완료 (40px)');
     } catch (e) {
-      debugPrint('⚠️ WalkDetailMap: 커스텀 아이콘 로드 실패 - $e');
+      debugPrint('⚠️ WalkDetailMap: 마커 로드 실패 - $e');
     }
   }
 
@@ -154,6 +164,8 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
   }
 
   void _setupWalkDetailMap() {
+    debugPrint('🔄 WalkDetailMap: _setupWalkDetailMap 호출');
+
     _markers.clear();
     _polylines.clear();
 
@@ -167,6 +179,15 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
 
     // 이 산책 기록의 배변/배뇨 마커 추가
     _addActivityMarkers();
+
+    // 마커와 폴리라인 적용
+    if (mounted) {
+      setState(() {
+        debugPrint(
+          '✅ WalkDetailMap: 마커 ${_markers.length}개, 폴리라인 ${_polylines.length}개 적용',
+        );
+      });
+    }
   }
 
   /// 이 산책 기록의 활동 마커 추가 (배변/배뇨)
@@ -215,13 +236,34 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
           markerIcon = _poopIcon!;
         } else if (type == 'pee' && _peeIcon != null) {
           markerIcon = _peeIcon!;
+        } else if (type == 'no-entry' && _noEntryIcon != null) {
+          markerIcon = _noEntryIcon!;
         } else {
           // 기본 마커
-          markerIcon = BitmapDescriptor.defaultMarkerWithHue(
-            type == 'poop'
-                ? BitmapDescriptor.hueOrange
-                : BitmapDescriptor.hueAzure,
-          );
+          double hue;
+          if (type == 'poop') {
+            hue = BitmapDescriptor.hueOrange;
+          } else if (type == 'pee') {
+            hue = BitmapDescriptor.hueAzure;
+          } else {
+            hue = BitmapDescriptor.hueRed;
+          }
+          markerIcon = BitmapDescriptor.defaultMarkerWithHue(hue);
+        }
+
+        String title;
+        switch (type) {
+          case 'poop':
+            title = '💩 排便';
+            break;
+          case 'pee':
+            title = '💧 排尿';
+            break;
+          case 'no-entry':
+            title = '🚫 立入禁止';
+            break;
+          default:
+            title = '記録';
         }
 
         _markers.add(
@@ -230,19 +272,17 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
             position: LatLng(lat, lng),
             icon: markerIcon,
             infoWindow: InfoWindow(
-              title: type == 'poop' ? '💩 排便' : '💧 排尿',
-              snippet: timestamp.substring(11, 16), // HH:mm 형식
+              title: title,
+              snippet: timestamp.substring(11, 16), // HH:mm 形式
             ),
           ),
         );
 
-        debugPrint('✅ 마커 추가: ${type == 'poop' ? '💩' : '💧'} at ($lat, $lng)');
+        debugPrint('✅ 마커 추가: $title at ($lat, $lng)');
       }
 
-      setState(() {}); // UI 업데이트
-
       debugPrint(
-        '✅ WalkDetailMap: 산책 ${widget.walkRecord.id}의 ${activities.length}개 활동 마커 추가 완료',
+        '✅ WalkDetailMap: 산책 ${widget.walkRecord.id}의 ${activities.length}개 활동 마커 추가 완료 (총 ${_markers.length}개 마커)',
       );
     } catch (e) {
       debugPrint('⚠️ WalkDetailMap: 활동 마커 파싱 실패 - $e');

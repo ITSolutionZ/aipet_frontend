@@ -38,6 +38,15 @@ class _FakeResponse_1<T1> extends _i1.SmartFake implements _i2.Response<T1> {
 /// See the documentation for Mockito's code generation for more information.
 class MockApiClient extends _i1.Mock implements _i3.ApiClient {
   @override
+  bool get useMockServer =>
+      (super.noSuchMethod(
+            Invocation.getter(#useMockServer),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
   _i2.Dio get dio =>
       (super.noSuchMethod(
             Invocation.getter(#dio),
