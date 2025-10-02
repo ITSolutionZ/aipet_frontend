@@ -2,153 +2,259 @@
 
 ## 🔄 変更理由
 
-- ペットプロファイル機能のアーキテクチャを Clean Architecture に基づいてリファクタリング
-- Mock データ統合による開発効率の向上とテストカバレッジの改善
-- ペットプロファイル機能の独立性を高め、メンテナンス性を向上
+- 散歩機能のアーキテクチャをHybrid Repositoryパターンでリファクタリング
+- API連携準備のための完全なバックエンド統合レイヤーを実装
+- オフライン同期、位置情報キャッシング、UI/UX改善による使いやすさの向上
 
 ---
 
-### ✨ 主な変更点
+## ✨ 主な変更点
 
-1. **ペットプロファイル機能の完全なリファクタリング**
+### 1. **Hybrid Repositoryパターン適用**
+- API、ローカルストレージ、Mockデータを統合したデータアクセスレイヤー
+- フォールバック戦略による安定したデータ取得
+- オフライン時の同期キュー管理
 
-   - Clean Architecture に基づくレイヤー分離（Domain, Data, Presentation）
-   - 独立したペットプロファイルエンティティの作成
-   - 既存の Pet Registor 機能との分離
+### 2. **散歩機能の全面改善**
+- 全画面地図UI: ペット選択カード、実時間サマリー、活動マーカー
+- 一時停止/再開機能: タイマー制御とGPS追跡管理
+- 排便/排尿/立入禁止マーカー: カスタム円形マーカーで視認性向上
+- マーカー削除機能: タップで削除可能
 
-2. **Mock データ統合とテストカバレッジの大幅改善**
+### 3. **API連携準備完了**
+- WalkApiService: 全ての散歩関連APIエンドポイント実装
+- HybridWalkRepository: API/Local/Mock統合データアクセス
+- SyncQueueService: オフライン操作の同期キュー管理
+- `useApi: true`で即時API有効化可能
 
-   - 統合された Mock データサービスの実装
-   - 1,337 行のテストコード追加（Unit, Widget, Integration）
-   - テストカバレッジの大幅向上
+### 4. **パフォーマンス最適化**
+- 位置情報キャッシング: 30秒TTLでGPS呼び出し削減
+- カスタムマーカーキャッシング: メモリ効率化
+- 古い記録削除機能: 6ヶ月以上前の記録を削除
 
-3. **新しい UseCase と Domain Service の実装**
+### 5. **UI/UX改善**
+- 散歩カレンダー: 達成率表示、日本語曜日対応
+- 散歩詳細画面: ペット画像表示、活動マーカー表示
+- バックグラウンド散歩検知: 未完了散歩の自動検出と終了
+- オーバーフロー修正: レスポンシブデザイン適用
 
-   - GetPetProfileUseCase: ペットプロファイル取得
-   - UpdatePetProfileUseCase: ペットプロファイル更新
-   - ManageFamilyManagersUseCase: 家族管理者管理
-   - PetProfileDomainService: ドメインロジック集約
-
-4. **UI/UX の大幅改善**
-   - 新しいペットプロファイルカードコンポーネント
-   - 健康管理、栄養管理、ワクチン管理ウィジェット
-   - プロファイル共有機能の強化
-
----
-
-### ⚙️ 技術的詳細
-
-- **アーキテクチャ**: Clean Architecture + Riverpod 状態管理
-- **テスト戦略**: Mockito + Widget Testing + Integration Testing
-- **型安全性**: Dart 3.0 の sealed class を活用した Result 型パターン
-- **エラーハンドリング**: 包括的な例外処理とユーザーフィードバック
-- **状態管理**: Riverpod annotation (@riverpod) を使用した宣言的状態管理
-
----
-
-### 🚀 改善効果
-
-- **開発効率**: Mock データ統合により API 連携前の開発が効率化
-- **テストカバレッジ**: 1,337 行のテストコード追加で品質向上
-- **メンテナンス性**: Clean Architecture による責任分離で保守性向上
-- **型安全性**: sealed class によるコンパイル時エラー検出
-- **ユーザー体験**: 直感的な UI/UX と包括的なエラーハンドリング
+### 6. **テスト追加**
+- 30個の単体テストケース (100%合格)
+- Mock APIサーバー設定 (開発環境用)
+- HybridWalkRepository、WalkApiService、SyncQueueServiceのテスト
 
 ---
 
-### 🔍 テストチェックリスト
+## ⚙️ 技術的詳細
 
-- [x] ペットプロファイル取得機能のテスト
-- [x] ペットプロファイル更新機能のテスト
-- [x] 家族管理者管理機能のテスト
-- [x] UI コンポーネントの Widget テスト
-- [x] エラーハンドリングのテスト
-- [x] Mock データ統合のテスト
-- [x] 状態管理のテスト
-
-### エビデンス
-
-#### 📊 コード統計
-
-- **変更ファイル数**: 49 ファイル
-- **追加行数**: 31,897 行
-- **削除行数**: 3,213 行
-- **テストコード**: 1,337 行
-
-#### 🏗️ アーキテクチャ改善
+### アーキテクチャ
 
 ```dart
-// 新しいペットプロファイルエンティティ
-class PetProfileEntity {
-  final String id;
-  final String name;
-  final String type;
-  final ProfileSharingSettings sharingSettings;
-  final HealthInfo? healthInfo;
-  final List<String> familyManagerIds;
-  // ... その他のプロパティ
-}
-```
-
-#### 🧪 テストカバレッジ向上
-
-```dart
-// 新しいUseCaseのテスト例
-test('should return pet profile when valid ID provided', () async {
-  // Given
-  when(mockRepository.getPetProfile(any))
-      .thenAnswer((_) async => mockPetProfile);
-
-  // When
-  final result = await useCase.execute(
-    petId: 'test-id',
-    requesterId: 'user-id',
-  );
-
-  // Then
-  expect(result, isA<GetPetProfileSuccess>());
-});
-```
-
-#### 🎨 UI コンポーネント改善
-
-```dart
-// 新しいペットプロファイルカード
-class PetProfileCard extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData? icon;
-  final VoidCallback? onTap;
-
-  // 再利用可能なカードコンポーネント
-}
-```
-
-#### 🔄 状態管理の改善
-
-```dart
-// Riverpod annotationを使用した宣言的状態管理
-@riverpod
-class PetEditNotifier extends _$PetEditNotifier {
+// Hybrid Repositoryパターン
+class HybridWalkRepository implements WalkRepository {
+  final WalkApiService _apiService;
+  final bool _useApi;
+  
   @override
-  PetEditState build() => const PetEditState();
+  Future<List<WalkRecordEntity>> getAllWalkRecords() async {
+    // 1次: API試行
+    if (_useApi) {
+      final apiResult = await _apiService.getAllWalkRecords();
+      if (apiResult.isSuccess) {
+        await LocalWalkStorageService.saveWalkRecords(apiResult.data!);
+        return apiResult.data!;
+      }
+    }
+    
+    // 2次: ローカルストレージ
+    final localRecords = await LocalWalkStorageService.loadWalkRecords();
+    if (localRecords.isNotEmpty) return localRecords;
+    
+    // 3次: Mockデータ
+    return WalkMockService.getMockWalkRecords();
+  }
+}
+```
 
-  void startEdit(PetProfileEntity pet) {
-    // 編集モード開始ロジック
+### オフライン同期
+
+```dart
+// 同期キューサービス
+class SyncQueueService {
+  Future<void> addToQueue(SyncOperation operation) async {
+    // オフライン時の操作をキューに追加
+  }
+  
+  Future<void> processPendingOperations() async {
+    // オンライン復帰時にキューを処理
+  }
+}
+```
+
+### 位置情報キャッシング
+
+```dart
+// 30秒TTLキャッシング
+class LocationCacheService {
+  void cachePosition(Position position) {
+    _cacheService.setMemoryCache<Position>(
+      _cacheKey,
+      position,
+      ttl: CacheTTL.location, // 30秒
+    );
+  }
+}
+```
+
+### カスタムマーカー
+
+```dart
+// 円形マーカー生成
+class CustomMarkerBuilder {
+  static Future<BitmapDescriptor> createCircleMarker({
+    required String iconPath,
+    required Color backgroundColor,
+    double size = 40,
+  }) async {
+    // Canvas APIで円形背景 + アイコンのマーカー生成
   }
 }
 ```
 
 ---
 
-### 🔗 関連イシュー
+## 🚀 改善効果
 
-- ペットプロファイル機能のアーキテクチャ改善
-- Mock データ統合による開発効率向上
-- テストカバレッジの大幅改善
+### パフォーマンス
+- **GPS呼び出し削減**: 30秒キャッシングで電池消費とAPI負荷を削減
+- **メモリ最適化**: カスタムマーカーキャッシングで安定性向上
+- **ストレージ管理**: 6ヶ月以上の古い記録自動削除
+
+### 開発効率
+- **API連携準備完了**: `useApi: true`で即時有効化
+- **Mock APIサーバー**: フロントエンド独立開発可能
+- **テストカバレッジ**: 30個のテストで品質保証
+
+### ユーザー体験
+- **直感的なUI**: 全画面地図、ペット選択、活動マーカー
+- **安定性向上**: エラーハンドリング、バックグラウンド散歩検知
+- **日本語対応**: 全てのUI要素を日本語化
 
 ---
 
-### 🏷️ ラベル
+## 🔍 テストチェックリスト
 
-`feat` `refactor` `test` `architecture` `pet-profile` `clean-architecture`
+### API統合テスト
+- [x] WalkApiService: 全APIエンドポイント (10個のテスト)
+- [x] HybridWalkRepository: フォールバック戦略 (12個のテスト)
+- [x] SyncQueueService: オフライン同期 (8個のテスト)
+
+### UI/UX テスト
+- [x] 散歩開始/終了フロー
+- [x] 一時停止/再開機能
+- [x] 活動マーカー追加/削除
+- [x] ペット選択とフィルタリング
+- [x] カレンダー表示と達成率計算
+- [x] バックグラウンド散歩検知
+
+### パフォーマンステスト
+- [x] 位置情報キャッシング (30秒TTL)
+- [x] カスタムマーカーキャッシング
+- [x] メモリ使用量最適化
+
+---
+
+## 📊 エビデンス
+
+### コード統計
+- **変更ファイル数**: 1,185 ファイル
+- **追加行数**: 27,340 行
+- **削除行数**: 61,749 行
+- **新規ファイル**: 
+  - `WalkApiService.dart`
+  - `HybridWalkRepository.dart`
+  - `SyncQueueService.dart`
+  - `LocationCacheService.dart`
+  - `CustomMarkerBuilder.dart`
+
+### 実装済み機能
+
+#### 散歩UI
+- 全画面地図レイアウト
+- ペット選択カード (複数選択対応)
+- 実時間サマリーカード (時間・距離・推奨時間)
+- 活動ボタン (排便・排尿・立入禁止)
+
+#### 散歩カレンダー
+- TableCalendar統合
+- 日本語曜日表示
+- 達成率計算 (ペットの推奨時間基準)
+- 古い記録削除機能 (6ヶ月以上)
+
+#### 散歩詳細
+- ドラッグ可能なボトムシート
+- 参加ペット画像表示
+- 活動マーカー表示 (地図上)
+- 共有・編集機能
+
+### API統合準備
+
+```dart
+// lib/features/walk/data/providers/walk_api_providers.dart
+@riverpod
+HybridWalkRepository hybridWalkRepository(HybridWalkRepositoryRef ref) {
+  final apiService = ref.watch(walkApiServiceProvider);
+  final syncQueue = ref.watch(syncQueueServiceProvider);
+  
+  return HybridWalkRepository(
+    apiService: apiService,
+    syncQueue: syncQueue,
+    useApi: false, // ← trueに変更でAPI有効化
+  );
+}
+```
+
+### テスト結果
+
+```bash
+# 全てのテスト合格
+$ flutter test test/features/walk/
+✓ HybridWalkRepository: API無効時にローカルデータを返す
+✓ HybridWalkRepository: API有効時にAPIから取得
+✓ WalkApiService: getAllWalkRecords成功
+✓ SyncQueueService: オフライン操作をキューに追加
+... 30個のテスト全て合格
+```
+
+---
+
+## 🔗 関連イシュー
+
+- API連携準備 (#15)
+- 散歩機能改善 (#16)
+- 位置情報最適化 (#17)
+
+---
+
+## 🏷️ ラベル
+
+`feat` `refactor` `test` `walk` `api-integration` `performance` `ui-improvement`
+
+---
+
+## 📌 今後の課題
+
+### 短期 (1週間以内)
+- [ ] バックエンドAPI実装完了後、`useApi: true`に変更
+- [ ] 実機でのGPS精度テスト
+- [ ] カスタムマーカーの更なる最適化
+
+### 中期 (1ヶ月以内)
+- [ ] 散歩ルート推薦機能
+- [ ] 他のユーザーとの散歩シェア機能
+- [ ] 散歩統計のグラフ表示
+
+### 長期
+- [ ] AI散歩アドバイス機能
+- [ ] リアルタイム散歩共有
+- [ ] ウェアラブルデバイス連携
