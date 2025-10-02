@@ -77,7 +77,7 @@ class _ExcuseRecordBottomSheetState extends State<ExcuseRecordBottomSheet> {
 
           // 제목
           Text(
-            '핑게 기록 작성',
+            '訳あり記録',
             style: AppTextStyles.h1.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -88,7 +88,7 @@ class _ExcuseRecordBottomSheetState extends State<ExcuseRecordBottomSheet> {
 
           // 부제
           Text(
-            '산책을 못 나간 이유를 알려주시겠어요?',
+            '散歩に行けなかった理由を教えてください',
             style: AppTextStyles.bodyMedium.copyWith(
               color: Colors.white.withValues(alpha: 0.9),
             ),

@@ -58,12 +58,16 @@ class MapWidgetState {
   final Position? currentPosition;
   final Set<Marker> markers;
   final Set<Polyline> polylines;
+  final BitmapDescriptor? poopIcon;
+  final BitmapDescriptor? peeIcon;
 
   const MapWidgetState({
     this.mapController,
     this.currentPosition,
     this.markers = const {},
     this.polylines = const {},
+    this.poopIcon,
+    this.peeIcon,
   });
 
   MapWidgetState copyWith({
@@ -71,12 +75,16 @@ class MapWidgetState {
     Position? currentPosition,
     Set<Marker>? markers,
     Set<Polyline>? polylines,
+    BitmapDescriptor? poopIcon,
+    BitmapDescriptor? peeIcon,
   }) {
     return MapWidgetState(
       mapController: mapController ?? this.mapController,
       currentPosition: currentPosition ?? this.currentPosition,
       markers: markers ?? this.markers,
       polylines: polylines ?? this.polylines,
+      poopIcon: poopIcon ?? this.poopIcon,
+      peeIcon: peeIcon ?? this.peeIcon,
     );
   }
 }
@@ -89,7 +97,31 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
     // 즉시 기본 위치를 설정한 후 실제 위치를 가져오도록 변경
     _setDefaultLocation();
     getCurrentLocation();
+    _loadCustomIcons();
     setupMarkersAndPolylines();
+  }
+
+  /// 커스텀 아이콘 로드
+  Future<void> _loadCustomIcons() async {
+    try {
+      final poopIcon = await BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(48, 48)),
+        'assets/icons/poop.png',
+      );
+      final peeIcon = await BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(48, 48)),
+        'assets/icons/marking.png',
+      );
+      
+      state = state.copyWith(poopIcon: poopIcon, peeIcon: peeIcon);
+      
+      // 아이콘 로드 후 마커 다시 생성
+      setupMarkersAndPolylines();
+      
+      debugPrint('✅ MapWidget: 커스텀 아이콘 로드 완료');
+    } catch (e) {
+      debugPrint('⚠️ MapWidget: 커스텀 아이콘 로드 실패 - $e');
+    }
   }
 
   Future<void> getCurrentLocation() async {
@@ -223,6 +255,21 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
       // 같은 위치에 여러 마커가 있을 경우 약간 오프셋 적용
       final offset = _calculateOffset(i, params.petActivities, lat, lng);
 
+      // 커스텀 아이콘이 로드되었으면 사용, 아니면 기본 마커
+      BitmapDescriptor markerIcon;
+      if (type == 'poop' && state.poopIcon != null) {
+        markerIcon = state.poopIcon!;
+      } else if (type == 'pee' && state.peeIcon != null) {
+        markerIcon = state.peeIcon!;
+      } else {
+        // 기본 마커
+        markerIcon = BitmapDescriptor.defaultMarkerWithHue(
+          type == 'poop'
+              ? BitmapDescriptor.hueOrange
+              : BitmapDescriptor.hueAzure,
+        );
+      }
+
       markers.add(
         Marker(
           markerId: MarkerId('activity_$i'),
@@ -230,12 +277,7 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
             lat + offset['latOffset']!,
             lng + offset['lngOffset']!,
           ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            type == 'poop'
-                ? BitmapDescriptor
-                      .hueOrange // 똥: 주황색
-                : BitmapDescriptor.hueAzure, // 오줌: 하늘색
-          ),
+          icon: markerIcon,
           infoWindow: InfoWindow(
             title: type == 'poop' ? '💩 排便' : '💧 排尿',
             snippet: '${activity['timestamp']}'.substring(11, 16),
@@ -371,7 +413,7 @@ class MapWidget extends ConsumerWidget {
             ),
             SizedBox(height: AppSpacing.sm),
             Text(
-              'GPS 위치를 확인 중입니다',
+              'GPS位置を確認中です',
               style: TextStyle(color: AppColors.pointGray, fontSize: 12),
             ),
           ],
