@@ -19,7 +19,12 @@ class OpenAIService extends BaseLoggingService {
       super('openai_service');
 
   /// OpenAI ChatGPT API를 사용하여 메시지에 대한 응답 생성 (재시도 로직 포함)
-  Future<Result<String>> generateResponse(String message, {PetProfileEntity? petContext}) async {
+  Future<Result<String>> generateResponse(
+    String message, {
+    PetProfileEntity? petContext,
+    String? weatherAdvice,
+    String? walkGuide,
+  }) async {
     final apiKey = AppConfig.current.openaiApiKey;
 
     if (apiKey.isEmpty) {
@@ -29,9 +34,13 @@ class OpenAIService extends BaseLoggingService {
     // ペット関連コンテンツ検証 (펫 컨텍스트가 있으면 스킵)
     if (petContext == null) {
       try {
-        final validationResult = await _contentFilter.validatePetContent(message);
+        final validationResult = await _contentFilter.validatePetContent(
+          message,
+        );
         if (!validationResult.isValid) {
-          logInfo('Non-pet related content detected: ${validationResult.reason}');
+          logInfo(
+            'Non-pet related content detected: ${validationResult.reason}',
+          );
           return Result.success('''こんにちは！私はペット専門のAIアシスタントです。🐶🐱
 
 ${_translateReasonToJapanese(validationResult.reason)}
@@ -63,7 +72,9 @@ ${_translateReasonToJapanese(validationResult.reason)}
         estimatedTokens: AiApiConstants.openaiMaxTokens,
       );
       if (!canMakeRequest.isSuccess) {
-        return Result.failure(canMakeRequest.error?.toString() ?? 'Token limit exceeded');
+        return Result.failure(
+          canMakeRequest.error?.toString() ?? 'Token limit exceeded',
+        );
       }
 
       final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
@@ -71,7 +82,14 @@ ${_translateReasonToJapanese(validationResult.reason)}
         data: {
           'model': AiApiConstants.openaiModel,
           'messages': [
-            {'role': 'system', 'content': _buildSystemPrompt(petContext)},
+            {
+              'role': 'system',
+              'content': _buildSystemPrompt(
+                petContext,
+                weatherAdvice,
+                walkGuide,
+              ),
+            },
             {'role': 'user', 'content': message},
           ],
           'max_tokens': AiApiConstants.openaiMaxTokens,
@@ -99,7 +117,9 @@ ${_translateReasonToJapanese(validationResult.reason)}
         );
 
         if (usageResult.isSuccess) {
-          logInfo('Token usage recorded: ${usageResult.dataOrNull!.totalTokens} tokens');
+          logInfo(
+            'Token usage recorded: ${usageResult.dataOrNull!.totalTokens} tokens',
+          );
         } else {
           logWarning(
             'Failed to record token usage: ${usageResult.error?.toString() ?? 'Unknown error'}',
@@ -123,7 +143,9 @@ ${_translateReasonToJapanese(validationResult.reason)}
       }
 
       // 에러 정보가 있는 경우 포함
-      final errorInfo = responseData['error'] != null ? ' Error: ${responseData['error']}' : '';
+      final errorInfo = responseData['error'] != null
+          ? ' Error: ${responseData['error']}'
+          : '';
       return Result.failure('No valid response from OpenAI API$errorInfo');
     });
   }
@@ -149,7 +171,11 @@ ${_translateReasonToJapanese(validationResult.reason)}
   }
 
   /// システムプロンプトを構築
-  String _buildSystemPrompt(PetProfileEntity? petContext) {
+  String _buildSystemPrompt(
+    PetProfileEntity? petContext,
+    String? weatherAdvice,
+    String? walkGuide,
+  ) {
     String basePrompt = '''あなたはペット専門のAIアシスタントです。
 ペットの健康、行動、トレーニング、栄養、一般的なケアに関する質問にのみお答えください。
 回答は親しみやすく、わかりやすく書いてください。
@@ -158,9 +184,26 @@ ${_translateReasonToJapanese(validationResult.reason)}
 重要：ペットに関係のない質問（政治、経済、エンターテイメント、ゲーム、料理など）には答えず、
 "ペットに関する質問のみお答えできます"と回答してください。''';
 
+    // 날씨 및 산책 정보 추가
+    if (weatherAdvice != null || walkGuide != null) {
+      basePrompt += '\n\n【今日の情報】';
+
+      if (weatherAdvice != null) {
+        basePrompt += '\n・天気アドバイス：$weatherAdvice';
+      }
+
+      if (walkGuide != null) {
+        basePrompt += '\n・散歩ガイド：$walkGuide';
+      }
+
+      basePrompt += '\n\n上記の情報を参考にして、必要に応じて散歩や外出に関するアドバイスに反映してください。';
+    }
+
     if (petContext != null) {
       final age = petContext.age;
-      final breedInfo = petContext.breed != null ? '（品種：${petContext.breed}）' : '';
+      final breedInfo = petContext.breed != null
+          ? '（品種：${petContext.breed}）'
+          : '';
       final birthYear = petContext.birthDate.year;
       final birthMonth = petContext.birthDate.month;
       final birthDay = petContext.birthDate.day;
@@ -170,7 +213,8 @@ ${_translateReasonToJapanese(validationResult.reason)}
 
       // 추가 정보가 있는 경우 포함
       String additionalDetails = '';
-      if (petContext.additionalInfo != null && petContext.additionalInfo!.isNotEmpty) {
+      if (petContext.additionalInfo != null &&
+          petContext.additionalInfo!.isNotEmpty) {
         additionalDetails = '\n・追加情報：';
         petContext.additionalInfo!.forEach((key, value) {
           additionalDetails += '\n  - $key: $value';

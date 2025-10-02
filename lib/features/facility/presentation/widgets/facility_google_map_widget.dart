@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -31,7 +31,11 @@ class FacilityGoogleMapState {
   final Position? currentPosition;
   final Set<Marker> markers;
 
-  const FacilityGoogleMapState({this.mapController, this.currentPosition, this.markers = const {}});
+  const FacilityGoogleMapState({
+    this.mapController,
+    this.currentPosition,
+    this.markers = const {},
+  });
 
   FacilityGoogleMapState copyWith({
     GoogleMapController? mapController,
@@ -46,21 +50,45 @@ class FacilityGoogleMapState {
   }
 }
 
-class FacilityGoogleMapController extends StateNotifier<FacilityGoogleMapState> {
+class FacilityGoogleMapController
+    extends StateNotifier<FacilityGoogleMapState> {
   final FacilityGoogleMapParams params;
+  final LocationCacheService _locationCache = LocationCacheService.instance;
 
-  FacilityGoogleMapController(this.params) : super(const FacilityGoogleMapState()) {
+  FacilityGoogleMapController(this.params)
+    : super(const FacilityGoogleMapState()) {
     getCurrentLocation();
   }
 
   Future<void> getCurrentLocation() async {
     try {
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-      );
+      // 1. 먼저 캐시된 위치 확인
+      final cachedPosition = _locationCache.getCachedPosition();
+      if (cachedPosition != null) {
+        state = state.copyWith(currentPosition: cachedPosition);
+        setupMarkers();
+        return;
+      }
+
+      // 2. 캐시가 없으면 GPS로 위치 가져오기
+      final position =
+          await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+            ),
+          ).timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              throw Exception('位置情報の取得がタイムアウトしました');
+            },
+          );
+
+      // 3. 위치 정보 캐싱
+      _locationCache.cachePosition(position);
       state = state.copyWith(currentPosition: position);
       setupMarkers();
     } catch (e) {
+      // 4. 실패 시 기본 위치 사용 (도쿄)
       state = state.copyWith(
         currentPosition: Position(
           latitude: 35.6762,
@@ -79,6 +107,12 @@ class FacilityGoogleMapController extends StateNotifier<FacilityGoogleMapState> 
     }
   }
 
+  /// 강제로 새로운 위치 가져오기 (캐시 무시)
+  Future<void> forceRefreshLocation() async {
+    _locationCache.invalidateCache();
+    await getCurrentLocation();
+  }
+
   void setupMarkers() {
     final markers = <Marker>{};
 
@@ -91,7 +125,9 @@ class FacilityGoogleMapController extends StateNotifier<FacilityGoogleMapState> 
         ),
         infoWindow: InfoWindow(
           title: params.facility.name,
-          snippet: params.facility.type == FacilityType.grooming ? 'トリミング' : '動物病院',
+          snippet: params.facility.type == FacilityType.grooming
+              ? 'トリミング'
+              : '動物病院',
         ),
         icon: BitmapDescriptor.defaultMarkerWithHue(
           params.facility.type == FacilityType.grooming
@@ -107,10 +143,15 @@ class FacilityGoogleMapController extends StateNotifier<FacilityGoogleMapState> 
           markers.add(
             Marker(
               markerId: MarkerId(facility.id),
-              position: LatLng(getFacilityLatitude(facility), getFacilityLongitude(facility)),
+              position: LatLng(
+                getFacilityLatitude(facility),
+                getFacilityLongitude(facility),
+              ),
               infoWindow: InfoWindow(
                 title: facility.name,
-                snippet: facility.type == FacilityType.grooming ? 'トリミング' : '動物病院',
+                snippet: facility.type == FacilityType.grooming
+                    ? 'トリミング'
+                    : '動物病院',
               ),
               icon: BitmapDescriptor.defaultMarkerWithHue(
                 facility.type == FacilityType.grooming
@@ -128,7 +169,10 @@ class FacilityGoogleMapController extends StateNotifier<FacilityGoogleMapState> 
       markers.add(
         Marker(
           markerId: const MarkerId('current_location'),
-          position: LatLng(state.currentPosition!.latitude, state.currentPosition!.longitude),
+          position: LatLng(
+            state.currentPosition!.latitude,
+            state.currentPosition!.longitude,
+          ),
           infoWindow: const InfoWindow(title: '現在地', snippet: 'あなたの現在位置'),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
         ),
@@ -230,7 +274,11 @@ class FacilityGoogleMapWidget extends ConsumerWidget {
       child: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [CircularProgressIndicator(), SizedBox(height: 8), Text('地図を読み込み中...')],
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 8),
+            Text('地図を読み込み中...'),
+          ],
         ),
       ),
     );

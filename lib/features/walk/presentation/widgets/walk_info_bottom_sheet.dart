@@ -31,42 +31,67 @@ class WalkInfoBottomSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sheetId = walkRecord.id;
     final isExpanded = ref.watch(walkInfoBottomSheetProvider(sheetId));
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.6,
-        minHeight: 200,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(AppRadius.large),
-          topRight: Radius.circular(AppRadius.large),
+
+    return GestureDetector(
+      onVerticalDragEnd: (details) {
+        // 위로 스와이프하면 확장
+        if (details.primaryVelocity! < -500 && !isExpanded) {
+          ref.read(walkInfoBottomSheetProvider(sheetId).notifier).toggle();
+        }
+        // 아래로 스와이프하면 축소
+        else if (details.primaryVelocity! > 500 && isExpanded) {
+          ref.read(walkInfoBottomSheetProvider(sheetId).notifier).toggle();
+        }
+      },
+      onTap: () {
+        // 탭으로도 토글 가능
+        ref.read(walkInfoBottomSheetProvider(sheetId).notifier).toggle();
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        constraints: BoxConstraints(
+          maxHeight: isExpanded
+              ? MediaQuery.of(context).size.height * 0.75
+              : 220,
+          minHeight: 220,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(AppRadius.large),
+            topRight: Radius.circular(AppRadius.large),
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // 드래그 핸들
-          _buildDragHandle(),
-
-          // 헤더
-          _buildHeader(context, ref, sheetId, isExpanded),
-
-          // 정보 내용 (스크롤 가능)
-          Flexible(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-              child: _buildContent(context, ref, isExpanded),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
             ),
-          ),
-        ],
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // 드래그 핸들
+            _buildDragHandle(),
+
+            // 헤더
+            _buildHeader(context, ref, sheetId, isExpanded),
+
+            // 기본 정보 (항상 표시)
+            _buildBasicInfo(),
+
+            // 확장 상태일 때 추가 정보 표시
+            if (isExpanded)
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                  child: _buildExpandedContent(context, ref),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -83,137 +108,170 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, WidgetRef ref, String sheetId, bool isExpanded) {
+  Widget _buildHeader(
+    BuildContext context,
+    WidgetRef ref,
+    String sheetId,
+    bool isExpanded,
+  ) {
+    // 펫 정보 가져오기
+    final pets = PetMockData.getMockPets();
+    final pet = pets.firstWhere(
+      (p) => p.id == walkRecord.petId,
+      orElse: () => pets.first,
+    );
+
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md,
+      ),
       child: Row(
         children: [
-          // 프로필 이미지
+          // 펫 프로필 이미지
           Container(
             width: 48,
             height: 48,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.3), width: 2),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: Image.asset(
-                walkRecord.ownerAvatar ?? 'assets/images/placeholder.png',
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: AppColors.pointGray.withValues(alpha: 0.3),
-                    child: const Icon(Icons.person, color: AppColors.pointGray, size: 24),
-                  );
-                },
+              border: Border.all(
+                color: AppColors.pointBrown.withValues(alpha: 0.3),
+                width: 2,
               ),
+              image: pet.imagePath != null
+                  ? DecorationImage(
+                      image: AssetImage(pet.imagePath!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
+            child: pet.imagePath == null
+                ? ClipOval(
+                    child: Image.asset(
+                      'assets/icons/aipet_logo.png',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.pets,
+                          color: AppColors.pointBrown,
+                          size: 24,
+                        );
+                      },
+                    ),
+                  )
+                : null,
           ),
           const SizedBox(width: AppSpacing.md),
 
-          // 사용자 정보
+          // 펫 정보
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      walkRecord.ownerName ?? 'Hanna Blair',
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointDark,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text('(3.5)', style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
-                  ],
+                Text(
+                  walkRecord.petName,
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointDark,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
-                Text('ドッグウォーカー', style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
+                Text(
+                  '${pet.type} • ${pet.breed}',
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray,
+                  ),
+                ),
               ],
             ),
           ),
 
-          // 확장/축소 버튼
-          IconButton(
-            onPressed: () {
-              ref.read(walkInfoBottomSheetProvider(sheetId).notifier).toggle();
-            },
-            icon: Icon(
-              isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
-              color: AppColors.pointGray,
-              size: 24,
-            ),
+          // 확장/축소 아이콘
+          Icon(
+            isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+            color: AppColors.pointGray,
+            size: 24,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildContent(BuildContext context, WidgetRef ref, bool isExpanded) {
+  /// 기본 정보 (항상 표시)
+  Widget _buildBasicInfo() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 주요 정보
           _buildInfoRow('開始時間', walkRecord.timeString),
           const SizedBox(height: AppSpacing.md),
           _buildInfoRow('距離', walkRecord.formattedDistance),
           const SizedBox(height: AppSpacing.md),
           _buildInfoRow('時間', walkRecord.formattedDuration),
+          const SizedBox(height: AppSpacing.md),
+        ],
+      ),
+    );
+  }
 
-          if (isExpanded) ...[
-            const SizedBox(height: AppSpacing.lg),
-            Divider(color: AppColors.pointGray.withValues(alpha: 0.3)),
+  /// 확장된 콘텐츠 (드래그하면 표시)
+  Widget _buildExpandedContent(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Divider(color: AppColors.pointGray.withValues(alpha: 0.3)),
+          const SizedBox(height: AppSpacing.md),
+
+          // 추가 정보
+          _buildInfoRow('日付', walkRecord.dateString),
+          const SizedBox(height: AppSpacing.md),
+          _buildInfoRow('状態', _getStatusText(walkRecord.status)),
+
+          // 펫 활동 정보
+          if (walkRecord.notes != null &&
+              walkRecord.notes!.contains('activities:')) ...[
             const SizedBox(height: AppSpacing.md),
-
-            // 추가 정보
-            _buildInfoRow('日付', walkRecord.dateString),
-            const SizedBox(height: AppSpacing.md),
-            _buildInfoRow('状態', _getStatusText(walkRecord.status)),
-            if (walkRecord.notes != null) ...[
-              const SizedBox(height: AppSpacing.md),
-              _buildInfoRow('メモ', walkRecord.notes!),
-            ],
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // 액션 버튼들
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      _showShareDialog(context, ref, walkRecord);
-                    },
-                    icon: const Icon(Icons.share, size: 16),
-                    label: const Text('共有'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.pointBrown,
-                      side: const BorderSide(color: AppColors.pointBrown),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      _showEditWalkDialog(context, ref, walkRecord);
-                    },
-                    icon: const Icon(Icons.edit, size: 16),
-                    label: const Text('編集'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.pointBrown,
-                      foregroundColor: AppColors.pointOffWhite,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            _buildMemoSection(walkRecord.notes!),
           ],
+
+          const SizedBox(height: AppSpacing.lg),
+
+          // 액션 버튼들
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    _showShareDialog(context, ref, walkRecord);
+                  },
+                  icon: const Icon(Icons.share, size: 16),
+                  label: const Text('共有'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.pointBrown,
+                    side: const BorderSide(color: AppColors.pointBrown),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    _showEditWalkDialog(context, ref, walkRecord);
+                  },
+                  icon: const Icon(Icons.edit, size: 16),
+                  label: const Text('編集'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.pointBrown,
+                    foregroundColor: AppColors.pointOffWhite,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xl),
         ],
       ),
     );
@@ -223,16 +281,134 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
         Text(
-          value,
-          style: AppFonts.bodyMedium.copyWith(
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.w600,
+          label,
+          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+        ),
+        Flexible(
+          child: Text(
+            value,
+            style: AppFonts.bodyMedium.copyWith(
+              color: AppColors.pointDark,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.right,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ),
       ],
     );
+  }
+
+  /// 메모 섹션 빌드 (activities JSON 처리)
+  Widget _buildMemoSection(String notes) {
+    // activities JSON이 포함된 경우 파싱하여 별도 표시
+    if (notes.startsWith('activities:')) {
+      return _buildActivitiesSection(notes);
+    }
+
+    // 일반 메모
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'メモ',
+          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: AppColors.pointOffWhite,
+            borderRadius: BorderRadius.circular(AppRadius.medium),
+          ),
+          child: Text(
+            notes,
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointDark),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 펫 활동 섹션 빌드
+  Widget _buildActivitiesSection(String notes) {
+    try {
+      // "activities:[...]" 형식에서 JSON 부분 추출
+      final jsonStr = notes.substring('activities:'.length);
+      // activities 개수만 표시 (전체 JSON은 숨김)
+      final activityCount = _countActivities(jsonStr);
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'ペット活動',
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: AppColors.pointOffWhite,
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.pets, size: 16, color: AppColors.pointBrown),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  '$activityCount回の活動記録',
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointDark,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    } catch (e) {
+      // 파싱 실패 시 간단히 표시
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'メモ',
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: AppColors.pointOffWhite,
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+            ),
+            child: Text(
+              'ペット活動記録',
+              style: AppFonts.bodySmall.copyWith(color: AppColors.pointDark),
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  /// activities 개수 카운트
+  int _countActivities(String jsonStr) {
+    try {
+      // [{...}, {...}] 형식에서 콤마 개수 + 1 = 항목 수
+      final matches = jsonStr.split('type:').length - 1;
+      return matches > 0 ? matches : 0;
+    } catch (e) {
+      return 0;
+    }
   }
 
   String _getStatusText(WalkStatus status) {
@@ -249,7 +425,11 @@ class WalkInfoBottomSheet extends ConsumerWidget {
   }
 
   /// 산책 기록 공유 다이얼로그 표시
-  void _showShareDialog(BuildContext context, WidgetRef ref, WalkRecordEntity walkRecord) {
+  void _showShareDialog(
+    BuildContext context,
+    WidgetRef ref,
+    WalkRecordEntity walkRecord,
+  ) {
     final shareText = ref.read(shareTextProvider(walkRecord));
 
     showDialog(
@@ -285,13 +465,22 @@ class WalkInfoBottomSheet extends ConsumerWidget {
             ),
           ],
         ),
-        actions: [TextButton(onPressed: () => context.pop(), child: const Text('キャンセル'))],
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text('キャンセル'),
+          ),
+        ],
       ),
     );
   }
 
   /// 클립보드에 복사
-  Future<void> _copyToClipboard(BuildContext context, WidgetRef ref, String text) async {
+  Future<void> _copyToClipboard(
+    BuildContext context,
+    WidgetRef ref,
+    String text,
+  ) async {
     final useCase = ref.read(copyToClipboardUseCaseProvider);
     final result = await useCase(text);
 
@@ -299,7 +488,9 @@ class WalkInfoBottomSheet extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: result.isSuccess ? AppColors.pointGreen : AppColors.pointPink,
+          backgroundColor: result.isSuccess
+              ? AppColors.pointGreen
+              : AppColors.pointPink,
         ),
       );
     }
@@ -318,14 +509,20 @@ class WalkInfoBottomSheet extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: result.isSuccess ? AppColors.pointGreen : AppColors.pointPink,
+          backgroundColor: result.isSuccess
+              ? AppColors.pointGreen
+              : AppColors.pointPink,
         ),
       );
     }
   }
 
   /// 시스템 공유
-  Future<void> _systemShare(BuildContext context, WidgetRef ref, String text) async {
+  Future<void> _systemShare(
+    BuildContext context,
+    WidgetRef ref,
+    String text,
+  ) async {
     final useCase = ref.read(systemShareUseCaseProvider);
     final result = await useCase(text, subject: '散歩記録を共有');
 
@@ -333,14 +530,20 @@ class WalkInfoBottomSheet extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: result.isSuccess ? AppColors.pointGreen : AppColors.pointPink,
+          backgroundColor: result.isSuccess
+              ? AppColors.pointGreen
+              : AppColors.pointPink,
         ),
       );
     }
   }
 
   /// 산책 기록 수정 바텀 시트 표시
-  void _showEditWalkDialog(BuildContext context, WidgetRef ref, WalkRecordEntity walkRecord) {
+  void _showEditWalkDialog(
+    BuildContext context,
+    WidgetRef ref,
+    WalkRecordEntity walkRecord,
+  ) {
     EditWalkBottomSheet.show(context, walkRecord, WalkController(ref));
   }
 }

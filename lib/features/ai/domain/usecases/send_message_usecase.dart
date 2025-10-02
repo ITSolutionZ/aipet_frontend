@@ -41,11 +41,15 @@ class SendMessageUseCase {
   ///
   /// [message] 사용자가 입력한 메시지
   /// [petContext] 펫 프로필 정보
+  /// [weatherAdvice] 날씨 어드바이스
+  /// [walkGuide] 산책 가이드
   ///
   /// Returns: AI 응답 메시지 (펫 정보 포함)
   Future<Result<AiMessageEntity>> callWithPetContext(
     String message, {
     PetProfileEntity? petContext,
+    String? weatherAdvice,
+    String? walkGuide,
   }) async {
     try {
       // 입력 유효성 검사
@@ -58,7 +62,12 @@ class SendMessageUseCase {
       }
 
       // Repository를 통한 펫 컨텍스트와 함께 메시지 전송
-      return await _repository.sendMessageWithPetContext(message, petContext: petContext);
+      return await _repository.sendMessageWithPetContext(
+        message,
+        petContext: petContext,
+        weatherAdvice: weatherAdvice,
+        walkGuide: walkGuide,
+      );
     } catch (error) {
       return Result.failure('メッセージの送信に失敗しました: ${error.toString()}');
     }

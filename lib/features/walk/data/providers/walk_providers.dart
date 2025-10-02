@@ -1,23 +1,49 @@
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'walk_providers.g.dart';
 
-/// 선택된 펫 상태 관리
+/// 선택된 펫 상태 관리 (다중 선택 지원)
 @riverpod
-class SelectedPetNotifier extends _$SelectedPetNotifier {
+class SelectedPetsNotifier extends _$SelectedPetsNotifier {
   @override
-  PetInfo? build() {
-    return null;
+  List<WalkPetInfo> build() {
+    return [];
   }
 
-  void setSelectedPet(PetInfo? pet) {
-    state = pet;
+  /// 펫 선택 토글 (선택/해제)
+  void togglePet(WalkPetInfo pet) {
+    final isSelected = state.any((p) => p.id == pet.id);
+
+    if (isSelected) {
+      // 이미 선택된 경우 해제
+      state = state.where((p) => p.id != pet.id).toList();
+    } else {
+      // 선택되지 않은 경우 추가
+      state = [...state, pet];
+    }
   }
 
+  /// 단일 펫만 선택 (기존 호환성)
+  void setSelectedPet(WalkPetInfo pet) {
+    state = [pet];
+  }
+
+  /// 모든 선택 해제
   void clearSelection() {
-    state = null;
+    state = [];
+  }
+
+  /// 특정 펫이 선택되어 있는지 확인
+  bool isSelected(String petId) {
+    return state.any((p) => p.id == petId);
+  }
+
+  /// 첫 번째 선택된 펫 (단일 선택 호환)
+  WalkPetInfo? get firstSelected {
+    return state.isEmpty ? null : state.first;
   }
 }
 
@@ -45,6 +71,14 @@ class WalkRecordsNotifier extends _$WalkRecordsNotifier {
 
   void clearRecords() {
     state = [];
+  }
+
+  void setWalkRecords(List<WalkRecordEntity> records) {
+    state = records;
+  }
+
+  List<WalkRecordEntity> getRecentWalkRecords() {
+    return state;
   }
 }
 
@@ -91,17 +125,43 @@ class CurrentWalkNotifier extends _$CurrentWalkNotifier {
 
   void endWalk() {
     if (state != null) {
-      state = state!.copyWith(status: WalkStatus.completed, endTime: DateTime.now());
+      // 산책 종료 시 상태를 null로 설정하여 UI 초기화
+      state = null;
     }
   }
 
   void cancelWalk() {
     if (state != null) {
-      state = state!.copyWith(status: WalkStatus.cancelled);
+      // 산책 취소 시 상태를 null로 설정하여 UI 초기화
+      state = null;
     }
   }
 
   void clearCurrentWalk() {
     state = null;
+  }
+
+  void addLocationToCurrentWalk(WalkLocation location) {
+    if (state != null) {
+      final updatedRoute = [...state!.route, location];
+      state = state!.copyWith(route: updatedRoute);
+    }
+  }
+}
+
+/// 위치 추적 상태 관리
+@riverpod
+class LocationTrackingNotifier extends _$LocationTrackingNotifier {
+  @override
+  bool build() {
+    return false;
+  }
+
+  void startTracking() {
+    state = true;
+  }
+
+  void stopTracking() {
+    state = false;
   }
 }

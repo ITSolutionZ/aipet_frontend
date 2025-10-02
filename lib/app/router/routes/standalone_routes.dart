@@ -3,6 +3,7 @@ import 'package:aipet_frontend/features/notification/presentation/screens/notifi
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
 import 'package:aipet_frontend/features/pet_health/presentation/screens/weight_tracking_screen.dart';
+import 'package:aipet_frontend/features/walk/presentation/screens/live_walk_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,7 +22,8 @@ class StandaloneRoutes {
     GoRoute(
       path: RouteConstants.addFamilyManagerRoute,
       name: 'add-family-manager',
-      builder: (context, state) => const Scaffold(body: Center(child: Text('家族管理者追加画面 - 近日公開'))),
+      builder: (context, state) =>
+          const Scaffold(body: Center(child: Text('家族管理者追加画面 - 近日公開'))),
     ),
     GoRoute(
       path: RouteConstants.weightTrackingRoute,
@@ -66,7 +68,8 @@ class StandaloneRoutes {
     GoRoute(
       path: RouteConstants.eventDetailRoute,
       name: 'event-detail',
-      builder: (context, state) => const Scaffold(body: Center(child: Text('イベント詳細画面 - 近日公開'))),
+      builder: (context, state) =>
+          const Scaffold(body: Center(child: Text('イベント詳細画面 - 近日公開'))),
     ),
     GoRoute(
       path: RouteConstants.allTricksRoute,
@@ -79,6 +82,29 @@ class StandaloneRoutes {
       builder: (context, state) {
         final petId = state.uri.queryParameters['petId'] ?? 'pet1';
         return YouTubeTrainingVideosScreen(petId: petId);
+      },
+    ),
+    GoRoute(
+      path: RouteConstants.liveWalkRoute,
+      name: 'live-walk',
+      builder: (context, state) {
+        // URL 쿼리 파라미터 또는 extra에서 petId, petName, petImage 가져오기
+        String? petId = state.uri.queryParameters['petId'];
+        String? petName = state.uri.queryParameters['petName'];
+        String? petImage = state.uri.queryParameters['petImage'];
+
+        if (state.extra != null && state.extra is Map<String, dynamic>) {
+          final extra = state.extra as Map<String, dynamic>;
+          petId ??= extra['petId'] as String?;
+          petName ??= extra['petName'] as String?;
+          petImage ??= extra['petImage'] as String?;
+        }
+
+        return LiveWalkScreen(
+          petId: petId,
+          petName: petName,
+          petImage: petImage,
+        );
       },
     ),
   ];

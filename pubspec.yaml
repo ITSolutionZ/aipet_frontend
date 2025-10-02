@@ -43,10 +43,13 @@ dependencies:
   google_maps_flutter: ^2.8.0
   location: ^6.0.0
   image_picker: ^1.0.7
+  image: ^4.1.7
   logger: ^2.0.2+1
   sentry_flutter: ^9.6.0
   sqflite: ^2.3.3
   path: ^1.8.3
+  qr_flutter: ^4.1.0
+  table_calendar: ^3.1.2
 
   mockito: ^5.4.4
   freezed_annotation: ^2.4.4
@@ -72,6 +75,7 @@ flutter:
     - assets/meteocons/
     - assets/meteocons/design/fill/animation-ready/
     - assets/meteocons/viewer.html
+    - assets/policies/
 
     - assets/images/
     - assets/images/activities/

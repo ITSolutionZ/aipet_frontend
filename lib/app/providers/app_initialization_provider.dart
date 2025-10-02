@@ -22,42 +22,39 @@ class AppInitialization extends _$AppInitialization {
 
   /// 앱 초기화를 수행합니다.
   ///
-  /// 8단계의 체계적인 초기화 프로세스를 진행합니다:
-  /// 1. 기본 서비스 초기화
-  /// 2. 앱 설정 로드
-  /// 3. 사용자 인증 상태 확인
-  /// 4. 온보딩 완료 상태 확인
-  /// 5. 네트워크 연결 확인
-  /// 6. 앱 버전 확인
-  /// 7. 필수 데이터 로드
-  /// 8. 리소스 초기화
+  /// 최적화된 병렬 초기화 프로세스:
+  /// 1. 기본 서비스 초기화 (먼저 실행)
+  /// 2. 병렬 작업: 앱 설정, 인증, 네트워크, 버전 확인
+  /// 3. 의존성 작업: 온보딩 상태 확인 (앱 버전 후)
+  /// 4. 병렬 작업: 필수 데이터, 리소스 초기화
   Future<void> initialize() async {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      // 1. 기본 서비스 초기화
+      // 1. 기본 서비스 초기화 (다른 작업의 의존성이므로 먼저 실행)
       await _initializeServices();
 
-      // 2. 앱 설정 로드
-      await _loadAppConfig();
+      // 2. 병렬 실행 가능한 독립적인 작업들
+      final independentFutures = <Future>[
+        _loadAppConfig(),
+        _checkAuthStatus(),
+        _checkNetworkConnection(),
+        _getAppVersion(),
+      ];
 
-      // 3. 사용자 인증 상태 확인
-      await _checkAuthStatus();
+      // 병렬 실행
+      final results = await Future.wait(independentFutures, eagerError: false);
 
-      // 4. 온보딩 완료 상태 확인
+      // 앱 버전이 필요한 온보딩 상태 확인
       await _checkOnboardingStatus();
 
-      // 5. 네트워크 연결 확인
-      await _checkNetworkConnection();
+      // 3. 마지막 단계 병렬 실행
+      final finalFutures = <Future>[
+        _loadEssentialData(),
+        _initializeResources(),
+      ];
 
-      // 6. 앱 버전 확인
-      await _getAppVersion();
-
-      // 7. 필수 데이터 로드
-      await _loadEssentialData();
-
-      // 8. 리소스 초기화
-      await _initializeResources();
+      await Future.wait(finalFutures, eagerError: false);
 
       state = state.copyWith(isInitialized: true, isLoading: false);
     } catch (e) {
@@ -322,9 +319,7 @@ class AppInitialization extends _$AppInitialization {
       await _precacheImportantImages();
 
       // 애니메이션 리소스 준비
-      // Lottie 애니메이션 등의 사전 로딩
-
-      await Future.delayed(const Duration(milliseconds: 100));
+      // Lottie 애니메이션 등의 사전 로딩 (필요시에만 로드)
 
       if (kDebugMode) {
         debugPrint('✅ 리소스 초기화 완료');

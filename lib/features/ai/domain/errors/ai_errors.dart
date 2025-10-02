@@ -8,10 +8,17 @@ import '../../../../shared/shared.dart';
 
 /// AI 관련 기본 예외 클래스 (공통 시스템 확장)
 abstract class AiException extends AppException {
-  AiException(super.message, {super.code, super.originalError, super.timestamp, super.context});
+  AiException(
+    super.message, {
+    super.code,
+    super.originalError,
+    super.timestamp,
+    super.context,
+  });
 
   @override
-  String toString() => 'AiException: $message${code != null ? ' (Code: $code)' : ''}';
+  String toString() =>
+      'AiException: $message${code != null ? ' (Code: $code)' : ''}';
 }
 
 /// 네트워크 관련 에러
@@ -25,7 +32,8 @@ class AiNetworkException extends AiException {
   });
 
   @override
-  String toString() => 'AiNetworkException: $message${code != null ? ' (Code: $code)' : ''}';
+  String toString() =>
+      'AiNetworkException: $message${code != null ? ' (Code: $code)' : ''}';
 }
 
 /// OpenAI API 관련 에러
@@ -104,7 +112,8 @@ class AiCacheException extends AiException {
   });
 
   @override
-  String toString() => 'AiCacheException: $message${cacheKey != null ? ' (Key: $cacheKey)' : ''}';
+  String toString() =>
+      'AiCacheException: $message${cacheKey != null ? ' (Key: $cacheKey)' : ''}';
 }
 
 /// 설정 관련 에러
@@ -237,29 +246,32 @@ class AiErrorHandler {
     }
 
     // 알 수 없는 에러
-    return AiBusinessLogicException('Unknown error: $error', originalError: error);
+    return AiBusinessLogicException(
+      'Unknown error: $error',
+      originalError: error,
+    );
   }
 
   /// 에러 메시지를 사용자 친화적으로 변환
   static String getUserFriendlyMessage(AiException error) {
     switch (error.runtimeType) {
-      case AiNetworkException:
+      case AiNetworkException _:
         return AiErrorCode.openaiApiServerError.userFriendlyMessage;
-      case AiOpenAIException:
+      case AiOpenAIException _:
         return AiErrorCode.openaiApiServerError.userFriendlyMessage;
-      case AiContentValidationException:
+      case AiContentValidationException _:
         return AiErrorCode.contentNotPetRelated.userFriendlyMessage;
-      case AiLocalStorageException:
+      case AiLocalStorageException _:
         return AiErrorCode.chatHistoryLoadFailed.userFriendlyMessage;
-      case AiCacheException:
+      case AiCacheException _:
         return AppErrorCode.cacheMiss.userFriendlyMessage;
-      case AiConfigException:
+      case AiConfigException _:
         return AppErrorCode.configurationMissing.userFriendlyMessage;
-      case AiDataParsingException:
+      case AiDataParsingException _:
         return AppErrorCode.parsingFailed.userFriendlyMessage;
-      case AiInputValidationException:
+      case AiInputValidationException _:
         return AppErrorCode.validationFailed.userFriendlyMessage;
-      case AiBusinessLogicException:
+      case AiBusinessLogicException _:
         return AppErrorCode.businessRuleViolation.userFriendlyMessage;
       default:
         return AppErrorCode.unexpectedError.userFriendlyMessage;

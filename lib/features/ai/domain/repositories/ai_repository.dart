@@ -13,6 +13,8 @@ abstract class AiRepository {
   Future<Result<AiMessageEntity>> sendMessageWithPetContext(
     String message, {
     PetProfileEntity? petContext,
+    String? weatherAdvice,
+    String? walkGuide,
   });
 
   /// 채팅 기록 지우기
@@ -49,7 +51,10 @@ abstract class AiRepository {
   Future<void> removeFavoriteMessage(String favoriteId);
 
   /// 즐겨찾기 목록 가져오기
-  Future<List<AiFavoriteEntity>> getFavoriteMessages({String? petId, String? category});
+  Future<List<AiFavoriteEntity>> getFavoriteMessages({
+    String? petId,
+    String? category,
+  });
 
   /// 즐겨찾기 QA 목록 가져오기
   List<AiFavoriteQaEntity> getFavoriteQAs();
@@ -63,7 +68,10 @@ abstract class AiRepository {
   });
 
   /// 채팅 요약 목록 가져오기
-  Future<List<AiChatSummaryEntity>> getChatSummaries({String? petId, String? category});
+  Future<List<AiChatSummaryEntity>> getChatSummaries({
+    String? petId,
+    String? category,
+  });
 
   /// 채팅 요약 삭제
   Future<void> deleteChatSummary(String summaryId);
@@ -114,8 +122,6 @@ abstract class AiRepository {
   Future<Result<bool>> toggleFavoriteMessage(String messageId);
 
   /// 파라미터와 함께 제안 질문 가져오기
-  Future<Result<List<AiSuggestedQuestionEntity>>> getSuggestedQuestionsWithParams({
-    String? petId,
-    String? categoryId,
-  });
+  Future<Result<List<AiSuggestedQuestionEntity>>>
+  getSuggestedQuestionsWithParams({String? petId, String? categoryId});
 }

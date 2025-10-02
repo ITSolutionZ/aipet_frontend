@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:aipet_frontend/features/auth/data/services/firebase_token_service.dart';
 import 'package:aipet_frontend/features/auth/data/services/token_storage_auth_token_repository.dart';
 import 'package:aipet_frontend/firebase_options.dart';
 import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/services/preload_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -64,40 +67,32 @@ class AppBootstrap {
   ///
   /// 환경별 설정을 초기화하고 앱 실행에 필요한 기본 설정을 로드합니다.
   static Future<void> initialize() async {
-    // 환경 변수는 main.dart에서 이미 로드됨
-    debugPrint('✅ Environment variables available');
+    debugPrint('🚀 App initialization started');
 
-    // 환경별 설정 초기화
+    // 동기 초기화 작업들 (빠른 작업들)
     _initializeAppConfig();
-
-    // Sentry 초기화 (에러 추적 및 성능 모니터링)
-    await _initializeSentry();
-
-    // 환경 변수 로드 및 API 키 검증
-    await AppConfig.current.loadEnv();
-
-    // API 키 설정 상태 로그 출력
-    AppConfig.current.logApiKeyStatus();
-
-    // 환경 및 위치 관련 설정 로그 출력
-    debugPrint('🌍 =============[ 앱 환경 설정 ]=============');
-    debugPrint('🏗️ 현재 환경: ${AppConfig.current.environment}');
-    debugPrint('🐛 디버그 모드: ${AppConfig.current.isDebugMode}');
-    debugPrint('📍 위치 정확도 임계값: ${AppConfig.current.locationAccuracyThreshold}m');
-    debugPrint('🌤️ Weather API 키 설정: ${AppConfig.current.weatherApiKey.isNotEmpty ? '✅' : '❌'}');
-    debugPrint('🔄 Mock 모드: ${AppConfig.current.isMockMode}');
-    debugPrint('🔍 ===========================================');
+    _initializeImageCache();
 
     // 공통 HTTP 클라이언트에 토큰 저장소 연결
     HttpClientService.tokenRepository = const TokenStorageAuthTokenRepository();
 
-    // Google Maps API 키 유효성 검사
-    if (!AppConfig.current.isGoogleMapsApiKeyValid) {
-      debugPrint('⚠️  Google Maps API 키가 유효하지 않습니다. 지도 기능이 작동하지 않을 수 있습니다.');
-    }
+    // 비동기 작업들을 병렬로 실행
+    final futures = <Future>[
+      AppConfig.current.loadEnv(),
+      FirebaseManager.initialize(),
+      _initializeSentry(),
+    ];
 
-    // Firebase 초기화 (옵션, 설정 파일이 있는 경우에만)
-    final isFirebaseInitialized = await FirebaseManager.initialize();
+    // 모든 비동기 초기화 작업을 병렬로 실행
+    final results = await Future.wait(futures, eagerError: false);
+
+    // Firebase 초기화 결과 확인 (두 번째 결과)
+    final isFirebaseInitialized = results[1] as bool;
+
+    // 설정 완료 후 로그 출력 (개발 모드에서만)
+    if (AppConfig.current.isDebugMode) {
+      _logInitializationStatus(isFirebaseInitialized);
+    }
 
     // Firebase가 성공적으로 초기화된 경우에만 인증 상태 리스너 설정
     if (isFirebaseInitialized) {
@@ -108,6 +103,9 @@ class AppBootstrap {
         debugPrint('⚠️ Firebase Auth State Listener setup failed: $e');
       }
     }
+
+    // 홈 데이터 프리로딩 시작 (백그라운드)
+    unawaited(PreloadService().startPreloading());
 
     // NOTE:
     // 웹/멀티플랫폼에서 옵션이 필요하다면 아래 주석을 해제하고
@@ -187,8 +185,37 @@ class AppBootstrap {
     }
   }
 
+  /// 이미지 캐시 최적화 설정을 초기화합니다.
+  ///
+  /// ImageReader 버퍼 문제를 해결하기 위한 캐시 설정을 적용합니다.
+  static void _initializeImageCache() {
+    try {
+      // 이미지 캐시 크기를 더 적극적으로 제한
+      PaintingBinding.instance.imageCache.maximumSize = 50; // 기본값 1000에서 50으로 축소
+      PaintingBinding.instance.imageCache.maximumSizeBytes = 50 << 20; // 50MB (기본값 100MB에서 축소)
+
+      debugPrint('✅ Image cache optimized: maxSize=50, maxSizeBytes=50MB');
+    } catch (e) {
+      debugPrint('⚠️ Image cache initialization failed: $e');
+      // 캐시 설정 실패해도 앱은 계속 실행
+    }
+  }
+
   static Widget createApp() {
     return const AIPetApp();
+  }
+
+  /// 초기화 상태를 로그에 출력합니다.
+  ///
+  /// 개발 모드에서만 호출되며, 각 초기화 단계의 성공/실패 상태를 확인할 수 있습니다.
+  static void _logInitializationStatus(bool isFirebaseInitialized) {
+    debugPrint('📋 === App Initialization Status ===');
+    debugPrint('🔧 Environment: ${AppConfig.current.environment}');
+    debugPrint('🔥 Firebase: ${isFirebaseInitialized ? '✅ Initialized' : '❌ Failed'}');
+    debugPrint('📱 Sentry: ${dotenv.env['SENTRY_DSN'] != null ? '✅ Configured' : '⚠️ Not configured'}');
+    debugPrint('🖼️ Image Cache: ✅ Optimized (50 items, 50MB)');
+    debugPrint('🌐 HTTP Client: ✅ Token repository connected');
+    debugPrint('📋 === Initialization Complete ===');
   }
 }
 
@@ -241,6 +268,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
     return MaterialApp(
       title: 'AI Pet',
       debugShowCheckedModeBanner: false,
+      locale: const Locale('ko', 'KR'),
       theme: AppTheme.light,
       home: Scaffold(
         backgroundColor: AppColors.pointOffWhite,
@@ -268,6 +296,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
     return MaterialApp(
       title: 'AI Pet',
       debugShowCheckedModeBanner: false,
+      locale: const Locale('ko', 'KR'),
       theme: AppTheme.light,
       home: Scaffold(
         backgroundColor: AppColors.pointOffWhite,
@@ -327,6 +356,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
       title: 'AI Pet',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      locale: const Locale('ko', 'KR'),
       theme: AppTheme.light.copyWith(
         primaryColor: AppColors.pointBrown,
         scaffoldBackgroundColor: AppColors.pointOffWhite,
