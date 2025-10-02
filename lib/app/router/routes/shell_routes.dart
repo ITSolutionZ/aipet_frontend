@@ -13,6 +13,7 @@ import 'package:aipet_frontend/features/scheduling/presentation/presentation.dar
 import 'package:aipet_frontend/features/scheduling/presentation/screens/today_appointments_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/settings_screens.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/presentation/screens/walk_calendar_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/walk_detail_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/walk_list_screen.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart';
@@ -47,7 +48,8 @@ class ShellRoutes {
             name: 'pet-empty',
             redirect: (context, state) {
               // 쿼리 파라미터 확인
-              final afterRegistration = state.uri.queryParameters['afterRegistration'] == 'true';
+              final afterRegistration =
+                  state.uri.queryParameters['afterRegistration'] == 'true';
 
               // 신규 회원가입 후라면 펫 등록 플로우로 이동
               if (afterRegistration) {
@@ -88,6 +90,23 @@ class ShellRoutes {
             name: 'tricks',
             builder: (context, state) => const TricksScreen(),
           ),
+          GoRoute(
+            path: 'qr',
+            name: 'qr-code',
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                child: const SizedBox.shrink(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      // 페이지 진입 시 바텀시트 표시
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        QRCodeBottomSheet.show(context);
+                      });
+                      return const SizedBox.shrink();
+                    },
+              );
+            },
+          ),
         ],
       ),
 
@@ -109,11 +128,18 @@ class ShellRoutes {
                 path: 'edit',
                 name: 'feeding-schedule-edit',
                 builder: (context, state) {
-                  final defaults = SchedulingMockService.getDefaultFeedingScheduleParams();
-                  final mealType = state.uri.queryParameters['mealType'] ?? defaults['mealType']!;
-                  final time = state.uri.queryParameters['time'] ?? defaults['time']!;
-                  final amount = state.uri.queryParameters['amount'] ?? defaults['amount']!;
-                  final petId = state.uri.queryParameters['petId'] ?? defaults['petId']!;
+                  final defaults =
+                      SchedulingMockService.getDefaultFeedingScheduleParams();
+                  final mealType =
+                      state.uri.queryParameters['mealType'] ??
+                      defaults['mealType']!;
+                  final time =
+                      state.uri.queryParameters['time'] ?? defaults['time']!;
+                  final amount =
+                      state.uri.queryParameters['amount'] ??
+                      defaults['amount']!;
+                  final petId =
+                      state.uri.queryParameters['petId'] ?? defaults['petId']!;
                   return FeedingScheduleEditScreen(
                     mealType: mealType,
                     currentTime: time,
@@ -161,11 +187,14 @@ class ShellRoutes {
                     path: 'edit',
                     name: 'watering-schedule-edit',
                     builder: (context, state) {
-                      final mealType = state.uri.queryParameters['mealType'] ?? '朝の給水';
+                      final mealType =
+                          state.uri.queryParameters['mealType'] ?? '朝の給水';
                       final time = state.uri.queryParameters['time'] ?? '08:00';
-                      final amount = state.uri.queryParameters['amount'] ?? '200ml';
+                      final amount =
+                          state.uri.queryParameters['amount'] ?? '200ml';
                       return WateringScheduleEditScreen(
-                        scheduleId: state.uri.queryParameters['scheduleId'] ?? '',
+                        scheduleId:
+                            state.uri.queryParameters['scheduleId'] ?? '',
                         mealType: mealType,
                         currentTime: time,
                         currentAmount: amount,
@@ -182,21 +211,25 @@ class ShellRoutes {
                   GoRoute(
                     path: 'add',
                     name: 'add-watering-record',
-                    builder: (context, state) => const AddWateringRecordScreen(),
+                    builder: (context, state) =>
+                        const AddWateringRecordScreen(),
                   ),
                   GoRoute(
                     path: 'edit',
                     name: 'edit-watering-record',
                     builder: (context, state) {
-                      // TODO: 실제 record 데이터를 전달하는 방식으로 개선 필요
-                      final mockRecord = {
-                        'date': '2024-01-15',
-                        'time': '08:30',
-                        'amount': '200ml',
-                        'type': '定期的な給水',
-                        'notes': 'いつも通り完食',
-                      };
-                      return EditWateringRecordScreen(record: mockRecord);
+                      final record = state.extra as Map<String, dynamic>?;
+                      return EditWateringRecordScreen(
+                        record:
+                            record ??
+                            {
+                              'date': '2024-01-15',
+                              'time': '08:30',
+                              'amount': '200ml',
+                              'type': '定期的な給水',
+                              'notes': 'いつも通り完食',
+                            },
+                      );
                     },
                   ),
                 ],
@@ -246,7 +279,8 @@ class ShellRoutes {
       GoRoute(
         path: RouteConstants.walkRoute,
         name: 'walk',
-        builder: (context, state) => const WalkListScreen(showBackButton: false),
+        builder: (context, state) =>
+            const WalkListScreen(showBackButton: false),
         routes: [
           // 산책 상세 화면
           GoRoute(
@@ -255,10 +289,18 @@ class ShellRoutes {
             builder: (context, state) {
               final walkRecord = state.extra as WalkRecordEntity?;
               if (walkRecord == null) {
-                return const Scaffold(body: Center(child: Text('산책 기록을 찾을 수 없습니다.')));
+                return const Scaffold(
+                  body: Center(child: Text('산책 기록을 찾을 수 없습니다.')),
+                );
               }
               return WalkDetailScreen(walkRecord: walkRecord);
             },
+          ),
+          // 산책 기록 달력 화면
+          GoRoute(
+            path: 'calendar',
+            name: 'walk-calendar',
+            builder: (context, state) => const WalkCalendarScreen(),
           ),
         ],
       ),
@@ -355,7 +397,9 @@ class ShellRoutes {
             path: 'alarm-time-settings',
             name: 'alarm-time-settings',
             builder: (context, state) => const Scaffold(
-              body: Center(child: Text('Alarm Time Settings Screen - Coming Soon')),
+              body: Center(
+                child: Text('Alarm Time Settings Screen - Coming Soon'),
+              ),
             ),
           ),
           GoRoute(

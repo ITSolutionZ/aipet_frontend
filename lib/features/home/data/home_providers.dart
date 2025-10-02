@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/home/domain/domain.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -48,24 +49,24 @@ class HomeDashboardNotifier extends _$HomeDashboardNotifier {
     try {
       final getDashboardDataUseCase = ref.read(getDashboardDataUseCaseProvider);
 
-      print('🔍 HomeDashboardNotifier: 대시보드 데이터 요청 시작');
+      debugPrint('🔍 HomeDashboardNotifier: 대시보드 데이터 요청 시작');
       final result = await getDashboardDataUseCase.call();
-      print(
+      debugPrint(
         '📊 HomeDashboardNotifier: UseCase 결과 - Success: ${result.isSuccess}',
       );
 
       if (result.isSuccess && result.dataOrNull != null) {
-        print('✅ HomeDashboardNotifier: 대시보드 데이터 로드 성공');
+        debugPrint('✅ HomeDashboardNotifier: 대시보드 데이터 로드 성공');
         return result.dataOrNull!;
       } else {
-        print('❌ HomeDashboardNotifier: UseCase 실패 - ${result.error}');
+        debugPrint('❌ HomeDashboardNotifier: UseCase 실패 - ${result.error}');
         throw Exception(
           '대시보드 데이터 로드 실패: ${result.error?.toString() ?? 'Unknown error'}',
         );
       }
     } catch (error, stackTrace) {
-      print('💥 HomeDashboardNotifier: 예외 발생 - $error');
-      print('📍 StackTrace: $stackTrace');
+      debugPrint('💥 HomeDashboardNotifier: 예외 발생 - $error');
+      debugPrint('📍 StackTrace: $stackTrace');
       rethrow;
     }
   }

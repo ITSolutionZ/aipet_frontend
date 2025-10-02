@@ -1,42 +1,46 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
 import 'package:aipet_frontend/features/home/presentation/widgets/home_menu_widget.dart';
+import 'package:aipet_frontend/features/home/presentation/widgets/qr_code_bottom_sheet.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// 홈 메뉴 아이템 정의
 class HomeMenuItems {
-  static List<MenuItem> getMenuItems() {
+  static List<MenuItem> getMenuItems(BuildContext context) {
     return [
       MenuItem(
-        title: '予約',
+        title: '予約記録',
         iconPath: 'assets/icons/home_menu/booking.png',
         onTap: () {
           // TODO: 예약 화면으로 이동
         },
       ),
       MenuItem(
-        title: '場所',
+        title: 'お散歩',
         iconPath: 'assets/icons/home_menu/place.png',
         onTap: () {
-          // TODO: 장소 검색 화면으로 이동
+          context.go(RouteConstants.walkRoute);
         },
       ),
       MenuItem(
-        title: 'デイリー',
+        title: '毎日ケア',
         iconPath: 'assets/icons/home_menu/daily.png',
         onTap: () {
           // TODO: 일상 기록 화면으로 이동
         },
       ),
       MenuItem(
-        title: '育ちノート',
+        title: 'ペット手帳',
         iconPath: 'assets/icons/home_menu/note.png',
         onTap: () {
           // TODO: 노트 화면으로 이동
         },
       ),
       MenuItem(
-        title: '処方',
+        title: '病院記録',
         iconPath: 'assets/icons/home_menu/pharmacy.png',
         onTap: () {
-          // TODO: 약국 찾기 화면으로 이동
+          // TODO: 병원 찾기 화면으로 이동
         },
       ),
       MenuItem(
@@ -64,7 +68,7 @@ class HomeMenuItems {
         title: 'QRコード',
         iconPath: 'assets/icons/home_menu/qr.png',
         onTap: () {
-          // TODO: QR 코드 화면으로 이동
+          QRCodeBottomSheet.show(context);
         },
       ),
       MenuItem(

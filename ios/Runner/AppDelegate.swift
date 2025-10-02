@@ -13,7 +13,8 @@ import GoogleMaps
     GeneratedPluginRegistrant.register(with: self)
 
     // Google Maps API 키 설정 (플러그인 등록 후)
-    GMSServices.provideAPIKey("AIzaSyA3cKQUER5YaPEi5-9iWP_n5rFcXzlRn6c")
+    // .env에서 GOOGLE_PUBLIC_API_KEY 사용
+    GMSServices.provideAPIKey("AIzaSyDgutqY6sdUtjQ_nCZOfb5_GwZmz7mHiAY")
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

@@ -17,13 +17,15 @@ class BannerSection extends StatelessWidget {
       children: [
         // 배너 이미지
         const BannerImage(),
-
         // 검색바 (배너 끝부분을 덮도록 배치)
         Positioned(
-          bottom: -30, // 배너 하단에서 위로 10px 위치
+          bottom: -30, // 배너 하단에서 적절한 위치
           left: AppSpacing.lg,
           right: AppSpacing.lg,
-          child: HomeSearchBarWidget(onTap: onSearchTap, onChanged: onSearchChanged),
+          child: HomeSearchBarWidget(
+            onTap: onSearchTap,
+            onChanged: onSearchChanged,
+          ),
         ),
       ],
     );

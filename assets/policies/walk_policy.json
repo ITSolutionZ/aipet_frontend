@@ -1,0 +1,206 @@
+{
+  "baseRecommendations": {
+    "dog": {
+      "small": {
+        "minMinutes": 20,
+        "maxMinutes": 30,
+        "description": "小型犬の基本散歩時間"
+      },
+      "medium": {
+        "minMinutes": 30,
+        "maxMinutes": 45,
+        "description": "中型犬の基本散歩時間"
+      },
+      "large": {
+        "minMinutes": 45,
+        "maxMinutes": 60,
+        "description": "大型犬の基本散歩時間"
+      }
+    },
+    "cat": {
+      "all": {
+        "minMinutes": 0,
+        "maxMinutes": 10,
+        "description": "猫の散歩（オプション）"
+      }
+    }
+  },
+  "ageModifiers": {
+    "puppy": {
+      "range": [0, 1],
+      "factor": 0.6,
+      "description": "子犬（1歳未満）"
+    },
+    "adult": {
+      "range": [1, 7],
+      "factor": 1.0,
+      "description": "成犬"
+    },
+    "senior": {
+      "range": [7, 15],
+      "factor": 0.7,
+      "description": "老犬"
+    },
+    "elderly": {
+      "range": [15, 100],
+      "factor": 0.5,
+      "description": "高齢犬"
+    }
+  },
+  "breedModifiers": {
+    "shiba": {
+      "factor": 1.2,
+      "description": "柴犬は活発なので長めの散歩が必要"
+    },
+    "golden_retriever": {
+      "factor": 1.3,
+      "description": "ゴールデンレトリバーは運動量が多い"
+    },
+    "bulldog": {
+      "factor": 0.7,
+      "description": "ブルドッグは短時間の散歩"
+    },
+    "corgi": {
+      "factor": 1.1,
+      "description": "コーギーは活発"
+    },
+    "chihuahua": {
+      "factor": 0.8,
+      "description": "チワワは短時間で十分"
+    },
+    "poodle": {
+      "factor": 1.0,
+      "description": "プードルは標準"
+    }
+  },
+  "healthModifiers": {
+    "arthritis": {
+      "factor": 0.6,
+      "riskIncrease": 1,
+      "description": "関節炎がある場合は短めに"
+    },
+    "heart_disease": {
+      "factor": 0.5,
+      "riskIncrease": 2,
+      "description": "心臓病がある場合は注意"
+    },
+    "obesity": {
+      "factor": 0.8,
+      "riskIncrease": 1,
+      "description": "肥満の場合は徐々に増やす"
+    },
+    "pregnancy": {
+      "factor": 0.7,
+      "riskIncrease": 1,
+      "description": "妊娠中は軽めに"
+    },
+    "recovery": {
+      "factor": 0.5,
+      "riskIncrease": 2,
+      "description": "回復中は控えめに"
+    }
+  },
+  "weatherModifiers": {
+    "wbgt": [
+      {
+        "range": [0, 21],
+        "level": "safe",
+        "factor": 1.0,
+        "description": "安全",
+        "message": "散歩に最適な天気です"
+      },
+      {
+        "range": [21, 25],
+        "level": "caution",
+        "factor": 0.9,
+        "description": "注意",
+        "message": "水分補給を忘れずに"
+      },
+      {
+        "range": [25, 28],
+        "level": "warning",
+        "factor": 0.7,
+        "description": "警戒",
+        "message": "短めの散歩をお勧めします"
+      },
+      {
+        "range": [28, 31],
+        "level": "danger",
+        "factor": 0.5,
+        "description": "厳重警戒",
+        "message": "必要最小限の散歩のみ"
+      },
+      {
+        "range": [31, 100],
+        "level": "extreme",
+        "factor": 0.2,
+        "description": "危険",
+        "message": "散歩は避けてください"
+      }
+    ],
+    "temperature": [
+      {
+        "range": [-100, 5],
+        "factor": 0.7,
+        "description": "極寒",
+        "message": "防寒対策をしっかりと"
+      },
+      {
+        "range": [5, 15],
+        "factor": 0.9,
+        "description": "寒い",
+        "message": "散歩は可能です"
+      },
+      {
+        "range": [15, 25],
+        "factor": 1.0,
+        "description": "快適",
+        "message": "散歩に最適です"
+      },
+      {
+        "range": [25, 30],
+        "factor": 0.8,
+        "description": "暑い",
+        "message": "水分補給を忘れずに"
+      },
+      {
+        "range": [30, 100],
+        "factor": 0.5,
+        "description": "猛暑",
+        "message": "早朝か夜の散歩をお勧めします"
+      }
+    ]
+  },
+  "riskLevels": {
+    "safe": {
+      "value": 0,
+      "color": "#4CAF50",
+      "icon": "check_circle",
+      "message": "安全に散歩できます"
+    },
+    "low": {
+      "value": 1,
+      "color": "#8BC34A",
+      "icon": "info",
+      "message": "注意して散歩しましょう"
+    },
+    "medium": {
+      "value": 2,
+      "color": "#FFC107",
+      "icon": "warning",
+      "message": "短めの散歩をお勧めします"
+    },
+    "high": {
+      "value": 3,
+      "color": "#FF9800",
+      "icon": "error",
+      "message": "散歩は慎重に"
+    },
+    "extreme": {
+      "value": 4,
+      "color": "#F44336",
+      "icon": "dangerous",
+      "message": "散歩は避けてください"
+    }
+  }
+}

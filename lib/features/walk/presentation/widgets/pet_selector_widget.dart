@@ -3,8 +3,8 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 class PetSelectorWidget extends StatelessWidget {
-  final PetInfo? selectedPet;
-  final Function(PetInfo) onPetSelected;
+  final WalkPetInfo? selectedPet;
+  final Function(WalkPetInfo) onPetSelected;
 
   const PetSelectorWidget({super.key, this.selectedPet, required this.onPetSelected});
 
@@ -72,27 +72,27 @@ class PetSelectorWidget extends StatelessWidget {
 }
 
 class _PetSelectorBottomSheet extends StatelessWidget {
-  final PetInfo? selectedPet;
-  final Function(PetInfo) onPetSelected;
+  final WalkPetInfo? selectedPet;
+  final Function(WalkPetInfo) onPetSelected;
 
   const _PetSelectorBottomSheet({this.selectedPet, required this.onPetSelected});
 
   @override
   Widget build(BuildContext context) {
     final pets = [
-      const PetInfo(
+      const WalkPetInfo(
         id: 'pet1',
         type: 'dog',
         name: 'Maxi',
         imageUrl: 'assets/images/dogs/shiba.png',
       ),
-      const PetInfo(
+      const WalkPetInfo(
         id: 'pet2',
         type: 'dog',
         name: 'Luna',
         imageUrl: 'assets/images/dogs/poodle.jpg',
       ),
-      const PetInfo(
+      const WalkPetInfo(
         id: 'pet3',
         type: 'dog',
         name: 'Buddy',
@@ -116,7 +116,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildPetOption(BuildContext context, PetInfo pet) {
+  Widget _buildPetOption(BuildContext context, WalkPetInfo pet) {
     final isSelected = selectedPet?.id == pet.id;
 
     return GestureDetector(

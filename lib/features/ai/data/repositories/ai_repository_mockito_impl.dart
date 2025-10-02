@@ -14,8 +14,10 @@ class AiRepositoryMockitoImpl implements AiRepository {
   final OpenAIService _openAIService; // 실제 OpenAI API 사용
   final Ref ref;
 
-  const AiRepositoryMockitoImpl({required OpenAIService openAIService, required this.ref})
-    : _openAIService = openAIService;
+  const AiRepositoryMockitoImpl({
+    required OpenAIService openAIService,
+    required this.ref,
+  }) : _openAIService = openAIService;
 
   @override
   Future<List<AiMessageEntity>> getChatHistory() async {
@@ -54,6 +56,8 @@ class AiRepositoryMockitoImpl implements AiRepository {
   Future<Result<AiMessageEntity>> sendMessageWithPetContext(
     String message, {
     PetProfileEntity? petContext,
+    String? weatherAdvice,
+    String? walkGuide,
   }) async {
     try {
       // AI 로거를 사용한 API 호출 시작 로그 (펫 컨텍스트 포함)
@@ -61,7 +65,12 @@ class AiRepositoryMockitoImpl implements AiRepository {
       AiLogger.logPetContext(petContext?.name, petContext?.type);
 
       // 실제 OpenAI API 호출 (펫 컨텍스트 포함)
-      final response = await _openAIService.generateResponse(message, petContext: petContext);
+      final response = await _openAIService.generateResponse(
+        message,
+        petContext: petContext,
+        weatherAdvice: weatherAdvice,
+        walkGuide: walkGuide,
+      );
 
       // AI 로거를 사용한 응답 성공 로그
       AiLogger.logApiSuccess(response as String);
@@ -94,7 +103,10 @@ class AiRepositoryMockitoImpl implements AiRepository {
   }
 
   @override
-  Future<AiChatSessionEntity> createChatSession(String title, {String? petId}) async {
+  Future<AiChatSessionEntity> createChatSession(
+    String title, {
+    String? petId,
+  }) async {
     // Mock 구현
     await Future.delayed(const Duration(milliseconds: 150));
     return AiChatSessionEntity(
@@ -159,7 +171,10 @@ class AiRepositoryMockitoImpl implements AiRepository {
   }
 
   @override
-  Future<List<AiFavoriteEntity>> getFavoriteMessages({String? petId, String? category}) async {
+  Future<List<AiFavoriteEntity>> getFavoriteMessages({
+    String? petId,
+    String? category,
+  }) async {
     // Mock 데이터 반환
     await Future.delayed(const Duration(milliseconds: 200));
     return _getMockFavoriteMessages(petId, category);
@@ -196,7 +211,10 @@ class AiRepositoryMockitoImpl implements AiRepository {
   }
 
   @override
-  Future<List<AiChatSummaryEntity>> getChatSummaries({String? petId, String? category}) async {
+  Future<List<AiChatSummaryEntity>> getChatSummaries({
+    String? petId,
+    String? category,
+  }) async {
     // Mock 데이터 반환
     await Future.delayed(const Duration(milliseconds: 200));
     return _getMockChatSummaries(petId, category);
@@ -310,7 +328,10 @@ class AiRepositoryMockitoImpl implements AiRepository {
     ];
   }
 
-  List<AiFavoriteEntity> _getMockFavoriteMessages(String? petId, String? category) {
+  List<AiFavoriteEntity> _getMockFavoriteMessages(
+    String? petId,
+    String? category,
+  ) {
     return [
       AiFavoriteEntity(
         id: 'fav-1',
@@ -344,7 +365,10 @@ class AiRepositoryMockitoImpl implements AiRepository {
     ];
   }
 
-  List<AiChatSummaryEntity> _getMockChatSummaries(String? petId, String? category) {
+  List<AiChatSummaryEntity> _getMockChatSummaries(
+    String? petId,
+    String? category,
+  ) {
     return [
       AiChatSummaryEntity(
         id: 'summary-1',
@@ -362,7 +386,10 @@ class AiRepositoryMockitoImpl implements AiRepository {
     ];
   }
 
-  List<AiChatHistoryEntity> _getMockChatHistories(int? limit, bool? onlyManualSaved) {
+  List<AiChatHistoryEntity> _getMockChatHistories(
+    int? limit,
+    bool? onlyManualSaved,
+  ) {
     return [
       AiChatHistoryEntity(
         id: 'history-1',
@@ -424,10 +451,8 @@ class AiRepositoryMockitoImpl implements AiRepository {
 
   /// 파라미터와 함께 제안 질문 가져오기
   @override
-  Future<Result<List<AiSuggestedQuestionEntity>>> getSuggestedQuestionsWithParams({
-    String? petId,
-    String? categoryId,
-  }) async {
+  Future<Result<List<AiSuggestedQuestionEntity>>>
+  getSuggestedQuestionsWithParams({String? petId, String? categoryId}) async {
     final suggestions = await getSuggestedQuestions();
     return Result.success('제안 질문 로드 완료', suggestions);
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 보안 저장소 서비스 (flutter_secure_storage 기반)
 ///
@@ -170,4 +171,68 @@ class SecureStorageService {
       }
     }
   }
+
+  // ========== 인증 토큰 관련 메서드 ==========
+
+  /// Access Token 저장
+  static Future<void> saveToken(String token) async {
+    await setString('access_token', token);
+  }
+
+  /// Access Token 조회
+  static Future<String?> getToken() async {
+    return await getString('access_token');
+  }
+
+  /// Refresh Token 저장
+  static Future<void> saveRefreshToken(String refreshToken) async {
+    await setString('refresh_token', refreshToken);
+  }
+
+  /// Refresh Token 조회
+  static Future<String?> getRefreshToken() async {
+    return await getString('refresh_token');
+  }
+
+  /// 모든 토큰 삭제
+  static Future<void> clearTokens() async {
+    await remove('access_token');
+    await remove('refresh_token');
+  }
+
+  /// 사용자 인증 정보 저장
+  static Future<void> saveUserCredentials({
+    required String accessToken,
+    String? refreshToken,
+    Map<String, dynamic>? userInfo,
+  }) async {
+    await saveToken(accessToken);
+    if (refreshToken != null) {
+      await saveRefreshToken(refreshToken);
+    }
+    if (userInfo != null) {
+      await setJson('user_info', userInfo);
+    }
+  }
+
+  /// 사용자 정보 조회
+  static Future<Map<String, dynamic>?> getUserInfo() async {
+    return await getJson('user_info');
+  }
+
+  /// 사용자 정보 저장
+  static Future<void> saveUserInfo(Map<String, dynamic> userInfo) async {
+    await setJson('user_info', userInfo);
+  }
+
+  /// 로그아웃 (모든 인증 관련 데이터 삭제)
+  static Future<void> logout() async {
+    await clearTokens();
+    await remove('user_info');
+  }
 }
+
+/// SecureStorageService Provider
+final secureStorageServiceProvider = Provider<SecureStorageService>((ref) {
+  return SecureStorageService();
+});

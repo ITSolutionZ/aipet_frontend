@@ -1,14 +1,18 @@
-import 'package:aipet_frontend/app/router/app_router.dart';
+import 'dart:async';
+
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
 import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_widgets.dart';
-import 'package:aipet_frontend/shared/shared.dart' hide MapWidget, WalkRecordCardWidget;
+import 'package:aipet_frontend/shared/shared.dart'
+    hide MapWidget, WalkRecordCardWidget;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class WalkListScreen extends ConsumerStatefulWidget {
   final bool showBackButton;
@@ -22,6 +26,12 @@ class WalkListScreen extends ConsumerStatefulWidget {
 class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   late final WalkController _controller;
   final PageController _pageController = PageController();
+  String? _selectedExcuse; // 선택된 핑계
+  String? _selectedExcuseLabel; // 선택된 핑계 라벨
+  bool _isPaused = false; // 일시정지 상태
+  Timer? _timer; // 타이머
+  int _elapsedSeconds = 0; // 경과 시간 (초)
+  final List<Map<String, dynamic>> _petActivities = []; // 펫 활동 기록 (똥, 오줌)
 
   @override
   void initState() {
@@ -32,6 +42,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
   @override
   void dispose() {
+    _timer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -39,30 +50,45 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   Future<void> _loadInitialData() async {
     await _controller.loadWalkRecords();
 
-    // 기본 반려동물 설정
-    _controller.setSelectedPet(
-      const PetInfo(
-        id: 'pet1',
-        name: 'Maxi',
-        type: 'dog',
-        imageUrl: 'assets/images/dogs/shiba.png',
-      ),
-    );
+    // Mock 데이터의 첫 번째 펫을 기본으로 설정
+    final pets = PetMockData.getMockPets();
+    if (pets.isNotEmpty) {
+      final firstPet = pets.first;
+      _controller.setSelectedPet(WalkPetInfo.fromPetProfile(firstPet));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedPet = ref.watch(selectedPetNotifierProvider);
+    final selectedPets = ref.watch(selectedPetsNotifierProvider);
     final walkRecords = ref.watch(walkRecordsNotifierProvider);
     final currentWalk = ref.watch(currentWalkNotifierProvider);
 
+    // 산책 시작 시 타이머 시작
+    if (currentWalk != null && _timer == null) {
+      final startTime = currentWalk.startTime;
+      _elapsedSeconds = DateTime.now().difference(startTime).inSeconds;
+      _startTimer();
+    }
+
+    // 산책 종료 시 타이머 정지
+    if (currentWalk == null && _timer != null) {
+      _stopTimer();
+      _elapsedSeconds = 0;
+      _isPaused = false;
+    }
+
     // 새로운 전체 화면 오버레이 레이아웃
-    return _buildFullScreenOverlayLayout(selectedPet, walkRecords, currentWalk);
+    return _buildFullScreenOverlayLayout(
+      selectedPets,
+      walkRecords,
+      currentWalk,
+    );
   }
 
   /// 새로운 전체 화면 오버레이 레이아웃
   Widget _buildFullScreenOverlayLayout(
-    PetInfo? selectedPet,
+    List<WalkPetInfo> selectedPets,
     List<WalkRecordEntity> walkRecords,
     WalkRecordEntity? currentWalk,
   ) {
@@ -75,72 +101,16 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           Positioned.fill(
             top: MediaQuery.of(context).padding.top,
             bottom: MediaQuery.of(context).padding.bottom,
-            child: MapWidget(walkRecords: walkRecords, selectedPet: selectedPet),
+            child: _buildMapWidget(walkRecords, selectedPets),
           ),
 
-          // 상단 네비게이션 (뒤로가기, 리스트 버튼)
+          // 상단 우측 버튼들 (세로 배치)
           Positioned(
             top: MediaQuery.of(context).padding.top + 10,
-            left: 16,
             right: 16,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
               children: [
-                // 왼쪽 버튼들 (세로 배치)
-                Column(
-                  children: [
-                    // 뒤로가기/메뉴 버튼 (원형)
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        onPressed: widget.showBackButton
-                            ? () => Navigator.of(context).pop()
-                            : () => Scaffold.of(context).openDrawer(),
-                        icon: Icon(
-                          widget.showBackButton ? Icons.arrow_back : Icons.menu,
-                          color: AppColors.textPrimary,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-
-                    // 현재 위치로 이동 버튼
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        onPressed: _moveToCurrentLocation,
-                        icon: const Icon(Icons.my_location, color: AppColors.pointBrown, size: 20),
-                      ),
-                    ),
-                  ],
-                ),
-
-                // 리스트 버튼 (원형)
+                // 산책 기록 리스트 버튼
                 Container(
                   width: 44,
                   height: 44,
@@ -157,696 +127,1051 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                   ),
                   child: IconButton(
                     onPressed: _showWalkRecordsList,
-                    icon: const Icon(Icons.list, color: AppColors.textPrimary, size: 20),
+                    icon: const Icon(
+                      Icons.list,
+                      color: AppColors.textPrimary,
+                      size: 20,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // 현재 위치로 이동 버튼
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    onPressed: _moveToCurrentLocation,
+                    icon: const Icon(
+                      Icons.my_location,
+                      color: AppColors.pointBrown,
+                      size: 20,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // 줌 인 버튼
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    onPressed: _zoomIn,
+                    icon: const Icon(
+                      Icons.add,
+                      color: AppColors.textPrimary,
+                      size: 20,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // 줌 아웃 버튼
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    onPressed: _zoomOut,
+                    icon: const Icon(
+                      Icons.remove,
+                      color: AppColors.textPrimary,
+                      size: 20,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
+
+          // 중앙 하단 펫 선택 카드 (산책 중이 아닐 때만 표시)
+          if (currentWalk == null)
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom + 90,
+              left: 0,
+              right: 0,
+              child: Center(child: _buildPetFloatingButton(selectedPets)),
+            ),
+
+          // 배변/배뇨 버튼 (우측 상단)
+          if (currentWalk != null)
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom + 160,
+              right: 16,
+              child: Column(
+                children: [
+                  _buildActivityButton(
+                    iconPath: 'assets/icons/poop.png',
+                    onTap: () => _recordPetActivity('poop'),
+                  ),
+                  const SizedBox(height: 8),
+                  _buildActivityButton(
+                    iconPath: 'assets/icons/marking.png',
+                    onTap: () => _recordPetActivity('pee'),
+                  ),
+                ],
+              ),
+            ),
+
+          // 산책 중일 때 정보 표시 (버튼 위)
+          if (currentWalk != null)
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom + 90,
+              left: 20,
+              right: 20,
+              child: _buildWalkInfoCard(currentWalk),
+            ),
 
           // 하단 버튼들
           Positioned(
             bottom: MediaQuery.of(context).padding.bottom + 20,
             left: 20,
             right: 20,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // 당겨 기록 & 산책 시작 버튼
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 56,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.9),
-                          borderRadius: BorderRadius.circular(28),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: TextButton(
-                          onPressed: _showWalkRecordsList,
-                          style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-                          ),
-                          child: Text(
-                            '당겨 기록',
-                            style: AppTextStyles.titleMedium.copyWith(
-                              color: AppColors.textSecondary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Container(
-                        height: 56,
-                        decoration: BoxDecoration(
-                          color: AppColors.pointBrown,
-                          borderRadius: BorderRadius.circular(28),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.pointBrown.withValues(alpha: 0.3),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: TextButton(
-                          onPressed: currentWalk != null
-                              ? _showCurrentWalkDialog
-                              : _showStartWalkDialog,
-                          style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-                          ),
-                          child: Text(
-                            currentWalk != null ? '산책 중...' : '산책 시작',
-                            style: AppTextStyles.titleMedium.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          // 오른쪽 하단 펫 버튼 (당겨 기록 바로 위)
-          Positioned(
-            bottom: MediaQuery.of(context).padding.bottom + 90,
-            right: 20,
-            child: _buildPetFloatingButton(selectedPet),
-          ),
-        ],
-      ),
-      drawer: widget.showBackButton ? null : const AppDrawer(),
-    );
-  }
-
-  /// 오른쪽 하단 펫 선택 버튼 (긴 직사각형)
-  Widget _buildPetFloatingButton(PetInfo? selectedPet) {
-    final bool isPetSelected = selectedPet != null;
-
-    return InkWell(
-      onTap: () {
-        // TODO: 펫 선택/비선택 토글
-        if (isPetSelected) {
-          _controller.setSelectedPet(null); // 선택 해제
-        } else {
-          // 펫 선택 다이얼로그 표시
-          _showPetSelectionDialog();
-        }
-      },
-      borderRadius: BorderRadius.circular(28),
-      child: Container(
-        width: 120,
-        height: 56,
-        decoration: BoxDecoration(
-          color: isPetSelected ? AppColors.pointBrown : AppColors.pointGray.withValues(alpha: 0.8),
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(
-            color: isPetSelected ? AppColors.pointBrown : AppColors.pointGray,
-            width: 2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: (isPetSelected ? AppColors.pointBrown : AppColors.pointGray).withValues(
-                alpha: 0.3,
-              ),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 펫 아이콘 또는 발바닥 아이콘
-            if (selectedPet?.imageUrl?.startsWith('assets/') == true)
-              ClipOval(
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                  child: ClipOval(child: Image.asset(selectedPet!.imageUrl!, fit: BoxFit.cover)),
-                ),
-              )
-            else
-              Image.asset('assets/icons/paw_show.png', width: 28, height: 28, color: Colors.white),
-            const SizedBox(width: 8),
-
-            // 선택 표시 아이콘
-            Icon(
-              isPetSelected ? Icons.check_circle : Icons.add_circle_outline,
-              color: Colors.white,
-              size: 20,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// 펫 선택 다이얼로그
-  void _showPetSelectionDialog() {
-    final pets = PetMockData.getMockPets();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('ペットを選択'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: pets.length,
-            itemBuilder: (context, index) {
-              final pet = pets[index];
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: pet.imagePath != null ? AssetImage(pet.imagePath!) : null,
-                  backgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
-                  child: pet.imagePath == null
-                      ? const Icon(Icons.pets, color: AppColors.pointBrown)
-                      : null,
-                ),
-                title: Text(
-                  pet.name,
-                  style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text('${pet.breed} · ${pet.weight}kg', style: AppTextStyles.bodySmall),
-                onTap: () {
-                  // PetProfileEntity를 PetInfo로 변환
-                  _controller.setSelectedPet(
-                    PetInfo(id: pet.id, name: pet.name, type: pet.type, imageUrl: pet.imagePath),
-                  );
-                  Navigator.of(context).pop();
-                },
-              );
-            },
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('キャンセル')),
-        ],
-      ),
-    );
-  }
-
-  /// 새로운 카드 스타일 레이아웃
-  Widget _buildCardStyleLayout(
-    PetInfo? selectedPet,
-    List<WalkRecordEntity> walkRecords,
-    WalkRecordEntity? currentWalk,
-  ) {
-    return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pointOffWhite,
-        elevation: 0,
-        leading: widget.showBackButton
-            ? IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-              )
-            : IconButton(
-                onPressed: () => Scaffold.of(context).openDrawer(),
-                icon: const Icon(Icons.menu, color: AppColors.textPrimary),
-              ),
-        title: Text(
-          '散歩',
-          style: AppTextStyles.titleMedium.copyWith(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      drawer: widget.showBackButton ? null : const AppDrawer(),
-      body: Stack(
-        children: [
-          // 전체 화면 지도
-          MapWidget(walkRecords: walkRecords, selectedPet: selectedPet),
-
-          // 하단 펫 정보 + 버튼 카드
-          if (selectedPet != null)
-            Positioned(
-              left: 16,
-              right: 16,
-              bottom: MediaQuery.of(context).padding.bottom + 16,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // 펫 정보 카드
-                  _buildPetInfoCard(selectedPet),
-                  const SizedBox(height: 16),
-
-                  // 버튼 영역
-                  Row(
+            child: currentWalk == null
+                ? Row(
                     children: [
+                      // わけあり 버튼 (산책 전)
                       Expanded(
-                        child: ActionButton.secondary(
-                          isEnabled: true,
-                          text: '당겨 기록',
-                          onPressed: _showWalkRecordsList,
+                        child: Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: TextButton(
+                            onPressed: _showExcuseRecord,
+                            style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                            ),
+                            child: _selectedExcuse != null
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        _getExcuseIcon(_selectedExcuse!),
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        _selectedExcuseLabel ?? '訳あり',
+                                        style: AppTextStyles.titleMedium
+                                            .copyWith(
+                                              color: AppColors.textSecondary,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                      ),
+                                    ],
+                                  )
+                                : Text(
+                                    '訳あり',
+                                    style: AppTextStyles.titleMedium.copyWith(
+                                      color: AppColors.textSecondary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 12),
+                      // 산책 시작 버튼
                       Expanded(
-                        child: ActionButton.primary(
-                          isEnabled: true,
-                          text: currentWalk != null ? '산책 중...' : '산책 시작',
-                          onPressed: currentWalk != null
-                              ? _showCurrentWalkDialog
-                              : _showStartWalkDialog,
+                        child: Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: AppColors.pointBrown,
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.pointBrown.withValues(
+                                  alpha: 0.3,
+                                ),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: TextButton(
+                            onPressed: _showStartWalkDialog,
+                            style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                            ),
+                            child: Text(
+                              'スタート',
+                              style: AppTextStyles.titleMedium.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      // 일시정지/재시작 버튼 (산책 중)
+                      Expanded(
+                        child: Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: _isPaused
+                                ? AppColors.pointGreen.withValues(alpha: 0.9)
+                                : AppColors.pointBlue.withValues(alpha: 0.9),
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color:
+                                    (_isPaused
+                                            ? AppColors.pointGreen
+                                            : AppColors.pointBlue)
+                                        .withValues(alpha: 0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: TextButton.icon(
+                            onPressed: _pauseWalk,
+                            style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                            ),
+                            icon: Icon(
+                              _isPaused ? Icons.play_arrow : Icons.pause,
+                              color: Colors.white,
+                            ),
+                            label: Text(
+                              _isPaused ? '再開' : '一時停止',
+                              style: AppTextStyles.titleMedium.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      // 종료 버튼 (산책 중)
+                      Expanded(
+                        child: Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: AppColors.pointPink,
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.pointPink.withValues(
+                                  alpha: 0.3,
+                                ),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: TextButton.icon(
+                            onPressed: _showEndWalkDialog,
+                            style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                            ),
+                            icon: const Icon(Icons.stop, color: Colors.white),
+                            label: Text(
+                              '終了',
+                              style: AppTextStyles.titleMedium.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
+          ),
         ],
       ),
+      drawer: widget.showBackButton ? null : const AppDrawer(),
     );
   }
 
-  /// 반려동물 정보 카드
-  Widget _buildPetInfoCard(PetInfo selectedPet) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.85),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // 반려동물 아바타
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: AppColors.pureWhite,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.pointBrown, width: 3),
-            ),
-            child: ClipOval(
-              child: selectedPet.imageUrl?.startsWith('assets/') == true
-                  ? Image.asset(selectedPet.imageUrl!, fit: BoxFit.cover)
-                  : const Icon(Icons.pets, color: AppColors.pointBrown, size: 40),
-            ),
-          ),
-          const SizedBox(height: 12),
+  /// 중앙 하단 펫 리스트 위젯
+  Widget _buildPetFloatingButton(List<WalkPetInfo> selectedPets) {
+    // Mock 펫 데이터 가져오기
+    final pets = PetMockData.getMockPets();
 
-          // 반려동물 이름
-          Text(
-            selectedPet.name,
-            style: AppTextStyles.h2.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-
-          // 몸무게와 권장 시간
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '1.9kg', // TODO: selectedPet.weight 사용
-                style: AppTextStyles.bodyMedium.copyWith(color: Colors.white70),
-              ),
-              const SizedBox(width: 16),
-              Text(
-                '30분 권장', // TODO: 권장 시간 계산
-                style: AppTextStyles.bodyMedium.copyWith(color: Colors.white70),
+    if (pets.isEmpty) {
+      // 펫이 없는 경우: + 원형 아이콘만 표시
+      return GestureDetector(
+        onTap: () {
+          // TODO: 펫 추가 화면으로 이동
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('ペットを追加してください'),
+              backgroundColor: AppColors.pointBrown,
+            ),
+          );
+        },
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: AppColors.pointBrown.withValues(alpha: 0.9),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  /// 전체 화면 맵 빌드 (앱바, 상태바 포함)
-  Widget _buildFullScreenMap(
-    PetInfo? selectedPet,
-    List<WalkRecordEntity> walkRecords,
-    WalkRecordEntity? currentWalk,
-  ) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      extendBodyBehindAppBar: true,
-      drawer: widget.showBackButton ? null : const AppDrawer(),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        leading: IconButton(
-          onPressed: () {
-            if (widget.showBackButton) {
-              Navigator.of(context).pop();
-            } else {
-              // 드로어 열기
-              Scaffold.of(context).openDrawer();
-            }
-          },
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              widget.showBackButton ? Icons.arrow_back : Icons.menu,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
+          child: const Icon(Icons.add, color: Colors.white, size: 30),
         ),
-        title: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.6),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            '散歩マップ',
-            style: AppTextStyles.titleMedium.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          // 산책 기록 목록 버튼
-          IconButton(
-            onPressed: _showWalkRecordsList,
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.6),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.list, color: Colors.white, size: 20),
-            ),
-          ),
-          if (selectedPet != null)
-            Container(
-              margin: const EdgeInsets.only(right: 16),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.6),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.pointBrown,
-                    ),
-                    child: const Icon(Icons.pets, size: 12, color: AppColors.pointOffWhite),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    selectedPet.name,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          // 전체 화면 지도
-          MapWidget(walkRecords: walkRecords, selectedPet: selectedPet),
-
-          // 하단 FAB
-          Positioned(bottom: 30, right: 20, child: _buildFloatingActionButton(currentWalk)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWalkRecordsList(List<WalkRecordEntity> walkRecords) {
-    if (walkRecords.isEmpty) {
-      return _buildEmptyState();
+      );
     }
 
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 페이지 인디케이터
-          _buildPageIndicator(),
-          const SizedBox(height: AppSpacing.md),
+    // 펫 리스트가 있는 경우: 가로 스크롤 펫 카드
+    return Center(
+      child: SizedBox(
+        height: 145,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: pets.length,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemBuilder: (context, index) {
+            final pet = pets[index];
+            final isSelected = selectedPets.any((p) => p.id == pet.id);
 
-          // 산책 기록 리스트
-          Expanded(
-            child: ListView.builder(
-              itemCount: walkRecords.length,
-              itemBuilder: (context, index) {
-                final walkRecord = walkRecords[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: GestureDetector(
-                    onTap: () => _showWalkDetails(walkRecord),
-                    onLongPress: () => _showWalkOptions(walkRecord),
-                    child: WalkRecordCardWidget(
-                      walkRecord: walkRecord,
-                      onTap: () => _showWalkDetails(walkRecord),
-                    ),
+            return Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: GestureDetector(
+                onTap: () {
+                  debugPrint('🐾 펫 탭: ${pet.name} (ID: ${pet.id})');
+                  // 펫 선택 토글
+                  _controller.togglePet(WalkPetInfo.fromPetProfile(pet));
+
+                  // 선택된 펫 확인
+                  final currentSelected = ref.read(
+                    selectedPetsNotifierProvider,
+                  );
+                  debugPrint(
+                    '✅ 선택된 펫들: ${currentSelected.map((p) => p.name).join(', ')}',
+                  );
+                },
+                child: Container(
+                  width: 80,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.pointPink.withValues(alpha: 0.9)
+                        : Colors.white.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(24),
+                    border: isSelected
+                        ? Border.all(color: AppColors.pointPink, width: 3)
+                        : Border.all(color: Colors.grey.shade300, width: 1),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                );
-              },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // 펫 아바타
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Colors.white
+                              : AppColors.pointGray.withValues(alpha: 0.3),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected
+                                ? Colors.white
+                                : Colors.grey.shade300,
+                            width: 2,
+                          ),
+                        ),
+                        child: ClipOval(
+                          child: pet.imagePath?.isNotEmpty == true
+                              ? Image.asset(
+                                  pet.imagePath!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(
+                                      Icons.pets,
+                                      color: isSelected
+                                          ? AppColors.pointPink
+                                          : AppColors.pointGray,
+                                      size: 25,
+                                    );
+                                  },
+                                )
+                              : Icon(
+                                  Icons.pets,
+                                  color: isSelected
+                                      ? AppColors.pointPink
+                                      : AppColors.pointGray,
+                                  size: 25,
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+
+                      // 펫 이름
+                      Text(
+                        pet.name,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: isSelected
+                              ? Colors.white
+                              : AppColors.textPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 1),
+
+                      // 권장 산책 시간
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.timer_outlined,
+                            size: 12,
+                            color: isSelected
+                                ? Colors.white.withValues(alpha: 0.8)
+                                : AppColors.textSecondary,
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            '${pet.recommendedWalkTime}分',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: isSelected
+                                  ? Colors.white.withValues(alpha: 0.8)
+                                  : AppColors.textSecondary,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showStartWalkDialog() {
+    final selectedPets = ref.read(selectedPetsNotifierProvider);
+
+    if (selectedPets.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('ペットを選択してください'),
+          backgroundColor: AppColors.pointPink,
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        // title: const Text('산책 시작'),
+        content: Text(
+          selectedPets.length == 1
+              ? '${selectedPets.first.name}と散歩を始めますか？'
+              : '${selectedPets.map((p) => p.name).join('、')}と散歩を始めますか？',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+
+              // 산책 시작 (currentWalk 상태 업데이트)
+              final result = await _controller.startNewWalk(
+                title: '산책',
+                petId: selectedPets.first.id,
+                petName: selectedPets.map((p) => p.name).join('、'),
+              );
+
+              if (result.isSuccess) {
+                // LiveWalk 화면으로 이동
+                if (mounted) {
+                  context.push(RouteConstants.liveWalkRoute);
+                }
+              } else {
+                // 실패 시 에러 메시지 표시
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(result.message),
+                      backgroundColor: AppColors.pointPink,
+                    ),
+                  );
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.pointBrown,
+              foregroundColor: Colors.white,
             ),
+            child: const Text('散歩開始'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPageIndicator() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: const BoxDecoration(color: AppColors.pointBrown, shape: BoxShape.circle),
+  /// 타이머 시작
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!_isPaused && mounted) {
+        setState(() {
+          _elapsedSeconds++;
+        });
+      }
+    });
+  }
+
+  /// 타이머 정지
+  void _stopTimer() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  /// 산책 일시정지/재시작
+  void _pauseWalk() {
+    setState(() {
+      _isPaused = !_isPaused;
+    });
+
+    if (_isPaused) {
+      // 위치 추적 중지
+      ref.read(locationTrackingNotifierProvider.notifier).stopTracking();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('散歩を一時停止しました'),
+          backgroundColor: AppColors.pointBlue,
+          duration: Duration(seconds: 2),
         ),
-        const SizedBox(width: AppSpacing.xs),
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: AppColors.pointGray.withValues(alpha: 0.3),
-            shape: BoxShape.circle,
+      );
+    } else {
+      // 위치 추적 재개
+      ref.read(locationTrackingNotifierProvider.notifier).startTracking();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('散歩を再開しました'),
+          backgroundColor: AppColors.pointGreen,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  /// 펫 활동 버튼 (똥/오줌) - 원형 아이콘 버튼
+  Widget _buildActivityButton({
+    required String iconPath,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.95),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.15),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Image.asset(
+            iconPath,
+            width: 28,
+            height: 28,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(
+                Icons.pets,
+                size: 28,
+                color: AppColors.pointBrown,
+              );
+            },
           ),
         ),
-        const SizedBox(width: AppSpacing.xs),
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: AppColors.pointGray.withValues(alpha: 0.3),
-            shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  /// 펫 활동 기록 (똥/오줌)
+  Future<void> _recordPetActivity(String activityType) async {
+    if (!mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+
+    try {
+      // 현재 위치 가져오기
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      if (!mounted) return;
+
+      final activity = {
+        'type': activityType,
+        'latitude': position.latitude,
+        'longitude': position.longitude,
+        'timestamp': DateTime.now(),
+      };
+
+      setState(() {
+        _petActivities.add(activity);
+      });
+
+      // 사용자에게 피드백
+      final label = activityType == 'poop' ? '排便' : '排尿';
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('$labelを記録しました'),
+          backgroundColor: AppColors.pointGreen,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      debugPrint('❌ 活動記録失敗: $e');
+      if (mounted) {
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('位置情報を取得できませんでした'),
+            backgroundColor: AppColors.pointPink,
+          ),
+        );
+      }
+    }
+  }
+
+  /// 산책 정보 카드
+  Widget _buildWalkInfoCard(WalkRecordEntity currentWalk) {
+    final hours = _elapsedSeconds ~/ 3600;
+    final seconds = _elapsedSeconds % 60;
+    final distance = currentWalk.distance ?? 0.0;
+
+    // 선택된 펫의 추천 시간 가져오기
+    final selectedPets = ref.watch(selectedPetsNotifierProvider);
+    final pets = PetMockData.getMockPets();
+    final selectedPet = selectedPets.isNotEmpty
+        ? pets.firstWhere(
+            (p) => p.id == selectedPets.first.id,
+            orElse: () => pets.first,
+          )
+        : pets.first;
+    final recommendedTime = selectedPet.recommendedWalkTime;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.95),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          // 소요 시간 (h:s 형식)
+          _buildInfoItem(
+            icon: Icons.timer,
+            value: '$hours:${seconds.toString().padLeft(2, '0')}',
+          ),
+
+          // 거리
+          _buildInfoItem(
+            icon: Icons.straighten,
+            value: distance < 1
+                ? '${(distance * 1000).toStringAsFixed(0)}m'
+                : '${distance.toStringAsFixed(2)}km',
+          ),
+
+          // 추천 시간
+          _buildInfoItem(icon: Icons.flag_outlined, value: '$recommendedTime分'),
+        ],
+      ),
+    );
+  }
+
+  /// 정보 아이템 (아이콘 + 값)
+  Widget _buildInfoItem({required IconData icon, required String value}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: AppColors.pointBrown, size: 18),
+        const SizedBox(width: 6),
+        Text(
+          value,
+          style: AppTextStyles.bodyMedium.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.pointBrown,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.directions_walk, size: 64, color: AppColors.pointGray.withValues(alpha: 0.5)),
-          const SizedBox(height: AppSpacing.md),
-          Text('散歩記録がありません。', style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            '一番目の散歩を始めてみてください。',
-            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray.withValues(alpha: 0.7)),
-          ),
-        ],
-      ),
-    );
-  }
+  /// 산책 종료 확인 다이얼로그
+  void _showEndWalkDialog() {
+    final currentWalk = ref.read(currentWalkNotifierProvider);
+    if (currentWalk == null) return;
 
-  Widget _buildFloatingActionButton(WalkRecordEntity? currentWalk) {
-    if (currentWalk != null) {
-      // 진행 중인 산책이 있는 경우
-      return FloatingActionButton.extended(
-        onPressed: _showCurrentWalkDialog,
-        backgroundColor: AppColors.pointBrown,
-        icon: const Icon(Icons.pause, color: AppColors.pointOffWhite),
-        label: Text('散歩中...', style: AppFonts.bodyMedium.copyWith(color: AppColors.pointOffWhite)),
-      );
-    } else {
-      // 새 산책 시작 버튼
-      return FloatingActionButton.extended(
-        onPressed: _showStartWalkDialog,
-        backgroundColor: AppColors.pointBrown,
-        icon: const Icon(Icons.directions_walk, color: AppColors.pointOffWhite),
-        label: Text('散歩始め', style: AppFonts.bodyMedium.copyWith(color: AppColors.pointOffWhite)),
-      );
-    }
-  }
+    // 현재 거리 및 시간 계산
+    final currentDistance = currentWalk.distance ?? 0.0;
+    final durationInSeconds = _elapsedSeconds;
+    final hours = durationInSeconds ~/ 3600;
+    final minutes = (durationInSeconds % 3600) ~/ 60;
+    final seconds = durationInSeconds % 60;
 
-  void _showStartWalkDialog() {
-    // TODO: StartWalkBottomSheet 구현 필요
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('산책 시작'),
-        content: const Text('산책을 시작하시겠습니까?'),
+        title: const Text('散歩を終了'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${currentWalk.petName}との散歩を終了しますか？'),
+            const SizedBox(height: 16),
+            Text(
+              '経過時間: $hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            Text(
+              '距離: ${currentDistance < 1 ? '${(currentDistance * 1000).toStringAsFixed(0)}m' : '${currentDistance.toStringAsFixed(2)}km'}',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('취소')),
           TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _controller.startNewWalk(title: 'New Walk', petId: 'pet1', petName: 'Maxi');
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              // context를 미리 저장
+              final navigator = Navigator.of(context);
+              final messenger = ScaffoldMessenger.of(context);
+
+              navigator.pop();
+
+              // 활동 기록을 notes에 JSON 형식으로 저장
+              String? notesWithActivities;
+              if (_petActivities.isNotEmpty) {
+                final activitiesJson = _petActivities.map((a) {
+                  return {
+                    'type': a['type'],
+                    'latitude': a['latitude'],
+                    'longitude': a['longitude'],
+                    'timestamp': (a['timestamp'] as DateTime).toIso8601String(),
+                  };
+                }).toList();
+                notesWithActivities = 'activities:${activitiesJson.toString()}';
+              }
+
+              // 산책 종료 (현재 거리, 시간, 활동 기록 전달)
+              final result = await _controller.endCurrentWalk(
+                distance: currentDistance,
+                notes: notesWithActivities,
+              );
+
+              if (!mounted) return;
+
+              // 타이머 정지 및 상태 초기화
+              _stopTimer();
+
+              setState(() {
+                _petActivities.clear();
+                _isPaused = false;
+                _elapsedSeconds = 0;
+                _selectedExcuse = null;
+                _selectedExcuseLabel = '';
+              });
+
+              if (result.isSuccess) {
+                messenger.showSnackBar(
+                  const SnackBar(
+                    content: Text('散歩が終了しました'),
+                    backgroundColor: AppColors.pointGreen,
+                  ),
+                );
+              } else {
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(result.message),
+                    backgroundColor: AppColors.pointPink,
+                  ),
+                );
+              }
             },
-            child: const Text('시작'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.pointPink,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('終了'),
           ),
         ],
       ),
     );
   }
 
-  void _showCurrentWalkDialog() {
-    final currentWalk = _controller.getCurrentWalk();
-    if (currentWalk != null) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('진행 중인 산책'),
-          content: Text('${currentWalk.petName}과(와) 산책 중입니다.'),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('계속')),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _controller.endCurrentWalk();
-              },
-              child: const Text('종료'),
-            ),
-          ],
-        ),
-      );
+  /// 핑계 기록 바텀시트 표시
+  void _showExcuseRecord() {
+    ExcuseRecordBottomSheet.show(
+      context,
+      date: DateTime.now(),
+      onSave: (excuse) {
+        setState(() {
+          _selectedExcuse = excuse;
+          _selectedExcuseLabel = _getExcuseLabel(excuse);
+        });
+        debugPrint('Excuse saved: $excuse');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('「$_selectedExcuseLabel」を記録しました'),
+            backgroundColor: AppColors.pointGreen,
+          ),
+        );
+      },
+    );
+  }
+
+  /// 핑계 아이콘 가져오기
+  String _getExcuseIcon(String excuse) {
+    switch (excuse) {
+      case 'sick':
+        return '💊';
+      case 'tired':
+        return '😴';
+      case 'cold':
+        return '🥶';
+      case 'rain':
+        return '☔';
+      case 'hot':
+        return '🥵';
+      case 'busy':
+        return '💼';
+      default:
+        return '📝';
     }
   }
 
-  void _showWalkDetails(WalkRecordEntity walkRecord) {
-    context.push(AppRouter.walkDetailRoute, extra: walkRecord);
+  /// 핑계 라벨 가져오기
+  String _getExcuseLabel(String excuse) {
+    switch (excuse) {
+      case 'sick':
+        return '体調不良';
+      case 'tired':
+        return '疲れ';
+      case 'cold':
+        return '寒さ';
+      case 'rain':
+        return '雨';
+      case 'hot':
+        return '暑さ';
+      case 'busy':
+        return '忙しい';
+      default:
+        return '訳あり';
+    }
   }
 
-  void _showWalkOptions(WalkRecordEntity walkRecord) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.edit),
-            title: const Text('수정'),
-            onTap: () {
-              Navigator.of(context).pop();
-              // TODO: 수정 다이얼로그 구현
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.delete),
-            title: const Text('삭제'),
-            onTap: () {
-              Navigator.of(context).pop();
-              _controller.deleteWalkRecord(walkRecord.id);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showWalkRecordsList() {
-    final walkRecords = ref.read(walkRecordsNotifierProvider);
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.7,
-        decoration: const BoxDecoration(
-          color: AppColors.pointOffWhite,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: Column(
-          children: [
-            // 핸들바
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.pointGray.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-
-            // 제목
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                '散歩記録',
-                style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ),
-
-            // 산책 기록 리스트
-            Expanded(child: _buildWalkRecordsList(walkRecords)),
-          ],
-        ),
-      ),
+  /// 지도 위젯 빌드
+  Widget _buildMapWidget(
+    List<WalkRecordEntity> walkRecords,
+    List<WalkPetInfo> selectedPets,
+  ) {
+    return MapWidget(
+      key: const ValueKey('walk_map_widget'),
+      walkRecords: walkRecords,
+      selectedPet: selectedPets.isNotEmpty ? selectedPets.first : null,
+      petActivities: _petActivities,
     );
   }
 
   /// 현재 위치로 지도 이동
   Future<void> _moveToCurrentLocation() async {
-    final walkRecords = ref.read(walkRecordsNotifierProvider);
-    final selectedPet = ref.read(selectedPetNotifierProvider);
-    final params = MapWidgetParams(walkRecords: walkRecords, selectedPet: selectedPet);
-    final controller = ref.read(mapWidgetProvider(params).notifier);
+    try {
+      // 전역 provider에서 지도 컨트롤러 가져오기
+      final mapController = ref.read(globalMapControllerProvider);
 
-    // 현재 위치 다시 가져오기
-    await controller.getCurrentLocation();
+      if (mapController == null) {
+        debugPrint('❌ 지도 컨트롤러가 아직 초기화되지 않았습니다');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('地図が読み込まれていません'),
+              backgroundColor: AppColors.pointPink,
+            ),
+          );
+        }
+        return;
+      }
+
+      // 현재 위치 가져오기
+      final position =
+          await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+            ),
+          ).timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              throw Exception('位置情報の取得がタイムアウトしました');
+            },
+          );
+
+      debugPrint('📍 현재 위치: ${position.latitude}, ${position.longitude}');
+
+      // 지도 카메라를 현재 위치로 이동 (줌 레벨을 기본값 16.0으로 재설정)
+      await mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(position.latitude, position.longitude),
+            zoom: 16.0, // 기본 줌 레벨로 되돌림
+          ),
+        ),
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('現在地に移動しました'),
+            backgroundColor: AppColors.pointGreen,
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('❌ 현재 위치 이동 에러: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('現在地の取得に失敗しました'),
+            backgroundColor: AppColors.pointPink,
+          ),
+        );
+      }
+    }
+  }
+
+  /// 지도 확대
+  Future<void> _zoomIn() async {
+    try {
+      final mapController = ref.read(globalMapControllerProvider);
+
+      if (mapController == null) {
+        debugPrint('❌ 지도 컨트롤러가 아직 초기화되지 않았습니다');
+        return;
+      }
+
+      await mapController.animateCamera(CameraUpdate.zoomIn());
+      debugPrint('🔍 지도 확대');
+    } catch (e) {
+      debugPrint('❌ 지도 확대 에러: $e');
+    }
+  }
+
+  /// 지도 축소
+  Future<void> _zoomOut() async {
+    try {
+      final mapController = ref.read(globalMapControllerProvider);
+
+      if (mapController == null) {
+        debugPrint('❌ 지도 컨트롤러가 아직 초기화되지 않았습니다');
+        return;
+      }
+
+      await mapController.animateCamera(CameraUpdate.zoomOut());
+      debugPrint('🔍 지도 축소');
+    } catch (e) {
+      debugPrint('❌ 지도 축소 에러: $e');
+    }
+  }
+
+  void _showWalkRecordsList() {
+    // 산책 기록 달력 페이지로 이동
+    context.push('/walk/calendar');
   }
 }

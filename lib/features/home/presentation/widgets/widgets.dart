@@ -10,6 +10,7 @@ export 'home_header_widget.dart';
 export 'home_menu_items.dart';
 export 'home_menu_widget.dart';
 export 'home_search_bar_widget.dart';
+export 'qr_code_bottom_sheet.dart';
 export 'today_appointments_widget.dart';
 export 'walk_summary_widget.dart';
 export 'weather_card_widget.dart';

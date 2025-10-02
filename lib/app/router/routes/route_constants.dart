@@ -25,6 +25,8 @@ class RouteConstants {
   static const String walkRoute = '/walk';
   static const String walkFromHomeRoute = '/walk-from-home';
   static const String walkDetailRoute = '/walk/detail';
+  static const String walkCalendarRoute = '/walk/calendar';
+  static const String liveWalkRoute = '/walk/live';
   static const String calendarRoute = '/calendar';
   static const String settingsRoute = '/settings';
 
@@ -36,12 +38,14 @@ class RouteConstants {
   static const String tricksRoute = '/home/tricks';
   static const String allTricksRoute = '/all-tricks';
   static const String trainingVideosRoute = '/training-videos';
+  static const String qrCodeRoute = '/home/qr';
 
   // ===== SCHEDULING TAB SUB-ROUTES =====
   static const String feedingScheduleRoute = '/scheduling/feeding-schedule';
   static const String feedingRecordsRoute = '/scheduling/feeding-records';
   static const String feedingAnalysisRoute = '/scheduling/feeding-analysis';
-  static const String feedingScheduleEditRoute = '/scheduling/feeding-schedule/edit';
+  static const String feedingScheduleEditRoute =
+      '/scheduling/feeding-schedule/edit';
   static const String addFeedingRecordRoute = '/scheduling/add-feeding-record';
   static const String trainingMainRoute = '/scheduling/training';
   static const String wateringMainRoute = '/scheduling/watering';
@@ -49,14 +53,19 @@ class RouteConstants {
   static const String wateringRecordsRoute = '/scheduling/watering/records';
   static const String wateringAnalysisRoute = '/scheduling/watering/analysis';
   static const String wateringSettingsRoute = '/scheduling/watering/settings';
-  static const String addWateringRecordRoute = '/scheduling/watering/add-record';
-  static const String editWateringRecordRoute = '/scheduling/watering/edit-record';
-  static const String wateringScheduleEditRoute = '/scheduling/watering/schedule/edit';
+  static const String addWateringRecordRoute =
+      '/scheduling/watering/add-record';
+  static const String editWateringRecordRoute =
+      '/scheduling/watering/edit-record';
+  static const String wateringScheduleEditRoute =
+      '/scheduling/watering/schedule/edit';
   static const String healthMainRoute = '/scheduling/health';
 
   // ===== CALENDAR TAB SUB-ROUTES =====
-  static const String groomingReservationRoute = '/calendar/grooming-reservation';
-  static const String hospitalReservationRoute = '/calendar/hospital-reservation';
+  static const String groomingReservationRoute =
+      '/calendar/grooming-reservation';
+  static const String hospitalReservationRoute =
+      '/calendar/hospital-reservation';
   static const String facilityDetailRoute = '/calendar/facility-detail';
   static const String facilityFullscreenMapRoute = '/facility/fullscreen-map';
   static const String bookingRoute = '/calendar/booking';
@@ -81,7 +90,8 @@ class RouteConstants {
   static const String petSizeWeightRoute = '/pet-size-weight';
   static const String petAnniversaryRoute = '/pet-anniversary';
   static const String petAnniversarySummaryRoute = '/pet-anniversary-summary';
-  static const String petRegistrationCompleteRoute = '/pet-registration-complete';
+  static const String petRegistrationCompleteRoute =
+      '/pet-registration-complete';
 
   // ===== STANDALONE ROUTES =====
   static const String addFamilyManagerRoute = '/add-family-manager';

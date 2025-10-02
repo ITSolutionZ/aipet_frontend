@@ -7,6 +7,9 @@ import 'package:aipet_frontend/features/ai/domain/services/ai_chat_state_manager
 import 'package:aipet_frontend/features/ai/domain/services/ai_favorite_manager.dart';
 import 'package:aipet_frontend/features/ai/domain/services/ai_message_manager.dart';
 import 'package:aipet_frontend/features/ai/domain/services/message_pagination_service.dart';
+import 'package:aipet_frontend/features/home/data/home_providers.dart';
+import 'package:aipet_frontend/features/walk/domain/services/walk_recommendation_service.dart';
+import 'package:aipet_frontend/features/walk/domain/usecases/compute_walk_recommendation_usecase.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/foundation.dart';
@@ -74,7 +77,8 @@ class AiChatState {
   }) {
     final updatedMessages = messages ?? this.messages;
     final updatedStats =
-        messageStats ?? MessagePaginationService.generateStatistics(updatedMessages);
+        messageStats ??
+        MessagePaginationService.generateStatistics(updatedMessages);
 
     return AiChatState(
       messages: updatedMessages,
@@ -122,7 +126,9 @@ class AiChatNotifier extends _$AiChatNotifier {
     final result = await useCase();
 
     if (result.isSuccess && result.dataOrNull != null) {
-      final initResult = AiChatStateManager.initializeState(suggestedQuestions: result.dataOrNull!);
+      final initResult = AiChatStateManager.initializeState(
+        suggestedQuestions: result.dataOrNull!,
+      );
 
       if (initResult.isSuccess) {
         state = initResult.dataOrNull!;
@@ -167,7 +173,10 @@ class AiChatNotifier extends _$AiChatNotifier {
             state;
       }
     } else if (pet == null) {
-      final updateResult = AiChatStateManager.updatePetSelection(currentState: state, pet: null);
+      final updateResult = AiChatStateManager.updatePetSelection(
+        currentState: state,
+        pet: null,
+      );
       if (updateResult.isSuccess) {
         state = updateResult.dataOrNull!;
       }
@@ -184,7 +193,10 @@ class AiChatNotifier extends _$AiChatNotifier {
   Future<void> selectCategory(AiCategoryEntity category) async {
     final useCase = ref.read(selectCategoryUseCaseProvider);
 
-    final result = await useCase(category: category, selectedPet: state.selectedPet);
+    final result = await useCase(
+      category: category,
+      selectedPet: state.selectedPet,
+    );
 
     if (result.isSuccess && result.dataOrNull != null) {
       final updateResult = AiChatStateManager.updateCategorySelection(
@@ -268,7 +280,41 @@ class AiChatNotifier extends _$AiChatNotifier {
       state = userMessageResult.dataOrNull!;
     }
 
-    final result = await useCase.callWithPetContext(content.trim(), petContext: state.selectedPet);
+    // 날씨 및 산책 정보 가져오기
+    String? weatherAdvice;
+    String? walkGuide;
+
+    try {
+      final dashboardAsync = ref.read(homeDashboardNotifierProvider);
+      if (dashboardAsync.hasValue && dashboardAsync.value != null) {
+        final dashboard = dashboardAsync.value!;
+        final weather = dashboard.weather;
+
+        // 날씨 어드바이스
+        weatherAdvice = weather.dogWalkingRecommendation;
+
+        // 산책 가이드 (펫이 선택되어 있을 때만)
+        if (state.selectedPet != null) {
+          final recommendationService = WalkRecommendationService();
+          final recommendation = await ComputeWalkRecommendationUseCase().call(
+            pet: state.selectedPet!,
+            wbgt: weather.wbgt,
+            temperature: weather.temperature,
+          );
+
+          walkGuide = recommendationService.generateShortGuide(recommendation);
+        }
+      }
+    } catch (e) {
+      debugPrint('날씨/산책 정보 가져오기 실패: $e');
+    }
+
+    final result = await useCase.callWithPetContext(
+      content.trim(),
+      petContext: state.selectedPet,
+      weatherAdvice: weatherAdvice,
+      walkGuide: walkGuide,
+    );
 
     if (result.isSuccess && result.dataOrNull != null) {
       // AI 응답 추가
@@ -284,7 +330,9 @@ class AiChatNotifier extends _$AiChatNotifier {
         state =
             AiChatStateManager.setErrorState(
               currentState: state,
-              error: assistantMessageResult.error?.toString() ?? 'Assistant message failed',
+              error:
+                  assistantMessageResult.error?.toString() ??
+                  'Assistant message failed',
               clearTyping: true,
             ).dataOrNull ??
             state;
@@ -364,7 +412,9 @@ class AiChatNotifier extends _$AiChatNotifier {
             state = resetResult.dataOrNull!;
           }
         } else {
-          state = AiChatStateManager.initializeState().dataOrNull ?? const AiChatState();
+          state =
+              AiChatStateManager.initializeState().dataOrNull ??
+              const AiChatState();
         }
       } else {
         state =
@@ -468,7 +518,8 @@ class AiChatController extends BaseController {
   List<AiMessageEntity> get messages => chatState.messages;
 
   /// 추천 질문 목록 가져오기
-  List<AiSuggestedQuestionEntity> get suggestedQuestions => chatState.suggestedQuestions;
+  List<AiSuggestedQuestionEntity> get suggestedQuestions =>
+      chatState.suggestedQuestions;
 
   /// 타이핑 상태 확인
   bool get isTyping => chatState.isTyping;
@@ -492,7 +543,8 @@ class AiChatController extends BaseController {
   List<String> get favoriteMessageIds => chatState.favoriteMessageIds;
 
   /// 메시지 즐겨찾기 여부 확인
-  bool isFavorite(String messageId) => chatState.favoriteMessageIds.contains(messageId);
+  bool isFavorite(String messageId) =>
+      chatState.favoriteMessageIds.contains(messageId);
 
   /// 카테고리 선택
   void selectCategory(AiCategoryEntity category) {
