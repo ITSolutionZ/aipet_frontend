@@ -13,12 +13,10 @@ class PushNotificationScreen extends ConsumerStatefulWidget {
   const PushNotificationScreen({super.key});
 
   @override
-  ConsumerState<PushNotificationScreen> createState() =>
-      _PushNotificationScreenState();
+  ConsumerState<PushNotificationScreen> createState() => _PushNotificationScreenState();
 }
 
-class _PushNotificationScreenState
-    extends ConsumerState<PushNotificationScreen> {
+class _PushNotificationScreenState extends ConsumerState<PushNotificationScreen> {
   bool _foodAlarmEnabled = false;
   bool _walkAlarmEnabled = false;
   bool _systemAlarmEnabled = true;
@@ -46,8 +44,7 @@ class _PushNotificationScreenState
 
       setState(() {
         // settings가 Map<String, dynamic>이므로 적절히 처리
-        final typeSettings =
-            settings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ?? {};
+        final typeSettings = settings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ?? {};
         _foodAlarmEnabled = typeSettings['feeding'] as bool? ?? false;
         _walkAlarmEnabled = typeSettings['walk'] as bool? ?? false;
         _systemAlarmEnabled = typeSettings['system'] as bool? ?? true;
@@ -66,26 +63,21 @@ class _PushNotificationScreenState
     if (!mounted) return;
 
     try {
-      final getSettingsUseCase = ref.read(
-        getNotificationSettingsUseCaseProvider,
-      );
+      final getSettingsUseCase = ref.read(getNotificationSettingsUseCaseProvider);
       final currentSettings = await getSettingsUseCase('default_user_id');
 
       if (!mounted) return;
 
       // 새로운 타입 설정 생성
       final newTypeSettings = Map<String, dynamic>.from(
-        currentSettings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ??
-            {},
+        currentSettings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ?? {},
       );
       newTypeSettings['feeding'] = _foodAlarmEnabled;
       newTypeSettings['walk'] = _walkAlarmEnabled;
       newTypeSettings['system'] = _systemAlarmEnabled;
 
       // 새로운 설정 생성
-      final newSettings = Map<String, dynamic>.from(
-        currentSettings.dataOrNull ?? {},
-      );
+      final newSettings = Map<String, dynamic>.from(currentSettings.dataOrNull ?? {});
       newSettings['typeSettings'] = newTypeSettings;
 
       if (!mounted) return;
@@ -145,25 +137,16 @@ class _PushNotificationScreenState
               decoration: BoxDecoration(
                 color: AppColors.pointBrown.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(AppRadius.medium),
-                border: Border.all(
-                  color: AppColors.pointBrown.withValues(alpha: 0.1),
-                ),
+                border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.1)),
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.info_outline,
-                    color: AppColors.pointBrown,
-                    size: 20,
-                  ),
+                  const Icon(Icons.info_outline, color: AppColors.pointBrown, size: 20),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'アラームをオンにすると、設定した時間にお知らせを受け取ることができます',
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointBrown,
-                        height: 1.3,
-                      ),
+                      style: AppFonts.bodySmall.copyWith(color: AppColors.pointBrown, height: 1.3),
                     ),
                   ),
                 ],

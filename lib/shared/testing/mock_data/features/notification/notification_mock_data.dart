@@ -13,12 +13,7 @@ class NotificationMockData {
       priority: NotificationPriority.high,
       status: NotificationStatus.unread,
       createdAt: DateTime.now().subtract(const Duration(minutes: 30)),
-      data: {
-        'petName': 'ポチ',
-        'petId': 'pet_001',
-        'feedingTime': '18:00',
-        'actionUrl': '/feeding',
-      },
+      data: {'petName': 'ポチ', 'petId': 'pet_001', 'feedingTime': '18:00', 'actionUrl': '/feeding'},
       actions: [
         const NotificationAction(
           id: 'feed_now',
@@ -90,11 +85,7 @@ class NotificationMockData {
           type: 'open_screen',
           data: {'screen_path': '/health/appointment'},
         ),
-        const NotificationAction(
-          id: 'view_details',
-          title: '詳細を見る',
-          type: 'view_details',
-        ),
+        const NotificationAction(id: 'view_details', title: '詳細を見る', type: 'view_details'),
       ],
     ),
 
@@ -179,11 +170,7 @@ class NotificationMockData {
       priority: NotificationPriority.low,
       status: NotificationStatus.unread,
       createdAt: DateTime.now().subtract(const Duration(hours: 3)),
-      data: {
-        'version': '2.1.0',
-        'updateSize': '15.2MB',
-        'actionUrl': '/settings/update',
-      },
+      data: {'version': '2.1.0', 'updateSize': '15.2MB', 'actionUrl': '/settings/update'},
       actions: [
         const NotificationAction(
           id: 'update_now',
@@ -328,9 +315,8 @@ class NotificationMockData {
       notifications.where((n) => !n.isUnread).toList();
 
   /// 특정 타입의 알림만 필터링
-  static List<NotificationModel> getNotificationsByType(
-    NotificationType type,
-  ) => notifications.where((n) => n.type == type).toList();
+  static List<NotificationModel> getNotificationsByType(NotificationType type) =>
+      notifications.where((n) => n.type == type).toList();
 
   /// 특정 펫의 알림만 필터링
   static List<NotificationModel> getNotificationsByPet(String petId) =>
@@ -347,10 +333,7 @@ class NotificationMockData {
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
     return notifications
-        .where(
-          (n) =>
-              n.createdAt.isAfter(startOfDay) && n.createdAt.isBefore(endOfDay),
-        )
+        .where((n) => n.createdAt.isAfter(startOfDay) && n.createdAt.isBefore(endOfDay))
         .toList();
   }
 
@@ -358,15 +341,9 @@ class NotificationMockData {
   static List<NotificationModel> get thisWeekNotifications {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final startOfWeekDay = DateTime(
-      startOfWeek.year,
-      startOfWeek.month,
-      startOfWeek.day,
-    );
+    final startOfWeekDay = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
 
-    return notifications
-        .where((n) => n.createdAt.isAfter(startOfWeekDay))
-        .toList();
+    return notifications.where((n) => n.createdAt.isAfter(startOfWeekDay)).toList();
   }
 
   /// 알림 통계 데이터
@@ -379,9 +356,7 @@ class NotificationMockData {
       'walk': getNotificationsByType(NotificationType.walk).length,
       'health': getNotificationsByType(NotificationType.health).length,
       'medication': getNotificationsByType(NotificationType.medication).length,
-      'reservation': getNotificationsByType(
-        NotificationType.reservation,
-      ).length,
+      'reservation': getNotificationsByType(NotificationType.reservation).length,
       'system': getNotificationsByType(NotificationType.system).length,
       'emergency': getNotificationsByType(NotificationType.emergency).length,
       'reminder': getNotificationsByType(NotificationType.reminder).length,
@@ -389,18 +364,10 @@ class NotificationMockData {
       'general': getNotificationsByType(NotificationType.general).length,
     },
     'priorityDistribution': {
-      'low': notifications
-          .where((n) => n.priority == NotificationPriority.low)
-          .length,
-      'normal': notifications
-          .where((n) => n.priority == NotificationPriority.normal)
-          .length,
-      'high': notifications
-          .where((n) => n.priority == NotificationPriority.high)
-          .length,
-      'urgent': notifications
-          .where((n) => n.priority == NotificationPriority.urgent)
-          .length,
+      'low': notifications.where((n) => n.priority == NotificationPriority.low).length,
+      'normal': notifications.where((n) => n.priority == NotificationPriority.normal).length,
+      'high': notifications.where((n) => n.priority == NotificationPriority.high).length,
+      'urgent': notifications.where((n) => n.priority == NotificationPriority.urgent).length,
     },
     'todayCount': todayNotifications.length,
     'thisWeekCount': thisWeekNotifications.length,

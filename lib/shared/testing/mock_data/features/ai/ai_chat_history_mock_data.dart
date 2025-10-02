@@ -92,9 +92,7 @@ class AiChatHistoryMockData {
             'content':
                 'ポチの食事拒否について心配ですね。🍽️\n\nまず確認していただきたいことがあります：\n• 最近フードを変更しましたか？\n• 体調や元気さはいかがでしょうか？',
             'isUser': false,
-            'timestamp': DateTime.now().subtract(
-              const Duration(hours: 1, minutes: 58),
-            ),
+            'timestamp': DateTime.now().subtract(const Duration(hours: 1, minutes: 58)),
           },
         ];
       default:
@@ -122,22 +120,16 @@ class AiChatHistoryMockData {
 
   /// 카테고리별 세션 필터링
   static List<Map<String, dynamic>> getChatSessionsByCategory(String category) {
-    return getChatHistorySessions()
-        .where((session) => session['category'] == category)
-        .toList();
+    return getChatHistorySessions().where((session) => session['category'] == category).toList();
   }
 
   /// 즐겨찾기가 있는 세션만 조회
   static List<Map<String, dynamic>> getFavoriteChatSessions() {
-    return getChatHistorySessions()
-        .where((session) => session['hasFavorites'] == true)
-        .toList();
+    return getChatHistorySessions().where((session) => session['hasFavorites'] == true).toList();
   }
 
   /// 특정 펫의 세션만 조회
   static List<Map<String, dynamic>> getChatSessionsByPet(String petName) {
-    return getChatHistorySessions()
-        .where((session) => session['petName'] == petName)
-        .toList();
+    return getChatHistorySessions().where((session) => session['petName'] == petName).toList();
   }
 }

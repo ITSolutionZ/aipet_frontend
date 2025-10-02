@@ -12,8 +12,7 @@ class FeedingRecordsScreen extends ConsumerStatefulWidget {
   const FeedingRecordsScreen({super.key});
 
   @override
-  ConsumerState<FeedingRecordsScreen> createState() =>
-      _FeedingRecordsScreenState();
+  ConsumerState<FeedingRecordsScreen> createState() => _FeedingRecordsScreenState();
 }
 
 class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
@@ -33,17 +32,12 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final feedingRecords =
-        SchedulingMock.SchedulingMockService.getMockFeedingRecordsForRecords();
-    final statistics = SchedulingMock
-        .SchedulingMockService.getMockFeedingStatisticsForRecords();
+    final feedingRecords = SchedulingMock.SchedulingMockService.getMockFeedingRecordsForRecords();
+    final statistics = SchedulingMock.SchedulingMockService.getMockFeedingStatisticsForRecords();
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: DynamicAppBarStyles.brown(
-        scrollController: _scrollController,
-        title: '食事記録',
-      ),
+      appBar: DynamicAppBarStyles.brown(scrollController: _scrollController, title: '食事記録'),
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
@@ -55,10 +49,7 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 통계 차트
-                    FeedingStatisticsCard(
-                      feedingRecords: feedingRecords,
-                      statistics: statistics,
-                    ),
+                    FeedingStatisticsCard(feedingRecords: feedingRecords, statistics: statistics),
                     const SizedBox(height: AppSpacing.lg),
 
                     // 기록 목록
@@ -72,9 +63,7 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
                     const SizedBox(height: AppSpacing.md),
 
                     // 기록 목록
-                    ...feedingRecords.map(
-                      (record) => FeedingRecordItem(record: record),
-                    ),
+                    ...feedingRecords.map((record) => FeedingRecordItem(record: record)),
                   ],
                 ),
               ]),

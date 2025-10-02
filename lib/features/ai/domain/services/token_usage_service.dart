@@ -212,9 +212,7 @@ class TokenUsageService {
 
   static int _getRequestCountForDate(DateTime date) {
     final dateKey = _formatDateKey(date);
-    return _usageHistory
-        .where((record) => _formatDateKey(record.timestamp) == dateKey)
-        .length;
+    return _usageHistory.where((record) => _formatDateKey(record.timestamp) == dateKey).length;
   }
 }
 

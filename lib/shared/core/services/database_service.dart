@@ -72,11 +72,7 @@ class DatabaseService {
   }
 
   /// 데이터베이스 업그레이드
-  Future<void> _upgradeDatabase(
-    Database db,
-    int oldVersion,
-    int newVersion,
-  ) async {
+  Future<void> _upgradeDatabase(Database db, int oldVersion, int newVersion) async {
     // 향후 스키마 변경 시 여기에 마이그레이션 로직 추가
   }
 
@@ -100,11 +96,7 @@ class DatabaseService {
         'additional_info': jsonEncode(pet.additionalInfo),
       };
 
-      await db.insert(
-        'pet_profiles',
-        petMap,
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      await db.insert('pet_profiles', petMap, conflictAlgorithm: ConflictAlgorithm.replace);
 
       return Result.success('펫 프로필이 성공적으로 저장되었습니다', null);
     } catch (e) {
@@ -150,9 +142,7 @@ class DatabaseService {
   }
 
   /// Owner ID로 Pet Profile 조회
-  Future<Result<List<PetProfileEntity>>> getPetProfilesByOwnerId(
-    String ownerId,
-  ) async {
+  Future<Result<List<PetProfileEntity>>> getPetProfilesByOwnerId(String ownerId) async {
     try {
       final db = await database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -209,11 +199,7 @@ class DatabaseService {
     try {
       final db = await database;
 
-      final rowsAffected = await db.delete(
-        'pet_profiles',
-        where: 'id = ?',
-        whereArgs: [id],
-      );
+      final rowsAffected = await db.delete('pet_profiles', where: 'id = ?', whereArgs: [id]);
 
       if (rowsAffected == 0) {
         return Result.failure('삭제할 펫을 찾을 수 없습니다');
@@ -226,10 +212,7 @@ class DatabaseService {
   }
 
   /// Temporary Pet Data 저장
-  Future<Result<void>> saveTemporaryPetData(
-    String step,
-    Map<String, dynamic> data,
-  ) async {
+  Future<Result<void>> saveTemporaryPetData(String step, Map<String, dynamic> data) async {
     try {
       final db = await database;
 
@@ -267,8 +250,7 @@ class DatabaseService {
         return Result.success('임시 데이터를 찾을 수 없습니다', null);
       }
 
-      final data =
-          jsonDecode(maps.first['data'] as String) as Map<String, dynamic>;
+      final data = jsonDecode(maps.first['data'] as String) as Map<String, dynamic>;
       return Result.success('임시 데이터를 성공적으로 조회했습니다', data);
     } catch (e) {
       return Result.failure('임시 데이터 조회에 실패했습니다: ${e.toString()}');

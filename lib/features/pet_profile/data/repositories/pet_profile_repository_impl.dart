@@ -16,25 +16,20 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<List<PetProfileEntity>>> getAllPets() async {
     try {
       // Mock 모드 또는 테스트 환경에서는 Mock 데이터 사용
-      if (AppConfig.current.isMockMode ||
-          AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
         return _getMockPets();
       }
 
       // 실제 API 호출
       final response = await _httpClient.get<List<Map<String, dynamic>>>(
         '/pets',
-        fromJson: (data) => (data['pets'] as List<dynamic>)
-            .map((pet) => pet as Map<String, dynamic>)
-            .toList(),
+        fromJson: (data) =>
+            (data['pets'] as List<dynamic>).map((pet) => pet as Map<String, dynamic>).toList(),
       );
 
       if (response.isSuccess && response.data != null) {
         final pets =
-            response.data
-                ?.map((petData) => PetProfileEntity.fromJson(petData))
-                .toList() ??
-            [];
+            response.data?.map((petData) => PetProfileEntity.fromJson(petData)).toList() ?? [];
         return Result.success('펫 목록을 성공적으로 조회했습니다', pets);
       } else {
         return Result.failure(response.error?.toString() ?? '펫 목록 조회에 실패했습니다');
@@ -63,20 +58,17 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
               type: petData['typeName']?.toString() ?? 'dog',
               breed: petData['breed']?.toString(),
               birthDate: petData['birthDate'] != null
-                  ? DateTime.tryParse(petData['birthDate'].toString()) ??
-                        DateTime.now()
+                  ? DateTime.tryParse(petData['birthDate'].toString()) ?? DateTime.now()
                   : DateTime.now(),
               gender: petData['gender']?.toString() ?? 'unknown',
               weight: (petData['weight'] as num?)?.toDouble() ?? 0.0,
               imagePath: petData['imagePath']?.toString(),
               ownerId: petData['ownerId']?.toString() ?? 'unknown',
               createdAt: petData['createdAt'] != null
-                  ? DateTime.tryParse(petData['createdAt'].toString()) ??
-                        DateTime.now()
+                  ? DateTime.tryParse(petData['createdAt'].toString()) ?? DateTime.now()
                   : DateTime.now(),
               updatedAt: DateTime.now(),
-              additionalInfo:
-                  petData['additionalInfo'] as Map<String, dynamic>? ?? {},
+              additionalInfo: petData['additionalInfo'] as Map<String, dynamic>? ?? {},
             ),
           )
           .toList();
@@ -90,8 +82,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<PetProfileEntity?>> getPetById(String id) async {
     try {
       // Mock 모드 또는 테스트 환경에서는 getAllPets에서 찾기
-      if (AppConfig.current.isMockMode ||
-          AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
         final result = await getAllPets();
         if (result.isSuccess) {
           final pets = result.dataOrNull!;
@@ -128,8 +119,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<PetProfileEntity>> createPet(PetProfileEntity pet) async {
     try {
       // Mock 모드 또는 테스트 환경에서는 Mock 생성
-      if (AppConfig.current.isMockMode ||
-          AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
         if (AppConfig.current.environment == 'test') {
           await Future.delayed(const Duration(milliseconds: 1));
         } else {
@@ -167,8 +157,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<PetProfileEntity>> updatePet(PetProfileEntity pet) async {
     try {
       // Mock 모드 또는 테스트 환경에서는 Mock 업데이트
-      if (AppConfig.current.isMockMode ||
-          AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
         if (AppConfig.current.environment == 'test') {
           await Future.delayed(const Duration(milliseconds: 1));
         } else {
@@ -202,8 +191,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<void>> deletePet(String id) async {
     try {
       // Mock 모드 또는 테스트 환경에서는 Mock 삭제
-      if (AppConfig.current.isMockMode ||
-          AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
         if (AppConfig.current.environment == 'test') {
           await Future.delayed(const Duration(milliseconds: 1));
         } else {
@@ -230,8 +218,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   Future<Result<String>> uploadPetImage(String petId, String imagePath) async {
     try {
       // Mock 모드 또는 테스트 환경에서는 Mock 업로드
-      if (AppConfig.current.isMockMode ||
-          AppConfig.current.environment == 'test') {
+      if (AppConfig.current.isMockMode || AppConfig.current.environment == 'test') {
         await Future.delayed(const Duration(milliseconds: 500));
         final imageUrl = 'https://example.com/images/$petId.jpg';
         return Result.success('이미지가 성공적으로 업로드되었습니다', imageUrl);
@@ -257,10 +244,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   }
 
   @override
-  Future<Result<void>> updateSharingSettings(
-    String petId,
-    bool isPublic,
-  ) async {
+  Future<Result<void>> updateSharingSettings(String petId, bool isPublic) async {
     try {
       // 시뮬레이션된 공유 설정 업데이트
       await Future.delayed(const Duration(milliseconds: 200));

@@ -5,13 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 🎯 Add YouTube Video Dialog State Provider
 final addYouTubeVideoDialogProvider =
-    StateNotifierProvider<
-      AddYouTubeVideoDialogController,
-      AddYouTubeVideoDialogState
-    >((ref) => AddYouTubeVideoDialogController());
+    StateNotifierProvider<AddYouTubeVideoDialogController, AddYouTubeVideoDialogState>(
+      (ref) => AddYouTubeVideoDialogController(),
+    );
 
-class AddYouTubeVideoDialogController
-    extends StateNotifier<AddYouTubeVideoDialogState> {
+class AddYouTubeVideoDialogController extends StateNotifier<AddYouTubeVideoDialogState> {
   AddYouTubeVideoDialogController() : super(const AddYouTubeVideoDialogState());
 
   void setLoading(bool isLoading) {
@@ -38,10 +36,7 @@ class AddYouTubeVideoDialogState {
   final bool isLoading;
   final List<String> tags;
 
-  const AddYouTubeVideoDialogState({
-    this.isLoading = false,
-    this.tags = const [],
-  });
+  const AddYouTubeVideoDialogState({this.isLoading = false, this.tags = const []});
 
   AddYouTubeVideoDialogState copyWith({bool? isLoading, List<String>? tags}) {
     return AddYouTubeVideoDialogState(
@@ -73,8 +68,7 @@ class _AddYouTubeVideoDialogContent extends ConsumerStatefulWidget {
       _AddYouTubeVideoDialogContentState();
 }
 
-class _AddYouTubeVideoDialogContentState
-    extends ConsumerState<_AddYouTubeVideoDialogContent> {
+class _AddYouTubeVideoDialogContentState extends ConsumerState<_AddYouTubeVideoDialogContent> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _urlController;
   late final TextEditingController _titleController;
@@ -209,10 +203,7 @@ class _AddYouTubeVideoDialogContentState
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('キャンセル'),
-        ),
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
         ElevatedButton(
           onPressed: state.isLoading ? null : _submit,
           child: state.isLoading
@@ -231,10 +222,7 @@ class _AddYouTubeVideoDialogContentState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'YouTube URL *',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        const Text('YouTube URL *', style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: _urlController,
@@ -363,10 +351,7 @@ class _AddYouTubeVideoDialogContentState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '추가된 태그:',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-        ),
+        const Text('추가된 태그:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
         const SizedBox(height: AppSpacing.xs),
         Wrap(
           spacing: AppSpacing.xs,

@@ -29,12 +29,10 @@ class NotificationListWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<NotificationListWidget> createState() =>
-      _NotificationListWidgetState();
+  ConsumerState<NotificationListWidget> createState() => _NotificationListWidgetState();
 }
 
-class _NotificationListWidgetState
-    extends ConsumerState<NotificationListWidget> {
+class _NotificationListWidgetState extends ConsumerState<NotificationListWidget> {
   @override
   Widget build(BuildContext context) {
     // Riverpod Provider를 사용하여 알림 목록 관리
@@ -86,8 +84,7 @@ class _NotificationListWidgetState
 
   List<NotificationModel> _applyFilters(List<NotificationModel> notifications) {
     return notifications.where((notification) {
-      if (widget.filterStatus != null &&
-          notification.status != widget.filterStatus) {
+      if (widget.filterStatus != null && notification.status != widget.filterStatus) {
         return false;
       }
       if (widget.filterType != null && notification.type != widget.filterType) {
@@ -104,9 +101,7 @@ class _NotificationListWidgetState
     if (!notification.isUnread) return; // 이미 읽음인 경우 처리하지 않음
 
     try {
-      await ref
-          .read(notificationsNotifierProvider.notifier)
-          .markAsRead(notification.id);
+      await ref.read(notificationsNotifierProvider.notifier).markAsRead(notification.id);
       widget.onNotificationTap?.call();
     } catch (e) {
       if (kDebugMode) {}
@@ -124,10 +119,7 @@ class _NotificationListWidgetState
         title: const Text('通知削除'),
         content: const Text('この通知を削除しますか？'),
         actions: [
-          TextButton(
-            onPressed: () => context.pop(false),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => context.pop(false), child: const Text('キャンセル')),
           TextButton(
             onPressed: () => context.pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -140,9 +132,7 @@ class _NotificationListWidgetState
 
   Future<void> _deleteNotification(NotificationModel notification) async {
     try {
-      await ref
-          .read(notificationsNotifierProvider.notifier)
-          .deleteNotification(notification.id);
+      await ref.read(notificationsNotifierProvider.notifier).deleteNotification(notification.id);
       widget.onNotificationDelete?.call();
     } catch (e) {
       if (kDebugMode) {}
@@ -151,10 +141,7 @@ class _NotificationListWidgetState
 
   Widget _buildLoadMoreButton() {
     return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       child: InkWell(
         onTap: () {
           // 더보기 기능 구현 시 추가
@@ -195,15 +182,9 @@ class _NotificationListWidgetState
         children: [
           const Icon(Icons.error_outline, size: 64, color: AppColors.pointGray),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            'エラーが発生しました',
-            style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
-          ),
+          Text('エラーが発生しました', style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray)),
           const SizedBox(height: AppSpacing.sm),
-          Text(
-            '通知の読み込みに失敗しました',
-            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-          ),
+          Text('通知の読み込みに失敗しました', style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
         ],
       ),
     );
@@ -214,16 +195,9 @@ class _NotificationListWidgetState
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.notifications_none,
-            size: 64,
-            color: AppColors.pointGray,
-          ),
+          const Icon(Icons.notifications_none, size: 64, color: AppColors.pointGray),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            '通知がありません',
-            style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
-          ),
+          Text('通知がありません', style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray)),
           const SizedBox(height: AppSpacing.sm),
           Text(
             '新しい通知が届くとここに表示されます',
@@ -251,10 +225,7 @@ class _NotificationListWidgetState
         _deleteNotification(notification);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.xs,
-        ),
+        margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -274,9 +245,7 @@ class _NotificationListWidgetState
                 _markAsRead(notification);
               }
               // 알림 상세 화면으로 이동
-              context.push(
-                '${RouteConstants.notificationDetailRoute}?id=${notification.id}',
-              );
+              context.push('${RouteConstants.notificationDetailRoute}?id=${notification.id}');
             },
             borderRadius: BorderRadius.circular(AppRadius.medium),
             child: Padding(
@@ -294,9 +263,7 @@ class _NotificationListWidgetState
                       children: [
                         Text(
                           notification.title,
-                          style: NotificationUIUtils.getTitleStyle(
-                            notification.isUnread,
-                          ),
+                          style: NotificationUIUtils.getTitleStyle(notification.isUnread),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -315,9 +282,7 @@ class _NotificationListWidgetState
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        DateFormatService.formatRelativeTime(
-                          notification.createdAt,
-                        ),
+                        DateFormatService.formatRelativeTime(notification.createdAt),
                         style: NotificationUIUtils.timeStyle,
                       ),
                       if (notification.isUnread) ...[

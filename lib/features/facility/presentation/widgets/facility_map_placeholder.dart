@@ -1,27 +1,19 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 
 import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
-import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
-import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
 
 class FacilityMapPlaceholder extends StatelessWidget {
   final List<Facility> facilities;
   final Function(Facility) onFacilityTap;
 
-  const FacilityMapPlaceholder({
-    super.key,
-    required this.facilities,
-    required this.onFacilityTap,
-  });
+  const FacilityMapPlaceholder({super.key, required this.facilities, required this.onFacilityTap});
 
   void _showFullScreenMap(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => _FullScreenMapDialog(
-          facilities: facilities,
-          onFacilityTap: onFacilityTap,
-        ),
+        builder: (context) =>
+            _FullScreenMapDialog(facilities: facilities, onFacilityTap: onFacilityTap),
       ),
     );
   }
@@ -59,11 +51,7 @@ class FacilityMapPlaceholder extends StatelessWidget {
                     color: AppColors.pointDark,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(
-                    Icons.fullscreen,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  child: const Icon(Icons.fullscreen, color: Colors.white, size: 20),
                 ),
               ),
             ),
@@ -99,10 +87,7 @@ class FacilityMapPlaceholder extends StatelessWidget {
   Widget _buildMapBackground() {
     return Container(
       decoration: BoxDecoration(color: Colors.grey[100]),
-      child: CustomPaint(
-        painter: FacilityMapBackgroundPainter(),
-        size: Size.infinite,
-      ),
+      child: CustomPaint(painter: FacilityMapBackgroundPainter(), size: Size.infinite),
     );
   }
 
@@ -236,10 +221,7 @@ class _FullScreenMapDialog extends StatelessWidget {
   final List<Facility> facilities;
   final Function(Facility) onFacilityTap;
 
-  const _FullScreenMapDialog({
-    required this.facilities,
-    required this.onFacilityTap,
-  });
+  const _FullScreenMapDialog({required this.facilities, required this.onFacilityTap});
 
   @override
   Widget build(BuildContext context) {
@@ -266,10 +248,7 @@ class _FullScreenMapDialog extends StatelessWidget {
             icon: const Icon(Icons.my_location, color: Colors.white, size: 20),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('現在位置に移動'),
-                  duration: Duration(seconds: 1),
-                ),
+                const SnackBar(content: Text('現在位置に移動'), duration: Duration(seconds: 1)),
               );
             },
           ),
@@ -290,10 +269,7 @@ class _FullScreenMapDialog extends StatelessWidget {
               // 지도 배경 (전체 화면 크기)
               Container(
                 decoration: BoxDecoration(color: Colors.grey[100]),
-                child: CustomPaint(
-                  painter: FacilityMapBackgroundPainter(),
-                  size: Size.infinite,
-                ),
+                child: CustomPaint(painter: FacilityMapBackgroundPainter(), size: Size.infinite),
               ),
 
               // 시설 마커들 (전체 화면에서 더 크게)
@@ -307,19 +283,13 @@ class _FullScreenMapDialog extends StatelessWidget {
                   children: [
                     _buildZoomButton(Icons.add, () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('地図を拡大'),
-                          duration: Duration(seconds: 1),
-                        ),
+                        const SnackBar(content: Text('地図を拡大'), duration: Duration(seconds: 1)),
                       );
                     }),
                     const SizedBox(height: 8),
                     _buildZoomButton(Icons.remove, () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('地図を縮小'),
-                          duration: Duration(seconds: 1),
-                        ),
+                        const SnackBar(content: Text('地図を縮小'), duration: Duration(seconds: 1)),
                       );
                     }),
                   ],
@@ -350,17 +320,12 @@ class _FullScreenMapDialog extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         '合計 ${facilities.length}件の施設',
-                        style: AppFonts.bodySmall.copyWith(
-                          color: Colors.white70,
-                        ),
+                        style: AppFonts.bodySmall.copyWith(color: Colors.white70),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'マーカーをタップして詳細情報を確認してください',
-                        style: AppFonts.bodySmall.copyWith(
-                          color: Colors.white60,
-                          fontSize: 10,
-                        ),
+                        style: AppFonts.bodySmall.copyWith(color: Colors.white60, fontSize: 10),
                       ),
                     ],
                   ),
@@ -409,9 +374,7 @@ class _FullScreenMapDialog extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: facility.type == FacilityType.hospital
-                ? Colors.red
-                : AppColors.pointBlue,
+            color: facility.type == FacilityType.hospital ? Colors.red : AppColors.pointBlue,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
@@ -422,9 +385,7 @@ class _FullScreenMapDialog extends StatelessWidget {
             ],
           ),
           child: Icon(
-            facility.type == FacilityType.hospital
-                ? Icons.local_hospital
-                : Icons.content_cut,
+            facility.type == FacilityType.hospital ? Icons.local_hospital : Icons.content_cut,
             color: Colors.white,
             size: 24,
           ),
@@ -460,10 +421,7 @@ class _FullScreenMapDialog extends StatelessWidget {
               ),
               Text(
                 '${(facility.rating * 20 + 50).toInt()}m',
-                style: AppFonts.bodySmall.copyWith(
-                  color: Colors.grey[600],
-                  fontSize: 9,
-                ),
+                style: AppFonts.bodySmall.copyWith(color: Colors.grey[600], fontSize: 9),
               ),
             ],
           ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aipet_frontend/app/providers/app_initialization_provider.dart';
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/splash/data/data.dart';
 import 'package:aipet_frontend/features/splash/presentation/widgets/splash_logo_widget.dart';
@@ -39,12 +40,7 @@ class SplashAnimationNotifier extends _$SplashAnimationNotifier {
     return Tween<double>(
       begin: AppConstants.splashFadeStart,
       end: AppConstants.splashFadeEnd,
-    ).animate(
-      CurvedAnimation(
-        parent: controller,
-        curve: AppConstants.splashFadeInterval,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: controller, curve: AppConstants.splashFadeInterval));
   }
 
   /// Scale 애니메이션 생성
@@ -52,12 +48,7 @@ class SplashAnimationNotifier extends _$SplashAnimationNotifier {
     return Tween<double>(
       begin: AppConstants.splashScaleStart,
       end: AppConstants.splashScaleEnd,
-    ).animate(
-      CurvedAnimation(
-        parent: controller,
-        curve: AppConstants.splashScaleInterval,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: controller, curve: AppConstants.splashScaleInterval));
   }
 
   void startAnimation() {
@@ -75,11 +66,7 @@ class SplashAnimationState {
   final Animation<double>? fadeAnimation;
   final Animation<double>? scaleAnimation;
 
-  const SplashAnimationState({
-    this.animationController,
-    this.fadeAnimation,
-    this.scaleAnimation,
-  });
+  const SplashAnimationState({this.animationController, this.fadeAnimation, this.scaleAnimation});
 
   SplashAnimationState copyWith({
     AnimationController? animationController,
@@ -107,8 +94,7 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
   StreamSubscription<Result<SplashState>>? _splashSequenceSubscription;
 
   @override
@@ -129,14 +115,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _preloadImages() async {
     try {
       await Future.wait([
-        precacheImage(
-          const AssetImage(AppConstants.splashAppLogoPath),
-          context,
-        ),
-        precacheImage(
-          const AssetImage(AppConstants.splashCompanyLogoPath),
-          context,
-        ),
+        precacheImage(const AssetImage(AppConstants.splashAppLogoPath), context),
+        precacheImage(const AssetImage(AppConstants.splashCompanyLogoPath), context),
       ]);
     } catch (error) {
       // 이미지 프리로딩 실패는 치명적이지 않으므로 로그만 남김
@@ -150,9 +130,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     await _preloadImages();
 
     // 애니메이션 초기화
-    ref
-        .read(splashAnimationNotifierProvider.notifier)
-        .initializeAnimations(this);
+    ref.read(splashAnimationNotifierProvider.notifier).initializeAnimations(this);
     ref.read(splashAnimationNotifierProvider.notifier).startAnimation();
 
     // 스플래시 시퀀스 시작
@@ -161,7 +139,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   /// 스플래시 시퀀스 시작
   void _startSplashSequence() {
-    final controller = ref.read(splashControllerProvider);
+    final controller = ref.read(splashControllerNotifierProvider.notifier);
     _splashSequenceSubscription = controller.startSplashSequence().listen(
       (result) => _handleSplashResult(result),
       onError: (error) => _handleSplashError(error),
@@ -171,8 +149,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   /// 스플래시 결과 처리
   void _handleSplashResult(Result<SplashState> result) {
     if (result.isSuccess && result.dataOrNull != null) {
-      // 상태 업데이트
-      ref.read(splashControllerProvider).updateSplashState(result.dataOrNull!);
+      // 상태 업데이트 - SplashStateNotifier를 사용
+      ref.read(splashStateNotifierProvider.notifier).updateState(result.dataOrNull!);
 
       // 완료 시 다음 화면으로 이동
       if (result.dataOrNull!.isCompleted) {
@@ -231,19 +209,28 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     if (!mounted) return;
 
     try {
-      final controller = ref.read(splashControllerProvider);
-      final routeResult = await controller.determineNextRoute();
-      if (routeResult.isSuccess && routeResult.dataOrNull != null) {
-        if (mounted) {
-          context.go(routeResult.dataOrNull!);
+      // 앱 초기화 상태 확인
+      final initState = ref.read(appInitializationProvider);
+
+      if (initState.isInitialized) {
+        // 온보딩 완료 상태에 따라 라우팅 결정
+        if (initState.isOnboardingCompleted) {
+          if (mounted) {
+            context.go(AppRouter.homeRoute);
+          }
+        } else {
+          if (mounted) {
+            context.go(AppRouter.onboardingRoute);
+          }
         }
       } else {
-        // 기본 경로로 이동
+        // 초기화가 완료되지 않은 경우 온보딩으로 이동
         if (mounted) {
           context.go(AppRouter.onboardingRoute);
         }
       }
     } catch (error) {
+      debugPrint('Navigation error: $error');
       // 에러 발생 시 기본 경로로 이동
       if (mounted) {
         context.go(AppRouter.onboardingRoute);

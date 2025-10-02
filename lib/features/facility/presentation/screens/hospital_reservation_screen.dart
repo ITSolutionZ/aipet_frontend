@@ -12,12 +12,10 @@ class HospitalReservationScreen extends ConsumerStatefulWidget {
   const HospitalReservationScreen({super.key});
 
   @override
-  ConsumerState<HospitalReservationScreen> createState() =>
-      _HospitalReservationScreenState();
+  ConsumerState<HospitalReservationScreen> createState() => _HospitalReservationScreenState();
 }
 
-class _HospitalReservationScreenState
-    extends ConsumerState<HospitalReservationScreen> {
+class _HospitalReservationScreenState extends ConsumerState<HospitalReservationScreen> {
   final TextEditingController _searchController = TextEditingController();
   late HospitalReservationController _controller;
 
@@ -88,36 +86,25 @@ class _HospitalReservationScreenState
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.search_off,
-                              size: 64,
-                              color: Colors.grey[400],
-                            ),
+                            Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
                             const SizedBox(height: AppSpacing.md),
                             Text(
                               '検索結果がありません',
-                              style: AppFonts.bodyMedium.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                              style: AppFonts.bodyMedium.copyWith(color: Colors.grey[600]),
                             ),
                           ],
                         ),
                       )
                     : ListView.builder(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.lg,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                         itemCount: state.filteredFacilities.length,
                         itemBuilder: (context, index) {
                           final facility = state.filteredFacilities[index];
                           return Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: AppSpacing.md,
-                            ),
+                            padding: const EdgeInsets.only(bottom: AppSpacing.md),
                             child: FacilityCard(
                               facility: facility,
-                              onFavoriteToggle: () =>
-                                  _toggleFavorite(facility.id),
+                              onFavoriteToggle: () => _toggleFavorite(facility.id),
                               onTap: () {
                                 context.push('/facility-detail/${facility.id}');
                               },
@@ -140,9 +127,7 @@ class _HospitalReservationScreenState
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.blue,
                       elevation: 2,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.lg,
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppRadius.medium),
                         side: const BorderSide(color: Colors.blue, width: 1),

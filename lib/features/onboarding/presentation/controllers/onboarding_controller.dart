@@ -10,14 +10,18 @@ class OnboardingController extends BaseController {
   OnboardingController(super.ref);
 
   // ✅ All UseCases properly injected
-  late final CompleteOnboardingUseCase _completeUseCase =
-      CompleteOnboardingUseCase(ref.read(onboardingRepositoryProvider));
-  late final CheckOnboardingStatusUseCase _checkStatusUseCase =
-      CheckOnboardingStatusUseCase(ref.read(onboardingRepositoryProvider));
-  late final LoadOnboardingDataUseCase _loadDataUseCase =
-      LoadOnboardingDataUseCase(ref.read(onboardingRepositoryProvider));
-  late final RestartOnboardingUseCase _restartUseCase =
-      RestartOnboardingUseCase(ref.read(onboardingRepositoryProvider));
+  late final CompleteOnboardingUseCase _completeUseCase = CompleteOnboardingUseCase(
+    ref.read(onboardingRepositoryProvider),
+  );
+  late final CheckOnboardingStatusUseCase _checkStatusUseCase = CheckOnboardingStatusUseCase(
+    ref.read(onboardingRepositoryProvider),
+  );
+  late final LoadOnboardingDataUseCase _loadDataUseCase = LoadOnboardingDataUseCase(
+    ref.read(onboardingRepositoryProvider),
+  );
+  late final RestartOnboardingUseCase _restartUseCase = RestartOnboardingUseCase(
+    ref.read(onboardingRepositoryProvider),
+  );
   late final NextPageUseCase _nextPageUseCase = NextPageUseCase(
     ref.read(onboardingRepositoryProvider),
   );
@@ -27,8 +31,9 @@ class OnboardingController extends BaseController {
   late final GoToPageUseCase _goToPageUseCase = GoToPageUseCase(
     ref.read(onboardingRepositoryProvider),
   );
-  late final NavigateAfterOnboardingUseCase _navigationUseCase =
-      NavigateAfterOnboardingUseCase(ref.read(onboardingRepositoryProvider));
+  late final NavigateAfterOnboardingUseCase _navigationUseCase = NavigateAfterOnboardingUseCase(
+    ref.read(onboardingRepositoryProvider),
+  );
 
   /// ✅ Navigate to next page through UseCase
   Future<Result<void>> nextPage() async {

@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/auth/presentation/presentation.dart';
+import 'package:aipet_frontend/features/auth/presentation/screens/dev_login_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import 'route_constants.dart';
@@ -12,7 +13,7 @@ class AuthRoutes {
     GoRoute(
       path: RouteConstants.loginRoute,
       name: 'login',
-      builder: (context, state) => const LoginScreen(),
+      builder: (context, state) => const DevLoginScreen(), // 개발용 로그인 화면 사용
     ),
     GoRoute(
       path: RouteConstants.signupRoute,

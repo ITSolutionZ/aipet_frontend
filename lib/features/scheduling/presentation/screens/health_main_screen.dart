@@ -88,11 +88,7 @@ class HealthMainScreen extends StatelessWidget {
                 child: Icon(icon, color: color, size: 32),
               ),
               const SizedBox(height: AppSpacing.md),
-              Text(
-                title,
-                style: AppFonts.titleMedium,
-                textAlign: TextAlign.center,
-              ),
+              Text(title, style: AppFonts.titleMedium, textAlign: TextAlign.center),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 subtitle,
@@ -146,9 +142,7 @@ class HealthMainScreen extends StatelessWidget {
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       'ペットの健康状態をチェックしましょう',
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointGray,
-                      ),
+                      style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     _buildHealthCheckItem(
@@ -213,12 +207,7 @@ class HealthMainScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('閉じる'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('閉じる'))],
       ),
     );
   }
@@ -263,9 +252,7 @@ class HealthMainScreen extends StatelessWidget {
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       'ペットの運動と活動を記録しましょう',
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointGray,
-                      ),
+                      style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     _buildExerciseItem(
@@ -330,12 +317,7 @@ class HealthMainScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('閉じる'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('閉じる'))],
       ),
     );
   }
@@ -398,13 +380,11 @@ class HealthMainScreen extends StatelessWidget {
       onSave: (value) {
         final temp = double.tryParse(value);
         if (temp != null && temp >= 35 && temp <= 42) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('体温 $temp°C を記録しました')));
+        } else {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('体温 $temp°C を記録しました')));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('有効な体温を入力してください (35-42°C)')),
-          );
+          ).showSnackBar(const SnackBar(content: Text('有効な体温を入力してください (35-42°C)')));
         }
       },
     );
@@ -423,9 +403,9 @@ class HealthMainScreen extends StatelessWidget {
             context,
           ).showSnackBar(SnackBar(content: Text('心拍数 ${rate}bpm を記録しました')));
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('有効な心拍数を入力してください (60-200 bpm)')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('有効な心拍数を入力してください (60-200 bpm)')));
         }
       },
     );
@@ -496,9 +476,7 @@ class HealthMainScreen extends StatelessWidget {
   }
 
   void _viewActivityHistory(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('活動履歴機能は開発中です')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('活動履歴機能は開発中です')));
   }
 
   // 투약 관리 관련 다이얼로그들
@@ -510,9 +488,7 @@ class HealthMainScreen extends StatelessWidget {
       hint: 'フロントライン',
       onSave: (value) {
         if (value.trim().isNotEmpty) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('$value を追加しました')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$value を追加しました')));
         } else {
           ScaffoldMessenger.of(
             context,
@@ -523,22 +499,16 @@ class HealthMainScreen extends StatelessWidget {
   }
 
   void _showMedicationSchedule(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('投薬スケジュール機能は開発中です')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('投薬スケジュール機能は開発中です')));
   }
 
   // 건강 분석 관련 다이얼로그들
   void _showHealthTrends(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('健康トレンド分析機能は開発中です')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('健康トレンド分析機能は開発中です')));
   }
 
   void _showHealthReport(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('健康レポート機能は開発中です')));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('健康レポート機能は開発中です')));
   }
 
   // 공통 입력 다이얼로그
@@ -561,10 +531,7 @@ class HealthMainScreen extends StatelessWidget {
           keyboardType: TextInputType.number,
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
           ElevatedButton(
             onPressed: () {
               onSave(controller.text);

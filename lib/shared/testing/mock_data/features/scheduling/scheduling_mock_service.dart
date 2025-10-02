@@ -54,9 +54,7 @@ class SchedulingMockService extends BaseMockService {
   /// 펫별 피딩 스케줄 조회
   static List<Map<String, dynamic>> getMockFeedingSchedulesByPet(String petId) {
     final allSchedules = getMockFeedingSchedules();
-    return allSchedules
-        .where((schedule) => schedule['petId'] == petId)
-        .toList();
+    return allSchedules.where((schedule) => schedule['petId'] == petId).toList();
   }
 
   /// 오늘의 식사 일정 조회
@@ -109,11 +107,7 @@ class SchedulingMockService extends BaseMockService {
         },
       ],
       'weeklyAverage': 420,
-      'tips': [
-        '신선한 물을 매일 교체해주세요',
-        '물그릇은 항상 청결하게 유지해주세요',
-        '활동량이 많은 날에는 물 섭취량이 늘어날 수 있습니다',
-      ],
+      'tips': ['신선한 물을 매일 교체해주세요', '물그릇은 항상 청결하게 유지해주세요', '활동량이 많은 날에는 물 섭취량이 늘어날 수 있습니다'],
     };
   }
 
@@ -241,8 +235,7 @@ class SchedulingMockService extends BaseMockService {
     // 펫별 맞춤 데이터
     switch (petId) {
       case '1': // MAX
-        baseData['healthAlerts'][0]['message'] =
-            'MAX의 연간 예방접종이 다음 주에 예정되어 있습니다.';
+        baseData['healthAlerts'][0]['message'] = 'MAX의 연간 예방접종이 다음 주에 예정되어 있습니다.';
         break;
       case '2': // LUNA
         baseData['upcomingAppointments'] = 1;
@@ -251,8 +244,7 @@ class SchedulingMockService extends BaseMockService {
       case '3': // MOMO
         baseData['upcomingAppointments'] = 1;
         baseData['medicationReminders'] = 0;
-        baseData['healthAlerts'][0]['message'] =
-            'MOMO의 정기 검진이 다음 달에 예정되어 있습니다.';
+        baseData['healthAlerts'][0]['message'] = 'MOMO의 정기 검진이 다음 달에 예정되어 있습니다.';
         break;
     }
 
@@ -286,10 +278,7 @@ class SchedulingMockService extends BaseMockService {
   }
 
   /// 월별 진행상황
-  static List<Map<String, dynamic>> getMockMonthlyProgress({
-    String? petId,
-    int months = 6,
-  }) {
+  static List<Map<String, dynamic>> getMockMonthlyProgress({String? petId, int months = 6}) {
     final progress = <Map<String, dynamic>>[];
 
     for (int i = months; i >= 0; i--) {
@@ -336,12 +325,7 @@ class SchedulingMockService extends BaseMockService {
   /// 펫 크기별 급식 가이드
   static Map<String, dynamic> getPetSizeFeedingGuide() {
     return {
-      'guidelines': [
-        '하루 2-3회 나누어 급식',
-        '일정한 시간에 규칙적으로',
-        '신선한 물을 항상 제공',
-        '체중 변화 주기적으로 체크',
-      ],
+      'guidelines': ['하루 2-3회 나누어 급식', '일정한 시간에 규칙적으로', '신선한 물을 항상 제공', '체중 변화 주기적으로 체크'],
       'portions': getMockPetSizesAndFeedingAmounts(),
       'tips': ['급식량은 펫의 활동량에 따라 조절', '간식은 하루 칼로리의 10% 이내', '새로운 사료 변경 시 점진적으로'],
     };
@@ -353,11 +337,7 @@ class SchedulingMockService extends BaseMockService {
   }
 
   /// 급식 스케줄 업데이트
-  static void updateFeedingSchedule(
-    String mealType,
-    String time,
-    String amount,
-  ) {
+  static void updateFeedingSchedule(String mealType, String time, String amount) {
     // Mock implementation
   }
 
@@ -453,11 +433,7 @@ class SchedulingMockService extends BaseMockService {
         {'week': 3, 'meals': 12, 'amount': 3600},
         {'week': 4, 'meals': 14, 'amount': 4200},
       ],
-      'recommendations': [
-        '급식 시간을 더 일정하게 유지해보세요',
-        '주말에도 규칙적인 급식 시간을 지켜주세요',
-        '현재 급식량이 적절합니다',
-      ],
+      'recommendations': ['급식 시간을 더 일정하게 유지해보세요', '주말에도 규칙적인 급식 시간을 지켜주세요', '현재 급식량이 적절합니다'],
       'nutritionBalance': {
         'protein': 85, // 퍼센트
         'fat': 78,
@@ -482,11 +458,7 @@ class SchedulingMockService extends BaseMockService {
         'successRate': 92.9,
         'averageAmount': '275g',
       },
-      'monthlyAverage': {
-        'mealsPerDay': 1.8,
-        'consistencyScore': 88.5,
-        'preferredTime': '18:30',
-      },
+      'monthlyAverage': {'mealsPerDay': 1.8, 'consistencyScore': 88.5, 'preferredTime': '18:30'},
       'trends': {
         'weeklyChange': -7.2, // 퍼센트 변화
         'monthlyChange': 3.1,

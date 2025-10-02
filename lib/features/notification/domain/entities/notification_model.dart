@@ -184,17 +184,11 @@ class NotificationModel {
         orElse: () => NotificationStatus.unread,
       ),
       createdAt: DateTime.parse(json['createdAt'] as String),
-      readAt: json['readAt'] != null
-          ? DateTime.parse(json['readAt'] as String)
-          : null,
-      expiresAt: json['expiresAt'] != null
-          ? DateTime.parse(json['expiresAt'] as String)
-          : null,
+      readAt: json['readAt'] != null ? DateTime.parse(json['readAt'] as String) : null,
+      expiresAt: json['expiresAt'] != null ? DateTime.parse(json['expiresAt'] as String) : null,
       data: json['data'] as Map<String, dynamic>?,
       actions: json['actions'] != null
-          ? (json['actions'] as List)
-                .map((action) => NotificationAction.fromJson(action))
-                .toList()
+          ? (json['actions'] as List).map((action) => NotificationAction.fromJson(action)).toList()
           : null,
       imageUrl: json['imageUrl'] as String?,
       icon: json['icon'] as String?,
@@ -277,8 +271,7 @@ class NotificationModel {
   String? get petName => data?['petName'] as String?;
 
   /// 메타데이터 (data에서 추출)
-  Map<String, dynamic>? get metadata =>
-      data?['metadata'] as Map<String, dynamic>?;
+  Map<String, dynamic>? get metadata => data?['metadata'] as Map<String, dynamic>?;
 
   @override
   String toString() {
@@ -309,12 +302,7 @@ class NotificationAction {
   /// 액션 데이터
   final Map<String, dynamic>? data;
 
-  const NotificationAction({
-    required this.id,
-    required this.title,
-    required this.type,
-    this.data,
-  });
+  const NotificationAction({required this.id, required this.title, required this.type, this.data});
 
   /// JSON에서 NotificationAction 생성
   factory NotificationAction.fromJson(Map<String, dynamic> json) {
@@ -377,8 +365,7 @@ class NotificationSettings {
   /// JSON에서 NotificationSettings 생성
   factory NotificationSettings.fromJson(Map<String, dynamic> json) {
     final typeSettingsMap = <NotificationType, bool>{};
-    final typeSettingsJson =
-        json['typeSettings'] as Map<String, dynamic>? ?? {};
+    final typeSettingsJson = json['typeSettings'] as Map<String, dynamic>? ?? {};
 
     for (final entry in typeSettingsJson.entries) {
       final type = NotificationType.values.firstWhere(
@@ -394,9 +381,7 @@ class NotificationSettings {
       soundEnabled: json['soundEnabled'] as bool? ?? true,
       vibrationEnabled: json['vibrationEnabled'] as bool? ?? true,
       badgeEnabled: json['badgeEnabled'] as bool? ?? true,
-      quietTime: json['quietTime'] != null
-          ? QuietTimeSettings.fromJson(json['quietTime'])
-          : null,
+      quietTime: json['quietTime'] != null ? QuietTimeSettings.fromJson(json['quietTime']) : null,
     );
   }
 
@@ -488,12 +473,7 @@ class QuietTimeSettings {
 
   /// JSON으로 변환
   Map<String, dynamic> toJson() {
-    return {
-      'enabled': enabled,
-      'startTime': startTime,
-      'endTime': endTime,
-      'days': days,
-    };
+    return {'enabled': enabled, 'startTime': startTime, 'endTime': endTime, 'days': days};
   }
 
   /// 현재 조용한 시간인지 확인
@@ -511,12 +491,10 @@ class QuietTimeSettings {
     // 시간 확인
     if (startTime.compareTo(endTime) <= 0) {
       // 같은 날 내의 시간 범위 (예: 08:00-22:00)
-      return currentTime.compareTo(startTime) >= 0 &&
-          currentTime.compareTo(endTime) <= 0;
+      return currentTime.compareTo(startTime) >= 0 && currentTime.compareTo(endTime) <= 0;
     } else {
       // 자정을 걸치는 시간 범위 (예: 22:00-08:00)
-      return currentTime.compareTo(startTime) >= 0 ||
-          currentTime.compareTo(endTime) <= 0;
+      return currentTime.compareTo(startTime) >= 0 || currentTime.compareTo(endTime) <= 0;
     }
   }
 

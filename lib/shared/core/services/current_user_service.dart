@@ -59,9 +59,7 @@ class CurrentUserService {
     try {
       final user = await _authRepository.getCurrentUser();
 
-      if (user != null &&
-          user.displayName != null &&
-          user.displayName!.isNotEmpty) {
+      if (user != null && user.displayName != null && user.displayName!.isNotEmpty) {
         return Result.success('사용자 이름을 성공적으로 가져왔습니다', user.displayName!);
       } else {
         // 이메일에서 이름 부분 추출 시도
@@ -109,9 +107,7 @@ final currentUserIdProvider = FutureProvider<String?>((ref) async {
 });
 
 /// 현재 사용자 정보 Provider
-final currentUserInfoProvider = FutureProvider<Map<String, String?>>((
-  ref,
-) async {
+final currentUserInfoProvider = FutureProvider<Map<String, String?>>((ref) async {
   final userService = ref.watch(currentUserServiceProvider);
 
   final userIdResult = await userService.getCurrentUserId();
@@ -121,8 +117,6 @@ final currentUserInfoProvider = FutureProvider<Map<String, String?>>((
   return {
     'userId': userIdResult.isSuccess ? userIdResult.dataOrNull : null,
     'email': emailResult.isSuccess ? emailResult.dataOrNull : null,
-    'displayName': displayNameResult.isSuccess
-        ? displayNameResult.dataOrNull
-        : null,
+    'displayName': displayNameResult.isSuccess ? displayNameResult.dataOrNull : null,
   };
 });

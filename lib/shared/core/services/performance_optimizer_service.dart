@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 
 /// 성능 최적화 서비스
 class PerformanceOptimizerService {
-  static final PerformanceOptimizerService _instance =
-      PerformanceOptimizerService._internal();
+  static final PerformanceOptimizerService _instance = PerformanceOptimizerService._internal();
   factory PerformanceOptimizerService() => _instance;
   PerformanceOptimizerService._internal();
 
@@ -166,13 +165,10 @@ class PerformanceOptimizerService {
   /// 성능 통계 가져오기
   Map<String, dynamic> getPerformanceStats() {
     return {
-      'memoryUsage': _memoryUsageHistory.isNotEmpty
-          ? _memoryUsageHistory.last
-          : 0.0,
+      'memoryUsage': _memoryUsageHistory.isNotEmpty ? _memoryUsageHistory.last : 0.0,
       'memoryHistory': List<double>.from(_memoryUsageHistory),
       'imageCacheSize': PaintingBinding.instance.imageCache.currentSize,
-      'imageCacheSizeBytes':
-          PaintingBinding.instance.imageCache.currentSizeBytes,
+      'imageCacheSizeBytes': PaintingBinding.instance.imageCache.currentSizeBytes,
       'isAnimationOptimized': _isAnimationOptimized,
     };
   }

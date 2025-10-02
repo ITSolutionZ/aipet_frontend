@@ -25,11 +25,7 @@ class ProfileEditButtons extends StatelessWidget {
         children: [
           // キャンセルボタン
           Expanded(
-            child: ActionButton.outlined(
-              isEnabled: !isLoading,
-              onPressed: onCancel,
-              text: 'キャンセル',
-            ),
+            child: ActionButton.outlined(isEnabled: !isLoading, onPressed: onCancel, text: 'キャンセル'),
           ),
           const SizedBox(width: AppSpacing.md),
           // 保存ボタン

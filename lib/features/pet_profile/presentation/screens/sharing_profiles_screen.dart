@@ -9,8 +9,7 @@ class SharingProfilesScreen extends ConsumerStatefulWidget {
   const SharingProfilesScreen({super.key});
 
   @override
-  ConsumerState<SharingProfilesScreen> createState() =>
-      _SharingProfilesScreenState();
+  ConsumerState<SharingProfilesScreen> createState() => _SharingProfilesScreenState();
 }
 
 class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
@@ -70,11 +69,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
           Tab(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.qr_code, size: 20),
-                SizedBox(width: 8),
-                Text('コード生成'),
-              ],
+              children: [Icon(Icons.qr_code, size: 20), SizedBox(width: 8), Text('コード生成')],
             ),
           ),
           Tab(
@@ -115,9 +110,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
         content: Text(message),
         backgroundColor: AppColors.pointGreen,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
       ),
     );
   }
@@ -128,9 +121,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
         content: Text(message),
         backgroundColor: AppColors.pointPink,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
       ),
     );
   }

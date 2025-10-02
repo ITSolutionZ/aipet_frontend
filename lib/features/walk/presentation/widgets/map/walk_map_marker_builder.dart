@@ -55,7 +55,7 @@ class WalkMapMarkerBuilder {
   }
 
   /// 선택된 펫 마커 생성
-  static Marker buildSelectedPetMarker(PetInfo pet, Position currentPosition) {
+  static Marker buildSelectedPetMarker(WalkPetInfo pet, Position currentPosition) {
     return Marker(
       markerId: const MarkerId('selected_pet'),
       position: LatLng(
@@ -71,7 +71,7 @@ class WalkMapMarkerBuilder {
   static Set<Marker> buildAllMarkers({
     required List<WalkRecordEntity> walkRecords,
     Position? currentPosition,
-    PetInfo? selectedPet,
+    WalkPetInfo? selectedPet,
   }) {
     final markers = <Marker>{};
 

@@ -125,9 +125,7 @@ class ConfirmationDialogComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
       title: Row(
         children: [
           if (icon != null) ...[
@@ -147,10 +145,7 @@ class ConfirmationDialogComponent extends StatelessWidget {
       ),
       content: Text(
         message,
-        style: AppFonts.bodyMedium.copyWith(
-          color: AppColors.pointGray,
-          height: 1.4,
-        ),
+        style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray, height: 1.4),
       ),
       actions: [
         TextButton(
@@ -175,9 +170,7 @@ class ConfirmationDialogComponent extends StatelessWidget {
             backgroundColor: confirmButtonColor ?? AppColors.pointBlue,
             foregroundColor: confirmTextColor ?? Colors.white,
             elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.small),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.small)),
           ),
           child: Text(
             confirmText,

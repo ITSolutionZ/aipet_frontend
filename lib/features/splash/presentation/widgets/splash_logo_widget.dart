@@ -58,19 +58,13 @@ class SplashLogoWidget extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withValues(
-                  alpha: AppConstants.splashGradientAlpha1 / 255,
-                ),
-                Colors.white.withValues(
-                  alpha: AppConstants.splashGradientAlpha2 / 255,
-                ),
+                Colors.white.withValues(alpha: AppConstants.splashGradientAlpha1 / 255),
+                Colors.white.withValues(alpha: AppConstants.splashGradientAlpha2 / 255),
               ],
             ),
             borderRadius: BorderRadius.circular(AppConstants.splashLogoRadius),
             border: Border.all(
-              color: Colors.white.withValues(
-                alpha: AppConstants.splashBorderAlpha / 255,
-              ),
+              color: Colors.white.withValues(alpha: AppConstants.splashBorderAlpha / 255),
               width: 1,
             ),
           ),
@@ -114,11 +108,7 @@ class SplashLogoWidget extends StatelessWidget {
   }
 
   /// 이미지 로드 실패시 표시할 위젯
-  Widget _buildErrorWidget(
-    BuildContext context,
-    Object error,
-    StackTrace? stackTrace,
-  ) {
+  Widget _buildErrorWidget(BuildContext context, Object error, StackTrace? stackTrace) {
     return Container(
       color: Colors.grey[200],
       child: const Icon(Icons.pets, size: 60, color: Colors.grey),

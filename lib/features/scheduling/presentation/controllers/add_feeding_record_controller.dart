@@ -12,15 +12,13 @@ class AddFeedingRecordController extends StateNotifier<AddFeedingRecordState> {
 
   /// 펫 정보 및 사이즈 가이드 로드
   void loadPetInfo(String petId) {
-    final petSizes = scheduling_mock
-        .SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = scheduling_mock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     final selectedPetInfo = petSizes[petId];
     Map<String, dynamic>? petSizeGuide;
 
     if (selectedPetInfo != null) {
       final size = selectedPetInfo['size'] as String;
-      final sizeGuide =
-          scheduling_mock.SchedulingMockService.getPetSizeFeedingGuide();
+      final sizeGuide = scheduling_mock.SchedulingMockService.getPetSizeFeedingGuide();
       petSizeGuide = sizeGuide[size];
     }
 
@@ -29,9 +27,7 @@ class AddFeedingRecordController extends StateNotifier<AddFeedingRecordState> {
     List<String> selectedStatuses = [];
     Map<String, String> statusValues = {};
 
-    selectedStatuses = List<String>.from(
-      currentStatus['selectedStatuses'] ?? [],
-    );
+    selectedStatuses = List<String>.from(currentStatus['selectedStatuses'] ?? []);
     statusValues = Map<String, String>.from(currentStatus);
     statusValues.remove('selectedStatuses');
     statusValues.remove('lastUpdated');
@@ -74,10 +70,7 @@ class AddFeedingRecordController extends StateNotifier<AddFeedingRecordState> {
     // MockDataService에 상태 업데이트
     MockDataService.updatePetStatus(petId, statusValues);
 
-    state = state.copyWith(
-      selectedStatuses: selectedStatuses,
-      statusValues: statusValues,
-    );
+    state = state.copyWith(selectedStatuses: selectedStatuses, statusValues: statusValues);
   }
 
   /// 목업 데이터에 새로운 급여 기록 추가
@@ -171,8 +164,6 @@ class AddFeedingRecordState {
 
 /// 컨트롤러 프로바이더
 final addFeedingRecordControllerProvider =
-    StateNotifierProvider<AddFeedingRecordController, AddFeedingRecordState>((
-      ref,
-    ) {
+    StateNotifierProvider<AddFeedingRecordController, AddFeedingRecordState>((ref) {
       return AddFeedingRecordController();
     });

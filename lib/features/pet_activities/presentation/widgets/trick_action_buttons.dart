@@ -22,9 +22,7 @@ class TrickActionButtons extends StatelessWidget {
               backgroundColor: AppColors.pointBlue,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.md),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
             ),
           ),
         ),
@@ -43,9 +41,7 @@ class TrickActionButtons extends StatelessWidget {
               foregroundColor: AppColors.pointBrown,
               side: const BorderSide(color: AppColors.pointBrown),
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.md),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
             ),
           ),
         ),

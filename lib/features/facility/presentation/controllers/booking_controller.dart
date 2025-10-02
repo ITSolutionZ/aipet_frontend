@@ -4,16 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 예약 컨트롤러
 class BookingController extends StateNotifier<BookingState> {
-  BookingController({required String facilityId})
-    : super(BookingState(facilityId: facilityId)) {
+  BookingController({required String facilityId}) : super(BookingState(facilityId: facilityId)) {
     _loadFacilityData();
   }
 
   /// 시설 데이터 로드
   void _loadFacilityData() {
-    final facilityData = FacilityMockService.getMockFacilityDetailById(
-      state.facilityId,
-    );
+    final facilityData = FacilityMockService.getMockFacilityDetailById(state.facilityId);
     if (facilityData != null) {
       final facility = Facility(
         id: facilityData['id'] as String,
@@ -24,9 +21,7 @@ class BookingController extends StateNotifier<BookingState> {
         longitude: facilityData['longitude'] as double? ?? 139.6503,
         phone: facilityData['phone'] as String,
         email: facilityData['email'] as String,
-        type: facilityData['type'] == 'grooming'
-            ? FacilityType.grooming
-            : FacilityType.hospital,
+        type: facilityData['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
         rating: (facilityData['rating'] as num).toDouble(),
         reviewCount: facilityData['reviewCount'] as int,
         imagePath: facilityData['imagePath'] as String,
@@ -69,10 +64,7 @@ class BookingController extends StateNotifier<BookingState> {
       }
     }
 
-    state = state.copyWith(
-      services: newServices,
-      selectedServices: newSelectedServices,
-    );
+    state = state.copyWith(services: newServices, selectedServices: newSelectedServices);
   }
 
   /// 예약 확인
@@ -140,9 +132,6 @@ class BookingState {
 
 /// 컨트롤러 프로바이더
 final bookingControllerProvider =
-    StateNotifierProvider.family<BookingController, BookingState, String>((
-      ref,
-      facilityId,
-    ) {
+    StateNotifierProvider.family<BookingController, BookingState, String>((ref, facilityId) {
       return BookingController(facilityId: facilityId);
     });

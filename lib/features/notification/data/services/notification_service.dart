@@ -27,17 +27,14 @@ class NotificationService {
       StreamController<NotificationModel>.broadcast();
 
   /// 알림 스트림
-  Stream<NotificationModel> get notificationStream =>
-      _notificationController.stream;
+  Stream<NotificationModel> get notificationStream => _notificationController.stream;
 
   /// 알림 서비스 초기화
   Future<void> initialize() async {
     _localNotifications = FlutterLocalNotificationsPlugin();
 
     // Android 설정
-    const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
+    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
 
     // iOS 설정
     const iosSettings = DarwinInitializationSettings(
@@ -47,10 +44,7 @@ class NotificationService {
     );
 
     // 초기화 설정
-    const initSettings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
+    const initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
 
     // 알림 서비스 초기화
     await _localNotifications.initialize(
@@ -139,10 +133,7 @@ class NotificationService {
       categoryIdentifier: 'aipet_category',
     );
 
-    const details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
+    const details = NotificationDetails(android: androidDetails, iOS: iosDetails);
 
     if (scheduledDate != null) {
       // 예약된 알림 (현재는 즉시 알림으로 처리)
@@ -186,14 +177,10 @@ class NotificationService {
   }
 
   /// 알림 액션 처리
-  void _handleNotificationAction(
-    NotificationModel notification,
-    String actionId,
-  ) {
+  void _handleNotificationAction(NotificationModel notification, String actionId) {
     final action = notification.actions?.firstWhere(
       (action) => action.id == actionId,
-      orElse: () =>
-          const NotificationAction(id: 'default', title: '기본', type: 'default'),
+      orElse: () => const NotificationAction(id: 'default', title: '기본', type: 'default'),
     );
 
     if (kDebugMode) {}
@@ -225,10 +212,7 @@ class NotificationService {
   }
 
   /// 화면 열기 액션 처리
-  void _handleOpenScreenAction(
-    NotificationAction? action,
-    NotificationModel notification,
-  ) {
+  void _handleOpenScreenAction(NotificationAction? action, NotificationModel notification) {
     final screenPath = action?.data?['screen_path'] as String?;
     final petId = action?.data?['pet_id'] as String?;
 
@@ -375,8 +359,7 @@ class NotificationService {
   }) async {
     try {
       // API 연계 전까지는 Mock 데이터 사용
-      List<NotificationModel> notifications =
-          NotificationMockService.getMockNotifications();
+      List<NotificationModel> notifications = NotificationMockService.getMockNotifications();
 
       // 필터링 적용
       notifications = notifications.where((notification) {
@@ -501,9 +484,7 @@ class NotificationService {
   /// 읽지 않은 알림 개수 가져오기
   Future<int> getUnreadCount() async {
     try {
-      final notifications = await getNotifications(
-        status: NotificationStatus.unread,
-      );
+      final notifications = await getNotifications(status: NotificationStatus.unread);
       return notifications.length;
     } catch (e) {
       if (kDebugMode) {}

@@ -19,12 +19,10 @@ class YouTubeTrainingVideosScreen extends ConsumerStatefulWidget {
   const YouTubeTrainingVideosScreen({super.key, required this.petId});
 
   @override
-  ConsumerState<YouTubeTrainingVideosScreen> createState() =>
-      _YouTubeTrainingVideosScreenState();
+  ConsumerState<YouTubeTrainingVideosScreen> createState() => _YouTubeTrainingVideosScreenState();
 }
 
-class _YouTubeTrainingVideosScreenState
-    extends ConsumerState<YouTubeTrainingVideosScreen> {
+class _YouTubeTrainingVideosScreenState extends ConsumerState<YouTubeTrainingVideosScreen> {
   late YouTubeVideosController _controller;
   String _searchQuery = '';
   final List<String> _selectedTags = [];
@@ -59,9 +57,7 @@ class _YouTubeTrainingVideosScreenState
   }
 
   Future<void> _openVideo(YouTubeVideoEntity video, {int? startTime}) async {
-    final url = startTime != null
-        ? video.getYouTubeUrlWithTime(startTime)
-        : video.youtubeUrl;
+    final url = startTime != null ? video.getYouTubeUrlWithTime(startTime) : video.youtubeUrl;
 
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -132,23 +128,14 @@ class _YouTubeTrainingVideosScreenState
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: AppColors.pointBrown,
-                    ),
+                    const Icon(Icons.error_outline, size: 64, color: AppColors.pointBrown),
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       'ビデオの読み込みに失敗しました',
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointDark,
-                      ),
+                      style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
                     ),
                     const SizedBox(height: AppSpacing.md),
-                    ElevatedButton(
-                      onPressed: _loadVideos,
-                      child: const Text('再試行'),
-                    ),
+                    ElevatedButton(onPressed: _loadVideos, child: const Text('再試行')),
                   ],
                 ),
               ),

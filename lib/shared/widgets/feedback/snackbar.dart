@@ -85,11 +85,7 @@ class GlassSnackbar extends StatelessWidget {
                 Flexible(
                   child: Text(
                     message,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      height: 1.3,
-                    ),
+                    style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.3),
                   ),
                 ),
                 if (actionLabel != null && onAction != null) ...[
@@ -99,10 +95,7 @@ class GlassSnackbar extends StatelessWidget {
                     style: TextButton.styleFrom(foregroundColor: baseColor),
                     child: Text(
                       actionLabel!,
-                      style: TextStyle(
-                        color: baseColor,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(color: baseColor, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -144,15 +137,10 @@ class GlassSnackbarWidget extends ConsumerStatefulWidget {
   final GlassSnackbar snackbar;
   final OverlayEntry overlayEntry;
 
-  const GlassSnackbarWidget({
-    super.key,
-    required this.snackbar,
-    required this.overlayEntry,
-  });
+  const GlassSnackbarWidget({super.key, required this.snackbar, required this.overlayEntry});
 
   @override
-  ConsumerState<GlassSnackbarWidget> createState() =>
-      _GlassSnackbarWidgetState();
+  ConsumerState<GlassSnackbarWidget> createState() => _GlassSnackbarWidgetState();
 }
 
 class _GlassSnackbarWidgetState extends ConsumerState<GlassSnackbarWidget> {
@@ -231,8 +219,7 @@ class _GlassSnackbarWidgetState extends ConsumerState<GlassSnackbarWidget> {
 void showGlassSnackbar(BuildContext context, GlassSnackbar snackbar) {
   late OverlayEntry overlay;
   overlay = OverlayEntry(
-    builder: (ctx) =>
-        GlassSnackbarWidget(snackbar: snackbar, overlayEntry: overlay),
+    builder: (ctx) => GlassSnackbarWidget(snackbar: snackbar, overlayEntry: overlay),
   );
 
   Overlay.of(context).insert(overlay);

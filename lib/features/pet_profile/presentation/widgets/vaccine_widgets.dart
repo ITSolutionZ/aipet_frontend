@@ -73,9 +73,7 @@ class VaccineCard extends StatelessWidget {
                     Text(
                       'Next: $nextDue',
                       style: AppFonts.bodySmall.copyWith(
-                        color: isCompleted
-                            ? AppColors.pointGreen
-                            : AppColors.pointPink,
+                        color: isCompleted ? AppColors.pointGreen : AppColors.pointPink,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -142,10 +140,7 @@ class VaccineDetailModal extends StatelessWidget {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close),
-                ),
+                IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close)),
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -159,14 +154,8 @@ class VaccineDetailModal extends StatelessWidget {
                     // 백신 정보
                     _buildDetailSection('ワクチン情報', [
                       _buildDetailRow('名前', vaccine['name'] ?? 'Unknown'),
-                      _buildDetailRow(
-                        '説明',
-                        vaccine['description'] ?? 'No description',
-                      ),
-                      _buildDetailRow(
-                        '状態',
-                        vaccine['isCompleted'] == true ? '完了' : '未完了',
-                      ),
+                      _buildDetailRow('説明', vaccine['description'] ?? 'No description'),
+                      _buildDetailRow('状態', vaccine['isCompleted'] == true ? '完了' : '未完了'),
                     ]),
 
                     const SizedBox(height: AppSpacing.lg),
@@ -182,9 +171,7 @@ class VaccineDetailModal extends StatelessWidget {
 
                     // 수의사 정보
                     VeterinarianCard(
-                      veterinarian:
-                          vaccine['veterinarian'] as Map<String, dynamic>? ??
-                          {},
+                      veterinarian: vaccine['veterinarian'] as Map<String, dynamic>? ?? {},
                     ),
                   ],
                 ),
@@ -204,9 +191,7 @@ class VaccineDetailModal extends StatelessWidget {
                     },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppColors.pointBrown),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.md,
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     ),
                     child: Text(
                       '編集',
@@ -226,9 +211,7 @@ class VaccineDetailModal extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.pointGreen,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.md,
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     ),
                     child: Text(
                       '접종 완료',
@@ -330,11 +313,7 @@ class VeterinarianCard extends StatelessWidget {
                   color: AppColors.pointBlue.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.person,
-                  color: AppColors.pointBlue,
-                  size: 24,
-                ),
+                child: const Icon(Icons.person, color: AppColors.pointBlue, size: 24),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(

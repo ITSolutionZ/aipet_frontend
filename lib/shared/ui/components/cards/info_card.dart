@@ -160,10 +160,7 @@ class InfoCard extends StatelessWidget {
       children: [
         if (icon != null) ...[
           IconTheme(
-            data: IconThemeData(
-              color: iconColor ?? AppColors.primary,
-              size: 20,
-            ),
+            data: IconThemeData(color: iconColor ?? AppColors.primary, size: 20),
             child: icon!,
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -172,19 +169,12 @@ class InfoCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title!,
-                style: AppTextStyles.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Text(title!, style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.bold)),
               if (subtitle != null) ...[
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   subtitle!,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
+                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ],

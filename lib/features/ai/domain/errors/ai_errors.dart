@@ -255,23 +255,23 @@ class AiErrorHandler {
   /// 에러 메시지를 사용자 친화적으로 변환
   static String getUserFriendlyMessage(AiException error) {
     switch (error.runtimeType) {
-      case AiNetworkException:
+      case AiNetworkException _:
         return AiErrorCode.openaiApiServerError.userFriendlyMessage;
-      case AiOpenAIException:
+      case AiOpenAIException _:
         return AiErrorCode.openaiApiServerError.userFriendlyMessage;
-      case AiContentValidationException:
+      case AiContentValidationException _:
         return AiErrorCode.contentNotPetRelated.userFriendlyMessage;
-      case AiLocalStorageException:
+      case AiLocalStorageException _:
         return AiErrorCode.chatHistoryLoadFailed.userFriendlyMessage;
-      case AiCacheException:
+      case AiCacheException _:
         return AppErrorCode.cacheMiss.userFriendlyMessage;
-      case AiConfigException:
+      case AiConfigException _:
         return AppErrorCode.configurationMissing.userFriendlyMessage;
-      case AiDataParsingException:
+      case AiDataParsingException _:
         return AppErrorCode.parsingFailed.userFriendlyMessage;
-      case AiInputValidationException:
+      case AiInputValidationException _:
         return AppErrorCode.validationFailed.userFriendlyMessage;
-      case AiBusinessLogicException:
+      case AiBusinessLogicException _:
         return AppErrorCode.businessRuleViolation.userFriendlyMessage;
       default:
         return AppErrorCode.unexpectedError.userFriendlyMessage;

@@ -46,10 +46,7 @@ class BookingFacilityCard extends StatelessWidget {
                         color: AppColors.cardBackgroundGray,
                         borderRadius: BorderRadius.circular(AppSpacing.sm),
                       ),
-                      child: const Icon(
-                        Icons.business,
-                        color: AppColors.textSecondary,
-                      ),
+                      child: const Icon(Icons.business, color: AppColors.textSecondary),
                     ),
                   ),
                 )
@@ -61,11 +58,7 @@ class BookingFacilityCard extends StatelessWidget {
                     color: AppColors.cardBackgroundGray,
                     borderRadius: BorderRadius.circular(AppSpacing.sm),
                   ),
-                  child: const Icon(
-                    Icons.business,
-                    color: AppColors.textSecondary,
-                    size: 32,
-                  ),
+                  child: const Icon(Icons.business, color: AppColors.textSecondary, size: 32),
                 ),
               const SizedBox(width: AppSpacing.md),
 
@@ -76,9 +69,7 @@ class BookingFacilityCard extends StatelessWidget {
                   children: [
                     Text(
                       facilityName,
-                      style: AppFonts.headlineSmall.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppFonts.headlineSmall.copyWith(fontWeight: FontWeight.bold),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -94,9 +85,7 @@ class BookingFacilityCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             facilityAddress,
-                            style: AppFonts.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
+                            style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -106,17 +95,11 @@ class BookingFacilityCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
-                        const Icon(
-                          Icons.phone_outlined,
-                          size: 16,
-                          color: AppColors.textSecondary,
-                        ),
+                        const Icon(Icons.phone_outlined, size: 16, color: AppColors.textSecondary),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           facilityPhoneNumber,
-                          style: AppFonts.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
+                          style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
                         ),
                       ],
                     ),

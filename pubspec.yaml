@@ -15,7 +15,7 @@ dependencies:
   firebase_auth: ^5.1.4
   google_sign_in: ^6.2.1
   sign_in_with_apple: ^6.1.1
-  flutter_web_auth: ^0.4.0
+  # flutter_web_auth: ^0.4.3  # 네임스페이스 문제로 임시 비활성화
   screenshot: ^3.0.0
   google_fonts: ^6.3.0
   flutter_riverpod: ^2.5.1
@@ -26,13 +26,13 @@ dependencies:
   flutter_svg: ^2.0.10+1
   lottie: ^3.1.3
   fl_chart: ^0.68.0
-  http: ^1.2.2
+  http: ^1.5.0
   path_provider: ^2.1.4
   crypto: ^3.0.3
   flutter_local_notifications: ^17.2.3
   url_launcher: ^6.2.4
   share_plus: ^7.2.1
-  qr_code_scanner: ^1.0.1
+  # mobile_scanner: ^5.0.0  # 의존성 충돌로 임시 비활성화
   permission_handler: ^11.3.1
   flutter_secure_storage: ^9.2.2
   dio: ^5.4.3+1
@@ -43,10 +43,13 @@ dependencies:
   google_maps_flutter: ^2.8.0
   location: ^6.0.0
   image_picker: ^1.0.7
+  image: ^4.1.7
   logger: ^2.0.2+1
   sentry_flutter: ^9.6.0
   sqflite: ^2.3.3
   path: ^1.8.3
+  qr_flutter: ^4.1.0
+  table_calendar: ^3.1.2
 
   mockito: ^5.4.4
   freezed_annotation: ^2.4.4
@@ -69,27 +72,39 @@ flutter:
   uses-material-design: true
   assets:
     - .env
-    - assets/
     - assets/meteocons/
     - assets/meteocons/design/fill/animation-ready/
     - assets/meteocons/viewer.html
-    - assets/meteocons/viewer.html
+    - assets/policies/
+
     - assets/images/
     - assets/images/activities/
+    - assets/images/home_banner/
     - assets/images/backgrounds/
     - assets/images/cats/
     - assets/images/pet_selector/
     - assets/images/dogs/
     - assets/images/onboarding/
     - assets/images/etc/
-
+    - assets/images/home_banner/banners/
     - assets/images/modal/
     - assets/images/medications/
     - assets/images/textures/
     - assets/images/walks/
+
     - assets/icons/
     - assets/icons/navigation/
-    - assets/icons/weathers/
+    - assets/icons/home_menu/adopt.png
+    - assets/icons/home_menu/alregic.png
+    - assets/icons/home_menu/booking.png
+    - assets/icons/home_menu/community.png
+    - assets/icons/home_menu/daily.png
+    - assets/icons/home_menu/note.png
+    - assets/icons/home_menu/pharmacy.png
+    - assets/icons/home_menu/place.png
+    - assets/icons/home_menu/qr.png
+    - assets/icons/home_menu/shopping.png
+
     - assets/fonts/
     - assets/lottie/
 

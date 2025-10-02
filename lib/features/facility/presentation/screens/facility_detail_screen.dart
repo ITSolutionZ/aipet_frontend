@@ -19,8 +19,7 @@ class FacilityDetailScreen extends ConsumerStatefulWidget {
   const FacilityDetailScreen({super.key, required this.facilityId});
 
   @override
-  ConsumerState<FacilityDetailScreen> createState() =>
-      _FacilityDetailScreenState();
+  ConsumerState<FacilityDetailScreen> createState() => _FacilityDetailScreenState();
 }
 
 class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
@@ -87,11 +86,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
       pinned: true,
       backgroundColor: AppColors.pointBrown,
       leading: IconButton(
-        icon: const Icon(
-          Icons.arrow_back_ios,
-          color: AppColors.pureWhite,
-          size: 20,
-        ),
+        icon: const Icon(Icons.arrow_back_ios, color: AppColors.pureWhite, size: 20),
         onPressed: () => context.pop(),
       ),
       title: Text(
@@ -112,9 +107,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
           onPressed: () => _controller.handleFavoriteToggle(_facility!.id),
         ),
       ],
-      flexibleSpace: FlexibleSpaceBar(
-        background: FacilityDetailHeader(facility: _facility!),
-      ),
+      flexibleSpace: FlexibleSpaceBar(background: FacilityDetailHeader(facility: _facility!)),
     );
   }
 
@@ -145,9 +138,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
     return Card(
       elevation: 1,
       color: AppColors.pureWhite,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: FacilityContactSection(facility: _facility!),
@@ -159,9 +150,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
     return Card(
       elevation: 1,
       color: AppColors.pureWhite,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: FacilityLocationSection(facility: _facility!),
@@ -173,9 +162,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
     return Card(
       elevation: 1,
       color: AppColors.pureWhite,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: FacilityAvailabilitySection(facility: _facility!),
@@ -187,9 +174,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
     return Card(
       elevation: 1,
       color: AppColors.pureWhite,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: FacilityServicesSection(facility: _facility!),
@@ -218,9 +203,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
               backgroundColor: AppColors.pointBlue,
               foregroundColor: AppColors.pureWhite,
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
             ),
           ),
         ),
@@ -249,10 +232,7 @@ class _FacilityDetailScreenState extends ConsumerState<FacilityDetailScreen> {
       icon: const Icon(Icons.error_outline),
       title: '施設情報を読み込めませんでした',
       subtitle: 'しばらくしてから再度試してください',
-      action: ElevatedButton(
-        onPressed: _loadFacilityData,
-        child: const Text('再度試す'),
-      ),
+      action: ElevatedButton(onPressed: _loadFacilityData, child: const Text('再度試す')),
     );
   }
 }

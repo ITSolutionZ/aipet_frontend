@@ -9,10 +9,7 @@ class FeedingRepositoryImpl implements FeedingRepository {
     try {
       await Future.delayed(const Duration(milliseconds: 200));
       final data = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
-      return Result.success(
-        '펫 사이즈 급여량 정보를 성공적으로 가져왔습니다',
-        data as Map<String, dynamic>,
-      );
+      return Result.success('펫 사이즈 급여량 정보를 성공적으로 가져왔습니다', data as Map<String, dynamic>);
     } catch (error) {
       return Result.failure('펫 사이즈 급여량 정보를 가져오는데 실패했습니다: ${error.toString()}');
     }
@@ -98,8 +95,7 @@ class FeedingRepositoryImpl implements FeedingRepository {
   }) async {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
-      final analysisData =
-          SchedulingMockService.getMockFeedingStatisticsForRecords();
+      final analysisData = SchedulingMockService.getMockFeedingStatisticsForRecords();
       return Result.success('급여 분석 데이터를 성공적으로 가져왔습니다', analysisData);
     } catch (error) {
       return Result.failure('급여 분석 데이터를 가져오는데 실패했습니다: ${error.toString()}');

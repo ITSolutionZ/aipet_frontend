@@ -2,8 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Centralized env accessor
-String _env(String key, [String fallback = '']) =>
-    dotenv.env[key] ?? fallback; // Added
+String _env(String key, [String fallback = '']) => dotenv.env[key] ?? fallback; // Added
 
 /// 앱 설정 관리 클래스
 ///
@@ -17,8 +16,7 @@ abstract class AppConfig {
   String get apiBaseUrl;
 
   /// 환경변수에서 API URL 가져오기
-  static String get apiBaseUrlFromEnv =>
-      _env('API_BASE_URL', 'http://localhost:3000'); // Changed
+  static String get apiBaseUrlFromEnv => _env('API_BASE_URL', 'http://localhost:3000'); // Changed
 
   /// 앱 환경 (development, staging, production)
   String get environment;
@@ -144,16 +142,12 @@ abstract class AppConfig {
 
     if (isEnvLoaded) {
       debugPrint('🔑 API Key Status (키 값은 보안상 표시되지 않습니다):');
-      debugPrint(
-        '  Google Maps: ${googleMapsApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}',
-      );
+      debugPrint('  Google Maps: ${googleMapsApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
       debugPrint('  OpenAI: ${openaiApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
       debugPrint('  Weather: ${weatherApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
       debugPrint('  LINE: ${lineChannelId.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
       debugPrint('  YouTube: ${youtubeApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
-      debugPrint(
-        '  Google Calendar: ${googleCalendarApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}',
-      );
+      debugPrint('  Google Calendar: ${googleCalendarApiKey.isNotEmpty ? '✅ 설정됨' : '❌ 미설정'}');
     } else {
       debugPrint('❌ Environment variables not loaded');
     }
@@ -175,8 +169,7 @@ abstract class AppConfig {
   }
 
   /// Google Maps API 키 유효성 검사
-  bool get isGoogleMapsApiKeyValid =>
-      isApiKeyValid(googleMapsApiKey, 'Google Maps');
+  bool get isGoogleMapsApiKeyValid => isApiKeyValid(googleMapsApiKey, 'Google Maps');
 
   /// 현재 설정된 앱 설정 인스턴스를 반환합니다.
   static AppConfig get current => _current;

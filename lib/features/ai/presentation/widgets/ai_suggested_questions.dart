@@ -7,22 +7,14 @@ class AiSuggestedQuestions extends StatelessWidget {
   final List<AiSuggestedQuestionEntity> questions;
   final Function(String) onQuestionTap;
 
-  const AiSuggestedQuestions({
-    super.key,
-    required this.questions,
-    required this.onQuestionTap,
-  });
+  const AiSuggestedQuestions({super.key, required this.questions, required this.onQuestionTap});
 
   @override
   Widget build(BuildContext context) {
     // 디버그: 질문 목록 확인
-    debugPrint(
-      'AiSuggestedQuestions: Building with ${questions.length} questions',
-    );
+    debugPrint('AiSuggestedQuestions: Building with ${questions.length} questions');
     for (int i = 0; i < questions.length; i++) {
-      debugPrint(
-        'Question $i: "${questions[i].question}" (icon: ${questions[i].icon})',
-      );
+      debugPrint('Question $i: "${questions[i].question}" (icon: ${questions[i].icon})');
     }
 
     return Container(
@@ -70,17 +62,11 @@ class AiSuggestedQuestions extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        question.icon,
-                        size: 16,
-                        color: AppColors.pointBrown,
-                      ),
+                      Icon(question.icon, size: 16, color: AppColors.pointBrown),
                       const SizedBox(width: AppSpacing.xs),
                       Flexible(
                         child: Text(
-                          question.question.isEmpty
-                              ? 'No question text'
-                              : question.question,
+                          question.question.isEmpty ? 'No question text' : question.question,
                           style: AppFonts.bodyMedium.copyWith(
                             color: AppColors.pointDark,
                             fontWeight: FontWeight.w500,

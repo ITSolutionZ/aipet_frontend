@@ -84,9 +84,7 @@ class ApiUtils {
         handler.next(options);
       },
       onResponse: (response, handler) {
-        _loggerInstance.i(
-          '✅ API Response: ${response.statusCode} ${response.requestOptions.uri}',
-        );
+        _loggerInstance.i('✅ API Response: ${response.statusCode} ${response.requestOptions.uri}');
         handler.next(response);
       },
       onError: (error, handler) {
@@ -122,10 +120,7 @@ class ApiUtils {
 
             // 지수 백오프 지연
             final delay = Duration(
-              seconds:
-                  (AppConstants.exponentialBackoffBase.inSeconds *
-                          (retryCount + 1))
-                      .toInt(),
+              seconds: (AppConstants.exponentialBackoffBase.inSeconds * (retryCount + 1)).toInt(),
             );
 
             await Future.delayed(delay);
@@ -276,9 +271,7 @@ class ApiUtils {
     Response response,
     T Function(Map<String, dynamic>) fromJson,
   ) {
-    if (response.statusCode != null &&
-        response.statusCode! >= 200 &&
-        response.statusCode! < 300) {
+    if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300) {
       try {
         final data = fromJson(response.data as Map<String, dynamic>);
         return Result.success(AppTexts.success, data);
@@ -311,10 +304,7 @@ class ApiUtils {
         errorMessage = AppTexts.networkError;
       }
 
-      return Result.failure(
-        errorMessage,
-        e is Exception ? e : Exception(e.toString()),
-      );
+      return Result.failure(errorMessage, e is Exception ? e : Exception(e.toString()));
     }
   }
 
@@ -403,11 +393,7 @@ class ApiUtils {
   }
 
   /// 에러 로깅
-  static void _logError(
-    String message, [
-    Object? error,
-    StackTrace? stackTrace,
-  ]) {
+  static void _logError(String message, [Object? error, StackTrace? stackTrace]) {
     _loggerInstance.e(message, error: error, stackTrace: stackTrace);
 
     // Sentry를 사용한 에러 추적
@@ -429,9 +415,7 @@ class ApiUtils {
         level: SentryLevel.error,
         withScope: (scope) {
           scope.setTag('service', 'api_utils');
-          scope.setExtra('api_error', {
-            'timestamp': DateTime.now().toIso8601String(),
-          });
+          scope.setExtra('api_error', {'timestamp': DateTime.now().toIso8601String()});
         },
       );
     }

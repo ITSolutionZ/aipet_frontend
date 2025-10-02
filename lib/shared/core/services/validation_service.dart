@@ -12,10 +12,7 @@ class ValidationService {
       if (isValid) {
         return Result.success('有効なメールアドレスです');
       } else {
-        final errorMessage = ValidationUtils.getFieldErrorMessage(
-          email,
-          ValidationField.email,
-        );
+        final errorMessage = ValidationUtils.getFieldErrorMessage(email, ValidationField.email);
         return Result.failure(errorMessage ?? '無効なメールアドレスです');
       }
     } catch (error) {
@@ -60,15 +57,9 @@ class ValidationService {
   }
 
   /// 비밀번호 확인 검사
-  static Result<void> validateConfirmPassword(
-    String password,
-    String confirmPassword,
-  ) {
+  static Result<void> validateConfirmPassword(String password, String confirmPassword) {
     try {
-      final isValid = ValidationUtils.doPasswordsMatch(
-        password,
-        confirmPassword,
-      );
+      final isValid = ValidationUtils.doPasswordsMatch(password, confirmPassword);
       if (isValid) {
         return Result.success('パスワードが一致しています');
       } else {

@@ -52,12 +52,8 @@ class NotificationFilterChipsComponent extends StatelessWidget {
                 width: selectedFilter == null ? 1.5 : 1,
               ),
               labelStyle: TextStyle(
-                color: selectedFilter == null
-                    ? AppColors.pointBrown
-                    : AppColors.pointGray,
-                fontWeight: selectedFilter == null
-                    ? FontWeight.w600
-                    : FontWeight.normal,
+                color: selectedFilter == null ? AppColors.pointBrown : AppColors.pointGray,
+                fontWeight: selectedFilter == null ? FontWeight.w600 : FontWeight.normal,
                 fontSize: 14,
               ),
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -71,9 +67,7 @@ class NotificationFilterChipsComponent extends StatelessWidget {
                 avatar: Icon(
                   type.icon,
                   size: 16,
-                  color: selectedFilter == type
-                      ? type.color
-                      : AppColors.pointGray,
+                  color: selectedFilter == type ? type.color : AppColors.pointGray,
                 ),
                 label: Text(type.name),
                 selected: selectedFilter == type,
@@ -90,12 +84,8 @@ class NotificationFilterChipsComponent extends StatelessWidget {
                   width: selectedFilter == type ? 1.5 : 1,
                 ),
                 labelStyle: TextStyle(
-                  color: selectedFilter == type
-                      ? type.color
-                      : AppColors.pointGray,
-                  fontWeight: selectedFilter == type
-                      ? FontWeight.w600
-                      : FontWeight.normal,
+                  color: selectedFilter == type ? type.color : AppColors.pointGray,
+                  fontWeight: selectedFilter == type ? FontWeight.w600 : FontWeight.normal,
                   fontSize: 14,
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),

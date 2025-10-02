@@ -21,9 +21,7 @@ class YouTubeVideoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.md),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -42,9 +40,7 @@ class YouTubeVideoCard extends StatelessWidget {
                   // 제목
                   Text(
                     video.title,
-                    style: AppFonts.bodyMedium.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -54,9 +50,7 @@ class YouTubeVideoCard extends StatelessWidget {
                   if (video.description != null) ...[
                     Text(
                       video.description!,
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                      style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -68,10 +62,7 @@ class YouTubeVideoCard extends StatelessWidget {
                     Wrap(
                       spacing: AppSpacing.xs,
                       runSpacing: AppSpacing.xs,
-                      children: video.tags
-                          .take(3)
-                          .map((tag) => _buildTagChip(tag))
-                          .toList(),
+                      children: video.tags.take(3).map((tag) => _buildTagChip(tag)).toList(),
                     ),
                     const SizedBox(height: AppSpacing.sm),
                   ],
@@ -150,8 +141,7 @@ class YouTubeVideoCard extends StatelessWidget {
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: double.infinity,
-                errorBuilder: (context, error, stackTrace) =>
-                    _buildPlaceholder(),
+                errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
               ),
             )
           else
@@ -166,11 +156,7 @@ class YouTubeVideoCard extends StatelessWidget {
                 color: Colors.black.withValues(alpha: 0.7),
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: const Icon(
-                Icons.play_arrow,
-                color: Colors.white,
-                size: 30,
-              ),
+              child: const Icon(Icons.play_arrow, color: Colors.white, size: 30),
             ),
           ),
 
@@ -212,30 +198,20 @@ class YouTubeVideoCard extends StatelessWidget {
           topRight: Radius.circular(AppSpacing.md),
         ),
       ),
-      child: const Icon(
-        Icons.video_library,
-        color: AppColors.pointBrown,
-        size: 48,
-      ),
+      child: const Icon(Icons.video_library, color: AppColors.pointBrown, size: 48),
     );
   }
 
   Widget _buildTagChip(String tag) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: AppColors.pointBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.sm),
       ),
       child: Text(
         tag,
-        style: AppFonts.bodySmall.copyWith(
-          color: AppColors.pointBlue,
-          fontWeight: FontWeight.bold,
-        ),
+        style: AppFonts.bodySmall.copyWith(color: AppColors.pointBlue, fontWeight: FontWeight.bold),
       ),
     );
   }

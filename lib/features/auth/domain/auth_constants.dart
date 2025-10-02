@@ -10,8 +10,7 @@ class AuthConstants {
 
   // 토큰 관련 (공통 상수 사용)
   static const Duration defaultTokenExpiry = AppConstants.defaultTokenExpiry;
-  static const Duration tokenRefreshThreshold =
-      AppConstants.tokenRefreshThreshold;
+  static const Duration tokenRefreshThreshold = AppConstants.tokenRefreshThreshold;
 
   // API 타임아웃 (공통 상수 사용)
   static const Duration apiTimeout = AppConstants.apiTimeout;
@@ -23,8 +22,7 @@ class AuthConstants {
 
   // UI 관련 (공통 상수 사용)
   static const Duration loadingDebounce = AppConstants.loadingDebounce;
-  static const Duration errorDisplayDuration =
-      AppConstants.errorDisplayDuration;
+  static const Duration errorDisplayDuration = AppConstants.errorDisplayDuration;
 
   // 저장소 키 (TokenStorageService에서 사용)
   // 이 상수들은 AuthConfigConstants로 이동되었습니다.

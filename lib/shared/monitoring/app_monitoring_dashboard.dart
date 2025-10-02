@@ -11,8 +11,7 @@ import 'package:flutter/foundation.dart';
 /// 실시간 앱 상태, 성능, 보안 정보를 종합적으로 모니터링합니다.
 class AppMonitoringDashboard {
   static AppMonitoringDashboard? _instance;
-  static AppMonitoringDashboard get instance =>
-      _instance ??= AppMonitoringDashboard._();
+  static AppMonitoringDashboard get instance => _instance ??= AppMonitoringDashboard._();
 
   AppMonitoringDashboard._();
 
@@ -79,8 +78,7 @@ class AppMonitoringDashboard {
 
     // 보안 통계 수집
     final securityStats = ApiSecurityManager.instance.generateStats();
-    final suspiciousActivities = ApiSecurityManager.instance
-        .detectSuspiciousActivity();
+    final suspiciousActivities = ApiSecurityManager.instance.detectSuspiciousActivity();
 
     // 환경 정보 수집
     final environmentInfo = EnvironmentConfig.getEnvironmentInfo();
@@ -115,34 +113,25 @@ class AppMonitoringDashboard {
     // 성능 이슈 체크
     if (performance.avgApiResponseTime > 2000) {
       healthScore -= 20;
-      issues.add(
-        'Slow API response time: ${performance.avgApiResponseTime.toStringAsFixed(0)}ms',
-      );
+      issues.add('Slow API response time: ${performance.avgApiResponseTime.toStringAsFixed(0)}ms');
     }
 
     if (performance.avgWidgetBuildTime > 100) {
       healthScore -= 15;
-      issues.add(
-        'Slow widget build time: ${performance.avgWidgetBuildTime.toStringAsFixed(0)}ms',
-      );
+      issues.add('Slow widget build time: ${performance.avgWidgetBuildTime.toStringAsFixed(0)}ms');
     }
 
     if (performance.slowOperations.isNotEmpty) {
       healthScore -= 10;
-      issues.add(
-        '${performance.slowOperations.length} slow operations detected',
-      );
+      issues.add('${performance.slowOperations.length} slow operations detected');
     }
 
     // 메모리 이슈 체크
     if (memory.systemMemory != null) {
-      final memoryUsage =
-          memory.systemMemory!.usedMemory / memory.systemMemory!.totalMemory;
+      final memoryUsage = memory.systemMemory!.usedMemory / memory.systemMemory!.totalMemory;
       if (memoryUsage > 0.8) {
         healthScore -= 25;
-        issues.add(
-          'High memory usage: ${(memoryUsage * 100).toStringAsFixed(1)}%',
-        );
+        issues.add('High memory usage: ${(memoryUsage * 100).toStringAsFixed(1)}%');
       }
     }
 
@@ -154,9 +143,7 @@ class AppMonitoringDashboard {
     // 보안 이슈 체크
     if (suspiciousActivities.isNotEmpty) {
       healthScore -= 20;
-      issues.add(
-        '${suspiciousActivities.length} suspicious activities detected',
-      );
+      issues.add('${suspiciousActivities.length} suspicious activities detected');
     }
 
     if (security.activeRequests > 50) {
@@ -246,12 +233,9 @@ class AppMonitoringDashboard {
     }
 
     // 통계 계산
-    final healthScores = recentSnapshots
-        .map((snapshot) => snapshot.systemHealth.score)
-        .toList();
+    final healthScores = recentSnapshots.map((snapshot) => snapshot.systemHealth.score).toList();
 
-    final avgHealthScore =
-        healthScores.reduce((a, b) => a + b) / healthScores.length;
+    final avgHealthScore = healthScores.reduce((a, b) => a + b) / healthScores.length;
     final minHealthScore = healthScores.reduce((a, b) => a < b ? a : b);
     final maxHealthScore = healthScores.reduce((a, b) => a > b ? a : b);
 
@@ -323,9 +307,7 @@ class AppMonitoringDashboard {
     debugPrint('Min Health Score: ${stats.minHealthScore}');
     debugPrint('Max Health Score: ${stats.maxHealthScore}');
     debugPrint('Total Alerts: ${stats.totalAlerts}');
-    debugPrint(
-      'Total Suspicious Activities: ${stats.totalSuspiciousActivities}',
-    );
+    debugPrint('Total Suspicious Activities: ${stats.totalSuspiciousActivities}');
     debugPrint('Uptime: ${stats.uptime.inMinutes} minutes');
   }
 
@@ -388,11 +370,7 @@ class SystemHealth {
   final SystemHealthLevel level;
   final List<String> issues;
 
-  const SystemHealth({
-    required this.score,
-    required this.level,
-    required this.issues,
-  });
+  const SystemHealth({required this.score, required this.level, required this.issues});
 }
 
 /// 시스템 건강도 등급

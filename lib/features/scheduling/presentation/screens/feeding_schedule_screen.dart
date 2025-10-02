@@ -14,8 +14,7 @@ class FeedingScheduleScreen extends ConsumerStatefulWidget {
   const FeedingScheduleScreen({super.key, required this.petId});
 
   @override
-  ConsumerState<FeedingScheduleScreen> createState() =>
-      _FeedingScheduleScreenState();
+  ConsumerState<FeedingScheduleScreen> createState() => _FeedingScheduleScreenState();
 }
 
 class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
@@ -33,10 +32,8 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
 
   void _loadMockData() {
     setState(() {
-      _todayMeals =
-          SchedulingMock.SchedulingMockService.getMockTodayMealsForSchedule();
-      _scheduleItems = SchedulingMock
-          .SchedulingMockService.getMockFeedingSchedulesForSchedule();
+      _todayMeals = SchedulingMock.SchedulingMockService.getMockTodayMealsForSchedule();
+      _scheduleItems = SchedulingMock.SchedulingMockService.getMockFeedingSchedulesForSchedule();
     });
   }
 
@@ -76,8 +73,7 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 오늘의 급여 요약
-                    if (_todayMeals != null)
-                      TodayMealsCard(todayMeals: _todayMeals!),
+                    if (_todayMeals != null) TodayMealsCard(todayMeals: _todayMeals!),
                     const SizedBox(height: AppSpacing.lg),
 
                     // 스케줄 설정
@@ -111,9 +107,7 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.pointBrown,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppSpacing.md,
-                          ),
+                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                         ),
                       ),
                     ),

@@ -13,6 +13,8 @@ abstract class AiRepository {
   Future<Result<AiMessageEntity>> sendMessageWithPetContext(
     String message, {
     PetProfileEntity? petContext,
+    String? weatherAdvice,
+    String? walkGuide,
   });
 
   /// 채팅 기록 지우기

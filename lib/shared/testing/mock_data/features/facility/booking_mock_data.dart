@@ -4,17 +4,7 @@
 class BookingMockData {
   /// 기본 시간 슬롯 Mock 데이터
   static List<String> getDefaultTimeSlots() {
-    return [
-      '09:00',
-      '10:00',
-      '11:00',
-      '12:00',
-      '13:00',
-      '14:00',
-      '15:00',
-      '16:00',
-      '17:00',
-    ];
+    return ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
   }
 
   /// 병원 예약 시간 슬롯
@@ -37,16 +27,7 @@ class BookingMockData {
 
   /// 그루밍샵 예약 시간 슬롯
   static List<String> getGroomingTimeSlots() {
-    return [
-      '10:00',
-      '11:00',
-      '12:00',
-      '13:00',
-      '14:00',
-      '15:00',
-      '16:00',
-      '17:00',
-    ];
+    return ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
   }
 
   /// 시설 타입별 시간 슬롯 조회
@@ -113,11 +94,7 @@ class BookingMockData {
   }
 
   /// 시간 슬롯이 예약 가능한지 확인
-  static bool isTimeSlotAvailable(
-    DateTime date,
-    String timeSlot,
-    String facilityType,
-  ) {
+  static bool isTimeSlotAvailable(DateTime date, String timeSlot, String facilityType) {
     final unavailableSlots = getUnavailableSlots(date, facilityType);
     return !unavailableSlots.contains(timeSlot);
   }

@@ -6,11 +6,7 @@ class MealStatus {
   final String time;
   final bool isCompleted;
 
-  const MealStatus({
-    required this.meal,
-    required this.time,
-    required this.isCompleted,
-  });
+  const MealStatus({required this.meal, required this.time, required this.isCompleted});
 }
 
 class ScheduleItem {
@@ -28,13 +24,7 @@ class ScheduleItem {
     required this.isEnabled,
   });
 
-  ScheduleItem copyWith({
-    String? id,
-    String? meal,
-    String? time,
-    String? amount,
-    bool? isEnabled,
-  }) {
+  ScheduleItem copyWith({String? id, String? meal, String? time, String? amount, bool? isEnabled}) {
     return ScheduleItem(
       id: id ?? this.id,
       meal: meal ?? this.meal,
@@ -100,13 +90,7 @@ class FeedingScheduleController extends BaseController {
           amount: '100g',
           isEnabled: true,
         ),
-        const ScheduleItem(
-          id: 'lunch',
-          meal: '昼食',
-          time: '12:00',
-          amount: '100g',
-          isEnabled: true,
-        ),
+        const ScheduleItem(id: 'lunch', meal: '昼食', time: '12:00', amount: '100g', isEnabled: true),
         const ScheduleItem(
           id: 'dinner',
           meal: '夕食',
@@ -200,9 +184,7 @@ class FeedingScheduleController extends BaseController {
   /// 급여 완료율 계산
   double calculateCompletionRate(List<MealStatus> mealStatuses) {
     if (mealStatuses.isEmpty) return 0.0;
-    final completedCount = mealStatuses
-        .where((status) => status.isCompleted)
-        .length;
+    final completedCount = mealStatuses.where((status) => status.isCompleted).length;
     return completedCount / mealStatuses.length;
   }
 

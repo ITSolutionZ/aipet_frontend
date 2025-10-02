@@ -67,10 +67,7 @@ class PetNameInputController extends _$PetNameInputController {
       selectedImagePath: globalState.petImagePath,
       microchipNumber: globalState.microchipNumber ?? '',
       isNameValid: _validateName(globalState.petName ?? ''),
-      canProceedToNext: _canProceedToNext(
-        globalState.petName ?? '',
-        globalState.petGender,
-      ),
+      canProceedToNext: _canProceedToNext(globalState.petName ?? '', globalState.petGender),
     );
   }
 
@@ -94,10 +91,7 @@ class PetNameInputController extends _$PetNameInputController {
   void updateGender(String? gender) {
     final canProceed = _canProceedToNext(state.petName, gender);
 
-    state = state.copyWith(
-      selectedGender: gender,
-      canProceedToNext: canProceed,
-    );
+    state = state.copyWith(selectedGender: gender, canProceedToNext: canProceed);
 
     // 글로벌 상태 동기화
     _syncToGlobalState();
@@ -152,18 +146,11 @@ class PetNameInputController extends _$PetNameInputController {
     }
 
     if (!genderSelected) {
-      state = state.copyWith(
-        errorMessage: 'ペットの性別を選択してください',
-        canProceedToNext: false,
-      );
+      state = state.copyWith(errorMessage: 'ペットの性別を選択してください', canProceedToNext: false);
       return false;
     }
 
-    state = state.copyWith(
-      errorMessage: null,
-      isNameValid: true,
-      canProceedToNext: true,
-    );
+    state = state.copyWith(errorMessage: null, isNameValid: true, canProceedToNext: true);
     return true;
   }
 
@@ -207,10 +194,7 @@ class PetNameInputController extends _$PetNameInputController {
     final notifier = ref.read(petRegistrationStateProvider.notifier);
 
     notifier.setPetName(state.petName);
-    notifier.setPetGenderInfo(
-      gender: state.selectedGender,
-      isNeutered: state.isNeutered,
-    );
+    notifier.setPetGenderInfo(gender: state.selectedGender, isNeutered: state.isNeutered);
     notifier.setPetImagePath(state.selectedImagePath);
     notifier.setMicrochipNumber(state.microchipNumber);
   }

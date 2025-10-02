@@ -21,13 +21,9 @@ class MicrochipReminderService {
     final petId = pet.id;
 
     // 1주일 후 재표시 설정 확인
-    final remindLaterTime = prefs.getInt(
-      '$_keyPrefix$petId$_remindLaterSuffix',
-    );
+    final remindLaterTime = prefs.getInt('$_keyPrefix$petId$_remindLaterSuffix');
     if (remindLaterTime != null) {
-      final lastRemindTime = DateTime.fromMillisecondsSinceEpoch(
-        remindLaterTime,
-      );
+      final lastRemindTime = DateTime.fromMillisecondsSinceEpoch(remindLaterTime);
       final now = DateTime.now();
 
       // 7일이 지났는지 확인
@@ -35,8 +31,7 @@ class MicrochipReminderService {
         return false;
       } else {
         // 7일이 지났으므로 다시 마이크로칩 등록 상태 체크
-        final currentMicrochipId =
-            pet.additionalInfo?['microchipId'] as String?;
+        final currentMicrochipId = pet.additionalInfo?['microchipId'] as String?;
         if (currentMicrochipId != null && currentMicrochipId.isNotEmpty) {
           // 등록되었다면 알림 설정 제거하고 표시하지 않음
           await _clearReminders(petId);

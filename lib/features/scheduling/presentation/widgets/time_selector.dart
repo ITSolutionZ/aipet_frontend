@@ -50,10 +50,7 @@ class TimeSelector extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    const Icon(
-                      Icons.arrow_drop_down,
-                      color: AppColors.pointGray,
-                    ),
+                    const Icon(Icons.arrow_drop_down, color: AppColors.pointGray),
                   ],
                 ),
               ),

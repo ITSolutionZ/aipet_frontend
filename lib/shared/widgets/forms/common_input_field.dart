@@ -5,11 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 🎯 Common Input Field State Provider
 final commonInputFieldStateProvider =
-    StateNotifierProvider.family<
-      CommonInputFieldController,
-      CommonInputFieldState,
-      String
-    >((ref, fieldId) => CommonInputFieldController());
+    StateNotifierProvider.family<CommonInputFieldController, CommonInputFieldState, String>(
+      (ref, fieldId) => CommonInputFieldController(),
+    );
 
 class CommonInputFieldController extends StateNotifier<CommonInputFieldState> {
   CommonInputFieldController() : super(const CommonInputFieldState());
@@ -31,10 +29,7 @@ class CommonInputFieldState {
   final bool isFocused;
   final bool obscureText;
 
-  const CommonInputFieldState({
-    this.isFocused = false,
-    this.obscureText = false,
-  });
+  const CommonInputFieldState({this.isFocused = false, this.obscureText = false});
 
   CommonInputFieldState copyWith({bool? isFocused, bool? obscureText}) {
     return CommonInputFieldState(
@@ -163,8 +158,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
   @override
   void initState() {
     super.initState();
-    _controller =
-        widget.controller ?? TextEditingController(text: widget.initialValue);
+    _controller = widget.controller ?? TextEditingController(text: widget.initialValue);
     _focusNode = widget.focusNode ?? FocusNode();
 
     _focusNode.addListener(_onFocusChange);
@@ -194,9 +188,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
   void _onFocusChange() {
     final hasFocus = _focusNode.hasFocus;
     if (widget.fieldId != null) {
-      ref
-          .read(commonInputFieldStateProvider(widget.fieldId!).notifier)
-          .setFocus(hasFocus);
+      ref.read(commonInputFieldStateProvider(widget.fieldId!).notifier).setFocus(hasFocus);
     }
     widget.onFocusChange?.call(hasFocus);
   }
@@ -204,9 +196,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
   @override
   Widget build(BuildContext context) {
     final effectiveFieldId = widget.fieldId ?? 'default_common_input_field';
-    final fieldState = ref.watch(
-      commonInputFieldStateProvider(effectiveFieldId),
-    );
+    final fieldState = ref.watch(commonInputFieldStateProvider(effectiveFieldId));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,9 +224,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
         Text(
           widget.label,
           style: AppFonts.bodyMedium.copyWith(
-            color: widget.enabled
-                ? AppColors.pointDark
-                : AppColors.pointOffWhite,
+            color: widget.enabled ? AppColors.pointDark : AppColors.pointOffWhite,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -303,10 +291,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.medium),
-          borderSide: BorderSide(
-            color: AppColors.pointOffWhite.withValues(alpha: 0.3),
-            width: 1,
-          ),
+          borderSide: BorderSide(color: AppColors.pointOffWhite.withValues(alpha: 0.3), width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -322,10 +307,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.medium),
-          borderSide: BorderSide(
-            color: AppColors.pointOffWhite.withValues(alpha: 0.1),
-            width: 1,
-          ),
+          borderSide: BorderSide(color: AppColors.pointOffWhite.withValues(alpha: 0.1), width: 1),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
@@ -346,9 +328,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
         ),
         onPressed: () {
           if (widget.fieldId != null) {
-            ref
-                .read(commonInputFieldStateProvider(widget.fieldId!).notifier)
-                .toggleObscureText();
+            ref.read(commonInputFieldStateProvider(widget.fieldId!).notifier).toggleObscureText();
           }
         },
       );
@@ -379,9 +359,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
     if (widget.helpText != null) {
       return Text(
         widget.helpText!,
-        style: AppFonts.bodySmall.copyWith(
-          color: AppColors.pointOffWhite.withValues(alpha: 0.7),
-        ),
+        style: AppFonts.bodySmall.copyWith(color: AppColors.pointOffWhite.withValues(alpha: 0.7)),
       );
     }
 

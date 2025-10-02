@@ -35,10 +35,7 @@ class AuthModeService {
       isEmailVerified: false, // 회원가입 시에는 이메일 미인증
       creationTime: now,
       lastSignInTime: now,
-      customData: {
-        'isTempSignup': true,
-        'tempSignupTime': now.toIso8601String(),
-      },
+      customData: {'isTempSignup': true, 'tempSignupTime': now.toIso8601String()},
     );
   }
 

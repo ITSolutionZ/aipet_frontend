@@ -42,10 +42,7 @@ class PetImageDisplay extends StatelessWidget {
                 ),
               ],
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(width / 2),
-              child: _buildImage(),
-            ),
+            child: ClipRRect(borderRadius: BorderRadius.circular(width / 2), child: _buildImage()),
           ),
           if (showUploadIcon)
             Positioned(
@@ -59,11 +56,7 @@ class PetImageDisplay extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.pureWhite, width: 2),
                 ),
-                child: const Icon(
-                  Icons.camera_alt,
-                  color: AppColors.pureWhite,
-                  size: 20,
-                ),
+                child: const Icon(Icons.camera_alt, color: AppColors.pureWhite, size: 20),
               ),
             ),
           if (badge != null) Positioned(top: 10, right: 10, child: badge!),

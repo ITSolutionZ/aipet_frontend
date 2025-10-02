@@ -122,10 +122,7 @@ class GlassButton extends StatelessWidget {
       trailing: trailing,
       backgroundColor: isPrimary ? null : Colors.transparent,
       borderColor: borderColor,
-      padding:
-          padding != const EdgeInsets.symmetric(vertical: 14, horizontal: 20)
-          ? padding
-          : null,
+      padding: padding != const EdgeInsets.symmetric(vertical: 14, horizontal: 20) ? padding : null,
       textStyle: textStyle,
       borderRadius: borderRadius != 12 ? borderRadius : null,
     );
@@ -242,8 +239,7 @@ class PointButton extends StatelessWidget {
   }
 
   bool _isCustomPadding() {
-    return padding !=
-            const EdgeInsets.symmetric(vertical: 14, horizontal: 20) &&
+    return padding != const EdgeInsets.symmetric(vertical: 14, horizontal: 20) &&
         padding != const EdgeInsets.symmetric(vertical: 8, horizontal: 12) &&
         padding != const EdgeInsets.symmetric(vertical: 18, horizontal: 28);
   }

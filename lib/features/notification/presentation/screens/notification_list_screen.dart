@@ -11,12 +11,10 @@ class NotificationListScreen extends ConsumerStatefulWidget {
   const NotificationListScreen({super.key});
 
   @override
-  ConsumerState<NotificationListScreen> createState() =>
-      _NotificationListScreenState();
+  ConsumerState<NotificationListScreen> createState() => _NotificationListScreenState();
 }
 
-class _NotificationListScreenState
-    extends ConsumerState<NotificationListScreen> {
+class _NotificationListScreenState extends ConsumerState<NotificationListScreen> {
   late final NotificationListController _controller;
   NotificationType? _selectedFilter; // null = 全体 (전체)
   bool _shouldShowInfoCard = true;
@@ -43,9 +41,7 @@ class _NotificationListScreenState
 
   /// 알림 설정 상태 확인
   Future<void> _checkNotificationSettings() async {
-    final shouldShow = await _controller.checkNotificationSettings(
-      'default_user_id',
-    );
+    final shouldShow = await _controller.checkNotificationSettings('default_user_id');
     if (mounted) {
       setState(() {
         _shouldShowInfoCard = shouldShow;

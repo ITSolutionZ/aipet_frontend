@@ -122,4 +122,39 @@ class PetProfileEntity with _$PetProfileEntity {
       neutered: neutered ?? this.neutered,
     );
   }
+
+  /// 권장 산책 시간 (분 단위)
+  int get recommendedWalkTime {
+    // 개 타입일 경우
+    if (type.toLowerCase() == 'dog') {
+      // 크기와 몸무게에 따라 산책 시간 결정
+      if (size != null) {
+        switch (size!.toLowerCase()) {
+          case 'small': // 소형견 (< 10kg)
+            return 30;
+          case 'medium': // 중형견 (10-25kg)
+            return 45;
+          case 'large': // 대형견 (> 25kg)
+            return 60;
+        }
+      }
+
+      // size가 없으면 몸무게로 판단
+      if (weight < 10) {
+        return 30; // 소형견
+      } else if (weight < 25) {
+        return 45; // 중형견
+      } else {
+        return 60; // 대형견
+      }
+    }
+
+    // 고양이
+    if (type.toLowerCase() == 'cat') {
+      return 20;
+    }
+
+    // 기타 동물
+    return 15;
+  }
 }

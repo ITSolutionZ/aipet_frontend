@@ -17,9 +17,7 @@ class ValidationUtils {
     if (_isDevelopmentMode()) return true;
 
     // 최소 8자, 영문/숫자/특수문자 조합
-    final passwordRegex = RegExp(
-      r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-    );
+    final passwordRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
     return passwordRegex.hasMatch(password!);
   }
 
@@ -268,15 +266,7 @@ enum ValidationError {
 }
 
 /// 검증 필드 타입
-enum ValidationField {
-  email,
-  password,
-  username,
-  name,
-  phone,
-  petName,
-  microchip,
-}
+enum ValidationField { email, password, username, name, phone, petName, microchip }
 
 /// 검증 결과 클래스 (기존과 통합)
 class ValidationResult {
@@ -297,9 +287,7 @@ class ValidationResult {
 
   /// 에러 메시지 목록 반환
   List<String> get errorMessages {
-    return errors
-        .map((error) => ValidationUtils.getErrorMessage(error))
-        .toList();
+    return errors.map((error) => ValidationUtils.getErrorMessage(error)).toList();
   }
 
   /// 첫 번째 에러 메시지 반환

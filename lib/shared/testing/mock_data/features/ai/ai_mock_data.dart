@@ -130,10 +130,7 @@ class AiMockDataService {
   }
 
   /// 채팅 세션 Mock 데이터 생성
-  static Map<String, dynamic> createChatSessionMockData(
-    String title, {
-    String? petId,
-  }) {
+  static Map<String, dynamic> createChatSessionMockData(String title, {String? petId}) {
     return {
       'id': DateTime.now().millisecondsSinceEpoch.toString(),
       'title': title,

@@ -6,11 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Pet Basic Info Tab 상태 관리
 final petBasicInfoTabProvider =
-    StateNotifierProvider.family<
-      PetBasicInfoTabController,
-      PetBasicInfoTabState,
-      String
-    >((ref, tabId) => PetBasicInfoTabController());
+    StateNotifierProvider.family<PetBasicInfoTabController, PetBasicInfoTabState, String>(
+      (ref, tabId) => PetBasicInfoTabController(),
+    );
 
 class PetBasicInfoTabController extends StateNotifier<PetBasicInfoTabState> {
   PetBasicInfoTabController() : super(const PetBasicInfoTabState());
@@ -138,9 +136,7 @@ class PetBasicInfoTab extends ConsumerWidget {
       title: pet.name,
       subtitle: '${pet.type} • ${pet.breed}',
       badge: pet.gender,
-      badgeColor: pet.gender == 'Male'
-          ? AppColors.pointBlue
-          : AppColors.pointPink,
+      badgeColor: pet.gender == 'Male' ? AppColors.pointBlue : AppColors.pointPink,
       trailing: isEditMode
           ? IconButton(
               icon: const Icon(Icons.camera_alt),
@@ -150,11 +146,7 @@ class PetBasicInfoTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildBasicInfoCards(
-    BuildContext context,
-    WidgetRef ref,
-    String tabId,
-  ) {
+  Widget _buildBasicInfoCards(BuildContext context, WidgetRef ref, String tabId) {
     final tabState = ref.watch(petBasicInfoTabProvider(tabId));
 
     return Column(
@@ -182,9 +174,7 @@ class PetBasicInfoTab extends ConsumerWidget {
           ref,
           tabId,
           '体重',
-          isEditMode
-              ? '${tabState.editingWeight ?? pet.weight ?? 0}kg'
-              : '${pet.weight ?? 0}kg',
+          isEditMode ? '${tabState.editingWeight ?? pet.weight ?? 0}kg' : '${pet.weight ?? 0}kg',
           type: 'weight',
         ),
         const SizedBox(height: AppSpacing.md),
@@ -194,9 +184,7 @@ class PetBasicInfoTab extends ConsumerWidget {
           tabId,
           '外見',
           isEditMode
-              ? (tabState.appearanceController?.text ??
-                    pet.additionalInfo?['appearance'] ??
-                    '未設定')
+              ? (tabState.appearanceController?.text ?? pet.additionalInfo?['appearance'] ?? '未設定')
               : (pet.additionalInfo?['appearance'] ?? '未設定'),
           type: 'appearance',
         ),
@@ -227,16 +215,10 @@ class PetBasicInfoTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildMicrochipCard(
-    BuildContext context,
-    WidgetRef ref,
-    String tabId,
-  ) {
+  Widget _buildMicrochipCard(BuildContext context, WidgetRef ref, String tabId) {
     final tabState = ref.watch(petBasicInfoTabProvider(tabId));
     final microchipId = isEditMode
-        ? (tabState.microchipController?.text ??
-              pet.additionalInfo?['microchipId'] ??
-              '')
+        ? (tabState.microchipController?.text ?? pet.additionalInfo?['microchipId'] ?? '')
         : pet.additionalInfo?['microchipId'] ?? '';
 
     return GenericInfoCard.withIcon(
@@ -246,9 +228,7 @@ class PetBasicInfoTab extends ConsumerWidget {
       title: 'マイクロチップ',
       subtitle: microchipId.isEmpty ? '未登録' : microchipId,
       badge: microchipId.isEmpty ? '未登録' : '登録済み',
-      badgeColor: microchipId.isEmpty
-          ? AppColors.pointGray
-          : AppColors.pointGreen,
+      badgeColor: microchipId.isEmpty ? AppColors.pointGray : AppColors.pointGreen,
       trailing: isEditMode
           ? IconButton(
               icon: const Icon(Icons.edit, size: 16),
@@ -306,11 +286,7 @@ class PetBasicInfoTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildActionButtons(
-    BuildContext context,
-    WidgetRef ref,
-    String tabId,
-  ) {
+  Widget _buildActionButtons(BuildContext context, WidgetRef ref, String tabId) {
     return ActionButtonGroup.toggle(
       isEditMode: isEditMode,
       onEdit: onToggleEdit,
@@ -365,12 +341,7 @@ class PetBasicInfoTab extends ConsumerWidget {
     );
   }
 
-  void _editAttribute(
-    BuildContext context,
-    WidgetRef ref,
-    String tabId,
-    String type,
-  ) {
+  void _editAttribute(BuildContext context, WidgetRef ref, String tabId, String type) {
     switch (type) {
       case 'name':
         _showEditNameDialog(context, ref, tabId);
@@ -393,19 +364,11 @@ class PetBasicInfoTab extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: const Text('マイクロチップ編集'),
         content: TextField(
-          controller: ref
-              .read(petBasicInfoTabProvider(tabId))
-              .microchipController,
-          decoration: const InputDecoration(
-            labelText: 'マイクロチップID',
-            hintText: 'マイクロチップIDを入力してください',
-          ),
+          controller: ref.read(petBasicInfoTabProvider(tabId)).microchipController,
+          decoration: const InputDecoration(labelText: 'マイクロチップID', hintText: 'マイクロチップIDを入力してください'),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
@@ -477,16 +440,10 @@ class PetBasicInfoTab extends ConsumerWidget {
         title: const Text('名前編集'),
         content: TextField(
           controller: ref.read(petBasicInfoTabProvider(tabId)).nameController,
-          decoration: const InputDecoration(
-            labelText: 'ペットの名前',
-            hintText: '名前を入力してください',
-          ),
+          decoration: const InputDecoration(labelText: 'ペットの名前', hintText: '名前を入力してください'),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
@@ -498,11 +455,7 @@ class PetBasicInfoTab extends ConsumerWidget {
     );
   }
 
-  void _showEditGenderDialog(
-    BuildContext context,
-    WidgetRef ref,
-    String tabId,
-  ) {
+  void _showEditGenderDialog(BuildContext context, WidgetRef ref, String tabId) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -513,34 +466,23 @@ class PetBasicInfoTab extends ConsumerWidget {
             RadioListTile<String>(
               title: const Text('オス'),
               value: 'Male',
-              groupValue: ref
-                  .watch(petBasicInfoTabProvider(tabId))
-                  .editingGender,
+              groupValue: ref.watch(petBasicInfoTabProvider(tabId)).editingGender,
               onChanged: (value) {
-                ref
-                    .read(petBasicInfoTabProvider(tabId).notifier)
-                    .updateGender(value);
+                ref.read(petBasicInfoTabProvider(tabId).notifier).updateGender(value);
               },
             ),
             RadioListTile<String>(
               title: const Text('メス'),
               value: 'Female',
-              groupValue: ref
-                  .watch(petBasicInfoTabProvider(tabId))
-                  .editingGender,
+              groupValue: ref.watch(petBasicInfoTabProvider(tabId)).editingGender,
               onChanged: (value) {
-                ref
-                    .read(petBasicInfoTabProvider(tabId).notifier)
-                    .updateGender(value);
+                ref.read(petBasicInfoTabProvider(tabId).notifier).updateGender(value);
               },
             ),
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
@@ -552,15 +494,9 @@ class PetBasicInfoTab extends ConsumerWidget {
     );
   }
 
-  void _showEditWeightDialog(
-    BuildContext context,
-    WidgetRef ref,
-    String tabId,
-  ) {
+  void _showEditWeightDialog(BuildContext context, WidgetRef ref, String tabId) {
     final tabState = ref.read(petBasicInfoTabProvider(tabId));
-    final weightController = TextEditingController(
-      text: tabState.editingWeight?.toString() ?? '',
-    );
+    final weightController = TextEditingController(text: tabState.editingWeight?.toString() ?? '');
 
     showDialog(
       context: context,
@@ -576,22 +512,13 @@ class PetBasicInfoTab extends ConsumerWidget {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
           ElevatedButton(
             onPressed: () {
               final weight = double.tryParse(weightController.text);
               if (weight != null && weight > 0) {
-                ref
-                    .read(petBasicInfoTabProvider(tabId).notifier)
-                    .updateWeight(weight);
-                ref
-                    .read(petBasicInfoTabProvider(tabId))
-                    .weightController
-                    ?.text = weight
-                    .toString();
+                ref.read(petBasicInfoTabProvider(tabId).notifier).updateWeight(weight);
+                ref.read(petBasicInfoTabProvider(tabId)).weightController?.text = weight.toString();
                 Navigator.pop(context);
               } else {
                 SnackBarService.showError(context, '有効な体重を入力してください');
@@ -604,30 +531,18 @@ class PetBasicInfoTab extends ConsumerWidget {
     );
   }
 
-  void _showEditAppearanceDialog(
-    BuildContext context,
-    WidgetRef ref,
-    String tabId,
-  ) {
+  void _showEditAppearanceDialog(BuildContext context, WidgetRef ref, String tabId) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('外見編集'),
         content: TextField(
-          controller: ref
-              .read(petBasicInfoTabProvider(tabId))
-              .appearanceController,
+          controller: ref.read(petBasicInfoTabProvider(tabId)).appearanceController,
           maxLines: 3,
-          decoration: const InputDecoration(
-            labelText: '外見の特徴',
-            hintText: 'ペットの外見について説明してください',
-          ),
+          decoration: const InputDecoration(labelText: '外見の特徴', hintText: 'ペットの外見について説明してください'),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);

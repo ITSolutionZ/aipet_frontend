@@ -64,8 +64,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
           debugPrint('[$_tag] ⚠️ API 실패, 캐시된 데이터 조회 시도');
         }
 
-        final cacheResult =
-            await NotificationCacheService.getCachedNotifications(userId);
+        final cacheResult = await NotificationCacheService.getCachedNotifications(userId);
         if (cacheResult.isSuccess) {
           if (kDebugMode) {
             debugPrint('[$_tag] 🗄️ 만료된 캐시 데이터 사용 (오프라인 모드)');
@@ -90,12 +89,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }) async {
     try {
       // 1. 캐시에서 먼저 확인
-      final cachedNotifications =
-          await NotificationCacheService.getCachedNotifications(userId);
+      final cachedNotifications = await NotificationCacheService.getCachedNotifications(userId);
       if (cachedNotifications.isSuccess) {
-        final notification = cachedNotifications.dataOrNull!
-            .cast<NotificationModel?>()
-            .firstWhere((n) => n?.id == notificationId, orElse: () => null);
+        final notification = cachedNotifications.dataOrNull!.cast<NotificationModel?>().firstWhere(
+          (n) => n?.id == notificationId,
+          orElse: () => null,
+        );
 
         if (notification != null) {
           if (kDebugMode) {
@@ -108,9 +107,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
       // 2. 캐시에 없으면 전체 목록을 API에서 다시 조회
       final allNotifications = await getAllNotifications(userId: userId);
       if (allNotifications.isSuccess) {
-        final notification = allNotifications.dataOrNull!
-            .cast<NotificationModel?>()
-            .firstWhere((n) => n?.id == notificationId, orElse: () => null);
+        final notification = allNotifications.dataOrNull!.cast<NotificationModel?>().firstWhere(
+          (n) => n?.id == notificationId,
+          orElse: () => null,
+        );
 
         if (notification != null) {
           if (kDebugMode) {
@@ -140,10 +140,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }) async {
     try {
       // 1. API에서 읽음 상태 업데이트
-      final result = await _apiService.markAsRead(
-        notificationId: notificationId,
-        isRead: isRead,
-      );
+      final result = await _apiService.markAsRead(notificationId: notificationId, isRead: isRead);
 
       if (result.isSuccess) {
         // 2. 성공한 경우 캐시 무효화 (다음 조회 시 최신 데이터 받기 위해)
@@ -191,14 +188,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> getNotificationSettings(
-    String userId,
-  ) async {
+  Future<Result<Map<String, dynamic>>> getNotificationSettings(String userId) async {
     try {
       // 1. 캐시가 유효한지 확인
-      final cachedSettings = await NotificationCacheService.getCachedSettings(
-        userId,
-      );
+      final cachedSettings = await NotificationCacheService.getCachedSettings(userId);
       if (cachedSettings.isSuccess) {
         if (kDebugMode) {
           debugPrint('[$_tag] 🗄️ 캐시된 설정 사용');
@@ -212,10 +205,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       if (apiResult.isSuccess) {
         // 3. 성공한 경우 캐시에 저장
         final settings = apiResult.dataOrNull!;
-        await NotificationCacheService.cacheSettings(
-          userId: userId,
-          settings: settings,
-        );
+        await NotificationCacheService.cacheSettings(userId: userId, settings: settings);
 
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ API에서 설정 조회 및 캐시 저장 완료');
@@ -245,10 +235,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
       if (result.isSuccess) {
         // 2. 성공한 경우 캐시에도 업데이트
-        await NotificationCacheService.cacheSettings(
-          userId: userId,
-          settings: settings,
-        );
+        await NotificationCacheService.cacheSettings(userId: userId, settings: settings);
 
         if (kDebugMode) {
           debugPrint('[$_tag] ✅ 설정 업데이트 및 캐시 동기화 완료');
@@ -265,9 +252,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> getNotificationStats(
-    String userId,
-  ) async {
+  Future<Result<Map<String, dynamic>>> getNotificationStats(String userId) async {
     try {
       // 통계는 실시간성이 중요하므로 항상 API에서 조회
       return await _apiService.getNotificationStats(userId);

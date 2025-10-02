@@ -14,10 +14,7 @@ class TestMockService {
   // ==================== AI Feature Mock Data ====================
 
   /// Mock AiChatSummary 생성
-  static AiChatSummary createMockAiChatSummary({
-    String? title,
-    String? content,
-  }) {
+  static AiChatSummary createMockAiChatSummary({String? title, String? content}) {
     return const AiChatSummary(
       title: 'ペットの健康相談',
       content: 'ペットの健康管理について相談し、定期的な健康診断と適切な食事の重要性について学びました。',
@@ -207,10 +204,7 @@ class TestMockService {
 
   /// Mock HealthAlert 생성
   static HealthAlert createMockHealthAlert({String? petName, String? message}) {
-    return HealthAlert(
-      petName: petName ?? 'テストペット',
-      message: message ?? 'ワクチン接種が必要です',
-    );
+    return HealthAlert(petName: petName ?? 'テストペット', message: message ?? 'ワクチン接種が必要です');
   }
 
   /// Mock HealthSummary 생성
@@ -265,12 +259,7 @@ class TestMockService {
       petProfiles:
           petProfiles ??
           [
-            createMockPetSummaryEntity(
-              id: 'pet-1',
-              name: 'テストペット1',
-              typeName: 'dog',
-              breed: '柴犬',
-            ),
+            createMockPetSummaryEntity(id: 'pet-1', name: 'テストペット1', typeName: 'dog', breed: '柴犬'),
             createMockPetSummaryEntity(
               id: 'pet-2',
               name: 'テストペット2',
@@ -278,8 +267,7 @@ class TestMockService {
               breed: 'アメリカンショートヘア',
             ),
           ],
-      upcomingAppointments:
-          upcomingAppointments ?? [createMockAppointmentSummary()],
+      upcomingAppointments: upcomingAppointments ?? [createMockAppointmentSummary()],
       petHealthSummary: petHealthSummary ?? createMockHealthSummary(),
       walkSummary: walkSummary ?? createMockWalkSummary(),
     );
@@ -316,9 +304,7 @@ class TestMockService {
       updatedAt: updatedAt ?? DateTime(2020, 1, 1),
       imagePath: imagePath ?? '/path/to/image.jpg',
       isActive: isActive ?? true,
-      additionalInfo:
-          additionalInfo ??
-          {'gender': 'male', 'weight': 15.8, 'isNeutered': false},
+      additionalInfo: additionalInfo ?? {'gender': 'male', 'weight': 15.8, 'isNeutered': false},
     );
   }
 

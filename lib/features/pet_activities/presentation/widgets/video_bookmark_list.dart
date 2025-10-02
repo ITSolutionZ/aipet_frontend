@@ -5,14 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // 북마크 프로바이더 (임시로 생성)
-final videoBookmarksProvider =
-    FutureProvider.family<List<VideoBookmarkEntity>, String>((
-      ref,
-      videoId,
-    ) async {
-      final repository = ref.read(petActivitiesRepositoryProvider);
-      return repository.getVideoBookmarks(videoId);
-    });
+final videoBookmarksProvider = FutureProvider.family<List<VideoBookmarkEntity>, String>((
+  ref,
+  videoId,
+) async {
+  final repository = ref.read(petActivitiesRepositoryProvider);
+  return repository.getVideoBookmarks(videoId);
+});
 
 /// 🎯 Video Bookmark 관리 Provider
 final videoBookmarkControllerProvider = Provider<VideoBookmarkController>(
@@ -75,14 +74,8 @@ class VideoBookmarkList extends ConsumerWidget {
       context: context,
       builder: (context) => _AddBookmarkDialog(
         videoId: videoId,
-        onAdd: (label, positionSec, description) => _addBookmark(
-          context,
-          ref,
-          videoId,
-          label,
-          positionSec,
-          description,
-        ),
+        onAdd: (label, positionSec, description) =>
+            _addBookmark(context, ref, videoId, label, positionSec, description),
       ),
     );
   }
@@ -126,10 +119,7 @@ class VideoBookmarkList extends ConsumerWidget {
         title: const Text('ブックマークを削除'),
         content: Text('ブックマーク"${bookmark.displayLabel}"を削除しますか？'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('キャンセル'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('キャンセル')),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -141,9 +131,7 @@ class VideoBookmarkList extends ConsumerWidget {
 
     if (confirmed == true) {
       try {
-        await ref
-            .read(videoBookmarkControllerProvider)
-            .deleteBookmark(bookmark.id, videoId);
+        await ref.read(videoBookmarkControllerProvider).deleteBookmark(bookmark.id, videoId);
 
         if (context.mounted) {
           UiService.showSuccess(context, 'ブックマークが削除されました.');
@@ -161,9 +149,7 @@ class VideoBookmarkList extends ConsumerWidget {
     final bookmarksState = ref.watch(videoBookmarksProvider(videoId));
 
     return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
-      ),
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -183,10 +169,7 @@ class VideoBookmarkList extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Row(
               children: [
-                const Text(
-                  'ブックマーク',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                const Text('ブックマーク', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const Spacer(),
                 IconButton(
                   onPressed: () => _showAddBookmarkDialog(context, ref),
@@ -210,24 +193,18 @@ class VideoBookmarkList extends ConsumerWidget {
                 ),
               ),
               child: bookmarksState.when(
-                data: (bookmarks) =>
-                    _buildBookmarkList(bookmarks, context, ref),
+                data: (bookmarks) => _buildBookmarkList(bookmarks, context, ref),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) => Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
-                        Icons.error_outline,
-                        size: 48,
-                        color: Colors.red,
-                      ),
+                      const Icon(Icons.error_outline, size: 48, color: Colors.red),
                       const SizedBox(height: AppSpacing.md),
                       Text('ブックマークの読み込みに失敗しました: $error'),
                       const SizedBox(height: AppSpacing.md),
                       ElevatedButton(
-                        onPressed: () =>
-                            ref.refresh(videoBookmarksProvider(videoId)),
+                        onPressed: () => ref.refresh(videoBookmarksProvider(videoId)),
                         child: const Text('再試行'),
                       ),
                     ],
@@ -253,10 +230,7 @@ class VideoBookmarkList extends ConsumerWidget {
           children: [
             Icon(Icons.bookmark_outline, size: 64, color: Colors.grey),
             SizedBox(height: AppSpacing.md),
-            Text(
-              'ブックマークがありません',
-              style: TextStyle(color: Colors.grey, fontSize: 16),
-            ),
+            Text('ブックマークがありません', style: TextStyle(color: Colors.grey, fontSize: 16)),
             SizedBox(height: AppSpacing.sm),
             Text(
               'ビデオの特定のモーメントにすばやく移動するには、ブックマークを追加してください',
@@ -271,8 +245,7 @@ class VideoBookmarkList extends ConsumerWidget {
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.md),
       itemCount: bookmarks.length,
-      separatorBuilder: (context, index) =>
-          const SizedBox(height: AppSpacing.sm),
+      separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, index) {
         final bookmark = bookmarks[index];
         return RepaintBoundary(
@@ -314,34 +287,21 @@ class _BookmarkCard extends StatelessWidget {
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),
           ),
-          child: const Icon(
-            Icons.bookmark,
-            color: AppColors.pointBlue,
-            size: 20,
-          ),
+          child: const Icon(Icons.bookmark, color: AppColors.pointBlue, size: 20),
         ),
-        title: Text(
-          bookmark.displayLabel,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: Text(bookmark.displayLabel, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               bookmark.formattedTime,
-              style: TextStyle(
-                color: AppColors.pointDark.withValues(alpha: 0.6),
-                fontSize: 12,
-              ),
+              style: TextStyle(color: AppColors.pointDark.withValues(alpha: 0.6), fontSize: 12),
             ),
             if (bookmark.description?.isNotEmpty == true) ...[
               const SizedBox(height: 2),
               Text(
                 bookmark.description!,
-                style: TextStyle(
-                  color: AppColors.pointDark.withValues(alpha: 0.8),
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: AppColors.pointDark.withValues(alpha: 0.8), fontSize: 12),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -367,13 +327,7 @@ final bookmarkFormControllerProvider =
 class BookmarkFormController extends StateNotifier<BookmarkFormState> {
   BookmarkFormController()
     : super(
-        const BookmarkFormState(
-          label: '',
-          description: '',
-          minutes: 0,
-          seconds: 0,
-          isValid: true,
-        ),
+        const BookmarkFormState(label: '', description: '', minutes: 0, seconds: 0, isValid: true),
       );
 
   void updateLabel(String label) {
@@ -396,9 +350,7 @@ class BookmarkFormController extends StateNotifier<BookmarkFormState> {
   }
 
   bool _isFormValid(BookmarkFormState checkState) {
-    return checkState.minutes >= 0 &&
-        checkState.seconds >= 0 &&
-        checkState.seconds < 60;
+    return checkState.minutes >= 0 && checkState.seconds >= 0 && checkState.seconds < 60;
   }
 
   int get totalSeconds => state.minutes * 60 + state.seconds;
@@ -453,9 +405,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
     onAdd(
       formState.label.trim(),
       formController.totalSeconds,
-      formState.description.trim().isEmpty
-          ? null
-          : formState.description.trim(),
+      formState.description.trim().isEmpty ? null : formState.description.trim(),
     );
 
     Navigator.pop(context);
@@ -482,10 +432,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
                   decoration: const InputDecoration(
                     labelText: '分',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 8,
-                    ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
@@ -502,10 +449,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
                   decoration: const InputDecoration(
                     labelText: '秒',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 8,
-                    ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
@@ -522,10 +466,7 @@ class _AddBookmarkDialog extends ConsumerWidget {
           // 라벨 입력
           TextFormField(
             initialValue: formState.label,
-            decoration: const InputDecoration(
-              labelText: 'ラベル (任意)',
-              border: OutlineInputBorder(),
-            ),
+            decoration: const InputDecoration(labelText: 'ラベル (任意)', border: OutlineInputBorder()),
             onChanged: formController.updateLabel,
           ),
 
@@ -534,20 +475,14 @@ class _AddBookmarkDialog extends ConsumerWidget {
           // 설명 입력
           TextFormField(
             initialValue: formState.description,
-            decoration: const InputDecoration(
-              labelText: '説明 (任意)',
-              border: OutlineInputBorder(),
-            ),
+            decoration: const InputDecoration(labelText: '説明 (任意)', border: OutlineInputBorder()),
             maxLines: 2,
             onChanged: formController.updateDescription,
           ),
         ],
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('キャンセル'),
-        ),
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
         ElevatedButton(
           onPressed: formState.isValid ? () => _submit(context, ref) : null,
           child: const Text('追加'),

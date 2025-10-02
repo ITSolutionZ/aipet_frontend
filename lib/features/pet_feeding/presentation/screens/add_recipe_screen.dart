@@ -142,10 +142,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                ElevatedButton(
-                  onPressed: _addIngredient,
-                  child: const Text('追加'),
-                ),
+                ElevatedButton(onPressed: _addIngredient, child: const Text('追加')),
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -162,12 +159,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '材料リスト',
-                      style: AppFonts.bodyMedium.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text('材料リスト', style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: AppSpacing.sm),
                     ..._ingredients.asMap().entries.map((entry) {
                       final index = entry.key;
@@ -204,10 +196,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                ElevatedButton(
-                  onPressed: _addInstruction,
-                  child: const Text('追加'),
-                ),
+                ElevatedButton(onPressed: _addInstruction, child: const Text('追加')),
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -224,12 +213,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '調理手順',
-                      style: AppFonts.bodyMedium.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text('調理手順', style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: AppSpacing.sm),
                     ..._instructions.asMap().entries.map((entry) {
                       final index = entry.key;
@@ -294,10 +278,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: AppFonts.titleMedium.copyWith(
-        color: AppColors.pointDark,
-        fontWeight: FontWeight.bold,
-      ),
+      style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark, fontWeight: FontWeight.bold),
     );
   }
 

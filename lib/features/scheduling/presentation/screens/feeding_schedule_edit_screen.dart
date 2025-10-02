@@ -26,12 +26,10 @@ class FeedingScheduleEditScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<FeedingScheduleEditScreen> createState() =>
-      _FeedingScheduleEditScreenState();
+  ConsumerState<FeedingScheduleEditScreen> createState() => _FeedingScheduleEditScreenState();
 }
 
-class _FeedingScheduleEditScreenState
-    extends ConsumerState<FeedingScheduleEditScreen> {
+class _FeedingScheduleEditScreenState extends ConsumerState<FeedingScheduleEditScreen> {
   late TimeOfDay _selectedTime;
   late TextEditingController _amountController;
   late String _selectedMealType;
@@ -51,10 +49,7 @@ class _FeedingScheduleEditScreenState
 
     // 현재 시간 파싱 (예: "08:00" → TimeOfDay(8, 0))
     final timeParts = widget.currentTime.split(':');
-    _selectedTime = TimeOfDay(
-      hour: int.parse(timeParts[0]),
-      minute: int.parse(timeParts[1]),
-    );
+    _selectedTime = TimeOfDay(hour: int.parse(timeParts[0]), minute: int.parse(timeParts[1]));
 
     // g 단위 제거하고 숫자만 저장
     final amountText = widget.currentAmount.replaceAll('g', '');
@@ -66,22 +61,18 @@ class _FeedingScheduleEditScreenState
 
   /// 펫 정보 및 사이즈 가이드 로드
   void _loadPetInfo() {
-    final petSizes =
-        SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     _selectedPetInfo = petSizes[_selectedPetId];
 
     if (_selectedPetInfo != null) {
       final size = _selectedPetInfo!['size'] as String;
-      final sizeGuide =
-          SchedulingMock.SchedulingMockService.getPetSizeFeedingGuide();
+      final sizeGuide = SchedulingMock.SchedulingMockService.getPetSizeFeedingGuide();
       _petSizeGuide = sizeGuide[size];
     }
 
     // 펫 현재 상태 로드
     final currentStatus = MockDataService.getPetCurrentStatus(_selectedPetId);
-    _selectedStatuses = List<String>.from(
-      currentStatus['selectedStatuses'] ?? [],
-    );
+    _selectedStatuses = List<String>.from(currentStatus['selectedStatuses'] ?? []);
     _statusValues = Map<String, String>.from(currentStatus);
     _statusValues.remove('selectedStatuses');
     _statusValues.remove('lastUpdated');
@@ -96,8 +87,7 @@ class _FeedingScheduleEditScreenState
 
   /// 펫 선택 처리
   void _onPetSelected(String petId) {
-    final petSizes =
-        SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     setState(() {
       _selectedPetId = petId;
       _selectedPetInfo = petSizes[petId];
@@ -110,26 +100,21 @@ class _FeedingScheduleEditScreenState
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final statusOptions =
-            pet_feature_mock.PetMockService.getPetStatusOptions();
+        final statusOptions = pet_feature_mock.PetMockService.getPetStatusOptions();
         return PetStatusSelectionDialog(
           petInfo: petInfo,
           selectedStatuses: List<String>.from(_selectedStatuses),
           statusValues: Map<String, String>.from(_statusValues),
           statusOptions: statusOptions,
-          onStatusUpdated:
-              (
-                List<String> selectedStatuses,
-                Map<String, String> statusValues,
-              ) {
-                setState(() {
-                  _selectedStatuses = selectedStatuses;
-                  _statusValues = statusValues;
+          onStatusUpdated: (List<String> selectedStatuses, Map<String, String> statusValues) {
+            setState(() {
+              _selectedStatuses = selectedStatuses;
+              _statusValues = statusValues;
 
-                  // MockDataService에 상태 업데이트
-                  MockDataService.updatePetStatus(petId, statusValues);
-                });
-              },
+              // MockDataService에 상태 업데이트
+              MockDataService.updatePetStatus(petId, statusValues);
+            });
+          },
         );
       },
     );
@@ -176,21 +161,13 @@ class _FeedingScheduleEditScreenState
       ),
     );
 
-    context.pop({
-      'mealType': _selectedMealType,
-      'time': timeString,
-      'amount': amount,
-    });
+    context.pop({'mealType': _selectedMealType, 'time': timeString, 'amount': amount});
   }
 
   /// 목업 데이터 업데이트
   void _updateMockData(String mealType, String time, String amount) {
     // MockDataService의 데이터를 실제로 업데이트
-    SchedulingMock.SchedulingMockService.updateFeedingSchedule(
-      mealType,
-      time,
-      amount,
-    );
+    SchedulingMock.SchedulingMockService.updateFeedingSchedule(mealType, time, amount);
 
     // 변경사항을 사용자에게 알림
     developer.log('목업 데이터 업데이트: $mealType - $time - $amount');
@@ -266,18 +243,11 @@ class _FeedingScheduleEditScreenState
 
                     // 급여 가이드 카드
                     if (_selectedPetInfo != null && _petSizeGuide != null)
-                      FeedingGuideCard(
-                        petInfo: _selectedPetInfo!,
-                        sizeGuide: _petSizeGuide!,
-                      ),
+                      FeedingGuideCard(petInfo: _selectedPetInfo!, sizeGuide: _petSizeGuide!),
 
                     const SizedBox(height: AppSpacing.lg),
 
-                    ActionButton.primary(
-                      text: '保存',
-                      onPressed: _saveSchedule,
-                      isEnabled: true,
-                    ),
+                    ActionButton.primary(text: '保存', onPressed: _saveSchedule, isEnabled: true),
                   ],
                 ),
               ]),

@@ -117,9 +117,7 @@ class PetRegistrationDataEntity {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PetRegistrationDataEntity &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
+      other is PetRegistrationDataEntity && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;
@@ -157,9 +155,7 @@ class PetRegistrationDataEntity {
       case PetRegistrationStep.breedSelection:
         return selectedPetType != null && currentBreed != null;
       case PetRegistrationStep.nameInput:
-        return selectedPetType != null &&
-            currentBreed != null &&
-            petName != null;
+        return selectedPetType != null && currentBreed != null && petName != null;
       case PetRegistrationStep.birthDateInput:
         return selectedPetType != null &&
             currentBreed != null &&

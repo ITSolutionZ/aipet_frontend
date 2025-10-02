@@ -49,11 +49,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
     const String userId = 'current_user'; // 임시 사용자 ID
 
-    final result = await repository.markAsRead(
-      userId: userId,
-      notificationId: id,
-      isRead: true,
-    );
+    final result = await repository.markAsRead(userId: userId, notificationId: id, isRead: true);
 
     if (result.isSuccess) {
       await refresh();
@@ -68,10 +64,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
     const String userId = 'current_user'; // 임시 사용자 ID
 
-    final result = await repository.deleteNotification(
-      userId: userId,
-      notificationId: id,
-    );
+    final result = await repository.deleteNotification(userId: userId, notificationId: id);
 
     if (result.isSuccess) {
       await refresh();
@@ -88,10 +81,7 @@ Future<NotificationModel?> notificationById(Ref ref, String id) async {
   // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
   const String userId = 'current_user'; // 임시 사용자 ID
 
-  final result = await repository.getNotificationById(
-    userId: userId,
-    notificationId: id,
-  );
+  final result = await repository.getNotificationById(userId: userId, notificationId: id);
 
   if (result.isSuccess) {
     return result.dataOrNull;
@@ -136,18 +126,12 @@ class NotificationSettingsNotifier extends _$NotificationSettingsNotifier {
     // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
     const String userId = 'current_user'; // 임시 사용자 ID
 
-    final result = await repository.updateNotificationSettings(
-      userId: userId,
-      settings: settings,
-    );
+    final result = await repository.updateNotificationSettings(userId: userId, settings: settings);
 
     if (result.isSuccess) {
       state = AsyncValue.data(settings);
     } else {
-      state = AsyncValue.error(
-        Exception('설정 저장 실패: ${result.error}'),
-        StackTrace.current,
-      );
+      state = AsyncValue.error(Exception('설정 저장 실패: ${result.error}'), StackTrace.current);
     }
   }
 }

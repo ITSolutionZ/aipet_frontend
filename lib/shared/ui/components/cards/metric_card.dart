@@ -178,10 +178,7 @@ class MetricCard extends StatelessWidget {
                 _buildHeader(),
                 const SizedBox(height: AppSpacing.sm),
                 _buildValue(),
-                if (change != null) ...[
-                  const SizedBox(height: AppSpacing.xs),
-                  _buildChange(),
-                ],
+                if (change != null) ...[const SizedBox(height: AppSpacing.xs), _buildChange()],
               ],
             ),
           ),
@@ -205,10 +202,7 @@ class MetricCard extends StatelessWidget {
       children: [
         if (icon != null) ...[
           IconTheme(
-            data: IconThemeData(
-              color: iconColor ?? AppColors.primary,
-              size: 20,
-            ),
+            data: IconThemeData(color: iconColor ?? AppColors.primary, size: 20),
             child: icon!,
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -216,9 +210,7 @@ class MetricCard extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
           ),
         ),
       ],
@@ -239,12 +231,7 @@ class MetricCard extends StatelessWidget {
         ),
         if (unit != null) ...[
           const SizedBox(width: AppSpacing.xs),
-          Text(
-            unit!,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
-          ),
+          Text(unit!, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
         ],
       ],
     );
@@ -261,10 +248,7 @@ class MetricCard extends StatelessWidget {
         const SizedBox(width: AppSpacing.xs),
         Text(
           change!,
-          style: AppTextStyles.bodySmall.copyWith(
-            color: changeColor,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.bodySmall.copyWith(color: changeColor, fontWeight: FontWeight.w600),
         ),
       ],
     );

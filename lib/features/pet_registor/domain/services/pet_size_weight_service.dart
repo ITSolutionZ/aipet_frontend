@@ -36,13 +36,7 @@ class PetSizeWeightService {
 
   /// 크기 유효성 검사
   static bool isValidSize(String? size) {
-    const validSizes = [
-      'extra_small',
-      'small',
-      'medium',
-      'large',
-      'extra_large',
-    ];
+    const validSizes = ['extra_small', 'small', 'medium', 'large', 'extra_large'];
     return size != null && validSizes.contains(size);
   }
 
@@ -65,10 +59,7 @@ class PetSizeWeightService {
   }
 
   /// 체중 기반 추천 사료량 계산 (일일 권장량, g)
-  static double calculateDailyFoodAmount(
-    double weight, {
-    bool isNeutered = false,
-  }) {
+  static double calculateDailyFoodAmount(double weight, {bool isNeutered = false}) {
     // 기본 공식: 체중(kg) × 70 × 0.75 (중성화된 경우 0.6)
     final multiplier = isNeutered ? 0.6 : 0.75;
     return weight * 70 * multiplier;

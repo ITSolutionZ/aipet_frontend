@@ -7,11 +7,7 @@ class GetWalkStatisticsUseCase {
 
   GetWalkStatisticsUseCase(this.repository);
 
-  Future<WalkStatistics> call({
-    String? petId,
-    DateTime? startDate,
-    DateTime? endDate,
-  }) async {
+  Future<WalkStatistics> call({String? petId, DateTime? startDate, DateTime? endDate}) async {
     // 비즈니스 로직: 날짜 범위 유효성 검증
     if (startDate != null && endDate != null) {
       if (startDate.isAfter(endDate)) {
@@ -25,11 +21,7 @@ class GetWalkStatisticsUseCase {
       }
     }
 
-    return repository.getWalkStatistics(
-      petId: petId,
-      startDate: startDate,
-      endDate: endDate,
-    );
+    return repository.getWalkStatistics(petId: petId, startDate: startDate, endDate: endDate);
   }
 
   /// 오늘 산책 통계 조회
@@ -60,10 +52,7 @@ class GetWalkStatisticsUseCase {
   }
 
   /// 지난 N일간 산책 통계 조회
-  Future<WalkStatistics> getLastNDaysStatistics(
-    int days, {
-    String? petId,
-  }) async {
+  Future<WalkStatistics> getLastNDaysStatistics(int days, {String? petId}) async {
     if (days <= 0) {
       throw ArgumentError('일수는 1 이상이어야 합니다.');
     }

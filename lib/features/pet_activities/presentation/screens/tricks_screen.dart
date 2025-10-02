@@ -40,10 +40,7 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
   }
 
   void _showTrickManagementMenu() {
-    TrickManagementBottomSheet.show(
-      context,
-      onResetProgress: _showResetProgressDialog,
-    );
+    TrickManagementBottomSheet.show(context, onResetProgress: _showResetProgressDialog);
   }
 
   void _showResetProgressDialog() {
@@ -81,12 +78,8 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
   }
 
   Widget _buildContent(List<TrickEntity> tricks) {
-    final learnedTricks = tricks
-        .where((trick) => trick.practiceCount > 0)
-        .toList();
-    final availableTricks = tricks
-        .where((trick) => trick.practiceCount == 0)
-        .toList();
+    final learnedTricks = tricks.where((trick) => trick.practiceCount > 0).toList();
+    final availableTricks = tricks.where((trick) => trick.practiceCount == 0).toList();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -94,10 +87,7 @@ class _TricksScreenState extends ConsumerState<TricksScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Your tricks 섹션
-          YourTricksSection(
-            learnedTricks: learnedTricks,
-            onManageTricks: _showTrickManagementMenu,
-          ),
+          YourTricksSection(learnedTricks: learnedTricks, onManageTricks: _showTrickManagementMenu),
           const SizedBox(height: AppSpacing.xl),
 
           // Learn next 섹션

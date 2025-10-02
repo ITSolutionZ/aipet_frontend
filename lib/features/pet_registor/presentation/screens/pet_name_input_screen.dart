@@ -51,8 +51,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
   void _validateName() {
     setState(() {
       _isValid =
-          _nameController.text.trim().length >= 2 &&
-          _nameController.text.trim().length <= 20;
+          _nameController.text.trim().length >= 2 && _nameController.text.trim().length <= 20;
     });
   }
 
@@ -82,14 +81,9 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
 
   /// 전역 상태에 데이터 저장
   void _saveData() {
-    final registrationNotifier = ref.read(
-      petRegistrationStateProvider.notifier,
-    );
+    final registrationNotifier = ref.read(petRegistrationStateProvider.notifier);
     registrationNotifier.setPetName(_nameController.text.trim());
-    registrationNotifier.setPetGenderInfo(
-      gender: _selectedGender,
-      isNeutered: _isNeutered,
-    );
+    registrationNotifier.setPetGenderInfo(gender: _selectedGender, isNeutered: _isNeutered);
     registrationNotifier.setPetImagePath(_selectedImagePath);
     registrationNotifier.setMicrochipNumber(_microchipController.text.trim());
   }
@@ -126,10 +120,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // 프로그레스바
-                    const PetRegistrationProgressBar(
-                      currentStep: 3,
-                      totalSteps: 7,
-                    ),
+                    const PetRegistrationProgressBar(currentStep: 3, totalSteps: 7),
                     const SizedBox(height: AppSpacing.lg),
 
                     // 제목
@@ -160,9 +151,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                     // 이름 입력 필드
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                       child: TextFormField(
                         controller: _nameController,
                         textAlign: TextAlign.center,
@@ -176,35 +165,22 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                           filled: true,
                           fillColor: AppColors.pureWhite,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.medium,
-                            ),
+                            borderRadius: BorderRadius.circular(AppRadius.medium),
                             borderSide: BorderSide(
-                              color: AppColors.pointBrown.withValues(
-                                alpha: 0.3,
-                              ),
+                              color: AppColors.pointBrown.withValues(alpha: 0.3),
                               width: 1,
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.medium,
-                            ),
+                            borderRadius: BorderRadius.circular(AppRadius.medium),
                             borderSide: BorderSide(
-                              color: AppColors.pointBrown.withValues(
-                                alpha: 0.3,
-                              ),
+                              color: AppColors.pointBrown.withValues(alpha: 0.3),
                               width: 1,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.medium,
-                            ),
-                            borderSide: const BorderSide(
-                              color: AppColors.pointBrown,
-                              width: 2,
-                            ),
+                            borderRadius: BorderRadius.circular(AppRadius.medium),
+                            borderSide: const BorderSide(color: AppColors.pointBrown, width: 2),
                           ),
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: AppSpacing.md,
@@ -247,9 +223,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                         Expanded(
                           child: Text(
                             '去勢・避妊済',
-                            style: AppFonts.bodyMedium.copyWith(
-                              color: AppColors.pointDark,
-                            ),
+                            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
                           ),
                         ),
                       ],
@@ -257,10 +231,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                     const SizedBox(height: AppSpacing.md),
 
                     // 마이크로칩 번호 입력
-                    MicrochipInput(
-                      controller: _microchipController,
-                      onChanged: _saveData,
-                    ),
+                    MicrochipInput(controller: _microchipController, onChanged: _saveData),
                   ],
                 ),
               ),
@@ -272,10 +243,7 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
-                  top: BorderSide(
-                    color: AppColors.pointGray.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
+                  top: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
                 ),
               ),
               child: SizedBox(
@@ -291,13 +259,9 @@ class _PetNameInputScreenState extends ConsumerState<PetNameInputScreen> {
                               _saveData();
 
                               // 등록이 완료된 상태라면 등록확인 페이지로
-                              final updatedState = ref.read(
-                                petRegistrationStateProvider,
-                              );
+                              final updatedState = ref.read(petRegistrationStateProvider);
                               if (updatedState.isRegistrationComplete) {
-                                context.go(
-                                  RouteConstants.petAnniversarySummaryRoute,
-                                );
+                                context.go(RouteConstants.petAnniversarySummaryRoute);
                                 return;
                               }
 

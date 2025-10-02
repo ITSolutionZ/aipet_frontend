@@ -32,10 +32,7 @@ class SecureStorage {
   }
 
   /// 서버 JWT 토큰과 만료 시간 함께 저장 // Changed
-  static Future<void> saveServerJWTWithExpiry(
-    String token,
-    DateTime expiry,
-  ) async {
+  static Future<void> saveServerJWTWithExpiry(String token, DateTime expiry) async {
     await _storage.write(key: _serverJwtKey, value: token);
     await _storage.write(key: _tokenExpiryKey, value: expiry.toIso8601String());
   }
@@ -62,9 +59,7 @@ class SecureStorage {
   }
 
   /// 토큰이 곧 만료될지 확인 (기본: 5분 전) // Changed
-  static Future<bool> isTokenExpiringSoon({
-    Duration threshold = const Duration(minutes: 5),
-  }) async {
+  static Future<bool> isTokenExpiringSoon({Duration threshold = const Duration(minutes: 5)}) async {
     final expiry = await getTokenExpiry();
     if (expiry == null) return true;
 

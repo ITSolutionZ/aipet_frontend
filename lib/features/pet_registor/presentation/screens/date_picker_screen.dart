@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final datePickerProvider =
-    StateNotifierProvider.family<
-      DatePickerController,
-      DatePickerState,
-      DatePickerParams
-    >((ref, params) => DatePickerController(params));
+    StateNotifierProvider.family<DatePickerController, DatePickerState, DatePickerParams>(
+      (ref, params) => DatePickerController(params),
+    );
 
 class DatePickerParams {
   final DateTime? selectedBirthday;
@@ -109,9 +107,7 @@ class DatePickerController extends StateNotifier<DatePickerState> {
   }
 
   DateTime? getCurrentSelectedDate() {
-    return state.currentTab == 'birthday'
-        ? state.currentBirthday
-        : state.currentArrivalDate;
+    return state.currentTab == 'birthday' ? state.currentBirthday : state.currentArrivalDate;
   }
 
   void updateYear(int year) {
@@ -155,8 +151,7 @@ class DatePickerScreen extends ConsumerStatefulWidget {
   ConsumerState<DatePickerScreen> createState() => _DatePickerScreenState();
 }
 
-class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
-    with TickerProviderStateMixin {
+class _DatePickerScreenState extends ConsumerState<DatePickerScreen> with TickerProviderStateMixin {
   late DatePickerParams params;
 
   @override
@@ -218,8 +213,7 @@ class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
             ),
 
             // 탭바
-            if (state.tabController != null)
-              DateTabBarWidget(tabController: state.tabController!),
+            if (state.tabController != null) DateTabBarWidget(tabController: state.tabController!),
 
             // 스크롤 가능한 콘텐츠 영역
             Expanded(
@@ -239,9 +233,7 @@ class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
                   // 달력
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                       child: CustomCalendarWidget(
                         selectedYear: state.selectedYear,
                         selectedMonth: state.selectedMonth,
@@ -260,10 +252,7 @@ class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
-                  top: BorderSide(
-                    color: AppColors.pointGray.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
+                  top: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
                 ),
               ),
               child: SizedBox(
@@ -275,10 +264,7 @@ class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
                       widget.onDateSelected(state.currentBirthday!, 'birthday');
                     }
                     if (state.currentArrivalDate != null) {
-                      widget.onDateSelected(
-                        state.currentArrivalDate!,
-                        'arrival',
-                      );
+                      widget.onDateSelected(state.currentArrivalDate!, 'arrival');
                     }
 
                     Navigator.pop(context);
@@ -286,9 +272,7 @@ class _DatePickerScreenState extends ConsumerState<DatePickerScreen>
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: AppColors.pureWhite,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.lg,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.medium),
                     ),

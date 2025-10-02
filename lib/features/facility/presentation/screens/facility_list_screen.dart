@@ -132,9 +132,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
         children: [
           Text(
             '${searchResults.length}件の施設',
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointDark.withValues(alpha: 0.6),
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark.withValues(alpha: 0.6)),
           ),
           const Spacer(),
           if (_controller.hasActiveFilters)
@@ -169,8 +167,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
                   padding: const EdgeInsets.only(bottom: 12.0),
                   child: FacilityCard(
                     facility: facility,
-                    onFavoriteToggle: () =>
-                        _controller.handleFavoriteToggle(facility.id),
+                    onFavoriteToggle: () => _controller.handleFavoriteToggle(facility.id),
                     onTap: () => _navigateToDetail(facility),
                   ),
                 );
@@ -182,9 +179,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
   Widget _buildEmptyState() {
     return EmptyState(
       icon: const Icon(Icons.search_off),
-      title: _controller.hasActiveFilters
-          ? '検索条件に一致する施設がありません'
-          : '施設を見つけることができません',
+      title: _controller.hasActiveFilters ? '検索条件に一致する施設がありません' : '施設を見つけることができません',
       subtitle: '他の条件で検索してください',
     );
   }

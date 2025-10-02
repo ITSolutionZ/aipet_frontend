@@ -13,9 +13,7 @@ class GetSuggestedQuestionsUseCase {
   /// 기본 추천 질문 조회
   ///
   /// Returns: 추천 질문 목록
-  Future<Result<List<AiSuggestedQuestionEntity>>> call(
-    GetSuggestedQuestionsParams params,
-  ) async {
+  Future<Result<List<AiSuggestedQuestionEntity>>> call(GetSuggestedQuestionsParams params) async {
     try {
       final questionsResult = await _repository.getSuggestedQuestionsWithParams(
         petId: params.petProfile.id,
@@ -49,9 +47,7 @@ class GetSuggestedQuestionsUseCase {
       );
       return Result.success('カスタマイズされた推奨質問を取得しました', questions);
     } catch (error) {
-      return Result.failure(
-        '推奨質問の取得に失敗しました (personalized): ${error.toString()}',
-      );
+      return Result.failure('推奨質問の取得に失敗しました (personalized): ${error.toString()}');
     }
   }
 }

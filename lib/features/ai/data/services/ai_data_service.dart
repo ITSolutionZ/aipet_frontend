@@ -25,9 +25,7 @@ class AiDataService extends BaseLoggingService {
     const cacheKey = 'ai_categories';
 
     // 캐시에서 먼저 확인
-    final cachedData = _cacheService.getFromCache<List<AiCategoryEntity>>(
-      cacheKey,
-    );
+    final cachedData = _cacheService.getFromCache<List<AiCategoryEntity>>(cacheKey);
     if (cachedData != null) {
       return cachedData;
     }
@@ -51,8 +49,7 @@ class AiDataService extends BaseLoggingService {
     const cacheKey = 'ai_suggested_questions';
 
     // 캐시에서 먼저 확인
-    final cachedData = _cacheService
-        .getFromCache<List<AiSuggestedQuestionEntity>>(cacheKey);
+    final cachedData = _cacheService.getFromCache<List<AiSuggestedQuestionEntity>>(cacheKey);
     if (cachedData != null) {
       return cachedData;
     }
@@ -76,9 +73,7 @@ class AiDataService extends BaseLoggingService {
     const cacheKey = 'ai_response_templates';
 
     // 캐시에서 먼저 확인
-    final cachedData = _cacheService.getFromCache<Map<String, String>>(
-      cacheKey,
-    );
+    final cachedData = _cacheService.getFromCache<Map<String, String>>(cacheKey);
     if (cachedData != null) {
       return cachedData;
     }
@@ -102,9 +97,7 @@ class AiDataService extends BaseLoggingService {
     const cacheKey = 'ai_keyword_mapping';
 
     // 캐시에서 먼저 확인
-    final cachedData = _cacheService.getFromCache<Map<String, List<String>>>(
-      cacheKey,
-    );
+    final cachedData = _cacheService.getFromCache<Map<String, List<String>>>(cacheKey);
     if (cachedData != null) {
       return cachedData;
     }
@@ -156,16 +149,13 @@ class AiDataService extends BaseLoggingService {
     });
   }
 
-  Future<List<AiSuggestedQuestionEntity>>
-  _loadSuggestedQuestionsFromApi() async {
+  Future<List<AiSuggestedQuestionEntity>> _loadSuggestedQuestionsFromApi() async {
     return _executeWithRetry(() async {
       final response = await _dio.get('/ai/suggested-questions');
 
       if (response.statusCode == 200 && response.data != null) {
         final List<dynamic> data = response.data['data'] ?? response.data;
-        return data
-            .map((json) => _mapToAiSuggestedQuestionEntity(json))
-            .toList();
+        return data.map((json) => _mapToAiSuggestedQuestionEntity(json)).toList();
       } else {
         throw Exception('AI推奨質問データの取得に失敗しました');
       }
@@ -177,8 +167,7 @@ class AiDataService extends BaseLoggingService {
       final response = await _dio.get('/ai/response-templates');
 
       if (response.statusCode == 200 && response.data != null) {
-        final Map<String, dynamic> data =
-            response.data['data'] ?? response.data;
+        final Map<String, dynamic> data = response.data['data'] ?? response.data;
         return data.map((key, value) => MapEntry(key, value.toString()));
       } else {
         throw Exception('AI応答テンプレートデータの取得に失敗しました');
@@ -191,8 +180,7 @@ class AiDataService extends BaseLoggingService {
       final response = await _dio.get('/ai/keyword-mapping');
 
       if (response.statusCode == 200 && response.data != null) {
-        final Map<String, dynamic> data =
-            response.data['data'] ?? response.data;
+        final Map<String, dynamic> data = response.data['data'] ?? response.data;
         return data.map((key, value) {
           if (value is List) {
             return MapEntry(key, value.map((e) => e.toString()).toList());
@@ -223,9 +211,7 @@ class AiDataService extends BaseLoggingService {
   }
 
   /// JSON을 AiSuggestedQuestionEntity로 매핑
-  AiSuggestedQuestionEntity _mapToAiSuggestedQuestionEntity(
-    Map<String, dynamic> json,
-  ) {
+  AiSuggestedQuestionEntity _mapToAiSuggestedQuestionEntity(Map<String, dynamic> json) {
     return AiSuggestedQuestionEntity(
       id: json['id']?.toString() ?? '',
       question: json['question']?.toString() ?? '',

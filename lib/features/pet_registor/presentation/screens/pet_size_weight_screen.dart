@@ -10,8 +10,7 @@ class PetSizeWeightScreen extends ConsumerStatefulWidget {
   const PetSizeWeightScreen({super.key});
 
   @override
-  ConsumerState<PetSizeWeightScreen> createState() =>
-      _PetSizeWeightScreenState();
+  ConsumerState<PetSizeWeightScreen> createState() => _PetSizeWeightScreenState();
 }
 
 class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
@@ -70,9 +69,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
 
   /// 전역 상태에 데이터 저장
   void _saveToGlobalState() {
-    final registrationNotifier = ref.read(
-      petRegistrationStateProvider.notifier,
-    );
+    final registrationNotifier = ref.read(petRegistrationStateProvider.notifier);
     registrationNotifier.setPetSizeWeight(size: _selectedSize, weight: _weight);
   }
 
@@ -209,9 +206,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                 controller: _scrollController,
                 slivers: [
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                     sliver: SliverList(
                       delegate: SliverChildListDelegate([
                         Column(
@@ -224,11 +219,8 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                             // 제목
                             Consumer(
                               builder: (context, ref, child) {
-                                final registrationState = ref.watch(
-                                  petRegistrationStateProvider,
-                                );
-                                final petName =
-                                    registrationState.petName ?? 'ペット';
+                                final registrationState = ref.watch(petRegistrationStateProvider);
+                                final petName = registrationState.petName ?? 'ペット';
 
                                 return Text(
                                   '$petNameのサイズと体重は？',
@@ -303,10 +295,8 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                                 setState(() {
                                   _weight = newWeight;
                                   _updateSizeBasedOnWeight();
-                                  if (_weightController != null &&
-                                      !_weightFocusNode!.hasFocus) {
-                                    _weightController!.text = _weight
-                                        .toStringAsFixed(1);
+                                  if (_weightController != null && !_weightFocusNode!.hasFocus) {
+                                    _weightController!.text = _weight.toStringAsFixed(1);
                                   }
                                 });
                                 _saveToGlobalState();
@@ -330,10 +320,7 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
-                  top: BorderSide(
-                    color: AppColors.pointGray.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
+                  top: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
                 ),
               ),
               child: SizedBox(
@@ -349,13 +336,9 @@ class _PetSizeWeightScreenState extends ConsumerState<PetSizeWeightScreen> {
                               _saveToGlobalState();
 
                               // 등록이 완료된 상태라면 등록확인 페이지로
-                              final updatedState = ref.read(
-                                petRegistrationStateProvider,
-                              );
+                              final updatedState = ref.read(petRegistrationStateProvider);
                               if (updatedState.isRegistrationComplete) {
-                                context.go(
-                                  RouteConstants.petAnniversarySummaryRoute,
-                                );
+                                context.go(RouteConstants.petAnniversarySummaryRoute);
                                 return;
                               }
 

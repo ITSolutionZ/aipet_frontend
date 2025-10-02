@@ -123,17 +123,11 @@ class TemporaryPetData {
       name: json['name'] as String?,
       type: json['type'] as String?,
       breed: json['breed'] as String?,
-      birthDate: json['birthDate'] != null
-          ? DateTime.parse(json['birthDate'] as String)
-          : null,
+      birthDate: json['birthDate'] != null ? DateTime.parse(json['birthDate'] as String) : null,
       imagePath: json['imagePath'] as String?,
       ownerId: json['ownerId'] as String?,
-      createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'] as String)
-          : null,
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'] as String)
-          : null,
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null,
       isActive: json['isActive'] as bool? ?? true,
       additionalInfo: json['additionalInfo'] as Map<String, dynamic>?,
       currentStep: PetRegistrationStep.values.firstWhere(

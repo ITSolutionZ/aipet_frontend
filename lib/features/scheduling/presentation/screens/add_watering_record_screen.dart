@@ -8,12 +8,10 @@ class AddWateringRecordScreen extends ConsumerStatefulWidget {
   const AddWateringRecordScreen({super.key});
 
   @override
-  ConsumerState<AddWateringRecordScreen> createState() =>
-      _AddWateringRecordScreenState();
+  ConsumerState<AddWateringRecordScreen> createState() => _AddWateringRecordScreenState();
 }
 
-class _AddWateringRecordScreenState
-    extends ConsumerState<AddWateringRecordScreen> {
+class _AddWateringRecordScreenState extends ConsumerState<AddWateringRecordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
@@ -125,10 +123,7 @@ class _AddWateringRecordScreenState
             ),
             const SizedBox(height: AppSpacing.md),
             ListTile(
-              leading: const Icon(
-                Icons.access_time,
-                color: AppColors.pointBlue,
-              ),
+              leading: const Icon(Icons.access_time, color: AppColors.pointBlue),
               title: const Text('時間を選択'),
               subtitle: Text(
                 _selectedTime.format(context),
@@ -227,10 +222,7 @@ class _AddWateringRecordScreenState
 
   /// 시간 선택
   Future<void> _selectTime() async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime,
-    );
+    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: _selectedTime);
     if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
@@ -248,10 +240,7 @@ class _AddWateringRecordScreenState
 
       // 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('給水記録を保存しました'),
-          backgroundColor: AppColors.pointGreen,
-        ),
+        const SnackBar(content: Text('給水記録を保存しました'), backgroundColor: AppColors.pointGreen),
       );
 
       // 이전 화면으로 돌아가기

@@ -54,9 +54,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                   Text(AppTexts.alarmSettings, style: AppFonts.titleMedium),
                   Text(
                     AppTexts.scheduleNotification,
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointGray,
-                    ),
+                    style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                   ),
                 ],
               ),
@@ -70,11 +68,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                 // TODO: 알람 설정 저장 로직 구현
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(
-                      _isAlarmEnabled
-                          ? AppTexts.alarmEnabled
-                          : AppTexts.alarmDisabled,
-                    ),
+                    content: Text(_isAlarmEnabled ? AppTexts.alarmEnabled : AppTexts.alarmDisabled),
                   ),
                 );
               },
@@ -160,11 +154,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                 child: Icon(icon, color: color, size: 32),
               ),
               const SizedBox(height: AppSpacing.md),
-              Text(
-                title,
-                style: AppFonts.titleMedium,
-                textAlign: TextAlign.center,
-              ),
+              Text(title, style: AppFonts.titleMedium, textAlign: TextAlign.center),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 subtitle,

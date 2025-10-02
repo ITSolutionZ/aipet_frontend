@@ -45,9 +45,7 @@ class TricksController extends BaseController {
   Future<void> completeTrick(TrickEntity trick) async {
     try {
       final completedTrick = trick.markAsCompleted();
-      await ref
-          .read(petActivitiesRepositoryProvider)
-          .updateTrick(completedTrick);
+      await ref.read(petActivitiesRepositoryProvider).updateTrick(completedTrick);
       showSuccess('트릭을 완료했습니다!');
     } catch (error) {
       handleError(error);

@@ -6,11 +6,7 @@ class PetSizeSelector extends StatelessWidget {
   final String? selectedSize;
   final ValueChanged<String> onSizeChanged;
 
-  const PetSizeSelector({
-    super.key,
-    required this.selectedSize,
-    required this.onSizeChanged,
-  });
+  const PetSizeSelector({super.key, required this.selectedSize, required this.onSizeChanged});
 
   static const Map<String, Map<String, dynamic>> _sizeData = {
     'extra_small': {
@@ -117,27 +113,18 @@ class PetSizeSelector extends StatelessWidget {
                       sizeInfo['name'] as String,
                       style: AppFonts.bodyLarge.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: isSelected
-                            ? (sizeInfo['color'] as Color)
-                            : AppColors.pointDark,
+                        color: isSelected ? (sizeInfo['color'] as Color) : AppColors.pointDark,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       sizeInfo['description'] as String,
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointGray,
-                      ),
+                      style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                     ),
                   ],
                 ),
               ),
-              if (isSelected)
-                Icon(
-                  Icons.check_circle,
-                  color: sizeInfo['color'] as Color,
-                  size: 24,
-                ),
+              if (isSelected) Icon(Icons.check_circle, color: sizeInfo['color'] as Color, size: 24),
             ],
           ),
         ),

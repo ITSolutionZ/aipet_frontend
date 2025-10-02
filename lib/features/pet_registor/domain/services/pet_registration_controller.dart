@@ -12,8 +12,7 @@ class PetRegistrationController {
   PetRegistrationController(this.ref);
 
   /// 현재 등록 상태 가져오기 (외부에서 주입받아야 함)
-  PetRegistrationDataEntity get currentState =>
-      ref.read(petRegistrationStateProvider);
+  PetRegistrationDataEntity get currentState => ref.read(petRegistrationStateProvider);
 
   /// 다음 단계로 이동 가능한지 확인
   bool canProceedToNextStep(int currentStep) {
@@ -59,9 +58,7 @@ class PetRegistrationController {
   /// 커스텀 품종 입력 (검증 포함)
   void setCustomBreed(String customBreed) {
     if (customBreed.trim().isNotEmpty) {
-      ref
-          .read(petRegistrationStateProvider.notifier)
-          .setCustomBreed(customBreed.trim());
+      ref.read(petRegistrationStateProvider.notifier).setCustomBreed(customBreed.trim());
     }
   }
 
@@ -79,9 +76,7 @@ class PetRegistrationController {
     if (weight != null && !PetValidationUtils.isValidWeight(weight)) {
       throw ArgumentError('Invalid weight: $weight');
     }
-    ref
-        .read(petRegistrationStateProvider.notifier)
-        .setPetSizeWeight(size: size, weight: weight);
+    ref.read(petRegistrationStateProvider.notifier).setPetSizeWeight(size: size, weight: weight);
   }
 
   /// 펫 생일 설정
@@ -95,11 +90,8 @@ class PetRegistrationController {
 
   /// 펫 입양일 설정
   void setPetArrivalDate(DateTime arrivalDate) {
-    if (arrivalDate.isBefore(DateTime.now()) ||
-        arrivalDate.isAtSameMomentAs(DateTime.now())) {
-      ref
-          .read(petRegistrationStateProvider.notifier)
-          .setPetArrivalDate(arrivalDate);
+    if (arrivalDate.isBefore(DateTime.now()) || arrivalDate.isAtSameMomentAs(DateTime.now())) {
+      ref.read(petRegistrationStateProvider.notifier).setPetArrivalDate(arrivalDate);
     } else {
       throw ArgumentError('Arrival date cannot be in the future');
     }
@@ -132,9 +124,7 @@ class PetRegistrationController {
   void validateAndCompleteRegistration() {
     if (!isRegistrationComplete) {
       final missingFields = _getMissingRequiredFields();
-      throw StateError(
-        'Registration incomplete. Missing: ${missingFields.join(', ')}',
-      );
+      throw StateError('Registration incomplete. Missing: ${missingFields.join(', ')}');
     }
     // TODO: 실제 API 호출이나 다른 완료 처리 로직 추가
   }
@@ -158,8 +148,6 @@ class PetRegistrationController {
 }
 
 /// Provider for PetRegistrationController
-final petRegistrationControllerProvider = Provider<PetRegistrationController>((
-  ref,
-) {
+final petRegistrationControllerProvider = Provider<PetRegistrationController>((ref) {
   return PetRegistrationController(ref);
 });

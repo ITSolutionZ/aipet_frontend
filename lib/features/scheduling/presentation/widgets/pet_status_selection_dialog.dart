@@ -5,24 +5,15 @@ import 'package:go_router/go_router.dart';
 
 /// 🎯 Pet Status Selection State Provider
 final petStatusSelectionProvider =
-    StateNotifierProvider.family<
-      PetStatusSelectionController,
-      PetStatusSelectionState,
-      String
-    >((ref, dialogId) => PetStatusSelectionController());
+    StateNotifierProvider.family<PetStatusSelectionController, PetStatusSelectionState, String>(
+      (ref, dialogId) => PetStatusSelectionController(),
+    );
 
-class PetStatusSelectionController
-    extends StateNotifier<PetStatusSelectionState> {
+class PetStatusSelectionController extends StateNotifier<PetStatusSelectionState> {
   PetStatusSelectionController() : super(const PetStatusSelectionState());
 
-  void initialize(
-    List<String> selectedStatuses,
-    Map<String, String> statusValues,
-  ) {
-    state = state.copyWith(
-      selectedStatuses: selectedStatuses,
-      statusValues: statusValues,
-    );
+  void initialize(List<String> selectedStatuses, Map<String, String> statusValues) {
+    state = state.copyWith(selectedStatuses: selectedStatuses, statusValues: statusValues);
   }
 
   void toggleStatus(String status) {
@@ -46,10 +37,7 @@ class PetStatusSelectionState {
   final List<String> selectedStatuses;
   final Map<String, String> statusValues;
 
-  const PetStatusSelectionState({
-    this.selectedStatuses = const [],
-    this.statusValues = const {},
-  });
+  const PetStatusSelectionState({this.selectedStatuses = const [], this.statusValues = const {}});
 
   PetStatusSelectionState copyWith({
     List<String>? selectedStatuses,
@@ -139,10 +127,7 @@ class _PetStatusSelectionDialogContentState
             // 헤더
             Row(
               children: [
-                CircleAvatar(
-                  radius: 25,
-                  backgroundImage: AssetImage(widget.petInfo['imagePath']),
-                ),
+                CircleAvatar(radius: 25, backgroundImage: AssetImage(widget.petInfo['imagePath'])),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
@@ -167,35 +152,25 @@ class _PetStatusSelectionDialogContentState
               child: SingleChildScrollView(
                 child: Column(
                   children: widget.statusOptions.map((statusOption) {
-                    final isSelected = state.selectedStatuses.contains(
-                      statusOption['id'],
-                    );
+                    final isSelected = state.selectedStatuses.contains(statusOption['id']);
 
                     return Card(
                       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                       child: ExpansionTile(
                         leading: Icon(
                           statusOption['icon'],
-                          color: isSelected
-                              ? AppColors.pointBrown
-                              : AppColors.pointGray,
+                          color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
                         ),
                         title: Text(
                           statusOption['title'],
                           style: AppFonts.titleSmall.copyWith(
-                            color: isSelected
-                                ? AppColors.pointDark
-                                : AppColors.pointDark,
-                            fontWeight: isSelected
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                            color: isSelected ? AppColors.pointDark : AppColors.pointDark,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                           ),
                         ),
                         subtitle: Text(
                           statusOption['description'],
-                          style: AppFonts.bodySmall.copyWith(
-                            color: AppColors.pointGray,
-                          ),
+                          style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                         ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -207,12 +182,8 @@ class _PetStatusSelectionDialogContentState
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.pointGreen.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(
-                                    AppRadius.small,
-                                  ),
+                                  color: AppColors.pointGreen.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(AppRadius.small),
                                 ),
                                 child: Text(
                                   '選択済み',
@@ -226,8 +197,7 @@ class _PetStatusSelectionDialogContentState
                             const SizedBox(width: AppSpacing.xs),
                             InkWell(
                               onTap: () {
-                                if (!isSelected &&
-                                    state.selectedStatuses.length >= 2) {
+                                if (!isSelected && state.selectedStatuses.length >= 2) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text('最大2つまで選択できます'),
@@ -248,22 +218,14 @@ class _PetStatusSelectionDialogContentState
                                 height: 24,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: isSelected
-                                      ? AppColors.pointBrown
-                                      : Colors.transparent,
+                                  color: isSelected ? AppColors.pointBrown : Colors.transparent,
                                   border: Border.all(
-                                    color: isSelected
-                                        ? AppColors.pointBrown
-                                        : AppColors.pointGray,
+                                    color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
                                     width: 2,
                                   ),
                                 ),
                                 child: isSelected
-                                    ? const Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                        size: 16,
-                                      )
+                                    ? const Icon(Icons.check, color: Colors.white, size: 16)
                                     : null,
                               ),
                             ),
@@ -276,26 +238,19 @@ class _PetStatusSelectionDialogContentState
                               child: Column(
                                 children: [
                                   DropdownButtonFormField<String>(
-                                    value:
-                                        state.statusValues[statusOption['id']],
+                                    value: state.statusValues[statusOption['id']],
                                     decoration: InputDecoration(
                                       labelText: '状態選択',
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          AppRadius.medium,
-                                        ),
+                                        borderRadius: BorderRadius.circular(AppRadius.medium),
                                       ),
                                     ),
-                                    items:
-                                        (statusOption['options']
-                                                as List<String>)
-                                            .map((option) {
-                                              return DropdownMenuItem<String>(
-                                                value: option,
-                                                child: Text(option),
-                                              );
-                                            })
-                                            .toList(),
+                                    items: (statusOption['options'] as List<String>).map((option) {
+                                      return DropdownMenuItem<String>(
+                                        value: option,
+                                        child: Text(option),
+                                      );
+                                    }).toList(),
                                     onChanged: (String? value) {
                                       if (value != null) {
                                         // 상태 값 업데이트는 상위 위젯에서 처리
@@ -327,19 +282,14 @@ class _PetStatusSelectionDialogContentState
                     onPressed: () => context.pop(),
                     child: Text(
                       '戻る',
-                      style: AppFonts.bodyMedium.copyWith(
-                        color: AppColors.pointGray,
-                      ),
+                      style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                     ),
                   ),
                 ),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      widget.onStatusUpdated(
-                        state.selectedStatuses,
-                        state.statusValues,
-                      );
+                      widget.onStatusUpdated(state.selectedStatuses, state.statusValues);
                       context.pop();
                     },
                     style: ElevatedButton.styleFrom(

@@ -41,11 +41,7 @@ abstract class BaseController {
   /// [error] 처리할 에러 객체
   /// [severity] 에러 심각도
   /// [stackTrace] 스택 트레이스 (선택사항)
-  void handleErrorWithSeverity(
-    Object error,
-    dynamic severity, [
-    StackTrace? stackTrace,
-  ]) {
+  void handleErrorWithSeverity(Object error, dynamic severity, [StackTrace? stackTrace]) {
     ErrorHandlingService.handleSync(
       () => throw error,
       context: 'BaseController - Severity: $severity',
@@ -155,10 +151,7 @@ abstract class BaseController {
 
   /// 안전한 비동기 작업 실행
   /// 에러가 발생하면 자동으로 처리하고 사용자 친화적인 메시지를 반환합니다
-  Future<T?> safeExecute<T>(
-    Future<T> Function() action, {
-    String? errorMessage,
-  }) async {
+  Future<T?> safeExecute<T>(Future<T> Function() action, {String? errorMessage}) async {
     return ErrorHandlingService.handleAsync(
       action(),
       context: errorMessage ?? 'BaseController async operation',
@@ -190,8 +183,7 @@ abstract class BaseController {
     while (attempts < maxRetries) {
       final result = await ErrorHandlingService.handleAsync(
         action(),
-        context:
-            '${errorMessage ?? 'BaseController'} - Attempt ${attempts + 1}',
+        context: '${errorMessage ?? 'BaseController'} - Attempt ${attempts + 1}',
         showUserMessage: attempts == maxRetries - 1, // 마지막 시도에서만 UI 메시지 표시
       );
 

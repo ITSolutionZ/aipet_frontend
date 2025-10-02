@@ -39,8 +39,7 @@ class WalkShareRepositoryImpl implements WalkShareRepository {
       }
 
       // 파일명 생성
-      final fileName =
-          'walk_${walkRecord.id}_${DateTime.now().millisecondsSinceEpoch}.txt';
+      final fileName = 'walk_${walkRecord.id}_${DateTime.now().millisecondsSinceEpoch}.txt';
       final file = File('${imagesDir.path}/$fileName');
 
       // 산책 기록 정보를 텍스트 파일로 저장 (임시 구현)
@@ -121,13 +120,9 @@ ${walkRecord.notes != null ? '메모: ${walkRecord.notes}' : ''}
   }
 
   /// 산책 기록 이미지 생성
-  Future<String> _generateWalkRecordImage(
-    WalkRecordEntity walkRecord,
-    String directoryPath,
-  ) async {
+  Future<String> _generateWalkRecordImage(WalkRecordEntity walkRecord, String directoryPath) async {
     // 이미지 파일명 생성
-    final fileName =
-        'walk_${walkRecord.id}_${DateTime.now().millisecondsSinceEpoch}.png';
+    final fileName = 'walk_${walkRecord.id}_${DateTime.now().millisecondsSinceEpoch}.png';
     final imagePath = '$directoryPath/$fileName';
 
     // 이미지 생성
@@ -142,11 +137,7 @@ ${walkRecord.notes != null ? '메모: ${walkRecord.notes}' : ''}
     final titlePainter = TextPainter(
       text: const TextSpan(
         text: '🐕 AI Pet - 산책 기록',
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF333333),
-        ),
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
       ),
       textDirection: TextDirection.ltr,
     );

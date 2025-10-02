@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 /// 산책에서 사용되는 펫 정보 엔티티
-class PetInfo {
+class WalkPetInfo {
   final String id;
   final String name;
   final String type;
@@ -9,7 +9,7 @@ class PetInfo {
   final DateTime? lastWalkTime;
   final bool isSelected;
 
-  const PetInfo({
+  const WalkPetInfo({
     required this.id,
     required this.name,
     required this.type,
@@ -18,9 +18,9 @@ class PetInfo {
     this.isSelected = false,
   });
 
-  /// PetProfileEntity에서 PetInfo로 변환
-  factory PetInfo.fromPetProfile(PetProfileEntity pet) {
-    return PetInfo(
+  /// PetProfileEntity에서 WalkPetInfo로 변환
+  factory WalkPetInfo.fromPetProfile(PetProfileEntity pet) {
+    return WalkPetInfo(
       id: pet.id,
       name: pet.name,
       type: pet.type, // type은 이미 String입니다
@@ -31,7 +31,7 @@ class PetInfo {
   }
 
   /// 선택 상태 변경
-  PetInfo copyWith({
+  WalkPetInfo copyWith({
     String? id,
     String? name,
     String? type,
@@ -39,7 +39,7 @@ class PetInfo {
     DateTime? lastWalkTime,
     bool? isSelected,
   }) {
-    return PetInfo(
+    return WalkPetInfo(
       id: id ?? this.id,
       name: name ?? this.name,
       type: type ?? this.type,
@@ -52,7 +52,7 @@ class PetInfo {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is PetInfo && other.id == id;
+    return other is WalkPetInfo && other.id == id;
   }
 
   @override
@@ -60,6 +60,6 @@ class PetInfo {
 
   @override
   String toString() {
-    return 'PetInfo(id: $id, name: $name, type: $type, isSelected: $isSelected)';
+    return 'WalkPetInfo(id: $id, name: $name, type: $type, isSelected: $isSelected)';
   }
 }

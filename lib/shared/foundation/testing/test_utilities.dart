@@ -25,10 +25,7 @@ class TestDataGenerator {
     if (includeNumbers) chars += numbers;
     if (includeSpecialChars) chars += special;
 
-    return List.generate(
-      length,
-      (index) => chars[_random.nextInt(chars.length)],
-    ).join();
+    return List.generate(length, (index) => chars[_random.nextInt(chars.length)]).join();
   }
 
   /// 랜덤 이메일 생성
@@ -62,11 +59,7 @@ class TestDataGenerator {
   }
 
   /// 랜덤 리스트 생성
-  static List<T> randomList<T>(
-    T Function() generator, {
-    int minLength = 1,
-    int maxLength = 10,
-  }) {
+  static List<T> randomList<T>(T Function() generator, {int minLength = 1, int maxLength = 10}) {
     final length = _random.nextInt(maxLength - minLength + 1) + minLength;
     return List.generate(length, (index) => generator());
   }
@@ -103,22 +96,12 @@ class TestCaseAutomator {
         final result = await testFunction(input);
         stopwatch.stop();
 
-        results.add(
-          TestResult.success(
-            input: input,
-            result: result,
-            duration: stopwatch.elapsed,
-          ),
-        );
+        results.add(TestResult.success(input: input, result: result, duration: stopwatch.elapsed));
       } catch (e) {
         stopwatch.stop();
 
         results.add(
-          TestResult.failure(
-            input: input,
-            error: e.toString(),
-            duration: stopwatch.elapsed,
-          ),
+          TestResult.failure(input: input, error: e.toString(), duration: stopwatch.elapsed),
         );
       }
     }
@@ -160,8 +143,7 @@ class TestCaseAutomator {
       iterations: durations.length,
       averageDuration: Duration(
         microseconds:
-            durations.map((d) => d.inMicroseconds).reduce((a, b) => a + b) ~/
-            durations.length,
+            durations.map((d) => d.inMicroseconds).reduce((a, b) => a + b) ~/ durations.length,
       ),
       minDuration: durations.reduce((a, b) => a < b ? a : b),
       maxDuration: durations.reduce((a, b) => a > b ? a : b),
@@ -220,11 +202,7 @@ class TestCaseAutomator {
         iterationStopwatch.stop();
 
         results.add(
-          TestResult.success(
-            input: null,
-            result: null,
-            duration: iterationStopwatch.elapsed,
-          ),
+          TestResult.success(input: null, result: null, duration: iterationStopwatch.elapsed),
         );
       } catch (e) {
         iterationStopwatch.stop();
@@ -243,9 +221,7 @@ class TestCaseAutomator {
   static Duration _calculateAverageDuration(List<TestResult> results) {
     if (results.isEmpty) return Duration.zero;
 
-    final totalMicroseconds = results
-        .map((r) => r.duration.inMicroseconds)
-        .reduce((a, b) => a + b);
+    final totalMicroseconds = results.map((r) => r.duration.inMicroseconds).reduce((a, b) => a + b);
 
     return Duration(microseconds: totalMicroseconds ~/ results.length);
   }
@@ -433,9 +409,7 @@ extension TestHelperExtensions on Object {
         return Map<String, dynamic>.from(this as Map);
       }
       if (this is List) {
-        return {
-          'list': (this as List).map((item) => item?.toTestJson()).toList(),
-        };
+        return {'list': (this as List).map((item) => item?.toTestJson()).toList()};
       }
 
       // 기본 객체의 경우 리플렉션을 통한 변환

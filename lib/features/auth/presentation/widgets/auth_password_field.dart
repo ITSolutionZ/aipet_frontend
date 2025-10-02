@@ -26,23 +26,14 @@ class AuthPasswordField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: AppFonts.bodyMedium.copyWith(
-            color: labelColor ?? AppColors.pointGray,
-          ),
-        ),
+        Text(label, style: AppFonts.bodyMedium.copyWith(color: labelColor ?? AppColors.pointGray)),
         const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: controller,
           obscureText: !isVisible,
           style: AppFonts.bodyMedium,
           decoration: InputDecoration(
-            prefixIcon: const Icon(
-              Icons.lock_outline,
-              color: AppColors.pointGray,
-              size: 20,
-            ),
+            prefixIcon: const Icon(Icons.lock_outline, color: AppColors.pointGray, size: 20),
             suffixIcon: IconButton(
               icon: Icon(
                 isVisible ? Icons.visibility_off : Icons.visibility,
@@ -53,22 +44,15 @@ class AuthPasswordField extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
-              borderSide: BorderSide(
-                color: AppColors.pointGray.withValues(alpha: 0.3),
-              ),
+              borderSide: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.3)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
-              borderSide: BorderSide(
-                color: AppColors.pointGray.withValues(alpha: 0.3),
-              ),
+              borderSide: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.3)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
-              borderSide: const BorderSide(
-                color: AppColors.pointBrown,
-                width: 2,
-              ),
+              borderSide: const BorderSide(color: AppColors.pointBrown, width: 2),
             ),
             filled: true,
             fillColor: Colors.white,

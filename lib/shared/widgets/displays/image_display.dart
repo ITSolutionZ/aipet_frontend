@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/shared.dart' hide State;
 import 'package:flutter/material.dart';
 
-/// 범용 이미지 표시 위젯
-class ImageDisplay extends StatelessWidget {
+/// 범용 이미지 표시 위젯 - 메모리 최적화 버전
+class ImageDisplay extends StatefulWidget {
   final String? imagePath;
   final dynamic imageFile; // String 또는 File을 받을 수 있도록 변경
   final double width;
@@ -31,22 +31,111 @@ class ImageDisplay extends StatelessWidget {
   });
 
   @override
+  ImageDisplayState createState() => ImageDisplayState();
+}
+
+class ImageDisplayState extends State<ImageDisplay> with AutomaticKeepAliveClientMixin {
+  late ImageProvider? _imageProvider;
+  ImageStream? _imageStream;
+  ImageStreamListener? _listener;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeImage();
+  }
+
+  @override
+  void didUpdateWidget(ImageDisplay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.imagePath != widget.imagePath ||
+        oldWidget.imageFile != widget.imageFile) {
+      _disposeImage();
+      _initializeImage();
+    }
+  }
+
+  @override
+  void dispose() {
+    _disposeImage();
+    super.dispose();
+  }
+
+  void _initializeImage() {
+    _imageProvider = _getImageProvider();
+    if (_imageProvider != null) {
+      _imageStream = _imageProvider!.resolve(ImageConfiguration.empty);
+      _listener = ImageStreamListener(_onImageLoaded, onError: _onImageError);
+      _imageStream?.addListener(_listener!);
+    }
+  }
+
+  void _disposeImage() {
+    if (_listener != null && _imageStream != null) {
+      _imageStream!.removeListener(_listener!);
+    }
+    _imageStream = null;
+    _listener = null;
+    _imageProvider = null;
+  }
+
+  void _onImageLoaded(ImageInfo info, bool synchronousCall) {
+    if (mounted) {
+      setState(() {}); // 이미지 로드 완료 시 상태 업데이트
+    }
+  }
+
+  void _onImageError(Object error, StackTrace? stackTrace) {
+    // 에러 처리 - 필요시 로깅
+    debugPrint('Image loading error: $error');
+  }
+
+  ImageProvider? _getImageProvider() {
+    // File 객체가 있는 경우
+    if (widget.imageFile != null && widget.imageFile is File) {
+      return FileImage(widget.imageFile as File);
+    }
+
+    // 이미지 경로가 있는 경우
+    if (widget.imagePath != null && widget.imagePath!.isNotEmpty) {
+      if (widget.imagePath!.startsWith('http') || widget.imagePath!.startsWith('https')) {
+        return NetworkImage(widget.imagePath!);
+      } else {
+        return AssetImage(widget.imagePath!);
+      }
+    }
+
+    // String 형태의 imageFile (경로)
+    if (widget.imageFile != null && widget.imageFile is String) {
+      final String path = widget.imageFile as String;
+      if (path.startsWith('http') || path.startsWith('https')) {
+        return NetworkImage(path);
+      } else {
+        return AssetImage(path);
+      }
+    }
+
+    return null;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           Container(
-            width: width,
-            height: height,
+            width: widget.width,
+            height: widget.height,
             decoration: BoxDecoration(
               color: AppColors.pointGray.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.large),
-              border: Border.all(
-                color: AppColors.pointGray.withValues(alpha: 0.2),
-                width: 1,
-              ),
+              border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.large),
@@ -55,7 +144,7 @@ class ImageDisplay extends StatelessWidget {
           ),
 
           // 업로드 아이콘
-          if (showUploadIcon)
+          if (widget.showUploadIcon)
             Positioned(
               bottom: -8,
               right: -8,
@@ -74,110 +163,75 @@ class ImageDisplay extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.camera_alt,
-                  color: AppColors.pureWhite,
-                  size: 18,
-                ),
+                child: const Icon(Icons.camera_alt, color: AppColors.pureWhite, size: 18),
               ),
             ),
 
           // 배지
-          if (badge != null) Positioned(top: 8, right: 8, child: badge!),
+          if (widget.badge != null) Positioned(top: 8, right: 8, child: widget.badge!),
         ],
       ),
     );
   }
 
   Widget _buildImageContent() {
-    // File 객체가 있는 경우
-    if (imageFile != null && imageFile is File) {
-      return Image.file(
-        imageFile as File,
-        width: width,
-        height: height,
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
-      );
+    if (_imageProvider == null) {
+      return _buildPlaceholder();
     }
 
-    // 이미지 경로가 있는 경우
-    if (imagePath != null && imagePath!.isNotEmpty) {
-      if (imagePath!.startsWith('http') || imagePath!.startsWith('https')) {
-        // 네트워크 이미지
-        return Image.network(
-          imagePath!,
-          width: width,
-          height: height,
-          fit: fit,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                    : null,
-                color: AppColors.pointBrown,
-              ),
-            );
-          },
-          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
+    return Image(
+      image: _imageProvider!,
+      width: widget.width,
+      height: widget.height,
+      fit: widget.fit,
+      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+        if (wasSynchronouslyLoaded) return child;
+        return AnimatedOpacity(
+          opacity: frame == null ? 0 : 1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+          child: child,
         );
-      } else {
-        // 로컬 에셋 이미지
-        return Image.asset(
-          imagePath!,
-          width: width,
-          height: height,
-          fit: fit,
-          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
+      },
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  : null,
+              strokeWidth: 2,
+              color: AppColors.pointBrown,
+            ),
+          ),
         );
-      }
-    }
-
-    // String 형태의 imageFile (경로)
-    if (imageFile != null && imageFile is String) {
-      final String path = imageFile as String;
-      if (path.startsWith('http') || path.startsWith('https')) {
-        return Image.network(
-          path,
-          width: width,
-          height: height,
-          fit: fit,
-          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
-        );
-      } else {
-        return Image.asset(
-          path,
-          width: width,
-          height: height,
-          fit: fit,
-          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
-        );
-      }
-    }
-
-    return _buildPlaceholder();
+      },
+      errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
+    );
   }
 
   Widget _buildPlaceholder() {
-    if (placeholder != null) {
-      return placeholder!;
+    if (widget.placeholder != null) {
+      return widget.placeholder!;
     }
 
-    if (placeholderAsset != null) {
+    if (widget.placeholderAsset != null) {
       return Image.asset(
-        placeholderAsset!,
-        width: width,
-        height: height,
-        fit: fit,
+        widget.placeholderAsset!,
+        width: widget.width,
+        height: widget.height,
+        fit: widget.fit,
+        cacheWidth: (widget.width * 2).round(),
+        cacheHeight: (widget.height * 2).round(),
       );
     }
 
     return Container(
-      width: width,
-      height: height,
+      width: widget.width,
+      height: widget.height,
       decoration: BoxDecoration(
         color: AppColors.pointGray.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -187,15 +241,13 @@ class ImageDisplay extends StatelessWidget {
         children: [
           Icon(
             Icons.image_outlined,
-            size: width * 0.3,
+            size: widget.width * 0.3,
             color: AppColors.pointGray.withValues(alpha: 0.6),
           ),
           const SizedBox(height: 8),
           Text(
             'No Image',
-            style: AppFonts.bodySmall.copyWith(
-              color: AppColors.pointGray.withValues(alpha: 0.6),
-            ),
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray.withValues(alpha: 0.6)),
           ),
         ],
       ),

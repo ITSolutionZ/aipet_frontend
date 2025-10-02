@@ -20,24 +20,19 @@ class TestDataHelper {
   // ==================== AI 관련 테스트 데이터 ====================
 
   /// AI 채팅 요약 테스트 데이터
-  static AiChatSummary get aiChatSummary =>
-      TestMockService.createMockAiChatSummary();
+  static AiChatSummary get aiChatSummary => TestMockService.createMockAiChatSummary();
 
   /// AI 메시지 테스트 데이터
-  static AiMessageEntity get aiMessage =>
-      TestMockService.createMockAiMessageEntity();
+  static AiMessageEntity get aiMessage => TestMockService.createMockAiMessageEntity();
 
   /// AI 카테고리 테스트 데이터
-  static AiCategoryEntity get aiCategory =>
-      TestMockService.createMockAiCategoryEntity();
+  static AiCategoryEntity get aiCategory => TestMockService.createMockAiCategoryEntity();
 
   /// AI 채팅 히스토리 테스트 데이터
-  static AiChatHistoryEntity get aiChatHistory =>
-      TestMockService.createMockAiChatHistoryEntity();
+  static AiChatHistoryEntity get aiChatHistory => TestMockService.createMockAiChatHistoryEntity();
 
   /// AI 즐겨찾기 QA 테스트 데이터
-  static AiFavoriteQaEntity get aiFavoriteQa =>
-      TestMockService.createMockAiFavoriteQaEntity();
+  static AiFavoriteQaEntity get aiFavoriteQa => TestMockService.createMockAiFavoriteQaEntity();
 
   /// 여러 AI 메시지 목록 테스트 데이터
   static List<AiMessageEntity> getAiMessageList({int count = 5}) =>
@@ -46,8 +41,7 @@ class TestDataHelper {
   // ==================== Home 관련 테스트 데이터 ====================
 
   /// 펫 요약 테스트 데이터
-  static PetSummaryEntity get petSummary =>
-      TestMockService.createMockPetSummaryEntity();
+  static PetSummaryEntity get petSummary => TestMockService.createMockPetSummaryEntity();
 
   /// 날씨 테스트 데이터
   static WeatherEntity get weather => TestMockService.createMockWeatherEntity();
@@ -64,15 +58,13 @@ class TestDataHelper {
   static HealthAlert get healthAlert => TestMockService.createMockHealthAlert();
 
   /// 건강 요약 테스트 데이터
-  static HealthSummary get healthSummary =>
-      TestMockService.createMockHealthSummary();
+  static HealthSummary get healthSummary => TestMockService.createMockHealthSummary();
 
   /// 산책 요약 테스트 데이터
   static WalkSummary get walkSummary => TestMockService.createMockWalkSummary();
 
   /// 홈 대시보드 테스트 데이터
-  static HomeDashboardEntity get homeDashboard =>
-      TestMockService.createMockHomeDashboardEntity();
+  static HomeDashboardEntity get homeDashboard => TestMockService.createMockHomeDashboardEntity();
 
   /// 여러 펫 목록 테스트 데이터
   static List<PetSummaryEntity> getPetList({int count = 3}) =>
@@ -85,21 +77,18 @@ class TestDataHelper {
   // ==================== Pet Profile 관련 테스트 데이터 ====================
 
   /// 펫 프로필 테스트 데이터
-  static PetProfileEntity get petProfile =>
-      TestMockService.createMockPetProfileEntity();
+  static PetProfileEntity get petProfile => TestMockService.createMockPetProfileEntity();
 
   /// 여러 펫 프로필 목록 - 기존 mock_data에서 가져오기
   static List<PetProfileEntity> get petProfiles => PetMockData.getMockPets();
 
   /// 강아지 품종 목록 테스트 데이터
-  static List<String> get dogBreeds => PetMockData.getMockDogBreeds()
-      .map((breed) => breed['name'] as String)
-      .toList();
+  static List<String> get dogBreeds =>
+      PetMockData.getMockDogBreeds().map((breed) => breed['name'] as String).toList();
 
   /// 고양이 품종 목록 테스트 데이터
-  static List<String> get catBreeds => PetMockData.getMockCatBreeds()
-      .map((breed) => breed['name'] as String)
-      .toList();
+  static List<String> get catBreeds =>
+      PetMockData.getMockCatBreeds().map((breed) => breed['name'] as String).toList();
 
   // ==================== 기존 Mock 서비스와의 연동 ====================
 

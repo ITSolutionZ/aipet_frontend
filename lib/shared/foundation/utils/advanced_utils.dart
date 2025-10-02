@@ -42,8 +42,7 @@ class AdvancedAsyncUtils {
       return Result.success('Operation completed successfully', result);
     } on TimeoutException {
       return Result.failure(
-        timeoutMessage ??
-            'Operation timed out after ${timeout.inSeconds} seconds',
+        timeoutMessage ?? 'Operation timed out after ${timeout.inSeconds} seconds',
       );
     } catch (e) {
       return Result.fromException(Exception(e.toString()));
@@ -51,10 +50,7 @@ class AdvancedAsyncUtils {
   }
 
   /// Future를 디바운스하여 실행
-  static Future<T> debounce<T>(
-    Duration delay,
-    Future<T> Function() operation,
-  ) async {
+  static Future<T> debounce<T>(Duration delay, Future<T> Function() operation) async {
     final completer = Completer<T>();
     Timer? timer;
 
@@ -76,10 +72,7 @@ class AdvancedAsyncUtils {
   }
 
   /// Future를 스로틀링하여 실행
-  static Future<T> throttle<T>(
-    Duration interval,
-    Future<T> Function() operation,
-  ) async {
+  static Future<T> throttle<T>(Duration interval, Future<T> Function() operation) async {
     final now = DateTime.now();
     final lastExecution = _lastThrottleExecution[operation.hashCode];
 
@@ -151,19 +144,13 @@ class AdvancedCollectionUtils {
   }
 
   /// 리스트에서 조건에 맞는 중복 제거
-  static List<T> distinctBy<T, K>(
-    List<T> list,
-    K Function(T item) keySelector,
-  ) {
+  static List<T> distinctBy<T, K>(List<T> list, K Function(T item) keySelector) {
     final seen = <K>{};
     return list.where((item) => seen.add(keySelector(item))).toList();
   }
 
   /// 리스트를 그룹화
-  static Map<K, List<T>> groupBy<T, K>(
-    List<T> list,
-    K Function(T item) keySelector,
-  ) {
+  static Map<K, List<T>> groupBy<T, K>(List<T> list, K Function(T item) keySelector) {
     final groups = <K, List<T>>{};
     for (final item in list) {
       final key = keySelector(item);
@@ -191,11 +178,7 @@ class AdvancedCollectionUtils {
   }
 
   /// 리스트에서 슬라이딩 윈도우
-  static List<List<T>> sliding<T>(
-    List<T> list,
-    int windowSize, {
-    bool partialWindows = false,
-  }) {
+  static List<List<T>> sliding<T>(List<T> list, int windowSize, {bool partialWindows = false}) {
     return windowed(list, windowSize, step: 1, partialWindows: partialWindows);
   }
 }
@@ -211,8 +194,7 @@ class AdvancedStringUtils {
       return words[0].toLowerCase();
     }
 
-    return words[0].toLowerCase() +
-        words.skip(1).map((word) => word.capitalize()).join();
+    return words[0].toLowerCase() + words.skip(1).map((word) => word.capitalize()).join();
   }
 
   /// 문자열을 파스칼케이스로 변환
@@ -226,10 +208,7 @@ class AdvancedStringUtils {
   /// 문자열을 스네이크케이스로 변환
   static String toSnakeCase(String input) {
     return input
-        .replaceAllMapped(
-          RegExp(r'[A-Z]'),
-          (match) => '_${match.group(0)!.toLowerCase()}',
-        )
+        .replaceAllMapped(RegExp(r'[A-Z]'), (match) => '_${match.group(0)!.toLowerCase()}')
         .replaceAll(RegExp(r'[\s\-]+'), '_')
         .replaceAll(RegExp(r'_+'), '_')
         .replaceAll(RegExp(r'^_|_$'), '');
@@ -238,10 +217,7 @@ class AdvancedStringUtils {
   /// 문자열을 케밥케이스로 변환
   static String toKebabCase(String input) {
     return input
-        .replaceAllMapped(
-          RegExp(r'[A-Z]'),
-          (match) => '-${match.group(0)!.toLowerCase()}',
-        )
+        .replaceAllMapped(RegExp(r'[A-Z]'), (match) => '-${match.group(0)!.toLowerCase()}')
         .replaceAll(RegExp(r'[\s_]+'), '-')
         .replaceAll(RegExp(r'-+'), '-')
         .replaceAll(RegExp(r'^-|-$'), '');
@@ -442,11 +418,7 @@ extension ListExtensions<T> on List<T> {
   }
 
   /// 윈도우 슬라이딩
-  List<List<T>> windowed(
-    int windowSize, {
-    int step = 1,
-    bool partialWindows = false,
-  }) {
+  List<List<T>> windowed(int windowSize, {int step = 1, bool partialWindows = false}) {
     return AdvancedCollectionUtils.windowed(
       this,
       windowSize,
@@ -457,11 +429,7 @@ extension ListExtensions<T> on List<T> {
 
   /// 슬라이딩 윈도우
   List<List<T>> sliding(int windowSize, {bool partialWindows = false}) {
-    return AdvancedCollectionUtils.sliding(
-      this,
-      windowSize,
-      partialWindows: partialWindows,
-    );
+    return AdvancedCollectionUtils.sliding(this, windowSize, partialWindows: partialWindows);
   }
 
   /// 안전한 인덱스 접근
@@ -487,8 +455,7 @@ extension MapExtensions<K, V> on Map<K, V> {
   T? getAs<T>(K key) => this[key] is T ? this[key] as T : null;
 
   /// 키로 값을 안전하게 가져오기 (기본값 포함)
-  T getAsOr<T>(K key, T defaultValue) =>
-      this[key] is T ? this[key] as T : defaultValue;
+  T getAsOr<T>(K key, T defaultValue) => this[key] is T ? this[key] as T : defaultValue;
 
   /// 키로 값을 안전하게 가져오기 (계산된 기본값)
   T getAsOrElse<T>(K key, T Function() defaultValueSupplier) {
@@ -511,17 +478,13 @@ extension DateTimeExtensions on DateTime {
   /// 날짜가 어제인지 확인
   bool get isYesterday {
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
-    return year == yesterday.year &&
-        month == yesterday.month &&
-        day == yesterday.day;
+    return year == yesterday.year && month == yesterday.month && day == yesterday.day;
   }
 
   /// 날짜가 내일인지 확인
   bool get isTomorrow {
     final tomorrow = DateTime.now().add(const Duration(days: 1));
-    return year == tomorrow.year &&
-        month == tomorrow.month &&
-        day == tomorrow.day;
+    return year == tomorrow.year && month == tomorrow.month && day == tomorrow.day;
   }
 
   /// 날짜를 상대적 시간 문자열로 변환

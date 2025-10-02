@@ -48,10 +48,7 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
           'Authorization': 'Bearer $refreshToken',
           'Accept': 'application/json',
         },
-        body: json.encode({
-          'refreshToken': refreshToken,
-          'clientType': 'mobile',
-        }),
+        body: json.encode({'refreshToken': refreshToken, 'clientType': 'mobile'}),
       );
 
       if (response.statusCode == 200) {
@@ -132,14 +129,11 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
 
       // 토큰이 곧 만료되는지 확인 (5분 전)
       final fiveMinutesFromNow = DateTime.now().add(const Duration(minutes: 5));
-      final isExpiringSoon =
-          currentToken.expiresAt?.isBefore(fiveMinutesFromNow) ?? false;
+      final isExpiringSoon = currentToken.expiresAt?.isBefore(fiveMinutesFromNow) ?? false;
 
       if (isExpiringSoon && currentToken.refreshToken != null) {
         if (kDebugMode) {
-          debugPrint(
-            '토큰 자동 갱신 시작 (만료 예정: ${currentToken.expiresAt?.toIso8601String()})',
-          );
+          debugPrint('토큰 자동 갱신 시작 (만료 예정: ${currentToken.expiresAt?.toIso8601String()})');
         }
 
         // 리프레시 토큰으로 갱신 시도

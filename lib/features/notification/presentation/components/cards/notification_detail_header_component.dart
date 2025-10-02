@@ -35,11 +35,7 @@ class NotificationDetailHeaderComponent extends StatelessWidget {
                       color: notification.type.color.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppRadius.medium),
                     ),
-                    child: Icon(
-                      notification.type.icon,
-                      color: notification.type.color,
-                      size: 20,
-                    ),
+                    child: Icon(notification.type.icon, color: notification.type.color, size: 20),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
@@ -55,9 +51,7 @@ class NotificationDetailHeaderComponent extends StatelessWidget {
                         ),
                         Text(
                           formatDateTime(notification.createdAt),
-                          style: AppFonts.bodySmall.copyWith(
-                            color: AppColors.pointGray,
-                          ),
+                          style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
                         ),
                       ],
                     ),
@@ -99,10 +93,7 @@ class NotificationDetailHeaderComponent extends StatelessWidget {
               // 메시지
               Text(
                 notification.body,
-                style: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.pointDark,
-                  height: 1.6,
-                ),
+                style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark, height: 1.6),
               ),
             ],
           ),

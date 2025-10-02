@@ -12,25 +12,12 @@ class AuthDivider extends StatelessWidget {
       // 텍스트가 있는 구분선 (예: "または")
       return Row(
         children: [
-          Expanded(
-            child: Container(
-              height: 1,
-              color: AppColors.pointGray.withValues(alpha: 0.3),
-            ),
-          ),
+          Expanded(child: Container(height: 1, color: AppColors.pointGray.withValues(alpha: 0.3))),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Text(
-              text!,
-              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-            ),
+            child: Text(text!, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
           ),
-          Expanded(
-            child: Container(
-              height: 1,
-              color: AppColors.pointGray.withValues(alpha: 0.3),
-            ),
-          ),
+          Expanded(child: Container(height: 1, color: AppColors.pointGray.withValues(alpha: 0.3))),
         ],
       );
     } else {

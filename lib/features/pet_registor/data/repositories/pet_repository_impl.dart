@@ -15,8 +15,7 @@ class PetRepositoryImpl implements PetRepository {
   final Logger _logger = Logger();
 
   /// Mock 모드 여부 확인
-  bool get _isMockMode =>
-      AppConfig.current.isMockMode || AppConfig.current.environment == 'test';
+  bool get _isMockMode => AppConfig.current.isMockMode || AppConfig.current.environment == 'test';
 
   @override
   Future<Result<List<PetProfileEntity>>> getAllPets() async {
@@ -49,20 +48,17 @@ class PetRepositoryImpl implements PetRepository {
             type: petData['typeName']?.toString() ?? 'dog',
             breed: petData['breed']?.toString(),
             birthDate: petData['birthDate'] != null
-                ? DateTime.tryParse(petData['birthDate'].toString()) ??
-                      DateTime.now()
+                ? DateTime.tryParse(petData['birthDate'].toString()) ?? DateTime.now()
                 : DateTime.now(),
             gender: petData['gender']?.toString() ?? 'unknown',
             weight: (petData['weight'] as num?)?.toDouble() ?? 0.0,
             imagePath: petData['imagePath']?.toString(),
             ownerId: petData['ownerId']?.toString() ?? 'unknown',
             createdAt: petData['createdAt'] != null
-                ? DateTime.tryParse(petData['createdAt'].toString()) ??
-                      DateTime.now()
+                ? DateTime.tryParse(petData['createdAt'].toString()) ?? DateTime.now()
                 : DateTime.now(),
             updatedAt: DateTime.now(),
-            additionalInfo:
-                petData['additionalInfo'] as Map<String, dynamic>? ?? {},
+            additionalInfo: petData['additionalInfo'] as Map<String, dynamic>? ?? {},
           ),
         )
         .toList();
@@ -98,9 +94,7 @@ class PetRepositoryImpl implements PetRepository {
   Future<Result<PetProfileEntity>> createPet(PetProfileEntity pet) async {
     try {
       final newPet = pet.copyWith(
-        id: pet.id.isEmpty
-            ? DateTime.now().millisecondsSinceEpoch.toString()
-            : pet.id,
+        id: pet.id.isEmpty ? DateTime.now().millisecondsSinceEpoch.toString() : pet.id,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );

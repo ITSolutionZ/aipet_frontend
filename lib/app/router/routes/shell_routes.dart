@@ -13,6 +13,7 @@ import 'package:aipet_frontend/features/scheduling/presentation/presentation.dar
 import 'package:aipet_frontend/features/scheduling/presentation/screens/today_appointments_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/settings_screens.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/presentation/screens/walk_calendar_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/walk_detail_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/walk_list_screen.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart';
@@ -88,6 +89,23 @@ class ShellRoutes {
             path: 'tricks',
             name: 'tricks',
             builder: (context, state) => const TricksScreen(),
+          ),
+          GoRoute(
+            path: 'qr',
+            name: 'qr-code',
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                child: const SizedBox.shrink(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      // 페이지 진입 시 바텀시트 표시
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        QRCodeBottomSheet.show(context);
+                      });
+                      return const SizedBox.shrink();
+                    },
+              );
+            },
           ),
         ],
       ),
@@ -200,15 +218,18 @@ class ShellRoutes {
                     path: 'edit',
                     name: 'edit-watering-record',
                     builder: (context, state) {
-                      // TODO: 실제 record 데이터를 전달하는 방식으로 개선 필요
-                      final mockRecord = {
-                        'date': '2024-01-15',
-                        'time': '08:30',
-                        'amount': '200ml',
-                        'type': '定期的な給水',
-                        'notes': 'いつも通り完食',
-                      };
-                      return EditWateringRecordScreen(record: mockRecord);
+                      final record = state.extra as Map<String, dynamic>?;
+                      return EditWateringRecordScreen(
+                        record:
+                            record ??
+                            {
+                              'date': '2024-01-15',
+                              'time': '08:30',
+                              'amount': '200ml',
+                              'type': '定期的な給水',
+                              'notes': 'いつも通り完食',
+                            },
+                      );
                     },
                   ),
                 ],
@@ -274,6 +295,12 @@ class ShellRoutes {
               }
               return WalkDetailScreen(walkRecord: walkRecord);
             },
+          ),
+          // 산책 기록 달력 화면
+          GoRoute(
+            path: 'calendar',
+            name: 'walk-calendar',
+            builder: (context, state) => const WalkCalendarScreen(),
           ),
         ],
       ),
@@ -374,6 +401,11 @@ class ShellRoutes {
                 child: Text('Alarm Time Settings Screen - Coming Soon'),
               ),
             ),
+          ),
+          GoRoute(
+            path: 'location-setting',
+            name: 'location-setting',
+            builder: (context, state) => const LocationSettingScreen(),
           ),
         ],
       ),

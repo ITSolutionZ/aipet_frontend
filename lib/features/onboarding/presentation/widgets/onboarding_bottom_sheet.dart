@@ -24,9 +24,7 @@ class OnboardingBottomSheet extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(
-              alpha: OnboardingConstants.bottomSheetShadowOpacity,
-            ),
+            color: Colors.black.withValues(alpha: OnboardingConstants.bottomSheetShadowOpacity),
             blurRadius: OnboardingConstants.bottomSheetShadowBlurRadius,
             offset: OnboardingConstants.bottomSheetShadowOffset,
             spreadRadius: 0,
@@ -88,9 +86,7 @@ class OnboardingBottomSheet extends StatelessWidget {
                 width: double.infinity,
                 child: ActionButton.primary(
                   isEnabled: true,
-                  text:
-                      onboardingState.currentPage ==
-                          OnboardingData.pages.length - 1
+                  text: onboardingState.currentPage == OnboardingData.pages.length - 1
                       ? OnboardingConstants.startButtonText
                       : OnboardingConstants.nextButtonText,
                   onPressed: onNext,
