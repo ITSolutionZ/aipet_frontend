@@ -23,12 +23,41 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
   final Set<Marker> _markers = {};
   final Set<Polyline> _polylines = {};
   final LocationCacheService _locationCache = LocationCacheService.instance;
+  BitmapDescriptor? _poopIcon;
+  BitmapDescriptor? _peeIcon;
 
   @override
   void initState() {
     super.initState();
+    _loadCustomIcons();
     _getCurrentLocation();
     _setupWalkDetailMap();
+  }
+
+  /// 커스텀 아이콘 로드
+  Future<void> _loadCustomIcons() async {
+    try {
+      final poopIcon = await BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(48, 48)),
+        'assets/icons/poop.png',
+      );
+      final peeIcon = await BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(48, 48)),
+        'assets/icons/marking.png',
+      );
+      
+      setState(() {
+        _poopIcon = poopIcon;
+        _peeIcon = peeIcon;
+      });
+      
+      // 아이콘 로드 후 마커 다시 생성
+      _setupWalkDetailMap();
+      
+      debugPrint('✅ WalkDetailMap: 커스텀 아이콘 로드 완료');
+    } catch (e) {
+      debugPrint('⚠️ WalkDetailMap: 커스텀 아이콘 로드 실패 - $e');
+    }
   }
 
   Future<void> _getCurrentLocation() async {
@@ -180,16 +209,26 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
         final lng = (activity['longitude'] as num).toDouble();
         final timestamp = activity['timestamp'] as String;
 
+        // 커스텀 아이콘이 로드되었으면 사용, 아니면 기본 마커
+        BitmapDescriptor markerIcon;
+        if (type == 'poop' && _poopIcon != null) {
+          markerIcon = _poopIcon!;
+        } else if (type == 'pee' && _peeIcon != null) {
+          markerIcon = _peeIcon!;
+        } else {
+          // 기본 마커
+          markerIcon = BitmapDescriptor.defaultMarkerWithHue(
+            type == 'poop'
+                ? BitmapDescriptor.hueOrange
+                : BitmapDescriptor.hueAzure,
+          );
+        }
+
         _markers.add(
           Marker(
             markerId: MarkerId('activity_${widget.walkRecord.id}_$i'),
             position: LatLng(lat, lng),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-              type == 'poop'
-                  ? BitmapDescriptor
-                        .hueOrange // 💩 주황색
-                  : BitmapDescriptor.hueAzure, // 💧 하늘색
-            ),
+            icon: markerIcon,
             infoWindow: InfoWindow(
               title: type == 'poop' ? '💩 排便' : '💧 排尿',
               snippet: timestamp.substring(11, 16), // HH:mm 형식
@@ -290,7 +329,7 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
       Marker(
         markerId: const MarkerId('park'),
         position: const LatLng(parkLat, parkLng),
-        infoWindow: const InfoWindow(title: '공원', snippet: '산책 시작점'),
+        infoWindow: const InfoWindow(title: '公園', snippet: '散歩開始点'),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       ),
     );
@@ -308,7 +347,7 @@ class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
       Marker(
         markerId: const MarkerId('home'),
         position: const LatLng(homeLat, homeLng),
-        infoWindow: const InfoWindow(title: '집', snippet: '산책 종료점'),
+        infoWindow: const InfoWindow(title: '家', snippet: '散歩終了点'),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       ),
     );

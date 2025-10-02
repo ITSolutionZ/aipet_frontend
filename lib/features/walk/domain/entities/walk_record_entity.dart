@@ -139,9 +139,9 @@ class WalkRecordEntity {
     final minutes = duration.inMinutes % 60;
 
     if (hours > 0) {
-      return '$hours시간 $minutes분';
+      return '$hours時間$minutes分';
     } else {
-      return '$minutes분';
+      return '$minutes分';
     }
   }
 
