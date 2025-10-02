@@ -70,22 +70,23 @@ class WalkRecordCardWidget extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  Row(
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.xs,
                     children: [
                       // 소요시간
                       _buildInfoChip(
                         icon: Icons.timer,
                         text: walkRecord.formattedDuration,
                       ),
-                      const SizedBox(width: AppSpacing.sm),
                       // 거리
                       _buildInfoChip(
                         icon: Icons.straighten,
                         text: walkRecord.formattedDistance,
                       ),
-                      const SizedBox(width: AppSpacing.sm),
                       // 제안 시간 대비 퍼센트
                       _buildInfoChip(
                         icon: Icons.emoji_events,
@@ -208,14 +209,17 @@ class WalkRecordCardWidget extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: color ?? AppColors.pointBrown),
+          Icon(icon, size: 12, color: color ?? AppColors.pointBrown),
           const SizedBox(width: 4),
           Text(
             text,
             style: AppTextStyles.bodySmall.copyWith(
               color: color ?? AppColors.pointBrown,
               fontWeight: FontWeight.w600,
+              fontSize: 11,
             ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ],
       ),

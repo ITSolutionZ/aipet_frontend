@@ -9,6 +9,7 @@ import '../../domain/entities/pet_info.dart';
 import 'map/walk_map_camera_controller.dart';
 import 'map/walk_map_marker_builder.dart';
 import 'map/walk_map_polyline_builder.dart';
+import 'utils/custom_marker_builder.dart';
 
 final mapWidgetProvider = StateNotifierProvider.family
     .autoDispose<MapWidgetController, MapWidgetState, MapWidgetParams>((
@@ -33,11 +34,13 @@ class MapWidgetParams {
   final List<WalkRecordEntity> walkRecords;
   final WalkPetInfo? selectedPet;
   final List<Map<String, dynamic>> petActivities;
+  final Function(int index)? onActivityMarkerTap;
 
   const MapWidgetParams({
     required this.walkRecords,
     this.selectedPet,
     this.petActivities = const [],
+    this.onActivityMarkerTap,
   });
 
   @override
@@ -46,11 +49,13 @@ class MapWidgetParams {
     return other is MapWidgetParams &&
         other.walkRecords == walkRecords &&
         other.selectedPet == selectedPet &&
-        other.petActivities == petActivities;
+        other.petActivities == petActivities &&
+        other.onActivityMarkerTap == onActivityMarkerTap;
   }
 
   @override
-  int get hashCode => Object.hash(walkRecords, selectedPet, petActivities);
+  int get hashCode =>
+      Object.hash(walkRecords, selectedPet, petActivities, onActivityMarkerTap);
 }
 
 class MapWidgetState {
@@ -60,6 +65,7 @@ class MapWidgetState {
   final Set<Polyline> polylines;
   final BitmapDescriptor? poopIcon;
   final BitmapDescriptor? peeIcon;
+  final BitmapDescriptor? noEntryIcon;
 
   const MapWidgetState({
     this.mapController,
@@ -68,6 +74,7 @@ class MapWidgetState {
     this.polylines = const {},
     this.poopIcon,
     this.peeIcon,
+    this.noEntryIcon,
   });
 
   MapWidgetState copyWith({
@@ -77,6 +84,7 @@ class MapWidgetState {
     Set<Polyline>? polylines,
     BitmapDescriptor? poopIcon,
     BitmapDescriptor? peeIcon,
+    BitmapDescriptor? noEntryIcon,
   }) {
     return MapWidgetState(
       mapController: mapController ?? this.mapController,
@@ -85,6 +93,7 @@ class MapWidgetState {
       polylines: polylines ?? this.polylines,
       poopIcon: poopIcon ?? this.poopIcon,
       peeIcon: peeIcon ?? this.peeIcon,
+      noEntryIcon: noEntryIcon ?? this.noEntryIcon,
     );
   }
 }
@@ -93,34 +102,83 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
   final MapWidgetParams params;
   final LocationCacheService _locationCache = LocationCacheService.instance;
 
+  // 전역 캐싱 (한 번만 생성)
+  static BitmapDescriptor? _cachedPoopIcon;
+  static BitmapDescriptor? _cachedPeeIcon;
+  static BitmapDescriptor? _cachedNoEntryIcon;
+  static bool _iconsLoading = false;
+  static bool _iconsLoaded = false;
+
   MapWidgetController(this.params) : super(const MapWidgetState()) {
     // 즉시 기본 위치를 설정한 후 실제 위치를 가져오도록 변경
     _setDefaultLocation();
     getCurrentLocation();
-    _loadCustomIcons();
+    _loadCustomIconsOnce();
     setupMarkersAndPolylines();
   }
 
-  /// 커스텀 아이콘 로드
-  Future<void> _loadCustomIcons() async {
+  /// 커스텀 아이콘 로드 (전역 싱글톤, 한 번만)
+  Future<void> _loadCustomIconsOnce() async {
+    // 이미 로드되었으면 상태만 업데이트
+    if (_iconsLoaded && _cachedPoopIcon != null) {
+      state = state.copyWith(
+        poopIcon: _cachedPoopIcon,
+        peeIcon: _cachedPeeIcon,
+        noEntryIcon: _cachedNoEntryIcon,
+      );
+      return;
+    }
+
+    // 로딩 중이면 대기
+    if (_iconsLoading) {
+      while (_iconsLoading) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+      state = state.copyWith(
+        poopIcon: _cachedPoopIcon,
+        peeIcon: _cachedPeeIcon,
+        noEntryIcon: _cachedNoEntryIcon,
+      );
+      return;
+    }
+
+    _iconsLoading = true;
+
     try {
-      final poopIcon = await BitmapDescriptor.asset(
-        const ImageConfiguration(size: Size(48, 48)),
-        'assets/icons/poop.png',
+      // 작은 사이즈로 원형 마커 생성 (메모리 효율적)
+      final poopIcon = await CustomMarkerBuilder.createCircleMarker(
+        iconPath: 'assets/icons/poop.png',
+        backgroundColor: const Color(0xFFFF9800),
+        size: 40,
       );
-      final peeIcon = await BitmapDescriptor.asset(
-        const ImageConfiguration(size: Size(48, 48)),
-        'assets/icons/marking.png',
+      final peeIcon = await CustomMarkerBuilder.createCircleMarker(
+        iconPath: 'assets/icons/marking.png',
+        backgroundColor: const Color(0xFF2196F3),
+        size: 40,
       );
-      
-      state = state.copyWith(poopIcon: poopIcon, peeIcon: peeIcon);
-      
-      // 아이콘 로드 후 마커 다시 생성
+      final noEntryIcon = await CustomMarkerBuilder.createCircleMarker(
+        iconPath: 'assets/icons/no-entry.png',
+        backgroundColor: const Color(0xFFF44336),
+        size: 40,
+      );
+
+      _cachedPoopIcon = poopIcon;
+      _cachedPeeIcon = peeIcon;
+      _cachedNoEntryIcon = noEntryIcon;
+      _iconsLoaded = true;
+
+      state = state.copyWith(
+        poopIcon: poopIcon,
+        peeIcon: peeIcon,
+        noEntryIcon: noEntryIcon,
+      );
+
       setupMarkersAndPolylines();
-      
-      debugPrint('✅ MapWidget: 커스텀 아이콘 로드 완료');
+      debugPrint('✅ MapWidget: 원형 마커 로드 완료 (40px)');
     } catch (e) {
-      debugPrint('⚠️ MapWidget: 커스텀 아이콘 로드 실패 - $e');
+      debugPrint('⚠️ MapWidget: 마커 로드 실패 - $e');
+    } finally {
+      _iconsLoading = false;
     }
   }
 
@@ -261,13 +319,34 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
         markerIcon = state.poopIcon!;
       } else if (type == 'pee' && state.peeIcon != null) {
         markerIcon = state.peeIcon!;
+      } else if (type == 'no-entry' && state.noEntryIcon != null) {
+        markerIcon = state.noEntryIcon!;
       } else {
         // 기본 마커
-        markerIcon = BitmapDescriptor.defaultMarkerWithHue(
-          type == 'poop'
-              ? BitmapDescriptor.hueOrange
-              : BitmapDescriptor.hueAzure,
-        );
+        double hue;
+        if (type == 'poop') {
+          hue = BitmapDescriptor.hueOrange;
+        } else if (type == 'pee') {
+          hue = BitmapDescriptor.hueAzure;
+        } else {
+          hue = BitmapDescriptor.hueRed;
+        }
+        markerIcon = BitmapDescriptor.defaultMarkerWithHue(hue);
+      }
+
+      String title;
+      switch (type) {
+        case 'poop':
+          title = '💩 排便';
+          break;
+        case 'pee':
+          title = '💧 排尿';
+          break;
+        case 'no-entry':
+          title = '🚫 立入禁止';
+          break;
+        default:
+          title = '記録';
       }
 
       markers.add(
@@ -278,10 +357,11 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
             lng + offset['lngOffset']!,
           ),
           icon: markerIcon,
-          infoWindow: InfoWindow(
-            title: type == 'poop' ? '💩 排便' : '💧 排尿',
-            snippet: '${activity['timestamp']}'.substring(11, 16),
-          ),
+          infoWindow: InfoWindow(title: title, snippet: 'タップして削除'),
+          onTap: () {
+            // 마커 탭 시 콜백 호출
+            params.onActivityMarkerTap?.call(i);
+          },
         ),
       );
     }
@@ -330,12 +410,14 @@ class MapWidget extends ConsumerWidget {
   final List<WalkRecordEntity> walkRecords;
   final WalkPetInfo? selectedPet;
   final List<Map<String, dynamic>> petActivities;
+  final Function(int index)? onActivityMarkerTap;
 
   const MapWidget({
     super.key,
     required this.walkRecords,
     this.selectedPet,
     this.petActivities = const [],
+    this.onActivityMarkerTap,
   });
 
   @override
@@ -344,6 +426,7 @@ class MapWidget extends ConsumerWidget {
       walkRecords: walkRecords,
       selectedPet: selectedPet,
       petActivities: petActivities,
+      onActivityMarkerTap: onActivityMarkerTap,
     );
     final controller = ref.read(mapWidgetProvider(params).notifier);
     final state = ref.watch(mapWidgetProvider(params));

@@ -444,16 +444,27 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem('${recordsForDay.length}回', Icons.directions_walk),
-          _buildStatItem(
-            '${totalDistance.toStringAsFixed(1)}km',
-            Icons.straighten,
+          Expanded(
+            child: _buildStatItem(
+              '${recordsForDay.length}回',
+              Icons.directions_walk,
+            ),
           ),
-          _buildStatItem('${totalDuration.inMinutes}分', Icons.timer),
-          _buildStatItem(
-            '$achievementRate%',
-            Icons.emoji_events,
-            color: _getAchievementColor(achievementRate),
+          Expanded(
+            child: _buildStatItem(
+              '${totalDistance.toStringAsFixed(1)}km',
+              Icons.straighten,
+            ),
+          ),
+          Expanded(
+            child: _buildStatItem('${totalDuration.inMinutes}分', Icons.timer),
+          ),
+          Expanded(
+            child: _buildStatItem(
+              '$achievementRate%',
+              Icons.emoji_events,
+              color: _getAchievementColor(achievementRate),
+            ),
           ),
         ],
       ),
@@ -495,14 +506,18 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: itemColor, size: AppSpacing.lg),
+        Icon(icon, color: itemColor, size: 20),
         const SizedBox(height: 4),
         Text(
           value,
-          style: AppTextStyles.bodyMedium.copyWith(
+          style: AppTextStyles.bodySmall.copyWith(
             fontWeight: FontWeight.bold,
             color: itemColor,
+            fontSize: 12,
           ),
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
         ),
       ],
     );

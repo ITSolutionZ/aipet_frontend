@@ -5,6 +5,7 @@ import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_widgets.dart';
+import 'package:aipet_frontend/shared/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart'
     hide MapWidget, WalkRecordCardWidget;
 import 'package:flutter/material.dart';
@@ -47,11 +48,94 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   Future<void> _loadInitialData() async {
     await _controller.loadWalkRecords();
 
+    // 백그라운드에서 진행 중인 산책 확인
+    await _checkBackgroundWalk();
+
     // Mock 데이터의 첫 번째 펫을 기본으로 설정
     final pets = PetMockData.getMockPets();
     if (pets.isNotEmpty) {
       final firstPet = pets.first;
       _controller.setSelectedPet(WalkPetInfo.fromPetProfile(firstPet));
+    }
+  }
+
+  /// 백그라운드에서 진행 중인 산책 확인 및 종료
+  Future<void> _checkBackgroundWalk() async {
+    try {
+      // 로컬 스토리지에서 진행 중인 산책 확인
+      final currentWalk = await LocalWalkStorageService.loadCurrentWalk();
+
+      if (currentWalk != null) {
+        debugPrint('⚠️ 백그라운드 산책 발견: ${currentWalk.id}');
+        debugPrint('시작 시간: ${currentWalk.startTime}');
+        debugPrint('상태: ${currentWalk.status}');
+
+        // 진행 중 또는 일시정지 상태인 산책을 자동 종료
+        if (currentWalk.status == WalkStatus.inProgress ||
+            currentWalk.status == WalkStatus.paused) {
+          if (!mounted) return;
+
+          // 사용자에게 알림
+          final shouldEnd = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+              title: const Text('未完了の散歩'),
+              content: Text(
+                '${currentWalk.petName}の散歩が進行中です。\n'
+                '開始時間: ${currentWalk.timeString}\n\n'
+                'この散歩を終了しますか？',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('続ける'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.pointPink,
+                  ),
+                  child: const Text('終了'),
+                ),
+              ],
+            ),
+          );
+
+          if (shouldEnd == true && mounted) {
+            // 자동 종료 처리
+            final duration = DateTime.now().difference(currentWalk.startTime);
+
+            // 종료 처리
+            await _controller.endCurrentWalk(
+              distance: currentWalk.distance ?? 0.0,
+              notes: currentWalk.notes,
+            );
+
+            // 로컬 스토리지에서 currentWalk 명시적으로 제거
+            await LocalWalkStorageService.saveCurrentWalk(null);
+
+            // Provider 상태도 명시적으로 클리어
+            ref.read(currentWalkNotifierProvider.notifier).endWalk();
+
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('散歩を終了しました (${duration.inMinutes}分)'),
+                  backgroundColor: AppColors.pointGreen,
+                ),
+              );
+            }
+          } else if (shouldEnd == false) {
+            // 계속하기 선택 시 provider에 복원
+            ref
+                .read(currentWalkNotifierProvider.notifier)
+                .startWalk(currentWalk);
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('❌ 백그라운드 산책 확인 실패: $e');
     }
   }
 
@@ -165,67 +249,22 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                // 줌 인 버튼
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: IconButton(
-                    onPressed: _zoomIn,
-                    icon: const Icon(
-                      Icons.add,
-                      color: AppColors.textPrimary,
-                      size: 20,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                // 줌 아웃 버튼
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: IconButton(
-                    onPressed: _zoomOut,
-                    icon: const Icon(
-                      Icons.remove,
-                      color: AppColors.textPrimary,
-                      size: 20,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
 
-          // 배변/배뇨 버튼 (우측 상단)
+          // 배변/배뇨/금지구역 버튼 (우측 상단)
           if (currentWalk != null)
             Positioned(
               bottom: MediaQuery.of(context).padding.bottom + 160,
               right: 16,
               child: Column(
                 children: [
+                  _buildActivityButton(
+                    iconPath: 'assets/icons/no-entry.png',
+                    onTap: () => _recordPetActivity('no-entry'),
+                  ),
+                  const SizedBox(height: 8),
                   _buildActivityButton(
                     iconPath: 'assets/icons/poop.png',
                     onTap: () => _recordPetActivity('poop'),
@@ -522,7 +561,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                         children: [
                           Icon(
                             Icons.timer_outlined,
-                            size: 10,
+                            size: 12,
                             color: isSelected
                                 ? Colors.white.withValues(alpha: 0.8)
                                 : AppColors.textSecondary,
@@ -534,7 +573,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                               color: isSelected
                                   ? Colors.white.withValues(alpha: 0.8)
                                   : AppColors.textSecondary,
-                              fontSize: 10,
+                              fontSize: 11,
                             ),
                           ),
                         ],
@@ -684,7 +723,21 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
       );
 
       // 사용자에게 피드백 (간단하게)
-      final label = activityType == 'poop' ? '💩' : '💧';
+      String label;
+      switch (activityType) {
+        case 'poop':
+          label = '💩';
+          break;
+        case 'pee':
+          label = '💧';
+          break;
+        case 'no-entry':
+          label = '🚫';
+          break;
+        default:
+          label = '✅';
+      }
+
       messenger.showSnackBar(
         SnackBar(
           content: Text(label),
@@ -834,16 +887,24 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                     'type': a['type'],
                     'latitude': a['latitude'],
                     'longitude': a['longitude'],
-                    'timestamp': (a['timestamp'] as DateTime).toIso8601String(),
+                    'timestamp': a['timestamp'], // 이미 String 형식
                   };
                 }).toList();
                 notesWithActivities = 'activities:${activitiesJson.toString()}';
               }
 
+              debugPrint(
+                '🔄 산책 종료 시작 - 거리: $currentDistance, 활동: ${_petActivities.length}개',
+              );
+
               // 산책 종료 (현재 거리, 시간, 활동 기록 전달)
               final result = await _controller.endCurrentWalk(
                 distance: currentDistance,
                 notes: notesWithActivities,
+              );
+
+              debugPrint(
+                '✅ 산책 종료 결과: ${result.isSuccess ? "성공" : "실패"} - ${result.message}',
               );
 
               if (!mounted) return;
@@ -890,10 +951,67 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     List<WalkPetInfo> selectedPets,
   ) {
     return MapWidget(
-      key: ValueKey('walk_map_widget_${_petActivities.length}'),
+      key: const ValueKey('walk_map_widget'),
       walkRecords: walkRecords,
       selectedPet: selectedPets.isNotEmpty ? selectedPets.first : null,
       petActivities: _petActivities,
+      onActivityMarkerTap: (index) => _deleteActivityMarker(index),
+    );
+  }
+
+  /// 활동 마커 삭제
+  void _deleteActivityMarker(int index) {
+    if (index < 0 || index >= _petActivities.length) return;
+
+    final activity = _petActivities[index];
+    final type = activity['type'] as String;
+    String label;
+    switch (type) {
+      case 'poop':
+        label = '💩 排便';
+        break;
+      case 'pee':
+        label = '💧 排尿';
+        break;
+      case 'no-entry':
+        label = '🚫 立入禁止';
+        break;
+      default:
+        label = '記録';
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('記録を削除'),
+        content: Text('$labelの記録を削除しますか？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              setState(() {
+                _petActivities.removeAt(index);
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('$labelを削除しました'),
+                  backgroundColor: AppColors.pointGreen,
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.pointPink,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -960,40 +1078,6 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           ),
         );
       }
-    }
-  }
-
-  /// 지도 확대
-  Future<void> _zoomIn() async {
-    try {
-      final mapController = ref.read(globalMapControllerProvider);
-
-      if (mapController == null) {
-        debugPrint('❌ 지도 컨트롤러가 아직 초기화되지 않았습니다');
-        return;
-      }
-
-      await mapController.animateCamera(CameraUpdate.zoomIn());
-      debugPrint('🔍 지도 확대');
-    } catch (e) {
-      debugPrint('❌ 지도 확대 에러: $e');
-    }
-  }
-
-  /// 지도 축소
-  Future<void> _zoomOut() async {
-    try {
-      final mapController = ref.read(globalMapControllerProvider);
-
-      if (mapController == null) {
-        debugPrint('❌ 지도 컨트롤러가 아직 초기화되지 않았습니다');
-        return;
-      }
-
-      await mapController.animateCamera(CameraUpdate.zoomOut());
-      debugPrint('🔍 지도 축소');
-    } catch (e) {
-      debugPrint('❌ 지도 축소 에러: $e');
     }
   }
 
