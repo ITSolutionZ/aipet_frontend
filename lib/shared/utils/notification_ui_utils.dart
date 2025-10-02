@@ -121,20 +121,14 @@ class NotificationUIUtils {
   );
 
   /// 알림 시간 스타일
-  static const TextStyle timeStyle = TextStyle(
-    fontSize: 12,
-    color: AppColors.pointGray,
-  );
+  static const TextStyle timeStyle = TextStyle(fontSize: 12, color: AppColors.pointGray);
 
   /// 읽지 않은 알림 표시 점 생성
   static Widget buildUnreadIndicator() {
     return Container(
       width: 8,
       height: 8,
-      decoration: const BoxDecoration(
-        color: Colors.red,
-        shape: BoxShape.circle,
-      ),
+      decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
     );
   }
 }

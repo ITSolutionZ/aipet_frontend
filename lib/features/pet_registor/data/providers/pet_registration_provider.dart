@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 펫 등록 상태 프로바이더
 final petRegistrationStateProvider =
-    StateNotifierProvider<PetRegistrationNotifier, PetRegistrationDataEntity>((
-      ref,
-    ) {
+    StateNotifierProvider<PetRegistrationNotifier, PetRegistrationDataEntity>((ref) {
       return PetRegistrationNotifier();
     });
 
@@ -30,23 +28,17 @@ class PetRegistrationNotifier extends StateNotifier<PetRegistrationDataEntity> {
 
   /// 펫 크기 설정
   void setPetSize(String size) {
-    state = state.copyWith(
-      additionalInfo: {...?state.additionalInfo, 'size': size},
-    );
+    state = state.copyWith(additionalInfo: {...?state.additionalInfo, 'size': size});
   }
 
   /// 펫 몸무게 설정
   void setPetWeight(double weight) {
-    state = state.copyWith(
-      additionalInfo: {...?state.additionalInfo, 'weight': weight},
-    );
+    state = state.copyWith(additionalInfo: {...?state.additionalInfo, 'weight': weight});
   }
 
   /// 펫 성별 설정
   void setPetGender(String gender) {
-    state = state.copyWith(
-      additionalInfo: {...?state.additionalInfo, 'gender': gender},
-    );
+    state = state.copyWith(additionalInfo: {...?state.additionalInfo, 'gender': gender});
   }
 
   /// 펫 생년월일 설정
@@ -57,18 +49,13 @@ class PetRegistrationNotifier extends StateNotifier<PetRegistrationDataEntity> {
   /// 펫 도착일 설정
   void setPetArrivalDate(DateTime arrivalDate) {
     state = state.copyWith(
-      additionalInfo: {
-        ...?state.additionalInfo,
-        'arrivalDate': arrivalDate.toIso8601String(),
-      },
+      additionalInfo: {...?state.additionalInfo, 'arrivalDate': arrivalDate.toIso8601String()},
     );
   }
 
   /// 중성화 여부 설정
   void setNeutered(bool isNeutered) {
-    state = state.copyWith(
-      additionalInfo: {...?state.additionalInfo, 'isNeutered': isNeutered},
-    );
+    state = state.copyWith(additionalInfo: {...?state.additionalInfo, 'isNeutered': isNeutered});
   }
 
   /// 펫 이미지 경로 설정
@@ -79,20 +66,14 @@ class PetRegistrationNotifier extends StateNotifier<PetRegistrationDataEntity> {
   /// 마이크로칩 번호 설정
   void setMicrochipNumber(String? microchipNumber) {
     state = state.copyWith(
-      additionalInfo: {
-        ...?state.additionalInfo,
-        'microchipNumber': microchipNumber,
-      },
+      additionalInfo: {...?state.additionalInfo, 'microchipNumber': microchipNumber},
     );
   }
 
   /// 커스텀 기본 이미지 경로 설정
   void setCustomDefaultImagePath(String imagePath) {
     state = state.copyWith(
-      additionalInfo: {
-        ...?state.additionalInfo,
-        'customDefaultImagePath': imagePath,
-      },
+      additionalInfo: {...?state.additionalInfo, 'customDefaultImagePath': imagePath},
     );
   }
 
@@ -121,9 +102,7 @@ class PetRegistrationNotifier extends StateNotifier<PetRegistrationDataEntity> {
         break;
       default:
         // additionalInfo에서 제거
-        final newAdditionalInfo = Map<String, dynamic>.from(
-          state.additionalInfo ?? {},
-        );
+        final newAdditionalInfo = Map<String, dynamic>.from(state.additionalInfo ?? {});
         newAdditionalInfo.remove(fieldName);
         state = state.copyWith(additionalInfo: newAdditionalInfo);
     }

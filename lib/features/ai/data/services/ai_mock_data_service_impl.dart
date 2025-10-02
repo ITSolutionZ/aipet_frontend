@@ -54,9 +54,7 @@ class AiMockDataServiceImpl implements MockDataService {
             'categoryName': entity.categoryName,
             'createdAt': entity.createdAt.toIso8601String(),
             'originalTimestamp': entity.originalTimestamp.toIso8601String(),
-            'pet': entity.pet != null
-                ? {'id': entity.pet!.id, 'name': entity.pet!.name}
-                : null,
+            'pet': entity.pet != null ? {'id': entity.pet!.id, 'name': entity.pet!.name} : null,
           },
         )
         .toList();
@@ -131,10 +129,7 @@ class AiMockDataServiceImpl implements MockDataService {
   }
 
   @override
-  Future<Map<String, dynamic>> createChatSession(
-    String title, {
-    String? petId,
-  }) async {
+  Future<Map<String, dynamic>> createChatSession(String title, {String? petId}) async {
     // Mock 데이터에서 채팅 세션 생성
     return AiMockDataService.createChatSessionMockData(title, petId: petId);
   }

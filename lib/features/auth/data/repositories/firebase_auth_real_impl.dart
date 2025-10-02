@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:aipet_frontend/features/auth/data/services/line_oauth_service.dart';
-import 'package:aipet_frontend/features/auth/domain/auth_error.dart'
-    as auth_errors;
+import 'package:aipet_frontend/features/auth/domain/auth_error.dart' as auth_errors;
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -46,10 +45,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
   ///
   /// Throws: FirebaseAuthException - Firebase 인증 에러
   @override
-  Future<Result<AuthUser>> signInWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
+  Future<Result<AuthUser>> signInWithEmailAndPassword(String email, String password) async {
     try {
       // Firebase Auth를 통한 이메일/비밀번호 로그인
       final credential = await _firebaseAuth.signInWithEmailAndPassword(
@@ -73,10 +69,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
   }
 
   @override
-  Future<Result<AuthUser>> createUserWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
+  Future<Result<AuthUser>> createUserWithEmailAndPassword(String email, String password) async {
     try {
       final credential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
@@ -106,16 +99,13 @@ class FirebaseAuthRealImpl implements AuthRepository {
         return Result.failure('Google ログインがキャンセルされました');
       }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final userCredential = await _firebaseAuth.signInWithCredential(
-        credential,
-      );
+      final userCredential = await _firebaseAuth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
@@ -135,20 +125,14 @@ class FirebaseAuthRealImpl implements AuthRepository {
     try {
       // Apple Sign-In 플로우
       final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
+        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
       );
 
-      final oauthCredential = OAuthProvider('apple.com').credential(
-        idToken: credential.identityToken,
-        accessToken: credential.authorizationCode,
-      );
+      final oauthCredential = OAuthProvider(
+        'apple.com',
+      ).credential(idToken: credential.identityToken, accessToken: credential.authorizationCode);
 
-      final userCredential = await _firebaseAuth.signInWithCredential(
-        oauthCredential,
-      );
+      final userCredential = await _firebaseAuth.signInWithCredential(oauthCredential);
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
@@ -249,10 +233,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
   }
 
   @override
-  Future<void> updateUserProfile({
-    String? displayName,
-    String? photoURL,
-  }) async {
+  Future<void> updateUserProfile({String? displayName, String? photoURL}) async {
     try {
       final user = _firebaseAuth.currentUser;
       if (user != null) {
@@ -306,9 +287,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
         // 토큰 유효성 검증
         if (serverToken.isEmpty || serverToken.length < 32) {
-          throw const auth_errors.TokenError(
-            auth_errors.TokenErrorType.invalid,
-          );
+          throw const auth_errors.TokenError(auth_errors.TokenErrorType.invalid);
         }
 
         // 서버 토큰 저장
@@ -326,10 +305,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
       } else {
         final errorData = json.decode(response.body) as Map<String, dynamic>?;
         final errorMessage = errorData?['message'] ?? 'Token exchange failed';
-        throw auth_errors.ClientError(
-          statusCode: response.statusCode,
-          reason: errorMessage,
-        );
+        throw auth_errors.ClientError(statusCode: response.statusCode, reason: errorMessage);
       }
     } catch (e) {
       throw Exception('서버 토큰 교환 실패: $e');
@@ -389,10 +365,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       await Future.wait([
         _storage.write(key: _serverTokenKey, value: token),
-        _storage.write(
-          key: _serverTokenExpiresKey,
-          value: expiresAt.toIso8601String(),
-        ),
+        _storage.write(key: _serverTokenExpiresKey, value: expiresAt.toIso8601String()),
       ]);
 
       if (kDebugMode) {
@@ -471,8 +444,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
         'firebaseUid': firebaseUser.uid,
         'isEmailVerified': firebaseUser.emailVerified,
         'creationTime': firebaseUser.metadata.creationTime?.toIso8601String(),
-        'lastSignInTime': firebaseUser.metadata.lastSignInTime
-            ?.toIso8601String(),
+        'lastSignInTime': firebaseUser.metadata.lastSignInTime?.toIso8601String(),
       },
     );
   }

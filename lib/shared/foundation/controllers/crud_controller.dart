@@ -41,9 +41,7 @@ abstract class CrudController<T> extends BaseController {
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return Result.failure(
-        '$operationName中にエラーが発生しました: ${getUserFriendlyErrorMessage(error)}',
-      );
+      return Result.failure('$operationName中にエラーが発生しました: ${getUserFriendlyErrorMessage(error)}');
     }
   }
 

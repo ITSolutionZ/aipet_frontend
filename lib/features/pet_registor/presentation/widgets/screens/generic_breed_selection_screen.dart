@@ -29,8 +29,7 @@ class GenericBreedSelectionScreen<T> extends ConsumerStatefulWidget {
       _GenericBreedSelectionScreenState<T>();
 }
 
-class _GenericBreedSelectionScreenState<T>
-    extends ConsumerState<GenericBreedSelectionScreen<T>> {
+class _GenericBreedSelectionScreenState<T> extends ConsumerState<GenericBreedSelectionScreen<T>> {
   String? _selectedBreed;
   String? _customBreed;
   final TextEditingController _customController = TextEditingController();
@@ -77,9 +76,7 @@ class _GenericBreedSelectionScreenState<T>
 
   /// 전역 상태에 데이터 저장
   void _saveToGlobalState() {
-    final registrationNotifier = ref.read(
-      petRegistrationStateProvider.notifier,
-    );
+    final registrationNotifier = ref.read(petRegistrationStateProvider.notifier);
 
     if (widget.petType == 'dog') {
       registrationNotifier.selectDogBreed(_selectedBreed ?? '');
@@ -87,8 +84,7 @@ class _GenericBreedSelectionScreenState<T>
       registrationNotifier.selectCatBreed(_selectedBreed ?? '');
     }
 
-    if ((_selectedBreed == 'custom' || _selectedBreed == 'other') &&
-        _customBreed != null) {
+    if ((_selectedBreed == 'custom' || _selectedBreed == 'other') && _customBreed != null) {
       registrationNotifier.setCustomBreed(_customBreed!);
     }
   }
@@ -158,13 +154,12 @@ class _GenericBreedSelectionScreenState<T>
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.zero,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 1.0,
-                            crossAxisSpacing: AppSpacing.md,
-                            mainAxisSpacing: AppSpacing.md,
-                          ),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.0,
+                        crossAxisSpacing: AppSpacing.md,
+                        mainAxisSpacing: AppSpacing.md,
+                      ),
                       itemCount: widget.breedData.length,
                       itemBuilder: (context, index) {
                         final breed = widget.breedData[index];
@@ -179,8 +174,7 @@ class _GenericBreedSelectionScreenState<T>
                     ),
 
                     // 커스텀 품종 입력
-                    if (_selectedBreed == 'custom' ||
-                        _selectedBreed == 'other') ...[
+                    if (_selectedBreed == 'custom' || _selectedBreed == 'other') ...[
                       const SizedBox(height: AppSpacing.lg),
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -204,15 +198,10 @@ class _GenericBreedSelectionScreenState<T>
                           focusNode: _focusNode,
                           decoration: const InputDecoration(
                             hintText: '品種名を入力してください（例：ミックス、雑種など）',
-                            hintStyle: TextStyle(
-                              color: AppColors.pointGray,
-                              fontSize: 14,
-                            ),
+                            hintStyle: TextStyle(color: AppColors.pointGray, fontSize: 14),
                             border: InputBorder.none,
                           ),
-                          style: AppFonts.bodyMedium.copyWith(
-                            color: AppColors.pointDark,
-                          ),
+                          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
                           onChanged: _onCustomBreedChanged,
                         ),
                       ),
@@ -228,10 +217,7 @@ class _GenericBreedSelectionScreenState<T>
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
-                  top: BorderSide(
-                    color: Colors.grey.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
+                  top: BorderSide(color: Colors.grey.withValues(alpha: 0.2), width: 1),
                 ),
               ),
               child: SizedBox(
@@ -269,9 +255,7 @@ class _GenericBreedSelectionScreenState<T>
           color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
-            color: isSelected
-                ? AppColors.pointPink
-                : AppColors.pointGray.withValues(alpha: 0.2),
+            color: isSelected ? AppColors.pointPink : AppColors.pointGray.withValues(alpha: 0.2),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
@@ -315,11 +299,7 @@ class _GenericBreedSelectionScreenState<T>
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
                         color: AppColors.pointGray.withValues(alpha: 0.2),
-                        child: const Icon(
-                          Icons.pets,
-                          size: 40,
-                          color: AppColors.pointPink,
-                        ),
+                        child: const Icon(Icons.pets, size: 40, color: AppColors.pointPink),
                       );
                     },
                   ),

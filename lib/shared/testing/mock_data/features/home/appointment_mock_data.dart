@@ -7,34 +7,10 @@ class AppointmentMockData {
     return [
       DateTime(baseDate.year, baseDate.month, baseDate.day, 14, 0), // 오늘 14:00
       DateTime(baseDate.year, baseDate.month, baseDate.day, 16, 30), // 오늘 16:30
-      DateTime(
-        baseDate.year,
-        baseDate.month,
-        baseDate.day + 1,
-        10,
-        0,
-      ), // 내일 10:00
-      DateTime(
-        baseDate.year,
-        baseDate.month,
-        baseDate.day + 2,
-        15,
-        0,
-      ), // 모레 15:00
-      DateTime(
-        baseDate.year,
-        baseDate.month,
-        baseDate.day + 3,
-        9,
-        30,
-      ), // 3일 후 9:30
-      DateTime(
-        baseDate.year,
-        baseDate.month,
-        baseDate.day + 5,
-        11,
-        0,
-      ), // 5일 후 11:00
+      DateTime(baseDate.year, baseDate.month, baseDate.day + 1, 10, 0), // 내일 10:00
+      DateTime(baseDate.year, baseDate.month, baseDate.day + 2, 15, 0), // 모레 15:00
+      DateTime(baseDate.year, baseDate.month, baseDate.day + 3, 9, 30), // 3일 후 9:30
+      DateTime(baseDate.year, baseDate.month, baseDate.day + 5, 11, 0), // 5일 후 11:00
     ];
   }
 

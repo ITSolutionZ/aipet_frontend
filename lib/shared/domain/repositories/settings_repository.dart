@@ -9,9 +9,7 @@ abstract class SettingsRepository {
   Future<Result<UserProfileEntity>> getUserProfile();
 
   /// 사용자 프로필 업데이트
-  Future<Result<UserProfileEntity>> updateUserProfile(
-    UserProfileEntity profile,
-  );
+  Future<Result<UserProfileEntity>> updateUserProfile(UserProfileEntity profile);
 
   /// 비밀번호 변경
   Future<Result<void>> changePassword(PasswordChangeRequest request);

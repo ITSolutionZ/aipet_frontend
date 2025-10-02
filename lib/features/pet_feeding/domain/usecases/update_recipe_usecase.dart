@@ -28,10 +28,7 @@ class UpdateRecipeUseCase {
   }
 
   /// 레시피 이름 수정
-  Future<Result<Map<String, dynamic>>> updateRecipeName(
-    String recipeId,
-    String newName,
-  ) async {
+  Future<Result<Map<String, dynamic>>> updateRecipeName(String recipeId, String newName) async {
     try {
       if (newName.trim().isEmpty) {
         return Result.failure('レシピ名は空にできません');
@@ -69,9 +66,7 @@ class UpdateRecipeUseCase {
       }
 
       final updatedRecipe = Map<String, dynamic>.from(existingRecipe);
-      updatedRecipe['ingredients'] = ingredients
-          .map((ingredient) => ingredient.trim())
-          .toList();
+      updatedRecipe['ingredients'] = ingredients.map((ingredient) => ingredient.trim()).toList();
       updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
 
       return Result.success('レシピの材料を更新しました', updatedRecipe);

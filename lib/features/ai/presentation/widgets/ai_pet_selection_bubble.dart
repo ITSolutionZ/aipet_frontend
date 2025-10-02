@@ -9,11 +9,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
   final PetProfileEntity? selectedPet;
   final Function(PetProfileEntity?) onPetSelected;
 
-  const AiPetSelectionBubble({
-    super.key,
-    this.selectedPet,
-    required this.onPetSelected,
-  });
+  const AiPetSelectionBubble({super.key, this.selectedPet, required this.onPetSelected});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,10 +22,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
           // AI 아바타
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
-            decoration: const BoxDecoration(
-              color: AppColors.pointBrown,
-              shape: BoxShape.circle,
-            ),
+            decoration: const BoxDecoration(color: AppColors.pointBrown, shape: BoxShape.circle),
             child: Image.asset(
               'assets/icons/logo_notinclude_text.png',
               width: 20,
@@ -63,28 +56,19 @@ class AiPetSelectionBubble extends ConsumerWidget {
                   // AI 메시지 텍스트
                   Text(
                     'こんにちは！私はペット専門のAIアシスタントです。🐶 🐱',
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointDark,
-                      height: 1.4,
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark, height: 1.4),
                   ),
                   const SizedBox(height: AppSpacing.sm),
 
                   Text(
                     'ペットに関連する内容をより具体的にご質問ください',
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointDark,
-                      height: 1.4,
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark, height: 1.4),
                   ),
                   const SizedBox(height: AppSpacing.sm),
 
                   Text(
                     '以下のような内容についてご質問ください：',
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointDark,
-                      height: 1.4,
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark, height: 1.4),
                   ),
                   const SizedBox(height: AppSpacing.xs),
 
@@ -113,8 +97,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                       final petsAsync = ref.watch(petsNotifierProvider);
                       return petsAsync.when(
                         data: (pets) => _buildPetSelection(pets),
-                        loading: () =>
-                            const Center(child: CircularProgressIndicator()),
+                        loading: () => const Center(child: CircularProgressIndicator()),
                         error: (error, stack) => _buildPetSelection([]),
                       );
                     },
@@ -123,12 +106,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.sm),
 
                   // 타임스탬프
-                  Text(
-                    '今',
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointGray,
-                    ),
-                  ),
+                  Text('今', style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
                 ],
               ),
             ),
@@ -143,10 +121,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
       padding: const EdgeInsets.only(bottom: AppSpacing.xs),
       child: Text(
         text,
-        style: AppFonts.bodyMedium.copyWith(
-          color: AppColors.pointGray,
-          height: 1.3,
-        ),
+        style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray, height: 1.3),
       ),
     );
   }
@@ -155,10 +130,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (pets.isNotEmpty)
-          _buildPetSelectionGrid(pets)
-        else
-          _buildNoPetsCard(),
+        if (pets.isNotEmpty) _buildPetSelectionGrid(pets) else _buildNoPetsCard(),
 
         const SizedBox(height: AppSpacing.sm),
         _buildGeneralConsultationOption(),
@@ -176,11 +148,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.pets_outlined,
-            size: 48,
-            color: AppColors.pointBrown.withValues(alpha: 0.5),
-          ),
+          Icon(Icons.pets_outlined, size: 48, color: AppColors.pointBrown.withValues(alpha: 0.5)),
           const SizedBox(height: AppSpacing.sm),
           Text(
             '登録されたペットがありません',
@@ -192,9 +160,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             'ペットを登録すると、より具体的な\nアドバイスが受けられます',
-            style: AppFonts.bodySmall.copyWith(
-              color: AppColors.pointDark.withValues(alpha: 0.7),
-            ),
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointDark.withValues(alpha: 0.7)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -216,37 +182,23 @@ class AiPetSelectionBubble extends ConsumerWidget {
     return GestureDetector(
       onTap: () => onPetSelected(isSelected ? null : pet),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.pointBrown : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(
-            color: isSelected
-                ? AppColors.pointBrown
-                : AiColors.selectedBorderColor,
+            color: isSelected ? AppColors.pointBrown : AiColors.selectedBorderColor,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AiColors.shadowColor,
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
+              ? [BoxShadow(color: AiColors.shadowColor, blurRadius: 4, offset: const Offset(0, 2))]
               : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (pet.imagePath != null && pet.imagePath!.isNotEmpty)
-              CircleAvatar(
-                radius: 12,
-                backgroundImage: AssetImage(pet.imagePath!),
-              )
+              CircleAvatar(radius: 12, backgroundImage: AssetImage(pet.imagePath!))
             else
               Icon(
                 pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
@@ -288,19 +240,12 @@ class AiPetSelectionBubble extends ConsumerWidget {
       onTap: () => onPetSelected(null),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: isGeneralSelected
-              ? AiColors.petSelectionBackground
-              : Colors.transparent,
+          color: isGeneralSelected ? AiColors.petSelectionBackground : Colors.transparent,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
-            color: isGeneralSelected
-                ? AppColors.pointBrown
-                : AiColors.unselectedBorderColor,
+            color: isGeneralSelected ? AppColors.pointBrown : AiColors.unselectedBorderColor,
             width: 1,
           ),
         ),
@@ -320,9 +265,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                 color: isGeneralSelected
                     ? AppColors.pointBrown
                     : AppColors.pointDark.withValues(alpha: 0.8),
-                fontWeight: isGeneralSelected
-                    ? FontWeight.w600
-                    : FontWeight.normal,
+                fontWeight: isGeneralSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
           ],

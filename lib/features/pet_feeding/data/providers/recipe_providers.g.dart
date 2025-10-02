@@ -847,7 +847,7 @@ final quickRecipesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef QuickRecipesRef = AutoDisposeFutureProviderRef<List<RecipeEntity>>;
-String _$recipesNotifierHash() => r'71fe0be8163bdb838cb623c7fa6f463e27ce5f80';
+String _$recipesNotifierHash() => r'6ed41f4fc6a72280c689995fafa91d8ad4780099';
 
 /// See also [RecipesNotifier].
 @ProviderFor(RecipesNotifier)

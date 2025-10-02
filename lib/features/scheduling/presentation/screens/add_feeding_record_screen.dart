@@ -14,12 +14,10 @@ class AddFeedingRecordScreen extends ConsumerStatefulWidget {
   const AddFeedingRecordScreen({super.key});
 
   @override
-  ConsumerState<AddFeedingRecordScreen> createState() =>
-      _AddFeedingRecordScreenState();
+  ConsumerState<AddFeedingRecordScreen> createState() => _AddFeedingRecordScreenState();
 }
 
-class _AddFeedingRecordScreenState
-    extends ConsumerState<AddFeedingRecordScreen> {
+class _AddFeedingRecordScreenState extends ConsumerState<AddFeedingRecordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _mealController = TextEditingController();
   final _amountController = TextEditingController();
@@ -56,22 +54,18 @@ class _AddFeedingRecordScreenState
 
   /// 펫 정보 및 사이즈 가이드 로드
   void _loadPetInfo() {
-    final petSizes = scheduling_mock
-        .SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = scheduling_mock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     _selectedPetInfo = petSizes[_selectedPetId];
 
     if (_selectedPetInfo != null) {
       final size = _selectedPetInfo!['size'] as String;
-      final sizeGuide =
-          scheduling_mock.SchedulingMockService.getPetSizeFeedingGuide();
+      final sizeGuide = scheduling_mock.SchedulingMockService.getPetSizeFeedingGuide();
       _petSizeGuide = sizeGuide[size];
     }
 
     // 펫 현재 상태 로드
     final currentStatus = MockDataService.getPetCurrentStatus(_selectedPetId);
-    _selectedStatuses = List<String>.from(
-      currentStatus['selectedStatuses'] ?? [],
-    );
+    _selectedStatuses = List<String>.from(currentStatus['selectedStatuses'] ?? []);
     _statusValues = Map<String, String>.from(currentStatus);
     _statusValues.remove('selectedStatuses');
     _statusValues.remove('lastUpdated');
@@ -173,8 +167,7 @@ class _AddFeedingRecordScreenState
 
   /// 펫 선택 처리
   void _onPetSelected(String petId) {
-    final petSizes = scheduling_mock
-        .SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = scheduling_mock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
     setState(() {
       _selectedPetId = petId;
       _selectedPetInfo = petSizes[petId];
@@ -187,8 +180,7 @@ class _AddFeedingRecordScreenState
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final statusOptions =
-            scheduling_mock.SchedulingMockService.getPetStatusOptions();
+        final statusOptions = scheduling_mock.SchedulingMockService.getPetStatusOptions();
         return PetStatusSelectionDialog(
           petInfo: petInfo,
           selectedStatuses: List<String>.from(_selectedStatuses),
@@ -203,19 +195,15 @@ class _AddFeedingRecordScreenState
                 },
               )
               .toList(),
-          onStatusUpdated:
-              (
-                List<String> selectedStatuses,
-                Map<String, String> statusValues,
-              ) {
-                setState(() {
-                  _selectedStatuses = selectedStatuses;
-                  _statusValues = statusValues;
+          onStatusUpdated: (List<String> selectedStatuses, Map<String, String> statusValues) {
+            setState(() {
+              _selectedStatuses = selectedStatuses;
+              _statusValues = statusValues;
 
-                  // MockDataService에 상태 업데이트
-                  MockDataService.updatePetStatus(petId, statusValues);
-                });
-              },
+              // MockDataService에 상태 업데이트
+              MockDataService.updatePetStatus(petId, statusValues);
+            });
+          },
         );
       },
     );
@@ -320,19 +308,12 @@ class _AddFeedingRecordScreenState
 
                       // 급여 가이드 카드
                       if (_selectedPetInfo != null && _petSizeGuide != null)
-                        FeedingGuideCard(
-                          petInfo: _selectedPetInfo!,
-                          sizeGuide: _petSizeGuide!,
-                        ),
+                        FeedingGuideCard(petInfo: _selectedPetInfo!, sizeGuide: _petSizeGuide!),
 
                       const SizedBox(height: AppSpacing.lg),
 
                       // 저장 버튼
-                      ActionButton.primary(
-                        text: '保存',
-                        onPressed: _saveRecord,
-                        isEnabled: true,
-                      ),
+                      ActionButton.primary(text: '保存', onPressed: _saveRecord, isEnabled: true),
                     ],
                   ),
                 ]),

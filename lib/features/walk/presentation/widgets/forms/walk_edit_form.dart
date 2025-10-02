@@ -15,11 +15,14 @@ class WalkEditFormController extends StateNotifier<WalkEditFormState> {
   WalkEditFormController() : super(const WalkEditFormState());
 
   void initialize(WalkRecordEntity walkRecord) {
+    // notes에서 activities JSON과 일반 메모 분리
+    final separatedNotes = _separateNotesAndActivities(walkRecord.notes);
+
     state = state.copyWith(
       originalWalkRecord: walkRecord,
-      title: walkRecord.title,
       distance: walkRecord.distance?.toStringAsFixed(1) ?? '',
-      notes: walkRecord.notes ?? '',
+      notes: separatedNotes['userNotes'] ?? '',
+      activitiesJson: separatedNotes['activities'],
       startTime: TimeOfDay.fromDateTime(walkRecord.startTime),
       endTime: walkRecord.endTime != null
           ? TimeOfDay.fromDateTime(walkRecord.endTime!)
@@ -27,8 +30,28 @@ class WalkEditFormController extends StateNotifier<WalkEditFormState> {
     );
   }
 
-  void updateTitle(String title) {
-    state = state.copyWith(title: title);
+  /// notes에서 activities JSON과 일반 메모 분리
+  Map<String, String?> _separateNotesAndActivities(String? notes) {
+    if (notes == null || notes.isEmpty) {
+      return {'userNotes': null, 'activities': null};
+    }
+
+    // activities: 로 시작하는 경우 activities만 추출
+    if (notes.startsWith('activities:')) {
+      return {'userNotes': null, 'activities': notes};
+    }
+
+    // activities:가 중간에 있는 경우 분리
+    if (notes.contains('activities:')) {
+      final parts = notes.split('activities:');
+      return {
+        'userNotes': parts[0].trim().isEmpty ? null : parts[0].trim(),
+        'activities': 'activities:${parts[1]}',
+      };
+    }
+
+    // 일반 메모만 있는 경우
+    return {'userNotes': notes, 'activities': null};
   }
 
   void updateDistance(String distance) {
@@ -88,31 +111,60 @@ class WalkEditFormController extends StateNotifier<WalkEditFormState> {
       }
     }
 
+    // notes 재구성: 사용자 메모 + activities JSON
+    final String? finalNotes = _combinedNotes(
+      state.notes,
+      state.activitiesJson,
+    );
+
     return originalWalk.copyWith(
       distance: distance,
-      notes: state.notes.trim().isEmpty ? null : state.notes.trim(),
+      notes: finalNotes,
       startTime: startDateTime ?? originalWalk.startTime,
       endTime: endDateTime,
       duration: duration,
       updatedAt: DateTime.now(),
     );
   }
+
+  /// 사용자 메모와 activities JSON 병합
+  String? _combinedNotes(String userNotes, String? activitiesJson) {
+    final trimmedNotes = userNotes.trim();
+
+    // 둘 다 없으면 null
+    if (trimmedNotes.isEmpty && activitiesJson == null) {
+      return null;
+    }
+
+    // activities만 있으면 activities 반환
+    if (trimmedNotes.isEmpty && activitiesJson != null) {
+      return activitiesJson;
+    }
+
+    // 사용자 메모만 있으면 사용자 메모 반환
+    if (trimmedNotes.isNotEmpty && activitiesJson == null) {
+      return trimmedNotes;
+    }
+
+    // 둘 다 있으면 병합 (사용자 메모 + activities)
+    return '$trimmedNotes\n$activitiesJson';
+  }
 }
 
 class WalkEditFormState {
   final WalkRecordEntity? originalWalkRecord;
-  final String title;
   final String distance;
-  final String notes;
+  final String notes; // 사용자가 편집 가능한 메모
+  final String? activitiesJson; // 펫 활동 JSON (편집 불가, 자동 보존)
   final TimeOfDay? startTime;
   final TimeOfDay? endTime;
   final bool isLoading;
 
   const WalkEditFormState({
     this.originalWalkRecord,
-    this.title = '',
     this.distance = '',
     this.notes = '',
+    this.activitiesJson,
     this.startTime,
     this.endTime,
     this.isLoading = false,
@@ -120,18 +172,18 @@ class WalkEditFormState {
 
   WalkEditFormState copyWith({
     WalkRecordEntity? originalWalkRecord,
-    String? title,
     String? distance,
     String? notes,
+    String? activitiesJson,
     TimeOfDay? startTime,
     TimeOfDay? endTime,
     bool? isLoading,
   }) {
     return WalkEditFormState(
       originalWalkRecord: originalWalkRecord ?? this.originalWalkRecord,
-      title: title ?? this.title,
       distance: distance ?? this.distance,
       notes: notes ?? this.notes,
+      activitiesJson: activitiesJson ?? this.activitiesJson,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       isLoading: isLoading ?? this.isLoading,
@@ -158,7 +210,6 @@ class WalkEditForm extends ConsumerStatefulWidget {
 
 class _WalkEditFormState extends ConsumerState<WalkEditForm> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _titleController;
   late final TextEditingController _distanceController;
   late final TextEditingController _notesController;
   final String _formId = DateTime.now().millisecondsSinceEpoch.toString();
@@ -177,20 +228,18 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
   }
 
   void _initializeControllers() {
-    _titleController = TextEditingController(text: widget.walkRecord.title);
+    // notes에서 activities JSON과 일반 메모 분리
+    final separatedNotes = _separateNotesAndActivities(widget.walkRecord.notes);
+
     _distanceController = TextEditingController(
       text: widget.walkRecord.distance?.toStringAsFixed(1) ?? '',
     );
+    // 사용자 메모만 표시 (activities JSON은 숨김)
     _notesController = TextEditingController(
-      text: widget.walkRecord.notes ?? '',
+      text: separatedNotes['userNotes'] ?? '',
     );
 
     // Add listeners to sync with Riverpod state
-    _titleController.addListener(() {
-      ref
-          .read(walkEditFormProvider(_formId).notifier)
-          .updateTitle(_titleController.text);
-    });
     _distanceController.addListener(() {
       ref
           .read(walkEditFormProvider(_formId).notifier)
@@ -203,9 +252,32 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
     });
   }
 
+  /// notes에서 activities JSON과 일반 메모 분리
+  Map<String, String?> _separateNotesAndActivities(String? notes) {
+    if (notes == null || notes.isEmpty) {
+      return {'userNotes': null, 'activities': null};
+    }
+
+    // activities: 로 시작하는 경우 activities만 추출
+    if (notes.startsWith('activities:')) {
+      return {'userNotes': null, 'activities': notes};
+    }
+
+    // activities:가 포함된 경우 분리
+    if (notes.contains('activities:')) {
+      final parts = notes.split('activities:');
+      return {
+        'userNotes': parts[0].trim().isEmpty ? null : parts[0].trim(),
+        'activities': 'activities:${parts[1]}',
+      };
+    }
+
+    // 일반 메모만 있는 경우
+    return {'userNotes': notes, 'activities': null};
+  }
+
   @override
   void dispose() {
-    _titleController.dispose();
     _distanceController.dispose();
     _notesController.dispose();
     super.dispose();
@@ -220,19 +292,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 제목 필드
-          WalkFormFields.buildTitleField(
-            controller: _titleController,
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return 'タイトルは必須です';
-              }
-              return null;
-            },
-          ),
-
-          const SizedBox(height: AppSpacing.md),
-
+          // 제목은 자동 생성됨 (ペット名 + "の散歩")
           // 거리 필드
           WalkFormFields.buildDistanceField(
             controller: _distanceController,

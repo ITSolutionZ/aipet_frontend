@@ -27,10 +27,7 @@ class PetInfoCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppRadius.large),
-          border: Border.all(
-            color: AppColors.pointGray.withValues(alpha: 0.2),
-            width: 1,
-          ),
+          border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -65,25 +62,13 @@ class PetInfoCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    value,
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointDark,
-                    ),
-                  ),
+                  Text(value, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark)),
                 ],
               ),
             ),
-            if (badge != null) ...[
-              badge!,
-              const SizedBox(width: AppSpacing.sm),
-            ],
+            if (badge != null) ...[badge!, const SizedBox(width: AppSpacing.sm)],
             if (onTap != null)
-              const Icon(
-                Icons.arrow_forward_ios,
-                color: AppColors.pointGray,
-                size: 16,
-              ),
+              const Icon(Icons.arrow_forward_ios, color: AppColors.pointGray, size: 16),
           ],
         ),
       ),

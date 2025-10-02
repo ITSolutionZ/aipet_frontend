@@ -118,11 +118,7 @@ class ScheduleController extends StateNotifier<ScheduleState> {
 
     try {
       final schedules = await _getTodaySchedulesUseCase();
-      state = state.copyWith(
-        isLoading: false,
-        schedules: schedules,
-        selectedDate: DateTime.now(),
-      );
+      state = state.copyWith(isLoading: false, schedules: schedules, selectedDate: DateTime.now());
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());
     }
@@ -202,15 +198,11 @@ class ScheduleController extends StateNotifier<ScheduleState> {
 
     try {
       await _deleteScheduleUseCase(id);
-      final updatedSchedules = state.schedules
-          .where((s) => s.id != id)
-          .toList();
+      final updatedSchedules = state.schedules.where((s) => s.id != id).toList();
       state = state.copyWith(
         isLoading: false,
         schedules: updatedSchedules,
-        selectedSchedule: state.selectedSchedule?.id == id
-            ? null
-            : state.selectedSchedule,
+        selectedSchedule: state.selectedSchedule?.id == id ? null : state.selectedSchedule,
       );
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());

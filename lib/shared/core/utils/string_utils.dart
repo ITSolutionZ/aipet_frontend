@@ -116,11 +116,7 @@ class StringUtils {
   }
 
   /// 문자열을 지정된 길이로 자르고 말줄임표 추가
-  static String truncate(
-    String? value,
-    int maxLength, {
-    String suffix = '...',
-  }) {
+  static String truncate(String? value, int maxLength, {String suffix = '...'}) {
     if (isEmpty(value)) return '';
     if (value!.length <= maxLength) return value;
 

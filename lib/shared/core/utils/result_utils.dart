@@ -57,11 +57,7 @@ class ResultHelper {
   }
 
   /// null 체크 후 Result 생성
-  static Result<T> fromNullable<T>(
-    T? data, {
-    String? successMessage,
-    String? failureMessage,
-  }) {
+  static Result<T> fromNullable<T>(T? data, {String? successMessage, String? failureMessage}) {
     if (data != null) {
       return Result.success(successMessage ?? 'データが見つかりました', data);
     } else {

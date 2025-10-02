@@ -30,17 +30,11 @@ class BookingDateSelector extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
-                const Icon(
-                  Icons.calendar_today,
-                  size: 20,
-                  color: AppColors.primary,
-                ),
+                const Icon(Icons.calendar_today, size: 20, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '日付を選択してください',
-                  style: AppFonts.titleMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
                 ),
                 if (selectedDate != null) ...[
                   const SizedBox(width: AppSpacing.sm),
@@ -72,8 +66,7 @@ class BookingDateSelector extends StatelessWidget {
             child: CalendarDatePicker(
               initialDate: selectedDate ?? DateTime.now(),
               firstDate: minimumDate ?? DateTime.now(),
-              lastDate:
-                  maximumDate ?? DateTime.now().add(const Duration(days: 90)),
+              lastDate: maximumDate ?? DateTime.now().add(const Duration(days: 90)),
               onDateChanged: onDateSelected,
             ),
           ),
@@ -115,10 +108,7 @@ class CompactDateSelector extends StatelessWidget {
         // 헤더
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Text(
-            '날짜 선택',
-            style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
-          ),
+          child: Text('날짜 선택', style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold)),
         ),
         const SizedBox(height: AppSpacing.sm),
 
@@ -145,13 +135,9 @@ class CompactDateSelector extends StatelessWidget {
                     width: 60,
                     padding: const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.cardBackgroundGray,
+                      color: isSelected ? AppColors.primary : AppColors.cardBackgroundGray,
                       borderRadius: BorderRadius.circular(AppSpacing.md),
-                      border: isToday
-                          ? Border.all(color: AppColors.primary, width: 2)
-                          : null,
+                      border: isToday ? Border.all(color: AppColors.primary, width: 2) : null,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -159,9 +145,7 @@ class CompactDateSelector extends StatelessWidget {
                         Text(
                           ['月', '火', '水', '木', '金', '土', '日'][date.weekday - 1],
                           style: AppFonts.bodySmall.copyWith(
-                            color: isSelected
-                                ? Colors.white
-                                : AppColors.textSecondary,
+                            color: isSelected ? Colors.white : AppColors.textSecondary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -169,9 +153,7 @@ class CompactDateSelector extends StatelessWidget {
                         Text(
                           date.day.toString(),
                           style: AppFonts.headlineSmall.copyWith(
-                            color: isSelected
-                                ? Colors.white
-                                : AppColors.textPrimary,
+                            color: isSelected ? Colors.white : AppColors.textPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -189,8 +171,6 @@ class CompactDateSelector extends StatelessWidget {
 
   bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    return date.year == now.year && date.month == now.month && date.day == now.day;
   }
 }

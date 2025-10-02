@@ -18,12 +18,10 @@ class PetProfileScreenRefactored extends ConsumerStatefulWidget {
   const PetProfileScreenRefactored({super.key, required this.petId});
 
   @override
-  ConsumerState<PetProfileScreenRefactored> createState() =>
-      _PetProfileScreenRefactoredState();
+  ConsumerState<PetProfileScreenRefactored> createState() => _PetProfileScreenRefactoredState();
 }
 
-class _PetProfileScreenRefactoredState
-    extends ConsumerState<PetProfileScreenRefactored>
+class _PetProfileScreenRefactoredState extends ConsumerState<PetProfileScreenRefactored>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
@@ -44,18 +42,14 @@ class _PetProfileScreenRefactoredState
     final petAsyncValue = ref.watch(petByIdProvider(widget.petId));
 
     return petAsyncValue.when(
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, stackTrace) => Scaffold(
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Pet not found: $error'),
-              ElevatedButton(
-                onPressed: () => context.go('/home'),
-                child: const Text('Go Home'),
-              ),
+              ElevatedButton(onPressed: () => context.go('/home'), child: const Text('Go Home')),
             ],
           ),
         ),
@@ -72,10 +66,7 @@ class _PetProfileScreenRefactoredState
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text('Pet not found'),
-              ElevatedButton(
-                onPressed: () => context.go('/home'),
-                child: const Text('Go Home'),
-              ),
+              ElevatedButton(onPressed: () => context.go('/home'), child: const Text('Go Home')),
             ],
           ),
         ),

@@ -74,22 +74,10 @@ class RecommendedTricksSection extends StatelessWidget {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              LearnTrickCard(
-                trick: trick1,
-                onTap: () => onTrickTap(trick1.name),
-              ),
-              LearnTrickCard(
-                trick: trick2,
-                onTap: () => onTrickTap(trick2.name),
-              ),
-              LearnTrickCard(
-                trick: trick3,
-                onTap: () => onTrickTap(trick3.name),
-              ),
-              LearnTrickCard(
-                trick: trick4,
-                onTap: () => onTrickTap(trick4.name),
-              ),
+              LearnTrickCard(trick: trick1, onTap: () => onTrickTap(trick1.name)),
+              LearnTrickCard(trick: trick2, onTap: () => onTrickTap(trick2.name)),
+              LearnTrickCard(trick: trick3, onTap: () => onTrickTap(trick3.name)),
+              LearnTrickCard(trick: trick4, onTap: () => onTrickTap(trick4.name)),
             ],
           ),
         ),

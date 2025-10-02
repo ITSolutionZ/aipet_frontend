@@ -103,29 +103,20 @@ class WalkShareDialog extends ConsumerWidget {
       await Clipboard.setData(ClipboardData(text: text));
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('テキストがコピーされました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
+          const SnackBar(content: Text('テキストがコピーされました'), backgroundColor: AppColors.pointGreen),
         );
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('コピーに失敗しました: $e'),
-            backgroundColor: AppColors.pointPink,
-          ),
+          SnackBar(content: Text('コピーに失敗しました: $e'), backgroundColor: AppColors.pointPink),
         );
       }
     }
   }
 
   /// 파일로 저장
-  Future<void> _saveAsFile(
-    BuildContext context,
-    WalkRecordEntity walkRecord,
-  ) async {
+  Future<void> _saveAsFile(BuildContext context, WalkRecordEntity walkRecord) async {
     try {
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final fileName = 'walk_record_$timestamp.txt';
@@ -151,10 +142,7 @@ class WalkShareDialog extends ConsumerWidget {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('保存に失敗しました: $e'),
-            backgroundColor: AppColors.pointPink,
-          ),
+          SnackBar(content: Text('保存に失敗しました: $e'), backgroundColor: AppColors.pointPink),
         );
       }
     }
@@ -167,19 +155,13 @@ class WalkShareDialog extends ConsumerWidget {
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('共有が完了しました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
+          const SnackBar(content: Text('共有が完了しました'), backgroundColor: AppColors.pointGreen),
         );
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('共有に失敗しました: $e'),
-            backgroundColor: AppColors.pointPink,
-          ),
+          SnackBar(content: Text('共有に失敗しました: $e'), backgroundColor: AppColors.pointPink),
         );
       }
     }

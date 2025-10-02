@@ -99,17 +99,11 @@ class CommonFormField extends StatelessWidget {
       fillColor: enabled ? AppColors.pureWhite : AppColors.pointOffWhite,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: BorderSide(
-          color: AppColors.pointOffWhite.withValues(alpha: 0.3),
-          width: 1.0,
-        ),
+        borderSide: BorderSide(color: AppColors.pointOffWhite.withValues(alpha: 0.3), width: 1.0),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: BorderSide(
-          color: AppColors.pointOffWhite.withValues(alpha: 0.3),
-          width: 1.0,
-        ),
+        borderSide: BorderSide(color: AppColors.pointOffWhite.withValues(alpha: 0.3), width: 1.0),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -125,10 +119,7 @@ class CommonFormField extends StatelessWidget {
       ),
       disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: BorderSide(
-          color: AppColors.pointOffWhite.withValues(alpha: 0.1),
-          width: 1.0,
-        ),
+        borderSide: BorderSide(color: AppColors.pointOffWhite.withValues(alpha: 0.1), width: 1.0),
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -217,9 +208,7 @@ class PasswordFormField extends ConsumerWidget {
           color: AppColors.pointDark.withValues(alpha: 0.6),
         ),
         onPressed: () {
-          ref
-              .read(passwordVisibilityProvider(effectiveFieldId).notifier)
-              .toggle();
+          ref.read(passwordVisibilityProvider(effectiveFieldId).notifier).toggle();
         },
       ),
     );

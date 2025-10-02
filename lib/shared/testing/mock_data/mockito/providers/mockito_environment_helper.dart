@@ -8,8 +8,7 @@ class MockitoEnvironmentHelper {
   static bool get shouldUseMock => MockConfig.shouldUseMock;
 
   /// 현재 환경 정보
-  static MockEnvironment get currentEnvironment =>
-      MockConfig.currentEnvironment;
+  static MockEnvironment get currentEnvironment => MockConfig.currentEnvironment;
 
   /// 환경 정보 디버그 출력
   static void logEnvironmentInfo() {}

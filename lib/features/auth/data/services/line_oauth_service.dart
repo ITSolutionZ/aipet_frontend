@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
+// import 'package:flutter_web_auth/flutter_web_auth.dart'; // 의존성 충돌로 임시 비활성화
 import 'package:http/http.dart' as http;
 
 /// 🎯 LINE OAuth 서비스
@@ -11,8 +11,7 @@ import 'package:http/http.dart' as http;
 /// LINE OAuth 2.0을 통한 실제 로그인 구현
 class LineOAuthService {
   // LINE OAuth 설정
-  static const String _lineAuthUrl =
-      'https://access.line.me/oauth2/v2.1/authorize';
+  static const String _lineAuthUrl = 'https://access.line.me/oauth2/v2.1/authorize';
   static const String _lineTokenUrl = 'https://api.line.me/oauth2/v2.1/token';
   static const String _lineProfileUrl = 'https://api.line.me/v2/profile';
 
@@ -46,17 +45,13 @@ class LineOAuthService {
       // 5. 액세스 토큰 요청
       final tokenResult = await _requestAccessToken(authCode, state);
       if (!tokenResult.isSuccess) {
-        return Result.failure(
-          tokenResult.error?.toString() ?? 'LINE ログインに失敗しました',
-        );
+        return Result.failure(tokenResult.error?.toString() ?? 'LINE ログインに失敗しました');
       }
 
       // 6. 사용자 프로필 정보 요청
       final profileResult = await _requestUserProfile(tokenResult.dataOrNull!);
       if (!profileResult.isSuccess) {
-        return Result.failure(
-          profileResult.error?.toString() ?? 'LINE プロフィールの取得に失敗しました',
-        );
+        return Result.failure(profileResult.error?.toString() ?? 'LINE プロフィールの取得に失敗しました');
       }
 
       return Result.success('LINEログインが完了しました', profileResult.dataOrNull!);
@@ -86,28 +81,12 @@ class LineOAuthService {
     return uri.toString();
   }
 
-  /// OAuth URL 실행 (flutter_web_auth 사용)
+  /// OAuth URL 실행 (임시 비활성화)
   ///
-  /// flutter_web_auth 패키지를 사용하여 실제 OAuth 플로우를 처리합니다.
-  /// 웹뷰에서 인증을 진행하고 콜백 URL을 받아 처리합니다.
+  /// flutter_web_auth 패키지 의존성 충돌로 임시 비활성화
   Future<String> _launchOAuthUrl(String authUrl) async {
-    try {
-      // flutter_web_auth를 사용한 OAuth 플로우
-      final result = await FlutterWebAuth.authenticate(
-        url: authUrl,
-        callbackUrlScheme: _extractSchemeFromRedirectUri(_redirectUri),
-      );
-
-      // 콜백 URL에서 결과 반환
-      return result;
-    } catch (e) {
-      // 사용자가 취소한 경우 또는 OAuth 실패
-      if (e.toString().contains('CANCELLED') ||
-          e.toString().contains('canceled')) {
-        throw Exception('LINE ログインがキャンセルされました');
-      }
-      throw Exception('OAuth URL 실행 실패: $e');
-    }
+    // 임시로 에러 반환 (LINE OAuth 기능 비활성화)
+    throw Exception('LINE OAuth機能は現在利用できません');
   }
 
   /// 리다이렉트 URI에서 스키마 추출
@@ -135,10 +114,7 @@ class LineOAuthService {
   }
 
   /// 액세스 토큰 요청
-  Future<Result<LineTokenInfo>> _requestAccessToken(
-    String authCode,
-    String state,
-  ) async {
+  Future<Result<LineTokenInfo>> _requestAccessToken(String authCode, String state) async {
     try {
       final response = await http.post(
         Uri.parse(_lineTokenUrl),
@@ -165,9 +141,7 @@ class LineOAuthService {
   }
 
   /// 사용자 프로필 정보 요청
-  Future<Result<LineUserInfo>> _requestUserProfile(
-    LineTokenInfo tokenInfo,
-  ) async {
+  Future<Result<LineUserInfo>> _requestUserProfile(LineTokenInfo tokenInfo) async {
     try {
       final response = await http.get(
         Uri.parse(_lineProfileUrl),

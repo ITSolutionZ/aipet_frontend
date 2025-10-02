@@ -38,10 +38,9 @@ class ProfileData {
 }
 
 // 프로필 데이터 프로바이더
-final profileDataProvider =
-    StateNotifierProvider<ProfileDataNotifier, ProfileData>((ref) {
-      return ProfileDataNotifier();
-    });
+final profileDataProvider = StateNotifierProvider<ProfileDataNotifier, ProfileData>((ref) {
+  return ProfileDataNotifier();
+});
 
 class ProfileDataNotifier extends StateNotifier<ProfileData> {
   ProfileDataNotifier() : super(const ProfileData()) {
@@ -125,24 +124,16 @@ class ProfileEditFormController extends StateNotifier<ProfileEditFormState> {
 
   void initialize(ProfileData profileData) {
     final formKey = GlobalKey<FormState>();
-    final userNameController = TextEditingController(
-      text: profileData.userName,
-    );
+    final userNameController = TextEditingController(text: profileData.userName);
     final emailController = TextEditingController(text: profileData.email);
-    final nameKatakanaController = TextEditingController(
-      text: profileData.nameKatakana,
-    );
+    final nameKatakanaController = TextEditingController(text: profileData.nameKatakana);
     final contactController = TextEditingController(text: profileData.contact);
 
     userNameController.addListener(() {
-      ref
-          .read(profileDataProvider.notifier)
-          .updateField('userName', userNameController.text);
+      ref.read(profileDataProvider.notifier).updateField('userName', userNameController.text);
     });
     emailController.addListener(() {
-      ref
-          .read(profileDataProvider.notifier)
-          .updateField('email', emailController.text);
+      ref.read(profileDataProvider.notifier).updateField('email', emailController.text);
     });
     nameKatakanaController.addListener(() {
       ref
@@ -150,9 +141,7 @@ class ProfileEditFormController extends StateNotifier<ProfileEditFormState> {
           .updateField('nameKatakana', nameKatakanaController.text);
     });
     contactController.addListener(() {
-      ref
-          .read(profileDataProvider.notifier)
-          .updateField('contact', contactController.text);
+      ref.read(profileDataProvider.notifier).updateField('contact', contactController.text);
     });
 
     state = state.copyWith(
@@ -200,8 +189,7 @@ class ProfileEditFormState {
       formKey: formKey ?? this.formKey,
       userNameController: userNameController ?? this.userNameController,
       emailController: emailController ?? this.emailController,
-      nameKatakanaController:
-          nameKatakanaController ?? this.nameKatakanaController,
+      nameKatakanaController: nameKatakanaController ?? this.nameKatakanaController,
       contactController: contactController ?? this.contactController,
     );
   }
@@ -217,14 +205,10 @@ class ProfileEditScreen extends ConsumerWidget {
       final success = await profileNotifier.saveProfile();
       if (context.mounted) {
         if (success) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('프로필이 저장되었습니다')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('프로필이 저장되었습니다')));
           Navigator.pop(context);
         } else {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('저장에 실패했습니다')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('저장에 실패했습니다')));
         }
       }
     }
@@ -258,17 +242,12 @@ class ProfileEditScreen extends ConsumerWidget {
               if (profileData.isLoading)
                 const Center(child: CircularProgressIndicator())
               else
-                const ProfileHeaderWidget(
-                  userName: 'プロフィール編集',
-                  email: '',
-                  isEditable: true,
-                ),
+                const ProfileHeaderWidget(userName: 'プロフィール編集', email: '', isEditable: true),
 
               // フォームフィールド
               FormFieldWidget(
                 label: 'ユーザ名',
-                controller:
-                    formState.userNameController ?? TextEditingController(),
+                controller: formState.userNameController ?? TextEditingController(),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'ユーザ名を入力してください';
@@ -281,8 +260,7 @@ class ProfileEditScreen extends ConsumerWidget {
 
               FormFieldWidget(
                 label: 'メールアドレス',
-                controller:
-                    formState.emailController ?? TextEditingController(),
+                controller: formState.emailController ?? TextEditingController(),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'メールアドレスを入力してください';
@@ -298,8 +276,7 @@ class ProfileEditScreen extends ConsumerWidget {
 
               FormFieldWidget(
                 label: 'フリガナ',
-                controller:
-                    formState.nameKatakanaController ?? TextEditingController(),
+                controller: formState.nameKatakanaController ?? TextEditingController(),
                 validator: (value) => null, // Optional field
               ),
 
@@ -307,8 +284,7 @@ class ProfileEditScreen extends ConsumerWidget {
 
               FormFieldWidget(
                 label: '連絡先',
-                controller:
-                    formState.contactController ?? TextEditingController(),
+                controller: formState.contactController ?? TextEditingController(),
                 validator: (value) => null, // Optional field
               ),
 
@@ -318,15 +294,11 @@ class ProfileEditScreen extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: profileData.isLoading
-                      ? null
-                      : () => _saveProfile(ref, context),
+                  onPressed: profileData.isLoading ? null : () => _saveProfile(ref, context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.md,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.small),
                     ),
@@ -337,17 +309,12 @@ class ProfileEditScreen extends ConsumerWidget {
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : const Text(
                           '保存',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                 ),
               ),

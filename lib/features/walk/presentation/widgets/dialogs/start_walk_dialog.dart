@@ -6,13 +6,11 @@ import 'package:go_router/go_router.dart';
 
 /// 🎯 Start Walk Dialog Form State Provider
 final startWalkDialogFormProvider =
-    StateNotifierProvider<
-      StartWalkDialogFormController,
-      StartWalkDialogFormState
-    >((ref) => StartWalkDialogFormController());
+    StateNotifierProvider<StartWalkDialogFormController, StartWalkDialogFormState>(
+      (ref) => StartWalkDialogFormController(),
+    );
 
-class StartWalkDialogFormController
-    extends StateNotifier<StartWalkDialogFormState> {
+class StartWalkDialogFormController extends StateNotifier<StartWalkDialogFormState> {
   StartWalkDialogFormController()
     : super(const StartWalkDialogFormState(title: '', selectedPetId: 'pet1'));
 
@@ -34,10 +32,7 @@ class StartWalkDialogFormState {
   final String title;
   final String selectedPetId;
 
-  const StartWalkDialogFormState({
-    required this.title,
-    required this.selectedPetId,
-  });
+  const StartWalkDialogFormState({required this.title, required this.selectedPetId});
 
   StartWalkDialogFormState copyWith({String? title, String? selectedPetId}) {
     return StartWalkDialogFormState(
@@ -60,20 +55,14 @@ class StartWalkDialog extends ConsumerWidget {
     return AlertDialog(
       title: Text(
         '새 산책 시작',
-        style: AppFonts.fredoka(
-          fontSize: AppFonts.lg,
-          fontWeight: FontWeight.bold,
-        ),
+        style: AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.bold),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
             initialValue: formState.title,
-            decoration: const InputDecoration(
-              labelText: '散歩のタイトル',
-              border: OutlineInputBorder(),
-            ),
+            decoration: const InputDecoration(labelText: '散歩のタイトル', border: OutlineInputBorder()),
             onChanged: formController.updateTitle,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -85,10 +74,7 @@ class StartWalkDialog extends ConsumerWidget {
           const SizedBox(height: AppSpacing.md),
           DropdownButtonFormField<String>(
             value: formState.selectedPetId,
-            decoration: const InputDecoration(
-              labelText: 'ペット',
-              border: OutlineInputBorder(),
-            ),
+            decoration: const InputDecoration(labelText: 'ペット', border: OutlineInputBorder()),
             items: const [
               DropdownMenuItem(value: 'pet1', child: Text('Maxi')),
               DropdownMenuItem(value: 'pet2', child: Text('Luna')),
@@ -104,19 +90,14 @@ class StartWalkDialog extends ConsumerWidget {
       actions: [
         TextButton(onPressed: () => context.pop(), child: const Text('キャンセル')),
         ElevatedButton(
-          onPressed: formController.isFormValid()
-              ? () => _startWalk(context, formState)
-              : null,
+          onPressed: formController.isFormValid() ? () => _startWalk(context, formState) : null,
           child: const Text('はじめ'),
         ),
       ],
     );
   }
 
-  void _startWalk(
-    BuildContext context,
-    StartWalkDialogFormState formState,
-  ) async {
+  void _startWalk(BuildContext context, StartWalkDialogFormState formState) async {
     if (formState.title.trim().isEmpty) return;
 
     final result = await controller.startNewWalk(

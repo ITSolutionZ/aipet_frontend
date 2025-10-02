@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -53,6 +53,7 @@ class FacilityGoogleMapState {
 class FacilityGoogleMapController
     extends StateNotifier<FacilityGoogleMapState> {
   final FacilityGoogleMapParams params;
+  final LocationCacheService _locationCache = LocationCacheService.instance;
 
   FacilityGoogleMapController(this.params)
     : super(const FacilityGoogleMapState()) {
@@ -61,14 +62,33 @@ class FacilityGoogleMapController
 
   Future<void> getCurrentLocation() async {
     try {
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      );
+      // 1. 먼저 캐시된 위치 확인
+      final cachedPosition = _locationCache.getCachedPosition();
+      if (cachedPosition != null) {
+        state = state.copyWith(currentPosition: cachedPosition);
+        setupMarkers();
+        return;
+      }
+
+      // 2. 캐시가 없으면 GPS로 위치 가져오기
+      final position =
+          await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+            ),
+          ).timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              throw Exception('位置情報の取得がタイムアウトしました');
+            },
+          );
+
+      // 3. 위치 정보 캐싱
+      _locationCache.cachePosition(position);
       state = state.copyWith(currentPosition: position);
       setupMarkers();
     } catch (e) {
+      // 4. 실패 시 기본 위치 사용 (도쿄)
       state = state.copyWith(
         currentPosition: Position(
           latitude: 35.6762,
@@ -85,6 +105,12 @@ class FacilityGoogleMapController
       );
       setupMarkers();
     }
+  }
+
+  /// 강제로 새로운 위치 가져오기 (캐시 무시)
+  Future<void> forceRefreshLocation() async {
+    _locationCache.invalidateCache();
+    await getCurrentLocation();
   }
 
   void setupMarkers() {

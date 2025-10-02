@@ -9,11 +9,7 @@ class YourTricksSection extends StatelessWidget {
   final List<TrickEntity> learnedTricks;
   final VoidCallback onManageTricks;
 
-  const YourTricksSection({
-    super.key,
-    required this.learnedTricks,
-    required this.onManageTricks,
-  });
+  const YourTricksSection({super.key, required this.learnedTricks, required this.onManageTricks});
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +63,7 @@ class YourTricksSection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.pets,
-            size: 48,
-            color: AppColors.pointBrown.withValues(alpha: 0.6),
-          ),
+          Icon(Icons.pets, size: 48, color: AppColors.pointBrown.withValues(alpha: 0.6)),
           const SizedBox(height: AppSpacing.md),
           Text(
             'まだ学習したトリックがありません',

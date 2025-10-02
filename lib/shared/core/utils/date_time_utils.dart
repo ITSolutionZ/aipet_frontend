@@ -49,9 +49,7 @@ class DateTimeUtils {
   /// 오늘인지 확인
   static bool isToday(DateTime dateTime) {
     final now = DateTime.now();
-    return dateTime.year == now.year &&
-        dateTime.month == now.month &&
-        dateTime.day == now.day;
+    return dateTime.year == now.year && dateTime.month == now.month && dateTime.day == now.day;
   }
 
   /// 내일인지 확인
@@ -159,10 +157,7 @@ class NotificationTimeOfDay {
 
   /// JSON에서 생성
   factory NotificationTimeOfDay.fromJson(Map<String, dynamic> json) {
-    return NotificationTimeOfDay(
-      hour: json['hour'] ?? 0,
-      minute: json['minute'] ?? 0,
-    );
+    return NotificationTimeOfDay(hour: json['hour'] ?? 0, minute: json['minute'] ?? 0);
   }
 
   @override
@@ -173,9 +168,7 @@ class NotificationTimeOfDay {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is NotificationTimeOfDay &&
-        other.hour == hour &&
-        other.minute == minute;
+    return other is NotificationTimeOfDay && other.hour == hour && other.minute == minute;
   }
 
   @override

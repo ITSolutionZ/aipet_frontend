@@ -22,13 +22,9 @@ class NotificationItemWidget extends StatelessWidget {
     return NotificationCardComponent(
       title: notification.title,
       body: notification.body,
-      formattedTime: DateFormatService.formatRelativeTime(
-        notification.createdAt,
-      ),
+      formattedTime: DateFormatService.formatRelativeTime(notification.createdAt),
       icon: NotificationIconService.getNotificationIcon(notification.type),
-      iconColor: NotificationIconService.getNotificationColor(
-        notification.type,
-      ),
+      iconColor: NotificationIconService.getNotificationColor(notification.type),
       isUnread: notification.isUnread,
       onTap: onTap,
       onDismiss: onDismiss,

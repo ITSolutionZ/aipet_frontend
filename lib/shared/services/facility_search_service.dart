@@ -16,9 +16,7 @@ class FacilitySearchService {
         .where(
           (facility) =>
               facility.name.toLowerCase().contains(lowerQuery) ||
-              (facility.description?.toLowerCase() ?? '').contains(
-                lowerQuery,
-              ) ||
+              (facility.description?.toLowerCase() ?? '').contains(lowerQuery) ||
               facility.address.toLowerCase().contains(lowerQuery),
         )
         .toList();
@@ -40,9 +38,7 @@ class FacilitySearchService {
             if (facility.name.toLowerCase().contains(lowerQuery)) return true;
             break;
           case 'description':
-            if ((facility.description?.toLowerCase() ?? '').contains(
-              lowerQuery,
-            )) {
+            if ((facility.description?.toLowerCase() ?? '').contains(lowerQuery)) {
               return true;
             }
             break;
@@ -68,10 +64,7 @@ class FacilitySearchService {
   }
 
   /// 타입별 필터링
-  static List<Facility> filterByType(
-    List<Facility> facilities,
-    FacilityType? type,
-  ) {
+  static List<Facility> filterByType(List<Facility> facilities, FacilityType? type) {
     if (type == null) return facilities;
     return facilities.where((facility) => facility.type == type).toList();
   }
@@ -92,13 +85,8 @@ class FacilitySearchService {
   }
 
   /// 평점별 필터링
-  static List<Facility> filterByRating(
-    List<Facility> facilities,
-    double minRating,
-  ) {
-    return facilities
-        .where((facility) => facility.rating >= minRating)
-        .toList();
+  static List<Facility> filterByRating(List<Facility> facilities, double minRating) {
+    return facilities.where((facility) => facility.rating >= minRating).toList();
   }
 
   /// 거리별 정렬 (현재 위치 기준)
@@ -220,18 +208,12 @@ class FacilitySearchService {
   }
 
   /// 거리 계산 (Haversine 공식)
-  static double _calculateDistance(
-    double lat1,
-    double lon1,
-    double lat2,
-    double lon2,
-  ) {
+  static double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const double earthRadius = 6371; // km
     final double dLat = _degreesToRadians(lat2 - lat1);
     final double dLon = _degreesToRadians(lon2 - lon1);
     final double a =
-        sin(dLat / 2) * sin(dLat / 2) +
-        cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
+        sin(dLat / 2) * sin(dLat / 2) + cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
     final double c = 2 * asin(sqrt(a));
     return earthRadius * c;
   }

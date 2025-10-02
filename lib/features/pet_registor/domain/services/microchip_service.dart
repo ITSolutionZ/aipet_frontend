@@ -6,15 +6,10 @@ abstract class MicrochipService {
   Future<Result<bool>> validateMicrochipNumber(String microchipNumber);
 
   /// 마이크로칩 번호로 펫 정보 조회
-  Future<Result<Map<String, dynamic>?>> getPetInfoByMicrochip(
-    String microchipNumber,
-  );
+  Future<Result<Map<String, dynamic>?>> getPetInfoByMicrochip(String microchipNumber);
 
   /// 마이크로칩 번호 등록
-  Future<Result<void>> registerMicrochipNumber(
-    String petId,
-    String microchipNumber,
-  );
+  Future<Result<void>> registerMicrochipNumber(String petId, String microchipNumber);
 
   /// 마이크로칩 등록 사이트 열기
   Future<void> openRegistrationSite();

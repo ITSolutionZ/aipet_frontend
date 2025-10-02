@@ -35,9 +35,7 @@ class AiMessageManager {
       }
 
       // 메시지 최적화 (페이징, 정렬, 중복 제거)
-      final optimizedResult = MessagePaginationService.optimizeMessages(
-        combinedMessages,
-      );
+      final optimizedResult = MessagePaginationService.optimizeMessages(combinedMessages);
 
       if (optimizedResult.isSuccess) {
         if (kDebugMode) {
@@ -50,14 +48,9 @@ class AiMessageManager {
 
       // 최적화 실패 시 원본 반환
       if (kDebugMode) {
-        debugPrint(
-          '[$_tag] Optimization failed, returning unoptimized messages',
-        );
+        debugPrint('[$_tag] Optimization failed, returning unoptimized messages');
       }
-      return Result.success(
-        'Messages added without optimization',
-        combinedMessages,
-      );
+      return Result.success('Messages added without optimization', combinedMessages);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error adding messages: $error\n$stackTrace');
@@ -96,9 +89,7 @@ class AiMessageManager {
       // 메시지 길이 제한
       const maxContentLength = 10000;
       if (message.content.length > maxContentLength) {
-        return Result.failure(
-          '메시지가 너무 깁니다 (${message.content.length}/$maxContentLength자)',
-        );
+        return Result.failure('메시지가 너무 깁니다 (${message.content.length}/$maxContentLength자)');
       }
 
       // 타입별 특수 검증
@@ -119,14 +110,10 @@ class AiMessageManager {
   ///
   /// [messages] 정리할 메시지 목록
   /// [return] 정리된 메시지 목록
-  static Result<List<AiMessageEntity>> cleanupMessages(
-    List<AiMessageEntity> messages,
-  ) {
+  static Result<List<AiMessageEntity>> cleanupMessages(List<AiMessageEntity> messages) {
     try {
       // 빈 메시지 제거
-      final nonEmptyMessages = messages
-          .where((msg) => msg.content.trim().isNotEmpty)
-          .toList();
+      final nonEmptyMessages = messages.where((msg) => msg.content.trim().isNotEmpty).toList();
 
       // 연속된 같은 타입 메시지 확인 및 정리
       final cleanedMessages = <AiMessageEntity>[];
@@ -134,8 +121,7 @@ class AiMessageManager {
 
       for (final message in nonEmptyMessages) {
         // 연속된 시스템 메시지는 마지막 것만 유지
-        if (message.type == MessageType.system &&
-            lastType == MessageType.system) {
+        if (message.type == MessageType.system && lastType == MessageType.system) {
           if (cleanedMessages.isNotEmpty) {
             cleanedMessages.removeLast();
           }
@@ -146,9 +132,7 @@ class AiMessageManager {
       }
 
       // 메시지 최적화 적용
-      final optimizedResult = MessagePaginationService.optimizeMessages(
-        cleanedMessages,
-      );
+      final optimizedResult = MessagePaginationService.optimizeMessages(cleanedMessages);
 
       if (optimizedResult.isSuccess) {
         if (kDebugMode) {
@@ -160,10 +144,7 @@ class AiMessageManager {
       }
 
       // 최적화 실패 시 정리된 메시지 반환
-      return Result.success(
-        'Messages cleaned up without optimization',
-        cleanedMessages,
-      );
+      return Result.success('Messages cleaned up without optimization', cleanedMessages);
     } catch (error, stackTrace) {
       if (kDebugMode) {
         debugPrint('[$_tag] Error cleaning up messages: $error\n$stackTrace');
@@ -177,27 +158,16 @@ class AiMessageManager {
   /// [messages] 검색할 메시지 목록
   /// [messageId] 찾을 메시지 ID
   /// [return] 찾은 메시지와 인덱스
-  static Result<MessageSearchResult> findMessage(
-    List<AiMessageEntity> messages,
-    String messageId,
-  ) {
+  static Result<MessageSearchResult> findMessage(List<AiMessageEntity> messages, String messageId) {
     try {
       for (int i = 0; i < messages.length; i++) {
         if (messages[i].id == messageId) {
-          final result = MessageSearchResult(
-            message: messages[i],
-            index: i,
-            found: true,
-          );
+          final result = MessageSearchResult(message: messages[i], index: i, found: true);
           return Result.success('Message found at index $i', result);
         }
       }
 
-      const result = MessageSearchResult(
-        message: null,
-        index: -1,
-        found: false,
-      );
+      const result = MessageSearchResult(message: null, index: -1, found: false);
       return Result.success('Message not found', result);
     } catch (error) {
       return Result.failure('메시지 검색 중 오류: $error');
@@ -219,12 +189,8 @@ class AiMessageManager {
   static MemoryStatus checkMemoryStatus(List<AiMessageEntity> messages) {
     try {
       final isMemoryHigh = MessagePaginationService.isMemoryUsageHigh(messages);
-      final shouldCleanup = MessagePaginationService.shouldAutoCleanup(
-        messages.length,
-      );
-      final estimatedUsage = MessagePaginationService.estimateMemoryUsage(
-        messages,
-      );
+      final shouldCleanup = MessagePaginationService.shouldAutoCleanup(messages.length);
+      final estimatedUsage = MessagePaginationService.estimateMemoryUsage(messages);
 
       final status = MemoryStatus(
         isHigh: isMemoryHigh,
@@ -268,9 +234,7 @@ class AiMessageManager {
     final errorPatterns = ['error', 'failed', 'cannot', 'unable'];
     final contentLower = message.content.toLowerCase();
 
-    final hasErrorPattern = errorPatterns.any(
-      (pattern) => contentLower.contains(pattern),
-    );
+    final hasErrorPattern = errorPatterns.any((pattern) => contentLower.contains(pattern));
     if (hasErrorPattern && message.content.length < 50) {
       return Result.failure('AI 응답에 오류 패턴이 감지되었습니다');
     }
@@ -306,11 +270,7 @@ class MessageSearchResult {
   final int index;
   final bool found;
 
-  const MessageSearchResult({
-    required this.message,
-    required this.index,
-    required this.found,
-  });
+  const MessageSearchResult({required this.message, required this.index, required this.found});
 }
 
 /// 메모리 상태 정보

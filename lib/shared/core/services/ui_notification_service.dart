@@ -12,15 +12,11 @@ class UINotificationService {
       GlobalKey<ScaffoldMessengerState>();
 
   /// ScaffoldMessenger Key getter (main.dart에서 사용)
-  static GlobalKey<ScaffoldMessengerState> get scaffoldMessengerKey =>
-      _scaffoldMessengerKey;
+  static GlobalKey<ScaffoldMessengerState> get scaffoldMessengerKey => _scaffoldMessengerKey;
 
   /// 성공 메시지 표시
   static void showSuccess(String message, {Duration? duration}) {
-    LoggerService.userAction(
-      'Notification.Success',
-      context: {'message': message},
-    );
+    LoggerService.userAction('Notification.Success', context: {'message': message});
 
     _scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(
@@ -42,9 +38,7 @@ class UINotificationService {
         backgroundColor: AppColors.pointGreen,
         duration: duration ?? const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.small),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.small)),
         margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
@@ -52,10 +46,7 @@ class UINotificationService {
 
   /// 에러 메시지 표시
   static void showError(String message, {Duration? duration}) {
-    LoggerService.userAction(
-      'Notification.Error',
-      context: {'message': message},
-    );
+    LoggerService.userAction('Notification.Error', context: {'message': message});
 
     _scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(
@@ -77,9 +68,7 @@ class UINotificationService {
         backgroundColor: AppColors.pointPink,
         duration: duration ?? const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.small),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.small)),
         margin: const EdgeInsets.all(AppSpacing.md),
         action: SnackBarAction(
           label: '닫기',
@@ -94,10 +83,7 @@ class UINotificationService {
 
   /// 경고 메시지 표시
   static void showWarning(String message, {Duration? duration}) {
-    LoggerService.userAction(
-      'Notification.Warning',
-      context: {'message': message},
-    );
+    LoggerService.userAction('Notification.Warning', context: {'message': message});
 
     _scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(
@@ -119,9 +105,7 @@ class UINotificationService {
         backgroundColor: Colors.orange,
         duration: duration ?? const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.small),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.small)),
         margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
@@ -129,10 +113,7 @@ class UINotificationService {
 
   /// 정보 메시지 표시
   static void showInfo(String message, {Duration? duration}) {
-    LoggerService.userAction(
-      'Notification.Info',
-      context: {'message': message},
-    );
+    LoggerService.userAction('Notification.Info', context: {'message': message});
 
     _scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(
@@ -154,9 +135,7 @@ class UINotificationService {
         backgroundColor: AppColors.pointBlue,
         duration: duration ?? const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.small),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.small)),
         margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
@@ -164,10 +143,7 @@ class UINotificationService {
 
   /// 로딩 메시지 표시
   static void showLoading(String message) {
-    LoggerService.userAction(
-      'Notification.Loading',
-      context: {'message': message},
-    );
+    LoggerService.userAction('Notification.Loading', context: {'message': message});
 
     _scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(
@@ -196,9 +172,7 @@ class UINotificationService {
         backgroundColor: AppColors.pointDark,
         duration: const Duration(seconds: 10), // 로딩은 길게
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.small),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.small)),
         margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
@@ -232,9 +206,7 @@ class UINotificationService {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
           title: Text(
             title,
             style: AppFonts.titleMedium.copyWith(
@@ -242,10 +214,7 @@ class UINotificationService {
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text(
-            message,
-            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
-          ),
+          content: Text(message, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -286,9 +255,7 @@ class UINotificationService {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
           title: Text(
             title,
             style: AppFonts.titleMedium.copyWith(
@@ -296,10 +263,7 @@ class UINotificationService {
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text(
-            message,
-            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
-          ),
+          content: Text(message, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -322,8 +286,9 @@ class UINotificationService {
 extension LegacySnackBarMigration on ScaffoldMessengerState {
   /// 기존 showSnackBar 호출을 UINotificationService로 리다이렉트
   @Deprecated('Use UINotificationService.showSuccess/showError instead')
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
-  showMigratedSnackBar(SnackBar snackBar) {
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showMigratedSnackBar(
+    SnackBar snackBar,
+  ) {
     // 기존 코드와의 호환성을 위해 유지하되, 로그 남기기
     LoggerService.warning(
       'Legacy SnackBar usage detected. Consider migrating to UINotificationService.',

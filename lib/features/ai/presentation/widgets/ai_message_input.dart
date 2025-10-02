@@ -41,14 +41,10 @@ class AiMessageInput extends StatelessWidget {
               enabled: !isLoading,
               decoration: InputDecoration(
                 hintText: 'あなたのペットについての質問をしてください...',
-                hintStyle: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.pointGray,
-                ),
+                hintStyle: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.large),
-                  borderSide: BorderSide(
-                    color: AppColors.pointGray.withValues(alpha: 0.3),
-                  ),
+                  borderSide: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.3)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.large),
@@ -71,9 +67,7 @@ class AiMessageInput extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              onPressed: isLoading
-                  ? null
-                  : () => onSendMessage(controller.text),
+              onPressed: isLoading ? null : () => onSendMessage(controller.text),
               icon: isLoading
                   ? const SizedBox(
                       width: 20,

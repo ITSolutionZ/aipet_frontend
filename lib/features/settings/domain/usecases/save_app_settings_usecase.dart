@@ -7,9 +7,7 @@ class SaveAppSettingsUseCase {
   const SaveAppSettingsUseCase(this._repository);
 
   /// 앱 설정 저장
-  Future<Result<Map<String, dynamic>>> call(
-    Map<String, dynamic> settings,
-  ) async {
+  Future<Result<Map<String, dynamic>>> call(Map<String, dynamic> settings) async {
     final result = await _repository.saveAppSettings(settings);
     if (result.isSuccess) {
       return Result.success('アプリ設定を保存しました', result.dataOrNull);

@@ -76,11 +76,7 @@ class _CurrentFeedingCard extends StatelessWidget {
   final String label;
   final Color color;
 
-  const _CurrentFeedingCard({
-    required this.value,
-    required this.label,
-    required this.color,
-  });
+  const _CurrentFeedingCard({required this.value, required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -104,10 +100,7 @@ class _CurrentFeedingCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             label,
-            style: AppFonts.fredoka(
-              fontSize: AppFonts.sm,
-              color: AppColors.pointGray,
-            ),
+            style: AppFonts.fredoka(fontSize: AppFonts.sm, color: AppColors.pointGray),
           ),
         ],
       ),

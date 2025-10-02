@@ -64,11 +64,7 @@ class AiPetSelection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.pets_outlined,
-            size: 48,
-            color: AppColors.pointBrown.withValues(alpha: 0.5),
-          ),
+          Icon(Icons.pets_outlined, size: 48, color: AppColors.pointBrown.withValues(alpha: 0.5)),
           const SizedBox(height: AppSpacing.sm),
           Text(
             '登録されたペットがありません',
@@ -80,9 +76,7 @@ class AiPetSelection extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             'ペットを登録すると、より具体的な\nアドバイスが受けられます',
-            style: AppFonts.bodySmall.copyWith(
-              color: AppColors.pointDark.withValues(alpha: 0.7),
-            ),
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointDark.withValues(alpha: 0.7)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.md),
@@ -119,37 +113,23 @@ class AiPetSelection extends StatelessWidget {
     return GestureDetector(
       onTap: () => onPetSelected(isSelected ? null : pet),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.pointBrown : AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(
-            color: isSelected
-                ? AppColors.pointBrown
-                : AiColors.selectedBorderColor,
+            color: isSelected ? AppColors.pointBrown : AiColors.selectedBorderColor,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AiColors.shadowColor,
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
+              ? [BoxShadow(color: AiColors.shadowColor, blurRadius: 4, offset: const Offset(0, 2))]
               : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (pet.imagePath != null && pet.imagePath!.isNotEmpty)
-              CircleAvatar(
-                radius: 12,
-                backgroundImage: AssetImage(pet.imagePath!),
-              )
+              CircleAvatar(radius: 12, backgroundImage: AssetImage(pet.imagePath!))
             else
               Icon(
                 pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
@@ -164,9 +144,7 @@ class AiPetSelection extends StatelessWidget {
                 Text(
                   pet.name,
                   style: AppFonts.bodySmall.copyWith(
-                    color: isSelected
-                        ? AppColors.pureWhite
-                        : AppColors.pointDark,
+                    color: isSelected ? AppColors.pureWhite : AppColors.pointDark,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -193,19 +171,12 @@ class AiPetSelection extends StatelessWidget {
       onTap: () => onPetSelected(null),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: isGeneralSelected
-              ? AiColors.petSelectionBackground
-              : Colors.transparent,
+          color: isGeneralSelected ? AiColors.petSelectionBackground : Colors.transparent,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
-            color: isGeneralSelected
-                ? AppColors.pointBrown
-                : AiColors.unselectedBorderColor,
+            color: isGeneralSelected ? AppColors.pointBrown : AiColors.unselectedBorderColor,
             width: 1,
           ),
         ),
@@ -225,9 +196,7 @@ class AiPetSelection extends StatelessWidget {
                 color: isGeneralSelected
                     ? AppColors.pointBrown
                     : AppColors.pointDark.withValues(alpha: 0.8),
-                fontWeight: isGeneralSelected
-                    ? FontWeight.w600
-                    : FontWeight.normal,
+                fontWeight: isGeneralSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
           ],

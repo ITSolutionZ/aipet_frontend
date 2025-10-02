@@ -98,10 +98,7 @@ class MarkNotificationAsReadUseCase {
   }
 
   /// 알림을 읽지 않음으로 표시
-  Future<Result<void>> markAsUnread(
-    String userId,
-    String notificationId,
-  ) async {
+  Future<Result<void>> markAsUnread(String userId, String notificationId) async {
     try {
       if (userId.trim().isEmpty) {
         return Result.failure('ユーザーIDが無効です');
@@ -128,10 +125,7 @@ class MarkNotificationAsReadUseCase {
   }
 
   /// 읽음 상태 토글
-  Future<Result<bool>> toggleReadStatus(
-    String userId,
-    String notificationId,
-  ) async {
+  Future<Result<bool>> toggleReadStatus(String userId, String notificationId) async {
     try {
       if (userId.trim().isEmpty) {
         return Result.failure('ユーザーIDが無効です');

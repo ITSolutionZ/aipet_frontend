@@ -5,11 +5,7 @@ class MicrochipInput extends StatelessWidget {
   final TextEditingController controller;
   final Function() onChanged;
 
-  const MicrochipInput({
-    super.key,
-    required this.controller,
-    required this.onChanged,
-  });
+  const MicrochipInput({super.key, required this.controller, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -34,21 +30,14 @@ class MicrochipInput extends StatelessWidget {
             style: AppFonts.bodyMedium,
             decoration: InputDecoration(
               hintText: '例: 392142000000000',
-              hintStyle: AppFonts.bodyMedium.copyWith(
-                color: Colors.grey.withValues(alpha: 0.5),
-              ),
+              hintStyle: AppFonts.bodyMedium.copyWith(color: Colors.grey.withValues(alpha: 0.5)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadius.medium),
-                borderSide: BorderSide(
-                  color: Colors.grey.withValues(alpha: 0.3),
-                ),
+                borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadius.medium),
-                borderSide: const BorderSide(
-                  color: AppColors.pointPink,
-                  width: 2,
-                ),
+                borderSide: const BorderSide(color: AppColors.pointPink, width: 2),
               ),
               contentPadding: const EdgeInsets.all(AppSpacing.md),
               counterText: '',
@@ -65,10 +54,7 @@ class MicrochipInput extends StatelessWidget {
             },
           ),
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            '※ 15桁の数字を入力してください',
-            style: AppFonts.bodySmall.copyWith(color: Colors.grey),
-          ),
+          Text('※ 15桁の数字を入力してください', style: AppFonts.bodySmall.copyWith(color: Colors.grey)),
         ],
       ),
     );

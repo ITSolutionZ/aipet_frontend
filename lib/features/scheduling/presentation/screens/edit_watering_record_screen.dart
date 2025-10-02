@@ -10,12 +10,10 @@ class EditWateringRecordScreen extends ConsumerStatefulWidget {
   const EditWateringRecordScreen({super.key, required this.record});
 
   @override
-  ConsumerState<EditWateringRecordScreen> createState() =>
-      _EditWateringRecordScreenState();
+  ConsumerState<EditWateringRecordScreen> createState() => _EditWateringRecordScreenState();
 }
 
-class _EditWateringRecordScreenState
-    extends ConsumerState<EditWateringRecordScreen> {
+class _EditWateringRecordScreenState extends ConsumerState<EditWateringRecordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
@@ -32,8 +30,7 @@ class _EditWateringRecordScreenState
 
   void _initializeValues() {
     // 기존 값들로 초기화
-    _amountController.text =
-        widget.record['amount']?.toString().replaceAll('ml', '') ?? '';
+    _amountController.text = widget.record['amount']?.toString().replaceAll('ml', '') ?? '';
     _notesController.text = widget.record['notes']?.toString() ?? '';
     _selectedType = widget.record['type']?.toString() ?? '定期的な給水';
 
@@ -41,10 +38,7 @@ class _EditWateringRecordScreenState
     final timeStr = widget.record['time']?.toString() ?? '';
     final timeParts = timeStr.split(':');
     if (timeParts.length == 2) {
-      _selectedTime = TimeOfDay(
-        hour: int.parse(timeParts[0]),
-        minute: int.parse(timeParts[1]),
-      );
+      _selectedTime = TimeOfDay(hour: int.parse(timeParts[0]), minute: int.parse(timeParts[1]));
     }
   }
 
@@ -109,11 +103,7 @@ class _EditWateringRecordScreenState
                 color: AppColors.pointBlue.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.water_drop,
-                color: AppColors.pointBlue,
-                size: 32,
-              ),
+              child: const Icon(Icons.water_drop, color: AppColors.pointBlue, size: 32),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -129,9 +119,7 @@ class _EditWateringRecordScreenState
                   ),
                   Text(
                     '${widget.record['amount']} - ${widget.record['type']}',
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointGray,
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
                   ),
                 ],
               ),
@@ -201,10 +189,7 @@ class _EditWateringRecordScreenState
             ),
             const SizedBox(height: AppSpacing.md),
             ListTile(
-              leading: const Icon(
-                Icons.access_time,
-                color: AppColors.pointBlue,
-              ),
+              leading: const Icon(Icons.access_time, color: AppColors.pointBlue),
               title: const Text('時間を選択'),
               subtitle: Text(
                 _selectedTime.format(context),
@@ -337,10 +322,7 @@ class _EditWateringRecordScreenState
 
   /// 시간 선택
   Future<void> _selectTime() async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime,
-    );
+    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: _selectedTime);
     if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
@@ -357,10 +339,7 @@ class _EditWateringRecordScreenState
 
       // 성공 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('給水記録を更新しました'),
-          backgroundColor: AppColors.pointGreen,
-        ),
+        const SnackBar(content: Text('給水記録を更新しました'), backgroundColor: AppColors.pointGreen),
       );
 
       // 이전 화면으로 돌아가기
@@ -377,10 +356,7 @@ class _EditWateringRecordScreenState
           title: const Text('記録を削除'),
           content: const Text('この給水記録を削除しますか？この操作は取り消せません。'),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('キャンセル'),
-            ),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('キャンセル')),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();

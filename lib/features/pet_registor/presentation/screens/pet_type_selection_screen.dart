@@ -12,12 +12,10 @@ class PetTypeSelectionScreen extends ConsumerStatefulWidget {
   const PetTypeSelectionScreen({super.key});
 
   @override
-  ConsumerState<PetTypeSelectionScreen> createState() =>
-      _PetTypeSelectionScreenState();
+  ConsumerState<PetTypeSelectionScreen> createState() => _PetTypeSelectionScreenState();
 }
 
-class _PetTypeSelectionScreenState
-    extends ConsumerState<PetTypeSelectionScreen> {
+class _PetTypeSelectionScreenState extends ConsumerState<PetTypeSelectionScreen> {
   bool _showMicrochipBanner = false;
 
   /// 7단계 프로그레스바 생성
@@ -48,15 +46,11 @@ class _PetTypeSelectionScreenState
   @override
   Widget build(BuildContext context) {
     final petRegistrationState = ref.watch(petRegistrationStateProvider);
-    final petRegistrationNotifier = ref.read(
-      petRegistrationStateProvider.notifier,
-    );
+    final petRegistrationNotifier = ref.read(petRegistrationStateProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.pureWhite,
-      appBar: const SoftGradientAppBar(
-        title: PetRegistrationTexts.petTypeSelection,
-      ),
+      appBar: const SoftGradientAppBar(title: PetRegistrationTexts.petTypeSelection),
       body: SafeArea(
         child: Column(
           children: [
@@ -101,8 +95,7 @@ class _PetTypeSelectionScreenState
                         petRegistrationNotifier.selectPetType(petType);
 
                         setState(() {
-                          _showMicrochipBanner =
-                              (petType == 'dog' || petType == 'cat');
+                          _showMicrochipBanner = (petType == 'dog' || petType == 'cat');
                         });
                       },
                     ),
@@ -117,19 +110,14 @@ class _PetTypeSelectionScreenState
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
-                  top: BorderSide(
-                    color: AppColors.pointGray.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
+                  top: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
                 ),
               ),
               child: SizedBox(
                 width: double.infinity,
                 child: Consumer(
                   builder: (context, ref, child) {
-                    final registrationState = ref.watch(
-                      petRegistrationStateProvider,
-                    );
+                    final registrationState = ref.watch(petRegistrationStateProvider);
                     final hasDataBeyond = registrationState.hasDataBeyondStep(
                       PetRegistrationStep.typeSelection,
                     );
@@ -141,22 +129,15 @@ class _PetTypeSelectionScreenState
                           ? () {
                               // 등록이 완료된 상태라면 등록확인 페이지로
                               if (registrationState.isRegistrationComplete) {
-                                context.go(
-                                  RouteConstants.petAnniversarySummaryRoute,
-                                );
+                                context.go(RouteConstants.petAnniversarySummaryRoute);
                                 return;
                               }
 
                               // 다음 단계로 이동
                               if (registrationState.selectedPetType == 'dog') {
-                                context.go(
-                                  RouteConstants.dogBreedSelectionRoute,
-                                );
-                              } else if (registrationState.selectedPetType ==
-                                  'cat') {
-                                context.go(
-                                  RouteConstants.catBreedSelectionRoute,
-                                );
+                                context.go(RouteConstants.dogBreedSelectionRoute);
+                              } else if (registrationState.selectedPetType == 'cat') {
+                                context.go(RouteConstants.catBreedSelectionRoute);
                               } else {
                                 // 강아지나 고양이가 아닌 경우 이름 입력으로 바로 이동
                                 context.go(RouteConstants.petNameInputRoute);

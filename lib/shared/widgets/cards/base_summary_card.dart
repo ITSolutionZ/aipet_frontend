@@ -46,10 +46,7 @@ class BaseSummaryCard extends ConsumerWidget {
         decoration: BoxDecoration(
           color: backgroundColor ?? Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(
-            color: AppColors.pointGray.withValues(alpha: 0.3),
-            width: 1.0,
-          ),
+          border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3), width: 1.0),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
@@ -87,10 +84,7 @@ class BaseSummaryCard extends ConsumerWidget {
         ),
         if (subtitle != null) ...[
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            subtitle!,
-            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
-          ),
+          Text(subtitle!, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
         ],
         if (value != null) ...[
           const SizedBox(height: AppSpacing.sm),
@@ -114,12 +108,7 @@ class BaseSummaryCard extends ConsumerWidget {
                 ),
               if (unit != null && !isLoading) ...[
                 const SizedBox(width: AppSpacing.xs),
-                Text(
-                  unit!,
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: AppColors.pointGray,
-                  ),
-                ),
+                Text(unit!, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
               ],
             ],
           ),

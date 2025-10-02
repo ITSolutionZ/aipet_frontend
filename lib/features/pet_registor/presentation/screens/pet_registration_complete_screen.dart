@@ -6,10 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 /// 🎯 Mock Pet Registration State Provider for Migration
-final petRegistrationStateProvider =
-    StateNotifierProvider<MockPetRegistrationController, String?>(
-      (ref) => MockPetRegistrationController(),
-    );
+final petRegistrationStateProvider = StateNotifierProvider<MockPetRegistrationController, String?>(
+  (ref) => MockPetRegistrationController(),
+);
 
 class MockPetRegistrationController extends StateNotifier<String?> {
   MockPetRegistrationController() : super(null);
@@ -45,8 +44,7 @@ class PetRegistrationCompleteScreen extends ConsumerStatefulWidget {
       _PetRegistrationCompleteScreenState();
 }
 
-class _PetRegistrationCompleteScreenState
-    extends ConsumerState<PetRegistrationCompleteScreen>
+class _PetRegistrationCompleteScreenState extends ConsumerState<PetRegistrationCompleteScreen>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -160,18 +158,14 @@ class _PetRegistrationCompleteScreenState
 
                           Text(
                             '$petNameの登録が完了しました',
-                            style: AppFonts.titleLarge.copyWith(
-                              color: AppColors.pointDark,
-                            ),
+                            style: AppFonts.titleLarge.copyWith(color: AppColors.pointDark),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: AppSpacing.md),
 
                           Text(
                             'プロフィールページで詳細を\n確認できます',
-                            style: AppFonts.bodyLarge.copyWith(
-                              color: AppColors.pointGray,
-                            ),
+                            style: AppFonts.bodyLarge.copyWith(color: AppColors.pointGray),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: AppSpacing.xl),
@@ -213,13 +207,9 @@ class _PetRegistrationCompleteScreenState
                           child: ElevatedButton(
                             onPressed: () {
                               // 상태 초기화 후 펫 프로필 페이지로 이동
-                              ref
-                                  .read(petRegistrationStateProvider.notifier)
-                                  .reset();
+                              ref.read(petRegistrationStateProvider.notifier).reset();
                               if (createdPetId != null) {
-                                context.go(
-                                  '/home/pet-profile?petId=$createdPetId',
-                                );
+                                context.go('/home/pet-profile?petId=$createdPetId');
                               } else {
                                 context.go('/home/pet-profile');
                               }
@@ -227,18 +217,12 @@ class _PetRegistrationCompleteScreenState
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.pointPink,
                               foregroundColor: AppColors.pureWhite,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: AppSpacing.lg,
-                              ),
+                              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  AppRadius.medium,
-                                ),
+                                borderRadius: BorderRadius.circular(AppRadius.medium),
                               ),
                               elevation: 2,
-                              shadowColor: AppColors.pointPink.withValues(
-                                alpha: 0.3,
-                              ),
+                              shadowColor: AppColors.pointPink.withValues(alpha: 0.3),
                             ),
                             child: Text(
                               'プロフィールを見る',
@@ -257,15 +241,11 @@ class _PetRegistrationCompleteScreenState
                           child: TextButton(
                             onPressed: () {
                               // 상태 초기화 후 홈으로 이동
-                              ref
-                                  .read(petRegistrationStateProvider.notifier)
-                                  .reset();
+                              ref.read(petRegistrationStateProvider.notifier).reset();
                               context.go('/home');
                             },
                             style: TextButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: AppSpacing.lg,
-                              ),
+                              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                             ),
                             child: Text(
                               'ホームに戻る',

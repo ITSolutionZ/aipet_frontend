@@ -37,9 +37,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
   void _initializeTabController() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final tabController = TabController(length: 4, vsync: this);
-      ref
-          .read(petProfileNotifierProvider.notifier)
-          .initializeTabController(tabController);
+      ref.read(petProfileNotifierProvider.notifier).initializeTabController(tabController);
     });
   }
 
@@ -54,9 +52,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     return petAsyncValue.when(
       loading: () => const _LoadingScreen(),
       error: (error, stackTrace) => _ErrorScreen(error: error),
-      data: (pet) => pet != null
-          ? _PetProfileContent(pet: pet)
-          : const _PetNotFoundScreen(),
+      data: (pet) => pet != null ? _PetProfileContent(pet: pet) : const _PetNotFoundScreen(),
     );
   }
 }
@@ -69,9 +65,7 @@ class _LoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      body: Center(
-        child: CircularProgressIndicator(color: AppColors.pointBrown),
-      ),
+      body: Center(child: CircularProgressIndicator(color: AppColors.pointBrown)),
     );
   }
 }
@@ -90,11 +84,7 @@ class _ErrorScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: AppColors.pointPink,
-            ),
+            const Icon(Icons.error_outline, size: 64, color: AppColors.pointPink),
             const SizedBox(height: AppSpacing.lg),
             Text(
               '펫을 찾을 수 없습니다',
@@ -195,10 +185,7 @@ class _PetProfileContentState extends ConsumerState<_PetProfileContent> {
       appBar: DynamicAppBarStyles.brown(
         scrollController: _scrollController,
         title: widget.pet.name,
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back),
-        ),
+        leading: IconButton(onPressed: () => context.pop(), icon: const Icon(Icons.arrow_back)),
         actions: [
           IconButton(
             onPressed: () {

@@ -113,9 +113,7 @@ List<AiFavoriteQaEntity> aiFavoriteMockData(Ref ref) {
 @riverpod
 List<AiFavoriteQaEntity> aiFavoritesByCategory(Ref ref, String categoryId) {
   final favorites = ref.watch(aiFavoriteMockDataProvider);
-  return favorites
-      .where((favorite) => favorite.categoryId == categoryId)
-      .toList();
+  return favorites.where((favorite) => favorite.categoryId == categoryId).toList();
 }
 
 /// 즐겨찾기 펫별 목록 프로바이더

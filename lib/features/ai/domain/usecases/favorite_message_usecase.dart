@@ -69,15 +69,9 @@ class FavoriteMessageUseCase {
   /// [category] 카테고리로 필터링 (선택사항)
   ///
   /// Returns: 즐겨찾기 목록
-  Future<Result<List<AiFavoriteEntity>>> getFavorites({
-    String? petId,
-    String? category,
-  }) async {
+  Future<Result<List<AiFavoriteEntity>>> getFavorites({String? petId, String? category}) async {
     try {
-      final favorites = await _repository.getFavoriteMessages(
-        petId: petId,
-        category: category,
-      );
+      final favorites = await _repository.getFavoriteMessages(petId: petId, category: category);
       return Result.success('お気に入り一覧を取得しました', favorites);
     } catch (error) {
       return Result.failure('お気に入り一覧の取得に失敗しました: ${error.toString()}');

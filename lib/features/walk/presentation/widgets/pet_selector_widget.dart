@@ -3,31 +3,21 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 class PetSelectorWidget extends StatelessWidget {
-  final PetInfo? selectedPet;
-  final Function(PetInfo) onPetSelected;
+  final WalkPetInfo? selectedPet;
+  final Function(WalkPetInfo) onPetSelected;
 
-  const PetSelectorWidget({
-    super.key,
-    this.selectedPet,
-    required this.onPetSelected,
-  });
+  const PetSelectorWidget({super.key, this.selectedPet, required this.onPetSelected});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => _showPetSelector(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: AppSpacing.xs,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(
-            color: AppColors.pointBrown.withValues(alpha: 0.3),
-            width: 1,
-          ),
+          border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.3), width: 1),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -38,10 +28,7 @@ class PetSelectorWidget extends StatelessWidget {
               height: 32,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.pointBrown.withValues(alpha: 0.3),
-                  width: 1,
-                ),
+                border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.3), width: 1),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
@@ -51,11 +38,7 @@ class PetSelectorWidget extends StatelessWidget {
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       color: Colors.grey[300],
-                      child: Icon(
-                        Icons.pets,
-                        color: Colors.grey[600],
-                        size: 16,
-                      ),
+                      child: Icon(Icons.pets, color: Colors.grey[600], size: 16),
                     );
                   },
                 ),
@@ -72,11 +55,7 @@ class PetSelectorWidget extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.xs),
             // 드롭다운 아이콘
-            const Icon(
-              Icons.keyboard_arrow_down,
-              color: AppColors.pointGray,
-              size: 16,
-            ),
+            const Icon(Icons.keyboard_arrow_down, color: AppColors.pointGray, size: 16),
           ],
         ),
       ),
@@ -86,39 +65,34 @@ class PetSelectorWidget extends StatelessWidget {
   void _showPetSelector(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => _PetSelectorBottomSheet(
-        selectedPet: selectedPet,
-        onPetSelected: onPetSelected,
-      ),
+      builder: (context) =>
+          _PetSelectorBottomSheet(selectedPet: selectedPet, onPetSelected: onPetSelected),
     );
   }
 }
 
 class _PetSelectorBottomSheet extends StatelessWidget {
-  final PetInfo? selectedPet;
-  final Function(PetInfo) onPetSelected;
+  final WalkPetInfo? selectedPet;
+  final Function(WalkPetInfo) onPetSelected;
 
-  const _PetSelectorBottomSheet({
-    this.selectedPet,
-    required this.onPetSelected,
-  });
+  const _PetSelectorBottomSheet({this.selectedPet, required this.onPetSelected});
 
   @override
   Widget build(BuildContext context) {
     final pets = [
-      const PetInfo(
+      const WalkPetInfo(
         id: 'pet1',
         type: 'dog',
         name: 'Maxi',
         imageUrl: 'assets/images/dogs/shiba.png',
       ),
-      const PetInfo(
+      const WalkPetInfo(
         id: 'pet2',
         type: 'dog',
         name: 'Luna',
         imageUrl: 'assets/images/dogs/poodle.jpg',
       ),
-      const PetInfo(
+      const WalkPetInfo(
         id: 'pet3',
         type: 'dog',
         name: 'Buddy',
@@ -133,10 +107,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
         children: [
           Text(
             '반려동물 선택',
-            style: AppFonts.fredoka(
-              fontSize: AppFonts.lg,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
           ...pets.map((pet) => _buildPetOption(context, pet)),
@@ -145,7 +116,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildPetOption(BuildContext context, PetInfo pet) {
+  Widget _buildPetOption(BuildContext context, WalkPetInfo pet) {
     final isSelected = selectedPet?.id == pet.id;
 
     return GestureDetector(
@@ -157,9 +128,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: AppSpacing.sm),
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.pointBrown.withValues(alpha: 0.1)
-              : Colors.white,
+          color: isSelected ? AppColors.pointBrown.withValues(alpha: 0.1) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
             color: isSelected ? AppColors.pointBrown : Colors.grey[300]!,
@@ -187,11 +156,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       color: Colors.grey[300],
-                      child: Icon(
-                        Icons.pets,
-                        color: Colors.grey[600],
-                        size: 24,
-                      ),
+                      child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
                     );
                   },
                 ),
@@ -206,28 +171,16 @@ class _PetSelectorBottomSheet extends StatelessWidget {
                   Text(
                     pet.name,
                     style: AppFonts.bodyMedium.copyWith(
-                      color: isSelected
-                          ? AppColors.pointBrown
-                          : AppColors.pointDark,
+                      color: isSelected ? AppColors.pointBrown : AppColors.pointDark,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Text(
-                    '산책 기록 보기',
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointGray,
-                    ),
-                  ),
+                  Text('산책 기록 보기', style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
                 ],
               ),
             ),
             // 선택 표시
-            if (isSelected)
-              const Icon(
-                Icons.check_circle,
-                color: AppColors.pointBrown,
-                size: 24,
-              ),
+            if (isSelected) const Icon(Icons.check_circle, color: AppColors.pointBrown, size: 24),
           ],
         ),
       ),

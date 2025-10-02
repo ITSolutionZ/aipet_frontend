@@ -29,11 +29,7 @@ class ErrorService {
   /// [error] 처리할 에러 객체
   /// [severity] 에러 심각도
   /// [stackTrace] 스택 트레이스 (선택사항)
-  void handleErrorWithSeverity(
-    Object error,
-    dynamic severity, [
-    StackTrace? stackTrace,
-  ]) {
+  void handleErrorWithSeverity(Object error, dynamic severity, [StackTrace? stackTrace]) {
     ErrorSeverity errorSeverity;
 
     // severity 타입에 따른 변환

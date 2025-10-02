@@ -52,8 +52,7 @@ enum MockScenario {
 /// CentralizedMockManager.setScenarioOverride('pets', MockScenario.error);
 /// ```
 class CentralizedMockManager {
-  static final CentralizedMockManager _instance =
-      CentralizedMockManager._internal();
+  static final CentralizedMockManager _instance = CentralizedMockManager._internal();
   factory CentralizedMockManager() => _instance;
   CentralizedMockManager._internal();
 
@@ -95,18 +94,13 @@ class CentralizedMockManager {
     if (MockDataService.isEnabled) {
       // Pet Activities 데이터 통합
       _dataStore['mock_tricks'] = MockDataService.getMockTricks();
-      _dataStore['mock_video_bookmarks'] =
-          MockDataService.getMockVideoBookmarks();
-      _dataStore['mock_video_progress'] =
-          MockDataService.getMockVideoProgress();
+      _dataStore['mock_video_bookmarks'] = MockDataService.getMockVideoBookmarks();
+      _dataStore['mock_video_progress'] = MockDataService.getMockVideoProgress();
 
       // Pet Feeding 데이터 통합
-      _dataStore['mock_feeding_records'] =
-          MockDataService.getMockFeedingRecords();
-      _dataStore['mock_feeding_statistics'] =
-          MockDataService.getMockFeedingStatistics();
-      _dataStore['mock_pet_sizes'] =
-          MockDataService.getMockPetSizesAndFeedingAmounts();
+      _dataStore['mock_feeding_records'] = MockDataService.getMockFeedingRecords();
+      _dataStore['mock_feeding_statistics'] = MockDataService.getMockFeedingStatistics();
+      _dataStore['mock_pet_sizes'] = MockDataService.getMockPetSizesAndFeedingAmounts();
 
       // Pet 데이터 통합
       _dataStore['mock_pet_by_id'] = MockDataService.getMockPetById('pet-1');
@@ -147,9 +141,7 @@ class CentralizedMockManager {
         'type': 'walk',
         'duration': 3600,
         'distance': 2.5,
-        'date': DateTime.now()
-            .subtract(const Duration(hours: 2))
-            .toIso8601String(),
+        'date': DateTime.now().subtract(const Duration(hours: 2)).toIso8601String(),
       },
     ];
   }
@@ -161,18 +153,13 @@ class CentralizedMockManager {
         'id': 'msg_001',
         'type': 'user',
         'content': 'ポチが最近食事を拒否していて心配です',
-        'timestamp': DateTime.now()
-            .subtract(const Duration(minutes: 5))
-            .toIso8601String(),
+        'timestamp': DateTime.now().subtract(const Duration(minutes: 5)).toIso8601String(),
       },
       {
         'id': 'msg_002',
         'type': 'assistant',
-        'content':
-            'ポチの食事拒否について心配ですね。まず確認していただきたいことがあります：最近フードを変更しましたか？体調や元気さはいかがでしょうか？',
-        'timestamp': DateTime.now()
-            .subtract(const Duration(minutes: 4))
-            .toIso8601String(),
+        'content': 'ポチの食事拒否について心配ですね。まず確認していただきたいことがあります：最近フードを変更しましたか？体調や元気さはいかがでしょうか？',
+        'timestamp': DateTime.now().subtract(const Duration(minutes: 4)).toIso8601String(),
       },
     ];
   }
@@ -183,9 +170,7 @@ class CentralizedMockManager {
       {
         'id': 'walk_001',
         'petId': 'pet_001',
-        'startTime': DateTime.now()
-            .subtract(const Duration(hours: 1))
-            .toIso8601String(),
+        'startTime': DateTime.now().subtract(const Duration(hours: 1)).toIso8601String(),
         'endTime': DateTime.now().toIso8601String(),
         'distance': 1.8,
         'route': [
@@ -307,10 +292,7 @@ class CentralizedMockManager {
       case MockScenario.success:
         final dataList = _dataStore[key] as List?;
         if (dataList != null) {
-          return dataList
-              .cast<Map<String, dynamic>>()
-              .map((data) => fromJson(data))
-              .toList();
+          return dataList.cast<Map<String, dynamic>>().map((data) => fromJson(data)).toList();
         }
         break;
       case MockScenario.error:
@@ -335,10 +317,7 @@ class CentralizedMockManager {
       case MockScenario.delay:
         final dataList = _dataStore[key] as List?;
         if (dataList != null) {
-          return dataList
-              .cast<Map<String, dynamic>>()
-              .map((data) => fromJson(data))
-              .toList();
+          return dataList.cast<Map<String, dynamic>>().map((data) => fromJson(data)).toList();
         }
         break;
     }
@@ -371,29 +350,19 @@ class CentralizedMockManager {
 
     switch (scenario) {
       case MockScenario.success:
-        await Future.delayed(
-          Duration(milliseconds: 200 + _random.nextInt(300)),
-        );
+        await Future.delayed(Duration(milliseconds: 200 + _random.nextInt(300)));
         break;
       case MockScenario.delay:
-        await Future.delayed(
-          Duration(milliseconds: 1000 + _random.nextInt(2000)),
-        );
+        await Future.delayed(Duration(milliseconds: 1000 + _random.nextInt(2000)));
         break;
       case MockScenario.partialSuccess:
-        await Future.delayed(
-          Duration(milliseconds: 500 + _random.nextInt(500)),
-        );
+        await Future.delayed(Duration(milliseconds: 500 + _random.nextInt(500)));
         break;
       case MockScenario.error:
-        await Future.delayed(
-          Duration(milliseconds: 100 + _random.nextInt(200)),
-        );
+        await Future.delayed(Duration(milliseconds: 100 + _random.nextInt(200)));
         break;
       case MockScenario.empty:
-        await Future.delayed(
-          Duration(milliseconds: 100 + _random.nextInt(100)),
-        );
+        await Future.delayed(Duration(milliseconds: 100 + _random.nextInt(100)));
         break;
       case MockScenario.loading:
         // 로딩 시나리오는 호출하는 곳에서 처리
@@ -429,10 +398,7 @@ class CentralizedMockManager {
   static Map<String, dynamic> getStatistics() {
     final instance = CentralizedMockManager();
     return {
-      'totalCalls': instance._callCounts.values.fold<int>(
-        0,
-        (sum, count) => sum + count,
-      ),
+      'totalCalls': instance._callCounts.values.fold<int>(0, (sum, count) => sum + count),
       'callsByKey': Map.from(instance._callCounts),
       'activeOverrides': Map.from(instance._scenarioOverrides),
       'dataKeys': instance._dataStore.keys.toList(),
@@ -453,6 +419,5 @@ class CentralizedMockManager {
   }
 
   /// Mock 상태 확인
-  static bool get isInitialized =>
-      CentralizedMockManager()._dataStore.isNotEmpty;
+  static bool get isInitialized => CentralizedMockManager()._dataStore.isNotEmpty;
 }

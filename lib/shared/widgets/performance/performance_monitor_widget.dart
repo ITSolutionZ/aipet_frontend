@@ -18,12 +18,10 @@ class PerformanceMonitorWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<PerformanceMonitorWidget> createState() =>
-      _PerformanceMonitorWidgetState();
+  ConsumerState<PerformanceMonitorWidget> createState() => _PerformanceMonitorWidgetState();
 }
 
-class _PerformanceMonitorWidgetState
-    extends ConsumerState<PerformanceMonitorWidget> {
+class _PerformanceMonitorWidgetState extends ConsumerState<PerformanceMonitorWidget> {
   PerformanceMonitorService? _monitorService;
   PerformanceMetric? _currentMetric;
   final List<PerformanceIssue> _recentIssues = [];
@@ -122,14 +120,8 @@ class _PerformanceMonitorWidgetState
           _buildHeader(),
           const SizedBox(height: AppSpacing.sm),
           _buildMetrics(_currentMetric),
-          if (widget.showDetails) ...[
-            const SizedBox(height: AppSpacing.sm),
-            _buildDetails(),
-          ],
-          if (_recentIssues.isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.sm),
-            _buildIssues(),
-          ],
+          if (widget.showDetails) ...[const SizedBox(height: AppSpacing.sm), _buildDetails()],
+          if (_recentIssues.isNotEmpty) ...[const SizedBox(height: AppSpacing.sm), _buildIssues()],
         ],
       ),
     );
@@ -150,20 +142,14 @@ class _PerformanceMonitorWidgetState
         const Spacer(),
         if (_currentMetric != null)
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.xs,
-              vertical: 2,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: 2),
             decoration: BoxDecoration(
               color: _getPerformanceColor(),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               _getPerformanceStatus(),
-              style: AppFonts.bodySmall.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppFonts.bodySmall.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
       ],
@@ -207,12 +193,7 @@ class _PerformanceMonitorWidgetState
     );
   }
 
-  Widget _buildMetricCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
@@ -234,10 +215,7 @@ class _PerformanceMonitorWidgetState
           const SizedBox(height: AppSpacing.xs),
           Text(
             value,
-            style: AppFonts.bodyMedium.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: color, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -292,17 +270,11 @@ class _PerformanceMonitorWidgetState
       decoration: BoxDecoration(
         color: _getIssueColor(issue.severity).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
-        border: Border.all(
-          color: _getIssueColor(issue.severity).withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: _getIssueColor(issue.severity).withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          Icon(
-            _getIssueIcon(issue.type),
-            color: _getIssueColor(issue.severity),
-            size: 16,
-          ),
+          Icon(_getIssueIcon(issue.type), color: _getIssueColor(issue.severity), size: 16),
           const SizedBox(width: AppSpacing.xs),
           Expanded(
             child: Text(
@@ -333,8 +305,7 @@ class _PerformanceMonitorWidgetState
 
     if (_currentMetric!.memoryUsage > 100 || _currentMetric!.frameRate < 30) {
       return Colors.red;
-    } else if (_currentMetric!.memoryUsage > 80 ||
-        _currentMetric!.frameRate < 45) {
+    } else if (_currentMetric!.memoryUsage > 80 || _currentMetric!.frameRate < 45) {
       return AppColors.pointBrown;
     } else {
       return AppColors.pointGreen;
@@ -346,8 +317,7 @@ class _PerformanceMonitorWidgetState
 
     if (_currentMetric!.memoryUsage > 100 || _currentMetric!.frameRate < 30) {
       return '위험';
-    } else if (_currentMetric!.memoryUsage > 80 ||
-        _currentMetric!.frameRate < 45) {
+    } else if (_currentMetric!.memoryUsage > 80 || _currentMetric!.frameRate < 45) {
       return '주의';
     } else {
       return '정상';

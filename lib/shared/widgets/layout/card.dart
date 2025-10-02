@@ -114,11 +114,7 @@ class GlassCard extends StatelessWidget {
 
     return Material(
       type: MaterialType.transparency,
-      child: InkWell(
-        onTap: onTap,
-        splashFactory: InkRipple.splashFactory,
-        child: clipped,
-      ),
+      child: InkWell(onTap: onTap, splashFactory: InkRipple.splashFactory, child: clipped),
     );
   }
 }
@@ -211,9 +207,7 @@ class WhiteCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(borderRadius),
-        border: borderWidth > 0
-            ? Border.all(color: lineColor, width: borderWidth)
-            : null,
+        border: borderWidth > 0 ? Border.all(color: lineColor, width: borderWidth) : null,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),

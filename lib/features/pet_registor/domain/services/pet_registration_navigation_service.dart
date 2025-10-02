@@ -36,9 +36,7 @@ class PetRegistrationNavigationService {
     }
 
     // 3. 이름이나 성별이 입력되지 않았으면 이름 입력으로
-    if (state.petName == null ||
-        state.petName!.trim().isEmpty ||
-        state.petGender == null) {
+    if (state.petName == null || state.petName!.trim().isEmpty || state.petGender == null) {
       return RouteConstants.petNameInputRoute;
     }
 

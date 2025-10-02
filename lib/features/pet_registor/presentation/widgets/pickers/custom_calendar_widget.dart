@@ -62,9 +62,7 @@ class CustomCalendarWidget extends StatelessWidget {
             if (index < startOffset || dayIndex > daysInMonth) {
               if (index < startOffset) {
                 final prevMonth = selectedMonth == 1 ? 12 : selectedMonth - 1;
-                final prevYear = selectedMonth == 1
-                    ? selectedYear - 1
-                    : selectedYear;
+                final prevYear = selectedMonth == 1 ? selectedYear - 1 : selectedYear;
                 final prevMonthDays = _getDaysInMonth(prevYear, prevMonth);
                 final prevDay = prevMonthDays - (startOffset - index - 1);
 
@@ -72,9 +70,7 @@ class CustomCalendarWidget extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     '$prevDay',
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: Colors.grey.withValues(alpha: 0.3),
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(color: Colors.grey.withValues(alpha: 0.3)),
                   ),
                 );
               } else {
@@ -83,9 +79,7 @@ class CustomCalendarWidget extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     '$nextDay',
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: Colors.grey.withValues(alpha: 0.3),
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(color: Colors.grey.withValues(alpha: 0.3)),
                   ),
                 );
               }
@@ -110,19 +104,13 @@ class CustomCalendarWidget extends StatelessWidget {
                       ? AppColors.pointPink.withValues(alpha: 0.2)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(6),
-                  border: isSelected
-                      ? Border.all(color: AppColors.pointBrown, width: 2)
-                      : null,
+                  border: isSelected ? Border.all(color: AppColors.pointBrown, width: 2) : null,
                 ),
                 child: Text(
                   '$dayIndex',
                   style: AppFonts.bodySmall.copyWith(
-                    color: isSelected
-                        ? AppColors.pointBrown
-                        : AppColors.pointDark,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                    color: isSelected ? AppColors.pointBrown : AppColors.pointDark,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ),

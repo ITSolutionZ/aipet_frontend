@@ -63,9 +63,7 @@ class AuthController extends StateNotifier<AuthFormState> {
 
   bool get isFormValid {
     final state = currentState;
-    return state.email.isNotEmpty &&
-        state.username.isNotEmpty &&
-        state.error == null;
+    return state.email.isNotEmpty && state.username.isNotEmpty && state.error == null;
   }
 
   bool get canSubmit => isFormValid && !currentState.isLoading;
@@ -84,15 +82,11 @@ class AuthController extends StateNotifier<AuthFormState> {
   }
 
   void togglePasswordVisibility() {
-    _ref
-        .read(authFormStateNotifierProvider.notifier)
-        .togglePasswordVisibility();
+    _ref.read(authFormStateNotifierProvider.notifier).togglePasswordVisibility();
   }
 
   void toggleConfirmPasswordVisibility() {
-    _ref
-        .read(authFormStateNotifierProvider.notifier)
-        .toggleConfirmPasswordVisibility();
+    _ref.read(authFormStateNotifierProvider.notifier).toggleConfirmPasswordVisibility();
   }
 
   void toggleRememberMe() {
@@ -125,10 +119,7 @@ class AuthController extends StateNotifier<AuthFormState> {
       }
 
       // UseCase를 통한 로그인 실행
-      final result = await _loginUseCase.call(
-        email: currentState.email,
-        password: password,
-      );
+      final result = await _loginUseCase.call(email: currentState.email, password: password);
 
       if (result.isSuccess) {
         return Result.success('ログインが完了しました', '');
@@ -223,9 +214,7 @@ class AuthController extends StateNotifier<AuthFormState> {
   /// 저장된 로그인 정보 불러오기
   Future<void> loadSavedCredentials() async {
     try {
-      await _ref
-          .read(authFormStateNotifierProvider.notifier)
-          .loadSavedCredentials();
+      await _ref.read(authFormStateNotifierProvider.notifier).loadSavedCredentials();
     } catch (error) {
       handleError(error, StackTrace.current);
     }
@@ -234,9 +223,7 @@ class AuthController extends StateNotifier<AuthFormState> {
   /// 저장된 로그인 정보 삭제
   Future<bool> clearSavedCredentials() async {
     try {
-      await _ref
-          .read(authFormStateNotifierProvider.notifier)
-          .clearSavedCredentials();
+      await _ref.read(authFormStateNotifierProvider.notifier).clearSavedCredentials();
       return true;
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -318,9 +305,7 @@ class AuthController extends StateNotifier<AuthFormState> {
       if (result.isSuccess) {
         return Result.success('사용자 정보를 가져왔습니다', result.dataOrNull);
       } else {
-        return Result.failure(
-          result.error?.toString() ?? '사용자 정보를 가져오는데 실패했습니다',
-        );
+        return Result.failure(result.error?.toString() ?? '사용자 정보를 가져오는데 실패했습니다');
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -350,9 +335,7 @@ class AuthController extends StateNotifier<AuthFormState> {
       if (result.isSuccess) {
         return Result.success('이메일 인증 상태를 확인했습니다', result.dataOrNull ?? false);
       } else {
-        return Result.failure(
-          result.error?.toString() ?? '이메일 인증 상태 확인에 실패했습니다',
-        );
+        return Result.failure(result.error?.toString() ?? '이메일 인증 상태 확인에 실패했습니다');
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);

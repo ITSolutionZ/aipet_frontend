@@ -65,9 +65,7 @@ class GroomingReservationController {
               longitude: data['longitude'] as double? ?? 139.6503,
               phone: data['phone'] as String,
               email: data['email'] as String,
-              type: data['type'] == 'grooming'
-                  ? FacilityType.grooming
-                  : FacilityType.hospital,
+              type: data['type'] == 'grooming' ? FacilityType.grooming : FacilityType.hospital,
               rating: (data['rating'] as num).toDouble(),
               reviewCount: data['reviewCount'] as int,
               imagePath: data['imagePath'] as String,
@@ -131,10 +129,7 @@ class GroomingReservationController {
       currentState.currentFilter,
     );
 
-    _updateState(
-      facilities: updatedFacilities,
-      filteredFacilities: filteredFacilities,
-    );
+    _updateState(facilities: updatedFacilities, filteredFacilities: filteredFacilities);
   }
 
   /// 필터 적용 로직
@@ -150,12 +145,8 @@ class GroomingReservationController {
       filtered = filtered
           .where(
             (facility) =>
-                facility.name.toLowerCase().contains(
-                  searchQuery.toLowerCase(),
-                ) ||
-                (facility.description?.toLowerCase() ?? '').contains(
-                  searchQuery.toLowerCase(),
-                ),
+                facility.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
+                (facility.description?.toLowerCase() ?? '').contains(searchQuery.toLowerCase()),
           )
           .toList();
     }
@@ -195,28 +186,24 @@ class GroomingReservationController {
       error: error,
     );
 
-    ref
-        .read(groomingReservationControllerProvider.notifier)
-        .updateState(newState);
+    ref.read(groomingReservationControllerProvider.notifier).updateState(newState);
   }
 
   /// 에러 메시지 표시
   void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointPink),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message), backgroundColor: AppColors.pointPink));
   }
 }
 
 /// 그루밍 예약 컨트롤러 프로바이더
 final groomingReservationControllerProvider =
-    StateNotifierProvider<
-      GroomingReservationStateNotifier,
-      GroomingReservationState
-    >((ref) => GroomingReservationStateNotifier());
+    StateNotifierProvider<GroomingReservationStateNotifier, GroomingReservationState>(
+      (ref) => GroomingReservationStateNotifier(),
+    );
 
-class GroomingReservationStateNotifier
-    extends StateNotifier<GroomingReservationState> {
+class GroomingReservationStateNotifier extends StateNotifier<GroomingReservationState> {
   GroomingReservationStateNotifier() : super(const GroomingReservationState());
 
   void updateState(GroomingReservationState newState) {

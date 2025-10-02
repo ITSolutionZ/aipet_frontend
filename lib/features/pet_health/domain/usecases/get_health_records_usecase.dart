@@ -10,9 +10,7 @@ class GetHealthRecordsUseCase {
   GetHealthRecordsUseCase(this.repository);
 
   /// 펫의 체중 기록 조회
-  Future<Result<List<WeightRecordEntity>>> getWeightRecords(
-    String petId,
-  ) async {
+  Future<Result<List<WeightRecordEntity>>> getWeightRecords(String petId) async {
     try {
       final result = await repository.getWeightRecords(petId);
       return Result.success('体重記録を取得しました', result);
@@ -22,9 +20,7 @@ class GetHealthRecordsUseCase {
   }
 
   /// 펫의 백신 기록 조회
-  Future<Result<List<VaccineRecordEntity>>> getVaccineRecords(
-    String petId,
-  ) async {
+  Future<Result<List<VaccineRecordEntity>>> getVaccineRecords(String petId) async {
     try {
       final result = await repository.getVaccineRecords(petId);
       return Result.success('ワクチン記録を取得しました', result);
@@ -34,9 +30,7 @@ class GetHealthRecordsUseCase {
   }
 
   /// 최신 체중 기록 조회
-  Future<Result<WeightRecordEntity?>> getLatestWeightRecord(
-    String petId,
-  ) async {
+  Future<Result<WeightRecordEntity?>> getLatestWeightRecord(String petId) async {
     try {
       final result = await repository.getLatestWeight(petId);
       return Result.success('最新の体重記録を取得しました', result);
@@ -46,9 +40,7 @@ class GetHealthRecordsUseCase {
   }
 
   /// 다음 백신 접종 예정일 조회
-  Future<Result<List<VaccineRecordEntity>>> getUpcomingVaccines(
-    String petId,
-  ) async {
+  Future<Result<List<VaccineRecordEntity>>> getUpcomingVaccines(String petId) async {
     try {
       final result = await repository.getUpcomingVaccines(petId);
       return Result.success('次のワクチン接種予定を取得しました', result);
@@ -69,15 +61,10 @@ class GetHealthRecordsUseCase {
   }
 
   /// 백신 만료 예정 목록 조회
-  Future<Result<List<VaccineRecordEntity>>> getExpiringVaccines(
-    String petId,
-    int daysAhead,
-  ) async {
+  Future<Result<List<VaccineRecordEntity>>> getExpiringVaccines(String petId, int daysAhead) async {
     try {
       final allVaccines = await repository.getVaccineRecords(petId);
-      final expiringVaccines = allVaccines
-          .where((vaccine) => vaccine.isExpiringSoon)
-          .toList();
+      final expiringVaccines = allVaccines.where((vaccine) => vaccine.isExpiringSoon).toList();
       return Result.success('期限切れ予定のワクチンを取得しました', expiringVaccines);
     } catch (error) {
       return Result.failure('期限切れ予定のワクチンの取得に失敗しました: ${error.toString()}');
@@ -85,10 +72,7 @@ class GetHealthRecordsUseCase {
   }
 
   /// 건강 기록 검색
-  Future<Result<List<Map<String, dynamic>>>> searchHealthRecords(
-    String petId,
-    String query,
-  ) async {
+  Future<Result<List<Map<String, dynamic>>>> searchHealthRecords(String petId, String query) async {
     try {
       final weightRecords = await repository.getWeightRecords(petId);
       final vaccineRecords = await repository.getVaccineRecords(petId);
@@ -98,11 +82,7 @@ class GetHealthRecordsUseCase {
       // 체중 기록에서 검색
       for (final record in weightRecords) {
         if (record.notes?.toLowerCase().contains(query.toLowerCase()) == true) {
-          results.add({
-            'type': 'weight',
-            'record': record,
-            'matchedField': 'notes',
-          });
+          results.add({'type': 'weight', 'record': record, 'matchedField': 'notes'});
         }
       }
 
@@ -111,11 +91,7 @@ class GetHealthRecordsUseCase {
         if (record.name.toLowerCase().contains(query.toLowerCase()) ||
             record.doctor.toLowerCase().contains(query.toLowerCase()) ||
             record.notes?.toLowerCase().contains(query.toLowerCase()) == true) {
-          results.add({
-            'type': 'vaccine',
-            'record': record,
-            'matchedField': 'name',
-          });
+          results.add({'type': 'vaccine', 'record': record, 'matchedField': 'name'});
         }
       }
 
@@ -126,9 +102,7 @@ class GetHealthRecordsUseCase {
   }
 
   /// 체중 통계 계산
-  Map<String, dynamic> _calculateWeightStatistics(
-    List<WeightRecordEntity> records,
-  ) {
+  Map<String, dynamic> _calculateWeightStatistics(List<WeightRecordEntity> records) {
     if (records.isEmpty) {
       return {
         'currentWeight': 0.0,

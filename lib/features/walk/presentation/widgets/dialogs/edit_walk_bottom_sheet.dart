@@ -95,55 +95,12 @@ class EditWalkBottomSheet extends ConsumerWidget {
                         managerId;
                   },
                 ),
-                const SizedBox(height: AppSpacing.xl),
-                Text(
-                  '散歩の詳細',
-                  style: AppFonts.point(
-                    fontSize: AppFonts.lg,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[700],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                WalkDetailInfoCard(walkRecord: walkRecord),
-                const SizedBox(height: AppSpacing.lg),
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: AppColors.pointBlue.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppRadius.medium),
-                    border: Border.all(
-                      color: AppColors.pointBlue.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.check_circle,
-                        size: 16,
-                        color: AppColors.pointBlue,
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        '記録日時: ${_formatDate(walkRecord.createdAt)}',
-                        style: AppFonts.base(
-                          fontSize: AppFonts.sm,
-                          color: AppColors.pointBlue,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
   }
 
   void _updateWalk(

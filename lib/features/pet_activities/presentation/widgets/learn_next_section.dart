@@ -40,11 +40,7 @@ class LearnNextSection extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: AppSpacing.xs),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    size: 12,
-                    color: AppColors.pointBlue,
-                  ),
+                  const Icon(Icons.arrow_forward_ios, size: 12, color: AppColors.pointBlue),
                 ],
               ),
             ),

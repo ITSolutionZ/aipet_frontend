@@ -79,9 +79,7 @@ class AiCategoriesMockData {
   /// 카테고리 이름으로 찾기
   static AiCategoryEntity? findByName(String name) {
     try {
-      return getDefaultCategories().firstWhere(
-        (category) => category.name == name,
-      );
+      return getDefaultCategories().firstWhere((category) => category.name == name);
     } catch (e) {
       return null;
     }
@@ -89,9 +87,7 @@ class AiCategoriesMockData {
 
   /// 특정 색상의 카테고리들 조회
   static List<AiCategoryEntity> getCategoriesByColor(Color color) {
-    return getDefaultCategories()
-        .where((category) => category.color == color)
-        .toList();
+    return getDefaultCategories().where((category) => category.color == color).toList();
   }
 
   /// 카테고리 ID 목록 조회

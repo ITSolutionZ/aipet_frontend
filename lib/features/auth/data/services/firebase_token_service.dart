@@ -64,9 +64,7 @@ class FirebaseTokenService {
         await _cacheIdToken(idToken);
 
         if (kDebugMode) {
-          debugPrint(
-            'Firebase ID Token 가져오기 성공${shouldForceRefresh ? ' (갱신됨)' : ''}',
-          );
+          debugPrint('Firebase ID Token 가져오기 성공${shouldForceRefresh ? ' (갱신됨)' : ''}');
         }
 
         return idToken;
@@ -106,9 +104,7 @@ class FirebaseTokenService {
       if (idToken == null || idToken.isEmpty) return false;
 
       // 2. JWT 구조 검증 수행
-      final structureValidation = JwtValidationService.validateFirebaseIdToken(
-        idToken,
-      );
+      final structureValidation = JwtValidationService.validateFirebaseIdToken(idToken);
       if (!structureValidation.isSuccess) {
         if (kDebugMode) {
           debugPrint(
@@ -158,9 +154,7 @@ class FirebaseTokenService {
   /// 토큰을 갱신해야 하는지 확인
   static Future<bool> _shouldRefreshToken() async {
     try {
-      final cachedExpires = await SecureStorageService.getString(
-        _firebaseIdTokenExpiresKey,
-      );
+      final cachedExpires = await SecureStorageService.getString(_firebaseIdTokenExpiresKey);
       if (cachedExpires == null) return true;
 
       final expirationTime = DateTime.parse(cachedExpires);
@@ -204,12 +198,8 @@ class FirebaseTokenService {
   /// 캐시된 ID Token 가져오기
   static Future<String?> _getCachedIdToken() async {
     try {
-      final cachedToken = await SecureStorageService.getString(
-        _firebaseIdTokenKey,
-      );
-      final cachedExpires = await SecureStorageService.getString(
-        _firebaseIdTokenExpiresKey,
-      );
+      final cachedToken = await SecureStorageService.getString(_firebaseIdTokenKey);
+      final cachedExpires = await SecureStorageService.getString(_firebaseIdTokenExpiresKey);
 
       if (cachedToken == null || cachedExpires == null) {
         return null;

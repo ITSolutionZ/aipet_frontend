@@ -7,8 +7,7 @@ export 'widgets/accessibility/accessibility_widgets.dart';
 export 'widgets/animation/animation_widgets.dart';
 export 'widgets/buttons/action_button.dart' hide ActionButton;
 export 'widgets/buttons/common_button.dart' show ButtonType, IconPosition;
-export 'widgets/cards/common_summary_card.dart'
-    hide CommonSummaryCard, StatCard, ActionCard;
+export 'widgets/cards/common_summary_card.dart' hide CommonSummaryCard, StatCard, ActionCard;
 export 'widgets/cards/selection_card.dart';
 export 'widgets/common/common_form_patterns.dart';
 export 'widgets/common/common_screen_patterns.dart';

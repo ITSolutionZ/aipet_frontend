@@ -8,57 +8,77 @@ class WalkMockService extends BaseMockService {
 
   /// Mock 산책 기록 목록
   static List<Map<String, dynamic>> getMockWalkRecords() {
+    final now = DateTime.now();
     return [
       {
-        'id': MockHelper.generateId(),
+        'id': 'walk_1',
         'petId': '1',
-        'petName': 'ぺっと１',
-        'startTime': DateTime.now().subtract(const Duration(hours: 2)),
-        'endTime': DateTime.now().subtract(
-          const Duration(hours: 1, minutes: 30),
-        ),
+        'petName': 'マックス',
+        'startTime': now.subtract(const Duration(hours: 2)),
+        'endTime': now.subtract(const Duration(hours: 1, minutes: 30)),
         'duration': const Duration(minutes: 30),
         'distance': 2.1, // km
-        'steps': 2800,
-        'calories': 150,
-        'route': '한강공원',
-        'weather': '맑음',
+        'route': [], // WalkLocation 리스트로 변경
         'notes': '활발하게 뛰어다님',
-        'photos': ['walk1.jpg', 'walk2.jpg'],
+        'status': 'completed',
+        'createdAt': now.subtract(const Duration(hours: 2)),
+        'updatedAt': now.subtract(const Duration(hours: 1, minutes: 30)),
       },
       {
-        'id': MockHelper.generateId(),
+        'id': 'walk_2',
         'petId': '1',
-        'startTime': DateTime.now().subtract(
-          const Duration(days: 1, hours: 10),
-        ),
-        'endTime': DateTime.now().subtract(
-          const Duration(days: 1, hours: 9, minutes: 45),
-        ),
+        'petName': 'マックス',
+        'startTime': now.subtract(const Duration(days: 1, hours: 10)),
+        'endTime': now.subtract(const Duration(days: 1, hours: 9, minutes: 45)),
         'duration': const Duration(minutes: 15),
         'distance': 0.8,
-        'steps': 1200,
-        'calories': 60,
-        'route': '아파트 단지',
-        'weather': '흐림',
+        'route': [],
         'notes': '짧은 산책',
-        'photos': [],
+        'status': 'completed',
+        'createdAt': now.subtract(const Duration(days: 1, hours: 10)),
+        'updatedAt': now.subtract(const Duration(days: 1, hours: 9, minutes: 45)),
       },
       {
-        'id': MockHelper.generateId(),
+        'id': 'walk_3',
         'petId': '2',
-        'startTime': DateTime.now().subtract(const Duration(hours: 4)),
-        'endTime': DateTime.now().subtract(
-          const Duration(hours: 3, minutes: 45),
-        ),
+        'petName': 'ルナ',
+        'startTime': now.subtract(const Duration(hours: 4)),
+        'endTime': now.subtract(const Duration(hours: 3, minutes: 45)),
         'duration': const Duration(minutes: 15),
         'distance': 0.5,
-        'steps': 800,
-        'calories': 40,
-        'route': '근처 공원',
-        'weather': '맑음',
+        'route': [],
         'notes': '차분한 산책',
-        'photos': ['luna_walk1.jpg'],
+        'status': 'completed',
+        'createdAt': now.subtract(const Duration(hours: 4)),
+        'updatedAt': now.subtract(const Duration(hours: 3, minutes: 45)),
+      },
+      {
+        'id': 'walk_4',
+        'petId': '1',
+        'petName': 'マックス',
+        'startTime': now.subtract(const Duration(days: 2, hours: 8)),
+        'endTime': now.subtract(const Duration(days: 2, hours: 7, minutes: 20)),
+        'duration': const Duration(minutes: 40),
+        'distance': 3.2,
+        'route': [],
+        'notes': '공원에서 즐거운 산책',
+        'status': 'completed',
+        'createdAt': now.subtract(const Duration(days: 2, hours: 8)),
+        'updatedAt': now.subtract(const Duration(days: 2, hours: 7, minutes: 20)),
+      },
+      {
+        'id': 'walk_5',
+        'petId': '2',
+        'petName': 'ルナ',
+        'startTime': now.subtract(const Duration(days: 3, hours: 6)),
+        'endTime': now.subtract(const Duration(days: 3, hours: 5, minutes: 30)),
+        'duration': const Duration(minutes: 30),
+        'distance': 1.8,
+        'route': [],
+        'notes': '느긋한 산책',
+        'status': 'completed',
+        'createdAt': now.subtract(const Duration(days: 3, hours: 6)),
+        'updatedAt': now.subtract(const Duration(days: 3, hours: 5, minutes: 30)),
       },
     ];
   }
@@ -120,27 +140,19 @@ class WalkMockService extends BaseMockService {
         ),
       ),
       'averageDistance': weekRecords.isNotEmpty
-          ? (weekRecords.fold<double>(
-                      0.0,
-                      (sum, record) => sum + (record['distance'] as double),
-                    ) /
+          ? (weekRecords.fold<double>(0.0, (sum, record) => sum + (record['distance'] as double)) /
                     weekRecords.length)
                 .toStringAsFixed(1)
           : '0.0',
       'dailyGoal': 2.0, // km
       'goalAchieved':
-          weekRecords.fold<double>(
-            0.0,
-            (sum, record) => sum + (record['distance'] as double),
-          ) >=
+          weekRecords.fold<double>(0.0, (sum, record) => sum + (record['distance'] as double)) >=
           14.0, // 주간 목표 14km
     };
   }
 
   /// 산책 루트 추천
-  static List<Map<String, dynamic>> getMockWalkRouteRecommendations({
-    String? petId,
-  }) {
+  static List<Map<String, dynamic>> getMockWalkRouteRecommendations({String? petId}) {
     return [
       {
         'id': '1',
@@ -179,9 +191,7 @@ class WalkMockService extends BaseMockService {
 
   static bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    return date.year == now.year && date.month == now.month && date.day == now.day;
   }
 
   static bool _isThisWeek(DateTime date) {

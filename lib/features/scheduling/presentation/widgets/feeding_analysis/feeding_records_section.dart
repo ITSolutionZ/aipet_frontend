@@ -9,8 +9,7 @@ class FeedingRecordsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final recentRecords =
-        analysisData['recentRecords'] as List<Map<String, dynamic>>;
+    final recentRecords = analysisData['recentRecords'] as List<Map<String, dynamic>>;
 
     return Container(
       width: double.infinity,
@@ -97,10 +96,7 @@ class FeedingRecordsSection extends StatelessWidget {
         return AlertDialog(
           title: Text(
             '食事記録追加',
-            style: AppFonts.fredoka(
-              fontSize: AppFonts.lg,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.bold),
           ),
           content: StatefulBuilder(
             builder: (context, setState) {
@@ -111,9 +107,7 @@ class FeedingRecordsSection extends StatelessWidget {
                   ListTile(
                     title: Text(
                       '날짜',
-                      style: AppFonts.bodyMedium.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.w600),
                     ),
                     subtitle: Text(
                       '${selectedDate.year}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.day.toString().padLeft(2, '0')}',
@@ -125,9 +119,7 @@ class FeedingRecordsSection extends StatelessWidget {
                         final date = await showDatePicker(
                           context: context,
                           initialDate: selectedDate,
-                          firstDate: DateTime.now().subtract(
-                            const Duration(days: 365),
-                          ),
+                          firstDate: DateTime.now().subtract(const Duration(days: 365)),
                           lastDate: DateTime.now(),
                         );
                         if (date != null) {
@@ -224,11 +216,7 @@ class FeedingRecordItem extends StatelessWidget {
               color: AppColors.pointBrown.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Icon(
-              Icons.restaurant,
-              color: AppColors.pointBrown,
-              size: 20,
-            ),
+            child: const Icon(Icons.restaurant, color: AppColors.pointBrown, size: 20),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -242,12 +230,7 @@ class FeedingRecordItem extends StatelessWidget {
                     color: AppColors.pointDark,
                   ),
                 ),
-                Text(
-                  date,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointGray,
-                  ),
-                ),
+                Text(date, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
               ],
             ),
           ),

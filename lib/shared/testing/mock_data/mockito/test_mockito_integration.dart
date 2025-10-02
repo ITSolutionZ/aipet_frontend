@@ -58,18 +58,10 @@ class MockitoIntegrationTester {
   static void _simulateProviderUsage() {
     final shouldUseMock = MockConfig.shouldUseMock;
 
-    debugPrint(
-      '   📦 AI Repository: ${shouldUseMock ? "MockitoImpl" : "RealImpl"}',
-    );
-    debugPrint(
-      '   🔐 Auth Repository: ${shouldUseMock ? "MockitoImpl" : "RealImpl"}',
-    );
-    debugPrint(
-      '   🏠 Home Repository: ${shouldUseMock ? "MockitoImpl" : "RealImpl"}',
-    );
-    debugPrint(
-      '   🐕 Pet Repository: ${shouldUseMock ? "MockitoImpl" : "RealImpl"}',
-    );
+    debugPrint('   📦 AI Repository: ${shouldUseMock ? "MockitoImpl" : "RealImpl"}');
+    debugPrint('   🔐 Auth Repository: ${shouldUseMock ? "MockitoImpl" : "RealImpl"}');
+    debugPrint('   🏠 Home Repository: ${shouldUseMock ? "MockitoImpl" : "RealImpl"}');
+    debugPrint('   🐕 Pet Repository: ${shouldUseMock ? "MockitoImpl" : "RealImpl"}');
   }
 
   /// 전체 통합 테스트 실행
@@ -78,8 +70,6 @@ class MockitoIntegrationTester {
     testEnvironmentSwitching();
     testProviderSwitching();
     debugPrint('\n🎉 All Mockito integration tests completed!');
-    debugPrint(
-      '🎯 Ready for production deployment: rm -rf lib/shared/testing/mock_data/mockito/',
-    );
+    debugPrint('🎯 Ready for production deployment: rm -rf lib/shared/testing/mock_data/mockito/');
   }
 }

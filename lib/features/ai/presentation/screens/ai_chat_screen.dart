@@ -13,8 +13,7 @@ class AiChatScreen extends ConsumerStatefulWidget {
   ConsumerState<AiChatScreen> createState() => _AiChatScreenState();
 }
 
-class _AiChatScreenState extends ConsumerState<AiChatScreen>
-    with WidgetsBindingObserver {
+class _AiChatScreenState extends ConsumerState<AiChatScreen> with WidgetsBindingObserver {
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
 
@@ -95,27 +94,19 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
     final chatState = ref.read(aiChatNotifierProvider);
     if (chatState.messages.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('保存する会話がありません')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('保存する会話がありません')));
       }
       return;
     }
 
     try {
-      await ref
-          .read(aiChatNotifierProvider.notifier)
-          .saveCurrentChatToHistory(isManualSave: true);
+      await ref.read(aiChatNotifierProvider.notifier).saveCurrentChatToHistory(isManualSave: true);
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('会話を保存しました')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('会話を保存しました')));
       }
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('保存に失敗しました: $error')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('保存に失敗しました: $error')));
       }
     }
   }
@@ -152,8 +143,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
 
     // 구체적인 질문 요청 버블 (카테고리 선택 완료 후, 실제 질문 전 단계)
     if (chatState.hasCategorySelected &&
-        chatState.messages.length >=
-            4 && // 펫선택(사용자) + AI응답 + 카테고리선택(사용자) + AI응답 = 4개
+        chatState.messages.length >= 4 && // 펫선택(사용자) + AI응답 + 카테고리선택(사용자) + AI응답 = 4개
         !_hasUserQuestionAfterCategorySelection(chatState)) {
       count += 1; // 구체적인 질문 요청 메시지
     }
@@ -171,12 +161,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
     return count;
   }
 
-  Widget _buildChatItem(
-    BuildContext context,
-    WidgetRef ref,
-    AiChatState chatState,
-    int index,
-  ) {
+  Widget _buildChatItem(BuildContext context, WidgetRef ref, AiChatState chatState, int index) {
     int currentIndex = 0;
 
     // 1. 펫 선택 버블 (펫이 선택되지 않은 경우 첫 번째로 표시)
@@ -193,8 +178,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
     }
 
     // 2. 실제 메시지들 (날짜 구분선 포함)
-    if (index >= currentIndex &&
-        index < currentIndex + chatState.messages.length) {
+    if (index >= currentIndex && index < currentIndex + chatState.messages.length) {
       final messageIndex = index - currentIndex;
       final message = chatState.messages[messageIndex];
 
@@ -224,9 +208,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
             message: message,
             isFavorite: chatState.favoriteMessageIds.contains(message.id),
             onFavoriteToggle: (msg) async {
-              await ref
-                  .read(aiChatNotifierProvider.notifier)
-                  .toggleFavorite(msg);
+              await ref.read(aiChatNotifierProvider.notifier).toggleFavorite(msg);
             },
           ),
         ],
@@ -251,8 +233,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
 
     // 4. 구체적인 질문 요청 버블 (카테고리 선택 완료 후, 실제 질문 전 단계)
     if (chatState.hasCategorySelected &&
-        chatState.messages.length >=
-            4 && // 펫선택(사용자) + AI응답 + 카테고리선택(사용자) + AI응답 = 4개
+        chatState.messages.length >= 4 && // 펫선택(사용자) + AI응답 + 카테고리선택(사용자) + AI응답 = 4개
         !_hasUserQuestionAfterCategorySelection(chatState)) {
       if (index == currentIndex) {
         return AiQuestionRequestBubble(
@@ -299,28 +280,29 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: DynamicAppBarStyles.brown(
-        scrollController: _scrollController,
-        title: 'AIアシスタント',
+      appBar: AppBar(
+        backgroundColor: AppColors.pointBrown,
+        elevation: 0,
+        title: const Text('AIアシスタント', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           onPressed: _navigateToChatHistory,
-          icon: const Icon(Icons.history),
+          icon: const Icon(Icons.history, color: Colors.white),
           tooltip: 'チャット履歴',
         ),
         actions: [
           IconButton(
             onPressed: _navigateToFavoriteMessages,
-            icon: const Icon(Icons.star),
+            icon: const Icon(Icons.star, color: Colors.white),
             tooltip: 'お気に入り',
           ),
           IconButton(
             onPressed: _saveCurrentChat,
-            icon: const Icon(Icons.save),
+            icon: const Icon(Icons.save, color: Colors.white),
             tooltip: '会話を保存',
           ),
           IconButton(
             onPressed: _clearChatHistory,
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh, color: Colors.white),
             tooltip: 'チャットをクリア',
           ),
         ],
@@ -333,6 +315,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
               child: ListView.builder(
                 controller: _scrollController,
                 padding: const EdgeInsets.all(AppSpacing.md),
+                reverse: false,
                 itemCount: _getTotalItemCount(chatState),
                 itemBuilder: (context, index) {
                   return _buildChatItem(context, ref, chatState, index);

@@ -15,10 +15,7 @@ class DateSeparatorWidget extends StatelessWidget {
         children: [
           const Expanded(child: Divider()),
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.xs,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
             decoration: BoxDecoration(
               color: AppColors.pointGray.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.large),

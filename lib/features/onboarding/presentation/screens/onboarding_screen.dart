@@ -92,8 +92,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
                     // Skip 버튼 (1회 이상 온보딩을 본 사용자에게만 표시, 마지막 페이지가 아닐 때)
                     if (onboardingState.hasSeenOnboardingBefore &&
-                        onboardingState.currentPage <
-                            OnboardingData.pages.length - 1)
+                        onboardingState.currentPage < OnboardingData.pages.length - 1)
                       Positioned(
                         top: MediaQuery.of(context).padding.top + AppSpacing.md,
                         right: AppSpacing.md,

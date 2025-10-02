@@ -15,11 +15,7 @@ class NotificationMockService extends BaseMockService {
         type: NotificationType.appointment,
         status: NotificationStatus.unread,
         createdAt: DateTime.now().subtract(const Duration(hours: 2)),
-        data: {
-          'petId': '1',
-          'appointmentType': '건강검진',
-          'facilityName': '우리동물병원',
-        },
+        data: {'petId': '1', 'appointmentType': '건강검진', 'facilityName': '우리동물병원'},
       ),
       NotificationModel(
         id: '2',
@@ -85,10 +81,7 @@ class NotificationMockService extends BaseMockService {
 
   /// Mock 알림 설정
   static NotificationSettings getMockNotificationSettings() {
-    return const NotificationSettings(
-      soundEnabled: true,
-      vibrationEnabled: true,
-    );
+    return const NotificationSettings(soundEnabled: true, vibrationEnabled: true);
   }
 
   /// 알림 설정 조회 (단일 메소드)
@@ -110,10 +103,7 @@ class NotificationMockService extends BaseMockService {
   // ==================== 통계 데이터 ====================
 
   /// 알림 통계 데이터
-  static List<Map<String, dynamic>> getMockNotificationStats({
-    int days = 7,
-    String? petId,
-  }) {
+  static List<Map<String, dynamic>> getMockNotificationStats({int days = 7, String? petId}) {
     final stats = <Map<String, dynamic>>[];
 
     for (int i = days; i >= 0; i--) {
@@ -143,10 +133,7 @@ class NotificationMockService extends BaseMockService {
   }
 
   /// 사용자 참여도 데이터
-  static List<Map<String, dynamic>> getMockUserEngagement({
-    int days = 30,
-    String? petId,
-  }) {
+  static List<Map<String, dynamic>> getMockUserEngagement({int days = 30, String? petId}) {
     final engagement = <Map<String, dynamic>>[];
 
     for (int i = days; i >= 0; i--) {
@@ -163,10 +150,8 @@ class NotificationMockService extends BaseMockService {
         // 특정 펫의 참여도로 필터링
         dayEngagement['notificationsReceived'] =
             (dayEngagement['notificationsReceived'] as int) ~/ 2;
-        dayEngagement['notificationsRead'] =
-            (dayEngagement['notificationsRead'] as int) ~/ 2;
-        dayEngagement['actionsCompleted'] =
-            (dayEngagement['actionsCompleted'] as int) ~/ 2;
+        dayEngagement['notificationsRead'] = (dayEngagement['notificationsRead'] as int) ~/ 2;
+        dayEngagement['actionsCompleted'] = (dayEngagement['actionsCompleted'] as int) ~/ 2;
       }
 
       engagement.add(dayEngagement);

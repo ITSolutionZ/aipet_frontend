@@ -35,9 +35,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
 
     // 카테고리 필터링
     if (_selectedCategory != 'all') {
-      filtered = filtered
-          .where((trick) => trick.difficulty.name == _selectedCategory)
-          .toList();
+      filtered = filtered.where((trick) => trick.difficulty.name == _selectedCategory).toList();
     }
 
     // 검색어 필터링
@@ -46,9 +44,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
           .where(
             (trick) =>
                 trick.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                trick.description.toLowerCase().contains(
-                  _searchQuery.toLowerCase(),
-                ),
+                trick.description.toLowerCase().contains(_searchQuery.toLowerCase()),
           )
           .toList();
     }
@@ -56,9 +52,7 @@ class _AllTricksScreenState extends ConsumerState<AllTricksScreen> {
     return filtered;
   }
 
-  Map<String, List<TrickEntity>> _groupTricksByCategory(
-    List<TrickEntity> tricks,
-  ) {
+  Map<String, List<TrickEntity>> _groupTricksByCategory(List<TrickEntity> tricks) {
     final Map<String, List<TrickEntity>> grouped = {};
 
     for (final trick in tricks) {

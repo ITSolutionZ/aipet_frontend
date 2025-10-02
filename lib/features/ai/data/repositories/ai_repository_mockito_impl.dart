@@ -56,6 +56,8 @@ class AiRepositoryMockitoImpl implements AiRepository {
   Future<Result<AiMessageEntity>> sendMessageWithPetContext(
     String message, {
     PetProfileEntity? petContext,
+    String? weatherAdvice,
+    String? walkGuide,
   }) async {
     try {
       // AI 로거를 사용한 API 호출 시작 로그 (펫 컨텍스트 포함)
@@ -66,6 +68,8 @@ class AiRepositoryMockitoImpl implements AiRepository {
       final response = await _openAIService.generateResponse(
         message,
         petContext: petContext,
+        weatherAdvice: weatherAdvice,
+        walkGuide: walkGuide,
       );
 
       // AI 로거를 사용한 응답 성공 로그

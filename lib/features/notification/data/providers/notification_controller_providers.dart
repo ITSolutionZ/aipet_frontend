@@ -29,9 +29,7 @@ GetNotificationByIdUseCase getNotificationByIdUseCase(Ref ref) {
 
 @riverpod
 MarkNotificationAsReadUseCase markNotificationAsReadUseCase(Ref ref) {
-  return MarkNotificationAsReadUseCase(
-    ref.read(notificationRepositoryProvider),
-  );
+  return MarkNotificationAsReadUseCase(ref.read(notificationRepositoryProvider));
 }
 
 @riverpod
@@ -41,53 +39,45 @@ DeleteNotificationUseCase deleteNotificationUseCase(Ref ref) {
 
 @riverpod
 GetNotificationSettingsUseCase getNotificationSettingsUseCase(Ref ref) {
-  return GetNotificationSettingsUseCase(
-    ref.read(notificationRepositoryProvider),
-  );
+  return GetNotificationSettingsUseCase(ref.read(notificationRepositoryProvider));
 }
 
 @riverpod
 SaveNotificationSettingsUseCase saveNotificationSettingsUseCase(Ref ref) {
-  return SaveNotificationSettingsUseCase(
-    ref.read(notificationRepositoryProvider),
-  );
+  return SaveNotificationSettingsUseCase(ref.read(notificationRepositoryProvider));
 }
 
 @riverpod
-RequestNotificationPermissionUseCase requestNotificationPermissionUseCase(
-  Ref ref,
-) {
+RequestNotificationPermissionUseCase requestNotificationPermissionUseCase(Ref ref) {
   return RequestNotificationPermissionUseCase(
-    ref.read(
-      notificationRepositoryProvider as ProviderListenable<NotificationService>,
-    ),
+    ref.read(notificationRepositoryProvider as ProviderListenable<NotificationService>),
   );
 }
 
 @riverpod
 TestNotificationUseCase testNotificationUseCase(Ref ref) {
   return TestNotificationUseCase(
-    ref.read(
-      notificationRepositoryProvider as ProviderListenable<NotificationService>,
-    ),
+    ref.read(notificationRepositoryProvider as ProviderListenable<NotificationService>),
   );
 }
 
 // Controller Factory Providers - Consumer에서 WidgetRef를 받아서 사용
-final notificationControllerFactoryProvider =
-    Provider.family<NotificationController, WidgetRef>((ref, widgetRef) {
-      return NotificationController(
-        widgetRef,
-        ref.read(getNotificationsUseCaseProvider),
-        ref.read(getNotificationByIdUseCaseProvider),
-        ref.read(markNotificationAsReadUseCaseProvider),
-        ref.read(deleteNotificationUseCaseProvider),
-        ref.read(getNotificationSettingsUseCaseProvider),
-        ref.read(saveNotificationSettingsUseCaseProvider),
-        ref.read(requestNotificationPermissionUseCaseProvider),
-        ref.read(testNotificationUseCaseProvider),
-      );
-    });
+final notificationControllerFactoryProvider = Provider.family<NotificationController, WidgetRef>((
+  ref,
+  widgetRef,
+) {
+  return NotificationController(
+    widgetRef,
+    ref.read(getNotificationsUseCaseProvider),
+    ref.read(getNotificationByIdUseCaseProvider),
+    ref.read(markNotificationAsReadUseCaseProvider),
+    ref.read(deleteNotificationUseCaseProvider),
+    ref.read(getNotificationSettingsUseCaseProvider),
+    ref.read(saveNotificationSettingsUseCaseProvider),
+    ref.read(requestNotificationPermissionUseCaseProvider),
+    ref.read(testNotificationUseCaseProvider),
+  );
+});
 
 final notificationDetailControllerFactoryProvider =
     Provider.family<NotificationDetailController, WidgetRef>((ref, widgetRef) {

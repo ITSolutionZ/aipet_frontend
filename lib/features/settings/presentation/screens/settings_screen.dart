@@ -81,10 +81,7 @@ class SettingsScreen extends ConsumerWidget {
                         color: Colors.black87,
                       ),
                     ),
-                    Text(
-                      'test@test.com',
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
+                    Text('test@test.com', style: TextStyle(fontSize: 14, color: Colors.grey)),
                   ],
                 ),
               ],

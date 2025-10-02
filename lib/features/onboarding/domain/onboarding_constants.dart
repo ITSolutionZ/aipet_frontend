@@ -8,18 +8,14 @@ class OnboardingConstants {
   static const int bottomSheetFlex = 45;
 
   // 애니메이션 (AppConstants에서 가져옴)
-  static Duration get pageTransitionDuration =>
-      AppConstants.pageTransitionDuration;
+  static Duration get pageTransitionDuration => AppConstants.pageTransitionDuration;
   static Curve get pageTransitionCurve => AppConstants.pageTransitionCurve;
 
   // UI 상수 (AppConstants에서 가져옴)
   static double get skipButtonOpacity => AppConstants.skipButtonOpacity;
-  static double get bottomSheetShadowOpacity =>
-      AppConstants.bottomSheetShadowOpacity;
-  static double get bottomSheetShadowBlurRadius =>
-      AppConstants.bottomSheetShadowBlurRadius;
-  static Offset get bottomSheetShadowOffset =>
-      AppConstants.bottomSheetShadowOffset;
+  static double get bottomSheetShadowOpacity => AppConstants.bottomSheetShadowOpacity;
+  static double get bottomSheetShadowBlurRadius => AppConstants.bottomSheetShadowBlurRadius;
+  static Offset get bottomSheetShadowOffset => AppConstants.bottomSheetShadowOffset;
 
   // 이미지 상수 (AppConstants에서 가져옴)
   static double get logoWidth => AppConstants.logoWidth;
@@ -37,9 +33,7 @@ class OnboardingConstants {
   static String get skipButtonText => AppTexts.skipButton;
 
   // 공통 스타일 상수 (AppConstants에서 가져옴)
-  static double get fallbackBackgroundOpacity =>
-      AppConstants.fallbackBackgroundOpacity;
+  static double get fallbackBackgroundOpacity => AppConstants.fallbackBackgroundOpacity;
   static double get fallbackIconOpacity => AppConstants.fallbackIconOpacity;
-  static double get buttonBackgroundOpacity =>
-      AppConstants.buttonBackgroundOpacity;
+  static double get buttonBackgroundOpacity => AppConstants.buttonBackgroundOpacity;
 }

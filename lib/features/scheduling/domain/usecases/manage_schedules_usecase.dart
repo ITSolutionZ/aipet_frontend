@@ -142,11 +142,7 @@ class CreateRecurringScheduleUseCase {
 
       // RRULE 파싱 및 반복 스케줄 생성
       final parsedRule = _parseRRule(recurrenceRule);
-      final occurrences = _generateOccurrences(
-        baseSchedule.startDateTime,
-        endDate,
-        parsedRule,
-      );
+      final occurrences = _generateOccurrences(baseSchedule.startDateTime, endDate, parsedRule);
 
       for (final occurrence in occurrences) {
         final schedule = baseSchedule.copyWith(

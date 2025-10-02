@@ -397,9 +397,7 @@ class AppCard extends StatelessWidget {
         height: 24,
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(
-            iconColor ?? AppColors.pointBrown,
-          ),
+          valueColor: AlwaysStoppedAnimation<Color>(iconColor ?? AppColors.pointBrown),
         ),
       ),
     );
@@ -408,10 +406,7 @@ class AppCard extends StatelessWidget {
   Widget _buildInfoContent() {
     return Row(
       children: [
-        if (icon != null) ...[
-          _buildIconContainer(),
-          const SizedBox(width: AppSpacing.md),
-        ],
+        if (icon != null) ...[_buildIconContainer(), const SizedBox(width: AppSpacing.md)],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,10 +432,7 @@ class AppCard extends StatelessWidget {
             ],
           ),
         ),
-        if (trailing != null) ...[
-          const SizedBox(width: AppSpacing.md),
-          trailing!,
-        ],
+        if (trailing != null) ...[const SizedBox(width: AppSpacing.md), trailing!],
       ],
     );
   }
@@ -452,10 +444,7 @@ class AppCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            if (icon != null) ...[
-              _buildIconContainer(),
-              const SizedBox(width: AppSpacing.md),
-            ],
+            if (icon != null) ...[_buildIconContainer(), const SizedBox(width: AppSpacing.md)],
             Expanded(
               child: Text(
                 title ?? '',
@@ -538,14 +527,8 @@ class AppCard extends StatelessWidget {
   Widget _buildSummaryContent() {
     return Row(
       children: [
-        if (leading != null) ...[
-          leading!,
-          const SizedBox(width: AppSpacing.md),
-        ],
-        if (icon != null) ...[
-          _buildIconContainer(),
-          const SizedBox(width: AppSpacing.md),
-        ],
+        if (leading != null) ...[leading!, const SizedBox(width: AppSpacing.md)],
+        if (icon != null) ...[_buildIconContainer(), const SizedBox(width: AppSpacing.md)],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -594,10 +577,7 @@ class AppCard extends StatelessWidget {
             ],
           ),
         ],
-        if (trailing != null) ...[
-          const SizedBox(width: AppSpacing.md),
-          trailing!,
-        ],
+        if (trailing != null) ...[const SizedBox(width: AppSpacing.md), trailing!],
       ],
     );
   }
@@ -632,10 +612,7 @@ class AppCard extends StatelessWidget {
         const SizedBox(width: 2),
         Text(
           change!,
-          style: AppFonts.bodySmall.copyWith(
-            color: color,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppFonts.bodySmall.copyWith(color: color, fontWeight: FontWeight.w600),
         ),
       ],
     );

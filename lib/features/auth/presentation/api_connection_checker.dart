@@ -37,11 +37,7 @@ class ApiConnectionState {
 class ApiConnectionNotifier extends StateNotifier<ApiConnectionState> {
   ApiConnectionNotifier()
     : super(
-        const ApiConnectionState(
-          isChecking: false,
-          status: 'Unknown',
-          statusColor: Colors.grey,
-        ),
+        const ApiConnectionState(isChecking: false, status: 'Unknown', statusColor: Colors.grey),
       ) {
     // 위젯이 빌드될 때 자동으로 연결 확인
     Future.microtask(() => checkApiConnection());
@@ -70,10 +66,7 @@ class ApiConnectionNotifier extends StateNotifier<ApiConnectionState> {
       );
 
       if (response.statusCode == 200) {
-        state = state.copyWith(
-          status: 'Connected ✅',
-          statusColor: Colors.green,
-        );
+        state = state.copyWith(status: 'Connected ✅', statusColor: Colors.green);
       } else {
         state = state.copyWith(
           status: 'Unexpected Response',
@@ -154,9 +147,7 @@ class ApiConnectionChecker extends ConsumerWidget {
                 else
                   IconButton(
                     icon: const Icon(Icons.refresh),
-                    onPressed: () => ref
-                        .read(apiConnectionProvider.notifier)
-                        .checkApiConnection(),
+                    onPressed: () => ref.read(apiConnectionProvider.notifier).checkApiConnection(),
                     tooltip: '다시 확인',
                   ),
               ],
@@ -168,19 +159,14 @@ class ApiConnectionChecker extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: connectionState.statusColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: connectionState.statusColor.withValues(alpha: 0.3),
-                ),
+                border: Border.all(color: connectionState.statusColor.withValues(alpha: 0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'URL: $baseUrl',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontFamily: 'monospace',
-                    ),
+                    style: const TextStyle(fontSize: 12, fontFamily: 'monospace'),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -195,10 +181,7 @@ class ApiConnectionChecker extends ConsumerWidget {
                     const SizedBox(height: 4),
                     Text(
                       'Error: ${connectionState.errorMessage}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.red.shade700,
-                      ),
+                      style: TextStyle(fontSize: 12, color: Colors.red.shade700),
                     ),
                   ],
                 ],
@@ -207,11 +190,7 @@ class ApiConnectionChecker extends ConsumerWidget {
             const SizedBox(height: 12),
             const Text(
               '💡 팁: API 서버가 실행 중인지 확인하세요',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-                fontStyle: FontStyle.italic,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey, fontStyle: FontStyle.italic),
             ),
           ],
         ),
@@ -221,7 +200,6 @@ class ApiConnectionChecker extends ConsumerWidget {
 }
 
 /// API 연결 상태 Provider
-final apiConnectionProvider =
-    StateNotifierProvider<ApiConnectionNotifier, ApiConnectionState>(
-      (ref) => ApiConnectionNotifier(),
-    );
+final apiConnectionProvider = StateNotifierProvider<ApiConnectionNotifier, ApiConnectionState>(
+  (ref) => ApiConnectionNotifier(),
+);

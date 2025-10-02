@@ -95,7 +95,7 @@ class WalkRecordEntity {
   double _toRadians(double degrees) => degrees * (3.14159265359 / 180);
 
   /// UI에서 사용할 제목
-  String get title => '$petName의 산책';
+  String get title => '$petNameの散歩';
 
   /// UI에서 사용할 날짜 문자열
   String get dateString {

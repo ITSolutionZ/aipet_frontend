@@ -14,11 +14,7 @@ class AuthMockService extends BaseMockService {
       'createdAt': DateTime.now().subtract(const Duration(days: 30)),
       'lastLoginAt': DateTime.now().subtract(const Duration(hours: 2)),
       'isEmailVerified': true,
-      'preferences': {
-        'language': 'ko',
-        'theme': 'light',
-        'notifications': true,
-      },
+      'preferences': {'language': 'ko', 'theme': 'light', 'notifications': true},
     };
   }
 
@@ -34,10 +30,8 @@ class AuthMockService extends BaseMockService {
       return {
         'success': true,
         'user': getMockUserInfo(),
-        'accessToken':
-            'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
-        'refreshToken':
-            'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+        'accessToken': 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
+        'refreshToken': 'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
         'expiresIn': 3600, // 1시간
       };
     } else {
@@ -78,9 +72,7 @@ class AuthMockService extends BaseMockService {
         'errorCode': 'VALIDATION_ERROR',
         'details': {
           'email': email.contains('@') ? null : 'Invalid email format',
-          'password': password.length >= 6
-              ? null
-              : 'Password must be at least 6 characters',
+          'password': password.length >= 6 ? null : 'Password must be at least 6 characters',
           'name': name.isNotEmpty ? null : 'Name is required',
         },
       };
@@ -96,47 +88,30 @@ class AuthMockService extends BaseMockService {
     if (verificationCode == '123456') {
       return {'success': true, 'message': 'Email verified successfully'};
     } else {
-      return {
-        'success': false,
-        'error': 'Invalid verification code',
-        'errorCode': 'INVALID_CODE',
-      };
+      return {'success': false, 'error': 'Invalid verification code', 'errorCode': 'INVALID_CODE'};
     }
   }
 
   /// Mock 비밀번호 재설정 요청
-  static Future<Map<String, dynamic>> mockPasswordResetRequest({
-    required String email,
-  }) async {
+  static Future<Map<String, dynamic>> mockPasswordResetRequest({required String email}) async {
     await MockHelper.simulateApiCall();
 
     if (email.contains('@')) {
-      return {
-        'success': true,
-        'message': 'Password reset link sent to your email',
-      };
+      return {'success': true, 'message': 'Password reset link sent to your email'};
     } else {
-      return {
-        'success': false,
-        'error': 'Invalid email format',
-        'errorCode': 'INVALID_EMAIL',
-      };
+      return {'success': false, 'error': 'Invalid email format', 'errorCode': 'INVALID_EMAIL'};
     }
   }
 
   /// Mock 토큰 갱신 응답
-  static Future<Map<String, dynamic>> mockTokenRefresh({
-    required String refreshToken,
-  }) async {
+  static Future<Map<String, dynamic>> mockTokenRefresh({required String refreshToken}) async {
     await MockHelper.simulateApiCall();
 
     if (refreshToken.startsWith('mock_refresh_token_')) {
       return {
         'success': true,
-        'accessToken':
-            'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
-        'refreshToken':
-            'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+        'accessToken': 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
+        'refreshToken': 'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
         'expiresIn': 3600,
       };
     } else {
@@ -156,15 +131,9 @@ class AuthMockService extends BaseMockService {
 
     return {
       'success': true,
-      'user': {
-        ...getMockUserInfo(),
-        'provider': 'google',
-        'providerId': 'google_user_123',
-      },
-      'accessToken':
-          'mock_google_token_${DateTime.now().millisecondsSinceEpoch}',
-      'refreshToken':
-          'mock_google_refresh_${DateTime.now().millisecondsSinceEpoch}',
+      'user': {...getMockUserInfo(), 'provider': 'google', 'providerId': 'google_user_123'},
+      'accessToken': 'mock_google_token_${DateTime.now().millisecondsSinceEpoch}',
+      'refreshToken': 'mock_google_refresh_${DateTime.now().millisecondsSinceEpoch}',
       'expiresIn': 3600,
     };
   }
@@ -175,15 +144,9 @@ class AuthMockService extends BaseMockService {
 
     return {
       'success': true,
-      'user': {
-        ...getMockUserInfo(),
-        'provider': 'apple',
-        'providerId': 'apple_user_456',
-      },
-      'accessToken':
-          'mock_apple_token_${DateTime.now().millisecondsSinceEpoch}',
-      'refreshToken':
-          'mock_apple_refresh_${DateTime.now().millisecondsSinceEpoch}',
+      'user': {...getMockUserInfo(), 'provider': 'apple', 'providerId': 'apple_user_456'},
+      'accessToken': 'mock_apple_token_${DateTime.now().millisecondsSinceEpoch}',
+      'refreshToken': 'mock_apple_refresh_${DateTime.now().millisecondsSinceEpoch}',
       'expiresIn': 3600,
     };
   }
@@ -206,21 +169,14 @@ class AuthMockService extends BaseMockService {
       'updatedAt': DateTime.now(),
     };
 
-    return {
-      'success': true,
-      'user': updatedUser,
-      'message': 'Profile updated successfully',
-    };
+    return {'success': true, 'user': updatedUser, 'message': 'Profile updated successfully'};
   }
 
   /// Mock 프로필 이미지 업로드 응답
-  static Future<Map<String, dynamic>> mockProfileImageUpload({
-    required String imagePath,
-  }) async {
+  static Future<Map<String, dynamic>> mockProfileImageUpload({required String imagePath}) async {
     await MockHelper.simulateLongApiCall(); // 파일 업로드는 시간이 오래 걸림
 
-    final uploadedUrl =
-        'https://mock-storage.example.com/profiles/${MockHelper.generateId()}.jpg';
+    final uploadedUrl = 'https://mock-storage.example.com/profiles/${MockHelper.generateId()}.jpg';
 
     return {
       'success': true,
@@ -265,11 +221,7 @@ class AuthMockService extends BaseMockService {
         'deletionId': MockHelper.generateId(),
       };
     } else {
-      return {
-        'success': false,
-        'error': 'Incorrect password',
-        'errorCode': 'INVALID_PASSWORD',
-      };
+      return {'success': false, 'error': 'Incorrect password', 'errorCode': 'INVALID_PASSWORD'};
     }
   }
 
@@ -283,9 +235,7 @@ class AuthMockService extends BaseMockService {
   }
 
   /// Mock 세션 검증 응답
-  static Future<Map<String, dynamic>> mockSessionValidation({
-    required String accessToken,
-  }) async {
+  static Future<Map<String, dynamic>> mockSessionValidation({required String accessToken}) async {
     await MockHelper.simulateApiCall();
 
     if (accessToken.startsWith('mock_access_token_')) {
@@ -332,15 +282,9 @@ class AuthMockService extends BaseMockService {
   }
 
   /// Mock 기기 등록 해제 응답
-  static Future<Map<String, dynamic>> mockDeviceUnregister({
-    required String deviceId,
-  }) async {
+  static Future<Map<String, dynamic>> mockDeviceUnregister({required String deviceId}) async {
     await MockHelper.simulateApiCall();
 
-    return {
-      'success': true,
-      'message': 'Device unregistered successfully',
-      'deviceId': deviceId,
-    };
+    return {'success': true, 'message': 'Device unregistered successfully', 'deviceId': deviceId};
   }
 }

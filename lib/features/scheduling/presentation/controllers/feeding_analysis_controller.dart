@@ -4,15 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 급여 분석 컨트롤러
 class FeedingAnalysisController extends StateNotifier<FeedingAnalysisState> {
-  FeedingAnalysisController({required String petId})
-    : super(FeedingAnalysisState(petId: petId)) {
+  FeedingAnalysisController({required String petId}) : super(FeedingAnalysisState(petId: petId)) {
     _loadAnalysisData();
   }
 
   /// 분석 데이터 로드
   void _loadAnalysisData() {
-    final analysisData =
-        scheduling_mock.SchedulingMockService.getMockFeedingAnalysisData();
+    final analysisData = scheduling_mock.SchedulingMockService.getMockFeedingAnalysisData();
     state = state.copyWith(analysisData: analysisData);
   }
 
@@ -55,15 +53,9 @@ class FeedingAnalysisState {
   final String petId;
   final Map<String, dynamic> analysisData;
 
-  const FeedingAnalysisState({
-    required this.petId,
-    this.analysisData = const {},
-  });
+  const FeedingAnalysisState({required this.petId, this.analysisData = const {}});
 
-  FeedingAnalysisState copyWith({
-    String? petId,
-    Map<String, dynamic>? analysisData,
-  }) {
+  FeedingAnalysisState copyWith({String? petId, Map<String, dynamic>? analysisData}) {
     return FeedingAnalysisState(
       petId: petId ?? this.petId,
       analysisData: analysisData ?? this.analysisData,
@@ -73,10 +65,9 @@ class FeedingAnalysisState {
 
 /// 컨트롤러 프로바이더
 final feedingAnalysisControllerProvider =
-    StateNotifierProvider.family<
-      FeedingAnalysisController,
-      FeedingAnalysisState,
-      String
-    >((ref, petId) {
+    StateNotifierProvider.family<FeedingAnalysisController, FeedingAnalysisState, String>((
+      ref,
+      petId,
+    ) {
       return FeedingAnalysisController(petId: petId);
     });

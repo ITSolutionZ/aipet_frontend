@@ -22,11 +22,7 @@ class PetSectionWidget extends ConsumerWidget {
               SizedBox(width: 8),
               Text(
                 'Pet',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -46,10 +42,7 @@ class PetSectionWidget extends ConsumerWidget {
                 for (int i = 0; i < displayPets.length; i++) {
                   final pet = displayPets[i];
                   children.add(
-                    _buildPetAvatar(
-                      pet.name,
-                      pet.imagePath ?? 'assets/images/pets/default.png',
-                    ),
+                    _buildPetAvatar(pet.name, pet.imagePath ?? 'assets/images/pets/default.png'),
                   );
                   if (i < displayPets.length - 1) {
                     children.add(const SizedBox(width: 12));
@@ -99,10 +92,7 @@ class PetSectionWidget extends ConsumerWidget {
         // 대시보드 메뉴
         ListTile(
           leading: const Icon(Icons.list, color: Colors.white, size: 20),
-          title: const Text(
-            'ダッシュボード',
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
+          title: const Text('ダッシュボード', style: TextStyle(color: Colors.white, fontSize: 14)),
           onTap: () {
             Navigator.of(context).pop(); // 드로어 닫기
             context.go(AppRouter.homeRoute); // 홈 페이지로 이동
@@ -157,19 +147,13 @@ class PetSectionWidget extends ConsumerWidget {
             height: 48,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.5),
-                width: 2,
-              ),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 2),
               color: Colors.transparent,
             ),
             child: const Icon(Icons.add, color: Colors.white, size: 24),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'ペット追加',
-            style: TextStyle(color: Colors.white, fontSize: 12),
-          ),
+          const Text('ペット追加', style: TextStyle(color: Colors.white, fontSize: 12)),
         ],
       ),
     );

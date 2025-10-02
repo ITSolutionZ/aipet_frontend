@@ -59,12 +59,7 @@ class PetImagePicker extends StatelessWidget {
 
   Widget _buildImageContent() {
     if (selectedImagePath != null) {
-      return Image.file(
-        File(selectedImagePath!),
-        width: 120,
-        height: 120,
-        fit: BoxFit.cover,
-      );
+      return Image.file(File(selectedImagePath!), width: 120, height: 120, fit: BoxFit.cover);
     }
 
     if (defaultImagePath != null) {
@@ -99,16 +94,9 @@ class PetImagePicker extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: Colors.grey.withValues(alpha: 0.3),
-            width: 1,
-          ),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.3), width: 1),
         ),
-        child: const Icon(
-          Icons.cloud_upload_outlined,
-          size: 16,
-          color: Colors.grey,
-        ),
+        child: const Icon(Icons.cloud_upload_outlined, size: 16, color: Colors.grey),
       ),
     );
   }
@@ -256,10 +244,7 @@ class PetImagePicker extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.grey.withValues(alpha: 0.3),
-                        width: 1,
-                      ),
+                      border: Border.all(color: Colors.grey.withValues(alpha: 0.3), width: 1),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
@@ -279,12 +264,7 @@ class PetImagePicker extends StatelessWidget {
               },
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('취소'),
-            ),
-          ],
+          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('취소'))],
         );
       },
     );

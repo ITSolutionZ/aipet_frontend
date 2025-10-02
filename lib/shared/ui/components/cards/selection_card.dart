@@ -137,16 +137,11 @@ class SelectionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: effectiveBackgroundColor,
         borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.md),
-        border: Border.all(
-          color: effectiveBorderColor,
-          width: isSelected ? 2 : 1,
-        ),
+        border: Border.all(color: effectiveBorderColor, width: isSelected ? 2 : 1),
         boxShadow: isSelected
             ? [
                 BoxShadow(
-                  color: (selectedColor ?? AppColors.primary).withValues(
-                    alpha: 0.2,
-                  ),
+                  color: (selectedColor ?? AppColors.primary).withValues(alpha: 0.2),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -176,11 +171,7 @@ class SelectionCard extends StatelessWidget {
                     Expanded(child: child),
                     if (isSelected) ...[
                       const SizedBox(width: AppSpacing.sm),
-                      Icon(
-                        Icons.check_circle,
-                        color: selectedColor ?? AppColors.primary,
-                        size: 20,
-                      ),
+                      Icon(Icons.check_circle, color: selectedColor ?? AppColors.primary, size: 20),
                     ],
                   ],
                 ),
@@ -212,10 +203,7 @@ class SelectionCard extends StatelessWidget {
       children: [
         if (icon != null) ...[
           IconTheme(
-            data: IconThemeData(
-              color: iconColor ?? AppColors.primary,
-              size: 20,
-            ),
+            data: IconThemeData(color: iconColor ?? AppColors.primary, size: 20),
             child: icon!,
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -228,18 +216,14 @@ class SelectionCard extends StatelessWidget {
                 title!,
                 style: AppTextStyles.titleMedium.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: isSelected
-                      ? (selectedColor ?? AppColors.primary)
-                      : AppColors.textPrimary,
+                  color: isSelected ? (selectedColor ?? AppColors.primary) : AppColors.textPrimary,
                 ),
               ),
               if (subtitle != null) ...[
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   subtitle!,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
+                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ],

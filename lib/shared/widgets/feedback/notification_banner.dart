@@ -77,22 +77,14 @@ class NotificationBanner extends StatelessWidget {
                 Expanded(
                   child: Text(
                     message,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      height: 1.3,
-                    ),
+                    style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.3),
                   ),
                 ),
                 if (onDismiss != null) ...[
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: onDismiss,
-                    child: Icon(
-                      Icons.close,
-                      size: 18,
-                      color: Colors.white.withAlpha(180),
-                    ),
+                    child: Icon(Icons.close, size: 18, color: Colors.white.withAlpha(180)),
                   ),
                 ],
               ],

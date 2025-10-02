@@ -42,11 +42,7 @@ class MicrochipCard extends StatelessWidget {
               color: AppColors.pointGreen.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.memory,
-              color: AppColors.pointGreen,
-              size: 20,
-            ),
+            child: const Icon(Icons.memory, color: AppColors.pointGreen, size: 20),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -70,10 +66,7 @@ class MicrochipCard extends StatelessWidget {
                     decoration: InputDecoration(
                       hintText: 'マイクロチップ番号を入力',
                       isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
-                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(AppRadius.small),
                       ),
@@ -83,9 +76,7 @@ class MicrochipCard extends StatelessWidget {
                   Text(
                     microchipId.isEmpty ? '未登録' : microchipId,
                     style: AppFonts.bodyMedium.copyWith(
-                      color: microchipId.isEmpty
-                          ? AppColors.pointGray
-                          : AppColors.pointDark,
+                      color: microchipId.isEmpty ? AppColors.pointGray : AppColors.pointDark,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

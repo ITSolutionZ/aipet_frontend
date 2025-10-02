@@ -66,11 +66,7 @@ class HealthCard extends StatelessWidget {
                 color: AppColors.pointBlue.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.add,
-                color: AppColors.pointBlue,
-                size: 20,
-              ),
+              child: const Icon(Icons.add, color: AppColors.pointBlue, size: 20),
             ),
           ],
         ),
@@ -106,11 +102,7 @@ class HealthTab extends StatelessWidget {
             iconColor: AppColors.pointGreen,
             onTap: () {
               // 백신 화면으로 이동
-              Navigator.pushNamed(
-                context,
-                '/vaccines',
-                arguments: {'petId': petId},
-              );
+              Navigator.pushNamed(context, '/vaccines', arguments: {'petId': petId});
             },
           ),
           const SizedBox(height: AppSpacing.md),
@@ -230,17 +222,11 @@ class MedicalRecordCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
-                        const Icon(
-                          Icons.person,
-                          size: 14,
-                          color: AppColors.pointBlue,
-                        ),
+                        const Icon(Icons.person, size: 14, color: AppColors.pointBlue),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           veterinarian!,
-                          style: AppFonts.bodySmall.copyWith(
-                            color: AppColors.pointBlue,
-                          ),
+                          style: AppFonts.bodySmall.copyWith(color: AppColors.pointBlue),
                         ),
                       ],
                     ),
@@ -249,11 +235,7 @@ class MedicalRecordCard extends StatelessWidget {
               ),
             ),
             if (onTap != null)
-              const Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: AppColors.pointGray,
-              ),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.pointGray),
           ],
         ),
       ),
@@ -295,11 +277,7 @@ class HealthSummaryCard extends StatelessWidget {
                   color: AppColors.pointGreen.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.favorite,
-                  color: AppColors.pointGreen,
-                  size: 20,
-                ),
+                child: const Icon(Icons.favorite, color: AppColors.pointGreen, size: 20),
               ),
               const SizedBox(width: AppSpacing.md),
               Text(
@@ -345,9 +323,7 @@ class HealthSummaryCard extends StatelessWidget {
             const SizedBox(width: AppSpacing.xs),
             Text(
               label,
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointDark.withValues(alpha: 0.7),
-              ),
+              style: AppFonts.bodySmall.copyWith(color: AppColors.pointDark.withValues(alpha: 0.7)),
             ),
           ],
         ),

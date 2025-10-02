@@ -26,8 +26,7 @@ class AuthLogo extends StatelessWidget {
           width: width,
           height: height,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) =>
-              const SizedBox(width: 200, height: 200),
+          errorBuilder: (context, error, stackTrace) => const SizedBox(width: 200, height: 200),
         ),
       ),
     );

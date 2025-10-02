@@ -43,8 +43,7 @@ class AuthMockData {
           'email': 'google.user@gmail.com',
           'username': 'GoogleUser',
           'displayName': 'Google User',
-          'photoUrl':
-              'https://ui-avatars.com/api/?name=Google+User&background=4285f4&color=fff',
+          'photoUrl': 'https://ui-avatars.com/api/?name=Google+User&background=4285f4&color=fff',
           'provider': 'google',
           'createdAt': now,
           'lastLoginAt': now,
@@ -57,8 +56,7 @@ class AuthMockData {
           'email': 'apple.user@icloud.com',
           'username': 'AppleUser',
           'displayName': 'Apple User',
-          'photoUrl':
-              'https://ui-avatars.com/api/?name=Apple+User&background=000000&color=fff',
+          'photoUrl': 'https://ui-avatars.com/api/?name=Apple+User&background=000000&color=fff',
           'provider': 'apple',
           'createdAt': now,
           'lastLoginAt': now,
@@ -71,8 +69,7 @@ class AuthMockData {
           'email': 'line.user@line.me',
           'username': 'LineUser',
           'displayName': 'LINE User',
-          'photoUrl':
-              'https://ui-avatars.com/api/?name=LINE+User&background=00c300&color=fff',
+          'photoUrl': 'https://ui-avatars.com/api/?name=LINE+User&background=00c300&color=fff',
           'provider': 'line',
           'createdAt': now,
           'lastLoginAt': now,
@@ -96,20 +93,13 @@ class AuthMockData {
 
   /// 개발 모드 로그인 처리 (토큰 기반)
   /// 어떤 이메일/비밀번호든 성공하도록 처리
-  static Future<Map<String, dynamic>> mockLogin(
-    String email,
-    String password,
-  ) async {
+  static Future<Map<String, dynamic>> mockLogin(String email, String password) async {
     await MockDataBase.simulateApiDelay(milliseconds: 1000);
 
     // Mock 토큰 생성
-    final accessToken =
-        'mock_access_token_${DateTime.now().millisecondsSinceEpoch}';
-    final refreshToken =
-        'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}';
-    final expiresAt = DateTime.now().add(
-      const Duration(hours: 24),
-    ); // 24시간 후 만료
+    final accessToken = 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}';
+    final refreshToken = 'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}';
+    final expiresAt = DateTime.now().add(const Duration(hours: 24)); // 24시간 후 만료
 
     final user = {
       'id': 'dev_user_${DateTime.now().millisecondsSinceEpoch}',
@@ -130,12 +120,7 @@ class AuthMockData {
       'tokenType': 'Bearer',
     };
 
-    return {
-      'success': true,
-      'message': 'ログインに成功しました',
-      'user': user,
-      'token': token,
-    };
+    return {'success': true, 'message': 'ログインに成功しました', 'user': user, 'token': token};
   }
 
   /// 개발 모드 회원가입 처리 (토큰 기반)
@@ -148,10 +133,8 @@ class AuthMockData {
     await MockDataBase.simulateApiDelay(milliseconds: 1200);
 
     // Mock 토큰 생성
-    final accessToken =
-        'mock_signup_token_${DateTime.now().millisecondsSinceEpoch}';
-    final refreshToken =
-        'mock_signup_refresh_${DateTime.now().millisecondsSinceEpoch}';
+    final accessToken = 'mock_signup_token_${DateTime.now().millisecondsSinceEpoch}';
+    final refreshToken = 'mock_signup_refresh_${DateTime.now().millisecondsSinceEpoch}';
     final expiresAt = DateTime.now().add(const Duration(hours: 24));
 
     final user = {
@@ -173,12 +156,7 @@ class AuthMockData {
       'tokenType': 'Bearer',
     };
 
-    return {
-      'success': true,
-      'message': '会員登録に成功しました',
-      'user': user,
-      'token': token,
-    };
+    return {'success': true, 'message': '会員登録に成功しました', 'user': user, 'token': token};
   }
 
   /// 소셜 로그인 Mock 처리 (토큰 기반)
@@ -186,16 +164,13 @@ class AuthMockData {
     await MockDataBase.simulateApiDelay(milliseconds: 800);
 
     // Mock 토큰 생성
-    final accessToken =
-        'mock_${provider}_token_${DateTime.now().millisecondsSinceEpoch}';
-    final refreshToken =
-        'mock_${provider}_refresh_${DateTime.now().millisecondsSinceEpoch}';
+    final accessToken = 'mock_${provider}_token_${DateTime.now().millisecondsSinceEpoch}';
+    final refreshToken = 'mock_${provider}_refresh_${DateTime.now().millisecondsSinceEpoch}';
     final expiresAt = DateTime.now().add(const Duration(hours: 24));
 
     final user = generateSocialUser(provider);
     final providerName =
-        {'google': 'Google', 'apple': 'Apple', 'line': 'LINE'}[provider] ??
-        provider;
+        {'google': 'Google', 'apple': 'Apple', 'line': 'LINE'}[provider] ?? provider;
 
     final token = {
       'accessToken': accessToken,
@@ -204,12 +179,7 @@ class AuthMockData {
       'tokenType': 'Bearer',
     };
 
-    return {
-      'success': true,
-      'message': '$providerNameログインに成功しました',
-      'user': user,
-      'token': token,
-    };
+    return {'success': true, 'message': '$providerNameログインに成功しました', 'user': user, 'token': token};
   }
 
   /// 로그아웃 Mock 처리
@@ -258,11 +228,7 @@ class AuthMockData {
 
     // Mock: ID Token 검증 성공으로 가정
     if (idToken.isEmpty) {
-      return {
-        'success': false,
-        'message': 'ID Token이 필요합니다',
-        'errorCode': 'MISSING_TOKEN',
-      };
+      return {'success': false, 'message': 'ID Token이 필요합니다', 'errorCode': 'MISSING_TOKEN'};
     }
 
     // Mock JWT 토큰 생성 (실제로는 백엔드에서 생성)
@@ -281,8 +247,7 @@ class AuthMockData {
       'createdAt': DateTime.now().subtract(const Duration(days: 10)),
       'lastLoginAt': DateTime.now(),
       'isEmailVerified': true,
-      'firebaseUid':
-          'firebase_uid_mock_${DateTime.now().millisecondsSinceEpoch}',
+      'firebaseUid': 'firebase_uid_mock_${DateTime.now().millisecondsSinceEpoch}',
     };
 
     return {
@@ -298,24 +263,17 @@ class AuthMockData {
 
   /// 백엔드 회원가입 Mock 처리 (ID Token 기반)
   /// Firebase ID Token을 받아서 백엔드에 새 사용자 생성 후 JWT 토큰 반환
-  static Future<Map<String, dynamic>> mockBackendRegister(
-    String idToken,
-  ) async {
+  static Future<Map<String, dynamic>> mockBackendRegister(String idToken) async {
     await MockDataBase.simulateApiDelay(milliseconds: 2000);
 
     // Mock: ID Token 검증 성공으로 가정
     if (idToken.isEmpty) {
-      return {
-        'success': false,
-        'message': 'ID Token이 필요합니다',
-        'errorCode': 'MISSING_TOKEN',
-      };
+      return {'success': false, 'message': 'ID Token이 필요합니다', 'errorCode': 'MISSING_TOKEN'};
     }
 
     // Mock JWT 토큰 생성
     final accessToken = 'jwt_register_${DateTime.now().millisecondsSinceEpoch}';
-    final refreshToken =
-        'jwt_register_refresh_${DateTime.now().millisecondsSinceEpoch}';
+    final refreshToken = 'jwt_register_refresh_${DateTime.now().millisecondsSinceEpoch}';
     final expiresAt = DateTime.now().add(const Duration(hours: 24));
 
     // Mock 새 사용자 정보
@@ -329,8 +287,7 @@ class AuthMockData {
       'createdAt': DateTime.now(),
       'lastLoginAt': DateTime.now(),
       'isEmailVerified': false,
-      'firebaseUid':
-          'firebase_new_uid_${DateTime.now().millisecondsSinceEpoch}',
+      'firebaseUid': 'firebase_new_uid_${DateTime.now().millisecondsSinceEpoch}',
       'isNewUser': true,
     };
 
@@ -346,9 +303,7 @@ class AuthMockData {
   }
 
   /// 백엔드 토큰 갱신 Mock 처리
-  static Future<Map<String, dynamic>> mockBackendRefreshToken(
-    String refreshToken,
-  ) async {
+  static Future<Map<String, dynamic>> mockBackendRefreshToken(String refreshToken) async {
     await MockDataBase.simulateApiDelay(milliseconds: 800);
 
     if (refreshToken.isEmpty) {
@@ -360,10 +315,8 @@ class AuthMockData {
     }
 
     // Mock 새 토큰 생성
-    final newAccessToken =
-        'jwt_refreshed_${DateTime.now().millisecondsSinceEpoch}';
-    final newRefreshToken =
-        'jwt_refresh_new_${DateTime.now().millisecondsSinceEpoch}';
+    final newAccessToken = 'jwt_refreshed_${DateTime.now().millisecondsSinceEpoch}';
+    final newRefreshToken = 'jwt_refresh_new_${DateTime.now().millisecondsSinceEpoch}';
     final expiresAt = DateTime.now().add(const Duration(hours: 24));
 
     return {
@@ -377,9 +330,7 @@ class AuthMockData {
   }
 
   /// 백엔드 로그아웃 Mock 처리
-  static Future<Map<String, dynamic>> mockBackendLogout(
-    String accessToken,
-  ) async {
+  static Future<Map<String, dynamic>> mockBackendLogout(String accessToken) async {
     await MockDataBase.simulateApiDelay(milliseconds: 500);
 
     return {'success': true, 'message': 'ログアウトに成功しました'};

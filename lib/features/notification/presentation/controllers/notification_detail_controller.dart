@@ -22,15 +22,9 @@ class NotificationDetailController {
   );
 
   /// 알림 데이터 로드
-  Future<NotificationModel?> loadNotification(
-    String userId,
-    String notificationId,
-  ) async {
+  Future<NotificationModel?> loadNotification(String userId, String notificationId) async {
     try {
-      final result = await _getNotificationByIdUseCase.call(
-        userId,
-        notificationId,
-      );
+      final result = await _getNotificationByIdUseCase.call(userId, notificationId);
       return result.dataOrNull;
     } catch (error) {
       rethrow;
@@ -62,9 +56,7 @@ class NotificationDetailController {
     String notificationId,
   ) async {
     try {
-      final confirmed = await _uiController.showDeleteConfirmationDialog(
-        context,
-      );
+      final confirmed = await _uiController.showDeleteConfirmationDialog(context);
       if (confirmed && context.mounted) {
         await _deleteNotificationUseCase.call(userId, notificationId);
         if (context.mounted) {
@@ -91,15 +83,11 @@ class NotificationDetailController {
       } else if (actionUrl.startsWith('/feeding-schedule/')) {
         final petId = actionUrl.split('/')[2];
         final petName = notification.petName ?? '';
-        context.push(
-          '${RouteConstants.feedingScheduleRoute}/$petId?petName=$petName',
-        );
+        context.push('${RouteConstants.feedingScheduleRoute}/$petId?petName=$petName');
       } else if (actionUrl.startsWith('/feeding-analysis/')) {
         final petId = actionUrl.split('/')[2];
         final petName = notification.petName ?? '';
-        context.push(
-          '${RouteConstants.feedingAnalysisRoute}/$petId?petName=$petName',
-        );
+        context.push('${RouteConstants.feedingAnalysisRoute}/$petId?petName=$petName');
       } else if (actionUrl == '/walk') {
         context.push(RouteConstants.walkRoute);
       } else if (actionUrl == '/vaccines') {

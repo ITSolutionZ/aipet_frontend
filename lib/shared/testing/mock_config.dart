@@ -48,9 +48,7 @@ class MockConfig {
       case 'development':
       case 'dev':
       default:
-        return kDebugMode
-            ? MockEnvironment.development
-            : MockEnvironment.production;
+        return kDebugMode ? MockEnvironment.development : MockEnvironment.production;
     }
   }
 
@@ -134,10 +132,7 @@ class MockConfig {
     'shouldSimulateNetworkDelay': shouldSimulateNetworkDelay,
     'shouldSimulateErrors': shouldSimulateErrors,
     'enableMockLogging': enableMockLogging,
-    'overrides': {
-      'environment': _overrideEnvironment?.name,
-      'useMock': _overrideUseMock,
-    },
+    'overrides': {'environment': _overrideEnvironment?.name, 'useMock': _overrideUseMock},
     'environmentVariables': {
       'FLUTTER_ENV': Platform.environment['FLUTTER_ENV'],
       'USE_MOCK_DATA': Platform.environment['USE_MOCK_DATA'],

@@ -25,10 +25,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
           // AI 아바타
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
-            decoration: const BoxDecoration(
-              color: AppColors.pointBrown,
-              shape: BoxShape.circle,
-            ),
+            decoration: const BoxDecoration(color: AppColors.pointBrown, shape: BoxShape.circle),
             child: Image.asset(
               'assets/icons/logo_notinclude_text.png',
               width: 20,
@@ -72,10 +69,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
 
                   Text(
                     '該当するカテゴリを選択してください：',
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointGray,
-                      height: 1.4,
-                    ),
+                    style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray, height: 1.4),
                   ),
                   const SizedBox(height: AppSpacing.md),
 
@@ -85,12 +79,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
                   const SizedBox(height: AppSpacing.sm),
 
                   // 타임스탬프
-                  Text(
-                    '今',
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointGray,
-                    ),
-                  ),
+                  Text('今', style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
                 ],
               ),
             ),
@@ -116,17 +105,12 @@ class AiCategorySelectionBubble extends StatelessWidget {
     return GestureDetector(
       onTap: () => onCategorySelected(category),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.pointBrown : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(
-            color: isSelected
-                ? AppColors.pointBrown
-                : AppColors.pointBrown.withValues(alpha: 0.3),
+            color: isSelected ? AppColors.pointBrown : AppColors.pointBrown.withValues(alpha: 0.3),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
@@ -142,11 +126,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              category.icon,
-              size: 18,
-              color: isSelected ? Colors.white : AppColors.pointBrown,
-            ),
+            Icon(category.icon, size: 18, color: isSelected ? Colors.white : AppColors.pointBrown),
             const SizedBox(width: AppSpacing.xs),
             Text(
               category.name,

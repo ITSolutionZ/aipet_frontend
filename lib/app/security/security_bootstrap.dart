@@ -35,9 +35,7 @@ class SecurityBootstrap {
 
       // 프로덕션 환경에서는 보안 검증 실패 시 앱 종료
       if (kReleaseMode) {
-        throw SecurityBootstrapException(
-          'Security system initialization failed: ${e.toString()}',
-        );
+        throw SecurityBootstrapException('Security system initialization failed: ${e.toString()}');
       }
     }
   }
@@ -77,9 +75,7 @@ class SecurityBootstrap {
         }
       }
     } catch (e) {
-      throw SecurityBootstrapException(
-        'Security validation failed: ${e.toString()}',
-      );
+      throw SecurityBootstrapException('Security validation failed: ${e.toString()}');
     }
   }
 
@@ -133,10 +129,8 @@ class SecurityBootstrap {
     return {
       'isInitialized': _isInitialized,
       'environment': EnvironmentConfig.currentEnvironment.name,
-      'isSecurityValidationEnabled':
-          EnvironmentConfig.isSecurityValidationEnabled,
-      'isPerformanceMonitoringEnabled':
-          EnvironmentConfig.isPerformanceMonitoringEnabled,
+      'isSecurityValidationEnabled': EnvironmentConfig.isSecurityValidationEnabled,
+      'isPerformanceMonitoringEnabled': EnvironmentConfig.isPerformanceMonitoringEnabled,
       'isMockModeAllowed': EnvironmentConfig.isMockModeAllowed,
       'timestamp': DateTime.now().toIso8601String(),
     };

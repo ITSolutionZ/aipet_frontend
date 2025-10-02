@@ -21,12 +21,8 @@ class PetActivityTab extends ConsumerWidget {
   }
 
   Widget _buildActivityContent(List<dynamic> tricks) {
-    final learnedTricks = tricks
-        .where((trick) => trick.progress != null)
-        .toList();
-    final availableTricks = tricks
-        .where((trick) => trick.progress == null)
-        .toList();
+    final learnedTricks = tricks.where((trick) => trick.progress != null).toList();
+    final availableTricks = tricks.where((trick) => trick.progress == null).toList();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -45,9 +41,7 @@ class PetActivityTab extends ConsumerWidget {
   }
 
   Widget _buildActivityStatsSection(int learnedCount, int totalCount) {
-    final progressPercentage = totalCount > 0
-        ? (learnedCount / totalCount) * 100
-        : 0;
+    final progressPercentage = totalCount > 0 ? (learnedCount / totalCount) * 100 : 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,10 +104,7 @@ class PetActivityTab extends ConsumerWidget {
               ],
             ),
             child: const Center(
-              child: Text(
-                'まだ学習したトリックがありません',
-                style: TextStyle(color: AppColors.pointGray),
-              ),
+              child: Text('まだ学習したトリックがありません', style: TextStyle(color: AppColors.pointGray)),
             ),
           )
         else

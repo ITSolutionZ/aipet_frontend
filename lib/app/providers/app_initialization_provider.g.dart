@@ -6,7 +6,7 @@ part of 'app_initialization_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appInitializationHash() => r'556fb52f4b746274ba5fca35c37933645d575f1d';
+String _$appInitializationHash() => r'2e5e1ee14460eed155d4ea76cbac55975f0e5071';
 
 /// 앱 초기화 상태를 관리하는 Provider
 ///

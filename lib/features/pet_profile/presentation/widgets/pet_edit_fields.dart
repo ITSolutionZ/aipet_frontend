@@ -50,11 +50,7 @@ class WeightInputField extends StatelessWidget {
   final TextEditingController controller;
   final ValueChanged<double?> onChanged;
 
-  const WeightInputField({
-    super.key,
-    required this.controller,
-    required this.onChanged,
-  });
+  const WeightInputField({super.key, required this.controller, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +59,7 @@ class WeightInputField extends StatelessWidget {
       child: TextField(
         controller: controller,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}')),
-        ],
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}'))],
         decoration: const InputDecoration(
           suffix: Text('kg'),
           isDense: true,
@@ -98,14 +92,10 @@ class EditableTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       maxLines: maxLines,
-      style: AppFonts.bodyMedium.copyWith(
-        color: AppColors.pointDark.withValues(alpha: 0.8),
-      ),
+      style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark.withValues(alpha: 0.8)),
       decoration: InputDecoration(
         hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
         contentPadding: const EdgeInsets.all(AppSpacing.md),
       ),
       onChanged: onChanged,
@@ -123,10 +113,7 @@ class NameEditField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      style: AppFonts.titleLarge.copyWith(
-        color: AppColors.pointDark,
-        fontWeight: FontWeight.bold,
-      ),
+      style: AppFonts.titleLarge.copyWith(color: AppColors.pointDark, fontWeight: FontWeight.bold),
       decoration: const InputDecoration(
         border: UnderlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(vertical: 8),

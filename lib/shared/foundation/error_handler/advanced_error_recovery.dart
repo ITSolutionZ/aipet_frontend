@@ -40,11 +40,8 @@ class CircuitBreaker {
   /// Circuit Breaker를 통한 작업 실행
   Future<Result> execute<T>(Future<T> Function() operation) async {
     if (_state == CircuitState.open) {
-      if (_nextAttemptTime != null &&
-          DateTime.now().isBefore(_nextAttemptTime!)) {
-        return Result.failure(
-          'Circuit breaker is open. Next attempt at $_nextAttemptTime',
-        );
+      if (_nextAttemptTime != null && DateTime.now().isBefore(_nextAttemptTime!)) {
+        return Result.failure('Circuit breaker is open. Next attempt at $_nextAttemptTime');
       }
       _state = CircuitState.halfOpen;
     }
@@ -154,10 +151,7 @@ class FallbackStrategy {
     } catch (e) {
       try {
         final fallbackResult = await fallbackOperation().timeout(timeout);
-        return Result.success(
-          'Fallback operation succeeded: $name',
-          fallbackResult,
-        );
+        return Result.success('Fallback operation succeeded: $name', fallbackResult);
       } catch (fallbackError) {
         return Result.failure(
           'Both primary and fallback operations failed. Primary: ${e.toString()}, Fallback: ${fallbackError.toString()}',
@@ -167,20 +161,14 @@ class FallbackStrategy {
   }
 
   /// 동기 Fallback 작업 실행
-  Result executeSync<T>(
-    T Function() primaryOperation,
-    T Function() fallbackOperation,
-  ) {
+  Result executeSync<T>(T Function() primaryOperation, T Function() fallbackOperation) {
     try {
       final result = primaryOperation();
       return Result.success('Success', result);
     } catch (e) {
       try {
         final fallbackResult = fallbackOperation();
-        return Result.success(
-          'Fallback operation succeeded: $name',
-          fallbackResult,
-        );
+        return Result.success('Fallback operation succeeded: $name', fallbackResult);
       } catch (fallbackError) {
         return Result.failure(
           'Both primary and fallback operations failed. Primary: ${e.toString()}, Fallback: ${fallbackError.toString()}',
@@ -226,10 +214,7 @@ class AdvancedErrorRecoveryManager extends BaseLoggingService {
   }
 
   /// 지수 백오프 재시도 전략 등록
-  void registerRetryStrategy(
-    String name,
-    ExponentialBackoffRetry retryStrategy,
-  ) {
+  void registerRetryStrategy(String name, ExponentialBackoffRetry retryStrategy) {
     _retryStrategies[name] = retryStrategy;
     logInfo('Retry strategy registered: $name');
   }
@@ -278,31 +263,21 @@ class AdvancedErrorRecoveryManager extends BaseLoggingService {
     required Future<T> Function() fallbackOperation,
   }) async {
     // 1. Circuit Breaker로 실행
-    final circuitResult = await executeWithCircuitBreaker(
-      circuitBreakerName,
-      primaryOperation,
-    );
+    final circuitResult = await executeWithCircuitBreaker(circuitBreakerName, primaryOperation);
 
     if (circuitResult.isSuccess) {
       return circuitResult;
     }
 
     // 2. Retry 전략으로 재시도
-    final retryResult = await executeWithRetry(
-      retryStrategyName,
-      primaryOperation,
-    );
+    final retryResult = await executeWithRetry(retryStrategyName, primaryOperation);
 
     if (retryResult.isSuccess) {
       return retryResult;
     }
 
     // 3. Fallback 전략으로 최종 시도
-    return executeWithFallback(
-      fallbackStrategyName,
-      primaryOperation,
-      fallbackOperation,
-    );
+    return executeWithFallback(fallbackStrategyName, primaryOperation, fallbackOperation);
   }
 
   /// Circuit Breaker 상태 조회
@@ -339,10 +314,7 @@ extension AdvancedErrorRecoveryExtensions<T> on Future<T> Function() {
 
   /// 지수 백오프 재시도와 함께 실행
   Future<Result> withExponentialBackoff(String retryStrategyName) async {
-    return AdvancedErrorRecoveryManager.instance.executeWithRetry(
-      retryStrategyName,
-      this,
-    );
+    return AdvancedErrorRecoveryManager.instance.executeWithRetry(retryStrategyName, this);
   }
 
   /// Fallback과 함께 실행
@@ -361,13 +333,9 @@ extension AdvancedErrorRecoveryExtensions<T> on Future<T> Function() {
 /// 동기 함수 고급 에러 복구 확장 메서드들
 extension SyncAdvancedErrorRecoveryExtensions<T> on T Function() {
   /// 동기 Fallback과 함께 실행
-  Result withFallbackSync(
-    String fallbackStrategyName,
-    T Function() fallbackOperation,
-  ) {
-    final fallbackStrategy = AdvancedErrorRecoveryManager
-        .instance
-        ._fallbackStrategies[fallbackStrategyName];
+  Result withFallbackSync(String fallbackStrategyName, T Function() fallbackOperation) {
+    final fallbackStrategy =
+        AdvancedErrorRecoveryManager.instance._fallbackStrategies[fallbackStrategyName];
     if (fallbackStrategy == null) {
       try {
         final result = this();

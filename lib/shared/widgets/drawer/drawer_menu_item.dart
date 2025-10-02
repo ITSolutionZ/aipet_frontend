@@ -17,11 +17,7 @@ class DrawerMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: isSelected ? Colors.white : Colors.white.withAlpha(80),
-        size: 20,
-      ),
+      leading: Icon(icon, color: isSelected ? Colors.white : Colors.white.withAlpha(80), size: 20),
       title: Text(
         title,
         style: TextStyle(

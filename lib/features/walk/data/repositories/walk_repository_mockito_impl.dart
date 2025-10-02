@@ -13,9 +13,7 @@ class WalkRepositoryMockitoImpl implements WalkRepository {
 
   void _initializeMockData() {
     final mockData = WalkMockService.getMockWalkRecords();
-    _walkRecords.addAll(
-      mockData.map((data) => WalkRecordEntity.fromJson(data)).toList(),
-    );
+    _walkRecords.addAll(mockData.map((data) => WalkRecordEntity.fromJson(data)).toList());
   }
 
   @override
@@ -55,9 +53,7 @@ class WalkRepositoryMockitoImpl implements WalkRepository {
   Future<WalkRecordEntity?> getCurrentWalk() async {
     await Future.delayed(const Duration(milliseconds: 200));
     try {
-      return _walkRecords.firstWhere(
-        (record) => record.status == WalkStatus.inProgress,
-      );
+      return _walkRecords.firstWhere((record) => record.status == WalkStatus.inProgress);
     } catch (e) {
       return null;
     }
@@ -71,11 +67,7 @@ class WalkRepositoryMockitoImpl implements WalkRepository {
   }
 
   @override
-  Future<WalkRecordEntity> endWalk(
-    String walkId, {
-    double? distance,
-    String? notes,
-  }) async {
+  Future<WalkRecordEntity> endWalk(String walkId, {double? distance, String? notes}) async {
     await Future.delayed(const Duration(milliseconds: 500));
     final index = _walkRecords.indexWhere((record) => record.id == walkId);
     if (index != -1) {
@@ -106,9 +98,7 @@ class WalkRepositoryMockitoImpl implements WalkRepository {
   @override
   Future<void> updateWalkRecord(WalkRecordEntity walkRecord) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    final index = _walkRecords.indexWhere(
-      (record) => record.id == walkRecord.id,
-    );
+    final index = _walkRecords.indexWhere((record) => record.id == walkRecord.id);
     if (index != -1) {
       _walkRecords[index] = walkRecord;
     }

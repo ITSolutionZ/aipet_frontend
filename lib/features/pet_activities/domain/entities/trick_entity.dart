@@ -77,19 +77,13 @@ class TrickEntity {
       status: newProgress >= _getRequiredPracticeCount()
           ? TrickStatus.completed
           : TrickStatus.learning,
-      learnedAt: newProgress >= _getRequiredPracticeCount()
-          ? DateTime.now()
-          : learnedAt,
+      learnedAt: newProgress >= _getRequiredPracticeCount() ? DateTime.now() : learnedAt,
     );
   }
 
   /// 완료 처리
   TrickEntity markAsCompleted() {
-    return copyWith(
-      status: TrickStatus.completed,
-      isLearned: true,
-      learnedAt: DateTime.now(),
-    );
+    return copyWith(status: TrickStatus.completed, isLearned: true, learnedAt: DateTime.now());
   }
 
   /// 난이도별 필요 연습 횟수

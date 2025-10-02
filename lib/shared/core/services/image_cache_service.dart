@@ -44,8 +44,7 @@ class _CacheEntry {
 
   const _CacheEntry(this.data, this.timestamp);
 
-  bool get isExpired =>
-      DateTime.now().difference(timestamp) > const Duration(hours: 1);
+  bool get isExpired => DateTime.now().difference(timestamp) > const Duration(hours: 1);
 }
 
 /// 이미지 캐시 서비스
@@ -69,10 +68,7 @@ class ImageCacheService {
   ImageCacheConfig get config => _config;
 
   /// 이미지 로드 (URL)
-  Future<Uint8List?> loadImageFromUrl(
-    String url, {
-    ImageCacheConfig? config,
-  }) async {
+  Future<Uint8List?> loadImageFromUrl(String url, {ImageCacheConfig? config}) async {
     final cacheConfig = config ?? _config;
 
     try {
@@ -127,10 +123,7 @@ class ImageCacheService {
   }
 
   /// 이미지 로드 (Asset)
-  Future<Uint8List?> loadImageFromAsset(
-    String assetPath, {
-    ImageCacheConfig? config,
-  }) async {
+  Future<Uint8List?> loadImageFromAsset(String assetPath, {ImageCacheConfig? config}) async {
     final cacheConfig = config ?? _config;
 
     try {
@@ -162,9 +155,7 @@ class ImageCacheService {
 
   /// Asset 바이트 로드
   Future<Uint8List> _loadAssetBytes(String assetPath) async {
-    final data = await DefaultAssetBundle.of(
-      navigatorKey.currentContext!,
-    ).load(assetPath);
+    final data = await DefaultAssetBundle.of(navigatorKey.currentContext!).load(assetPath);
     return data.buffer.asUint8List();
   }
 
@@ -172,9 +163,7 @@ class ImageCacheService {
   Future<Uint8List?> _loadFromDiskCache(String url) async {
     try {
       final cacheDir = await getTemporaryDirectory();
-      final cacheFile = File(
-        '${cacheDir.path}/image_cache/${_getCacheKey(url)}',
-      );
+      final cacheFile = File('${cacheDir.path}/image_cache/${_getCacheKey(url)}');
 
       if (await cacheFile.exists()) {
         return await cacheFile.readAsBytes();
@@ -219,10 +208,7 @@ class ImageCacheService {
   }
 
   /// 캐시 정리
-  Future<void> clearCache({
-    bool clearMemory = true,
-    bool clearDisk = true,
-  }) async {
+  Future<void> clearCache({bool clearMemory = true, bool clearDisk = true}) async {
     if (clearMemory) {
       _memoryCache.clear();
     }
@@ -275,9 +261,7 @@ class ImageCacheService {
 
     try {
       final cacheDir = await getTemporaryDirectory();
-      final cacheFile = File(
-        '${cacheDir.path}/image_cache/${_getCacheKey(key)}',
-      );
+      final cacheFile = File('${cacheDir.path}/image_cache/${_getCacheKey(key)}');
 
       if (await cacheFile.exists()) {
         await cacheFile.delete();
@@ -312,8 +296,7 @@ class ImageCacheService {
         await for (final file in cacheDirFile.list()) {
           if (file is File) {
             final stat = await file.stat();
-            if (DateTime.now().difference(stat.modified) >
-                const Duration(days: 7)) {
+            if (DateTime.now().difference(stat.modified) > const Duration(days: 7)) {
               await file.delete();
             }
           }
@@ -362,27 +345,16 @@ class CachedImage extends StatelessWidget {
           return errorWidget ?? _buildDefaultErrorWidget();
         }
 
-        return Image.memory(
-          snapshot.data!,
-          width: width,
-          height: height,
-          fit: fit,
-        );
+        return Image.memory(snapshot.data!, width: width, height: height, fit: fit);
       },
     );
   }
 
   Future<Uint8List?> _loadImage() {
     if (imageUrl.startsWith('http')) {
-      return ImageCacheService().loadImageFromUrl(
-        imageUrl,
-        config: cacheConfig,
-      );
+      return ImageCacheService().loadImageFromUrl(imageUrl, config: cacheConfig);
     } else {
-      return ImageCacheService().loadImageFromAsset(
-        imageUrl,
-        config: cacheConfig,
-      );
+      return ImageCacheService().loadImageFromAsset(imageUrl, config: cacheConfig);
     }
   }
 
@@ -429,10 +401,7 @@ class CachedAssetImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Uint8List?>(
-      future: ImageCacheService().loadImageFromAsset(
-        assetPath,
-        config: cacheConfig,
-      ),
+      future: ImageCacheService().loadImageFromAsset(assetPath, config: cacheConfig),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return placeholder ?? _buildDefaultPlaceholder();
@@ -442,12 +411,7 @@ class CachedAssetImage extends StatelessWidget {
           return errorWidget ?? _buildDefaultErrorWidget();
         }
 
-        return Image.memory(
-          snapshot.data!,
-          width: width,
-          height: height,
-          fit: fit,
-        );
+        return Image.memory(snapshot.data!, width: width, height: height, fit: fit);
       },
     );
   }

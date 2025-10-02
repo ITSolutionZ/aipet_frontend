@@ -10,12 +10,10 @@ class EnhancedExchangeTokenButton extends ConsumerStatefulWidget {
   const EnhancedExchangeTokenButton({super.key});
 
   @override
-  ConsumerState<EnhancedExchangeTokenButton> createState() =>
-      _EnhancedExchangeTokenButtonState();
+  ConsumerState<EnhancedExchangeTokenButton> createState() => _EnhancedExchangeTokenButtonState();
 }
 
-class _EnhancedExchangeTokenButtonState
-    extends ConsumerState<EnhancedExchangeTokenButton> {
+class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTokenButton> {
   DateTime? _tokenExpiry;
   bool _isExpired = false;
   bool _isExpiringSoon = false;
@@ -88,8 +86,7 @@ class _EnhancedExchangeTokenButtonState
             const SizedBox(height: 16),
 
             // 리셋 버튼
-            if (tokenState.isSuccess || tokenState.errorMessage != null)
-              _buildResetButton(ref),
+            if (tokenState.isSuccess || tokenState.errorMessage != null) _buildResetButton(ref),
           ],
         ),
       ),
@@ -137,18 +134,9 @@ class _EnhancedExchangeTokenButtonState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                  ),
+                  Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
                 ],
               ),
             ),
@@ -164,9 +152,7 @@ class _EnhancedExchangeTokenButtonState
       onPressed: _checkTokenStatus,
       icon: const Icon(Icons.refresh),
       label: const Text('토큰 상태 새로고침'),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-      ),
+      style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
     );
   }
 
@@ -225,10 +211,7 @@ class _EnhancedExchangeTokenButtonState
             else
               Icon(icon, size: 48, color: Colors.grey.shade700),
             const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ...[
               const SizedBox(height: 8),
               Text(
@@ -243,18 +226,12 @@ class _EnhancedExchangeTokenButtonState
     );
   }
 
-  Widget _buildExchangeButton(
-    BuildContext context,
-    WidgetRef ref,
-    TokenExchangeState state,
-  ) {
+  Widget _buildExchangeButton(BuildContext context, WidgetRef ref, TokenExchangeState state) {
     return ElevatedButton(
       onPressed: state.isLoading
           ? null
           : () async {
-              await ref
-                  .read(authControllerProvider.notifier)
-                  .exchangeServerToken();
+              await ref.read(authControllerProvider.notifier).exchangeServerToken();
 
               // 토큰 상태 새로고침 // Changed
               await _checkTokenStatus();
@@ -263,10 +240,7 @@ class _EnhancedExchangeTokenButtonState
                 final newState = ref.read(authControllerProvider);
                 if (newState.isSuccess) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('✅ 서버 JWT 저장 완료!'),
-                      backgroundColor: Colors.green,
-                    ),
+                    const SnackBar(content: Text('✅ 서버 JWT 저장 완료!'), backgroundColor: Colors.green),
                   );
                 } else if (newState.errorMessage != null) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -301,10 +275,7 @@ class _EnhancedExchangeTokenButtonState
         padding: const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
-      child: const Text(
-        '다시 시도',
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-      ),
+      child: const Text('다시 시도', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
     );
   }
 }

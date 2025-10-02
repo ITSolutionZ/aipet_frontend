@@ -34,9 +34,7 @@ class PetMapper {
   }
 
   /// Map 리스트를 PetSummaryEntity 리스트로 직접 변환
-  static List<PetSummaryEntity> toSummaryEntityListFromMaps(
-    List<Map<String, dynamic>> maps,
-  ) {
+  static List<PetSummaryEntity> toSummaryEntityListFromMaps(List<Map<String, dynamic>> maps) {
     return maps.map((map) => toSummaryEntity(fromMap(map))).toList();
   }
 
@@ -59,9 +57,7 @@ class PetMapper {
   }
 
   /// 여러 PetProfileEntity를 PetSummaryEntity 리스트로 변환
-  static List<PetSummaryEntity> toSummaryEntityList(
-    List<PetProfileEntity> profiles,
-  ) {
+  static List<PetSummaryEntity> toSummaryEntityList(List<PetProfileEntity> profiles) {
     return profiles.map(toSummaryEntity).toList();
   }
 }

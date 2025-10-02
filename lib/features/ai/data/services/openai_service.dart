@@ -22,6 +22,8 @@ class OpenAIService extends BaseLoggingService {
   Future<Result<String>> generateResponse(
     String message, {
     PetProfileEntity? petContext,
+    String? weatherAdvice,
+    String? walkGuide,
   }) async {
     final apiKey = AppConfig.current.openaiApiKey;
 
@@ -80,7 +82,14 @@ ${_translateReasonToJapanese(validationResult.reason)}
         data: {
           'model': AiApiConstants.openaiModel,
           'messages': [
-            {'role': 'system', 'content': _buildSystemPrompt(petContext)},
+            {
+              'role': 'system',
+              'content': _buildSystemPrompt(
+                petContext,
+                weatherAdvice,
+                walkGuide,
+              ),
+            },
             {'role': 'user', 'content': message},
           ],
           'max_tokens': AiApiConstants.openaiMaxTokens,
@@ -162,7 +171,11 @@ ${_translateReasonToJapanese(validationResult.reason)}
   }
 
   /// システムプロンプトを構築
-  String _buildSystemPrompt(PetProfileEntity? petContext) {
+  String _buildSystemPrompt(
+    PetProfileEntity? petContext,
+    String? weatherAdvice,
+    String? walkGuide,
+  ) {
     String basePrompt = '''あなたはペット専門のAIアシスタントです。
 ペットの健康、行動、トレーニング、栄養、一般的なケアに関する質問にのみお答えください。
 回答は親しみやすく、わかりやすく書いてください。
@@ -170,6 +183,21 @@ ${_translateReasonToJapanese(validationResult.reason)}
 
 重要：ペットに関係のない質問（政治、経済、エンターテイメント、ゲーム、料理など）には答えず、
 "ペットに関する質問のみお答えできます"と回答してください。''';
+
+    // 날씨 및 산책 정보 추가
+    if (weatherAdvice != null || walkGuide != null) {
+      basePrompt += '\n\n【今日の情報】';
+
+      if (weatherAdvice != null) {
+        basePrompt += '\n・天気アドバイス：$weatherAdvice';
+      }
+
+      if (walkGuide != null) {
+        basePrompt += '\n・散歩ガイド：$walkGuide';
+      }
+
+      basePrompt += '\n\n上記の情報を参考にして、必要に応じて散歩や外出に関するアドバイスに反映してください。';
+    }
 
     if (petContext != null) {
       final age = petContext.age;

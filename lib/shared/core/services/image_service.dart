@@ -86,9 +86,7 @@ class ImageService {
     } catch (e) {
       if (context.mounted) {
         final isSimulator = e.toString().contains('simulator');
-        final message = isSimulator
-            ? '시뮬레이터에서는 카메라를 사용할 수 없습니다'
-            : '카메라 접근 권한이 필요합니다';
+        final message = isSimulator ? '시뮬레이터에서는 카메라를 사용할 수 없습니다' : '카메라 접근 권한이 필요합니다';
 
         if (isSimulator) {
           SnackBarService.showWarning(context, message);
@@ -219,10 +217,7 @@ class ImageService {
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
                             color: AppColors.pointGray.withValues(alpha: 0.2),
-                            child: const Icon(
-                              Icons.pets,
-                              color: AppColors.pointGray,
-                            ),
+                            child: const Icon(Icons.pets, color: AppColors.pointGray),
                           );
                         },
                       ),
@@ -232,12 +227,7 @@ class ImageService {
               },
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('취소'),
-            ),
-          ],
+          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('취소'))],
         );
       },
     );
@@ -294,10 +284,7 @@ class ImageService {
   }
 
   /// 이미지 삭제
-  static Future<bool> deleteImage(
-    BuildContext context,
-    String imagePath,
-  ) async {
+  static Future<bool> deleteImage(BuildContext context, String imagePath) async {
     try {
       // 네트워크나 에셋 이미지는 삭제할 수 없음
       if (imagePath.startsWith('http') || imagePath.startsWith('assets/')) {

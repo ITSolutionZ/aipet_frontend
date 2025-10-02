@@ -27,10 +27,7 @@ class WeatherData {
     required this.pressure,
   });
 
-  factory WeatherData.fromOneCallJson(
-    Map<String, dynamic> json,
-    String location,
-  ) {
+  factory WeatherData.fromOneCallJson(Map<String, dynamic> json, String location) {
     final current = json['current'] as Map<String, dynamic>? ?? {};
     final weatherList = current['weather'] as List? ?? [];
     final weather = weatherList.isNotEmpty
@@ -163,9 +160,5 @@ class WeatherLocation {
   final double longitude;
   final String name;
 
-  const WeatherLocation({
-    required this.latitude,
-    required this.longitude,
-    required this.name,
-  });
+  const WeatherLocation({required this.latitude, required this.longitude, required this.name});
 }

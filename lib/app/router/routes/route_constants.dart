@@ -25,6 +25,8 @@ class RouteConstants {
   static const String walkRoute = '/walk';
   static const String walkFromHomeRoute = '/walk-from-home';
   static const String walkDetailRoute = '/walk/detail';
+  static const String walkCalendarRoute = '/walk/calendar';
+  static const String liveWalkRoute = '/walk/live';
   static const String calendarRoute = '/calendar';
   static const String settingsRoute = '/settings';
 
@@ -36,6 +38,7 @@ class RouteConstants {
   static const String tricksRoute = '/home/tricks';
   static const String allTricksRoute = '/all-tricks';
   static const String trainingVideosRoute = '/training-videos';
+  static const String qrCodeRoute = '/home/qr';
 
   // ===== SCHEDULING TAB SUB-ROUTES =====
   static const String feedingScheduleRoute = '/scheduling/feeding-schedule';
@@ -72,6 +75,7 @@ class RouteConstants {
   static const String accountDeleteRoute = '/settings/account-delete';
   static const String pushNotificationRoute = '/settings/push-notification';
   static const String alarmTimeSettingsRoute = '/settings/alarm-time-settings';
+  static const String locationSettingRoute = '/settings/location-setting';
 
   // ===== PET FEEDING =====
   static const String feedingMainRoute = '/feeding-main';

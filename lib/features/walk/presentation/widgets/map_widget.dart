@@ -10,18 +10,47 @@ import 'map/walk_map_camera_controller.dart';
 import 'map/walk_map_marker_builder.dart';
 import 'map/walk_map_polyline_builder.dart';
 
-final mapWidgetProvider =
-    StateNotifierProvider.family<
-      MapWidgetController,
-      MapWidgetState,
-      MapWidgetParams
-    >((ref, params) => MapWidgetController(params));
+final mapWidgetProvider = StateNotifierProvider.family
+    .autoDispose<MapWidgetController, MapWidgetState, MapWidgetParams>((
+      ref,
+      params,
+    ) {
+      // keepAlive를 사용하여 dispose 방지
+      ref.keepAlive();
+
+      final controller = MapWidgetController(params);
+      debugPrint('🗺️ MapWidgetProvider 생성됨 - keepAlive 설정');
+
+      return controller;
+    });
+
+/// 전역 지도 컨트롤러 Provider (현재 위치 이동용)
+final globalMapControllerProvider = StateProvider<GoogleMapController?>(
+  (ref) => null,
+);
 
 class MapWidgetParams {
   final List<WalkRecordEntity> walkRecords;
-  final PetInfo? selectedPet;
+  final WalkPetInfo? selectedPet;
+  final List<Map<String, dynamic>> petActivities;
 
-  const MapWidgetParams({required this.walkRecords, this.selectedPet});
+  const MapWidgetParams({
+    required this.walkRecords,
+    this.selectedPet,
+    this.petActivities = const [],
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is MapWidgetParams &&
+        other.walkRecords == walkRecords &&
+        other.selectedPet == selectedPet &&
+        other.petActivities == petActivities;
+  }
+
+  @override
+  int get hashCode => Object.hash(walkRecords, selectedPet, petActivities);
 }
 
 class MapWidgetState {
@@ -54,32 +83,70 @@ class MapWidgetState {
 
 class MapWidgetController extends StateNotifier<MapWidgetState> {
   final MapWidgetParams params;
+  final LocationCacheService _locationCache = LocationCacheService.instance;
 
   MapWidgetController(this.params) : super(const MapWidgetState()) {
+    // 즉시 기본 위치를 설정한 후 실제 위치를 가져오도록 변경
+    _setDefaultLocation();
     getCurrentLocation();
     setupMarkersAndPolylines();
   }
 
   Future<void> getCurrentLocation() async {
     try {
+      // 1. 먼저 캐시된 위치 확인
+      final cachedPosition = _locationCache.getCachedPosition();
+      if (cachedPosition != null) {
+        state = state.copyWith(currentPosition: cachedPosition);
+        if (state.mapController != null) {
+          await WalkMapCameraController.moveToCurrentLocation(
+            state.mapController!,
+            cachedPosition,
+          );
+        }
+        return;
+      }
+
+      debugPrint('🗺️ MapWidget: 현재 위치 가져오기 시작 (캐시 없음)');
       LocationPermission permission = await Geolocator.checkPermission();
+      debugPrint('🗺️ MapWidget: 위치 권한 상태 - $permission');
+
       if (permission == LocationPermission.denied) {
+        debugPrint('🗺️ MapWidget: 위치 권한 요청 중...');
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
+          debugPrint('❌ MapWidget: 위치 권한 거부됨 - 기본 위치 사용');
+          _setDefaultLocation();
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
+        debugPrint('❌ MapWidget: 위치 권한 영구 거부됨 - 기본 위치 사용');
+        _setDefaultLocation();
         return;
       }
 
-      final Position position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
+      debugPrint('🗺️ MapWidget: GPS 위치 가져오는 중...');
+      final Position position =
+          await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+            ),
+          ).timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              debugPrint('⚠️ MapWidget: GPS 위치 취득 타임아웃 - 기본 위치 사용');
+              throw Exception('GPS 위치 취득 タイムアウト');
+            },
+          );
+
+      debugPrint(
+        '✅ MapWidget: 현재 위치 가져오기 성공 - lat: ${position.latitude}, lng: ${position.longitude}',
       );
 
+      // 위치 정보 캐싱
+      _locationCache.cachePosition(position);
       state = state.copyWith(currentPosition: position);
 
       if (state.mapController != null) {
@@ -89,8 +156,34 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
         );
       }
     } catch (e) {
-      debugPrint('위치 가져오기 실패: $e');
+      debugPrint('❌ MapWidget: 위치 가져오기 실패 - $e');
+      _setDefaultLocation();
     }
+  }
+
+  /// 강제로 새로운 위치 가져오기 (캐시 무시)
+  Future<void> forceRefreshLocation() async {
+    _locationCache.invalidateCache();
+    await getCurrentLocation();
+  }
+
+  /// 기본 위치 설정 (도쿄)
+  void _setDefaultLocation() {
+    final defaultPosition = Position(
+      latitude: 35.6762,
+      longitude: 139.6503,
+      timestamp: DateTime.now(),
+      accuracy: 0,
+      altitude: 0,
+      heading: 0,
+      speed: 0,
+      speedAccuracy: 0,
+      altitudeAccuracy: 0,
+      headingAccuracy: 0,
+    );
+
+    debugPrint('🗺️ MapWidget: 기본 위치 설정 (도쿄) - lat: 35.6762, lng: 139.6503');
+    state = state.copyWith(currentPosition: defaultPosition);
   }
 
   void setupMarkersAndPolylines() {
@@ -103,6 +196,9 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
       ),
     );
 
+    // 펫 활동 마커 추가 (똥/오줌)
+    markers.addAll(_buildPetActivityMarkers());
+
     final polylines = <Polyline>{};
     polylines.addAll(
       WalkMapPolylineBuilder.buildAllPolylines(
@@ -114,79 +210,169 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
     state = state.copyWith(markers: markers, polylines: polylines);
   }
 
-  void setMapController(GoogleMapController controller) {
+  /// 펫 활동 마커 생성 (똥/오줌) - 각각 개별 표시
+  Set<Marker> _buildPetActivityMarkers() {
+    final markers = <Marker>{};
+
+    for (int i = 0; i < params.petActivities.length; i++) {
+      final activity = params.petActivities[i];
+      final type = activity['type'] as String;
+      final lat = activity['latitude'] as double;
+      final lng = activity['longitude'] as double;
+
+      // 같은 위치에 여러 마커가 있을 경우 약간 오프셋 적용
+      final offset = _calculateOffset(i, params.petActivities, lat, lng);
+
+      markers.add(
+        Marker(
+          markerId: MarkerId('activity_$i'),
+          position: LatLng(
+            lat + offset['latOffset']!,
+            lng + offset['lngOffset']!,
+          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            type == 'poop'
+                ? BitmapDescriptor
+                      .hueOrange // 똥: 주황색
+                : BitmapDescriptor.hueAzure, // 오줌: 하늘색
+          ),
+          infoWindow: InfoWindow(
+            title: type == 'poop' ? '💩 排便' : '💧 排尿',
+            snippet: '${activity['timestamp']}'.substring(11, 16),
+          ),
+        ),
+      );
+    }
+
+    return markers;
+  }
+
+  /// 같은 위치의 마커를 위한 오프셋 계산
+  Map<String, double> _calculateOffset(
+    int currentIndex,
+    List<Map<String, dynamic>> activities,
+    double lat,
+    double lng,
+  ) {
+    // 같은 위치에 있는 이전 마커 수 계산
+    int sameLocationCount = 0;
+    for (int i = 0; i < currentIndex; i++) {
+      final prevLat = activities[i]['latitude'] as double;
+      final prevLng = activities[i]['longitude'] as double;
+
+      // 소수점 4자리까지 같으면 같은 위치로 간주
+      if ((lat - prevLat).abs() < 0.0001 && (lng - prevLng).abs() < 0.0001) {
+        sameLocationCount++;
+      }
+    }
+
+    // 오프셋 적용 (약 5-10m 정도)
+    if (sameLocationCount > 0) {
+      return {
+        'latOffset': 0.0001 * sameLocationCount,
+        'lngOffset': 0.0001 * sameLocationCount,
+      };
+    }
+
+    return {'latOffset': 0.0, 'lngOffset': 0.0};
+  }
+
+  void setMapController(GoogleMapController controller, WidgetRef ref) {
     state = state.copyWith(mapController: controller);
+    // 전역 provider에도 저장
+    ref.read(globalMapControllerProvider.notifier).state = controller;
   }
 }
 
 class MapWidget extends ConsumerWidget {
   final List<WalkRecordEntity> walkRecords;
-  final PetInfo? selectedPet;
+  final WalkPetInfo? selectedPet;
+  final List<Map<String, dynamic>> petActivities;
 
-  const MapWidget({super.key, required this.walkRecords, this.selectedPet});
+  const MapWidget({
+    super.key,
+    required this.walkRecords,
+    this.selectedPet,
+    this.petActivities = const [],
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final params = MapWidgetParams(
       walkRecords: walkRecords,
       selectedPet: selectedPet,
+      petActivities: petActivities,
     );
     final controller = ref.read(mapWidgetProvider(params).notifier);
     final state = ref.watch(mapWidgetProvider(params));
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        child: state.currentPosition == null
-            ? _buildLoadingState()
-            : GoogleMap(
-                onMapCreated: (GoogleMapController mapController) {
-                  controller.setMapController(mapController);
-                  controller.setupMarkersAndPolylines();
 
-                  WalkMapCameraController.moveToCurrentLocation(
-                    mapController,
-                    state.currentPosition!,
-                  );
-                },
-                initialCameraPosition:
-                    WalkMapCameraController.createDefaultCameraPosition(
-                      latitude: state.currentPosition!.latitude,
-                      longitude: state.currentPosition!.longitude,
-                      zoom: 15.0,
-                    ),
-                markers: state.markers,
-                polylines: state.polylines,
-                myLocationEnabled: true,
-                myLocationButtonEnabled: false,
-                zoomControlsEnabled: false,
-                mapToolbarEnabled: false,
-                compassEnabled: true,
-                onCameraMove: (CameraPosition position) {
-                  // 카메라 이동 시 추가 로직 (필요시)
-                },
-              ),
-      ),
+    debugPrint(
+      '🗺️ MapWidget: build() - currentPosition: ${state.currentPosition != null ? '있음' : 'null'}',
+    );
+
+    if (state.currentPosition == null) {
+      debugPrint('🗺️ MapWidget: 로딩 화면 표시');
+      return _buildLoadingState();
+    }
+
+    debugPrint('🗺️ MapWidget: GoogleMap 렌더링 시작');
+    return GoogleMap(
+      key: const ValueKey('google_map_view'),
+      onMapCreated: (GoogleMapController mapController) {
+        debugPrint('🗺️ MapWidget: GoogleMap 생성 완료');
+        controller.setMapController(mapController, ref);
+        controller.setupMarkersAndPolylines();
+
+        WalkMapCameraController.moveToCurrentLocation(
+          mapController,
+          state.currentPosition!,
+        );
+      },
+      initialCameraPosition:
+          WalkMapCameraController.createDefaultCameraPosition(
+            latitude: state.currentPosition!.latitude,
+            longitude: state.currentPosition!.longitude,
+            zoom: 15.0,
+          ),
+      markers: state.markers,
+      polylines: state.polylines,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: false,
+      zoomControlsEnabled: false,
+      mapToolbarEnabled: false,
+      compassEnabled: true,
+      onCameraMove: (CameraPosition position) {
+        // 카메라 이동 시 추가 로직 (필요시)
+      },
     );
   }
 
   Widget _buildLoadingState() {
+    debugPrint('🗺️ MapWidget: _buildLoadingState() 호출됨 - 위치 정보가 없어서 로딩 화면 표시');
+
     return Container(
       color: Colors.grey[100],
       child: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
-            ),
+            // 지도 아이콘 표시
+            Icon(Icons.map, size: 60, color: AppColors.pointGray),
+            SizedBox(height: AppSpacing.md),
+            CircularProgressIndicator(color: AppColors.pointBrown),
             SizedBox(height: AppSpacing.md),
             Text(
               '地図を読み込み中...',
-              style: TextStyle(color: AppColors.pointGray, fontSize: 14),
+              style: TextStyle(
+                color: AppColors.pointGray,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              'GPS 위치를 확인 중입니다',
+              style: TextStyle(color: AppColors.pointGray, fontSize: 12),
             ),
           ],
         ),
