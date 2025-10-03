@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_history_list_screen.dart';
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_screen.dart';
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_favorite_messages_screen.dart';
+import 'package:aipet_frontend/features/allergy/allergy.dart';
 import 'package:aipet_frontend/features/facility/facility.dart';
 import 'package:aipet_frontend/features/home/presentation/presentation.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_screens.dart';
@@ -106,6 +107,11 @@ class ShellRoutes {
                     },
               );
             },
+          ),
+          GoRoute(
+            path: 'allergy',
+            name: 'allergy',
+            builder: (context, state) => const AllergyMainScreen(),
           ),
         ],
       ),
