@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 알레르기 제품 선택 화면
 ///
-/// 사료/영양제/간식 중 선택하여 알레르기 관련 제품을 등록하는 화면
+/// フード/サプリメント/おやつ/生食から選択してアレルギー関連製品を登録する画面
 class AllergyProductSelectionScreen extends ConsumerStatefulWidget {
   /// 알레르기 발생 여부 (true: 발생, false: 미발생)
   final bool hasAllergy;
@@ -42,6 +42,9 @@ class _AllergyProductSelectionScreenState
   /// 검색 결과
   List<ProductEntity> _searchResults = [];
 
+  /// 선택된 브랜드 ID
+  String? _selectedBrandId;
+
   @override
   void initState() {
     super.initState();
@@ -66,9 +69,8 @@ class _AllergyProductSelectionScreenState
           icon: const Icon(Icons.arrow_back, color: AppColors.pointDark),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(''),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(160),
+          preferredSize: const Size.fromHeight(120),
           child: Column(
             children: [
               // 탭바
@@ -83,10 +85,10 @@ class _AllergyProductSelectionScreenState
                     fontWeight: FontWeight.bold,
                   ),
                   tabs: const [
-                    Tab(text: '사료'),
-                    Tab(text: '영양제'),
-                    Tab(text: '간식'),
-                    Tab(text: '생식'),
+                    Tab(text: 'フード'),
+                    Tab(text: 'サプリメント'),
+                    Tab(text: 'おやつ'),
+                    Tab(text: '生食'),
                   ],
                 ),
               ),
@@ -143,34 +145,6 @@ class _AllergyProductSelectionScreenState
                   },
                 ),
               ),
-              // 똥따말사료 버튼
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
-                ),
-                color: Colors.white,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // TODO: 똥따말사료 기능
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF6B9D),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
-                    ),
-                  ),
-                  child: Text(
-                    '똥따말사료',
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -178,10 +152,10 @@ class _AllergyProductSelectionScreenState
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildProductList('사료'),
-          _buildProductList('영양제'),
-          _buildProductList('간식'),
-          _buildProductList('생식'),
+          _buildProductList('フード'),
+          _buildProductList('サプリメント'),
+          _buildProductList('おやつ'),
+          _buildProductList('生食'),
         ],
       ),
     );
@@ -193,7 +167,12 @@ class _AllergyProductSelectionScreenState
       return _buildSearchResults();
     }
 
-    // 검색어가 없으면 기본 화면 표시
+    // 선택된 브랜드가 있으면 해당 브랜드의 상품만 표시
+    if (_selectedBrandId != null) {
+      return _buildBrandProducts(category, _selectedBrandId!);
+    }
+
+    // 검색어와 선택된 브랜드가 없으면 기본 화면 표시
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,6 +188,105 @@ class _AllergyProductSelectionScreenState
           _buildPopularBrands(),
         ],
       ),
+    );
+  }
+
+  /// 선택된 브랜드의 상품 표시
+  Widget _buildBrandProducts(String category, String brandId) {
+    // 해당 카테고리와 브랜드의 상품 필터링
+    final filteredProducts = ProductMockData.products
+        .where((p) => p.category == category && p.brandId == brandId)
+        .toList();
+
+    // 브랜드 정보 가져오기
+    final brand = BrandMockData.brands.firstWhere(
+      (b) => b.id == brandId,
+      orElse: () => BrandMockData.brands.first,
+    );
+
+    if (filteredProducts.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.shopping_bag_outlined,
+                size: 64,
+                color: AppColors.pointGray.withValues(alpha: 0.5),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                '${brand.japaneseName}の$categoryがありません',
+                style: AppFonts.bodyLarge.copyWith(color: AppColors.pointGray),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              OutlinedButton(
+                onPressed: () {
+                  setState(() {
+                    _selectedBrandId = null;
+                  });
+                },
+                child: const Text('フィルターを解除'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        // 선택된 브랜드 헤더
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          color: AppColors.pointBrown.withValues(alpha: 0.05),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.filter_alt,
+                size: 20,
+                color: AppColors.pointBrown,
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Text(
+                '${brand.japaneseName}の商品',
+                style: AppFonts.bodyMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.pointBrown,
+                ),
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _selectedBrandId = null;
+                  });
+                },
+                child: Text(
+                  'フィルター解除',
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointBrown,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // 상품 리스트
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            itemCount: filteredProducts.length,
+            itemBuilder: (context, index) {
+              final product = filteredProducts[index];
+              return _buildProductCard(product);
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -408,7 +486,7 @@ class _AllergyProductSelectionScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '추천 필터',
+            'おすすめフィルター',
             style: AppFonts.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: AppColors.pointDark,
@@ -425,12 +503,12 @@ class _AllergyProductSelectionScreenState
             crossAxisSpacing: AppSpacing.sm,
             childAspectRatio: 2.5,
             children: [
-              _buildFilterChip('퍼피 / 키튼'),
-              _buildFilterChip('어덜트'),
-              _buildFilterChip('시니어'),
-              _buildFilterChip('건식'),
-              _buildFilterChip('습식'),
-              _buildFilterChip('발습식'),
+              _buildFilterChip('パピー / キトン'),
+              _buildFilterChip('アダルト'),
+              _buildFilterChip('シニア'),
+              _buildFilterChip('ドライ'),
+              _buildFilterChip('ウェット'),
+              _buildFilterChip('セミモイスト'),
             ],
           ),
 
@@ -445,7 +523,7 @@ class _AllergyProductSelectionScreenState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '필터 더보기',
+                    'もっと見る',
                     style: AppFonts.bodyMedium.copyWith(
                       color: AppColors.pointGray,
                     ),
@@ -513,7 +591,7 @@ class _AllergyProductSelectionScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '인기 브랜드',
+            '人気ブランド',
             style: AppFonts.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: AppColors.pointDark,
@@ -535,6 +613,7 @@ class _AllergyProductSelectionScreenState
             itemBuilder: (context, index) {
               final brand = brands[index];
               return _buildBrandItem(
+                brand.id,
                 brand.japaneseName,
                 brand.logoUrl ?? 'assets/images/placeholder.png',
               );
@@ -552,7 +631,7 @@ class _AllergyProductSelectionScreenState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '브랜드 더보기',
+                    'もっと見る',
                     style: AppFonts.bodyMedium.copyWith(
                       color: AppColors.pointGray,
                     ),
@@ -573,20 +652,34 @@ class _AllergyProductSelectionScreenState
   }
 
   /// 브랜드 아이템
-  Widget _buildBrandItem(String name, String logo) {
+  Widget _buildBrandItem(String brandId, String name, String logo) {
+    final isSelected = _selectedBrandId == brandId;
+
     return GestureDetector(
       onTap: () {
-        // TODO: 브랜드 선택
+        setState(() {
+          // 같은 브랜드를 다시 클릭하면 필터 해제
+          if (_selectedBrandId == brandId) {
+            _selectedBrandId = null;
+          } else {
+            _selectedBrandId = brandId;
+          }
+        });
       },
       child: Column(
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isSelected
+                    ? AppColors.pointBrown.withValues(alpha: 0.1)
+                    : Colors.white,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.pointGray.withValues(alpha: 0.2),
+                  color: isSelected
+                      ? AppColors.pointBrown
+                      : AppColors.pointGray.withValues(alpha: 0.2),
+                  width: isSelected ? 2 : 1,
                 ),
               ),
               padding: const EdgeInsets.all(12),
@@ -594,7 +687,9 @@ class _AllergyProductSelectionScreenState
                 child: Text(
                   name,
                   style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointDark,
+                    color: isSelected
+                        ? AppColors.pointBrown
+                        : AppColors.pointDark,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,

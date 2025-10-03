@@ -117,10 +117,10 @@ class SelectedAllergyProducts extends _$SelectedAllergyProducts {
     List<ProductEntity> products,
   ) {
     final Map<String, List<ProductEntity>> categoryMap = {
-      '사료': [],
-      '영양제': [],
-      '간식': [],
-      '생식': [],
+      'フード': [],
+      'サプリメント': [],
+      'おやつ': [],
+      '生食': [],
     };
 
     for (final product in products) {

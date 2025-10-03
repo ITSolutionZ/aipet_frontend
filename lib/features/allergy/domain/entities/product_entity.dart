@@ -18,7 +18,7 @@ class ProductEntity with _$ProductEntity {
     /// 브랜드 ID
     required String brandId,
 
-    /// 카테고리 (사료, 영양제, 간식, 생식)
+    /// カテゴリ（フード、サプリメント、おやつ、生食）
     required String category,
   }) = _ProductEntity;
 }
