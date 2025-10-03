@@ -40,6 +40,9 @@ class RouteConstants {
   static const String trainingVideosRoute = '/training-videos';
   static const String qrCodeRoute = '/home/qr';
   static const String allergyRoute = '/home/allergy';
+  static const String allergyRecommendedProductsRoute =
+      '/home/allergy/recommended-products';
+  static const String savedAnalysisListRoute = '/home/allergy/saved-analyses';
 
   // ===== SCHEDULING TAB SUB-ROUTES =====
   static const String feedingScheduleRoute = '/scheduling/feeding-schedule';

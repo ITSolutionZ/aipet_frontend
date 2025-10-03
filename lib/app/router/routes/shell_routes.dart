@@ -112,6 +112,26 @@ class ShellRoutes {
             path: 'allergy',
             name: 'allergy',
             builder: (context, state) => const AllergyMainScreen(),
+            routes: [
+              GoRoute(
+                path: 'recommended-products',
+                name: 'allergy-recommended-products',
+                builder: (context, state) {
+                  final args = state.extra as Map<String, dynamic>;
+                  return AllergyRecommendedProductsScreen(
+                    suspectedIngredients:
+                        args['suspectedIngredients'] as List<String>,
+                    petId: args['petId'] as String,
+                    petName: args['petName'] as String,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'saved-analyses',
+                name: 'saved-analysis-list',
+                builder: (context, state) => const SavedAnalysisListScreen(),
+              ),
+            ],
           ),
         ],
       ),

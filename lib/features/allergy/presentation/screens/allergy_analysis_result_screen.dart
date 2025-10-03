@@ -1,9 +1,9 @@
 import 'package:aipet_frontend/features/allergy/data/providers/saved_analysis_provider.dart';
 import 'package:aipet_frontend/features/allergy/domain/entities/saved_analysis_entity.dart';
-import 'package:aipet_frontend/features/allergy/presentation/screens/saved_analysis_list_screen.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// 알레르기 분석 결과 화면
 class AllergyAnalysisResultScreen extends ConsumerWidget {
@@ -34,18 +34,18 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.list_alt, color: AppColors.pointDark),
-          onPressed: () {
-            // 저장된 리스트 페이지로 이동
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SavedAnalysisListScreen(),
-              ),
-            );
-          },
+          icon: const Icon(Icons.arrow_back, color: AppColors.pointDark),
+          onPressed: () => context.pop(),
         ),
         actions: [
+          // 히스토리 버튼
+          IconButton(
+            icon: const Icon(Icons.list_alt, color: AppColors.pointDark),
+            onPressed: () {
+              // 저장된 리스트 페이지로 이동
+              context.push('/home/allergy/saved-analyses');
+            },
+          ),
           // 저장 버튼
           TextButton.icon(
             onPressed: () async {
@@ -63,15 +63,7 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
                     .read(savedAnalysisNotifierProvider.notifier)
                     .saveAnalysis(savedAnalysis);
 
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('分析結果を保存しました'),
-                      backgroundColor: AppColors.pointBrown,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                }
+                // 저장 완료 후 추가 동작 없음
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -425,7 +417,54 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
               ),
             ),
           ),
+          const SizedBox(height: AppSpacing.md),
+          // 상품보기 버튼
+          _buildViewProductsButton(),
         ],
+      ),
+    );
+  }
+
+  /// 상품보기 버튼
+  Widget _buildViewProductsButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: Builder(
+        builder: (context) {
+          return TextButton.icon(
+            onPressed: () {
+              context.push(
+                '/home/allergy/recommended-products',
+                extra: {
+                  'suspectedIngredients':
+                      analysisResult['suspectedIngredients'] as List<String>? ??
+                      [],
+                  'petId': petId,
+                  'petName': petName,
+                },
+              );
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: const Color(0xFF4CAF50).withValues(alpha: 0.1),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.small),
+                side: const BorderSide(color: Color(0xFF4CAF50), width: 1),
+              ),
+            ),
+            icon: const Icon(
+              Icons.shopping_bag_outlined,
+              color: Color(0xFF4CAF50),
+            ),
+            label: Text(
+              '推奨商品を見る',
+              style: AppFonts.bodyMedium.copyWith(
+                color: const Color(0xFF4CAF50),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

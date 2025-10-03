@@ -4,13 +4,13 @@ import 'package:aipet_frontend/features/allergy/domain/entities/product_entity.d
 import 'package:aipet_frontend/features/allergy/presentation/screens/allergy_analysis_result_screen.dart';
 import 'package:aipet_frontend/features/allergy/presentation/screens/allergy_product_selection_screen.dart';
 import 'package:aipet_frontend/features/allergy/presentation/widgets/allergy_pet_selector.dart';
-import 'package:aipet_frontend/features/allergy/presentation/widgets/saved_analysis_accordion.dart';
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/mock_data/brand_mock_data.dart';
 import 'package:aipet_frontend/shared/shared.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// 알레르기 메인 화면
 ///
@@ -60,68 +60,63 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen>
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: const SavedAnalysisAccordion(),
-        actions: [
-          // 펫 선택 위젯
-          petsAsync.when(
-            data: (pets) {
-              if (pets.isEmpty) return const SizedBox.shrink();
-
-              // 첫 로드 시 첫 번째 펫 자동 선택
-              if (_selectedPet == null && pets.isNotEmpty) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted) {
-                    setState(() {
-                      _selectedPet = pets.first;
-                    });
-                  }
-                });
-              }
-
-              return Padding(
-                padding: const EdgeInsets.only(right: AppSpacing.md),
-                child: AllergyPetSelector(
-                  selectedPet: _selectedPet,
-                  pets: pets,
-                  onPetSelected: (pet) {
-                    setState(() {
-                      _selectedPet = pet;
-                    });
-                  },
-                ),
-              );
-            },
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.list_alt,
+            color: AppColors.pointDark,
           ),
-        ],
+          onPressed: () {
+            // 보존된 분석 결과 페이지로 이동
+            context.push('/home/allergy/saved-analyses');
+          },
+        ),
+        title: petsAsync.when(
+          data: (pets) {
+            if (pets.isEmpty) return const SizedBox.shrink();
+
+            // 첫 로드 시 첫 번째 펫 자동 선택
+            if (_selectedPet == null && pets.isNotEmpty) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  setState(() {
+                    _selectedPet = pets.first;
+                  });
+                }
+              });
+            }
+
+            return AllergyPetSelector(
+              selectedPet: _selectedPet,
+              pets: pets,
+              onPetSelected: (pet) {
+                setState(() {
+                  _selectedPet = pet;
+                });
+              },
+            );
+          },
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+        centerTitle: true,
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
-                child: Column(
-                  children: [
-                    // 상단 안내 섹션
-                    _buildInfoSection(),
-                    const SizedBox(height: AppSpacing.md),
-                    // 알레르기 발생/미발생 선택 섹션
-                    _buildFilterSection(),
-                    const SizedBox(height: AppSpacing.md),
-                    // 선택된 펫 정보 표시
-                    if (_selectedPet != null) _buildSelectedPetInfo(),
-                    const SizedBox(height: AppSpacing.sm),
-                    // 선택된 제품 리스트
-                    if (_selectedPet != null)
-                      Expanded(child: _buildSelectedProductsList()),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // 상단 안내 섹션
+            _buildInfoSection(),
+            const SizedBox(height: AppSpacing.md),
+            // 알레르기 발생/미발생 선택 섹션
+            _buildFilterSection(),
+            const SizedBox(height: AppSpacing.md),
+            // 선택된 펫 정보 표시
+            if (_selectedPet != null) _buildSelectedPetInfo(),
+            const SizedBox(height: AppSpacing.sm),
+            // 선택된 제품 리스트
+            if (_selectedPet != null) _buildSelectedProductsList(),
+            const SizedBox(height: AppSpacing.xl),
+          ],
+        ),
       ),
     );
   }
@@ -369,7 +364,7 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen>
     }
 
     return Container(
-      height: 500, // 고정 높이 지정
+      height: 350, // 높이를 500에서 350으로 줄임
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -377,42 +372,43 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen>
       ),
       child: Column(
         children: [
-          // 탭바
+          // 메인 탭바 (개선된 디자인)
           Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: AppColors.pointGray.withValues(alpha: 0.2),
-                ),
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            decoration: const BoxDecoration(
+              color: AppColors.pointOffWhite,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppRadius.medium),
+                topRight: Radius.circular(AppRadius.medium),
               ),
             ),
-            child: TabBar(
-              controller: _mainTabController,
-              labelColor: AppColors.pointBrown,
-              unselectedLabelColor: AppColors.pointGray,
-              indicatorColor: AppColors.pointBrown,
-              labelStyle: AppFonts.bodyMedium.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-              tabs: [
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.warning_amber_rounded, size: 16),
-                      const SizedBox(width: 4),
-                      Text('あった ($allergyCount)'),
-                    ],
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildMainTabButton(
+                    isSelected: _mainTabController?.index == 0,
+                    icon: Icons.warning_amber_rounded,
+                    label: 'あった',
+                    count: allergyCount,
+                    color: const Color(0xFFFF6B9D),
+                    onTap: () {
+                      _mainTabController?.animateTo(0);
+                      setState(() {});
+                    },
                   ),
                 ),
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.check_circle, size: 16),
-                      const SizedBox(width: 4),
-                      Text('なかった ($nonAllergyCount)'),
-                    ],
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: _buildMainTabButton(
+                    isSelected: _mainTabController?.index == 1,
+                    icon: Icons.check_circle,
+                    label: 'なかった',
+                    count: nonAllergyCount,
+                    color: const Color(0xFF4CAF50),
+                    onTap: () {
+                      _mainTabController?.animateTo(1);
+                      setState(() {});
+                    },
                   ),
                 ),
               ],
@@ -503,10 +499,10 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen>
   ) {
     // 카테고리별 분류
     final productsByCategory = <String, List<ProductEntity>>{
-      '사료': products.where((p) => p.category == '사료').toList(),
-      '영양제': products.where((p) => p.category == '영양제').toList(),
-      '간식': products.where((p) => p.category == '간식').toList(),
-      '생식': products.where((p) => p.category == '생식').toList(),
+      'フード': products.where((p) => p.category == 'フード').toList(),
+      'サプリメント': products.where((p) => p.category == 'サプリメント').toList(),
+      'おやつ': products.where((p) => p.category == 'おやつ').toList(),
+      '生食': products.where((p) => p.category == '生食').toList(),
     };
 
     return CategoryTabViewWidget(
@@ -572,6 +568,63 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen>
                   ),
                 ],
               ),
+      ),
+    );
+  }
+
+  /// 메인 탭 버튼
+  Widget _buildMainTabButton({
+    required bool isSelected,
+    required IconData icon,
+    required String label,
+    required int count,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.sm,
+          horizontal: AppSpacing.md,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadius.small),
+          border: isSelected
+              ? Border.all(color: color.withValues(alpha: 0.3))
+              : null,
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: isSelected ? color : AppColors.pointGray,
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Flexible(
+              child: Text(
+                '$label ($count)',
+                style: AppFonts.bodyMedium.copyWith(
+                  color: isSelected ? color : AppColors.pointGray,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -664,31 +717,42 @@ class _CategoryTabViewWidgetState extends State<CategoryTabViewWidget>
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // 카테고리 탭바
+        // 카테고리 탭바 (개선된 디자인)
         Container(
+          padding: const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: AppColors.pointGray.withValues(alpha: 0.2),
-              ),
-            ),
+            color: AppColors.pointGray.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(AppRadius.small),
           ),
-          child: TabBar(
-            controller: _categoryTabController,
-            labelColor: AppColors.pointBrown,
-            unselectedLabelColor: AppColors.pointGray,
-            indicatorColor: AppColors.pointBrown,
-            labelStyle: AppFonts.bodySmall.copyWith(
-              fontWeight: FontWeight.bold,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildCategoryChip(
+                  'フード',
+                  widget.productsByCategory['フード']?.length ?? 0,
+                  0,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                _buildCategoryChip(
+                  'サプリ',
+                  widget.productsByCategory['サプリメント']?.length ?? 0,
+                  1,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                _buildCategoryChip(
+                  'おやつ',
+                  widget.productsByCategory['おやつ']?.length ?? 0,
+                  2,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                _buildCategoryChip(
+                  '生食',
+                  widget.productsByCategory['生食']?.length ?? 0,
+                  3,
+                ),
+              ],
             ),
-            tabs: [
-              Tab(text: '사료 (${widget.productsByCategory['사료']?.length ?? 0})'),
-              Tab(
-                text: '영양제 (${widget.productsByCategory['영양제']?.length ?? 0})',
-              ),
-              Tab(text: '간식 (${widget.productsByCategory['간식']?.length ?? 0})'),
-              Tab(text: '생식 (${widget.productsByCategory['생식']?.length ?? 0})'),
-            ],
           ),
         ),
         // 제품 리스트
@@ -696,14 +760,89 @@ class _CategoryTabViewWidgetState extends State<CategoryTabViewWidget>
           child: TabBarView(
             controller: _categoryTabController,
             children: [
-              _buildProductList(widget.productsByCategory['사료'] ?? [], '사료'),
-              _buildProductList(widget.productsByCategory['영양제'] ?? [], '영양제'),
-              _buildProductList(widget.productsByCategory['간식'] ?? [], '간식'),
-              _buildProductList(widget.productsByCategory['생식'] ?? [], '생식'),
+              _buildProductList(widget.productsByCategory['フード'] ?? [], 'フード'),
+              _buildProductList(
+                widget.productsByCategory['サプリメント'] ?? [],
+                'サプリメント',
+              ),
+              _buildProductList(widget.productsByCategory['おやつ'] ?? [], 'おやつ'),
+              _buildProductList(widget.productsByCategory['生食'] ?? [], '生食'),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  /// 카테고리 칩
+  Widget _buildCategoryChip(String label, int count, int index) {
+    final isSelected = _categoryTabController.index == index;
+    return GestureDetector(
+      onTap: () {
+        _categoryTabController.animateTo(index);
+        setState(() {});
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.pointBrown : Colors.white,
+          borderRadius: BorderRadius.circular(AppRadius.large),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.pointBrown
+                : AppColors.pointGray.withValues(alpha: 0.3),
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.pointBrown.withValues(alpha: 0.2),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: AppFonts.bodySmall.copyWith(
+                color: isSelected ? Colors.white : AppColors.pointGray,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+            if (count > 0) ...[
+              const SizedBox(width: AppSpacing.xs),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 6,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? Colors.white.withValues(alpha: 0.2)
+                      : AppColors.pointBrown.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppRadius.small),
+                ),
+                child: Text(
+                  count.toString(),
+                  style: AppFonts.bodySmall.copyWith(
+                    color: isSelected
+                        ? Colors.white
+                        : AppColors.pointBrown,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 

@@ -1,41 +1,183 @@
 import 'package:aipet_frontend/features/allergy/data/providers/saved_analysis_provider.dart';
 import 'package:aipet_frontend/features/allergy/domain/entities/saved_analysis_entity.dart';
 import 'package:aipet_frontend/features/allergy/presentation/screens/allergy_analysis_result_screen.dart';
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 /// 저장된 알레르기 분석 결과 리스트 화면
-class SavedAnalysisListScreen extends ConsumerWidget {
+class SavedAnalysisListScreen extends ConsumerStatefulWidget {
   const SavedAnalysisListScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SavedAnalysisListScreen> createState() =>
+      _SavedAnalysisListScreenState();
+}
+
+class _SavedAnalysisListScreenState
+    extends ConsumerState<SavedAnalysisListScreen> {
+  String? _selectedPetId;
+
+  @override
+  Widget build(BuildContext context) {
     final savedAnalysesAsync = ref.watch(savedAnalysisNotifierProvider);
+    final petsAsync = ref.watch(petProfilesNotifierProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientBackAppBar(title: '保存された分析結果'),
-      body: savedAnalysesAsync.when(
-        data: (savedAnalyses) {
-          if (savedAnalyses.isEmpty) {
-            return _buildEmptyState();
-          }
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.pointDark),
+          onPressed: () {
+            // 알레르기 메인 화면으로 이동
+            context.go('/home/allergy');
+          },
+        ),
+      ),
+      body: Column(
+        children: [
+          // 펫 필터링 섹션
+          petsAsync.when(
+            data: (pets) {
+              if (pets.isEmpty) return const SizedBox.shrink();
 
-          return ListView.separated(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            itemCount: savedAnalyses.length,
-            separatorBuilder: (context, index) =>
-                const SizedBox(height: AppSpacing.md),
-            itemBuilder: (context, index) {
-              final analysis = savedAnalyses[index];
-              return _buildAnalysisCard(context, ref, analysis);
+              return Container(
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'ペットでフィルター',
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointGray,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          // 전체 선택 칩
+                          _buildPetFilterChip(
+                            petId: null,
+                            petName: 'すべて',
+                            isSelected: _selectedPetId == null,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          // 각 펫별 칩
+                          ...pets.map(
+                            (pet) => Padding(
+                              padding: const EdgeInsets.only(
+                                right: AppSpacing.sm,
+                              ),
+                              child: _buildPetFilterChip(
+                                petId: pet.id,
+                                petName: pet.name,
+                                isSelected: _selectedPetId == pet.id,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
             },
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('エラー: $error')),
+            loading: () => const SizedBox.shrink(),
+            error: (_, __) => const SizedBox.shrink(),
+          ),
+
+          // 분석 결과 리스트
+          Expanded(
+            child: savedAnalysesAsync.when(
+              data: (savedAnalyses) {
+                // 펫 필터링 적용
+                final filteredAnalyses = _selectedPetId != null
+                    ? savedAnalyses
+                          .where((analysis) => analysis.petId == _selectedPetId)
+                          .toList()
+                    : savedAnalyses;
+
+                if (filteredAnalyses.isEmpty) {
+                  return _buildEmptyState();
+                }
+
+                return ListView.separated(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  itemCount: filteredAnalyses.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: AppSpacing.md),
+                  itemBuilder: (context, index) {
+                    final analysis = filteredAnalyses[index];
+                    return _buildAnalysisCard(context, ref, analysis);
+                  },
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(child: Text('エラー: $error')),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 펫 필터링 칩
+  Widget _buildPetFilterChip({
+    required String? petId,
+    required String petName,
+    required bool isSelected,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedPetId = petId;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.pointBrown
+              : AppColors.pointBrown.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.pointBrown
+                : AppColors.pointBrown.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (petId != null) ...[
+              const Icon(Icons.pets, size: 16, color: AppColors.pointBrown),
+              const SizedBox(width: AppSpacing.xs),
+            ],
+            Text(
+              petName,
+              style: AppFonts.bodySmall.copyWith(
+                color: isSelected ? Colors.white : AppColors.pointBrown,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

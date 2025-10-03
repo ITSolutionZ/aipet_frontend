@@ -8,7 +8,9 @@ import 'package:intl/intl.dart';
 
 /// 저장된 분석 결과 아코디언 위젯
 class SavedAnalysisAccordion extends ConsumerStatefulWidget {
-  const SavedAnalysisAccordion({super.key});
+  final String? selectedPetId;
+
+  const SavedAnalysisAccordion({super.key, this.selectedPetId});
 
   @override
   ConsumerState<SavedAnalysisAccordion> createState() =>
@@ -23,7 +25,14 @@ class _SavedAnalysisAccordionState
 
     return savedAnalysesAsync.when(
       data: (savedAnalyses) {
-        if (savedAnalyses.isEmpty) {
+        // 선택된 펫의 분석 결과만 필터링
+        final filteredAnalyses = widget.selectedPetId != null
+            ? savedAnalyses
+                  .where((analysis) => analysis.petId == widget.selectedPetId)
+                  .toList()
+            : savedAnalyses;
+
+        if (filteredAnalyses.isEmpty) {
           return IconButton(
             icon: const Icon(Icons.arrow_back, color: AppColors.pointDark),
             onPressed: () => Navigator.pop(context),
@@ -64,7 +73,7 @@ class _SavedAnalysisAccordionState
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
-                              '保存された分析 (${savedAnalyses.length})',
+                              '保存された分析 (${filteredAnalyses.length})',
                               style: AppFonts.bodyMedium.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.pointBrown,
@@ -80,19 +89,19 @@ class _SavedAnalysisAccordionState
                         child: ListView.separated(
                           shrinkWrap: true,
                           padding: const EdgeInsets.all(AppSpacing.sm),
-                          itemCount: savedAnalyses.length > 5
+                          itemCount: filteredAnalyses.length > 5
                               ? 5
-                              : savedAnalyses.length,
+                              : filteredAnalyses.length,
                           separatorBuilder: (context, index) =>
                               const Divider(height: 1),
                           itemBuilder: (context, index) {
-                            final analysis = savedAnalyses[index];
+                            final analysis = filteredAnalyses[index];
                             return _buildAnalysisItem(context, analysis);
                           },
                         ),
                       ),
                       // 더보기 버튼
-                      if (savedAnalyses.length > 5)
+                      if (filteredAnalyses.length > 5)
                         InkWell(
                           onTap: () {
                             Navigator.pop(context);
