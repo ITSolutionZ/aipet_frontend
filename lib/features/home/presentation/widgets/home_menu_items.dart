@@ -61,7 +61,7 @@ class HomeMenuItems {
         title: 'アレルギー',
         iconPath: 'assets/icons/home_menu/alregic.png',
         onTap: () {
-          // TODO: 알레르기 화면으로 이동
+          context.go(RouteConstants.allergyRoute);
         },
       ),
       MenuItem(
