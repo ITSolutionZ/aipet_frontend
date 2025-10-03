@@ -12,9 +12,7 @@ class LocalDataManager {
 
   late SharedPreferences _prefs;
   static const _secureStorage = FlutterSecureStorage(
-    aOptions: AndroidOptions(
-      encryptedSharedPreferences: true,
-    ),
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
   /// 초기화
@@ -42,7 +40,10 @@ class LocalDataManager {
   }
 
   /// 펫 등록 정보 저장
-  Future<void> savePetRegistration(String petId, Map<String, dynamic> data) async {
+  Future<void> savePetRegistration(
+    String petId,
+    Map<String, dynamic> data,
+  ) async {
     await _prefs.setString('pet_registration_$petId', jsonEncode(data));
   }
 
@@ -107,7 +108,9 @@ class LocalDataManager {
   }
 
   /// 급식 스케줄 저장
-  Future<void> saveFeedingSchedules(List<Map<String, dynamic>> schedules) async {
+  Future<void> saveFeedingSchedules(
+    List<Map<String, dynamic>> schedules,
+  ) async {
     await _prefs.setString('feeding_schedules', jsonEncode(schedules));
   }
 
@@ -245,7 +248,9 @@ class LocalDataManager {
   }
 
   /// 알림 목록 저장
-  Future<void> saveNotifications(List<Map<String, dynamic>> notifications) async {
+  Future<void> saveNotifications(
+    List<Map<String, dynamic>> notifications,
+  ) async {
     await _prefs.setString('notifications', jsonEncode(notifications));
   }
 
@@ -287,7 +292,7 @@ class LocalDataManager {
 
   /// 민감한 데이터 로드
   Future<String?> loadSecureData(String key) async {
-    return await _secureStorage.read(key: key);
+    return _secureStorage.read(key: key);
   }
 
   /// 민감한 데이터 삭제

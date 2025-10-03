@@ -1,4 +1,3 @@
-import '../../../../shared/core/api/api_client.dart';
 import '../../../../shared/core/api/api_constants.dart';
 import '../../../../shared/core/api/api_error_handler.dart';
 import '../../../../shared/core/data/base_remote_data_source.dart';
@@ -26,10 +25,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
     try {
       final response = await apiClient.post<Map<String, dynamic>>(
         ApiEndpoints.login,
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'email': email, 'password': password},
       );
 
       if (response.data == null) {
@@ -75,9 +71,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
     try {
       final response = await apiClient.post<Map<String, dynamic>>(
         ApiEndpoints.refreshToken,
-        data: {
-          'refresh_token': refreshToken,
-        },
+        data: {'refresh_token': refreshToken},
       );
 
       if (response.data == null) {
@@ -103,9 +97,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
 
   Future<ResultState<AuthUserModel>> getCurrentUser() async {
     try {
-      final response = await apiClient.get<Map<String, dynamic>>(
-        '/auth/me',
-      );
+      final response = await apiClient.get<Map<String, dynamic>>('/auth/me');
 
       if (response.data == null) {
         return Failure(UnknownError(details: 'Empty response data'));
@@ -121,10 +113,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
 
   Future<ResultState<void>> sendPasswordResetEmail(String email) async {
     try {
-      await apiClient.post(
-        '/auth/password-reset',
-        data: {'email': email},
-      );
+      await apiClient.post('/auth/password-reset', data: {'email': email});
       return const Success(null);
     } catch (e) {
       return Failure(ApiErrorHandler.handleError(e));
@@ -201,13 +190,13 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
     }
   }
 
-  Future<ResultState<AuthTokenModel>> exchangeFirebaseToken(String firebaseIdToken) async {
+  Future<ResultState<AuthTokenModel>> exchangeFirebaseToken(
+    String firebaseIdToken,
+  ) async {
     try {
       final response = await apiClient.post<Map<String, dynamic>>(
         '/auth/firebase-exchange',
-        data: {
-          'firebase_id_token': firebaseIdToken,
-        },
+        data: {'firebase_id_token': firebaseIdToken},
       );
 
       if (response.data == null) {
