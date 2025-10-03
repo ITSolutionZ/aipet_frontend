@@ -93,17 +93,12 @@ flutter:
     - assets/images/walks/
 
     - assets/icons/
+    - assets/icons/logos/
+    - assets/icons/common/
+    - assset/icons/walk_logo/
     - assets/icons/navigation/
-    - assets/icons/home_menu/adopt.png
-    - assets/icons/home_menu/alregic.png
-    - assets/icons/home_menu/booking.png
-    - assets/icons/home_menu/community.png
-    - assets/icons/home_menu/daily.png
-    - assets/icons/home_menu/note.png
-    - assets/icons/home_menu/pharmacy.png
-    - assets/icons/home_menu/place.png
-    - assets/icons/home_menu/qr.png
-    - assets/icons/home_menu/shopping.png
+    - assets/icons/pet_type/
+    - assets/icons/home_menu/
 
     - assets/fonts/
     - assets/lottie/

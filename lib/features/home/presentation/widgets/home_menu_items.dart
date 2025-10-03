@@ -26,7 +26,7 @@ class HomeMenuItems {
         title: '毎日ケア',
         iconPath: 'assets/icons/home_menu/daily.png',
         onTap: () {
-          // TODO: 일상 기록 화면으로 이동
+          context.go('/home/daily');
         },
       ),
       MenuItem(

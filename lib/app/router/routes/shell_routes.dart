@@ -2,6 +2,9 @@ import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_history_
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_screen.dart';
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_favorite_messages_screen.dart';
 import 'package:aipet_frontend/features/allergy/allergy.dart';
+import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
+import 'package:aipet_frontend/features/daily/presentation/screens/daily_health_input_screen.dart';
+import 'package:aipet_frontend/features/daily/presentation/screens/daily_health_screen.dart';
 import 'package:aipet_frontend/features/facility/facility.dart';
 import 'package:aipet_frontend/features/home/presentation/presentation.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_screens.dart';
@@ -132,6 +135,30 @@ class ShellRoutes {
                 builder: (context, state) => const SavedAnalysisListScreen(),
               ),
             ],
+          ),
+
+          // Daily Health Routes (하단 네비게이션 포함)
+          GoRoute(
+            path: 'daily',
+            name: 'daily-health',
+            builder: (context, state) => const DailyHealthScreen(),
+          ),
+          GoRoute(
+            path: 'daily/input',
+            name: 'daily-health-input',
+            builder: (context, state) {
+              DailyHealthRecord? existingRecord;
+              if (state.extra != null && state.extra is DailyHealthRecord) {
+                existingRecord = state.extra as DailyHealthRecord;
+              }
+              return DailyHealthInputScreen(existingRecord: existingRecord);
+            },
+          ),
+          GoRoute(
+            path: 'daily/history',
+            name: 'daily-health-history',
+            builder: (context, state) =>
+                const Scaffold(body: Center(child: Text('健康記録ヒストリー - 近日実装予定'))),
           ),
         ],
       ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-import '../../../../shared/core/api/api_client.dart';
 import '../../../../shared/core/api/api_constants.dart';
 import '../../../../shared/core/api/api_error_handler.dart';
 import '../../../../shared/core/data/base_remote_data_source.dart';
@@ -108,15 +107,21 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
         '${ApiEndpoints.petById(petId)}/image',
         imageFile.path,
         'image',
-        additionalData: description != null ? {'description': description} : null,
+        additionalData: description != null
+            ? {'description': description}
+            : null,
       );
 
       if (response.isSuccess) {
-        final uploadResponse = PetImageUploadResponse.fromJson(response.dataOrNull!);
+        final uploadResponse = PetImageUploadResponse.fromJson(
+          response.dataOrNull!,
+        );
         return Success(uploadResponse);
       }
 
-      return Failure(response.errorOrNull ?? UnknownError(details: 'Image upload failed'));
+      return Failure(
+        response.errorOrNull ?? UnknownError(details: 'Image upload failed'),
+      );
     } catch (e) {
       return Failure(ApiErrorHandler.handleError(e));
     }
@@ -137,7 +142,9 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
     }
   }
 
-  Future<ResultState<PetSharingSettings>> getSharingSettings(String petId) async {
+  Future<ResultState<PetSharingSettings>> getSharingSettings(
+    String petId,
+  ) async {
     try {
       final response = await apiClient.get<Map<String, dynamic>>(
         '${ApiEndpoints.petById(petId)}/sharing',
@@ -155,7 +162,10 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
     }
   }
 
-  Future<ResultState<void>> addFamilyManager(String petId, String userId) async {
+  Future<ResultState<void>> addFamilyManager(
+    String petId,
+    String userId,
+  ) async {
     try {
       await apiClient.post(
         '${ApiEndpoints.petById(petId)}/family-managers',
@@ -167,7 +177,10 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
     }
   }
 
-  Future<ResultState<void>> removeFamilyManager(String petId, String userId) async {
+  Future<ResultState<void>> removeFamilyManager(
+    String petId,
+    String userId,
+  ) async {
     try {
       await apiClient.delete(
         '${ApiEndpoints.petById(petId)}/family-managers/$userId',
@@ -223,10 +236,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
     int limit = 20,
   }) async {
     try {
-      final queryParams = <String, dynamic>{
-        'page': page,
-        'limit': limit,
-      };
+      final queryParams = <String, dynamic>{'page': page, 'limit': limit};
 
       if (name != null) queryParams['name'] = name;
       if (type != null) queryParams['type'] = type;
@@ -267,9 +277,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
     try {
       await apiClient.post(
         '${ApiEndpoints.pets}/bulk-update',
-        data: {
-          'updates': updates.map((update) => update.toJson()).toList(),
-        },
+        data: {'updates': updates.map((update) => update.toJson()).toList()},
       );
       return const Success(null);
     } catch (e) {

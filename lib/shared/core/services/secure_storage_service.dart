@@ -14,7 +14,9 @@ class SecureStorageService {
       keyCipherAlgorithm: KeyCipherAlgorithm.RSA_ECB_PKCS1Padding,
       storageCipherAlgorithm: StorageCipherAlgorithm.AES_GCM_NoPadding,
     ),
-    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock_this_device),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+    ),
   );
 
   /// 문자열 데이터를 안전하게 저장합니다
@@ -109,7 +111,9 @@ class SecureStorageService {
       return value != null;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('❌ Secure storage contains key check failed: $key, error: $e');
+        debugPrint(
+          '❌ Secure storage contains key check failed: $key, error: $e',
+        );
       }
       return false;
     }
@@ -164,7 +168,9 @@ class SecureStorageService {
         if (retrievedValue == testValue) {
           debugPrint('🔐 Secure Storage validation: PASSED');
         } else {
-          debugPrint('⚠️  Secure Storage validation: FAILED - Data integrity issue');
+          debugPrint(
+            '⚠️  Secure Storage validation: FAILED - Data integrity issue',
+          );
         }
       } catch (e) {
         debugPrint('⚠️  Secure Storage validation: FAILED - $e');
@@ -181,7 +187,7 @@ class SecureStorageService {
 
   /// Access Token 조회
   static Future<String?> getToken() async {
-    return await getString('access_token');
+    return getString('access_token');
   }
 
   /// Refresh Token 저장
@@ -191,7 +197,7 @@ class SecureStorageService {
 
   /// Refresh Token 조회
   static Future<String?> getRefreshToken() async {
-    return await getString('refresh_token');
+    return getString('refresh_token');
   }
 
   /// 모든 토큰 삭제
@@ -217,7 +223,7 @@ class SecureStorageService {
 
   /// 사용자 정보 조회
   static Future<Map<String, dynamic>?> getUserInfo() async {
-    return await getJson('user_info');
+    return getJson('user_info');
   }
 
   /// 사용자 정보 저장
