@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/auth/application/auth_controller.dart';
+import 'package:aipet_frontend/shared/widgets/layout/card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -49,13 +50,26 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
         title: const Text('🔐 Enhanced Token Exchange'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.blue.shade50,
+              Colors.grey.shade100,
+              Colors.white,
+            ],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
             // API 연결 상태 확인 // Changed
             const ApiConnectionChecker(),
             const SizedBox(height: 24),
@@ -89,70 +103,142 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
             if (tokenState.isSuccess || tokenState.errorMessage != null) _buildResetButton(ref),
           ],
         ),
+        ),
       ),
     );
   }
 
   /// 토큰 상태 카드 // Changed
   Widget _buildTokenStatusCard() {
-    Color cardColor;
     IconData icon;
     String title;
     String subtitle;
+    Color iconColor;
+    Gradient cardGradient;
 
     if (_tokenExpiry == null) {
-      cardColor = Colors.grey.shade100;
       icon = Icons.help_outline;
       title = '토큰 없음';
       subtitle = '아직 토큰이 저장되지 않았습니다';
+      iconColor = Colors.grey.shade600;
+      cardGradient = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.grey.withAlpha(40),
+          Colors.grey.withAlpha(20),
+        ],
+      );
     } else if (_isExpired) {
-      cardColor = Colors.red.shade100;
       icon = Icons.timer_off;
       title = '토큰 만료됨';
       subtitle = '토큰이 만료되었습니다. 다시 교환해주세요';
+      iconColor = Colors.red.shade600;
+      cardGradient = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.red.withAlpha(60),
+          Colors.red.withAlpha(30),
+        ],
+      );
     } else if (_isExpiringSoon) {
-      cardColor = Colors.orange.shade100;
       icon = Icons.warning;
       title = '토큰 곧 만료';
       subtitle = '5분 내에 토큰이 만료됩니다';
+      iconColor = Colors.orange.shade600;
+      cardGradient = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.orange.withAlpha(60),
+          Colors.orange.withAlpha(30),
+        ],
+      );
     } else {
-      cardColor = Colors.green.shade100;
       icon = Icons.check_circle;
       title = '토큰 유효';
       subtitle = '만료: ${_formatExpiry(_tokenExpiry!)}';
+      iconColor = Colors.green.shade600;
+      cardGradient = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.green.withAlpha(60),
+          Colors.green.withAlpha(30),
+        ],
+      );
     }
 
-    return Card(
-      color: cardColor,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Icon(icon, size: 32, color: Colors.grey.shade700),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
-                ],
-              ),
+    return GlassCard(
+      gradient: cardGradient,
+      child: Row(
+        children: [
+          Icon(icon, size: 32, color: iconColor),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   /// 상태 새로고침 버튼 // Changed
   Widget _buildRefreshButton() {
-    return OutlinedButton.icon(
-      onPressed: _checkTokenStatus,
-      icon: const Icon(Icons.refresh),
-      label: const Text('토큰 상태 새로고침'),
-      style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
+    return GlassCard(
+      onTap: _checkTokenStatus,
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.cyan.withAlpha(40),
+          Colors.cyan.withAlpha(20),
+        ],
+      ),
+      borderColor: Colors.cyan.shade300,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.refresh,
+              color: Colors.cyan.shade600,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              '토큰 상태 새로고침',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.cyan.shade700,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -173,62 +259,104 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
 
   // 기존 메서드들 유지
   Widget _buildStatusCard(TokenExchangeState state) {
-    Color cardColor;
     IconData icon;
     String title;
     String? subtitle;
+    Color iconColor;
+    Gradient cardGradient;
 
     if (state.isLoading) {
-      cardColor = Colors.orange.shade100;
       icon = Icons.sync;
       title = '토큰 교환 중...';
       subtitle = '서버와 통신 중입니다';
+      iconColor = Colors.orange.shade600;
+      cardGradient = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.orange.withAlpha(60),
+          Colors.orange.withAlpha(30),
+        ],
+      );
     } else if (state.isSuccess) {
-      cardColor = Colors.green.shade100;
       icon = Icons.check_circle;
       title = '토큰 저장 완료';
       subtitle = '서버 JWT가 안전하게 저장되었습니다';
+      iconColor = Colors.green.shade600;
+      cardGradient = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.green.withAlpha(60),
+          Colors.green.withAlpha(30),
+        ],
+      );
     } else if (state.errorMessage != null) {
-      cardColor = Colors.red.shade100;
       icon = Icons.error;
       title = '실패';
       subtitle = state.errorMessage;
+      iconColor = Colors.red.shade600;
+      cardGradient = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.red.withAlpha(60),
+          Colors.red.withAlpha(30),
+        ],
+      );
     } else {
-      cardColor = Colors.grey.shade100;
       icon = Icons.info;
       title = '준비 완료';
       subtitle = 'Firebase 로그인 후 버튼을 눌러주세요';
+      iconColor = Colors.blue.shade600;
+      cardGradient = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.blue.withAlpha(40),
+          Colors.blue.withAlpha(20),
+        ],
+      );
     }
 
-    return Card(
-      color: cardColor,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            if (state.isLoading)
-              const CircularProgressIndicator()
-            else
-              Icon(icon, size: 48, color: Colors.grey.shade700),
-            const SizedBox(height: 12),
-            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ...[
-              const SizedBox(height: 8),
-              Text(
-                subtitle ?? '',
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                textAlign: TextAlign.center,
+    return GlassCard.panel(
+      gradient: cardGradient,
+      child: Column(
+        children: [
+          if (state.isLoading)
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(iconColor),
+            )
+          else
+            Icon(icon, size: 48, color: iconColor),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          if (subtitle != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade700,
               ),
-            ],
+              textAlign: TextAlign.center,
+            ),
           ],
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildExchangeButton(BuildContext context, WidgetRef ref, TokenExchangeState state) {
-    return ElevatedButton(
-      onPressed: state.isLoading
+    return GlassCard(
+      onTap: state.isLoading
           ? null
           : () async {
               await ref.read(authControllerProvider.notifier).exchangeServerToken();
@@ -252,30 +380,86 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
                 }
               }
             },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: state.isLoading
+            ? [
+                Colors.grey.withAlpha(40),
+                Colors.grey.withAlpha(20),
+              ]
+            : [
+                Colors.blue.withAlpha(80),
+                Colors.blue.withAlpha(40),
+              ],
       ),
-      child: Text(
-        state.isLoading ? '교환 중...' : 'Firebase → Server 토큰 교환',
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Center(
+          child: state.isLoading
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade600),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      '교환 중...',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                )
+              : Text(
+                  'Firebase → Server 토큰 교환',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blue.shade700,
+                  ),
+                ),
+        ),
       ),
     );
   }
 
   Widget _buildResetButton(WidgetRef ref) {
-    return OutlinedButton(
-      onPressed: () {
+    return GlassCard.dense(
+      onTap: () {
         ref.read(authControllerProvider.notifier).reset();
         _checkTokenStatus(); // Changed: 상태 새로고침
       },
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.grey.withAlpha(30),
+          Colors.grey.withAlpha(15),
+        ],
       ),
-      child: const Text('다시 시도', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+      borderColor: Colors.grey.shade400,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Center(
+          child: Text(
+            '다시 시도',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey.shade700,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

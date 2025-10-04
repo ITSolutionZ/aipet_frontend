@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/learn_trick_screen.dart';
 import 'package:aipet_frontend/features/pet_feeding/presentation/screens/pet_feeding_screens.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/vaccine_screen.dart';
-import 'package:aipet_frontend/features/pet_registor/presentation/screens/pet_registor_screens.dart';
 import 'package:go_router/go_router.dart';
 
 import 'route_constants.dart';
@@ -12,48 +11,6 @@ import 'route_constants.dart';
 /// 이 라우트들은 Shell 밖에서 독립적으로 실행되며, 펫 관리 기능을 담당합니다.
 class PetRoutes {
   static List<RouteBase> get routes => [
-    // ===== PET REGISTRATION FLOW =====
-    GoRoute(
-      path: RouteConstants.petTypeSelectionRoute,
-      name: 'pet-type-selection',
-      builder: (context, state) => const PetTypeSelectionScreen(),
-    ),
-    GoRoute(
-      path: RouteConstants.dogBreedSelectionRoute,
-      name: 'dog-breed-selection',
-      builder: (context, state) => const DogBreedSelectionScreen(),
-    ),
-    GoRoute(
-      path: RouteConstants.catBreedSelectionRoute,
-      name: 'cat-breed-selection',
-      builder: (context, state) => const CatBreedSelectionScreen(),
-    ),
-    GoRoute(
-      path: RouteConstants.petNameInputRoute,
-      name: 'pet-name-input',
-      builder: (context, state) => const PetNameInputScreen(),
-    ),
-    GoRoute(
-      path: RouteConstants.petSizeWeightRoute,
-      name: 'pet-size-weight',
-      builder: (context, state) => const PetSizeWeightScreen(),
-    ),
-    GoRoute(
-      path: RouteConstants.petAnniversaryRoute,
-      name: 'pet-anniversary',
-      builder: (context, state) => const PetAnniversaryScreen(),
-    ),
-    GoRoute(
-      path: RouteConstants.petAnniversarySummaryRoute,
-      name: 'pet-anniversary-summary',
-      builder: (context, state) => const PetAnniversarySummaryScreen(),
-    ),
-    GoRoute(
-      path: RouteConstants.petRegistrationCompleteRoute,
-      name: 'pet-registration-complete',
-      builder: (context, state) => const PetRegistrationCompleteScreen(),
-    ),
-
     // ===== PET PROFILE & HEALTH =====
     GoRoute(
       path: RouteConstants.vaccinesRoute,

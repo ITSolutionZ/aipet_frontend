@@ -1,41 +1,29 @@
 import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
+/// 체온 표시 카드 위젯
 class TemperatureDisplayCard extends StatelessWidget {
-  final DailyHealthRecord record;
+  final DailyHealthRecord healthRecord;
 
-  const TemperatureDisplayCard({super.key, required this.record});
+  const TemperatureDisplayCard({super.key, required this.healthRecord});
 
   @override
   Widget build(BuildContext context) {
-    final temperature = record.temperature;
-    final isHigh = temperature > 39.2;
-    final isLow = temperature < 37.5;
-
-    Color temperatureColor;
-    String temperatureStatus;
-
-    if (isHigh) {
-      temperatureColor = Colors.red;
-      temperatureStatus = '高い';
-    } else if (isLow) {
-      temperatureColor = Colors.blue;
-      temperatureStatus = '低い';
-    } else {
-      temperatureColor = Colors.green;
-      temperatureStatus = '正常';
-    }
+    final temperature = healthRecord.temperature;
+    final isNormal =
+        temperature != null && temperature >= 37.0 && temperature <= 39.5;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -44,81 +32,168 @@ class TemperatureDisplayCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.thermostat, color: temperatureColor, size: 24),
-              const SizedBox(width: 8),
+              const Icon(Icons.thermostat, color: AppColors.pointRed, size: 24),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 '体温',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
+                style: AppFonts.titleMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
                 ),
               ),
               const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: temperatureColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  temperatureStatus,
-                  style: TextStyle(
-                    color: temperatureColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+              _buildStatusIndicator(isNormal),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                temperature.toStringAsFixed(1),
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: temperatureColor,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (temperature != null) ...[
+                      Text(
+                        '${temperature.toStringAsFixed(1)}°C',
+                        style: AppFonts.displaySmall.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        _getTemperatureStatus(temperature),
+                        style: AppFonts.bodyMedium.copyWith(
+                          color: _getTemperatureColor(temperature),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ] else ...[
+                      Text(
+                        '未記録',
+                        style: AppFonts.displaySmall.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        '体温を記録してください',
+                        style: AppFonts.bodyMedium.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8, left: 4),
-                child: Text(
-                  '°C',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: temperatureColor,
-                  ),
-                ),
-              ),
+              const SizedBox(width: AppSpacing.lg),
+              _buildHealthIcons(isNormal),
             ],
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.grey[50],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.info_outline, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    '正常体温: 37.5°C - 39.2°C',
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  ),
-                ),
-              ],
-            ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildStatusIndicator(bool isNormal) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: isNormal
+            ? AppColors.pointGreen.withOpacity(0.1)
+            : AppColors.pointRed.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.xs),
+      ),
+      child: Text(
+        isNormal ? '正常' : '要注意',
+        style: AppFonts.bodySmall.copyWith(
+          color: isNormal ? AppColors.pointGreen : AppColors.pointRed,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHealthIcons(bool isNormal) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isNormal
+                    ? AppColors.pointGreen.withOpacity(0.1)
+                    : AppColors.pointRed.withOpacity(0.1),
+              ),
+              child: Icon(
+                Icons.sentiment_satisfied,
+                color: isNormal ? AppColors.pointGreen : AppColors.pointRed,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isNormal
+                    ? AppColors.pointGreen.withOpacity(0.1)
+                    : AppColors.pointRed.withOpacity(0.1),
+              ),
+              child: Icon(
+                Icons.pets,
+                color: isNormal ? AppColors.pointGreen : AppColors.pointRed,
+                size: 20,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(2, (index) {
+            return Container(
+              width: 8,
+              height: 8,
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isNormal
+                    ? AppColors.pointRed
+                    : AppColors.pointRed.withOpacity(0.3),
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  String _getTemperatureStatus(double temperature) {
+    if (temperature < 37.0) {
+      return '低体温';
+    } else if (temperature <= 39.5) {
+      return '正常';
+    } else {
+      return '発熱';
+    }
+  }
+
+  Color _getTemperatureColor(double temperature) {
+    if (temperature < 37.0) {
+      return AppColors.pointBlue;
+    } else if (temperature <= 39.5) {
+      return AppColors.pointGreen;
+    } else {
+      return AppColors.pointRed;
+    }
   }
 }

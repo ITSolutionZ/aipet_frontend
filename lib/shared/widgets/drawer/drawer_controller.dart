@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
 import 'package:aipet_frontend/shared/core/services/ui_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,16 +82,12 @@ class DrawerController extends BaseController {
   /// ペット追加画面へ遷移
   ///
   /// [context] - ナビゲーション用のBuildContext
-  void navigateToPetRegistration(BuildContext context) {
+  Future<void> navigateToPetRegistration(BuildContext context) async {
     if (!context.mounted) return;
 
-    // ドロワーを閉じる
-    Navigator.of(context).pop();
-
-    // ペット登録画面へ遷移
-    // TODO: RouteConstants定義後に実装
-    debugPrint('ペット登録画面へ遷移');
-    // context.go(RouteConstants.petTypeSelectionRoute);
+    // Daily Health 스타일 펫 등록 화면으로 이동
+    await context.push(RouteConstants.dailyPetRegistrationRoute);
+    // 네비게이션 완료 후 drawer 자동으로 닫힘
   }
 
   /// プロフィール編集画面へ遷移

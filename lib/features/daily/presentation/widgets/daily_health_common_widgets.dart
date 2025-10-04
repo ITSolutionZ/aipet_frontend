@@ -1,97 +1,33 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-/// 날짜 헤더 위젯
-class DateHeaderWidget extends StatelessWidget {
-  final DateTime? date;
-  final String? customText;
+/// 섹션 헤더 위젯
+class SectionHeaderWidget extends StatelessWidget {
+  final String title;
+  final String? subtitle;
 
-  const DateHeaderWidget({super.key, this.date, this.customText});
+  const SectionHeaderWidget({super.key, required this.title, this.subtitle});
 
   @override
   Widget build(BuildContext context) {
-    final displayDate = date ?? DateTime.now();
-    final dateText =
-        customText ?? '${displayDate.month}月${displayDate.day}日 今日';
-
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm + AppSpacing.xs,
-            vertical: AppSpacing.xs + 2,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            dateText,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
-            ),
+        Text(
+          title,
+          style: AppFonts.titleMedium.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
           ),
         ),
+        if (subtitle != null) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            subtitle!,
+            style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+          ),
+        ],
       ],
-    );
-  }
-}
-
-/// 빈 상태 위젯
-class EmptyStateWidget extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Color? iconColor;
-  final Color? titleColor;
-  final Color? subtitleColor;
-
-  const EmptyStateWidget({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    this.iconColor,
-    this.titleColor,
-    this.subtitleColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackgroundWhite,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Icon(icon, size: 48, color: iconColor ?? Colors.grey[400]),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            title,
-            style: AppTextStyles.titleMedium.copyWith(
-              color: titleColor ?? Colors.grey[700],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            subtitle,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: subtitleColor ?? Colors.grey[500],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -99,145 +35,157 @@ class EmptyStateWidget extends StatelessWidget {
 /// 액션 버튼 위젯
 class ActionButtonWidget extends StatelessWidget {
   final String text;
-  final IconData icon;
-  final VoidCallback onPressed;
+  final IconData? icon;
+  final VoidCallback? onPressed;
   final bool isPrimary;
   final bool isLoading;
 
   const ActionButtonWidget({
     super.key,
     required this.text,
-    required this.icon,
-    required this.onPressed,
+    this.icon,
+    this.onPressed,
     this.isPrimary = true,
     this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = isPrimary
-        ? ElevatedButton.styleFrom(
+    if (isPrimary) {
+      return SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          onPressed: isLoading ? null : onPressed,
+          icon: isLoading
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : icon != null
+              ? Icon(icon, color: Colors.white)
+              : const SizedBox.shrink(),
+          label: Text(
+            text,
+            style: AppFonts.bodyMedium.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              vertical: AppSpacing.sm + AppSpacing.xs,
-            ),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppSpacing.sm),
             ),
-          )
-        : OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppSpacing.sm + AppSpacing.xs,
+          ),
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: isLoading ? null : onPressed,
+          icon: icon != null
+              ? Icon(icon, color: AppColors.primary)
+              : const SizedBox.shrink(),
+          label: Text(
+            text,
+            style: AppFonts.bodyMedium.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
             ),
+          ),
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+            side: const BorderSide(color: AppColors.primary),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppSpacing.sm),
             ),
-          );
-
-    return Semantics(
-      label: text,
-      button: true,
-      hint: 'タップして$textを実行します',
-      child: isPrimary
-          ? ElevatedButton.icon(
-              onPressed: isLoading ? null : onPressed,
-              icon: isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                      ),
-                    )
-                  : Icon(icon),
-              label: Text(text),
-              style: buttonStyle,
-            )
-          : OutlinedButton.icon(
-              onPressed: isLoading ? null : onPressed,
-              icon: isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Icon(icon),
-              label: Text(text),
-              style: buttonStyle,
-            ),
-    );
+          ),
+        ),
+      );
+    }
   }
 }
 
 /// 정보 카드 위젯
 class InfoCardWidget extends StatelessWidget {
-  final Widget child;
-  final EdgeInsetsGeometry? padding;
-  final Color? backgroundColor;
-  final List<BoxShadow>? boxShadow;
+  final String title;
+  final String? subtitle;
+  final Widget? leading;
+  final Widget? trailing;
+  final VoidCallback? onTap;
 
   const InfoCardWidget({
     super.key,
-    required this.child,
-    this.padding,
-    this.backgroundColor,
-    this.boxShadow,
+    required this.title,
+    this.subtitle,
+    this.leading,
+    this.trailing,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding ?? const EdgeInsets.all(AppSpacing.lg + AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.cardBackgroundWhite,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow:
-            boxShadow ??
-            [
+    return Semantics(
+      button: onTap != null,
+      label: title,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(AppSpacing.sm),
+            boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
             ],
-      ),
-      child: child,
-    );
-  }
-}
-
-/// 섹션 헤더 위젯
-class SectionHeaderWidget extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Color? iconColor;
-  final Widget? action;
-
-  const SectionHeaderWidget({
-    super.key,
-    required this.title,
-    required this.icon,
-    this.iconColor,
-    this.action,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, color: iconColor ?? AppColors.primary, size: 24),
-        const SizedBox(width: AppSpacing.sm),
-        Text(
-          title,
-          style: AppTextStyles.titleMedium.copyWith(
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
+          ),
+          child: Row(
+            children: [
+              if (leading != null) ...[
+                leading!,
+                const SizedBox(width: AppSpacing.md),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        subtitle!,
+                        style: AppFonts.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (trailing != null) ...[
+                const SizedBox(width: AppSpacing.md),
+                trailing!,
+              ],
+            ],
           ),
         ),
-        if (action != null) ...[const Spacer(), action!],
-      ],
+      ),
     );
   }
 }

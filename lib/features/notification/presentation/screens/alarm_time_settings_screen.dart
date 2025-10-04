@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/notification/presentation/controllers/alarm_time_settings_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/layout/card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,16 +8,20 @@ class AlarmTimeSettingsScreen extends ConsumerStatefulWidget {
   const AlarmTimeSettingsScreen({super.key});
 
   @override
-  ConsumerState<AlarmTimeSettingsScreen> createState() => _AlarmTimeSettingsScreenState();
+  ConsumerState<AlarmTimeSettingsScreen> createState() =>
+      _AlarmTimeSettingsScreenState();
 }
 
-class _AlarmTimeSettingsScreenState extends ConsumerState<AlarmTimeSettingsScreen> {
+class _AlarmTimeSettingsScreenState
+    extends ConsumerState<AlarmTimeSettingsScreen> {
   @override
   void initState() {
     super.initState();
     // 컨트롤러를 통해 알림 시간 로드
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(alarmTimeSettingsControllerProvider.notifier).loadAlarmTimes('default_user_id');
+      ref
+          .read(alarmTimeSettingsControllerProvider.notifier)
+          .loadAlarmTimes('default_user_id');
     });
   }
 
@@ -83,11 +88,12 @@ class _AlarmTimeSettingsScreenState extends ConsumerState<AlarmTimeSettingsScree
                   title: '朝食',
                   subtitle: '朝食アラーム時間',
                   time: state.morningTime,
-                  onTap: () => _selectTime(context, '朝食時間', state.morningTime, (time) {
-                    ref
-                        .read(alarmTimeSettingsControllerProvider.notifier)
-                        .selectTime('morning', time);
-                  }),
+                  onTap: () =>
+                      _selectTime(context, '朝食時間', state.morningTime, (time) {
+                        ref
+                            .read(alarmTimeSettingsControllerProvider.notifier)
+                            .selectTime('morning', time);
+                      }),
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
@@ -96,11 +102,12 @@ class _AlarmTimeSettingsScreenState extends ConsumerState<AlarmTimeSettingsScree
                   title: '昼食',
                   subtitle: '昼食アラーム時間',
                   time: state.lunchTime,
-                  onTap: () => _selectTime(context, '昼食時間', state.lunchTime, (time) {
-                    ref
-                        .read(alarmTimeSettingsControllerProvider.notifier)
-                        .selectTime('lunch', time);
-                  }),
+                  onTap: () =>
+                      _selectTime(context, '昼食時間', state.lunchTime, (time) {
+                        ref
+                            .read(alarmTimeSettingsControllerProvider.notifier)
+                            .selectTime('lunch', time);
+                      }),
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
@@ -109,11 +116,12 @@ class _AlarmTimeSettingsScreenState extends ConsumerState<AlarmTimeSettingsScree
                   title: '夕食',
                   subtitle: '夕食アラーム時間',
                   time: state.dinnerTime,
-                  onTap: () => _selectTime(context, '夕食時間', state.dinnerTime, (time) {
-                    ref
-                        .read(alarmTimeSettingsControllerProvider.notifier)
-                        .selectTime('dinner', time);
-                  }),
+                  onTap: () =>
+                      _selectTime(context, '夕食時間', state.dinnerTime, (time) {
+                        ref
+                            .read(alarmTimeSettingsControllerProvider.notifier)
+                            .selectTime('dinner', time);
+                      }),
                 ),
 
                 const SizedBox(height: AppSpacing.xl * 2),
@@ -126,9 +134,12 @@ class _AlarmTimeSettingsScreenState extends ConsumerState<AlarmTimeSettingsScree
                   title: '散歩時間',
                   subtitle: '散歩アラーム時間',
                   time: state.walkTime,
-                  onTap: () => _selectTime(context, '散歩時間', state.walkTime, (time) {
-                    ref.read(alarmTimeSettingsControllerProvider.notifier).selectTime('walk', time);
-                  }),
+                  onTap: () =>
+                      _selectTime(context, '散歩時間', state.walkTime, (time) {
+                        ref
+                            .read(alarmTimeSettingsControllerProvider.notifier)
+                            .selectTime('walk', time);
+                      }),
                 ),
 
                 const SizedBox(height: AppSpacing.xl * 3),
@@ -137,7 +148,9 @@ class _AlarmTimeSettingsScreenState extends ConsumerState<AlarmTimeSettingsScree
                   text: '保存',
                   isEnabled: true,
                   onPressed: () {
-                    ref.read(alarmTimeSettingsControllerProvider.notifier).saveAlarmTimes();
+                    ref
+                        .read(alarmTimeSettingsControllerProvider.notifier)
+                        .saveAlarmTimes();
                   },
                 ),
 
@@ -164,18 +177,32 @@ class _AlarmTimeSettingsScreenState extends ConsumerState<AlarmTimeSettingsScree
         ),
         title: Text(
           title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black87),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
         ),
-        subtitle: Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+        ),
         trailing: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
           decoration: BoxDecoration(
             color: AppColors.pointBrown,
             borderRadius: BorderRadius.circular(AppSpacing.sm),
           ),
           child: Text(
             '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
           ),
         ),
         onTap: onTap,

@@ -3,54 +3,30 @@ import 'package:flutter/material.dart';
 
 /// 로딩 상태 위젯
 class LoadingStateWidget extends StatelessWidget {
-  final String? message;
-  final String? subMessage;
+  final String message;
 
-  const LoadingStateWidget({super.key, this.message, this.subMessage});
+  const LoadingStateWidget({super.key, this.message = '読み込み中...'});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        margin: const EdgeInsets.all(AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: Colors.blue[50],
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.blue[200]!),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              width: 48,
-              height: 48,
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
-                valueColor: AlwaysStoppedAnimation(Colors.blue[600]),
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(
+            width: 40,
+            height: 40,
+            child: CircularProgressIndicator(
+              strokeWidth: 3,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              message ?? 'データを読み込み中です',
-              style: AppTextStyles.titleMedium.copyWith(
-                color: Colors.blue[800],
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            if (subMessage != null) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                subMessage!,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.blue[700],
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ],
-        ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            message,
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.textSecondary),
+          ),
+        ],
       ),
     );
   }
@@ -59,68 +35,48 @@ class LoadingStateWidget extends StatelessWidget {
 /// 에러 상태 위젯
 class ErrorStateWidget extends StatelessWidget {
   final Object error;
-  final String? message;
-  final String? subMessage;
   final VoidCallback? onRetry;
-  final String? retryButtonText;
 
-  const ErrorStateWidget({
-    super.key,
-    required this.error,
-    this.message,
-    this.subMessage,
-    this.onRetry,
-    this.retryButtonText,
-  });
+  const ErrorStateWidget({super.key, required this.error, this.onRetry});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        margin: const EdgeInsets.all(AppSpacing.md),
+      child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: Colors.red[50],
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.red[200]!),
-        ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 48, color: Colors.red[600]),
+            const Icon(
+              Icons.error_outline,
+              size: 64,
+              color: AppColors.pointRed,
+            ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              message ?? 'データの読み込みに失敗しました',
-              style: AppTextStyles.titleMedium.copyWith(
-                color: Colors.red[800],
-                fontWeight: FontWeight.w600,
+              'エラーが発生しました',
+              style: AppFonts.titleMedium.copyWith(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
               ),
-              textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              subMessage ?? 'ネットワーク接続を確認して、もう一度お試しください',
-              style: AppTextStyles.bodyMedium.copyWith(color: Colors.red[700]),
+              error.toString(),
+              style: AppFonts.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
               const SizedBox(height: AppSpacing.lg),
-              Semantics(
-                label: 'データ再読み込みボタン',
-                button: true,
-                hint: 'タップしてデータを再読み込みします',
-                child: ElevatedButton.icon(
-                  onPressed: onRetry,
-                  icon: const Icon(Icons.refresh),
-                  label: Text(retryButtonText ?? '再試行'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red[600],
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.sm,
-                    ),
-                  ),
+              ElevatedButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh),
+                label: const Text('再試行'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
                 ),
               ),
             ],
@@ -131,28 +87,60 @@ class ErrorStateWidget extends StatelessWidget {
   }
 }
 
-/// 간단한 로딩 위젯 (작은 크기)
-class SimpleLoadingWidget extends StatelessWidget {
-  final double size;
-  final double strokeWidth;
-  final Color? color;
+/// 빈 상태 위젯
+class EmptyStateWidget extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String? actionText;
+  final VoidCallback? onActionPressed;
 
-  const SimpleLoadingWidget({
+  const EmptyStateWidget({
     super.key,
-    this.size = 20,
-    this.strokeWidth = 2,
-    this.color,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.actionText,
+    this.onActionPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CircularProgressIndicator(
-        strokeWidth: strokeWidth,
-        valueColor: AlwaysStoppedAnimation(
-          color ?? Theme.of(context).primaryColor,
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 64, color: AppColors.textSecondary),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              title,
+              style: AppFonts.titleMedium.copyWith(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              subtitle,
+              style: AppFonts.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (actionText != null && onActionPressed != null) ...[
+              const SizedBox(height: AppSpacing.lg),
+              ElevatedButton(
+                onPressed: onActionPressed,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text(actionText!),
+              ),
+            ],
+          ],
         ),
       ),
     );
