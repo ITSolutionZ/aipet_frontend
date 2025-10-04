@@ -1,55 +1,52 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// 공통 폼 필드 위젯
+/// 공통 폼 필드 컴포넌트
 ///
-/// 모든 feature에서 공통으로 사용되는 폼 필드 패턴을 제공합니다.
+/// 모든 화면에서 일관된 스타일의 텍스트 입력 필드를 제공합니다.
 class CommonFormField extends StatelessWidget {
-  const CommonFormField({
-    super.key,
-    required this.label,
-    this.hint,
-    this.initialValue,
-    this.onChanged,
-    this.validator,
-    this.keyboardType,
-    this.textInputAction,
-    this.obscureText = false,
-    this.maxLines = 1,
-    this.maxLength,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.enabled = true,
-    this.readOnly = false,
-    this.autofocus = false,
-    this.controller,
-    this.focusNode,
-    this.onSubmitted,
-    this.onTap,
-    this.decoration,
-  });
-
+  final TextEditingController controller;
   final String label;
   final String? hint;
-  final String? initialValue;
-  final ValueChanged<String>? onChanged;
-  final FormFieldValidator<String>? validator;
+  final String? helperText;
+  final IconData? prefixIcon;
+  final IconData? suffixIcon;
   final TextInputType? keyboardType;
-  final TextInputAction? textInputAction;
-  final bool obscureText;
   final int? maxLines;
   final int? maxLength;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
+  final bool obscureText;
   final bool enabled;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
+  final void Function()? onTap;
+  final Widget? suffix;
+  final Widget? prefix;
+  final EdgeInsetsGeometry? contentPadding;
   final bool readOnly;
-  final bool autofocus;
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
-  final ValueChanged<String>? onSubmitted;
-  final VoidCallback? onTap;
-  final InputDecoration? decoration;
+  final TextAlign textAlign;
+
+  const CommonFormField({
+    super.key,
+    required this.controller,
+    required this.label,
+    this.hint,
+    this.helperText,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.keyboardType,
+    this.maxLines = 1,
+    this.maxLength,
+    this.obscureText = false,
+    this.enabled = true,
+    this.validator,
+    this.onChanged,
+    this.onTap,
+    this.suffix,
+    this.prefix,
+    this.contentPadding,
+    this.readOnly = false,
+    this.textAlign = TextAlign.start,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -57,251 +54,172 @@ class CommonFormField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 라벨
-        Text(
-          label,
-          style: AppFonts.bodyMedium.copyWith(
-            color: AppColors.pointDark,
-            fontWeight: FontWeight.w500,
+        if (label.isNotEmpty) ...[
+          Text(
+            label,
+            style: AppFonts.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
           ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xs),
+        ],
 
         // 입력 필드
         TextFormField(
           controller: controller,
-          focusNode: focusNode,
-          initialValue: controller == null ? initialValue : null,
-          onChanged: onChanged,
-          validator: validator,
           keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          obscureText: obscureText,
           maxLines: maxLines,
           maxLength: maxLength,
+          obscureText: obscureText,
           enabled: enabled,
           readOnly: readOnly,
-          autofocus: autofocus,
-          onFieldSubmitted: onSubmitted,
+          textAlign: textAlign,
+          validator: validator,
+          onChanged: onChanged,
           onTap: onTap,
-          decoration: _buildDecoration(),
+          decoration: InputDecoration(
+            hintText: hint,
+            helperText: helperText,
+            prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+            suffixIcon: suffixIcon != null ? Icon(suffixIcon) : null,
+            prefix: prefix,
+            suffix: suffix,
+            contentPadding:
+                contentPadding ??
+                const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.small),
+              borderSide: const BorderSide(color: AppColors.borderGray),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.small),
+              borderSide: const BorderSide(color: AppColors.borderGray),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.small),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.small),
+              borderSide: const BorderSide(color: AppColors.pointRed),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.small),
+              borderSide: const BorderSide(color: AppColors.pointRed, width: 2),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.small),
+              borderSide: const BorderSide(color: AppColors.backgroundGray),
+            ),
+            filled: true,
+            fillColor: enabled ? Colors.white : AppColors.backgroundGray,
+          ),
         ),
       ],
     );
   }
-
-  InputDecoration _buildDecoration() {
-    final baseDecoration = InputDecoration(
-      hintText: hint,
-      prefixIcon: prefixIcon,
-      suffixIcon: suffixIcon,
-      counterText: '', // maxLength 카운터 숨기기
-      filled: true,
-      fillColor: enabled ? AppColors.pureWhite : AppColors.pointOffWhite,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: BorderSide(color: AppColors.pointOffWhite.withValues(alpha: 0.3), width: 1.0),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: BorderSide(color: AppColors.pointOffWhite.withValues(alpha: 0.3), width: 1.0),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: const BorderSide(color: AppColors.pointBrown, width: 2.0),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: const BorderSide(color: AppColors.pointPink, width: 1.0),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: const BorderSide(color: AppColors.pointPink, width: 2.0),
-      ),
-      disabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        borderSide: BorderSide(color: AppColors.pointOffWhite.withValues(alpha: 0.1), width: 1.0),
-      ),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
-    );
-
-    // 커스텀 데코레이션이 있으면 병합
-    if (decoration != null) {
-      return baseDecoration.copyWith(
-        hintText: decoration!.hintText ?? baseDecoration.hintText,
-        prefixIcon: decoration!.prefixIcon ?? baseDecoration.prefixIcon,
-        suffixIcon: decoration!.suffixIcon ?? baseDecoration.suffixIcon,
-        errorText: decoration!.errorText,
-        helperText: decoration!.helperText,
-      );
-    }
-
-    return baseDecoration;
-  }
 }
 
-/// 🎯 Password Visibility State Provider
-final passwordVisibilityProvider =
-    StateNotifierProvider.family<PasswordVisibilityController, bool, String>(
-      (ref, fieldId) => PasswordVisibilityController(),
-    );
-
-class PasswordVisibilityController extends StateNotifier<bool> {
-  PasswordVisibilityController() : super(true); // Initially obscured
-
-  void toggle() {
-    state = !state;
-  }
-}
-
-/// 비밀번호 입력 필드
-class PasswordFormField extends ConsumerWidget {
-  const PasswordFormField({
-    super.key,
-    required this.label,
-    this.hint,
-    this.initialValue,
-    this.onChanged,
-    this.validator,
-    this.textInputAction,
-    this.enabled = true,
-    this.controller,
-    this.focusNode,
-    this.onSubmitted,
-    this.fieldId,
-  });
-
+/// 필수 필드 표시가 포함된 CommonFormField
+class RequiredFormField extends StatelessWidget {
+  final TextEditingController controller;
   final String label;
   final String? hint;
-  final String? initialValue;
-  final ValueChanged<String>? onChanged;
-  final FormFieldValidator<String>? validator;
-  final TextInputAction? textInputAction;
+  final String? helperText;
+  final IconData? prefixIcon;
+  final IconData? suffixIcon;
+  final TextInputType? keyboardType;
+  final int? maxLines;
+  final int? maxLength;
+  final bool obscureText;
   final bool enabled;
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
-  final ValueChanged<String>? onSubmitted;
-  final String? fieldId;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
+  final void Function()? onTap;
+  final Widget? suffix;
+  final Widget? prefix;
+  final EdgeInsetsGeometry? contentPadding;
+  final bool readOnly;
+  final TextAlign textAlign;
+
+  const RequiredFormField({
+    super.key,
+    required this.controller,
+    required this.label,
+    this.hint,
+    this.helperText,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.keyboardType,
+    this.maxLines = 1,
+    this.maxLength,
+    this.obscureText = false,
+    this.enabled = true,
+    this.validator,
+    this.onChanged,
+    this.onTap,
+    this.suffix,
+    this.prefix,
+    this.contentPadding,
+    this.readOnly = false,
+    this.textAlign = TextAlign.start,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final effectiveFieldId = fieldId ?? 'default_password_field';
-    final obscureText = ref.watch(passwordVisibilityProvider(effectiveFieldId));
-
-    return CommonFormField(
-      label: label,
-      hint: hint,
-      initialValue: initialValue,
-      onChanged: onChanged,
-      validator: validator,
-      textInputAction: textInputAction,
-      enabled: enabled,
-      controller: controller,
-      focusNode: focusNode,
-      onSubmitted: onSubmitted,
-      obscureText: obscureText,
-      suffixIcon: IconButton(
-        icon: Icon(
-          obscureText ? Icons.visibility_off : Icons.visibility,
-          color: AppColors.pointDark.withValues(alpha: 0.6),
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 필수 표시가 포함된 라벨
+        Row(
+          children: [
+            Container(
+              width: 4,
+              height: 16,
+              decoration: BoxDecoration(
+                color: AppColors.pointRed,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              label,
+              style: AppFonts.bodyMedium.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ],
         ),
-        onPressed: () {
-          ref.read(passwordVisibilityProvider(effectiveFieldId).notifier).toggle();
-        },
-      ),
-    );
-  }
-}
+        const SizedBox(height: AppSpacing.xs),
 
-/// 이메일 입력 필드
-class EmailFormField extends StatelessWidget {
-  const EmailFormField({
-    super.key,
-    required this.label,
-    this.hint,
-    this.initialValue,
-    this.onChanged,
-    this.validator,
-    this.textInputAction,
-    this.enabled = true,
-    this.controller,
-    this.focusNode,
-    this.onSubmitted,
-  });
-
-  final String label;
-  final String? hint;
-  final String? initialValue;
-  final ValueChanged<String>? onChanged;
-  final FormFieldValidator<String>? validator;
-  final TextInputAction? textInputAction;
-  final bool enabled;
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
-  final ValueChanged<String>? onSubmitted;
-
-  @override
-  Widget build(BuildContext context) {
-    return CommonFormField(
-      label: label,
-      hint: hint ?? 'メールアドレスを入力してください',
-      initialValue: initialValue,
-      onChanged: onChanged,
-      validator: validator,
-      textInputAction: textInputAction,
-      enabled: enabled,
-      controller: controller,
-      focusNode: focusNode,
-      onSubmitted: onSubmitted,
-      keyboardType: TextInputType.emailAddress,
-      prefixIcon: const Icon(Icons.email_outlined, color: AppColors.pointBrown),
-    );
-  }
-}
-
-/// 사용자명 입력 필드
-class UsernameFormField extends StatelessWidget {
-  const UsernameFormField({
-    super.key,
-    required this.label,
-    this.hint,
-    this.initialValue,
-    this.onChanged,
-    this.validator,
-    this.textInputAction,
-    this.enabled = true,
-    this.controller,
-    this.focusNode,
-    this.onSubmitted,
-  });
-
-  final String label;
-  final String? hint;
-  final String? initialValue;
-  final ValueChanged<String>? onChanged;
-  final FormFieldValidator<String>? validator;
-  final TextInputAction? textInputAction;
-  final bool enabled;
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
-  final ValueChanged<String>? onSubmitted;
-
-  @override
-  Widget build(BuildContext context) {
-    return CommonFormField(
-      label: label,
-      hint: hint ?? 'ユーザー名を入力してください',
-      initialValue: initialValue,
-      onChanged: onChanged,
-      validator: validator,
-      textInputAction: textInputAction,
-      enabled: enabled,
-      controller: controller,
-      focusNode: focusNode,
-      onSubmitted: onSubmitted,
-      prefixIcon: const Icon(Icons.person_outline, color: AppColors.pointBrown),
+        // 입력 필드
+        CommonFormField(
+          controller: controller,
+          label: '', // 라벨은 위에서 처리했으므로 빈 문자열
+          hint: hint,
+          helperText: helperText,
+          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          maxLength: maxLength,
+          obscureText: obscureText,
+          enabled: enabled,
+          validator: validator,
+          onChanged: onChanged,
+          onTap: onTap,
+          suffix: suffix,
+          prefix: prefix,
+          contentPadding: contentPadding,
+          readOnly: readOnly,
+          textAlign: textAlign,
+        ),
+      ],
     );
   }
 }

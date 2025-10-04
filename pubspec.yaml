@@ -71,29 +71,44 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    # Environment and config files
     - .env
+
+    # Meteocons (weather icons)
     - assets/meteocons/
     - assets/meteocons/design/fill/animation-ready/
     - assets/meteocons/viewer.html
+
+    # Policy documents
     - assets/policies/
 
+    # Images - General
     - assets/images/
     - assets/images/activities/
-    - assets/images/home_banner/
     - assets/images/backgrounds/
+    - assets/images/brands/
     - assets/images/cats/
-    - assets/images/pet_selector/
     - assets/images/dogs/
-    - assets/images/onboarding/
     - assets/images/etc/
+    - assets/images/home_banner/
     - assets/images/home_banner/banners/
-    - assets/images/modal/
     - assets/images/medications/
+    - assets/images/modal/
+    - assets/images/onboarding/
+    - assets/images/pet_selector/
+    - assets/images/pets/
     - assets/images/textures/
     - assets/images/walks/
 
+    # Individual image files
+    - assets/images/empty_image.png
+    - assets/images/placeholder.png
+
+    # Icons - General
     - assets/icons/
     - assets/icons/navigation/
+
+    # Icons - Home menu (individual files)
     - assets/icons/home_menu/adopt.png
     - assets/icons/home_menu/alregic.png
     - assets/icons/home_menu/booking.png
@@ -105,6 +120,7 @@ flutter:
     - assets/icons/home_menu/qr.png
     - assets/icons/home_menu/shopping.png
 
+    # Fonts and animations
     - assets/fonts/
     - assets/lottie/
 

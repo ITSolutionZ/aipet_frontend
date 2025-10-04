@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,8 @@ class ProfileAppBar extends ConsumerWidget implements PreferredSizeWidget {
   }
 
   void _showPetSelectionModal(BuildContext context, WidgetRef ref) {
-    final petsAsyncValue = ref.read(petsNotifierProvider);
+    // Mock 데이터 사용
+    const petsAsyncValue = AsyncValue.data(<PetProfileEntity>[]);
 
     petsAsyncValue.whenData((pets) {
       if (pets.isEmpty) {

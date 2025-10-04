@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
-import 'package:aipet_frontend/features/pet_registor/domain/repositories/pet_repository.dart';
+
 import 'mock_config.dart';
 
 /// 스마트 Repository Factory
@@ -78,26 +78,6 @@ class RepositoryFactory {
     }
   }
 
-  /// Pet Repository 생성
-  ///
-  /// 환경에 따라 Mock 또는 Real 구현체 반환
-  /// 현재는 의존성 주입 없이 팩토리 패턴만 시연
-  PetRepository createPetRepository() {
-    if (MockConfig.shouldUseMock) {
-      // Mock 구현체 - 실제 구현 시 Mockito 객체 반환
-      throw UnimplementedError(
-        'Mock Pet Repository는 의존성 주입이 필요합니다. '
-        'Provider나 테스트에서 직접 생성하세요.',
-      );
-    } else {
-      // Real 구현체 - 실제 구현 시 API 구현체 반환
-      throw UnimplementedError(
-        'Real Pet Repository는 의존성 주입이 필요합니다. '
-        'Provider에서 필요한 의존성과 함께 생성하세요.',
-      );
-    }
-  }
-
   /// Factory 초기화 (테스트용)
   static void reset() {
     _instance = null;
@@ -129,8 +109,6 @@ extension RepositoryFactoryExtensions on RepositoryFactory {
       return createAuthRepository() as T;
     } else if (T == HomeRepository) {
       return createHomeRepository() as T;
-    } else if (T == PetRepository) {
-      return createPetRepository() as T;
     } else {
       throw ArgumentError('지원하지 않는 Repository 타입입니다: $T');
     }
@@ -151,9 +129,6 @@ class RepositoryFactoryProvider {
 
   /// Home Repository Provider
   static HomeRepository get homeRepository => _factory.createHomeRepository();
-
-  /// Pet Repository Provider
-  static PetRepository get petRepository => _factory.createPetRepository();
 
   /// Repository 타입 디버그 정보
   static Map<String, String> get debugInfo => _factory.getRepositoryTypes();

@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/controllers/sharing_profiles_controller.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/sharing_widgets.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
@@ -9,7 +10,8 @@ class SharingProfilesScreen extends ConsumerStatefulWidget {
   const SharingProfilesScreen({super.key});
 
   @override
-  ConsumerState<SharingProfilesScreen> createState() => _SharingProfilesScreenState();
+  ConsumerState<SharingProfilesScreen> createState() =>
+      _SharingProfilesScreenState();
 }
 
 class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
@@ -69,7 +71,11 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
           Tab(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Icon(Icons.qr_code, size: 20), SizedBox(width: 8), Text('コード生成')],
+              children: [
+                Icon(Icons.qr_code, size: 20),
+                SizedBox(width: 8),
+                Text('コード生成'),
+              ],
             ),
           ),
           Tab(
@@ -88,7 +94,9 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
   }
 
   void _showQRCodeModal(PetProfileEntity pet) {
-    final qrData = 'pet_profile:${pet.id}:${pet.name}';
+    final qrData = ref
+        .read(sharingProfilesControllerProvider.notifier)
+        .generateQRCode(pet);
 
     showDialog(
       context: context,
@@ -97,10 +105,14 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
   }
 
   void _handleScannedCode(String code) {
-    if (code.startsWith('pet_profile:')) {
-      _showSuccessMessage('QRコードをスキャンしました: $code');
+    final result = ref
+        .read(sharingProfilesControllerProvider.notifier)
+        .handleScannedCode(code);
+
+    if (result['success'] == true) {
+      _showSuccessMessage(result['message']);
     } else {
-      _showErrorMessage('無効なQRコードです');
+      _showErrorMessage(result['error']);
     }
   }
 
@@ -110,7 +122,9 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
         content: Text(message),
         backgroundColor: AppColors.pointGreen,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+        ),
       ),
     );
   }
@@ -121,7 +135,9 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
         content: Text(message),
         backgroundColor: AppColors.pointPink,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+        ),
       ),
     );
   }

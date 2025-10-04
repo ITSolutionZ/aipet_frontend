@@ -13,6 +13,11 @@ class AppColors {
   static const Color pointCream = Color(0xFFF7F0E8);
   static const Color pureWhite = Color(0xFFFFFFFF);
 
+  // Additional Point Colors for Health/Daily features
+  static const Color pointRed = Color(0xFFE57373);
+  static const Color pointOrange = Color(0xFFFFB74D);
+  static const Color pointYellow = Color(0xFFFFF176);
+
   // Tone and Manner Colors
   static const Color toneOffWhite = Color(0xFFF0F0E5);
   static const Color tonePeach = Color(0xFFE4C7B8);
@@ -32,6 +37,7 @@ class AppColors {
   static const Color cardBackgroundGray = toneOffWhite;
   static const Color cardBackgroundWhite = pureWhite;
   static const Color borderGray = pointGray;
+  static const Color backgroundGray = toneOffWhite;
   static const Color error = Color(0xFFD32F2F);
   static const Color success = Color(0xFF4CAF50);
 }
