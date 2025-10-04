@@ -1,5 +1,4 @@
 import 'dart:io';
-import '../../../../shared/core/api/api_client.dart';
 import '../../../../shared/core/api/api_constants.dart';
 import '../../../../shared/core/api/api_error_handler.dart';
 import '../../../../shared/core/data/base_remote_data_source.dart';

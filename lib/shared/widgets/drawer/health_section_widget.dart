@@ -37,9 +37,10 @@ class HealthSectionWidget extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.directions_walk, color: Colors.white, size: 20),
           title: const Text('散歩', style: TextStyle(color: Colors.white, fontSize: 14)),
-          onTap: () {
-            context.pop(); // 드로어 닫기
-            context.go(AppRouter.walkRoute); // 산책 페이지로 이동
+          onTap: () async {
+            // 먼저 네비게이션 실행
+            await context.push(AppRouter.walkRoute);
+            // 네비게이션 완료 후 drawer 자동으로 닫힘
           },
         ),
         ListTile(
