@@ -37,7 +37,10 @@ class PetTypeSection extends StatelessWidget {
           ExpansionTile(
             title: Text(
               selectedPetType.isNotEmpty
-                  ? PetRegistrationController.petTypes[selectedPetType]?['name'] as String? ?? '펫 종류 선택'
+                  ? (PetRegistrationController
+                                .petTypes[selectedPetType]?['name']
+                            as String? ??
+                        '펫 종류 선택')
                   : '펫 종류 선택',
               style: AppFonts.bodyMedium.copyWith(
                 fontWeight: FontWeight.bold,
@@ -61,7 +64,10 @@ class PetTypeSection extends StatelessWidget {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Icon(
-                            PetRegistrationController.petTypes[selectedPetType]?['icon'] as IconData? ?? Icons.pets,
+                            PetRegistrationController
+                                        .petTypes[selectedPetType]?['icon']
+                                    as IconData? ??
+                                Icons.pets,
                             size: 20,
                             color: AppColors.textSecondary,
                           );
@@ -69,10 +75,7 @@ class PetTypeSection extends StatelessWidget {
                       ),
                     ),
                   )
-                : const Icon(
-                    Icons.pets,
-                    color: AppColors.textSecondary,
-                  ),
+                : const Icon(Icons.pets, color: AppColors.textSecondary),
             children: PetRegistrationController.petTypes.entries.map((entry) {
               final petTypeKey = entry.key;
               final petTypeData = entry.value;
@@ -115,10 +118,7 @@ class PetTypeSection extends StatelessWidget {
                   ),
                 ),
                 trailing: isSelected
-                    ? const Icon(
-                        Icons.check_circle,
-                        color: AppColors.primary,
-                      )
+                    ? const Icon(Icons.check_circle, color: AppColors.primary)
                     : null,
                 selected: isSelected,
                 selectedTileColor: AppColors.primary.withValues(alpha: 0.1),
