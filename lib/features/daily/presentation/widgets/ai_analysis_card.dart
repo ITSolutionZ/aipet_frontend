@@ -1,6 +1,8 @@
 import 'package:aipet_frontend/features/daily/domain/entities/health_analysis.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
+/// AI 분석 카드 위젯
 class AIAnalysisCard extends StatelessWidget {
   final HealthAnalysis analysis;
 
@@ -8,18 +10,16 @@ class AIAnalysisCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final result = analysis.result;
-
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -28,162 +28,79 @@ class AIAnalysisCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.psychology, color: Colors.blue[600], size: 24),
-              const SizedBox(width: 8),
-              Text(
-                'AI健康分析',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
-                ),
-              ),
-              const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: _getRiskLevelColor(
-                    result.riskLevel,
-                  ).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.xs),
                 ),
-                child: Text(
-                  result.riskLevel.displayName,
-                  style: TextStyle(
-                    color: _getRiskLevelColor(result.riskLevel),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: const Icon(
+                  Icons.auto_awesome,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                'AI 리포트',
+                style: AppFonts.titleMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-
-          // 분석 결과 요약
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: _getRiskLevelColor(
-                result.riskLevel,
-              ).withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: _getRiskLevelColor(
-                  result.riskLevel,
-                ).withValues(alpha: 0.2),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  result.riskLevel.description,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: _getRiskLevelColor(result.riskLevel),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  result.summary,
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                ),
-              ],
-            ),
-          ),
-
-          if (analysis.recommendations.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Text(
-              '推奨事項',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
-              ),
-            ),
-            const SizedBox(height: 8),
-            ...analysis.recommendations
-                .take(3)
-                .map(
-                  (recommendation) => _buildRecommendationItem(recommendation),
-                ),
-          ],
-
+          const SizedBox(height: AppSpacing.md),
+          _buildRiskLevelIndicator(),
+          const SizedBox(height: AppSpacing.md),
+          _buildRecommendationsSection(),
           if (analysis.warnings.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Text(
-              '注意事項',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.red[700],
-              ),
-            ),
-            const SizedBox(height: 8),
-            ...analysis.warnings.map((warning) => _buildWarningItem(warning)),
+            const SizedBox(height: AppSpacing.md),
+            _buildWarningsSection(),
           ],
-
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Icon(Icons.verified, size: 16, color: Colors.grey[500]),
-              const SizedBox(width: 4),
-              Text(
-                '信頼度: ${(result.confidenceScore * 100).toInt()}%',
-                style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-              ),
-              const Spacer(),
-              Text(
-                '分析日: ${_formatDate(analysis.analysisDate)}',
-                style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-              ),
-            ],
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildRecommendationItem(HealthRecommendation recommendation) {
+  Widget _buildRiskLevelIndicator() {
+    final riskData = _getRiskLevelData(analysis.riskLevel);
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.blue[200]!),
+        color: riskData.color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.sm),
       ),
       child: Row(
         children: [
-          Icon(
-            _getRecommendationIcon(recommendation.type),
-            size: 16,
-            color: Colors.blue[600],
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            decoration: BoxDecoration(
+              color: riskData.color.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(AppSpacing.xs),
+            ),
+            child: Icon(riskData.icon, color: riskData.color, size: 20),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  recommendation.title,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue[800],
+                  riskData.text,
+                  style: AppFonts.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: riskData.color,
                   ),
                 ),
-                if (recommendation.description.isNotEmpty) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    recommendation.description,
-                    style: TextStyle(fontSize: 11, color: Colors.blue[700]),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  riskData.description,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
                   ),
-                ],
+                ),
               ],
             ),
           ),
@@ -192,95 +109,143 @@ class AIAnalysisCard extends StatelessWidget {
     );
   }
 
-  Widget _buildWarningItem(WarningSign warning) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: _getWarningLevelColor(warning.level).withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: _getWarningLevelColor(warning.level).withValues(alpha: 0.3),
+  Widget _buildRecommendationsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '推奨事項',
+          style: AppFonts.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            warning.requiresVeterinaryVisit
-                ? Icons.local_hospital
-                : Icons.warning,
-            size: 16,
-            color: _getWarningLevelColor(warning.level),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
+        const SizedBox(height: AppSpacing.sm),
+        ...analysis.recommendations.map((recommendation) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: AppColors.pointGreen.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(AppSpacing.sm),
+              border: Border.all(
+                color: AppColors.pointGreen.withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  warning.symptom,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: _getWarningLevelColor(warning.level),
-                  ),
+                const Icon(
+                  Icons.lightbulb_outline,
+                  color: AppColors.pointGreen,
+                  size: 16,
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  warning.description,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: _getWarningLevelColor(warning.level),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    recommendation,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.textPrimary,
+                      height: 1.4,
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
+          );
+        }),
+      ],
     );
   }
 
-  Color _getRiskLevelColor(HealthRiskLevel level) {
-    switch (level) {
-      case HealthRiskLevel.low:
-        return Colors.green[600]!;
-      case HealthRiskLevel.medium:
-        return Colors.orange[600]!;
-      case HealthRiskLevel.high:
-        return Colors.red[600]!;
-      case HealthRiskLevel.critical:
-        return Colors.red[800]!;
-    }
+  Widget _buildWarningsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '注意事項',
+          style: AppFonts.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+            color: AppColors.pointRed,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        ...analysis.warnings.map((warning) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: AppColors.pointRed.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(AppSpacing.sm),
+              border: Border.all(
+                color: AppColors.pointRed.withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.warning_amber_rounded,
+                  color: AppColors.pointRed,
+                  size: 16,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    warning,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.textPrimary,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ],
+    );
   }
 
-  Color _getWarningLevelColor(WarningLevel level) {
-    switch (level) {
-      case WarningLevel.info:
-        return Colors.blue[600]!;
-      case WarningLevel.warning:
-        return Colors.orange[600]!;
-      case WarningLevel.urgent:
-        return Colors.red[600]!;
+  _RiskLevelData _getRiskLevelData(RiskLevel riskLevel) {
+    switch (riskLevel) {
+      case RiskLevel.low:
+        return _RiskLevelData(
+          text: '低リスク',
+          description: '現在の健康状態は良好です',
+          icon: Icons.check_circle,
+          color: AppColors.pointGreen,
+        );
+      case RiskLevel.medium:
+        return _RiskLevelData(
+          text: '中リスク',
+          description: '注意深く観察してください',
+          icon: Icons.warning,
+          color: AppColors.pointYellow,
+        );
+      case RiskLevel.high:
+        return _RiskLevelData(
+          text: '高リスク',
+          description: '獣医師への相談を推奨します',
+          icon: Icons.dangerous,
+          color: AppColors.pointRed,
+        );
     }
   }
+}
 
-  IconData _getRecommendationIcon(RecommendationType type) {
-    switch (type) {
-      case RecommendationType.diet:
-        return Icons.restaurant;
-      case RecommendationType.exercise:
-        return Icons.directions_run;
-      case RecommendationType.medication:
-        return Icons.medication;
-      case RecommendationType.monitoring:
-        return Icons.visibility;
-      case RecommendationType.veterinary:
-        return Icons.local_hospital;
-    }
-  }
+class _RiskLevelData {
+  final String text;
+  final String description;
+  final IconData icon;
+  final Color color;
 
-  String _formatDate(DateTime date) {
-    return '${date.month}/${date.day} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
-  }
+  _RiskLevelData({
+    required this.text,
+    required this.description,
+    required this.icon,
+    required this.color,
+  });
 }

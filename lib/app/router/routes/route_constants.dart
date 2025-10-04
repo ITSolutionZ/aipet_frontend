@@ -86,16 +86,11 @@ class RouteConstants {
   static const String recipesRoute = '/recipes';
   static const String addRecipeRoute = '/add-recipe';
 
-  // ===== PET REGISTRATION FLOW =====
-  static const String petTypeSelectionRoute = '/pet-type-selection';
-  static const String dogBreedSelectionRoute = '/dog-breed-selection';
-  static const String catBreedSelectionRoute = '/cat-breed-selection';
-  static const String petNameInputRoute = '/pet-name-input';
-  static const String petSizeWeightRoute = '/pet-size-weight';
-  static const String petAnniversaryRoute = '/pet-anniversary';
-  static const String petAnniversarySummaryRoute = '/pet-anniversary-summary';
-  static const String petRegistrationCompleteRoute =
-      '/pet-registration-complete';
+  // ===== DAILY HEALTH =====
+  static const String dailyHealthRoute = '/home/daily';
+  static const String dailyHealthInputRoute = '/home/daily/input';
+  static const String dailyHealthHistoryRoute = '/home/daily/history';
+  static const String dailyPetRegistrationRoute = '/daily-pet-registration';
 
   // ===== STANDALONE ROUTES =====
   static const String addFamilyManagerRoute = '/add-family-manager';

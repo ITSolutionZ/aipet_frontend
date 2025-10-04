@@ -1,25 +1,25 @@
 import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
+/// 증상 카드 위젯
 class SymptomsCard extends StatelessWidget {
-  final DailyHealthRecord record;
+  final DailyHealthRecord healthRecord;
 
-  const SymptomsCard({super.key, required this.record});
+  const SymptomsCard({super.key, required this.healthRecord});
 
   @override
   Widget build(BuildContext context) {
-    final symptoms = record.symptoms;
-
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -28,143 +28,161 @@ class SymptomsCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.list_alt, color: Colors.grey[700], size: 24),
-              const SizedBox(width: 8),
-              Text(
-                '症状',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
-                ),
+              const Icon(
+                Icons.medical_services,
+                color: AppColors.pointOrange,
+                size: 24,
               ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: symptoms.isEmpty
-                      ? Colors.green[100]
-                      : Colors.orange[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  symptoms.isEmpty ? '症状なし' : '${symptoms.length}個',
-                  style: TextStyle(
-                    color: symptoms.isEmpty
-                        ? Colors.green[700]
-                        : Colors.orange[700],
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                '症状記録',
+                style: AppFonts.titleMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          if (symptoms.isEmpty) ...[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.green[50],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.green[200]!),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.check_circle_outline,
-                    color: Colors.green[600],
-                    size: 20,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    '特別な症状はありません',
-                    style: TextStyle(
-                      color: Colors.green[700],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          const SizedBox(height: AppSpacing.md),
+          if (healthRecord.symptoms.isNotEmpty) ...[
+            _buildSymptomsList(),
           ] else ...[
-            ...symptoms.map((symptom) => _buildSymptomItem(symptom)),
+            _buildEmptyState(),
+          ],
+          if (healthRecord.notes != null && healthRecord.notes!.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            _buildNotesSection(),
           ],
         ],
       ),
     );
   }
 
-  Widget _buildSymptomItem(HealthSymptom symptom) {
-    Color severityColor;
-    String severityText;
+  Widget _buildSymptomsList() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '記録された症状 (${healthRecord.symptoms.length}件)',
+          style: AppFonts.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: healthRecord.symptoms.map((symptom) {
+            return Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.pointOrange.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(AppSpacing.sm),
+                border: Border.all(
+                  color: AppColors.pointOrange.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.warning_amber_rounded,
+                    color: AppColors.pointOrange,
+                    size: 16,
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  Text(
+                    symptom,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.pointOrange,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
 
-    switch (symptom.severity) {
-      case SymptomSeverity.mild:
-        severityColor = Colors.yellow[600]!;
-        severityText = '軽微';
-        break;
-      case SymptomSeverity.moderate:
-        severityColor = Colors.orange[600]!;
-        severityText = '普通';
-        break;
-      case SymptomSeverity.severe:
-        severityColor = Colors.red[600]!;
-        severityText = '深刻';
-        break;
-    }
-
+  Widget _buildEmptyState() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: severityColor.withValues(alpha: 0.3)),
+        color: AppColors.backgroundGray,
+        borderRadius: BorderRadius.circular(AppSpacing.sm),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  symptom.name,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: severityColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  severityText,
-                  style: TextStyle(
-                    color: severityColor,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+          const Icon(
+            Icons.check_circle_outline,
+            color: AppColors.pointGreen,
+            size: 32,
           ),
-          if (symptom.description != null &&
-              symptom.description!.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              symptom.description!,
-              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            '症状なし',
+            style: AppFonts.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.pointGreen,
             ),
-          ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            '現在、異常な症状は記録されていません',
+            style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildNotesSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(
+              Icons.note_alt,
+              color: AppColors.textSecondary,
+              size: 16,
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              'メモ',
+              style: AppFonts.bodySmall.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundGray,
+            borderRadius: BorderRadius.circular(AppSpacing.sm),
+          ),
+          child: Text(
+            healthRecord.notes!,
+            style: AppFonts.bodySmall.copyWith(
+              color: AppColors.textPrimary,
+              height: 1.4,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

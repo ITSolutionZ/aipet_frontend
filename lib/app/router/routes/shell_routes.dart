@@ -55,9 +55,9 @@ class ShellRoutes {
               final afterRegistration =
                   state.uri.queryParameters['afterRegistration'] == 'true';
 
-              // 신규 회원가입 후라면 펫 등록 플로우로 이동
+              // 신규 회원가입 후라면 Daily Pet Registration 화면으로 이동
               if (afterRegistration) {
-                return RouteConstants.petTypeSelectionRoute;
+                return RouteConstants.dailyPetRegistrationRoute;
               }
 
               // 일반적인 경우 홈 화면으로 이동 (펫이 없어도 홈 화면 유지)

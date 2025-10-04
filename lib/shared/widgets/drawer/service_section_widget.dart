@@ -30,31 +30,34 @@ class ServiceSectionWidget extends StatelessWidget {
           title: const Text('コミュニティー', style: TextStyle(color: Colors.white, fontSize: 14)),
           onTap: () {
             Navigator.of(context).pop(); // 드로어 닫기
-            context.go(AppRouter.homeRoute); // 홈 페이지로 이동
+            context.go(AppRouter.homeRoute); // 홈 페이지로 이동 (메인 페이지는 go 유지)
           },
         ),
         ListTile(
           leading: const Icon(Icons.notifications, color: Colors.white, size: 20),
           title: const Text('アラーム', style: TextStyle(color: Colors.white, fontSize: 14)),
-          onTap: () {
-            Navigator.of(context).pop(); // 드로어 닫기
-            context.go(AppRouter.pushNotificationRoute); // 푸시 알림 설정 페이지로 이동
+          onTap: () async {
+            // 먼저 네비게이션 실행
+            await context.push(AppRouter.pushNotificationRoute);
+            // 네비게이션 완료 후 drawer 자동으로 닫힘
           },
         ),
         ListTile(
           leading: const Icon(Icons.person, color: Colors.white, size: 20),
           title: const Text('アカウント', style: TextStyle(color: Colors.white, fontSize: 14)),
-          onTap: () {
-            Navigator.of(context).pop(); // 드로어 닫기
-            context.go(AppRouter.profileEditRoute); // 프로필 편집 페이지로 이동
+          onTap: () async {
+            // 먼저 네비게이션 실행
+            await context.push(AppRouter.profileEditRoute);
+            // 네비게이션 완료 후 drawer 자동으로 닫힘
           },
         ),
         ListTile(
           leading: const Icon(Icons.settings, color: Colors.white, size: 20),
           title: const Text('設定', style: TextStyle(color: Colors.white, fontSize: 14)),
-          onTap: () {
-            Navigator.of(context).pop(); // 드로어 닫기
-            context.go(AppRouter.settingsRoute); // 설정 페이지로 이동
+          onTap: () async {
+            // 먼저 네비게이션 실행
+            await context.push(AppRouter.settingsRoute);
+            // 네비게이션 완료 후 drawer 자동으로 닫힘
           },
         ),
         const SizedBox(height: 16),

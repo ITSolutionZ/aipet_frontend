@@ -1,5 +1,4 @@
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/pet_profile_widgets.dart';
-import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +17,12 @@ class PetProfileScreenRefactored extends ConsumerStatefulWidget {
   const PetProfileScreenRefactored({super.key, required this.petId});
 
   @override
-  ConsumerState<PetProfileScreenRefactored> createState() => _PetProfileScreenRefactoredState();
+  ConsumerState<PetProfileScreenRefactored> createState() =>
+      _PetProfileScreenRefactoredState();
 }
 
-class _PetProfileScreenRefactoredState extends ConsumerState<PetProfileScreenRefactored>
+class _PetProfileScreenRefactoredState
+    extends ConsumerState<PetProfileScreenRefactored>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
@@ -39,17 +40,34 @@ class _PetProfileScreenRefactoredState extends ConsumerState<PetProfileScreenRef
 
   @override
   Widget build(BuildContext context) {
-    final petAsyncValue = ref.watch(petByIdProvider(widget.petId));
+    // Mock 데이터 사용
+    final petAsyncValue = AsyncValue.data(
+      PetProfileEntity(
+        id: widget.petId,
+        name: 'Mock Pet',
+        type: 'dog',
+        birthDate: DateTime.now().subtract(const Duration(days: 365)),
+        gender: 'male',
+        weight: 10.0,
+        ownerId: 'current_user',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
 
     return petAsyncValue.when(
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, stackTrace) => Scaffold(
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Pet not found: $error'),
-              ElevatedButton(onPressed: () => context.go('/home'), child: const Text('Go Home')),
+              ElevatedButton(
+                onPressed: () => context.go('/home'),
+                child: const Text('Go Home'),
+              ),
             ],
           ),
         ),
@@ -66,7 +84,10 @@ class _PetProfileScreenRefactoredState extends ConsumerState<PetProfileScreenRef
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text('Pet not found'),
-              ElevatedButton(onPressed: () => context.go('/home'), child: const Text('Go Home')),
+              ElevatedButton(
+                onPressed: () => context.go('/home'),
+                child: const Text('Go Home'),
+              ),
             ],
           ),
         ),

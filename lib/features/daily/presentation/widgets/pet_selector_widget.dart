@@ -1,13 +1,10 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/features/pet_registor/presentation/widgets/displays/pet_image_display.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// 펫 선택기 위젯
-/// 두 화면에서 공통으로 사용되는 펫 선택 기능을 제공합니다.
 class PetSelectorWidget extends ConsumerWidget {
   final String? selectedPetId;
   final ValueChanged<String?> onPetSelected;
@@ -64,11 +61,11 @@ class PetSelectorWidget extends ConsumerWidget {
                       ),
                     ),
                     child: ClipOval(
-                      child: PetImageDisplay(
-                        imagePath: pet.imagePath,
+                      child: Image.asset(
+                        pet.imagePath ?? 'assets/images/pets/default.png',
                         width: 36,
                         height: 36,
-                        showUploadIcon: false,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -100,8 +97,8 @@ class PetSelectorWidget extends ConsumerWidget {
     return Builder(
       builder: (context) => GestureDetector(
         onTap: () {
-          // 펫 등록 화면으로 이동
-          context.push('/pet-type-selection');
+          // Daily Health 스타일 펫 등록 화면으로 이동
+          context.push('/daily-pet-registration');
         },
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),

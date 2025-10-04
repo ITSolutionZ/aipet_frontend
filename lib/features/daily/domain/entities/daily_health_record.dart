@@ -3,24 +3,31 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'daily_health_record.freezed.dart';
 part 'daily_health_record.g.dart';
 
-@freezed
-class DailyHealthRecord with _$DailyHealthRecord {
-  const factory DailyHealthRecord({
-    required String id,
-    required String petId,
-    required DateTime date,
-    required double temperature,
-    required HealthStatus overallHealth,
-    required List<HealthSymptom> symptoms,
-    String? notes,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) = _DailyHealthRecord;
-
-  factory DailyHealthRecord.fromJson(Map<String, dynamic> json) =>
-      _$DailyHealthRecordFromJson(json);
+/// 건강 상태 열거형
+enum HealthStatus {
+  @JsonValue('excellent')
+  excellent,
+  @JsonValue('good')
+  good,
+  @JsonValue('fair')
+  fair,
+  @JsonValue('poor')
+  poor,
+  @JsonValue('critical')
+  critical,
 }
 
+/// 증상 심각도 열거형
+enum SymptomSeverity {
+  @JsonValue('mild')
+  mild,
+  @JsonValue('moderate')
+  moderate,
+  @JsonValue('severe')
+  severe,
+}
+
+/// 건강 증상 엔티티
 @freezed
 class HealthSymptom with _$HealthSymptom {
   const factory HealthSymptom({
@@ -34,32 +41,21 @@ class HealthSymptom with _$HealthSymptom {
       _$HealthSymptomFromJson(json);
 }
 
-enum HealthStatus {
-  @JsonValue('excellent')
-  excellent('excellent', '매우 좋음'),
-  @JsonValue('good')
-  good('good', '좋음'),
-  @JsonValue('fair')
-  fair('fair', '보통'),
-  @JsonValue('poor')
-  poor('poor', '나쁨'),
-  @JsonValue('critical')
-  critical('critical', '위험');
+/// 일일 건강 기록 엔티티
+@freezed
+class DailyHealthRecord with _$DailyHealthRecord {
+  const factory DailyHealthRecord({
+    required String id,
+    required String petId,
+    required DateTime date,
+    double? temperature,
+    required HealthStatus overallHealth,
+    @Default([]) List<String> symptoms,
+    String? notes,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) = _DailyHealthRecord;
 
-  const HealthStatus(this.value, this.displayName);
-  final String value;
-  final String displayName;
-}
-
-enum SymptomSeverity {
-  @JsonValue('mild')
-  mild('mild', '경미함'),
-  @JsonValue('moderate')
-  moderate('moderate', '보통'),
-  @JsonValue('severe')
-  severe('severe', '심각함');
-
-  const SymptomSeverity(this.value, this.displayName);
-  final String value;
-  final String displayName;
+  factory DailyHealthRecord.fromJson(Map<String, dynamic> json) =>
+      _$DailyHealthRecordFromJson(json);
 }
