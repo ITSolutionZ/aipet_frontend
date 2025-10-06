@@ -37,5 +37,6 @@ export 'services/facility_error_handler.dart';
 export 'services/facility_search_service.dart';
 export 'services/weather_icon_service.dart';
 export 'utils/notification_ui_utils.dart';
+export 'utils/pet_image_utils.dart';
 export 'utils/summary_card_utils.dart';
 export 'utils/weather_utils.dart';

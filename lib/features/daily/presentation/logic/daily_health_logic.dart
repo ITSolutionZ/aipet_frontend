@@ -7,7 +7,7 @@ class DailyHealthLogic {
   DailyHealthLogic();
 
   /// 앱바 제목
-  String get appBarTitle => '毎日ケア';
+  String get appBarTitle => '';
 
   /// 펫 선택 초기화 로직
   String? initializePetSelection(List<dynamic>? pets) {

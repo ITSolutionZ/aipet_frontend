@@ -208,12 +208,12 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
 
   // Pet type and breed data with images
   static const List<Map<String, dynamic>> dogBreeds = [
-    {'name': '시바견', 'image': 'assets/images/breeds/dogs/shiba.png'},
+    {'name': '柴犬', 'image': 'assets/images/breeds/dogs/shiba.png'},
     {
-      'name': '골든 리트리버',
+      'name': 'ゴールデンレトリバー',
       'image': 'assets/images/breeds/dogs/golden_retriever.png',
     },
-    {'name': '래브라도', 'image': 'assets/images/breeds/dogs/labrador.png'},
+    {'name': 'ラブラドール', 'image': 'assets/images/breeds/dogs/labrador.png'},
     {'name': '푸들', 'image': 'assets/images/breeds/dogs/poodle.png'},
     {'name': '치와와', 'image': 'assets/images/breeds/dogs/chihuahua.png'},
     {'name': '닥스훈트', 'image': 'assets/images/breeds/dogs/dachshund.png'},

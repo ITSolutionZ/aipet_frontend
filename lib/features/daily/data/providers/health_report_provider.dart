@@ -1,0 +1,237 @@
+import 'dart:io';
+
+import 'package:aipet_frontend/features/daily/data/services/health_data_collection_service.dart';
+import 'package:aipet_frontend/features/daily/data/services/health_report_openai_service.dart';
+import 'package:aipet_frontend/features/daily/data/services/health_report_pdf_service.dart';
+import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
+import 'package:flutter/material.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'health_report_provider.g.dart';
+
+/// Health Report OpenAI Service Provider
+@riverpod
+HealthReportOpenAIService healthReportOpenAIService(
+  HealthReportOpenAIServiceRef ref,
+) {
+  return HealthReportOpenAIService();
+}
+
+/// Health Report PDF Service Provider
+@riverpod
+HealthReportPdfService healthReportPdfService(HealthReportPdfServiceRef ref) {
+  return HealthReportPdfService();
+}
+
+/// Health Data Collection Service Provider
+@riverpod
+HealthDataCollectionService healthDataCollectionService(
+  HealthDataCollectionServiceRef ref,
+) {
+  return HealthDataCollectionService();
+}
+
+/// AI 건강 리포트 생성 Provider
+@riverpod
+Future<String> generateHealthReport(
+  GenerateHealthReportRef ref,
+  PetProfileEntity pet,
+) async {
+  final collectionService = ref.read(healthDataCollectionServiceProvider);
+  final aiService = ref.read(healthReportOpenAIServiceProvider);
+
+  // 건강 데이터 수집
+  final healthData = await collectionService.collectMonthlyHealthData(pet);
+
+  // 데이터 검증
+  if (!collectionService.hasSufficientData(healthData)) {
+    throw Exception('健康データが不足しています');
+  }
+
+  // AI 리포트 생성
+  final petInfo = healthData['petInfo'] as Map<String, dynamic>;
+  final health = healthData['healthData'] as Map<String, dynamic>;
+  final vaccines = healthData['vaccineData'] as List<Map<String, dynamic>>;
+  final weightHistory =
+      healthData['weightHistory'] as List<Map<String, dynamic>>;
+  final allergies = healthData['allergyInfo'] as Map<String, dynamic>?;
+
+  final result = await aiService.generateMonthlyHealthReport(
+    petName: petInfo['name'] as String,
+    petType: petInfo['type'] as String,
+    petAge: petInfo['age'] as int,
+    petWeight: petInfo['weight'] as double,
+    healthData: health,
+    vaccineData: vaccines,
+    weightHistory: weightHistory,
+    allergyInfo: allergies,
+  );
+
+  if (!result.isSuccess) {
+    throw Exception(result.message);
+  }
+
+  return result.dataOrNull ?? '';
+}
+
+/// PDF 건강 리포트 생성 및 저장 Provider
+@riverpod
+Future<File> generateHealthReportPdf(
+  GenerateHealthReportPdfRef ref,
+  PetProfileEntity pet,
+) async {
+  try {
+    final collectionService = ref.read(healthDataCollectionServiceProvider);
+    final pdfService = ref.read(healthReportPdfServiceProvider);
+
+    debugPrint('');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('📄 [PROVIDER] PDF 리포트 생성 시작: ${pet.name}');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('');
+
+    // 건강 데이터 수집
+    final healthData = await collectionService.collectMonthlyHealthData(pet);
+
+    // JSON 데이터 콘솔 출력
+    final jsonString = collectionService.convertToJson(healthData);
+    debugPrint('');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('📊 [PROVIDER] 수집된 건강 데이터 (JSON):');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint(jsonString);
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('');
+
+    // AI 리포트 생성
+    final aiReport = await ref.read(generateHealthReportProvider(pet).future);
+
+    debugPrint('');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('🤖 [PROVIDER] AI 리포트:');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint(aiReport);
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('');
+
+    // PDF 생성
+    final pdfFile = await pdfService.generateHealthReportPdf(
+      petName: pet.name,
+      petType: pet.type,
+      petAge: pet.age,
+      petWeight: pet.weight,
+      aiReport: aiReport,
+      vaccineData: healthData['vaccineData'] ?? [],
+      weightHistory: healthData['weightHistory'] ?? [],
+      allergyInfo: healthData['allergyInfo'],
+    );
+
+    debugPrint('');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('✅ [PROVIDER] PDF 리포트 생성 완료!');
+    debugPrint('📁 경로: ${pdfFile.path}');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('');
+    return pdfFile;
+  } catch (e, stackTrace) {
+    debugPrint('❌ PDF 리포트 생성 실패: $e');
+    debugPrint('Stack trace: $stackTrace');
+    rethrow;
+  }
+}
+
+/// 리포트 생성 가능 여부 확인 Provider
+@riverpod
+Future<bool> canGenerateReport(
+  CanGenerateReportRef ref,
+  PetProfileEntity pet,
+) async {
+  final collectionService = ref.read(healthDataCollectionServiceProvider);
+  return collectionService.canGenerateReport(pet);
+}
+
+/// 건강 데이터를 JSON 파일로 생성하는 Provider
+@riverpod
+Future<File> generateHealthDataJson(
+  GenerateHealthDataJsonRef ref,
+  PetProfileEntity pet,
+) async {
+  final collectionService = ref.read(healthDataCollectionServiceProvider);
+
+  // 건강 데이터 수집
+  final healthData = await collectionService.collectMonthlyHealthData(pet);
+
+  // JSON 파일 생성
+  final jsonFile = await collectionService.saveHealthDataAsJson(
+    pet,
+    healthData,
+  );
+
+  return jsonFile;
+}
+
+/// AI 건강 리포트 PNG 이미지 생성 Provider
+@riverpod
+Future<File> generateHealthReportPng(
+  GenerateHealthReportPngRef ref,
+  PetProfileEntity pet,
+) async {
+  try {
+    final collectionService = ref.read(healthDataCollectionServiceProvider);
+    final pdfService = ref.read(healthReportPdfServiceProvider);
+
+    debugPrint('');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('🖼️ [PROVIDER] PNG 리포트 생성 시작: ${pet.name}');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('');
+
+    // 건강 데이터 수집
+    final healthData = await collectionService.collectMonthlyHealthData(pet);
+
+    // JSON 데이터 콘솔 출력
+    final jsonString = collectionService.convertToJson(healthData);
+    debugPrint('');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('📊 [PROVIDER] 수집된 건강 데이터 (JSON):');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint(jsonString);
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('');
+
+    // AI 리포트 생성
+    final aiReport = await ref.read(generateHealthReportProvider(pet).future);
+
+    debugPrint('');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('🤖 [PROVIDER] AI 리포트:');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint(aiReport);
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('');
+
+    // PNG 생성
+    final pngFile = await pdfService.generateHealthReportPng(
+      petName: pet.name,
+      petType: pet.type,
+      petAge: pet.age,
+      petWeight: pet.weight,
+      aiReport: aiReport,
+      vaccineData: healthData['vaccineData'] ?? [],
+      weightHistory: healthData['weightHistory'] ?? [],
+      allergyInfo: healthData['allergyInfo'],
+    );
+
+    debugPrint('');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('✅ [PROVIDER] PNG 리포트 생성 완료!');
+    debugPrint('📁 경로: ${pngFile.path}');
+    debugPrint('═══════════════════════════════════════════════');
+    debugPrint('');
+    return pngFile;
+  } catch (e, stackTrace) {
+    debugPrint('❌ PNG 리포트 생성 실패: $e');
+    debugPrint('Stack trace: $stackTrace');
+    rethrow;
+  }
+}

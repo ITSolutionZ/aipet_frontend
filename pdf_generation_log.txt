@@ -1,0 +1,26 @@
+Checking for wireless devices...
+
+Connected devices:
+SM N986N (mobile)  • R3CN815LCAB                          • android-arm64  • Android 13 (API 33)
+iPhone 15 (mobile) • 7944E679-4D36-4DBF-8E73-A2DC95621BBF • ios            • com.apple.CoreSimulator.SimRuntime.iOS-17-5 (simulator)
+macOS (desktop)    • macos                                • darwin-arm64   • macOS 15.6 24G84 darwin-arm64
+Chrome (web)       • chrome                               • web-javascript • Google Chrome 141.0.7390.54
+[1]: SM N986N (R3CN815LCAB)
+[2]: iPhone 15 (7944E679-4D36-4DBF-8E73-A2DC95621BBF)
+[3]: macOS (macos)
+[4]: Chrome (chrome)
+Please choose one (or "q" to quit): [A
+Please choose one (or "q" to quit): [A
+Please choose one (or "q" to quit): [A
+Please choose one (or "q" to quit): [A
+Please choose one (or "q" to quit): [D
+Please choose one (or "q" to quit): 
+Please choose one (or "q" to quit): 
+Please choose one (or "q" to quit): 
+Please choose one (or "q" to quit): 
+Please choose one (or "q" to quit): 
+Please choose one (or "q" to quit): 
+Please choose one (or "q" to quit): 
+Please choose one (or "q" to quit): 
+Please choose one (or "q" to quit): 
+Please choose one (or "q" to quit): 

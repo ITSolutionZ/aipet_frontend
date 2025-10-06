@@ -22,7 +22,10 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
-    with ScrollTrackingMixin, SingleTickerProviderStateMixin, WidgetsBindingObserver {
+    with
+        ScrollTrackingMixin,
+        SingleTickerProviderStateMixin,
+        WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   AnimationController? _drawerAnimationController;
   Animation<Offset>? _drawerSlideAnimation;
@@ -176,7 +179,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               autoSlideInterval: const Duration(seconds: 4),
               onTap: (index) {
                 // 배너 탭 이벤트 처리
-                debugPrint('Banner tapped: $index');
               },
             ),
           ),
