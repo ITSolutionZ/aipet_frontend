@@ -113,64 +113,93 @@ class ImageService {
     List<String>? customDefaultImages,
     String? currentImagePath,
   }) async {
-    final result = await showModalBottomSheet<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('갤러리에서 선택'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final imagePath = await pickFromGallery(context);
-                  if (context.mounted && imagePath != null) {
-                    Navigator.pop(context, imagePath);
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_camera),
-                title: const Text('카메라로 촬영'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final imagePath = await pickFromCamera(context);
-                  if (context.mounted && imagePath != null) {
-                    Navigator.pop(context, imagePath);
-                  }
-                },
-              ),
-              if (showDefaultImages)
-                ListTile(
-                  leading: const Icon(Icons.pets),
-                  title: const Text('기본 이미지 선택'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final defaultImage = await _showDefaultImageSelection(
-                      context,
-                      customDefaultImages,
-                    );
-                    if (context.mounted && defaultImage != null) {
-                      Navigator.pop(context, defaultImage);
-                    }
-                  },
-                ),
-              if (allowRemoval && currentImagePath != null)
-                ListTile(
-                  leading: const Icon(Icons.delete),
-                  title: const Text('이미지 제거'),
-                  onTap: () {
-                    Navigator.pop(context, 'REMOVE');
-                  },
-                ),
-            ],
-          ),
-        );
-      },
-    );
+    try {
+      print('📷 ImageService: showImagePickerOptions called with allowRemoval: $allowRemoval, currentImagePath: $currentImagePath');
 
-    return result;
+      final result = await showModalBottomSheet<String>(
+        context: context,
+        builder: (BuildContext context) {
+          print('📷 ImageService: Building bottom sheet');
+          return SafeArea(
+            child: Wrap(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.photo_library),
+                  title: const Text('갤러리에서 선택'),
+                  onTap: () {
+                    print('📷 ImageService: Gallery option tapped');
+                    Navigator.pop(context, 'gallery');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.photo_camera),
+                  title: const Text('카메라로 촬영'),
+                  onTap: () {
+                    print('📷 ImageService: Camera option tapped');
+                    Navigator.pop(context, 'camera');
+                  },
+                ),
+                if (showDefaultImages)
+                  ListTile(
+                    leading: const Icon(Icons.pets),
+                    title: const Text('기본 이미지 선택'),
+                    onTap: () {
+                      print('📷 ImageService: Default images option tapped');
+                      Navigator.pop(context, 'default');
+                    },
+                  ),
+                if (allowRemoval && currentImagePath != null)
+                  ListTile(
+                    leading: const Icon(Icons.delete),
+                    title: const Text('이미지 제거'),
+                    onTap: () {
+                      print('📷 ImageService: Remove option tapped');
+                      Navigator.pop(context, 'REMOVE');
+                    },
+                  ),
+              ],
+            ),
+          );
+        },
+      );
+
+      print('📷 ImageService: Bottom sheet result: $result');
+
+      // 사용자가 취소한 경우
+      if (result == null) {
+        print('📷 ImageService: User cancelled');
+        return null;
+      }
+
+      // 선택된 옵션에 따라 실제 이미지 선택 수행
+      switch (result) {
+        case 'gallery':
+          print('📷 ImageService: Opening gallery');
+          final galleryResult = await pickFromGallery(context);
+          print('📷 ImageService: Gallery result: $galleryResult');
+          return galleryResult;
+        case 'camera':
+          print('📷 ImageService: Opening camera');
+          final cameraResult = await pickFromCamera(context);
+          print('📷 ImageService: Camera result: $cameraResult');
+          return cameraResult;
+        case 'default':
+          print('📷 ImageService: Opening default images');
+          final defaultResult = await _showDefaultImageSelection(context, customDefaultImages);
+          print('📷 ImageService: Default image result: $defaultResult');
+          return defaultResult;
+        case 'REMOVE':
+          print('📷 ImageService: Removing image');
+          return 'REMOVE';
+        default:
+          print('📷 ImageService: Unknown result: $result');
+          return null;
+      }
+    } catch (e, stackTrace) {
+      print('📷 ImageService: Exception in showImagePickerOptions: $e');
+      print('📷 ImageService: Stack trace: $stackTrace');
+      return null;
+    }
   }
 
   /// 기본 이미지 선택 다이얼로그 표시

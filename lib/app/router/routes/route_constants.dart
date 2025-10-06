@@ -101,9 +101,4 @@ class RouteConstants {
   static const String notificationDetailRoute = '/notification-detail';
   static const String eventDetailRoute = '/event-detail';
   static const String todayAppointmentsRoute = '/today-appointments';
-
-  // ===== DAILY HEALTH ROUTES =====
-  static const String dailyHealthRoute = '/daily';
-  static const String dailyHealthInputRoute = '/daily/input';
-  static const String dailyHealthHistoryRoute = '/daily/history';
 }

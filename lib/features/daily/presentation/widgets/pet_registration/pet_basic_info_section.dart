@@ -34,141 +34,127 @@ class PetBasicInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppSpacing.md),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 펫 이름
-          _buildRequiredFieldLabel('이름'),
-          const SizedBox(height: AppSpacing.sm),
-          CommonFormField(
-            controller: petNameController,
-            label: '',
-            hint: '이름을 입력하세요(최대10자)',
-            validator: petNameValidator,
-          ),
-          const SizedBox(height: AppSpacing.lg),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 펫 이름
+        _buildRequiredFieldLabel('名前'),
+        const SizedBox(height: AppSpacing.sm),
+        CommonFormField(
+          controller: petNameController,
+          label: '',
+          hint: '名前を入力してください（最大10文字）',
+          validator: petNameValidator,
+        ),
+        const SizedBox(height: AppSpacing.lg),
 
-          // 생년월일
-          _buildRequiredFieldLabel('생년월일'),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              Expanded(
-                child: CommonFormField(
-                  controller: birthDateController,
-                  label: '',
-                  hint: '2020-02-19',
-                  validator: birthDateValidator,
-                  readOnly: true,
-                  onTap: onBirthDateTap,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              GestureDetector(
+        // 생년월일
+        _buildRequiredFieldLabel('生年月日'),
+        const SizedBox(height: AppSpacing.sm),
+        Row(
+          children: [
+            Expanded(
+              child: CommonFormField(
+                controller: birthDateController,
+                label: '',
+                hint: '2020-02-19',
+                validator: birthDateValidator,
+                readOnly: true,
                 onTap: onBirthDateTap,
-                child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppRadius.small),
-                    border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.calendar_today,
-                    color: AppColors.primary,
-                    size: 20,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            GestureDetector(
+              onTap: onBirthDateTap,
+              child: Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppRadius.small),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    width: 1,
                   ),
                 ),
+                child: const Icon(
+                  Icons.calendar_today,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
 
-          // 집에 온 날
-          _buildOptionalFieldLabel('집에 온 날'),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              Expanded(
-                child: CommonFormField(
-                  controller: adoptionDateController,
-                  label: '',
-                  hint: '2023-05-15',
-                  validator: adoptionDateValidator,
-                  readOnly: true,
-                  onTap: onAdoptionDateTap,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              GestureDetector(
+        // 집에 온 날
+        _buildOptionalFieldLabel('お迎えした日'),
+        const SizedBox(height: AppSpacing.sm),
+        Row(
+          children: [
+            Expanded(
+              child: CommonFormField(
+                controller: adoptionDateController,
+                label: '',
+                hint: '2023-05-15',
+                validator: adoptionDateValidator,
+                readOnly: true,
                 onTap: onAdoptionDateTap,
-                child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppRadius.small),
-                    border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.calendar_today,
-                    color: AppColors.primary,
-                    size: 20,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            GestureDetector(
+              onTap: onAdoptionDateTap,
+              child: Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppRadius.small),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    width: 1,
                   ),
                 ),
+                child: const Icon(
+                  Icons.calendar_today,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
 
-          // 몸무게
-          _buildOptionalFieldLabel('몸무게'),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              Expanded(
-                child: CommonFormField(
-                  controller: weightController,
-                  label: '',
-                  hint: '예) 3.23',
-                  keyboardType: TextInputType.number,
-                  validator: weightValidator,
-                ),
+        // 몸무게
+        _buildOptionalFieldLabel('体重'),
+        const SizedBox(height: AppSpacing.sm),
+        Row(
+          children: [
+            Expanded(
+              child: CommonFormField(
+                controller: weightController,
+                label: '',
+                hint: '例）3.23',
+                keyboardType: TextInputType.number,
+                validator: weightValidator,
               ),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                'kg',
-                style: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              'kg',
+              style: AppFonts.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            '1kg 미만의 경우, 예 750g이라면 0.75로 입력',
-            style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          '1kg未満の場合、例：750gなら0.75と入力',
+          style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+        ),
+      ],
     );
   }
 

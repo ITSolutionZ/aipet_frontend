@@ -55,6 +55,9 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(
+            decelerationRate: ScrollDecelerationRate.fast,
+          ),
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,24 +93,23 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
         children: [
           const SizedBox(height: AppSpacing.lg),
           _buildPetImageSection(formData),
-          const SizedBox(height: AppSpacing.lg),
+          _buildSectionDivider(),
           _buildPetBasicInfoSection(formData),
-          const SizedBox(height: AppSpacing.lg),
+          _buildSectionDivider(),
           _buildPetTypeSection(formData),
-          const SizedBox(height: AppSpacing.lg),
+          _buildSectionDivider(),
           _buildPetBreedSection(formData),
-          const SizedBox(height: AppSpacing.lg),
+          _buildSectionDivider(),
           _buildPetGenderSection(formData),
-          const SizedBox(height: AppSpacing.lg),
-          _buildPetNeuteringSection(formData),
-          const SizedBox(height: AppSpacing.lg),
+          _buildSectionDivider(),
           _buildPetRegistrationSection(),
-          const SizedBox(height: AppSpacing.lg),
-          const PetFoodSection(),
-          const SizedBox(height: AppSpacing.lg),
+          _buildSectionDivider(),
+          _buildPetFoodSection(formData),
+          _buildSectionDivider(),
           _buildPetIngredientsSection(),
-          const SizedBox(height: AppSpacing.lg),
+          _buildSectionDivider(),
           _buildPetBodyPartsSection(),
+          const SizedBox(height: AppSpacing.lg),
         ],
       ),
     );
@@ -117,6 +119,7 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
   Widget _buildPetImageSection(PetRegistrationFormData formData) {
     return PetImageSection(
       petImagePath: formData.petImagePath,
+      isLoading: formData.isImageLoading,
       onImageTap: () => _handleImageSelection(formData.petImagePath),
     );
   }
@@ -157,45 +160,102 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
     );
   }
 
-  /// 펫 성별 섹션
+  /// 펫 성별 섹션 (중성화 체크박스 포함)
   Widget _buildPetGenderSection(PetRegistrationFormData formData) {
     return PetGenderSection(
       selectedGender: formData.gender,
-      onGenderChanged: _controller.updateGender,
-    );
-  }
-
-  /// 펫 중성화 섹션
-  Widget _buildPetNeuteringSection(PetRegistrationFormData formData) {
-    return PetNeuteringSection(
       isNeutered: formData.isNeutered,
+      onGenderChanged: _controller.updateGender,
       onNeuteringChanged: _controller.updateNeuteringStatus,
     );
   }
 
   /// 펫 등록증 섹션
   Widget _buildPetRegistrationSection() {
-    return PetRegistrationSection(
-      guardianNameController: _controller.guardianNameController,
-      registrationNumberController: _controller.registrationNumberController,
-      onRegistrationImageTap: () =>
-          _showInfoMessage(PetRegistrationLogic.registrationImageMessage),
+    return Consumer(
+      builder: (context, ref, child) {
+        final state = ref.watch(petRegistrationControllerProvider);
+        return PetRegistrationSection(
+          guardianNameController: _controller.guardianNameController,
+          institutionNameController: _controller.institutionNameController,
+          registrationNumberController:
+              _controller.registrationNumberController,
+          onRegistrationImageTap: _handleRegistrationImageSelection,
+          registrationImagePath: state.registrationImagePath,
+          isProcessingOCR: state.isProcessingOCR,
+        );
+      },
+    );
+  }
+
+  /// 펫 사료 섹션
+  Widget _buildPetFoodSection(PetRegistrationFormData formData) {
+    return PetFoodSection(
+      selectedFood: formData.food,
+      selectedSupplement: formData.supplement,
+      selectedTreat: formData.treat,
+      onFoodChanged: _controller.updateFood,
+      onSupplementChanged: _controller.updateSupplement,
+      onTreatChanged: _controller.updateTreat,
     );
   }
 
   /// 펫 원료 섹션
   Widget _buildPetIngredientsSection() {
-    return PetIngredientsSection(
-      onRegisterIngredients: () =>
-          _showInfoMessage(PetRegistrationLogic.ingredientsMessage),
+    return Consumer(
+      builder: (context, ref, child) {
+        final controller = ref.watch(
+          petRegistrationControllerProvider.notifier,
+        );
+        final state = ref.watch(petRegistrationControllerProvider);
+
+        return PetIngredientsSection(
+          forbiddenIngredients: state.forbiddenIngredients,
+          onAddIngredient: (ingredient, context) {
+            controller.addForbiddenIngredientWithNotification(
+              ingredient,
+              context,
+            );
+          },
+          onRemoveIngredient: (ingredient) {
+            controller.removeForbiddenIngredient(ingredient);
+          },
+        );
+      },
+    );
+  }
+
+  /// 섹션 구분선
+  Widget _buildSectionDivider() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+      child: Divider(
+        color: AppColors.borderGray.withValues(alpha: 0.2),
+        thickness: 1,
+        height: 1,
+      ),
     );
   }
 
   /// 펫 신체 부위 섹션
   Widget _buildPetBodyPartsSection() {
-    return PetBodyPartsSection(
-      onRegisterBodyParts: () =>
-          _showInfoMessage(PetRegistrationLogic.bodyPartsMessage),
+    return Consumer(
+      builder: (context, ref, child) {
+        final controller = ref.watch(
+          petRegistrationControllerProvider.notifier,
+        );
+        final state = ref.watch(petRegistrationControllerProvider);
+
+        return PetBodyPartsSection(
+          bodyPartsToManage: state.bodyPartsToManage,
+          onUpdateBodyParts: (bodyParts) {
+            controller.updateBodyPartsToManage(bodyParts);
+          },
+          onClearBodyParts: () {
+            controller.clearBodyPartsToManage();
+          },
+        );
+      },
     );
   }
 
@@ -218,17 +278,32 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
 
   /// 이미지 선택 핸들러
   Future<void> _handleImageSelection(String? currentImagePath) async {
-    final result = await _logic.selectPetImage(
-      context: context,
-      currentImagePath: currentImagePath,
-    );
+    try {
+      print('📸 Starting image selection, current path: $currentImagePath');
+      _controller.setImageLoading(true);
 
-    if (result == null) return;
+      final result = await _logic.selectPetImage(
+        context: context,
+        currentImagePath: currentImagePath,
+      );
 
-    if (result == 'REMOVE') {
-      _controller.updatePetImagePath(null);
-    } else {
-      _controller.updatePetImagePath(result);
+      print('📸 Image selection result: $result');
+
+      if (result == null) {
+        print('📸 Image selection cancelled');
+        return;
+      }
+
+      if (result == 'REMOVE') {
+        print('📸 Removing image');
+        _controller.updatePetImagePath(null);
+      } else {
+        print('📸 Setting new image path: $result');
+        _controller.updatePetImagePath(result);
+      }
+    } finally {
+      _controller.setImageLoading(false);
+      print('📸 Image loading finished');
     }
   }
 
@@ -274,7 +349,9 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
       }
     } catch (error) {
       if (mounted) {
-        _showErrorMessage(_logic.getErrorMessage(error));
+        final errorMessage = _logic.getErrorMessage(error);
+        print('🚨 Registration error: $errorMessage');
+        _showErrorMessage(errorMessage);
       }
     } finally {
       if (mounted) {
@@ -283,13 +360,6 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
         });
       }
     }
-  }
-
-  /// 정보 메시지 표시
-  void _showInfoMessage(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   /// 성공 메시지 표시
@@ -301,8 +371,49 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
 
   /// 에러 메시지 표시
   void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointRed),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.error, color: AppColors.pointRed),
+            SizedBox(width: AppSpacing.sm),
+            Text('登録エラー'),
+          ],
+        ),
+        content: Text(message, style: AppFonts.bodyMedium),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('確認'),
+          ),
+        ],
+      ),
     );
+  }
+
+  /// 등록증 이미지 선택 및 OCR 처리
+  Future<void> _handleRegistrationImageSelection() async {
+    try {
+      await _controller.selectAndProcessRegistrationImage();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('등록증 정보를 자동으로 입력했습니다. 확인 후 수정해주세요.'),
+            backgroundColor: AppColors.pointGreen,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('등록증 처리 중 오류가 발생했습니다: $e'),
+            backgroundColor: AppColors.pointRed,
+          ),
+        );
+      }
+    }
   }
 }

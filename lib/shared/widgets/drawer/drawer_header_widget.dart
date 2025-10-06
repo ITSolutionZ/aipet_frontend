@@ -25,7 +25,7 @@ class DrawerHeaderWidget extends StatelessWidget {
               border: Border.all(color: Colors.white, width: 2),
               image: DecorationImage(
                 image: AssetImage(
-                  userImagePath ?? 'assets/icons/aipet_logo.png',
+                  userImagePath ?? 'assets/icons/logos/aipet_logo.png',
                 ),
                 fit: BoxFit.cover,
               ),

@@ -46,41 +46,67 @@ class _DailyPetRegistrationScreenState
     }
   }
 
-  Future<void> _selectPetImage() async {
-    final result = await ImageService.showImagePickerOptions(
-      context,
-      allowRemoval: _controller.state.petImagePath != null,
-      currentImagePath: _controller.state.petImagePath,
+  Future<void> _selectAdoptionDate(BuildContext context) async {
+    final formData = ref.read(petRegistrationControllerProvider);
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: formData.adoptionDate ?? DateTime.now(),
+      firstDate: DateTime(1990),
+      lastDate: DateTime.now(),
     );
-
-    if (!mounted || result == null) {
-      return;
+    if (picked != null) {
+      _controller.updateAdoptionDate(picked);
     }
+  }
 
-    if (result == 'REMOVE') {
-      _controller.updatePetImagePath(null);
-      return;
+  Future<void> _selectPetImage() async {
+    try {
+      _controller.setImageLoading(true);
+
+      final formData = ref.read(petRegistrationControllerProvider);
+      final result = await ImageService.showImagePickerOptions(
+        context,
+        allowRemoval: formData.petImagePath != null,
+        currentImagePath: formData.petImagePath,
+      );
+
+      if (!mounted || result == null) {
+        return;
+      }
+
+      if (result == 'REMOVE') {
+        _controller.updatePetImagePath(null);
+        return;
+      }
+
+      _controller.updatePetImagePath(result);
+    } finally {
+      _controller.setImageLoading(false);
     }
-
-    _controller.updatePetImagePath(result);
   }
 
-  void _showRegistrationImageDialog() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('登録証写真アップロード機能は近日実装予定')));
-  }
+  Future<void> _handleRegistrationImageSelection() async {
+    try {
+      await _controller.selectAndProcessRegistrationImage();
 
-  void _showIngredientsDialog() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('原料登録画面は近日実装予定')));
-  }
-
-  void _showBodyPartsDialog() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('身体部位登録画面は近日実装予定')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('등록증 정보를 자동으로 입력했습니다. 확인 후 수정해주세요.'),
+            backgroundColor: AppColors.pointGreen,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('등록증 처리 중 오류가 발생했습니다: $e'),
+            backgroundColor: AppColors.pointRed,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -118,6 +144,7 @@ class _DailyPetRegistrationScreenState
                     const SizedBox(height: AppSpacing.lg),
                     PetImageSection(
                       petImagePath: formData.petImagePath,
+                      isLoading: formData.isImageLoading,
                       onImageTap: _selectPetImage,
                     ),
                     const SizedBox(height: AppSpacing.lg),
@@ -130,6 +157,11 @@ class _DailyPetRegistrationScreenState
                       petNameValidator: _controller.validatePetName,
                       birthDateValidator: _controller.validateBirthDate,
                       weightValidator: _controller.validateWeight,
+                      adoptionDateController:
+                          _controller.adoptionDateController,
+                      selectedAdoptionDate: formData.adoptionDate,
+                      onAdoptionDateTap: () => _selectAdoptionDate(context),
+                      adoptionDateValidator: _controller.validateAdoptionDate,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     PetTypeSection(
@@ -145,30 +177,71 @@ class _DailyPetRegistrationScreenState
                     const SizedBox(height: AppSpacing.lg),
                     PetGenderSection(
                       selectedGender: formData.gender,
-                      onGenderChanged: _controller.updateGender,
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    PetNeuteringSection(
                       isNeutered: formData.isNeutered,
+                      onGenderChanged: _controller.updateGender,
                       onNeuteringChanged: _controller.updateNeuteringStatus,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     PetRegistrationSection(
                       guardianNameController:
                           _controller.guardianNameController,
+                      institutionNameController:
+                          _controller.institutionNameController,
                       registrationNumberController:
                           _controller.registrationNumberController,
-                      onRegistrationImageTap: _showRegistrationImageDialog,
+                      onRegistrationImageTap: _handleRegistrationImageSelection,
+                      registrationImagePath: formData.registrationImagePath,
+                      isProcessingOCR: formData.isProcessingOCR,
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    const PetFoodSection(),
-                    const SizedBox(height: AppSpacing.lg),
-                    PetIngredientsSection(
-                      onRegisterIngredients: _showIngredientsDialog,
+                    PetFoodSection(
+                      selectedFood: formData.food,
+                      selectedSupplement: formData.supplement,
+                      selectedTreat: formData.treat,
+                      onFoodChanged: _controller.updateFood,
+                      onSupplementChanged: _controller.updateSupplement,
+                      onTreatChanged: _controller.updateTreat,
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    PetBodyPartsSection(
-                      onRegisterBodyParts: _showBodyPartsDialog,
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final controller = ref.watch(
+                          petRegistrationControllerProvider.notifier,
+                        );
+                        final state = ref.watch(
+                          petRegistrationControllerProvider,
+                        );
+
+                        return Column(
+                          children: [
+                            PetIngredientsSection(
+                              forbiddenIngredients: state.forbiddenIngredients,
+                              onAddIngredient: (ingredient, context) {
+                                controller
+                                    .addForbiddenIngredientWithNotification(
+                                      ingredient,
+                                      context,
+                                    );
+                              },
+                              onRemoveIngredient: (ingredient) {
+                                controller.removeForbiddenIngredient(
+                                  ingredient,
+                                );
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            PetBodyPartsSection(
+                              bodyPartsToManage: state.bodyPartsToManage,
+                              onUpdateBodyParts: (bodyParts) {
+                                controller.updateBodyPartsToManage(bodyParts);
+                              },
+                              onClearBodyParts: () {
+                                controller.clearBodyPartsToManage();
+                              },
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -196,6 +269,18 @@ class _DailyPetRegistrationScreenState
   }
 
   Future<void> _savePetRegistration() async {
+    // 폼 검증 전에 텍스트 컨트롤러와 state 동기화
+    print('🔄 Synchronizing text controllers with state before validation');
+    _controller.updatePetName(_controller.petNameController.text);
+    _controller.updateWeight(_controller.weightController.text);
+    _controller.updateGuardianName(_controller.guardianNameController.text);
+    _controller.updateInstitutionName(
+      _controller.institutionNameController.text,
+    );
+    _controller.updateRegistrationNumber(
+      _controller.registrationNumberController.text,
+    );
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -242,12 +327,7 @@ class _DailyPetRegistrationScreenState
       }
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('エラーが発生しました: $error'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        _showErrorMessage('エラーが発生しました: $error');
       }
     } finally {
       if (mounted) {
@@ -256,5 +336,28 @@ class _DailyPetRegistrationScreenState
         });
       }
     }
+  }
+
+  /// 에러 메시지 표시
+  void _showErrorMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.error, color: AppColors.pointRed),
+            SizedBox(width: AppSpacing.sm),
+            Text('登録エラー'),
+          ],
+        ),
+        content: Text(message, style: AppFonts.bodyMedium),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('確認'),
+          ),
+        ],
+      ),
+    );
   }
 }

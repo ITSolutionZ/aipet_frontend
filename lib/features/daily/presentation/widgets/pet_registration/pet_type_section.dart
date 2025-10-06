@@ -1,9 +1,9 @@
 import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration_controller.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/shared.dart' hide State;
 import 'package:flutter/material.dart';
 
 /// 펫 타입 선택 섹션
-class PetTypeSection extends StatelessWidget {
+class PetTypeSection extends StatefulWidget {
   final String selectedPetType;
   final ValueChanged<String> onPetTypeChanged;
 
@@ -14,77 +14,45 @@ class PetTypeSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppSpacing.md),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildRequiredFieldLabel('펫 종류'),
-          const SizedBox(height: AppSpacing.md),
-          // 펫 타입 아코디언
-          ExpansionTile(
-            title: Text(
-              selectedPetType.isNotEmpty
-                  ? (PetRegistrationController
-                                .petTypes[selectedPetType]?['name']
-                            as String? ??
-                        '펫 종류 선택')
-                  : '펫 종류 선택',
-              style: AppFonts.bodyMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: selectedPetType.isNotEmpty
-                    ? AppColors.primary
-                    : AppColors.textSecondary,
-              ),
-            ),
-            leading: selectedPetType.isNotEmpty
-                ? Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppSpacing.xs),
-                      color: AppColors.backgroundGray.withValues(alpha: 0.3),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(AppSpacing.xs),
-                      child: Image.asset(
-                        _getPetTypeImagePath(selectedPetType),
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            PetRegistrationController
-                                        .petTypes[selectedPetType]?['icon']
-                                    as IconData? ??
-                                Icons.pets,
-                            size: 20,
-                            color: AppColors.textSecondary,
-                          );
-                        },
-                      ),
-                    ),
-                  )
-                : const Icon(Icons.pets, color: AppColors.textSecondary),
-            children: PetRegistrationController.petTypes.entries.map((entry) {
-              final petTypeKey = entry.key;
-              final petTypeData = entry.value;
-              final petTypeName = petTypeData['name'] as String;
-              final petTypeIcon = petTypeData['icon'] as IconData;
-              final isSelected = selectedPetType == petTypeKey;
+  State<PetTypeSection> createState() => _PetTypeSectionState();
+}
 
-              return ListTile(
-                leading: Container(
+class _PetTypeSectionState extends State<PetTypeSection> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildRequiredFieldLabel('ペットの種類'),
+        const SizedBox(height: AppSpacing.md),
+        // 펫 타입 아코디언
+        ExpansionTile(
+          key: ValueKey(_isExpanded),
+          initiallyExpanded: _isExpanded,
+          expandedCrossAxisAlignment: CrossAxisAlignment.start,
+          onExpansionChanged: (expanded) {
+            setState(() {
+              _isExpanded = expanded;
+            });
+          },
+          title: Text(
+            widget.selectedPetType.isNotEmpty
+                ? (PetRegistrationController.petTypes[widget
+                              .selectedPetType]?['name']
+                          as String? ??
+                      'ペットの種類を選択')
+                : 'ペットの種類を選択',
+            style: AppFonts.bodyMedium.copyWith(
+              fontWeight: FontWeight.bold,
+              color: widget.selectedPetType.isNotEmpty
+                  ? AppColors.primary
+                  : AppColors.textSecondary,
+            ),
+          ),
+          leading: widget.selectedPetType.isNotEmpty
+              ? Container(
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
@@ -94,40 +62,75 @@ class PetTypeSection extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(AppSpacing.xs),
                     child: Image.asset(
-                      _getPetTypeImagePath(petTypeKey),
+                      _getPetTypeImagePath(widget.selectedPetType),
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Icon(
-                          petTypeIcon,
+                          PetRegistrationController.petTypes[widget
+                                      .selectedPetType]?['icon']
+                                  as IconData? ??
+                              Icons.pets,
                           size: 20,
                           color: AppColors.textSecondary,
                         );
                       },
                     ),
                   ),
+                )
+              : const Icon(Icons.pets, color: AppColors.textSecondary),
+          children: PetRegistrationController.petTypes.entries.map((entry) {
+            final petTypeKey = entry.key;
+            final petTypeData = entry.value;
+            final petTypeName = petTypeData['name'] as String;
+            final petTypeIcon = petTypeData['icon'] as IconData;
+            final isSelected = widget.selectedPetType == petTypeKey;
+
+            return ListTile(
+              leading: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppSpacing.xs),
+                  color: AppColors.backgroundGray.withValues(alpha: 0.3),
                 ),
-                title: Text(
-                  petTypeName,
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: isSelected
-                        ? AppColors.primary
-                        : AppColors.textPrimary,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppSpacing.xs),
+                  child: Image.asset(
+                    _getPetTypeImagePath(petTypeKey),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        petTypeIcon,
+                        size: 20,
+                        color: AppColors.textSecondary,
+                      );
+                    },
                   ),
                 ),
-                trailing: isSelected
-                    ? const Icon(Icons.check_circle, color: AppColors.primary)
-                    : null,
-                selected: isSelected,
-                selectedTileColor: AppColors.primary.withValues(alpha: 0.1),
-                onTap: () => onPetTypeChanged(petTypeKey),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
+              ),
+              title: Text(
+                petTypeName,
+                style: AppFonts.bodyMedium.copyWith(
+                  color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+              trailing: isSelected
+                  ? const Icon(Icons.check_circle, color: AppColors.primary)
+                  : null,
+              selected: isSelected,
+              selectedTileColor: AppColors.primary.withValues(alpha: 0.1),
+              onTap: () {
+                widget.onPetTypeChanged(petTypeKey);
+                // 선택 후 아코디언 닫기
+                setState(() {
+                  _isExpanded = false;
+                });
+              },
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
