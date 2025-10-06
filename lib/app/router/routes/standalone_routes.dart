@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/daily/presentation/screens/daily_pet_registration_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_detail_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_list_screen.dart';
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
@@ -18,6 +19,12 @@ import 'route_constants.dart';
 /// 이 라우트들은 Shell과 독립적으로 실행되며, 전체화면 경험을 제공합니다.
 class StandaloneRoutes {
   static List<RouteBase> get routes => [
+    // Daily Health Pet Registration
+    GoRoute(
+      path: RouteConstants.dailyPetRegistrationRoute,
+      name: 'daily-pet-registration',
+      builder: (context, state) => const DailyPetRegistrationScreen(),
+    ),
     // 기타 독립 라우트
     GoRoute(
       path: RouteConstants.addFamilyManagerRoute,

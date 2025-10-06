@@ -1,153 +1,168 @@
-import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/material.dart';
-
-/// Pet Profile UI Constants
+/// Pet Profile 관련 상수 정의
 ///
-/// Pet Profile 기능의 UI 관련 상수들 (공통 상수 사용)
-
+/// 하드코딩된 텍스트와 설정값들을 중앙 집중식으로 관리합니다.
 class PetProfileConstants {
+  // Private constructor to prevent instantiation
   PetProfileConstants._();
 
-  // UI Dimensions (공통 상수 사용)
-  static const double profileImageSize = AppConstants.profileImageSize;
-  static const double profileImageRadius = AppConstants.profileImageRadius;
-  static const double cardElevation = AppConstants.defaultCardElevation;
-  static const double buttonHeight = AppConstants.defaultButtonHeight;
-  static const double iconSize = AppConstants.defaultIconSize;
+  /// 탭 관련 상수
+  static const int tabCount = 4;
+  static const int basicInfoTabIndex = 0;
+  static const int healthTabIndex = 1;
+  static const int nutritionTabIndex = 2;
+  static const int activityTabIndex = 3;
 
-  // Spacing (공통 상수 사용)
-  static const EdgeInsets defaultPadding = AppConstants.defaultPadding;
-  static const EdgeInsets cardPadding = AppConstants.cardPadding;
-  static const EdgeInsets buttonPadding = AppConstants.buttonPadding;
-  static const double defaultSpacing = AppConstants.spacingMD;
-  static const double smallSpacing = AppConstants.spacingSM;
-  static const double largeSpacing = AppConstants.spacingLG;
+  /// 탭 제목 (일본어)
+  static const List<String> tabTitles = ['基本情報', '健康', '栄養', '活動'];
 
-  // Animation Durations (공통 상수 사용)
-  static const Duration defaultAnimation = AppConstants.defaultAnimation;
-  static const Duration fastAnimation = AppConstants.fastAnimation;
-  static const Duration slowAnimation = AppConstants.slowAnimation;
+  /// 성별 옵션 (일본어)
+  static const List<String> genderOptions = ['オス', 'メス'];
 
-  // Text Styles Keys
-  static const String profileNameStyle = 'profileName';
-  static const String profileDetailStyle = 'profileDetail';
-  static const String sectionHeaderStyle = 'sectionHeader';
-  static const String bodyTextStyle = 'bodyText';
+  /// 성별 옵션 (영어 - 백엔드 호환용)
+  static const List<String> genderOptionsEn = ['Male', 'Female'];
 
-  // Form Validation (공통 상수 사용)
-  static const int maxNameLength = AppConstants.maxNameLength;
-  static const int minNameLength = AppConstants.minNameLength;
-  static const double maxWeight = AppConstants.maxWeight;
-  static const double minWeight = AppConstants.minWeight;
-
-  // Share Settings (공통 상수 사용)
-  static const int maxFamilyManagers = AppConstants.maxFamilyManagers;
-  static const Duration defaultLinkExpiry = AppConstants.defaultLinkExpiry;
-
-  // Image Upload (공통 상수 사용)
-  static const int maxImageSizeMB = AppConstants.maxImageSizeMB;
-  static const List<String> allowedImageTypes = AppConstants.allowedImageTypes;
-
-  // Tab Names (Japanese)
-  static const String basicInfoTab = '基本情報';
-  static const String healthTab = '健康';
-  static const String nutritionTab = '栄養';
-  static const String shareTab = '共有';
-
-  // Button Texts (Japanese)
-  static const String editButton = '編集';
-  static const String saveButton = '保存';
-  static const String cancelButton = 'キャンセル';
-  static const String shareButton = '共有';
-  static const String deleteButton = '削除';
-  static const String addButton = '追加';
-
-  // Status Messages (Japanese)
-  static const String saveSuccess = '保存されました';
-  static const String saveError = '保存に失敗しました';
-  static const String loadError = '読み込みに失敗しました';
-  static const String noDataMessage = 'データがありません';
-  static const String accessDeniedMessage = 'アクセスが拒否されました';
-
-  // Validation Messages (Japanese)
-  static const String nameRequiredMessage = '名前を入力してください';
-  static const String nameTooLongMessage = '名前は50文字以内で入力してください';
-  static const String invalidWeightMessage = '体重は0.1kg以上200kg以下で入力してください';
-  static const String futureBirthDateMessage = '生年月日は未来の日付を設定できません';
-
-  // Color Keys
-  static const String primaryColor = 'primary';
-  static const String secondaryColor = 'secondary';
-  static const String errorColor = 'error';
-  static const String successColor = 'success';
-  static const String warningColor = 'warning';
-
-  // Feature Flags
-  static const bool enableAdvancedHealthTracking = false;
-  static const bool enableSocialSharing = true;
-  static const bool enableOfflineMode = false;
-
-  // API Endpoints (for future use)
-  static const String profileEndpoint = '/api/pet-profiles';
-  static const String imageUploadEndpoint = '/api/pet-profiles/images';
-  static const String shareEndpoint = '/api/pet-profiles/share';
-}
-
-/// Pet Profile Screen Routes
-class PetProfileRoutes {
-  PetProfileRoutes._();
-
-  static const String profile = '/pet-profile';
-  static const String edit = '/pet-profile/edit';
-  static const String share = '/pet-profile/share';
-  static const String qrScanner = '/pet-profile/qr-scanner';
-  static const String linkRegistration = '/pet-profile/link-registration';
-  static const String vaccine = '/pet-profile/vaccine';
-  static const String sharingProfiles = '/pet-profile/sharing-profiles';
-}
-
-/// Pet Type Icons and Display Names
-class PetTypeConstants {
-  PetTypeConstants._();
-
-  static const Map<String, String> typeIcons = {
+  /// 펫 타입 아이콘 매핑
+  static const Map<String, String> petTypeIcons = {
     'dog': '🐕',
     'cat': '🐱',
     'bird': '🐦',
     'hamster': '🐹',
     'rabbit': '🐰',
     'turtle': '🐢',
+    'default': '🐾',
   };
 
-  static const Map<String, String> typeNames = {
+  /// 펫 타입 이름 매핑 (일본어)
+  static const Map<String, String> petTypeNames = {
     'dog': '犬',
     'cat': '猫',
     'bird': '鳥',
     'hamster': 'ハムスター',
     'rabbit': 'うさぎ',
     'turtle': '亀',
+    'default': 'ペット',
   };
 
-  static String getIcon(String type) => typeIcons[type.toLowerCase()] ?? '🐾';
-  static String getName(String type) => typeNames[type.toLowerCase()] ?? 'ペット';
-}
-
-/// Visibility Level Display
-class VisibilityLevelConstants {
-  VisibilityLevelConstants._();
-
-  static const Map<String, String> levelNames = {
-    'private': '非公開',
-    'family': '家族のみ',
-    'public': '公開',
+  /// 성별 표시명 매핑 (일본어)
+  static const Map<String, String> genderDisplayNames = {
+    'male': 'オス',
+    'female': 'メス',
+    'オス': 'オス',
+    'メス': 'メス',
+    'default': '不明',
   };
 
-  static const Map<String, IconData> levelIcons = {
-    'private': Icons.lock,
-    'family': Icons.family_restroom,
-    'public': Icons.public,
-  };
+  /// 메시지 상수
+  static const String loadingMessage = '読み込み中...';
+  static const String errorMessage = 'エラーが発生しました';
+  static const String successMessage = '操作が完了しました';
+  static const String petNotFoundMessage = 'ペットが見つかりません';
+  static const String noPermissionMessage = '権限がありません';
 
-  static String getName(String level) => levelNames[level.toLowerCase()] ?? '非公開';
-  static IconData getIcon(String level) => levelIcons[level.toLowerCase()] ?? Icons.lock;
+  /// 편집 관련 메시지
+  static const String editModeEntered = '編集モードに入りました';
+  static const String editModeExited = '編集モードを終了しました';
+  static const String saveSuccessMessage = '保存しました';
+  static const String saveErrorMessage = '保存に失敗しました';
+  static const String cancelEditMessage = '編集をキャンセルしました';
+
+  /// 이미지 관련 메시지
+  static const String imageUploadSuccess = '画像をアップロードしました';
+  static const String imageUploadError = '画像のアップロードに失敗しました';
+  static const String imageChangeSuccess = '画像を変更しました';
+  static const String imageChangeError = '画像の変更に失敗しました';
+
+  /// 삭제 관련 메시지
+  static const String deleteSuccessMessage = '削除しました';
+  static const String deleteErrorMessage = '削除に失敗しました';
+  static const String deleteConfirmMessage = '本当に削除しますか？';
+
+  /// 검증 관련 메시지
+  static const String nameRequiredMessage = '名前を入力してください';
+  static const String weightInvalidMessage = '有効な体重を入力してください';
+  static const String weightPositiveMessage = '体重は0より大きい値を入力してください';
+
+  /// UI 레이블
+  static const String editLabel = '編集';
+  static const String saveLabel = '保存';
+  static const String cancelLabel = 'キャンセル';
+  static const String deleteLabel = '削除';
+  static const String shareLabel = '共有';
+  static const String backLabel = '戻る';
+  static const String homeLabel = 'ホーム';
+
+  /// 필드 레이블
+  static const String nameLabel = '名前';
+  static const String typeLabel = '種類';
+  static const String breedLabel = '品種';
+  static const String genderLabel = '性別';
+  static const String weightLabel = '体重';
+  static const String birthDateLabel = '誕生日';
+  static const String ageLabel = '年齢';
+  static const String appearanceLabel = '外見';
+  static const String microchipLabel = 'マイクロチップ';
+  static const String caretakerLabel = '家族';
+
+  /// 힌트 텍스트
+  static const String nameHint = '名前を入力してください';
+  static const String weightHint = '体重を入力してください';
+  static const String appearanceHint = 'ペットの外見について説明してください';
+  static const String microchipHint = 'マイクロチップIDを入力してください';
+
+  /// 버튼 텍스트
+  static const String changeImageButton = '写真を変更';
+  static const String takePhotoButton = 'カメラで撮影';
+  static const String selectFromGalleryButton = 'ギャラリーから選択';
+  static const String goHomeButton = 'ホームに戻る';
+
+  /// 다이얼로그 제목
+  static const String editNameDialogTitle = '名前編集';
+  static const String editGenderDialogTitle = '性別編集';
+  static const String editWeightDialogTitle = '体重編集';
+  static const String editAppearanceDialogTitle = '外見編集';
+  static const String editMicrochipDialogTitle = 'マイクロチップ編集';
+  static const String deleteConfirmDialogTitle = '削除確認';
+
+  /// 상태 표시
+  static const String registeredStatus = '登録済み';
+  static const String unregisteredStatus = '未登録';
+  static const String managerStatus = '管理者';
+
+  /// 기본값
+  static const String defaultPetName = 'ペット';
+  static const String defaultBreed = '不明';
+  static const String defaultAppearance = '未設定';
+  static const double defaultWeight = 0.0;
+  static const bool defaultNeutered = false;
+
+  /// 이미지 관련 설정
+  static const double profileImageSize = 120.0;
+  static const double profileImageBorderWidth = 2.0;
+  static const int maxAppearanceLength = 200;
+  static const int maxNameLength = 20;
+
+  /// 애니메이션 설정
+  static const Duration tabAnimationDuration = Duration(milliseconds: 300);
+  static const Duration fadeAnimationDuration = Duration(milliseconds: 200);
+
+  /// 권장 산책 시간 (분 단위)
+  static const int smallDogWalkTime = 30;
+  static const int mediumDogWalkTime = 45;
+  static const int largeDogWalkTime = 60;
+  static const int catWalkTime = 20;
+  static const int otherAnimalWalkTime = 15;
+
+  /// 몸무게 기준 (kg)
+  static const double smallDogWeightLimit = 10.0;
+  static const double mediumDogWeightLimit = 25.0;
+
+  /// 색상 관련 상수
+  static const double iconBackgroundOpacity = 0.1;
+  static const double borderOpacity = 0.3;
+
+  /// 폼 검증 관련
+  static const int minNameLength = 1;
+  static const int maxNameLengthValidation = 20;
+  static const double minWeight = 0.1;
+  static const double maxWeight = 100.0;
 }

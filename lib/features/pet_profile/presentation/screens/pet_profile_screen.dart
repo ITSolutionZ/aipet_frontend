@@ -1,16 +1,18 @@
-import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_controller.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/constants/pet_profile_constants.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_unified_controller.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_activity_tab.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_basic_info_tab_refactored.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_health_tab.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_nutrition_tab.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// 리팩토링된 Pet Profile 화면
+/// Pet Profile 화면
 ///
-/// 기존 1,229라인에서 약 150라인으로 축소
-/// 로직과 UI 완전 분리, 재사용 가능한 위젯들로 구성
-
+/// Clean Architecture를 적용하여 로직과 UI를 완전히 분리했습니다.
+/// 재사용 가능한 컴포넌트들을 사용하여 유지보수성을 높였습니다.
 class PetProfileScreen extends ConsumerStatefulWidget {
   final String petId;
 
@@ -22,332 +24,345 @@ class PetProfileScreen extends ConsumerStatefulWidget {
 
 class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
     _initializeTabController();
+    _loadPetProfile();
   }
 
   @override
   void dispose() {
-    _disposeTabController();
+    _tabController.dispose();
+    ref
+        .read(petProfileUnifiedControllerProvider.notifier)
+        .disposeTabController();
     super.dispose();
   }
 
   void _initializeTabController() {
+    _tabController = TabController(
+      length: PetProfileConstants.tabCount,
+      vsync: this,
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final tabController = TabController(length: 4, vsync: this);
-      ref.read(petProfileNotifierProvider.notifier).initializeTabController(tabController);
+      ref
+          .read(petProfileUnifiedControllerProvider.notifier)
+          .initializeTabController(_tabController);
     });
   }
 
-  void _disposeTabController() {
-    ref.read(petProfileNotifierProvider.notifier).disposeTabController();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final petAsyncValue = ref.watch(petProfileByIdProvider(widget.petId));
-
-    return petAsyncValue.when(
-      loading: () => const _LoadingScreen(),
-      error: (error, stackTrace) => _ErrorScreen(error: error),
-      data: (pet) => pet != null ? _PetProfileContent(pet: pet) : const _PetNotFoundScreen(),
-    );
-  }
-}
-
-/// 로딩 화면
-class _LoadingScreen extends StatelessWidget {
-  const _LoadingScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
-      body: Center(child: CircularProgressIndicator(color: AppColors.pointBrown)),
-    );
-  }
-}
-
-/// 에러 화면
-class _ErrorScreen extends StatelessWidget {
-  final Object error;
-
-  const _ErrorScreen({required this.error});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.pointPink),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              '펫을 찾을 수 없습니다',
-              style: AppFonts.headlineSmall.copyWith(
-                color: AppColors.pointDark,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              error.toString(),
-              style: AppFonts.bodyMedium.copyWith(
-                color: AppColors.pointDark.withValues(alpha: 0.7),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            CommonButton(
-              text: '홈으로 돌아가기',
-              type: ButtonType.primary,
-              onPressed: () => context.go('/home'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// 펫을 찾을 수 없을 때 화면
-class _PetNotFoundScreen extends StatelessWidget {
-  const _PetNotFoundScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.pets, size: 64, color: AppColors.pointBrown),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              '펫을 찾을 수 없습니다',
-              style: AppFonts.headlineSmall.copyWith(
-                color: AppColors.pointDark,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            CommonButton(
-              text: '홈으로 돌아가기',
-              type: ButtonType.primary,
-              onPressed: () => context.go('/home'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// 메인 펫 프로필 컨텐츠
-class _PetProfileContent extends ConsumerStatefulWidget {
-  final PetProfileEntity pet;
-
-  const _PetProfileContent({required this.pet});
-
-  @override
-  ConsumerState<_PetProfileContent> createState() => _PetProfileContentState();
-}
-
-class _PetProfileContentState extends ConsumerState<_PetProfileContent> {
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // 펫 데이터를 컨트롤러에 설정
+  void _loadPetProfile() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(petProfileNotifierProvider.notifier).selectPet(widget.pet);
+      ref
+          .read(petProfileUnifiedControllerProvider.notifier)
+          .loadPetProfile(widget.petId);
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(petProfileUnifiedControllerProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: DynamicAppBarStyles.brown(
-        scrollController: _scrollController,
-        title: widget.pet.name,
-        leading: IconButton(onPressed: () => context.pop(), icon: const Icon(Icons.arrow_back)),
-        actions: [
+      appBar: _buildAppBar(context, state),
+      body: _buildBody(context, state),
+      bottomNavigationBar: _buildBottomNavigationBar(context, state),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(
+    BuildContext context,
+    PetProfileUnifiedState state,
+  ) {
+    if (state.selectedPet == null) {
+      return AppBar(
+        title: const Text(PetProfileConstants.loadingMessage),
+        backgroundColor: AppColors.pointBrown,
+        foregroundColor: Colors.white,
+      );
+    }
+
+    return AppBar(
+      title: Text(state.selectedPet!.name),
+      backgroundColor: AppColors.pointBrown,
+      foregroundColor: Colors.white,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => context.pop(),
+      ),
+      actions: [
+        if (!state.isEditMode) ...[
           IconButton(
-            onPressed: () {
-              // Navigate to edit screen or show edit options
-            },
             icon: const Icon(Icons.edit),
-            tooltip: '編集',
+            onPressed: () => _toggleEditMode(),
+            tooltip: PetProfileConstants.editLabel,
           ),
           IconButton(
-            onPressed: () {
-              // Show more options menu
-            },
             icon: const Icon(Icons.more_vert),
+            onPressed: () => _showMoreOptions(context),
             tooltip: 'メニュー',
           ),
         ],
+      ],
+      bottom: _buildTabBar(),
+    );
+  }
+
+  PreferredSizeWidget _buildTabBar() {
+    return TabBar(
+      controller: _tabController,
+      indicatorColor: Colors.yellow,
+      indicatorWeight: 3,
+      labelColor: Colors.white,
+      unselectedLabelColor: Colors.white.withValues(alpha: 0.7),
+      tabs: PetProfileConstants.tabTitles
+          .map((title) => Tab(text: title))
+          .toList(),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, PetProfileUnifiedState state) {
+    if (state.isLoading) {
+      return const _LoadingWidget();
+    }
+
+    if (state.errorMessage != null) {
+      return _ErrorWidget(
+        error: state.errorMessage!,
+        onRetry: () => _loadPetProfile(),
+      );
+    }
+
+    if (state.selectedPet == null) {
+      return const _PetNotFoundWidget();
+    }
+
+    return TabBarView(
+      controller: _tabController,
+      children: [
+        PetBasicInfoTabRefactored(
+          pet: state.selectedPet!,
+          isEditMode: state.isEditMode,
+        ),
+        PetHealthTab(pet: state.selectedPet!),
+        PetNutritionTab(pet: state.selectedPet!),
+        PetActivityTab(pet: state.selectedPet!),
+      ],
+    );
+  }
+
+  Widget? _buildBottomNavigationBar(
+    BuildContext context,
+    PetProfileUnifiedState state,
+  ) {
+    if (state.selectedPet == null || state.isEditMode) {
+      return null;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: ElevatedButton(
+        onPressed: _toggleEditMode,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.pointBrown,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        ),
+        child: const Text(PetProfileConstants.editLabel),
       ),
-      body: Column(
-        children: [
-          _PetProfileTabBar(),
-          Expanded(child: _PetProfileTabContent(pet: widget.pet)),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: ElevatedButton(
-          onPressed: () {
-            // 편집 기능 구현
-          },
-          child: const Text('編集'),
+    );
+  }
+
+  void _toggleEditMode() {
+    ref.read(petProfileUnifiedControllerProvider.notifier).toggleEditMode();
+  }
+
+  void _showMoreOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.share),
+              title: const Text(PetProfileConstants.shareLabel),
+              onTap: () {
+                Navigator.pop(context);
+                _shareProfile(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete, color: AppColors.pointRed),
+              title: const Text(
+                PetProfileConstants.deleteLabel,
+                style: TextStyle(color: AppColors.pointRed),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                _showDeleteConfirmation(context);
+              },
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
-/// 탭 바 위젯
-class _PetProfileTabBar extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(petProfileNotifierProvider);
+  void _shareProfile(BuildContext context) {
+    // TODO: Implement sharing functionality
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('共有機能は今後実装予定です')));
+  }
 
-    if (state.tabController == null) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      color: AppColors.pointBrown,
-      child: TabBar(
-        controller: state.tabController,
-        indicatorColor: Colors.yellow,
-        indicatorWeight: 3,
-        labelColor: Colors.white,
-        unselectedLabelColor: Colors.white.withValues(alpha: 0.7),
-        tabs: const [
-          Tab(text: '基本情報'),
-          Tab(text: '健康'),
-          Tab(text: '栄養'),
-          Tab(text: '活動'),
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(PetProfileConstants.deleteConfirmDialogTitle),
+        content: const Text(PetProfileConstants.deleteConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(PetProfileConstants.cancelLabel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _deleteProfile(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.pointRed,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text(PetProfileConstants.deleteLabel),
+          ),
         ],
       ),
     );
   }
-}
 
-/// 탭 컨텐츠 위젯
-class _PetProfileTabContent extends ConsumerWidget {
-  final PetProfileEntity pet;
+  void _deleteProfile(BuildContext context) async {
+    try {
+      await ref
+          .read(petProfileUnifiedControllerProvider.notifier)
+          .deletePetProfile();
 
-  const _PetProfileTabContent({required this.pet});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(petProfileNotifierProvider);
-
-    if (state.tabController == null) {
-      return _BasicInfoTab(pet: pet);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(PetProfileConstants.deleteSuccessMessage),
+          ),
+        );
+        context.go('/home');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(PetProfileConstants.deleteErrorMessage),
+            backgroundColor: AppColors.pointRed,
+          ),
+        );
+      }
     }
-
-    return TabBarView(
-      controller: state.tabController,
-      children: [
-        _BasicInfoTab(pet: pet),
-        _HealthTab(pet: pet),
-        _NutritionTab(pet: pet),
-        _ActivityTab(pet: pet),
-      ],
-    );
   }
 }
 
-/// 기본 정보 탭
-class _BasicInfoTab extends ConsumerWidget {
-  final PetProfileEntity pet;
-
-  const _BasicInfoTab({required this.pet});
+/// 로딩 위젯
+class _LoadingWidget extends StatelessWidget {
+  const _LoadingWidget();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 100), // 하단 버튼 공간 확보
+  Widget build(BuildContext context) {
+    return const Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('名前: ${pet.name}'),
-          Text('種類: ${pet.type}'),
-          Text('性別: ${pet.gender}'),
-          Text('体重: ${pet.weight}kg'),
+          CircularProgressIndicator(color: AppColors.pointBrown),
+          SizedBox(height: AppSpacing.md),
+          Text(
+            PetProfileConstants.loadingMessage,
+            style: TextStyle(color: AppColors.textSecondary),
+          ),
         ],
       ),
     );
   }
 }
 
-/// 건강 탭 (임시 구현)
-class _HealthTab extends StatelessWidget {
-  final PetProfileEntity pet;
+/// 에러 위젯
+class _ErrorWidget extends StatelessWidget {
+  final String error;
+  final VoidCallback? onRetry;
 
-  const _HealthTab({required this.pet});
+  const _ErrorWidget({required this.error, this.onRetry});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        '건강 정보\n(구현 예정)',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 18, color: AppColors.pointDark),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error_outline, size: 64, color: AppColors.pointRed),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            PetProfileConstants.errorMessage,
+            style: AppFonts.headlineSmall.copyWith(
+              color: AppColors.pointDark,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            error,
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.textSecondary),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          if (onRetry != null)
+            ElevatedButton(onPressed: onRetry, child: const Text('再試行')),
+          const SizedBox(height: AppSpacing.md),
+          TextButton(
+            onPressed: () => context.go('/home'),
+            child: const Text(PetProfileConstants.goHomeButton),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// 영양 탭 (임시 구현)
-class _NutritionTab extends StatelessWidget {
-  final PetProfileEntity pet;
-
-  const _NutritionTab({required this.pet});
+/// 펫을 찾을 수 없을 때 위젯
+class _PetNotFoundWidget extends StatelessWidget {
+  const _PetNotFoundWidget();
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        '영양 정보\n(구현 예정)',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 18, color: AppColors.pointDark),
-      ),
-    );
-  }
-}
-
-/// 활동 탭 (임시 구현)
-class _ActivityTab extends StatelessWidget {
-  final PetProfileEntity pet;
-
-  const _ActivityTab({required this.pet});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        '활동 정보\n(구현 예정)',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 18, color: AppColors.pointDark),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.pets, size: 64, color: AppColors.pointBrown),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            PetProfileConstants.petNotFoundMessage,
+            style: AppFonts.headlineSmall.copyWith(
+              color: AppColors.pointDark,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          ElevatedButton(
+            onPressed: () => context.go('/home'),
+            child: const Text(PetProfileConstants.goHomeButton),
+          ),
+        ],
       ),
     );
   }

@@ -11,7 +11,7 @@ class ExampleLocalPetRepository {
 
   /// 모든 펫 프로필 조회
   Future<List<Map<String, dynamic>>> getAllPetProfiles() async {
-    return await _localDataManager.loadPetProfiles();
+    return _localDataManager.loadPetProfiles();
   }
 
   /// ID로 펫 프로필 조회
@@ -41,7 +41,10 @@ class ExampleLocalPetRepository {
   }
 
   /// 펫 프로필 수정
-  Future<void> updatePetProfile(String petId, Map<String, dynamic> updatedData) async {
+  Future<void> updatePetProfile(
+    String petId,
+    Map<String, dynamic> updatedData,
+  ) async {
     final profiles = await _localDataManager.loadPetProfiles();
 
     final index = profiles.indexWhere((pet) => pet['id'] == petId);
@@ -69,11 +72,14 @@ class ExampleLocalPetRepository {
 
   /// 펫 현재 상태 조회
   Future<Map<String, dynamic>?> getPetStatus(String petId) async {
-    return await _localDataManager.loadPetStatus(petId);
+    return _localDataManager.loadPetStatus(petId);
   }
 
   /// 펫 상태 업데이트
-  Future<void> updatePetStatus(String petId, Map<String, dynamic> status) async {
+  Future<void> updatePetStatus(
+    String petId,
+    Map<String, dynamic> status,
+  ) async {
     status['updatedAt'] = DateTime.now().toIso8601String();
     await _localDataManager.savePetStatus(petId, status);
   }
@@ -152,7 +158,7 @@ class ExampleLocalPetRepository {
 
   /// 진행 중인 산책 조회
   Future<Map<String, dynamic>?> getActiveWalk() async {
-    return await _localDataManager.loadActiveWalk();
+    return _localDataManager.loadActiveWalk();
   }
 
   /// 진행 중인 산책 완료

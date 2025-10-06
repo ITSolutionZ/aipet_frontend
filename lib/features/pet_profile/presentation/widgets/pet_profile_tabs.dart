@@ -42,7 +42,9 @@ class AboutTab extends ConsumerWidget {
             typeAndBreed: '${_getTypeString(pet.type)} | ${pet.breed}',
             isEditMode: isEditMode,
             onImageTap: onImageTap,
-            nameWidget: isEditMode ? NameEditField(controller: controllers['name']!) : null,
+            nameWidget: isEditMode
+                ? NameEditField(controller: controllers['name']!)
+                : null,
           ),
 
           const SizedBox(height: AppSpacing.xl),
@@ -55,7 +57,8 @@ class AboutTab extends ConsumerWidget {
                     controller: controllers['appearance']!,
                     hintText: 'ペットの外観や特徴を入力してください',
                     maxLines: 3,
-                    onChanged: (value) => onValueChanged?.call('appearance', value),
+                    onChanged: (value) =>
+                        onValueChanged?.call('appearance', value),
                   )
                 : Text(
                     pet.breed ?? 'No appearance description available',
@@ -71,9 +74,11 @@ class AboutTab extends ConsumerWidget {
           _buildSection('重要な属性', null),
           const SizedBox(height: AppSpacing.md),
 
-          EditableAttributeCard(
+          PetProfileEditableAttributeCard(
             label: '性別',
-            value: _getGenderString(isEditMode ? editingValues['gender'] : pet.gender),
+            value: _getGenderString(
+              isEditMode ? editingValues['gender'] : pet.gender,
+            ),
             isEditMode: isEditMode,
             editWidget: isEditMode
                 ? GenderDropdown(
@@ -85,9 +90,11 @@ class AboutTab extends ConsumerWidget {
 
           const SizedBox(height: AppSpacing.sm),
 
-          EditableAttributeCard(
+          PetProfileEditableAttributeCard(
             label: 'サイズ',
-            value: _getSizeString(isEditMode ? editingValues['size'] : pet.size),
+            value: _getSizeString(
+              isEditMode ? editingValues['size'] : pet.size,
+            ),
             isEditMode: isEditMode,
             editWidget: isEditMode
                 ? SizeDropdown(
@@ -99,9 +106,11 @@ class AboutTab extends ConsumerWidget {
 
           const SizedBox(height: AppSpacing.sm),
 
-          EditableAttributeCard(
+          PetProfileEditableAttributeCard(
             label: '体重',
-            value: _getWeightString(isEditMode ? editingValues['weight'] : pet.weight),
+            value: _getWeightString(
+              isEditMode ? editingValues['weight'] : pet.weight,
+            ),
             isEditMode: isEditMode,
             editWidget: isEditMode
                 ? WeightInputField(
@@ -134,7 +143,8 @@ class AboutTab extends ConsumerWidget {
                     child: EditableTextField(
                       controller: controllers['microchip']!,
                       hintText: 'マイクロチップ番号を入力',
-                      onChanged: (value) => onValueChanged?.call('microchipId', value),
+                      onChanged: (value) =>
+                          onValueChanged?.call('microchipId', value),
                     ),
                   )
                 : null,
@@ -189,7 +199,10 @@ class AboutTab extends ConsumerWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        if (content != null) ...[const SizedBox(height: AppSpacing.sm), content],
+        if (content != null) ...[
+          const SizedBox(height: AppSpacing.sm),
+          content,
+        ],
       ],
     );
   }
@@ -233,7 +246,8 @@ class AboutTab extends ConsumerWidget {
   String _calculateAge(DateTime birthDate) {
     final now = DateTime.now();
     int years = now.year - birthDate.year;
-    if (now.month < birthDate.month || (now.month == birthDate.month && now.day < birthDate.day)) {
+    if (now.month < birthDate.month ||
+        (now.month == birthDate.month && now.day < birthDate.day)) {
       years--;
     }
     return '$years歳';
@@ -270,13 +284,18 @@ class ActivityTab extends ConsumerWidget {
     return tricksState.when(
       data: (tricks) => _buildActivityContent(context, tricks),
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stackTrace) => Center(child: Text('活動データの読み込み中にエラーが発生しました: $error')),
+      error: (error, stackTrace) =>
+          Center(child: Text('活動データの読み込み中にエラーが発生しました: $error')),
     );
   }
 
   Widget _buildActivityContent(BuildContext context, List<dynamic> tricks) {
-    final learnedTricks = tricks.where((trick) => trick.progress != null).toList();
-    final availableTricks = tricks.where((trick) => trick.progress == null).toList();
+    final learnedTricks = tricks
+        .where((trick) => trick.progress != null)
+        .toList();
+    final availableTricks = tricks
+        .where((trick) => trick.progress == null)
+        .toList();
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -292,7 +311,9 @@ class ActivityTab extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            ...learnedTricks.take(3).map((trick) => _buildTrickCard(trick, true)),
+            ...learnedTricks
+                .take(3)
+                .map((trick) => _buildTrickCard(trick, true)),
             const SizedBox(height: AppSpacing.lg),
           ],
 
@@ -305,7 +326,9 @@ class ActivityTab extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            ...availableTricks.take(2).map((trick) => _buildTrickCard(trick, false)),
+            ...availableTricks
+                .take(2)
+                .map((trick) => _buildTrickCard(trick, false)),
           ],
 
           const Spacer(),
@@ -357,12 +380,18 @@ class ActivityTab extends ConsumerWidget {
           ),
         ),
         subtitle: Text(
-          isLearned ? '完了! (${trick.progress ?? 0}%)' : trick.description ?? '説明なし',
+          isLearned
+              ? '完了! (${trick.progress ?? 0}%)'
+              : trick.description ?? '説明なし',
           style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
         ),
         trailing: isLearned
             ? const Icon(Icons.check_circle, color: AppColors.pointGreen)
-            : const Icon(Icons.arrow_forward_ios, color: AppColors.pointGray, size: 16),
+            : const Icon(
+                Icons.arrow_forward_ios,
+                color: AppColors.pointGray,
+                size: 16,
+              ),
       ),
     );
   }

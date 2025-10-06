@@ -40,6 +40,7 @@ export 'feedback/feedback.dart';
 export 'form_field_widget.dart';
 export 'forms/common_form_field.dart';
 export 'forms/common_input_field.dart';
+export 'forms/searchable_dropdown.dart';
 export 'forms/toggle_switch_component.dart';
 export 'forms/validated_text_field.dart';
 // Headers

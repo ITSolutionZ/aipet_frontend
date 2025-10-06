@@ -20,7 +20,7 @@ class TokenManagerService {
       return Success(_currentToken);
     }
 
-    return await _loadTokenFromStorage();
+    return _loadTokenFromStorage();
   }
 
   Future<ResultState<void>> saveToken(AuthTokenModel token) async {
@@ -65,7 +65,9 @@ class TokenManagerService {
         return Failure(AuthenticationError('토큰이 없습니다.'));
       }
 
-      final refreshResult = await _apiAuthService.refreshToken(currentToken.refreshToken);
+      final refreshResult = await _apiAuthService.refreshToken(
+        currentToken.refreshToken,
+      );
       if (refreshResult.isFailure) {
         await clearToken();
         return Failure(refreshResult.errorOrNull!);

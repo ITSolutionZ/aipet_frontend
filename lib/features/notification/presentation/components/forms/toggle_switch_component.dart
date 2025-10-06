@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/layout/card.dart';
 import 'package:flutter/material.dart';
 
 /// 순수 UI 전용 토글 스위치 위젯
@@ -48,7 +49,10 @@ class ToggleSwitchUI extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   subtitle,
-                  style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray, height: 1.3),
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointGray,
+                    height: 1.3,
+                  ),
                 ),
               ],
             ),

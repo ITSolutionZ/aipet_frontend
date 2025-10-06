@@ -17,18 +17,18 @@ class DrawerMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: isSelected ? Colors.white : Colors.white.withAlpha(80), size: 20),
+      leading: Icon(icon, color: Colors.white, size: 20),
       title: Text(
         title,
         style: TextStyle(
-          color: isSelected ? Colors.white : Colors.white.withAlpha(80),
+          color: Colors.white,
           fontSize: 14,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
         ),
       ),
       onTap: onTap,
       selected: isSelected,
-      selectedTileColor: Colors.white.withAlpha(10),
+      selectedTileColor: Colors.white.withOpacity(0.1),
     );
   }
 }

@@ -2,12 +2,15 @@ import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_history_
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_chat_screen.dart';
 import 'package:aipet_frontend/features/ai/presentation/screens/ai_favorite_messages_screen.dart';
 import 'package:aipet_frontend/features/allergy/allergy.dart';
+import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
+import 'package:aipet_frontend/features/daily/presentation/screens/daily_health_input_screen.dart';
+import 'package:aipet_frontend/features/daily/presentation/screens/daily_health_screen.dart';
 import 'package:aipet_frontend/features/facility/facility.dart';
 import 'package:aipet_frontend/features/home/presentation/presentation.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_screens.dart';
 import 'package:aipet_frontend/features/pet_activities/pet_activities.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/link_registration_screen.dart';
-import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen_refactored.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/qr_scanner_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/sharing_profiles_screen.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/presentation.dart';
@@ -52,9 +55,9 @@ class ShellRoutes {
               final afterRegistration =
                   state.uri.queryParameters['afterRegistration'] == 'true';
 
-              // 신규 회원가입 후라면 펫 등록 플로우로 이동
+              // 신규 회원가입 후라면 Daily Pet Registration 화면으로 이동
               if (afterRegistration) {
-                return RouteConstants.petTypeSelectionRoute;
+                return RouteConstants.dailyPetRegistrationRoute;
               }
 
               // 일반적인 경우 홈 화면으로 이동 (펫이 없어도 홈 화면 유지)
@@ -67,7 +70,7 @@ class ShellRoutes {
             builder: (context, state) {
               // 쿼리 파라미터에서 petId 추출
               final petId = state.uri.queryParameters['petId'] ?? 'default';
-              return PetProfileScreenRefactored(petId: petId);
+              return PetProfileScreen(petId: petId);
             },
           ),
           GoRoute(
@@ -132,6 +135,30 @@ class ShellRoutes {
                 builder: (context, state) => const SavedAnalysisListScreen(),
               ),
             ],
+          ),
+
+          // Daily Health Routes (하단 네비게이션 포함)
+          GoRoute(
+            path: 'daily',
+            name: 'daily-health',
+            builder: (context, state) => const DailyHealthScreen(),
+          ),
+          GoRoute(
+            path: 'daily/input',
+            name: 'daily-health-input',
+            builder: (context, state) {
+              DailyHealthRecord? existingRecord;
+              if (state.extra != null && state.extra is DailyHealthRecord) {
+                existingRecord = state.extra as DailyHealthRecord;
+              }
+              return DailyHealthInputScreen(existingRecord: existingRecord);
+            },
+          ),
+          GoRoute(
+            path: 'daily/history',
+            name: 'daily-health-history',
+            builder: (context, state) =>
+                const Scaffold(body: Center(child: Text('健康記録ヒストリー - 近日実装予定'))),
           ),
         ],
       ),

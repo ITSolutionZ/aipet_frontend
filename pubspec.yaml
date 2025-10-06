@@ -42,7 +42,7 @@ dependencies:
   geolocator: ^13.0.1
   google_maps_flutter: ^2.8.0
   location: ^6.0.0
-  image_picker: ^1.0.7
+  image_picker: ^1.2.0
   image: ^4.1.7
   logger: ^2.0.2+1
   sentry_flutter: ^9.6.0
@@ -50,6 +50,7 @@ dependencies:
   path: ^1.8.3
   qr_flutter: ^4.1.0
   table_calendar: ^3.1.2
+  google_mlkit_text_recognition: ^0.15.0
 
   mockito: ^5.4.4
   freezed_annotation: ^2.4.4
@@ -71,29 +72,49 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    # Environment and config files
     - .env
+
+    # Meteocons (weather icons)
     - assets/meteocons/
     - assets/meteocons/design/fill/animation-ready/
     - assets/meteocons/viewer.html
+
+    # Policy documents
     - assets/policies/
 
+    # Images - General
     - assets/images/
     - assets/images/activities/
-    - assets/images/home_banner/
     - assets/images/backgrounds/
+    - assets/images/brands/
     - assets/images/cats/
-    - assets/images/pet_selector/
     - assets/images/dogs/
-    - assets/images/onboarding/
     - assets/images/etc/
+    - assets/images/home_banner/
     - assets/images/home_banner/banners/
-    - assets/images/modal/
     - assets/images/medications/
+    - assets/images/modal/
+    - assets/images/onboarding/
+    - assets/images/pet_selector/
+    - assets/images/pets/
     - assets/images/textures/
     - assets/images/walks/
 
+    # Individual image files
+    - assets/images/empty_image.png
+    - assets/images/placeholder.png
+
+    # Icons - General
     - assets/icons/
     - assets/icons/navigation/
+
+    - assets/icons/logos/
+    - assets/icons/common/
+    - assets/icons/pet_type/
+    - assets/icons/walk_logo/
+
+    # Icons - Home menu (individual files)
     - assets/icons/home_menu/adopt.png
     - assets/icons/home_menu/alregic.png
     - assets/icons/home_menu/booking.png
@@ -105,6 +126,13 @@ flutter:
     - assets/icons/home_menu/qr.png
     - assets/icons/home_menu/shopping.png
 
+    # Icons - Walk status
+    - assets/icons/walk_logo/walk_good.png
+    - assets/icons/walk_logo/walk_warning.png
+    - assets/icons/walk_logo/walk_dont.png
+    - assets/icons/common/ranking-star.png
+
+    # Fonts and animations
     - assets/fonts/
     - assets/lottie/
 
