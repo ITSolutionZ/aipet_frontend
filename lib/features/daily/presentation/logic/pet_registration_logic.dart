@@ -11,23 +11,64 @@ class PetRegistrationLogic {
     required GlobalKey<FormState> formKey,
     required PetRegistrationController controller,
   }) async {
+    // 폼 검증 전에 텍스트 컨트롤러와 state 동기화
+    print('🔄 Synchronizing text controllers with state before validation');
+    controller.updatePetName(controller.petNameController.text);
+    controller.updateWeight(controller.weightController.text);
+    controller.updateGuardianName(controller.guardianNameController.text);
+    controller.updateInstitutionName(controller.institutionNameController.text);
+    controller.updateRegistrationNumber(
+      controller.registrationNumberController.text,
+    );
+
+    // 폼 데이터 상태 디버깅
+    final formData = controller.state;
+    print('🔍 Form validation check:');
+    print(
+      '  - petName: "${formData.petName}" (empty: ${formData.petName.isEmpty})',
+    );
+    print('  - birthDate: ${formData.birthDate}');
+    print('  - weight: ${formData.weight}');
+    print('  - breed: "${formData.breed}" (empty: ${formData.breed.isEmpty})');
+    print(
+      '  - gender: "${formData.gender}" (empty: ${formData.gender.isEmpty})',
+    );
+    print('  - petType: "${formData.petType}"');
+
     // フォーム基本検証
     if (!formKey.currentState!.validate()) {
-      throw const PetRegistrationException('フォーム検証に失敗しました');
+      print('❌ Form validation failed - basic form validation');
+
+      // 구체적인 에러 메시지 생성
+      final errors = <String>[];
+      if (formData.petName.isEmpty) errors.add('ペットの名前');
+      if (formData.birthDate == null) errors.add('生年月日');
+      if (formData.weight == null) errors.add('体重');
+      if (formData.breed.isEmpty) errors.add('品種');
+      if (formData.gender.isEmpty) errors.add('性別');
+
+      final errorMessage = errors.isNotEmpty
+          ? '必須項目を入力してください:\n• ${errors.join('\n• ')}'
+          : 'フォーム検証に失敗しました';
+
+      throw PetRegistrationException(errorMessage);
     }
 
     // 品種検証
     final breedValidation = controller.validateBreed();
     if (breedValidation != null) {
+      print('❌ Breed validation failed: $breedValidation');
       throw PetRegistrationException(breedValidation);
     }
 
     // 性別検証
     final genderValidation = controller.validateGender();
     if (genderValidation != null) {
+      print('❌ Gender validation failed: $genderValidation');
       throw PetRegistrationException(genderValidation);
     }
 
+    print('✅ All validations passed, proceeding with registration');
     // 実際の登録処理
     await controller.submitForm();
   }
@@ -80,16 +121,38 @@ class PetRegistrationLogic {
     required BuildContext context,
     String? currentImagePath,
   }) async {
-    final result = await ImageService.showImagePickerOptions(
-      context,
-      allowRemoval: currentImagePath != null,
-      currentImagePath: currentImagePath,
-    );
+    try {
+      print(
+        '🎯 PetRegistrationLogic: selectPetImage called with currentImagePath: $currentImagePath',
+      );
+      print('🎯 PetRegistrationLogic: context.mounted: ${context.mounted}');
 
-    if (result == null) return null;
-    if (result == 'REMOVE') return 'REMOVE';
+      final result = await ImageService.showImagePickerOptions(
+        context,
+        allowRemoval: currentImagePath != null,
+        currentImagePath: currentImagePath,
+      );
 
-    return result;
+      print('🎯 PetRegistrationLogic: ImageService returned: $result');
+
+      if (result == null) {
+        print('🎯 PetRegistrationLogic: Result is null, returning null');
+        return null;
+      }
+      if (result == 'REMOVE') {
+        print('🎯 PetRegistrationLogic: Result is REMOVE, returning REMOVE');
+        return 'REMOVE';
+      }
+
+      print(
+        '🎯 PetRegistrationLogic: Result is valid image path, returning: $result',
+      );
+      return result;
+    } catch (e, stackTrace) {
+      print('🎯 PetRegistrationLogic: Exception in selectPetImage: $e');
+      print('🎯 PetRegistrationLogic: Stack trace: $stackTrace');
+      return null;
+    }
   }
 
   /// 成功メッセージ生成

@@ -6,6 +6,5 @@ export 'pet_food_section.dart';
 export 'pet_gender_section.dart';
 export 'pet_image_section.dart';
 export 'pet_ingredients_section.dart';
-export 'pet_neutering_section.dart';
 export 'pet_registration_section.dart';
 export 'pet_type_section.dart';

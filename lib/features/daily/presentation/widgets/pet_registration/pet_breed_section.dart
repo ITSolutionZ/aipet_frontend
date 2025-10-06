@@ -1,9 +1,9 @@
 import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration_controller.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/shared.dart' hide State;
 import 'package:flutter/material.dart';
 
 /// 펫 품종 선택 섹션
-class PetBreedSection extends StatelessWidget {
+class PetBreedSection extends StatefulWidget {
   final String selectedPetType;
   final String selectedBreed;
   final ValueChanged<String> onBreedChanged;
@@ -16,86 +16,45 @@ class PetBreedSection extends StatelessWidget {
   });
 
   @override
+  State<PetBreedSection> createState() => _PetBreedSectionState();
+}
+
+class _PetBreedSectionState extends State<PetBreedSection> {
+  bool _isExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
-    final petTypeData = PetRegistrationController.petTypes[selectedPetType];
+    final petTypeData =
+        PetRegistrationController.petTypes[widget.selectedPetType];
     final breeds = petTypeData?['breeds'] as List<Map<String, dynamic>>? ?? [];
 
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppSpacing.md),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildRequiredFieldLabel('품종 선택'),
-          const SizedBox(height: AppSpacing.md),
-          if (breeds.isNotEmpty)
-            // 품종 아코디언
-            ExpansionTile(
-              title: Text(
-                selectedBreed.isNotEmpty ? selectedBreed : '품종 선택',
-                style: AppFonts.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: selectedBreed.isNotEmpty
-                      ? AppColors.primary
-                      : AppColors.textSecondary,
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildRequiredFieldLabel('品種選択'),
+        const SizedBox(height: AppSpacing.md),
+        if (breeds.isNotEmpty)
+          // 품종 아코디언
+          ExpansionTile(
+            key: ValueKey(_isExpanded),
+            initiallyExpanded: _isExpanded,
+            expandedCrossAxisAlignment: CrossAxisAlignment.start,
+            onExpansionChanged: (expanded) {
+              setState(() {
+                _isExpanded = expanded;
+              });
+            },
+            title: Text(
+              widget.selectedBreed.isNotEmpty ? widget.selectedBreed : '品種選択',
+              style: AppFonts.bodyMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: widget.selectedBreed.isNotEmpty
+                    ? AppColors.primary
+                    : AppColors.textSecondary,
               ),
-              leading: selectedBreed.isNotEmpty
-                  ? Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(AppSpacing.xs),
-                        color: AppColors.backgroundGray.withValues(alpha: 0.3),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(AppSpacing.xs),
-                        child: Image.asset(
-                          breeds.firstWhere(
-                                (breed) => breed['name'] == selectedBreed,
-                                orElse: () => breeds.first,
-                              )['image']
-                              as String,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Icon(
-                              selectedPetType == 'dog'
-                                  ? Icons.pets
-                                  : selectedPetType == 'cat'
-                                  ? Icons.cruelty_free
-                                  : Icons.pets_outlined,
-                              size: 20,
-                              color: AppColors.textSecondary,
-                            );
-                          },
-                        ),
-                      ),
-                    )
-                  : Icon(
-                      selectedPetType == 'dog'
-                          ? Icons.pets
-                          : selectedPetType == 'cat'
-                          ? Icons.cruelty_free
-                          : Icons.pets_outlined,
-                      color: AppColors.textSecondary,
-                    ),
-              children: breeds.map((breed) {
-                final breedName = breed['name'] as String;
-                final breedImage = breed['image'] as String;
-                final isSelected = selectedBreed == breedName;
-
-                return ListTile(
-                  leading: Container(
+            ),
+            leading: widget.selectedBreed.isNotEmpty
+                ? Container(
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
@@ -105,13 +64,17 @@ class PetBreedSection extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(AppSpacing.xs),
                       child: Image.asset(
-                        breedImage,
+                        breeds.firstWhere(
+                              (breed) => breed['name'] == widget.selectedBreed,
+                              orElse: () => breeds.first,
+                            )['image']
+                            as String,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Icon(
-                            selectedPetType == 'dog'
+                            widget.selectedPetType == 'dog'
                                 ? Icons.pets
-                                : selectedPetType == 'cat'
+                                : widget.selectedPetType == 'cat'
                                 ? Icons.cruelty_free
                                 : Icons.pets_outlined,
                             size: 20,
@@ -120,41 +83,86 @@ class PetBreedSection extends StatelessWidget {
                         },
                       ),
                     ),
-                  ),
-                  title: Text(
-                    breedName,
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.textPrimary,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                  trailing: isSelected
-                      ? const Icon(Icons.check_circle, color: AppColors.primary)
-                      : null,
-                  selected: isSelected,
-                  selectedTileColor: AppColors.primary.withValues(alpha: 0.1),
-                  onTap: () => onBreedChanged(breedName),
-                );
-              }).toList(),
-            )
-          else
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Center(
-                child: Text(
-                  '펫 종류를 먼저 선택해주세요',
-                  style: AppFonts.bodyMedium.copyWith(
+                  )
+                : Icon(
+                    widget.selectedPetType == 'dog'
+                        ? Icons.pets
+                        : widget.selectedPetType == 'cat'
+                        ? Icons.cruelty_free
+                        : Icons.pets_outlined,
                     color: AppColors.textSecondary,
                   ),
+            children: breeds.map((breed) {
+              final breedName = breed['name'] as String;
+              final breedImage = breed['image'] as String;
+              final isSelected = widget.selectedBreed == breedName;
+
+              return ListTile(
+                leading: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(AppSpacing.xs),
+                    color: AppColors.backgroundGray.withValues(alpha: 0.3),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppSpacing.xs),
+                    child: Image.asset(
+                      breedImage,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          widget.selectedPetType == 'dog'
+                              ? Icons.pets
+                              : widget.selectedPetType == 'cat'
+                              ? Icons.cruelty_free
+                              : Icons.pets_outlined,
+                          size: 20,
+                          color: AppColors.textSecondary,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                title: Text(
+                  breedName,
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.textPrimary,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                ),
+                trailing: isSelected
+                    ? const Icon(Icons.check_circle, color: AppColors.primary)
+                    : null,
+                selected: isSelected,
+                selectedTileColor: AppColors.primary.withValues(alpha: 0.1),
+                onTap: () {
+                  widget.onBreedChanged(breedName);
+                  // 선택 후 아코디언 닫기
+                  setState(() {
+                    _isExpanded = false;
+                  });
+                },
+              );
+            }).toList(),
+          )
+        else
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Center(
+              child: Text(
+                'ペットの種類を先に選択してください',
+                style: AppFonts.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
                 ),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 

@@ -10,7 +10,7 @@ import 'package:aipet_frontend/features/home/presentation/presentation.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_screens.dart';
 import 'package:aipet_frontend/features/pet_activities/pet_activities.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/link_registration_screen.dart';
-import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen_refactored.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/qr_scanner_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/sharing_profiles_screen.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/presentation.dart';
@@ -70,7 +70,7 @@ class ShellRoutes {
             builder: (context, state) {
               // 쿼리 파라미터에서 petId 추출
               final petId = state.uri.queryParameters['petId'] ?? 'default';
-              return PetProfileScreenRefactored(petId: petId);
+              return PetProfileScreen(petId: petId);
             },
           ),
           GoRoute(

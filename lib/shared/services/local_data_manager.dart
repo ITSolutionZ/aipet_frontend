@@ -58,6 +58,23 @@ class LocalDataManager {
     return jsonDecode(jsonString);
   }
 
+  /// 임시 펫 등록 폼 데이터 저장
+  Future<void> savePetRegistrationFormData(Map<String, dynamic> formData) async {
+    await _prefs!.setString('pet_registration_form_draft', jsonEncode(formData));
+  }
+
+  /// 임시 펫 등록 폼 데이터 로드
+  Future<Map<String, dynamic>?> loadPetRegistrationFormData() async {
+    final jsonString = _prefs!.getString('pet_registration_form_draft');
+    if (jsonString == null) return null;
+    return jsonDecode(jsonString);
+  }
+
+  /// 임시 펫 등록 폼 데이터 삭제
+  Future<void> clearPetRegistrationFormData() async {
+    await _prefs!.remove('pet_registration_form_draft');
+  }
+
   // ================================
   // Walk 관련 데이터 저장/로드
   // ================================
