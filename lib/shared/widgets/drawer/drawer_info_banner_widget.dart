@@ -11,19 +11,15 @@ class DrawerInfoBannerWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
+        color: Colors.white.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
-          Expanded(
+          const Expanded(
             child: Text(
               '一緒に情報を登録して\nカスタムサービスを受けてください',
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.9),
-                fontSize: 12,
-                height: 1.4,
-              ),
+              style: TextStyle(color: Colors.white, fontSize: 12, height: 1.4),
             ),
           ),
           const SizedBox(width: 12),
@@ -37,7 +33,9 @@ class DrawerInfoBannerWidget extends StatelessWidget {
               backgroundColor: const Color(0xFF5A5EA6),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
             ),
             child: const Text('情報設定', style: TextStyle(fontSize: 12)),
           ),

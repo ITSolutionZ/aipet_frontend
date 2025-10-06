@@ -464,19 +464,19 @@ class _WeatherCardWidgetState extends State<WeatherCardWidget> {
 
     switch (riskLevel) {
       case WBGTRiskLevel.safe:
-        walkIcon = 'assets/icons/walk_good.png';
+        walkIcon = 'assets/icons/walk_logo/walk_good.png';
         break;
       case WBGTRiskLevel.caution:
-        walkIcon = 'assets/icons/walk_warning.png';
+        walkIcon = 'assets/icons/walk_logo/walk_warning.png';
         break;
       case WBGTRiskLevel.alert:
-        walkIcon = 'assets/icons/walk_warning.png';
+        walkIcon = 'assets/icons/walk_logo/walk_warning.png';
         break;
       case WBGTRiskLevel.danger:
-        walkIcon = 'assets/icons/walk_dont.png';
+        walkIcon = 'assets/icons/walk_logo/walk_dont.png';
         break;
       case WBGTRiskLevel.extreme:
-        walkIcon = 'assets/icons/walk_dont.png';
+        walkIcon = 'assets/icons/walk_logo/walk_dont.png';
         break;
     }
 

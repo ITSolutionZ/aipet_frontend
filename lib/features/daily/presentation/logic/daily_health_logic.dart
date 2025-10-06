@@ -1,0 +1,117 @@
+import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+/// Daily Health 화면의 비즈니스 로직을 담당하는 클래스
+class DailyHealthLogic {
+  DailyHealthLogic();
+
+  /// 앱바 제목
+  String get appBarTitle => '毎日ケア';
+
+  /// 펫 선택 초기화 로직
+  String? initializePetSelection(List<dynamic>? pets) {
+    if (pets != null && pets.isNotEmpty) {
+      return pets.first.id;
+    }
+    return null;
+  }
+
+  /// 날짜 포맷팅
+  String formatDate(DateTime date) {
+    return '${date.year}年${date.month}月${date.day}日';
+  }
+
+  /// 요일 이름 가져오기
+  String getWeekdayName(int weekday) {
+    const weekdays = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'];
+    return weekdays[weekday - 1];
+  }
+
+  /// 퀵 액션 데이터 생성
+  List<QuickActionData> getQuickActions({
+    required VoidCallback onTemperatureRecord,
+    required VoidCallback onSymptomRecord,
+    required VoidCallback onMedicationRecord,
+    required VoidCallback onHospitalBooking,
+  }) {
+    return [
+      QuickActionData(
+        title: '体温記録',
+        icon: Icons.thermostat,
+        color: const Color(0xFFE74C3C),
+        onTap: onTemperatureRecord,
+      ),
+      QuickActionData(
+        title: '症状記録',
+        icon: Icons.medical_services,
+        color: const Color(0xFFFF9500),
+        onTap: onSymptomRecord,
+      ),
+      QuickActionData(
+        title: '薬の記録',
+        icon: Icons.medication,
+        color: const Color(0xFF007AFF),
+        onTap: onMedicationRecord,
+      ),
+      QuickActionData(
+        title: '病院予約',
+        icon: Icons.local_hospital,
+        color: const Color(0xFF34C759),
+        onTap: onHospitalBooking,
+      ),
+    ];
+  }
+
+  /// 건강 기록 입력 화면으로 네비게이션
+  void navigateToHealthInput(BuildContext context, DailyHealthRecord? record) {
+    context.push('/home/daily/input', extra: record);
+  }
+
+  /// 히스토리 화면으로 네비게이션
+  void navigateToHistoryScreen(BuildContext context) {
+    context.push('/home/daily/history');
+  }
+
+  /// 병원 검색 화면으로 네비게이션
+  void navigateToHospitalSearch(BuildContext context) {
+    context.push('/home/calendar');
+  }
+
+  /// 펫 등록 화면으로 네비게이션
+  void navigateToPetRegistration(BuildContext context) {
+    context.push('/daily-pet-registration');
+  }
+
+  /// 에러 메시지 생성
+  String getErrorMessage(Object error) {
+    return 'エラーが発生しました: $error';
+  }
+
+  /// 로딩 메시지
+  String get loadingMessage => '健康データを読み込み中...';
+
+  /// 빈 상태 제목
+  String get emptyStateTitle => 'ペットを選択してください';
+
+  /// 빈 상태 부제목
+  String get emptyStateSubtitle => '健康記録を確인するペットを選択してください';
+
+  /// 빈 상태 액션 텍스트
+  String get emptyStateActionText => 'ペットを追加';
+}
+
+/// 퀵 액션 데이터 클래스
+class QuickActionData {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const QuickActionData({
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+}

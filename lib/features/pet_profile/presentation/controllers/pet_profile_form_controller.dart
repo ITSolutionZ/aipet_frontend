@@ -1,3 +1,6 @@
+import 'package:aipet_frontend/features/pet_profile/data/providers/usecase_providers.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/usecases/update_pet_usecase.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -68,6 +71,8 @@ class PetProfileFormState {
 /// Pet Profile Form Controller
 @riverpod
 class PetProfileFormController extends _$PetProfileFormController {
+  UpdatePetUseCase get _updateUseCase => ref.read(updatePetUseCaseProvider);
+
   @override
   PetProfileFormState build() {
     final nameController = TextEditingController();
@@ -154,22 +159,87 @@ class PetProfileFormController extends _$PetProfileFormController {
   }
 
   /// 변경사항 저장
-  Future<void> saveChanges(PetProfileEntity originalPet) async {
+  Future<Result<bool>> saveChanges(PetProfileEntity originalPet) async {
+    // 입력 유효성 검증
+    final validationError = _validateInput();
+    if (validationError != null) {
+      state = state.copyWith(errorMessage: validationError);
+      return Result.failure(validationError);
+    }
+
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
-      // TODO: Repository를 통해 실제 저장 로직 구현
-      // 변경된 펫 정보 생성 및 저장
-      // final updatedPet = originalPet.copyWith(...);
-      // await repository.updatePet(updatedPet);
+      // 변경된 펫 엔티티 생성
+      final updatedPet = _createUpdatedPetEntity(originalPet);
 
-      await Future.delayed(const Duration(milliseconds: 500)); // Mock delay
+      // UseCase를 통한 업데이트 실행
+      final result = await _updateUseCase.call(updatedPet);
 
-      // 편집 모드 종료
-      state = state.copyWith(isEditMode: false, isLoading: false);
+      if (result.isSuccess) {
+        // 편집 모드 종료
+        state = state.copyWith(isEditMode: false, isLoading: false);
+        return Result.success('ペットプロフィールを保存しました', true);
+      } else {
+        state = state.copyWith(isLoading: false, errorMessage: result.message);
+        return Result.failure(result.message);
+      }
     } catch (error) {
-      state = state.copyWith(isLoading: false, errorMessage: error.toString());
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Failed to save pet profile: $error',
+      );
+      return Result.failure('Failed to save pet profile: $error');
     }
+  }
+
+  /// 입력 유효성 검증
+  String? _validateInput() {
+    final name = state.nameController.text.trim();
+    final weightStr = state.weightController.text.trim();
+
+    // 이름 검증
+    if (name.isEmpty) {
+      return '名前は必須です';
+    }
+    if (name.length > 50) {
+      return '名前は50文字以内で入力してください';
+    }
+
+    // 체중 검증 (입력된 경우)
+    if (weightStr.isNotEmpty) {
+      final weight = double.tryParse(weightStr);
+      if (weight == null || weight < 0.1 || weight > 200.0) {
+        return '体重は0.1kgから200.0kgの間で入力してください';
+      }
+    }
+
+    // 생년월일 검증
+    if (state.editingBirthDate != null &&
+        state.editingBirthDate!.isAfter(DateTime.now())) {
+      return '生年月日は未来の日付にできません';
+    }
+
+    return null;
+  }
+
+  /// 업데이트된 펫 엔티티 생성
+  PetProfileEntity _createUpdatedPetEntity(PetProfileEntity originalPet) {
+    final weightStr = state.weightController.text.trim();
+    final weight = weightStr.isNotEmpty ? double.tryParse(weightStr) : null;
+
+    return originalPet.copyWith(
+      name: state.nameController.text.trim(),
+      breed: state.breedController.text.trim().isNotEmpty
+          ? state.breedController.text.trim()
+          : null,
+      birthDate: state.editingBirthDate ?? originalPet.birthDate,
+      imagePath: state.selectedImagePath,
+      weight: weight ?? originalPet.weight,
+      gender: state.editingGender ?? originalPet.gender,
+      type: state.editingType ?? originalPet.type,
+      updatedAt: DateTime.now(),
+    );
   }
 
   /// 폼 유효성 검사

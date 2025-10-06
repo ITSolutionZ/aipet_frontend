@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/features/pet_registor/data/providers/pet_providers.dart';
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +12,8 @@ class PetCardSectionWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final petsAsync = ref.watch(petsNotifierProvider);
+    // Repository를 통해 PetProfileEntity 데이터 사용
+    final petsAsync = ref.watch(petProfilesNotifierProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -19,12 +21,9 @@ class PetCardSectionWidget extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ペットカード表示エリア
-          Text(
+          const Text(
             '旅と概要登録をして様々な情報を確認しよう',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.8),
-              fontSize: 12,
-            ),
+            style: TextStyle(color: Colors.white, fontSize: 12),
           ),
           const SizedBox(height: 12),
 
@@ -35,8 +34,8 @@ class PetCardSectionWidget extends ConsumerWidget {
                 // ペットがいない場合は登録促進メッセージ
                 return _buildEmptyPetState(context);
               } else {
-                // 最初のペットを表示
-                return _buildPetCard(context, pets.first);
+                // 複数ペット対応のスライド可能なカードビュー
+                return _buildPetCardsSlider(context, pets);
               }
             },
             loading: () => _buildLoadingState(),
@@ -51,86 +50,140 @@ class PetCardSectionWidget extends ConsumerWidget {
     );
   }
 
-  /// ペットカードを構築
-  Widget _buildPetCard(BuildContext context, pet) {
+  /// 複数ペット対応のスライド可能なカードビュー
+  Widget _buildPetCardsSlider(BuildContext context, List pets) {
+    if (pets.length == 1) {
+      return _buildPetCard(context, pets.first);
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          height: 120, // 카드 높이를 줄임
+          child: PageView.builder(
+            itemCount: pets.length,
+            itemBuilder: (context, index) {
+              return _buildPetCard(context, pets[index]);
+            },
+          ),
+        ),
+        const SizedBox(height: 8),
+        // ページインジケーター
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            pets.length,
+            (index) => Container(
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              width: 6,
+              height: 6,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.6),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// ペットカードを構築（実際のペット画像付き）
+  Widget _buildPetCard(BuildContext context, PetProfileEntity pet) {
     // 年齢計算
     final age = _calculateAge(pet.birthDate);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12), // 패딩 줄임
       decoration: BoxDecoration(
         color: const Color(0xFF7B68BE),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // 최소 크기로 제한
         children: [
           Row(
             children: [
+              // 실제 펫 이미지 표시
               Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
+                width: 32, // 이미지 크기 줄임
+                height: 32,
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white,
+                  image: _getPetImage(pet),
                 ),
-                child: const Icon(
-                  Icons.pets,
-                  color: Color(0xFF7B68BE),
-                  size: 24,
-                ),
+                child: _getPetImage(pet) == null
+                    ? const Icon(
+                        Icons.pets,
+                        color: Color(0xFF7B68BE),
+                        size: 20, // 아이콘 크기 줄임
+                      )
+                    : null,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8), // 간격 줄임
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       pet.name,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 14, // 폰트 크기 줄임
                         fontWeight: FontWeight.bold,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      pet.breed ?? 'ミックス',
-                      style: const TextStyle(color: Colors.white, fontSize: 11),
+                      _getPetBreedDisplay(pet),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            _buildPetInfo(pet, age),
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
-              fontSize: 12,
+          const SizedBox(height: 8), // 간격 줄임
+          Flexible(
+            // Flexible로 변경하여 오버플로우 방지
+            child: Text(
+              _buildPetInfo(pet, age),
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.9),
+                fontSize: 11, // 폰트 크기 줄임
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6), // 간격 줄임
           Align(
             alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                // TODO: ペット詳細画面への遷移処理
+            child: GestureDetector(
+              // TextButton 대신 GestureDetector 사용
+              onTap: () async {
+                final petId = pet.id;
+                // 먼저 네비게이션 실행
+                await context.push('/pet-profile/$petId');
+                // 네비게이션 완료 후 drawer 자동으로 닫힘
               },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
-                ),
-              ),
-              child: const Text(
-                'プロフィール確認',
-                style: TextStyle(
-                  fontSize: 11,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Colors.white,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                child: const Text(
+                  'プロフィール確認',
+                  style: TextStyle(
+                    fontSize: 10, // 폰트 크기 줄임
+                    color: Colors.white,
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -140,14 +193,79 @@ class PetCardSectionWidget extends ConsumerWidget {
     );
   }
 
+  /// ペット画像を取得
+  DecorationImage? _getPetImage(PetProfileEntity pet) {
+    try {
+      // pet.imagePath가 있는 경우 실제 이미지 사용
+      if (pet.imagePath != null && pet.imagePath!.isNotEmpty) {
+        return DecorationImage(
+          image: AssetImage(pet.imagePath!),
+          fit: BoxFit.cover,
+        );
+      }
+
+      // 품종이나 타입에 따른 기본 이미지
+      if (pet.type.isNotEmpty) {
+        final defaultImagePath = _getDefaultPetImage(pet.type, pet.breed);
+        if (defaultImagePath != null) {
+          return DecorationImage(
+            image: AssetImage(defaultImagePath),
+            fit: BoxFit.cover,
+          );
+        }
+      }
+    } catch (e) {
+      // 이미지 로드 실패시 null 반환
+    }
+    return null;
+  }
+
+  /// 기본 펫 이미지 경로 가져오기
+  String? _getDefaultPetImage(String? petType, String? breed) {
+    if (petType == 'dog') {
+      switch (breed) {
+        case 'shiba':
+          return 'assets/images/dogs/shiba.png';
+        case 'poodle':
+          return 'assets/images/dogs/poodle.jpg';
+        case 'pomeranian':
+          return 'assets/images/dogs/pomeranian.png';
+        case 'dachshund':
+          return 'assets/images/dogs/dachshund.png';
+        case 'chiwawa':
+          return 'assets/images/dogs/chiwawa.png';
+        case 'mixed':
+          return 'assets/images/dogs/mixed.png';
+        default:
+          return 'assets/images/dogs/dogs.png';
+      }
+    } else if (petType == 'cat') {
+      return 'assets/images/cats/cat.png';
+    }
+    return null;
+  }
+
+  /// 펫 품종 표시 텍스트 가져오기
+  String _getPetBreedDisplay(PetProfileEntity pet) {
+    if (pet.breed != null && pet.breed!.isNotEmpty) {
+      return pet.breed!;
+    }
+    if (pet.type == 'dog') {
+      return '犬';
+    } else if (pet.type == 'cat') {
+      return '猫';
+    }
+    return 'ミックス';
+  }
+
   /// ペット情報文字列を構築
-  String _buildPetInfo(pet, String age) {
+  String _buildPetInfo(PetProfileEntity pet, String age) {
     final gender = pet.gender == 'male'
         ? '男の子'
         : pet.gender == 'female'
         ? '女の子'
         : '';
-    final weight = pet.weight != null ? '${pet.weight}kg' : '';
+    final weight = '${pet.weight}kg';
 
     final parts = <String>[
       if (gender.isNotEmpty) gender,
@@ -226,12 +344,9 @@ class PetCardSectionWidget extends ConsumerWidget {
         color: const Color(0xFF7B68BE),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(
+      child: const Text(
         'ペット情報の読み込みに失敗しました',
-        style: TextStyle(
-          color: Colors.white.withValues(alpha: 0.9),
-          fontSize: 14,
-        ),
+        style: TextStyle(color: Colors.white, fontSize: 14),
       ),
     );
   }
@@ -243,9 +358,10 @@ class PetCardSectionWidget extends ConsumerWidget {
       button: true,
       hint: 'タップして新しいペットを登録します',
       child: InkWell(
-        onTap: () {
-          Navigator.of(context).pop();
-          context.go(RouteConstants.petTypeSelectionRoute);
+        onTap: () async {
+          // 먼저 네비게이션 실행 - Daily Health 스타일로 변경
+          await context.push(RouteConstants.dailyPetRegistrationRoute);
+          // 네비게이션 완료 후 drawer 자동으로 닫힘
         },
         child: Container(
           height: 48,

@@ -29,7 +29,10 @@ class AppConstants {
   /// 패딩
   static const EdgeInsets defaultPadding = EdgeInsets.all(16.0);
   static const EdgeInsets cardPadding = EdgeInsets.all(12.0);
-  static const EdgeInsets buttonPadding = EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0);
+  static const EdgeInsets buttonPadding = EdgeInsets.symmetric(
+    horizontal: 24.0,
+    vertical: 12.0,
+  );
   static const EdgeInsets screenPadding = EdgeInsets.all(16.0);
 
   // ========== 애니메이션 관련 상수 ==========
@@ -71,7 +74,12 @@ class AppConstants {
   /// 이미지 파일
   static const int maxImageSizeMB = 5;
   static const int maxImageSizeBytes = 5 * 1024 * 1024; // 5MB
-  static const List<String> allowedImageTypes = ['.jpg', '.jpeg', '.png', '.webp'];
+  static const List<String> allowedImageTypes = [
+    '.jpg',
+    '.jpeg',
+    '.png',
+    '.webp',
+  ];
 
   /// 파일 업로드
   static const int maxFileSizeMB = 10;
@@ -198,12 +206,16 @@ class AppConstants {
   /// 스플래시 타이밍
   static const Duration splashLogoDisplayDuration = Duration(seconds: 2);
   static const Duration splashAnimationDuration = Duration(milliseconds: 2000);
-  static const Duration splashFadeAnimationDuration = Duration(milliseconds: 1000);
-  static const Duration splashScaleAnimationDuration = Duration(milliseconds: 1000);
+  static const Duration splashFadeAnimationDuration = Duration(
+    milliseconds: 1000,
+  );
+  static const Duration splashScaleAnimationDuration = Duration(
+    milliseconds: 1000,
+  );
 
   /// 스플래시 이미지 경로
-  static const String splashCompanyLogoPath = 'assets/icons/itz.png';
-  static const String splashAppLogoPath = 'assets/icons/aipet_logo.png';
+  static const String splashCompanyLogoPath = 'assets/icons/logos/itz.png';
+  static const String splashAppLogoPath = 'assets/icons/logos/aipet_logo.png';
   static const String splashLoadingLottiePath = 'assets/lottie/loading.json';
 
   /// 스플래시 크기
@@ -220,8 +232,16 @@ class AppConstants {
   static const double splashLogoRadius = 20.0;
 
   /// 스플래시 애니메이션 인터벌
-  static const Interval splashFadeInterval = Interval(0.0, 0.33, curve: Curves.easeIn);
-  static const Interval splashScaleInterval = Interval(0.0, 0.33, curve: Curves.elasticOut);
+  static const Interval splashFadeInterval = Interval(
+    0.0,
+    0.33,
+    curve: Curves.easeIn,
+  );
+  static const Interval splashScaleInterval = Interval(
+    0.0,
+    0.33,
+    curve: Curves.elasticOut,
+  );
 
   /// 스플래시 색상 투명도
   static const int splashGradientAlpha1 = 23;

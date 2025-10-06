@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/layout/card.dart';
 import 'package:flutter/material.dart';
 
 /// 범용 정보 카드 컴포넌트
@@ -65,72 +66,89 @@ class GenericInfoCard extends StatelessWidget {
     this.onLongPress,
     this.padding,
     this.showChevron = false,
-  }) : leading = _buildIcon(icon: icon, iconColor: iconColor, backgroundColor: iconBackgroundColor);
+  }) : leading = _buildIcon(
+         icon: icon,
+         iconColor: iconColor,
+         backgroundColor: iconBackgroundColor,
+       );
 
   @override
   Widget build(BuildContext context) {
-    return WhiteCard(
+    return GlassCard(
       onTap: onTap,
-      padding: padding ?? const EdgeInsets.all(AppSpacing.md),
-      child: InkWell(
-        onLongPress: onLongPress,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        child: Row(
-          children: [
-            if (leading != null) ...[leading!, const SizedBox(width: AppSpacing.md)],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (title != null) ...[
-                    Row(
-                      children: [
-                        Expanded(
+      child: Row(
+        children: [
+          if (leading != null) ...[
+            leading!,
+            const SizedBox(width: AppSpacing.md),
+          ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (title != null) ...[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title!,
+                          style: AppFonts.bodyMedium.copyWith(
+                            color: AppColors.pointDark,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      if (badge != null) ...[
+                        const SizedBox(width: AppSpacing.sm),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xs,
+                          ),
+                          decoration: BoxDecoration(
+                            color: (badgeColor ?? AppColors.pointBlue)
+                                .withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.small,
+                            ),
+                          ),
                           child: Text(
-                            title!,
-                            style: AppFonts.bodyMedium.copyWith(
-                              color: AppColors.pointDark,
+                            badge!,
+                            style: AppFonts.bodySmall.copyWith(
+                              color: badgeColor ?? AppColors.pointBlue,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                        if (badge != null) ...[
-                          const SizedBox(width: AppSpacing.sm),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.sm,
-                              vertical: AppSpacing.xs,
-                            ),
-                            decoration: BoxDecoration(
-                              color: (badgeColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(AppRadius.small),
-                            ),
-                            child: Text(
-                              badge!,
-                              style: AppFonts.bodySmall.copyWith(
-                                color: badgeColor ?? AppColors.pointBlue,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
                       ],
-                    ),
-                  ],
-                  if (subtitle != null) ...[
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(subtitle!, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
-                  ],
+                    ],
+                  ),
                 ],
-              ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    subtitle!,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.pointGray,
+                    ),
+                  ),
+                ],
+              ],
             ),
-            if (trailing != null) ...[const SizedBox(width: AppSpacing.md), trailing!],
-            if (showChevron && onTap != null) ...[
-              const SizedBox(width: AppSpacing.sm),
-              const Icon(Icons.chevron_right, color: AppColors.pointGray, size: 20),
-            ],
+          ),
+          if (trailing != null) ...[
+            const SizedBox(width: AppSpacing.md),
+            trailing!,
           ],
-        ),
+          if (showChevron && onTap != null) ...[
+            const SizedBox(width: AppSpacing.sm),
+            const Icon(
+              Icons.chevron_right,
+              color: AppColors.pointGray,
+              size: 20,
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -147,7 +165,10 @@ class GenericInfoCard extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3), width: 1),
+        border: Border.all(
+          color: AppColors.pointGray.withValues(alpha: 0.3),
+          width: 1,
+        ),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(size / 2),
@@ -191,10 +212,16 @@ class GenericInfoCard extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: backgroundColor ?? (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
+        color:
+            backgroundColor ??
+            (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(size / 2),
       ),
-      child: Icon(icon, color: iconColor ?? AppColors.pointBlue, size: size * 0.5),
+      child: Icon(
+        icon,
+        color: iconColor ?? AppColors.pointBlue,
+        size: size * 0.5,
+      ),
     );
   }
 }

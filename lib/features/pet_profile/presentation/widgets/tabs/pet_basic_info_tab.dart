@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/ui/components/components.dart';
@@ -41,6 +43,10 @@ class PetBasicInfoTabController extends StateNotifier<PetBasicInfoTabState> {
     state = state.copyWith(editingWeight: weight);
   }
 
+  void updateSelectedImage(String? imagePath) {
+    state = state.copyWith(selectedImagePath: imagePath);
+  }
+
   @override
   void dispose() {
     state.nameController?.dispose();
@@ -58,6 +64,7 @@ class PetBasicInfoTabState {
   final TextEditingController? microchipController;
   final String? editingGender;
   final double? editingWeight;
+  final String? selectedImagePath;
 
   const PetBasicInfoTabState({
     this.nameController,
@@ -66,6 +73,7 @@ class PetBasicInfoTabState {
     this.microchipController,
     this.editingGender,
     this.editingWeight,
+    this.selectedImagePath,
   });
 
   PetBasicInfoTabState copyWith({
@@ -75,6 +83,7 @@ class PetBasicInfoTabState {
     TextEditingController? microchipController,
     String? editingGender,
     double? editingWeight,
+    String? selectedImagePath,
   }) {
     return PetBasicInfoTabState(
       nameController: nameController ?? this.nameController,
@@ -83,6 +92,7 @@ class PetBasicInfoTabState {
       microchipController: microchipController ?? this.microchipController,
       editingGender: editingGender ?? this.editingGender,
       editingWeight: editingWeight ?? this.editingWeight,
+      selectedImagePath: selectedImagePath ?? this.selectedImagePath,
     );
   }
 }
@@ -112,7 +122,7 @@ class PetBasicInfoTab extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
-          _buildProfileImageSection(context),
+          _buildProfileImageSection(context, ref, tabId),
           const SizedBox(height: AppSpacing.lg),
           _buildBasicInfoCards(context, ref, tabId),
           const SizedBox(height: AppSpacing.lg),
@@ -128,21 +138,49 @@ class PetBasicInfoTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileImageSection(BuildContext context) {
-    return GenericInfoCard.withIcon(
-      icon: Icons.pets,
-      iconColor: AppColors.pointBrown,
-      iconBackgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
-      title: pet.name,
-      subtitle: '${pet.type} • ${pet.breed}',
-      badge: pet.gender,
-      badgeColor: pet.gender == 'Male' ? AppColors.pointBlue : AppColors.pointPink,
-      trailing: isEditMode
-          ? IconButton(
-              icon: const Icon(Icons.camera_alt),
-              onPressed: () => _changeProfileImage(context),
-            )
-          : null,
+  Widget _buildProfileImageSection(BuildContext context, WidgetRef ref, String tabId) {
+    final tabState = ref.watch(petBasicInfoTabProvider(tabId));
+    final displayImagePath = tabState.selectedImagePath ?? pet.imagePath;
+    return Column(
+      children: [
+        Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: AppColors.pointGray.withValues(alpha: 0.3),
+              width: 2,
+            ),
+          ),
+          child: ClipOval(
+            child: displayImagePath != null
+                ? _buildImageWidget(displayImagePath)
+                : Container(
+                    color: AppColors.pointGray.withValues(alpha: 0.2),
+                    child: const Icon(Icons.pets, size: 40, color: AppColors.pointGray),
+                  ),
+          ),
+        ),
+        if (isEditMode) ...[
+          const SizedBox(height: AppSpacing.sm),
+          TextButton.icon(
+            onPressed: () => _changeProfileImage(context, ref, '${pet.id}_basic_info'),
+            icon: const Icon(Icons.camera_alt),
+            label: const Text('写真を変更'),
+          ),
+        ],
+        const SizedBox(height: AppSpacing.md),
+        GenericInfoCard.withIcon(
+          icon: Icons.pets,
+          iconColor: AppColors.pointBrown,
+          iconBackgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
+          title: pet.name,
+          subtitle: '${pet.type} • ${pet.breed}',
+          badge: pet.gender,
+          badgeColor: pet.gender == 'Male' ? AppColors.pointBlue : AppColors.pointPink,
+        ),
+      ],
     );
   }
 
@@ -156,7 +194,7 @@ class PetBasicInfoTab extends ConsumerWidget {
           ref,
           tabId,
           '名前',
-          isEditMode ? (tabState.nameController?.text ?? pet.name) : pet.name,
+          isEditMode ? (tabState.nameController?.text.isNotEmpty == true ? tabState.nameController!.text : pet.name) : pet.name,
           type: 'name',
         ),
         const SizedBox(height: AppSpacing.md),
@@ -174,7 +212,7 @@ class PetBasicInfoTab extends ConsumerWidget {
           ref,
           tabId,
           '体重',
-          isEditMode ? '${tabState.editingWeight ?? pet.weight ?? 0}kg' : '${pet.weight ?? 0}kg',
+          isEditMode ? '${tabState.editingWeight ?? pet.weight}kg' : '${pet.weight}kg',
           type: 'weight',
         ),
         const SizedBox(height: AppSpacing.md),
@@ -247,10 +285,8 @@ class PetBasicInfoTab extends ConsumerWidget {
       iconColor: AppColors.pointPink,
       iconBackgroundColor: AppColors.pointPink.withValues(alpha: 0.1),
       title: '誕生日',
-      subtitle: birthDate != null
-          ? '${birthDate.year}年${birthDate.month}月${birthDate.day}日'
-          : '未設定',
-      badge: age != null ? '$age歳' : null,
+      subtitle: '${birthDate.year}年${birthDate.month}月${birthDate.day}日',
+      badge: '$age歳',
       badgeColor: AppColors.pointPink,
     );
   }
@@ -313,7 +349,47 @@ class PetBasicInfoTab extends ConsumerWidget {
     }
   }
 
-  void _changeProfileImage(BuildContext context) {
+  Widget _buildImageWidget(String imagePath) {
+    final imageType = ImageService.getImageType(imagePath);
+
+    switch (imageType) {
+      case ImageType.file:
+        return Image.file(
+          File(imagePath),
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              color: AppColors.pointGray.withValues(alpha: 0.2),
+              child: const Icon(Icons.pets, size: 40, color: AppColors.pointGray),
+            );
+          },
+        );
+      case ImageType.network:
+        return Image.network(
+          imagePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              color: AppColors.pointGray.withValues(alpha: 0.2),
+              child: const Icon(Icons.pets, size: 40, color: AppColors.pointGray),
+            );
+          },
+        );
+      case ImageType.asset:
+        return Image.asset(
+          imagePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              color: AppColors.pointGray.withValues(alpha: 0.2),
+              child: const Icon(Icons.pets, size: 40, color: AppColors.pointGray),
+            );
+          },
+        );
+    }
+  }
+
+  void _changeProfileImage(BuildContext context, WidgetRef ref, String tabId) {
     showModalBottomSheet(
       context: context,
       builder: (context) => SafeArea(
@@ -324,7 +400,7 @@ class PetBasicInfoTab extends ConsumerWidget {
               title: const Text('カメラで撮影'),
               onTap: () {
                 Navigator.pop(context);
-                _pickImageFromCamera(context);
+                _pickImageFromCamera(context, ref, '${pet.id}_basic_info');
               },
             ),
             ListTile(
@@ -332,7 +408,7 @@ class PetBasicInfoTab extends ConsumerWidget {
               title: const Text('ギャラリーから選択'),
               onTap: () {
                 Navigator.pop(context);
-                _pickImageFromGallery(context);
+                _pickImageFromGallery(context, ref, '${pet.id}_basic_info');
               },
             ),
           ],
@@ -423,14 +499,20 @@ class PetBasicInfoTab extends ConsumerWidget {
     onToggleEdit();
   }
 
-  void _pickImageFromCamera(BuildContext context) {
-    // TODO: Implement camera functionality
-    SnackBarService.showInfo(context, 'カメラ機能は実装予定です');
+  void _pickImageFromCamera(BuildContext context, WidgetRef ref, String tabId) async {
+    final imagePath = await ImageService.pickFromCamera(context);
+    if (imagePath != null && context.mounted) {
+      ref.read(petBasicInfoTabProvider(tabId).notifier).updateSelectedImage(imagePath);
+      SnackBarService.showSuccess(context, '写真が選択されました');
+    }
   }
 
-  void _pickImageFromGallery(BuildContext context) {
-    // TODO: Implement gallery picker functionality
-    SnackBarService.showInfo(context, 'ギャラリー選択機能は実装予定です');
+  void _pickImageFromGallery(BuildContext context, WidgetRef ref, String tabId) async {
+    final imagePath = await ImageService.pickFromGallery(context);
+    if (imagePath != null && context.mounted) {
+      ref.read(petBasicInfoTabProvider(tabId).notifier).updateSelectedImage(imagePath);
+      SnackBarService.showSuccess(context, '画像が選択されました');
+    }
   }
 
   void _showEditNameDialog(BuildContext context, WidgetRef ref, String tabId) {
