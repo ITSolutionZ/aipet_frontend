@@ -36,7 +36,7 @@ class WalkSummaryWidget extends StatelessWidget {
                     if (isWeeklyRecord) ...[
                       const SizedBox(width: AppSpacing.sm),
                       Image.asset(
-                        'assets/icons/ranking-star.png',
+                        'assets/icons/common/ranking-star.png',
                         width: 20,
                         height: 20,
                       ),

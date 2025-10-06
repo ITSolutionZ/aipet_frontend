@@ -51,6 +51,9 @@ dependencies:
   qr_flutter: ^4.1.0
   table_calendar: ^3.1.2
   google_mlkit_text_recognition: ^0.15.0
+  pdf: ^3.11.1
+  printing: ^5.13.2
+  intl: ^0.19.0
 
   mockito: ^5.4.4
   freezed_annotation: ^2.4.4
@@ -71,6 +74,40 @@ dev_dependencies:
   riverpod: any
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: NotoSansJP
+      fonts:
+        - asset: assets/fonts/NotoSansJP/NotoSansJP-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/NotoSansJP/NotoSansJP-Light.ttf
+          weight: 300
+        - asset: assets/fonts/NotoSansJP/NotoSansJP-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansJP/NotoSansJP-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSansJP/NotoSansJP-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/NotoSansJP/NotoSansJP-Black.ttf
+          weight: 900
+
+    - family: MPlusRounded1c
+      fonts:
+        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Light.ttf
+          weight: 300
+        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Black.ttf
+          weight: 900
+
   assets:
     # Environment and config files
     - .env
@@ -132,8 +169,7 @@ flutter:
     - assets/icons/walk_logo/walk_dont.png
     - assets/icons/common/ranking-star.png
 
-    # Fonts and animations
-    - assets/fonts/
+    # Animations
     - assets/lottie/
 
 sentry:

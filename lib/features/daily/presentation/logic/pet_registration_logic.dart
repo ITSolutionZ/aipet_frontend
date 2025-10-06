@@ -105,13 +105,13 @@ class PetRegistrationLogic {
       initialDate: currentDate ?? DateTime.now(),
       firstDate: DateTime(1990),
       lastDate: DateTime.now(),
-      helpText: '집에 온 날 선택',
-      cancelText: '취소',
-      confirmText: '확인',
-      fieldLabelText: '날짜 입력',
+      helpText: '家にきた日を選択',
+      cancelText: 'キャンセル',
+      confirmText: '確認',
+      fieldLabelText: '日付入力',
       fieldHintText: 'yyyy/mm/dd',
-      errorFormatText: '올바른 날짜 형식이 아닙니다',
-      errorInvalidText: '유효하지 않은 날짜입니다',
+      errorFormatText: '正しい日付形式ではありません',
+      errorInvalidText: '無効な日付です',
     );
     return picked;
   }

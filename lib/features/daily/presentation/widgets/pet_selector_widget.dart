@@ -60,14 +60,7 @@ class PetSelectorWidget extends ConsumerWidget {
                         width: 2,
                       ),
                     ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        pet.imagePath ?? 'assets/images/pets/default.png',
-                        width: 36,
-                        height: 36,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    child: ClipOval(child: _buildPetImage(pet)),
                   ),
                   const SizedBox(height: 2),
                   Text(
@@ -90,6 +83,35 @@ class PetSelectorWidget extends ConsumerWidget {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildPetImage(PetProfileEntity pet) {
+    final imagePath = PetImageUtils.getImagePath(pet.imagePath, pet.type);
+
+    // 빈 문자열 체크
+    if (imagePath.isEmpty) {
+      return Container(
+        width: 36,
+        height: 36,
+        color: AppColors.pointGray.withValues(alpha: 0.2),
+        child: const Icon(Icons.pets, size: 20, color: AppColors.pointBrown),
+      );
+    }
+
+    return Image.asset(
+      imagePath,
+      width: 36,
+      height: 36,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: 36,
+          height: 36,
+          color: AppColors.pointGray.withValues(alpha: 0.2),
+          child: const Icon(Icons.pets, size: 20, color: AppColors.pointBrown),
+        );
+      },
     );
   }
 

@@ -11,13 +11,16 @@ class PetMockService extends BaseMockService {
       {
         'id': '1',
         'name': 'MAX',
-        'typeName': 'dog',
+        'type': 'dog',
         'breed': 'Golden Retriever',
         'age': 3,
         'birthDate': DateTime(2021, 5, 15).toIso8601String(),
         'createdAt': DateTime(2023, 1, 10).toIso8601String(),
         'gender': 'male',
         'weight': 15.8,
+        'ownerId': 'owner-1',
+        'updatedAt': DateTime(2023, 1, 10).toIso8601String(),
+        'imagePath': 'assets/images/dogs/golden_retriever.png',
         'additionalInfo': {
           'personality': ['friendly', 'energetic'],
           'specialNotes': 'Loves playing fetch',
@@ -26,13 +29,16 @@ class PetMockService extends BaseMockService {
       {
         'id': '2',
         'name': 'LUNA',
-        'typeName': 'dog',
+        'type': 'dog',
         'breed': 'Pomeranian',
         'age': 2,
         'birthDate': DateTime(2022, 8, 20).toIso8601String(),
         'createdAt': DateTime(2023, 3, 5).toIso8601String(),
         'gender': 'female',
         'weight': 3.5,
+        'ownerId': 'owner-1',
+        'updatedAt': DateTime(2023, 3, 5).toIso8601String(),
+        'imagePath': 'assets/images/dogs/pomeranian.png',
         'additionalInfo': {
           'personality': ['gentle', 'quiet'],
           'specialNotes': 'Prefers indoor activities',
@@ -41,16 +47,37 @@ class PetMockService extends BaseMockService {
       {
         'id': '3',
         'name': 'MOMO',
-        'typeName': 'cat',
+        'type': 'cat',
         'breed': 'Scottish Fold',
         'age': 4,
         'birthDate': DateTime(2020, 11, 3).toIso8601String(),
         'createdAt': DateTime(2023, 2, 20).toIso8601String(),
         'gender': 'female',
         'weight': 4.2,
+        'ownerId': 'owner-1',
+        'updatedAt': DateTime(2023, 2, 20).toIso8601String(),
+        'imagePath': 'assets/images/cats/scottish_fold.png',
         'additionalInfo': {
           'personality': ['independent', 'calm'],
           'specialNotes': 'Loves sunny spots',
+        },
+      },
+      {
+        'id': '4',
+        'name': 'ココ',
+        'type': 'rabbit',
+        'breed': 'Holland Lop',
+        'age': 1,
+        'birthDate': DateTime(2023, 4, 10).toIso8601String(),
+        'createdAt': DateTime(2023, 5, 1).toIso8601String(),
+        'gender': 'female',
+        'weight': 1.5,
+        'ownerId': 'owner-1',
+        'updatedAt': DateTime(2023, 5, 1).toIso8601String(),
+        'imagePath': 'assets/images/etc/rabbit.png',
+        'additionalInfo': {
+          'personality': ['gentle', 'playful'],
+          'specialNotes': 'Loves carrots',
         },
       },
     ];
@@ -135,12 +162,16 @@ class PetMockService extends BaseMockService {
   }
 
   /// 펫별 오늘 예약 조회
-  static List<Map<String, dynamic>> getMockTodayAppointmentsByPet({String? petId}) {
+  static List<Map<String, dynamic>> getMockTodayAppointmentsByPet({
+    String? petId,
+  }) {
     final allAppointments = getMockAppointments();
     final today = DateTime.now();
 
     return allAppointments.where((appointment) {
-      final appointmentDate = DateTime.parse(appointment['scheduledTime'].toIso8601String());
+      final appointmentDate = DateTime.parse(
+        appointment['scheduledTime'].toIso8601String(),
+      );
       final isToday =
           appointmentDate.year == today.year &&
           appointmentDate.month == today.month &&
@@ -244,11 +275,36 @@ class PetMockService extends BaseMockService {
   /// 펫 타입 목록
   static List<Map<String, dynamic>> getMockPetTypes() {
     return [
-      {'id': 'dog', 'name': '강아지', 'icon': '🐕', 'description': '충실하고 활발한 반려동물'},
-      {'id': 'cat', 'name': '고양이', 'icon': '🐱', 'description': '독립적이고 우아한 반려동물'},
-      {'id': 'rabbit', 'name': '토끼', 'icon': '🐰', 'description': '온순하고 깨끗한 반려동물'},
-      {'id': 'hamster', 'name': '햄스터', 'icon': '🐹', 'description': '작고 귀여운 반려동물'},
-      {'id': 'bird', 'name': '새', 'icon': '🐦', 'description': '지능적이고 사교적인 반려동물'},
+      {
+        'id': 'dog',
+        'name': '강아지',
+        'icon': '🐕',
+        'description': '충실하고 활발한 반려동물',
+      },
+      {
+        'id': 'cat',
+        'name': '고양이',
+        'icon': '🐱',
+        'description': '독립적이고 우아한 반려동물',
+      },
+      {
+        'id': 'rabbit',
+        'name': '토끼',
+        'icon': '🐰',
+        'description': '온순하고 깨끗한 반려동물',
+      },
+      {
+        'id': 'hamster',
+        'name': '햄스터',
+        'icon': '🐹',
+        'description': '작고 귀여운 반려동물',
+      },
+      {
+        'id': 'bird',
+        'name': '새',
+        'icon': '🐦',
+        'description': '지능적이고 사교적인 반려동물',
+      },
     ];
   }
 

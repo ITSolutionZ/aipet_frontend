@@ -400,7 +400,7 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('등록증 정보를 자동으로 입력했습니다. 확인 후 수정해주세요.'),
+            content: Text('登録証情報を自動で入力しました。確認後修正してください。'),
             backgroundColor: AppColors.pointGreen,
           ),
         );
@@ -409,7 +409,7 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('등록증 처리 중 오류가 발생했습니다: $e'),
+            content: Text('登録証処理中にエラーが発生しました: $e'),
             backgroundColor: AppColors.pointRed,
           ),
         );

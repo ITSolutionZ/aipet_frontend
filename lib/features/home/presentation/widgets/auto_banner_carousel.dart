@@ -179,10 +179,6 @@ class _AutoBannerCarouselState extends State<AutoBannerCarousel>
       cacheHeight: widget.height != null ? (widget.height! * 2).round() : null,
       filterQuality: FilterQuality.medium, // 품질 향상
       errorBuilder: (context, error, stackTrace) {
-        debugPrint(
-          '❌ Banner image load error: ${widget.bannerImages[actualIndex]}',
-        );
-        debugPrint('❌ Error: $error');
         return Container(
           width: double.infinity,
           height: widget.height,
@@ -214,9 +210,6 @@ class _AutoBannerCarouselState extends State<AutoBannerCarousel>
             ),
           );
         }
-        debugPrint(
-          '✅ Banner image loaded successfully: ${widget.bannerImages[actualIndex]}',
-        );
         return child;
       },
     );
