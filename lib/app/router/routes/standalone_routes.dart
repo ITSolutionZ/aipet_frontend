@@ -1,4 +1,9 @@
 import 'package:aipet_frontend/features/daily/presentation/screens/daily_pet_registration_screen.dart';
+import 'package:aipet_frontend/features/daily/presentation/screens/reservation_status_screen_new.dart';
+import 'package:aipet_frontend/features/facility/presentation/screens/facility_calendar_screen.dart';
+import 'package:aipet_frontend/features/facility/presentation/screens/facility_list_screen.dart';
+import 'package:aipet_frontend/features/facility/presentation/screens/hospital_booking_screen.dart';
+import 'package:aipet_frontend/features/facility/presentation/screens/hospital_detail_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_detail_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_list_screen.dart';
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
@@ -24,6 +29,46 @@ class StandaloneRoutes {
       path: RouteConstants.dailyPetRegistrationRoute,
       name: 'daily-pet-registration',
       builder: (context, state) => const DailyPetRegistrationScreen(),
+    ),
+    // Facility Calendar
+    GoRoute(
+      path: RouteConstants.facilityCalendarRoute,
+      name: 'facility-calendar',
+      builder: (context, state) => const FacilityCalendarScreen(),
+    ),
+    // Facility List
+    GoRoute(
+      path: RouteConstants.facilityListRoute,
+      name: 'facility-list',
+      builder: (context, state) => const FacilityListScreen(),
+    ),
+    // Hospital Detail
+    GoRoute(
+      path: '/hospital-detail/:hospitalId',
+      name: 'hospital-detail',
+      builder: (context, state) {
+        final hospitalId = state.pathParameters['hospitalId'] ?? '0';
+        return HospitalDetailScreen(hospitalId: hospitalId);
+      },
+    ),
+    // Hospital Booking
+    GoRoute(
+      path: '/hospital-booking/:hospitalId',
+      name: 'hospital-booking',
+      builder: (context, state) {
+        final hospitalId = state.pathParameters['hospitalId'] ?? '0';
+        final hospitalName = state.uri.queryParameters['hospitalName'];
+        return HospitalBookingScreen(
+          hospitalId: hospitalId,
+          hospitalName: hospitalName,
+        );
+      },
+    ),
+    // Hospital Reservation Status (독립 라우트)
+    GoRoute(
+      path: '/calendar/hospital-reservation',
+      name: 'hospital-reservation-standalone',
+      builder: (context, state) => const ReservationStatusScreen(),
     ),
     // 기타 독립 라우트
     GoRoute(

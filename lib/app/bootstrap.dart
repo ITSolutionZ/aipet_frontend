@@ -277,116 +277,17 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
     final router = ref.watch(routerProvider);
     final initializationState = ref.watch(appInitializationProvider);
 
-    // 초기화 상태에 따른 처리
-    if (initializationState.isLoading) {
-      return _buildLoadingApp();
-    }
-
-    if (initializationState.error != null) {
-      return _buildErrorApp(initializationState.error!, ref);
-    }
-
-    return _buildMainApp(router);
-  }
-
-  /// 로딩 중 앱 UI를 구성합니다.
-  ///
-  /// 앱 초기화가 진행 중일 때 표시되는 로딩 화면을 반환합니다.
-  Widget _buildLoadingApp() {
-    return MaterialApp(
-      title: 'AI Pet',
-      debugShowCheckedModeBanner: false,
-      locale: const Locale('ja', 'JP'),
-      theme: AppTheme.light,
-      home: Scaffold(
-        backgroundColor: AppColors.pointOffWhite,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Lottie 로딩 애니메이션
-              SizedBox(
-                width: 200,
-                height: 200,
-                child: Lottie.asset(
-                  'assets/lottie/loading.json',
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// 에러 상태 앱 UI를 구성합니다.
-  ///
-  /// 앱 초기화 중 오류가 발생했을 때 표시되는 에러 화면을 반환합니다.
-  Widget _buildErrorApp(String error, WidgetRef ref) {
-    return MaterialApp(
-      title: 'AI Pet',
-      debugShowCheckedModeBanner: false,
-      locale: const Locale('ja', 'JP'),
-      theme: AppTheme.light,
-      home: Scaffold(
-        backgroundColor: AppColors.pointOffWhite,
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: AppColors.pointBrown,
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                Text(
-                  '앱 초기화 중 오류가 발생했습니다',
-                  style: AppFonts.titleMedium.copyWith(
-                    color: AppColors.pointDark,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  error,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointDark.withValues(alpha: 0.7),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                ElevatedButton(
-                  onPressed: () {
-                    // 앱 재시작 또는 초기화 재시도
-                    ref.read(appInitializationProvider.notifier).initialize();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.pointBrown,
-                    foregroundColor: AppColors.pointOffWhite,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.md,
-                    ),
-                  ),
-                  child: const Text('リフレッシュ'),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    // 단일 MaterialApp.router로 모든 상태 처리
+    return _buildMainApp(router, initializationState);
   }
 
   /// 메인 앱 UI를 구성합니다.
   ///
-  /// 앱 초기화가 완료된 후 표시되는 메인 앱 화면을 반환합니다.
-  Widget _buildMainApp(GoRouter router) {
+  /// 앱 초기화 상태에 따라 적절한 UI를 표시하는 단일 MaterialApp.router를 반환합니다.
+  Widget _buildMainApp(
+    GoRouter router,
+    AppInitializationState initializationState,
+  ) {
     return MaterialApp.router(
       title: 'AI Pet',
       debugShowCheckedModeBanner: false,
@@ -416,6 +317,97 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
             ),
+          ),
+        ),
+      ),
+      builder: (context, child) {
+        // 초기화 상태에 따른 UI 처리
+        if (initializationState.isLoading) {
+          return _buildLoadingContent();
+        }
+
+        if (initializationState.error != null) {
+          return _buildErrorContent(initializationState.error!, ref);
+        }
+
+        // 정상 상태에서는 child (라우터 콘텐츠) 표시
+        return child ?? const SizedBox.shrink();
+      },
+    );
+  }
+
+  /// 로딩 콘텐츠를 구성합니다.
+  Widget _buildLoadingContent() {
+    return Scaffold(
+      backgroundColor: AppColors.pointOffWhite,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Lottie 로딩 애니메이션
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: Lottie.asset(
+                'assets/lottie/loading.json',
+                fit: BoxFit.contain,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 에러 콘텐츠를 구성합니다.
+  Widget _buildErrorContent(String error, WidgetRef ref) {
+    return Scaffold(
+      backgroundColor: AppColors.pointOffWhite,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.error_outline,
+                size: 64,
+                color: AppColors.pointBrown,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Text(
+                '앱 초기화 중 오류가 발생했습니다',
+                style: AppFonts.titleMedium.copyWith(
+                  color: AppColors.pointDark,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                error,
+                style: AppFonts.bodySmall.copyWith(
+                  color: AppColors.pointDark.withValues(alpha: 0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              ElevatedButton(
+                onPressed: () {
+                  // 앱 재시작 또는 초기화 재시도
+                  ref.read(appInitializationProvider.notifier).initialize();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.pointBrown,
+                  foregroundColor: AppColors.pointOffWhite,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
+                ),
+                child: const Text('リフレッシュ'),
+              ),
+            ],
           ),
         ),
       ),

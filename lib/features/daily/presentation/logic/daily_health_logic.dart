@@ -73,6 +73,11 @@ class DailyHealthLogic {
     context.push('/home/daily/history');
   }
 
+  /// 캘린더 화면으로 네비게이션
+  void navigateToCalendarScreen(BuildContext context) {
+    context.push('/facility-calendar');
+  }
+
   /// 병원 검색 화면으로 네비게이션
   void navigateToHospitalSearch(BuildContext context) {
     context.push('/home/calendar');

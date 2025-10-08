@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'routes/routes.dart';
@@ -13,6 +14,13 @@ import 'routes/routes.dart';
 ///
 /// 라우터는 모듈형 구조로 설계되어 있어 유지보수와 확장이 용이합니다.
 class AppRouter {
+  // Navigator key 충돌 방지를 위한 전역 NavigatorKey
+  static final GlobalKey<NavigatorState> _navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  /// Navigator key에 대한 접근자
+  static GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
+
   // 라우트 상수들은 RouteConstants에서 관리
   static const String logoRoute = RouteConstants.logoRoute;
   static const String splashRoute = RouteConstants.splashRoute;
@@ -95,7 +103,7 @@ class AppRouter {
   static GoRouter createRouter() {
     return GoRouter(
       initialLocation: splashRoute, // 스플래시 시퀀스로 시작
-      debugLogDiagnostics: true,
+      debugLogDiagnostics: false,
       routes: [
         // 1. Splash Shell 라우트 (스플래시 시퀀스 → 온보딩) - 최우선
         SplashShellRoutes.splashShellRoute,

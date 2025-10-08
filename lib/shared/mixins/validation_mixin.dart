@@ -23,14 +23,14 @@ mixin ValidationMixin {
 
     if (minLength != null && trimmedValue.length < minLength) {
       return fieldName != null
-          ? '$fieldNameは${minLength}文字以上で入力してください'
-          : '${minLength}文字以上で入力してください';
+          ? '$fieldNameは$minLength文字以上で入力してください'
+          : '$minLength文字以上で入力してください';
     }
 
     if (maxLength != null && trimmedValue.length > maxLength) {
       return fieldName != null
-          ? '$fieldNameは${maxLength}文字以下で入力してください'
-          : '${maxLength}文字以下で入力してください';
+          ? '$fieldNameは$maxLength文字以下で入力してください'
+          : '$maxLength文字以下で入力してください';
     }
 
     return null;
@@ -79,14 +79,14 @@ mixin ValidationMixin {
 
     if (min != null && number < min) {
       return fieldName != null
-          ? '$fieldNameは${min}以上で入力してください'
-          : '${min}以上の数値を入力してください';
+          ? '$fieldNameは$min以上で入力してください'
+          : '$min以上の数値を入力してください';
     }
 
     if (max != null && number > max) {
       return fieldName != null
-          ? '$fieldNameは${max}以下で入力してください'
-          : '${max}以下の数値を入力してください';
+          ? '$fieldNameは$max以下で入力してください'
+          : '$max以下の数値を入力してください';
     }
 
     return null;

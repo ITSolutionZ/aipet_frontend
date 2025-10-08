@@ -5,6 +5,7 @@ import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,24 +18,46 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
+  // Global navigator key for navigation - removed to prevent key conflicts
+  // static final GlobalKey<NavigatorState> navigatorKey =
+  //     GlobalKey<NavigatorState>();
+
   static const String _tag = 'NotificationService';
 
   static const String _notificationsKey = 'notifications';
   static const String _settingsKey = 'notification_settings';
+
+  /// 현재 컨텍스트를 가져오는 헬퍼 메서드
+  static BuildContext? _getCurrentContext() {
+    // AppRouter의 navigatorKey를 사용
+    try {
+      return AppRouter.navigatorKey.currentContext;
+    } catch (e) {
+      // fallback으로 rootElement 사용
+      try {
+        return WidgetsBinding.instance.rootElement;
+      } catch (e) {
+        return null;
+      }
+    }
+  }
 
   late FlutterLocalNotificationsPlugin _localNotifications;
   final StreamController<NotificationModel> _notificationController =
       StreamController<NotificationModel>.broadcast();
 
   /// 알림 스트림
-  Stream<NotificationModel> get notificationStream => _notificationController.stream;
+  Stream<NotificationModel> get notificationStream =>
+      _notificationController.stream;
 
   /// 알림 서비스 초기화
   Future<void> initialize() async {
     _localNotifications = FlutterLocalNotificationsPlugin();
 
     // Android 설정
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
     // iOS 설정
     const iosSettings = DarwinInitializationSettings(
@@ -44,7 +67,10 @@ class NotificationService {
     );
 
     // 초기화 설정
-    const initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
+    const initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
 
     // 알림 서비스 초기화
     await _localNotifications.initialize(
@@ -133,7 +159,10 @@ class NotificationService {
       categoryIdentifier: 'aipet_category',
     );
 
-    const details = NotificationDetails(android: androidDetails, iOS: iosDetails);
+    const details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
 
     if (scheduledDate != null) {
       // 예약된 알림 (현재는 즉시 알림으로 처리)
@@ -177,10 +206,14 @@ class NotificationService {
   }
 
   /// 알림 액션 처리
-  void _handleNotificationAction(NotificationModel notification, String actionId) {
+  void _handleNotificationAction(
+    NotificationModel notification,
+    String actionId,
+  ) {
     final action = notification.actions?.firstWhere(
       (action) => action.id == actionId,
-      orElse: () => const NotificationAction(id: 'default', title: '기본', type: 'default'),
+      orElse: () =>
+          const NotificationAction(id: 'default', title: '기본', type: 'default'),
     );
 
     if (kDebugMode) {}
@@ -212,12 +245,15 @@ class NotificationService {
   }
 
   /// 화면 열기 액션 처리
-  void _handleOpenScreenAction(NotificationAction? action, NotificationModel notification) {
+  void _handleOpenScreenAction(
+    NotificationAction? action,
+    NotificationModel notification,
+  ) {
     final screenPath = action?.data?['screen_path'] as String?;
     final petId = action?.data?['pet_id'] as String?;
 
     if (screenPath != null) {
-      final context = navigatorKey.currentContext;
+      final context = _getCurrentContext();
       if (context != null) {
         if (petId != null) {
           context.go('$screenPath/$petId');
@@ -265,7 +301,7 @@ class NotificationService {
 
   /// 상세보기 액션 처리
   void _handleViewDetailsAction(NotificationModel notification) {
-    final context = navigatorKey.currentContext;
+    final context = _getCurrentContext();
     if (context != null) {
       context.go('${AppRouter.notificationDetailRoute}/${notification.id}');
     }
@@ -305,7 +341,7 @@ class NotificationService {
 
   /// 급여 화면으로 이동
   void _navigateToFeeding() {
-    final context = navigatorKey.currentContext;
+    final context = _getCurrentContext();
     if (context != null) {
       context.go(AppRouter.feedingScheduleRoute);
     }
@@ -313,7 +349,7 @@ class NotificationService {
 
   /// 산책 화면으로 이동
   void _navigateToWalk() {
-    final context = navigatorKey.currentContext;
+    final context = _getCurrentContext();
     if (context != null) {
       context.go(AppRouter.walkRoute);
     }
@@ -321,7 +357,7 @@ class NotificationService {
 
   /// 건강 관리 화면으로 이동
   void _navigateToHealth() {
-    final context = navigatorKey.currentContext;
+    final context = _getCurrentContext();
     if (context != null) {
       context.go(AppRouter.vaccinesRoute);
     }
@@ -329,7 +365,7 @@ class NotificationService {
 
   /// 약물 관리 화면으로 이동
   void _navigateToMedication() {
-    final context = navigatorKey.currentContext;
+    final context = _getCurrentContext();
     if (context != null) {
       context.go(AppRouter.schedulingRoute);
     }
@@ -337,7 +373,7 @@ class NotificationService {
 
   /// 예약 화면으로 이동
   void _navigateToReservation() {
-    final context = navigatorKey.currentContext;
+    final context = _getCurrentContext();
     if (context != null) {
       context.go(AppRouter.schedulingRoute);
     }
@@ -345,7 +381,7 @@ class NotificationService {
 
   /// 홈 화면으로 이동
   void _navigateToHome() {
-    final context = navigatorKey.currentContext;
+    final context = _getCurrentContext();
     if (context != null) {
       context.go(AppRouter.homeRoute);
     }
@@ -359,7 +395,8 @@ class NotificationService {
   }) async {
     try {
       // API 연계 전까지는 Mock 데이터 사용
-      List<NotificationModel> notifications = NotificationMockService.getMockNotifications();
+      List<NotificationModel> notifications =
+          NotificationMockService.getMockNotifications();
 
       // 필터링 적용
       notifications = notifications.where((notification) {
@@ -484,7 +521,9 @@ class NotificationService {
   /// 읽지 않은 알림 개수 가져오기
   Future<int> getUnreadCount() async {
     try {
-      final notifications = await getNotifications(status: NotificationStatus.unread);
+      final notifications = await getNotifications(
+        status: NotificationStatus.unread,
+      );
       return notifications.length;
     } catch (e) {
       if (kDebugMode) {}

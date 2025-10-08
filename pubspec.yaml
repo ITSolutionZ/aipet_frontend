@@ -49,6 +49,7 @@ dependencies:
   sqflite: ^2.3.3
   path: ^1.8.3
   qr_flutter: ^4.1.0
+  qr_code_scanner: ^1.0.1
   table_calendar: ^3.1.2
   google_mlkit_text_recognition: ^0.15.0
   pdf: ^3.11.1
@@ -70,6 +71,7 @@ dev_dependencies:
   build_runner: ^2.4.13
   test: ^1.25.2
   sqflite_common_ffi: ^2.3.3
+  flutter_native_splash: ^2.4.1
 
   riverpod: any
 flutter:
@@ -129,7 +131,8 @@ flutter:
     - assets/images/dogs/
     - assets/images/etc/
     - assets/images/home_banner/
-    - assets/images/home_banner/banners/
+    - assets/images/home_banner/appbar_banners/
+    - assets/images/home_banner/home_banners/
     - assets/images/medications/
     - assets/images/modal/
     - assets/images/onboarding/
@@ -177,3 +180,29 @@ sentry:
   upload_source_maps: true
   project: flutter
   org: itz-aipet
+
+# スプラッシュスクリーン設定
+flutter_native_splash:
+  # 背景色 (白色)
+  color: "#FFFFFF"
+
+  # スプラッシュ画像 - より小さなロゴ使用
+  image: assets/icons/logos/itz.png
+
+  # Android用設定
+  android: true
+  android_gravity: center
+  android_12:
+    # Android 12以降用の設定
+    image: assets/icons/logos/itz.png
+    color: "#FFFFFF"
+
+  # iOS用設定
+  ios: true
+  ios_content_mode: center
+
+  # Web用設定 (必要に応じて)
+  web: false
+
+  # フルスクリーン設定
+  fullscreen: true

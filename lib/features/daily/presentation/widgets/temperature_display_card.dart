@@ -23,7 +23,7 @@ class TemperatureDisplayCard extends StatelessWidget {
         temperature <= tempRange.max;
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),

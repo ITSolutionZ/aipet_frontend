@@ -11,6 +11,8 @@ import 'package:aipet_frontend/features/daily/presentation/controllers/daily_hea
 import 'package:aipet_frontend/features/daily/presentation/controllers/daily_health_screen_controller.dart';
 import 'package:aipet_frontend/features/daily/presentation/logic/daily_health_logic.dart';
 import 'package:aipet_frontend/features/daily/presentation/widgets/daily_health_widgets.dart';
+import 'package:aipet_frontend/features/daily/presentation/widgets/hospital_management_card.dart';
+import 'package:aipet_frontend/features/daily/presentation/widgets/reservation_status_card.dart';
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -41,8 +43,8 @@ class DailyHealthScreen extends ConsumerWidget {
 
   PreferredSizeWidget _buildAppBar(DailyHealthLogic logic) {
     return AppBar(
-      backgroundColor: AppColors.primary,
-      foregroundColor: Colors.white,
+      backgroundColor: AppColors.pointBrown,
+      foregroundColor: AppColors.pointOffWhite,
       elevation: 0,
       automaticallyImplyLeading: false,
       leading: Consumer(
@@ -62,9 +64,12 @@ class DailyHealthScreen extends ConsumerWidget {
       actions: [
         Builder(
           builder: (context) => IconButton(
-            onPressed: () => logic.navigateToHistoryScreen(context),
-            icon: const Icon(Icons.history, color: Colors.white),
-            tooltip: '健康記録ヒストリー',
+            onPressed: () => logic.navigateToCalendarScreen(context),
+            icon: const Icon(
+              Icons.calendar_today,
+              color: AppColors.pointOffWhite,
+            ),
+            tooltip: 'カレンダー',
           ),
         ),
       ],
@@ -340,7 +345,7 @@ class DailyHealthScreen extends ConsumerWidget {
         return Row(
           children: [
             Text(
-              '$weekOfYear주차 : ',
+              '$weekOfYear週目 : ',
               style: AppFonts.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -360,7 +365,7 @@ class DailyHealthScreen extends ConsumerWidget {
       loading: () => Row(
         children: [
           Text(
-            '$weekOfYear주차 : ',
+            '$weekOfYear週目 : ',
             style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(width: 4),
@@ -372,7 +377,7 @@ class DailyHealthScreen extends ConsumerWidget {
         ],
       ),
       error: (error, stack) => Text(
-        '$weekOfYear주차',
+        '$weekOfYear週目',
         style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
       ),
     );
@@ -512,13 +517,22 @@ class DailyHealthScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             _buildVaccineHistorySection(ref, currentPetId, petName),
             const SizedBox(height: AppSpacing.md),
-            HospitalVisitHistoryCard(
-              petName: petName,
-              hasVisitHistory: false,
-              onManageHospital: () => context.push('/home/calendar'),
-              onCheckReservation: () {
-                // TODO: 예약 현황 화면으로 이동
-              },
+            Row(
+              children: [
+                Expanded(
+                  child: HospitalManagementCard(
+                    onTap: () =>
+                        context.push('/home/daily/hospital-management'),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: ReservationStatusCard(
+                    upcomingReservations: 0, // TODO: 실제 예약 수로 교체
+                    onTap: () => context.push('/home/daily/reservation-status'),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.md),
             HealthStatusCard(healthRecord: healthRecord),

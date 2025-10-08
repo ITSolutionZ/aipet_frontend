@@ -15,25 +15,46 @@ class SchedulingScreen extends ConsumerStatefulWidget {
 
 class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   bool _isAlarmEnabled = true;
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SoftGradientAppBar(title: 'スケジュール管理'),
-      body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 알람 설정 섹션
-            _buildAlarmSection(),
+      backgroundColor: AppColors.pointOffWhite,
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
+        title: 'スケジュール管理',
+      ),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // 알람 설정 섹션
+                _buildAlarmSection(),
 
-            const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
-            // 카테고리 섹션
-            _buildCategorySection(),
-          ],
-        ),
+                // 카테고리 섹션
+                _buildCategorySection(),
+              ]),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -54,7 +75,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                   Text(AppTexts.alarmSettings, style: AppFonts.titleMedium),
                   Text(
                     AppTexts.scheduleNotification,
-                    style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.pointGray,
+                    ),
                   ),
                 ],
               ),
@@ -68,7 +91,11 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                 // TODO: 알람 설정 저장 로직 구현
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(_isAlarmEnabled ? AppTexts.alarmEnabled : AppTexts.alarmDisabled),
+                    content: Text(
+                      _isAlarmEnabled
+                          ? AppTexts.alarmEnabled
+                          : AppTexts.alarmDisabled,
+                    ),
                   ),
                 );
               },
@@ -154,7 +181,11 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                 child: Icon(icon, color: color, size: 32),
               ),
               const SizedBox(height: AppSpacing.md),
-              Text(title, style: AppFonts.titleMedium, textAlign: TextAlign.center),
+              Text(
+                title,
+                style: AppFonts.titleMedium,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 subtitle,

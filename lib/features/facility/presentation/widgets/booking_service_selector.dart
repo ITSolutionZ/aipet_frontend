@@ -30,11 +30,17 @@ class BookingServiceSelector extends StatelessWidget {
             // 섹션 헤더
             Row(
               children: [
-                const Icon(Icons.room_service, size: 20, color: AppColors.primary),
+                const Icon(
+                  Icons.room_service,
+                  size: 20,
+                  color: AppColors.primary,
+                ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   'サービスを選択してください',
-                  style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
+                  style: AppFonts.titleMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 if (selectedServiceIds.isNotEmpty) ...[
                   const SizedBox(width: AppSpacing.sm),
@@ -88,7 +94,10 @@ class BookingServiceSelector extends StatelessWidget {
         .where((service) => selectedServiceIds.contains(service.id))
         .toList();
 
-    final totalPrice = selectedServices.fold<int>(0, (sum, service) => sum + service.price);
+    final totalPrice = selectedServices.fold<int>(
+      0,
+      (sum, service) => sum + service.price,
+    );
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -100,7 +109,10 @@ class BookingServiceSelector extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('合計金額', style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            '合計金額',
+            style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
+          ),
           Text(
             '¥${totalPrice.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
             style: AppFonts.headlineSmall.copyWith(
@@ -157,12 +169,14 @@ class BookingServiceCard extends StatelessWidget {
                   width: 2,
                 ),
               ),
-              child: isSelected ? const Icon(Icons.check, size: 14, color: Colors.white) : null,
+              child: isSelected
+                  ? const Icon(Icons.check, size: 14, color: Colors.white)
+                  : null,
             ),
             const SizedBox(width: AppSpacing.md),
 
             // 서비스 정보
-            Expanded(
+            Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -170,24 +184,34 @@ class BookingServiceCard extends StatelessWidget {
                     service.name,
                     style: AppFonts.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                      color: isSelected
+                          ? AppColors.primary
+                          : AppColors.textPrimary,
                     ),
                   ),
                   if (service.description != null) ...[
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       service.description!,
-                      style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ],
                   const SizedBox(height: AppSpacing.xs),
                   Row(
                     children: [
-                      const Icon(Icons.schedule, size: 14, color: AppColors.textSecondary),
+                      const Icon(
+                        Icons.schedule,
+                        size: 14,
+                        color: AppColors.textSecondary,
+                      ),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
                         '${service.durationMinutes}分',
-                        style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+                        style: AppFonts.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ],
                   ),

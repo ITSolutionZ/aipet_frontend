@@ -63,9 +63,15 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   /// 목업 데이터로 로컬 저장소 초기화
   Future<void> _initializeWithMockData() async {
     try {
-      // 기존 데이터 클리어
+      // 기존 데이터 완전 클리어
       await _localDataManager.clearDataByPattern('pet_profiles');
       await _localDataManager.clearDataByPattern('pet_registration_');
+      await _localDataManager.clearDataByPattern('pet_');
+
+      // 마이그레이션 상태 리셋 (기존 마이그레이션 플래그 삭제)
+      await _localDataManager.clearDataByPattern(
+        'migration_completed_pet_profiles',
+      );
 
       final mockPets = PetMockService.getMockPets(); // getMockPets() 사용
 
@@ -75,7 +81,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
             (pet) => {
               'id': pet['id'] ?? '',
               'name': pet['name'] ?? '',
-              'typeName': pet['typeName'] ?? 'dog',
+              'type': pet['type'] ?? 'dog',
               'breed': pet['breed'] ?? '',
               'birthDate': pet['birthDate'] ?? DateTime.now().toIso8601String(),
               'gender': pet['gender'] ?? 'unknown',

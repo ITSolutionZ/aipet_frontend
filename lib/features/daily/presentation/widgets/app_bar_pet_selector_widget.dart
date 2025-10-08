@@ -50,10 +50,13 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  color: isSelected
+                      ? Colors.transparent
+                      : Colors.black.withValues(alpha: 0.3),
                   border: Border.all(
                     color: isSelected
                         ? Colors.white
-                        : Colors.white.withOpacity(0.3),
+                        : Colors.white.withValues(alpha: 0.3),
                     width: 2,
                   ),
                 ),

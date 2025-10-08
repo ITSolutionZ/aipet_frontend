@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:aipet_frontend/features/home/data/banner_assets.dart';
 import 'package:flutter/material.dart';
 
-/// 배너 이미지
-/// 3개의 배너 이미지가 자동으로 순환하며 표시
+/// 홈 콘텐츠 배너 이미지
+/// home_banners 폴더의 모든 배너 이미지가 자동으로 순환하며 표시
 class BannerImage extends StatefulWidget {
   const BannerImage({super.key});
 
@@ -16,11 +17,8 @@ class _BannerImageState extends State<BannerImage> {
   Timer? _timer;
   int _currentBannerIndex = 0;
 
-  static const List<String> _bannerImages = [
-    'assets/images/home_banner/banner1.png',
-    'assets/images/home_banner/banner2.png',
-    'assets/images/home_banner/banner3.png',
-  ];
+  // 홈 콘텐츠 배너 이미지 목록을 BannerAssets에서 가져옴
+  List<String> get _bannerImages => BannerAssets.homeBannerImages;
 
   @override
   void initState() {
