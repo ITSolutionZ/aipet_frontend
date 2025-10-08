@@ -12,7 +12,7 @@ class HomeMenuItems {
         title: '予約記録',
         iconPath: 'assets/icons/home_menu/booking.png',
         onTap: () {
-          // TODO: 예약 화면으로 이동
+          context.go('/home/daily/reservation-status');
         },
       ),
       MenuItem(
@@ -40,7 +40,7 @@ class HomeMenuItems {
         title: '病院記録',
         iconPath: 'assets/icons/home_menu/pharmacy.png',
         onTap: () {
-          // TODO: 병원 찾기 화면으로 이동
+          context.push('/facility-type-selection');
         },
       ),
       MenuItem(

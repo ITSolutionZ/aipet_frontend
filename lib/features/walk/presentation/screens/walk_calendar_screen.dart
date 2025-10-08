@@ -46,7 +46,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
         ),
         centerTitle: true,

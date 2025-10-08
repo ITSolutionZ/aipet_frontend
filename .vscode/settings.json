@@ -51,6 +51,10 @@
   // Flutter Hot Reload 설정
   "dart.hotReloadOnSave": "all",
 
+  // Flutter 로그 필터링 설정 (ImageReader 에러 숨김)
+  "dart.flutterRunLogcat": false,
+  "dart.flutterLogcat": false,
+
   // 코드 스니펫 설정
   "editor.snippetSuggestions": "top",
 

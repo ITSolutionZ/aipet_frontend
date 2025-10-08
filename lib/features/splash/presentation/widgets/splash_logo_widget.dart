@@ -68,12 +68,15 @@ class SplashLogoWidget extends StatelessWidget {
               width: 1,
             ),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppConstants.splashLogoRadius),
-            child: Image.asset(
-              AppConstants.splashAppLogoPath,
-              fit: BoxFit.contain,
-              errorBuilder: _buildErrorWidget,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0), // 앱 로고에도 여백 추가
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppConstants.splashLogoRadius - 8),
+              child: Image.asset(
+                AppConstants.splashAppLogoPath,
+                fit: BoxFit.scaleDown, // 비율 유지하면서 크기 조정
+                errorBuilder: _buildErrorWidget,
+              ),
             ),
           ),
         ),
@@ -94,12 +97,15 @@ class SplashLogoWidget extends StatelessWidget {
               ),
             ],
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Image.asset(
-              AppConstants.splashCompanyLogoPath,
-              fit: BoxFit.contain,
-              errorBuilder: _buildErrorWidget,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0), // 여백 추가로 이미지가 경계에 닿지 않도록
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4.0),
+              child: Image.asset(
+                AppConstants.splashCompanyLogoPath,
+                fit: BoxFit.scaleDown, // 비율 유지하면서 크기 조정
+                errorBuilder: _buildErrorWidget,
+              ),
             ),
           ),
         ),

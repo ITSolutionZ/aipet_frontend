@@ -81,7 +81,7 @@ class WeeklyTaskOpenAIService extends BaseLoggingService {
           }
 
           debugPrint('✅ WeeklyTaskOpenAI: Success - $content');
-          return Result.success('주차별 할 일 생성 성공', content);
+          return Result.success('週別タスク生成成功', content);
         }
       }
 

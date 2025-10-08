@@ -362,7 +362,7 @@ class _AIAnalysisCardState extends State<AIAnalysisCard> {
           text: '中リスク',
           description: '注意深く観察してください',
           icon: Icons.warning,
-          color: AppColors.pointYellow,
+          color: AppColors.pointOrange,
         );
       case RiskLevel.high:
         return _RiskLevelData(

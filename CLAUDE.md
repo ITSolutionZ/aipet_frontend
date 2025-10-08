@@ -391,6 +391,17 @@ dart fix --apply
 npx markdownlint "**/*.md" --fix
 ```
 
+### 배너 이미지 관리
+
+```bash
+# 홈 배너 이미지 목록 자동 업데이트
+./scripts/update_banner_assets.sh
+
+# 새로운 배너 이미지 추가 후 실행 필요
+# assets/images/home_banner/banners/ 폴더에 새 이미지 추가 후:
+./scripts/update_banner_assets.sh
+```
+
 ### 코드 생성
 
 ```bash

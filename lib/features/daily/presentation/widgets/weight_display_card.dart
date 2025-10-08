@@ -12,7 +12,7 @@ class WeightDisplayCard extends StatelessWidget {
     final isNormal = weight != null && weight! >= 1.0 && weight! <= 50.0;
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),

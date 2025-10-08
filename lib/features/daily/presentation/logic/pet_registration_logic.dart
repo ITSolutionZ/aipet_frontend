@@ -22,7 +22,7 @@ class PetRegistrationLogic {
     );
 
     // 폼 데이터 상태 디버깅
-    final formData = controller.state;
+    final formData = controller.formData;
     print('🔍 Form validation check:');
     print(
       '  - petName: "${formData.petName}" (empty: ${formData.petName.isEmpty})',

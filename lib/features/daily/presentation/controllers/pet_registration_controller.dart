@@ -206,6 +206,9 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
   TextEditingController get registrationNumberController =>
       _registrationNumberController;
 
+  // Public getter for form data (외부에서 state 접근용)
+  PetRegistrationFormData get formData => state;
+
   // Pet type and breed data with images
   static const List<Map<String, dynamic>> dogBreeds = [
     {'name': '柴犬', 'image': 'assets/images/breeds/dogs/shiba.png'},

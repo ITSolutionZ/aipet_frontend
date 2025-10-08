@@ -73,6 +73,7 @@ class RouteConstants {
   static const String facilityDetailRoute = '/calendar/facility-detail';
   static const String facilityFullscreenMapRoute = '/facility/fullscreen-map';
   static const String bookingRoute = '/calendar/booking';
+  static const String facilityCalendarRoute = '/facility-calendar';
 
   // ===== SETTINGS TAB SUB-ROUTES =====
   static const String profileEditRoute = '/settings/profile-edit';
@@ -91,6 +92,7 @@ class RouteConstants {
   static const String dailyHealthInputRoute = '/home/daily/input';
   static const String dailyHealthHistoryRoute = '/home/daily/history';
   static const String dailyPetRegistrationRoute = '/daily-pet-registration';
+  static const String hospitalManagementRoute = '/home/daily/hospital-management';
 
   // ===== STANDALONE ROUTES =====
   static const String addFamilyManagerRoute = '/add-family-manager';
@@ -101,4 +103,6 @@ class RouteConstants {
   static const String notificationDetailRoute = '/notification-detail';
   static const String eventDetailRoute = '/event-detail';
   static const String todayAppointmentsRoute = '/today-appointments';
+  static const String facilityListRoute = '/facility-list';
+  static const String hospitalDetailRoute = '/hospital-detail';
 }

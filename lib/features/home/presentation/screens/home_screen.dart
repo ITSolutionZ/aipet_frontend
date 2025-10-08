@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/home/data/banner_assets.dart';
 import 'package:aipet_frontend/features/home/data/data.dart';
 import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
 import 'package:aipet_frontend/features/home/presentation/controllers/home_controller.dart';
@@ -168,11 +169,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: AutoBannerCarousel(
-              bannerImages: const [
-                'assets/images/home_banner/banners/home_banner1.png',
-                'assets/images/home_banner/banners/home_banner2.png',
-                'assets/images/home_banner/banners/home_banner3.png',
-              ],
+              bannerImages: BannerAssets.homeBannerImages,
               height:
                   (MediaQuery.of(context).size.width - (AppSpacing.lg * 2)) /
                   2, // 2:1 비율 유지
@@ -246,7 +243,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _handleFavoriteTap() {
     // TODO: 즐겨찾기 화면으로 이동 (요청사항에 따라 제외)
-    debugPrint('즐겨찾기 탭됨 - 구현 예정');
+    // debugPrint('즐겨찾기 탭됨 - 구현 예정');
   }
 
   void _handleNotificationTap() {
@@ -256,7 +253,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   void _handleSearchTap() {
     // TODO: 검색 화면으로 이동 (요청사항에 따라 제외)
-    debugPrint('검색 탭됨 - 구현 예정');
+    // debugPrint('검색 탭됨 - 구현 예정');
   }
 
   void _handleSearchChanged(String query) {
@@ -276,7 +273,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   /// Pull-to-Refresh 핸들러
   Future<void> _handleRefresh() async {
-    debugPrint('🔄 HomeScreen: Pull-to-Refresh 시작');
+    // debugPrint('🔄 HomeScreen: Pull-to-Refresh 시작');
 
     // 캐시 새로고침
     await _cacheManager.refreshHomeDashboard();
@@ -284,6 +281,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     // 대시보드 데이터 다시 로드
     ref.invalidate(homeDashboardNotifierProvider);
 
-    debugPrint('✅ HomeScreen: Pull-to-Refresh 완료');
+    // debugPrint('✅ HomeScreen: Pull-to-Refresh 완료');
   }
 }

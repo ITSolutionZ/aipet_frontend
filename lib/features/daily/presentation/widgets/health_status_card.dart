@@ -157,7 +157,7 @@ class HealthStatusCard extends StatelessWidget {
           text: '普通',
           description: '特に問題はありません',
           icon: Icons.sentiment_neutral,
-          color: AppColors.pointYellow,
+          color: AppColors.pointGreen,
         );
       case HealthStatus.poor:
         return _HealthStatusData(

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
+import 'package:flutter/material.dart';
 
 /// 검색 가능한 드롭다운 위젯
 class SearchableDropdown extends StatefulWidget {
@@ -49,8 +49,9 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
         _filteredOptions = List.from(widget.options);
       } else {
         _filteredOptions = widget.options
-            .where((option) =>
-                option.toLowerCase().contains(query.toLowerCase()))
+            .where(
+              (option) => option.toLowerCase().contains(query.toLowerCase()),
+            )
             .toList();
       }
     });

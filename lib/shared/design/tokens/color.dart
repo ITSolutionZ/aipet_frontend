@@ -29,6 +29,8 @@ class AppColors {
   static const Color toneDarkBrown = Color(0xFF56453F);
   static const Color toneDeepOlive = Color(0xFF4A493E);
   static const Color toneLightCream = Color(0xFFF4E9DF);
+  static const Color toneLightGray = Color(0xFFE0E0E0);
+  static const Color toneDarkGray = Color(0xFF666666);
 
   // Semantic color getters for UI components
   static const Color primary = pointBrown;

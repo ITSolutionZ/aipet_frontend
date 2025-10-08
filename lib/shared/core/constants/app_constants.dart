@@ -220,8 +220,8 @@ class AppConstants {
 
   /// 스플래시 크기
   static const double splashAppLogoSize = 300.0;
-  static const double splashCompanyLogoWidth = 80.0;
-  static const double splashCompanyLogoHeight = 50.0;
+  static const double splashCompanyLogoWidth = 180.0; // 196:130 비율 유지하여 증가 (50% 증가)
+  static const double splashCompanyLogoHeight = 120.0; // 비율에 맞게 조정 (180 * 130/196 ≈ 120)
   static const double splashLoadingLottieSize = 200.0;
 
   /// 스플래시 애니메이션

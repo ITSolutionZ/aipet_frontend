@@ -36,9 +36,9 @@ Future<String> weeklyTasks(
   );
 
   if (result.isSuccess) {
-    return result.dataOrNull ?? '$weekOfYear주차';
+    return result.dataOrNull ?? '$weekOfYear週目';
   } else {
     // 에러 발생 시 기본 텍스트 반환
-    return '$weekOfYear주차';
+    return '$weekOfYear週目';
   }
 }

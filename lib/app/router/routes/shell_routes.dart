@@ -5,7 +5,11 @@ import 'package:aipet_frontend/features/allergy/allergy.dart';
 import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
 import 'package:aipet_frontend/features/daily/presentation/screens/daily_health_input_screen.dart';
 import 'package:aipet_frontend/features/daily/presentation/screens/daily_health_screen.dart';
+import 'package:aipet_frontend/features/daily/presentation/screens/hospital_management_screen.dart';
+import 'package:aipet_frontend/features/daily/presentation/screens/reservation_status_screen_new.dart';
 import 'package:aipet_frontend/features/facility/facility.dart';
+import 'package:aipet_frontend/features/facility/presentation/screens/facility_type_selection_screen.dart';
+import 'package:aipet_frontend/features/facility/presentation/screens/hospital_list_screen.dart';
 import 'package:aipet_frontend/features/home/presentation/presentation.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_screens.dart';
 import 'package:aipet_frontend/features/pet_activities/pet_activities.dart';
@@ -20,6 +24,7 @@ import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.
 import 'package:aipet_frontend/features/walk/presentation/screens/walk_calendar_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/walk_detail_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/walk_list_screen.dart';
+import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
 import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart';
 import 'package:aipet_frontend/shared/widgets/navigation/main_navigation_screen.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +40,38 @@ import 'route_constants.dart';
 /// 모든 메인 앱 화면은 이 Shell 내에서 실행되며, 하단 네비게이션을 통해
 /// 탭 간 이동이 가능합니다.
 class ShellRoutes {
+  /// 문자열을 FacilityType으로 변환하는 헬퍼 함수
+  static FacilityType _parseFacilityType(String typeString) {
+    switch (typeString) {
+      case 'hospital':
+        return FacilityType.hospital;
+      case 'grooming':
+        return FacilityType.grooming;
+      case 'petShop':
+        return FacilityType.petShop;
+      case 'petStore':
+        return FacilityType.petStore;
+      case 'dogRun':
+        return FacilityType.dogRun;
+      case 'park':
+        return FacilityType.park;
+      case 'petPark':
+        return FacilityType.petPark;
+      case 'cafe':
+        return FacilityType.cafe;
+      case 'hotel':
+        return FacilityType.hotel;
+      case 'petFriendlyAccommodation':
+        return FacilityType.petFriendlyAccommodation;
+      case 'training':
+        return FacilityType.training;
+      case 'veterinary':
+        return FacilityType.veterinary;
+      default:
+        return FacilityType.other;
+    }
+  }
+
   static ShellRoute get shellRoute => ShellRoute(
     builder: (context, state, child) {
       return MainNavigationScreen(child: child);
@@ -159,6 +196,28 @@ class ShellRoutes {
             name: 'daily-health-history',
             builder: (context, state) =>
                 const Scaffold(body: Center(child: Text('健康記録ヒストリー - 近日実装予定'))),
+          ),
+          GoRoute(
+            path: 'daily/hospital-management',
+            name: 'hospital-management',
+            builder: (context, state) => const HospitalManagementScreen(),
+          ),
+          GoRoute(
+            path: 'daily/reservation-status',
+            name: 'reservation-status',
+            builder: (context, state) => const ReservationStatusScreen(),
+          ),
+          // 시설 타입 선택 화면
+          GoRoute(
+            path: 'facility-type-selection',
+            name: 'facility-type-selection',
+            builder: (context, state) => const FacilityTypeSelectionScreen(),
+          ),
+          // 동물병원 목록 화면
+          GoRoute(
+            path: 'hospital-list',
+            name: 'hospital-list',
+            builder: (context, state) => const HospitalListScreen(),
           ),
         ],
       ),
@@ -371,55 +430,61 @@ class ShellRoutes {
         name: 'calendar',
         builder: (context, state) => const FacilityListScreen(),
         routes: [
-          GoRoute(
-            path: 'grooming-reservation',
-            name: 'grooming-reservation',
-            builder: (context, state) => const GroomingReservationScreen(),
-          ),
+          // 예약 상태 화면
           GoRoute(
             path: 'hospital-reservation',
             name: 'hospital-reservation',
-            builder: (context, state) => const HospitalReservationScreen(),
-          ),
-          GoRoute(
-            path: 'facility-detail',
-            name: 'facility-detail',
-            builder: (context, state) {
-              final facilityId = state.uri.queryParameters['facilityId'] ?? '1';
-              return FacilityDetailScreen(facilityId: facilityId);
-            },
+            builder: (context, state) => const ReservationStatusScreen(),
           ),
           GoRoute(
             path: 'facility-fullscreen-map',
             name: 'facility-fullscreen-map',
             builder: (context, state) {
               final facilityId = state.uri.queryParameters['facilityId'] ?? '1';
-              // TODO: 실제 시설 데이터로 교체 필요
-              final mockFacility = Facility(
-                id: facilityId,
-                name: 'Shinny Fur Saloon',
-                description: '전문적인 펫 트리밍 서비스',
-                address: '70 North Street',
-                phone: '079 1234 7777',
-                email: 'contactshinnyfur@gmail.com',
-                type: FacilityType.grooming,
-                rating: 4.6,
-                reviewCount: 230,
-                imagePath: 'assets/images/placeholder.png',
-                isFavorite: false,
-                hasHistory: false,
-                latitude: 35.6092,
-                longitude: 139.7301,
+
+              // Mock 데이터에서 실제 시설 정보 가져오기
+              final facilityData = FacilityMockService.getMockFacilityById(
+                facilityId,
               );
-              return FacilityFullscreenMapScreen(facility: mockFacility);
-            },
-          ),
-          GoRoute(
-            path: 'booking',
-            name: 'booking',
-            builder: (context, state) {
-              final facilityId = state.uri.queryParameters['facilityId'] ?? '1';
-              return BookingScreen(facilityId: facilityId);
+
+              // 시설 데이터가 없으면 기본값 사용
+              final facility = facilityData != null
+                  ? Facility(
+                      id: facilityData['id'] as String,
+                      name: facilityData['name'] as String,
+                      description: facilityData['description'] as String,
+                      address: facilityData['address'] as String,
+                      phone: facilityData['phone'] as String,
+                      email: facilityData['email'] as String,
+                      type: _parseFacilityType(facilityData['type'] as String),
+                      rating: (facilityData['rating'] as num).toDouble(),
+                      reviewCount: facilityData['reviewCount'] as int,
+                      imagePath: facilityData['imagePath'] as String,
+                      isFavorite: facilityData['isFavorite'] as bool,
+                      hasHistory: facilityData['hasHistory'] as bool,
+                      latitude: (facilityData['coordinates']['lat'] as num)
+                          .toDouble(),
+                      longitude: (facilityData['coordinates']['lng'] as num)
+                          .toDouble(),
+                    )
+                  : Facility(
+                      id: facilityId,
+                      name: 'ペットサロン ルナ',
+                      description: 'プレミアムペット美容サービス',
+                      address: '東京都港区六本木7-14-23',
+                      phone: '03-5678-9012',
+                      email: 'luna@pet-salon.jp',
+                      type: FacilityType.grooming,
+                      rating: 4.7,
+                      reviewCount: 195,
+                      imagePath: 'assets/images/placeholder.png',
+                      isFavorite: false,
+                      hasHistory: false,
+                      latitude: 35.6627,
+                      longitude: 139.7290,
+                    );
+
+              return FacilityFullscreenMapScreen(facility: facility);
             },
           ),
         ],

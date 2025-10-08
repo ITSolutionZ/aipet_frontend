@@ -137,7 +137,7 @@ class ChipSelectorField<T> extends StatelessWidget {
         if (maxSelection != null) ...[
           const SizedBox(height: AppSpacing.xs),
           Text(
-            '${selectedValues.length}/${maxSelection} 선택됨',
+            '${selectedValues.length}/$maxSelection 선택됨',
             style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
           ),
         ],
