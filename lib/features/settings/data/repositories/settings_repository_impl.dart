@@ -11,6 +11,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   static const String _keyCacheSize = 'cache_size';
   static const String _keyUserPassword = 'user_password';
   static const String _keyExportedData = 'exported_data';
+  static const String _keyUserLocation = 'user_location';
 
   // 기본 사용자 프로필
   final Map<String, dynamic> _defaultUserProfile = {
@@ -60,7 +61,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> updateUserProfile(Map<String, dynamic> profile) async {
+  Future<Result<Map<String, dynamic>>> updateUserProfile(
+    Map<String, dynamic> profile,
+  ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final profileMap = {
@@ -147,7 +150,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> saveAppSettings(Map<String, dynamic> settings) async {
+  Future<Result<Map<String, dynamic>>> saveAppSettings(
+    Map<String, dynamic> settings,
+  ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final settingsMap = {
@@ -199,7 +204,8 @@ class SettingsRepositoryImpl implements SettingsRepository {
       final exportedDataJson = prefs.getString(_keyExportedData);
 
       if (exportedDataJson != null) {
-        final exportedData = jsonDecode(exportedDataJson) as Map<String, dynamic>;
+        final exportedData =
+            jsonDecode(exportedDataJson) as Map<String, dynamic>;
 
         // 데이터 복원
         if (exportedData['userProfile'] != null) {
@@ -250,6 +256,45 @@ class SettingsRepositoryImpl implements SettingsRepository {
       return Result.success('デフォルトキャッシュサイズを取得しました', defaultSize);
     } catch (e) {
       return Result.failure('キャッシュサイズの取得に失敗しました: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Result<void>> saveUserLocation({
+    required String postalCode,
+    required String address,
+    String? detailAddress,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final locationMap = {
+        'postalCode': postalCode,
+        'address': address,
+        'detailAddress': detailAddress ?? '',
+        'savedAt': DateTime.now().toIso8601String(),
+      };
+
+      await prefs.setString(_keyUserLocation, jsonEncode(locationMap));
+      return Result.success('位置情報を保存しました');
+    } catch (e) {
+      return Result.failure('位置情報の保存に失敗しました: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Result<Map<String, dynamic>>> getUserLocation() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final locationJson = prefs.getString(_keyUserLocation);
+
+      if (locationJson != null) {
+        final locationMap = jsonDecode(locationJson) as Map<String, dynamic>;
+        return Result.success('位置情報を取得しました', locationMap);
+      }
+
+      return Result.failure('保存された位置情報がありません');
+    } catch (e) {
+      return Result.failure('位置情報の取得に失敗しました: ${e.toString()}');
     }
   }
 }

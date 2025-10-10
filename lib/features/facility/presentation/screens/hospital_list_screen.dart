@@ -1,3 +1,5 @@
+import 'package:aipet_frontend/features/facility/data/facility_providers.dart';
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:aipet_frontend/features/facility/presentation/screens/facility_detail_screen.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
@@ -253,27 +255,95 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
   }
 
   Widget _buildHospitalList() {
-    final hospitals = _getFilteredHospitals();
+    // Google Places API를 통한 동물병원 조회
+    final hospitalsAsync = ref.watch(
+      facilitiesByTypeProvider(FacilityType.veterinary),
+    );
 
-    print(
-      '🏥 Filtered hospitals count: ${hospitals.length} for categories: $_selectedCategories, search: "$_searchQuery"',
-    ); // 디버그 로그
+    return hospitalsAsync.when(
+      data: (result) {
+        if (!result.isSuccess ||
+            result.dataOrNull == null ||
+            result.dataOrNull!.isEmpty) {
+          return _buildEmptyState();
+        }
 
-    if (hospitals.isEmpty) {
-      return _buildEmptyState();
-    }
+        var hospitals = result.dataOrNull!;
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      itemCount: hospitals.length,
-      itemBuilder: (context, index) {
-        final hospital = hospitals[index];
-        return _buildHospitalCard(hospital);
+        // 검색어로 필터링
+        if (_searchQuery.isNotEmpty) {
+          hospitals = hospitals
+              .where(
+                (hospital) =>
+                    hospital.name.toLowerCase().contains(
+                      _searchQuery.toLowerCase(),
+                    ) ||
+                    hospital.address.toLowerCase().contains(
+                      _searchQuery.toLowerCase(),
+                    ),
+              )
+              .toList();
+        }
+
+        // 카테고리 필터링 (현재는 24시간/응급실 정보가 Google Places에 없으므로 생략)
+        // TODO: Google Places API 응답에서 24시간 정보를 추출하여 필터링 구현
+
+        if (hospitals.isEmpty) {
+          return _buildEmptyState();
+        }
+
+        print(
+          '🏥 Filtered hospitals count: ${hospitals.length} for categories: $_selectedCategories, search: "$_searchQuery"',
+        );
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          itemCount: hospitals.length,
+          itemBuilder: (context, index) {
+            final hospital = hospitals[index];
+            return _buildHospitalCard(hospital);
+          },
+        );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              size: 64,
+              color: AppColors.pointRed,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'エラーが発生しました',
+              style: AppFonts.titleMedium.copyWith(
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              error.toString(),
+              style: AppFonts.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            ElevatedButton(
+              onPressed: () => ref.invalidate(
+                facilitiesByTypeProvider(FacilityType.veterinary),
+              ),
+              child: const Text('再試行'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildHospitalCard(Map<String, dynamic> hospital) {
+  Widget _buildHospitalCard(Facility hospital) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Card(
@@ -335,7 +405,7 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              hospital['name'],
+                              hospital.name,
                               style: AppFonts.titleMedium.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textPrimary,
@@ -343,11 +413,13 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
                             ),
                             const SizedBox(height: AppSpacing.xs),
                             Text(
-                              hospital['type'],
+                              hospital.description ?? '動物病院',
                               style: AppFonts.bodyMedium.copyWith(
                                 color: AppColors.textSecondary,
                                 fontWeight: FontWeight.w500,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
@@ -359,29 +431,22 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
                           vertical: AppSpacing.sm,
                         ),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: hospital['isEmergency']
-                                ? [Colors.red.shade400, Colors.red.shade600]
-                                : [
-                                    const Color(0xFF4A90E2),
-                                    const Color(0xFF357ABD),
-                                  ],
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF4A90E2), Color(0xFF357ABD)],
                           ),
                           borderRadius: BorderRadius.circular(AppSpacing.lg),
                           boxShadow: [
                             BoxShadow(
-                              color:
-                                  (hospital['isEmergency']
-                                          ? Colors.red
-                                          : const Color(0xFF4A90E2))
-                                      .withValues(alpha: 0.3),
+                              color: const Color(
+                                0xFF4A90E2,
+                              ).withValues(alpha: 0.3),
                               blurRadius: 4,
                               offset: const Offset(0, 2),
                             ),
                           ],
                         ),
                         child: Text(
-                          hospital['isEmergency'] ? '救急室' : '予約可能',
+                          hospital.isOpen ? '営業中' : '休業中',
                           style: AppFonts.bodySmall.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -410,11 +475,13 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
-                            hospital['address'],
+                            hospital.address,
                             style: AppFonts.bodyMedium.copyWith(
                               color: AppColors.textPrimary,
                               fontWeight: FontWeight.w500,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -449,7 +516,7 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
-                              '${hospital['rating']}',
+                              hospital.rating.toStringAsFixed(1),
                               style: AppFonts.bodySmall.copyWith(
                                 color: Colors.amber.shade800,
                                 fontWeight: FontWeight.bold,
@@ -460,35 +527,13 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
-                        '(${hospital['reviewCount']}件のレビュー)',
+                        '(${hospital.reviewCount}件のレビュー)',
                         style: AppFonts.bodySmall.copyWith(
                           color: AppColors.textSecondary,
                         ),
                       ),
                       const Spacer(),
-                      if (hospital['isOpen24h'])
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.sm,
-                            vertical: AppSpacing.xs,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.green.shade400,
-                                Colors.green.shade600,
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(AppSpacing.sm),
-                          ),
-                          child: Text(
-                            '24時間',
-                            style: AppFonts.bodySmall.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                      // Google Places에서 24시간 정보가 없으므로 생략
                     ],
                   ),
 
@@ -516,11 +561,13 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
                               const SizedBox(width: AppSpacing.xs),
                               Expanded(
                                 child: Text(
-                                  hospital['phone'] ?? '',
+                                  hospital.phone ?? '電話番号なし',
                                   style: AppFonts.bodySmall.copyWith(
                                     color: AppColors.textPrimary,
                                     fontWeight: FontWeight.w500,
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
@@ -547,11 +594,13 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
                               const SizedBox(width: AppSpacing.xs),
                               Expanded(
                                 child: Text(
-                                  hospital['hours'] ?? '',
+                                  hospital.isOpen ? '営業中' : '休業中',
                                   style: AppFonts.bodySmall.copyWith(
                                     color: AppColors.textPrimary,
                                     fontWeight: FontWeight.w500,
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
@@ -663,6 +712,8 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
     );
   }
 
+  // Mock 데이터 메서드 삭제 - Google Places API 사용으로 대체됨
+  /*
   List<Map<String, dynamic>> _getFilteredHospitals() {
     final allHospitals = _getMockHospitals();
 
@@ -818,11 +869,25 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
       },
     ];
   }
+  */
 
-  void _navigateToDetail(Map<String, dynamic> hospital) {
+  void _navigateToDetail(Facility hospital) {
+    // Facility entity를 Map으로 변환하여 기존 화면에 전달
+    // TODO: FacilityDetailScreen을 Facility entity를 받도록 수정
+    final hospitalMap = {
+      'id': hospital.id,
+      'name': hospital.name,
+      'type': '動物病院',
+      'address': hospital.address,
+      'phone': hospital.phone ?? '',
+      'rating': hospital.rating,
+      'reviewCount': hospital.reviewCount,
+      'description': hospital.description ?? '',
+    };
+
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => FacilityDetailScreen(facility: hospital),
+        builder: (context) => FacilityDetailScreen(facility: hospitalMap),
       ),
     );
   }

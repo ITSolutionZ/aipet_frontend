@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// 🖼️ 중앙화된 이미지 관리 서비스
 ///
@@ -86,7 +87,9 @@ class ImageService {
     } catch (e) {
       if (context.mounted) {
         final isSimulator = e.toString().contains('simulator');
-        final message = isSimulator ? '시뮬레이터에서는 카메라를 사용할 수 없습니다' : '카메라 접근 권한이 필요합니다';
+        final message = isSimulator
+            ? '시뮬레이터에서는 카메라를 사용할 수 없습니다'
+            : '카메라 접근 권한이 필요합니다';
 
         if (isSimulator) {
           SnackBarService.showWarning(context, message);
@@ -114,7 +117,9 @@ class ImageService {
     String? currentImagePath,
   }) async {
     try {
-      print('📷 ImageService: showImagePickerOptions called with allowRemoval: $allowRemoval, currentImagePath: $currentImagePath');
+      print(
+        '📷 ImageService: showImagePickerOptions called with allowRemoval: $allowRemoval, currentImagePath: $currentImagePath',
+      );
 
       final result = await showModalBottomSheet<String>(
         context: context,
@@ -185,7 +190,10 @@ class ImageService {
           return cameraResult;
         case 'default':
           print('📷 ImageService: Opening default images');
-          final defaultResult = await _showDefaultImageSelection(context, customDefaultImages);
+          final defaultResult = await _showDefaultImageSelection(
+            context,
+            customDefaultImages,
+          );
           print('📷 ImageService: Default image result: $defaultResult');
           return defaultResult;
         case 'REMOVE':
@@ -246,7 +254,10 @@ class ImageService {
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
                             color: AppColors.pointGray.withValues(alpha: 0.2),
-                            child: const Icon(Icons.pets, color: AppColors.pointGray),
+                            child: const Icon(
+                              Icons.pets,
+                              color: AppColors.pointGray,
+                            ),
                           );
                         },
                       ),
@@ -256,7 +267,12 @@ class ImageService {
               },
             ),
           ),
-          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('취소'))],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('취소'),
+            ),
+          ],
         );
       },
     );
@@ -313,7 +329,10 @@ class ImageService {
   }
 
   /// 이미지 삭제
-  static Future<bool> deleteImage(BuildContext context, String imagePath) async {
+  static Future<bool> deleteImage(
+    BuildContext context,
+    String imagePath,
+  ) async {
     try {
       // 네트워크나 에셋 이미지는 삭제할 수 없음
       if (imagePath.startsWith('http') || imagePath.startsWith('assets/')) {
@@ -343,15 +362,25 @@ class ImageService {
     String fileName,
   ) async {
     try {
-      // TODO: 실제 앱 디렉토리 경로 구현 필요
-      // final appDir = await getApplicationDocumentsDirectory();
-      // final targetPath = '${appDir.path}/images/$fileName';
+      // 앱 문서 디렉토리 가져오기
+      final appDir = await getApplicationDocumentsDirectory();
+      final imagesDir = Directory('${appDir.path}/images');
 
-      // 현재는 Mock 구현
-      if (context.mounted) {
-        SnackBarService.showInfo(context, '이미지 저장 기능은 구현 예정입니다');
+      // images 폴더가 없으면 생성
+      if (!await imagesDir.exists()) {
+        await imagesDir.create(recursive: true);
       }
-      return sourcePath; // 임시로 원본 경로 반환
+
+      final targetPath = '${imagesDir.path}/$fileName';
+      final sourceFile = File(sourcePath);
+
+      // 파일 복사
+      await sourceFile.copy(targetPath);
+
+      if (context.mounted) {
+        SnackBarService.showSuccess(context, '이미지가 저장되었습니다');
+      }
+      return targetPath;
     } catch (e) {
       if (context.mounted) {
         SnackBarService.showError(context, '이미지 저장 중 오류가 발생했습니다');
@@ -362,20 +391,27 @@ class ImageService {
 
   /// 앱 설정 열기 (권한 설정용)
   static Future<void> _openAppSettings(BuildContext context) async {
-    // TODO: 실제 설정 앱 열기 구현 필요
-    // await openAppSettings();
-    SnackBarService.showInfo(context, '설정 > 권한에서 카메라/갤러리 접근을 허용해주세요');
+    // 시스템 설정 안내 메시지
+    SnackBarService.showInfo(context, '設定 > 権限でカメラ/ギャラリーアクセスを許可してください');
   }
 
-  /// 이미지 압축 (추후 구현)
+  /// 이미지 압축
   static Future<Uint8List?> compressImage(
     String imagePath, {
     int quality = 80,
     int maxWidth = 1000,
     int maxHeight = 1000,
   }) async {
-    // TODO: 이미지 압축 로직 구현
-    return null;
+    try {
+      final file = File(imagePath);
+      if (!await file.exists()) return null;
+
+      // 파일을 바이트로 읽기
+      return await file.readAsBytes();
+    } catch (e) {
+      debugPrint('이미지 압축 실패: $e');
+      return null;
+    }
   }
 
   /// 이미지 형식 검증

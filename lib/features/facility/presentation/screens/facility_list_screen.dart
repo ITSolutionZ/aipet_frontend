@@ -1,3 +1,5 @@
+import 'package:aipet_frontend/features/facility/data/facility_providers.dart';
+import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:aipet_frontend/features/facility/presentation/screens/facility_detail_screen.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +13,15 @@ class FacilityListScreen extends ConsumerStatefulWidget {
 }
 
 class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
-  String _selectedCategory = '전체';
-  final List<String> _categories = ['전체', '미용실', '카페', '호텔', '놀이터', '교육센터'];
+  FacilityType? _selectedType;
+  final List<Map<String, dynamic>> _categories = [
+    {'name': '全体', 'type': null},
+    {'name': '美容室', 'type': FacilityType.grooming},
+    {'name': 'カフェ', 'type': FacilityType.cafe},
+    {'name': 'ホテル', 'type': FacilityType.hotel},
+    {'name': '遊び場', 'type': FacilityType.park},
+    {'name': '教育センター', 'type': FacilityType.training},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +70,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
       elevation: 0,
       centerTitle: true,
       title: const Text(
-        '시설 예약',
+        '施設予約',
         style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       ),
     );
@@ -75,7 +84,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
         children: [
           const SizedBox(height: AppSpacing.md),
           Text(
-            '카테고리별 시설',
+            'カテゴリ別施設',
             style: AppFonts.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: AppColors.pointOffWhite,
@@ -89,14 +98,16 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
               itemCount: _categories.length,
               itemBuilder: (context, index) {
                 final category = _categories[index];
-                final isSelected = _selectedCategory == category;
+                final categoryName = category['name'] as String;
+                final categoryType = category['type'] as FacilityType?;
+                final isSelected = _selectedType == categoryType;
 
                 return Padding(
                   padding: const EdgeInsets.only(right: AppSpacing.sm),
                   child: InkWell(
                     onTap: () {
                       setState(() {
-                        _selectedCategory = category;
+                        _selectedType = categoryType;
                       });
                     },
                     child: Container(
@@ -115,7 +126,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
                         ),
                       ),
                       child: Text(
-                        category,
+                        categoryName,
                         style: AppFonts.bodyMedium.copyWith(
                           color: isSelected
                               ? AppColors.pointBrown
@@ -137,23 +148,70 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
   }
 
   Widget _buildFacilityList() {
-    final facilities = _getFilteredFacilities();
+    // Google Places API를 통한 시설 조회
+    final facilitiesAsync = _selectedType != null
+        ? ref.watch(facilitiesByTypeProvider(_selectedType!))
+        : ref.watch(nearbyFacilitiesProvider);
 
-    if (facilities.isEmpty) {
-      return _buildEmptyState();
-    }
+    return facilitiesAsync.when(
+      data: (result) {
+        if (!result.isSuccess ||
+            result.dataOrNull == null ||
+            result.dataOrNull!.isEmpty) {
+          return _buildEmptyState();
+        }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      itemCount: facilities.length,
-      itemBuilder: (context, index) {
-        final facility = facilities[index];
-        return _buildFacilityCard(facility);
+        final facilities = result.dataOrNull!;
+        return ListView.builder(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          itemCount: facilities.length,
+          itemBuilder: (context, index) {
+            final facility = facilities[index];
+            return _buildFacilityCard(facility);
+          },
+        );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              size: 64,
+              color: AppColors.pointRed,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'エラーが発生しました',
+              style: AppFonts.titleMedium.copyWith(
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              error.toString(),
+              style: AppFonts.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            ElevatedButton(
+              onPressed: () => ref.invalidate(
+                _selectedType != null
+                    ? facilitiesByTypeProvider(_selectedType!)
+                    : nearbyFacilitiesProvider,
+              ),
+              child: const Text('再試行'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildFacilityCard(Map<String, dynamic> facility) {
+  Widget _buildFacilityCard(Facility facility) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Card(
@@ -175,13 +233,13 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
                       padding: const EdgeInsets.all(AppSpacing.sm),
                       decoration: BoxDecoration(
                         color: _getCategoryColor(
-                          facility['type'],
+                          facility.type,
                         ).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppSpacing.sm),
                       ),
                       child: Icon(
-                        _getCategoryIcon(facility['type']),
-                        color: _getCategoryColor(facility['type']),
+                        _getCategoryIcon(facility.type),
+                        color: _getCategoryColor(facility.type),
                         size: 24,
                       ),
                     ),
@@ -191,7 +249,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            facility['name'],
+                            facility.name,
                             style: AppFonts.titleSmall.copyWith(
                               fontWeight: FontWeight.bold,
                               color: AppColors.textPrimary,
@@ -199,7 +257,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
                           ),
                           const SizedBox(height: AppSpacing.xs),
                           Text(
-                            facility['type'],
+                            _getTypeDisplayName(facility.type),
                             style: AppFonts.bodySmall.copyWith(
                               color: AppColors.textSecondary,
                             ),
@@ -207,23 +265,24 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
                         ],
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _getCategoryColor(facility['type']),
-                        borderRadius: BorderRadius.circular(AppSpacing.sm),
-                      ),
-                      child: Text(
-                        '예약 가능',
-                        style: AppFonts.bodySmall.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                    if (facility.isOpen)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.sm,
+                          vertical: AppSpacing.xs,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _getCategoryColor(facility.type),
+                          borderRadius: BorderRadius.circular(AppSpacing.sm),
+                        ),
+                        child: Text(
+                          '予約可能',
+                          style: AppFonts.bodySmall.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -237,10 +296,12 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
                     const SizedBox(width: AppSpacing.xs),
                     Expanded(
                       child: Text(
-                        facility['address'],
+                        facility.address,
                         style: AppFonts.bodySmall.copyWith(
                           color: AppColors.textSecondary,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -251,7 +312,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
                     Icon(Icons.star, size: 16, color: Colors.amber[600]),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
-                      '${facility['rating']}',
+                      facility.rating.toStringAsFixed(1),
                       style: AppFonts.bodySmall.copyWith(
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.bold,
@@ -259,7 +320,7 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
-                      '(${facility['reviewCount']}개 리뷰)',
+                      '(${facility.reviewCount}件のレビュー)',
                       style: AppFonts.bodySmall.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -273,14 +334,14 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
                     Text(
                       '詳細を見る',
                       style: AppFonts.bodyMedium.copyWith(
-                        color: _getCategoryColor(facility['type']),
+                        color: _getCategoryColor(facility.type),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Icon(
                       Icons.arrow_forward_ios,
                       size: 16,
-                      color: _getCategoryColor(facility['type']),
+                      color: _getCategoryColor(facility.type),
                     ),
                   ],
                 ),
@@ -305,12 +366,12 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            '해당 카테고리의 시설이 없습니다.',
+            '該当カテゴリの施設がありません',
             style: AppFonts.bodyLarge.copyWith(color: AppColors.toneDarkGray),
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            '다른 카테고리를 선택해보세요',
+            '他のカテゴリを選択してください',
             style: AppFonts.bodyMedium.copyWith(color: AppColors.toneDarkGray),
           ),
         ],
@@ -318,150 +379,102 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
     );
   }
 
-  List<Map<String, dynamic>> _getFilteredFacilities() {
-    final allFacilities = _getMockFacilities();
-
-    if (_selectedCategory == '전체') {
-      return allFacilities;
-    }
-
-    return allFacilities
-        .where((facility) => facility['type'] == _selectedCategory)
-        .toList();
-  }
-
-  List<Map<String, dynamic>> _getMockFacilities() {
-    return [
-      // 미용실
-      {
-        'name': '펫뷰티 살롱',
-        'type': '미용실',
-        'address': '서울시 강남구 테헤란로 123',
-        'rating': 4.8,
-        'reviewCount': 156,
-        'services': ['기본 미용', '전체 미용', '발톱 관리', '목욕', '드라이'],
-      },
-      {
-        'name': '러블리 펫살롱',
-        'type': '미용실',
-        'address': '서울시 서초구 서초대로 456',
-        'rating': 4.6,
-        'reviewCount': 89,
-        'services': ['기본 미용', '전체 미용', '발톱 관리', '목욕', '드라이'],
-      },
-
-      // 카페
-      {
-        'name': '펫프렌드 카페',
-        'type': '카페',
-        'address': '서울시 홍대입구역 789',
-        'rating': 4.7,
-        'reviewCount': 203,
-        'services': ['기본 이용', '특별 메뉴', '이벤트 참여'],
-      },
-      {
-        'name': '도그카페 루루',
-        'type': '카페',
-        'address': '서울시 이태원동 321',
-        'rating': 4.5,
-        'reviewCount': 134,
-        'services': ['기본 이용', '특별 메뉴', '이벤트 참여'],
-      },
-
-      // 호텔
-      {
-        'name': '펫스테이 호텔',
-        'type': '호텔',
-        'address': '서울시 송파구 올림픽로 654',
-        'rating': 4.9,
-        'reviewCount': 278,
-        'services': ['1박', '2박', '장기 숙박', '특별 케어'],
-      },
-      {
-        'name': '펫파라다이스',
-        'type': '호텔',
-        'address': '서울시 강동구 천호대로 987',
-        'rating': 4.4,
-        'reviewCount': 95,
-        'services': ['1박', '2박', '장기 숙박', '특별 케어'],
-      },
-
-      // 놀이터
-      {
-        'name': '펫플레이그라운드',
-        'type': '놀이터',
-        'address': '서울시 한강공원 내',
-        'rating': 4.6,
-        'reviewCount': 167,
-        'services': ['기본 이용', '특별 프로그램', '그룹 활동'],
-      },
-      {
-        'name': '도그파크 센트럴',
-        'type': '놀이터',
-        'address': '서울시 중앙공원 내',
-        'rating': 4.3,
-        'reviewCount': 112,
-        'services': ['기본 이용', '특별 프로그램', '그룹 활동'],
-      },
-
-      // 교육센터
-      {
-        'name': '펫스쿨 아카데미',
-        'type': '교육센터',
-        'address': '서울시 마포구 홍대입구 147',
-        'rating': 4.8,
-        'reviewCount': 189,
-        'services': ['기본 훈련', '고급 훈련', '행동 교정', '사회화 훈련'],
-      },
-      {
-        'name': '도그트레이닝센터',
-        'type': '교육센터',
-        'address': '서울시 강서구 화곡동 258',
-        'rating': 4.7,
-        'reviewCount': 145,
-        'services': ['기본 훈련', '고급 훈련', '행동 교정', '사회화 훈련'],
-      },
-    ];
-  }
-
-  IconData _getCategoryIcon(String type) {
+  /// 시설 타입에 따른 표시 이름 반환
+  String _getTypeDisplayName(FacilityType type) {
     switch (type) {
-      case '미용실':
+      case FacilityType.hospital:
+      case FacilityType.veterinary:
+        return '動物病院';
+      case FacilityType.grooming:
+        return '美容室';
+      case FacilityType.cafe:
+        return 'カフェ';
+      case FacilityType.hotel:
+      case FacilityType.petFriendlyAccommodation:
+        return 'ホテル';
+      case FacilityType.park:
+      case FacilityType.petPark:
+      case FacilityType.dogRun:
+        return '遊び場';
+      case FacilityType.training:
+        return '教育センター';
+      case FacilityType.petShop:
+      case FacilityType.petStore:
+        return 'ペットショップ';
+      default:
+        return '施設';
+    }
+  }
+
+  IconData _getCategoryIcon(FacilityType type) {
+    switch (type) {
+      case FacilityType.hospital:
+      case FacilityType.veterinary:
+        return Icons.local_hospital;
+      case FacilityType.grooming:
         return Icons.content_cut;
-      case '카페':
+      case FacilityType.cafe:
         return Icons.local_cafe;
-      case '호텔':
+      case FacilityType.hotel:
+      case FacilityType.petFriendlyAccommodation:
         return Icons.hotel;
-      case '놀이터':
+      case FacilityType.park:
+      case FacilityType.petPark:
+      case FacilityType.dogRun:
         return Icons.park;
-      case '교육센터':
+      case FacilityType.training:
         return Icons.school;
+      case FacilityType.petShop:
+      case FacilityType.petStore:
+        return Icons.store;
       default:
         return Icons.place;
     }
   }
 
-  Color _getCategoryColor(String type) {
+  Color _getCategoryColor(FacilityType type) {
     switch (type) {
-      case '미용실':
+      case FacilityType.grooming:
         return Colors.pink;
-      case '카페':
+      case FacilityType.cafe:
         return Colors.brown;
-      case '호텔':
+      case FacilityType.hotel:
+      case FacilityType.petFriendlyAccommodation:
         return Colors.blue;
-      case '놀이터':
+      case FacilityType.park:
+      case FacilityType.petPark:
+      case FacilityType.dogRun:
         return Colors.green;
-      case '교육센터':
+      case FacilityType.training:
         return Colors.purple;
+      case FacilityType.hospital:
+      case FacilityType.veterinary:
+        return AppColors.pointRed;
+      case FacilityType.petShop:
+      case FacilityType.petStore:
+        return AppColors.pointBlue;
       default:
         return AppColors.pointGreen;
     }
   }
 
-  void _navigateToDetail(Map<String, dynamic> facility) {
+  void _navigateToDetail(Facility facility) {
+    // Facility entity를 Map으로 변환하여 기존 화면에 전달
+    // TODO: FacilityDetailScreen을 Facility entity를 받도록 수정
+    final facilityMap = {
+      'id': facility.id,
+      'name': facility.name,
+      'type': _getTypeDisplayName(facility.type),
+      'address': facility.address,
+      'phone': facility.phone ?? '',
+      'rating': facility.rating,
+      'reviewCount': facility.reviewCount,
+      'description': facility.description ?? '',
+    };
+
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => FacilityDetailScreen(facility: facility),
+        builder: (context) => FacilityDetailScreen(facility: facilityMap),
       ),
     );
   }

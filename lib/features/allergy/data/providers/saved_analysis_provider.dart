@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/features/allergy/data/repositories/saved_analysis_repository.dart';
 import 'package:aipet_frontend/features/allergy/domain/entities/saved_analysis_entity.dart';
-import 'package:aipet_frontend/shared/mock_data/saved_analysis_mock_data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'saved_analysis_provider.g.dart';
@@ -22,11 +21,7 @@ class SavedAnalysisNotifier extends _$SavedAnalysisNotifier {
     final repository = ref.read(savedAnalysisRepositoryProvider);
     final localData = await repository.loadAll();
 
-    // 로컬 데이터가 없으면 Mock 데이터 사용 (개발용)
-    if (localData.isEmpty) {
-      return SavedAnalysisMockData.mockAnalyses;
-    }
-
+    // 로컬 데이터 반환 (빈 리스트도 그대로 반환)
     return localData;
   }
 

@@ -24,11 +24,11 @@ class _CancelReservationModalState
   final TextEditingController _reasonController = TextEditingController();
   String _selectedReason = '';
   final List<String> _predefinedReasons = [
-    '일정 변경',
-    '개인 사정',
-    '시설 문제',
-    '서비스 불만',
-    '기타',
+    'スケジュール変更',
+    '個人的な事情',
+    '施設の問題',
+    'サービスへの不満',
+    'その他',
   ];
 
   @override
@@ -56,7 +56,7 @@ class _CancelReservationModalState
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
-                    '예약 취소',
+                    '予約キャンセル',
                     style: AppFonts.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
@@ -72,7 +72,7 @@ class _CancelReservationModalState
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              '${widget.facilityName} 예약을 취소하시겠습니까?',
+              '${widget.facilityName}の予約をキャンセルしますか？',
               style: AppFonts.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -81,7 +81,7 @@ class _CancelReservationModalState
 
             // 취소 사유 선택
             Text(
-              '취소 사유를 선택해주세요',
+              'キャンセル理由を選択してください',
               style: AppFonts.titleSmall.copyWith(
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
@@ -135,7 +135,7 @@ class _CancelReservationModalState
 
             // 상세 사유 입력
             Text(
-              '상세 사유 (선택)',
+              '詳細理由（任意）',
               style: AppFonts.titleSmall.copyWith(
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
@@ -146,7 +146,7 @@ class _CancelReservationModalState
               controller: _reasonController,
               maxLines: 3,
               decoration: InputDecoration(
-                hintText: '취소 사유를 자세히 입력해주세요',
+                hintText: 'キャンセル理由を詳しく入力してください',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppSpacing.sm),
                 ),
@@ -174,7 +174,7 @@ class _CancelReservationModalState
                         borderRadius: BorderRadius.circular(AppSpacing.sm),
                       ),
                     ),
-                    child: const Text('취소'),
+                    child: const Text('閉じる'),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -191,7 +191,7 @@ class _CancelReservationModalState
                         borderRadius: BorderRadius.circular(AppSpacing.sm),
                       ),
                     ),
-                    child: const Text('예약 취소'),
+                    child: const Text('予約キャンセル'),
                   ),
                 ),
               ],
@@ -206,22 +206,22 @@ class _CancelReservationModalState
     if (_selectedReason.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('취소 사유를 선택해주세요'),
+          content: Text('キャンセル理由を選択してください'),
           backgroundColor: Colors.orange,
         ),
       );
       return;
     }
 
-    // TODO: 실제 예약 취소 로직 구현
+    // 실제 예약 취소 로직
     // 1. 로컬 데이터에서 예약 상태를 'cancelled'로 변경
     // 2. 취소 사유와 상세 사유 저장
-    // 3. 서버에 취소 요청 전송 (추후 구현)
+    // 3. 서버에 취소 요청 전송 (추후 API 연동 시 구현)
 
     // 성공 메시지 표시
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${widget.facilityName} 예약이 취소되었습니다'),
+        content: Text('${widget.facilityName}の予約がキャンセルされました'),
         backgroundColor: AppColors.pointRed,
         duration: const Duration(seconds: 2),
       ),

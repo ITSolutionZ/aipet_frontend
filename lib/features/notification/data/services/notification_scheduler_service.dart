@@ -1,16 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'helpers/notification_scheduler_executor_helper.dart';
+import 'helpers/notification_scheduler_storage_helper.dart';
 import 'notification_service.dart' as local;
 
 /// 알림 스케줄링 서비스
 class NotificationSchedulerService {
-  static const String _schedulesKey = 'notification_schedules';
   static const String _schedulerEnabledKey = 'scheduler_enabled';
 
   final local.NotificationService _notificationService;
@@ -22,7 +21,8 @@ class NotificationSchedulerService {
   final StreamController<List<NotificationSchedule>> _schedulesController =
       StreamController<List<NotificationSchedule>>.broadcast();
 
-  Stream<List<NotificationSchedule>> get schedulesStream => _schedulesController.stream;
+  Stream<List<NotificationSchedule>> get schedulesStream =>
+      _schedulesController.stream;
 
   NotificationSchedulerService(this._notificationService);
 
@@ -70,16 +70,11 @@ class NotificationSchedulerService {
   Future<void> _checkSchedules() async {
     try {
       final schedules = await getSchedules();
-      final now = DateTime.now();
 
       for (final schedule in schedules) {
-        if (!schedule.isActive) continue;
-
-        final nextTrigger = schedule.calculateNextExecutionTime();
-
-        // 1분 이내에 실행될 스케줄 확인
-        final timeUntilTrigger = nextTrigger.difference(now);
-        if (timeUntilTrigger.inMinutes <= 1 && timeUntilTrigger.inMinutes >= 0) {
+        if (NotificationSchedulerExecutorHelper.shouldExecuteSchedule(
+          schedule,
+        )) {
           await _executeSchedule(schedule);
         }
       }
@@ -91,16 +86,11 @@ class NotificationSchedulerService {
   /// 스케줄 실행
   Future<void> _executeSchedule(NotificationSchedule schedule) async {
     try {
-      // 알림 생성
-      final notification = NotificationModel(
-        id: 'scheduled_${schedule.id}_${DateTime.now().millisecondsSinceEpoch}',
-        title: schedule.title,
-        body: schedule.description,
-        type: schedule.type,
-        priority: NotificationPriority.normal,
-        createdAt: DateTime.now(),
-        data: schedule.metadata,
-      );
+      // 알림 생성 (헬퍼 위임)
+      final notification =
+          NotificationSchedulerExecutorHelper.createNotificationFromSchedule(
+            schedule,
+          );
 
       // 알림 발송
       await _notificationService.createNotification(
@@ -126,7 +116,7 @@ class NotificationSchedulerService {
     try {
       final schedules = await getSchedules();
       schedules.add(schedule);
-      await _saveSchedules(schedules);
+      await NotificationSchedulerStorageHelper.saveSchedules(schedules);
       _schedulesController.add(schedules);
 
       if (kDebugMode) {}
@@ -143,7 +133,7 @@ class NotificationSchedulerService {
 
       if (index != -1) {
         schedules[index] = schedule;
-        await _saveSchedules(schedules);
+        await NotificationSchedulerStorageHelper.saveSchedules(schedules);
         _schedulesController.add(schedules);
 
         if (kDebugMode) {}
@@ -158,7 +148,7 @@ class NotificationSchedulerService {
     try {
       final schedules = await getSchedules();
       schedules.removeWhere((s) => s.id == scheduleId);
-      await _saveSchedules(schedules);
+      await NotificationSchedulerStorageHelper.saveSchedules(schedules);
       _schedulesController.add(schedules);
 
       if (kDebugMode) {}
@@ -175,7 +165,7 @@ class NotificationSchedulerService {
 
       if (index != -1) {
         schedules[index] = schedules[index].copyWith(isActive: isActive);
-        await _saveSchedules(schedules);
+        await NotificationSchedulerStorageHelper.saveSchedules(schedules);
         _schedulesController.add(schedules);
 
         if (kDebugMode) {}
@@ -187,28 +177,19 @@ class NotificationSchedulerService {
 
   /// 모든 스케줄 가져오기
   Future<List<NotificationSchedule>> getSchedules() async {
-    try {
-      final schedulesJson = await SecureStorageService.getString(_schedulesKey);
-      if (schedulesJson != null) {
-        final List<dynamic> schedulesList = jsonDecode(schedulesJson);
-        return schedulesList.map((json) => NotificationSchedule.fromJson(json)).toList();
-      }
-    } catch (e) {
-      if (kDebugMode) {}
-    }
-    return [];
+    return NotificationSchedulerStorageHelper.getSchedules();
   }
 
   /// 활성화된 스케줄만 가져오기
   Future<List<NotificationSchedule>> getActiveSchedules() async {
-    final schedules = await getSchedules();
-    return schedules.where((s) => s.isActive).toList();
+    return NotificationSchedulerStorageHelper.getActiveSchedules();
   }
 
   /// 특정 타입의 스케줄 가져오기
-  Future<List<NotificationSchedule>> getSchedulesByType(NotificationType type) async {
-    final schedules = await getSchedules();
-    return schedules.where((s) => s.type == type).toList();
+  Future<List<NotificationSchedule>> getSchedulesByType(
+    NotificationType type,
+  ) async {
+    return NotificationSchedulerStorageHelper.getSchedulesByType(type);
   }
 
   /// 스케줄러 활성화/비활성화
@@ -234,20 +215,10 @@ class NotificationSchedulerService {
   /// 스케줄러 상태 확인
   bool get isEnabled => _isEnabled;
 
-  /// 스케줄 저장
-  Future<void> _saveSchedules(List<NotificationSchedule> schedules) async {
-    try {
-      final schedulesJson = jsonEncode(schedules.map((s) => s.toJson()).toList());
-      await SecureStorageService.setString(_schedulesKey, schedulesJson);
-    } catch (e) {
-      if (kDebugMode) {}
-    }
-  }
-
   /// 모든 스케줄 삭제
   Future<void> clearAllSchedules() async {
     try {
-      await SecureStorageService.remove(_schedulesKey);
+      await NotificationSchedulerStorageHelper.clearAllSchedules();
       _schedulesController.add([]);
 
       if (kDebugMode) {}
@@ -259,22 +230,11 @@ class NotificationSchedulerService {
   /// 만료된 스케줄 정리
   Future<void> cleanupExpiredSchedules() async {
     try {
-      final schedules = await getSchedules();
-      final validSchedules = schedules.where((schedule) {
-        // 한 번만 실행되는 스케줄은 이미 실행되었으면 제거
-        if (schedule.scheduleType == ScheduleType.once) {
-          return !schedule.isExpired;
-        }
-        // 활성화된 스케줄만 유지
-        return schedule.isActive;
-      }).toList();
+      final validSchedules =
+          await NotificationSchedulerStorageHelper.cleanupExpiredSchedules();
+      _schedulesController.add(validSchedules);
 
-      if (validSchedules.length != schedules.length) {
-        await _saveSchedules(validSchedules);
-        _schedulesController.add(validSchedules);
-
-        if (kDebugMode) {}
-      }
+      if (kDebugMode) {}
     } catch (e) {
       if (kDebugMode) {}
     }
@@ -284,21 +244,7 @@ class NotificationSchedulerService {
   Future<Map<String, dynamic>> getScheduleStats() async {
     try {
       final schedules = await getSchedules();
-      final activeSchedules = schedules.where((s) => s.isActive).length;
-      final totalSchedules = schedules.length;
-
-      final typeStats = <String, int>{};
-      for (final schedule in schedules) {
-        final typeName = schedule.type.name;
-        typeStats[typeName] = (typeStats[typeName] ?? 0) + 1;
-      }
-
-      return {
-        'total': totalSchedules,
-        'active': activeSchedules,
-        'inactive': totalSchedules - activeSchedules,
-        'byType': typeStats,
-      };
+      return NotificationSchedulerExecutorHelper.createScheduleStats(schedules);
     } catch (e) {
       if (kDebugMode) {}
       return {};

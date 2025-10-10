@@ -24,7 +24,9 @@ class OnboardingBottomSheet extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: OnboardingConstants.bottomSheetShadowOpacity),
+            color: Colors.black.withValues(
+              alpha: OnboardingConstants.bottomSheetShadowOpacity,
+            ),
             blurRadius: OnboardingConstants.bottomSheetShadowBlurRadius,
             offset: OnboardingConstants.bottomSheetShadowOffset,
             spreadRadius: 0,
@@ -44,12 +46,52 @@ class OnboardingBottomSheet extends StatelessWidget {
                 totalPages: OnboardingData.pages.length,
               ),
 
-              // 로고 이미지 (첫 번째 페이지에서만 표시)
+              // 로고 이미지 (첫 번째 페이지에서만 표시) - Welcome 위로 이동
               if (onboardingState.currentPage == 0)
-                LogoWidget(
-                  imagePath: 'assets/icons/logo_notinclude_text.png',
-                  width: OnboardingConstants.logoWidth,
-                  height: OnboardingConstants.logoHeight,
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Image.asset(
+                      'assets/icons/logos/aipet_black.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        debugPrint('❌ 로고 로드 실패: aipet_black.png');
+                        // Fallback: 텍스트 로고
+                        return const Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.pets,
+                              size: 30,
+                              color: AppColors.pointBrown,
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'AIPET',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.pointBrown,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
                 ),
 
               // 제목
@@ -86,7 +128,9 @@ class OnboardingBottomSheet extends StatelessWidget {
                 width: double.infinity,
                 child: ActionButton.primary(
                   isEnabled: true,
-                  text: onboardingState.currentPage == OnboardingData.pages.length - 1
+                  text:
+                      onboardingState.currentPage ==
+                          OnboardingData.pages.length - 1
                       ? OnboardingConstants.startButtonText
                       : OnboardingConstants.nextButtonText,
                   onPressed: onNext,

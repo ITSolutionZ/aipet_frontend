@@ -27,7 +27,7 @@ class PetSelectionModal extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '반려동물 선택',
+                  'ペット選択',
                   style: AppFonts.titleMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -63,7 +63,7 @@ class PetSelectionModal extends ConsumerWidget {
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Text(
-                      '전체',
+                      '全体',
                       style: AppFonts.bodyLarge.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
@@ -200,7 +200,7 @@ class PetSelectionModal extends ConsumerWidget {
                       side: const BorderSide(color: AppColors.toneLightGray),
                     ),
                     child: Text(
-                      '반려동물 관리',
+                      'ペット管理',
                       style: AppFonts.bodyMedium.copyWith(
                         color: AppColors.toneDarkGray,
                       ),
@@ -218,7 +218,7 @@ class PetSelectionModal extends ConsumerWidget {
                       ),
                     ),
                     child: Text(
-                      '확인',
+                      '確認',
                       style: AppFonts.bodyMedium.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,

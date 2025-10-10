@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 급수 기록 편집 화면
 class EditWateringRecordScreen extends ConsumerStatefulWidget {
@@ -10,10 +13,12 @@ class EditWateringRecordScreen extends ConsumerStatefulWidget {
   const EditWateringRecordScreen({super.key, required this.record});
 
   @override
-  ConsumerState<EditWateringRecordScreen> createState() => _EditWateringRecordScreenState();
+  ConsumerState<EditWateringRecordScreen> createState() =>
+      _EditWateringRecordScreenState();
 }
 
-class _EditWateringRecordScreenState extends ConsumerState<EditWateringRecordScreen> {
+class _EditWateringRecordScreenState
+    extends ConsumerState<EditWateringRecordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
@@ -30,7 +35,8 @@ class _EditWateringRecordScreenState extends ConsumerState<EditWateringRecordScr
 
   void _initializeValues() {
     // 기존 값들로 초기화
-    _amountController.text = widget.record['amount']?.toString().replaceAll('ml', '') ?? '';
+    _amountController.text =
+        widget.record['amount']?.toString().replaceAll('ml', '') ?? '';
     _notesController.text = widget.record['notes']?.toString() ?? '';
     _selectedType = widget.record['type']?.toString() ?? '定期的な給水';
 
@@ -38,7 +44,10 @@ class _EditWateringRecordScreenState extends ConsumerState<EditWateringRecordScr
     final timeStr = widget.record['time']?.toString() ?? '';
     final timeParts = timeStr.split(':');
     if (timeParts.length == 2) {
-      _selectedTime = TimeOfDay(hour: int.parse(timeParts[0]), minute: int.parse(timeParts[1]));
+      _selectedTime = TimeOfDay(
+        hour: int.parse(timeParts[0]),
+        minute: int.parse(timeParts[1]),
+      );
     }
   }
 
@@ -103,7 +112,11 @@ class _EditWateringRecordScreenState extends ConsumerState<EditWateringRecordScr
                 color: AppColors.pointBlue.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.water_drop, color: AppColors.pointBlue, size: 32),
+              child: const Icon(
+                Icons.water_drop,
+                color: AppColors.pointBlue,
+                size: 32,
+              ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -119,7 +132,9 @@ class _EditWateringRecordScreenState extends ConsumerState<EditWateringRecordScr
                   ),
                   Text(
                     '${widget.record['amount']} - ${widget.record['type']}',
-                    style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+                    style: AppFonts.bodyMedium.copyWith(
+                      color: AppColors.pointGray,
+                    ),
                   ),
                 ],
               ),
@@ -189,7 +204,10 @@ class _EditWateringRecordScreenState extends ConsumerState<EditWateringRecordScr
             ),
             const SizedBox(height: AppSpacing.md),
             ListTile(
-              leading: const Icon(Icons.access_time, color: AppColors.pointBlue),
+              leading: const Icon(
+                Icons.access_time,
+                color: AppColors.pointBlue,
+              ),
               title: const Text('時間を選択'),
               subtitle: Text(
                 _selectedTime.format(context),
@@ -322,7 +340,10 @@ class _EditWateringRecordScreenState extends ConsumerState<EditWateringRecordScr
 
   /// 시간 선택
   Future<void> _selectTime() async {
-    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: _selectedTime);
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime,
+    );
     if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
@@ -331,19 +352,43 @@ class _EditWateringRecordScreenState extends ConsumerState<EditWateringRecordScr
   }
 
   /// 기록 저장
-  void _saveRecord() {
+  Future<void> _saveRecord() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: 실제 데이터 저장 로직 구현
+      // 로컬 데이터로 저장
+      final prefs = await SharedPreferences.getInstance();
 
-      // Mock 저장 로직 (실제로는 API 호출)
+      final recordId = widget.record['id'] as String;
 
-      // 성공 메시지 표시
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('給水記録を更新しました'), backgroundColor: AppColors.pointGreen),
-      );
+      final wateringRecord = {
+        'id': recordId,
+        'amount': int.parse(_amountController.text),
+        'time': '${_selectedTime.hour}:${_selectedTime.minute}',
+        'type': _selectedType,
+        'notes': _notesController.text,
+        'date': DateTime.now().toIso8601String(),
+      };
 
-      // 이전 화면으로 돌아가기
-      context.pop();
+      // 기존 기록 가져오기
+      final records = prefs.getStringList('watering_records') ?? [];
+      final updatedRecords = records.map((record) {
+        final data = jsonDecode(record) as Map<String, dynamic>;
+        if (data['id'] == recordId) {
+          return jsonEncode(wateringRecord);
+        }
+        return record;
+      }).toList();
+
+      await prefs.setStringList('watering_records', updatedRecords);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('給水記録を更新しました'),
+            backgroundColor: AppColors.pointGreen,
+          ),
+        );
+        context.pop();
+      }
     }
   }
 
@@ -356,21 +401,34 @@ class _EditWateringRecordScreenState extends ConsumerState<EditWateringRecordScr
           title: const Text('記録を削除'),
           content: const Text('この給水記録を削除しますか？この操作は取り消せません。'),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('キャンセル')),
             TextButton(
-              onPressed: () {
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('キャンセル'),
+            ),
+            TextButton(
+              onPressed: () async {
                 Navigator.of(context).pop();
 
-                // TODO: 실제 삭제 로직 구현
+                // 로컬 데이터에서 삭제
+                final prefs = await SharedPreferences.getInstance();
+                final records = prefs.getStringList('watering_records') ?? [];
+                final currentRecordId = widget.record['id'] as String;
+                final filteredRecords = records.where((record) {
+                  final data = jsonDecode(record) as Map<String, dynamic>;
+                  return data['id'] != currentRecordId;
+                }).toList();
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('給水記録を削除しました'),
-                    backgroundColor: AppColors.pointBrown,
-                  ),
-                );
+                await prefs.setStringList('watering_records', filteredRecords);
 
-                context.pop();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('給水記録を削除しました'),
+                      backgroundColor: AppColors.pointBrown,
+                    ),
+                  );
+                  context.pop();
+                }
               },
               child: const Text('削除'),
             ),

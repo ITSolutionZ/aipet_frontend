@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/allergy/data/providers/saved_analysis_provider.dart';
 import 'package:aipet_frontend/features/allergy/domain/entities/saved_analysis_entity.dart';
 import 'package:aipet_frontend/features/allergy/presentation/screens/allergy_analysis_result_screen.dart';
+import 'package:aipet_frontend/features/allergy/presentation/screens/saved_analysis_list_screen.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -105,7 +106,15 @@ class _SavedAnalysisAccordionState
                         InkWell(
                           onTap: () {
                             Navigator.pop(context);
-                            // TODO: 전체 리스트 화면으로 이동
+                            // 전체 리스트 화면으로 이동
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SavedAnalysisListScreen(
+                                  selectedPetId: widget.selectedPetId,
+                                ),
+                              ),
+                            );
                           },
                           child: Container(
                             width: double.infinity,

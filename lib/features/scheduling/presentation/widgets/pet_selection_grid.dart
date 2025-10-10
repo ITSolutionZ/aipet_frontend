@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class PetSelectionGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final petSizes = SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = FeedingLocalStorageService.getPetSizeFeedingInfo();
 
     return Card(
       child: Padding(

@@ -1,19 +1,44 @@
-// import 'package:aipet_frontend/features/home/data/providers/home_providers.dart';
-import 'package:aipet_frontend/features/scheduling/domain/entities/appointment_summary_entity.dart';
+import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
 import 'package:aipet_frontend/shared/widgets/soft_gradient_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 오늘의 예약 화면
-class TodayAppointmentsScreen extends ConsumerWidget {
+class TodayAppointmentsScreen extends ConsumerStatefulWidget {
   const TodayAppointmentsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final todayAppointments = SchedulingMock.SchedulingMockService.getMockTodayMealsForSchedule();
+  ConsumerState<TodayAppointmentsScreen> createState() =>
+      _TodayAppointmentsScreenState();
+}
+
+class _TodayAppointmentsScreenState
+    extends ConsumerState<TodayAppointmentsScreen> {
+  List<Map<String, dynamic>> _todayAppointments = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final appointments = await FeedingLocalStorageService.getTodayMeals();
+    setState(() {
+      _todayAppointments = appointments;
+      _isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    final todayAppointments = _todayAppointments;
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -48,7 +73,11 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                           color: AppColors.pointBrown.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(AppRadius.medium),
                         ),
-                        child: const Icon(Icons.today, color: AppColors.pointBrown, size: 24),
+                        child: const Icon(
+                          Icons.today,
+                          color: AppColors.pointBrown,
+                          size: 24,
+                        ),
                       ),
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
@@ -65,7 +94,9 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                             const SizedBox(height: AppSpacing.xs),
                             Text(
                               '${DateTime.now().month}月${DateTime.now().day}日',
-                              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+                              style: AppFonts.bodyMedium.copyWith(
+                                color: AppColors.pointGray,
+                              ),
                             ),
                           ],
                         ),
@@ -104,7 +135,7 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                   itemCount: todayAppointments.length,
                   itemBuilder: (context, index) {
                     final appointment = todayAppointments[index];
-                    return _buildAppointmentCard(appointment as AppointmentSummary, context);
+                    return _buildMealCard(appointment, context);
                   },
                 ),
               ),
@@ -127,7 +158,11 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 color: AppColors.pointGray.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(40),
               ),
-              child: const Icon(Icons.event_available, size: 40, color: AppColors.pointGray),
+              child: const Icon(
+                Icons.event_available,
+                size: 40,
+                color: AppColors.pointGray,
+              ),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
@@ -148,19 +183,21 @@ class TodayAppointmentsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildAppointmentCard(AppointmentSummary appointment, BuildContext context) {
+  Widget _buildMealCard(Map<String, dynamic> meal, BuildContext context) {
     final now = DateTime.now();
-    final isPast = appointment.scheduledTime.isBefore(now);
+    final scheduledTime = meal['scheduledTime'] as DateTime;
+    final isCompleted = meal['isCompleted'] as bool;
+    final isPast = scheduledTime.isBefore(now);
 
     Color statusColor;
     String statusText;
     IconData statusIcon;
 
-    if (isPast) {
-      statusColor = AppColors.pointGray;
+    if (isCompleted || isPast) {
+      statusColor = AppColors.pointGreen;
       statusText = '完了';
       statusIcon = Icons.check_circle;
-    } else if (appointment.scheduledTime.difference(now).inMinutes <= 30) {
+    } else if (scheduledTime.difference(now).inMinutes <= 30) {
       statusColor = AppColors.pointPink;
       statusText = '間もなく';
       statusIcon = Icons.access_time;
@@ -188,18 +225,17 @@ class TodayAppointmentsScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 상단 행: 시간과 상태
             Row(
               children: [
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: _getTypeColor(appointment.type).withValues(alpha: 0.1),
+                    color: AppColors.pointBrown.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppRadius.medium),
                   ),
-                  child: Icon(
-                    _getTypeIcon(appointment.type),
-                    color: _getTypeColor(appointment.type),
+                  child: const Icon(
+                    Icons.restaurant,
+                    color: AppColors.pointBrown,
                     size: 20,
                   ),
                 ),
@@ -209,15 +245,17 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${appointment.scheduledTime.hour.toString().padLeft(2, '0')}:${appointment.scheduledTime.minute.toString().padLeft(2, '0')}',
+                        '${scheduledTime.hour.toString().padLeft(2, '0')}:${scheduledTime.minute.toString().padLeft(2, '0')}',
                         style: AppFonts.titleLarge.copyWith(
                           fontWeight: FontWeight.bold,
                           color: AppColors.pointDark,
                         ),
                       ),
                       Text(
-                        appointment.type,
-                        style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                        meal['scheduleName'] as String,
+                        style: AppFonts.bodySmall.copyWith(
+                          color: AppColors.pointGray,
+                        ),
                       ),
                     ],
                   ),
@@ -248,59 +286,9 @@ class TodayAppointmentsScreen extends ConsumerWidget {
                 ),
               ],
             ),
-
-            const SizedBox(height: AppSpacing.md),
-
-            // 예약 제목과 펫 이름
-            Text(
-              appointment.title,
-              style: AppFonts.titleMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.pointDark,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Row(
-              children: [
-                const Icon(Icons.pets, size: 16, color: AppColors.pointGray),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  appointment.petName,
-                  style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-                ),
-              ],
-            ),
           ],
         ),
       ),
     );
-  }
-
-  Color _getTypeColor(String type) {
-    switch (type) {
-      case '健康診断':
-      case '医療':
-        return AppColors.pointGreen;
-      case 'グルーミング':
-        return AppColors.pointBrown;
-      case '訓練':
-        return AppColors.pointBlue;
-      default:
-        return AppColors.pointGray;
-    }
-  }
-
-  IconData _getTypeIcon(String type) {
-    switch (type) {
-      case '健康診断':
-      case '医療':
-        return Icons.medical_services;
-      case 'グルーミング':
-        return Icons.content_cut;
-      case '訓練':
-        return Icons.school;
-      default:
-        return Icons.event;
-    }
   }
 }

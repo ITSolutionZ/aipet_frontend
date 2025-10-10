@@ -2,6 +2,7 @@ import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart'
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_detail_map_widget.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_info_bottom_sheet.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart'
     hide WalkDetailMapWidget, WalkInfoBottomSheet;
 import 'package:flutter/material.dart';
@@ -22,17 +23,24 @@ class WalkDetailScreen extends ConsumerWidget {
       orElse: () => walkRecord, // 찾지 못하면 원본 사용
     );
 
+    // 로컬 저장소에서 펫 데이터 가져오기
+    final petsAsync = ref.watch(petListProvider);
+
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       body: SafeArea(
-        child: Column(
-          children: [
-            // 헤더
-            _buildHeader(context, currentWalkRecord),
+        child: petsAsync.when(
+          data: (pets) => Column(
+            children: [
+              // 헤더
+              _buildHeader(context, currentWalkRecord, pets),
 
-            // 지도 섹션
-            Expanded(child: _buildMapSection(currentWalkRecord)),
-          ],
+              // 지도 섹션
+              Expanded(child: _buildMapSection(currentWalkRecord)),
+            ],
+          ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('エラー: $error')),
         ),
       ),
     );
@@ -41,13 +49,19 @@ class WalkDetailScreen extends ConsumerWidget {
   Widget _buildHeader(
     BuildContext context,
     WalkRecordEntity currentWalkRecord,
+    List<PetProfileEntity> pets,
   ) {
     // 이 산책에 참여한 펫만 가져오기
-    final pets = PetMockData.getMockPets();
-    final walkPet = pets.firstWhere(
-      (p) => p.id == currentWalkRecord.petId,
-      orElse: () => pets.first,
-    );
+    final walkPet = pets.isNotEmpty
+        ? pets.firstWhere(
+            (p) => p.id == currentWalkRecord.petId,
+            orElse: () => pets.first,
+          )
+        : null;
+
+    if (walkPet == null) {
+      return const SizedBox.shrink();
+    }
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),

@@ -1,4 +1,6 @@
-import 'package:aipet_frontend/shared/mock_data/pet_food_mock_data.dart';
+import 'package:aipet_frontend/features/daily/data/datasources/pet_food_local_datasource.dart';
+import 'package:aipet_frontend/features/daily/presentation/widgets/searchable_dropdown.dart'
+    as daily;
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -26,34 +28,33 @@ class PetFoodSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SearchableDropdown(
+        daily.SearchableDropdown(
           title: '食べる餌',
           selectedValue: selectedFood,
-          options: PetFoodMockData.foods,
+          options: PetFoodLocalDatasource.foods,
           onChanged: onFoodChanged,
-          icon: PetFoodMockData.getCategoryIcons()['food']!,
+          icon: PetFoodLocalDatasource.getCategoryIcons()['food']!,
           hintText: '餌を検索または選択してください',
         ),
         const SizedBox(height: AppSpacing.md),
-        SearchableDropdown(
+        daily.SearchableDropdown(
           title: '食べる栄養剤',
           selectedValue: selectedSupplement,
-          options: PetFoodMockData.supplements,
+          options: PetFoodLocalDatasource.supplements,
           onChanged: onSupplementChanged,
-          icon: PetFoodMockData.getCategoryIcons()['supplement']!,
+          icon: PetFoodLocalDatasource.getCategoryIcons()['supplement']!,
           hintText: '栄養剤を検索または選択してください',
         ),
         const SizedBox(height: AppSpacing.md),
-        SearchableDropdown(
+        daily.SearchableDropdown(
           title: '食べるおやつ',
           selectedValue: selectedTreat,
-          options: PetFoodMockData.treats,
+          options: PetFoodLocalDatasource.treats,
           onChanged: onTreatChanged,
-          icon: PetFoodMockData.getCategoryIcons()['treat']!,
+          icon: PetFoodLocalDatasource.getCategoryIcons()['treat']!,
           hintText: 'おやつを検索または選択してください',
         ),
       ],
     );
   }
-
 }

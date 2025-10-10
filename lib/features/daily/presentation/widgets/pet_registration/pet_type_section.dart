@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration_controller.dart';
+import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration/pet_registration_constants.dart';
 import 'package:aipet_frontend/shared/shared.dart' hide State;
 import 'package:flutter/material.dart';
 
@@ -39,7 +39,7 @@ class _PetTypeSectionState extends State<PetTypeSection> {
           },
           title: Text(
             widget.selectedPetType.isNotEmpty
-                ? (PetRegistrationController.petTypes[widget
+                ? (PetRegistrationConstants.petTypes[widget
                               .selectedPetType]?['name']
                           as String? ??
                       'ペットの種類を選択')
@@ -66,7 +66,7 @@ class _PetTypeSectionState extends State<PetTypeSection> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Icon(
-                          PetRegistrationController.petTypes[widget
+                          PetRegistrationConstants.petTypes[widget
                                       .selectedPetType]?['icon']
                                   as IconData? ??
                               Icons.pets,
@@ -78,7 +78,7 @@ class _PetTypeSectionState extends State<PetTypeSection> {
                   ),
                 )
               : const Icon(Icons.pets, color: AppColors.textSecondary),
-          children: PetRegistrationController.petTypes.entries.map((entry) {
+          children: PetRegistrationConstants.petTypes.entries.map((entry) {
             final petTypeKey = entry.key;
             final petTypeData = entry.value;
             final petTypeName = petTypeData['name'] as String;
@@ -138,9 +138,9 @@ class _PetTypeSectionState extends State<PetTypeSection> {
   String _getPetTypeImagePath(String petTypeKey) {
     // 개와 고양이는 대표 이미지 사용
     if (petTypeKey == 'dog') {
-      return 'assets/images/dogs.png';
+      return 'assets/images/dogs/dogs.png';
     } else if (petTypeKey == 'cat') {
-      return 'assets/images/cat.png';
+      return 'assets/images/cats/cats.png';
     } else {
       // 나머지는 etc 폴더의 이미지 사용
       return 'assets/images/etc/$petTypeKey.png';

@@ -214,7 +214,7 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
                               const Icon(Icons.calendar_today, size: 16),
                               const SizedBox(width: 8),
                               Text(
-                                '온라인 예약',
+                                'オンライン予約',
                                 style: AppFonts.bodyMedium.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
@@ -246,7 +246,7 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
                               const Icon(Icons.list_alt, size: 16),
                               const SizedBox(width: 8),
                               Text(
-                                '예약 내역 확인',
+                                '予約履歴確認',
                                 style: AppFonts.bodyMedium.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blue,
@@ -316,12 +316,12 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionTitle('병원소개'),
+                    _buildSectionTitle('病院紹介'),
                     const SizedBox(height: AppSpacing.md),
                     _buildExpandableDescription(),
                     const SizedBox(height: AppSpacing.lg),
                     Text(
-                      '병원 편의시설',
+                      '病院便利施設',
                       style: AppFonts.titleSmall.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -341,7 +341,7 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionTitle('공지사항'),
+                    _buildSectionTitle('お知らせ'),
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       '登録されたお知らせがありません。',
@@ -362,12 +362,12 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionTitle('운영시간'),
+                    _buildSectionTitle('営業時間'),
                     const SizedBox(height: AppSpacing.md),
-                    _buildTimeSlot('월', '10:00-19:00', '화', '10:00-19:00'),
-                    _buildTimeSlot('수', '10:00-19:00', '목', '10:00-19:00'),
-                    _buildTimeSlot('금', '10:00-19:00', '토', '09:30-15:00'),
-                    _buildTimeSlot('일', '휴진', '공휴일', '09:30-15:00'),
+                    _buildTimeSlot('月', '10:00-19:00', '火', '10:00-19:00'),
+                    _buildTimeSlot('水', '10:00-19:00', '木', '10:00-19:00'),
+                    _buildTimeSlot('金', '10:00-19:00', '土', '09:30-15:00'),
+                    _buildTimeSlot('日', '休診', '祝日', '09:30-15:00'),
                     const SizedBox(height: AppSpacing.lg),
                     Row(
                       children: [
@@ -405,7 +405,7 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionTitle('진료정보'),
+                    _buildSectionTitle('診療情報'),
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       '診療科目',
@@ -487,7 +487,7 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
                           side: const BorderSide(color: Colors.blue),
                         ),
                         child: Text(
-                          '예약 내역',
+                          '予約履歴',
                           style: AppFonts.bodyMedium.copyWith(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,
@@ -513,7 +513,7 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
                           ),
                         ),
                         child: Text(
-                          '온라인 예약',
+                          'オンライン予約',
                           style: AppFonts.bodyMedium.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -747,13 +747,13 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
 
     // 24시간 운영 병원인지 확인
     final filterTags = hospitalData['filterTags'] as List<String>? ?? [];
-    if (filterTags.contains('24시')) {
-      return '24시간 운영';
+    if (filterTags.contains('24時') || filterTags.contains('24시')) {
+      return '24時間営業';
     }
 
     final operatingHours = _getOperatingHoursForDay(currentDay);
     if (operatingHours == null) {
-      return '휴무';
+      return '休業';
     }
 
     return '${operatingHours['open']} - ${operatingHours['close']}';
@@ -765,20 +765,20 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
     final now = DateTime.now();
     final currentTime = now.hour * 60 + now.minute;
 
-    // 24시간 운영 병원인지 확인
+    // 24時間営業病院かどうか確認
     final filterTags = hospitalData['filterTags'] as List<String>? ?? [];
-    if (filterTags.contains('24시')) {
-      return '24시간 운영중';
+    if (filterTags.contains('24時') || filterTags.contains('24시')) {
+      return '24時間営業中';
     }
 
     if (!isOpen) {
-      // 점심시간인지 확인
+      // 昼休み時間かどうか確認
       const lunchStart = 12 * 60;
       const lunchEnd = 14 * 60;
       if (currentTime >= lunchStart && currentTime < lunchEnd) {
-        return '점심시간 (14:00에 재개)';
+        return '昼休み（14:00に再開）';
       }
-      return '현재 휴무';
+      return '現在休業';
     }
 
     // 운영 중일 때 남은 시간 계산
@@ -789,33 +789,33 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
       final remainingMinutes = closeTime - currentTime;
 
       if (remainingMinutes <= 60) {
-        // 1시간 이내에 마감
+        // 1時間以内に閉店
         final hours = remainingMinutes ~/ 60;
         final minutes = remainingMinutes % 60;
         if (hours > 0) {
-          return '현재 운영중 ($hours시간 $minutes분 후 마감)';
+          return '営業中（$hours時間$minutes分後に閉店）';
         } else {
-          return '현재 운영중 ($minutes분 후 마감)';
+          return '営業中（$minutes分後に閉店）';
         }
       }
     }
 
-    return '현재 운영중';
+    return '営業中';
   }
 
-  // 요일별 운영시간을 가져오는 함수
+  // 曜日別営業時間を取得する関数
   Map<String, String>? _getOperatingHoursForDay(int weekday) {
     switch (weekday) {
-      case 1: // 월요일
-      case 2: // 화요일
-      case 3: // 수요일
-      case 4: // 목요일
-      case 5: // 금요일
+      case 1: // 月曜日
+      case 2: // 火曜日
+      case 3: // 水曜日
+      case 4: // 木曜日
+      case 5: // 金曜日
         return {'open': '10:00', 'close': '19:00'};
-      case 6: // 토요일
+      case 6: // 土曜日
         return {'open': '09:30', 'close': '15:00'};
-      case 7: // 일요일
-        return null; // 휴무
+      case 7: // 日曜日
+        return null; // 休業
       default:
         return null;
     }
@@ -986,28 +986,28 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
     );
   }
 
-  // 요일별 색상을 결정하는 함수
+  // 曜日別色を決定する関数
   Color _getDayColor(String day) {
     switch (day) {
       case '토':
       case '土':
-        return Colors.blue; // 토요일은 파란색
+        return Colors.blue; // 土曜日は青色
       case '일':
       case '日':
       case '공휴일':
       case '祝日':
-        return Colors.red; // 일요일과 공휴일은 빨간색
+        return Colors.red; // 日曜日と祝日は赤色
       default:
-        return Colors.black; // 평일은 검은색
+        return Colors.black; // 平日は黒色
     }
   }
 
-  // 시간 텍스트 색상을 결정하는 함수
+  // 時間テキスト色を決定する関数
   Color _getTimeColor(String time) {
     if (time == '휴진' || time == '休診') {
-      return Colors.red; // 휴진일은 빨간색
+      return Colors.red; // 休診日は赤色
     }
-    return Colors.black; // 일반 시간은 검은색
+    return Colors.black; // 一般時間は黒色
   }
 
   // 확장 가능한 병원 설명 위젯
@@ -1040,7 +1040,7 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
           child: Row(
             children: [
               Text(
-                _isDescriptionExpanded ? '접기' : '펼쳐보기',
+                _isDescriptionExpanded ? '折りたたむ' : '詳細を見る',
                 style: AppFonts.bodySmall.copyWith(
                   color: Colors.blue,
                   fontWeight: FontWeight.w500,
@@ -1098,8 +1098,9 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
   }
 
   Map<String, dynamic> _getHospitalData(String hospitalId) {
-    // 実際のAPIまたはデータベースから取得
-    final mockData = {
+    // TODO: Google Places API getPlaceDetails를 사용하여 실제 데이터 가져오기
+    // 현재는 기본 데이터만 반환
+    final defaultData = {
       '0': {
         'name': 'アニマルクリニック銀座',
         'address': '東京都中央区銀座3-10-5',
@@ -1198,7 +1199,8 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
       },
     };
 
-    return mockData[hospitalId] ?? mockData['0']!;
+    // hospitalId에 해당하는 데이터가 있으면 반환, 없으면 기본 데이터 반환
+    return defaultData[hospitalId] ?? defaultData['0']!;
   }
 
   // 병원 편의시설을 동적으로 표시하는 위젯

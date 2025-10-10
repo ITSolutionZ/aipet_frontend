@@ -11,15 +11,8 @@ class SelectPetUseCase {
         return Result.failure('ペットを選択してください');
       }
 
-      final userMessage = AiMessageEntity(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: '${pet.name}について相談したいです',
-        type: MessageType.user,
-        timestamp: DateTime.now(),
-      );
-
       final aiMessage = AiMessageEntity(
-        id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
         content:
             '${pet.name}についてですね！🐕\n\nどのような内容でお困りですか？カテゴリを選択してください：\n\n• 健康 - 病気、怪我、健康管理\n• 食事 - フード、栄養、給餌\n• 行動 - しつけ、問題行動\n• グルーミング - お手入れ、毛づくろい\n• その他',
         type: MessageType.assistant,

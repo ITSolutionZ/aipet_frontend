@@ -1,15 +1,13 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/features/home/data/mappers/pet_mapper.dart';
 import 'package:aipet_frontend/features/home/data/mappers/weather_mapper.dart';
 import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
 import 'package:aipet_frontend/features/home/data/services/weather_service.dart';
 import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
+import 'package:aipet_frontend/shared/data/datasources/pet_profile_local_datasource.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:aipet_frontend/shared/services/ultra_fast_cache_service.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/home/home_mock_service.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart';
 import 'package:flutter/material.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
@@ -124,16 +122,15 @@ class HomeRepositoryImpl implements HomeRepository {
 
   /// Mock 날씨 엔티티 (API 실패시 fallback)
   WeatherEntity _getMockWeatherEntity() {
-    final mockWeatherInfo = HomeMockService.getMockWeatherInfo();
-    return WeatherEntity(
-      temperature: mockWeatherInfo['temperature'] as double,
-      location: mockWeatherInfo['location'] as String,
+    return const WeatherEntity(
+      temperature: 22.0,
+      location: '東京',
       weatherId: 800, // 맑음
-      description: mockWeatherInfo['condition'] as String,
-      feelsLike: (mockWeatherInfo['temperature'] as double) + 2.0,
+      description: '晴れ',
+      feelsLike: 24.0,
       humidity: 65,
       windSpeed: 2.5,
-      iconCode: mockWeatherInfo['iconCode'] as String,
+      iconCode: '01d',
       uvIndex: 5.0,
       visibility: 10000,
       pressure: 1013.25,
@@ -143,19 +140,33 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<List<PetSummaryEntity>> getPetSummaries() async {
     // 캐시에서 펫 요약 정보 확인
-    final cachedPetSummaries = _cacheService.getMemoryCache<List<PetSummaryEntity>>(
-      CacheKeys.petProfiles,
-    );
+    final cachedPetSummaries = _cacheService
+        .getMemoryCache<List<PetSummaryEntity>>(CacheKeys.petProfiles);
 
     if (cachedPetSummaries != null) {
       debugPrint('⚡ getPetSummaries: 캐시에서 펫 요약 정보 반환');
       return cachedPetSummaries;
     }
 
-    // 통합된 PetMockService에서 PetProfileEntity 리스트를 직접 가져옴
+    // 로컬 데이터 소스에서 실제 펫 프로필 가져오기
     await Future.delayed(_mockDelay);
-    final petProfiles = PetMockService.getMockPetProfiles();
-    final petSummaries = PetMapper.toSummaryEntityListFromMaps(petProfiles);
+    final petProfiles = PetProfileLocalDatasource.getPetProfiles();
+
+    // PetProfileEntity를 PetSummaryEntity로 변환
+    final petSummaries = petProfiles
+        .map(
+          (pet) => PetSummaryEntity(
+            id: pet.id,
+            name: pet.name,
+            typeName: pet.typeName,
+            breed: pet.breed ?? '',
+            age: pet.age,
+            birthDate: pet.birthDate,
+            createdAt: pet.createdAt,
+            profileImageUrl: pet.imagePath,
+          ),
+        )
+        .toList();
 
     // 펫 요약 정보 캐시 저장 (1시간 TTL)
     _cacheService.setMemoryCache(
@@ -169,10 +180,9 @@ class HomeRepositoryImpl implements HomeRepository {
 
   // 기존 호환성을 위해 유지
   Future<List<PetProfileEntity>> getPetProfiles() async {
-    // 통합된 PetMockService 사용 (실제 API 연동 전까지)
+    // 로컬 데이터 소스에서 실제 펫 프로필 가져오기
     await Future.delayed(_mockDelay);
-    final petMockData = PetMockService.getMockPetProfiles();
-    return PetMapper.fromMapList(petMockData);
+    return PetProfileLocalDatasource.getPetProfiles();
   }
 
   @override
@@ -187,20 +197,18 @@ class HomeRepositoryImpl implements HomeRepository {
       return cachedWalkSummary;
     }
 
-    // Mock 데이터 사용
+    // 로컬 Mock 데이터 직접 생성
     await Future.delayed(_mockDelay);
-    final walkSummaryData = HomeMockService.getMockWalkSummary();
 
-    // 이번주 최장 기록 여부 계산 (예시: 30분 이상이면 최장 기록으로 처리)
-    final todayDuration = walkSummaryData['todayDuration'] as Duration;
-    final isWeeklyRecord = todayDuration.inMinutes >= 30;
+    const todayDuration = Duration(minutes: 35);
+    const isWeeklyRecord = true; // 35분은 이번주 최장 기록
 
-    final walkSummary = WalkSummary(
-      todayWalks: walkSummaryData['todayWalks'] as int,
-      todayDistance: walkSummaryData['todayDistance'] as double,
+    const walkSummary = WalkSummary(
+      todayWalks: 2,
+      todayDistance: 3.5,
       todayDuration: todayDuration,
-      weeklyGoal: walkSummaryData['weeklyGoal'] as double,
-      weeklyProgress: walkSummaryData['weeklyProgress'] as double,
+      weeklyGoal: 20.0,
+      weeklyProgress: 15.5,
       isWeeklyRecord: isWeeklyRecord,
     );
 
@@ -226,20 +234,22 @@ class HomeRepositoryImpl implements HomeRepository {
       return cachedHealthSummary;
     }
 
-    // Mock 데이터 사용
+    // 로컬 데이터 소스에서 실제 펫 프로필 가져오기
     await Future.delayed(_mockDelay);
+    final petProfiles = PetProfileLocalDatasource.getPetProfiles();
 
-    // HomeMockService.getMockHealthSummary()는 HealthSummary에 맞지 않는 구조를 반환하므로
-    // 직접 HealthSummary용 데이터를 생성
-    final alerts = [
-      const HealthAlert(petName: 'マックス', message: '健康診断が必要です'),
-      const HealthAlert(petName: 'ルナ', message: 'ワクチン接種が必要です'),
-    ];
+    // 실제 펫 데이터 기반으로 건강 요약 생성
+    final totalPets = petProfiles.length;
+    final healthyPets = petProfiles.where((pet) => pet.isActive).length;
+    final petsNeedingAttention = totalPets - healthyPets;
+
+    // 빈 알림 리스트 (실제 펫이 없으므로)
+    final alerts = <HealthAlert>[];
 
     final healthSummary = HealthSummary(
-      totalPets: 3,
-      healthyPets: 2,
-      petsNeedingAttention: 1,
+      totalPets: totalPets,
+      healthyPets: healthyPets,
+      petsNeedingAttention: petsNeedingAttention,
       alerts: alerts,
     );
 
@@ -256,19 +266,17 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<List<AppointmentSummary>> getUpcomingAppointments() async {
     // 캐시에서 예약 정보 확인
-    final cachedAppointments = _cacheService.getMemoryCache<List<AppointmentSummary>>(
-      CacheKeys.appointments,
-    );
+    final cachedAppointments = _cacheService
+        .getMemoryCache<List<AppointmentSummary>>(CacheKeys.appointments);
 
     if (cachedAppointments != null) {
       debugPrint('⚡ getUpcomingAppointments: 캐시에서 예약 정보 반환');
       return cachedAppointments;
     }
 
-    // Mock 데이터 사용 - HomeMockService로 변경
+    // 로컬 데이터 직접 생성
     await Future.delayed(_mockDelay);
 
-    // 임시로 Mock 데이터 생성
     final appointments = [
       AppointmentSummary(
         id: 'app-1',

@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 
@@ -98,7 +99,10 @@ class MarkNotificationAsReadUseCase {
   }
 
   /// 알림을 읽지 않음으로 표시
-  Future<Result<void>> markAsUnread(String userId, String notificationId) async {
+  Future<Result<void>> markAsUnread(
+    String userId,
+    String notificationId,
+  ) async {
     try {
       if (userId.trim().isEmpty) {
         return Result.failure('ユーザーIDが無効です');
@@ -125,7 +129,10 @@ class MarkNotificationAsReadUseCase {
   }
 
   /// 읽음 상태 토글
-  Future<Result<bool>> toggleReadStatus(String userId, String notificationId) async {
+  Future<Result<bool>> toggleReadStatus(
+    String userId,
+    String notificationId,
+  ) async {
     try {
       if (userId.trim().isEmpty) {
         return Result.failure('ユーザーIDが無効です');
@@ -135,10 +142,21 @@ class MarkNotificationAsReadUseCase {
         return Result.failure('通知IDが無効です');
       }
 
-      // 현재 읽음 상태 조회 (실제로는 repository에서 조회)
-      // Mock으로 현재 상태를 가정하고 토글
-      const currentIsUnread = true; // Mock 데이터
-      const newIsRead = !currentIsUnread;
+      // 현재 읽음 상태 조회
+      final currentNotificationResult = await _repository.getNotificationById(
+        userId: userId,
+        notificationId: notificationId,
+      );
+
+      if (!currentNotificationResult.isSuccess ||
+          currentNotificationResult.dataOrNull == null) {
+        return Result.failure('通知が見つかりません');
+      }
+
+      final currentNotification = currentNotificationResult.dataOrNull!;
+      final currentIsRead =
+          currentNotification.status == NotificationStatus.read;
+      final newIsRead = !currentIsRead;
 
       final result = await _repository.markAsRead(
         userId: userId,
@@ -147,7 +165,7 @@ class MarkNotificationAsReadUseCase {
       );
 
       if (result.isSuccess) {
-        const message = newIsRead ? '通知を既読にしました' : '通知を未読にしました';
+        final message = newIsRead ? '通知を既読にしました' : '通知を未読にしました';
         return Result.success(message, newIsRead);
       } else {
         return Result.failure('通知の読み取り状態変更に失敗しました');

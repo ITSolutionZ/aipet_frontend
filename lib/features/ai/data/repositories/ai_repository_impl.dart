@@ -4,7 +4,6 @@ import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/utils/ai_logger.dart';
 import 'package:aipet_frontend/shared/core/utils/mock_helper.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/ai/ai_config_mock_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -232,11 +231,65 @@ class AiRepositoryImpl implements AiRepository {
   }) async {
     await MockHelper.simulateApiCall();
 
-    return AiConfigMockData.getPersonalizedQuestions(
-      category: category,
-      petType: pet?.type,
-      petAge: pet?.age,
-    );
+    // 카테고리별 맞춤형 질문 생성
+    final petName = pet?.name ?? 'ペット';
+
+    switch (category) {
+      case 'health':
+        return [
+          AiSuggestedQuestionEntity(
+            id: 'health_1',
+            question: '$petNameの健康状態はどうですか？',
+            category: 'health',
+            icon: Icons.medical_services,
+            description: '健康チェック',
+          ),
+          AiSuggestedQuestionEntity(
+            id: 'health_2',
+            question: '$petNameに適した予防接種は？',
+            category: 'health',
+            icon: Icons.vaccines,
+            description: '予防接種について',
+          ),
+        ];
+      case 'food':
+        return [
+          AiSuggestedQuestionEntity(
+            id: 'food_1',
+            question: '$petNameにおすすめのフードは？',
+            category: 'food',
+            icon: Icons.restaurant,
+            description: 'フード推奨',
+          ),
+          AiSuggestedQuestionEntity(
+            id: 'food_2',
+            question: '$petNameの適正な食事量は？',
+            category: 'food',
+            icon: Icons.scale,
+            description: '食事量について',
+          ),
+        ];
+      case 'behavior':
+        return [
+          AiSuggestedQuestionEntity(
+            id: 'behavior_1',
+            question: '$petNameのしつけ方法を教えてください',
+            category: 'behavior',
+            icon: Icons.psychology,
+            description: 'しつけの基本',
+          ),
+        ];
+      default:
+        return [
+          AiSuggestedQuestionEntity(
+            id: 'general_1',
+            question: '$petNameについて相談したいです',
+            category: 'general',
+            icon: Icons.help_outline,
+            description: '一般的な相談',
+          ),
+        ];
+    }
   }
 
   @override
@@ -418,19 +471,26 @@ class AiRepositoryImpl implements AiRepository {
         },
       ];
 
-      return mockHistories
-          .map(
-            (history) => AiChatHistoryEntity(
-              id: history['id'] as String,
-              title: history['title'] as String,
-              summary: history['summary'] as String,
-              messages: [], // TODO: 실제 메시지 목록 로드 구현 필요
-              messageCount: history['messageCount'] as int,
-              createdAt: DateTime.parse(history['createdAt'] as String),
-              isManualSaved: history['isManualSaved'] as bool,
-            ),
-          )
-          .toList();
+      // 실제 메시지 목록 로드
+      final allMessages = await _localStorageService.loadChatHistory();
+
+      return mockHistories.map((history) {
+        // 해당 히스토리와 관련된 메시지 필터링 (간단한 구현)
+        final relatedMessages = allMessages
+            .where((msg) => msg.id.contains(history['id'] as String))
+            .take(history['messageCount'] as int)
+            .toList();
+
+        return AiChatHistoryEntity(
+          id: history['id'] as String,
+          title: history['title'] as String,
+          summary: history['summary'] as String,
+          messages: relatedMessages,
+          messageCount: history['messageCount'] as int,
+          createdAt: DateTime.parse(history['createdAt'] as String),
+          isManualSaved: history['isManualSaved'] as bool,
+        );
+      }).toList();
     } catch (error) {
       debugPrint('getChatHistories error: $error');
       return [];

@@ -1,4 +1,4 @@
-import '../../domain/repositories/auth_repository.dart';
+import '../../domain/entities/auth_entities.dart';
 
 class AuthUserModel {
   final String id;

@@ -20,7 +20,15 @@ class DailyHealthScreenData {
   }
 }
 
-/// Daily Health Screen의 상태 관리 컨트롤러
+/// Daily Health Screen Controller
+///
+/// **역할**: 일일 건강 화면의 상태 관리 및 초기화
+/// - 선택된 펫 ID 상태 관리
+/// - 펫 선택 초기화
+/// - DailyHealthLogic 통합
+///
+/// **사용 위치**: DailyHealthScreen에서 사용
+/// **관련 파일**: DailyHealthLogic (UI 로직), DailyHealthController (데이터 CRUD)
 class DailyHealthScreenController extends StateNotifier<DailyHealthScreenData> {
   final Ref ref;
   late final DailyHealthLogic _logic;

@@ -1,17 +1,22 @@
+import 'dart:convert';
+
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 급수 기록 추가 화면
 class AddWateringRecordScreen extends ConsumerStatefulWidget {
   const AddWateringRecordScreen({super.key});
 
   @override
-  ConsumerState<AddWateringRecordScreen> createState() => _AddWateringRecordScreenState();
+  ConsumerState<AddWateringRecordScreen> createState() =>
+      _AddWateringRecordScreenState();
 }
 
-class _AddWateringRecordScreenState extends ConsumerState<AddWateringRecordScreen> {
+class _AddWateringRecordScreenState
+    extends ConsumerState<AddWateringRecordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
@@ -123,7 +128,10 @@ class _AddWateringRecordScreenState extends ConsumerState<AddWateringRecordScree
             ),
             const SizedBox(height: AppSpacing.md),
             ListTile(
-              leading: const Icon(Icons.access_time, color: AppColors.pointBlue),
+              leading: const Icon(
+                Icons.access_time,
+                color: AppColors.pointBlue,
+              ),
               title: const Text('時間を選択'),
               subtitle: Text(
                 _selectedTime.format(context),
@@ -222,7 +230,10 @@ class _AddWateringRecordScreenState extends ConsumerState<AddWateringRecordScree
 
   /// 시간 선택
   Future<void> _selectTime() async {
-    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: _selectedTime);
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime,
+    );
     if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
@@ -231,20 +242,34 @@ class _AddWateringRecordScreenState extends ConsumerState<AddWateringRecordScree
   }
 
   /// 급수 기록 저장
-  void _saveWateringRecord() {
+  Future<void> _saveWateringRecord() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: 실제 데이터 저장 로직 구현
-      // 현재는 Mock 데이터로 시뮬레이션
+      // 로컬 데이터로 저장
+      final prefs = await SharedPreferences.getInstance();
 
-      // Mock 저장 로직 (실제로는 API 호출)
+      final wateringRecord = {
+        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+        'amount': int.parse(_amountController.text),
+        'time': '${_selectedTime.hour}:${_selectedTime.minute}',
+        'type': _selectedType,
+        'notes': _notesController.text,
+        'date': DateTime.now().toIso8601String(),
+      };
 
-      // 성공 메시지 표시
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('給水記録を保存しました'), backgroundColor: AppColors.pointGreen),
-      );
+      // 기존 기록 가져오기
+      final records = prefs.getStringList('watering_records') ?? [];
+      records.add(jsonEncode(wateringRecord));
+      await prefs.setStringList('watering_records', records);
 
-      // 이전 화면으로 돌아가기
-      context.pop();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('給水記録を保存しました'),
+            backgroundColor: AppColors.pointGreen,
+          ),
+        );
+        context.pop();
+      }
     }
   }
 }

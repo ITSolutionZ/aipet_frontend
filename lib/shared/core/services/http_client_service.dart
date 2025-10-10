@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/shared/core/constants/error_codes.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/auth/auth_mock_data.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -23,7 +22,10 @@ class HttpClientService {
         baseUrl: baseUrl,
         connectTimeout: connectTimeout,
         receiveTimeout: receiveTimeout,
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
       ),
     );
 
@@ -51,7 +53,8 @@ class HttpClientService {
           if (_requiresAuth(options.path)) {
             final token = await _authTokenRepository?.getToken();
             if (token != null && !token.isExpired) {
-              options.headers['Authorization'] = '${token.tokenType} ${token.accessToken}';
+              options.headers['Authorization'] =
+                  '${token.tokenType} ${token.accessToken}';
             }
           }
 
@@ -68,14 +71,18 @@ class HttpClientService {
 
         onResponse: (response, handler) {
           if (kDebugMode) {
-            debugPrint('✅ HTTP Response: ${response.statusCode} ${response.requestOptions.path}');
+            debugPrint(
+              '✅ HTTP Response: ${response.statusCode} ${response.requestOptions.path}',
+            );
           }
           handler.next(response);
         },
 
         onError: (error, handler) async {
           if (kDebugMode) {
-            debugPrint('❌ HTTP Error: ${error.response?.statusCode} ${error.requestOptions.path}');
+            debugPrint(
+              '❌ HTTP Error: ${error.response?.statusCode} ${error.requestOptions.path}',
+            );
             debugPrint('❌ Error Message: ${error.message}');
           }
 
@@ -88,7 +95,8 @@ class HttpClientService {
           }
 
           // 네트워크 에러 재시도 로직
-          if (_shouldRetry(error) && _getRetryCount(error.requestOptions) < maxRetries) {
+          if (_shouldRetry(error) &&
+              _getRetryCount(error.requestOptions) < maxRetries) {
             await _retryRequest(error, handler);
             return;
           }
@@ -111,7 +119,10 @@ class HttpClientService {
   }
 
   /// 401 에러 발생 시 토큰 갱신 및 재요청
-  Future<bool> _handleTokenRefresh(DioException error, ErrorInterceptorHandler handler) async {
+  Future<bool> _handleTokenRefresh(
+    DioException error,
+    ErrorInterceptorHandler handler,
+  ) async {
     final repository = _authTokenRepository;
     if (repository == null) {
       return false;
@@ -163,7 +174,10 @@ class HttpClientService {
   }
 
   /// 요청 재시도 처리
-  Future<void> _retryRequest(DioException error, ErrorInterceptorHandler handler) async {
+  Future<void> _retryRequest(
+    DioException error,
+    ErrorInterceptorHandler handler,
+  ) async {
     final retryCount = _getRetryCount(error.requestOptions) + 1;
     final delay = Duration(seconds: retryCount * 2); // 지수 백오프
 
@@ -300,7 +314,9 @@ class HttpClientService {
       // 파일 데이터 추가
       if (files != null) {
         for (final entry in files.entries) {
-          formData.files.add(MapEntry(entry.key, await MultipartFile.fromFile(entry.value)));
+          formData.files.add(
+            MapEntry(entry.key, await MultipartFile.fromFile(entry.value)),
+          );
         }
       }
 
@@ -312,7 +328,10 @@ class HttpClientService {
   }
 
   /// 응답 파싱
-  ApiResponse<T> _parseResponse<T>(Response response, T Function(Map<String, dynamic>)? fromJson) {
+  ApiResponse<T> _parseResponse<T>(
+    Response response,
+    T Function(Map<String, dynamic>)? fromJson,
+  ) {
     final data = response.data as Map<String, dynamic>;
 
     if (fromJson != null) {
@@ -349,7 +368,8 @@ class HttpClientService {
           final statusCode = error.response?.statusCode ?? 0;
           final responseData = error.response?.data;
 
-          if (responseData is Map<String, dynamic> && responseData['message'] != null) {
+          if (responseData is Map<String, dynamic> &&
+              responseData['message'] != null) {
             errorMessage = responseData['message'] as String;
             errorCode = responseData['errorCode'] as String?;
           } else {
@@ -373,7 +393,8 @@ class HttpClientService {
   }
 
   // Mock 관련 메서드들 (기존 ApiService에서 이동)
-  static bool get _useMockData => const bool.fromEnvironment('USE_MOCK_DATA', defaultValue: true);
+  static bool get _useMockData =>
+      const bool.fromEnvironment('USE_MOCK_DATA', defaultValue: true);
 
   Future<ApiResponse<T>> _getMockResponse<T>(
     String path,
@@ -452,8 +473,14 @@ class HttpClientService {
   Future<Map<String, dynamic>?> _getMockDataForEndpoint(String endpoint) async {
     switch (endpoint) {
       case '/auth/me':
-        final userData = await AuthMockData.mockGetCurrentUser();
-        return userData != null ? {'user': userData} : null;
+        return {
+          'user': {
+            'id': 'local_user',
+            'email': 'local@aipet.dev',
+            'name': 'ローカルユーザー',
+            'createdAt': DateTime.now().toIso8601String(),
+          },
+        };
       default:
         return null;
     }
@@ -465,20 +492,35 @@ class HttpClientService {
   ) async {
     switch (endpoint) {
       case '/auth/login':
-        if (body?['idToken'] != null) {
-          return AuthMockData.mockBackendLogin(body!['idToken'] as String);
-        }
-        return null;
+        return {
+          'user': {
+            'id': 'local_user',
+            'email': 'local@aipet.dev',
+            'name': 'ローカルユーザー',
+            'createdAt': DateTime.now().toIso8601String(),
+          },
+          'accessToken': 'local_mock_token',
+          'refreshToken': 'local_mock_refresh_token',
+          'expiresIn': 3600,
+        };
       case '/auth/register':
-        if (body?['idToken'] != null) {
-          return AuthMockData.mockBackendRegister(body!['idToken'] as String);
-        }
-        return null;
+        return {
+          'user': {
+            'id': 'local_user',
+            'email': 'local@aipet.dev',
+            'name': 'ローカルユーザー',
+            'createdAt': DateTime.now().toIso8601String(),
+          },
+          'accessToken': 'local_mock_token',
+          'refreshToken': 'local_mock_refresh_token',
+          'expiresIn': 3600,
+        };
       case '/auth/refresh':
-        if (body?['refreshToken'] != null) {
-          return AuthMockData.mockBackendRefreshToken(body!['refreshToken'] as String);
-        }
-        return null;
+        return {
+          'accessToken': 'local_mock_token_refreshed',
+          'refreshToken': 'local_mock_refresh_token_refreshed',
+          'expiresIn': 3600,
+        };
       default:
         return null;
     }
@@ -491,7 +533,9 @@ class HttpClientService {
     return {'message': 'Updated successfully'};
   }
 
-  Future<Map<String, dynamic>?> _deleteMockDataForEndpoint(String endpoint) async {
+  Future<Map<String, dynamic>?> _deleteMockDataForEndpoint(
+    String endpoint,
+  ) async {
     return {'message': 'Deleted successfully'};
   }
 }
@@ -501,6 +545,8 @@ typedef ApiResponse<T> = Result<T>;
 
 /// Result 클래스의 success 메서드 확장
 extension ApiResponseExtension on Result {
-  static Result<T> success<T>(String message, T data) => Result.success(message, data);
-  static Result<T> failure<T>(String message, [Exception? error]) => Result.failure(message, error);
+  static Result<T> success<T>(String message, T data) =>
+      Result.success(message, data);
+  static Result<T> failure<T>(String message, [Exception? error]) =>
+      Result.failure(message, error);
 }

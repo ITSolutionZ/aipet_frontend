@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+
 import '../domain/common_errors.dart';
 import 'api_constants.dart';
 
@@ -31,7 +32,6 @@ class ApiErrorHandler {
         return NetworkError(details: '보안 인증서에 문제가 있습니다.');
 
       case DioExceptionType.unknown:
-      default:
         return UnknownError(details: error.message);
     }
   }
@@ -55,16 +55,10 @@ class ApiErrorHandler {
         );
 
       case ApiStatusCodes.unauthorized:
-        return AuthenticationError(
-          '인증이 필요합니다.',
-          details: error.message,
-        );
+        return AuthenticationError('인증이 필요합니다.', details: error.message);
 
       case ApiStatusCodes.forbidden:
-        return PermissionError(
-          '접근 권한이 없습니다.',
-          details: error.message,
-        );
+        return PermissionError('접근 권한이 없습니다.', details: error.message);
 
       case ApiStatusCodes.notFound:
         return ClientError(
@@ -98,10 +92,7 @@ class ApiErrorHandler {
       case ApiStatusCodes.badGateway:
       case ApiStatusCodes.serviceUnavailable:
       case ApiStatusCodes.gatewayTimeout:
-        return ServerError(
-          statusCode: statusCode,
-          details: error.message,
-        );
+        return ServerError(statusCode: statusCode, details: error.message);
 
       default:
         return UnknownError(details: error.message);

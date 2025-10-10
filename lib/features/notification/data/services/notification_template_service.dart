@@ -1,16 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 
+import 'helpers/notification_template_storage_helper.dart';
 import 'notification_service.dart' as local;
 
 /// 알림 템플릿 서비스
 class NotificationTemplateService {
-  static const String _templatesKey = 'notification_templates';
-
   final local.NotificationService _notificationService;
   bool _isInitialized = false;
 
@@ -18,7 +15,8 @@ class NotificationTemplateService {
   final StreamController<List<NotificationTemplate>> _templatesController =
       StreamController<List<NotificationTemplate>>.broadcast();
 
-  Stream<List<NotificationTemplate>> get templatesStream => _templatesController.stream;
+  Stream<List<NotificationTemplate>> get templatesStream =>
+      _templatesController.stream;
 
   NotificationTemplateService(this._notificationService);
 
@@ -43,8 +41,9 @@ class NotificationTemplateService {
   /// 기본 템플릿 생성
   Future<void> _createDefaultTemplates() async {
     try {
-      final defaultTemplates = NotificationTemplateFactory.getDefaultTemplates();
-      await _saveTemplates(defaultTemplates);
+      final defaultTemplates =
+          NotificationTemplateFactory.getDefaultTemplates();
+      await NotificationTemplateStorageHelper.saveTemplates(defaultTemplates);
       _templatesController.add(defaultTemplates);
 
       if (kDebugMode) {}
@@ -58,7 +57,7 @@ class NotificationTemplateService {
     try {
       final templates = await getTemplates();
       templates.add(template);
-      await _saveTemplates(templates);
+      await NotificationTemplateStorageHelper.saveTemplates(templates);
       _templatesController.add(templates);
 
       if (kDebugMode) {}
@@ -75,7 +74,7 @@ class NotificationTemplateService {
 
       if (index != -1) {
         templates[index] = template;
-        await _saveTemplates(templates);
+        await NotificationTemplateStorageHelper.saveTemplates(templates);
         _templatesController.add(templates);
 
         if (kDebugMode) {}
@@ -90,7 +89,7 @@ class NotificationTemplateService {
     try {
       final templates = await getTemplates();
       templates.removeWhere((t) => t.id == templateId);
-      await _saveTemplates(templates);
+      await NotificationTemplateStorageHelper.saveTemplates(templates);
       _templatesController.add(templates);
 
       if (kDebugMode) {}
@@ -107,7 +106,7 @@ class NotificationTemplateService {
 
       if (index != -1) {
         templates[index] = templates[index].copyWith(isActive: isActive);
-        await _saveTemplates(templates);
+        await NotificationTemplateStorageHelper.saveTemplates(templates);
         _templatesController.add(templates);
 
         if (kDebugMode) {}
@@ -119,16 +118,7 @@ class NotificationTemplateService {
 
   /// 모든 템플릿 가져오기
   Future<List<NotificationTemplate>> getTemplates() async {
-    try {
-      final templatesJson = await SecureStorageService.getString(_templatesKey);
-      if (templatesJson != null) {
-        final List<dynamic> templatesList = jsonDecode(templatesJson);
-        return templatesList.map((json) => NotificationTemplate.fromJson(json)).toList();
-      }
-    } catch (e) {
-      if (kDebugMode) {}
-    }
-    return [];
+    return NotificationTemplateStorageHelper.getTemplates();
   }
 
   /// 활성화된 템플릿만 가져오기
@@ -138,15 +128,22 @@ class NotificationTemplateService {
   }
 
   /// 특정 타입의 템플릿 가져오기
-  Future<List<NotificationTemplate>> getTemplatesByType(TemplateType type) async {
+  Future<List<NotificationTemplate>> getTemplatesByType(
+    TemplateType type,
+  ) async {
     final templates = await getTemplates();
     return NotificationTemplateFactory.filterByType(templates, type);
   }
 
   /// 특정 알림 타입의 템플릿 가져오기
-  Future<List<NotificationTemplate>> getTemplatesByNotificationType(NotificationType type) async {
+  Future<List<NotificationTemplate>> getTemplatesByNotificationType(
+    NotificationType type,
+  ) async {
     final templates = await getTemplates();
-    return NotificationTemplateFactory.filterByNotificationType(templates, type);
+    return NotificationTemplateFactory.filterByNotificationType(
+      templates,
+      type,
+    );
   }
 
   /// 템플릿으로 알림 생성 및 발송
@@ -192,10 +189,14 @@ class NotificationTemplateService {
   }
 
   /// 템플릿 미리보기 생성
-  String getTemplatePreview(String templateId, {Map<String, String>? variables}) {
+  String getTemplatePreview(
+    String templateId, {
+    Map<String, String>? variables,
+  }) {
     try {
       // 메모리에서 템플릿 찾기 (실제로는 getTemplates() 호출 필요)
-      final defaultTemplates = NotificationTemplateFactory.getDefaultTemplates();
+      final defaultTemplates =
+          NotificationTemplateFactory.getDefaultTemplates();
       final template = defaultTemplates.firstWhere((t) => t.id == templateId);
 
       return template.getPreview();
@@ -234,28 +235,7 @@ class NotificationTemplateService {
   Future<Map<String, dynamic>> getTemplateStats() async {
     try {
       final templates = await getTemplates();
-      final activeTemplates = templates.where((t) => t.isActive).length;
-      final totalTemplates = templates.length;
-
-      final typeStats = <String, int>{};
-      for (final template in templates) {
-        final typeName = template.type.name;
-        typeStats[typeName] = (typeStats[typeName] ?? 0) + 1;
-      }
-
-      final notificationTypeStats = <String, int>{};
-      for (final template in templates) {
-        final typeName = template.notificationType.name;
-        notificationTypeStats[typeName] = (notificationTypeStats[typeName] ?? 0) + 1;
-      }
-
-      return {
-        'total': totalTemplates,
-        'active': activeTemplates,
-        'inactive': totalTemplates - activeTemplates,
-        'byType': typeStats,
-        'byNotificationType': notificationTypeStats,
-      };
+      return NotificationTemplateStorageHelper.createTemplateStats(templates);
     } catch (e) {
       if (kDebugMode) {}
       return {};
@@ -266,13 +246,10 @@ class NotificationTemplateService {
   Future<List<NotificationTemplate>> searchTemplates(String query) async {
     try {
       final templates = await getTemplates();
-      final lowercaseQuery = query.toLowerCase();
-
-      return templates.where((template) {
-        return template.name.toLowerCase().contains(lowercaseQuery) ||
-            template.description.toLowerCase().contains(lowercaseQuery) ||
-            template.bodyTemplate.toLowerCase().contains(lowercaseQuery);
-      }).toList();
+      return NotificationTemplateStorageHelper.searchTemplates(
+        templates,
+        query,
+      );
     } catch (e) {
       if (kDebugMode) {}
       return [];
@@ -282,20 +259,10 @@ class NotificationTemplateService {
   /// 모든 템플릿 삭제
   Future<void> clearAllTemplates() async {
     try {
-      await SecureStorageService.remove(_templatesKey);
+      await NotificationTemplateStorageHelper.clearAllTemplates();
       _templatesController.add([]);
 
       if (kDebugMode) {}
-    } catch (e) {
-      if (kDebugMode) {}
-    }
-  }
-
-  /// 템플릿 저장
-  Future<void> _saveTemplates(List<NotificationTemplate> templates) async {
-    try {
-      final templatesJson = jsonEncode(templates.map((t) => t.toJson()).toList());
-      await SecureStorageService.setString(_templatesKey, templatesJson);
     } catch (e) {
       if (kDebugMode) {}
     }

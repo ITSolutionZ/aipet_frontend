@@ -242,8 +242,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   void _handleFavoriteTap() {
-    // TODO: 즐겨찾기 화면으로 이동 (요청사항에 따라 제외)
-    // debugPrint('즐겨찾기 탭됨 - 구현 예정');
+    // お気に入り画面へ移動
+    context.push('/favorites');
   }
 
   void _handleNotificationTap() {
@@ -252,8 +252,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   void _handleSearchTap() {
-    // TODO: 검색 화면으로 이동 (요청사항에 따라 제외)
-    // debugPrint('검색 탭됨 - 구현 예정');
+    // 펫 상품 검색 화면으로 이동
+    context.push('/pet-search');
   }
 
   void _handleSearchChanged(String query) {

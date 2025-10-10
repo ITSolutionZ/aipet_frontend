@@ -31,7 +31,10 @@ class AiChatStateManager {
       // 메시지 추가 (있는 경우)
       var updatedMessages = currentState.messages;
       if (newMessages.isNotEmpty) {
-        final messageResult = AiMessageManager.addMessages(updatedMessages, newMessages);
+        final messageResult = AiMessageManager.addMessages(
+          updatedMessages,
+          newMessages,
+        );
         if (messageResult.isSuccess) {
           updatedMessages = messageResult.dataOrNull!;
         }
@@ -39,7 +42,7 @@ class AiChatStateManager {
 
       final updatedState = currentState.copyWith(
         selectedPet: pet,
-        hasPetSelected: true,
+        hasPetSelected: pet != null,
         messages: updatedMessages,
         error: null, // 에러 클리어
       );
@@ -76,7 +79,10 @@ class AiChatStateManager {
       // 메시지 추가
       var updatedMessages = currentState.messages;
       if (newMessages.isNotEmpty) {
-        final messageResult = AiMessageManager.addMessages(updatedMessages, newMessages);
+        final messageResult = AiMessageManager.addMessages(
+          updatedMessages,
+          newMessages,
+        );
         if (messageResult.isSuccess) {
           updatedMessages = messageResult.dataOrNull!;
         }
@@ -99,7 +105,9 @@ class AiChatStateManager {
       return Result.success('Category selection updated', updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error updating category selection: $error\n$stackTrace');
+        debugPrint(
+          '[$_tag] Error updating category selection: $error\n$stackTrace',
+        );
       }
       return Result.failure('카테고리 선택 업데이트 중 오류 발생: $error');
     }
@@ -123,7 +131,10 @@ class AiChatStateManager {
 
       // 사용자 메시지 추가
       if (userMessage != null) {
-        final userResult = AiMessageManager.addMessage(updatedMessages, userMessage);
+        final userResult = AiMessageManager.addMessage(
+          updatedMessages,
+          userMessage,
+        );
         if (userResult.isSuccess) {
           updatedMessages = userResult.dataOrNull!;
         }
@@ -131,7 +142,10 @@ class AiChatStateManager {
 
       // AI 응답 메시지 추가
       if (assistantMessage != null) {
-        final assistantResult = AiMessageManager.addMessage(updatedMessages, assistantMessage);
+        final assistantResult = AiMessageManager.addMessage(
+          updatedMessages,
+          assistantMessage,
+        );
         if (assistantResult.isSuccess) {
           updatedMessages = assistantResult.dataOrNull!;
         }
@@ -155,7 +169,9 @@ class AiChatStateManager {
       return Result.success('Message exchange updated', updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error updating message exchange: $error\n$stackTrace');
+        debugPrint(
+          '[$_tag] Error updating message exchange: $error\n$stackTrace',
+        );
       }
       return Result.failure('메시지 교환 업데이트 중 오류 발생: $error');
     }
@@ -173,7 +189,9 @@ class AiChatStateManager {
     required String userQuestion,
   }) {
     try {
-      final isCurrentlyFavorite = currentState.favoriteMessageIds.contains(message.id);
+      final isCurrentlyFavorite = currentState.favoriteMessageIds.contains(
+        message.id,
+      );
 
       Result<FavoriteUpdateResult> favoriteResult;
 
@@ -197,7 +215,9 @@ class AiChatStateManager {
       }
 
       if (!favoriteResult.isSuccess) {
-        return Result.failure(favoriteResult.error?.toString() ?? 'Favorite operation failed');
+        return Result.failure(
+          favoriteResult.error?.toString() ?? 'Favorite operation failed',
+        );
       }
 
       final result = favoriteResult.dataOrNull!;
@@ -216,7 +236,9 @@ class AiChatStateManager {
       return Result.success(result.message, updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error updating favorite toggle: $error\n$stackTrace');
+        debugPrint(
+          '[$_tag] Error updating favorite toggle: $error\n$stackTrace',
+        );
       }
       return Result.failure('즐겨찾기 토글 중 오류 발생: $error');
     }
@@ -233,7 +255,9 @@ class AiChatStateManager {
       final initialState = AiChatState(suggestedQuestions: suggestedQuestions);
 
       if (kDebugMode) {
-        debugPrint('[$_tag] 🔄 State initialized with ${suggestedQuestions.length} suggestions');
+        debugPrint(
+          '[$_tag] 🔄 State initialized with ${suggestedQuestions.length} suggestions',
+        );
       }
 
       return Result.success('State initialized', initialState);
@@ -253,7 +277,9 @@ class AiChatStateManager {
 
       // 1. 메시지 상태 검증
       var validatedMessages = currentState.messages;
-      final messageCleanupResult = AiMessageManager.cleanupMessages(validatedMessages);
+      final messageCleanupResult = AiMessageManager.cleanupMessages(
+        validatedMessages,
+      );
 
       if (messageCleanupResult.isSuccess &&
           messageCleanupResult.dataOrNull!.length != validatedMessages.length) {
@@ -268,7 +294,8 @@ class AiChatStateManager {
         favoriteQAs: currentState.favoriteQAs,
       );
 
-      if (favoriteValidationResult.isSuccess && !favoriteValidationResult.dataOrNull!.isValid) {
+      if (favoriteValidationResult.isSuccess &&
+          !favoriteValidationResult.dataOrNull!.isValid) {
         issues.addAll(favoriteValidationResult.dataOrNull!.issues);
         needsUpdate = true;
       }
@@ -279,13 +306,16 @@ class AiChatStateManager {
         needsUpdate = true;
       }
 
-      if (currentState.hasCategorySelected && currentState.selectedCategory == null) {
+      if (currentState.hasCategorySelected &&
+          currentState.selectedCategory == null) {
         issues.add('카테고리 선택 상태 불일치');
         needsUpdate = true;
       }
 
       // 4. 메모리 상태 체크
-      final memoryStatus = AiMessageManager.checkMemoryStatus(validatedMessages);
+      final memoryStatus = AiMessageManager.checkMemoryStatus(
+        validatedMessages,
+      );
       if (memoryStatus.shouldCleanup) {
         issues.add(memoryStatus.recommendation);
       }
@@ -315,7 +345,10 @@ class AiChatStateManager {
       }
 
       // 결과 데이터에 검증 요약 포함
-      final resultData = StateValidationResult(state: updatedState, summary: validationSummary);
+      final resultData = StateValidationResult(
+        state: updatedState,
+        summary: validationSummary,
+      );
 
       return Result.success(
         needsUpdate ? 'State validated and updated' : 'State validation passed',
@@ -362,9 +395,15 @@ class AiChatStateManager {
   /// [return] 상태 스냅샷
   static StateSnapshot createSnapshot(AiChatState currentState) {
     try {
-      final messageStats = AiMessageManager.generateStatistics(currentState.messages);
-      final favoriteStats = AiFavoriteManager.generateStatistics(currentState.favoriteQAs);
-      final memoryStatus = AiMessageManager.checkMemoryStatus(currentState.messages);
+      final messageStats = AiMessageManager.generateStatistics(
+        currentState.messages,
+      );
+      final favoriteStats = AiFavoriteManager.generateStatistics(
+        currentState.favoriteQAs,
+      );
+      final memoryStatus = AiMessageManager.checkMemoryStatus(
+        currentState.messages,
+      );
 
       return StateSnapshot(
         timestamp: DateTime.now(),

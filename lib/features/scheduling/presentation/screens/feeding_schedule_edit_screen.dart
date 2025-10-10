@@ -1,11 +1,8 @@
 import 'dart:developer' as developer;
 
+import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/widgets/scheduling_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart'
-    as pet_feature_mock;
-import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -26,10 +23,12 @@ class FeedingScheduleEditScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<FeedingScheduleEditScreen> createState() => _FeedingScheduleEditScreenState();
+  ConsumerState<FeedingScheduleEditScreen> createState() =>
+      _FeedingScheduleEditScreenState();
 }
 
-class _FeedingScheduleEditScreenState extends ConsumerState<FeedingScheduleEditScreen> {
+class _FeedingScheduleEditScreenState
+    extends ConsumerState<FeedingScheduleEditScreen> {
   late TimeOfDay _selectedTime;
   late TextEditingController _amountController;
   late String _selectedMealType;
@@ -49,7 +48,10 @@ class _FeedingScheduleEditScreenState extends ConsumerState<FeedingScheduleEditS
 
     // 현재 시간 파싱 (예: "08:00" → TimeOfDay(8, 0))
     final timeParts = widget.currentTime.split(':');
-    _selectedTime = TimeOfDay(hour: int.parse(timeParts[0]), minute: int.parse(timeParts[1]));
+    _selectedTime = TimeOfDay(
+      hour: int.parse(timeParts[0]),
+      minute: int.parse(timeParts[1]),
+    );
 
     // g 단위 제거하고 숫자만 저장
     final amountText = widget.currentAmount.replaceAll('g', '');
@@ -60,22 +62,28 @@ class _FeedingScheduleEditScreenState extends ConsumerState<FeedingScheduleEditS
   }
 
   /// 펫 정보 및 사이즈 가이드 로드
-  void _loadPetInfo() {
-    final petSizes = SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+  Future<void> _loadPetInfo() async {
+    final petSizes = FeedingLocalStorageService.getPetSizeFeedingInfo();
     _selectedPetInfo = petSizes[_selectedPetId];
 
     if (_selectedPetInfo != null) {
       final size = _selectedPetInfo!['size'] as String;
-      final sizeGuide = SchedulingMock.SchedulingMockService.getPetSizeFeedingGuide();
+      final sizeGuide = FeedingLocalStorageService.getPetSizeFeedingGuide();
       _petSizeGuide = sizeGuide[size];
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = MockDataService.getPetCurrentStatus(_selectedPetId);
-    _selectedStatuses = List<String>.from(currentStatus['selectedStatuses'] ?? []);
-    _statusValues = Map<String, String>.from(currentStatus);
-    _statusValues.remove('selectedStatuses');
-    _statusValues.remove('lastUpdated');
+    final currentStatus = await FeedingLocalStorageService.getPetStatus(
+      _selectedPetId,
+    );
+    setState(() {
+      _selectedStatuses = List<String>.from(
+        currentStatus['selectedStatuses'] ?? [],
+      );
+      _statusValues = Map<String, String>.from(currentStatus);
+      _statusValues.remove('selectedStatuses');
+      _statusValues.remove('lastUpdated');
+    });
   }
 
   @override
@@ -87,12 +95,12 @@ class _FeedingScheduleEditScreenState extends ConsumerState<FeedingScheduleEditS
 
   /// 펫 선택 처리
   void _onPetSelected(String petId) {
-    final petSizes = SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = FeedingLocalStorageService.getPetSizeFeedingInfo();
     setState(() {
       _selectedPetId = petId;
       _selectedPetInfo = petSizes[petId];
-      _loadPetInfo(); // 펫 정보 다시 로드
     });
+    _loadPetInfo();
   }
 
   /// 펫 상태 선택 다이얼로그 표시
@@ -100,21 +108,38 @@ class _FeedingScheduleEditScreenState extends ConsumerState<FeedingScheduleEditS
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final statusOptions = pet_feature_mock.PetMockService.getPetStatusOptions();
+        final statusOptions = FeedingLocalStorageService.getPetStatusOptions();
         return PetStatusSelectionDialog(
           petInfo: petInfo,
           selectedStatuses: List<String>.from(_selectedStatuses),
           statusValues: Map<String, String>.from(_statusValues),
-          statusOptions: statusOptions,
-          onStatusUpdated: (List<String> selectedStatuses, Map<String, String> statusValues) {
-            setState(() {
-              _selectedStatuses = selectedStatuses;
-              _statusValues = statusValues;
+          statusOptions: statusOptions
+              .map(
+                (option) => {
+                  'id': option,
+                  'title': option,
+                  'description': '',
+                  'icon': Icons.pets,
+                  'options': [option],
+                },
+              )
+              .toList(),
+          onStatusUpdated:
+              (
+                List<String> selectedStatuses,
+                Map<String, String> statusValues,
+              ) async {
+                setState(() {
+                  _selectedStatuses = selectedStatuses;
+                  _statusValues = statusValues;
+                });
 
-              // MockDataService에 상태 업데이트
-              MockDataService.updatePetStatus(petId, statusValues);
-            });
-          },
+                // 로컬 저장소에 상태 업데이트
+                await FeedingLocalStorageService.updatePetStatus(
+                  petId,
+                  statusValues,
+                );
+              },
         );
       },
     );
@@ -146,31 +171,42 @@ class _FeedingScheduleEditScreenState extends ConsumerState<FeedingScheduleEditS
   }
 
   /// 저장 처리
-  void _saveSchedule() {
+  Future<void> _saveSchedule() async {
     final timeString =
         '${_selectedTime.hour.toString().padLeft(2, '0')}:${_selectedTime.minute.toString().padLeft(2, '0')}';
-    final amount = '${_amountController.text}g'; // g 단위 추가
+    final amount = '${_amountController.text}g';
 
-    // 목업 데이터 업데이트
-    _updateMockData(_selectedMealType, timeString, amount);
+    // 로컬 저장소 업데이트
+    await _updateLocalData(_selectedMealType, timeString, amount);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$_selectedMealTypeのスケジュールを保存しました'),
-        backgroundColor: AppColors.pointGreen,
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$_selectedMealTypeのスケジュールを保存しました'),
+          backgroundColor: AppColors.pointGreen,
+        ),
+      );
 
-    context.pop({'mealType': _selectedMealType, 'time': timeString, 'amount': amount});
+      context.pop({
+        'mealType': _selectedMealType,
+        'time': timeString,
+        'amount': amount,
+      });
+    }
   }
 
-  /// 목업 데이터 업데이트
-  void _updateMockData(String mealType, String time, String amount) {
-    // MockDataService의 데이터를 실제로 업데이트
-    SchedulingMock.SchedulingMockService.updateFeedingSchedule(mealType, time, amount);
-
-    // 변경사항을 사용자에게 알림
-    developer.log('목업 데이터 업데이트: $mealType - $time - $amount');
+  /// 로컬 저장소 데이터 업데이트
+  Future<void> _updateLocalData(
+    String mealType,
+    String time,
+    String amount,
+  ) async {
+    await FeedingLocalStorageService.updateFeedingSchedule(
+      mealType,
+      time,
+      amount,
+    );
+    developer.log('로컬 저장소 업데이트: $mealType - $time - $amount');
   }
 
   @override
@@ -243,11 +279,18 @@ class _FeedingScheduleEditScreenState extends ConsumerState<FeedingScheduleEditS
 
                     // 급여 가이드 카드
                     if (_selectedPetInfo != null && _petSizeGuide != null)
-                      FeedingGuideCard(petInfo: _selectedPetInfo!, sizeGuide: _petSizeGuide!),
+                      FeedingGuideCard(
+                        petInfo: _selectedPetInfo!,
+                        sizeGuide: _petSizeGuide!,
+                      ),
 
                     const SizedBox(height: AppSpacing.lg),
 
-                    ActionButton.primary(text: '保存', onPressed: _saveSchedule, isEnabled: true),
+                    ActionButton.primary(
+                      text: '保存',
+                      onPressed: _saveSchedule,
+                      isEnabled: true,
+                    ),
                   ],
                 ),
               ]),
