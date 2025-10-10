@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/daily/data/services/reservation_local_storage_service.dart';
 import 'package:aipet_frontend/features/daily/presentation/widgets/cancel_reservation_modal.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/facility/reservation_mock_data.dart';
 import 'package:flutter/material.dart';
 
 /// 예약 카드 위젯
@@ -21,9 +21,10 @@ class ReservationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = reservation['status'] as String;
-    final statusColor = ReservationMockData.getStatusColor(status);
-    final statusIcon = ReservationMockData.getStatusIcon(status);
-    final statusDisplayName = ReservationMockData.getStatusDisplayName(status);
+    final statusColor = ReservationLocalStorageService.getStatusColor(status);
+    final statusIcon = ReservationLocalStorageService.getStatusIcon(status);
+    final statusDisplayName =
+        ReservationLocalStorageService.getStatusDisplayName(status);
 
     final scheduledDate = reservation['scheduledDate'] as DateTime;
     final scheduledTime = reservation['scheduledTime'] as String;
@@ -70,7 +71,7 @@ class ReservationCard extends StatelessWidget {
                       vertical: AppSpacing.xs,
                     ),
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.1),
+                      color: statusColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -173,7 +174,7 @@ class ReservationCard extends StatelessWidget {
               ],
 
               // 액션 버튼들 (상태에 따라)
-              if (status == ReservationMockData.pending) ...[
+              if (status == ReservationLocalStorageService.pending) ...[
                 const SizedBox(height: AppSpacing.md),
                 Row(
                   children: [
@@ -187,7 +188,7 @@ class ReservationCard extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          '취소',
+                          'キャンセル',
                           style: AppFonts.bodySmall.copyWith(
                             color: Colors.red,
                             fontWeight: FontWeight.w500,
@@ -206,7 +207,7 @@ class ReservationCard extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          '확인',
+                          '確認',
                           style: AppFonts.bodySmall.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,
@@ -244,9 +245,9 @@ class ReservationCard extends StatelessWidget {
     final targetDate = DateTime(date.year, date.month, date.day);
 
     if (targetDate == today) {
-      return '오늘';
+      return '今日';
     } else if (targetDate == today.add(const Duration(days: 1))) {
-      return '내일';
+      return '明日';
     } else {
       return '${date.month}/${date.day}';
     }

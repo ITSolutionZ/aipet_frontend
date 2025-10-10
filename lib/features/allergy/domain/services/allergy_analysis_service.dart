@@ -1,26 +1,5 @@
+import 'package:aipet_frontend/features/allergy/domain/entities/allergy_analysis_entities.dart';
 import 'package:aipet_frontend/features/allergy/domain/entities/product_entity.dart';
-
-/// 알레르기 분석 결과
-class AllergyAnalysisResult {
-  /// 의심 원료 리스트
-  final List<String> suspectedIngredients;
-
-  /// 분석 설명
-  final String analysis;
-
-  /// 신뢰도 (0.0 ~ 1.0)
-  final double confidence;
-
-  /// 추가 권장사항
-  final List<String> recommendations;
-
-  const AllergyAnalysisResult({
-    required this.suspectedIngredients,
-    required this.analysis,
-    required this.confidence,
-    required this.recommendations,
-  });
-}
 
 /// 알레르기 분석 서비스 인터페이스
 abstract class AllergyAnalysisService {

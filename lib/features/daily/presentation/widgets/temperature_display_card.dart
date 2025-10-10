@@ -29,7 +29,7 @@ class TemperatureDisplayCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -76,8 +76,8 @@ class TemperatureDisplayCard extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         color: isNormal
-            ? AppColors.pointGreen.withOpacity(0.1)
-            : AppColors.pointRed.withOpacity(0.1),
+            ? AppColors.pointGreen.withValues(alpha: 0.1)
+            : AppColors.pointRed.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(

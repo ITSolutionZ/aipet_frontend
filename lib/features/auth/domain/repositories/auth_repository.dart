@@ -1,5 +1,7 @@
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 
+import '../entities/auth_entities.dart';
+
 /// 인증 리포지토리 인터페이스
 ///
 /// Firebase Auth 구현을 위한 추상화된 인터페이스입니다.
@@ -87,47 +89,3 @@ class AuthResult {
   }
 }
 
-/// 인증된 사용자 정보
-class AuthUser {
-  final String uid;
-  final String? email;
-  final String? displayName;
-  final String? photoURL;
-  final bool isEmailVerified;
-  final DateTime? lastSignInTime;
-  final DateTime creationTime;
-  final Map<String, dynamic>? customData; // 백엔드 토큰 등 추가 정보
-
-  const AuthUser({
-    required this.uid,
-    this.email,
-    this.displayName,
-    this.photoURL,
-    this.isEmailVerified = false,
-    this.lastSignInTime,
-    required this.creationTime,
-    this.customData,
-  });
-
-  AuthUser copyWith({
-    String? uid,
-    String? email,
-    String? displayName,
-    String? photoURL,
-    bool? isEmailVerified,
-    DateTime? lastSignInTime,
-    DateTime? creationTime,
-    Map<String, dynamic>? customData,
-  }) {
-    return AuthUser(
-      uid: uid ?? this.uid,
-      email: email ?? this.email,
-      displayName: displayName ?? this.displayName,
-      photoURL: photoURL ?? this.photoURL,
-      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
-      lastSignInTime: lastSignInTime ?? this.lastSignInTime,
-      creationTime: creationTime ?? this.creationTime,
-      customData: customData ?? this.customData,
-    );
-  }
-}

@@ -1,6 +1,8 @@
-import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:flutter/material.dart';
+
+import '../../features/notification/notification.dart';
 
 /// 🎯 알림 UI 유틸리티
 ///
@@ -121,14 +123,20 @@ class NotificationUIUtils {
   );
 
   /// 알림 시간 스타일
-  static const TextStyle timeStyle = TextStyle(fontSize: 12, color: AppColors.pointGray);
+  static const TextStyle timeStyle = TextStyle(
+    fontSize: 12,
+    color: AppColors.pointGray,
+  );
 
   /// 읽지 않은 알림 표시 점 생성
   static Widget buildUnreadIndicator() {
     return Container(
       width: 8,
       height: 8,
-      decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+      decoration: const BoxDecoration(
+        color: Colors.red,
+        shape: BoxShape.circle,
+      ),
     );
   }
 }

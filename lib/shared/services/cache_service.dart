@@ -44,6 +44,20 @@ class CacheService {
     return entry.data as T?;
   }
 
+  /// 메모리 캐시에서 특정 키 제거
+  void clearMemoryCache(String key) {
+    if (_memoryCache.containsKey(key)) {
+      _memoryCache.remove(key);
+      debugPrint('🧹 CacheService: 메모리 캐시 제거 - $key');
+    }
+  }
+
+  /// 모든 메모리 캐시 제거
+  void clearAllMemoryCache() {
+    _memoryCache.clear();
+    debugPrint('🧹 CacheService: 모든 메모리 캐시 제거');
+  }
+
   /// 영속 캐시에 데이터 저장
   Future<void> setPersistentCache(
     String key,
@@ -176,6 +190,7 @@ class CacheEntry {
 /// 캐시 키 상수
 class CacheKeys {
   static const String homeDashboard = 'home_dashboard';
+  static const String dashboard = 'dashboard';
   static const String weather = 'weather_data';
   static const String petProfiles = 'pet_profiles';
   static const String walkSummary = 'walk_summary';

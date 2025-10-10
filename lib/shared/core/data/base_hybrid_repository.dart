@@ -224,13 +224,4 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
         })
         .catchError((error) {});
   }
-
-  bool _isCacheValid(ResultState<T?> cachedResult) {
-    return cachedResult.isSuccess && cachedResult.dataOrNull != null;
-  }
-
-  bool _isListCacheValid(ResultState<List<T>> cachedResult) {
-    return cachedResult.isSuccess &&
-        cachedResult.dataOrNull?.isNotEmpty == true;
-  }
 }

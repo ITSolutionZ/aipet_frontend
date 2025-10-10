@@ -3,7 +3,15 @@ import 'package:aipet_frontend/features/daily/presentation/logic/daily_health_in
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Daily Health Input 폼의 상태를 관리하는 StateNotifier
+/// Daily Health Form Controller
+///
+/// **역할**: 일일 건강 입력 폼의 상태 관리
+/// - 폼 데이터 상태 관리 (체온, 증상, 메모 등)
+/// - TextEditingController 관리
+/// - DailyHealthInputLogic 통합
+///
+/// **사용 위치**: DailyHealthInputScreen에서 사용
+/// **관련 파일**: DailyHealthInputLogic (폼 검증 및 제출 로직)
 class DailyHealthFormController extends StateNotifier<DailyHealthFormData> {
   final Ref ref;
   final DailyHealthRecord? existingRecord;
@@ -11,10 +19,8 @@ class DailyHealthFormController extends StateNotifier<DailyHealthFormData> {
   late final TextEditingController _temperatureController;
   late final TextEditingController _notesController;
 
-  DailyHealthFormController({
-    required this.ref,
-    this.existingRecord,
-  }) : super(DailyHealthFormData.initial()) {
+  DailyHealthFormController({required this.ref, this.existingRecord})
+    : super(DailyHealthFormData.initial()) {
     _logic = DailyHealthInputLogic(ref: ref, existingRecord: existingRecord);
     _temperatureController = TextEditingController();
     _notesController = TextEditingController();
@@ -93,11 +99,11 @@ class DailyHealthFormController extends StateNotifier<DailyHealthFormData> {
 /// DailyHealthFormController Provider
 final dailyHealthFormControllerProvider = StateNotifierProvider.autoDispose
     .family<DailyHealthFormController, DailyHealthFormData, DailyHealthRecord?>(
-  (ref, existingRecord) => DailyHealthFormController(
-    ref: ref,
-    existingRecord: existingRecord,
-  ),
-);
+      (ref, existingRecord) =>
+          DailyHealthFormController(ref: ref, existingRecord: existingRecord),
+    );
 
 /// 로딩 상태 관리 Provider
-final dailyHealthInputLoadingProvider = StateProvider.autoDispose<bool>((ref) => false);
+final dailyHealthInputLoadingProvider = StateProvider.autoDispose<bool>(
+  (ref) => false,
+);

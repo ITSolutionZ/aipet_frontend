@@ -8,6 +8,9 @@ export 'ai_support.dart';
 /// 공유 도메인 모듈
 export 'core/domain/domain.dart';
 
+/// 공유 데이터 모듈
+export 'data/data.dart';
+
 /// 공유 엔티티 모듈
 export 'entities/entities.dart';
 
@@ -25,3 +28,6 @@ export 'testing.dart';
 
 /// UI 관련 공통 리소스
 export 'ui.dart';
+
+/// 유틸리티 모듈
+export 'utils/pet_data_reset_util.dart';

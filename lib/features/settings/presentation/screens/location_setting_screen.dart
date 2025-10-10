@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/settings/data/data.dart';
 import 'package:aipet_frontend/shared/services/postal_code_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,30 @@ class _LocationSettingScreenState extends ConsumerState<LocationSettingScreen> {
 
   bool _isSearching = false;
   String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    // 저장된 위치 정보 불러오기
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadSavedLocation();
+    });
+  }
+
+  /// 저장된 위치 정보 불러오기
+  Future<void> _loadSavedLocation() async {
+    final repository = ref.read(settingsRepositoryProvider);
+    final result = await repository.getUserLocation();
+
+    if (result.isSuccess && result.data != null) {
+      final location = result.data!;
+      setState(() {
+        _postalCodeController.text = location['postalCode'] ?? '';
+        _addressController.text = location['address'] ?? '';
+        _detailAddressController.text = location['detailAddress'] ?? '';
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -80,19 +105,21 @@ class _LocationSettingScreenState extends ConsumerState<LocationSettingScreen> {
 
     if (!confirmed) return;
 
-    // TODO: 位置情報を保存する処理
-    debugPrint(
-      '保存予定: postalCode=$postalCode, address=$address, detailAddress=$detailAddress',
+    // 위치 정보 저장
+    final repository = ref.read(settingsRepositoryProvider);
+    final result = await repository.saveUserLocation(
+      postalCode: postalCode,
+      address: address,
+      detailAddress: detailAddress,
     );
-    // 例: ref.read(userLocationProvider.notifier).saveLocation(
-    //   postalCode: postalCode,
-    //   address: address,
-    //   detailAddress: detailAddress,
-    // )
 
     if (mounted) {
-      UiService.showSuccess(context, '位置情報を保存しました');
-      Navigator.of(context).pop();
+      if (result.isSuccess) {
+        UiService.showSuccess(context, '位置情報を保存しました');
+        Navigator.of(context).pop();
+      } else {
+        UiService.showError(context, result.message);
+      }
     }
   }
 

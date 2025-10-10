@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/pet_profile/presentation/constants/pet_profile_constants.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_unified_controller.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_activity_tab.dart';
-import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_basic_info_tab_refactored.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_basic_info_tab.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_health_tab.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_nutrition_tab.dart';
 import 'package:aipet_frontend/shared/shared.dart';
@@ -145,9 +145,10 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     return TabBarView(
       controller: _tabController,
       children: [
-        PetBasicInfoTabRefactored(
+        PetBasicInfoTab(
           pet: state.selectedPet!,
           isEditMode: state.isEditMode,
+          onToggleEdit: _toggleEditMode,
         ),
         PetHealthTab(pet: state.selectedPet!),
         PetNutritionTab(pet: state.selectedPet!),

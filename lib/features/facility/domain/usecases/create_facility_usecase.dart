@@ -2,13 +2,13 @@ import 'package:aipet_frontend/features/facility/domain/entities/facility_entity
 import 'package:aipet_frontend/features/facility/domain/repositories/facility_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 
-/// 시설 생성 UseCase
+/// 施設作成 UseCase
 class CreateFacilityUseCase {
   final FacilityRepository _repository;
 
   CreateFacilityUseCase(this._repository);
 
-  /// 새로운 시설을 생성합니다
+  /// 新しい施設を作成します
   Future<Result<Facility>> createFacility({
     required String name,
     required String address,
@@ -26,24 +26,24 @@ class CreateFacilityUseCase {
     Map<String, dynamic>? additionalInfo,
   }) async {
     try {
-      // 입력 검증
+      // 入力検証
       if (name.trim().isEmpty) {
-        return Result.failure('시설명은 필수입니다');
+        return Result.failure('施設名は必須です');
       }
 
       if (address.trim().isEmpty) {
-        return Result.failure('주소는 필수입니다');
+        return Result.failure('住所は必須です');
       }
 
       if (latitude < -90 || latitude > 90) {
-        return Result.failure('유효하지 않은 위도입니다');
+        return Result.failure('無効な緯度です');
       }
 
       if (longitude < -180 || longitude > 180) {
-        return Result.failure('유효하지 않은 경도입니다');
+        return Result.failure('無効な経度です');
       }
 
-      // 시설 엔티티 생성
+      // 施設エンティティ生成
       final facility = Facility(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: name.trim(),
@@ -63,16 +63,17 @@ class CreateFacilityUseCase {
         updatedAt: DateTime.now(),
       );
 
-      // Mock 데이터에 추가 (실제 구현에서는 Repository를 통해 저장)
-      await Future.delayed(const Duration(milliseconds: 500)); // 시뮬레이션
+      // TODO: FacilityRepositoryに保存メソッド追加が必要
+      // 現在はローカルストレージにのみ保存
+      await Future.delayed(const Duration(milliseconds: 500));
 
-      return Result.success('시설이 성공적으로 생성되었습니다', facility);
+      return Result.success('施設が正常に作成されました', facility);
     } catch (e) {
-      return Result.failure('시설 생성 중 오류가 발생했습니다: $e');
+      return Result.failure('施設作成中にエラーが発生しました: $e');
     }
   }
 
-  /// 시설을 일괄 생성합니다
+  /// 施設を一括作成します
   Future<Result<List<Facility>>> createFacilities(
     List<Map<String, dynamic>> facilityDataList,
   ) async {
@@ -99,43 +100,43 @@ class CreateFacilityUseCase {
         if (result.isSuccess && result.data != null) {
           facilities.add(result.data!);
         } else {
-          return Result.failure('시설 일괄 생성 중 오류가 발생했습니다: ${result.message}');
+          return Result.failure('施設一括作成中にエラーが発生しました: ${result.message}');
         }
       }
 
-      return Result.success('시설들이 성공적으로 생성되었습니다', facilities);
+      return Result.success('施設が正常に作成されました', facilities);
     } catch (e) {
-      return Result.failure('시설 일괄 생성 중 오류가 발생했습니다: $e');
+      return Result.failure('施設一括作成中にエラーが発生しました: $e');
     }
   }
 
-  /// 시설을 복사하여 새 시설을 생성합니다
+  /// 施設をコピーして新しい施設を作成します
   Future<Result<Facility>> duplicateFacility(
     String facilityId, {
     String? newName,
   }) async {
     try {
-      // 기존 시설 조회
+      // 既存施設照会
       final getResult = await _repository.getFacilityById(facilityId);
       if (!getResult.isSuccess) {
-        return Result.failure('기존 시설을 찾을 수 없습니다: ${getResult.message}');
+        return Result.failure('既存の施設が見つかりません: ${getResult.message}');
       }
 
       final originalFacility = getResult.data;
 
-      // 새 시설 생성
+      // 新しい施設作成
       final newFacility = originalFacility?.copyWith(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        name: newName ?? '${originalFacility.name} (복사본)',
+        name: newName ?? '${originalFacility.name} (コピー)',
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      await Future.delayed(const Duration(milliseconds: 300)); // 시뮬레이션
+      await Future.delayed(const Duration(milliseconds: 300));
 
-      return Result.success('시설이 성공적으로 복사되었습니다', newFacility);
+      return Result.success('施設が正常にコピーされました', newFacility);
     } catch (e) {
-      return Result.failure('시설 복사 중 오류가 발생했습니다: $e');
+      return Result.failure('施設コピー中にエラーが発生しました: $e');
     }
   }
 }

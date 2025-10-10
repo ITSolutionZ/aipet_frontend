@@ -6,7 +6,15 @@ class MealTypeDropdown extends StatelessWidget {
   final String selectedMealType;
   final ValueChanged<String?> onChanged;
 
-  const MealTypeDropdown({super.key, required this.selectedMealType, required this.onChanged});
+  const MealTypeDropdown({
+    super.key,
+    required this.selectedMealType,
+    required this.onChanged,
+  });
+
+  static List<String> getMealTypes() {
+    return ['朝食', '昼食', '夕食', 'おやつ'];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +35,19 @@ class MealTypeDropdown extends StatelessWidget {
             DropdownButtonFormField<String>(
               value: selectedMealType,
               decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.medium),
+                ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
                 ),
               ),
-              items: MealTypesMockData.getMealTypes().map((String value) {
-                return DropdownMenuItem<String>(value: value, child: Text(value));
+              items: getMealTypes().map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
               }).toList(),
               onChanged: onChanged,
             ),

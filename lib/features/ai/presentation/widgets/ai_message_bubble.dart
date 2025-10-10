@@ -26,15 +26,20 @@ class AiMessageBubble extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
-        mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isUser
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!isUser) ...[
             Container(
               padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: const BoxDecoration(color: AppColors.pointBrown, shape: BoxShape.circle),
+              decoration: const BoxDecoration(
+                color: AppColors.pointBrown,
+                shape: BoxShape.circle,
+              ),
               child: Image.asset(
-                'assets/icons/logo_notinclude_text.png',
+                'assets/icons/logos/aipet_logo.png',
                 width: 20,
                 height: 20,
                 color: Colors.white,
@@ -54,11 +59,18 @@ class AiMessageBubble extends ConsumerWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isUser ? AppColors.pointBrown : Colors.white,
-                  borderRadius: BorderRadius.circular(AppRadius.medium).copyWith(
-                    bottomLeft: isUser ? const Radius.circular(AppRadius.medium) : Radius.zero,
-                    bottomRight: isUser ? Radius.zero : const Radius.circular(AppRadius.medium),
-                  ),
-                  border: isFavorite && !isUser ? Border.all(color: Colors.amber, width: 2) : null,
+                  borderRadius: BorderRadius.circular(AppRadius.medium)
+                      .copyWith(
+                        bottomLeft: isUser
+                            ? const Radius.circular(AppRadius.medium)
+                            : Radius.zero,
+                        bottomRight: isUser
+                            ? Radius.zero
+                            : const Radius.circular(AppRadius.medium),
+                      ),
+                  border: isFavorite && !isUser
+                      ? Border.all(color: Colors.amber, width: 2)
+                      : null,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.1),
@@ -87,7 +99,9 @@ class AiMessageBubble extends ConsumerWidget {
                         Text(
                           _formatTime(message.timestamp),
                           style: AppFonts.bodySmall.copyWith(
-                            color: isUser ? Colors.white70 : AppColors.pointGray,
+                            color: isUser
+                                ? Colors.white70
+                                : AppColors.pointGray,
                           ),
                         ),
                         if (isFavorite && !isUser)
@@ -99,7 +113,10 @@ class AiMessageBubble extends ConsumerWidget {
               ),
             ),
           ),
-          if (isUser) ...[const SizedBox(width: AppSpacing.sm), _buildDefaultUserIcon()],
+          if (isUser) ...[
+            const SizedBox(width: AppSpacing.sm),
+            _buildDefaultUserIcon(),
+          ],
         ],
       ),
     );
@@ -113,7 +130,10 @@ class AiMessageBubble extends ConsumerWidget {
           children: [
             const Icon(Icons.star, color: Colors.amber),
             const SizedBox(width: AppSpacing.sm),
-            Text('お気に入りに追加', style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark)),
+            Text(
+              'お気に入りに追加',
+              style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark),
+            ),
           ],
         ),
         content: Text(
@@ -123,7 +143,10 @@ class AiMessageBubble extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('キャンセル', style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
+            child: Text(
+              'キャンセル',
+              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+            ),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -134,7 +157,10 @@ class AiMessageBubble extends ConsumerWidget {
               backgroundColor: Colors.amber,
               foregroundColor: Colors.white,
             ),
-            child: Text('追加する', style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
+            child: Text(
+              '追加する',
+              style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),

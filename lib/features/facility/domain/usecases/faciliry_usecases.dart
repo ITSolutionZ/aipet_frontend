@@ -1,4 +1,4 @@
-/// 시설 도메인 레이어 UseCase들
+/// 施設ドメインレイヤー UseCase集
 library;
 
 export 'create_facility_usecase.dart';

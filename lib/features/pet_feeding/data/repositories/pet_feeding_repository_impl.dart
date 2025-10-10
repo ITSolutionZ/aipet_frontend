@@ -1,119 +1,125 @@
+import 'package:aipet_frontend/features/pet_feeding/data/models/feeding_record_model.dart';
+import 'package:aipet_frontend/features/pet_feeding/data/services/pet_feeding_local_storage_service.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/entities/feeding_record_entity.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/repositories/pet_feeding_repository.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/mock_data_service.dart';
 
 class PetFeedingRepositoryImpl implements PetFeedingRepository {
-  // 메모리 기반 저장소 (MockDataService의 데이터로 초기화)
-  late final List<FeedingRecordEntity> _feedingRecords;
-
-  PetFeedingRepositoryImpl() {
-    // MockDataService에서 초기 데이터 로드
-    _feedingRecords = List.from(MockDataService.getMockFeedingRecords());
-  }
+  PetFeedingRepositoryImpl();
 
   @override
   Future<List<FeedingRecordEntity>> getFeedingRecords(String petId) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (MockDataService.isEnabled) {
-      return _feedingRecords.where((record) => record.petId == petId).toList();
-    }
+    final recordsData = await PetFeedingLocalStorageService.getFeedingRecords(
+      petId: petId,
+    );
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    return recordsData
+        .map((data) => FeedingRecordModel.fromJson(data).toEntity())
+        .toList();
   }
 
   @override
-  Future<List<FeedingRecordEntity>> getFeedingRecordsByDate(String petId, DateTime date) async {
+  Future<List<FeedingRecordEntity>> getFeedingRecordsByDate(
+    String petId,
+    DateTime date,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (MockDataService.isEnabled) {
-      return _feedingRecords
-          .where(
-            (record) =>
-                record.petId == petId &&
-                record.fedTime.year == date.year &&
-                record.fedTime.month == date.month &&
-                record.fedTime.day == date.day,
-          )
-          .toList();
-    }
+    final recordsData = await PetFeedingLocalStorageService.getFeedingRecords(
+      petId: petId,
+    );
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    return recordsData
+        .where((data) {
+          final fedTime = DateTime.parse(data['fedTime'] as String);
+          return fedTime.year == date.year &&
+              fedTime.month == date.month &&
+              fedTime.day == date.day;
+        })
+        .map((data) => FeedingRecordModel.fromJson(data).toEntity())
+        .toList();
   }
 
   @override
-  Future<FeedingRecordEntity> addFeedingRecord(FeedingRecordEntity record) async {
+  Future<FeedingRecordEntity> addFeedingRecord(
+    FeedingRecordEntity record,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
-    if (MockDataService.isEnabled) {
-      _feedingRecords.add(record);
-      return record;
-    }
+    final model = FeedingRecordModel.fromEntity(record);
+    final recordData = model.toJson();
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    await PetFeedingLocalStorageService.addFeedingRecord(recordData);
+
+    return record;
   }
 
   @override
-  Future<FeedingRecordEntity> updateFeedingRecord(FeedingRecordEntity record) async {
+  Future<FeedingRecordEntity> updateFeedingRecord(
+    FeedingRecordEntity record,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
-    if (MockDataService.isEnabled) {
-      final index = _feedingRecords.indexWhere((r) => r.id == record.id);
-      if (index != -1) {
-        _feedingRecords[index] = record;
-        return record;
-      }
-      throw Exception('급여 기록을 찾을 수 없습니다');
-    }
+    final model = FeedingRecordModel.fromEntity(record);
+    final recordData = model.toJson();
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    await PetFeedingLocalStorageService.updateFeedingRecord(recordData);
+
+    return record;
   }
 
   @override
   Future<void> deleteFeedingRecord(String recordId) async {
     await Future.delayed(const Duration(milliseconds: 400));
 
-    if (MockDataService.isEnabled) {
-      _feedingRecords.removeWhere((record) => record.id == recordId);
-      return;
-    }
-
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    await PetFeedingLocalStorageService.deleteFeedingRecord(recordId);
   }
 
   @override
   Future<FeedingStatistics> getFeedingStatistics(String petId) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (MockDataService.isEnabled) {
-      final records = _feedingRecords.where((record) => record.petId == petId).toList();
+    final recordsData = await PetFeedingLocalStorageService.getFeedingRecords(
+      petId: petId,
+    );
 
-      final completedRecords = records.where((r) => r.status == FeedingStatus.completed).toList();
-      final skippedRecords = records.where((r) => r.status == FeedingStatus.skipped).toList();
+    final records = recordsData
+        .map((data) => FeedingRecordModel.fromJson(data).toEntity())
+        .toList();
 
-      final totalAmount = completedRecords.fold<double>(0, (sum, record) => sum + record.amount);
-      final averageAmount = completedRecords.isNotEmpty
-          ? totalAmount / completedRecords.length
-          : 0.0;
-      final completionRate = records.isNotEmpty ? completedRecords.length / records.length : 0.0;
+    final completedRecords = records
+        .where((r) => r.status == FeedingStatus.completed)
+        .toList();
+    final skippedRecords = records
+        .where((r) => r.status == FeedingStatus.skipped)
+        .toList();
 
-      final feedingsByHour = <String, int>{};
-      for (var record in records) {
-        final hour = record.fedTime.hour.toString().padLeft(2, '0');
-        feedingsByHour[hour] = (feedingsByHour[hour] ?? 0) + 1;
-      }
+    final totalAmount = completedRecords.fold<double>(
+      0,
+      (sum, record) => sum + record.amount,
+    );
+    final averageAmount = completedRecords.isNotEmpty
+        ? totalAmount / completedRecords.length
+        : 0.0;
+    final completionRate = records.isNotEmpty
+        ? completedRecords.length / records.length
+        : 0.0;
 
-      return FeedingStatistics(
-        totalFeedings: records.length,
-        completedFeedings: completedRecords.length,
-        skippedFeedings: skippedRecords.length,
-        totalAmount: totalAmount,
-        averageAmount: averageAmount,
-        completionRate: completionRate,
-        feedingsByHour: feedingsByHour,
-      );
+    final feedingsByHour = <String, int>{};
+    for (var record in records) {
+      final hour = record.fedTime.hour.toString().padLeft(2, '0');
+      feedingsByHour[hour] = (feedingsByHour[hour] ?? 0) + 1;
     }
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    return FeedingStatistics(
+      totalFeedings: records.length,
+      completedFeedings: completedRecords.length,
+      skippedFeedings: skippedRecords.length,
+      totalAmount: totalAmount,
+      averageAmount: averageAmount,
+      completionRate: completionRate,
+      feedingsByHour: feedingsByHour,
+    );
   }
 }

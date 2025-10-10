@@ -3,15 +3,25 @@ import 'package:aipet_frontend/features/daily/presentation/controllers/daily_hea
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Daily Health Input 화면의 비즈니스 로직을 담당하는 클래스
+/// Daily Health Input Logic
+///
+/// **역할**: 일일 건강 입력 화면의 UI 로직 및 헬퍼 함수 모음
+/// - 폼 초기화 데이터 생성
+/// - 건강 기록 저장/업데이트 로직
+/// - 폼 검증 및 에러 메시지 처리
+///
+/// **특징**:
+/// - 상태를 가지지 않는 순수 함수 중심
+/// - UI 표시와 관련된 로직만 포함
+/// - 비즈니스 로직은 DailyHealthController에서 처리
+///
+/// **사용 위치**: DailyHealthInputScreen, DailyHealthFormController에서 사용
+/// **관련 파일**: DailyHealthFormController (폼 상태 관리)
 class DailyHealthInputLogic {
   final Ref ref;
   final DailyHealthRecord? existingRecord;
 
-  DailyHealthInputLogic({
-    required this.ref,
-    this.existingRecord,
-  });
+  DailyHealthInputLogic({required this.ref, this.existingRecord});
 
   /// 폼 초기화 데이터 생성
   DailyHealthFormData initializeFormData() {
@@ -50,7 +60,9 @@ class DailyHealthInputLogic {
   /// DailyHealthRecord 엔티티 생성
   DailyHealthRecord _createHealthRecord(DailyHealthFormData formData) {
     return DailyHealthRecord(
-      id: existingRecord?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      id:
+          existingRecord?.id ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
       petId: formData.selectedPetId!,
       date: existingRecord?.date ?? DateTime.now(),
       temperature: formData.temperature,

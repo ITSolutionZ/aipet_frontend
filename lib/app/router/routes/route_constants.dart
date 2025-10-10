@@ -92,7 +92,8 @@ class RouteConstants {
   static const String dailyHealthInputRoute = '/home/daily/input';
   static const String dailyHealthHistoryRoute = '/home/daily/history';
   static const String dailyPetRegistrationRoute = '/daily-pet-registration';
-  static const String hospitalManagementRoute = '/home/daily/hospital-management';
+  static const String hospitalManagementRoute =
+      '/home/daily/hospital-management';
 
   // ===== STANDALONE ROUTES =====
   static const String addFamilyManagerRoute = '/add-family-manager';
@@ -105,4 +106,7 @@ class RouteConstants {
   static const String todayAppointmentsRoute = '/today-appointments';
   static const String facilityListRoute = '/facility-list';
   static const String hospitalDetailRoute = '/hospital-detail';
+
+  // ===== SHOPPING =====
+  static const String petSearchRoute = '/pet-search';
 }

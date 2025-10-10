@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 class MealStatus {
@@ -6,7 +7,11 @@ class MealStatus {
   final String time;
   final bool isCompleted;
 
-  const MealStatus({required this.meal, required this.time, required this.isCompleted});
+  const MealStatus({
+    required this.meal,
+    required this.time,
+    required this.isCompleted,
+  });
 }
 
 class ScheduleItem {
@@ -24,7 +29,13 @@ class ScheduleItem {
     required this.isEnabled,
   });
 
-  ScheduleItem copyWith({String? id, String? meal, String? time, String? amount, bool? isEnabled}) {
+  ScheduleItem copyWith({
+    String? id,
+    String? meal,
+    String? time,
+    String? amount,
+    bool? isEnabled,
+  }) {
     return ScheduleItem(
       id: id ?? this.id,
       meal: meal ?? this.meal,
@@ -41,10 +52,14 @@ class FeedingScheduleController extends BaseController {
   /// 펫 정보 로드
   Future<Result<Map<String, dynamic>>> loadPetInfo(String petId) async {
     try {
-      final pet = MockDataService.getMockPetById(petId);
-      return Result.success('펫 정보가 로드되었습니다', pet);
+      final petsInfo = FeedingLocalStorageService.getPetSizeFeedingInfo();
+      final pet = petsInfo[petId];
+      if (pet != null) {
+        return Result.success('ペット情報を取得しました', pet);
+      }
+      return Result.failure('ペットが見つかりません');
     } catch (error) {
-      return Result.failure('펫 정보 로드 실패: $error');
+      return Result.failure('ペット情報の取得に失敗しました: $error');
     }
   }
 
@@ -90,7 +105,13 @@ class FeedingScheduleController extends BaseController {
           amount: '100g',
           isEnabled: true,
         ),
-        const ScheduleItem(id: 'lunch', meal: '昼食', time: '12:00', amount: '100g', isEnabled: true),
+        const ScheduleItem(
+          id: 'lunch',
+          meal: '昼食',
+          time: '12:00',
+          amount: '100g',
+          isEnabled: true,
+        ),
         const ScheduleItem(
           id: 'dinner',
           meal: '夕食',
@@ -184,7 +205,9 @@ class FeedingScheduleController extends BaseController {
   /// 급여 완료율 계산
   double calculateCompletionRate(List<MealStatus> mealStatuses) {
     if (mealStatuses.isEmpty) return 0.0;
-    final completedCount = mealStatuses.where((status) => status.isCompleted).length;
+    final completedCount = mealStatuses
+        .where((status) => status.isCompleted)
+        .length;
     return completedCount / mealStatuses.length;
   }
 

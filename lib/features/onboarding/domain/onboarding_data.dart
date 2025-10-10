@@ -10,8 +10,8 @@ class OnboardingData {
       title: 'Welcome',
       subtitle: '毎日の記録、愛に繋ぐ',
       description: '記録から残る愛の痕跡',
-      imageAlignment: Alignment.bottomCenter, // 손바닥 위의 강아지 발 (하단 중앙)
-      imageFit: BoxFit.cover, // 전체 화면을 덮되 하단 부분이 보이도록
+      imageAlignment: Alignment.topCenter, // 이미지는 중앙에 위치
+      imageFit: BoxFit.cover, // 이미지 전체가 보이도록
       useCustomImageDisplay: true, // 커스텀 표시 사용
     ),
     OnboardingPage(

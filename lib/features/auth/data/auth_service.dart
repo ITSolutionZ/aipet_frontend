@@ -1,4 +1,6 @@
 import 'package:aipet_frontend/features/auth/domain/auth_token.dart';
+import 'package:aipet_frontend/features/auth/domain/entities/auth_entities.dart'
+    hide AuthToken;
 import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 
@@ -10,12 +12,19 @@ import 'services/token_storage_service.dart';
 class AuthService {
   final AuthRepository _repository;
 
-  AuthService({AuthRepository? repository}) : _repository = repository ?? FirebaseAuthRealImpl();
+  AuthService({AuthRepository? repository})
+    : _repository = repository ?? FirebaseAuthRealImpl();
 
   /// 이메일/비밀번호 로그인
-  Future<Result<AuthUser>> signInWithEmailAndPassword(String email, String password) async {
+  Future<Result<AuthUser>> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
     try {
-      final result = await _repository.signInWithEmailAndPassword(email, password);
+      final result = await _repository.signInWithEmailAndPassword(
+        email,
+        password,
+      );
 
       if (result.isSuccess && result.dataOrNull != null) {
         // 백엔드 토큰 저장
@@ -30,9 +39,15 @@ class AuthService {
   }
 
   /// 회원가입
-  Future<Result<AuthUser>> createUserWithEmailAndPassword(String email, String password) async {
+  Future<Result<AuthUser>> createUserWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
     try {
-      final result = await _repository.createUserWithEmailAndPassword(email, password);
+      final result = await _repository.createUserWithEmailAndPassword(
+        email,
+        password,
+      );
 
       if (result.isSuccess && result.dataOrNull != null) {
         // 백엔드 토큰 저장
@@ -70,7 +85,9 @@ class AuthService {
         await _saveBackendTokenFromUser(result.dataOrNull!);
         return Result.success('$provider ログインが完了しました', result.dataOrNull!);
       } else {
-        return Result.failure('$provider ログインに失敗しました: ${result.error?.toString()}');
+        return Result.failure(
+          '$provider ログインに失敗しました: ${result.error?.toString()}',
+        );
       }
     } catch (error) {
       return Result.failure('$provider ログインに失敗しました: ${error.toString()}');

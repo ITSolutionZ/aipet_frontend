@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'dialogs/edit_walk_bottom_sheet.dart';
+import 'helpers/helpers.dart';
 
 /// 🎯 Walk Info Bottom Sheet Expansion State Provider
 final walkInfoBottomSheetProvider =
@@ -97,15 +98,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
   }
 
   Widget _buildDragHandle() {
-    return Container(
-      margin: const EdgeInsets.only(top: AppSpacing.sm),
-      width: 40,
-      height: 4,
-      decoration: BoxDecoration(
-        color: AppColors.pointGray.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(2),
-      ),
-    );
+    return WalkInfoUiHelper.buildDragHandle();
   }
 
   Widget _buildHeader(
@@ -114,12 +107,22 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     String sheetId,
     bool isExpanded,
   ) {
-    // 펫 정보 가져오기
-    final pets = PetMockData.getMockPets();
-    final pet = pets.firstWhere(
-      (p) => p.id == walkRecord.petId,
-      orElse: () => pets.first,
+    // 로컬 저장소에서 펫 정보 가져오기
+    final petsAsync = ref.watch(petListProvider);
+    final pet = petsAsync.maybeWhen(
+      data: (pets) {
+        if (pets.isEmpty) return null;
+        return pets.firstWhere(
+          (p) => p.id == walkRecord.petId,
+          orElse: () => pets.first,
+        );
+      },
+      orElse: () => null,
     );
+
+    if (pet == null) {
+      return const SizedBox.shrink();
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -278,27 +281,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
   }
 
   Widget _buildInfoRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-        ),
-        Flexible(
-          child: Text(
-            value,
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointDark,
-              fontWeight: FontWeight.w600,
-            ),
-            textAlign: TextAlign.right,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ),
-      ],
-    );
+    return WalkInfoUiHelper.buildInfoRow(label, value);
   }
 
   /// 메모 섹션 빌드 (activities JSON 처리)
@@ -402,26 +385,11 @@ class WalkInfoBottomSheet extends ConsumerWidget {
 
   /// activities 개수 카운트
   int _countActivities(String jsonStr) {
-    try {
-      // [{...}, {...}] 형식에서 콤마 개수 + 1 = 항목 수
-      final matches = jsonStr.split('type:').length - 1;
-      return matches > 0 ? matches : 0;
-    } catch (e) {
-      return 0;
-    }
+    return WalkInfoUiHelper.countActivities(jsonStr);
   }
 
   String _getStatusText(WalkStatus status) {
-    switch (status) {
-      case WalkStatus.inProgress:
-        return '散歩中';
-      case WalkStatus.completed:
-        return '完了';
-      case WalkStatus.paused:
-        return '一時停止';
-      case WalkStatus.cancelled:
-        return 'キャンセル';
-    }
+    return WalkInfoUiHelper.getStatusText(status);
   }
 
   /// 산책 기록 공유 다이얼로그 표시
@@ -481,19 +449,11 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     WidgetRef ref,
     String text,
   ) async {
-    final useCase = ref.read(copyToClipboardUseCaseProvider);
-    final result = await useCase(text);
-
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result.message),
-          backgroundColor: result.isSuccess
-              ? AppColors.pointGreen
-              : AppColors.pointPink,
-        ),
-      );
-    }
+    await WalkInfoShareHelper.copyToClipboard(
+      context: context,
+      ref: ref,
+      text: text,
+    );
   }
 
   /// 이미지로 저장
@@ -502,19 +462,11 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     WidgetRef ref,
     WalkRecordEntity walkRecord,
   ) async {
-    final useCase = ref.read(saveAsImageUseCaseProvider);
-    final result = await useCase(walkRecord);
-
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result.message),
-          backgroundColor: result.isSuccess
-              ? AppColors.pointGreen
-              : AppColors.pointPink,
-        ),
-      );
-    }
+    await WalkInfoShareHelper.saveAsImage(
+      context: context,
+      ref: ref,
+      walkRecord: walkRecord,
+    );
   }
 
   /// 시스템 공유
@@ -523,19 +475,11 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     WidgetRef ref,
     String text,
   ) async {
-    final useCase = ref.read(systemShareUseCaseProvider);
-    final result = await useCase(text, subject: '散歩記録を共有');
-
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result.message),
-          backgroundColor: result.isSuccess
-              ? AppColors.pointGreen
-              : AppColors.pointPink,
-        ),
-      );
-    }
+    await WalkInfoShareHelper.systemShare(
+      context: context,
+      ref: ref,
+      text: text,
+    );
   }
 
   /// 산책 기록 수정 바텀 시트 표시

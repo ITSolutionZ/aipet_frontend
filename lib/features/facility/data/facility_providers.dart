@@ -1,6 +1,7 @@
+import 'package:aipet_frontend/features/facility/data/services/facility_local_storage_service.dart';
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:aipet_frontend/features/facility/domain/repositories/facility_repository.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/facility/facility_mock_service.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'facility_repository_impl.dart';
@@ -10,70 +11,134 @@ part 'facility_providers.g.dart';
 @riverpod
 class FacilityListNotifier extends _$FacilityListNotifier {
   @override
-  List<Facility> build() {
+  Future<List<Facility>> build() async {
     try {
-      final facilitiesData = FacilityMockService.getMockFacilities();
-      return facilitiesData
-          .map(
-            (data) => Facility(
-              id: data['id'] as String? ?? '',
-              name: data['name'] as String? ?? '',
-              description: data['description'] as String? ?? '',
-              address: data['address'] as String? ?? '',
-              latitude: data['latitude'] as double? ?? 35.6762,
-              longitude: data['longitude'] as double? ?? 139.6503,
-              phone: data['phone'] as String?,
-              email: data['email'] as String?,
-              type: data['type'] == 'grooming'
-                  ? FacilityType.grooming
-                  : FacilityType.hospital,
-              rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
-              reviewCount: data['reviewCount'] as int? ?? 0,
-              imagePath: data['imagePath'] as String?,
-              isFavorite: data['isFavorite'] as bool? ?? false,
-              hasHistory: data['hasHistory'] as bool? ?? false,
-              lastVisit: data['lastVisit'] as DateTime?,
-            ),
-          )
-          .toList();
+      // 로컬 저장소에서 시설 데이터 가져오기
+      final facilitiesData = await FacilityLocalStorageService.getFacilities();
+      final favorites = await FacilityLocalStorageService.getFavorites();
+      final history = await FacilityLocalStorageService.getHistory();
+
+      return facilitiesData.map((data) {
+        final facilityId = data['id'] as String;
+        return Facility(
+          id: facilityId,
+          name: data['name'] as String? ?? '',
+          description: data['description'] as String? ?? '',
+          address: data['address'] as String? ?? '',
+          latitude: data['latitude'] as double? ?? 35.6762,
+          longitude: data['longitude'] as double? ?? 139.6503,
+          phone: data['phone'] as String?,
+          email: data['email'] as String?,
+          type: _convertStringToFacilityType(data['type'] as String?),
+          rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
+          reviewCount: data['reviewCount'] as int? ?? 0,
+          imagePath: data['imagePath'] as String?,
+          isFavorite: favorites.contains(facilityId),
+          hasHistory: history.contains(facilityId),
+          lastVisit: data['lastVisit'] != null
+              ? DateTime.parse(data['lastVisit'] as String)
+              : null,
+          isOpen: data['isOpen'] as bool? ?? true,
+          createdAt: data['createdAt'] != null
+              ? DateTime.parse(data['createdAt'] as String)
+              : null,
+        );
+      }).toList();
     } catch (e) {
       // 에러 발생 시 빈 리스트 반환
       return [];
     }
   }
 
-  void toggleFavorite(String facilityId) {
-    state = state.map((facility) {
-      if (facility.id == facilityId) {
-        return facility.copyWith(isFavorite: !facility.isFavorite);
-      }
-      return facility;
-    }).toList();
+  /// 문자열을 FacilityType으로 변환
+  FacilityType _convertStringToFacilityType(String? typeString) {
+    switch (typeString) {
+      case 'hospital':
+        return FacilityType.hospital;
+      case 'veterinary':
+        return FacilityType.veterinary;
+      case 'grooming':
+        return FacilityType.grooming;
+      case 'petShop':
+        return FacilityType.petShop;
+      case 'petStore':
+        return FacilityType.petStore;
+      case 'dogRun':
+        return FacilityType.dogRun;
+      case 'park':
+        return FacilityType.park;
+      case 'petPark':
+        return FacilityType.petPark;
+      case 'cafe':
+        return FacilityType.cafe;
+      case 'hotel':
+        return FacilityType.hotel;
+      case 'petFriendlyAccommodation':
+        return FacilityType.petFriendlyAccommodation;
+      case 'training':
+        return FacilityType.training;
+      default:
+        return FacilityType.other;
+    }
+  }
+
+  Future<void> toggleFavorite(String facilityId) async {
+    // 로컬 저장소 업데이트
+    await FacilityLocalStorageService.toggleFavorite(facilityId);
+
+    // 상태 업데이트
+    state.whenData((facilities) {
+      state = AsyncValue.data(
+        facilities.map((facility) {
+          if (facility.id == facilityId) {
+            return facility.copyWith(isFavorite: !facility.isFavorite);
+          }
+          return facility;
+        }).toList(),
+      );
+    });
   }
 
   List<Facility> getFavorites() {
-    return state.where((facility) => facility.isFavorite).toList();
+    return state.maybeWhen(
+      data: (facilities) =>
+          facilities.where((facility) => facility.isFavorite).toList(),
+      orElse: () => [],
+    );
   }
 
   List<Facility> getHistory() {
-    return state.where((facility) => facility.hasHistory).toList();
+    return state.maybeWhen(
+      data: (facilities) =>
+          facilities.where((facility) => facility.hasHistory).toList(),
+      orElse: () => [],
+    );
   }
 
   List<Facility> getByType(FacilityType type) {
-    return state.where((facility) => facility.type == type).toList();
+    return state.maybeWhen(
+      data: (facilities) =>
+          facilities.where((facility) => facility.type == type).toList(),
+      orElse: () => [],
+    );
   }
 
   List<Facility> search(String query) {
-    if (query.isEmpty) return state;
-    return state
-        .where(
-          (facility) =>
-              facility.name.toLowerCase().contains(query.toLowerCase()) ||
-              (facility.description?.toLowerCase() ?? '').contains(
-                query.toLowerCase(),
-              ),
-        )
-        .toList();
+    return state.maybeWhen(
+      data: (facilities) {
+        if (query.isEmpty) return facilities;
+        return facilities
+            .where(
+              (facility) =>
+                  facility.name.toLowerCase().contains(query.toLowerCase()) ||
+                  (facility.description?.toLowerCase() ?? '').contains(
+                    query.toLowerCase(),
+                  ),
+            )
+            .toList();
+      },
+      orElse: () => [],
+    );
   }
 }
 
@@ -178,4 +243,21 @@ class SelectedFacilityTypeNotifier extends _$SelectedFacilityTypeNotifier {
 class FacilityRepositoryNotifier extends _$FacilityRepositoryNotifier {
   @override
   FacilityRepository build() => FacilityRepositoryImpl();
+}
+
+/// 근처 시설 조회 Provider (Google Places API + 로컬 저장소)
+@riverpod
+Future<Result<List<Facility>>> nearbyFacilities(NearbyFacilitiesRef ref) async {
+  final repository = ref.watch(facilityRepositoryNotifierProvider);
+  return repository.getNearbyFacilities();
+}
+
+/// 타입별 시설 조회 Provider (Google Places API + 로컬 저장소)
+@riverpod
+Future<Result<List<Facility>>> facilitiesByType(
+  FacilitiesByTypeRef ref,
+  FacilityType type,
+) async {
+  final repository = ref.watch(facilityRepositoryNotifierProvider);
+  return repository.getFacilitiesByType(type);
 }

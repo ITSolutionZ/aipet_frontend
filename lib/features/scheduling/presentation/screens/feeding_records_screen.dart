@@ -1,8 +1,7 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/widgets/scheduling_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,16 +11,39 @@ class FeedingRecordsScreen extends ConsumerStatefulWidget {
   const FeedingRecordsScreen({super.key});
 
   @override
-  ConsumerState<FeedingRecordsScreen> createState() => _FeedingRecordsScreenState();
+  ConsumerState<FeedingRecordsScreen> createState() =>
+      _FeedingRecordsScreenState();
 }
 
 class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
   late ScrollController _scrollController;
+  List<dynamic> _feedingRecords = [];
+  Map<String, dynamic> _statistics = {};
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final records = await FeedingLocalStorageService.getFeedingRecords();
+    final stats = {
+      'totalFeedings': records.length,
+      'averageAmount': records.isEmpty
+          ? 0.0
+          : records.fold<double>(0, (sum, r) => sum + (r['amount'] as double)) /
+                records.length,
+      'completionRate': 0.85,
+    };
+
+    setState(() {
+      _feedingRecords = records;
+      _statistics = stats;
+      _isLoading = false;
+    });
   }
 
   @override
@@ -32,12 +54,19 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final feedingRecords = SchedulingMock.SchedulingMockService.getMockFeedingRecordsForRecords();
-    final statistics = SchedulingMock.SchedulingMockService.getMockFeedingStatisticsForRecords();
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    final feedingRecords = _feedingRecords;
+    final statistics = _statistics;
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: DynamicAppBarStyles.brown(scrollController: _scrollController, title: '食事記録'),
+      appBar: DynamicAppBarStyles.brown(
+        scrollController: _scrollController,
+        title: '食事記録',
+      ),
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
@@ -49,7 +78,10 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 통계 차트
-                    FeedingStatisticsCard(feedingRecords: feedingRecords, statistics: statistics),
+                    FeedingStatisticsCard(
+                      feedingRecords: feedingRecords,
+                      statistics: statistics,
+                    ),
                     const SizedBox(height: AppSpacing.lg),
 
                     // 기록 목록
@@ -63,7 +95,9 @@ class _FeedingRecordsScreenState extends ConsumerState<FeedingRecordsScreen> {
                     const SizedBox(height: AppSpacing.md),
 
                     // 기록 목록
-                    ...feedingRecords.map((record) => FeedingRecordItem(record: record)),
+                    ...feedingRecords.map(
+                      (record) => FeedingRecordItem(record: record),
+                    ),
                   ],
                 ),
               ]),

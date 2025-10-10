@@ -81,7 +81,7 @@ class PetSelectionNotifier extends StateNotifier<PetSelectionState> {
     if (selectedPet != null) {
       return selectedPet.name;
     }
-    return '전체';
+    return '全体';
   }
 }
 

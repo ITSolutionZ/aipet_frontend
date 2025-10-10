@@ -1,10 +1,10 @@
+import 'package:aipet_frontend/features/daily/data/services/reservation_local_storage_service.dart';
 import 'package:aipet_frontend/features/daily/presentation/providers/pet_selection_provider.dart';
 import 'package:aipet_frontend/features/daily/presentation/providers/reservation_list_provider.dart';
 import 'package:aipet_frontend/features/daily/presentation/widgets/cancel_reservation_modal.dart';
 import 'package:aipet_frontend/features/daily/presentation/widgets/pet_selection_modal.dart';
 import 'package:aipet_frontend/features/daily/presentation/widgets/reservation_card.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/facility/reservation_mock_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -52,9 +52,9 @@ class _ReservationStatusScreenState
             child: TabBarView(
               controller: _tabController,
               children: [
-                _buildReservationList(ReservationMockData.pending),
-                _buildReservationList(ReservationMockData.confirmed),
-                _buildReservationList(ReservationMockData.cancelled),
+                _buildReservationList(ReservationLocalStorageService.pending),
+                _buildReservationList(ReservationLocalStorageService.confirmed),
+                _buildReservationList(ReservationLocalStorageService.cancelled),
               ],
             ),
           ),
@@ -70,7 +70,7 @@ class _ReservationStatusScreenState
       elevation: 0,
       centerTitle: true,
       title: const Text(
-        '예약내역',
+        '予約履歴',
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w500,
@@ -81,7 +81,7 @@ class _ReservationStatusScreenState
         TextButton(
           onPressed: () => context.go('/calendar'),
           child: const Text(
-            '시설검색',
+            '施設検索',
             style: TextStyle(color: AppColors.pointBrown),
           ),
         ),
@@ -116,7 +116,7 @@ class _ReservationStatusScreenState
                             orElse: () => petSelectionState.availablePets.first,
                           )
                           .name
-                    : '전체',
+                    : '全体',
                 style: AppFonts.bodyMedium.copyWith(
                   color: AppColors.pointOffWhite,
                   fontWeight: FontWeight.w500,
@@ -144,9 +144,9 @@ class _ReservationStatusScreenState
         labelColor: AppColors.pointBrown,
         unselectedLabelColor: AppColors.toneDarkGray,
         tabs: const [
-          Tab(text: '예약대기'),
-          Tab(text: '예약확정'),
-          Tab(text: '예약취소'),
+          Tab(text: '予約待ち'),
+          Tab(text: '予約確定'),
+          Tab(text: 'キャンセル'),
         ],
       ),
     );
@@ -154,12 +154,29 @@ class _ReservationStatusScreenState
 
   Widget _buildReservationList(String status) {
     final petSelectionState = ref.watch(petSelectionProvider);
+    final reservationState = ref.watch(reservationListProvider);
+
+    // 로컬 저장소에서 예약 목록 로드
+    if (reservationState.reservations.isEmpty && !reservationState.isLoading) {
+      // 초기 로드
+      Future.microtask(() {
+        ref
+            .read(reservationListProvider.notifier)
+            .loadReservations(
+              petId: petSelectionState.selectedPetId,
+              status: status,
+            );
+      });
+    }
 
     // 선택된 펫과 상태에 따른 예약 목록 필터링
-    final reservations = ReservationMockData.getReservationsByPetAndStatus(
-      petSelectionState.selectedPetId,
-      status,
-    );
+    final reservations = reservationState.reservations
+        .where((r) => r['status'] == status)
+        .toList();
+
+    if (reservationState.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     if (reservations.isEmpty) {
       return _buildEmptyState(status);
@@ -200,12 +217,12 @@ class _ReservationStatusScreenState
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            '해당 상태의 예약내역이 없습니다.',
+            'この状態の予約はありません。',
             style: AppFonts.bodyLarge.copyWith(color: AppColors.toneDarkGray),
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            '내근처 예약 가능한 시설을 찾아봐요',
+            '近くの予約可能な施設を探してみましょう',
             style: AppFonts.bodyMedium.copyWith(color: AppColors.toneDarkGray),
           ),
         ],
@@ -247,12 +264,12 @@ class _ReservationStatusScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('예약 확정'),
-        content: const Text('예약을 확정하시겠습니까?'),
+        title: const Text('予約確定'),
+        content: const Text('予約を確定しますか？'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('아니오'),
+            child: const Text('いいえ'),
           ),
           TextButton(
             onPressed: () {
@@ -262,7 +279,7 @@ class _ReservationStatusScreenState
                   .confirmReservation(reservation['id'] as String);
               setState(() {}); // UI 업데이트
             },
-            child: const Text('예'),
+            child: const Text('はい'),
           ),
         ],
       ),

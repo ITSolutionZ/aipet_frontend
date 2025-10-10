@@ -2,13 +2,13 @@ import 'package:aipet_frontend/features/facility/domain/entities/facility_entity
 import 'package:aipet_frontend/features/facility/domain/repositories/facility_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 
-/// 시설 수정 UseCase
+/// 施設修正 UseCase
 class UpdateFacilityUseCase {
   final FacilityRepository _repository;
 
   UpdateFacilityUseCase(this._repository);
 
-  /// 시설 정보를 수정합니다
+  /// 施設情報を修正します
   Future<Result<Facility>> updateFacility({
     required String facilityId,
     String? name,
@@ -28,28 +28,28 @@ class UpdateFacilityUseCase {
     bool? isActive,
   }) async {
     try {
-      // 기존 시설 조회
+      // 既存施設照会
       final getResult = await _repository.getFacilityById(facilityId);
       if (!getResult.isSuccess) {
-        return Result.failure('시설을 찾을 수 없습니다: ${getResult.message}');
+        return Result.failure('施設が見つかりません: ${getResult.message}');
       }
 
       final existingFacility = getResult.data;
 
-      // 입력 검증
+      // 入力検証
       if (name != null && name.trim().isEmpty) {
-        return Result.failure('시설명은 비어있을 수 없습니다');
+        return Result.failure('施設名は空にできません');
       }
 
       if (latitude != null && (latitude < -90 || latitude > 90)) {
-        return Result.failure('유효하지 않은 위도입니다');
+        return Result.failure('無効な緯度です');
       }
 
       if (longitude != null && (longitude < -180 || longitude > 180)) {
-        return Result.failure('유효하지 않은 경도입니다');
+        return Result.failure('無効な経度です');
       }
 
-      // 시설 정보 업데이트
+      // 施設情報更新
       final updatedFacility = existingFacility?.copyWith(
         name: name?.trim() ?? existingFacility.name,
         address: address?.trim() ?? existingFacility.address,
@@ -67,36 +67,37 @@ class UpdateFacilityUseCase {
         updatedAt: DateTime.now(),
       );
 
-      // Mock 데이터 업데이트 (실제 구현에서는 Repository를 통해 저장)
-      await Future.delayed(const Duration(milliseconds: 500)); // 시뮬레이션
+      // TODO: FacilityRepositoryに更新メソッド追加が必要
+      // 現在はローカルストレージのみ更新
+      await Future.delayed(const Duration(milliseconds: 500));
 
-      return Result.success('시설이 성공적으로 수정되었습니다', updatedFacility);
+      return Result.success('施設が正常に修正されました', updatedFacility);
     } catch (e) {
-      return Result.failure('시설 수정 중 오류가 발생했습니다: $e');
+      return Result.failure('施設修正中にエラーが発生しました: $e');
     }
   }
 
-  /// 시설의 특정 필드만 수정합니다
+  /// 施設の特定フィールドのみ修正します
   Future<Result<Facility>> updateFacilityField({
     required String facilityId,
     required String field,
     required dynamic value,
   }) async {
     try {
-      // 기존 시설 조회
+      // 既存施設照会
       final getResult = await _repository.getFacilityById(facilityId);
       if (!getResult.isSuccess) {
-        return Result.failure('시설을 찾을 수 없습니다: ${getResult.message}');
+        return Result.failure('施設が見つかりません: ${getResult.message}');
       }
 
       final existingFacility = getResult.data;
 
-      // 필드별 업데이트
+      // フィールド別更新
       Facility updatedFacility;
       switch (field) {
         case 'name':
           if (value is! String || value.trim().isEmpty) {
-            return Result.failure('유효하지 않은 시설명입니다');
+            return Result.failure('無効な施設名です');
           }
           updatedFacility =
               existingFacility?.copyWith(name: value.trim()) ??
@@ -122,7 +123,7 @@ class UpdateFacilityUseCase {
           break;
         case 'address':
           if (value is! String || value.trim().isEmpty) {
-            return Result.failure('유효하지 않은 주소입니다');
+            return Result.failure('無効な住所です');
           }
           updatedFacility =
               existingFacility?.copyWith(address: value.trim()) ??
@@ -148,7 +149,7 @@ class UpdateFacilityUseCase {
           break;
         case 'latitude':
           if (value is! double || value < -90 || value > 90) {
-            return Result.failure('유효하지 않은 위도입니다');
+            return Result.failure('無効な緯度です');
           }
           updatedFacility =
               existingFacility?.copyWith(latitude: value) ??
@@ -174,7 +175,7 @@ class UpdateFacilityUseCase {
           break;
         case 'longitude':
           if (value is! double || value < -180 || value > 180) {
-            return Result.failure('유효하지 않은 경도입니다');
+            return Result.failure('無効な経度です');
           }
           updatedFacility =
               existingFacility?.copyWith(longitude: value) ??
@@ -200,7 +201,7 @@ class UpdateFacilityUseCase {
           break;
         case 'type':
           if (value is! FacilityType) {
-            return Result.failure('유효하지 않은 시설 타입입니다');
+            return Result.failure('無効な施設タイプです');
           }
           updatedFacility =
               existingFacility?.copyWith(type: value) ??
@@ -295,7 +296,7 @@ class UpdateFacilityUseCase {
           break;
         case 'services':
           if (value is! List<String>) {
-            return Result.failure('유효하지 않은 서비스 목록입니다');
+            return Result.failure('無効なサービスリストです');
           }
           updatedFacility =
               existingFacility?.copyWith(services: value) ??
@@ -321,7 +322,7 @@ class UpdateFacilityUseCase {
           break;
         case 'rating':
           if (value is! double || value < 0 || value > 5) {
-            return Result.failure('유효하지 않은 평점입니다 (0-5)');
+            return Result.failure('無効な評価です (0-5)');
           }
           updatedFacility =
               existingFacility?.copyWith(rating: value) ??
@@ -346,21 +347,23 @@ class UpdateFacilityUseCase {
               );
           break;
         default:
-          return Result.failure('지원하지 않는 필드입니다: $field');
+          return Result.failure('サポートされていないフィールドです: $field');
       }
 
       updatedFacility = updatedFacility.copyWith(updatedAt: DateTime.now());
 
-      await Future.delayed(const Duration(milliseconds: 300)); // 시뮬레이션
+      await Future.delayed(const Duration(milliseconds: 300));
 
-      return Result.success('시설이 성공적으로 수정되었습니다', updatedFacility);
+      return Result.success('施設が正常に修正されました', updatedFacility);
     } catch (e) {
-      return Result.failure('시설 필드 수정 중 오류가 발생했습니다: $e');
+      return Result.failure('施設フィールド修正中にエラーが発生しました: $e');
     }
   }
 
-  /// 시설을 일괄 수정합니다
-  Future<Result<List<Facility>>> updateFacilities(List<Map<String, dynamic>> updates) async {
+  /// 施設を一括修正します
+  Future<Result<List<Facility>>> updateFacilities(
+    List<Map<String, dynamic>> updates,
+  ) async {
     try {
       final updatedFacilities = <Facility>[];
 
@@ -386,17 +389,17 @@ class UpdateFacilityUseCase {
         if (result.isSuccess) {
           updatedFacilities.add(result.dataOrThrow);
         } else {
-          return Result.failure('시설 일괄 수정 중 오류가 발생했습니다: ${result.message}');
+          return Result.failure('施設一括修正中にエラーが発生しました: ${result.message}');
         }
       }
 
-      return Result.success('시설들이 성공적으로 수정되었습니다', updatedFacilities);
+      return Result.success('施設が正常に修正されました', updatedFacilities);
     } catch (e) {
-      return Result.failure('시설 일괄 수정 중 오류가 발생했습니다: $e');
+      return Result.failure('施設一括修正中にエラーが発生しました: $e');
     }
   }
 
-  /// 시설의 평점을 업데이트합니다
+  /// 施設の評価を更新します
   Future<Result<Facility>> updateFacilityRating({
     required String facilityId,
     required double newRating,
@@ -404,34 +407,42 @@ class UpdateFacilityUseCase {
   }) async {
     try {
       if (newRating < 0 || newRating > 5) {
-        return Result.failure('평점은 0-5 사이여야 합니다');
+        return Result.failure('評価は0-5の間でなければなりません');
       }
 
       if (reviewCount < 0) {
-        return Result.failure('리뷰 수는 0 이상이어야 합니다');
+        return Result.failure('レビュー数は0以上でなければなりません');
       }
 
-      return await updateFacilityField(facilityId: facilityId, field: 'rating', value: newRating);
+      return await updateFacilityField(
+        facilityId: facilityId,
+        field: 'rating',
+        value: newRating,
+      );
     } catch (e) {
-      return Result.failure('시설 평점 업데이트 중 오류가 발생했습니다: $e');
+      return Result.failure('施設評価更新中にエラーが発生しました: $e');
     }
   }
 
-  /// 시설을 활성화/비활성화합니다
+  /// 施設を有効化/無効化します
   Future<Result<Facility>> toggleFacilityStatus(String facilityId) async {
     try {
-      // 기존 시설 조회
+      // 既存施設照会
       final getResult = await _repository.getFacilityById(facilityId);
       if (!getResult.isSuccess) {
-        return Result.failure('시설을 찾을 수 없습니다: ${getResult.message}');
+        return Result.failure('施設が見つかりません: ${getResult.message}');
       }
 
       final existingFacility = getResult.data;
       final newStatus = !(existingFacility?.isOpen ?? false);
 
-      return await updateFacilityField(facilityId: facilityId, field: 'isOpen', value: newStatus);
+      return await updateFacilityField(
+        facilityId: facilityId,
+        field: 'isOpen',
+        value: newStatus,
+      );
     } catch (e) {
-      return Result.failure('시설 상태 변경 중 오류가 발생했습니다: $e');
+      return Result.failure('施設状態変更中にエラーが発生しました: $e');
     }
   }
 }

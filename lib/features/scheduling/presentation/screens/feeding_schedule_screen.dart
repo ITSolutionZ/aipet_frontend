@@ -1,8 +1,7 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/widgets/scheduling_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +13,8 @@ class FeedingScheduleScreen extends ConsumerStatefulWidget {
   const FeedingScheduleScreen({super.key, required this.petId});
 
   @override
-  ConsumerState<FeedingScheduleScreen> createState() => _FeedingScheduleScreenState();
+  ConsumerState<FeedingScheduleScreen> createState() =>
+      _FeedingScheduleScreenState();
 }
 
 class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
@@ -30,10 +30,14 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
     _loadMockData();
   }
 
-  void _loadMockData() {
+  Future<void> _loadMockData() async {
+    final todayMeals = await FeedingLocalStorageService.getTodayMeals();
+    final scheduleItems =
+        await FeedingLocalStorageService.getFeedingSchedules();
+
     setState(() {
-      _todayMeals = SchedulingMock.SchedulingMockService.getMockTodayMealsForSchedule();
-      _scheduleItems = SchedulingMock.SchedulingMockService.getMockFeedingSchedulesForSchedule();
+      _todayMeals = todayMeals;
+      _scheduleItems = scheduleItems;
     });
   }
 
@@ -73,7 +77,8 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 오늘의 급여 요약
-                    if (_todayMeals != null) TodayMealsCard(todayMeals: _todayMeals!),
+                    if (_todayMeals != null)
+                      TodayMealsCard(todayMeals: _todayMeals!),
                     const SizedBox(height: AppSpacing.lg),
 
                     // 스케줄 설정
@@ -107,7 +112,9 @@ class _FeedingScheduleScreenState extends ConsumerState<FeedingScheduleScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.pointBrown,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.md,
+                          ),
                         ),
                       ),
                     ),

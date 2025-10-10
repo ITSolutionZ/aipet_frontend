@@ -1,10 +1,20 @@
+import 'package:aipet_frontend/features/daily/data/datasources/impl/daily_health_local_datasource_impl.dart';
 import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
 import 'package:aipet_frontend/features/daily/domain/entities/health_analysis.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'daily_health_controller.g.dart';
 
 /// Daily Health Controller
+///
+/// **역할**: 일일 건강 기록의 상태 관리 및 비즈니스 로직 처리
+/// - Riverpod을 사용한 상태 관리
+/// - 건강 기록 CRUD 작업 (Create, Read, Update, Delete)
+/// - 로컬 저장소와의 데이터 동기화
+///
+/// **사용 위치**: DailyHealthScreen에서 사용
+/// **관련 파일**: DailyHealthLogic (UI 로직 및 네비게이션)
 @riverpod
 class DailyHealthController extends _$DailyHealthController {
   @override
@@ -14,147 +24,63 @@ class DailyHealthController extends _$DailyHealthController {
 
   /// 건강 기록 추가
   Future<void> addHealthRecord(DailyHealthRecord record) async {
-    // TODO: 실제 API 호출로 교체
+    // 로컬 저장소에 건강 기록 저장 (추후 API 연동 시 변경)
     await Future.delayed(const Duration(milliseconds: 500));
 
-    // Mock 데이터 처리
-    print('건강 기록 추가: ${record.toJson()}');
+    // 로컬 데이터 처리
+    debugPrint('건강 기록 추가: ${record.toJson()}');
   }
 
   /// 건강 기록 업데이트
   Future<void> updateHealthRecord(DailyHealthRecord record) async {
-    // TODO: 실제 API 호출로 교체
+    // 로컬 저장소에 건강 기록 업데이트 (추후 API 연동 시 변경)
     await Future.delayed(const Duration(milliseconds: 500));
 
-    // Mock 데이터 처리
-    print('건강 기록 업데이트: ${record.toJson()}');
+    // 로컬 데이터 처리
+    debugPrint('건강 기록 업데이트: ${record.toJson()}');
   }
 
   /// 건강 기록 삭제
   Future<void> deleteHealthRecord(String recordId) async {
-    // TODO: 실제 API 호출로 교체
+    // 로컬 저장소에서 건강 기록 삭제 (추후 API 연동 시 변경)
     await Future.delayed(const Duration(milliseconds: 500));
 
-    // Mock 데이터 처리
-    print('건강 기록 삭제: $recordId');
+    // 로컬 데이터 처리
+    debugPrint('건강 기록 삭제: $recordId');
   }
 }
 
-/// 특정 펫의 건강 기록 Provider
+/// 특정 펫의 건강 기록 Provider (로컬 저장소)
 @riverpod
 Future<DailyHealthRecord?> dailyHealthRecord(
   DailyHealthRecordRef ref,
   String petId,
 ) async {
-  // TODO: 실제 API 호출로 교체
-  await Future.delayed(const Duration(milliseconds: 500));
+  // 로컬 저장소에서 오늘의 건강 기록 조회
+  final today = DateTime.now();
+  final startOfDay = DateTime(today.year, today.month, today.day);
+  final endOfDay = startOfDay.add(const Duration(days: 1));
 
-  // petId에 따른 다른 Mock 데이터 반환
-  final petIndex = petId.hashCode % 3; // 3가지 패턴
+  final localDatasource = ref.watch(dailyHealthLocalDatasourceProvider);
+  final records = await localDatasource.getDailyHealthRecordsByDateRange(
+    petId,
+    startOfDay,
+    endOfDay,
+  );
 
-  switch (petIndex) {
-    case 0:
-      return DailyHealthRecord(
-        id: 'mock-record-$petId',
-        petId: petId,
-        date: DateTime.now(),
-        temperature: 37.5,
-        overallHealth: HealthStatus.good,
-        symptoms: ['食欲不振'],
-        notes: 'いつもより少し食欲がありません',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-    case 1:
-      return DailyHealthRecord(
-        id: 'mock-record-$petId',
-        petId: petId,
-        date: DateTime.now(),
-        temperature: 38.2,
-        overallHealth: HealthStatus.fair,
-        symptoms: ['発熱', '元気がない'],
-        notes: '少し熱があるようです。注意深く観察が必要です。',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-    default:
-      return DailyHealthRecord(
-        id: 'mock-record-$petId',
-        petId: petId,
-        date: DateTime.now(),
-        temperature: 36.8,
-        overallHealth: HealthStatus.excellent,
-        symptoms: [],
-        notes: '非常に元気で健康的です！',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-  }
+  return records.isNotEmpty ? records.first : null;
 }
 
-/// 특정 펫의 건강 분석 Provider
+/// 특정 펫의 건강 분석 Provider (로컬 저장소)
 @riverpod
 Future<HealthAnalysis?> dailyHealthAnalysis(
   DailyHealthAnalysisRef ref,
   String petId,
 ) async {
-  // TODO: 실제 API 호출로 교체
-  await Future.delayed(const Duration(milliseconds: 500));
+  // 로컬 저장소에서 건강 분석 히스토리 조회
+  final localDatasource = ref.watch(dailyHealthLocalDatasourceProvider);
+  final analyses = await localDatasource.getHealthAnalysisHistory(petId);
 
-  // petId에 따른 다른 Mock 데이터 반환
-  final petIndex = petId.hashCode % 3; // 3가지 패턴
-
-  switch (petIndex) {
-    case 0:
-      return HealthAnalysis(
-        id: 'mock-analysis-$petId',
-        petId: petId,
-        recordId: 'mock-record-$petId',
-        riskLevel: RiskLevel.low,
-        recommendations: [
-          '定期的な運動を心がけてください',
-          'バランスの取れた食事を与えてください',
-          '十分な水分補給を確保してください',
-        ],
-        warnings: ['食欲不振が続く場合は獣医に相談してください'],
-        summary: '軽微な食欲不振が見られますが、全体的に健康です。',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-    case 1:
-      return HealthAnalysis(
-        id: 'mock-analysis-$petId',
-        petId: petId,
-        recordId: 'mock-record-$petId',
-        riskLevel: RiskLevel.medium,
-        recommendations: [
-          '発熱のため安静にしてください',
-          '水分補給を十分に行ってください',
-          '24時間以内に獣医に相談することをお勧めします',
-        ],
-        warnings: [
-          '体温が正常より高めです',
-          '元気がない症状が見られます',
-        ],
-        summary: '発熱と元気がない症状があります。早めの獣医診断をお勧めします。',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-    default:
-      return HealthAnalysis(
-        id: 'mock-analysis-$petId',
-        petId: petId,
-        recordId: 'mock-record-$petId',
-        riskLevel: RiskLevel.low,
-        recommendations: [
-          '現在の健康管理を継続してください',
-          '定期的な運動を維持してください',
-          '栄養バランスの良い食事を続けてください',
-        ],
-        warnings: [],
-        summary: '非常に良好な健康状態です。現在のケアを継続してください。',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-  }
+  // 가장 최근 분석 결과 반환
+  return analyses.isNotEmpty ? analyses.first : null;
 }

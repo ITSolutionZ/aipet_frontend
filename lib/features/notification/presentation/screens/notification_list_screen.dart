@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/notification/presentation/components/lists/filter_chips_component.dart';
 import 'package:aipet_frontend/features/notification/presentation/controllers/notification_list_controller.dart';
 import 'package:aipet_frontend/features/notification/presentation/widgets/notification_list_widget.dart';
@@ -11,10 +11,12 @@ class NotificationListScreen extends ConsumerStatefulWidget {
   const NotificationListScreen({super.key});
 
   @override
-  ConsumerState<NotificationListScreen> createState() => _NotificationListScreenState();
+  ConsumerState<NotificationListScreen> createState() =>
+      _NotificationListScreenState();
 }
 
-class _NotificationListScreenState extends ConsumerState<NotificationListScreen> {
+class _NotificationListScreenState
+    extends ConsumerState<NotificationListScreen> {
   late final NotificationListController _controller;
   NotificationType? _selectedFilter; // null = 全体 (전체)
   bool _shouldShowInfoCard = true;
@@ -41,7 +43,9 @@ class _NotificationListScreenState extends ConsumerState<NotificationListScreen>
 
   /// 알림 설정 상태 확인
   Future<void> _checkNotificationSettings() async {
-    final shouldShow = await _controller.checkNotificationSettings('default_user_id');
+    final shouldShow = await _controller.checkNotificationSettings(
+      'default_user_id',
+    );
     if (mounted) {
       setState(() {
         _shouldShowInfoCard = shouldShow;

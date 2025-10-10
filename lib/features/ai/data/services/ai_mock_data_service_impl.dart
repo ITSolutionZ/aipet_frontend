@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/core/services/mock_data_service.dart';
-import '../../../../shared/testing/mock_data/features/ai/ai_chat_messages_mock_data.dart';
-import '../../../../shared/testing/mock_data/features/ai/ai_mock_data.dart';
 import '../../domain/domain.dart';
 
 /// AI Mock 데이터 서비스 구현체
@@ -11,33 +9,38 @@ import '../../domain/domain.dart';
 class AiMockDataServiceImpl implements MockDataService {
   @override
   Future<void> simulateApiDelay({int seconds = 1}) async {
-    await AiMockDataService.simulateApiDelay(seconds: seconds);
+    await Future.delayed(Duration(seconds: seconds));
   }
 
   @override
   Future<List<Map<String, dynamic>>> getChatHistory() async {
-    final entities = AiChatMessagesMockData.getChatHistory();
-    return entities
-        .map(
-          (entity) => {
-            'id': entity.id,
-            'content': entity.content,
-            'type': entity.type.name,
-            'timestamp': entity.timestamp.toIso8601String(),
-            'isTyping': entity.isTyping,
-            'petId': entity.petId,
-            'petName': entity.petName,
-            'metadata': entity.metadata,
-          },
-        )
-        .toList();
+    // 빈 채팅 히스토리 반환 (로컬 저장소에서 로드됨)
+    return [];
   }
 
   @override
   Future<List<Map<String, dynamic>>> getSuggestedQuestions() async {
-    // Mock 데이터에서 추천 질문 반환
-    final mockData = AiMockDataService.getSuggestedQuestions();
-    return mockData;
+    // Mock 추천 질문 반환
+    return [
+      {
+        'id': '1',
+        'question': 'ペットの健康管理について教えてください',
+        'category': 'health',
+        'description': '健康管理の基本について',
+      },
+      {
+        'id': '2',
+        'question': 'おすすめのペットフードは何ですか？',
+        'category': 'food',
+        'description': 'フード選びのアドバイス',
+      },
+      {
+        'id': '3',
+        'question': 'しつけの基本を教えてください',
+        'category': 'behavior',
+        'description': 'しつけの基礎知識',
+      },
+    ];
   }
 
   @override
@@ -54,7 +57,9 @@ class AiMockDataServiceImpl implements MockDataService {
             'categoryName': entity.categoryName,
             'createdAt': entity.createdAt.toIso8601String(),
             'originalTimestamp': entity.originalTimestamp.toIso8601String(),
-            'pet': entity.pet != null ? {'id': entity.pet!.id, 'name': entity.pet!.name} : null,
+            'pet': entity.pet != null
+                ? {'id': entity.pet!.id, 'name': entity.pet!.name}
+                : null,
           },
         )
         .toList();
@@ -94,62 +99,71 @@ class AiMockDataServiceImpl implements MockDataService {
 
   // AI 전용 메서드들 (엔티티 타입 직접 반환)
   Future<List<AiMessageEntity>> getChatHistoryEntities() async {
-    return AiChatMessagesMockData.getChatHistory();
+    // 빈 채팅 히스토리 반환 (로컬 저장소에서 로드됨)
+    return [];
   }
 
   Future<List<AiSuggestedQuestionEntity>> getSuggestedQuestionEntities() async {
-    final mockData = AiMockDataService.getSuggestedQuestions();
-    return mockData
-        .map(
-          (json) => AiSuggestedQuestionEntity(
-            id: json['id'] as String,
-            question: json['question'] as String,
-            category: json['category'] as String,
-            icon: _getIconForCategory(json['category'] as String),
-            description: json['description'] as String?,
-          ),
-        )
-        .toList();
+    return [
+      const AiSuggestedQuestionEntity(
+        id: '1',
+        question: 'ペットの健康管理について教えてください',
+        category: 'health',
+        icon: Icons.medical_services,
+        description: '健康管理の基本について',
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '2',
+        question: 'おすすめのペットフードは何ですか？',
+        category: 'food',
+        icon: Icons.restaurant,
+        description: 'フード選びのアドバイス',
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '3',
+        question: 'しつけの基本を教えてください',
+        category: 'behavior',
+        icon: Icons.psychology,
+        description: 'しつけの基礎知識',
+      ),
+    ];
   }
 
   Future<List<AiFavoriteQaEntity>> getFavoriteQAEntities() async {
-    // 분리된 Mock 데이터 서비스 사용
-    return AiMockDataService.getFavoriteQAsMockData();
+    // 빈 즐겨찾기 목록 반환 (로컬 저장소에서 로드됨)
+    return [];
   }
 
   Future<List<AiChatSessionEntity>> getChatSessionEntities() async {
-    // 분리된 Mock 데이터 서비스 사용
-    return AiMockDataService.getChatSessions();
+    // 빈 세션 목록 반환 (로컬 저장소에서 로드됨)
+    return [];
   }
 
   @override
   Future<Map<String, dynamic>> generateAiResponse(String userMessage) async {
-    // Mock 데이터에서 AI 응답 생성
-    return AiMockDataService.generateAiResponseMockData(userMessage);
+    // Mock AI 응답 생성
+    return {
+      'id': 'ai_${DateTime.now().millisecondsSinceEpoch}',
+      'content': 'ペットについてのご質問ありがとうございます。詳しい情報を教えていただけますか？',
+      'type': 'assistant',
+      'timestamp': DateTime.now().toIso8601String(),
+    };
   }
 
   @override
-  Future<Map<String, dynamic>> createChatSession(String title, {String? petId}) async {
-    // Mock 데이터에서 채팅 세션 생성
-    return AiMockDataService.createChatSessionMockData(title, petId: petId);
-  }
-
-  /// 카테고리별 아이콘 매핑
-  IconData _getIconForCategory(String category) {
-    switch (category) {
-      case 'health':
-        return Icons.medical_services;
-      case 'food':
-        return Icons.restaurant;
-      case 'behavior':
-        return Icons.psychology;
-      case 'grooming':
-        return Icons.content_cut;
-      case 'exercise':
-        return Icons.directions_walk;
-      default:
-        return Icons.help_outline;
-    }
+  Future<Map<String, dynamic>> createChatSession(
+    String title, {
+    String? petId,
+  }) async {
+    // Mock 채팅 세션 생성
+    return {
+      'id': 'session_${DateTime.now().millisecondsSinceEpoch}',
+      'title': title,
+      'petId': petId,
+      'messages': [],
+      'createdAt': DateTime.now().toIso8601String(),
+      'updatedAt': DateTime.now().toIso8601String(),
+    };
   }
 
   @override

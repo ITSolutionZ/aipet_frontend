@@ -1,16 +1,16 @@
 import 'package:aipet_frontend/features/allergy/data/providers/saved_analysis_provider.dart';
 import 'package:aipet_frontend/features/allergy/domain/entities/saved_analysis_entity.dart';
 import 'package:aipet_frontend/features/allergy/presentation/screens/allergy_analysis_result_screen.dart';
-import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-/// 저장된 알레르기 분석 결과 리스트 화면
+/// 저장된 분석 결과 전체 리스트 화면
 class SavedAnalysisListScreen extends ConsumerStatefulWidget {
-  const SavedAnalysisListScreen({super.key});
+  final String? selectedPetId;
+
+  const SavedAnalysisListScreen({super.key, this.selectedPetId});
 
   @override
   ConsumerState<SavedAnalysisListScreen> createState() =>
@@ -19,12 +19,9 @@ class SavedAnalysisListScreen extends ConsumerStatefulWidget {
 
 class _SavedAnalysisListScreenState
     extends ConsumerState<SavedAnalysisListScreen> {
-  String? _selectedPetId;
-
   @override
   Widget build(BuildContext context) {
     final savedAnalysesAsync = ref.watch(savedAnalysisNotifierProvider);
-    final petsAsync = ref.watch(petProfilesNotifierProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -33,148 +30,69 @@ class _SavedAnalysisListScreenState
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.pointDark),
-          onPressed: () {
-            // 알레르기 메인 화면으로 이동
-            context.go('/home/allergy');
-          },
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          '保存された分析',
+          style: AppFonts.titleMedium.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.pointDark,
+          ),
         ),
       ),
-      body: Column(
-        children: [
-          // 펫 필터링 섹션
-          petsAsync.when(
-            data: (pets) {
-              if (pets.isEmpty) return const SizedBox.shrink();
+      body: savedAnalysesAsync.when(
+        data: (savedAnalyses) {
+          // 선택된 펫의 분석 결과만 필터링
+          final filteredAnalyses = widget.selectedPetId != null
+              ? savedAnalyses
+                    .where((analysis) => analysis.petId == widget.selectedPetId)
+                    .toList()
+              : savedAnalyses;
 
-              return Container(
-                color: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'ペットでフィルター',
-                      style: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointGray,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          // 전체 선택 칩
-                          _buildPetFilterChip(
-                            petId: null,
-                            petName: 'すべて',
-                            isSelected: _selectedPetId == null,
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          // 각 펫별 칩
-                          ...pets.map(
-                            (pet) => Padding(
-                              padding: const EdgeInsets.only(
-                                right: AppSpacing.sm,
-                              ),
-                              child: _buildPetFilterChip(
-                                petId: pet.id,
-                                petName: pet.name,
-                                isSelected: _selectedPetId == pet.id,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
+          if (filteredAnalyses.isEmpty) {
+            return _buildEmptyState();
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            itemCount: filteredAnalyses.length,
+            itemBuilder: (context, index) {
+              final analysis = filteredAnalyses[index];
+              return _buildAnalysisCard(analysis);
             },
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-
-          // 분석 결과 리스트
-          Expanded(
-            child: savedAnalysesAsync.when(
-              data: (savedAnalyses) {
-                // 펫 필터링 적용
-                final filteredAnalyses = _selectedPetId != null
-                    ? savedAnalyses
-                          .where((analysis) => analysis.petId == _selectedPetId)
-                          .toList()
-                    : savedAnalyses;
-
-                if (filteredAnalyses.isEmpty) {
-                  return _buildEmptyState();
-                }
-
-                return ListView.separated(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  itemCount: filteredAnalyses.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: AppSpacing.md),
-                  itemBuilder: (context, index) {
-                    final analysis = filteredAnalyses[index];
-                    return _buildAnalysisCard(context, ref, analysis);
-                  },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('エラー: $error')),
-            ),
-          ),
-        ],
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => _buildErrorState(error.toString()),
       ),
     );
   }
 
-  /// 펫 필터링 칩
-  Widget _buildPetFilterChip({
-    required String? petId,
-    required String petName,
-    required bool isSelected,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedPetId = petId;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.pointBrown
-              : AppColors.pointBrown.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(
-            color: isSelected
-                ? AppColors.pointBrown
-                : AppColors.pointBrown.withValues(alpha: 0.3),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (petId != null) ...[
-              const Icon(Icons.pets, size: 16, color: AppColors.pointBrown),
-              const SizedBox(width: AppSpacing.xs),
-            ],
+            Icon(
+              Icons.history,
+              size: 64,
+              color: AppColors.pointGray.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: AppSpacing.md),
             Text(
-              petName,
-              style: AppFonts.bodySmall.copyWith(
-                color: isSelected ? Colors.white : AppColors.pointBrown,
-                fontWeight: FontWeight.bold,
+              '保存された分析がありません',
+              style: AppFonts.bodyLarge.copyWith(
+                color: AppColors.pointGray,
+                fontWeight: FontWeight.w500,
               ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              '分析を実行すると、ここに保存されます',
+              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -182,49 +100,47 @@ class _SavedAnalysisListScreenState
     );
   }
 
-  /// 빈 상태
-  Widget _buildEmptyState() {
+  Widget _buildErrorState(String error) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.folder_open,
-            size: 80,
-            color: AppColors.pointGray.withValues(alpha: 0.3),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            '保存された分析結果がありません',
-            style: AppFonts.bodyLarge.copyWith(
-              color: AppColors.pointGray,
-              fontWeight: FontWeight.w600,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'エラーが発生しました',
+              style: AppFonts.bodyLarge.copyWith(
+                color: Colors.red,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            '分析結果ページで「保存」をタップすると\nここに表示されます',
-            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              error,
+              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            ElevatedButton(
+              onPressed: () {
+                ref.invalidate(savedAnalysisNotifierProvider);
+              },
+              child: const Text('再試行'),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  /// 분석 결과 카드
-  Widget _buildAnalysisCard(
-    BuildContext context,
-    WidgetRef ref,
-    SavedAnalysisEntity analysis,
-  ) {
-    final result = analysis.analysisResult;
+  Widget _buildAnalysisCard(SavedAnalysisEntity analysis) {
     final suspectedIngredients =
-        result['suspectedIngredients'] as List<String>? ?? [];
-    final allergyCount = result['allergyProducts'] as int? ?? 0;
-    final nonAllergyCount = result['nonAllergyProducts'] as int? ?? 0;
+        analysis.analysisResult['suspectedIngredients'] as List<String>? ?? [];
 
     return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -240,7 +156,6 @@ class _SavedAnalysisListScreenState
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            // 분석 결과 페이지로 이동
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -258,101 +173,98 @@ class _SavedAnalysisListScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 헤더 (펫 이름 + 날짜)
+                // 헤더: 펫 이름 + 날짜
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundColor: AppColors.pointBrown.withValues(
-                        alpha: 0.1,
-                      ),
-                      child: const Icon(
-                        Icons.pets,
-                        size: 16,
-                        color: AppColors.pointBrown,
+                    const Icon(
+                      Icons.pets,
+                      size: 20,
+                      color: AppColors.pointBrown,
+                    ),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(
+                      analysis.petName,
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.pointDark,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${analysis.petName}の分析',
-                            style: AppFonts.bodyMedium.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.pointDark,
-                            ),
-                          ),
-                          Text(
-                            _formatDate(analysis.savedAt),
-                            style: AppFonts.bodySmall.copyWith(
-                              color: AppColors.pointGray,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // 삭제 버튼
-                    IconButton(
-                      icon: const Icon(
-                        Icons.delete_outline,
+                    const Spacer(),
+                    Text(
+                      _formatDate(analysis.savedAt),
+                      style: AppFonts.bodySmall.copyWith(
                         color: AppColors.pointGray,
                       ),
-                      onPressed: () {
-                        _showDeleteConfirmDialog(context, ref, analysis.id);
-                      },
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.sm),
 
-                // 통계
-                Row(
-                  children: [
-                    _buildStatChip(
-                      Icons.warning_amber_rounded,
-                      'あった',
-                      allergyCount.toString(),
-                      const Color(0xFFFF6B9D),
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    _buildStatChip(
-                      Icons.check_circle,
-                      'なかった',
-                      nonAllergyCount.toString(),
-                      const Color(0xFF4CAF50),
-                    ),
-                  ],
-                ),
-
-                // 의심 원료 미리보기
+                // 의심 원료
                 if (suspectedIngredients.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    '疑われる成分',
+                    style: AppFonts.bodySmall.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.pointDark,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
                   Wrap(
-                    spacing: AppSpacing.xs,
-                    runSpacing: AppSpacing.xs,
-                    children: suspectedIngredients.take(3).map((ing) {
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: suspectedIngredients.take(5).map((ingredient) {
                       return Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
+                          horizontal: 8,
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFF6B9D).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(AppRadius.small),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          ing,
+                          ingredient,
                           style: AppFonts.bodySmall.copyWith(
                             color: const Color(0xFFFF6B9D),
+                            fontSize: 11,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       );
                     }).toList(),
                   ),
+                  if (suspectedIngredients.length > 5) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      '他${suspectedIngredients.length - 5}個',
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointGray,
+                      ),
+                    ),
+                  ],
                 ],
+
+                const SizedBox(height: AppSpacing.sm),
+
+                // 하단 화살표
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      '詳細を見る',
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointBrown,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 12,
+                      color: AppColors.pointBrown,
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -361,75 +273,18 @@ class _SavedAnalysisListScreenState
     );
   }
 
-  Widget _buildStatChip(
-    IconData icon,
-    String label,
-    String value,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppRadius.small),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: 4),
-          Text(
-            '$label $value個',
-            style: AppFonts.bodySmall.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   String _formatDate(DateTime date) {
-    return DateFormat('yyyy年MM月dd日 HH:mm').format(date);
-  }
+    final now = DateTime.now();
+    final difference = now.difference(date);
 
-  void _showDeleteConfirmDialog(
-    BuildContext context,
-    WidgetRef ref,
-    String analysisId,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('削除確認'),
-        content: const Text('この分析結果を削除しますか？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
-          ),
-          TextButton(
-            onPressed: () async {
-              await ref
-                  .read(savedAnalysisNotifierProvider.notifier)
-                  .deleteAnalysis(analysisId);
-
-              if (context.mounted) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('削除しました')));
-              }
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('削除'),
-          ),
-        ],
-      ),
-    );
+    if (difference.inDays == 0) {
+      return '今日 ${DateFormat('HH:mm').format(date)}';
+    } else if (difference.inDays == 1) {
+      return '昨日';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays}日前';
+    } else {
+      return DateFormat('MM/dd').format(date);
+    }
   }
 }

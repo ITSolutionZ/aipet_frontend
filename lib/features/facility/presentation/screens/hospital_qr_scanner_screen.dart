@@ -147,7 +147,7 @@ class _HospitalQrScannerScreenState
                       vertical: AppSpacing.md,
                     ),
                   ),
-                  child: const Text('테스트 스캔 (개발용)'),
+                  child: const Text('テストスキャン（開発用）'),
                 ),
               ],
             ),
@@ -161,7 +161,7 @@ class _HospitalQrScannerScreenState
                 // 플래시 토글 기능 (모의)
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('플래시 기능 (개발 중)'),
+                    content: Text('フラッシュ機能（開発中）'),
                     duration: Duration(seconds: 1),
                   ),
                 );

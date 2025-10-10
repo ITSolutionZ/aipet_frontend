@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/data/datasources/drawer_local_datasource.dart';
 import 'package:flutter/material.dart';
 
 /// ドロワー情報バナーウィジェット
@@ -7,6 +8,9 @@ class DrawerInfoBannerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 로컬 데이터에서 정보 배너 데이터 가져오기
+    final infoBanner = DrawerLocalDatasource.getInfoBanner();
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),
@@ -16,19 +20,25 @@ class DrawerInfoBannerWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: Text(
-              '一緒に情報を登録して\nカスタムサービスを受けてください',
-              style: TextStyle(color: Colors.white, fontSize: 12, height: 1.4),
+              infoBanner['title'],
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                height: 1.4,
+              ),
             ),
           ),
           const SizedBox(width: 12),
           ElevatedButton(
-            onPressed: () {
-              // 情報設定画面へ遷移
-              Navigator.of(context).pop();
-              // TODO: 情報設定画面への遷移処理
-            },
+            onPressed: infoBanner['isEnabled']
+                ? () {
+                    // 情報設定画面へ遷移
+                    Navigator.of(context).pop();
+                    // TODO: 情報設定画面への遷移処理
+                  }
+                : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF5A5EA6),
               foregroundColor: Colors.white,
@@ -37,7 +47,10 @@ class DrawerInfoBannerWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            child: const Text('情報設定', style: TextStyle(fontSize: 12)),
+            child: Text(
+              infoBanner['buttonText'],
+              style: const TextStyle(fontSize: 12),
+            ),
           ),
         ],
       ),

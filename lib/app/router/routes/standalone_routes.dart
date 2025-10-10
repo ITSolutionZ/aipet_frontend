@@ -4,11 +4,13 @@ import 'package:aipet_frontend/features/facility/presentation/screens/facility_c
 import 'package:aipet_frontend/features/facility/presentation/screens/facility_list_screen.dart';
 import 'package:aipet_frontend/features/facility/presentation/screens/hospital_booking_screen.dart';
 import 'package:aipet_frontend/features/facility/presentation/screens/hospital_detail_screen.dart';
+import 'package:aipet_frontend/features/home/presentation/screens/favorites_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_detail_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_list_screen.dart';
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
 import 'package:aipet_frontend/features/pet_health/presentation/screens/weight_tracking_screen.dart';
+import 'package:aipet_frontend/features/shopping/presentation/screens/pet_search_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/live_walk_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -158,6 +160,18 @@ class StandaloneRoutes {
           petImage: petImage,
         );
       },
+    ),
+    // Pet Search
+    GoRoute(
+      path: RouteConstants.petSearchRoute,
+      name: 'pet-search',
+      builder: (context, state) => const PetSearchScreen(),
+    ),
+    // Favorites
+    GoRoute(
+      path: '/favorites',
+      name: 'favorites',
+      builder: (context, state) => const FavoritesScreen(),
     ),
   ];
 }

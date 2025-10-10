@@ -1,11 +1,10 @@
-import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
+import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 급여 스케줄 편집 컨트롤러
-class FeedingScheduleEditController extends StateNotifier<FeedingScheduleEditState> {
+class FeedingScheduleEditController
+    extends StateNotifier<FeedingScheduleEditState> {
   FeedingScheduleEditController({
     required String mealType,
     required String currentTime,
@@ -23,23 +22,27 @@ class FeedingScheduleEditController extends StateNotifier<FeedingScheduleEditSta
   }
 
   /// 펫 정보 및 사이즈 가이드 로드
-  void _loadPetInfo() {
-    final petSizes = SchedulingMock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+  Future<void> _loadPetInfo() async {
+    final petSizes = FeedingLocalStorageService.getPetSizeFeedingInfo();
     final selectedPetInfo = petSizes[state.petId];
     Map<String, dynamic>? petSizeGuide;
 
     if (selectedPetInfo != null) {
       final size = selectedPetInfo['size'] as String;
-      final sizeGuide = SchedulingMock.SchedulingMockService.getPetSizeFeedingGuide();
+      final sizeGuide = FeedingLocalStorageService.getPetSizeFeedingGuide();
       petSizeGuide = sizeGuide[size];
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = MockDataService.getPetCurrentStatus(state.petId);
+    final currentStatus = await FeedingLocalStorageService.getPetStatus(
+      state.petId,
+    );
     List<String> selectedStatuses = [];
     Map<String, String> statusValues = {};
 
-    selectedStatuses = List<String>.from(currentStatus['selectedStatuses'] ?? []);
+    selectedStatuses = List<String>.from(
+      currentStatus['selectedStatuses'] ?? [],
+    );
     statusValues = Map<String, String>.from(currentStatus);
     statusValues.remove('selectedStatuses');
     statusValues.remove('lastUpdated');
@@ -74,15 +77,18 @@ class FeedingScheduleEditController extends StateNotifier<FeedingScheduleEditSta
   }
 
   /// 상태 업데이트
-  void updatePetStatus(
+  Future<void> updatePetStatus(
     String petId,
     List<String> selectedStatuses,
     Map<String, String> statusValues,
-  ) {
-    // MockDataService에 상태 업데이트
-    MockDataService.updatePetStatus(petId, statusValues);
+  ) async {
+    // 로컬 저장소에 상태 업데이트
+    await FeedingLocalStorageService.updatePetStatus(petId, statusValues);
 
-    state = state.copyWith(selectedStatuses: selectedStatuses, statusValues: statusValues);
+    state = state.copyWith(
+      selectedStatuses: selectedStatuses,
+      statusValues: statusValues,
+    );
   }
 
   /// 저장 데이터 반환
@@ -121,7 +127,10 @@ class FeedingScheduleEditState {
 
   static TimeOfDay _parseTime(String timeString) {
     final timeParts = timeString.split(':');
-    return TimeOfDay(hour: int.parse(timeParts[0]), minute: int.parse(timeParts[1]));
+    return TimeOfDay(
+      hour: int.parse(timeParts[0]),
+      minute: int.parse(timeParts[1]),
+    );
   }
 
   FeedingScheduleEditState copyWith({

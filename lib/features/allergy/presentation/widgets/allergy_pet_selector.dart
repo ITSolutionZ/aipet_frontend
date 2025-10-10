@@ -104,7 +104,9 @@ class _PetSelectionBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7, // 화면 높이의 70%로 제한
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -112,24 +114,39 @@ class _PetSelectionBottomSheet extends StatelessWidget {
           Container(
             width: 40,
             height: 4,
-            margin: const EdgeInsets.only(bottom: AppSpacing.md),
+            margin: const EdgeInsets.only(
+              top: AppSpacing.sm,
+              bottom: AppSpacing.md,
+            ),
             decoration: BoxDecoration(
               color: AppColors.pointGray.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
           // 제목
-          Text(
-            'ペットを選択',
-            style: AppFonts.titleMedium.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppColors.pointDark,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: Text(
+              'ペットを選択',
+              style: AppFonts.titleMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.pointDark,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          // 펫 목록
-          ...pets.map((pet) => _buildPetOption(pet)),
-          const SizedBox(height: AppSpacing.sm),
+          // 펫 목록 (스크롤 가능)
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: Column(
+                children: [
+                  ...pets.map((pet) => _buildPetOption(pet)),
+                  const SizedBox(height: AppSpacing.sm),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -1,28 +1,35 @@
+import 'package:aipet_frontend/features/notification/data/services/notification_local_storage_service.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/notification/notification_mock_service.dart';
 
-/// 통계 팩토리 (데이터 레이어에서 Mock 데이터 생성)
+/// 통계 팩토리 (데이터 레이어에서 로컬 저장소 데이터 생성)
 class NotificationStatsFactory {
-  /// 모의 통계 데이터 생성
-  static List<NotificationStats> generateMockStats({int days = 30, int notificationsPerDay = 5}) {
+  /// 통계 데이터 생성
+  static Future<List<NotificationStats>> generateMockStats({
+    int days = 30,
+    int notificationsPerDay = 5,
+  }) async {
     try {
-      final mockData = NotificationMockService.getMockNotificationStats(days: days);
+      final statsData = await NotificationLocalStorageService.getStats(
+        days: days,
+      );
 
-      return mockData
+      return statsData
           .map(
             (data) => NotificationStats(
               id: DateTime.now().millisecondsSinceEpoch.toString(),
-              title: 'Mock Notification',
+              title: 'Notification',
               type: NotificationType.general,
-              date: data['date'] as DateTime,
+              date: DateTime.parse(data['date'] as String),
               sentCount: data['total'] as int,
               openedCount: data['read'] as int,
               clickedCount: (data['read'] as int) ~/ 2,
               dismissedCount: (data['total'] as int) - (data['read'] as int),
               failedCount: 0,
-              openRate: data['read'] / data['total'],
-              clickRate: (data['read'] / 2) / data['total'],
-              dismissRate: ((data['total'] as int) - (data['read'] as int)) / data['total'],
+              openRate: (data['read'] as int) / (data['total'] as int),
+              clickRate: ((data['read'] as int) / 2) / (data['total'] as int),
+              dismissRate:
+                  ((data['total'] as int) - (data['read'] as int)) /
+                  (data['total'] as int),
               failureRate: 0.0,
               metadata: {},
             ),
@@ -33,21 +40,26 @@ class NotificationStatsFactory {
     }
   }
 
-  /// 모의 사용자 참여도 데이터 생성
-  static List<UserEngagement> generateMockUserEngagement({int days = 30, int users = 5}) {
+  /// 사용자 참여도 데이터 생성
+  static Future<List<UserEngagement>> generateMockUserEngagement({
+    int days = 30,
+    int users = 5,
+  }) async {
     try {
-      final mockData = NotificationMockService.getMockUserEngagement(days: days);
+      final engagementData =
+          await NotificationLocalStorageService.getUserEngagement(days: days);
 
-      return mockData
+      return engagementData
           .map(
             (data) => UserEngagement(
               userId: 'user_${DateTime.now().millisecondsSinceEpoch}',
-              date: data['date'] as DateTime,
+              date: DateTime.parse(data['date'] as String),
               totalNotifications: data['notificationsReceived'] as int,
               openedNotifications: data['notificationsRead'] as int,
               clickedNotifications: data['actionsCompleted'] as int,
               dismissedNotifications:
-                  (data['notificationsReceived'] as int) - (data['notificationsRead'] as int),
+                  (data['notificationsReceived'] as int) -
+                  (data['notificationsRead'] as int),
               engagementByType: {
                 NotificationType.feeding: 2,
                 NotificationType.health: 1,
@@ -55,7 +67,8 @@ class NotificationStatsFactory {
               },
               preferredTimeSlots: ['09:00', '12:00', '18:00'],
               overallEngagementRate:
-                  (data['notificationsRead'] as int) / (data['notificationsReceived'] as int),
+                  (data['notificationsRead'] as int) /
+                  (data['notificationsReceived'] as int),
             ),
           )
           .toList();
@@ -83,11 +96,16 @@ class NotificationStatsFactory {
     final totalSent = stats.fold(0, (sum, stat) => sum + stat.sentCount);
     final totalOpened = stats.fold(0, (sum, stat) => sum + stat.openedCount);
     final totalClicked = stats.fold(0, (sum, stat) => sum + stat.clickedCount);
-    final totalDismissed = stats.fold(0, (sum, stat) => sum + stat.dismissedCount);
+    final totalDismissed = stats.fold(
+      0,
+      (sum, stat) => sum + stat.dismissedCount,
+    );
     final totalFailed = stats.fold(0, (sum, stat) => sum + stat.failedCount);
 
-    final averageOpenRate = stats.fold(0.0, (sum, stat) => sum + stat.openRate) / stats.length;
-    final averageClickRate = stats.fold(0.0, (sum, stat) => sum + stat.clickRate) / stats.length;
+    final averageOpenRate =
+        stats.fold(0.0, (sum, stat) => sum + stat.openRate) / stats.length;
+    final averageClickRate =
+        stats.fold(0.0, (sum, stat) => sum + stat.clickRate) / stats.length;
     final averageDismissRate =
         stats.fold(0.0, (sum, stat) => sum + stat.dismissRate) / stats.length;
     final averageFailureRate =
