@@ -34,14 +34,36 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           preferredSize.height +
           MediaQuery.of(context).padding.top, // 상태바 높이 포함
       decoration: BoxDecoration(
-        color: scrollOffset <= statusBarHeight
-            ? null // 배너 시작 위치에서는 색상 없음
+        gradient: scrollOffset <= statusBarHeight
+            ? LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.pointBrown.withValues(alpha: 0.9),
+                  AppColors.pointBrown.withValues(alpha: 0.7),
+                ],
+              ) // 초기 상태: 브라운 그라데이션
             : scrollOffset > (bannerHeight * 0.9)
-            ? Colors
-                  .white // 배너를 거의 지나가면 완전한 흰색
-            : Colors.white.withValues(
-                alpha: 0.1 + (scrollOffset / bannerHeight) * 0.5,
-              ), // 스크롤 시작하면 반투명 흰색
+            ? LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.white,
+                  Colors.white.withValues(alpha: 0.95),
+                ],
+              ) // 스크롤 완료: 흰색 그라데이션
+            : LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.pointBrown.withValues(
+                    alpha: 0.9 - (scrollOffset / bannerHeight) * 0.9,
+                  ),
+                  AppColors.pointBrown.withValues(
+                    alpha: 0.7 - (scrollOffset / bannerHeight) * 0.7,
+                  ),
+                ],
+              ), // 스크롤 중: 점진적 투명도 변화
       ),
       child: SafeArea(
         child: Padding(
@@ -95,9 +117,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     onPressed: onMenuTap,
                     icon: Icon(
                       Icons.menu,
-                      color: scrollOffset <= statusBarHeight
-                          ? AppColors.pureWhite
-                          : AppColors.pointDark,
+                      color: AppColors.pureWhite, // 항상 흰색 유지
                       size: 24,
                     ),
                   ),
@@ -121,9 +141,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         constraints: const BoxConstraints(),
                         icon: Icon(
                           Icons.favorite_outline,
-                          color: scrollOffset <= statusBarHeight
-                              ? AppColors.pureWhite
-                              : AppColors.pointDark,
+                          color: AppColors.pureWhite, // 항상 흰색 유지
                           size: 24,
                         ),
                       ),
@@ -139,9 +157,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         constraints: const BoxConstraints(),
                         icon: Icon(
                           Icons.notifications_outlined,
-                          color: scrollOffset <= statusBarHeight
-                              ? AppColors.pureWhite
-                              : AppColors.pointDark,
+                          color: AppColors.pureWhite, // 항상 흰색 유지
                           size: 24,
                         ),
                       ),
