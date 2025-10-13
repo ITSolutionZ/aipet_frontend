@@ -8,14 +8,14 @@ import 'package:aipet_frontend/features/home/domain/repositories/home_repository
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:aipet_frontend/shared/services/ultra_fast_cache_service.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/home/home_mock_service.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/pet/pet_mock_service.dart';
+import 'package:aipet_frontend/shared/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final WeatherService _weatherService = WeatherService();
   final CacheService _cacheService = CacheService();
   final UltraFastCacheService _ultraFastCache = UltraFastCacheService();
+  final LocalStorageService _localStorageService = LocalStorageService.instance;
 
   @override
   Future<HomeDashboardEntity> getDashboardData() async {
@@ -124,16 +124,15 @@ class HomeRepositoryImpl implements HomeRepository {
 
   /// Mock 날씨 엔티티 (API 실패시 fallback)
   WeatherEntity _getMockWeatherEntity() {
-    final mockWeatherInfo = HomeMockService.getMockWeatherInfo();
     return WeatherEntity(
-      temperature: mockWeatherInfo['temperature'] as double,
-      location: mockWeatherInfo['location'] as String,
+      temperature: 23.0,
+      location: '東京',
       weatherId: 800, // 맑음
-      description: mockWeatherInfo['condition'] as String,
-      feelsLike: (mockWeatherInfo['temperature'] as double) + 2.0,
+      description: '晴れ',
+      feelsLike: 25.0,
       humidity: 65,
       windSpeed: 2.5,
-      iconCode: mockWeatherInfo['iconCode'] as String,
+      iconCode: '01d',
       uvIndex: 5.0,
       visibility: 10000,
       pressure: 1013.25,
@@ -152,9 +151,9 @@ class HomeRepositoryImpl implements HomeRepository {
       return cachedPetSummaries;
     }
 
-    // 통합된 PetMockService에서 PetProfileEntity 리스트를 직접 가져옴
+    // 로컬 스토리지에서 펫 정보 가져오기
     await Future.delayed(_mockDelay);
-    final petProfiles = PetMockService.getMockPetProfiles();
+    final petProfiles = await _localStorageService.pet.getAllPets();
     final petSummaries = PetMapper.toSummaryEntityListFromMaps(petProfiles);
 
     // 펫 요약 정보 캐시 저장 (1시간 TTL)
@@ -169,10 +168,10 @@ class HomeRepositoryImpl implements HomeRepository {
 
   // 기존 호환성을 위해 유지
   Future<List<PetProfileEntity>> getPetProfiles() async {
-    // 통합된 PetMockService 사용 (실제 API 연동 전까지)
+    // 로컬 스토리지에서 펫 정보 가져오기
     await Future.delayed(_mockDelay);
-    final petMockData = PetMockService.getMockPetProfiles();
-    return PetMapper.fromMapList(petMockData);
+    final petData = await _localStorageService.pet.getAllPets();
+    return PetMapper.fromMapList(petData);
   }
 
   @override
@@ -187,20 +186,41 @@ class HomeRepositoryImpl implements HomeRepository {
       return cachedWalkSummary;
     }
 
-    // Mock 데이터 사용
     await Future.delayed(_mockDelay);
-    final walkSummaryData = HomeMockService.getMockWalkSummary();
+    
+    // 로컬 스토리지에서 산책 기록 가져오기
+    final pets = await _localStorageService.pet.getAllPets();
+    int todayWalks = 0;
+    double todayDistance = 0.0;
+    Duration todayDuration = Duration.zero;
+
+    // 각 펫의 오늘 산책 기록 집계
+    for (final pet in pets) {
+      final walkRecords = await _localStorageService.pet.getWalkRecords(pet['id']);
+      final today = DateTime.now();
+      
+      for (final record in walkRecords) {
+        final startTime = DateTime.tryParse(record['start_time'] ?? '');
+        if (startTime != null &&
+            startTime.year == today.year &&
+            startTime.month == today.month &&
+            startTime.day == today.day) {
+          todayWalks++;
+          todayDistance += (record['distance'] ?? 0.0) as double;
+          todayDuration += Duration(seconds: record['duration'] ?? 0);
+        }
+      }
+    }
 
     // 이번주 최장 기록 여부 계산 (예시: 30분 이상이면 최장 기록으로 처리)
-    final todayDuration = walkSummaryData['todayDuration'] as Duration;
     final isWeeklyRecord = todayDuration.inMinutes >= 30;
 
     final walkSummary = WalkSummary(
-      todayWalks: walkSummaryData['todayWalks'] as int,
-      todayDistance: walkSummaryData['todayDistance'] as double,
+      todayWalks: todayWalks,
+      todayDistance: todayDistance,
       todayDuration: todayDuration,
-      weeklyGoal: walkSummaryData['weeklyGoal'] as double,
-      weeklyProgress: walkSummaryData['weeklyProgress'] as double,
+      weeklyGoal: 10.0,
+      weeklyProgress: todayDistance / 10.0 * 100,
       isWeeklyRecord: isWeeklyRecord,
     );
 
@@ -226,20 +246,44 @@ class HomeRepositoryImpl implements HomeRepository {
       return cachedHealthSummary;
     }
 
-    // Mock 데이터 사용
     await Future.delayed(_mockDelay);
 
-    // HomeMockService.getMockHealthSummary()는 HealthSummary에 맞지 않는 구조를 반환하므로
-    // 직접 HealthSummary용 데이터를 생성
-    final alerts = [
-      const HealthAlert(petName: 'マックス', message: '健康診断が必要です'),
-      const HealthAlert(petName: 'ルナ', message: 'ワクチン接種が必要です'),
-    ];
+    // 로컬 스토리지에서 펫 정보와 건강 기록 가져오기
+    final pets = await _localStorageService.pet.getAllPets();
+    final alerts = <HealthAlert>[];
+    int healthyPets = 0;
+    int petsNeedingAttention = 0;
+
+    for (final pet in pets) {
+      final healthRecords = await _localStorageService.pet.getHealthRecords(pet['id']);
+      
+      // 최근 건강 검진 확인 (30일 이내)
+      final now = DateTime.now();
+      bool needsCheckup = true;
+      
+      for (final record in healthRecords) {
+        final recordDate = DateTime.tryParse(record['date'] ?? '');
+        if (recordDate != null && now.difference(recordDate).inDays < 30) {
+          needsCheckup = false;
+          break;
+        }
+      }
+      
+      if (needsCheckup) {
+        alerts.add(HealthAlert(
+          petName: pet['name'] ?? '',
+          message: '健康診断が必要です',
+        ));
+        petsNeedingAttention++;
+      } else {
+        healthyPets++;
+      }
+    }
 
     final healthSummary = HealthSummary(
-      totalPets: 3,
-      healthyPets: 2,
-      petsNeedingAttention: 1,
+      totalPets: pets.length,
+      healthyPets: healthyPets,
+      petsNeedingAttention: petsNeedingAttention,
       alerts: alerts,
     );
 
@@ -265,26 +309,32 @@ class HomeRepositoryImpl implements HomeRepository {
       return cachedAppointments;
     }
 
-    // Mock 데이터 사용 - HomeMockService로 변경
     await Future.delayed(_mockDelay);
 
-    // 임시로 Mock 데이터 생성
-    final appointments = [
-      AppointmentSummary(
-        id: 'app-1',
-        title: '健康診断',
-        scheduledTime: DateTime.now().add(const Duration(days: 3)),
-        type: 'health_check',
-        petName: 'マックス',
-      ),
-      AppointmentSummary(
-        id: 'app-2',
-        title: '予防接種',
-        scheduledTime: DateTime.now().add(const Duration(days: 7)),
-        type: 'vaccination',
-        petName: 'ルナ',
-      ),
-    ];
+    // 로컬 스토리지에서 스케줄 정보 가져오기
+    final schedules = await _localStorageService.schedule.getUpcomingSchedules(limit: 10);
+    final appointments = <AppointmentSummary>[];
+
+    for (final schedule in schedules) {
+      final scheduledTime = DateTime.tryParse(schedule['time'] ?? '');
+      if (scheduledTime != null) {
+        // 펫 이름 가져오기
+        String petName = '';
+        final petId = schedule['pet_id'];
+        if (petId != null) {
+          final pet = await _localStorageService.pet.getPetById(petId);
+          petName = pet?['name'] ?? '';
+        }
+
+        appointments.add(AppointmentSummary(
+          id: schedule['id'] ?? '',
+          title: schedule['title'] ?? '',
+          scheduledTime: scheduledTime,
+          type: schedule['type'] ?? 'other',
+          petName: petName,
+        ));
+      }
+    }
 
     // 예약 정보 캐시 저장 (15분 TTL)
     _cacheService.setMemoryCache(
