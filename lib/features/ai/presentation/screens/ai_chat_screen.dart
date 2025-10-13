@@ -283,7 +283,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with WidgetsBinding
       appBar: AppBar(
         backgroundColor: AppColors.pointBrown,
         elevation: 0,
-        title: const Text('AIアシスタント', style: TextStyle(color: Colors.white)),
+        title: null, // タイトルを削除
         leading: IconButton(
           onPressed: _navigateToChatHistory,
           icon: const Icon(Icons.history, color: Colors.white),
