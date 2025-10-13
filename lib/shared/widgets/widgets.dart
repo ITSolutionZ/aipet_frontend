@@ -6,6 +6,7 @@ export 'accessibility/accessibility_widgets.dart';
 export 'animation/animation_widgets.dart';
 // App bars
 export 'app_bars/dynamic_scroll_app_bar.dart';
+export 'gradient_app_bar.dart';
 // Banners
 export 'banners/microchip_registration_banner.dart';
 // Buttons

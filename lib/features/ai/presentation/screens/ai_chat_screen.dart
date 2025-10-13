@@ -281,9 +281,21 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with WidgetsBinding
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       appBar: AppBar(
-        backgroundColor: AppColors.pointBrown,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         title: null, // タイトルを削除
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.pointBrown.withValues(alpha: 0.9),
+                AppColors.pointBrown.withValues(alpha: 0.7),
+              ],
+            ),
+          ),
+        ),
         leading: IconButton(
           onPressed: _navigateToChatHistory,
           icon: const Icon(Icons.history, color: Colors.white),
