@@ -9,7 +9,7 @@
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>ペットの写真選択と動物登録証のOCR認識にフォトライブラリを使用します。</string>
 		<key>CFBundleDisplayName</key>
-		<string>Aipet Frontend</string>
+		<string>AIPet</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -17,7 +17,7 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>aipet_frontend</string>
+		<string>AIPet</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>

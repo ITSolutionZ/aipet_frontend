@@ -72,6 +72,7 @@ dev_dependencies:
   test: ^1.25.2
   sqflite_common_ffi: ^2.3.3
   flutter_native_splash: ^2.4.1
+  flutter_launcher_icons: ^0.13.1
 
   riverpod: any
 flutter:
@@ -181,6 +182,14 @@ sentry:
   project: flutter
   org: itz-aipet
 
+# アプリアイコン設定
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/logos/aipet_logo.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  
 # スプラッシュスクリーン設定
 flutter_native_splash:
   # 背景色 (白色)
