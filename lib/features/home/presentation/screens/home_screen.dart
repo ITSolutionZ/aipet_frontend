@@ -4,6 +4,7 @@ import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_enti
 import 'package:aipet_frontend/features/home/presentation/controllers/home_controller.dart';
 import 'package:aipet_frontend/features/home/presentation/mixins/scroll_tracking_mixin.dart';
 import 'package:aipet_frontend/features/home/presentation/widgets/auto_banner_carousel.dart';
+import 'package:aipet_frontend/features/home/presentation/widgets/pet_profile_banner.dart';
 import 'package:aipet_frontend/features/home/presentation/widgets/widgets.dart';
 import 'package:aipet_frontend/shared/services/home_cache_manager.dart';
 import 'package:aipet_frontend/shared/shared.dart';
@@ -131,20 +132,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 배너와 검색바
-          SizedBox(
-            height:
-                MediaQuery.of(context).size.height * 0.40 +
-                50, // 배너 높이 축소 (30%)
-            child: ClipRect(
-              clipBehavior: Clip.none, // 검색바가 잘리지 않도록
-              child: Transform.translate(
-                offset: Offset(0, -MediaQuery.of(context).padding.top),
-                child: BannerSection(
-                  onSearchTap: _handleSearchTap,
-                  onSearchChanged: _handleSearchChanged,
-                ),
-              ),
+          // 펫 프로필 배너
+          const PetProfileBanner(),
+          
+          // 검색바
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: HomeSearchBarWidget(
+              onTap: _handleSearchTap,
+              onChanged: _handleSearchChanged,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
