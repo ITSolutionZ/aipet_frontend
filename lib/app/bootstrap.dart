@@ -6,6 +6,7 @@ import 'package:aipet_frontend/firebase_options.dart';
 import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/services/local_data_manager.dart';
+import 'package:aipet_frontend/shared/services/local_storage_service.dart';
 import 'package:aipet_frontend/shared/services/preload_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -85,6 +86,7 @@ class AppBootstrap {
       FirebaseManager.initialize(),
       _initializeSentry(),
       _initializeLocalDataManager(),
+      _initializeLocalStorage(),
     ];
 
     // 모든 비동기 초기화 작업을 병렬로 실행
@@ -222,6 +224,19 @@ class AppBootstrap {
     } catch (e) {
       debugPrint('⚠️ LocalDataManager initialization failed: $e');
       // LocalDataManager 초기화 실패해도 앱은 계속 실행
+    }
+  }
+
+  /// 로컬 스토리지 서비스를 초기화합니다.
+  ///
+  /// SQLite 데이터베이스와 로컬 서비스들을 초기화합니다.
+  static Future<void> _initializeLocalStorage() async {
+    try {
+      await LocalStorageService.instance.initialize();
+      debugPrint('✅ LocalStorageService initialized successfully');
+    } catch (e) {
+      debugPrint('⚠️ LocalStorageService initialization failed: $e');
+      // LocalStorageService 초기화 실패해도 앱은 계속 실행
     }
   }
 
