@@ -2,16 +2,14 @@ import 'dart:math';
 
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/utils/ai_logger.dart';
-import 'package:aipet_frontend/shared/core/utils/mock_helper.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/ai/ai_config_mock_data.dart';
+import 'package:aipet_frontend/shared/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/foundation/error_handler/error_handler.dart';
 import '../../domain/domain.dart';
 import '../services/ai_local_storage_service.dart';
-import '../services/ai_mock_data_service_impl.dart';
 import '../services/openai_service.dart';
 
 /// 🎯 AI Repository 구현체
@@ -29,17 +27,16 @@ import '../services/openai_service.dart';
 /// - 에러 처리 및 로깅을 통한 안정성 확보
 class AiRepositoryImpl implements AiRepository {
   final OpenAIService _openAIService;
-  final AiMockDataServiceImpl _aiMockDataService;
   final AiLocalStorageService _localStorageService;
+  final LocalStorageService _localStorage;
   final Ref ref;
 
   AiRepositoryImpl({
     required OpenAIService openAIService,
-    required AiMockDataServiceImpl aiMockDataService,
     required this.ref,
   }) : _openAIService = openAIService,
-       _aiMockDataService = aiMockDataService,
-       _localStorageService = AiLocalStorageService();
+       _localStorageService = AiLocalStorageService(),
+       _localStorage = LocalStorageService.instance;
 
   /// 채팅 히스토리 조회
   ///
@@ -55,13 +52,7 @@ class AiRepositoryImpl implements AiRepository {
   Future<List<AiMessageEntity>> getChatHistory() async {
     // 로컬 저장소에서 채팅 히스토리 가져오기
     final localHistory = await _localStorageService.loadChatHistory();
-    if (localHistory.isNotEmpty) {
-      return localHistory;
-    }
-
-    // 로컬에 저장된 히스토리가 없으면 Mock 데이터 반환
-    await _aiMockDataService.simulateApiDelay();
-    return _aiMockDataService.getChatHistoryEntities();
+    return localHistory;
   }
 
   /// 메시지 전송 및 AI 응답 생성
@@ -180,13 +171,7 @@ class AiRepositoryImpl implements AiRepository {
   Future<List<AiChatSessionEntity>> getChatSessions() async {
     // 로컬 저장소에서 채팅 세션 목록 가져오기
     final localSessions = await _localStorageService.loadChatSessions();
-    if (localSessions.isNotEmpty) {
-      return localSessions;
-    }
-
-    // 로컬에 저장된 세션이 없으면 Mock 데이터 반환
-    await MockHelper.simulateApiCall();
-    return _aiMockDataService.getChatSessionEntities();
+    return localSessions;
   }
 
   @override
@@ -219,9 +204,16 @@ class AiRepositoryImpl implements AiRepository {
 
   @override
   Future<List<AiSuggestedQuestionEntity>> getSuggestedQuestions() async {
-    // 실제 API 호출로 추천 질문 가져오기
-    await MockHelper.simulateApiCall();
-    return _aiMockDataService.getSuggestedQuestionEntities();
+    // 로컬 저장소에서 추천 질문 가져오기
+    final questions = await _localStorage.ai.loadAiCategories();
+    if (questions != null && questions.isNotEmpty) {
+      return questions.map((q) => AiSuggestedQuestionEntity(
+        id: q['id'] ?? '',
+        question: q['question'] ?? '',
+        category: q['category'] ?? '',
+      )).toList();
+    }
+    return [];
   }
 
   /// 펫 정보 기반 맞춤형 추천 질문 가져오기
@@ -230,13 +222,15 @@ class AiRepositoryImpl implements AiRepository {
     String? category,
     PetProfileEntity? pet,
   }) async {
-    await MockHelper.simulateApiCall();
-
-    return AiConfigMockData.getPersonalizedQuestions(
-      category: category,
-      petType: pet?.type,
-      petAge: pet?.age,
-    );
+    // 기본 추천 질문 가져오기
+    final baseQuestions = await getSuggestedQuestions();
+    
+    // 카테고리와 펫 정보에 따라 필터링
+    if (category != null) {
+      return baseQuestions.where((q) => q.category == category).toList();
+    }
+    
+    return baseQuestions;
   }
 
   @override
