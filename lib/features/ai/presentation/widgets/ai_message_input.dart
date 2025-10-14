@@ -17,71 +17,84 @@ class AiMessageInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(
-        left: AppSpacing.md,
-        right: AppSpacing.md,
-        top: AppSpacing.sm,
-        bottom: AppSpacing.sm,
-      ),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
+        border: Border(
+          top: BorderSide(color: Color(0xFFE0E0E0), width: 1),
+        ),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller,
-              enabled: !isLoading,
-              decoration: InputDecoration(
-                hintText: 'あなたのペットについての質問をしてください...',
-                hintStyle: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.large),
-                  borderSide: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.3)),
+      child: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF5F5F5),
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(
+                    color: const Color(0xFFE0E0E0),
+                    width: 1,
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.large),
-                  borderSide: const BorderSide(color: AppColors.pointBrown),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
+                child: TextField(
+                  controller: controller,
+                  enabled: !isLoading,
+                  decoration: InputDecoration(
+                    hintText: 'メッセージを入力...',
+                    hintStyle: AppFonts.bodyMedium.copyWith(
+                      color: AppColors.pointGray,
+                      fontSize: 16,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                  maxLines: 5,
+                  minLines: 1,
+                  textCapitalization: TextCapitalization.sentences,
+                  onSubmitted: isLoading ? null : onSendMessage,
                 ),
               ),
-              maxLines: null,
-              textCapitalization: TextCapitalization.sentences,
-              onSubmitted: isLoading ? null : onSendMessage,
             ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Container(
-            decoration: BoxDecoration(
-              color: isLoading ? AppColors.pointGray : AppColors.pointBrown,
-              shape: BoxShape.circle,
+            const SizedBox(width: 12),
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: isLoading 
+                    ? AppColors.pointGray 
+                    : AppColors.pointBrown,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                onPressed: isLoading 
+                    ? null 
+                    : () => onSendMessage(controller.text),
+                icon: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : const Icon(Icons.send, color: Colors.white, size: 20),
+                splashRadius: 24,
+              ),
             ),
-            child: IconButton(
-              onPressed: isLoading ? null : () => onSendMessage(controller.text),
-              icon: isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : const Icon(Icons.send, color: Colors.white),
-              splashRadius: 24,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
