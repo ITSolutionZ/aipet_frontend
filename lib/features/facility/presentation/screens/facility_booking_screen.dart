@@ -8,11 +8,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/providers/reservation_provider.dart';
 
-/// 예약 상태 열거형
+/// 予約状態列挙型
 enum BookingStatus {
-  available('◎', Colors.green, '예약 가능'),
-  consultation('◉', Colors.orange, '상담'),
-  unavailable('×', Colors.grey, '예약 불가');
+  available('◎', Colors.green, '予約可能'),
+  consultation('◉', Colors.orange, '相談'),
+  unavailable('×', Colors.grey, '予約不可');
 
   const BookingStatus(this.symbol, this.color, this.label);
   final String symbol;
@@ -67,19 +67,19 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
     super.dispose();
   }
 
-  /// 사용자 프로필 정보 로드
+  /// ユーザープロフィール情報の読み込み
   void _loadUserProfile() {
     final userProfileAsync = ref.read(userProfileNotifierProvider);
     userProfileAsync.whenData((profile) {
       _nameController.text = profile['name'] ?? '';
-      // 전화번호는 기본값으로 설정 (실제 프로필에서 가져올 수 있는 경우)
+      // 電話番号はデフォルト値で設定
       if (_phoneController.text.isEmpty) {
-        _phoneController.text = '010-0000-0000'; // 기본값
+        _phoneController.text = '010-0000-0000';
       }
     });
   }
 
-  /// 기본 펫 선택 (첫 번째 펫)
+  /// デフォルトペット選択 (最初のペット)
   void _loadDefaultPet() {
     final petsAsync = ref.read(petProfilesNotifierProvider);
     petsAsync.whenData((pets) {
@@ -103,9 +103,9 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFB89B8A), // 갈색 그라데이션 시작
-              Color(0xFFA08A7A), // 갈색 그라데이션 중간
-              Color(0xFF967E6D), // 갈색 그라데이션 끝
+              Color(0xFFB89B8A), // ブラウングラデーション開始
+              Color(0xFFA08A7A), // ブラウングラデーション中間
+              Color(0xFF967E6D), // ブラウングラデーション終了
             ],
           ),
         ),
@@ -132,20 +132,20 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
                       children: [
                         const SizedBox(height: AppSpacing.md),
 
-                        // 시설 정보 표시
+                        // 施設情報表示
                         _buildFacilityInfo(),
                         const SizedBox(height: AppSpacing.xl),
 
-                        // 예약자 정보
-                        _buildSectionTitle('예약자 정보'),
+                        // 予約者情報
+                        _buildSectionTitle('予約者情報'),
                         const SizedBox(height: AppSpacing.md),
                         _buildTextFormField(
                           controller: _nameController,
-                          label: '예약자명',
-                          hint: '예약자 이름을 입력해주세요',
+                          label: '予約者名',
+                          hint: '予約者名を入力してください',
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return '예약자명을 입력해주세요';
+                              return '予約者名を入力してください';
                             }
                             return null;
                           },
@@ -153,48 +153,48 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
                         const SizedBox(height: AppSpacing.md),
                         _buildTextFormField(
                           controller: _phoneController,
-                          label: '연락처',
+                          label: '連絡先',
                           hint: '010-0000-0000',
                           keyboardType: TextInputType.phone,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return '연락처를 입력해주세요';
+                              return '連絡先を入力してください';
                             }
                             return null;
                           },
                         ),
                         const SizedBox(height: AppSpacing.xl),
 
-                        // 반려동물 정보
-                        _buildSectionTitle('반려동물 정보'),
+                        // ペット情報
+                        _buildSectionTitle('ペット情報'),
                         const SizedBox(height: AppSpacing.md),
                         _buildPetSelector(),
                         const SizedBox(height: AppSpacing.xl),
 
-                        // 서비스 선택
-                        _buildSectionTitle('서비스 선택'),
+                        // サービス選択
+                        _buildSectionTitle('サービス選択'),
                         const SizedBox(height: AppSpacing.md),
                         _buildServiceSelector(),
                         const SizedBox(height: AppSpacing.xl),
 
-                        // 예약 일시
-                        _buildSectionTitle('예약 일시'),
+                        // 予約日時
+                        _buildSectionTitle('予約日時'),
                         const SizedBox(height: AppSpacing.md),
                         _buildDateTimeSelector(),
                         const SizedBox(height: AppSpacing.xl),
 
-                        // 특이사항
-                        _buildSectionTitle('특이사항'),
+                        // 特記事項
+                        _buildSectionTitle('特記事項'),
                         const SizedBox(height: AppSpacing.md),
                         _buildTextFormField(
                           controller: _notesController,
-                          label: '특이사항',
-                          hint: '예약 시 참고사항을 입력해주세요 (선택사항)',
+                          label: '特記事項',
+                          hint: '予約時の参考事項を入力してください（任意）',
                           maxLines: 3,
                         ),
                         const SizedBox(height: AppSpacing.xl),
 
-                        // 예약하기 버튼
+                        // 予約ボタン
                         _buildBookingButton(),
                         const SizedBox(height: AppSpacing.xl),
                       ],
@@ -216,7 +216,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
       elevation: 0,
       centerTitle: true,
       title: Text(
-        '${widget.facilityType} 예약',
+        '${widget.facilityType} 予約',
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       ),
     );
@@ -299,7 +299,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  '${widget.facilityType} 예약을 진행합니다',
+                  '${widget.facilityType}の予約を進めます',
                   style: AppFonts.bodySmall.copyWith(color: Colors.blue[600]),
                 ),
               ],
@@ -382,14 +382,14 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '반려동물 선택',
+                'ペット選択',
                 style: AppFonts.bodyMedium.copyWith(
                   fontWeight: FontWeight.w500,
                   color: Colors.black87,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
-              // 펫 선택 헤더 (항상 표시)
+              // ペット選択ヘッダー (常時表示)
               InkWell(
                 onTap: () {
                   setState(() {
@@ -411,7 +411,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
                         child: Text(
                           _selectedPet != null
                               ? _selectedPet!.name
-                              : '반려동물을 선택해주세요',
+                              : 'ペットを選択してください',
                           style: AppFonts.bodyMedium.copyWith(
                             color: _selectedPet != null
                                 ? Colors.black87
@@ -431,7 +431,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
                   ),
                 ),
               ),
-              // 펫 리스트 (아코디언 형태로 펼쳐짐)
+              // ペットリスト (アコーディオン形式で展開)
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 height: _isPetSelectorExpanded ? null : 0,
@@ -450,7 +450,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
                                   ),
                                   const SizedBox(height: AppSpacing.md),
                                   Text(
-                                    '등록된 펫이 없습니다',
+                                    '登録されたペットがありません',
                                     style: AppFonts.bodyMedium.copyWith(
                                       color: Colors.grey[600],
                                     ),
@@ -593,7 +593,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
                               ),
                               const SizedBox(height: AppSpacing.md),
                               Text(
-                                '펫 정보 로드 실패',
+                                'ペット情報の読み込み失敗',
                                 style: AppFonts.bodyMedium.copyWith(
                                   color: Colors.red,
                                 ),
@@ -632,7 +632,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '서비스 선택',
+            'サービス選択',
             style: AppFonts.bodyMedium.copyWith(
               fontWeight: FontWeight.w500,
               color: Colors.black87,
@@ -642,7 +642,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
           DropdownButtonFormField<String>(
             value: _selectedService,
             decoration: InputDecoration(
-              hintText: '서비스를 선택해주세요',
+              hintText: 'サービスを選択してください',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.sm),
                 borderSide: BorderSide(color: Colors.grey[300]!),
@@ -666,7 +666,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '서비스를 선택해주세요';
+                return 'サービスを選択してください';
               }
               return null;
             },
@@ -750,57 +750,6 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
           holiday.month == date.month &&
           holiday.day == date.day,
     );
-  }
-
-  List<Map<String, dynamic>> _getAvailableTimeSlots() {
-    final timeSlots = <Map<String, dynamic>>[];
-
-    // 병원 운영 시간: 9:00 ~ 18:00 (30분 단위)
-    for (int hour = 9; hour < 18; hour++) {
-      // 정시
-      final timeSlot00 = '${hour.toString().padLeft(2, '0')}:00';
-      final isBlocked00 = _isTimeSlotBlocked(hour, 0);
-      timeSlots.add({
-        'time': timeSlot00,
-        'hour': hour,
-        'minute': 0,
-        'isBlocked': isBlocked00,
-      });
-
-      // 30분
-      final timeSlot30 = '${hour.toString().padLeft(2, '0')}:30';
-      final isBlocked30 = _isTimeSlotBlocked(hour, 30);
-      timeSlots.add({
-        'time': timeSlot30,
-        'hour': hour,
-        'minute': 30,
-        'isBlocked': isBlocked30,
-      });
-    }
-
-    return timeSlots;
-  }
-
-  bool _isTimeSlotBlocked(int hour, int minute) {
-    if (_selectedDate == null) return false;
-
-    final status = _getBookingStatus(_selectedDate!);
-
-    // 상담만 가능한 날짜는 특정 시간만 가능
-    if (status == BookingStatus.consultation) {
-      // 상담 시간: 오후 2시~4시만 가능
-      return hour < 14 || hour >= 16;
-    }
-
-    // 예약 불가능한 날짜
-    if (status == BookingStatus.unavailable) {
-      return true;
-    }
-
-    // 실제 예약 시스템에서는 해당 날짜/시간에 예약이 있는지 확인
-    // 여기서는 예시로 특정 시간대를 블록 처리
-    final blockedHours = [12, 13]; // 점심시간 블록
-    return blockedHours.contains(hour);
   }
 
   /// 요일 헤더 빌드
@@ -1204,7 +1153,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
           ),
         ),
         child: const Text(
-          '예약하기',
+          '予約する',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
@@ -1213,14 +1162,19 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
 
   IconData _getFacilityIcon() {
     switch (widget.facilityType) {
+      case '美容室':
       case '미용실':
         return Icons.content_cut;
+      case 'カフェ':
       case '카페':
         return Icons.local_cafe;
+      case 'ホテル':
       case '호텔':
         return Icons.hotel;
+      case '遊び場':
       case '놀이터':
         return Icons.park;
+      case '教育センター':
       case '교육센터':
         return Icons.school;
       default:
@@ -1230,127 +1184,133 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
 
   List<String> _getServicesForFacilityType() {
     switch (widget.facilityType) {
+      case '病院':
       case '병원':
         return [
-          '일반진료',
-          '예방접종',
-          '건강검진',
-          '내과진료',
-          '외과수술',
-          '응급처치',
-          '치과진료',
-          '안과진료',
-          '피부과진료',
-          '정형외과진료',
-          '산과진료',
-          '중성화수술',
-          '백신접종',
-          '혈액검사',
-          'X-ray촬영',
-          '초음파검사',
+          '一般診療',
+          '予防接種',
+          '健康診断',
+          '内科診療',
+          '外科手術',
+          '応急処置',
+          '歯科診療',
+          '眼科診療',
+          '皮膚科診療',
+          '整形外科診療',
+          '産科診療',
+          '去勢・避妊手術',
+          'ワクチン接種',
+          '血液検査',
+          'X線撮影',
+          '超音波検査',
         ];
+      case '美容室':
       case '미용실':
         return [
-          '기본 미용',
-          '전체 미용',
-          '발톱 관리',
-          '목욕',
-          '드라이',
-          '털깎기',
-          '네일케어',
-          '이어클리닝',
-          '스타일링',
-          '펌',
-          '컬러링',
-          '특별스타일',
-          '전체패키지',
-          '부분미용',
-          '눈물자국관리',
-          '털빠짐관리',
-          '향수처리',
-          '스파트리트먼트',
+          '基本美容',
+          '全身美容',
+          '爪のケア',
+          '入浴',
+          'ドライング',
+          '毛のカット',
+          'ネイルケア',
+          '耳のクリーニング',
+          'スタイリング',
+          'パーマ',
+          'カラーリング',
+          '特別スタイル',
+          '全体パッケージ',
+          '部分美容',
+          '涙やけケア',
+          '抜け毛ケア',
+          '香水処理',
+          'スパトリートメント',
         ];
+      case 'カフェ':
       case '카페':
         return [
-          '기본 이용',
-          '특별 메뉴',
-          '이벤트 참여',
-          '펫프렌들리 카페',
-          '펫 간식',
-          '펫 장난감',
-          '펫 액세서리',
-          '펫 사료',
-          '펫 영양제',
-          '펫 샴푸',
-          '펫 침구',
-          '펫 의류',
-          '펫 목줄',
-          '펫 가방',
-          '펫 집',
-          '펫 놀이터',
-          '펫 사진촬영',
-          '펫 파티',
+          '基本利用',
+          '特別メニュー',
+          'イベント参加',
+          'ペットフレンドリーカフェ',
+          'ペットおやつ',
+          'ペットおもちゃ',
+          'ペットアクセサリー',
+          'ペットフード',
+          'ペット栄養剤',
+          'ペットシャンプー',
+          'ペット寝具',
+          'ペット服',
+          'ペットリード',
+          'ペットバッグ',
+          'ペットハウス',
+          'ペット遊び場',
+          'ペット写真撮影',
+          'ペットパーティー',
         ];
+      case 'ホテル':
       case '호텔':
         return [
-          '1박',
-          '2박',
-          '장기 숙박',
-          '특별 케어',
-          '1일 펜션',
-          '3일 펜션',
-          '1주일 펜션',
-          '장기 펜션',
-          '특별관리',
-          '산책서비스',
-          '목욕서비스',
-          '급식서비스',
-          '의료서비스',
-          '24시간관리',
-          '개별실',
-          '그룹실',
-          '야외놀이터',
-          '실내놀이터',
-          '특별활동',
+          '1泊',
+          '2泊',
+          '長期宿泊',
+          '特別ケア',
+          '1日ペンション',
+          '3日ペンション',
+          '1週間ペンション',
+          '長期ペンション',
+          '特別管理',
+          '散歩サービス',
+          '入浴サービス',
+          '給餌サービス',
+          '医療サービス',
+          '24時間管理',
+          '個室',
+          'グループルーム',
+          '屋外遊び場',
+          '室内遊び場',
+          '特別活動',
         ];
+      case '遊び場':
       case '놀이터':
         return [
-          '기본 이용',
-          '특별 프로그램',
-          '그룹 활동',
-          '야외놀이터',
-          '실내놀이터',
-          '수영장',
-          '애견카페',
-          '애견산책로',
-          '애견훈련장',
-          '애견미용실',
-          '애견호텔',
-          '애견병원',
-          '애견용품샵',
-          '애견사진관',
-          '애견이벤트',
+          '基本利用',
+          '特別プログラム',
+          'グループ活動',
+          '屋外遊び場',
+          '室内遊び場',
+          'プール',
+          'ドッグカフェ',
+          'ドッグ散歩道',
+          'ドッグトレーニング場',
+          'ドッグ美容室',
+          'ドッグホテル',
+          'ドッグ病院',
+          'ドッグ用品ショップ',
+          'ドッグ写真館',
+          'ドッグイベント',
         ];
+      case '教育センター':
       case '교육센터':
         return [
-          '기본 훈련',
-          '고급 훈련',
-          '행동 교정',
-          '사회화 훈련',
-          '실내배변훈련',
-          '산책훈련',
-          '앉아/누워훈련',
-          '손짓훈련',
-          '목소리훈련',
-          '분리불안훈련',
-          '공격성훈련',
-          '청소년기훈련',
-          '노령견훈련',
-          '개별훈련',
-          '그룹훈련',
+          '基本トレーニング',
+          '上級トレーニング',
+          '行動矯正',
+          '社会化トレーニング',
+          '室内トイレトレーニング',
+          '散歩トレーニング',
+          'お座り/伏せトレーニング',
+          'ハンドシグナルトレーニング',
+          '音声トレーニング',
+          '分離不安トレーニング',
+          '攻撃性トレーニング',
+          '若犬トレーニング',
+          '老犬トレーニング',
+          '個別トレーニング',
+          'グループトレーニング',
         ];
       default:
-        return ['기본 서비스', '프리미엄 서비스', 'VIP 서비스', '맞춤 서비스', '특별 서비스'];
+        return ['基本サービス', 'プレミアムサービス', 'VIPサービス', 'カスタマイズサービス', '特別サービス'];
     }
   }
 
@@ -1359,7 +1319,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
       if (_selectedPetId == null || _selectedPet == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('반려동물을 선택해주세요'),
+            content: Text('ペットを選択してください'),
             backgroundColor: Colors.red,
           ),
         );
@@ -1369,7 +1329,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
       if (_selectedService == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('서비스를 선택해주세요'),
+            content: Text('サービスを選択してください'),
             backgroundColor: Colors.red,
           ),
         );
@@ -1379,7 +1339,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
       if (_selectedDate == null || _selectedTimeSlot == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('예약 일시를 선택해주세요'),
+            content: Text('予約日時を選択してください'),
             backgroundColor: Colors.red,
           ),
         );
@@ -1417,17 +1377,17 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
           await showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('예약 완료'),
+              title: const Text('予約完了'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${widget.facilityName} 예약이 완료되었습니다.'),
+                  Text('${widget.facilityName}の予約が完了しました'),
                   const SizedBox(height: 8),
-                  Text('예약번호: ${reservation.id}'),
-                  Text('상태: ${reservation.status.displayName}'),
+                  Text('予約番号: ${reservation.id}'),
+                  Text('状態: ${reservation.status.displayName}'),
                   if (reservation.symptoms != null)
-                    Text('증상: ${reservation.symptoms}'),
+                    Text('症状: ${reservation.symptoms}'),
                 ],
               ),
               actions: [
@@ -1436,7 +1396,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
                     Navigator.of(context).pop();
                     context.pop();
                   },
-                  child: const Text('확인'),
+                  child: const Text('確認'),
                 ),
               ],
             ),
@@ -1447,7 +1407,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('예약 저장 중 오류가 발생했습니다: $e'),
+              content: Text('予約保存中にエラーが発生しました: $e'),
               backgroundColor: Colors.red,
             ),
           );

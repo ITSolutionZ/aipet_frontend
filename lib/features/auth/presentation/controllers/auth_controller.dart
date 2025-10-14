@@ -1,13 +1,15 @@
 import 'package:aipet_frontend/features/auth/data/auth_providers.dart';
-import 'package:aipet_frontend/features/auth/domain/auth_form_state.dart';
-import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/entities/auth_entities.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/login_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/social_login_usecase.dart';
+import 'package:aipet_frontend/features/auth/presentation/state/auth_form_state.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/utils/validation_utils.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/services/pet_login_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -63,7 +65,9 @@ class AuthController extends StateNotifier<AuthFormState> {
 
   bool get isFormValid {
     final state = currentState;
-    return state.email.isNotEmpty && state.username.isNotEmpty && state.error == null;
+    return state.email.isNotEmpty &&
+        state.username.isNotEmpty &&
+        state.error == null;
   }
 
   bool get canSubmit => isFormValid && !currentState.isLoading;
@@ -82,11 +86,15 @@ class AuthController extends StateNotifier<AuthFormState> {
   }
 
   void togglePasswordVisibility() {
-    _ref.read(authFormStateNotifierProvider.notifier).togglePasswordVisibility();
+    _ref
+        .read(authFormStateNotifierProvider.notifier)
+        .togglePasswordVisibility();
   }
 
   void toggleConfirmPasswordVisibility() {
-    _ref.read(authFormStateNotifierProvider.notifier).toggleConfirmPasswordVisibility();
+    _ref
+        .read(authFormStateNotifierProvider.notifier)
+        .toggleConfirmPasswordVisibility();
   }
 
   void toggleRememberMe() {
@@ -104,6 +112,29 @@ class AuthController extends StateNotifier<AuthFormState> {
     _ref.read(authFormStateNotifierProvider.notifier).handleLoginSuccess();
   }
 
+  /// 로그인 성공 시 펫 데이터 로드
+  ///
+  /// [userId] 로그인한 사용자 ID
+  /// [return] 로드된 펫 데이터
+  Future<List<PetProfileEntity>> loadUserPetsOnLogin(String userId) async {
+    try {
+      debugPrint('🐾 AuthController: 로그인 성공 시 펫 데이터 로드 시작 - 사용자: $userId');
+
+      // 펫 로그인 서비스를 통해 사용자 펫 데이터 로드
+      final pets = await PetLoginService.loadUserPetsOnLogin(userId);
+
+      // 로그인 로그 생성 및 출력
+      final loginLog = PetLoginService.generateLoginLog(userId, pets);
+      debugPrint(loginLog);
+
+      return pets;
+    } catch (error, stackTrace) {
+      debugPrint('❌ AuthController: 펫 데이터 로드 실패: $error');
+      debugPrint('Stack trace: $stackTrace');
+      return [];
+    }
+  }
+
   /// 로그인 처리 (UseCase 패턴 사용)
   Future<AuthControllerResult> login({String? password}) async {
     try {
@@ -119,9 +150,18 @@ class AuthController extends StateNotifier<AuthFormState> {
       }
 
       // UseCase를 통한 로그인 실행
-      final result = await _loginUseCase.call(email: currentState.email, password: password);
+      final result = await _loginUseCase.call(
+        email: currentState.email,
+        password: password,
+      );
 
       if (result.isSuccess) {
+        // 로그인 성공 시 펫 데이터 로드
+        final userId = currentState.email; // 임시로 이메일을 사용자 ID로 사용
+        final pets = await loadUserPetsOnLogin(userId);
+
+        debugPrint('✅ AuthController: 로그인 성공 - 펫 ${pets.length}마리 로드됨');
+
         return Result.success('ログインが完了しました', '');
       } else {
         return Result.failure(result.error?.toString() ?? 'ログインに失敗しました');
@@ -214,7 +254,9 @@ class AuthController extends StateNotifier<AuthFormState> {
   /// 저장된 로그인 정보 불러오기
   Future<void> loadSavedCredentials() async {
     try {
-      await _ref.read(authFormStateNotifierProvider.notifier).loadSavedCredentials();
+      await _ref
+          .read(authFormStateNotifierProvider.notifier)
+          .loadSavedCredentials();
     } catch (error) {
       handleError(error, StackTrace.current);
     }
@@ -223,7 +265,9 @@ class AuthController extends StateNotifier<AuthFormState> {
   /// 저장된 로그인 정보 삭제
   Future<bool> clearSavedCredentials() async {
     try {
-      await _ref.read(authFormStateNotifierProvider.notifier).clearSavedCredentials();
+      await _ref
+          .read(authFormStateNotifierProvider.notifier)
+          .clearSavedCredentials();
       return true;
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -305,7 +349,9 @@ class AuthController extends StateNotifier<AuthFormState> {
       if (result.isSuccess) {
         return Result.success('사용자 정보를 가져왔습니다', result.dataOrNull);
       } else {
-        return Result.failure(result.error?.toString() ?? '사용자 정보를 가져오는데 실패했습니다');
+        return Result.failure(
+          result.error?.toString() ?? '사용자 정보를 가져오는데 실패했습니다',
+        );
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
@@ -335,7 +381,9 @@ class AuthController extends StateNotifier<AuthFormState> {
       if (result.isSuccess) {
         return Result.success('이메일 인증 상태를 확인했습니다', result.dataOrNull ?? false);
       } else {
-        return Result.failure(result.error?.toString() ?? '이메일 인증 상태 확인에 실패했습니다');
+        return Result.failure(
+          result.error?.toString() ?? '이메일 인증 상태 확인에 실패했습니다',
+        );
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);

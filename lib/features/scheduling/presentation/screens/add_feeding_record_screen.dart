@@ -1,10 +1,9 @@
 import 'dart:developer' as developer;
 
+import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/controllers/scheduling_controllers.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/widgets/scheduling_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as scheduling_mock;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -53,22 +52,24 @@ class _AddFeedingRecordScreenState extends ConsumerState<AddFeedingRecordScreen>
   }
 
   /// 펫 정보 및 사이즈 가이드 로드
-  void _loadPetInfo() {
-    final petSizes = scheduling_mock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+  Future<void> _loadPetInfo() async {
+    final petSizes = FeedingLocalStorageService.getPetSizeFeedingInfo();
     _selectedPetInfo = petSizes[_selectedPetId];
 
     if (_selectedPetInfo != null) {
       final size = _selectedPetInfo!['size'] as String;
-      final sizeGuide = scheduling_mock.SchedulingMockService.getPetSizeFeedingGuide();
+      final sizeGuide = FeedingLocalStorageService.getPetSizeFeedingGuide();
       _petSizeGuide = sizeGuide[size];
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = MockDataService.getPetCurrentStatus(_selectedPetId);
-    _selectedStatuses = List<String>.from(currentStatus['selectedStatuses'] ?? []);
-    _statusValues = Map<String, String>.from(currentStatus);
-    _statusValues.remove('selectedStatuses');
-    _statusValues.remove('lastUpdated');
+    final currentStatus = await FeedingLocalStorageService.getPetStatus(_selectedPetId);
+    setState(() {
+      _selectedStatuses = List<String>.from(currentStatus['selectedStatuses'] ?? []);
+      _statusValues = Map<String, String>.from(currentStatus);
+      _statusValues.remove('selectedStatuses');
+      _statusValues.remove('lastUpdated');
+    });
   }
 
   /// 날짜 선택
@@ -124,55 +125,56 @@ class _AddFeedingRecordScreenState extends ConsumerState<AddFeedingRecordScreen>
   }
 
   /// 저장 처리
-  void _saveRecord() {
+  Future<void> _saveRecord() async {
     if (_formKey.currentState!.validate()) {
-      // 목업 데이터에 새로운 기록 추가
-      _addMockFeedingRecord();
+      // 로컬 저장소에 새로운 기록 추가
+      await _addFeedingRecord();
 
       UINotificationService.showSuccess('食事記録を保存しました');
 
-      context.pop({
-        'date': _selectedDate,
-        'time': _selectedTime,
-        'mealType': _selectedMealType,
-        'meal': _mealController.text,
-        'amount': '${_amountController.text}g', // g 단위 추가
-        'note': _noteController.text,
-      });
+      if (mounted) {
+        context.pop({
+          'date': _selectedDate,
+          'time': _selectedTime,
+          'mealType': _selectedMealType,
+          'meal': _mealController.text,
+          'amount': '${_amountController.text}g',
+          'note': _noteController.text,
+        });
+      }
     }
   }
 
-  /// 목업 데이터에 새로운 급여 기록 추가
-  void _addMockFeedingRecord() {
-    // MockDataService에 새로운 기록을 실제로 추가
+  /// 로컬 저장소에 새로운 급여 기록 추가
+  Future<void> _addFeedingRecord() async {
     final newRecord = {
       'id': DateTime.now().millisecondsSinceEpoch.toString(),
       'petId': _selectedPetId,
       'petName': _selectedPetInfo?['name'] ?? 'Max',
-      'fedTime': _selectedDate,
+      'fedTime': _selectedDate.toIso8601String(),
       'amount': double.tryParse(_amountController.text) ?? 0.0,
       'foodType': _mealController.text,
       'foodBrand': 'カスタム',
       'status': 'completed',
       'notes': _noteController.text,
-      'createdAt': DateTime.now(),
+      'createdAt': DateTime.now().toIso8601String(),
     };
 
-    // MockDataService에 기록 추가
-    scheduling_mock.SchedulingMockService.addMockFeedingRecord(newRecord);
+    // 로컬 저장소에 기록 추가
+    await FeedingLocalStorageService.addFeedingRecord(newRecord);
 
     // 추가된 기록 확인
-    developer.log('새로운 급여 기록이 목업 데이터에 추가되었습니다: $newRecord');
+    developer.log('새로운 급여 기록이 로컬 저장소에 추가되었습니다: $newRecord');
   }
 
   /// 펫 선택 처리
   void _onPetSelected(String petId) {
-    final petSizes = scheduling_mock.SchedulingMockService.getMockPetSizesAndFeedingAmounts();
+    final petSizes = FeedingLocalStorageService.getPetSizeFeedingInfo();
     setState(() {
       _selectedPetId = petId;
       _selectedPetInfo = petSizes[petId];
-      _loadPetInfo(); // 펫 정보 다시 로드
     });
+    _loadPetInfo();
   }
 
   /// 펫 상태 선택 다이얼로그 표시
@@ -180,7 +182,7 @@ class _AddFeedingRecordScreenState extends ConsumerState<AddFeedingRecordScreen>
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final statusOptions = scheduling_mock.SchedulingMockService.getPetStatusOptions();
+        final statusOptions = FeedingLocalStorageService.getPetStatusOptions();
         return PetStatusSelectionDialog(
           petInfo: petInfo,
           selectedStatuses: List<String>.from(_selectedStatuses),
@@ -190,19 +192,20 @@ class _AddFeedingRecordScreenState extends ConsumerState<AddFeedingRecordScreen>
                 (option) => {
                   'id': option,
                   'title': option,
+                  'description': '',
                   'icon': Icons.pets,
                   'options': [option],
                 },
               )
               .toList(),
-          onStatusUpdated: (List<String> selectedStatuses, Map<String, String> statusValues) {
+          onStatusUpdated: (List<String> selectedStatuses, Map<String, String> statusValues) async {
             setState(() {
               _selectedStatuses = selectedStatuses;
               _statusValues = statusValues;
-
-              // MockDataService에 상태 업데이트
-              MockDataService.updatePetStatus(petId, statusValues);
             });
+
+            // 로컬 저장소에 상태 업데이트
+            await FeedingLocalStorageService.updatePetStatus(petId, statusValues);
           },
         );
       },

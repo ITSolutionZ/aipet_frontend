@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration_controller.dart';
+import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration/pet_registration_constants.dart';
 import 'package:aipet_frontend/shared/shared.dart' hide State;
 import 'package:flutter/material.dart';
 
@@ -25,7 +25,7 @@ class _PetBreedSectionState extends State<PetBreedSection> {
   @override
   Widget build(BuildContext context) {
     final petTypeData =
-        PetRegistrationController.petTypes[widget.selectedPetType];
+        PetRegistrationConstants.petTypes[widget.selectedPetType];
     final breeds = petTypeData?['breeds'] as List<Map<String, dynamic>>? ?? [];
 
     return Column(

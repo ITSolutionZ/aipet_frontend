@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// 홈 화면용 커스텀 앱바
 /// 스크롤에 따라 투명에서 흰색으로 변하며 배너 이미지를 랜덤으로 표시
@@ -86,7 +87,8 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     const SizedBox(width: 8),
                     TextButton(
                       onPressed: () {
-                        // TODO: プロフィール編集画面へ遷移
+                        // プロフィール編集画面へ遷移
+                        context.push('/settings/profile-edit');
                       },
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
@@ -180,7 +182,12 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     // 1:1 채팅 버튼
                     IconButton(
                       onPressed: () {
-                        // TODO: 1:1 채팅 화면으로 이동
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('1:1チャット機能は準備中です'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
                       },
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       constraints: const BoxConstraints(),

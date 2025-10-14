@@ -1,5 +1,4 @@
-import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as SchedulingMock;
+import 'package:aipet_frontend/features/pet_health/data/services/pet_health_local_storage_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 펫 건강 컨트롤러
@@ -7,9 +6,15 @@ class PetHealthController extends StateNotifier<PetHealthState> {
   PetHealthController() : super(const PetHealthState());
 
   /// 건강 기록 로드
-  void loadHealthRecords(String petId) {
-    // SchedulingMockService에서 사용 가능한 메서드 사용
-    final healthData = SchedulingMock.SchedulingMockService.getMockHealthDataByPet(petId);
+  Future<void> loadHealthRecords(String petId) async {
+    final vaccineRecords = await PetHealthLocalStorageService.getVaccineRecords(
+      petId: petId,
+    );
+    final weightRecords = await PetHealthLocalStorageService.getWeightRecords(
+      petId: petId,
+    );
+
+    final healthData = {'vaccines': vaccineRecords, 'weights': weightRecords};
 
     state = state.copyWith(petId: petId, healthRecords: [healthData]);
   }
@@ -23,7 +28,9 @@ class PetHealthController extends StateNotifier<PetHealthState> {
 
   /// 건강 기록 삭제
   void deleteHealthRecord(String recordId) {
-    final newRecords = state.healthRecords.where((record) => record['id'] != recordId).toList();
+    final newRecords = state.healthRecords
+        .where((record) => record['id'] != recordId)
+        .toList();
     state = state.copyWith(healthRecords: newRecords);
   }
 }
@@ -35,7 +42,10 @@ class PetHealthState {
 
   const PetHealthState({this.petId = '', this.healthRecords = const []});
 
-  PetHealthState copyWith({String? petId, List<Map<String, dynamic>>? healthRecords}) {
+  PetHealthState copyWith({
+    String? petId,
+    List<Map<String, dynamic>>? healthRecords,
+  }) {
     return PetHealthState(
       petId: petId ?? this.petId,
       healthRecords: healthRecords ?? this.healthRecords,
@@ -44,8 +54,7 @@ class PetHealthState {
 }
 
 /// 컨트롤러 프로바이더
-final petHealthControllerProvider = StateNotifierProvider<PetHealthController, PetHealthState>((
-  ref,
-) {
-  return PetHealthController();
-});
+final petHealthControllerProvider =
+    StateNotifierProvider<PetHealthController, PetHealthState>((ref) {
+      return PetHealthController();
+    });

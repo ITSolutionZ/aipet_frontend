@@ -45,6 +45,11 @@ class OnboardingBackgroundImage extends StatelessWidget {
   Widget _buildCustomImageDisplay() {
     final pageIndex = OnboardingData.pages.indexOf(page);
 
+    // 첫 번째 페이지 (로고)는 특별한 처리
+    if (pageIndex == 0) {
+      return _buildLogoDisplay();
+    }
+
     return Stack(
       children: [
         // 배경 이미지 - 반응형으로 중요한 부분이 보이도록
@@ -65,6 +70,49 @@ class OnboardingBackgroundImage extends StatelessWidget {
                   );
                 }
 
+                return _buildImageWithFallback();
+              }
+              // 가로 화면 (태블릿)
+              else {
+                return _buildImageWithFallback();
+              }
+            },
+          ),
+        ),
+        // 그라데이션 오버레이 (위에서 아래로 어두워지는 효과)
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withValues(alpha: 0.2),
+                  Colors.black.withValues(alpha: 0.4),
+                ],
+                stops: const [0.5, 0.8, 1.0],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 첫 번째 페이지 표시 (2번 페이지와 동일한 전체 이미지, 로고는 하단 영역으로 이동)
+  Widget _buildLogoDisplay() {
+    return Stack(
+      children: [
+        // 전체 배경 이미지 (2번 페이지와 동일한 방식)
+        Positioned.fill(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // 화면 비율에 따라 이미지 표시 방식 조정
+              final aspectRatio = constraints.maxWidth / constraints.maxHeight;
+
+              // 세로 화면 (모바일)
+              if (aspectRatio < 0.8) {
                 return _buildImageWithFallback();
               }
               // 가로 화면 (태블릿)
@@ -129,7 +177,7 @@ class OnboardingBackgroundImage extends StatelessWidget {
     final pageIndex = OnboardingData.pages.indexOf(page);
 
     switch (pageIndex) {
-      case 0: // Welcome - 손바닥 위의 강아지 발 (클로즈업 효과)
+      case 0: // Welcome - 손바닥 위의 강아지 발 (2번 페이지와 동일한 전체 화면)
         return BoxFit.cover;
       case 1: // Together - 산책하는 강아지와 사람 (전체 장면)
         return BoxFit.cover;
@@ -148,8 +196,8 @@ class OnboardingBackgroundImage extends StatelessWidget {
     final pageIndex = OnboardingData.pages.indexOf(page);
 
     switch (pageIndex) {
-      case 0: // Welcome - 손바닥 위의 강아지 발 (하단에 위치)
-        return Alignment.bottomCenter; // 하단 중앙
+      case 0: // Welcome - 손바닥 위의 강아지 발 (2번 페이지와 동일한 상단 정렬)
+        return Alignment.topCenter; // 상단 중앙
       case 1: // Together - 산책하는 강아지와 사람 (상단 중앙)
         return Alignment.topCenter; // 상단 중앙
       case 2: // Intelligent - 골든 리트리버 강아지 얼굴 (중앙)

@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/notification/domain/usecases/notification_usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,7 +12,9 @@ class NotificationListController {
 
   NotificationListController(WidgetRef ref)
     : _uiController = NotificationUIController(ref),
-      _getNotificationSettingsUseCase = ref.read(getNotificationSettingsUseCaseProvider);
+      _getNotificationSettingsUseCase = ref.read(
+        getNotificationSettingsUseCaseProvider,
+      );
 
   /// 알림 설정 상태 확인
   Future<bool> checkNotificationSettings(String userId) async {
@@ -21,11 +23,16 @@ class NotificationListController {
       final settings = result.dataOrNull ?? {};
 
       // 주요 알림 타입들이 모두 활성화되어 있는지 확인
-      final mainTypes = [NotificationType.feeding, NotificationType.walk, NotificationType.system];
+      final mainTypes = [
+        NotificationType.feeding,
+        NotificationType.walk,
+        NotificationType.system,
+      ];
 
       // settings가 Map<String, dynamic>이므로 적절히 처리
       final enabled = settings['enabled'] as bool? ?? false;
-      final typeSettings = settings['typeSettings'] as Map<String, dynamic>? ?? {};
+      final typeSettings =
+          settings['typeSettings'] as Map<String, dynamic>? ?? {};
 
       final allEnabled =
           enabled &&

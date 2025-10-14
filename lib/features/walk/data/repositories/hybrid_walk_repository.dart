@@ -3,9 +3,9 @@ import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.
 import 'package:aipet_frontend/features/walk/domain/entities/walk_statistics_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
 import 'package:aipet_frontend/shared/services/local_walk_storage_service.dart';
-import 'package:aipet_frontend/shared/services/sync_queue_service.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/walk/walk_mock_service.dart';
 import 'package:flutter/foundation.dart';
+
+import 'helpers/helpers.dart';
 
 /// Hybrid 산책 리포지토리
 /// API, 로컬 저장소, Mock 데이터를 통합 관리하는 산책 리포지토리
@@ -17,7 +17,6 @@ import 'package:flutter/foundation.dart';
 class HybridWalkRepository implements WalkRepository {
   final WalkApiService _apiService;
   final bool _useApi;
-  final SyncQueueService _syncQueue = SyncQueueService.instance;
 
   HybridWalkRepository({
     required WalkApiService apiService,
@@ -30,41 +29,22 @@ class HybridWalkRepository implements WalkRepository {
 
   @override
   Future<List<WalkRecordEntity>> getAllWalkRecords() async {
-    // 1차: API 시도 (활성화된 경우)
-    if (_useApi) {
-      try {
-        debugPrint('🔄 HybridWalkRepository: API에서 산책 기록 조회 시도');
-        final apiResult = await _apiService.getAllWalkRecords();
-
-        if (apiResult.isSuccess && apiResult.data != null) {
-          final records = apiResult.data!;
-          // API 성공 시 로컬 캐시 동기화
-          await LocalWalkStorageService.saveWalkRecords(records);
-          debugPrint(
-            '✅ HybridWalkRepository: API 데이터 ${records.length}개 로드 완료',
-          );
-          return records;
-        }
-      } catch (e) {
-        debugPrint('⚠️ HybridWalkRepository: API 호출 실패, 로컬 데이터 사용 - $e');
-      }
-    }
+    // 1차: API 시도
+    final apiRecords = await WalkApiHelper.tryGetAllRecords(
+      apiService: _apiService,
+      useApi: _useApi,
+    );
+    if (apiRecords != null) return apiRecords;
 
     // 2차: 로컬 저장소
     try {
       final localRecords = await LocalWalkStorageService.loadWalkRecords();
-      if (localRecords.isNotEmpty) {
-        debugPrint('✅ HybridWalkRepository: 로컬 데이터 ${localRecords.length}개 로드');
-        return localRecords;
-      }
+      debugPrint('✅ HybridWalkRepository: 로컬 데이터 ${localRecords.length}개 로드');
+      return localRecords;
     } catch (e) {
       debugPrint('⚠️ HybridWalkRepository: 로컬 데이터 로드 실패 - $e');
+      return [];
     }
-
-    // 3차: Mock 데이터 (Fallback)
-    debugPrint('ℹ️ HybridWalkRepository: Mock 데이터 사용');
-    final mockData = WalkMockService.getMockWalkRecords();
-    return mockData.map((data) => WalkRecordEntity.fromJson(data)).toList();
   }
 
   @override
@@ -75,92 +55,29 @@ class HybridWalkRepository implements WalkRepository {
   @override
   Future<WalkRecordEntity?> getWalkRecordById(String recordId) async {
     // 1차: API 시도
-    if (_useApi) {
-      try {
-        debugPrint('🔄 HybridWalkRepository: API에서 산책 기록 조회 - ID: $recordId');
-        final apiResult = await _apiService.getWalkRecordById(recordId);
-
-        if (apiResult.isSuccess && apiResult.data != null) {
-          final record = apiResult.data!;
-          // API 성공 시 로컬 캐시 업데이트
-          await LocalWalkStorageService.updateWalkRecord(record);
-          debugPrint('✅ HybridWalkRepository: API 데이터 로드 완료 - ID: $recordId');
-          return record;
-        }
-      } catch (e) {
-        debugPrint(
-          '⚠️ HybridWalkRepository: API 호출 실패 - ID: $recordId, Error: $e',
-        );
-      }
-    }
+    final apiRecord = await WalkApiHelper.tryGetRecord(
+      apiService: _apiService,
+      recordId: recordId,
+      useApi: _useApi,
+    );
+    if (apiRecord != null) return apiRecord;
 
     // 2차: 로컬 저장소
-    try {
-      final localRecords = await LocalWalkStorageService.loadWalkRecords();
-      final record = localRecords.where((r) => r.id == recordId).firstOrNull;
-
-      if (record != null) {
-        debugPrint('✅ HybridWalkRepository: 로컬 데이터 로드 - ID: $recordId');
-        return record;
-      }
-    } catch (e) {
-      debugPrint('⚠️ HybridWalkRepository: 로컬 데이터 조회 실패 - $e');
-    }
-
-    // 3차: Mock 데이터
-    debugPrint('ℹ️ HybridWalkRepository: Mock 데이터 사용 - ID: $recordId');
-    final mockData = WalkMockService.getMockWalkRecords();
-    final mockRecord = mockData
-        .where((data) => data['id'] == recordId)
-        .firstOrNull;
-
-    if (mockRecord != null) {
-      return WalkRecordEntity.fromJson(mockRecord);
-    }
-
-    return null;
+    return WalkLocalHelper.getRecordById(recordId);
   }
 
   @override
   Future<List<WalkRecordEntity>> getWalkRecordsByPetId(String petId) async {
     // 1차: API 시도
-    if (_useApi) {
-      try {
-        debugPrint(
-          '🔄 HybridWalkRepository: API에서 펫 산책 기록 조회 - Pet ID: $petId',
-        );
-        final apiResult = await _apiService.getWalkRecordsByPetId(petId);
-
-        if (apiResult.isSuccess && apiResult.data != null) {
-          final records = apiResult.data!;
-          debugPrint('✅ HybridWalkRepository: API 펫 데이터 ${records.length}개 로드');
-          return records;
-        }
-      } catch (e) {
-        debugPrint(
-          '⚠️ HybridWalkRepository: API 호출 실패 - Pet ID: $petId, Error: $e',
-        );
-      }
-    }
+    final apiRecords = await WalkApiHelper.tryGetRecordsByPet(
+      apiService: _apiService,
+      petId: petId,
+      useApi: _useApi,
+    );
+    if (apiRecords != null) return apiRecords;
 
     // 2차: 로컬 저장소
-    try {
-      final localRecords = await LocalWalkStorageService.loadWalkRecords();
-      final petRecords = localRecords.where((r) => r.petId == petId).toList();
-
-      if (petRecords.isNotEmpty) {
-        debugPrint('✅ HybridWalkRepository: 로컬 펫 데이터 ${petRecords.length}개 로드');
-        return petRecords;
-      }
-    } catch (e) {
-      debugPrint('⚠️ HybridWalkRepository: 로컬 데이터 조회 실패 - $e');
-    }
-
-    // 3차: Mock 데이터
-    debugPrint('ℹ️ HybridWalkRepository: Mock 펫 데이터 사용 - Pet ID: $petId');
-    final mockData = WalkMockService.getMockWalkRecords();
-    final filteredData = mockData.where((record) => record['petId'] == petId);
-    return filteredData.map((data) => WalkRecordEntity.fromJson(data)).toList();
+    return WalkLocalHelper.getRecordsByPet(petId);
   }
 
   @override
@@ -223,14 +140,8 @@ class HybridWalkRepository implements WalkRepository {
       } catch (e) {
         debugPrint('⚠️ HybridWalkRepository: API 동기화 실패 (로컬 데이터 유지) - $e');
         // 동기화 큐에 추가
-        await _addToSyncQueue(
-          SyncOperation(
-            id: walkRecord.id,
-            type: SyncOperationType.create,
-            entityType: 'walk',
-            data: walkRecord.toJson(),
-            timestamp: DateTime.now(),
-          ),
+        await WalkSyncHelper.addToSyncQueue(
+          WalkSyncHelper.createSyncOperation(walkRecord),
         );
       }
     }
@@ -286,14 +197,8 @@ class HybridWalkRepository implements WalkRepository {
       } catch (e) {
         debugPrint('⚠️ HybridWalkRepository: API 동기화 실패 (로컬 데이터 유지) - $e');
         // 동기화 큐에 추가
-        await _addToSyncQueue(
-          SyncOperation(
-            id: recordId,
-            type: SyncOperationType.update,
-            entityType: 'walk',
-            data: updatedRecord.toJson(),
-            timestamp: DateTime.now(),
-          ),
+        await WalkSyncHelper.addToSyncQueue(
+          WalkSyncHelper.updateSyncOperation(updatedRecord),
         );
       }
     }
@@ -320,14 +225,8 @@ class HybridWalkRepository implements WalkRepository {
       } catch (e) {
         debugPrint('⚠️ HybridWalkRepository: API 동기화 실패 - $e');
         // 동기화 큐에 추가
-        await _addToSyncQueue(
-          SyncOperation(
-            id: walkRecord.id,
-            type: SyncOperationType.create,
-            entityType: 'walk',
-            data: walkRecord.toJson(),
-            timestamp: DateTime.now(),
-          ),
+        await WalkSyncHelper.addToSyncQueue(
+          WalkSyncHelper.createSyncOperation(walkRecord),
         );
       }
     }
@@ -351,14 +250,8 @@ class HybridWalkRepository implements WalkRepository {
       } catch (e) {
         debugPrint('⚠️ HybridWalkRepository: API 동기화 실패 (나중에 재시도 필요) - $e');
         // 동기화 큐에 추가
-        await _addToSyncQueue(
-          SyncOperation(
-            id: walkRecord.id,
-            type: SyncOperationType.update,
-            entityType: 'walk',
-            data: walkRecord.toJson(),
-            timestamp: DateTime.now(),
-          ),
+        await WalkSyncHelper.addToSyncQueue(
+          WalkSyncHelper.updateSyncOperation(walkRecord),
         );
       }
     }
@@ -380,26 +273,10 @@ class HybridWalkRepository implements WalkRepository {
       } catch (e) {
         debugPrint('⚠️ HybridWalkRepository: API 동기화 실패 (나중에 재시도 필요) - $e');
         // 동기화 큐에 추가
-        await _addToSyncQueue(
-          SyncOperation(
-            id: id,
-            type: SyncOperationType.delete,
-            entityType: 'walk',
-            data: {'id': id},
-            timestamp: DateTime.now(),
-          ),
+        await WalkSyncHelper.addToSyncQueue(
+          WalkSyncHelper.deleteSyncOperation(id),
         );
       }
-    }
-  }
-
-  /// 동기화 큐에 작업 추가
-  Future<void> _addToSyncQueue(SyncOperation operation) async {
-    try {
-      await _syncQueue.addToQueue(operation);
-      debugPrint('📥 동기화 큐에 추가: ${operation.type.name} - ${operation.id}');
-    } catch (e) {
-      debugPrint('❌ 동기화 큐 추가 실패: $e');
     }
   }
 
@@ -410,34 +287,7 @@ class HybridWalkRepository implements WalkRepository {
       return;
     }
 
-    await _syncQueue.processPendingOperations(
-      handler: (operation) async {
-        try {
-          if (operation.entityType != 'walk') {
-            return true; // 다른 엔티티 타입은 건너뜀
-          }
-
-          switch (operation.type) {
-            case SyncOperationType.create:
-              final record = WalkRecordEntity.fromJson(operation.data);
-              final result = await _apiService.startWalk(record);
-              return result.isSuccess;
-
-            case SyncOperationType.update:
-              final record = WalkRecordEntity.fromJson(operation.data);
-              final result = await _apiService.updateWalkRecord(record);
-              return result.isSuccess;
-
-            case SyncOperationType.delete:
-              final result = await _apiService.deleteWalkRecord(operation.id);
-              return result.isSuccess;
-          }
-        } catch (e) {
-          debugPrint('❌ 동기화 처리 실패: ${operation.id} - $e');
-          return false;
-        }
-      },
-    );
+    await WalkSyncHelper.processPendingSync(apiService: _apiService);
   }
 
   @override
@@ -465,9 +315,11 @@ class HybridWalkRepository implements WalkRepository {
       }
     }
 
-    // 2차: Mock 데이터
-    debugPrint('ℹ️ HybridWalkRepository: Mock 통계 데이터 사용');
-    final mockData = WalkMockService.getMockWeeklyWalkStats(petId: petId);
-    return WalkStatistics.fromJson(mockData);
+    // 2차: 로컬 저장소에서 통계 계산
+    return WalkLocalHelper.calculateStatistics(
+      petId: petId,
+      startDate: startDate,
+      endDate: endDate,
+    );
   }
 }

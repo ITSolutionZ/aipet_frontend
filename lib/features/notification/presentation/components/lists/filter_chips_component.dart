@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/notification/presentation/extensions/notification_type_ui_extension.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -52,8 +52,12 @@ class NotificationFilterChipsComponent extends StatelessWidget {
                 width: selectedFilter == null ? 1.5 : 1,
               ),
               labelStyle: TextStyle(
-                color: selectedFilter == null ? AppColors.pointBrown : AppColors.pointGray,
-                fontWeight: selectedFilter == null ? FontWeight.w600 : FontWeight.normal,
+                color: selectedFilter == null
+                    ? AppColors.pointBrown
+                    : AppColors.pointGray,
+                fontWeight: selectedFilter == null
+                    ? FontWeight.w600
+                    : FontWeight.normal,
                 fontSize: 14,
               ),
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -67,7 +71,9 @@ class NotificationFilterChipsComponent extends StatelessWidget {
                 avatar: Icon(
                   type.icon,
                   size: 16,
-                  color: selectedFilter == type ? type.color : AppColors.pointGray,
+                  color: selectedFilter == type
+                      ? type.color
+                      : AppColors.pointGray,
                 ),
                 label: Text(type.name),
                 selected: selectedFilter == type,
@@ -84,8 +90,12 @@ class NotificationFilterChipsComponent extends StatelessWidget {
                   width: selectedFilter == type ? 1.5 : 1,
                 ),
                 labelStyle: TextStyle(
-                  color: selectedFilter == type ? type.color : AppColors.pointGray,
-                  fontWeight: selectedFilter == type ? FontWeight.w600 : FontWeight.normal,
+                  color: selectedFilter == type
+                      ? type.color
+                      : AppColors.pointGray,
+                  fontWeight: selectedFilter == type
+                      ? FontWeight.w600
+                      : FontWeight.normal,
                   fontSize: 14,
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),

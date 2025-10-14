@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
+import 'package:aipet_frontend/features/auth/domain/entities/auth_entities.dart';
 import 'package:flutter/foundation.dart';
 
 /// 🎯 Auth 모드 서비스 (테스트 전용)
@@ -35,7 +35,10 @@ class AuthModeService {
       isEmailVerified: false, // 회원가입 시에는 이메일 미인증
       creationTime: now,
       lastSignInTime: now,
-      customData: {'isTempSignup': true, 'tempSignupTime': now.toIso8601String()},
+      customData: {
+        'isTempSignup': true,
+        'tempSignupTime': now.toIso8601String(),
+      },
     );
   }
 

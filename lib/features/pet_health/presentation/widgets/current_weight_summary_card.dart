@@ -1,13 +1,42 @@
+import 'package:aipet_frontend/features/pet_health/data/services/pet_health_local_storage_service.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/pet_health/pet_health_mock_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CurrentWeightSummaryCard extends StatelessWidget {
+class CurrentWeightSummaryCard extends ConsumerStatefulWidget {
   const CurrentWeightSummaryCard({super.key});
 
   @override
+  ConsumerState<CurrentWeightSummaryCard> createState() =>
+      _CurrentWeightSummaryCardState();
+}
+
+class _CurrentWeightSummaryCardState
+    extends ConsumerState<CurrentWeightSummaryCard> {
+  List<Map<String, dynamic>> _weightRecords = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWeightRecords();
+  }
+
+  Future<void> _loadWeightRecords() async {
+    final records = await PetHealthLocalStorageService.getWeightRecords(
+      petId: 'default',
+    );
+    setState(() {
+      _weightRecords = records;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final weightRecords = PetHealthMockService.getMockWeightRecords();
+    if (_weightRecords.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final weightRecords = _weightRecords;
 
     return Container(
       width: double.infinity,
@@ -53,7 +82,11 @@ class CurrentWeightSummaryCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           Column(
             children: [
-              _buildWeightInfo('現在', '${weightRecords.first['weight']}kg', AppColors.pointGreen),
+              _buildWeightInfo(
+                '現在',
+                '${weightRecords.first['weight']}kg',
+                AppColors.pointGreen,
+              ),
               const SizedBox(height: AppSpacing.sm),
               _buildWeightInfo('変化', '+0.2kg', AppColors.pointBlue),
               const SizedBox(height: AppSpacing.sm),

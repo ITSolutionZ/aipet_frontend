@@ -31,7 +31,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
               shape: BoxShape.circle,
             ),
             child: Image.asset(
-              'assets/icons/logo_notinclude_text.png',
+              'assets/icons/logos/aipet_logo.png',
               width: 20,
               height: 20,
               color: Colors.white,
@@ -255,26 +255,32 @@ class AiPetSelectionBubble extends ConsumerWidget {
                 color: isSelected ? Colors.white : AppColors.pointBrown,
               ),
             const SizedBox(width: AppSpacing.xs),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  pet.name,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: isSelected ? Colors.white : AppColors.pointDark,
-                    fontWeight: FontWeight.w600,
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    pet.name,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: isSelected ? Colors.white : AppColors.pointDark,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                ),
-                Text(
-                  '${pet.typeName} • ${pet.age}歳',
-                  style: AppFonts.bodySmall.copyWith(
-                    color: isSelected
-                        ? Colors.white.withValues(alpha: 0.9)
-                        : AppColors.pointDark.withValues(alpha: 0.7),
+                  Text(
+                    '${pet.typeName} • ${pet.age}歳',
+                    style: AppFonts.bodySmall.copyWith(
+                      color: isSelected
+                          ? Colors.white.withValues(alpha: 0.9)
+                          : AppColors.pointDark.withValues(alpha: 0.7),
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

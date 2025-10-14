@@ -32,22 +32,22 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
   PetProfileEntity? _selectedPet;
 
   final List<String> _consultations = [
-    '선택안함',
-    '내과',
-    '정형외과',
-    '피부과',
-    '안과',
-    '방사선과',
-    '이비인후과',
-    '한방진료',
-    '외과',
-    '산과',
-    '치과',
-    '임상병리과',
-    '예방의학과',
-    '비뇨기과',
+    '選択なし',
+    '内科',
+    '整形外科',
+    '皮膚科',
+    '眼科',
+    '放射線科',
+    '耳鼻咽喉科',
+    '漢方診療',
+    '外科',
+    '産科',
+    '歯科',
+    '臨床病理科',
+    '予防医学科',
+    '泌尿器科',
   ];
-  final List<String> _visitPurposes = ['첫 방문', '백신접종', '건강검진', '치과진료', '수술상담'];
+  final List<String> _visitPurposes = ['初診', 'ワクチン接種', '健康診断', '歯科診療', '手術相談'];
 
   @override
   void initState() {
@@ -255,7 +255,7 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '예약동물',
+                            '予約ペット',
                             style: AppFonts.titleMedium.copyWith(
                               fontWeight: FontWeight.bold,
                               color: AppColors.textPrimary,
@@ -424,7 +424,7 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '진료과목',
+                '診療科目',
                 style: AppFonts.titleMedium.copyWith(
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
@@ -523,7 +523,7 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '방문목적',
+                '来院目的',
                 style: AppFonts.titleMedium.copyWith(
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
@@ -588,7 +588,7 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '예약메모 (선택)',
+            '予約メモ（任意）',
             style: AppFonts.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
@@ -601,7 +601,7 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
             maxLength: 100,
             style: AppFonts.bodyMedium.copyWith(color: AppColors.textPrimary),
             decoration: InputDecoration(
-              hintText: '예약 관련 메모를 입력해주세요',
+              hintText: '予約関連のメモを入力してください',
               hintStyle: AppFonts.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -655,7 +655,7 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
           elevation: 0,
         ),
         child: Text(
-          '다음',
+          '次へ',
           style: AppFonts.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.textSecondary,

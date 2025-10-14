@@ -20,7 +20,9 @@ class PetImageSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasImage = petImagePath != null && petImagePath!.isNotEmpty;
 
-    print('🖼️ PetImageSection build - petImagePath: $petImagePath, hasImage: $hasImage');
+    debugPrint(
+      '🖼️ PetImageSection build - petImagePath: $petImagePath, hasImage: $hasImage',
+    );
 
     return Column(
       children: [

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/features/allergy/domain/entities/allergy_analysis_entities.dart';
 import 'package:aipet_frontend/features/allergy/domain/entities/product_entity.dart';
 import 'package:aipet_frontend/features/allergy/domain/services/allergy_analysis_service.dart';
 import 'package:aipet_frontend/shared/core/constants/environment_constants.dart';

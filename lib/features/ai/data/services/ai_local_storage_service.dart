@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/features/ai/domain/domain.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// 🎯 AI 로컬 저장소 서비스
@@ -25,6 +26,7 @@ class AiLocalStorageService extends BaseLoggingService {
   static const String _chatSessionsKey = 'ai_chat_sessions';
   static const String _chatSummariesKey = 'ai_chat_summaries';
   static const String _favoriteQAsKey = 'ai_favorite_qas';
+  static const String _suggestedQuestionsKey = 'ai_suggested_questions';
 
   AiLocalStorageService() : super('ai_local_storage');
 
@@ -85,7 +87,9 @@ class AiLocalStorageService extends BaseLoggingService {
       }
 
       final messagesJson = jsonDecode(jsonString) as List;
-      final messages = messagesJson.map((json) => _messageFromJson(json)).toList();
+      final messages = messagesJson
+          .map((json) => _messageFromJson(json))
+          .toList();
 
       logInfo('채팅 히스토리 로드 완료: ${messages.length}개 메시지');
       return messages;
@@ -119,7 +123,9 @@ class AiLocalStorageService extends BaseLoggingService {
       favorites.removeWhere((fav) => fav.id == favorite.id);
       favorites.add(favorite);
 
-      final favoritesJson = favorites.map((fav) => _favoriteToJson(fav)).toList();
+      final favoritesJson = favorites
+          .map((fav) => _favoriteToJson(fav))
+          .toList();
       final jsonString = jsonEncode(favoritesJson);
 
       await prefs.setString(_favoriteMessagesKey, jsonString);
@@ -141,7 +147,9 @@ class AiLocalStorageService extends BaseLoggingService {
       }
 
       final favoritesJson = jsonDecode(jsonString) as List;
-      final favorites = favoritesJson.map((json) => _favoriteFromJson(json)).toList();
+      final favorites = favoritesJson
+          .map((json) => _favoriteFromJson(json))
+          .toList();
 
       logInfo('즐겨찾기 메시지 로드 완료: ${favorites.length}개');
       return favorites;
@@ -159,7 +167,9 @@ class AiLocalStorageService extends BaseLoggingService {
 
       favorites.removeWhere((fav) => fav.id == favoriteId);
 
-      final favoritesJson = favorites.map((fav) => _favoriteToJson(fav)).toList();
+      final favoritesJson = favorites
+          .map((fav) => _favoriteToJson(fav))
+          .toList();
       final jsonString = jsonEncode(favoritesJson);
 
       await prefs.setString(_favoriteMessagesKey, jsonString);
@@ -204,7 +214,9 @@ class AiLocalStorageService extends BaseLoggingService {
       }
 
       final sessionsJson = jsonDecode(jsonString) as List;
-      final sessions = sessionsJson.map((json) => _sessionFromJson(json)).toList();
+      final sessions = sessionsJson
+          .map((json) => _sessionFromJson(json))
+          .toList();
 
       logInfo('채팅 세션 로드 완료: ${sessions.length}개');
       return sessions;
@@ -266,7 +278,9 @@ class AiLocalStorageService extends BaseLoggingService {
       }
 
       final summariesJson = jsonDecode(jsonString) as List;
-      final summaries = summariesJson.map((json) => _summaryFromJson(json)).toList();
+      final summaries = summariesJson
+          .map((json) => _summaryFromJson(json))
+          .toList();
 
       logInfo('채팅 요약 로드 완료: ${summaries.length}개');
       return summaries;
@@ -328,7 +342,9 @@ class AiLocalStorageService extends BaseLoggingService {
       }
 
       final qasJson = jsonDecode(jsonString) as List;
-      final favoriteQAs = qasJson.map((json) => _favoriteQAFromJson(json)).toList();
+      final favoriteQAs = qasJson
+          .map((json) => _favoriteQAFromJson(json))
+          .toList();
 
       logInfo('즐겨찾기 QA 로드 완료: ${favoriteQAs.length}개');
       return favoriteQAs;
@@ -501,6 +517,73 @@ class AiLocalStorageService extends BaseLoggingService {
     );
   }
 
+  AiSuggestedQuestionEntity _suggestedQuestionFromJson(
+    Map<String, dynamic> json,
+  ) {
+    return AiSuggestedQuestionEntity(
+      id: json['id'] as String,
+      question: json['question'] as String,
+      category: json['category'] as String,
+      icon: json['icon'] != null
+          ? IconData(json['icon'] as int, fontFamily: 'MaterialIcons')
+          : Icons.help_outline,
+      description: json['description'] as String?,
+    );
+  }
+
+  // ===== 추천 질문 관리 =====
+
+  /// 추천 질문 목록 로드
+  Future<List<AiSuggestedQuestionEntity>> loadSuggestedQuestions() async {
+    try {
+      final prefs = await _prefs;
+      final jsonString = prefs.getString(_suggestedQuestionsKey);
+
+      if (jsonString == null || jsonString.isEmpty) {
+        // 기본 추천 질문 반환
+        return _getDefaultSuggestedQuestions();
+      }
+
+      final questionsJson = jsonDecode(jsonString) as List;
+      final questions = questionsJson
+          .map((json) => _suggestedQuestionFromJson(json))
+          .toList();
+
+      logInfo('추천 질문 로드 완료: ${questions.length}개');
+      return questions;
+    } catch (e) {
+      logError('추천 질문 로드 실패', e);
+      return _getDefaultSuggestedQuestions();
+    }
+  }
+
+  /// 기본 추천 질문 목록
+  List<AiSuggestedQuestionEntity> _getDefaultSuggestedQuestions() {
+    return [
+      const AiSuggestedQuestionEntity(
+        id: 'default_1',
+        question: 'ペットの健康状態について相談したいです',
+        category: 'health',
+        icon: Icons.medical_services,
+        description: '健康相談',
+      ),
+      const AiSuggestedQuestionEntity(
+        id: 'default_2',
+        question: 'おすすめのフードを教えてください',
+        category: 'food',
+        icon: Icons.restaurant,
+        description: 'フード推奨',
+      ),
+      const AiSuggestedQuestionEntity(
+        id: 'default_3',
+        question: '散歩のコツを教えてください',
+        category: 'walk',
+        icon: Icons.directions_walk,
+        description: '散歩ガイド',
+      ),
+    ];
+  }
+
   /// 모든 AI 데이터 초기화
   Future<void> clearAllData() async {
     try {
@@ -510,6 +593,7 @@ class AiLocalStorageService extends BaseLoggingService {
       await prefs.remove(_chatSessionsKey);
       await prefs.remove(_chatSummariesKey);
       await prefs.remove(_favoriteQAsKey);
+      await prefs.remove(_suggestedQuestionsKey);
       logInfo('모든 AI 데이터 초기화 완료');
     } catch (e) {
       logError('AI 데이터 초기화 실패', e);

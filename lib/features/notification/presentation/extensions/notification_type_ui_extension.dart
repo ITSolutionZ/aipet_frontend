@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 
 /// NotificationType UI Extensions (Presentation Layer)

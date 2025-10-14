@@ -6,7 +6,9 @@ abstract class SettingsRepository {
   Future<Result<Map<String, dynamic>>> getUserProfile();
 
   /// 사용자 프로필 업데이트
-  Future<Result<Map<String, dynamic>>> updateUserProfile(Map<String, dynamic> profile);
+  Future<Result<Map<String, dynamic>>> updateUserProfile(
+    Map<String, dynamic> profile,
+  );
 
   /// 비밀번호 변경
   Future<Result<void>> changePassword(Map<String, dynamic> request);
@@ -18,7 +20,9 @@ abstract class SettingsRepository {
   Future<Result<Map<String, dynamic>>> getAppSettings();
 
   /// 앱 설정 저장
-  Future<Result<Map<String, dynamic>>> saveAppSettings(Map<String, dynamic> settings);
+  Future<Result<Map<String, dynamic>>> saveAppSettings(
+    Map<String, dynamic> settings,
+  );
 
   /// 앱 데이터 내보내기
   Future<Result<Result>> exportAppData();
@@ -31,4 +35,14 @@ abstract class SettingsRepository {
 
   /// 캐시 크기 가져오기
   Future<Result<int>> getCacheSize();
+
+  /// 사용자 위치 정보 저장
+  Future<Result<void>> saveUserLocation({
+    required String postalCode,
+    required String address,
+    String? detailAddress,
+  });
+
+  /// 사용자 위치 정보 가져오기
+  Future<Result<Map<String, dynamic>>> getUserLocation();
 }

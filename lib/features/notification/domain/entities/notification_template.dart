@@ -1,4 +1,6 @@
 import 'notification_model.dart';
+import 'notification_priority.dart';
+import 'notification_type.dart';
 
 /// 알림 템플릿 타입
 enum TemplateType {
@@ -46,7 +48,8 @@ class NotificationTemplate {
     NotificationPriority priority = NotificationPriority.normal,
     Map<String, dynamic>? data,
   }) {
-    final mergedVariables = Map<String, String>.from(defaultValues)..addAll(variables ?? {});
+    final mergedVariables = Map<String, String>.from(defaultValues)
+      ..addAll(variables ?? {});
 
     final title = _replaceVariables(titleTemplate, mergedVariables);
     final body = _replaceVariables(bodyTemplate, mergedVariables);
@@ -161,7 +164,9 @@ class NotificationTemplate {
       defaultValues: Map<String, String>.from(json['defaultValues'] ?? {}),
       isActive: json['isActive'] ?? true,
       createdAt: DateTime.parse(json['createdAt']),
-      lastUsed: json['lastUsed'] != null ? DateTime.parse(json['lastUsed']) : null,
+      lastUsed: json['lastUsed'] != null
+          ? DateTime.parse(json['lastUsed'])
+          : null,
     );
   }
 
@@ -237,7 +242,11 @@ class NotificationTemplateFactory {
         titleTemplate: '⚠️ {{pet_name}} 건강 체크',
         bodyTemplate: '{{pet_name}}의 {{health_item}}을 확인해주세요. {{reason}}',
         variables: ['pet_name', 'health_item', 'reason'],
-        defaultValues: {'pet_name': '반려동물', 'health_item': '건강 상태', 'reason': '정기 체크가 필요합니다'},
+        defaultValues: {
+          'pet_name': '반려동물',
+          'health_item': '건강 상태',
+          'reason': '정기 체크가 필요합니다',
+        },
         createdAt: DateTime.now(),
       ),
 
@@ -249,9 +258,15 @@ class NotificationTemplateFactory {
         type: TemplateType.info,
         notificationType: NotificationType.reservation,
         titleTemplate: '예약 알림: {{service_type}}',
-        bodyTemplate: '{{date}} {{time}}에 {{service_type}} 예약이 있습니다. {{location}}에서 진행됩니다.',
+        bodyTemplate:
+            '{{date}} {{time}}에 {{service_type}} 예약이 있습니다. {{location}}에서 진행됩니다.',
         variables: ['service_type', 'date', 'time', 'location'],
-        defaultValues: {'service_type': '건강검진', 'date': '내일', 'time': '오후 2시', 'location': '동물병원'},
+        defaultValues: {
+          'service_type': '건강검진',
+          'date': '내일',
+          'time': '오후 2시',
+          'location': '동물병원',
+        },
         createdAt: DateTime.now(),
       ),
 
@@ -284,11 +299,15 @@ class NotificationTemplateFactory {
     List<NotificationTemplate> templates,
     NotificationType notificationType,
   ) {
-    return templates.where((template) => template.notificationType == notificationType).toList();
+    return templates
+        .where((template) => template.notificationType == notificationType)
+        .toList();
   }
 
   /// 활성화된 템플릿만 필터링
-  static List<NotificationTemplate> filterActive(List<NotificationTemplate> templates) {
+  static List<NotificationTemplate> filterActive(
+    List<NotificationTemplate> templates,
+  ) {
     return templates.where((template) => template.isActive).toList();
   }
 }

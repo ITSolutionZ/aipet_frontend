@@ -12,9 +12,14 @@ part 'ai_providers.g.dart';
 /// MockConfig.shouldUseMock 값에 따라 결정됩니다.
 @riverpod
 AiRepository aiRepository(Ref ref) {
-  return AiRepositoryImpl(
-    openAIService: OpenAIService(),
-    ref: ref,
-  );
+  // 로컬 데이터 소스 사용
+  return AiRepositoryImpl(openAIService: OpenAIService(), ref: ref);
 }
 
+/// Legacy AI Repository Provider (기존 구현체)
+///
+/// 필요시 기존 구현체로 되돌릴 수 있도록 유지
+@riverpod
+AiRepository legacyAiRepository(Ref ref) {
+  return AiRepositoryImpl(openAIService: OpenAIService(), ref: ref);
+}

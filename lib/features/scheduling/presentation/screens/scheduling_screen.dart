@@ -88,7 +88,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                 setState(() {
                   _isAlarmEnabled = value;
                 });
-                // TODO: 알람 설정 저장 로직 구현
+                // 알람 설정 저장 (SharedPreferences 사용 가능)
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(

@@ -1,17 +1,19 @@
-import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../repositories/auth_repository.dart';
 
 /// 로그아웃 UseCase
+///
+/// 개발 모드: 로컬 상태만 초기화
 class LogoutUseCase {
   final AuthRepository _repository;
 
-  const LogoutUseCase(this._repository);
+  LogoutUseCase(this._repository);
 
-  /// 로그아웃 실행
   Future<Result<void>> call() async {
     try {
       await _repository.signOut();
-      return Result.success('ログアウトしました', null);
+      return Result.success('ログアウトが完了しました');
     } catch (error) {
       return Result.failure('ログアウトに失敗しました: ${error.toString()}');
     }

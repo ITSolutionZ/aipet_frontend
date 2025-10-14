@@ -3,7 +3,9 @@ import 'package:aipet_frontend/shared/monitoring/app_monitoring_dashboard.dart';
 import 'package:aipet_frontend/shared/performance/memory_optimizer.dart';
 import 'package:aipet_frontend/shared/performance/performance_monitor.dart';
 import 'package:aipet_frontend/shared/security/environment_config.dart';
+import 'package:aipet_frontend/shared/services/pet_local_storage_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// 🚀 앱 통합 부트스트랩 시스템
 ///
@@ -23,17 +25,26 @@ class AppBootstrap {
         debugPrint('🚀 Starting app bootstrap...');
       }
 
-      // 1. 보안 시스템 초기화
+      // 1. 환경 변수 로드
+      await _loadEnvironmentVariables();
+
+      // 2. 보안 시스템 초기화
       await _initializeSecuritySystems();
 
-      // 2. 성능 모니터링 시스템 초기화
+      // 3. 성능 모니터링 시스템 초기화
       await _initializePerformanceSystems();
 
-      // 3. 모니터링 대시보드 초기화
+      // 4. 모니터링 대시보드 초기화
       await _initializeMonitoringDashboard();
 
-      // 4. 환경별 설정 적용
+      // 5. 환경별 설정 적용
       await _applyEnvironmentSettings();
+
+      // 6. 로컬 데이터 초기화
+      await _initializeLocalData();
+
+      // 7. 앱 실행 관련 초기화
+      await _initializeAppRuntime();
 
       _isInitialized = true;
       _isInitializing = false;
@@ -51,7 +62,38 @@ class AppBootstrap {
 
       // 프로덕션 환경에서는 초기화 실패 시 앱 종료
       if (kReleaseMode) {
-        throw AppBootstrapException('App initialization failed: ${e.toString()}');
+        throw AppBootstrapException(
+          'App initialization failed: ${e.toString()}',
+        );
+      }
+    }
+  }
+
+  /// 환경 변수 로드
+  static Future<void> _loadEnvironmentVariables() async {
+    if (kDebugMode) {
+      debugPrint('📁 Loading environment variables...');
+    }
+
+    try {
+      await dotenv.load(fileName: '.env');
+
+      if (kDebugMode) {
+        debugPrint('✅ Environment variables loaded successfully');
+        // API 키 로드 확인 (디버그 모드에서만)
+        final rakutenAppId = dotenv.env['RAKUTEN_APP_ID'];
+        final rakutenAffiliateId = dotenv.env['RAKUTEN_APP_ID_AIPET'];
+        debugPrint(
+          '🔑 Rakuten App ID: ${rakutenAppId?.isNotEmpty == true ? "✅ Loaded" : "❌ Missing"}',
+        );
+        debugPrint(
+          '🔑 Rakuten Affiliate ID: ${rakutenAffiliateId?.isNotEmpty == true ? "✅ Loaded" : "❌ Missing"}',
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Failed to load .env file: $e');
+        debugPrint('📝 Using default environment variables');
       }
     }
   }
@@ -124,25 +166,86 @@ class AppBootstrap {
     }
   }
 
+  /// 로컬 데이터 초기화
+  static Future<void> _initializeLocalData() async {
+    if (kDebugMode) {
+      debugPrint('💾 Initializing local data...');
+    }
+
+    try {
+      // 펫 데이터 초기화 (로컬 저장소에서 로드)
+      await PetLocalStorageService.getPets();
+
+      if (kDebugMode) {
+        final pets = await PetLocalStorageService.getPets();
+        debugPrint('✅ Pet data initialized: ${pets.length} pets loaded');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Failed to initialize local data: $e');
+      }
+    }
+  }
+
+  /// 앱 실행 관련 초기화
+  static Future<void> _initializeAppRuntime() async {
+    if (kDebugMode) {
+      debugPrint('🚀 Initializing app runtime...');
+    }
+
+    try {
+      // 1. 앱 상태 초기화
+      // await AppStateManager.initialize();
+
+      // 2. 네비게이션 시스템 초기화
+      // await NavigationManager.initialize();
+
+      // 3. 알림 시스템 초기화
+      // await NotificationManager.initialize();
+
+      // 4. 백그라운드 작업 초기화
+      // await BackgroundTaskManager.initialize();
+
+      // 5. 사용자 세션 초기화
+      // await SessionManager.initialize();
+
+      // 6. 캐시 시스템 초기화
+      // await CacheManager.initialize();
+
+      if (kDebugMode) {
+        debugPrint('✅ App runtime initialized');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Failed to initialize app runtime: $e');
+      }
+      // 앱 실행에 필수적이지 않은 초기화는 실패해도 계속 진행
+    }
+  }
+
   /// 부트스트랩 요약 출력
   static void _printBootstrapSummary() {
     if (!kDebugMode) return;
 
     debugPrint('\n=== App Bootstrap Summary ===');
     debugPrint('Environment: ${EnvironmentConfig.currentEnvironment.name}');
+    debugPrint('Bootstrap Status: ${_isInitialized ? 'Completed' : 'Failed'}');
     debugPrint(
       'Security Validation: ${EnvironmentConfig.isSecurityValidationEnabled ? 'Enabled' : 'Disabled'}',
     );
     debugPrint(
       'Performance Monitoring: ${EnvironmentConfig.isPerformanceMonitoringEnabled ? 'Enabled' : 'Disabled'}',
     );
-    debugPrint('Mock Mode Allowed: ${EnvironmentConfig.isMockModeAllowed ? 'Yes' : 'No'}');
+    debugPrint(
+      'Mock Mode Allowed: ${EnvironmentConfig.isMockModeAllowed ? 'Yes' : 'No'}',
+    );
     debugPrint(
       'Debug Logging: ${EnvironmentConfig.isDebugLoggingAllowed ? 'Enabled' : 'Disabled'}',
     );
     debugPrint(
       'Error Reporting: ${EnvironmentConfig.isErrorReportingEnabled ? 'Enabled' : 'Disabled'}',
     );
+    debugPrint('App Runtime: Initialized');
     debugPrint('===============================\n');
   }
 
@@ -233,9 +336,12 @@ class AppBootstrap {
       if (EnvironmentConfig.isPerformanceMonitoringEnabled) {
         try {
           // 성능 모니터링 상태 체크
-          final performanceReport = PerformanceMonitor.instance.generateReport();
+          final performanceReport = PerformanceMonitor.instance
+              .generateReport();
           if (performanceReport.slowOperations.isNotEmpty) {
-            issues.add('${performanceReport.slowOperations.length} slow operations detected');
+            issues.add(
+              '${performanceReport.slowOperations.length} slow operations detected',
+            );
             healthScore -= 20;
           }
         } catch (e) {

@@ -17,7 +17,7 @@ class HealthStatusCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -57,7 +57,7 @@ class HealthStatusCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: statusData.color.withOpacity(0.1),
+        color: statusData.color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.sm),
       ),
       child: Row(
@@ -65,7 +65,7 @@ class HealthStatusCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
-              color: statusData.color.withOpacity(0.2),
+              color: statusData.color.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(AppSpacing.xs),
             ),
             child: Icon(statusData.icon, color: statusData.color, size: 24),
@@ -119,7 +119,7 @@ class HealthStatusCard extends StatelessWidget {
                 vertical: AppSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: AppColors.pointOrange.withOpacity(0.1),
+                color: AppColors.pointOrange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppSpacing.xs),
               ),
               child: Text(

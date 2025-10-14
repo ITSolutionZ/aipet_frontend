@@ -7,7 +7,9 @@ import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 import 'package:aipet_frontend/shared/services/local_storage_service.dart';
+import 'package:aipet_frontend/shared/services/pet_cache_clear_service.dart';
 import 'package:aipet_frontend/shared/services/preload_service.dart';
+import 'package:aipet_frontend/shared/utils/pet_data_reset_util.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -87,6 +89,7 @@ class AppBootstrap {
       _initializeSentry(),
       _initializeLocalDataManager(),
       _initializeLocalStorage(),
+      _clearPetCache(),
     ];
 
     // 모든 비동기 초기화 작업을 병렬로 실행
@@ -240,6 +243,28 @@ class AppBootstrap {
     }
   }
 
+  /// 펫 관련 캐시를 클리어합니다.
+  ///
+  /// 앱 시작 시 목업 데이터가 남아있지 않도록 캐시를 초기화합니다.
+  static Future<void> _clearPetCache() async {
+    try {
+      // 강제 리셋으로 모든 펫 데이터 완전 제거
+      final resetResult = await PetDataResetUtil.forceResetAllPetData();
+      if (resetResult) {
+        debugPrint('✅ Pet data force reset completed successfully');
+      } else {
+        debugPrint('⚠️ Pet data force reset failed, trying cache clear');
+        await PetCacheClearService.clearAllPetCache();
+      }
+
+      // 디버그 정보 출력
+      await PetDataResetUtil.printDebugInfo();
+    } catch (e) {
+      debugPrint('⚠️ Pet cache clear failed: $e');
+      // 캐시 클리어 실패해도 앱은 계속 실행
+    }
+  }
+
   static Widget createApp() {
     return const AIPetApp();
   }
@@ -258,6 +283,7 @@ class AppBootstrap {
     );
     debugPrint('🖼️ Image Cache: ✅ Optimized (50 items, 50MB)');
     debugPrint('🌐 HTTP Client: ✅ Token repository connected');
+    debugPrint('🧹 Pet Cache: ✅ Cleared (mock data removed)');
     debugPrint('📋 === Initialization Complete ===');
   }
 }

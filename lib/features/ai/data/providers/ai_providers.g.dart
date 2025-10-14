@@ -6,7 +6,7 @@ part of 'ai_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$aiRepositoryHash() => r'241043b42c08c1560a3bae429ed49e0b4d89f637';
+String _$aiRepositoryHash() => r'd4c5069ca9910dffd8a411be374bc3fd93fb6036';
 
 /// AI Repository Provider
 ///
@@ -29,7 +29,7 @@ final aiRepositoryProvider = AutoDisposeProvider<AiRepository>.internal(
 // ignore: unused_element
 typedef AiRepositoryRef = AutoDisposeProviderRef<AiRepository>;
 String _$legacyAiRepositoryHash() =>
-    r'a079efffcf3c26c647cbea25655e0c24d421a363';
+    r'11056a4821d018f421422c2f58a5a21ee064ab8f';
 
 /// Legacy AI Repository Provider (기존 구현체)
 ///

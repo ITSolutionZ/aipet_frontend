@@ -25,7 +25,7 @@ class HospitalVisitHistoryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -56,7 +56,7 @@ class HospitalVisitHistoryCard extends StatelessWidget {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.pointBrown,
                       side: BorderSide(
-                        color: AppColors.pointBrown.withOpacity(0.5),
+                        color: AppColors.pointBrown.withValues(alpha: 0.5),
                       ),
                       padding: const EdgeInsets.symmetric(
                         vertical: AppSpacing.sm,

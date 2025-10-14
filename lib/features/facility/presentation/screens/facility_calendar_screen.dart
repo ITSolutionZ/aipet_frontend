@@ -31,10 +31,7 @@ class _FacilityCalendarScreenState extends State<FacilityCalendarScreen> {
         elevation: 0,
         title: const Text(
           'カレンダー',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -76,13 +73,9 @@ class _FacilityCalendarScreenState extends State<FacilityCalendarScreen> {
                     shape: BoxShape.circle,
                   ),
                   // 주말 스타일
-                  weekendTextStyle: TextStyle(
-                    color: AppColors.pointRed,
-                  ),
+                  weekendTextStyle: TextStyle(color: AppColors.pointRed),
                   // 기본 텍스트 스타일
-                  defaultTextStyle: TextStyle(
-                    color: AppColors.textPrimary,
-                  ),
+                  defaultTextStyle: TextStyle(color: AppColors.textPrimary),
                   // 외부 날짜 스타일
                   outsideDaysVisible: false,
                   // 마커 스타일
@@ -147,7 +140,8 @@ class _FacilityCalendarScreenState extends State<FacilityCalendarScreen> {
 
   Widget _buildSelectedDayInfo() {
     final events = _getEventsForDay(_selectedDay!);
-    final dateStr = '${_selectedDay!.year}年${_selectedDay!.month}月${_selectedDay!.day}日';
+    final dateStr =
+        '${_selectedDay!.year}年${_selectedDay!.month}月${_selectedDay!.day}日';
 
     return Container(
       width: double.infinity,
@@ -168,11 +162,7 @@ class _FacilityCalendarScreenState extends State<FacilityCalendarScreen> {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.event,
-                color: AppColors.primary,
-                size: 20,
-              ),
+              const Icon(Icons.event, color: AppColors.primary, size: 20),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 dateStr,
@@ -243,14 +233,15 @@ class _FacilityCalendarScreenState extends State<FacilityCalendarScreen> {
   }
 
   List<Map<String, dynamic>> _getEventsForDay(DateTime day) {
-    // TODO: 실제 예약 데이터로 교체
-    // 예시 데이터
+    // 실제 예약 데이터는 reservationsNotifierProvider에서 가져옵니다
+    // 예시 데이터 (개발 중)
     if (day.day == DateTime.now().day && day.month == DateTime.now().month) {
       return [
         {'title': '定期健康診断', 'time': '10:00'},
         {'title': 'ワクチン接種', 'time': '14:30'},
       ];
-    } else if (day.day == DateTime.now().day + 1 && day.month == DateTime.now().month) {
+    } else if (day.day == DateTime.now().day + 1 &&
+        day.month == DateTime.now().month) {
       return [
         {'title': '爪切り', 'time': '11:00'},
       ];

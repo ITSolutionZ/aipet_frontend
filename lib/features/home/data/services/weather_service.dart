@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/home/home_mock_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherService {
-  static const String _oneCallUrl = 'https://api.openweathermap.org/data/3.0/onecall';
+  static const String _oneCallUrl =
+      'https://api.openweathermap.org/data/3.0/onecall';
   static const String _geocodingUrl = 'https://api.openweathermap.org/geo/1.0';
 
   Future<WeatherData?> getCurrentWeather({
@@ -49,7 +49,10 @@ class WeatherService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
-        final weatherData = WeatherData.fromOneCallJson(data, weatherLocation.name);
+        final weatherData = WeatherData.fromOneCallJson(
+          data,
+          weatherLocation.name,
+        );
 
         // _lastRequestTime = DateTime.now();
         return weatherData;
@@ -76,7 +79,9 @@ class WeatherService {
   }
 
   // 기본 날씨 API로 폴백
-  Future<WeatherData?> _getCurrentWeatherFallback(WeatherLocation weatherLocation) async {
+  Future<WeatherData?> _getCurrentWeatherFallback(
+    WeatherLocation weatherLocation,
+  ) async {
     final apiKey = AppConfig.current.weatherApiKey;
     final url = Uri.parse(
       'https://api.openweathermap.org/data/2.5/weather?lat=${weatherLocation.latitude}&lon=${weatherLocation.longitude}&appid=$apiKey&units=metric&lang=ja',
@@ -105,7 +110,9 @@ class WeatherService {
     // 현재 환경 및 설정 로깅
     debugPrint('🔍 =============[ 위치 서비스 디버그 ]=============');
     debugPrint('🌍 현재 환경: ${AppConfig.current.environment}');
-    debugPrint('🔑 Weather API 키 설정됨: ${AppConfig.current.weatherApiKey.isNotEmpty}');
+    debugPrint(
+      '🔑 Weather API 키 설정됨: ${AppConfig.current.weatherApiKey.isNotEmpty}',
+    );
 
     // 테스트 환경에서는 바로 기본 위치 사용
     if (AppConfig.current.environment == 'test') {
@@ -169,7 +176,10 @@ class WeatherService {
 
       debugPrint('✅ GPS 위치 취득 성공: ${position.latitude}, ${position.longitude}');
 
-      final locationName = await _getLocationName(position.latitude, position.longitude);
+      final locationName = await _getLocationName(
+        position.latitude,
+        position.longitude,
+      );
 
       debugPrint('🏷️ 위치명: $locationName');
 
@@ -243,7 +253,11 @@ class WeatherService {
   WeatherLocation _getDefaultLocation() {
     // 東京都品川区をデフォルト位置とする
     debugPrint('🏙️ デフォルト位置를 사용: 東京都品川区');
-    return const WeatherLocation(latitude: 35.6092, longitude: 139.7301, name: '東京都品川区');
+    return const WeatherLocation(
+      latitude: 35.6092,
+      longitude: 139.7301,
+      name: '東京都品川区',
+    );
   }
 
   // 마지막 API 요청 시간 추적 (향후 사용 예정)
@@ -251,14 +265,11 @@ class WeatherService {
 
   /// API 실패 시 목업 날씨 데이터 반환
   WeatherData _getMockWeatherData(String locationName) {
-    // 중앙화된 mock_data_service에서 목업 데이터 가져오기
-    final mockWeatherInfo = HomeMockService.getMockWeatherInfo();
-
-    // 시간대에 따른 온도 시뮬레이션 (기존 로직 유지)
+    // 시간대에 따른 온도 시뮬레이션
     final now = DateTime.now();
     final hour = now.hour;
 
-    double temperature = mockWeatherInfo['temperature'] as double;
+    double temperature = 22.0; // 기본 온도
     if (hour >= 6 && hour < 12) {
       temperature = 18.0 + (hour - 6) * 1.5; // 아침: 18-27도
     } else if (hour >= 12 && hour < 18) {
@@ -266,18 +277,19 @@ class WeatherService {
     } else if (hour >= 18 && hour < 22) {
       temperature = 24.0 - (hour - 18) * 1.0; // 저녁: 24-20도
     } else {
-      temperature = 20.0 - (hour >= 22 ? hour - 22 : hour + 2) * 0.5; // 밤: 20-16도
+      temperature =
+          20.0 - (hour >= 22 ? hour - 22 : hour + 2) * 0.5; // 밤: 20-16도
     }
 
     return WeatherData(
       temperature: temperature,
       location: locationName,
       weatherId: 800, // 맑음
-      description: mockWeatherInfo['condition'] as String,
+      description: '晴れ',
       feelsLike: temperature + 2.0,
       humidity: 65,
       windSpeed: 2.5,
-      iconCode: mockWeatherInfo['iconCode'] as String,
+      iconCode: '01d',
       uvIndex: 5.0,
       visibility: 10000,
       pressure: 1013.25,

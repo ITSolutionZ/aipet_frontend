@@ -44,24 +44,27 @@ class AiFavoriteQaEntity {
   ///
   /// JSON 데이터로부터 즐겨찾기 QA 엔티티를 생성합니다.
   /// 로컬 저장소나 API 응답에서 데이터를 복원할 때 사용됩니다.
+  ///
+  /// Note: 펫 정보는 비동기 조회가 필요하므로 null로 설정됩니다.
+  /// 필요한 경우 fromJsonAsync를 사용하거나 별도로 펫 정보를 로드하세요.
   factory AiFavoriteQaEntity.fromJson(Map<String, dynamic> json) {
-    // petId가 있으면 펫 정보를 복원
-    PetProfileEntity? pet;
-    if (json['petId'] != null) {
-      // TODO: Repository를 통해 펫 정보 조회 로직 구현 필요
-      // pet = petRepository.findById(json['petId']);
-    }
-
     return AiFavoriteQaEntity(
       id: json['id'] as String,
       question: json['question'] as String,
       answer: json['answer'] as String,
-      pet: pet,
+      pet: null, // 비동기 조회 필요
       categoryId: json['categoryId'] as String?,
       categoryName: json['categoryName'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       originalTimestamp: DateTime.parse(json['originalTimestamp'] as String),
     );
+  }
+
+  /// 펫 정보 포함 업데이트
+  ///
+  /// petId에 해당하는 펫 정보를 포함하여 새 인스턴스를 반환합니다.
+  AiFavoriteQaEntity withPet(PetProfileEntity pet) {
+    return copyWith(pet: pet);
   }
 
   /// 펫별로 그룹화할 때 사용할 키

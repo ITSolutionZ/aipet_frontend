@@ -1,16 +1,17 @@
-import 'package:aipet_frontend/shared/testing/mock_data/features/scheduling/scheduling_mock_service.dart'
-    as scheduling_mock;
+import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 급여 분석 컨트롤러
 class FeedingAnalysisController extends StateNotifier<FeedingAnalysisState> {
-  FeedingAnalysisController({required String petId}) : super(FeedingAnalysisState(petId: petId)) {
+  FeedingAnalysisController({required String petId})
+    : super(FeedingAnalysisState(petId: petId)) {
     _loadAnalysisData();
   }
 
   /// 분석 데이터 로드
-  void _loadAnalysisData() {
-    final analysisData = scheduling_mock.SchedulingMockService.getMockFeedingAnalysisData();
+  Future<void> _loadAnalysisData() async {
+    final analysisData =
+        await FeedingLocalStorageService.getFeedingAnalysisData();
     state = state.copyWith(analysisData: analysisData);
   }
 
@@ -53,9 +54,15 @@ class FeedingAnalysisState {
   final String petId;
   final Map<String, dynamic> analysisData;
 
-  const FeedingAnalysisState({required this.petId, this.analysisData = const {}});
+  const FeedingAnalysisState({
+    required this.petId,
+    this.analysisData = const {},
+  });
 
-  FeedingAnalysisState copyWith({String? petId, Map<String, dynamic>? analysisData}) {
+  FeedingAnalysisState copyWith({
+    String? petId,
+    Map<String, dynamic>? analysisData,
+  }) {
     return FeedingAnalysisState(
       petId: petId ?? this.petId,
       analysisData: analysisData ?? this.analysisData,
@@ -65,9 +72,10 @@ class FeedingAnalysisState {
 
 /// 컨트롤러 프로바이더
 final feedingAnalysisControllerProvider =
-    StateNotifierProvider.family<FeedingAnalysisController, FeedingAnalysisState, String>((
-      ref,
-      petId,
-    ) {
+    StateNotifierProvider.family<
+      FeedingAnalysisController,
+      FeedingAnalysisState,
+      String
+    >((ref, petId) {
       return FeedingAnalysisController(petId: petId);
     });

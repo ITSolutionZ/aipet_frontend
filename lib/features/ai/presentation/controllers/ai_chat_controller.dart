@@ -164,6 +164,13 @@ class AiChatNotifier extends _$AiChatNotifier {
 
       if (updateResult.isSuccess) {
         state = updateResult.dataOrNull!;
+        // 상태 검증 및 정리
+        final validationResult = AiChatStateManager.validateAndCleanState(
+          state,
+        );
+        if (validationResult.isSuccess) {
+          state = validationResult.dataOrNull!;
+        }
       } else {
         state =
             AiChatStateManager.setErrorState(
@@ -179,6 +186,13 @@ class AiChatNotifier extends _$AiChatNotifier {
       );
       if (updateResult.isSuccess) {
         state = updateResult.dataOrNull!;
+        // 상태 검증 및 정리
+        final validationResult = AiChatStateManager.validateAndCleanState(
+          state,
+        );
+        if (validationResult.isSuccess) {
+          state = validationResult.dataOrNull!;
+        }
       }
     } else {
       state =
