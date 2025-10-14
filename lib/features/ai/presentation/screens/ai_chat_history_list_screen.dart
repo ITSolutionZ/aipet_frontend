@@ -130,7 +130,7 @@ class _AiChatHistoryListScreenState
         title: null, // タイトルを削除
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back, color: AppColors.pointBrown),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           tooltip: '戻る',
         ),
       ),
