@@ -343,13 +343,12 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
               ),
             ),
 
-            // 메시지 입력 영역 (펫 선택 후에 표시)
-            if (chatState.hasPetSelected)
-              AiMessageInput(
-                controller: _messageController,
-                onSendMessage: _sendMessage,
-                isLoading: chatState.isTyping,
-              ),
+            // 메시지 입력 영역 (항상 표시)
+            AiMessageInput(
+              controller: _messageController,
+              onSendMessage: _sendMessage,
+              isLoading: chatState.isTyping,
+            ),
           ],
         ),
       ),
