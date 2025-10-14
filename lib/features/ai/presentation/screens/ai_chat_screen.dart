@@ -280,27 +280,30 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> with WidgetsBinding
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: GradientAppBar(
+      appBar: AppBar(
+        backgroundColor: AppColors.pureWhite,
+        foregroundColor: AppColors.pointBrown,
+        elevation: 0,
         title: null, // タイトルを削除
         leading: IconButton(
           onPressed: _navigateToChatHistory,
-          icon: const Icon(Icons.history, color: Colors.white),
+          icon: const Icon(Icons.history, color: AppColors.pointBrown),
           tooltip: 'チャット履歴',
         ),
         actions: [
           IconButton(
             onPressed: _navigateToFavoriteMessages,
-            icon: const Icon(Icons.star, color: Colors.white),
+            icon: const Icon(Icons.star, color: AppColors.pointBrown),
             tooltip: 'お気に入り',
           ),
           IconButton(
             onPressed: _saveCurrentChat,
-            icon: const Icon(Icons.save, color: Colors.white),
+            icon: const Icon(Icons.save, color: AppColors.pointBrown),
             tooltip: '会話を保存',
           ),
           IconButton(
             onPressed: _clearChatHistory,
-            icon: const Icon(Icons.refresh, color: Colors.white),
+            icon: const Icon(Icons.refresh, color: AppColors.pointBrown),
             tooltip: 'チャットをクリア',
           ),
         ],

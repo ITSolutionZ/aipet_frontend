@@ -123,11 +123,14 @@ class _AiChatHistoryListScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: GradientAppBar(
+      appBar: AppBar(
+        backgroundColor: AppColors.pureWhite,
+        foregroundColor: AppColors.pointBrown,
+        elevation: 0,
         title: null, // タイトルを削除
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: AppColors.pointBrown),
           tooltip: '戻る',
         ),
       ),
