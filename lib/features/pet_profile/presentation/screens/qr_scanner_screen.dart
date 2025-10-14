@@ -47,33 +47,12 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                AppColors.pointBrown.withValues(alpha: 0.9),
-                AppColors.pointBrown.withValues(alpha: 0.7),
-              ],
-            ),
-          ),
-        ),
+      appBar: GradientAppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
           onPressed: () => context.pop(),
         ),
-        title: Text(
-          'QR 코드 스캔',
-          style: AppFonts.fredoka(
-            fontSize: AppFonts.lg,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: null, // タイトルを削除
         centerTitle: true,
       ),
       body: _buildBody(),

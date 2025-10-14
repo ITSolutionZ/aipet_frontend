@@ -42,17 +42,15 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
+      appBar: GradientAppBar(
+        title: null, // タイトルを削除
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
         ),
-        centerTitle: true,
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, color: AppColors.textPrimary),
+            icon: const Icon(Icons.more_vert, color: Colors.white),
             onSelected: (value) {
               if (value == 'clean') {
                 _showCleanOldRecordsDialog();

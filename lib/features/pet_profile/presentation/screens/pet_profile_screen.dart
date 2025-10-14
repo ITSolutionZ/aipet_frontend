@@ -79,20 +79,10 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     BuildContext context,
     PetProfileUnifiedState state,
   ) {
-    if (state.selectedPet == null) {
-      return AppBar(
-        title: const Text(PetProfileConstants.loadingMessage),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
-      );
-    }
-
-    return AppBar(
-      title: Text(state.selectedPet!.name),
-      backgroundColor: AppColors.pointBrown,
-      foregroundColor: Colors.white,
+    return GradientAppBar(
+      title: null, // タイトルを削除
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => context.pop(),
       ),
       actions: [
