@@ -65,7 +65,6 @@ import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/core/services/services.dart';
 
 // Mock 데이터만 사용
-import 'package:aipet_frontend/shared/mock_data/mock_data.dart';
 ```
 
 ## 파일 구조
@@ -77,7 +76,6 @@ lib/shared/
 ├── branding/           # 브랜딩 관련 컴포넌트
 ├── constants/          # 상수 정의
 ├── design/             # 디자인 시스템
-├── mock_data/          # Mock 데이터 서비스
 ├── services/           # 공통 서비스들
 ├── utils/              # 유틸리티 함수들
 └── widgets/            # 재사용 가능한 UI 컴포넌트들
@@ -181,7 +179,6 @@ import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/core/services/services.dart';
 
 // Mockデータのみ使用
-import 'package:aipet_frontend/shared/mock_data/mock_data.dart';
 ```
 
 ### ファイル構造 {#file-structure}
@@ -193,7 +190,6 @@ lib/shared/
 ├── branding/           # ブランディング関連コンポーネント
 ├── constants/          # 定数定義
 ├── design/             # デザインシステム
-├── mock_data/          # Mockデータサービス
 ├── services/           # 共通サービス
 ├── utils/              # ユーティリティ関数
 └── widgets/            # 再利用可能なUIコンポーネント

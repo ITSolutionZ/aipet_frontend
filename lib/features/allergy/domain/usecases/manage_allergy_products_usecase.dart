@@ -232,7 +232,7 @@ class ManageAllergyProductsUseCase {
     };
 
     for (final product in products) {
-      final price = product.price ?? 0;
+      final price = product.price;
       if (price < 30000) {
         categories['budget']!.add(product);
       } else if (price < 80000) {
@@ -272,8 +272,8 @@ class ManageAllergyProductsUseCase {
         return safetyB.compareTo(safetyA);
       }
 
-      final priceA = a.price ?? double.infinity;
-      final priceB = b.price ?? double.infinity;
+      final priceA = a.price;
+      final priceB = b.price;
       return priceA.compareTo(priceB);
     });
   }

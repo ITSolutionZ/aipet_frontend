@@ -28,6 +28,7 @@ auth/
 ### Entities (`domain/entities/auth_entities.dart`)
 
 Core business entities:
+
 - `AuthUser` - User authentication data
 - `AuthToken` - JWT token information
 - `AuthSession` - User session data
@@ -37,7 +38,9 @@ Core business entities:
 ### Use Cases
 
 #### `AuthenticateUseCase` (`domain/usecases/authenticate_usecase.dart`)
+
 Handles all authentication operations:
+
 - Email/password login with validation
 - Social login (Google, Apple, LINE)
 - User registration with strong password validation
@@ -46,7 +49,9 @@ Handles all authentication operations:
 - Email verification
 
 #### `SessionManagementUseCase` (`domain/usecases/session_management_usecase.dart`)
+
 Manages sessions and tokens:
+
 - Session status checking
 - Token refresh and validation
 - Session expiration handling
@@ -54,6 +59,7 @@ Manages sessions and tokens:
 - Multi-device session management
 
 ### Repository Interface (`domain/repositories/auth_repository.dart`)
+
 Defines the contract for authentication operations.
 
 ## 💾 Data Layer
@@ -61,26 +67,32 @@ Defines the contract for authentication operations.
 ### Datasources (`data/datasources/`)
 
 #### `AuthDatasource` Interface
+
 Base interface for all auth data sources.
 
 #### `AuthRemoteDatasource` Interface
+
 Interface for remote authentication operations:
+
 - Firebase authentication
 - Social login integration
 - Server token exchange
 
 #### `AuthLocalDatasource` Interface
+
 Interface for local authentication operations:
+
 - Token storage
 - User session caching
 - Auto-login settings
 
-#### Mock Implementations (`auth_mock_datasource.dart`)
 - `AuthMockRemoteDatasource` - Mock remote operations for development
 - `AuthMockLocalDatasource` - Mock local operations for testing
 
 ### Repository Implementation (`data/repositories/auth_repository_impl.dart`)
+
 Clean implementation that coordinates between remote and local datasources:
+
 - Offline-first approach
 - Automatic fallback to local cache
 - Proper error handling
@@ -90,16 +102,21 @@ Clean implementation that coordinates between remote and local datasources:
 ### Controllers
 
 #### `CleanAuthController` (`controllers/auth_controller_new.dart`)
+
 Clean architecture controller using the new use cases:
+
 - Reactive state management with Riverpod
 - Comprehensive error handling
 - Business logic delegation to use cases
 
 #### Legacy `AuthController` (`controllers/auth_controller.dart`)
+
 **⚠️ Deprecated** - Old controller to be phased out
 
 ### Providers (`providers/auth_providers.dart`)
+
 Comprehensive dependency injection setup:
+
 - Datasource providers
 - Repository provider
 - Use case providers
@@ -109,13 +126,16 @@ Comprehensive dependency injection setup:
 ### State Management
 
 #### `AuthState` (in `auth_controller_new.dart`)
+
 Clean state model for authentication:
+
 - User information
 - Loading states
 - Error messages
 - Authentication status
 
 #### `AuthFormState` (`state/auth_form_state.dart`)
+
 UI form state management for login/signup forms.
 
 ## 🚀 Usage Examples
@@ -192,6 +212,7 @@ class AppStartup extends ConsumerWidget {
 ### From Old Controller to New Controller
 
 1. **Replace provider imports:**
+
    ```dart
    // Old
    final authController = ref.read(authControllerProvider);
@@ -201,6 +222,7 @@ class AppStartup extends ConsumerWidget {
    ```
 
 2. **Update method calls:**
+
    ```dart
    // Old
    await authController.login(password: password);
@@ -213,6 +235,7 @@ class AppStartup extends ConsumerWidget {
    ```
 
 3. **Use computed providers:**
+
    ```dart
    // Current user
    final user = ref.watch(currentUserProvider);
@@ -227,7 +250,9 @@ class AppStartup extends ConsumerWidget {
 ## 🧪 Testing Strategy
 
 ### Mock Datasources
+
 Use the provided mock implementations for testing:
+
 ```dart
 // Override providers in tests
 container.read(authRemoteDatasourceProvider.overrideWithValue(
@@ -236,24 +261,31 @@ container.read(authRemoteDatasourceProvider.overrideWithValue(
 ```
 
 ### Unit Tests
+
 Test each layer independently:
+
 - **Use Cases**: Test business logic without dependencies
 - **Repository**: Test data coordination logic
 - **Controller**: Test state management
 
 ### Integration Tests
+
 Test complete authentication flows using the mock datasources.
 
 ## 🔧 Configuration
 
 ### Development Mode
+
 The auth system uses mock datasources by default for development:
+
 - No external dependencies required
 - Predictable test data
 - Offline development support
 
 ### Production Mode
+
 To switch to production:
+
 1. Replace mock datasources with real implementations
 2. Configure Firebase authentication
 3. Set up proper error handling and logging
@@ -261,12 +293,14 @@ To switch to production:
 ## 📚 Dependencies
 
 ### Required Packages
+
 - `flutter_riverpod` - State management
 - `firebase_auth` - Authentication backend
 - `shared_preferences` - Local storage
 - `flutter_secure_storage` - Secure token storage
 
 ### Architecture Principles Applied
+
 - **Dependency Inversion**: Use interfaces for all dependencies
 - **Single Responsibility**: Each class has one clear purpose
 - **Open/Closed**: Easy to extend without modifying existing code

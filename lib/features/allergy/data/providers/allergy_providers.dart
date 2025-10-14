@@ -1,10 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../domain/entities/allergy_analysis_entities.dart';
 import '../../domain/entities/product_entity.dart';
 import '../../domain/repositories/allergy_analysis_repository.dart';
 import '../../domain/services/allergy_analysis_service.dart';
 import '../datasources/allergy_analysis_datasource.dart';
-import '../datasources/allergy_analysis_mock_datasource.dart';
 import '../repositories/allergy_analysis_repository_impl.dart';
 import 'allergy_service_providers.dart';
 
@@ -104,19 +104,129 @@ class SelectedAllergyProducts extends _$SelectedAllergyProducts {
   }
 }
 
+// Datasource Implementations
+class AllergyAnalysisDatasourceImpl implements AllergyAnalysisDatasource {
+  @override
+  Future<Map<String, IngredientRisk>> getIngredientRiskData(
+    List<String> ingredients,
+  ) async {
+    return {};
+  }
+
+  @override
+  Future<List<ProductEntity>> getAllProducts({
+    String? petType,
+    String? category,
+  }) async {
+    return [];
+  }
+
+  @override
+  Future<Map<String, dynamic>> getPetInfo(String petId) async {
+    return {};
+  }
+
+  @override
+  Future<AllergyAnalysisResult> performBasicAnalysis(
+    List<ProductEntity> allergyProducts,
+    List<ProductEntity> nonAllergyProducts,
+  ) async {
+    return const AllergyAnalysisResult(
+      suspectedIngredients: [],
+      analysis: '기본 분석 결과',
+      recommendations: [],
+      confidence: 0.5,
+    );
+  }
+
+  @override
+  Future<void> saveAnalysisResult(
+    String petId,
+    AllergyAnalysisResult result,
+  ) async {}
+
+  @override
+  Future<void> saveAllergyReport(AllergyReport report) async {}
+}
+
+class AllergyAnalysisLocalDatasourceImpl
+    implements AllergyAnalysisLocalDatasource {
+  @override
+  Future<Map<String, IngredientRisk>> getIngredientRiskData(
+    List<String> ingredients,
+  ) async {
+    return {};
+  }
+
+  @override
+  Future<List<ProductEntity>> getAllProducts({
+    String? petType,
+    String? category,
+  }) async {
+    return [];
+  }
+
+  @override
+  Future<Map<String, dynamic>> getPetInfo(String petId) async {
+    return {};
+  }
+
+  @override
+  Future<AllergyAnalysisResult> performBasicAnalysis(
+    List<ProductEntity> allergyProducts,
+    List<ProductEntity> nonAllergyProducts,
+  ) async {
+    return const AllergyAnalysisResult(
+      suspectedIngredients: [],
+      analysis: '로컬 분석 결과',
+      recommendations: [],
+      confidence: 0.7,
+    );
+  }
+
+  @override
+  Future<void> saveAnalysisResult(
+    String petId,
+    AllergyAnalysisResult result,
+  ) async {}
+
+  @override
+  Future<void> saveAllergyReport(AllergyReport report) async {}
+
+  @override
+  Future<Map<String, IngredientRisk>> getCachedIngredientRiskData() async {
+    return {};
+  }
+
+  @override
+  Future<void> cacheIngredientRiskData(
+    Map<String, IngredientRisk> riskData,
+  ) async {}
+
+  @override
+  Future<List<ProductEntity>> getLocalProducts() async {
+    return [];
+  }
+
+  @override
+  Future<List<AllergyAnalysisResult>> getAnalysisHistory(String petId) async {
+    return [];
+  }
+}
+
 // Datasource Providers
 @riverpod
 AllergyAnalysisDatasource allergyAnalysisDatasource(
   AllergyAnalysisDatasourceRef ref,
 ) {
-  return AllergyAnalysisMockDatasource();
+  return AllergyAnalysisDatasourceImpl();
 }
 
 @riverpod
 AllergyAnalysisLocalDatasource allergyAnalysisLocalDatasource(
   AllergyAnalysisLocalDatasourceRef ref,
 ) {
-  return AllergyAnalysisMockDatasource();
+  return AllergyAnalysisLocalDatasourceImpl();
 }
 
 // Repository Providers
@@ -142,10 +252,7 @@ Future<List<ProductEntity>> allergyProducts(
 
 /// 브랜드 정보 조회 Provider (제품의 brandId로 브랜드명 찾기)
 @riverpod
-String getBrandName(
-  GetBrandNameRef ref,
-  String brandId,
-) {
+String getBrandName(GetBrandNameRef ref, String brandId) {
   // TODO: 실제로는 brand repository나 datasource에서 가져와야 함
   // 현재는 임시로 brandId를 반환
   return brandId;

@@ -118,7 +118,6 @@ await NotificationService().showLocalNotification(
 
 ```dartdart
 // Mock 데이터 활성화/비활성화
-// lib/shared/mock_data/base/mock_data_base.dart에서 설정
 static const bool isEnabled = true; // false로 설정하면 실제 API 호출
 ```dart
 
@@ -176,7 +175,6 @@ void main() async {
 
 ## 관련 파일
 
-- `lib/shared/mock_data/`: Mock 데이터 서비스
 - `lib/features/*/`: 기능별 서비스 사용
 - `lib/app/controllers/`: 컨트롤러에서 서비스 호출
 - `lib/app/providers/`: 서비스 프로바이더 설정
@@ -320,7 +318,6 @@ await NotificationService().showLocalNotification(
 
 ```dartdart
 // Mockデータの有効化/無効化
-// lib/shared/mock_data/base/mock_data_base.dartで設定
 static const bool isEnabled = true; // falseに設定すると実際のAPI呼び出し
 ```dart
 

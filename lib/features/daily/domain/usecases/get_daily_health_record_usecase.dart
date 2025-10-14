@@ -14,17 +14,17 @@ class GetDailyHealthRecordUseCase {
 
   /// 특정 펫의 오늘 건강 기록 조회
   Future<DailyHealthRecord?> getTodayRecord(String petId) async {
-    return await _repository.getTodayHealthRecord(petId);
+    return _repository.getTodayHealthRecord(petId);
   }
 
   /// 특정 ID의 건강 기록 조회
   Future<DailyHealthRecord?> getRecord(String recordId) async {
-    return await _repository.getDailyHealthRecord(recordId);
+    return _repository.getDailyHealthRecord(recordId);
   }
 
   /// 특정 펫의 모든 건강 기록 조회
   Future<List<DailyHealthRecord>> getAllRecords(String petId) async {
-    return await _repository.getDailyHealthRecords(petId);
+    return _repository.getDailyHealthRecords(petId);
   }
 
   /// 날짜 범위별 건강 기록 조회
@@ -33,7 +33,7 @@ class GetDailyHealthRecordUseCase {
     DateTime startDate,
     DateTime endDate,
   ) async {
-    return await _repository.getDailyHealthRecordsByDateRange(
+    return _repository.getDailyHealthRecordsByDateRange(
       petId,
       startDate,
       endDate,

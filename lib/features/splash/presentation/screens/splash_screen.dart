@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aipet_frontend/app/bootstrap/app_bootstrap.dart';
 import 'package:aipet_frontend/app/providers/app_initialization_provider.dart';
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/splash/data/data.dart';
@@ -126,6 +127,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
 
   /// 스플래시 초기화
   void _initializeSplash() async {
+    // 앱 부트스트랩 초기화 실행
+    await AppBootstrap.initialize();
+
     // 이미지 프리로딩
     await _preloadImages();
 
@@ -209,6 +213,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     if (!mounted) return;
 
     try {
+      // 앱 부트스트랩 초기화 완료 확인
+      if (!AppBootstrap.isInitialized) {
+        debugPrint('⚠️ App bootstrap not completed, initializing...');
+        await AppBootstrap.initialize();
+      }
+
       // 앱 초기화 상태 확인
       final initState = ref.read(appInitializationProvider);
 

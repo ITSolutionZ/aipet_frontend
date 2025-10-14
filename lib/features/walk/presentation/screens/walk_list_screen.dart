@@ -55,11 +55,17 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
       controller: _controller,
     );
 
-    // 로컬 저장소에서 펫 불러와서 첫 번째 펫을 기본으로 설정
-    final petsAsync = await ref.read(petListProvider.future);
-    if (petsAsync.isNotEmpty) {
-      final firstPet = petsAsync.first;
-      _controller.setSelectedPet(WalkPetInfo.fromPetProfile(firstPet));
+    // 로컬 저장소에서 펫 불러와서 첫 번째 펫을 기본으로 설정 (펫이 있을 경우에만)
+    try {
+      final petsAsync = await ref.read(petListProvider.future);
+      if (petsAsync.isNotEmpty) {
+        final firstPet = petsAsync.first;
+        _controller.setSelectedPet(WalkPetInfo.fromPetProfile(firstPet));
+      }
+      // 펫이 없어도 산책 화면에는 접근 가능하도록 함
+    } catch (e) {
+      // 펫 데이터 로드 실패해도 산책 화면은 표시
+      debugPrint('펫 데이터 로드 실패, 하지만 산책 화면은 표시: $e');
     }
   }
 

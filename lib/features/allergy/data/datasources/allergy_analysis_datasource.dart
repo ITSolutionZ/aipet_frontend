@@ -1,5 +1,5 @@
-import '../../../allergy/domain/entities/product_entity.dart';
 import '../../../allergy/domain/entities/allergy_analysis_entities.dart';
+import '../../../allergy/domain/entities/product_entity.dart';
 
 /// 알레르기 분석 데이터소스 인터페이스
 abstract class AllergyAnalysisDatasource {

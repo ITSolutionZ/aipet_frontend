@@ -213,18 +213,18 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<String> exchangeServerToken(String idToken) async {
-    return await _remoteDatasource.exchangeServerToken(idToken);
+    return _remoteDatasource.exchangeServerToken(idToken);
   }
 
   @override
   Future<String?> getCurrentUserIdToken() async {
-    return await _remoteDatasource.getCurrentUserIdToken();
+    return _remoteDatasource.getCurrentUserIdToken();
   }
 
   @override
   Future<String?> getStoredServerToken() async {
     // 로컬에서 저장된 토큰 조회
-    return await _localDatasource.getStoredToken();
+    return _localDatasource.getStoredToken();
   }
 
   @override

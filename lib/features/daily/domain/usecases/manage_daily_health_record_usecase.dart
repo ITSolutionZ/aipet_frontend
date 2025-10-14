@@ -21,7 +21,7 @@ class ManageDailyHealthRecordUseCase {
       throw Exception('Today\'s health record already exists for this pet');
     }
 
-    return await _repository.createDailyHealthRecord(record);
+    return _repository.createDailyHealthRecord(record);
   }
 
   /// 건강 기록 업데이트
@@ -33,7 +33,7 @@ class ManageDailyHealthRecordUseCase {
       throw Exception('Health record not found');
     }
 
-    return await _repository.updateDailyHealthRecord(record);
+    return _repository.updateDailyHealthRecord(record);
   }
 
   /// 건강 기록 삭제
@@ -55,10 +55,10 @@ class ManageDailyHealthRecordUseCase {
     if (existingRecord != null) {
       // 기존 기록이 있으면 업데이트
       final updatedRecord = record.copyWith(id: existingRecord.id);
-      return await updateRecord(updatedRecord);
+      return updateRecord(updatedRecord);
     } else {
       // 기존 기록이 없으면 생성
-      return await createRecord(record);
+      return createRecord(record);
     }
   }
 }

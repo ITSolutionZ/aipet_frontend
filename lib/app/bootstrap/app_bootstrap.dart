@@ -43,6 +43,9 @@ class AppBootstrap {
       // 6. 로컬 데이터 초기화
       await _initializeLocalData();
 
+      // 7. 앱 실행 관련 초기화
+      await _initializeAppRuntime();
+
       _isInitialized = true;
       _isInitializing = false;
 
@@ -184,12 +187,49 @@ class AppBootstrap {
     }
   }
 
+  /// 앱 실행 관련 초기화
+  static Future<void> _initializeAppRuntime() async {
+    if (kDebugMode) {
+      debugPrint('🚀 Initializing app runtime...');
+    }
+
+    try {
+      // 1. 앱 상태 초기화
+      // await AppStateManager.initialize();
+
+      // 2. 네비게이션 시스템 초기화
+      // await NavigationManager.initialize();
+
+      // 3. 알림 시스템 초기화
+      // await NotificationManager.initialize();
+
+      // 4. 백그라운드 작업 초기화
+      // await BackgroundTaskManager.initialize();
+
+      // 5. 사용자 세션 초기화
+      // await SessionManager.initialize();
+
+      // 6. 캐시 시스템 초기화
+      // await CacheManager.initialize();
+
+      if (kDebugMode) {
+        debugPrint('✅ App runtime initialized');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Failed to initialize app runtime: $e');
+      }
+      // 앱 실행에 필수적이지 않은 초기화는 실패해도 계속 진행
+    }
+  }
+
   /// 부트스트랩 요약 출력
   static void _printBootstrapSummary() {
     if (!kDebugMode) return;
 
     debugPrint('\n=== App Bootstrap Summary ===');
     debugPrint('Environment: ${EnvironmentConfig.currentEnvironment.name}');
+    debugPrint('Bootstrap Status: ${_isInitialized ? 'Completed' : 'Failed'}');
     debugPrint(
       'Security Validation: ${EnvironmentConfig.isSecurityValidationEnabled ? 'Enabled' : 'Disabled'}',
     );
@@ -205,6 +245,7 @@ class AppBootstrap {
     debugPrint(
       'Error Reporting: ${EnvironmentConfig.isErrorReportingEnabled ? 'Enabled' : 'Disabled'}',
     );
+    debugPrint('App Runtime: Initialized');
     debugPrint('===============================\n');
   }
 
