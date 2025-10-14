@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aipet_frontend/shared/services/local_storage_service.dart';
 
 /// AI 채팅 히스토리 리스트 화면
 class AiChatHistoryListScreen extends ConsumerStatefulWidget {
@@ -23,8 +24,8 @@ class _AiChatHistoryListScreenState extends ConsumerState<AiChatHistoryListScree
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _allHistoryItems = AiChatHistoryMockData.getChatHistorySessions();
-    _savedHistoryItems = _allHistoryItems.where((item) => item['isManualSaved'] == true).toList();
+    // 실제 로컬 스토리지에서 데이터 로드
+    _loadChatHistory();
     _filteredAllItems = _allHistoryItems;
     _filteredSavedItems = _savedHistoryItems;
     _searchController.addListener(_onSearchChanged);
@@ -36,6 +37,34 @@ class _AiChatHistoryListScreenState extends ConsumerState<AiChatHistoryListScree
     _tabController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadChatHistory() async {
+    try {
+      final sessions = await LocalStorageService.instance.ai.getChatSessions();
+      setState(() {
+        _allHistoryItems = sessions.map((session) => {
+          'id': session['id'],
+          'title': session['title'] ?? 'チャット',
+          'lastMessage': session['lastMessage'] ?? '',
+          'timestamp': DateTime.parse(session['timestamp'] as String),
+          'isManualSaved': session['isManualSaved'] ?? false,
+          'petName': session['petName'] ?? '',
+          'categoryName': session['categoryName'] ?? '',
+        }).toList();
+        _savedHistoryItems = _allHistoryItems.where((item) => item['isManualSaved'] == true).toList();
+        _filteredAllItems = _allHistoryItems;
+        _filteredSavedItems = _savedHistoryItems;
+      });
+    } catch (e) {
+      debugPrint('Failed to load chat history: $e');
+      setState(() {
+        _allHistoryItems = [];
+        _savedHistoryItems = [];
+        _filteredAllItems = [];
+        _filteredSavedItems = [];
+      });
+    }
   }
 
   void _onSearchChanged() {
@@ -72,11 +101,11 @@ class _AiChatHistoryListScreenState extends ConsumerState<AiChatHistoryListScree
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: SoftGradientAppBar(
-        title: 'チャット履歴',
+      appBar: GradientAppBar(
+        title: null, // タイトルを削除
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           tooltip: '戻る',
         ),
       ),
