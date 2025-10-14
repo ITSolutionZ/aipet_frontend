@@ -2,17 +2,32 @@ import 'package:aipet_frontend/features/daily/presentation/controllers/pet_regis
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-/// Pet Registration画面のビジネスロジックを担当するクラス
+/// Pet Registration Logic
+///
+/// **역할**: 펫 등록 화면의 UI 로직 및 헬퍼 함수 모음
+/// - 폼 제출 및 검증 로직
+/// - 등록 완료 후 네비게이션
+/// - UI 상수 및 메시지
+///
+/// **특징**:
+/// - 상태를 가지지 않는 순수 함수 중심
+/// - UI 표시와 관련된 로직만 포함
+/// - 비즈니스 로직은 PetRegistrationController에서 처리
+///
+/// **사용 위치**: DailyPetRegistrationScreen에서 사용
+/// **관련 파일**: PetRegistrationController (상태 관리 및 비즈니스 로직)
 class PetRegistrationLogic {
   PetRegistrationLogic();
 
-  /// ペット登録フォーム検証および提出
+  /// 펫 등록 폼 검증 및 제출
   Future<void> submitPetRegistration({
     required GlobalKey<FormState> formKey,
     required PetRegistrationController controller,
   }) async {
     // 폼 검증 전에 텍스트 컨트롤러와 state 동기화
-    print('🔄 Synchronizing text controllers with state before validation');
+    debugPrint(
+      '🔄 Synchronizing text controllers with state before validation',
+    );
     controller.updatePetName(controller.petNameController.text);
     controller.updateWeight(controller.weightController.text);
     controller.updateGuardianName(controller.guardianNameController.text);
@@ -23,21 +38,23 @@ class PetRegistrationLogic {
 
     // 폼 데이터 상태 디버깅
     final formData = controller.formData;
-    print('🔍 Form validation check:');
-    print(
+    debugPrint('🔍 Form validation check:');
+    debugPrint(
       '  - petName: "${formData.petName}" (empty: ${formData.petName.isEmpty})',
     );
-    print('  - birthDate: ${formData.birthDate}');
-    print('  - weight: ${formData.weight}');
-    print('  - breed: "${formData.breed}" (empty: ${formData.breed.isEmpty})');
-    print(
+    debugPrint('  - birthDate: ${formData.birthDate}');
+    debugPrint('  - weight: ${formData.weight}');
+    debugPrint(
+      '  - breed: "${formData.breed}" (empty: ${formData.breed.isEmpty})',
+    );
+    debugPrint(
       '  - gender: "${formData.gender}" (empty: ${formData.gender.isEmpty})',
     );
-    print('  - petType: "${formData.petType}"');
+    debugPrint('  - petType: "${formData.petType}"');
 
-    // フォーム基本検証
+    // 폼 기본 검증
     if (!formKey.currentState!.validate()) {
-      print('❌ Form validation failed - basic form validation');
+      debugPrint('❌ Form validation failed - basic form validation');
 
       // 구체적인 에러 메시지 생성
       final errors = <String>[];
@@ -54,26 +71,26 @@ class PetRegistrationLogic {
       throw PetRegistrationException(errorMessage);
     }
 
-    // 品種検証
+    // 품종 검증
     final breedValidation = controller.validateBreed();
     if (breedValidation != null) {
-      print('❌ Breed validation failed: $breedValidation');
+      debugPrint('❌ Breed validation failed: $breedValidation');
       throw PetRegistrationException(breedValidation);
     }
 
-    // 性別検証
+    // 성별 검증
     final genderValidation = controller.validateGender();
     if (genderValidation != null) {
-      print('❌ Gender validation failed: $genderValidation');
+      debugPrint('❌ Gender validation failed: $genderValidation');
       throw PetRegistrationException(genderValidation);
     }
 
-    print('✅ All validations passed, proceeding with registration');
-    // 実際の登録処理
+    debugPrint('✅ All validations passed, proceeding with registration');
+    // 실제 등록 처리
     await controller.submitForm();
   }
 
-  /// 生年月日選択ロジック
+  /// 생년월일 선택 로직
   Future<DateTime?> selectBirthDate({
     required BuildContext context,
     DateTime? currentDate,
@@ -122,10 +139,12 @@ class PetRegistrationLogic {
     String? currentImagePath,
   }) async {
     try {
-      print(
+      debugPrint(
         '🎯 PetRegistrationLogic: selectPetImage called with currentImagePath: $currentImagePath',
       );
-      print('🎯 PetRegistrationLogic: context.mounted: ${context.mounted}');
+      debugPrint(
+        '🎯 PetRegistrationLogic: context.mounted: ${context.mounted}',
+      );
 
       final result = await ImageService.showImagePickerOptions(
         context,
@@ -133,24 +152,26 @@ class PetRegistrationLogic {
         currentImagePath: currentImagePath,
       );
 
-      print('🎯 PetRegistrationLogic: ImageService returned: $result');
+      debugPrint('🎯 PetRegistrationLogic: ImageService returned: $result');
 
       if (result == null) {
-        print('🎯 PetRegistrationLogic: Result is null, returning null');
+        debugPrint('🎯 PetRegistrationLogic: Result is null, returning null');
         return null;
       }
       if (result == 'REMOVE') {
-        print('🎯 PetRegistrationLogic: Result is REMOVE, returning REMOVE');
+        debugPrint(
+          '🎯 PetRegistrationLogic: Result is REMOVE, returning REMOVE',
+        );
         return 'REMOVE';
       }
 
-      print(
+      debugPrint(
         '🎯 PetRegistrationLogic: Result is valid image path, returning: $result',
       );
       return result;
     } catch (e, stackTrace) {
-      print('🎯 PetRegistrationLogic: Exception in selectPetImage: $e');
-      print('🎯 PetRegistrationLogic: Stack trace: $stackTrace');
+      debugPrint('🎯 PetRegistrationLogic: Exception in selectPetImage: $e');
+      debugPrint('🎯 PetRegistrationLogic: Stack trace: $stackTrace');
       return null;
     }
   }

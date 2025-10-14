@@ -2,7 +2,21 @@ import 'package:aipet_frontend/features/daily/domain/entities/daily_health_recor
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-/// Daily Health 화면의 비즈니스 로직을 담당하는 클래스
+/// Daily Health Logic
+///
+/// **역할**: 일일 건강 화면의 UI 로직 및 헬퍼 함수 모음
+/// - 날짜/시간 포맷팅
+/// - 화면 네비게이션 (GoRouter)
+/// - UI 상수 및 메시지
+/// - 빠른 액션 데이터 생성
+///
+/// **특징**:
+/// - 상태를 가지지 않는 순수 함수 중심
+/// - UI 표시와 관련된 로직만 포함
+/// - 비즈니스 로직은 DailyHealthController에서 처리
+///
+/// **사용 위치**: DailyHealthScreen에서 사용
+/// **관련 파일**: DailyHealthController (상태 관리 및 비즈니스 로직)
 class DailyHealthLogic {
   DailyHealthLogic();
 

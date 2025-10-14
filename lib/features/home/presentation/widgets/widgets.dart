@@ -14,3 +14,4 @@ export 'qr_code_bottom_sheet.dart';
 export 'today_appointments_widget.dart';
 export 'walk_summary_widget.dart';
 export 'weather_card_widget.dart';
+export 'weather_card_widgets/weather_card_widgets.dart';

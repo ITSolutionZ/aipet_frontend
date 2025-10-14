@@ -2,44 +2,34 @@ import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.
 import 'package:aipet_frontend/features/walk/domain/entities/walk_statistics_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
 import 'package:aipet_frontend/shared/services/local_walk_storage_service.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/walk/walk_mock_service.dart';
 
 /// 산책 리포지토리 구현체
 class WalkRepositoryImpl implements WalkRepository {
   @override
   Future<List<WalkRecordEntity>> getAllWalkRecords() async {
     await Future.delayed(const Duration(milliseconds: 300));
-    final mockData = WalkMockService.getMockWalkRecords();
-    return mockData.map((data) => WalkRecordEntity.fromJson(data)).toList();
+    final localRecords = await LocalWalkStorageService.loadWalkRecords();
+    return localRecords;
   }
 
   @override
   Future<WalkRecordEntity?> getWalkRecordById(String id) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    // 먼저 로컬 저장소에서 찾기
+    // 로컬 저장소에서 찾기
     final localWalkRecords = await LocalWalkStorageService.loadWalkRecords();
     try {
       return localWalkRecords.firstWhere((record) => record.id == id);
     } catch (e) {
-      // 로컬에 없으면 Mock 데이터에서 찾기
-      final mockData = WalkMockService.getMockWalkRecords();
-      final data = mockData.firstWhere(
-        (record) => record['id'] == id,
-        orElse: () => <String, dynamic>{},
-      );
-      return data.isNotEmpty ? WalkRecordEntity.fromJson(data) : null;
+      return null;
     }
   }
 
   @override
   Future<List<WalkRecordEntity>> getWalkRecordsByPetId(String petId) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    final mockData = WalkMockService.getMockWalkRecords();
-    final filteredData = mockData
-        .where((record) => record['petId'] == petId)
-        .toList();
-    return filteredData.map((data) => WalkRecordEntity.fromJson(data)).toList();
+    final localRecords = await LocalWalkStorageService.loadWalkRecords();
+    return localRecords.where((record) => record.petId == petId).toList();
   }
 
   @override
@@ -49,8 +39,49 @@ class WalkRepositoryImpl implements WalkRepository {
     DateTime? endDate,
   }) async {
     await Future.delayed(const Duration(milliseconds: 400));
-    final mockData = WalkMockService.getMockWeeklyWalkStats(petId: petId);
-    return WalkStatistics.fromJson(mockData);
+
+    // 로컬 저장소에서 통계 계산
+    final localRecords = await LocalWalkStorageService.loadWalkRecords();
+
+    // 펫 필터 적용
+    final filteredRecords = petId != null
+        ? localRecords.where((r) => r.petId == petId).toList()
+        : localRecords;
+
+    // 날짜 범위 필터 적용
+    final dateFilteredRecords = filteredRecords.where((r) {
+      if (startDate != null && r.startTime.isBefore(startDate)) return false;
+      if (endDate != null && r.startTime.isAfter(endDate)) return false;
+      return true;
+    }).toList();
+
+    if (dateFilteredRecords.isEmpty) {
+      return WalkStatistics.empty();
+    }
+
+    // 통계 계산
+    final totalWalks = dateFilteredRecords.length;
+    final totalDistance = dateFilteredRecords.fold<double>(
+      0.0,
+      (sum, record) => sum + (record.distance ?? 0.0),
+    );
+    final totalDuration = dateFilteredRecords.fold<Duration>(
+      Duration.zero,
+      (sum, record) => sum + (record.duration ?? Duration.zero),
+    );
+
+    return WalkStatistics(
+      totalWalks: totalWalks,
+      totalDistance: totalDistance,
+      totalDuration: totalDuration,
+      averageDistance: totalWalks > 0 ? totalDistance / totalWalks : 0.0,
+      averageDuration: totalWalks > 0
+          ? Duration(milliseconds: totalDuration.inMilliseconds ~/ totalWalks)
+          : Duration.zero,
+      lastWalkDate: dateFilteredRecords.isNotEmpty
+          ? dateFilteredRecords.last.startTime
+          : null,
+    );
   }
 
   @override

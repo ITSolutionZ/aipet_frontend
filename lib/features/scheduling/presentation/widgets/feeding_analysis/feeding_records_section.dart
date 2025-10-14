@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 급여 기록 섹션
 class FeedingRecordsSection extends StatelessWidget {
@@ -9,7 +12,8 @@ class FeedingRecordsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final recentRecords = analysisData['recentRecords'] as List<Map<String, dynamic>>;
+    final recentRecords =
+        analysisData['recentRecords'] as List<Map<String, dynamic>>;
 
     return Container(
       width: double.infinity,
@@ -96,7 +100,10 @@ class FeedingRecordsSection extends StatelessWidget {
         return AlertDialog(
           title: Text(
             '食事記録追加',
-            style: AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.bold),
+            style: AppFonts.fredoka(
+              fontSize: AppFonts.lg,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           content: StatefulBuilder(
             builder: (context, setState) {
@@ -107,7 +114,9 @@ class FeedingRecordsSection extends StatelessWidget {
                   ListTile(
                     title: Text(
                       '날짜',
-                      style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     subtitle: Text(
                       '${selectedDate.year}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.day.toString().padLeft(2, '0')}',
@@ -119,7 +128,9 @@ class FeedingRecordsSection extends StatelessWidget {
                         final date = await showDatePicker(
                           context: context,
                           initialDate: selectedDate,
-                          firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                          firstDate: DateTime.now().subtract(
+                            const Duration(days: 365),
+                          ),
                           lastDate: DateTime.now(),
                         );
                         if (date != null) {
@@ -168,9 +179,25 @@ class FeedingRecordsSection extends StatelessWidget {
               child: const Text('キャンセル'),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (amountController.text.isNotEmpty) {
-                  // TODO: 실제 데이터 저장 로직 추가
+                  // 로컬 데이터로 저장
+                  final prefs = await SharedPreferences.getInstance();
+
+                  final feedingRecord = {
+                    'id': DateTime.now().millisecondsSinceEpoch.toString(),
+                    'amount': '${amountController.text}g',
+                    'date':
+                        '${selectedDate.year}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.day.toString().padLeft(2, '0')}',
+                    'note': noteController.text,
+                    'timestamp': selectedDate.toIso8601String(),
+                    'change': '+0g', // 변화량은 별도 계산 로직 필요
+                  };
+
+                  final records = prefs.getStringList('feeding_records') ?? [];
+                  records.add(jsonEncode(feedingRecord));
+                  await prefs.setStringList('feeding_records', records);
+
                   SnackBarService.showSuccess(context, '食事記録が追加されました。');
                   amountController.dispose();
                   noteController.dispose();
@@ -216,7 +243,11 @@ class FeedingRecordItem extends StatelessWidget {
               color: AppColors.pointBrown.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Icon(Icons.restaurant, color: AppColors.pointBrown, size: 20),
+            child: const Icon(
+              Icons.restaurant,
+              color: AppColors.pointBrown,
+              size: 20,
+            ),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -230,7 +261,12 @@ class FeedingRecordItem extends StatelessWidget {
                     color: AppColors.pointDark,
                   ),
                 ),
-                Text(date, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
+                Text(
+                  date,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray,
+                  ),
+                ),
               ],
             ),
           ),

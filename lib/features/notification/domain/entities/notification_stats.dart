@@ -1,4 +1,4 @@
-import 'notification_model.dart';
+import 'notification_type.dart';
 
 /// 알림 통계 타입
 enum StatsType {
@@ -132,7 +132,9 @@ class NotificationStats {
       clickRate: (json['clickRate'] ?? 0.0).toDouble(),
       dismissRate: (json['dismissRate'] ?? 0.0).toDouble(),
       failureRate: (json['failureRate'] ?? 0.0).toDouble(),
-      metadata: json['metadata'] != null ? Map<String, dynamic>.from(json['metadata']) : null,
+      metadata: json['metadata'] != null
+          ? Map<String, dynamic>.from(json['metadata'])
+          : null,
     );
   }
 
@@ -211,7 +213,8 @@ class NotificationAnalytics {
       if (typeStats.isEmpty) continue;
 
       final avgRate =
-          typeStats.fold(0.0, (sum, stat) => sum + stat.engagementRate) / typeStats.length;
+          typeStats.fold(0.0, (sum, stat) => sum + stat.engagementRate) /
+          typeStats.length;
       if (avgRate > bestRate) {
         bestRate = avgRate;
         bestType = entry.key;
@@ -229,7 +232,8 @@ class NotificationAnalytics {
       'endDate': endDate.toIso8601String(),
       'stats': stats.map((s) => s.toJson()).toList(),
       'statsByType': statsByType.map(
-        (key, value) => MapEntry(key.name, value.map((s) => s.toJson()).toList()),
+        (key, value) =>
+            MapEntry(key.name, value.map((s) => s.toJson()).toList()),
       ),
       'summary': summary,
     };
@@ -245,7 +249,9 @@ class NotificationAnalytics {
     final statsByTypeJson = json['statsByType'] as Map<String, dynamic>;
 
     for (final entry in statsByTypeJson.entries) {
-      final type = NotificationType.values.firstWhere((e) => e.name == entry.key);
+      final type = NotificationType.values.firstWhere(
+        (e) => e.name == entry.key,
+      );
       final typeStats = (entry.value as List)
           .map((item) => NotificationStats.fromJson(item))
           .toList();
@@ -331,7 +337,9 @@ class UserEngagement {
       'openedNotifications': openedNotifications,
       'clickedNotifications': clickedNotifications,
       'dismissedNotifications': dismissedNotifications,
-      'engagementByType': engagementByType.map((key, value) => MapEntry(key.name, value)),
+      'engagementByType': engagementByType.map(
+        (key, value) => MapEntry(key.name, value),
+      ),
       'preferredTimeSlots': preferredTimeSlots,
       'overallEngagementRate': overallEngagementRate,
     };
@@ -340,10 +348,13 @@ class UserEngagement {
   /// JSON에서 생성
   factory UserEngagement.fromJson(Map<String, dynamic> json) {
     final engagementByTypeMap = <NotificationType, int>{};
-    final engagementByTypeJson = json['engagementByType'] as Map<String, dynamic>;
+    final engagementByTypeJson =
+        json['engagementByType'] as Map<String, dynamic>;
 
     for (final entry in engagementByTypeJson.entries) {
-      final type = NotificationType.values.firstWhere((e) => e.name == entry.key);
+      final type = NotificationType.values.firstWhere(
+        (e) => e.name == entry.key,
+      );
       engagementByTypeMap[type] = entry.value as int;
     }
 
@@ -381,7 +392,9 @@ class NotificationStatsEntityFactory {
       'averageOpenRate': totalSent > 0 ? totalOpened / totalSent : 0.0,
       'averageClickRate': totalSent > 0 ? totalClicked / totalSent : 0.0,
       'averageFailureRate': totalSent > 0 ? totalFailed / totalSent : 0.0,
-      'totalEngagementRate': totalSent > 0 ? (totalOpened + totalClicked) / totalSent : 0.0,
+      'totalEngagementRate': totalSent > 0
+          ? (totalOpened + totalClicked) / totalSent
+          : 0.0,
     };
   }
 }

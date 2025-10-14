@@ -1,232 +1,172 @@
+import 'package:aipet_frontend/features/pet_feeding/data/repositories/helpers/helpers.dart';
+import 'package:aipet_frontend/features/pet_feeding/data/services/pet_feeding_local_storage_service.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/entities/recipe_entity.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/repositories/recipe_repository.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/pet_feeding/pet_feeding_mock_service.dart';
 
-// Mock 데이터 사용 여부
-const bool _isEnabled = true;
-
+/// 레시피 리포지토리 구현 (리팩토링됨)
 class RecipeRepositoryImpl implements RecipeRepository {
-  // 메모리 기반 저장소 (MockDataService의 데이터로 초기화)
-  late final List<RecipeEntity> _recipes;
-
-  RecipeRepositoryImpl() {
-    // PetFeedingMockService에서 초기 데이터 로드
-    _recipes = List.from(PetFeedingMockService.getMockRecipes()).map((recipe) {
-      return RecipeEntity(
-        id: recipe['id'],
-        name: recipe['name'],
-        image: recipe['image'],
-        description: recipe['description'],
-        cookingTime: recipe['cookingTime'],
-        difficulty: recipe['difficulty'],
-        ingredients: List<String>.from(recipe['ingredients']),
-        instructions: List<String>.from(recipe['instructions']),
-        servings: recipe['servings'],
-        rating: recipe['rating'].toDouble(),
-        isFavorite: recipe['isFavorite'],
-        userId: null, // 기본 목업 데이터는 사용자 ID 없음
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        updatedAt: DateTime.now(),
-      );
-    }).toList();
-  }
+  RecipeRepositoryImpl();
 
   @override
   Future<List<RecipeEntity>> getAllRecipes() async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (_isEnabled) {
-      return List.from(_recipes);
-    }
-
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    final recipesData = await PetFeedingLocalStorageService.getRecipes();
+    return RecipeMapperHelper.jsonListToEntityList(recipesData);
   }
 
   @override
   Future<List<RecipeEntity>> getUserRecipes(String userId) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (_isEnabled) {
-      return _recipes.where((recipe) => recipe.userId == userId).toList();
-    }
+    final recipesData = await PetFeedingLocalStorageService.getRecipes();
+    final recipes = RecipeMapperHelper.jsonListToEntityList(recipesData);
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    return RecipeFilterHelper.filterByUserId(recipes, userId);
   }
 
   @override
   Future<RecipeEntity?> getRecipeById(String id) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (_isEnabled) {
-      try {
-        return _recipes.firstWhere((recipe) => recipe.id == id);
-      } catch (e) {
-        return null;
-      }
-    }
+    final recipesData = await PetFeedingLocalStorageService.getRecipes();
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    try {
+      final recipeData = recipesData.firstWhere((data) => data['id'] == id);
+      return RecipeMapperHelper.jsonToEntity(recipeData);
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
   Future<RecipeEntity> createRecipe(RecipeEntity recipe) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
-    if (_isEnabled) {
-      // 유효성 검사
-      if (recipe.name.isEmpty || recipe.description.isEmpty) {
-        throw Exception('레시피 이름과 설명은 필수입니다.');
-      }
-
-      final newRecipe = recipe.copyWith(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      _recipes.add(newRecipe);
-      return newRecipe;
+    // 유효성 검사
+    if (recipe.name.isEmpty || recipe.description.isEmpty) {
+      throw Exception('レシピ名と説明は必須です。');
     }
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    final newRecipe = recipe.copyWith(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    await PetFeedingLocalStorageService.addRecipe(newRecipe.toJson());
+
+    return newRecipe;
   }
 
   @override
   Future<RecipeEntity> updateRecipe(RecipeEntity recipe) async {
     await Future.delayed(const Duration(milliseconds: 400));
 
-    if (_isEnabled) {
-      // 유효성 검사
-      if (recipe.name.isEmpty || recipe.description.isEmpty) {
-        throw Exception('레시피 이름과 설명은 필수입니다.');
-      }
-
-      final index = _recipes.indexWhere((r) => r.id == recipe.id);
-      if (index != -1) {
-        final updatedRecipe = recipe.copyWith(updatedAt: DateTime.now());
-        _recipes[index] = updatedRecipe;
-        return updatedRecipe;
-      }
-      throw Exception('레시피를 찾을 수 없습니다');
+    // 유효성 검사
+    if (recipe.name.isEmpty || recipe.description.isEmpty) {
+      throw Exception('レシピ名と説明は必須です。');
     }
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    final updatedRecipe = recipe.copyWith(updatedAt: DateTime.now());
+
+    await PetFeedingLocalStorageService.updateRecipe(
+      recipe.id,
+      updatedRecipe.toJson(),
+    );
+
+    return updatedRecipe;
   }
 
   @override
   Future<void> deleteRecipe(String id) async {
     await Future.delayed(const Duration(milliseconds: 300));
-
-    if (_isEnabled) {
-      _recipes.removeWhere((recipe) => recipe.id == id);
-      return;
-    }
-
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    await PetFeedingLocalStorageService.deleteRecipe(id);
   }
 
   @override
   Future<List<RecipeEntity>> getRecipesByDifficulty(String difficulty) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (_isEnabled) {
-      return _recipes
-          .where((recipe) => recipe.difficulty.toLowerCase() == difficulty.toLowerCase())
-          .toList();
-    }
+    final recipesData = await PetFeedingLocalStorageService.getRecipes();
+    final recipes = RecipeMapperHelper.jsonListToEntityList(recipesData);
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    return RecipeFilterHelper.filterByDifficulty(recipes, difficulty);
   }
 
   @override
   Future<List<RecipeEntity>> getFavoriteRecipes(String userId) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (_isEnabled) {
-      return _recipes.where((recipe) => recipe.isFavorite).toList();
-    }
+    final recipesData = await PetFeedingLocalStorageService.getRecipes();
+    final recipes = RecipeMapperHelper.jsonListToEntityList(recipesData);
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    return RecipeFilterHelper.filterFavorites(recipes, userId);
   }
 
   @override
   Future<List<RecipeEntity>> searchRecipes(String query) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (_isEnabled) {
-      if (query.isEmpty) return List.from(_recipes);
+    final recipesData = await PetFeedingLocalStorageService.getRecipes();
+    final recipes = RecipeMapperHelper.jsonListToEntityList(recipesData);
 
-      return _recipes.where((recipe) {
-        return recipe.name.toLowerCase().contains(query.toLowerCase()) ||
-            recipe.description.toLowerCase().contains(query.toLowerCase()) ||
-            recipe.ingredients.any(
-              (ingredient) => ingredient.toLowerCase().contains(query.toLowerCase()),
-            );
-      }).toList();
-    }
-
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    return RecipeSearchHelper.searchRecipes(recipes, query);
   }
 
   @override
   Future<List<RecipeEntity>> getTopRatedRecipes({int limit = 5}) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (_isEnabled) {
-      final recipes = List<RecipeEntity>.from(_recipes);
-      recipes.sort((a, b) => b.rating.compareTo(a.rating));
-      return recipes.take(limit).toList();
-    }
+    final recipesData = await PetFeedingLocalStorageService.getRecipes();
+    final recipes = RecipeMapperHelper.jsonListToEntityList(recipesData);
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    return RecipeSearchHelper.sortByRating(recipes, limit: limit);
   }
 
   @override
   Future<List<RecipeEntity>> getQuickRecipes() async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (_isEnabled) {
-      return _recipes.where((recipe) {
-        final time = int.tryParse(recipe.cookingTime.split(' ').first) ?? 0;
-        return time <= 30;
-      }).toList();
-    }
+    final recipesData = await PetFeedingLocalStorageService.getRecipes();
+    final recipes = RecipeMapperHelper.jsonListToEntityList(recipesData);
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+    return RecipeFilterHelper.filterQuickRecipes(recipes);
   }
 
   @override
   Future<void> toggleFavorite(String recipeId, String userId) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (_isEnabled) {
-      final index = _recipes.indexWhere((recipe) => recipe.id == recipeId);
-      if (index != -1) {
-        final recipe = _recipes[index];
-        _recipes[index] = recipe.copyWith(
-          isFavorite: !recipe.isFavorite,
-          updatedAt: DateTime.now(),
-        );
-      }
-      return;
-    }
+    final recipe = await getRecipeById(recipeId);
+    if (recipe != null) {
+      final updatedRecipe = recipe.copyWith(
+        isFavorite: !recipe.isFavorite,
+        updatedAt: DateTime.now(),
+      );
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+      await PetFeedingLocalStorageService.updateRecipe(
+        recipeId,
+        updatedRecipe.toJson(),
+      );
+    }
   }
 
   @override
   Future<void> updateRating(String recipeId, double rating) async {
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (_isEnabled) {
-      final index = _recipes.indexWhere((recipe) => recipe.id == recipeId);
-      if (index != -1) {
-        final recipe = _recipes[index];
-        _recipes[index] = recipe.copyWith(rating: rating, updatedAt: DateTime.now());
-      }
-      return;
-    }
+    final recipe = await getRecipeById(recipeId);
+    if (recipe != null) {
+      final updatedRecipe = recipe.copyWith(
+        rating: rating,
+        updatedAt: DateTime.now(),
+      );
 
-    throw UnimplementedError('실제 API 호출이 구현되지 않았습니다.');
+      await PetFeedingLocalStorageService.updateRecipe(
+        recipeId,
+        updatedRecipe.toJson(),
+      );
+    }
   }
 }

@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/config/app_config.dart';
 import '../../../../shared/services/base_logging_service.dart';
-import '../../../../shared/testing/mock_data/features/ai/ai_config_mock_data.dart';
 import '../../domain/domain.dart';
 import 'ai_cache_service.dart';
+import 'ai_category_service.dart';
 import 'ai_dio_service.dart';
+import 'ai_keyword_service.dart';
 
 /// 🎯 AI 데이터 서비스
 ///
@@ -25,7 +26,9 @@ class AiDataService extends BaseLoggingService {
     const cacheKey = 'ai_categories';
 
     // 캐시에서 먼저 확인
-    final cachedData = _cacheService.getFromCache<List<AiCategoryEntity>>(cacheKey);
+    final cachedData = _cacheService.getFromCache<List<AiCategoryEntity>>(
+      cacheKey,
+    );
     if (cachedData != null) {
       return cachedData;
     }
@@ -49,7 +52,8 @@ class AiDataService extends BaseLoggingService {
     const cacheKey = 'ai_suggested_questions';
 
     // 캐시에서 먼저 확인
-    final cachedData = _cacheService.getFromCache<List<AiSuggestedQuestionEntity>>(cacheKey);
+    final cachedData = _cacheService
+        .getFromCache<List<AiSuggestedQuestionEntity>>(cacheKey);
     if (cachedData != null) {
       return cachedData;
     }
@@ -73,7 +77,9 @@ class AiDataService extends BaseLoggingService {
     const cacheKey = 'ai_response_templates';
 
     // 캐시에서 먼저 확인
-    final cachedData = _cacheService.getFromCache<Map<String, String>>(cacheKey);
+    final cachedData = _cacheService.getFromCache<Map<String, String>>(
+      cacheKey,
+    );
     if (cachedData != null) {
       return cachedData;
     }
@@ -97,7 +103,9 @@ class AiDataService extends BaseLoggingService {
     const cacheKey = 'ai_keyword_mapping';
 
     // 캐시에서 먼저 확인
-    final cachedData = _cacheService.getFromCache<Map<String, List<String>>>(cacheKey);
+    final cachedData = _cacheService.getFromCache<Map<String, List<String>>>(
+      cacheKey,
+    );
     if (cachedData != null) {
       return cachedData;
     }
@@ -118,19 +126,74 @@ class AiDataService extends BaseLoggingService {
 
   // Private methods for Mock data
   List<AiCategoryEntity> _getMockCategories() {
-    return AiConfigMockData.getMockCategories();
+    return AiCategoryService.getDefaultCategories();
   }
 
   List<AiSuggestedQuestionEntity> _getMockSuggestedQuestions() {
-    return AiConfigMockData.getMockSuggestedQuestions();
+    return [
+      const AiSuggestedQuestionEntity(
+        id: '1',
+        question: 'ペットの健康管理について教えてください',
+        category: 'health',
+        icon: Icons.medical_services,
+        description: '健康管理の基本について',
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '2',
+        question: 'おすすめのペットフードは何ですか？',
+        category: 'food',
+        icon: Icons.restaurant,
+        description: 'フード選びのアドバイス',
+      ),
+      const AiSuggestedQuestionEntity(
+        id: '3',
+        question: 'しつけの基本を教えてください',
+        category: 'behavior',
+        icon: Icons.psychology,
+        description: 'しつけの基礎知識',
+      ),
+    ];
   }
 
   Map<String, String> _getMockResponseTemplates() {
-    return AiConfigMockData.getMockResponseTemplates();
+    return {
+      'greeting': 'こんにちは！ペットについて何かお手伝いできることはありますか？',
+      'health_advice': 'ペットの健康について心配なことがあれば、まず獣医師にご相談ください。',
+      'food_advice': 'ペットの年齢や体調に合わせたフード選びが大切です。',
+      'error': '申し訳ございません。エラーが発生しました。',
+    };
   }
 
   Map<String, List<String>> _getMockKeywordMapping() {
-    return AiConfigMockData.getMockKeywordMapping();
+    return {
+      'health': AiKeywordService.getPetKeywords()
+          .where(
+            (k) =>
+                k.contains('健康') ||
+                k.contains('health') ||
+                k.contains('病気') ||
+                k.contains('sick'),
+          )
+          .toList(),
+      'food': AiKeywordService.getPetKeywords()
+          .where(
+            (k) =>
+                k.contains('フード') ||
+                k.contains('food') ||
+                k.contains('餌') ||
+                k.contains('feed'),
+          )
+          .toList(),
+      'behavior': AiKeywordService.getPetKeywords()
+          .where(
+            (k) =>
+                k.contains('しつけ') ||
+                k.contains('training') ||
+                k.contains('行動') ||
+                k.contains('behavior'),
+          )
+          .toList(),
+    };
   }
 
   // Private methods for API calls
@@ -149,13 +212,16 @@ class AiDataService extends BaseLoggingService {
     });
   }
 
-  Future<List<AiSuggestedQuestionEntity>> _loadSuggestedQuestionsFromApi() async {
+  Future<List<AiSuggestedQuestionEntity>>
+  _loadSuggestedQuestionsFromApi() async {
     return _executeWithRetry(() async {
       final response = await _dio.get('/ai/suggested-questions');
 
       if (response.statusCode == 200 && response.data != null) {
         final List<dynamic> data = response.data['data'] ?? response.data;
-        return data.map((json) => _mapToAiSuggestedQuestionEntity(json)).toList();
+        return data
+            .map((json) => _mapToAiSuggestedQuestionEntity(json))
+            .toList();
       } else {
         throw Exception('AI推奨質問データの取得に失敗しました');
       }
@@ -167,7 +233,8 @@ class AiDataService extends BaseLoggingService {
       final response = await _dio.get('/ai/response-templates');
 
       if (response.statusCode == 200 && response.data != null) {
-        final Map<String, dynamic> data = response.data['data'] ?? response.data;
+        final Map<String, dynamic> data =
+            response.data['data'] ?? response.data;
         return data.map((key, value) => MapEntry(key, value.toString()));
       } else {
         throw Exception('AI応答テンプレートデータの取得に失敗しました');
@@ -180,7 +247,8 @@ class AiDataService extends BaseLoggingService {
       final response = await _dio.get('/ai/keyword-mapping');
 
       if (response.statusCode == 200 && response.data != null) {
-        final Map<String, dynamic> data = response.data['data'] ?? response.data;
+        final Map<String, dynamic> data =
+            response.data['data'] ?? response.data;
         return data.map((key, value) {
           if (value is List) {
             return MapEntry(key, value.map((e) => e.toString()).toList());
@@ -211,7 +279,9 @@ class AiDataService extends BaseLoggingService {
   }
 
   /// JSON을 AiSuggestedQuestionEntity로 매핑
-  AiSuggestedQuestionEntity _mapToAiSuggestedQuestionEntity(Map<String, dynamic> json) {
+  AiSuggestedQuestionEntity _mapToAiSuggestedQuestionEntity(
+    Map<String, dynamic> json,
+  ) {
     return AiSuggestedQuestionEntity(
       id: json['id']?.toString() ?? '',
       question: json['question']?.toString() ?? '',

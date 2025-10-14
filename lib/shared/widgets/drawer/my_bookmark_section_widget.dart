@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/data/datasources/drawer_local_datasource.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
 
@@ -8,24 +9,48 @@ class MyBookmarkSectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 로컬 데이터에서 북마크 섹션 데이터 가져오기
+    final bookmarkSection = DrawerLocalDatasource.getBookmarkSection();
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // セクションヘッダー
-          const Row(
+          Row(
             children: [
-              Icon(Icons.bookmark, color: Colors.white, size: 20),
-              SizedBox(width: 8),
+              const Icon(Icons.bookmark, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
               Text(
-                'マイブックマーク',
-                style: TextStyle(
+                bookmarkSection['title'],
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              if (bookmarkSection['itemCount'] > 0) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '${bookmarkSection['itemCount']}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 16),

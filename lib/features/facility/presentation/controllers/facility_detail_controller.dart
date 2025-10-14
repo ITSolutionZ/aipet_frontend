@@ -12,8 +12,10 @@ class FacilityDetailController extends BaseFacilityController {
   /// 시설 정보 로드
   Future<Facility?> loadFacilityById(String facilityId) async {
     try {
-      final facilityList = ref.read(facilityListNotifierProvider);
-      return facilityList.firstWhere(
+      final facilityListAsync = await ref.read(
+        facilityListNotifierProvider.future,
+      );
+      return facilityListAsync.firstWhere(
         (facility) => facility.id == facilityId,
         orElse: () => FacilityFactory.createDefault(facilityId),
       );
@@ -53,11 +55,13 @@ class FacilityDetailController extends BaseFacilityController {
   Future<void> handleFavoriteToggle(String facilityId) async {
     try {
       final facilityList = ref.read(facilityListNotifierProvider.notifier);
-      facilityList.toggleFavorite(facilityId);
+      await facilityList.toggleFavorite(facilityId);
 
       final facility = await loadFacilityById(facilityId);
       if (facility != null) {
-        final message = facility.isFavorite ? 'お気に入りに追加されました。' : 'お気に入りから削除されました。';
+        final message = facility.isFavorite
+            ? 'お気に入りに追加されました。'
+            : 'お気に入りから削除されました。';
         showSuccessMessage(message);
       }
     } catch (error) {
@@ -119,7 +123,10 @@ class FacilityDetailController extends BaseFacilityController {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(facility.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      facility.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     const SizedBox(height: 4),
                     Text('電話: ${facility.phone}'),
                     Text('メール: ${facility.email}'),

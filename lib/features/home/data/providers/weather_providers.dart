@@ -2,6 +2,7 @@ import 'package:aipet_frontend/features/home/data/services/openweathermap_servic
 import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'weather_providers.g.dart';
@@ -98,22 +99,80 @@ class CurrentWeather extends _$CurrentWeather {
 class LocationBasedWeather extends _$LocationBasedWeather {
   @override
   Future<WeatherEntity> build() async {
-    // TODO: 위치 권한 요청 및 현재 위치 가져오기
-    // 현재는 기본 위치 사용
-    final currentWeather = ref.watch(
-      currentWeatherProvider(latitude: 35.6762, longitude: 139.6503),
-    );
+    try {
+      // 위치 권한 확인
+      LocationPermission permission = await Geolocator.checkPermission();
 
-    return currentWeather.when(
-      data: (weather) => weather,
-      loading: () => throw const AsyncLoading<WeatherEntity>(),
-      error: (error, stack) => throw AsyncError(error, stack),
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          // 권한 거부 시 기본 위치 사용
+          return _getWeatherWithDefaultLocation();
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        // 권한 영구 거부 시 기본 위치 사용
+        return _getWeatherWithDefaultLocation();
+      }
+
+      // 현재 위치 가져오기
+      final Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // 현재 위치로 날씨 정보 가져오기
+      final service = ref.read(openWeatherMapServiceProvider);
+      final result = await service.getCurrentWeather(
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
+
+      if (result.isSuccess && result.data != null) {
+        return result.data!;
+      } else {
+        return _getWeatherWithDefaultLocation();
+      }
+    } catch (e) {
+      // 에러 발생 시 기본 위치 사용
+      return _getWeatherWithDefaultLocation();
+    }
+  }
+
+  /// 기본 위치로 날씨 가져오기
+  Future<WeatherEntity> _getWeatherWithDefaultLocation() async {
+    final currentWeather = await ref.watch(
+      currentWeatherProvider(latitude: 35.6762, longitude: 139.6503).future,
     );
+    return currentWeather;
   }
 
   /// 위치 기반 날씨 새로고침
   Future<void> refreshWithLocation() async {
-    // TODO: 현재 위치 가져와서 날씨 정보 업데이트
-    ref.invalidate(currentWeatherProvider);
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async {
+      try {
+        // 현재 위치 가져오기
+        final Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+
+        // 현재 위치로 날씨 정보 업데이트
+        final service = ref.read(openWeatherMapServiceProvider);
+        final result = await service.getCurrentWeather(
+          latitude: position.latitude,
+          longitude: position.longitude,
+        );
+
+        if (result.isSuccess && result.data != null) {
+          return result.data!;
+        } else {
+          return _getWeatherWithDefaultLocation();
+        }
+      } catch (e) {
+        return _getWeatherWithDefaultLocation();
+      }
+    });
   }
 }

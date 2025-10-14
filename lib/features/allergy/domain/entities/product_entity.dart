@@ -20,5 +20,17 @@ class ProductEntity with _$ProductEntity {
 
     /// カテゴリ（フード、サプリメント、おやつ、生食）
     required String category,
+
+    /// 성분 목록 (optional)
+    String? ingredients,
+
+    /// 브랜드 객체 (optional)
+    @Default(null) dynamic brand,
+
+    /// 평점 (optional)
+    double? rating,
+
+    /// 상품 이미지 URL (optional)
+    String? imageUrl,
   }) = _ProductEntity;
 }

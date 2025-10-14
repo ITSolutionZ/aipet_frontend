@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,7 +41,17 @@ class LocalDataManager {
     if (jsonString == null) return [];
 
     final List<dynamic> jsonList = jsonDecode(jsonString);
-    return jsonList.cast<Map<String, dynamic>>();
+    final profiles = jsonList.cast<Map<String, dynamic>>();
+
+    // 디버그: 로드된 펫 데이터 확인
+    if (kDebugMode) {
+      debugPrint('🔍 LocalDataManager: 로드된 펫 프로필 수: ${profiles.length}');
+      if (profiles.isNotEmpty) {
+        debugPrint('🔍 LocalDataManager: 첫 번째 펫: ${profiles.first['name']}');
+      }
+    }
+
+    return profiles;
   }
 
   /// 펫 등록 정보 저장
@@ -59,8 +70,13 @@ class LocalDataManager {
   }
 
   /// 임시 펫 등록 폼 데이터 저장
-  Future<void> savePetRegistrationFormData(Map<String, dynamic> formData) async {
-    await _prefs!.setString('pet_registration_form_draft', jsonEncode(formData));
+  Future<void> savePetRegistrationFormData(
+    Map<String, dynamic> formData,
+  ) async {
+    await _prefs!.setString(
+      'pet_registration_form_draft',
+      jsonEncode(formData),
+    );
   }
 
   /// 임시 펫 등록 폼 데이터 로드
@@ -338,6 +354,20 @@ class LocalDataManager {
       if (key.contains(pattern)) {
         await _prefs!.remove(key);
       }
+    }
+  }
+
+  /// 펫 데이터 완전 초기화 (빈 상태로 설정)
+  Future<void> clearAllPetData() async {
+    await _prefs!.remove('pet_profiles');
+    await _prefs!.remove('migration_completed_pet_profiles');
+
+    // 펫 관련 모든 패턴 삭제
+    await clearDataByPattern('pet_');
+    await clearDataByPattern('pet_registration_');
+
+    if (kDebugMode) {
+      debugPrint('🧹 LocalDataManager: 모든 펫 데이터 완전 초기화 완료');
     }
   }
 

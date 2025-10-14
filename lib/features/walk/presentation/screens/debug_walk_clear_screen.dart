@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/shared/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 

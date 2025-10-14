@@ -81,7 +81,10 @@ class SettingsScreen extends ConsumerWidget {
                         color: Colors.black87,
                       ),
                     ),
-                    Text('test@test.com', style: TextStyle(fontSize: 14, color: Colors.grey)),
+                    Text(
+                      'test@test.com',
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
                   ],
                 ),
               ],
@@ -101,7 +104,7 @@ class SettingsScreen extends ConsumerWidget {
             title: 'ペット情報編集',
             backgroundColor: const Color(0xFFA88B5A),
             onTap: () {
-              // TODO: 펫 프로필 편집 구현
+              // ペットプロフィール画面へ移動
               context.push('${AppRouter.petProfileRoute}?petId=default');
             },
           ),

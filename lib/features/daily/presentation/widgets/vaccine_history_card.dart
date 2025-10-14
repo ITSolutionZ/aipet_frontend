@@ -38,7 +38,7 @@ class _VaccineHistoryCardState extends State<VaccineHistoryCard> {
         borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -90,7 +90,7 @@ class _VaccineHistoryCardState extends State<VaccineHistoryCard> {
                             vertical: AppSpacing.xs,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.pointGreen.withOpacity(0.1),
+                            color: AppColors.pointGreen.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(AppSpacing.xs),
                           ),
                           child: Text(
@@ -237,13 +237,13 @@ class _VaccineHistoryCardState extends State<VaccineHistoryCard> {
       padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: isScheduled
-            ? AppColors.pointOrange.withOpacity(0.05)
-            : AppColors.pointGreen.withOpacity(0.05),
+            ? AppColors.pointOrange.withValues(alpha: 0.05)
+            : AppColors.pointGreen.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(AppSpacing.xs),
         border: Border.all(
           color: isScheduled
-              ? AppColors.pointOrange.withOpacity(0.2)
-              : AppColors.pointGreen.withOpacity(0.2),
+              ? AppColors.pointOrange.withValues(alpha: 0.2)
+              : AppColors.pointGreen.withValues(alpha: 0.2),
           width: 1,
         ),
       ),

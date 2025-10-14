@@ -6,19 +6,14 @@ import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_camera_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_marker_builder.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_polyline_builder.dart';
-import 'package:aipet_frontend/shared/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/walk/helpers/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-enum WalkTimerState {
-  ready,
-  running,
-  paused,
-  stopped,
-}
+enum WalkTimerState { ready, running, paused, stopped }
 
 class LiveWalkState {
   final WalkTimerState timerState;
@@ -97,14 +92,14 @@ class LiveWalkState {
   }
 }
 
-final liveWalkProvider = StateNotifierProvider<LiveWalkController, LiveWalkState>(
-  (ref) => LiveWalkController(),
-);
+final liveWalkProvider =
+    StateNotifierProvider<LiveWalkController, LiveWalkState>(
+      (ref) => LiveWalkController(),
+    );
 
 class LiveWalkController extends StateNotifier<LiveWalkState> {
-  Timer? _timer;
-  Timer? _locationTimer;
-  StreamSubscription<Position>? _positionStream;
+  final _timerManager = LiveWalkTimerManager();
+  final _locationTracker = LiveWalkLocationTracker();
 
   LiveWalkController() : super(const LiveWalkState()) {
     _initializeCurrentLocation();
@@ -113,7 +108,7 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
 
   Future<void> _initializeCurrentLocation() async {
     try {
-      final position = await _getCurrentPosition();
+      final position = await LiveWalkLocationTracker.getCurrentPosition();
       if (position != null) {
         state = state.copyWith(currentPosition: position);
         _updateMapMarkers();
@@ -129,101 +124,25 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
   }
 
   void _setDefaultLocation() {
-    final defaultPosition = Position(
-      latitude: 35.6762, // 도쿄 기본 위치
-      longitude: 139.6503,
-      timestamp: DateTime.now(),
-      accuracy: 0,
-      altitude: 0,
-      heading: 0,
-      speed: 0,
-      speedAccuracy: 0,
-      altitudeAccuracy: 0,
-      headingAccuracy: 0,
-    );
+    final defaultPosition = LiveWalkLocationTracker.createDefaultPosition();
     state = state.copyWith(currentPosition: defaultPosition);
     _updateMapMarkers();
   }
 
   /// 저장된 산책 데이터 불러오기
   Future<void> _loadSavedWalk() async {
-    try {
-      final savedWalk = await LocalWalkStorageService.loadCurrentWalk();
-      if (savedWalk != null && savedWalk.isActive) {
-        // 진행 중인 산책이 있으면 복원
-        debugPrint('💾 저장된 산책 복원: ${savedWalk.id}');
-        state = state.copyWith(
-          timerState: WalkTimerState.paused, // 일시정지 상태로 복원
-          currentWalkRecord: savedWalk,
-          route: savedWalk.route,
-          distance: savedWalk.calculatedDistance,
-          elapsedTime: savedWalk.calculatedDuration,
-        );
-        _updateMapMarkers();
-        _updateMapPolylines();
-      }
-    } catch (e) {
-      debugPrint('❌ 저장된 산책 불러오기 실패: $e');
-    }
-  }
-
-  /// 현재 산책 상태 저장
-  Future<void> _saveCurrentWalk() async {
-    try {
-      if (state.currentWalkRecord != null) {
-        await LocalWalkStorageService.saveCurrentWalk(state.currentWalkRecord);
-      }
-    } catch (e) {
-      debugPrint('❌ 현재 산책 저장 실패: $e');
-    }
-  }
-
-  /// 산책 기록을 완료 목록에 저장
-  Future<void> _saveCompletedWalk() async {
-    try {
-      if (state.currentWalkRecord != null) {
-        final completedWalk = state.currentWalkRecord!.copyWith(
-          status: WalkStatus.completed,
-          endTime: DateTime.now(),
-          distance: state.distance / 1000, // m -> km 변환
-          updatedAt: DateTime.now(),
-        );
-
-        // 완료된 산책을 기록 목록에 추가
-        await LocalWalkStorageService.addWalkRecord(completedWalk);
-
-        // 현재 산책 제거
-        await LocalWalkStorageService.saveCurrentWalk(null);
-
-        debugPrint('💾 산책 완료 저장: ${completedWalk.id}');
-      }
-    } catch (e) {
-      debugPrint('❌ 완료된 산책 저장 실패: $e');
-    }
-  }
-
-  Future<Position?> _getCurrentPosition() async {
-    try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          return null;
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        return null;
-      }
-
-      return await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      ).timeout(const Duration(seconds: 10));
-    } catch (e) {
-      debugPrint('위치 권한 또는 GPS 오류: $e');
-      return null;
+    final savedWalk = await LiveWalkStorageManager.loadSavedWalk();
+    if (savedWalk != null) {
+      state = state.copyWith(
+        timerState: WalkTimerState.paused, // 일시정지 상태로 복원
+        currentWalkRecord: savedWalk,
+        route: savedWalk.route,
+        distance: savedWalk.calculatedDistance,
+        elapsedTime: savedWalk.calculatedDuration,
+      );
+      _timerManager.setElapsedTime(savedWalk.calculatedDuration);
+      _updateMapMarkers();
+      _updateMapPolylines();
     }
   }
 
@@ -235,7 +154,7 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
   void startWalk() async {
     if (state.timerState == WalkTimerState.running) return;
 
-    final currentPosition = await _getCurrentPosition();
+    final currentPosition = await LiveWalkLocationTracker.getCurrentPosition();
     if (currentPosition == null) {
       debugPrint('위치를 가져올 수 없어 산책을 시작할 수 없습니다');
       return;
@@ -252,7 +171,7 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
     final walkRecord = WalkRecordEntity(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       petId: 'current_pet',
-      petName: '실시간 산책',
+      petName: '実時間 散歩',
       startTime: DateTime.now(),
       route: [startLocation],
       status: WalkStatus.inProgress,
@@ -270,44 +189,57 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
       currentWalkRecord: walkRecord,
     );
 
-    _startTimer();
+    _timerManager.startTimer(() {
+      if (state.timerState == WalkTimerState.running) {
+        state = state.copyWith(elapsedTime: _timerManager.elapsedTime);
+      }
+    });
     _startLocationTracking();
     _updateMapMarkers();
     _moveMapToCurrentPosition();
 
     // 현재 산책 상태 저장
-    _saveCurrentWalk().ignore();
+    LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord).ignore();
   }
 
   void pauseWalk() {
     if (state.timerState != WalkTimerState.running) return;
 
     state = state.copyWith(timerState: WalkTimerState.paused);
-    _stopTimer();
-    _stopLocationTracking();
+    _timerManager.stopTimer();
+    _locationTracker.stopTracking();
 
     // 일시정지 상태 저장
-    _saveCurrentWalk();
+    LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
   }
 
   void resumeWalk() {
     if (state.timerState != WalkTimerState.paused) return;
 
     state = state.copyWith(timerState: WalkTimerState.running);
-    _startTimer();
+    _timerManager.startTimer(() {
+      if (state.timerState == WalkTimerState.running) {
+        state = state.copyWith(elapsedTime: _timerManager.elapsedTime);
+      }
+    });
     _startLocationTracking();
 
     // 재시작 상태 저장
-    _saveCurrentWalk();
+    LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
   }
 
   void stopWalk() {
     state = state.copyWith(timerState: WalkTimerState.stopped);
-    _stopTimer();
-    _stopLocationTracking();
+    _timerManager.stopTimer();
+    _locationTracker.stopTracking();
 
     // 완료된 산책 저장
-    _saveCompletedWalk();
+    if (state.currentWalkRecord != null) {
+      LiveWalkStorageManager.saveCompletedWalk(
+        state.currentWalkRecord!,
+        state.distance,
+      );
+    }
   }
 
   void completeWalk(String? notes) {
@@ -326,11 +258,14 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
         currentWalkRecord: updatedWalkRecord,
       );
 
-      _stopTimer();
-      _stopLocationTracking();
+      _timerManager.stopTimer();
+      _locationTracker.stopTracking();
 
       // 완료된 산책 저장
-      _saveCompletedWalk();
+      LiveWalkStorageManager.saveCompletedWalk(
+        updatedWalkRecord,
+        state.distance,
+      );
     }
   }
 
@@ -344,50 +279,26 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
       polylines: {},
       currentWalkRecord: null,
     );
-    _stopTimer();
-    _stopLocationTracking();
+    _timerManager.resetTimer();
+    _locationTracker.stopTracking();
     _updateMapMarkers();
 
     // 현재 산책 데이터 제거 (백그라운드에서 실행)
-    LocalWalkStorageService.saveCurrentWalk(null).ignore();
-  }
-
-  void _startTimer() {
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (state.timerState == WalkTimerState.running) {
-        state = state.copyWith(
-          elapsedTime: state.elapsedTime + const Duration(seconds: 1),
-        );
-      }
-    });
-  }
-
-  void _stopTimer() {
-    _timer?.cancel();
-    _timer = null;
+    LiveWalkStorageManager.cancelWalk().ignore();
   }
 
   void _startLocationTracking() {
-    _stopLocationTracking();
-
-    _locationTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-      if (state.timerState == WalkTimerState.running) {
-        await _updateLocation();
-      }
-    });
+    _locationTracker.startTracking(
+      onLocationUpdate: (location) => _updateLocation(location),
+      onError: () {
+        debugPrint('위치 추적 에러 발생');
+      },
+    );
   }
 
-  void _stopLocationTracking() {
-    _locationTimer?.cancel();
-    _locationTimer = null;
-    _positionStream?.cancel();
-    _positionStream = null;
-  }
-
-  Future<void> _updateLocation() async {
+  Future<void> _updateLocation(WalkLocation location) async {
     try {
-      final position = await _getCurrentPosition();
+      final position = await LiveWalkLocationTracker.getCurrentPosition();
       if (position == null) return;
 
       final newLocation = WalkLocation(
@@ -419,7 +330,7 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
       _moveMapToCurrentPosition();
 
       // 위치 업데이트 시 현재 상태 저장 (백그라운드에서 실행)
-      _saveCurrentWalk().ignore();
+      LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord).ignore();
     } catch (e) {
       debugPrint('위치 업데이트 실패: $e');
     }
@@ -440,15 +351,24 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
     return totalDistance;
   }
 
-  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  double _calculateDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
     const double earthRadius = 6371000;
     final double lat1Rad = lat1 * (math.pi / 180);
     final double lat2Rad = lat2 * (math.pi / 180);
     final double dLat = (lat2 - lat1) * (math.pi / 180);
     final double dLon = (lon2 - lon1) * (math.pi / 180);
 
-    final double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(lat1Rad) * math.cos(lat2Rad) * math.sin(dLon / 2) * math.sin(dLon / 2);
+    final double a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(lat1Rad) *
+            math.cos(lat2Rad) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     final double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
     return earthRadius * c;
@@ -473,12 +393,17 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
 
     // 현재 위치 마커
     if (state.currentPosition != null) {
-      markers.add(WalkMapMarkerBuilder.buildCurrentLocationMarker(state.currentPosition!));
+      markers.add(
+        WalkMapMarkerBuilder.buildCurrentLocationMarker(state.currentPosition!),
+      );
     }
 
     // 산책 시작점 마커
-    if (state.currentWalkRecord != null && state.currentWalkRecord!.route.isNotEmpty) {
-      markers.add(WalkMapMarkerBuilder.buildWalkStartMarker(state.currentWalkRecord!, 0));
+    if (state.currentWalkRecord != null &&
+        state.currentWalkRecord!.route.isNotEmpty) {
+      markers.add(
+        WalkMapMarkerBuilder.buildWalkStartMarker(state.currentWalkRecord!, 0),
+      );
     }
 
     state = state.copyWith(markers: markers);
@@ -496,8 +421,8 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
 
   @override
   void dispose() {
-    _stopTimer();
-    _stopLocationTracking();
+    _timerManager.stopTimer();
+    _locationTracker.stopTracking();
     super.dispose();
   }
 }
@@ -506,11 +431,7 @@ class LiveWalkWidget extends ConsumerWidget {
   final String? petId;
   final String? petName;
 
-  const LiveWalkWidget({
-    super.key,
-    this.petId,
-    this.petName,
-  });
+  const LiveWalkWidget({super.key, this.petId, this.petName});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -525,10 +446,7 @@ class LiveWalkWidget extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          Expanded(
-            flex: 3,
-            child: _buildMapSection(walkState, walkController),
-          ),
+          Expanded(flex: 3, child: _buildMapSection(walkState, walkController)),
           Expanded(
             flex: 1,
             child: _buildControlSection(context, walkState, walkController),
@@ -538,7 +456,10 @@ class LiveWalkWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildMapSection(LiveWalkState walkState, LiveWalkController walkController) {
+  Widget _buildMapSection(
+    LiveWalkState walkState,
+    LiveWalkController walkController,
+  ) {
     if (walkState.currentPosition == null) {
       return Container(
         color: Colors.grey[100]!,
@@ -548,11 +469,15 @@ class LiveWalkWidget extends ConsumerWidget {
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 16),
-              Text('위치 정보를 가져오는 중...',
-                   style: TextStyle(fontSize: 16, color: Colors.grey)),
+              Text(
+                '위치 정보를 가져오는 중...',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
               SizedBox(height: 8),
-              Text('GPS를 켜주세요',
-                   style: TextStyle(fontSize: 14, color: Colors.grey)),
+              Text(
+                'GPS를 켜주세요',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
             ],
           ),
         ),
@@ -571,11 +496,12 @@ class LiveWalkWidget extends ConsumerWidget {
           );
         }
       },
-      initialCameraPosition: WalkMapCameraController.createDefaultCameraPosition(
-        latitude: walkState.currentPosition!.latitude,
-        longitude: walkState.currentPosition!.longitude,
-        zoom: 16.0,
-      ),
+      initialCameraPosition:
+          WalkMapCameraController.createDefaultCameraPosition(
+            latitude: walkState.currentPosition!.latitude,
+            longitude: walkState.currentPosition!.longitude,
+            zoom: 16.0,
+          ),
       markers: walkState.markers,
       polylines: walkState.polylines,
       myLocationEnabled: true,
@@ -632,7 +558,11 @@ class LiveWalkWidget extends ConsumerWidget {
           children: [
             _buildStatCard('시간', walkState.formattedTime, Icons.timer),
             _buildStatCard('거리', walkState.formattedDistance, Icons.straighten),
-            _buildStatCard('상태', _getStatusText(walkState.timerState), Icons.directions_run),
+            _buildStatCard(
+              '상태',
+              _getStatusText(walkState.timerState),
+              Icons.directions_run,
+            ),
           ],
         ),
         // 디버그 정보 (테스트용)
@@ -646,10 +576,7 @@ class LiveWalkWidget extends ConsumerWidget {
             ),
             child: Text(
               '📱 ID: ${walkState.currentWalkRecord!.id.substring(0, 8)}... | 포인트: ${walkState.route.length}개',
-              style: const TextStyle(
-                fontSize: 10,
-                color: Colors.grey,
-              ),
+              style: const TextStyle(fontSize: 10, color: Colors.grey),
             ),
           ),
         ],
@@ -759,17 +686,12 @@ class LiveWalkWidget extends ConsumerWidget {
     return ElevatedButton.icon(
       onPressed: onPressed,
       icon: Icon(icon, size: 18),
-      label: Text(
-        label,
-        style: const TextStyle(fontSize: 14),
-      ),
+      label: Text(label, style: const TextStyle(fontSize: 14)),
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         minimumSize: const Size(100, 40),
       ),
     );
@@ -798,7 +720,8 @@ class LiveWalkWidget extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _buildCompleteWalkBottomSheet(context, walkState, walkController),
+      builder: (context) =>
+          _buildCompleteWalkBottomSheet(context, walkState, walkController),
     );
   }
 
@@ -858,9 +781,21 @@ class LiveWalkWidget extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildSummaryItem('시간', walkState.formattedTime, Icons.timer),
-                        _buildSummaryItem('거리', walkState.formattedDistance, Icons.straighten),
-                        _buildSummaryItem('포인트', '${walkState.route.length}개', Icons.location_on),
+                        _buildSummaryItem(
+                          '시간',
+                          walkState.formattedTime,
+                          Icons.timer,
+                        ),
+                        _buildSummaryItem(
+                          '거리',
+                          walkState.formattedDistance,
+                          Icons.straighten,
+                        ),
+                        _buildSummaryItem(
+                          '포인트',
+                          '${walkState.route.length}개',
+                          Icons.location_on,
+                        ),
                       ],
                     ),
                   ],
@@ -906,7 +841,9 @@ class LiveWalkWidget extends ConsumerWidget {
                         _completeWalk(
                           context,
                           walkController,
-                          notesController.text.trim().isEmpty ? null : notesController.text.trim(),
+                          notesController.text.trim().isEmpty
+                              ? null
+                              : notesController.text.trim(),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -936,10 +873,7 @@ class LiveWalkWidget extends ConsumerWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: AppColors.pointGray,
-          ),
+          style: const TextStyle(fontSize: 12, color: AppColors.pointGray),
         ),
         const SizedBox(height: 2),
         Text(
@@ -978,9 +912,7 @@ class LiveWalkWidget extends ConsumerWidget {
         ),
         backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
 

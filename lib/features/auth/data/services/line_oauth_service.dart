@@ -11,7 +11,8 @@ import 'package:http/http.dart' as http;
 /// LINE OAuth 2.0을 통한 실제 로그인 구현
 class LineOAuthService {
   // LINE OAuth 설정
-  static const String _lineAuthUrl = 'https://access.line.me/oauth2/v2.1/authorize';
+  static const String _lineAuthUrl =
+      'https://access.line.me/oauth2/v2.1/authorize';
   static const String _lineTokenUrl = 'https://api.line.me/oauth2/v2.1/token';
   static const String _lineProfileUrl = 'https://api.line.me/v2/profile';
 
@@ -45,13 +46,17 @@ class LineOAuthService {
       // 5. 액세스 토큰 요청
       final tokenResult = await _requestAccessToken(authCode, state);
       if (!tokenResult.isSuccess) {
-        return Result.failure(tokenResult.error?.toString() ?? 'LINE ログインに失敗しました');
+        return Result.failure(
+          tokenResult.error?.toString() ?? 'LINE ログインに失敗しました',
+        );
       }
 
       // 6. 사용자 프로필 정보 요청
       final profileResult = await _requestUserProfile(tokenResult.dataOrNull!);
       if (!profileResult.isSuccess) {
-        return Result.failure(profileResult.error?.toString() ?? 'LINE プロフィールの取得に失敗しました');
+        return Result.failure(
+          profileResult.error?.toString() ?? 'LINE プロフィールの取得に失敗しました',
+        );
       }
 
       return Result.success('LINEログインが完了しました', profileResult.dataOrNull!);
@@ -89,20 +94,6 @@ class LineOAuthService {
     throw Exception('LINE OAuth機能は現在利用できません');
   }
 
-  /// 리다이렉트 URI에서 스키마 추출
-  ///
-  /// [redirectUri] 리다이렉트 URI (예: https://example.com/callback)
-  /// Returns: 스키마 부분 (예: https)
-  String _extractSchemeFromRedirectUri(String redirectUri) {
-    try {
-      final uri = Uri.parse(redirectUri);
-      return uri.scheme;
-    } catch (e) {
-      // 파싱 실패 시 기본값 반환
-      return 'https';
-    }
-  }
-
   /// 콜백 URL에서 인증 코드 추출
   String? _extractAuthCode(String callbackUrl) {
     try {
@@ -114,7 +105,10 @@ class LineOAuthService {
   }
 
   /// 액세스 토큰 요청
-  Future<Result<LineTokenInfo>> _requestAccessToken(String authCode, String state) async {
+  Future<Result<LineTokenInfo>> _requestAccessToken(
+    String authCode,
+    String state,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse(_lineTokenUrl),
@@ -141,7 +135,9 @@ class LineOAuthService {
   }
 
   /// 사용자 프로필 정보 요청
-  Future<Result<LineUserInfo>> _requestUserProfile(LineTokenInfo tokenInfo) async {
+  Future<Result<LineUserInfo>> _requestUserProfile(
+    LineTokenInfo tokenInfo,
+  ) async {
     try {
       final response = await http.get(
         Uri.parse(_lineProfileUrl),

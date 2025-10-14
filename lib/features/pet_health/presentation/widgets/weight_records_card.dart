@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/features/pet_health/data/services/pet_health_local_storage_service.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
-import 'package:aipet_frontend/shared/testing/mock_data/features/pet_health/pet_health_mock_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,7 +10,8 @@ final weightRecordsStateProvider =
     );
 
 class WeightRecordsController extends StateNotifier<WeightRecordsState> {
-  WeightRecordsController() : super(WeightRecordsState(selectedYear: DateTime.now().year));
+  WeightRecordsController()
+    : super(WeightRecordsState(selectedYear: DateTime.now().year));
 
   void toggleMonth(String monthKey) {
     final expandedMonths = Set<String>.from(state.expandedMonths);
@@ -37,9 +38,15 @@ class WeightRecordsState {
   final Set<String> expandedMonths;
   final int selectedYear;
 
-  const WeightRecordsState({this.expandedMonths = const <String>{}, required this.selectedYear});
+  const WeightRecordsState({
+    this.expandedMonths = const <String>{},
+    required this.selectedYear,
+  });
 
-  WeightRecordsState copyWith({Set<String>? expandedMonths, int? selectedYear}) {
+  WeightRecordsState copyWith({
+    Set<String>? expandedMonths,
+    int? selectedYear,
+  }) {
     return WeightRecordsState(
       expandedMonths: expandedMonths ?? this.expandedMonths,
       selectedYear: selectedYear ?? this.selectedYear,
@@ -47,42 +54,44 @@ class WeightRecordsState {
   }
 }
 
-class WeightRecordsCard extends ConsumerWidget {
+class WeightRecordsCard extends ConsumerStatefulWidget {
   const WeightRecordsCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return const _WeightRecordsCardContent();
-  }
+  ConsumerState<WeightRecordsCard> createState() => _WeightRecordsCardState();
 }
 
-class _WeightRecordsCardContent extends ConsumerWidget {
-  const _WeightRecordsCardContent();
+class _WeightRecordsCardState extends ConsumerState<WeightRecordsCard> {
+  List<Map<String, dynamic>> _weightRecords = [];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(weightRecordsStateProvider);
-    return _WeightRecordsCardView(state: state);
+  void initState() {
+    super.initState();
+    _loadWeightRecords();
   }
-}
 
-class _WeightRecordsCardView extends ConsumerWidget {
-  final WeightRecordsState state;
-
-  const _WeightRecordsCardView({required this.state});
+  Future<void> _loadWeightRecords() async {
+    final records = await PetHealthLocalStorageService.getWeightRecords(
+      petId: 'default',
+    );
+    setState(() {
+      _weightRecords = records;
+    });
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final controllerState = ref.watch(weightRecordsStateProvider);
-    final weightRecords = PetHealthMockService.getMockWeightRecords();
+    final weightRecords = _weightRecords;
     final availableYears = _getAvailableYears(weightRecords);
-    final filteredRecords = weightRecords
-        .where((record) => (record['recordedDate'] as DateTime).year == state.selectedYear)
-        .toList();
+    final filteredRecords = weightRecords.where((record) {
+      final recordDate = DateTime.parse(record['measurementDate'] as String);
+      return recordDate.year == controllerState.selectedYear;
+    }).toList();
     final groupedRecords = _groupRecordsByMonth(filteredRecords);
 
     // 첫 번째(최신) 월을 기본으로 열어놓기
-    if (state.expandedMonths.isEmpty && groupedRecords.isNotEmpty) {
+    if (controllerState.expandedMonths.isEmpty && groupedRecords.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref
             .read(weightRecordsStateProvider.notifier)
@@ -115,7 +124,11 @@ class _WeightRecordsCardView extends ConsumerWidget {
                   color: AppColors.pointBrown.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.medium),
                 ),
-                child: const Icon(Icons.history, color: AppColors.pointBrown, size: 20),
+                child: const Icon(
+                  Icons.history,
+                  color: AppColors.pointBrown,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
               Text(
@@ -134,7 +147,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: availableYears.map((year) {
-                  final isSelected = year == state.selectedYear;
+                  final isSelected = year == controllerState.selectedYear;
                   return Padding(
                     padding: const EdgeInsets.only(right: AppSpacing.sm),
                     child: FilterChip(
@@ -142,14 +155,22 @@ class _WeightRecordsCardView extends ConsumerWidget {
                       label: Text('$year年'),
                       onSelected: (selected) {
                         if (selected) {
-                          ref.read(weightRecordsStateProvider.notifier).setSelectedYear(year);
+                          ref
+                              .read(weightRecordsStateProvider.notifier)
+                              .setSelectedYear(year);
                         }
                       },
-                      selectedColor: AppColors.pointBrown.withValues(alpha: 0.2),
+                      selectedColor: AppColors.pointBrown.withValues(
+                        alpha: 0.2,
+                      ),
                       checkmarkColor: AppColors.pointBrown,
                       labelStyle: TextStyle(
-                        color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected
+                            ? AppColors.pointBrown
+                            : AppColors.pointGray,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
                   );
@@ -163,9 +184,16 @@ class _WeightRecordsCardView extends ConsumerWidget {
             children: groupedRecords.entries.map((entry) {
               final monthKey = entry.key;
               final monthRecords = entry.value;
-              final isExpanded = state.expandedMonths.contains(monthKey);
+              final isExpanded = controllerState.expandedMonths.contains(
+                monthKey,
+              );
 
-              return _buildMonthAccordion(ref, monthKey, monthRecords, isExpanded);
+              return _buildMonthAccordion(
+                ref,
+                monthKey,
+                monthRecords,
+                isExpanded,
+              );
             }).toList(),
           ),
         ],
@@ -176,9 +204,10 @@ class _WeightRecordsCardView extends ConsumerWidget {
   List<int> _getAvailableYears(List<dynamic> records) {
     final Set<int> years = {};
     for (final record in records) {
-      years.add((record['recordedDate'] as DateTime).year);
+      final recordDate = DateTime.parse(record['measurementDate'] as String);
+      years.add(recordDate.year);
     }
-    final yearsList = years.toList()..sort((a, b) => b.compareTo(a)); // 최신년도부터
+    final yearsList = years.toList()..sort((a, b) => b.compareTo(a));
     return yearsList;
   }
 
@@ -186,7 +215,7 @@ class _WeightRecordsCardView extends ConsumerWidget {
     final Map<String, List<dynamic>> grouped = {};
 
     for (final record in records) {
-      final date = record['recordedDate'] as DateTime;
+      final date = DateTime.parse(record['measurementDate'] as String);
       final monthKey = '${date.year}年 ${date.month}月';
 
       if (!grouped.containsKey(monthKey)) {
@@ -220,7 +249,8 @@ class _WeightRecordsCardView extends ConsumerWidget {
   ) {
     final recordCount = monthRecords.length;
     final avgWeight =
-        monthRecords.map((r) => r.weight as double).reduce((a, b) => a + b) / recordCount;
+        monthRecords.map((r) => r.weight as double).reduce((a, b) => a + b) /
+        recordCount;
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -233,7 +263,9 @@ class _WeightRecordsCardView extends ConsumerWidget {
         children: [
           InkWell(
             onTap: () {
-              ref.read(weightRecordsStateProvider.notifier).toggleMonth(monthKey);
+              ref
+                  .read(weightRecordsStateProvider.notifier)
+                  .toggleMonth(monthKey);
             },
             borderRadius: BorderRadius.circular(AppRadius.medium),
             child: Container(
@@ -248,7 +280,11 @@ class _WeightRecordsCardView extends ConsumerWidget {
                       color: AppColors.pointBrown.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.calendar_month, color: AppColors.pointBrown, size: 20),
+                    child: const Icon(
+                      Icons.calendar_month,
+                      color: AppColors.pointBrown,
+                      size: 20,
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
@@ -265,7 +301,9 @@ class _WeightRecordsCardView extends ConsumerWidget {
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           '$recordCount件の記録 • 平均 ${avgWeight.toStringAsFixed(1)}kg',
-                          style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                          style: AppFonts.bodySmall.copyWith(
+                            color: AppColors.pointGray,
+                          ),
                         ),
                       ],
                     ),
@@ -292,10 +330,15 @@ class _WeightRecordsCardView extends ConsumerWidget {
     );
   }
 
-  Widget _buildWeightRecordItem(dynamic record, int index, List<dynamic> weightRecords) {
+  Widget _buildWeightRecordItem(
+    dynamic record,
+    int index,
+    List<dynamic> weightRecords,
+  ) {
     final isLatest = index == 0;
     final change = index < weightRecords.length - 1
-        ? (record['weight'] as double) - (weightRecords[index + 1]['weight'] as double)
+        ? (record['weight'] as double) -
+              (weightRecords[index + 1]['weight'] as double)
         : 0.0;
     final changeText = change > 0
         ? '+${change.toStringAsFixed(1)}kg'
@@ -310,7 +353,10 @@ class _WeightRecordsCardView extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.1), width: 0.5),
+          bottom: BorderSide(
+            color: AppColors.pointGray.withValues(alpha: 0.1),
+            width: 0.5,
+          ),
         ),
       ),
       child: Row(
@@ -345,12 +391,17 @@ class _WeightRecordsCardView extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   _formatDate(record['recordedDate'] as DateTime),
-                  style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray,
+                  ),
                 ),
-                if (record['notes'] != null && (record['notes'] as String).isNotEmpty)
+                if (record['notes'] != null &&
+                    (record['notes'] as String).isNotEmpty)
                   Text(
                     record['notes'] as String,
-                    style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.pointGray,
+                    ),
                   ),
               ],
             ),
@@ -367,7 +418,10 @@ class _WeightRecordsCardView extends ConsumerWidget {
               ),
               child: Text(
                 changeText,
-                style: AppFonts.bodySmall.copyWith(color: changeColor, fontWeight: FontWeight.w500),
+                style: AppFonts.bodySmall.copyWith(
+                  color: changeColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
         ],

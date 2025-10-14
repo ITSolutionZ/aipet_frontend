@@ -17,7 +17,7 @@ class SymptomsCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.md),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -80,10 +80,10 @@ class SymptomsCard extends StatelessWidget {
                 vertical: AppSpacing.sm,
               ),
               decoration: BoxDecoration(
-                color: AppColors.pointOrange.withOpacity(0.1),
+                color: AppColors.pointOrange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppSpacing.sm),
                 border: Border.all(
-                  color: AppColors.pointOrange.withOpacity(0.3),
+                  color: AppColors.pointOrange.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),

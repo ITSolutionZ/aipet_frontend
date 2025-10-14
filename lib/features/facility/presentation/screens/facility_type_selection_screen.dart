@@ -105,8 +105,8 @@ class _FacilityTypeSelectionScreenState
               // 왼쪽: 동물병원 카드
               Expanded(
                 child: _buildFacilityTypeCard(
-                  title: '동물병원',
-                  subtitle: '응급실, 24시간, 특수진료 등',
+                  title: '動物病院',
+                  subtitle: '救急室、24時間、特殊診療など',
                   icon: Icons.local_hospital,
                   iconColor: const Color(0xFF4A90E2),
                   backgroundColor: const Color(
@@ -119,8 +119,8 @@ class _FacilityTypeSelectionScreenState
               // 오른쪽: 기타 시설 카드
               Expanded(
                 child: _buildFacilityTypeCard(
-                  title: '기타 시설',
-                  subtitle: '미용실, 카페, 호텔, 놀이터, 교육센터',
+                  title: 'その他の施設',
+                  subtitle: 'グルーミング、カフェ、ホテル、遊び場、教育センター',
                   icon: Icons.place,
                   iconColor: const Color(0xFFB89B8A),
                   backgroundColor: const Color(

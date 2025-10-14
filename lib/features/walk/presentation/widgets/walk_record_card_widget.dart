@@ -1,8 +1,11 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class WalkRecordCardWidget extends StatelessWidget {
+import '../../../../shared/domain/entities/pet_profile_entity.dart';
+
+class WalkRecordCardWidget extends ConsumerWidget {
   final WalkRecordEntity walkRecord;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
@@ -15,14 +18,31 @@ class WalkRecordCardWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    // 이 산책에 참여한 펫만 가져오기
-    final pets = PetMockData.getMockPets();
-    final walkPet = pets.firstWhere(
-      (p) => p.id == walkRecord.petId,
-      orElse: () => pets.first,
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 로컬 저장소에서 이 산책에 참여한 펫만 가져오기
+    final petsAsync = ref.watch(petListProvider);
 
+    return petsAsync.when(
+      data: (pets) {
+        final walkPet = pets.isNotEmpty
+            ? pets.firstWhere(
+                (p) => p.id == walkRecord.petId,
+                orElse: () => pets.first,
+              )
+            : null;
+
+        if (walkPet == null) {
+          return const SizedBox.shrink();
+        }
+
+        return _buildCard(context, walkPet);
+      },
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
+  }
+
+  Widget _buildCard(BuildContext context, PetProfileEntity walkPet) {
     // 이 산책에 참여한 펫 리스트
     final walkPets = [walkPet];
 

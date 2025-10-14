@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/pet_feeding/domain/repositories/pet_feeding_repository.dart';
+import 'package:aipet_frontend/features/pet_feeding/domain/usecases/helpers/helpers.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 레시피 수정 UseCase
@@ -10,16 +11,13 @@ class UpdateRecipeUseCase {
   /// 레시피 정보 수정
   Future<Result<Map<String, dynamic>>> call(Map<String, dynamic> recipe) async {
     try {
-      // 레시피 데이터 검증
-      if (!_validateRecipe(recipe)) {
+      // 레시피 데이터 검증 (헬퍼 위임)
+      if (!RecipeValidationHelper.validateRecipe(recipe)) {
         return Result.failure('レシピデータが無効です');
       }
 
-      // 실제 구현에서는 repository에 updateRecipe 메서드가 필요
-      // 현재는 mock 데이터로 처리
-      final updatedRecipe = Map<String, dynamic>.from(recipe);
-      updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
-      updatedRecipe['version'] = (updatedRecipe['version'] ?? 0) + 1;
+      // 레시피 업데이트 (헬퍼 위임)
+      final updatedRecipe = RecipeUpdateHelper.updateRecipe(recipe);
 
       return Result.success('レシピを更新しました', updatedRecipe);
     } catch (error) {
@@ -30,19 +28,19 @@ class UpdateRecipeUseCase {
   /// 레시피 이름 수정
   Future<Result<Map<String, dynamic>>> updateRecipeName(String recipeId, String newName) async {
     try {
-      if (newName.trim().isEmpty) {
-        return Result.failure('レシピ名は空にできません');
+      // 이름 검증 (헬퍼 위임)
+      final nameValidation = RecipeValidationHelper.validateRecipeName(newName);
+      if (!nameValidation.isSuccess) {
+        return Result.failure(nameValidation.message);
       }
 
-      // 기존 레시피 조회 (실제로는 repository에서 조회)
       final existingRecipe = await _getRecipeById(recipeId);
       if (existingRecipe == null) {
         return Result.failure('レシピが見つかりません');
       }
 
-      final updatedRecipe = Map<String, dynamic>.from(existingRecipe);
-      updatedRecipe['name'] = newName.trim();
-      updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
+      // 이름 업데이트 (헬퍼 위임)
+      final updatedRecipe = RecipeUpdateHelper.updateName(existingRecipe, newName);
 
       return Result.success('レシピ名を更新しました', updatedRecipe);
     } catch (error) {
@@ -56,8 +54,10 @@ class UpdateRecipeUseCase {
     List<String> ingredients,
   ) async {
     try {
-      if (ingredients.isEmpty) {
-        return Result.failure('材料は少なくとも1つ必要です');
+      // 재료 검증 (헬퍼 위임)
+      final ingredientsValidation = RecipeValidationHelper.validateIngredients(ingredients);
+      if (!ingredientsValidation.isSuccess) {
+        return Result.failure(ingredientsValidation.message);
       }
 
       final existingRecipe = await _getRecipeById(recipeId);
@@ -65,9 +65,11 @@ class UpdateRecipeUseCase {
         return Result.failure('レシピが見つかりません');
       }
 
-      final updatedRecipe = Map<String, dynamic>.from(existingRecipe);
-      updatedRecipe['ingredients'] = ingredients.map((ingredient) => ingredient.trim()).toList();
-      updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
+      // 재료 업데이트 (헬퍼 위임)
+      final updatedRecipe = RecipeUpdateHelper.updateIngredients(
+        existingRecipe,
+        ingredientsValidation.dataOrNull!,
+      );
 
       return Result.success('レシピの材料を更新しました', updatedRecipe);
     } catch (error) {
@@ -81,8 +83,10 @@ class UpdateRecipeUseCase {
     List<String> instructions,
   ) async {
     try {
-      if (instructions.isEmpty) {
-        return Result.failure('作り方は少なくとも1つ必要です');
+      // 조리 방법 검증 (헬퍼 위임)
+      final instructionsValidation = RecipeValidationHelper.validateInstructions(instructions);
+      if (!instructionsValidation.isSuccess) {
+        return Result.failure(instructionsValidation.message);
       }
 
       final existingRecipe = await _getRecipeById(recipeId);
@@ -90,11 +94,11 @@ class UpdateRecipeUseCase {
         return Result.failure('レシピが見つかりません');
       }
 
-      final updatedRecipe = Map<String, dynamic>.from(existingRecipe);
-      updatedRecipe['instructions'] = instructions
-          .map((instruction) => instruction.trim())
-          .toList();
-      updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
+      // 조리 방법 업데이트 (헬퍼 위임)
+      final updatedRecipe = RecipeUpdateHelper.updateInstructions(
+        existingRecipe,
+        instructionsValidation.dataOrNull!,
+      );
 
       return Result.success('レシピの作り方を更新しました', updatedRecipe);
     } catch (error) {
@@ -108,8 +112,10 @@ class UpdateRecipeUseCase {
     Map<String, double> nutritionInfo,
   ) async {
     try {
-      if (nutritionInfo.isEmpty) {
-        return Result.failure('栄養情報は少なくとも1つ必要です');
+      // 영양 정보 검증 (헬퍼 위임)
+      final nutritionValidation = RecipeValidationHelper.validateNutrition(nutritionInfo);
+      if (!nutritionValidation.isSuccess) {
+        return Result.failure(nutritionValidation.message);
       }
 
       final existingRecipe = await _getRecipeById(recipeId);
@@ -117,9 +123,11 @@ class UpdateRecipeUseCase {
         return Result.failure('レシピが見つかりません');
       }
 
-      final updatedRecipe = Map<String, dynamic>.from(existingRecipe);
-      updatedRecipe['nutrition'] = nutritionInfo;
-      updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
+      // 영양 정보 업데이트 (헬퍼 위임)
+      final updatedRecipe = RecipeUpdateHelper.updateNutrition(
+        existingRecipe,
+        nutritionValidation.dataOrNull!,
+      );
 
       return Result.success('レシピの栄養情報を更新しました', updatedRecipe);
     } catch (error) {
@@ -133,8 +141,10 @@ class UpdateRecipeUseCase {
     String category,
   ) async {
     try {
-      if (category.trim().isEmpty) {
-        return Result.failure('カテゴリは空にできません');
+      // 카테고리 검증 (헬퍼 위임)
+      final categoryValidation = RecipeValidationHelper.validateCategory(category);
+      if (!categoryValidation.isSuccess) {
+        return Result.failure(categoryValidation.message);
       }
 
       final existingRecipe = await _getRecipeById(recipeId);
@@ -142,9 +152,11 @@ class UpdateRecipeUseCase {
         return Result.failure('レシピが見つかりません');
       }
 
-      final updatedRecipe = Map<String, dynamic>.from(existingRecipe);
-      updatedRecipe['category'] = category.trim();
-      updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
+      // 카테고리 업데이트 (헬퍼 위임)
+      final updatedRecipe = RecipeUpdateHelper.updateCategory(
+        existingRecipe,
+        categoryValidation.dataOrNull!,
+      );
 
       return Result.success('レシピのカテゴリを更新しました', updatedRecipe);
     } catch (error) {
@@ -158,9 +170,10 @@ class UpdateRecipeUseCase {
     String difficulty,
   ) async {
     try {
-      final validDifficulties = ['easy', 'medium', 'hard'];
-      if (!validDifficulties.contains(difficulty.toLowerCase())) {
-        return Result.failure('無効な難易度です。easy, medium, hard のいずれかを選択してください');
+      // 난이도 검증 (헬퍼 위임)
+      final difficultyValidation = RecipeValidationHelper.validateDifficulty(difficulty);
+      if (!difficultyValidation.isSuccess) {
+        return Result.failure(difficultyValidation.message);
       }
 
       final existingRecipe = await _getRecipeById(recipeId);
@@ -168,9 +181,11 @@ class UpdateRecipeUseCase {
         return Result.failure('レシピが見つかりません');
       }
 
-      final updatedRecipe = Map<String, dynamic>.from(existingRecipe);
-      updatedRecipe['difficulty'] = difficulty.toLowerCase();
-      updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
+      // 난이도 업데이트 (헬퍼 위임)
+      final updatedRecipe = RecipeUpdateHelper.updateDifficulty(
+        existingRecipe,
+        difficultyValidation.dataOrNull!,
+      );
 
       return Result.success('レシピの難易度を更新しました', updatedRecipe);
     } catch (error) {
@@ -184,8 +199,10 @@ class UpdateRecipeUseCase {
     int prepTimeMinutes,
   ) async {
     try {
-      if (prepTimeMinutes <= 0) {
-        return Result.failure('準備時間は0より大きい値である必要があります');
+      // 준비 시간 검증 (헬퍼 위임)
+      final prepTimeValidation = RecipeValidationHelper.validatePrepTime(prepTimeMinutes);
+      if (!prepTimeValidation.isSuccess) {
+        return Result.failure(prepTimeValidation.message);
       }
 
       final existingRecipe = await _getRecipeById(recipeId);
@@ -193,9 +210,11 @@ class UpdateRecipeUseCase {
         return Result.failure('レシピが見つかりません');
       }
 
-      final updatedRecipe = Map<String, dynamic>.from(existingRecipe);
-      updatedRecipe['prepTimeMinutes'] = prepTimeMinutes;
-      updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
+      // 준비 시간 업데이트 (헬퍼 위임)
+      final updatedRecipe = RecipeUpdateHelper.updatePrepTime(
+        existingRecipe,
+        prepTimeValidation.dataOrNull!,
+      );
 
       return Result.success('レシピの準備時間を更新しました', updatedRecipe);
     } catch (error) {
@@ -225,15 +244,6 @@ class UpdateRecipeUseCase {
     }
   }
 
-  /// 레시피 데이터 검증
-  bool _validateRecipe(Map<String, dynamic> recipe) {
-    return recipe.containsKey('name') &&
-        recipe.containsKey('ingredients') &&
-        recipe.containsKey('instructions') &&
-        recipe['name'].toString().trim().isNotEmpty &&
-        (recipe['ingredients'] as List).isNotEmpty &&
-        (recipe['instructions'] as List).isNotEmpty;
-  }
 
   /// 레시피 ID로 조회 (Mock)
   Future<Map<String, dynamic>?> _getRecipeById(String recipeId) async {

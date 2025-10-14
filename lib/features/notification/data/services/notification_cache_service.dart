@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,7 +41,9 @@ class NotificationCacheService {
       final prefs = await _preferences;
       final cacheKey = '${_notificationsCacheKey}_$userId';
 
-      final notificationsJson = notifications.map((notification) => notification.toJson()).toList();
+      final notificationsJson = notifications
+          .map((notification) => notification.toJson())
+          .toList();
 
       final cacheData = {
         'data': notificationsJson,
@@ -66,7 +68,9 @@ class NotificationCacheService {
   /// 캐시된 알림 목록 조회
   ///
   /// [userId] 사용자 ID
-  static Future<Result<List<NotificationModel>>> getCachedNotifications(String userId) async {
+  static Future<Result<List<NotificationModel>>> getCachedNotifications(
+    String userId,
+  ) async {
     try {
       final prefs = await _preferences;
       final cacheKey = '${_notificationsCacheKey}_$userId';
@@ -77,7 +81,9 @@ class NotificationCacheService {
       }
 
       final cacheData = json.decode(cachedDataString);
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(cacheData['timestamp']);
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(
+        cacheData['timestamp'],
+      );
 
       // 캐시 만료 확인
       if (DateTime.now().difference(timestamp) > _cacheExpiration) {
@@ -116,7 +122,10 @@ class NotificationCacheService {
       final prefs = await _preferences;
       final cacheKey = '${_settingsCacheKey}_$userId';
 
-      final cacheData = {'data': settings, 'timestamp': DateTime.now().millisecondsSinceEpoch};
+      final cacheData = {
+        'data': settings,
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      };
 
       await prefs.setString(cacheKey, json.encode(cacheData));
 
@@ -136,7 +145,9 @@ class NotificationCacheService {
   /// 캐시된 알림 설정 조회
   ///
   /// [userId] 사용자 ID
-  static Future<Result<Map<String, dynamic>>> getCachedSettings(String userId) async {
+  static Future<Result<Map<String, dynamic>>> getCachedSettings(
+    String userId,
+  ) async {
     try {
       final prefs = await _preferences;
       final cacheKey = '${_settingsCacheKey}_$userId';
@@ -147,7 +158,9 @@ class NotificationCacheService {
       }
 
       final cacheData = json.decode(cachedDataString);
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(cacheData['timestamp']);
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(
+        cacheData['timestamp'],
+      );
 
       // 캐시 만료 확인
       if (DateTime.now().difference(timestamp) > _cacheExpiration) {
@@ -237,7 +250,9 @@ class NotificationCacheService {
       }
 
       final cacheData = json.decode(cachedDataString);
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(cacheData['timestamp']);
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(
+        cacheData['timestamp'],
+      );
 
       return DateTime.now().difference(timestamp) <= _cacheExpiration;
     } catch (error) {
@@ -267,13 +282,17 @@ class NotificationCacheService {
 
       if (notificationsCache != null) {
         final cacheData = json.decode(notificationsCache);
-        notificationsTimestamp = DateTime.fromMillisecondsSinceEpoch(cacheData['timestamp']);
+        notificationsTimestamp = DateTime.fromMillisecondsSinceEpoch(
+          cacheData['timestamp'],
+        );
         notificationCount = (cacheData['data'] as List).length;
       }
 
       if (settingsCache != null) {
         final cacheData = json.decode(settingsCache);
-        settingsTimestamp = DateTime.fromMillisecondsSinceEpoch(cacheData['timestamp']);
+        settingsTimestamp = DateTime.fromMillisecondsSinceEpoch(
+          cacheData['timestamp'],
+        );
       }
 
       return {
@@ -284,7 +303,8 @@ class NotificationCacheService {
         'notificationCount': notificationCount,
         'isNotificationsCacheValid':
             notificationsTimestamp != null &&
-            DateTime.now().difference(notificationsTimestamp) <= _cacheExpiration,
+            DateTime.now().difference(notificationsTimestamp) <=
+                _cacheExpiration,
         'isSettingsCacheValid':
             settingsTimestamp != null &&
             DateTime.now().difference(settingsTimestamp) <= _cacheExpiration,

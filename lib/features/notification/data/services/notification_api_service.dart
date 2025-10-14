@@ -1,27 +1,16 @@
-import 'dart:convert';
-
-import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
+import 'package:aipet_frontend/features/notification/data/services/notification_local_storage_service.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
-/// 📡 알림 API 서비스
+/// 📱 알림 로컬 서비스 (API 대신 로컬 저장소 사용)
 ///
-/// 백엔드 API와 통신하여 알림 데이터를 관리합니다.
-/// 프론트엔드 중심의 구조로 로컬 데이터베이스 대신 API 통신을 사용합니다.
+/// 로컬 저장소를 사용하여 알림 데이터를 관리합니다.
+/// 개발 모드에서는 완전히 로컬 데이터만 사용합니다.
 class NotificationApiService {
   static const String _tag = 'NotificationApiService';
 
-  // API Endpoints (실제 백엔드 URL로 교체 필요)
-  static const String _baseUrl = 'https://api.aipet.com/v1';
-  static const String _notificationsEndpoint = '/notifications';
-  static const String _settingsEndpoint = '/notification-settings';
-
-  final http.Client _httpClient;
-
-  NotificationApiService({http.Client? httpClient}) : _httpClient = httpClient ?? http.Client();
-
-  /// 사용자의 알림 목록 조회
+  /// 사용자의 알림 목록 조회 (로컬 저장소 사용)
   ///
   /// [userId] 사용자 ID
   /// [page] 페이지 번호 (0부터 시작)
@@ -36,47 +25,51 @@ class NotificationApiService {
     String? type,
   }) async {
     try {
-      final queryParams = <String, String>{
-        'userId': userId,
-        'page': page.toString(),
-        'limit': limit.toString(),
-      };
+      // 로컬 저장소에서 알림 조회
+      final notificationsData =
+          await NotificationLocalStorageService.getNotifications();
+
+      final notifications = notificationsData
+          .map((data) => NotificationModel.fromJson(data))
+          .toList();
+
+      // 필터링 적용
+      var filteredNotifications = notifications;
 
       if (isRead != null) {
-        queryParams['isRead'] = isRead.toString();
+        filteredNotifications = filteredNotifications
+            .where(
+              (n) => (isRead
+                  ? n.status == NotificationStatus.read
+                  : n.status == NotificationStatus.unread),
+            )
+            .toList();
       }
 
       if (type != null) {
-        queryParams['type'] = type;
+        filteredNotifications = filteredNotifications
+            .where((n) => n.type.name == type)
+            .toList();
       }
 
-      final uri = Uri.parse(
-        '$_baseUrl$_notificationsEndpoint',
-      ).replace(queryParameters: queryParams);
+      // 페이지네이션 적용
+      final startIndex = page * limit;
+      final endIndex = (startIndex + limit < filteredNotifications.length)
+          ? startIndex + limit
+          : filteredNotifications.length;
 
-      final response = await _httpClient.get(
-        uri,
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      final paginatedNotifications = filteredNotifications.sublist(
+        startIndex < filteredNotifications.length ? startIndex : 0,
+        endIndex,
       );
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final notifications = (data['notifications'] as List)
-            .map((json) => NotificationModel.fromJson(json))
-            .toList();
-
-        if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 알림 조회 성공: ${notifications.length}개');
-        }
-
-        return Result.success('Notifications fetched successfully', notifications);
-      } else {
-        final errorMessage = 'API 요청 실패: ${response.statusCode}';
-        if (kDebugMode) {
-          debugPrint('[$_tag] ❌ $errorMessage');
-        }
-        return Result.failure(errorMessage);
+      if (kDebugMode) {
+        debugPrint(
+          '[$_tag] ✅ 로컬에서 알림 조회 성공: ${paginatedNotifications.length}개',
+        );
       }
+
+      return Result.success('通知を取得しました', paginatedNotifications);
     } catch (error) {
       final errorMessage = '알림 조회 중 오류 발생: $error';
       if (kDebugMode) {
@@ -86,32 +79,44 @@ class NotificationApiService {
     }
   }
 
-  /// 알림 읽음 상태 업데이트
+  /// 알림 읽음 상태 업데이트 (로컬 저장소 사용)
   ///
   /// [notificationId] 알림 ID
   /// [isRead] 읽음 상태
-  Future<Result<bool>> markAsRead({required String notificationId, required bool isRead}) async {
+  Future<Result<bool>> markAsRead({
+    required String notificationId,
+    required bool isRead,
+  }) async {
     try {
-      final uri = Uri.parse('$_baseUrl$_notificationsEndpoint/$notificationId/read');
+      // 로컬 저장소에서 알림 조회
+      final notificationsData =
+          await NotificationLocalStorageService.getNotifications();
 
-      final response = await _httpClient.patch(
-        uri,
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-        body: json.encode({'isRead': isRead}),
+      // 해당 알림 찾기
+      final notificationIndex = notificationsData.indexWhere(
+        (data) => data['id'] == notificationId,
       );
 
-      if (response.statusCode == 200) {
-        if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 알림 읽음 상태 업데이트 성공: $notificationId');
-        }
-        return Result.success('Notification read status updated', true);
-      } else {
-        final errorMessage = 'API 요청 실패: ${response.statusCode}';
-        if (kDebugMode) {
-          debugPrint('[$_tag] ❌ $errorMessage');
-        }
-        return Result.failure(errorMessage);
+      if (notificationIndex == -1) {
+        return Result.failure('通知が見つかりません');
       }
+
+      // 상태 업데이트
+      final notificationData = notificationsData[notificationIndex];
+      notificationData['status'] = isRead ? 'read' : 'unread';
+      if (isRead) {
+        notificationData['readAt'] = DateTime.now().toIso8601String();
+      }
+
+      // 로컬 저장소에 업데이트
+      await NotificationLocalStorageService.updateNotification(
+        notificationData,
+      );
+
+      if (kDebugMode) {
+        debugPrint('[$_tag] ✅ 알림 읽음 상태 업데이트 성공: $notificationId');
+      }
+      return Result.success('通知の既読状態を更新しました', true);
     } catch (error) {
       final errorMessage = '읽음 상태 업데이트 중 오류 발생: $error';
       if (kDebugMode) {
@@ -121,30 +126,18 @@ class NotificationApiService {
     }
   }
 
-  /// 알림 삭제
+  /// 알림 삭제 (로컬 저장소 사용)
   ///
   /// [notificationId] 삭제할 알림 ID
   Future<Result<bool>> deleteNotification(String notificationId) async {
     try {
-      final uri = Uri.parse('$_baseUrl$_notificationsEndpoint/$notificationId');
+      // 로컬 저장소에서 알림 삭제
+      await NotificationLocalStorageService.deleteNotification(notificationId);
 
-      final response = await _httpClient.delete(
-        uri,
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 알림 삭제 성공: $notificationId');
-        }
-        return Result.success('Notification deleted successfully', true);
-      } else {
-        final errorMessage = 'API 요청 실패: ${response.statusCode}';
-        if (kDebugMode) {
-          debugPrint('[$_tag] ❌ $errorMessage');
-        }
-        return Result.failure(errorMessage);
+      if (kDebugMode) {
+        debugPrint('[$_tag] ✅ 알림 삭제 성공: $notificationId');
       }
+      return Result.success('通知を削除しました', true);
     } catch (error) {
       final errorMessage = '알림 삭제 중 오류 발생: $error';
       if (kDebugMode) {
@@ -154,31 +147,20 @@ class NotificationApiService {
     }
   }
 
-  /// 알림 설정 조회
+  /// 알림 설정 조회 (로컬 저장소 사용)
   ///
   /// [userId] 사용자 ID
-  Future<Result<Map<String, dynamic>>> getNotificationSettings(String userId) async {
+  Future<Result<Map<String, dynamic>>> getNotificationSettings(
+    String userId,
+  ) async {
     try {
-      final uri = Uri.parse('$_baseUrl$_settingsEndpoint/$userId');
+      // 로컬 저장소에서 설정 조회
+      final settings = await NotificationLocalStorageService.getSettings();
 
-      final response = await _httpClient.get(
-        uri,
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final settings = json.decode(response.body) as Map<String, dynamic>;
-        if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 알림 설정 조회 성공');
-        }
-        return Result.success('Notification settings fetched successfully', settings);
-      } else {
-        final errorMessage = 'API 요청 실패: ${response.statusCode}';
-        if (kDebugMode) {
-          debugPrint('[$_tag] ❌ $errorMessage');
-        }
-        return Result.failure(errorMessage);
+      if (kDebugMode) {
+        debugPrint('[$_tag] ✅ 알림 설정 조회 성공');
       }
+      return Result.success('通知設定を取得しました', settings);
     } catch (error) {
       final errorMessage = '알림 설정 조회 중 오류 발생: $error';
       if (kDebugMode) {
@@ -188,7 +170,7 @@ class NotificationApiService {
     }
   }
 
-  /// 알림 설정 업데이트
+  /// 알림 설정 업데이트 (로컬 저장소 사용)
   ///
   /// [userId] 사용자 ID
   /// [settings] 업데이트할 설정 맵
@@ -197,26 +179,13 @@ class NotificationApiService {
     required Map<String, dynamic> settings,
   }) async {
     try {
-      final uri = Uri.parse('$_baseUrl$_settingsEndpoint/$userId');
+      // 로컬 저장소에 설정 저장
+      await NotificationLocalStorageService.saveSettings(settings);
 
-      final response = await _httpClient.patch(
-        uri,
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-        body: json.encode(settings),
-      );
-
-      if (response.statusCode == 200) {
-        if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 알림 설정 업데이트 성공');
-        }
-        return Result.success('Notification settings updated successfully', true);
-      } else {
-        final errorMessage = 'API 요청 실패: ${response.statusCode}';
-        if (kDebugMode) {
-          debugPrint('[$_tag] ❌ $errorMessage');
-        }
-        return Result.failure(errorMessage);
+      if (kDebugMode) {
+        debugPrint('[$_tag] ✅ 알림 설정 업데이트 성공');
       }
+      return Result.success('通知設定を更新しました', true);
     } catch (error) {
       final errorMessage = '알림 설정 업데이트 중 오류 발생: $error';
       if (kDebugMode) {
@@ -226,31 +195,32 @@ class NotificationApiService {
     }
   }
 
-  /// 알림 통계 조회
+  /// 알림 통계 조회 (로컬 저장소 사용)
   ///
   /// [userId] 사용자 ID
-  Future<Result<Map<String, dynamic>>> getNotificationStats(String userId) async {
+  Future<Result<Map<String, dynamic>>> getNotificationStats(
+    String userId,
+  ) async {
     try {
-      final uri = Uri.parse('$_baseUrl$_notificationsEndpoint/$userId/stats');
+      // 로컬 저장소에서 통계 조회
+      final stats = await NotificationLocalStorageService.getStats();
 
-      final response = await _httpClient.get(
-        uri,
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-      );
+      // 통계 요약 생성
+      final totalNotifications = stats.length;
+      final readNotifications = stats.where((s) => s['read'] > 0).length;
+      final unreadNotifications = stats.where((s) => s['unread'] > 0).length;
 
-      if (response.statusCode == 200) {
-        final stats = json.decode(response.body) as Map<String, dynamic>;
-        if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 알림 통계 조회 성공');
-        }
-        return Result.success('Notification stats fetched successfully', stats);
-      } else {
-        final errorMessage = 'API 요청 실패: ${response.statusCode}';
-        if (kDebugMode) {
-          debugPrint('[$_tag] ❌ $errorMessage');
-        }
-        return Result.failure(errorMessage);
+      final summary = {
+        'totalNotifications': totalNotifications,
+        'readNotifications': readNotifications,
+        'unreadNotifications': unreadNotifications,
+        'stats': stats,
+      };
+
+      if (kDebugMode) {
+        debugPrint('[$_tag] ✅ 알림 통계 조회 성공');
       }
+      return Result.success('通知統計を取得しました', summary);
     } catch (error) {
       final errorMessage = '알림 통계 조회 중 오류 발생: $error';
       if (kDebugMode) {
@@ -260,8 +230,8 @@ class NotificationApiService {
     }
   }
 
-  /// HTTP 클라이언트 정리
+  /// HTTP 클라이언트 정리 (로컬 전용이므로 불필요)
   void dispose() {
-    _httpClient.close();
+    // 로컬 저장소만 사용하므로 정리 불필요
   }
 }
