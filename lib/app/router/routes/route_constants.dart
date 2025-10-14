@@ -33,6 +33,7 @@ class RouteConstants {
   // ===== HOME TAB SUB-ROUTES =====
   static const String petEmptyRoute = '/home/pet-empty';
   static const String petProfileRoute = '/home/pet-profile';
+  static const String petManagementRoute = '/home/pet-management';
   static const String sharingProfilesRoute = '/home/sharing-profiles';
   static const String vaccinesRoute = '/home/vaccines';
   static const String tricksRoute = '/home/tricks';

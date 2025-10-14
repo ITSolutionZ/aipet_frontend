@@ -51,7 +51,11 @@ class ProfileHeaderWidget extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
-                    child: const Icon(Icons.edit, color: Colors.white, size: 16),
+                    child: const Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                      size: 16,
+                    ),
                   ),
                 ),
             ],
@@ -63,13 +67,16 @@ class ProfileHeaderWidget extends StatelessWidget {
               Text(
                 userName,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: AppColors.pointBrown,
                 ),
               ),
               const SizedBox(width: AppSpacing.xs),
-              const Text('さん', style: TextStyle(fontSize: 18, color: AppColors.pointBrown)),
+              const Text(
+                'さん',
+                style: TextStyle(fontSize: 16, color: AppColors.pointBrown),
+              ),
             ],
           ),
           Text(email, style: const TextStyle(fontSize: 14, color: Colors.grey)),

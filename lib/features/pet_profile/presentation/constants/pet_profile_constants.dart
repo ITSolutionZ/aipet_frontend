@@ -6,14 +6,15 @@ class PetProfileConstants {
   PetProfileConstants._();
 
   /// 탭 관련 상수
-  static const int tabCount = 4;
+  static const int tabCount = 5;
   static const int basicInfoTabIndex = 0;
   static const int healthTabIndex = 1;
   static const int nutritionTabIndex = 2;
   static const int activityTabIndex = 3;
+  static const int adoptionTabIndex = 4;
 
   /// 탭 제목 (일본어)
-  static const List<String> tabTitles = ['基本情報', '健康', '栄養', '活動'];
+  static const List<String> tabTitles = ['基本情報', '健康', '栄養', '活動', '家族探し'];
 
   /// 성별 옵션 (일본어)
   static const List<String> genderOptions = ['オス', 'メス'];

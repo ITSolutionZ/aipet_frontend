@@ -105,6 +105,9 @@ class AppRouter {
       initialLocation: splashRoute, // 스플래시 시퀀스로 시작
       debugLogDiagnostics: false,
       routes: [
+        // 루트 경로 리다이렉트
+        GoRoute(path: '/', redirect: (context, state) => splashRoute),
+
         // 1. Splash Shell 라우트 (스플래시 시퀀스 → 온보딩) - 최우선
         SplashShellRoutes.splashShellRoute,
 
