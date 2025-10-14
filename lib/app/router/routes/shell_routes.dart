@@ -77,6 +77,11 @@ class ShellRoutes {
             },
           ),
           GoRoute(
+            path: 'pet-management',
+            name: 'pet-management',
+            builder: (context, state) => const PetManagementScreen(),
+          ),
+          GoRoute(
             path: 'sharing-profiles',
             name: 'sharing-profiles',
             builder: (context, state) => const SharingProfilesScreen(),

@@ -1,104 +1,116 @@
+import 'package:uuid/uuid.dart';
+
+import '../domain/entities/user_profile_entity.dart';
 import 'local_database_service.dart';
 
-/// 사용자 정보 로컬 스토리지 서비스
+/// 사용자 프로필 로컬 서비스
 class LocalUserService {
-  final LocalDatabaseService _dbService = LocalDatabaseService.instance;
+  final LocalDatabaseService _databaseService = LocalDatabaseService.instance;
+  final Uuid _uuid = const Uuid();
 
-  /// 사용자 정보 저장
-  Future<bool> saveUserInfo(Map<String, dynamic> userInfo) async {
-    return await _dbService.saveJsonToPrefs('user_info', userInfo);
-  }
+  /// 사용자 프로필 저장/업데이트
+  Future<bool> saveUserProfile(UserProfileEntity profile) async {
+    try {
+      final db = await _databaseService.database;
 
-  /// 사용자 정보 로드
-  Future<Map<String, dynamic>?> loadUserInfo() async {
-    return await _dbService.loadJsonFromPrefs('user_info');
-  }
+      // 기존 프로필이 있는지 확인
+      final existingProfiles = await db.query(
+        'user_profiles',
+        where: 'id = ?',
+        whereArgs: [profile.id],
+      );
 
-  /// 사용자 설정 저장
-  Future<bool> saveUserSettings(Map<String, dynamic> settings) async {
-    return await _dbService.saveJsonToPrefs('user_settings', settings);
-  }
+      if (existingProfiles.isNotEmpty) {
+        // 업데이트
+        await db.update(
+          'user_profiles',
+          {
+            'user_name': profile.userName,
+            'email': profile.email,
+            'name_katakana': profile.nameKatakana,
+            'contact': profile.contact,
+            'profile_image': profile.profileImage,
+            'updated_at': profile.updatedAt.toIso8601String(),
+          },
+          where: 'id = ?',
+          whereArgs: [profile.id],
+        );
+      } else {
+        // 새로 생성
+        await db.insert('user_profiles', {
+          'id': profile.id,
+          'user_name': profile.userName,
+          'email': profile.email,
+          'name_katakana': profile.nameKatakana,
+          'contact': profile.contact,
+          'profile_image': profile.profileImage,
+          'created_at': profile.createdAt.toIso8601String(),
+          'updated_at': profile.updatedAt.toIso8601String(),
+        });
+      }
 
-  /// 사용자 설정 로드
-  Future<Map<String, dynamic>?> loadUserSettings() async {
-    return await _dbService.loadJsonFromPrefs('user_settings');
-  }
-
-  /// 알림 설정 저장
-  Future<bool> saveNotificationSettings(Map<String, dynamic> settings) async {
-    return await _dbService.saveJsonToPrefs('notification_settings', settings);
-  }
-
-  /// 알림 설정 로드
-  Future<Map<String, dynamic>?> loadNotificationSettings() async {
-    return await _dbService.loadJsonFromPrefs('notification_settings');
-  }
-
-  /// 온보딩 완료 여부 저장
-  Future<bool> setOnboardingComplete(bool isComplete) async {
-    final prefs = await _dbService.prefs;
-    return prefs.setBool('onboarding_complete', isComplete);
-  }
-
-  /// 온보딩 완료 여부 확인
-  Future<bool> isOnboardingComplete() async {
-    final prefs = await _dbService.prefs;
-    return prefs.getBool('onboarding_complete') ?? false;
-  }
-
-  /// 마지막 로그인 시간 저장
-  Future<bool> saveLastLoginTime() async {
-    final prefs = await _dbService.prefs;
-    return prefs.setString('last_login_time', DateTime.now().toIso8601String());
-  }
-
-  /// 마지막 로그인 시간 로드
-  Future<DateTime?> loadLastLoginTime() async {
-    final prefs = await _dbService.prefs;
-    final timeStr = prefs.getString('last_login_time');
-    if (timeStr != null) {
-      return DateTime.tryParse(timeStr);
+      return true;
+    } catch (e) {
+      print('사용자 프로필 저장 실패: $e');
+      return false;
     }
-    return null;
   }
 
-  /// 로그인 상태 저장
-  Future<bool> setLoginStatus(bool isLoggedIn) async {
-    final prefs = await _dbService.prefs;
-    return prefs.setBool('is_logged_in', isLoggedIn);
+  /// 사용자 프로필 로드
+  Future<UserProfileEntity?> loadUserProfile() async {
+    try {
+      final db = await _databaseService.database;
+      final profiles = await db.query('user_profiles', limit: 1);
+
+      if (profiles.isEmpty) return null;
+
+      final profile = profiles.first;
+      return UserProfileEntity(
+        id: profile['id'] as String,
+        userName: profile['user_name'] as String,
+        email: profile['email'] as String,
+        nameKatakana: profile['name_katakana'] as String?,
+        contact: profile['contact'] as String?,
+        profileImage: profile['profile_image'] as String?,
+        createdAt: DateTime.parse(profile['created_at'] as String),
+        updatedAt: DateTime.parse(profile['updated_at'] as String),
+      );
+    } catch (e) {
+      print('사용자 프로필 로드 실패: $e');
+      return null;
+    }
   }
 
-  /// 로그인 상태 확인
-  Future<bool> isLoggedIn() async {
-    final prefs = await _dbService.prefs;
-    return prefs.getBool('is_logged_in') ?? false;
+  /// 사용자 프로필 삭제
+  Future<bool> deleteUserProfile(String id) async {
+    try {
+      final db = await _databaseService.database;
+      await db.delete('user_profiles', where: 'id = ?', whereArgs: [id]);
+      return true;
+    } catch (e) {
+      print('사용자 프로필 삭제 실패: $e');
+      return false;
+    }
   }
 
-  /// 인증 토큰 저장 (보안 저장소 사용 권장)
-  Future<bool> saveAuthToken(String token) async {
-    final prefs = await _dbService.prefs;
-    return prefs.setString('auth_token', token);
-  }
-
-  /// 인증 토큰 로드
-  Future<String?> loadAuthToken() async {
-    final prefs = await _dbService.prefs;
-    return prefs.getString('auth_token');
-  }
-
-  /// 인증 토큰 삭제
-  Future<bool> clearAuthToken() async {
-    final prefs = await _dbService.prefs;
-    return prefs.remove('auth_token');
-  }
-
-  /// 사용자 데이터 전체 삭제
-  Future<void> clearAllUserData() async {
-    final prefs = await _dbService.prefs;
-    await prefs.remove('user_info');
-    await prefs.remove('user_settings');
-    await prefs.remove('notification_settings');
-    await prefs.remove('auth_token');
-    await prefs.setBool('is_logged_in', false);
+  /// 새 사용자 프로필 생성
+  Future<UserProfileEntity> createUserProfile({
+    required String userName,
+    required String email,
+    String? nameKatakana,
+    String? contact,
+    String? profileImage,
+  }) async {
+    final now = DateTime.now();
+    return UserProfileEntity(
+      id: _uuid.v4(),
+      userName: userName,
+      email: email,
+      nameKatakana: nameKatakana,
+      contact: contact,
+      profileImage: profileImage,
+      createdAt: now,
+      updatedAt: now,
+    );
   }
 }

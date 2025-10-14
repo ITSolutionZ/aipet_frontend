@@ -76,12 +76,18 @@ class AiRepositoryImpl implements AiRepository {
       // 실제 OpenAI API 호출
       final response = await _openAIService.generateResponse(message);
 
+      if (!response.isSuccess) {
+        return Result.failure(response.message);
+      }
+
+      final responseContent = response.dataOrNull!;
+
       // AI 로거를 사용한 응답 성공 로그
-      AiLogger.logApiSuccess(response as String);
+      AiLogger.logApiSuccess(responseContent);
 
       final aiMessage = AiMessageEntity(
         id: _generateId(),
-        content: response as String,
+        content: responseContent,
         type: MessageType.assistant,
         timestamp: DateTime.now(),
       );
@@ -134,12 +140,18 @@ class AiRepositoryImpl implements AiRepository {
         walkGuide: walkGuide,
       );
 
+      if (!response.isSuccess) {
+        return Result.failure(response.message);
+      }
+
+      final responseContent = response.dataOrNull!;
+
       // AI 로거를 사용한 응답 성공 로그
-      AiLogger.logApiSuccess(response as String);
+      AiLogger.logApiSuccess(responseContent);
 
       final aiMessage = AiMessageEntity(
         id: _generateId(),
-        content: response as String,
+        content: responseContent,
         type: MessageType.assistant,
         timestamp: DateTime.now(),
         petId: petContext?.id,

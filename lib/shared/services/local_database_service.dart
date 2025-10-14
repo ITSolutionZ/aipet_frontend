@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -27,9 +28,9 @@ class LocalDatabaseService {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'aipet_local.db');
 
-    return await openDatabase(
+    return openDatabase(
       path,
-      version: 1,
+      version: 3, // 버전을 더 높게 올려서 테이블 재생성 강제
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -162,6 +163,20 @@ class LocalDatabaseService {
         created_at TEXT NOT NULL
       )
     ''');
+
+    // 사용자 프로필 테이블
+    await db.execute('''
+      CREATE TABLE user_profiles(
+        id TEXT PRIMARY KEY,
+        user_name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        name_katakana TEXT,
+        contact TEXT,
+        profile_image TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''');
   }
 
   /// 데이터베이스 업그레이드
@@ -171,7 +186,7 @@ class LocalDatabaseService {
 
   /// SharedPreferences 인스턴스 가져오기
   Future<SharedPreferences> get prefs async {
-    return await SharedPreferences.getInstance();
+    return SharedPreferences.getInstance();
   }
 
   /// JSON 데이터를 SharedPreferences에 저장
@@ -191,7 +206,10 @@ class LocalDatabaseService {
   }
 
   /// 리스트 데이터를 SharedPreferences에 저장
-  Future<bool> saveListToPrefs(String key, List<Map<String, dynamic>> data) async {
+  Future<bool> saveListToPrefs(
+    String key,
+    List<Map<String, dynamic>> data,
+  ) async {
     final pref = await prefs;
     return pref.setString(key, jsonEncode(data));
   }

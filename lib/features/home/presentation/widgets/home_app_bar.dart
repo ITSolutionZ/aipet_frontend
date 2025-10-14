@@ -72,12 +72,12 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     const Text(
                       'ゲストユーザー',
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
+                        color: AppColors.pointDark,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     TextButton(
                       onPressed: () {
                         // プロフィール編集画面へ遷移
@@ -85,8 +85,8 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       },
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
+                          horizontal: AppSpacing.sm,
+                          vertical: AppSpacing.xs,
                         ),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -94,10 +94,10 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       child: const Text(
                         '情報修正',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: AppColors.pointDark,
                           fontSize: 14,
                           decoration: TextDecoration.underline,
-                          decorationColor: Colors.black,
+                          decorationColor: AppColors.pointDark,
                         ),
                       ),
                     ),
@@ -112,7 +112,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     onPressed: onMenuTap,
                     icon: const Icon(
                       Icons.menu,
-                      color: Colors.black, // 검정색으로 변경
+                      color: AppColors.pointDark, // 검정색으로 변경
                       size: 24,
                     ),
                   ),
@@ -136,7 +136,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         constraints: const BoxConstraints(),
                         icon: const Icon(
                           Icons.favorite_outline,
-                          color: Colors.black, // 검정색으로 변경
+                          color: AppColors.pointDark, // 검정색으로 변경
                           size: 24,
                         ),
                       ),
@@ -152,7 +152,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         constraints: const BoxConstraints(),
                         icon: const Icon(
                           Icons.notifications_outlined,
-                          color: Colors.black, // 검정색으로 변경
+                          color: AppColors.pointDark, // 검정색으로 변경
                           size: 24,
                         ),
                       ),
@@ -168,7 +168,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       constraints: const BoxConstraints(),
                       icon: const Icon(
                         Icons.notifications_outlined,
-                        color: Colors.white,
+                        color: AppColors.pureWhite,
                         size: 24,
                       ),
                     ),
@@ -186,7 +186,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       constraints: const BoxConstraints(),
                       icon: const Icon(
                         Icons.chat_bubble_outline,
-                        color: Colors.white,
+                        color: AppColors.pureWhite,
                         size: 24,
                       ),
                     ),
@@ -197,7 +197,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       constraints: const BoxConstraints(),
                       icon: const Icon(
                         Icons.close,
-                        color: Colors.white,
+                        color: AppColors.pureWhite,
                         size: 24,
                       ),
                     ),
