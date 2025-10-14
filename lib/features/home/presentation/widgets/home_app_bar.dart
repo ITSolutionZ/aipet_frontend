@@ -25,13 +25,39 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 배너 높이 계산 (화면 높이의 26% + 상태바 + 앱바 높이)
+    final screenHeight = MediaQuery.of(context).size.height;
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+    final bannerHeight = screenHeight * 0.26 + statusBarHeight + 56.0;
 
     return Container(
       height:
           preferredSize.height +
           MediaQuery.of(context).padding.top, // 상태바 높이 포함
-      decoration: const BoxDecoration(
-        color: Colors.white, // 항상 흰색 배경
+      decoration: BoxDecoration(
+        gradient: scrollOffset <= statusBarHeight
+            ? const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.transparent, Colors.transparent],
+              ) // 초기 상태: 완전 투명
+            : scrollOffset > (bannerHeight * 0.9)
+            ? const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.white, Colors.white],
+                stops: [0.0, 0.95],
+              ) // 스크롤 완료: 흰색 그라데이션
+            : LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.white.withValues(
+                    alpha: (scrollOffset / bannerHeight) * 0.8,
+                  ),
+                ],
+              ), // 스크롤 중: 투명에서 흰색으로 점진적 변화
       ),
       child: SafeArea(
         child: Padding(
