@@ -46,11 +46,7 @@ class AiMessageBubble extends ConsumerWidget {
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.smart_toy,
-                color: Colors.white,
-                size: 18,
-              ),
+              child: const Icon(Icons.smart_toy, color: Colors.white, size: 18),
             ),
             const SizedBox(width: AppSpacing.sm),
           ],
@@ -72,8 +68,12 @@ class AiMessageBubble extends ConsumerWidget {
                   borderRadius: BorderRadius.only(
                     topLeft: const Radius.circular(20),
                     topRight: const Radius.circular(20),
-                    bottomLeft: isUser ? const Radius.circular(20) : const Radius.circular(4),
-                    bottomRight: isUser ? const Radius.circular(4) : const Radius.circular(20),
+                    bottomLeft: isUser
+                        ? const Radius.circular(20)
+                        : const Radius.circular(4),
+                    bottomRight: isUser
+                        ? const Radius.circular(4)
+                        : const Radius.circular(20),
                   ),
                   border: isFavorite && !isUser
                       ? Border.all(color: AppColors.pointBrown, width: 2)
@@ -92,9 +92,10 @@ class AiMessageBubble extends ConsumerWidget {
                     // 메시지 내용
                     Text(
                       message.content,
-                      style: AppFonts.bodyMedium.copyWith(
+                      style: AppFonts.bodySmall.copyWith(
                         color: isUser ? Colors.white : AppColors.pointDark,
-                        height: 1.5,
+                        height: 1.4,
+                        fontSize: 14,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -109,12 +110,16 @@ class AiMessageBubble extends ConsumerWidget {
                             color: isUser
                                 ? Colors.white70
                                 : AppColors.pointGray,
-                            fontSize: 11,
+                            fontSize: 10,
                           ),
                         ),
                         if (isFavorite && !isUser) ...[
                           const SizedBox(width: 4),
-                          const Icon(Icons.star, color: AppColors.pointBrown, size: 14),
+                          const Icon(
+                            Icons.star,
+                            color: AppColors.pointBrown,
+                            size: 14,
+                          ),
                         ],
                       ],
                     ),
@@ -188,7 +193,6 @@ class AiMessageBubble extends ConsumerWidget {
       ),
     );
   }
-
 
   String _formatTime(DateTime dateTime) {
     final now = DateTime.now();
