@@ -86,57 +86,9 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.white,
-      foregroundColor: AppColors.pointBrown,
-      elevation: 0,
+    return const GradientAppBar(
+      title: null, // タイトルを削除
       automaticallyImplyLeading: true,
-      title: Container(
-        height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-        decoration: BoxDecoration(
-          color: AppColors.backgroundGray,
-          borderRadius: BorderRadius.circular(AppSpacing.md),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.search, color: AppColors.pointBrown, size: 20),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: '動物病院を検索してください',
-                  hintStyle: AppFonts.bodyMedium.copyWith(
-                    color: AppColors.toneDarkGray,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                style: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.textPrimary,
-                ),
-                onChanged: (value) {
-                  // 실시간 검색을 위한 추가 로직 (이미 리스너에서 처리됨)
-                },
-              ),
-            ),
-            if (_isSearching)
-              GestureDetector(
-                onTap: () {
-                  _searchController.clear();
-                },
-                child: const Icon(
-                  Icons.clear,
-                  color: AppColors.pointBrown,
-                  size: 20,
-                ),
-              ),
-          ],
-        ),
-      ),
-      centerTitle: false,
-      titleSpacing: 0,
     );
   }
 

@@ -100,10 +100,8 @@ class _LocationSettingScreenState extends ConsumerState<LocationSettingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: const Text('位置設定'),
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: Colors.white,
+      appBar: const GradientAppBar(
+        title: null, // タイトルを削除
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),

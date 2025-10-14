@@ -55,15 +55,8 @@ class _FacilityListScreenState extends ConsumerState<FacilityListScreen> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: AppColors.pointBrown,
-      foregroundColor: AppColors.pointOffWhite,
-      elevation: 0,
-      centerTitle: true,
-      title: const Text(
-        '시설 예약',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-      ),
+    return const GradientAppBar(
+      title: null, // タイトルを削除
     );
   }
 
