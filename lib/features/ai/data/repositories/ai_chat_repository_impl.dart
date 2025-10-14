@@ -7,7 +7,7 @@ import '../../domain/entities/ai_chat_session_entity.dart';
 import '../../domain/entities/ai_message_entity.dart';
 import '../../domain/repositories/ai_chat_repository.dart';
 import '../datasources/ai_chat_datasource.dart';
-import '../datasources/impl/ai_chat_mock_datasource.dart';
+import '../services/ai_local_storage_service.dart';
 
 /// AI 채팅 Repository 구현체
 class AiChatRepositoryImpl implements AiChatRepository {
@@ -169,6 +169,130 @@ class AiChatRepositoryImpl implements AiChatRepository {
     await _datasource.deleteChatHistory(historyId);
   }
 }
+
+/// AI Chat Datasource Implementation
+class AiChatDatasourceImpl implements AiChatDatasource {
+  final AiLocalStorageService _localStorageService = AiLocalStorageService();
+
+  @override
+  Future<List<AiMessageEntity>> getChatHistory({String? sessionId}) async {
+    return _localStorageService.loadChatHistory();
+  }
+
+  @override
+  Future<List<AiMessageEntity>> loadChatHistory({
+    required String userId,
+    String? petId,
+    String? sessionId,
+    int? limit,
+    int? offset,
+  }) async {
+    return _localStorageService.loadChatHistory();
+  }
+
+  @override
+  Future<void> saveChatHistory(AiChatHistoryEntity chatHistory) async {
+    await _localStorageService.saveChatHistory(chatHistory.messages);
+  }
+
+  @override
+  Future<void> clearChatHistory({String? sessionId}) async {
+    await _localStorageService.clearChatHistory();
+  }
+
+  @override
+  Future<AiMessageEntity> sendMessage({
+    required String message,
+    required String sessionId,
+    String? petId,
+    String? categoryId,
+    List<String>? attachedImages,
+    Map<String, dynamic>? context,
+  }) async {
+    final aiMessage = AiMessageEntity(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      content: 'AI 응답: $message',
+      type: MessageType.assistant,
+      timestamp: DateTime.now(),
+    );
+    await _localStorageService.saveChatHistory([aiMessage]);
+    return aiMessage;
+  }
+
+  @override
+  Future<AiMessageEntity> sendMessageWithPetContext(
+    String message, {
+    PetProfileEntity? petContext,
+    String? weatherAdvice,
+    String? walkGuide,
+    String? sessionId,
+  }) async {
+    final aiMessage = AiMessageEntity(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      content: '펫 컨텍스트 AI 응답: $message',
+      type: MessageType.assistant,
+      timestamp: DateTime.now(),
+      petId: petContext?.id,
+      petName: petContext?.name,
+    );
+    await _localStorageService.saveChatHistory([aiMessage]);
+    return aiMessage;
+  }
+
+  @override
+  Future<List<AiChatSessionEntity>> getChatSessions() async {
+    return _localStorageService.loadChatSessions();
+  }
+
+  @override
+  Future<AiChatSessionEntity> createChatSession(
+    String title, {
+    String? petId,
+    String? categoryId,
+  }) async {
+    final session = AiChatSessionEntity(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: title,
+      messages: [],
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      petId: petId,
+    );
+    await _localStorageService.saveChatSession(session);
+    return session;
+  }
+
+  @override
+  Future<void> deleteChatSession(String sessionId) async {
+    await _localStorageService.deleteChatSession(sessionId);
+  }
+
+  @override
+  Future<AiChatSessionEntity> updateChatSession(
+    AiChatSessionEntity session,
+  ) async {
+    await _localStorageService.saveChatSession(session);
+    return session;
+  }
+
+  @override
+  Future<List<AiChatHistoryEntity>> getChatHistories({
+    int limit = 30,
+    bool onlyManualSaved = false,
+  }) async {
+    return [];
+  }
+
+  @override
+  Future<void> deleteChatHistory(String historyId) async {
+    // Implementation for deleting chat history
+  }
+}
+
+/// AI Chat Datasource Provider
+final aiChatDatasourceProvider = Provider<AiChatDatasource>((ref) {
+  return AiChatDatasourceImpl();
+});
 
 /// Repository Provider
 final aiChatRepositoryProvider = Provider<AiChatRepository>((ref) {

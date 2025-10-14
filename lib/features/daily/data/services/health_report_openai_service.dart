@@ -36,10 +36,9 @@ class HealthReportOpenAIService extends BaseLoggingService {
     final apiKey = AppConfig.current.openaiApiKey;
 
     if (apiKey.isEmpty) {
-      // 개발 환경에서는 Mock 리포트 생성
-      debugPrint('📊 HealthReportOpenAI: API 키가 없어 Mock 리포트 생성');
-      final mockReport = _generateMockHealthReport(petName, petType, petAge);
-      return Result.success(mockReport);
+      // API 키가 없으면 에러 반환
+      debugPrint('📊 HealthReportOpenAI: API 키가 설정되지 않음');
+      return Result.failure('OpenAI API 키가 설정되지 않았습니다.');
     }
 
     try {
@@ -245,41 +244,4 @@ $vaccineText
     }
   }
 
-  /// Mock 건강 리포트 생성 (개발 환경용)
-  String _generateMockHealthReport(String petName, String petType, int petAge) {
-    final petTypeJapanese = _getPetTypeInJapanese(petType);
-    final currentDate = DateFormat('yyyy年MM月dd日').format(DateTime.now());
-
-    return '''
-【$petNameの健康レポート】
-作成日: $currentDate
-
-【基本情報】
-名前: $petName
-種類: $petTypeJapanese
-年齢: $petAge歳
-
-【健康状態の評価】
-✅ 全体的に健康状態は良好です
-✅ 体温、活動量ともに正常範囲内です
-✅ 食欲、排泄状況に特に問題は見られません
-
-【推奨事項】
-1. 定期的な運動を継続してください
-2. バランスの取れた食事を心がけてください
-3. 水分補給を十分に行ってください
-4. 定期的な健康チェックを受けることをお勧めします
-
-【注意点】
-• 急激な行動の変化がある場合は獣医師にご相談ください
-• 食欲不振が2日以上続く場合は注意が必要です
-• 定期的な体重測定を行い、適正体重を維持してください
-
-【今後のケア】
-今後も現在の健康管理を継続し、愛情をもってケアしてあげてください。
-何か気になる症状がある場合は、迷わず獣医師にご相談することをお勧めします。
-
-※ これはMock データです。実際のAI分析は別途API キーが必要です。
-''';
-  }
 }

@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/shared/data/datasources/pet_profile_local_datasource.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/services/pet_cache_clear_service.dart';
 import 'package:aipet_frontend/shared/services/pet_local_storage_service.dart';
@@ -28,26 +27,12 @@ class PetLoginService {
       // 사용자 ID에 맞는 펫들만 필터링
       final userPets = savedPets.where((pet) => pet.ownerId == userId).toList();
 
-      // 저장된 펫이 없는 경우 샘플 펫 데이터 제공
+      // 저장된 펫이 없는 경우 빈 리스트 반환
       if (userPets.isEmpty) {
         if (kDebugMode) {
-          debugPrint('🐾 PetLoginService: 저장된 펫이 없음 - 샘플 펫 데이터 제공');
+          debugPrint('🐾 PetLoginService: 저장된 펫이 없음 - 빈 리스트 반환');
         }
-
-        // 샘플 펫 데이터 생성
-        final samplePets =
-            PetProfileLocalDatasource.getSamplePetsForLoggedInUser(userId);
-
-        // 샘플 펫 데이터를 로컬 저장소에 저장
-        await PetLocalStorageService.savePets(samplePets);
-
-        if (kDebugMode) {
-          debugPrint(
-            '🐾 PetLoginService: 샘플 펫 데이터 저장 완료 - ${samplePets.length}마리',
-          );
-        }
-
-        return samplePets;
+        return [];
       }
 
       if (kDebugMode) {

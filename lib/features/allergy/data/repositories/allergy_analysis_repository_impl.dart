@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../domain/entities/product_entity.dart';
 import '../../domain/entities/allergy_analysis_entities.dart';
+import '../../domain/entities/product_entity.dart';
 import '../../domain/repositories/allergy_analysis_repository.dart';
 import '../../domain/services/allergy_analysis_service.dart';
 import '../datasources/allergy_analysis_datasource.dart';
@@ -13,10 +13,7 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
   final AllergyAnalysisService _analysisService;
   final AllergyAnalysisDatasource _datasource;
 
-  const AllergyAnalysisRepositoryImpl(
-    this._analysisService,
-    this._datasource,
-  );
+  const AllergyAnalysisRepositoryImpl(this._analysisService, this._datasource);
 
   @override
   Future<AllergyAnalysisResult> analyzeProductAllergy({
@@ -48,7 +45,7 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
       return domainResult;
     } catch (error) {
       // AI 분석 실패 시 기본 분석으로 폴백
-      return await _datasource.performBasicAnalysis(
+      return _datasource.performBasicAnalysis(
         allergyProducts,
         nonAllergyProducts,
       );
@@ -91,7 +88,9 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
       }
     }
 
-    final overallRisk = ingredients.isEmpty ? 0.0 : totalRiskScore / ingredients.length;
+    final overallRisk = ingredients.isEmpty
+        ? 0.0
+        : totalRiskScore / ingredients.length;
 
     return IngredientRiskAssessment(
       ingredientRisks: ingredientRisks,
@@ -127,11 +126,12 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
     }
 
     // 상위 알레르기 유발 제품
-    final frequentAllergens = allergenFreq.entries
-        .where((e) => e.value > 1)
-        .map((e) => e.key)
-        .toList()
-      ..sort((a, b) => allergenFreq[b]!.compareTo(allergenFreq[a]!));
+    final frequentAllergens =
+        allergenFreq.entries
+            .where((e) => e.value > 1)
+            .map((e) => e.key)
+            .toList()
+          ..sort((a, b) => allergenFreq[b]!.compareTo(allergenFreq[a]!));
 
     // 트렌드 분석
     final trends = await _analyzeTrends(allergyHistory);
@@ -140,7 +140,10 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
     final predictedRisks = await _predictFutureRisks(allergyHistory);
 
     // 패턴 신뢰도
-    final confidence = _calculatePatternConfidence(allergyHistory, frequentAllergens);
+    final confidence = _calculatePatternConfidence(
+      allergyHistory,
+      frequentAllergens,
+    );
 
     return AllergyPatternAnalysis(
       petId: petId,
@@ -273,14 +276,16 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
       final increasing = recentAllergens.difference(olderAllergens).toList();
       final decreasing = olderAllergens.difference(recentAllergens).toList();
 
-      trends.add(AllergyTrend(
-        period: '최근 vs 과거',
-        increasingAllergens: increasing,
-        decreasingAllergens: decreasing,
-        analysis: increasing.isNotEmpty
-            ? '새로운 알레르기 패턴이 발견되었습니다'
-            : '알레르기 패턴이 안정적입니다',
-      ));
+      trends.add(
+        AllergyTrend(
+          period: '최근 vs 과거',
+          increasingAllergens: increasing,
+          decreasingAllergens: decreasing,
+          analysis: increasing.isNotEmpty
+              ? '새로운 알레르기 패턴이 발견되었습니다'
+              : '알레르기 패턴이 안정적입니다',
+        ),
+      );
     }
 
     return trends;
@@ -297,9 +302,7 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
 
     // 빈도가 높은 제품들의 관련 성분 예측
     final predictions = <String>[];
-    productFreq.entries
-        .where((e) => e.value > 1)
-        .forEach((e) {
+    productFreq.entries.where((e) => e.value > 1).forEach((e) {
       predictions.addAll(_getRelatedIngredients(e.key));
     });
 

@@ -44,80 +44,45 @@ class SplashLogoWidget extends StatelessWidget {
     );
   }
 
-  /// 앱 로고 + 회사 로고 위젯 (앱 로고 하단에 작은 회사 로고)
+  /// 앱 로고만 표시 (크게)
   Widget _buildAppLogoWithCompanyLogo() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // 앱 로고
-        Container(
-          width: AppConstants.splashAppLogoSize,
-          height: AppConstants.splashAppLogoSize,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withValues(
-                  alpha: AppConstants.splashGradientAlpha1 / 255,
-                ),
-                Colors.white.withValues(
-                  alpha: AppConstants.splashGradientAlpha2 / 255,
-                ),
-              ],
+    return Container(
+      width: 200, // 로고 크기 증가
+      height: 200, // 로고 크기 증가
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(
+              alpha: AppConstants.splashGradientAlpha1 / 255,
             ),
-            borderRadius: BorderRadius.circular(AppConstants.splashLogoRadius),
-            border: Border.all(
-              color: Colors.white.withValues(
-                alpha: AppConstants.splashBorderAlpha / 255,
-              ),
-              width: 1,
+            Colors.white.withValues(
+              alpha: AppConstants.splashGradientAlpha2 / 255,
             ),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(AppConstants.splashLogoRadius),
+        border: Border.all(
+          color: Colors.white.withValues(
+            alpha: AppConstants.splashBorderAlpha / 255,
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0), // 앱 로고에도 여백 추가
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(
-                AppConstants.splashLogoRadius - 8,
-              ),
-              child: Image.asset(
-                AppConstants.splashAppLogoPath,
-                fit: BoxFit.scaleDown, // 비율 유지하면서 크기 조정
-                errorBuilder: _buildErrorWidget,
-              ),
-            ),
+          width: 1,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0), // 여백 증가
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(
+            AppConstants.splashLogoRadius - 8,
+          ),
+          child: Image.asset(
+            AppConstants.splashAppLogoPath,
+            fit: BoxFit.contain, // 전체 이미지 표시
+            errorBuilder: _buildErrorWidget,
           ),
         ),
-
-        const SizedBox(height: AppSpacing.lg), // 앱 로고와 회사 로고 사이 간격
-        // // 회사 로고 (작게)
-        // Container(
-        //   width: AppConstants.splashCompanyLogoWidth,
-        //   height: AppConstants.splashCompanyLogoHeight,
-        //   decoration: BoxDecoration(
-        //     color: Colors.white.withValues(alpha: 0.9),
-        //     borderRadius: BorderRadius.circular(8.0), // companyLogoRadius 상수화
-        //     boxShadow: [
-        //       BoxShadow(
-        //         color: Colors.black.withValues(alpha: 0.1),
-        //         blurRadius: 4,
-        //         offset: const Offset(0, 2),
-        //       ),
-        //     ],
-        //   ),
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(8.0), // 여백 추가로 이미지가 경계에 닿지 않도록
-        //     child: ClipRRect(
-        //       borderRadius: BorderRadius.circular(4.0),
-        //       child: Image.asset(
-        //         AppConstants.splashCompanyLogoPath,
-        //         fit: BoxFit.scaleDown, // 비율 유지하면서 크기 조정
-        //         errorBuilder: _buildErrorWidget,
-        //       ),
-        //     ),
-        //   ),
-        // ),
-      ],
+      ),
     );
   }
 

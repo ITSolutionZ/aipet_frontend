@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/daily/presentation/controllers/daily_health_screen_controller.dart';
 import 'package:aipet_frontend/features/daily/presentation/logic/daily_health_logic.dart';
 import 'package:aipet_frontend/features/daily/presentation/widgets/app_bar_pet_selector_widget.dart';
-import 'package:aipet_frontend/features/daily/presentation/controllers/daily_health_screen_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/features/home/data/banner_assets.dart';
 import 'package:aipet_frontend/features/home/data/data.dart';
 import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
 import 'package:aipet_frontend/features/home/presentation/controllers/home_controller.dart';
@@ -122,10 +121,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   /// 대시보드 UI 빌드
   Widget _buildDashboard(HomeDashboardEntity dashboard) {
-    if (!dashboard.hasPets) {
-      return const EmptyPetStateWidget();
-    }
-
     return SingleChildScrollView(
       controller: scrollController,
       child: Column(
@@ -148,6 +143,77 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
+
+          // 펫이 없을 때 등록 안내
+          if (!dashboard.hasPets) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.md),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(AppSpacing.md),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.primary.withValues(alpha: 0.1),
+                        AppColors.primary.withValues(alpha: 0.05),
+                      ],
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.pets,
+                        size: 48,
+                        color: AppColors.primary,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        'まだペットが登録されていません',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        '最初のペットを登録して、\nAIPetを始めましょう！',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      ElevatedButton(
+                        onPressed: () => context.push('/pet-type-selection'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.xl,
+                            vertical: AppSpacing.md,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppSpacing.lg),
+                          ),
+                        ),
+                        child: const Text('ペット登録'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+          ],
 
           // 날씨 정보
           Padding(
@@ -181,8 +247,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          // 오늘의 예약 (있을 경우)
-          if (dashboard.hasTodayAppointments) ...[
+          // 오늘의 예약 (펫이 있고, 예약이 있을 경우)
+          if (dashboard.hasPets && dashboard.hasTodayAppointments) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               child: TodayAppointmentsWidget(
@@ -194,14 +260,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             const SizedBox(height: AppSpacing.lg),
           ],
 
-          // 산책 요약
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: WalkSummaryWidget(
-              totalMinutes: dashboard.walkSummary.todayDuration.inMinutes,
-              isWeeklyRecord: dashboard.walkSummary.isWeeklyRecord,
+          // 산책 요약 (펫이 있을 경우)
+          if (dashboard.hasPets) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: WalkSummaryWidget(
+                totalMinutes: dashboard.walkSummary.todayDuration.inMinutes,
+                isWeeklyRecord: dashboard.walkSummary.isWeeklyRecord,
+              ),
             ),
-          ),
+          ],
 
           // 하단 여백
           SizedBox(height: AppSpacing.xl + MediaQuery.of(context).padding.top),
