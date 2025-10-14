@@ -79,6 +79,16 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     BuildContext context,
     PetProfileUnifiedState state,
   ) {
+    // 에러 상태나 펫을 찾을 수 없는 상태에서는 뒤로가기 버튼과 액션 버튼들을 숨김
+    if (state.errorMessage != null || state.selectedPet == null) {
+      return GradientAppBar(
+        title: null,
+        leading: null, // 뒤로가기 버튼 제거
+        actions: null, // 액션 버튼들 제거
+        bottom: _buildTabBar(),
+      );
+    }
+
     return GradientAppBar(
       title: null, // タイトルを削除
       leading: IconButton(

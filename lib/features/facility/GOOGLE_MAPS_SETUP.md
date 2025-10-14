@@ -175,7 +175,7 @@ API 키가 설정되지 않은 경우, 로컬 저장소의 캐시 데이터만 �
 
 ### API 키 오류
 
-```
+```text
 Error: REQUEST_DENIED
 ```
 
@@ -183,7 +183,7 @@ Error: REQUEST_DENIED
 
 ### 권한 오류
 
-```
+```text
 Error: PERMISSION_DENIED
 ```
 
@@ -191,7 +191,7 @@ Error: PERMISSION_DENIED
 
 ### 검색 결과 없음
 
-```
+```text
 No results found
 ```
 

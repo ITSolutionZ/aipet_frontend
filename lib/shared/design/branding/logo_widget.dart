@@ -10,8 +10,8 @@ class LogoWidget extends StatelessWidget {
   const LogoWidget({
     super.key,
     required this.imagePath,
-    this.width = 300,
-    this.height = 300,
+    this.width = 350,
+    this.height = 350,
     this.backgroundColor,
   });
 
@@ -27,7 +27,8 @@ class LogoWidget extends StatelessWidget {
           width: width,
           height: height,
           fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) => SizedBox(width: width, height: height),
+          errorBuilder: (context, error, stackTrace) =>
+              SizedBox(width: width, height: height),
         ),
       ),
     );

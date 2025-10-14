@@ -31,12 +31,10 @@ class AiRepositoryImpl implements AiRepository {
   final LocalStorageService _localStorage;
   final Ref ref;
 
-  AiRepositoryImpl({
-    required OpenAIService openAIService,
-    required this.ref,
-  }) : _openAIService = openAIService,
-       _localStorageService = AiLocalStorageService(),
-       _localStorage = LocalStorageService.instance;
+  AiRepositoryImpl({required OpenAIService openAIService, required this.ref})
+    : _openAIService = openAIService,
+      _localStorageService = AiLocalStorageService(),
+      _localStorage = LocalStorageService.instance;
 
   /// 채팅 히스토리 조회
   ///
@@ -207,11 +205,17 @@ class AiRepositoryImpl implements AiRepository {
     // 로컬 저장소에서 추천 질문 가져오기
     final questions = await _localStorage.ai.loadAiCategories();
     if (questions != null && questions.isNotEmpty) {
-      return questions.map((q) => AiSuggestedQuestionEntity(
-        id: q['id'] ?? '',
-        question: q['question'] ?? '',
-        category: q['category'] ?? '',
-      )).toList();
+      return questions
+          .map(
+            (q) => AiSuggestedQuestionEntity(
+              id: q['id'] ?? '',
+              question: q['question'] ?? '',
+              category: q['category'] ?? '',
+              icon: Icons.help_outline,
+              description: q['description'] as String?,
+            ),
+          )
+          .toList();
     }
     return [];
   }
@@ -223,13 +227,35 @@ class AiRepositoryImpl implements AiRepository {
     PetProfileEntity? pet,
   }) async {
     // 기본 추천 질문 가져오기
-    final baseQuestions = await getSuggestedQuestions();
-    
+    final baseQuestions = [
+      AiSuggestedQuestionEntity(
+        id: '1',
+        question: 'ペットの健康管理について教えてください',
+        category: category ?? 'health',
+        icon: Icons.medical_services,
+        description: '健康管理の基本について',
+      ),
+      AiSuggestedQuestionEntity(
+        id: '2',
+        question: 'おすすめのペットフードは何ですか？',
+        category: category ?? 'food',
+        icon: Icons.restaurant,
+        description: 'フード選びのアドバイス',
+      ),
+      AiSuggestedQuestionEntity(
+        id: '3',
+        question: 'しつけの基本を教えてください',
+        category: category ?? 'behavior',
+        icon: Icons.psychology,
+        description: 'しつけの基礎知識',
+      ),
+    ];
+
     // 카테고리와 펫 정보에 따라 필터링
     if (category != null) {
       return baseQuestions.where((q) => q.category == category).toList();
     }
-    
+
     return baseQuestions;
   }
 
@@ -364,7 +390,7 @@ class AiRepositoryImpl implements AiRepository {
     required String category,
   }) async {
     // 실제 ChatGPT API 호출로 요약 생성
-    await MockHelper.simulateApiCall();
+    await Future.delayed(const Duration(milliseconds: 300));
 
     // Mock 요약 생성
     final combinedMessages = userMessages.join(' ');

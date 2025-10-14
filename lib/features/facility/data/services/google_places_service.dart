@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,8 +9,13 @@ import 'package:http/http.dart' as http;
 ///
 /// Google Maps Places API를 사용하여 동물병원 및 동물 관련 시설을 검색합니다
 class GooglePlacesService {
-  // TODO: 실제 Google Maps API 키를 환경변수 또는 secure storage에서 가져오기
-  static const String _apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
+  // Google Maps API 키 설정
+  // 보안상 환경변수 또는 secure storage 사용을 권장합니다
+  static final String _apiKey =
+      dotenv.env['GOOGLE_MAPS_API_KEY'] ??
+      dotenv.env['GOOGLE_PUBLIC_API_KEY'] ??
+      '';
+
   static const String _baseUrl = 'https://maps.googleapis.com/maps/api/place';
 
   /// 주변 동물병원 검색
