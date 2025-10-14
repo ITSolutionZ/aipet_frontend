@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -109,8 +110,8 @@ class AiPetSelectionBubble extends ConsumerWidget {
                   // 펫 선택 위젯
                   Consumer(
                     builder: (context, ref, child) {
-                      // Mock 데이터 사용
-                      const petsAsync = AsyncValue.data(<PetProfileEntity>[]);
+                      // 실제 펫 데이터 사용
+                      final petsAsync = ref.watch(petProfilesNotifierProvider);
                       return petsAsync.when(
                         data: (pets) => _buildPetSelection(pets),
                         loading: () =>
