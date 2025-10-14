@@ -7,8 +7,8 @@ import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
 import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';
-import 'package:aipet_frontend/shared/services/ultra_fast_cache_service.dart';
 import 'package:aipet_frontend/shared/services/local_storage_service.dart';
+import 'package:aipet_frontend/shared/services/ultra_fast_cache_service.dart';
 import 'package:flutter/material.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
@@ -124,7 +124,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
   /// Mock 날씨 엔티티 (API 실패시 fallback)
   WeatherEntity _getMockWeatherEntity() {
-    return WeatherEntity(
+    return const WeatherEntity(
       temperature: 23.0,
       location: '東京',
       weatherId: 800, // 맑음
@@ -142,17 +142,15 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<List<PetSummaryEntity>> getPetSummaries() async {
     // 캐시에서 펫 요약 정보 확인
-    final cachedPetSummaries = _cacheService.getMemoryCache<List<PetSummaryEntity>>(
-      CacheKeys.petProfiles,
-    );
+    final cachedPetSummaries = _cacheService
+        .getMemoryCache<List<PetSummaryEntity>>(CacheKeys.petProfiles);
 
     if (cachedPetSummaries != null) {
       debugPrint('⚡ getPetSummaries: 캐시에서 펫 요약 정보 반환');
       return cachedPetSummaries;
     }
 
-    // 로컬 스토리지에서 펫 정보 가져오기
-    await Future.delayed(_mockDelay);
+    // 로컬 스토리지에서 펫 정보 가져오기 (실제 데이터)
     final petProfiles = await _localStorageService.pet.getAllPets();
     final petSummaries = PetMapper.toSummaryEntityListFromMaps(petProfiles);
 
@@ -168,8 +166,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
   // 기존 호환성을 위해 유지
   Future<List<PetProfileEntity>> getPetProfiles() async {
-    // 로컬 스토리지에서 펫 정보 가져오기
-    await Future.delayed(_mockDelay);
+    // 로컬 스토리지에서 펫 정보 가져오기 (실제 데이터)
     final petData = await _localStorageService.pet.getAllPets();
     return PetMapper.fromMapList(petData);
   }
@@ -186,9 +183,7 @@ class HomeRepositoryImpl implements HomeRepository {
       return cachedWalkSummary;
     }
 
-    await Future.delayed(_mockDelay);
-    
-    // 로컬 스토리지에서 산책 기록 가져오기
+    // 로컬 스토리지에서 산책 기록 가져오기 (실제 데이터)
     final pets = await _localStorageService.pet.getAllPets();
     int todayWalks = 0;
     double todayDistance = 0.0;
@@ -196,9 +191,11 @@ class HomeRepositoryImpl implements HomeRepository {
 
     // 각 펫의 오늘 산책 기록 집계
     for (final pet in pets) {
-      final walkRecords = await _localStorageService.pet.getWalkRecords(pet['id']);
+      final walkRecords = await _localStorageService.pet.getWalkRecords(
+        pet['id'],
+      );
       final today = DateTime.now();
-      
+
       for (final record in walkRecords) {
         final startTime = DateTime.tryParse(record['start_time'] ?? '');
         if (startTime != null &&
@@ -255,12 +252,14 @@ class HomeRepositoryImpl implements HomeRepository {
     int petsNeedingAttention = 0;
 
     for (final pet in pets) {
-      final healthRecords = await _localStorageService.pet.getHealthRecords(pet['id']);
-      
+      final healthRecords = await _localStorageService.pet.getHealthRecords(
+        pet['id'],
+      );
+
       // 최근 건강 검진 확인 (30일 이내)
       final now = DateTime.now();
       bool needsCheckup = true;
-      
+
       for (final record in healthRecords) {
         final recordDate = DateTime.tryParse(record['date'] ?? '');
         if (recordDate != null && now.difference(recordDate).inDays < 30) {
@@ -268,12 +267,11 @@ class HomeRepositoryImpl implements HomeRepository {
           break;
         }
       }
-      
+
       if (needsCheckup) {
-        alerts.add(HealthAlert(
-          petName: pet['name'] ?? '',
-          message: '健康診断が必要です',
-        ));
+        alerts.add(
+          HealthAlert(petName: pet['name'] ?? '', message: '健康診断が必要です'),
+        );
         petsNeedingAttention++;
       } else {
         healthyPets++;
@@ -300,19 +298,18 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<List<AppointmentSummary>> getUpcomingAppointments() async {
     // 캐시에서 예약 정보 확인
-    final cachedAppointments = _cacheService.getMemoryCache<List<AppointmentSummary>>(
-      CacheKeys.appointments,
-    );
+    final cachedAppointments = _cacheService
+        .getMemoryCache<List<AppointmentSummary>>(CacheKeys.appointments);
 
     if (cachedAppointments != null) {
       debugPrint('⚡ getUpcomingAppointments: 캐시에서 예약 정보 반환');
       return cachedAppointments;
     }
 
-    await Future.delayed(_mockDelay);
-
-    // 로컬 스토리지에서 스케줄 정보 가져오기
-    final schedules = await _localStorageService.schedule.getUpcomingSchedules(limit: 10);
+    // 로컬 스토리지에서 스케줄 정보 가져오기 (실제 데이터)
+    final schedules = await _localStorageService.schedule.getUpcomingSchedules(
+      limit: 10,
+    );
     final appointments = <AppointmentSummary>[];
 
     for (final schedule in schedules) {
@@ -326,13 +323,15 @@ class HomeRepositoryImpl implements HomeRepository {
           petName = pet?['name'] ?? '';
         }
 
-        appointments.add(AppointmentSummary(
-          id: schedule['id'] ?? '',
-          title: schedule['title'] ?? '',
-          scheduledTime: scheduledTime,
-          type: schedule['type'] ?? 'other',
-          petName: petName,
-        ));
+        appointments.add(
+          AppointmentSummary(
+            id: schedule['id'] ?? '',
+            title: schedule['title'] ?? '',
+            scheduledTime: scheduledTime,
+            type: schedule['type'] ?? 'other',
+            petName: petName,
+          ),
+        );
       }
     }
 
@@ -346,8 +345,8 @@ class HomeRepositoryImpl implements HomeRepository {
     return appointments;
   }
 
-  // 개발 모드용 지연 시간 상수
+  // 개발 모드용 지연 시간 상수 (실제 데이터 사용으로 지연 시간 단축)
   static Duration get _mockDelay => AppConfig.current.environment == 'test'
       ? const Duration(milliseconds: 1)
-      : const Duration(milliseconds: 250);
+      : const Duration(milliseconds: 100);
 }
