@@ -21,7 +21,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
     final groupedFavorites = _groupFavoritesByPet(favoriteQAs);
 
     return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: AppColors.pureWhite,
         foregroundColor: AppColors.pointBrown,
@@ -31,7 +31,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
           if (favoriteQAs.isNotEmpty)
             IconButton(
               onPressed: () => _showClearAllDialog(context, ref),
-              icon: const Icon(Icons.clear_all, color: Colors.black),
+              icon: const Icon(Icons.clear_all, color: AppColors.pointDark),
               tooltip: '全てクリア',
             ),
         ],
@@ -74,13 +74,13 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.xl),
             decoration: BoxDecoration(
-              color: Colors.amber.withValues(alpha: 0.1),
+              color: AppColors.pointBrown.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.star_border,
               size: 80,
-              color: Colors.amber.withValues(alpha: 0.5),
+              color: AppColors.pointBrown.withValues(alpha: 0.5),
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -191,7 +191,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                                 children: [
                                   const Icon(
                                     Icons.star,
-                                    color: Colors.amber,
+                                    color: AppColors.pointBrown,
                                     size: 12,
                                   ),
                                   const SizedBox(width: 4),
@@ -293,7 +293,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.pureWhite,
           borderRadius: BorderRadius.circular(AppRadius.medium),
           border: Border.all(
             color: AppColors.pointGray.withValues(alpha: 0.2),
@@ -324,12 +324,12 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: Colors.blue.withValues(alpha: 0.15),
+                        color: AppColors.pointBlue.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: const Icon(
                         Icons.help_outline,
-                        color: Colors.blue,
+                        color: AppColors.pointBlue,
                         size: 16,
                       ),
                     ),
@@ -337,7 +337,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                     Text(
                       '질문',
                       style: AppFonts.bodySmall.copyWith(
-                        color: Colors.blue,
+                        color: AppColors.pointBlue,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -348,12 +348,12 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: Colors.red.withValues(alpha: 0.1),
+                          color: AppColors.pointRed.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Icon(
                           Icons.delete_outline,
-                          color: Colors.red,
+                          color: AppColors.pointRed,
                           size: 16,
                         ),
                       ),
@@ -366,10 +366,10 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.05),
+                    color: AppColors.pointBlue.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(AppRadius.small),
                     border: Border.all(
-                      color: Colors.blue.withValues(alpha: 0.2),
+                      color: AppColors.pointBlue.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -497,7 +497,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
                         width: double.infinity,
                         padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: AppColors.pureWhite,
                           borderRadius: BorderRadius.circular(AppRadius.small),
                           border: Border.all(
                             color: AppColors.pointBrown.withValues(alpha: 0.2),

@@ -298,7 +298,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
     debugPrint('  - selectedCategory: ${chatState.selectedCategory?.name}');
 
     return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: AppColors.pureWhite,
         foregroundColor: AppColors.pointBrown,
@@ -306,23 +306,23 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
         title: null, // タイトルを削除
         leading: IconButton(
           onPressed: _navigateToChatHistory,
-          icon: const Icon(Icons.history, color: Colors.black),
+          icon: const Icon(Icons.history, color: AppColors.pointDark),
           tooltip: 'チャット履歴',
         ),
         actions: [
           IconButton(
             onPressed: _navigateToFavoriteMessages,
-            icon: const Icon(Icons.star, color: Colors.black),
+            icon: const Icon(Icons.star, color: AppColors.pointDark),
             tooltip: 'お気に入り',
           ),
           IconButton(
             onPressed: _saveCurrentChat,
-            icon: const Icon(Icons.save, color: Colors.black),
+            icon: const Icon(Icons.save, color: AppColors.pointDark),
             tooltip: '会話を保存',
           ),
           IconButton(
             onPressed: _clearChatHistory,
-            icon: const Icon(Icons.refresh, color: Colors.black),
+            icon: const Icon(Icons.refresh, color: AppColors.pointDark),
             tooltip: 'チャットをクリア',
           ),
         ],

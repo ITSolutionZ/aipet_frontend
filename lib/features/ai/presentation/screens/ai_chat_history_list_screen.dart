@@ -122,7 +122,7 @@ class _AiChatHistoryListScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: AppColors.pureWhite,
         foregroundColor: AppColors.pointBrown,
@@ -130,7 +130,7 @@ class _AiChatHistoryListScreenState
         title: null, // タイトルを削除
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.pointDark),
           tooltip: '戻る',
         ),
       ),
@@ -139,7 +139,7 @@ class _AiChatHistoryListScreenState
           children: [
             // 탭바
             Container(
-              color: Colors.white,
+              color: AppColors.pureWhite,
               child: TabBar(
                 controller: _tabController,
                 labelColor: AppColors.pointDark,
@@ -183,7 +183,7 @@ class _AiChatHistoryListScreenState
                     borderSide: const BorderSide(color: AppColors.pointBrown),
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: AppColors.pureWhite,
                 ),
               ),
             ),
@@ -288,7 +288,7 @@ class _AiChatHistoryListScreenState
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       elevation: 2,
-      color: Colors.white,
+      color: AppColors.pureWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
@@ -361,7 +361,11 @@ class _AiChatHistoryListScreenState
                     ),
                   ),
                   if (item['hasFavorites'] as bool)
-                    const Icon(Icons.star, color: Colors.amber, size: 18),
+                    const Icon(
+                      Icons.star,
+                      color: AppColors.pointBrown,
+                      size: 18,
+                    ),
                 ],
               ),
 
