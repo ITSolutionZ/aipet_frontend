@@ -23,8 +23,8 @@ class DailyHealthAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final controller = ref.read(dailyHealthScreenControllerProvider.notifier);
 
     return AppBar(
-      backgroundColor: AppColors.pointBrown,
-      foregroundColor: AppColors.pointOffWhite,
+      backgroundColor: AppColors.pureWhite,
+      foregroundColor: AppColors.pointBrown,
       elevation: 0,
       automaticallyImplyLeading: false,
       leading: AppBarPetSelectorWidget(
@@ -37,7 +37,7 @@ class DailyHealthAppBar extends ConsumerWidget implements PreferredSizeWidget {
           onPressed: () => logic.navigateToCalendarScreen(context),
           icon: const Icon(
             Icons.calendar_today,
-            color: AppColors.pointOffWhite,
+            color: AppColors.pointBrown,
           ),
           tooltip: 'カレンダー',
         ),
