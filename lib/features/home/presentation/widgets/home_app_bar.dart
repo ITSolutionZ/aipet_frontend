@@ -36,35 +36,28 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           MediaQuery.of(context).padding.top, // 상태바 높이 포함
       decoration: BoxDecoration(
         gradient: scrollOffset <= statusBarHeight
-            ? LinearGradient(
+            ? const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.pointBrown.withValues(alpha: 0.9),
-                  AppColors.pointBrown.withValues(alpha: 0.7),
-                ],
-              ) // 초기 상태: 브라운 그라데이션
+                colors: [Colors.transparent, Colors.transparent],
+              ) // 초기 상태: 완전 투명
             : scrollOffset > (bannerHeight * 0.9)
-            ? LinearGradient(
+            ? const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Colors.white,
-                  Colors.white.withValues(alpha: 0.95),
-                ],
+                colors: [Colors.white, Colors.white],
+                stops: [0.0, 0.95],
               ) // 스크롤 완료: 흰색 그라데이션
             : LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  AppColors.pointBrown.withValues(
-                    alpha: 0.9 - (scrollOffset / bannerHeight) * 0.9,
-                  ),
-                  AppColors.pointBrown.withValues(
-                    alpha: 0.7 - (scrollOffset / bannerHeight) * 0.7,
+                  Colors.transparent,
+                  Colors.white.withValues(
+                    alpha: (scrollOffset / bannerHeight) * 0.8,
                   ),
                 ],
-              ), // 스크롤 중: 점진적 투명도 변화
+              ), // 스크롤 중: 투명에서 흰색으로 점진적 변화
       ),
       child: SafeArea(
         child: Padding(
@@ -79,7 +72,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     const Text(
                       'ゲストユーザー',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -101,10 +94,10 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       child: const Text(
                         '情報修正',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: 14,
                           decoration: TextDecoration.underline,
-                          decorationColor: Colors.white,
+                          decorationColor: Colors.black,
                         ),
                       ),
                     ),
@@ -117,9 +110,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   hint: 'タップしてドロワーメニューを開きます',
                   child: IconButton(
                     onPressed: onMenuTap,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.menu,
-                      color: AppColors.pureWhite, // 항상 흰색 유지
+                      color: Colors.black, // 검정색으로 변경
                       size: 24,
                     ),
                   ),
@@ -141,9 +134,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         onPressed: onFavoriteTap,
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         constraints: const BoxConstraints(),
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.favorite_outline,
-                          color: AppColors.pureWhite, // 항상 흰색 유지
+                          color: Colors.black, // 검정색으로 변경
                           size: 24,
                         ),
                       ),
@@ -157,9 +150,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         onPressed: onNotificationTap,
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         constraints: const BoxConstraints(),
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.notifications_outlined,
-                          color: AppColors.pureWhite, // 항상 흰색 유지
+                          color: Colors.black, // 검정색으로 변경
                           size: 24,
                         ),
                       ),

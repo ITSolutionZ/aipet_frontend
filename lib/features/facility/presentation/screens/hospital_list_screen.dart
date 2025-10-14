@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/facility/data/facility_providers.dart';
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:aipet_frontend/features/facility/presentation/screens/facility_detail_screen.dart';
-import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,7 +21,6 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
   // 검색 관련 상태
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  bool _isSearching = false;
 
   @override
   void initState() {
@@ -35,7 +34,6 @@ class _HospitalListScreenState extends ConsumerState<HospitalListScreen>
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text;
-        _isSearching = _searchQuery.isNotEmpty;
       });
     });
   }

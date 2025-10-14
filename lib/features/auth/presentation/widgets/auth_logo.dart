@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class AuthLogo extends StatelessWidget {
   const AuthLogo({
     super.key,
-    this.width = 250,
-    this.height = 250,
+    this.width = 300,
+    this.height = 300,
     this.imagePath = 'assets/icons/logos/aipet_logo.png',
     this.backgroundColor = Colors.transparent,
   });
