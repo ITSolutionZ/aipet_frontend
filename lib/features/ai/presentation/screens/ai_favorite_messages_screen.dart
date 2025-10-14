@@ -22,13 +22,16 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: GradientAppBar(
+      appBar: AppBar(
+        backgroundColor: AppColors.pureWhite,
+        foregroundColor: AppColors.pointBrown,
+        elevation: 0,
         title: null, // タイトルを削除
         actions: [
           if (favoriteQAs.isNotEmpty)
             IconButton(
               onPressed: () => _showClearAllDialog(context, ref),
-              icon: const Icon(Icons.clear_all, color: Colors.white),
+              icon: const Icon(Icons.clear_all, color: AppColors.pointBrown),
               tooltip: '全てクリア',
             ),
         ],
