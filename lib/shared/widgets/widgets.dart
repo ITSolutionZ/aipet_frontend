@@ -6,7 +6,6 @@ export 'accessibility/accessibility_widgets.dart';
 export 'animation/animation_widgets.dart';
 // App bars
 export 'app_bars/dynamic_scroll_app_bar.dart';
-export 'gradient_app_bar.dart';
 // Banners
 export 'banners/microchip_registration_banner.dart';
 // Buttons
@@ -44,6 +43,7 @@ export 'forms/common_input_field.dart';
 export 'forms/searchable_dropdown.dart';
 export 'forms/toggle_switch_component.dart';
 export 'forms/validated_text_field.dart';
+export 'gradient_app_bar.dart';
 // Headers
 export 'headers/section_header_component.dart';
 // Inputs
