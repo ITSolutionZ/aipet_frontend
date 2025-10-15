@@ -381,7 +381,7 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
   // Submit form
   // ================================
 
-  Future<void> submitForm() async {
+  Future<String> submitForm() async {
     // 텍스트 컨트롤러와 state 동기화 확인
     debugPrint('🔍 submitForm - Checking form validity:');
     debugPrint(
@@ -453,6 +453,9 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
       await clearSavedFormData();
 
       debugPrint('✅ Pet registration completed successfully');
+
+      // 등록된 펫 ID 반환
+      return petEntity.id;
     } catch (error) {
       debugPrint('❌ Pet profile creation failed: $error');
       throw Exception('ペットプロフィール保存に失敗しました: $error');

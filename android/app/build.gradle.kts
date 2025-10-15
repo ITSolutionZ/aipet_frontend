@@ -31,14 +31,18 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        // 환경 변수에서 API 키 가져오기 (GOOGLE_MAPS_API_KEY -> GOOGLE_PUBLIC_API_KEY -> 기본값 순)
-        val googleMapsApiKey = System.getenv("GOOGLE_MAPS_API_KEY")
+        // gradle.properties에서 API 키 가져오기 (gradle.properties -> 환경 변수 -> 기본값 순)
+        val googleMapsApiKey = project.findProperty("GOOGLE_MAPS_API_KEY") as String?
+            ?: System.getenv("GOOGLE_MAPS_API_KEY")
             ?: System.getenv("GOOGLE_PUBLIC_API_KEY")
             ?: "AIzaSyDgutqY6sdUtjQ_nCZOfb5_GwZmz7mHiAY"
         manifestPlaceholders["GOOGLE_MAPS_API_KEY"] = googleMapsApiKey
 
         // API 키 설정 상태 출력
         when {
+            project.findProperty("GOOGLE_MAPS_API_KEY") != null -> {
+                println("✅ gradle.properties에서 GOOGLE_MAPS_API_KEY를 사용합니다.")
+            }
             System.getenv("GOOGLE_MAPS_API_KEY") != null -> {
                 println("✅ GOOGLE_MAPS_API_KEY 환경 변수를 사용합니다.")
             }
@@ -46,7 +50,7 @@ android {
                 println("✅ GOOGLE_PUBLIC_API_KEY 환경 변수를 사용합니다.")
             }
             else -> {
-                println("⚠️  Google Maps API 키 환경 변수가 설정되지 않았습니다. 기본값을 사용합니다.")
+                println("⚠️  Google Maps API 키가 설정되지 않았습니다. 기본값을 사용합니다.")
             }
         }
     }
