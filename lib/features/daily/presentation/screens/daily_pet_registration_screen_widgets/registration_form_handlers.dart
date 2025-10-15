@@ -80,14 +80,17 @@ class RegistrationFormHandlers {
     setLoading(true);
 
     try {
-      await logic.submitPetRegistration(
+      // 펫 등록 및 등록된 펫 ID 받기
+      final petId = await logic.submitPetRegistration(
         formKey: formKey,
         controller: controller,
       );
 
       if (context.mounted) {
         _showSuccessMessage(logic.getSuccessMessage());
-        context.pop();
+
+        // 등록된 펫의 프로필 편집 화면으로 이동 (쿼리 파라미터 사용)
+        context.go('/home/pet-profile?petId=$petId');
       }
     } catch (error) {
       if (context.mounted) {

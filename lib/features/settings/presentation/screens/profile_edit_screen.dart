@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/features/settings/data/providers/settings_providers.dart';
 import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -175,6 +176,13 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
       if (mounted) {
         if (success) {
+          // 다른 화면에서 참조하는 userProfileNotifierProvider도 업데이트
+          try {
+            await ref.read(userProfileNotifierProvider.notifier).refresh();
+          } catch (e) {
+            print('⚠️ userProfileNotifierProvider refresh 실패: $e');
+          }
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('プロフィールが保存されました'),
@@ -213,7 +221,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       drawer: const AppDrawer(),
-      appBar: const SoftGradientDrawerAppBar(title: 'プロフィール編集'),
+      appBar: const SoftGradientDrawerAppBar(title: ''),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Form(
@@ -312,6 +320,12 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                         ),
                 ),
               ),
+
+              // ユーザーID 표시 (읽기 전용)
+              if (profileState.profile != null) ...[
+                const SizedBox(height: AppSpacing.xl),
+                _buildUserIdCard(profileState.profile!.id),
+              ],
             ],
           ),
         ),
@@ -419,6 +433,49 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
         shape: BoxShape.circle,
       ),
       child: const Icon(Icons.person, size: 60, color: AppColors.pointGray),
+    );
+  }
+
+  /// 유저 ID 카드 (읽기 전용)
+  Widget _buildUserIdCard(String userId) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.pointOffWhite.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        border: Border.all(
+          color: AppColors.pointGray.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.badge_outlined,
+            color: AppColors.pointGray,
+            size: 20,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Text(
+            'ユーザID: ',
+            style: AppFonts.bodySmall.copyWith(
+              color: AppColors.pointGray,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              userId,
+              style: AppFonts.bodySmall.copyWith(
+                color: AppColors.pointDark,
+                fontFamily: 'monospace',
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const Icon(Icons.lock_outline, color: AppColors.pointGray, size: 16),
+        ],
+      ),
     );
   }
 }

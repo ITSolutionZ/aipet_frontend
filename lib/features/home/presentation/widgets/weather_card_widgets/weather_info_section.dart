@@ -58,10 +58,13 @@ class _WeatherInfoSectionState extends State<WeatherInfoSection> {
               align-items: center;
               justify-content: center;
               background: transparent;
+              overflow: hidden;
             }
             svg {
               width: 100%;
               height: 100%;
+              max-width: 100%;
+              max-height: 100%;
             }
           </style>
         </head>
@@ -74,6 +77,13 @@ class _WeatherInfoSectionState extends State<WeatherInfoSection> {
       final controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setBackgroundColor(Colors.transparent)
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onWebResourceError: (error) {
+              debugPrint('WebView error: ${error.description}');
+            },
+          ),
+        )
         ..loadHtmlString(htmlContent);
 
       if (mounted) {

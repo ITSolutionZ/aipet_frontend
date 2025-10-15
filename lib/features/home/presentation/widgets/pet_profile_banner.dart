@@ -82,16 +82,8 @@ class PetProfileBanner extends ConsumerWidget {
   }
 
   Widget _buildPetProfiles(BuildContext context, List<PetProfileEntity> pets) {
-    // 최대 3마리까지만 표시
-    final displayPets = pets.take(3).toList();
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ...displayPets.map((pet) => _buildPetAvatar(context, pet)),
-        if (pets.length < 3) _buildAddPetButton(context),
-      ],
-    );
+    // 펫 프로필과 추가 버튼을 완전히 숨김
+    return const SizedBox.shrink();
   }
 
   Widget _buildPetAvatar(BuildContext context, PetProfileEntity pet) {
@@ -100,6 +92,9 @@ class PetProfileBanner extends ConsumerWidget {
       child: GestureDetector(
         onTap: () {
           context.push('/pet-profile/${pet.id}');
+        },
+        onLongPress: () {
+          _showPetOptionsBottomSheet(context, pet);
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -218,5 +213,251 @@ class PetProfileBanner extends ConsumerWidget {
       color: AppColors.pointGreen.withValues(alpha: 0.2),
       child: Icon(iconData, color: AppColors.pointGreen, size: 40),
     );
+  }
+
+  /// 펫 옵션 바텀 시트 표시
+  void _showPetOptionsBottomSheet(BuildContext context, PetProfileEntity pet) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // 핸들 바
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  // 펫 정보 헤더
+                  Row(
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          border: Border.all(
+                            color: AppColors.pointGreen,
+                            width: 2,
+                          ),
+                        ),
+                        child: ClipOval(child: _getPetImage(pet)),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              pet.name,
+                              style: AppFonts.titleMedium.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              pet.type == 'dog'
+                                  ? '犬'
+                                  : pet.type == 'cat'
+                                  ? '猫'
+                                  : 'ペット',
+                              style: AppFonts.bodySmall.copyWith(
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // 옵션 리스트
+                  Column(
+                    children: [
+                      _buildOptionTile(
+                        context,
+                        icon: Icons.edit,
+                        title: 'プロフィール編集',
+                        onTap: () {
+                          Navigator.pop(context);
+                          context.push('/pet-profile/${pet.id}/edit');
+                        },
+                      ),
+                      _buildOptionTile(
+                        context,
+                        icon: Icons.delete_outline,
+                        title: 'ペットを削除',
+                        iconColor: Colors.red,
+                        textColor: Colors.red,
+                        onTap: () {
+                          Navigator.pop(context);
+                          _showDeleteConfirmDialog(context, pet);
+                        },
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: AppSpacing.lg),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// 옵션 타일 위젯
+  Widget _buildOptionTile(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    Color? iconColor,
+    Color? textColor,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: iconColor ?? Colors.grey[700]),
+      title: Text(
+        title,
+        style: AppFonts.bodyMedium.copyWith(color: textColor ?? Colors.black),
+      ),
+      onTap: onTap,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+    );
+  }
+
+  /// 삭제 확인 다이얼로그 표시
+  void _showDeleteConfirmDialog(BuildContext context, PetProfileEntity pet) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Consumer(
+          builder: (context, ref, child) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: const Text(
+                'ペット削除確認',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '「${pet.name}」を削除しますか？',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    'この操作は取り消せません。',
+                    style: TextStyle(fontSize: 14, color: Colors.red[600]),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'キャンセル',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    await _deletePet(context, ref, pet);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('削除'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// 펫 삭제 실행
+  Future<void> _deletePet(
+    BuildContext context,
+    WidgetRef ref,
+    PetProfileEntity pet,
+  ) async {
+    try {
+      // 로딩 인디케이터 표시
+      // ignore: unawaited_futures
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      // 펫 삭제 실행
+      await ref.read(petProfilesNotifierProvider.notifier).deletePet(pet.id);
+
+      // 로딩 인디케이터 닫기
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+
+      // 성공 메시지 표시
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${pet.name}を削除しました'),
+            backgroundColor: AppColors.pointGreen,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      // 로딩 인디케이터 닫기
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+
+      // 에러 메시지 표시
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('削除に失敗しました: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 }

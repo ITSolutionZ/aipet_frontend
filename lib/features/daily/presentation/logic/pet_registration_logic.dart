@@ -20,7 +20,7 @@ class PetRegistrationLogic {
   PetRegistrationLogic();
 
   /// 펫 등록 폼 검증 및 제출
-  Future<void> submitPetRegistration({
+  Future<String> submitPetRegistration({
     required GlobalKey<FormState> formKey,
     required PetRegistrationController controller,
   }) async {
@@ -86,8 +86,8 @@ class PetRegistrationLogic {
     }
 
     debugPrint('✅ All validations passed, proceeding with registration');
-    // 실제 등록 처리
-    await controller.submitForm();
+    // 실제 등록 처리 및 펫 ID 반환
+    return controller.submitForm();
   }
 
   /// 생년월일 선택 로직
