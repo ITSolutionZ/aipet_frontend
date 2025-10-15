@@ -1,106 +1,13 @@
 import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 /// 날씨 정보 섹션 (온도, 위치, 바람, UV, 특이사항)
-class WeatherInfoSection extends StatefulWidget {
+class WeatherInfoSection extends StatelessWidget {
   final WeatherEntity weather;
 
   const WeatherInfoSection({super.key, required this.weather});
-
-  @override
-  State<WeatherInfoSection> createState() => _WeatherInfoSectionState();
-}
-
-class _WeatherInfoSectionState extends State<WeatherInfoSection> {
-  late WebViewController _windWebViewController;
-  late WebViewController _uvWebViewController;
-  bool _windLoaded = false;
-  bool _uvLoaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeWebViews();
-  }
-
-  /// WebView 초기화
-  Future<void> _initializeWebViews() async {
-    await Future.wait([
-      _loadSvgToWebView('wind', 'wind'),
-      _loadSvgToWebView('uv', 'uv-index'),
-    ]);
-  }
-
-  /// SVG를 WebView에 로드
-  Future<void> _loadSvgToWebView(String type, String fileName) async {
-    try {
-      final svgString = await rootBundle.loadString(
-        'assets/meteocons/design/fill/animation-ready/$fileName.svg',
-      );
-
-      final htmlContent =
-          '''
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <style>
-            html, body {
-              margin: 0;
-              padding: 0;
-              width: 100%;
-              height: 100%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              background: transparent;
-              overflow: hidden;
-            }
-            svg {
-              width: 100%;
-              height: 100%;
-              max-width: 100%;
-              max-height: 100%;
-            }
-          </style>
-        </head>
-        <body>
-          $svgString
-        </body>
-        </html>
-      ''';
-
-      final controller = WebViewController()
-        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..setBackgroundColor(Colors.transparent)
-        ..setNavigationDelegate(
-          NavigationDelegate(
-            onWebResourceError: (error) {
-              debugPrint('WebView error: ${error.description}');
-            },
-          ),
-        )
-        ..loadHtmlString(htmlContent);
-
-      if (mounted) {
-        setState(() {
-          if (type == 'wind') {
-            _windWebViewController = controller;
-            _windLoaded = true;
-          } else if (type == 'uv') {
-            _uvWebViewController = controller;
-            _uvLoaded = true;
-          }
-        });
-      }
-    } catch (e) {
-      debugPrint('❌ Failed to load $type SVG: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +21,7 @@ class _WeatherInfoSectionState extends State<WeatherInfoSection> {
             children: [
               // 온도 숫자
               Text(
-                '${widget.weather.temperature.round()}',
+                '${weather.temperature.round()}',
                 style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(width: 2),
@@ -141,7 +48,7 @@ class _WeatherInfoSectionState extends State<WeatherInfoSection> {
 
           // 두 번째 줄: 장소명
           Text(
-            widget.weather.location,
+            weather.location,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -159,13 +66,16 @@ class _WeatherInfoSectionState extends State<WeatherInfoSection> {
         SizedBox(
           width: 28,
           height: 28,
-          child: _windLoaded
-              ? WebViewWidget(controller: _windWebViewController)
-              : const SizedBox(),
+          child: SvgPicture.asset(
+            'assets/meteocons/design/fill/animation-ready/wind.svg',
+            fit: BoxFit.contain,
+            // ignore: deprecated_member_use
+            color: AppColors.pointBlue,
+          ),
         ),
         const SizedBox(height: 2),
         Text(
-          widget.weather.windSpeed.toStringAsFixed(1),
+          weather.windSpeed.toStringAsFixed(1),
           style: AppTextStyles.bodySmall.copyWith(
             fontSize: 10,
             fontWeight: FontWeight.bold,
@@ -183,13 +93,16 @@ class _WeatherInfoSectionState extends State<WeatherInfoSection> {
         SizedBox(
           width: 28,
           height: 28,
-          child: _uvLoaded
-              ? WebViewWidget(controller: _uvWebViewController)
-              : const SizedBox(),
+          child: SvgPicture.asset(
+            'assets/meteocons/design/fill/animation-ready/uv-index.svg',
+            fit: BoxFit.contain,
+            // ignore: deprecated_member_use
+            color: AppColors.pointYellow,
+          ),
         ),
         const SizedBox(height: 2),
         Text(
-          widget.weather.uvIndex.toStringAsFixed(1),
+          weather.uvIndex.toStringAsFixed(1),
           style: AppTextStyles.bodySmall.copyWith(
             fontSize: 10,
             fontWeight: FontWeight.bold,
@@ -238,7 +151,7 @@ class _WeatherInfoSectionState extends State<WeatherInfoSection> {
           ),
           const SizedBox(height: 2),
           Text(
-            '${widget.weather.humidity}%',
+            '${weather.humidity}%',
             style: AppTextStyles.bodySmall.copyWith(
               fontSize: 10,
               fontWeight: FontWeight.bold,
@@ -251,7 +164,7 @@ class _WeatherInfoSectionState extends State<WeatherInfoSection> {
 
   /// 날씨 조건에 따른 파티클 아이콘 경로 반환
   String? _getWeatherParticleIcon() {
-    final weatherId = widget.weather.weatherId;
+    final weatherId = weather.weatherId;
 
     if (weatherId >= 200 && weatherId < 300) {
       return 'assets/meteocons/design/fill/animation-ready/lightning-bolt.svg';
@@ -278,7 +191,7 @@ class _WeatherInfoSectionState extends State<WeatherInfoSection> {
 
   /// 파티클 라벨 반환
   String _getWeatherParticleLabel() {
-    final weatherId = widget.weather.weatherId;
+    final weatherId = weather.weatherId;
 
     if (weatherId >= 200 && weatherId < 300) {
       return '雷';

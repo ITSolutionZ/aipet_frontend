@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Pet Profile 비즈니스 로직 클래스
@@ -15,15 +16,26 @@ class PetProfileLogic {
   /// 펫 프로필 로드
   Future<Result<PetProfileEntity?>> loadPetProfile(String petId) async {
     try {
+      debugPrint('🔍 PetProfileLogic: Loading pet with ID: $petId');
       final repository = _ref.read(petProfileRepositoryProvider);
       final result = await repository.getPetById(petId);
 
       if (result.isSuccess) {
-        return Result.success('ペット情報を取得しました', result.dataOrNull);
+        if (result.dataOrNull != null) {
+          debugPrint(
+            '✅ PetProfileLogic: Pet found: ${result.dataOrNull!.name}',
+          );
+          return Result.success('ペット情報を取得しました', result.dataOrNull);
+        } else {
+          debugPrint('❌ PetProfileLogic: Pet not found with ID: $petId');
+          return Result.failure('ペットが見つかりません (ID: $petId)');
+        }
       } else {
+        debugPrint('❌ PetProfileLogic: Repository error: ${result.message}');
         return Result.failure(result.message);
       }
     } catch (e) {
+      debugPrint('❌ PetProfileLogic: Exception: ${e.toString()}');
       return Result.failure('ペット情報の取得に失敗しました: ${e.toString()}');
     }
   }

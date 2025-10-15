@@ -76,26 +76,34 @@ class RegistrationFormHandlers {
   }
 
   /// 폼 제출 핸들러
-  Future<void> handleSubmit(void Function(bool) setLoading) async {
+  Future<void> handleSubmit(
+    void Function(bool) setLoading, {
+    String? editPetId,
+  }) async {
     setLoading(true);
 
     try {
-      // 펫 등록 및 등록된 펫 ID 받기
+      // 펫 등록/편집 및 등록된 펫 ID 받기
       final petId = await logic.submitPetRegistration(
         formKey: formKey,
         controller: controller,
+        petId: editPetId, // 편집 모드용 petId 전달
       );
 
       if (context.mounted) {
         _showSuccessMessage(logic.getSuccessMessage());
 
-        // 등록된 펫의 프로필 편집 화면으로 이동 (쿼리 파라미터 사용)
-        context.go('/home/pet-profile?petId=$petId');
+        // 잠시 대기 후 펫 프로필 화면으로 이동 (데이터 저장 완료 대기)
+        await Future.delayed(const Duration(milliseconds: 500));
+
+        // 등록된 펫의 프로필 편집 화면으로 이동 (경로 파라미터 사용)
+        context.go('/home/pet-profile/$petId');
       }
     } catch (error) {
       if (context.mounted) {
         final errorMessage = logic.getErrorMessage(error);
         debugPrint('🚨 Registration error: $errorMessage');
+        debugPrint('🚨 Error details: $error');
         _showErrorMessage(errorMessage);
       }
     } finally {

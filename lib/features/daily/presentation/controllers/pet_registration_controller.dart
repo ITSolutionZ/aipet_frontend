@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration/pet_registration.dart';
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/services/pet_user_relation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -440,9 +441,25 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
       final petProfilesNotifier = _ref.read(
         petProfilesNotifierProvider.notifier,
       );
-      await petProfilesNotifier.createPet(petEntity);
+      final createdPet = await petProfilesNotifier.createPet(petEntity);
 
       debugPrint('✅ Pet profile saved successfully to repository');
+      debugPrint('✅ Created pet ID: ${createdPet.id}');
+
+      // 펫-사용자 관계 생성 (소유자로 등록)
+      final relationService = PetUserRelationService.instance;
+      final relationSuccess = await relationService.addUserToPet(
+        petId: createdPet.id,
+        userId: 'local_user', // 현재 로컬 사용자 ID
+        role: 'owner',
+        permissions: 'full_access',
+      );
+
+      if (relationSuccess) {
+        debugPrint('✅ Pet-user relation created successfully');
+      } else {
+        debugPrint('⚠️ Pet-user relation creation failed');
+      }
 
       // Mock 데이터 처리 로그
       debugPrint(
@@ -454,8 +471,67 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
 
       debugPrint('✅ Pet registration completed successfully');
 
-      // 등록된 펫 ID 반환
-      return petEntity.id;
+      // 등록된 펫 ID 반환 (실제 생성된 ID 사용)
+      return createdPet.id;
+    } catch (e) {
+      debugPrint('❌ Pet registration failed: $e');
+      rethrow;
+    }
+  }
+
+  /// 펫 정보 업데이트 (편집 모드)
+  Future<String> updatePetForm(String petId) async {
+    try {
+      debugPrint('🔄 Updating pet profile for ID: $petId');
+
+      // 펫 프로필 업데이트를 위한 PetProfileEntity 생성
+      final petEntity = PetProfileEntity(
+        id: petId, // 기존 ID 유지
+        name: state.petName,
+        type: state.petType,
+        breed: state.breed,
+        birthDate: state.birthDate!,
+        gender: state.gender,
+        weight: state.weight!,
+        imagePath: state.petImagePath,
+        ownerId: 'local_user', // 로컬 사용자 ID
+        createdAt: DateTime.now(), // 기존 생성일 유지할 수 있지만 편의상 현재 시간 사용
+        updatedAt: DateTime.now(),
+        isActive: true,
+        additionalInfo: {
+          'isNeutered': state.isNeutered,
+          'guardianName': state.guardianName,
+          'institutionName': state.institutionName,
+          'registrationNumber': state.registrationNumber,
+          'adoptionDate': state.adoptionDate?.toIso8601String(),
+          'forbiddenIngredients': state.forbiddenIngredients,
+          'bodyPartsToManage': state.bodyPartsToManage,
+          'food': state.food,
+          'supplement': state.supplement,
+          'treat': state.treat,
+        },
+      );
+
+      debugPrint(
+        '🔄 PetProfileEntity for update: ${petEntity.name}, ${petEntity.type}, ${petEntity.breed}',
+      );
+
+      // 펫 프로필 업데이트
+      final petProfilesNotifier = _ref.read(
+        petProfilesNotifierProvider.notifier,
+      );
+      await petProfilesNotifier.updatePet(petEntity);
+
+      debugPrint('✅ Pet profile updated successfully');
+      debugPrint('✅ Updated pet ID: $petId');
+
+      // 성공적으로 업데이트된 후 로컬 저장 데이터 삭제
+      await clearSavedFormData();
+
+      debugPrint('✅ Pet update completed successfully');
+
+      // 업데이트된 펫 ID 반환 (기존 petId 사용)
+      return petId;
     } catch (error) {
       debugPrint('❌ Pet profile creation failed: $error');
       throw Exception('ペットプロフィール保存に失敗しました: $error');
