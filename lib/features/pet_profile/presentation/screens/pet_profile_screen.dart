@@ -5,6 +5,7 @@ import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pe
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_basic_info_tab.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_health_tab.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_nutrition_tab.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,25 +81,24 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
   ) {
     // 에러 상태나 펫을 찾을 수 없는 상태에서는 뒤로가기 버튼과 액션 버튼들을 숨김
     if (state.errorMessage != null || state.selectedPet == null) {
-      return GradientAppBar(
-        title: null,
+      return const SoftGradientAppBar(
+        title: 'ペットプロフィール',
         leading: null, // 뒤로가기 버튼 제거
         actions: null, // 액션 버튼들 제거
-        bottom: _buildTabBar(),
       );
     }
 
-    return GradientAppBar(
-      title: null, // タイトルを削除
+    return SoftGradientAppBar(
+      title: state.selectedPet?.name ?? 'ペットプロフィール',
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        icon: const Icon(Icons.arrow_back),
         onPressed: () => context.pop(),
       ),
       actions: [
         if (!state.isEditMode) ...[
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () => _toggleEditMode(),
+            onPressed: () => _navigateToEditScreen(context, state.selectedPet!),
             tooltip: PetProfileConstants.editLabel,
           ),
           IconButton(
@@ -108,20 +108,38 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
           ),
         ],
       ],
-      bottom: _buildTabBar(),
     );
   }
 
-  PreferredSizeWidget _buildTabBar() {
-    return TabBar(
-      controller: _tabController,
-      indicatorColor: Colors.yellow,
-      indicatorWeight: 3,
-      labelColor: Colors.white,
-      unselectedLabelColor: Colors.white.withValues(alpha: 0.7),
-      tabs: PetProfileConstants.tabTitles
-          .map((title) => Tab(text: title))
-          .toList(),
+  Widget _buildTabBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.pointOffWhite,
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.pointGray.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: TabBar(
+          controller: _tabController,
+          isScrollable: false,
+          indicatorColor: AppColors.pointBrown,
+          indicatorWeight: 3,
+          labelColor: AppColors.pointDark,
+          unselectedLabelColor: AppColors.pointGray,
+          labelStyle: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+          unselectedLabelStyle: AppFonts.bodyMedium,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+          tabAlignment: TabAlignment.fill,
+          tabs: PetProfileConstants.tabTitles
+              .map((title) => Tab(text: title))
+              .toList(),
+        ),
+      ),
     );
   }
 
@@ -141,18 +159,27 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
       return const _PetNotFoundWidget();
     }
 
-    return TabBarView(
-      controller: _tabController,
+    return Column(
       children: [
-        PetBasicInfoTab(
-          pet: state.selectedPet!,
-          isEditMode: state.isEditMode,
-          onToggleEdit: _toggleEditMode,
+        // TabBar 추가
+        Container(color: AppColors.pointOffWhite, child: _buildTabBar()),
+        // TabBarView
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              PetBasicInfoTab(
+                pet: state.selectedPet!,
+                isEditMode: state.isEditMode,
+                onToggleEdit: _toggleEditMode,
+              ),
+              PetHealthTab(pet: state.selectedPet!),
+              PetNutritionTab(pet: state.selectedPet!),
+              PetActivityTab(pet: state.selectedPet!),
+              PetAdoptionTab(pet: state.selectedPet!),
+            ],
+          ),
         ),
-        PetHealthTab(pet: state.selectedPet!),
-        PetNutritionTab(pet: state.selectedPet!),
-        PetActivityTab(pet: state.selectedPet!),
-        PetAdoptionTab(pet: state.selectedPet!),
       ],
     );
   }
@@ -168,7 +195,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: ElevatedButton(
-        onPressed: _toggleEditMode,
+        onPressed: () => _navigateToEditScreen(context, state.selectedPet!),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.pointBrown,
           foregroundColor: Colors.white,
@@ -181,6 +208,11 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
 
   void _toggleEditMode() {
     ref.read(petProfileUnifiedControllerProvider.notifier).toggleEditMode();
+  }
+
+  /// 편집 화면으로 이동 (펫 등록 화면을 편집 모드로 사용)
+  void _navigateToEditScreen(BuildContext context, PetProfileEntity pet) {
+    context.go('/daily-pet-registration?petId=${pet.id}');
   }
 
   void _showMoreOptions(BuildContext context) {
@@ -359,9 +391,23 @@ class _PetNotFoundWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
-          ElevatedButton(
-            onPressed: () => context.go('/home'),
-            child: const Text(PetProfileConstants.goHomeButton),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () => context.go('/home'),
+                child: const Text(PetProfileConstants.goHomeButton),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              ElevatedButton(
+                onPressed: () {
+                  // 현재 화면을 다시 로드
+                  final petId = (context.widget as PetProfileScreen).petId;
+                  context.go('/pet-profile/$petId');
+                },
+                child: const Text('再読み込み'),
+              ),
+            ],
           ),
         ],
       ),

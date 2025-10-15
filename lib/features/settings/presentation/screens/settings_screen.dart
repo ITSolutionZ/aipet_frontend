@@ -132,7 +132,7 @@ class SettingsScreen extends ConsumerWidget {
           const SectionHeaderWidget(title: 'その他'),
           SettingsTileWidget(
             icon: Icons.dashboard,
-            title: 'データベースダッシュボード',
+            title: 'データベースダッシュボード (開発用)',
             backgroundColor: const Color(0xFF6B73FF),
             onTap: () => context.push('/settings/database-dashboard'),
           ),

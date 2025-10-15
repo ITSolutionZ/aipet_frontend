@@ -30,7 +30,7 @@ class LocalDatabaseService {
 
     return openDatabase(
       path,
-      version: 5, // 펫-사용자 관계 테이블 추가를 위해 버전 업데이트
+      version: 6, // 펫 추가 정보 컬럼 추가를 위해 버전 업데이트
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -50,6 +50,10 @@ class LocalDatabaseService {
         gender TEXT,
         birth_date TEXT,
         profile_image TEXT,
+        registration_number TEXT,
+        guardian_name TEXT,
+        institution_name TEXT,
+        is_neutered INTEGER DEFAULT 0,
         is_active INTEGER DEFAULT 1,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
@@ -194,20 +198,6 @@ class LocalDatabaseService {
         created_at TEXT NOT NULL
       )
     ''');
-
-    // 사용자 프로필 테이블
-    await db.execute('''
-      CREATE TABLE user_profiles(
-        id TEXT PRIMARY KEY,
-        user_name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        name_katakana TEXT,
-        contact TEXT,
-        profile_image TEXT,
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-      )
-    ''');
   }
 
   /// 데이터베이스 업그레이드
@@ -287,6 +277,16 @@ class LocalDatabaseService {
       );
       await db.execute('ALTER TABLE schedules RENAME COLUMN pet_id TO petId');
       await db.execute('ALTER TABLE activities RENAME COLUMN pet_id TO petId');
+    }
+
+    if (oldVersion < 6) {
+      // 펫 테이블에 추가 정보 컬럼 추가
+      await db.execute('ALTER TABLE pets ADD COLUMN registration_number TEXT');
+      await db.execute('ALTER TABLE pets ADD COLUMN guardian_name TEXT');
+      await db.execute('ALTER TABLE pets ADD COLUMN institution_name TEXT');
+      await db.execute(
+        'ALTER TABLE pets ADD COLUMN is_neutered INTEGER DEFAULT 0',
+      );
     }
   }
 

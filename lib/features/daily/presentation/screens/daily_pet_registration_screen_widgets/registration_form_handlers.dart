@@ -91,12 +91,13 @@ class RegistrationFormHandlers {
       );
 
       if (context.mounted) {
-        _showSuccessMessage(logic.getSuccessMessage());
+        final isEditMode = editPetId != null && editPetId.isNotEmpty;
+        _showSuccessMessage(logic.getSuccessMessage(isEditMode: isEditMode));
 
         // 잠시 대기 후 펫 프로필 화면으로 이동 (데이터 저장 완료 대기)
         await Future.delayed(const Duration(milliseconds: 500));
 
-        // 등록된 펫의 프로필 편집 화면으로 이동 (경로 파라미터 사용)
+        // 등록된 펫의 프로필 화면으로 이동
         context.go('/home/pet-profile/$petId');
       }
     } catch (error) {

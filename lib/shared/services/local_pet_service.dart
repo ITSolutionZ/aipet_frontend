@@ -8,24 +8,46 @@ class LocalPetService {
 
   /// 모든 펫 조회
   Future<List<Map<String, dynamic>>> getAllPets() async {
-    final db = await _dbService.database;
-    return db.query(
-      'pets',
-      where: 'is_active = ?',
-      whereArgs: [1],
-      orderBy: 'created_at DESC',
-    );
+    try {
+      print('🐾 LocalPetService.getAllPets: 시작');
+      final db = await _dbService.database;
+      final results = await db.query(
+        'pets',
+        where: 'is_active = ?',
+        whereArgs: [1],
+        orderBy: 'created_at DESC',
+      );
+      print('🐾 LocalPetService.getAllPets: ${results.length}개 펫 조회 완료');
+      return results;
+    } catch (error, stackTrace) {
+      print('❌ LocalPetService.getAllPets: 에러 발생 - $error');
+      print('📍 StackTrace: $stackTrace');
+      // 에러 발생 시 빈 리스트 반환
+      return [];
+    }
   }
 
   /// 특정 펫 조회
   Future<Map<String, dynamic>?> getPetById(String petId) async {
-    final db = await _dbService.database;
-    final results = await db.query(
-      'pets',
-      where: 'petId = ?',
-      whereArgs: [petId],
-    );
-    return results.isNotEmpty ? results.first : null;
+    try {
+      print('🐾 LocalPetService.getPetById: $petId 조회 시작');
+      final db = await _dbService.database;
+      final results = await db.query(
+        'pets',
+        where: 'petId = ?',
+        whereArgs: [petId],
+      );
+      final result = results.isNotEmpty ? results.first : null;
+      print(
+        '🐾 LocalPetService.getPetById: ${result != null ? "펫 발견" : "펫 없음"}',
+      );
+      return result;
+    } catch (error, stackTrace) {
+      print('❌ LocalPetService.getPetById: 에러 발생 - $error');
+      print('📍 StackTrace: $stackTrace');
+      // 에러 발생 시 null 반환
+      return null;
+    }
   }
 
   /// 펫 추가
@@ -34,7 +56,29 @@ class LocalPetService {
     final id = DateTime.now().millisecondsSinceEpoch.toString();
     final now = DateTime.now().toIso8601String();
 
-    await db.insert('pets', {
+    // 디버그: 원본 petData 전체 확인
+    print('🔍 ===== LocalPetService.addPet 시작 =====');
+    print('🔍 petData 전체: $petData');
+    print('🔍 petData keys: ${petData.keys.toList()}');
+
+    // additionalInfo에서 값 추출
+    final additionalInfo =
+        petData['additionalInfo'] as Map<String, dynamic>? ?? {};
+
+    print('🔍 additionalInfo: $additionalInfo');
+    print('🔍 additionalInfo type: ${additionalInfo.runtimeType}');
+    print('🔍 additionalInfo keys: ${additionalInfo.keys.toList()}');
+    print(
+      '🔍 registrationNumber from additionalInfo: ${additionalInfo['registrationNumber']}',
+    );
+    print(
+      '🔍 guardianName from additionalInfo: ${additionalInfo['guardianName']}',
+    );
+    print(
+      '🔍 institutionName from additionalInfo: ${additionalInfo['institutionName']}',
+    );
+
+    final insertData = {
       'petId': id,
       'name': petData['name'],
       'type': petData['type'],
@@ -43,12 +87,38 @@ class LocalPetService {
       'weight': petData['weight'],
       'gender': petData['gender'],
       'birth_date': petData['birthDate']?.toString(),
-      'profile_image': petData['profileImage'],
+      'profile_image': petData['imagePath'] ?? petData['profileImage'],
+      'registration_number': additionalInfo['registrationNumber'],
+      'guardian_name': additionalInfo['guardianName'],
+      'institution_name': additionalInfo['institutionName'],
+      'is_neutered':
+          (additionalInfo['isNeutered'] == true || petData['neutered'] == true)
+          ? 1
+          : 0,
       'is_active': 1,
       'created_at': now,
       'updated_at': now,
       'data': petData.toString(),
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    };
+
+    print('💾 LocalPetService.addPet - 저장할 데이터:');
+    print('   - registration_number: ${insertData['registration_number']}');
+    print('   - guardian_name: ${insertData['guardian_name']}');
+    print('   - institution_name: ${insertData['institution_name']}');
+
+    await db.insert(
+      'pets',
+      insertData,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    // 저장 후 확인
+    final saved = await getPetById(id);
+    print('✅ LocalPetService.addPet - 저장 후 조회:');
+    print('   - registration_number: ${saved?['registration_number']}');
+    print('   - guardian_name: ${saved?['guardian_name']}');
+    print('   - institution_name: ${saved?['institution_name']}');
+
     return id;
   }
 

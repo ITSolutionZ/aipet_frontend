@@ -425,7 +425,7 @@ class QAAccordionCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Image.asset(
-                    'assets/icons/logo_notinclude_text.png',
+                    'assets/icons/logos/aipet_white.png',
                     width: 20,
                     height: 20,
                     color: AppColors.pointBrown,

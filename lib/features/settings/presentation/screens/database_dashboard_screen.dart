@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/services/data_cleanup_service.dart';
 import 'package:aipet_frontend/shared/services/database_visualization_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,168 @@ class _DatabaseDashboardScreenState
     }
   }
 
+  /// 메뉴 액션 처리
+  void _handleMenuAction(String action) async {
+    switch (action) {
+      case 'cleanup':
+        await _performDataCleanup();
+        break;
+      case 'delete_all':
+        await _deleteAllData();
+        break;
+    }
+  }
+
+  /// 데이터 정리 실행
+  Future<void> _performDataCleanup() async {
+    // 확인 다이얼로그 표시
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('データクリーンアップ'),
+        content: const Text(
+          '깨진 펫 이름과 중복 데이터를 정리하시겠습니까?\n'
+          '이 작업은 되돌릴 수 없습니다.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('実行'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      // 로딩 표시
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      try {
+        final success = await DataCleanupService().performFullCleanup();
+
+        if (mounted) {
+          Navigator.pop(context); // 로딩 다이얼로그 닫기
+
+          if (success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('データクリーンアップが完了しました'),
+                backgroundColor: Colors.green,
+              ),
+            );
+            // 데이터 새로고침
+            _loadDatabaseInfo();
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('データクリーンアップ中にエラーが発生しました'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          Navigator.pop(context); // 로딩 다이얼로그 닫기
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('エラー: $e'), backgroundColor: Colors.red),
+          );
+        }
+      }
+    }
+  }
+
+  /// 모든 데이터 삭제
+  Future<void> _deleteAllData() async {
+    // 확인 다이얼로그 표시
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('全データ削除'),
+        content: const Text(
+          'SQLiteデータベースとSharedPreferencesの全てのデータを削除しますか?\n'
+          'この操作は元に戻せません。',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      // 로딩 표시
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      try {
+        // 1. SQLite 데이터베이스 모든 테이블 데이터 삭제
+        final database = await LocalDatabaseService.instance.database;
+        await database.delete('pets');
+        await database.delete('user_profiles');
+        await database.delete('walk_records');
+        await database.delete('health_records');
+        await database.delete('schedules');
+        await database.delete('activities');
+        await database.delete('pet_user_relations');
+        await database.delete('ai_categories');
+        await database.delete('ai_keywords');
+
+        // 2. SharedPreferences 모든 데이터 삭제
+        await LocalDataManager.instance.clearAllLocalData();
+
+        if (mounted) {
+          Navigator.pop(context); // 로딩 다이얼로그 닫기
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('全てのデータを削除しました'),
+              backgroundColor: Colors.green,
+            ),
+          );
+
+          // 데이터 새로고침
+          _loadDatabaseInfo();
+        }
+      } catch (e) {
+        if (mounted) {
+          Navigator.pop(context); // 로딩 다이얼로그 닫기
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('データ削除中にエラーが発生しました: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,6 +227,31 @@ class _DatabaseDashboardScreenState
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadDatabaseInfo,
+          ),
+          PopupMenuButton<String>(
+            onSelected: _handleMenuAction,
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'cleanup',
+                child: Row(
+                  children: [
+                    Icon(Icons.cleaning_services, color: Colors.orange),
+                    SizedBox(width: 8),
+                    Text('データクリーンアップ'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'delete_all',
+                child: Row(
+                  children: [
+                    Icon(Icons.delete_forever, color: Colors.red),
+                    SizedBox(width: 8),
+                    Text('全データ削除'),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),

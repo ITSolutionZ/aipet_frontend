@@ -37,6 +37,7 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
     state = state.copyWith(
       selectedPet: pet,
       editFormData: _initializeEditFormData(pet),
+      isLoading: false,
       errorMessage: null,
     );
   }
@@ -82,23 +83,40 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
 
     debugPrint('🔍 Loading pet profile with ID: $petId');
 
-    final result = await _logic.loadPetProfile(petId);
+    try {
+      final result = await _logic.loadPetProfile(petId);
 
-    if (result.isSuccess) {
-      final pet = result.dataOrNull;
-      if (pet != null) {
-        debugPrint('✅ Pet profile loaded successfully: ${pet.name}');
-        selectPet(pet);
+      if (result.isSuccess) {
+        final pet = result.dataOrNull;
+        if (pet != null) {
+          debugPrint('✅ Pet profile loaded successfully: ${pet.name}');
+          // 펫 선택 후 로딩 상태 해제
+          state = state.copyWith(
+            selectedPet: pet,
+            editFormData: _initializeEditFormData(pet),
+            isLoading: false,
+            errorMessage: null,
+          );
+        } else {
+          debugPrint('❌ Pet not found with ID: $petId');
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: 'ペットが見つかりません (ID: $petId)',
+          );
+        }
       } else {
-        debugPrint('❌ Pet not found with ID: $petId');
+        debugPrint('❌ Failed to load pet profile: ${result.message}');
         state = state.copyWith(
           isLoading: false,
-          errorMessage: 'ペットが見つかりません (ID: $petId)',
+          errorMessage: result.message,
         );
       }
-    } else {
-      debugPrint('❌ Failed to load pet profile: ${result.message}');
-      state = state.copyWith(isLoading: false, errorMessage: result.message);
+    } catch (e) {
+      debugPrint('❌ Exception while loading pet profile: $e');
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'ペット情報の読み込み中にエラーが発生しました: ${e.toString()}',
+      );
     }
   }
 
