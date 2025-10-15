@@ -80,16 +80,24 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
   Future<void> loadPetProfile(String petId) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
+    debugPrint('🔍 Loading pet profile with ID: $petId');
+
     final result = await _logic.loadPetProfile(petId);
 
     if (result.isSuccess) {
       final pet = result.dataOrNull;
       if (pet != null) {
+        debugPrint('✅ Pet profile loaded successfully: ${pet.name}');
         selectPet(pet);
       } else {
-        state = state.copyWith(isLoading: false, errorMessage: 'ペットが見つかりません');
+        debugPrint('❌ Pet not found with ID: $petId');
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: 'ペットが見つかりません (ID: $petId)',
+        );
       }
     } else {
+      debugPrint('❌ Failed to load pet profile: ${result.message}');
       state = state.copyWith(isLoading: false, errorMessage: result.message);
     }
   }

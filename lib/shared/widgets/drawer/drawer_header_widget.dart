@@ -45,21 +45,11 @@ class DrawerHeaderWidget extends ConsumerWidget {
                 height: 60,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: profileImagePath == null ? Colors.white : null,
+                  color: Colors.white,
                   border: Border.all(color: Colors.white, width: 2),
-                  image: profileImagePath != null
-                      ? DecorationImage(
-                          image: profileImagePath.startsWith('assets/')
-                              ? AssetImage(profileImagePath) as ImageProvider
-                              : FileImage(File(profileImagePath)),
-                          fit: BoxFit.cover,
-                        )
-                      : const DecorationImage(
-                          image: AssetImage(
-                            'assets/icons/logos/aipet_logo.png',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
+                ),
+                child: ClipOval(
+                  child: _buildUserProfileImage(profileImagePath),
                 ),
               ),
               const SizedBox(width: 16),
@@ -109,6 +99,67 @@ class DrawerHeaderWidget extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// 사용자 프로필 이미지 위젯
+  Widget _buildUserProfileImage(String? imagePath) {
+    if (imagePath == null || imagePath.isEmpty) {
+      return Image.asset(
+        'assets/icons/logos/aipet_logo.png',
+        fit: BoxFit.cover,
+        width: 60,
+        height: 60,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            width: 60,
+            height: 60,
+            color: Colors.grey[300],
+            child: const Icon(Icons.person, size: 30, color: Colors.grey),
+          );
+        },
+      );
+    }
+
+    // 이미지 타입에 따라 처리
+    if (imagePath.startsWith('assets/')) {
+      return Image.asset(
+        imagePath,
+        fit: BoxFit.cover,
+        width: 60,
+        height: 60,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildDefaultUserImage();
+        },
+      );
+    } else {
+      return Image.file(
+        File(imagePath),
+        fit: BoxFit.cover,
+        width: 60,
+        height: 60,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildDefaultUserImage();
+        },
+      );
+    }
+  }
+
+  /// 기본 사용자 이미지
+  Widget _buildDefaultUserImage() {
+    return Image.asset(
+      'assets/icons/logos/aipet_logo.png',
+      fit: BoxFit.cover,
+      width: 60,
+      height: 60,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: 60,
+          height: 60,
+          color: Colors.grey[300],
+          child: const Icon(Icons.person, size: 30, color: Colors.grey),
+        );
+      },
     );
   }
 }

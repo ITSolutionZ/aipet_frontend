@@ -27,14 +27,16 @@ class PetSelectionModal extends StatelessWidget {
           ...pets.map(
             (pet) => ListTile(
               leading: CircleAvatar(
-                backgroundImage: pet.imagePath != null ? AssetImage(pet.imagePath!) : null,
+                backgroundImage: pet.imagePath != null
+                    ? AssetImage(pet.imagePath!)
+                    : null,
                 child: pet.imagePath == null ? const Icon(Icons.pets) : null,
               ),
               title: Text(pet.name),
               subtitle: Text(pet.breed ?? 'Unknown breed'),
               onTap: () {
                 Navigator.pop(context);
-                context.go('/home/pet-profile?petId=${pet.id}');
+                context.go('/home/pet-profile/${pet.id}');
               },
             ),
           ),

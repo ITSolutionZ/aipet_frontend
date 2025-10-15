@@ -211,15 +211,21 @@ class PetProfileHeader extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundColor: Colors.grey.withValues(alpha: 0.2),
+              backgroundColor: AppColors.pointOffWhite,
               backgroundImage: (selectedImagePath ?? imagePath) != null
                   ? AssetImage(selectedImagePath ?? imagePath!)
                   : null,
               child: (selectedImagePath ?? imagePath) == null
-                  ? const Icon(
-                      Icons.pets,
-                      size: 50,
-                      color: AppColors.pointBrown,
+                  ? Image.asset(
+                      'assets/icons/logos/aipet_logo.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.pets,
+                          size: 50,
+                          color: AppColors.pointBrown,
+                        );
+                      },
                     )
                   : null,
             ),

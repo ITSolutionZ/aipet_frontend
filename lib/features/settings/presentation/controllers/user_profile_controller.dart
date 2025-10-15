@@ -32,7 +32,8 @@ class UserProfileController extends _$UserProfileController {
 
   @override
   UserProfileState build() {
-    // 초기 상태 반환, 로딩은 별도 메서드로 처리
+    // 자동으로 프로필 로드
+    _loadProfile();
     return const UserProfileState();
   }
 

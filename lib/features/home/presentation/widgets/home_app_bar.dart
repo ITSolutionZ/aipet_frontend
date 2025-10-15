@@ -1,10 +1,12 @@
+import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 /// 홈 화면용 커스텀 앱바
 /// 스크롤에 따라 투명에서 흰색으로 변하며 배너 이미지를 랜덤으로 표시
-class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
+class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final double scrollOffset;
   final bool isDrawerOpen;
   final VoidCallback? onMenuTap;
@@ -24,7 +26,17 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(56);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profileState = ref.watch(userProfileControllerProvider);
+
+    // 프로필이 로드되지 않았으면 로드
+    if (profileState.profile == null && !profileState.isLoading) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(userProfileControllerProvider.notifier).loadProfile();
+      });
+    }
+
+    final userName = profileState.profile?.userName ?? 'ゲストユーザー';
     // 배너 높이 계산 (화면 높이의 26% + 상태바 + 앱바 높이)
     final screenHeight = MediaQuery.of(context).size.height;
     final statusBarHeight = MediaQuery.of(context).padding.top;
@@ -69,9 +81,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               if (isDrawerOpen)
                 Row(
                   children: [
-                    const Text(
-                      'ゲストユーザー',
-                      style: TextStyle(
+                    Text(
+                      userName,
+                      style: const TextStyle(
                         color: AppColors.pointDark,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

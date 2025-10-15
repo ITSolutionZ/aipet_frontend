@@ -37,9 +37,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
   @override
   void dispose() {
     _tabController.dispose();
-    ref
-        .read(petProfileUnifiedControllerProvider.notifier)
-        .disposeTabController();
+    // Widget이 dispose되기 전에 ref 사용을 피함
     super.dispose();
   }
 

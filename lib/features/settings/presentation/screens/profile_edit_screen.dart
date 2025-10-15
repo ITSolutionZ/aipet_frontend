@@ -46,6 +46,17 @@ class ProfileEditFormController extends StateNotifier<ProfileEditFormState> {
           .updateField('contact', contactController.text);
     });
 
+    // 프로필 데이터가 있으면 컨트롤러에 값 설정
+    final profileState = ref.read(userProfileControllerProvider);
+    if (profileState.profile != null) {
+      final profile = profileState.profile!;
+      userNameController.text = profile.userName;
+      emailController.text = profile.email;
+      nameKatakanaController.text = profile.nameKatakana ?? '';
+      contactController.text = profile.contact ?? '';
+      print('📝 초기화 시 프로필 데이터 설정: ${profile.userName}');
+    }
+
     state = state.copyWith(
       formKey: formKey,
       userNameController: userNameController,
@@ -126,11 +137,9 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   @override
   void initState() {
     super.initState();
-    // 폼 컨트롤러 초기화
+    // 폼 컨트롤러 초기화 (프로필은 자동으로 로드됨)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(profileEditFormProvider.notifier).initialize();
-      // 프로필 로드
-      ref.read(userProfileControllerProvider.notifier).loadProfile();
     });
   }
 
@@ -211,17 +220,31 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     ref.listen(userProfileControllerProvider, (previous, next) {
       if (next.profile != null && previous?.profile != next.profile) {
         final profile = next.profile!;
-        formState.userNameController?.text = profile.userName;
-        formState.emailController?.text = profile.email;
-        formState.nameKatakanaController?.text = profile.nameKatakana ?? '';
-        formState.contactController?.text = profile.contact ?? '';
+        print('📝 프로필 데이터 로드됨: ${profile.userName}');
+
+        // 텍스트 컨트롤러에 값 설정 (기존 텍스트와 다를 때만)
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (formState.userNameController?.text != profile.userName) {
+            formState.userNameController?.text = profile.userName;
+          }
+          if (formState.emailController?.text != profile.email) {
+            formState.emailController?.text = profile.email;
+          }
+          if (formState.nameKatakanaController?.text !=
+              (profile.nameKatakana ?? '')) {
+            formState.nameKatakanaController?.text = profile.nameKatakana ?? '';
+          }
+          if (formState.contactController?.text != (profile.contact ?? '')) {
+            formState.contactController?.text = profile.contact ?? '';
+          }
+          print('📝 텍스트 필드에 값 설정 완료');
+        });
       }
     });
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      drawer: const AppDrawer(),
-      appBar: const SoftGradientDrawerAppBar(title: ''),
+      appBar: const SoftGradientBackAppBar(title: ''),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Form(
@@ -239,7 +262,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
               FormFieldWidget(
                 label: 'ユーザ名',
                 controller:
-                    formState.userNameController ?? TextEditingController(),
+                    formState.userNameController ??
+                    TextEditingController(
+                      text: profileState.profile?.userName ?? '',
+                    ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'ユーザ名を入力してください';
@@ -253,7 +279,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
               FormFieldWidget(
                 label: 'メールアドレス',
                 controller:
-                    formState.emailController ?? TextEditingController(),
+                    formState.emailController ??
+                    TextEditingController(
+                      text: profileState.profile?.email ?? '',
+                    ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'メールアドレスを入力してください';
@@ -270,7 +299,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
               FormFieldWidget(
                 label: 'フリガナ',
                 controller:
-                    formState.nameKatakanaController ?? TextEditingController(),
+                    formState.nameKatakanaController ??
+                    TextEditingController(
+                      text: profileState.profile?.nameKatakana ?? '',
+                    ),
                 validator: (value) => null, // Optional field
               ),
 
@@ -279,7 +311,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
               FormFieldWidget(
                 label: '連絡先',
                 controller:
-                    formState.contactController ?? TextEditingController(),
+                    formState.contactController ??
+                    TextEditingController(
+                      text: profileState.profile?.contact ?? '',
+                    ),
                 validator: (value) => null, // Optional field
               ),
 
@@ -406,16 +441,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     if (profileState.profile?.profileImage != null &&
         profileState.profile!.profileImage!.isNotEmpty) {
       print('🖼️ 기존 프로필 이미지 표시: ${profileState.profile!.profileImage}');
-      return Image.file(
-        File(profileState.profile!.profileImage!),
-        fit: BoxFit.cover,
-        width: 120,
-        height: 120,
-        errorBuilder: (context, error, stackTrace) {
-          print('🖼️ 기존 이미지 로드 에러: $error');
-          return _buildDefaultProfileImage();
-        },
-      );
+      return _buildProfileImageWidget(profileState.profile!.profileImage!);
     }
 
     // 기본 이미지 표시
@@ -423,16 +449,87 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     return _buildDefaultProfileImage();
   }
 
+  /// 프로필 이미지 위젯 빌드 (이미지 타입 감지)
+  Widget _buildProfileImageWidget(String imagePath) {
+    final imageType = ImageService.getImageType(imagePath);
+    print('🖼️ 이미지 타입 감지: $imageType, 경로: $imagePath');
+
+    switch (imageType) {
+      case ImageType.file:
+        return Image.file(
+          File(imagePath),
+          fit: BoxFit.cover,
+          width: 120,
+          height: 120,
+          errorBuilder: (context, error, stackTrace) {
+            print('🖼️ 파일 이미지 로드 에러: $error');
+            return _buildDefaultProfileImage();
+          },
+        );
+      case ImageType.network:
+        return Image.network(
+          imagePath,
+          fit: BoxFit.cover,
+          width: 120,
+          height: 120,
+          errorBuilder: (context, error, stackTrace) {
+            print('🖼️ 네트워크 이미지 로드 에러: $error');
+            return _buildDefaultProfileImage();
+          },
+        );
+      case ImageType.asset:
+        return Image.asset(
+          imagePath,
+          fit: BoxFit.cover,
+          width: 120,
+          height: 120,
+          errorBuilder: (context, error, stackTrace) {
+            print('🖼️ 에셋 이미지 로드 에러: $error');
+            return _buildDefaultProfileImage();
+          },
+        );
+    }
+  }
+
   /// 기본 프로필 이미지 위젯
   Widget _buildDefaultProfileImage() {
     return Container(
       width: 120,
       height: 120,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.pointOffWhite,
         shape: BoxShape.circle,
+        border: Border.all(
+          color: AppColors.pointGray.withValues(alpha: 0.3),
+          width: 2,
+        ),
       ),
-      child: const Icon(Icons.person, size: 60, color: AppColors.pointGray),
+      child: ClipOval(
+        child: Image.asset(
+          'assets/icons/logos/aipet_logo.png',
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.person,
+                  size: 50,
+                  color: AppColors.pointGray.withValues(alpha: 0.7),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'プロフィール',
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray.withValues(alpha: 0.7),
+                    fontSize: 10,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 

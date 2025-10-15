@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+
 import 'local_database_service.dart';
 
 /// 펫 정보 로컬 스토리지 서비스
@@ -19,7 +20,11 @@ class LocalPetService {
   /// 특정 펫 조회
   Future<Map<String, dynamic>?> getPetById(String petId) async {
     final db = await _dbService.database;
-    final results = await db.query('pets', where: 'id = ?', whereArgs: [petId]);
+    final results = await db.query(
+      'pets',
+      where: 'petId = ?',
+      whereArgs: [petId],
+    );
     return results.isNotEmpty ? results.first : null;
   }
 
@@ -30,7 +35,7 @@ class LocalPetService {
     final now = DateTime.now().toIso8601String();
 
     await db.insert('pets', {
-      'id': id,
+      'petId': id,
       'name': petData['name'],
       'type': petData['type'],
       'breed': petData['breed'],
@@ -53,7 +58,7 @@ class LocalPetService {
     final count = await db.update(
       'pets',
       {...petData, 'updated_at': DateTime.now().toIso8601String()},
-      where: 'id = ?',
+      where: 'petId = ?',
       whereArgs: [petId],
     );
     return count > 0;
@@ -65,7 +70,7 @@ class LocalPetService {
     final count = await db.update(
       'pets',
       {'is_active': 0, 'updated_at': DateTime.now().toIso8601String()},
-      where: 'id = ?',
+      where: 'petId = ?',
       whereArgs: [petId],
     );
     return count > 0;

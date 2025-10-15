@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfileHeaderWidget extends StatelessWidget {
+class ProfileHeaderWidget extends ConsumerWidget {
   final String userName;
   final String email;
   final bool isEditable;
@@ -14,7 +18,8 @@ class ProfileHeaderWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profileState = ref.watch(userProfileControllerProvider);
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.xl),
       child: Column(
@@ -27,16 +32,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                 decoration: const BoxDecoration(shape: BoxShape.circle),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(50),
-                  child: Image.asset(
-                    'assets/images/placeholder.png',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.person, size: 50),
-                      );
-                    },
-                  ),
+                  child: _buildUserProfileImage(profileState),
                 ),
               ),
               if (isEditable)
@@ -82,6 +78,87 @@ class ProfileHeaderWidget extends StatelessWidget {
           Text(email, style: const TextStyle(fontSize: 14, color: Colors.grey)),
         ],
       ),
+    );
+  }
+
+  /// 사용자 프로필 이미지 위젯
+  Widget _buildUserProfileImage(UserProfileState profileState) {
+    // 프로필 이미지가 있으면 표시
+    if (profileState.profile?.profileImage != null &&
+        profileState.profile!.profileImage!.isNotEmpty) {
+      return _buildProfileImageWidget(profileState.profile!.profileImage!);
+    }
+
+    // 기본 이미지 표시
+    return Image.asset(
+      'assets/icons/logos/aipet_logo.png',
+      fit: BoxFit.cover,
+      width: 100,
+      height: 100,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: 100,
+          height: 100,
+          color: Colors.grey[300],
+          child: const Icon(Icons.person, size: 50),
+        );
+      },
+    );
+  }
+
+  /// 프로필 이미지 위젯 빌드 (이미지 타입 감지)
+  Widget _buildProfileImageWidget(String imagePath) {
+    final imageType = ImageService.getImageType(imagePath);
+
+    switch (imageType) {
+      case ImageType.file:
+        return Image.file(
+          File(imagePath),
+          fit: BoxFit.cover,
+          width: 100,
+          height: 100,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildDefaultUserImage();
+          },
+        );
+      case ImageType.network:
+        return Image.network(
+          imagePath,
+          fit: BoxFit.cover,
+          width: 100,
+          height: 100,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildDefaultUserImage();
+          },
+        );
+      case ImageType.asset:
+        return Image.asset(
+          imagePath,
+          fit: BoxFit.cover,
+          width: 100,
+          height: 100,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildDefaultUserImage();
+          },
+        );
+    }
+  }
+
+  /// 기본 사용자 이미지 위젯
+  Widget _buildDefaultUserImage() {
+    return Image.asset(
+      'assets/icons/logos/aipet_logo.png',
+      fit: BoxFit.cover,
+      width: 100,
+      height: 100,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: 100,
+          height: 100,
+          color: Colors.grey[300],
+          child: const Icon(Icons.person, size: 50),
+        );
+      },
     );
   }
 }

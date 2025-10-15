@@ -91,7 +91,7 @@ class PetProfileBanner extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
       child: GestureDetector(
         onTap: () {
-          context.push('/pet-profile/${pet.id}');
+          context.push('/home/pet-profile/${pet.id}');
         },
         onLongPress: () {
           _showPetOptionsBottomSheet(context, pet);
@@ -300,7 +300,7 @@ class PetProfileBanner extends ConsumerWidget {
                         title: 'プロフィール編集',
                         onTap: () {
                           Navigator.pop(context);
-                          context.push('/pet-profile/${pet.id}/edit');
+                          context.push('/home/pet-profile/${pet.id}/edit');
                         },
                       ),
                       _buildOptionTile(

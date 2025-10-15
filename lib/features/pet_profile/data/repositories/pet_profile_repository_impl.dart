@@ -234,7 +234,9 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
 
       // 수동으로 안전하게 PetProfileEntity 생성
       return PetProfileEntity(
-        id: petData['id']?.toString() ?? '',
+        id: petData['petId']?.toString() ??
+            petData['id']?.toString() ??
+            petData['data']?['id']?.toString() ?? '',
         name: petData['name']?.toString() ?? '',
         type:
             petData['typeName']?.toString() ??
