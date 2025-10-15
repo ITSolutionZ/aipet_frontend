@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/features/home/presentation/widgets/appbar_banner_image.dart';
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
@@ -186,13 +188,36 @@ class PetProfileBanner extends ConsumerWidget {
   Widget _getPetImage(PetProfileEntity pet) {
     // 펫 이미지가 있는 경우
     if (pet.imagePath != null && pet.imagePath!.isNotEmpty) {
-      return Image.asset(
-        pet.imagePath!,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return _getDefaultPetIcon(pet);
-        },
-      );
+      // 이미지 경로 타입에 따라 다른 위젯 반환
+      if (pet.imagePath!.startsWith('http') ||
+          pet.imagePath!.startsWith('https')) {
+        // 네트워크 이미지
+        return Image.network(
+          pet.imagePath!,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return _getDefaultPetIcon(pet);
+          },
+        );
+      } else if (pet.imagePath!.startsWith('assets/')) {
+        // 에셋 이미지
+        return Image.asset(
+          pet.imagePath!,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return _getDefaultPetIcon(pet);
+          },
+        );
+      } else {
+        // 파일 시스템 이미지
+        return Image.file(
+          File(pet.imagePath!),
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return _getDefaultPetIcon(pet);
+          },
+        );
+      }
     }
 
     // 기본 펫 이미지

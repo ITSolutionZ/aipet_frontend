@@ -71,7 +71,7 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
     return Scaffold(
       backgroundColor: AppColors.backgroundGray,
       appBar: SoftGradientBackAppBar(
-        title: widget.petId != null ? 'ペット情報編集' : 'ペット情報入力',
+        title: widget.petId != null ? '반려동물 수정' : 'ペット情報入力',
       ),
       body: Form(
         key: _formKey,
@@ -111,7 +111,7 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
 
     final buttons = [
       ActionButtonData.primary(
-        text: isEditMode ? '更新する' : '登録する',
+        text: isEditMode ? '수정 완료' : '登録する',
         onPressed: _isLoading ? null : _handleSubmit,
         isLoading: _isLoading,
       ),

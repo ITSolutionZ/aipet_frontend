@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/features/ai/data/providers/ai_usecase_providers.dart';
+import 'package:aipet_frontend/features/ai/data/services/ai_local_storage_service.dart';
 import 'package:aipet_frontend/features/ai/domain/domain.dart';
 import 'package:aipet_frontend/features/ai/domain/services/ai_chat_state_manager.dart';
 import 'package:aipet_frontend/features/ai/domain/services/ai_favorite_manager.dart';
@@ -12,6 +13,7 @@ import 'package:aipet_frontend/features/walk/domain/services/walk_recommendation
 import 'package:aipet_frontend/features/walk/domain/usecases/compute_walk_recommendation_usecase.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/services/local_storage_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -132,6 +134,23 @@ class AiChatNotifier extends _$AiChatNotifier {
 
       if (initResult.isSuccess) {
         state = initResult.dataOrNull!;
+
+        // 로컬 저장소에서 즐겨찾기 로드
+        try {
+          // AiLocalStorageService를 직접 사용
+          final aiLocalStorageService = AiLocalStorageService();
+          final favoriteQAs = aiLocalStorageService.loadFavoriteQAs();
+          final favoriteIds = favoriteQAs.map((qa) => qa.id).toList();
+
+          state = state.copyWith(
+            favoriteMessageIds: favoriteIds,
+            favoriteQAs: favoriteQAs,
+          );
+
+          debugPrint('⭐ 즐겨찾기 로컬 저장소에서 로드 완료: ${favoriteQAs.length}개');
+        } catch (e) {
+          debugPrint('⭐ 즐겨찾기 로컬 저장소 로드 실패: $e');
+        }
       } else {
         state =
             AiChatStateManager.setErrorState(
@@ -259,6 +278,36 @@ class AiChatNotifier extends _$AiChatNotifier {
 
     if (updateResult.isSuccess) {
       state = updateResult.dataOrNull!;
+
+      // 로컬 저장소에 즐겨찾기 저장/삭제
+      try {
+        final aiLocalStorageService = AiLocalStorageService();
+        final isCurrentlyFavorite = state.favoriteMessageIds.contains(
+          message.id,
+        );
+        if (isCurrentlyFavorite) {
+          // 즐겨찾기에 추가된 경우 - 로컬 저장소에 저장
+          final favoriteQA = AiFavoriteQaEntity(
+            id: message.id,
+            question: userQuestion.trim(),
+            answer: message.content.trim(),
+            pet: state.selectedPet,
+            categoryId: state.selectedCategory?.id,
+            categoryName: state.selectedCategory?.name,
+            createdAt: DateTime.now(),
+            originalTimestamp: message.timestamp,
+          );
+
+          await aiLocalStorageService.saveFavoriteQA(favoriteQA);
+          debugPrint('⭐ 즐겨찾기 로컬 저장소에 저장 완료: ${message.id}');
+        } else {
+          // 즐겨찾기에서 제거된 경우 - 로컬 저장소에서 삭제
+          await aiLocalStorageService.removeFavoriteQA(message.id);
+          debugPrint('⭐ 즐겨찾기 로컬 저장소에서 삭제 완료: ${message.id}');
+        }
+      } catch (e) {
+        debugPrint('⭐ 즐겨찾기 로컬 저장소 저장/삭제 실패: $e');
+      }
     } else {
       state =
           AiChatStateManager.setErrorState(
@@ -282,6 +331,23 @@ class AiChatNotifier extends _$AiChatNotifier {
       petId: state.selectedPet?.id,
       petName: state.selectedPet?.name,
     );
+
+    // 사용자 메시지를 데이터베이스에 저장
+    try {
+      await LocalStorageService.instance.ai.saveChatMessage(
+        conversationId: _getCurrentConversationId(),
+        message: content.trim(),
+        isUser: true,
+        metadata: {
+          'petId': state.selectedPet?.id,
+          'petName': state.selectedPet?.name,
+          'categoryId': state.selectedCategory?.id,
+          'categoryName': state.selectedCategory?.name,
+        },
+      );
+    } catch (e) {
+      debugPrint('사용자 메시지 저장 실패: $e');
+    }
 
     // 사용자 메시지 추가
     final userMessageResult = AiChatStateManager.updateMessageExchange(
@@ -331,6 +397,25 @@ class AiChatNotifier extends _$AiChatNotifier {
     );
 
     if (result.isSuccess && result.dataOrNull != null) {
+      // AI 응답을 데이터베이스에 저장
+      try {
+        await LocalStorageService.instance.ai.saveChatMessage(
+          conversationId: _getCurrentConversationId(),
+          message: result.dataOrNull!.content,
+          isUser: false,
+          metadata: {
+            'petId': state.selectedPet?.id,
+            'petName': state.selectedPet?.name,
+            'categoryId': state.selectedCategory?.id,
+            'categoryName': state.selectedCategory?.name,
+            'weatherAdvice': weatherAdvice,
+            'walkGuide': walkGuide,
+          },
+        );
+      } catch (e) {
+        debugPrint('AI 응답 저장 실패: $e');
+      }
+
       // AI 응답 추가
       final assistantMessageResult = AiChatStateManager.updateMessageExchange(
         currentState: state,
@@ -402,6 +487,13 @@ class AiChatNotifier extends _$AiChatNotifier {
       selectedCategory: state.selectedCategory,
       isManualSave: isManualSave,
     );
+  }
+
+  /// 현재 대화 ID 생성 또는 가져오기
+  String _getCurrentConversationId() {
+    // 현재 날짜를 기준으로 대화 ID 생성 (일별 대화)
+    final now = DateTime.now();
+    return 'conversation_${now.year}_${now.month.toString().padLeft(2, '0')}_${now.day.toString().padLeft(2, '0')}';
   }
 
   Future<void> clearChatHistory({bool saveBeforeClear = true}) async {

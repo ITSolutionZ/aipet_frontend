@@ -93,10 +93,10 @@ class PetRegistrationLogic {
     // 펫 등록/편집 실행
     if (petId != null && petId.isNotEmpty) {
       // 편집 모드: 기존 펫 정보 업데이트
-      return await controller.updatePetForm(petId);
+      return controller.updatePetForm(petId);
     } else {
       // 신규 등록 모드
-      return await controller.submitForm();
+      return controller.submitForm();
     }
   }
 
@@ -187,7 +187,9 @@ class PetRegistrationLogic {
   }
 
   /// 成功メッセージ生成
-  String getSuccessMessage() => 'ペット登録が完了しました！';
+  String getSuccessMessage({bool isEditMode = false}) {
+    return isEditMode ? 'ペット情報が更新されました！' : 'ペット登録が完了しました！';
+  }
 
   /// エラーメッセージ生成
   String getErrorMessage(dynamic error) {

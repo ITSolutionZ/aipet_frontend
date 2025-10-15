@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'helpers/helpers.dart';
 
-/// Pet Basic Info Tab 상태 관리
+/// Pet Basic Info Tab 상태 관리 Provider
 final petBasicInfoTabProvider =
     StateNotifierProvider.family<
       PetBasicInfoTabController,
@@ -14,51 +14,75 @@ final petBasicInfoTabProvider =
       String
     >((ref, tabId) => PetBasicInfoTabController());
 
+/// Pet Basic Info Tab 컨트롤러
 class PetBasicInfoTabController extends StateNotifier<PetBasicInfoTabState> {
   PetBasicInfoTabController() : super(const PetBasicInfoTabState());
 
+  /// 펫 정보로 컨트롤러 초기화
   void initialize(PetProfileEntity pet) {
-    final nameController = TextEditingController(text: pet.name);
-    final appearanceController = TextEditingController(
-      text: pet.additionalInfo?['appearance'] ?? '',
-    );
-    final weightController = TextEditingController(text: pet.weight.toString());
-    final microchipController = TextEditingController(
-      text: pet.additionalInfo?['microchipId'] ?? '',
-    );
+    final controllers = _createTextControllers(pet);
 
     state = state.copyWith(
-      nameController: nameController,
-      appearanceController: appearanceController,
-      weightController: weightController,
-      microchipController: microchipController,
+      nameController: controllers.name,
+      appearanceController: controllers.appearance,
+      weightController: controllers.weight,
+      microchipController: controllers.microchip,
       editingGender: pet.gender,
       editingWeight: pet.weight,
     );
   }
 
+  /// 텍스트 컨트롤러 생성
+  ({
+    TextEditingController name,
+    TextEditingController appearance,
+    TextEditingController weight,
+    TextEditingController microchip,
+  })
+  _createTextControllers(PetProfileEntity pet) {
+    return (
+      name: TextEditingController(text: pet.name),
+      appearance: TextEditingController(
+        text: pet.additionalInfo?['appearance'] ?? '',
+      ),
+      weight: TextEditingController(text: pet.weight.toString()),
+      microchip: TextEditingController(
+        text: pet.additionalInfo?['microchipId'] ?? '',
+      ),
+    );
+  }
+
+  /// 성별 업데이트
   void updateGender(String? gender) {
     state = state.copyWith(editingGender: gender);
   }
 
+  /// 체중 업데이트
   void updateWeight(double? weight) {
     state = state.copyWith(editingWeight: weight);
   }
 
+  /// 선택된 이미지 경로 업데이트
   void updateSelectedImage(String? imagePath) {
     state = state.copyWith(selectedImagePath: imagePath);
   }
 
   @override
   void dispose() {
+    _disposeControllers();
+    super.dispose();
+  }
+
+  /// 텍스트 컨트롤러들 정리
+  void _disposeControllers() {
     state.nameController?.dispose();
     state.appearanceController?.dispose();
     state.weightController?.dispose();
     state.microchipController?.dispose();
-    super.dispose();
   }
 }
 
+/// Pet Basic Info Tab 상태 클래스
 class PetBasicInfoTabState {
   final TextEditingController? nameController;
   final TextEditingController? appearanceController;
@@ -99,6 +123,7 @@ class PetBasicInfoTabState {
   }
 }
 
+/// Pet Basic Info Tab 위젯
 class PetBasicInfoTab extends ConsumerWidget {
   final PetProfileEntity pet;
   final bool isEditMode;
@@ -111,35 +136,57 @@ class PetBasicInfoTab extends ConsumerWidget {
     required this.onToggleEdit,
   });
 
+  // 상수 정의
+  static const double _profileImageSize = 120.0;
+  static const double _iconSize = 40.0;
+  static const double _editIconSize = 16.0;
+  static const double _smallIconSize = 20.0;
+  static const double _borderWidth = 2.0;
+  static const double _cardBorderRadius = 12.0;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tabId = DateTime.now().millisecondsSinceEpoch.toString();
-
-    // Initialize controller after first frame
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(petBasicInfoTabProvider(tabId).notifier).initialize(pet);
-    });
+    final tabId = _generateTabId();
+    _initializeController(ref, tabId);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Column(
-        children: [
-          _buildProfileImageSection(context, ref, tabId),
-          const SizedBox(height: AppSpacing.lg),
-          _buildBasicInfoCards(context, ref, tabId),
-          const SizedBox(height: AppSpacing.lg),
-          _buildMicrochipCard(context, ref, tabId),
-          const SizedBox(height: AppSpacing.lg),
-          _buildDateCard(),
-          const SizedBox(height: AppSpacing.lg),
-          _buildCaretakerSection(),
-          const SizedBox(height: AppSpacing.xl),
-          _buildActionButtons(context, ref, tabId),
-        ],
-      ),
+      child: _buildTabContent(context, ref, tabId),
     );
   }
 
+  /// 탭 ID 생성
+  String _generateTabId() {
+    return DateTime.now().millisecondsSinceEpoch.toString();
+  }
+
+  /// 컨트롤러 초기화
+  void _initializeController(WidgetRef ref, String tabId) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(petBasicInfoTabProvider(tabId).notifier).initialize(pet);
+    });
+  }
+
+  /// 탭 컨텐츠 구성
+  Widget _buildTabContent(BuildContext context, WidgetRef ref, String tabId) {
+    return Column(
+      children: [
+        _buildProfileImageSection(context, ref, tabId),
+        const SizedBox(height: AppSpacing.lg),
+        _buildBasicInfoCards(context, ref, tabId),
+        const SizedBox(height: AppSpacing.lg),
+        _buildMicrochipCard(context, ref, tabId),
+        const SizedBox(height: AppSpacing.lg),
+        _buildDateCard(),
+        const SizedBox(height: AppSpacing.lg),
+        _buildCaretakerSection(context),
+        const SizedBox(height: AppSpacing.xl),
+        _buildActionButtons(context, ref, tabId),
+      ],
+    );
+  }
+
+  /// 프로필 이미지 섹션 구성
   Widget _buildProfileImageSection(
     BuildContext context,
     WidgetRef ref,
@@ -147,60 +194,73 @@ class PetBasicInfoTab extends ConsumerWidget {
   ) {
     final tabState = ref.watch(petBasicInfoTabProvider(tabId));
     final displayImagePath = tabState.selectedImagePath ?? pet.imagePath;
+
     return Column(
       children: [
-        Container(
-          width: 120,
-          height: 120,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.pointGray.withValues(alpha: 0.3),
-              width: 2,
-            ),
-          ),
-          child: ClipOval(
-            child: displayImagePath != null
-                ? PetInfoImageHelper.buildImageWidget(displayImagePath)
-                : Container(
-                    color: AppColors.pointGray.withValues(alpha: 0.2),
-                    child: const Icon(
-                      Icons.pets,
-                      size: 40,
-                      color: AppColors.pointGray,
-                    ),
-                  ),
-          ),
-        ),
-        if (isEditMode) ...[
-          const SizedBox(height: AppSpacing.sm),
-          TextButton.icon(
-            onPressed: () => PetInfoImageHelper.showChangeProfileImageModal(
-              context,
-              ref,
-              tabId,
-              pet.id,
-            ),
-            icon: const Icon(Icons.camera_alt),
-            label: const Text('写真を変更'),
-          ),
-        ],
+        _buildProfileImageContainer(displayImagePath),
+        if (isEditMode) _buildImageChangeButton(context, ref, tabId),
         const SizedBox(height: AppSpacing.md),
-        GenericInfoCard.withIcon(
-          icon: Icons.pets,
-          iconColor: AppColors.pointBrown,
-          iconBackgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
-          title: pet.name,
-          subtitle: '${pet.type} • ${pet.breed}',
-          badge: pet.gender,
-          badgeColor: pet.gender == 'Male'
-              ? AppColors.pointBlue
-              : AppColors.pointPink,
+        _buildPetNameWithChipCard(),
+      ],
+    );
+  }
+
+  /// 프로필 이미지 컨테이너
+  Widget _buildProfileImageContainer(String? displayImagePath) {
+    return Container(
+      width: _profileImageSize,
+      height: _profileImageSize,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: AppColors.pointGray.withValues(alpha: 0.3),
+          width: _borderWidth,
+        ),
+      ),
+      child: ClipOval(
+        child: displayImagePath != null
+            ? PetInfoImageHelper.buildImageWidget(displayImagePath)
+            : _buildDefaultImagePlaceholder(),
+      ),
+    );
+  }
+
+  /// 기본 이미지 플레이스홀더
+  Widget _buildDefaultImagePlaceholder() {
+    return Container(
+      color: AppColors.pointGray.withValues(alpha: 0.2),
+      child: const Icon(
+        Icons.pets,
+        size: _iconSize,
+        color: AppColors.pointGray,
+      ),
+    );
+  }
+
+  /// 이미지 변경 버튼
+  Widget _buildImageChangeButton(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+  ) {
+    return Column(
+      children: [
+        const SizedBox(height: AppSpacing.sm),
+        TextButton.icon(
+          onPressed: () => PetInfoImageHelper.showChangeProfileImageModal(
+            context,
+            ref,
+            tabId,
+            pet.id,
+          ),
+          icon: const Icon(Icons.camera_alt),
+          label: const Text('写真を変更'),
         ),
       ],
     );
   }
 
+  /// 기본 정보 카드들 구성
   Widget _buildBasicInfoCards(
     BuildContext context,
     WidgetRef ref,
@@ -210,55 +270,195 @@ class PetBasicInfoTab extends ConsumerWidget {
 
     return Column(
       children: [
-        _buildEditableAttributeCard(
-          context,
-          ref,
-          tabId,
-          '名前',
-          isEditMode
-              ? (tabState.nameController?.text.isNotEmpty == true
-                    ? tabState.nameController!.text
-                    : pet.name)
-              : pet.name,
-          type: 'name',
-        ),
+        _buildNameCard(context, ref, tabId, tabState),
         const SizedBox(height: AppSpacing.md),
-        _buildEditableAttributeCard(
-          context,
-          ref,
-          tabId,
-          '性別',
-          isEditMode ? (tabState.editingGender ?? pet.gender) : pet.gender,
-          type: 'gender',
-        ),
+        _buildWeightCard(context, ref, tabId, tabState),
         const SizedBox(height: AppSpacing.md),
-        _buildEditableAttributeCard(
-          context,
-          ref,
-          tabId,
-          '体重',
-          isEditMode
-              ? '${tabState.editingWeight ?? pet.weight}kg'
-              : '${pet.weight}kg',
-          type: 'weight',
-        ),
+        _buildAppearanceCard(context, ref, tabId, tabState),
         const SizedBox(height: AppSpacing.md),
-        _buildEditableAttributeCard(
-          context,
-          ref,
-          tabId,
-          '外見',
-          isEditMode
-              ? (tabState.appearanceController?.text ??
-                    pet.additionalInfo?['appearance'] ??
-                    '未設定')
-              : (pet.additionalInfo?['appearance'] ?? '未設定'),
-          type: 'appearance',
+        _buildGuardianCard(),
+        const SizedBox(height: AppSpacing.md),
+        _buildInstitutionCard(),
+        const SizedBox(height: AppSpacing.md),
+        _buildAdoptionDateCard(),
+      ],
+    );
+  }
+
+  /// 이름 카드
+  Widget _buildNameCard(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+    PetBasicInfoTabState tabState,
+  ) {
+    final displayName = isEditMode
+        ? (tabState.nameController?.text.isNotEmpty == true
+              ? tabState.nameController!.text
+              : pet.name)
+        : pet.name;
+
+    return _buildEditableAttributeCard(
+      context,
+      ref,
+      tabId,
+      '名前',
+      displayName,
+      type: 'name',
+    );
+  }
+
+  /// 체중 카드
+  Widget _buildWeightCard(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+    PetBasicInfoTabState tabState,
+  ) {
+    final displayWeight = isEditMode
+        ? '${tabState.editingWeight ?? pet.weight}kg'
+        : '${pet.weight}kg';
+
+    return _buildEditableAttributeCard(
+      context,
+      ref,
+      tabId,
+      '体重',
+      displayWeight,
+      type: 'weight',
+    );
+  }
+
+  /// 외관 카드
+  Widget _buildAppearanceCard(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+    PetBasicInfoTabState tabState,
+  ) {
+    final displayAppearance = isEditMode
+        ? (tabState.appearanceController?.text ??
+              pet.additionalInfo?['appearance'] ??
+              '未設定')
+        : (pet.additionalInfo?['appearance'] ?? '未設定');
+
+    return _buildEditableAttributeCard(
+      context,
+      ref,
+      tabId,
+      '外見',
+      displayAppearance,
+      type: 'appearance',
+    );
+  }
+
+  /// 보호자 카드
+  Widget _buildGuardianCard() {
+    return _buildInfoOnlyCard(
+      '保護者',
+      pet.additionalInfo?['guardianName']?.toString() ?? '未設定',
+      Icons.person_outline,
+    );
+  }
+
+  /// 등록 기관 카드
+  Widget _buildInstitutionCard() {
+    return _buildInfoOnlyCard(
+      '登録機関',
+      pet.additionalInfo?['institutionName']?.toString() ?? '未設定',
+      Icons.business,
+    );
+  }
+
+  /// 입양일 카드
+  Widget _buildAdoptionDateCard() {
+    final displayDate = _formatAdoptionDate();
+
+    return GenericInfoCard.withIcon(
+      icon: Icons.home,
+      iconColor: AppColors.pointGreen,
+      iconBackgroundColor: AppColors.pointGreen.withValues(alpha: 0.1),
+      title: '家に来た日',
+      subtitle: displayDate,
+    );
+  }
+
+  /// 입양일 포맷팅
+  String _formatAdoptionDate() {
+    final adoptionDate = pet.additionalInfo?['adoptionDate'];
+
+    if (adoptionDate == null) return '未設定';
+
+    try {
+      final date = DateTime.parse(adoptionDate.toString());
+      return '${date.year}年${date.month}月${date.day}日';
+    } catch (e) {
+      return '未設定';
+    }
+  }
+
+  /// 읽기 전용 정보 카드
+  Widget _buildInfoOnlyCard(String label, String value, IconData icon) {
+    return GenericInfoCard.withIcon(
+      icon: icon,
+      iconColor: AppColors.pointBrown,
+      iconBackgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
+      title: label,
+      subtitle: value,
+    );
+  }
+
+  /// 펫 이름과 칩 정보 카드
+  Widget _buildPetNameWithChipCard() {
+    final registrationNumber = _getRegistrationNumber();
+    final isRegistered = registrationNumber.isNotEmpty;
+
+    return GenericInfoCard.withIcon(
+      icon: Icons.pets,
+      iconColor: AppColors.pointBrown,
+      iconBackgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
+      title: pet.name,
+      subtitle: '${pet.type} • ${pet.breed}',
+      badge: pet.gender,
+      badgeColor: _getGenderBadgeColor(),
+      trailing: _buildRegistrationStatusWidget(isRegistered),
+    );
+  }
+
+  /// 등록번호 가져오기
+  String _getRegistrationNumber() {
+    return pet.additionalInfo?['registrationNumber']?.toString() ?? '';
+  }
+
+  /// 성별 배지 색상
+  Color _getGenderBadgeColor() {
+    return pet.gender == 'Male' ? AppColors.pointBlue : AppColors.pointPink;
+  }
+
+  /// 등록 상태 위젯
+  Widget _buildRegistrationStatusWidget(bool isRegistered) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Icon(
+          Icons.memory,
+          size: _editIconSize,
+          color: isRegistered ? AppColors.pointGreen : AppColors.pointGray,
+        ),
+        const SizedBox(height: 2),
+        Text(
+          isRegistered ? '登録済み' : '未登録',
+          style: AppFonts.bodySmall.copyWith(
+            color: isRegistered ? AppColors.pointGreen : AppColors.pointGray,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
   }
 
+  /// 편집 가능한 속성 카드
   Widget _buildEditableAttributeCard(
     BuildContext context,
     WidgetRef ref,
@@ -273,85 +473,140 @@ class PetBasicInfoTab extends ConsumerWidget {
       iconBackgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
       title: label,
       subtitle: value,
-      trailing: isEditMode
-          ? IconButton(
-              icon: const Icon(Icons.edit, size: 16),
-              onPressed: () => _editAttribute(context, ref, tabId, type),
-            )
-          : null,
+      trailing: isEditMode ? _buildEditButton(context, ref, tabId, type) : null,
     );
   }
 
+  /// 편집 버튼
+  Widget _buildEditButton(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+    String type,
+  ) {
+    return IconButton(
+      icon: const Icon(Icons.edit, size: _editIconSize),
+      onPressed: () => _editAttribute(context, ref, tabId, type),
+    );
+  }
+
+  /// 마이크로칩 카드
   Widget _buildMicrochipCard(
     BuildContext context,
     WidgetRef ref,
     String tabId,
   ) {
-    final tabState = ref.watch(petBasicInfoTabProvider(tabId));
-    final microchipId = isEditMode
-        ? (tabState.microchipController?.text ??
-              pet.additionalInfo?['microchipId'] ??
-              '')
-        : pet.additionalInfo?['microchipId'] ?? '';
+    final registrationNumber = _getMicrochipRegistrationNumber(ref, tabId);
+    final isRegistered = registrationNumber.isNotEmpty;
 
     return GenericInfoCard.withIcon(
       icon: Icons.memory,
       iconColor: AppColors.pointBlue,
       iconBackgroundColor: AppColors.pointBlue.withValues(alpha: 0.1),
       title: 'マイクロチップ',
-      subtitle: microchipId.isEmpty ? '未登録' : microchipId,
-      badge: microchipId.isEmpty ? '未登録' : '登録済み',
-      badgeColor: microchipId.isEmpty
-          ? AppColors.pointGray
-          : AppColors.pointGreen,
-      trailing: isEditMode
-          ? IconButton(
-              icon: const Icon(Icons.edit, size: 16),
-              onPressed: () => PetInfoDialogHelper.showEditMicrochipDialog(
-                context,
-                ref,
-                tabId,
-              ),
-            )
-          : null,
+      subtitle: isRegistered ? registrationNumber : '未登録',
+      badge: isRegistered ? '登録済み' : '未登録',
+      badgeColor: isRegistered ? AppColors.pointGreen : AppColors.pointGray,
     );
   }
 
+  /// 마이크로칩 등록번호 가져오기
+  String _getMicrochipRegistrationNumber(WidgetRef ref, String tabId) {
+    final tabState = ref.watch(petBasicInfoTabProvider(tabId));
+
+    return isEditMode
+        ? (tabState.microchipController?.text ??
+              pet.additionalInfo?['registrationNumber'] ??
+              '')
+        : pet.additionalInfo?['registrationNumber'] ?? '';
+  }
+
+  /// 생년월일 카드
   Widget _buildDateCard() {
-    final age = pet.age;
     final birthDate = pet.birthDate;
+    final formattedDate = _formatBirthDate(birthDate);
 
     return GenericInfoCard.withIcon(
       icon: Icons.cake,
       iconColor: AppColors.pointPink,
       iconBackgroundColor: AppColors.pointPink.withValues(alpha: 0.1),
       title: '誕生日',
-      subtitle: '${birthDate.year}年${birthDate.month}月${birthDate.day}日',
-      badge: '$age歳',
+      subtitle: formattedDate,
+      badge: '${pet.age}歳',
       badgeColor: AppColors.pointPink,
     );
   }
 
-  Widget _buildCaretakerSection() {
+  /// 생년월일 포맷팅
+  String _formatBirthDate(DateTime birthDate) {
+    return '${birthDate.year}年${birthDate.month}月${birthDate.day}日';
+  }
+
+  /// 보호자 섹션
+  Widget _buildCaretakerSection(BuildContext context) {
+    final guardianInfo = _getGuardianInfo();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '家族',
-          style: AppFonts.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.pointDark,
-          ),
-        ),
+        _buildCaretakerSectionTitle(),
         const SizedBox(height: AppSpacing.md),
-        _buildCaretakerCard('田中 太郎', 'tanaka@example.com'),
-        const SizedBox(height: AppSpacing.sm),
-        _buildCaretakerCard('田中 花子', 'hanako@example.com'),
+        if (guardianInfo.name.isNotEmpty)
+          _buildCaretakerCardWithSpacing(context, guardianInfo)
+        else
+          _buildEmptyCaretakerCard(),
       ],
     );
   }
 
-  Widget _buildCaretakerCard(String name, String email) {
+  /// 보호자 정보 가져오기
+  ({String name, String institution}) _getGuardianInfo() {
+    final guardianName = pet.additionalInfo?['guardianName']?.toString() ?? '';
+    final institutionName =
+        pet.additionalInfo?['institutionName']?.toString() ?? '';
+
+    return (
+      name: guardianName,
+      institution: institutionName.isNotEmpty ? institutionName : '未設定',
+    );
+  }
+
+  /// 보호자 섹션 제목
+  Widget _buildCaretakerSectionTitle() {
+    return Text(
+      '家族',
+      style: AppFonts.titleMedium.copyWith(
+        fontWeight: FontWeight.bold,
+        color: AppColors.pointDark,
+      ),
+    );
+  }
+
+  /// 보호자 카드와 간격
+  Widget _buildCaretakerCardWithSpacing(
+    BuildContext context,
+    ({String name, String institution}) guardianInfo,
+  ) {
+    return Column(
+      children: [
+        _buildCaretakerCard(
+          context,
+          guardianInfo.name,
+          guardianInfo.institution,
+          isDeletable: true,
+        ),
+        const SizedBox(height: AppSpacing.sm),
+      ],
+    );
+  }
+
+  /// 보호자 카드
+  Widget _buildCaretakerCard(
+    BuildContext context,
+    String name,
+    String email, {
+    bool isDeletable = false,
+  }) {
     return GenericInfoCard.withIcon(
       icon: Icons.person,
       iconColor: AppColors.pointGray,
@@ -360,9 +615,64 @@ class PetBasicInfoTab extends ConsumerWidget {
       subtitle: email,
       badge: '管理者',
       badgeColor: AppColors.pointBrown,
+      trailing: _buildDeleteButton(context, name, isDeletable),
     );
   }
 
+  /// 삭제 버튼
+  Widget? _buildDeleteButton(
+    BuildContext context,
+    String name,
+    bool isDeletable,
+  ) {
+    if (!isDeletable || !isEditMode) return null;
+
+    return IconButton(
+      icon: const Icon(Icons.delete, size: _editIconSize, color: Colors.red),
+      onPressed: () => _showDeleteCaretakerDialog(context, name),
+    );
+  }
+
+  /// 빈 보호자 카드
+  Widget _buildEmptyCaretakerCard() {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: _buildEmptyCardDecoration(),
+      child: _buildEmptyCardContent(),
+    );
+  }
+
+  /// 빈 카드 디코레이션
+  BoxDecoration _buildEmptyCardDecoration() {
+    return BoxDecoration(
+      color: AppColors.pointGray.withValues(alpha: 0.05),
+      borderRadius: BorderRadius.circular(_cardBorderRadius),
+      border: Border.all(
+        color: AppColors.pointGray.withValues(alpha: 0.2),
+        style: BorderStyle.solid,
+      ),
+    );
+  }
+
+  /// 빈 카드 컨텐츠
+  Widget _buildEmptyCardContent() {
+    return Row(
+      children: [
+        const Icon(
+          Icons.person_add,
+          color: AppColors.pointGray,
+          size: _smallIconSize,
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Text(
+          '家族情報がありません',
+          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+        ),
+      ],
+    );
+  }
+
+  /// 액션 버튼들
   Widget _buildActionButtons(
     BuildContext context,
     WidgetRef ref,
@@ -371,40 +681,106 @@ class PetBasicInfoTab extends ConsumerWidget {
     return ActionButtonGroup.toggle(
       isEditMode: isEditMode,
       onEdit: onToggleEdit,
-      onSave: () => PetInfoValidationHelper.saveChanges(
-        context,
-        ref,
-        tabId,
-        pet,
-        onToggleEdit,
-      ),
-      onCancel: () =>
-          PetInfoValidationHelper.cancelEdit(ref, tabId, pet, onToggleEdit),
+      onSave: () => _handleSave(context, ref, tabId),
+      onCancel: () => _handleCancel(ref, tabId),
       editLabel: '編集',
       saveLabel: '保存',
       cancelLabel: 'キャンセル',
     );
   }
 
+  /// 저장 처리
+  void _handleSave(BuildContext context, WidgetRef ref, String tabId) {
+    PetInfoValidationHelper.saveChanges(context, ref, tabId, pet, onToggleEdit);
+  }
+
+  /// 취소 처리
+  void _handleCancel(WidgetRef ref, String tabId) {
+    PetInfoValidationHelper.cancelEdit(ref, tabId, pet, onToggleEdit);
+  }
+
+  /// 속성 편집
   void _editAttribute(
     BuildContext context,
     WidgetRef ref,
     String tabId,
     String type,
   ) {
-    switch (type) {
-      case 'name':
-        PetInfoDialogHelper.showEditNameDialog(context, ref, tabId);
-        break;
-      case 'gender':
-        PetInfoDialogHelper.showEditGenderDialog(context, ref, tabId);
-        break;
-      case 'weight':
-        PetInfoDialogHelper.showEditWeightDialog(context, ref, tabId);
-        break;
-      case 'appearance':
-        PetInfoDialogHelper.showEditAppearanceDialog(context, ref, tabId);
-        break;
-    }
+    final editActions = _getEditActions();
+    editActions[type]?.call(context, ref, tabId);
+  }
+
+  /// 편집 액션들 맵
+  Map<String, void Function(BuildContext, WidgetRef, String)>
+  _getEditActions() {
+    return {
+      'name': PetInfoDialogHelper.showEditNameDialog,
+      'gender': PetInfoDialogHelper.showEditGenderDialog,
+      'weight': PetInfoDialogHelper.showEditWeightDialog,
+      'appearance': PetInfoDialogHelper.showEditAppearanceDialog,
+    };
+  }
+
+  /// 보호자 삭제 다이얼로그 표시
+  void _showDeleteCaretakerDialog(BuildContext context, String name) {
+    showDialog(
+      context: context,
+      builder: (context) => _buildDeleteDialog(context, name),
+    );
+  }
+
+  /// 삭제 다이얼로그 구성
+  Widget _buildDeleteDialog(BuildContext context, String name) {
+    return AlertDialog(
+      title: const Text('家族情報を削除'),
+      content: Text('$name の家族情報を削除しますか？'),
+      actions: [
+        _buildCancelButton(context),
+        _buildDeleteConfirmButton(context),
+      ],
+    );
+  }
+
+  /// 취소 버튼
+  Widget _buildCancelButton(BuildContext context) {
+    return TextButton(
+      onPressed: () => Navigator.pop(context),
+      child: const Text('キャンセル'),
+    );
+  }
+
+  /// 삭제 확인 버튼
+  Widget _buildDeleteConfirmButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => _handleDeleteCaretaker(context),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+      ),
+      child: const Text('削除'),
+    );
+  }
+
+  /// 보호자 삭제 처리
+  void _handleDeleteCaretaker(BuildContext context) {
+    _deleteCaretaker(context);
+    Navigator.pop(context);
+  }
+
+  /// 보호자 삭제 실행
+  void _deleteCaretaker(BuildContext context) {
+    // TODO: 실제 삭제 로직 구현
+    // 현재는 UI에서만 제거하고, 실제 데이터 삭제는 추후 구현
+    _showDeleteSuccessMessage(context);
+  }
+
+  /// 삭제 성공 메시지 표시
+  void _showDeleteSuccessMessage(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('家族情報を削除しました'),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 }

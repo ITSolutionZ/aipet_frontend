@@ -162,8 +162,12 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
     );
     if (imagePath == null) {
       state = state.copyWith(clearPetImage: true);
+      debugPrint('🖼️ PetRegistrationController: Image cleared');
     } else {
       state = state.copyWith(petImagePath: imagePath);
+      debugPrint(
+        '🖼️ PetRegistrationController: Image path set to: $imagePath',
+      );
     }
     debugPrint(
       '🖼️ PetRegistrationController: Updated state.petImagePath: ${state.petImagePath}',
@@ -436,6 +440,28 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
       debugPrint(
         '🐾 PetProfileEntity created: ${petEntity.name}, ${petEntity.type}, ${petEntity.breed}',
       );
+      debugPrint('🖼️ PetProfileEntity imagePath: ${petEntity.imagePath}');
+      debugPrint('🖼️ State petImagePath: ${state.petImagePath}');
+
+      // 펫 등록 시 저장되는 모든 데이터 로그
+      debugPrint('📋 === 펫 등록 데이터 저장 로그 ===');
+      debugPrint('📋 펫 이름: ${petEntity.name}');
+      debugPrint('📋 펫 타입: ${petEntity.type}');
+      debugPrint('📋 펫 품종: ${petEntity.breed}');
+      debugPrint('📋 펫 성별: ${petEntity.gender}');
+      debugPrint('📋 펫 체중: ${petEntity.weight}');
+      debugPrint('📋 펫 이미지: ${petEntity.imagePath}');
+      debugPrint('📋 보호자 이름: ${state.guardianName}');
+      debugPrint('📋 기관 이름: ${state.institutionName}');
+      debugPrint('📋 등록번호: ${state.registrationNumber}');
+      debugPrint('📋 중성화 여부: ${state.isNeutered}');
+      debugPrint('📋 금지 원료: ${state.forbiddenIngredients}');
+      debugPrint('📋 관리 부위: ${state.bodyPartsToManage}');
+      debugPrint('📋 사료: ${state.food}');
+      debugPrint('📋 보조제: ${state.supplement}');
+      debugPrint('📋 간식: ${state.treat}');
+      debugPrint('📋 추가 정보: ${petEntity.additionalInfo}');
+      debugPrint('📋 ================================');
 
       // 펫 프로필 저장
       final petProfilesNotifier = _ref.read(

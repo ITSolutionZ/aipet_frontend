@@ -24,8 +24,8 @@ class SvgCacheService {
     'clear-night',
     'partly-cloudy-day',
     'partly-cloudy-night',
-    'cloudy-day',
-    'cloudy-night',
+    // 'cloudy-day', // 파일이 존재하지 않음
+    // 'cloudy-night', // 파일이 존재하지 않음
     'overcast-day',
     'overcast-night',
     'rain',
