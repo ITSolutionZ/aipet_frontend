@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/shared.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'package:aipet_frontend/shared/shared.dart' hide State;
 
 import '../../domain/entities/calendar_event_entity.dart';
 
@@ -148,7 +147,10 @@ class _AddEventDialogState extends State<AddEventDialog> {
                                 value: type,
                                 child: Row(
                                   children: [
-                                    Text(type.emoji, style: const TextStyle(fontSize: 20)),
+                                    Text(
+                                      type.emoji,
+                                      style: const TextStyle(fontSize: 20),
+                                    ),
                                     const SizedBox(width: 8),
                                     Text(type.displayName),
                                   ],
@@ -207,7 +209,9 @@ class _AddEventDialogState extends State<AddEventDialog> {
                                           const SizedBox(width: 8),
                                           Text(
                                             _startTime != null
-                                                ? DateFormat('HH:mm').format(_startTime!)
+                                                ? DateFormat(
+                                                    'HH:mm',
+                                                  ).format(_startTime!)
                                                 : '시간 선택',
                                           ),
                                         ],
@@ -238,7 +242,9 @@ class _AddEventDialogState extends State<AddEventDialog> {
                                           const SizedBox(width: 8),
                                           Text(
                                             _endTime != null
-                                                ? DateFormat('HH:mm').format(_endTime!)
+                                                ? DateFormat(
+                                                    'HH:mm',
+                                                  ).format(_endTime!)
                                                 : '시간 선택',
                                           ),
                                         ],
@@ -353,11 +359,9 @@ class _AddEventDialogState extends State<AddEventDialog> {
 
       // 종료 시간이 시작 시간보다 이후인지 확인
       if (_startTime != null && newEndTime.isBefore(_startTime!)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('종료 시간은 시작 시간보다 늦어야 합니다'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('종료 시간은 시작 시간보다 늦어야 합니다')));
         return;
       }
 
@@ -373,25 +377,39 @@ class _AddEventDialogState extends State<AddEventDialog> {
     }
 
     if (!_isAllDay && (_startTime == null || _endTime == null)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('시작 시간과 종료 시간을 설정해주세요')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('시작 시간과 종료 시간을 설정해주세요')));
       return;
     }
 
     // 이벤트 생성 (편집 모드일 때는 기존 ID 유지)
     final event = CalendarEventEntity(
-      id: widget.initialEvent?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      id:
+          widget.initialEvent?.id ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       startTime: _isAllDay
-          ? DateTime(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day)
+          ? DateTime(
+              widget.selectedDate.year,
+              widget.selectedDate.month,
+              widget.selectedDate.day,
+            )
           : _startTime!,
       endTime: _isAllDay
-          ? DateTime(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day, 23, 59)
+          ? DateTime(
+              widget.selectedDate.year,
+              widget.selectedDate.month,
+              widget.selectedDate.day,
+              23,
+              59,
+            )
           : _endTime!,
       type: _selectedType,
-      location: _locationController.text.trim().isEmpty ? null : _locationController.text.trim(),
+      location: _locationController.text.trim().isEmpty
+          ? null
+          : _locationController.text.trim(),
       isAllDay: _isAllDay,
       createdAt: widget.initialEvent?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),

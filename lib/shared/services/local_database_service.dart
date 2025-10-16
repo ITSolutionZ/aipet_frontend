@@ -30,7 +30,7 @@ class LocalDatabaseService {
 
     return openDatabase(
       path,
-      version: 6, // 펫 추가 정보 컬럼 추가를 위해 버전 업데이트
+      version: 8, // 캘린더 이벤트 테이블 강제 생성을 위해 버전 업데이트
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -141,6 +141,28 @@ class LocalDatabaseService {
       )
     ''');
 
+    // 캘린더 이벤트 테이블
+    await db.execute('''
+      CREATE TABLE calendar_events(
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT,
+        start_time TEXT NOT NULL,
+        end_time TEXT NOT NULL,
+        is_all_day INTEGER DEFAULT 0,
+        event_type TEXT NOT NULL,
+        pet_id TEXT,
+        location TEXT,
+        has_alarm INTEGER DEFAULT 0,
+        alarm_settings TEXT,
+        is_recurring INTEGER DEFAULT 0,
+        recurrence_rule TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (pet_id) REFERENCES pets (petId) ON DELETE CASCADE
+      )
+    ''');
+
     // 활동 기록 테이블
     await db.execute('''
       CREATE TABLE activities(
@@ -202,6 +224,31 @@ class LocalDatabaseService {
 
   /// 데이터베이스 업그레이드
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // 버전 7에서 8로 업그레이드 시 캘린더 이벤트 테이블 강제 생성
+    if (oldVersion < 8) {
+      // 기존 테이블이 있으면 삭제하고 새로 생성
+      await db.execute('DROP TABLE IF EXISTS calendar_events');
+      await db.execute('''
+        CREATE TABLE calendar_events(
+          id TEXT PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          start_time TEXT NOT NULL,
+          end_time TEXT NOT NULL,
+          is_all_day INTEGER DEFAULT 0,
+          event_type TEXT NOT NULL,
+          pet_id TEXT,
+          location TEXT,
+          has_alarm INTEGER DEFAULT 0,
+          alarm_settings TEXT,
+          is_recurring INTEGER DEFAULT 0,
+          recurrence_rule TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          FOREIGN KEY (pet_id) REFERENCES pets (petId) ON DELETE CASCADE
+        )
+      ''');
+    }
     if (oldVersion < 4) {
       // user_profiles 테이블 추가
       await db.execute('''

@@ -22,18 +22,18 @@ class AnalysisHeaderCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [
             AppColors.pointBrown,
-            AppColors.pointBrown.withValues(alpha: 0.8),
+            Color(0xFF8B4513), // 투명도 대신 고정 색상 사용
           ],
         ),
         borderRadius: BorderRadius.circular(AppRadius.large),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: AppColors.pointBrown.withValues(alpha: 0.2),
+            color: Colors.black26, // 투명도 대신 고정 색상 사용
             blurRadius: 8,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -65,7 +65,7 @@ class AnalysisHeaderCard extends StatelessWidget {
               Container(
                 width: 1,
                 height: 40,
-                color: Colors.white.withValues(alpha: 0.3),
+                color: const Color(0x4DFFFFFF), // 투명도 대신 고정 색상 사용
               ),
               _buildStatItem(
                 '✓ なし',
@@ -75,7 +75,7 @@ class AnalysisHeaderCard extends StatelessWidget {
               Container(
                 width: 1,
                 height: 40,
-                color: Colors.white.withValues(alpha: 0.3),
+                color: const Color(0x4DFFFFFF), // 투명도 대신 고정 색상 사용
               ),
               _buildStatItem(
                 '信頼度',
@@ -95,7 +95,7 @@ class AnalysisHeaderCard extends StatelessWidget {
         Text(
           label,
           style: AppFonts.bodySmall.copyWith(
-            color: Colors.white.withValues(alpha: 0.8),
+            color: const Color(0xCCFFFFFF), // 투명도 대신 고정 색상 사용
           ),
         ),
         const SizedBox(height: 4),

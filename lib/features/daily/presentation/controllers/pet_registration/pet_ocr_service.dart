@@ -1,9 +1,11 @@
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+// TODO: google_mlkit_text_recognition 패키지 활성화 시 복원 필요
+// import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 
 /// 펫 등록증 OCR 처리 서비스
 ///
 /// Google ML Kit을 사용한 텍스트 인식 및 정보 추출
+/// 현재는 Mock 구현 (google_mlkit_text_recognition 패키지 호환성 문제로 임시 비활성화)
 class PetOcrService {
   /// 이미지 선택 및 OCR 처리
   Future<OcrResult> selectAndProcessImage() async {
@@ -21,8 +23,12 @@ class PetOcrService {
   }
 
   /// Google ML Kit을 사용한 OCR 처리
+  /// TODO: google_mlkit_text_recognition 패키지 활성화 시 실제 OCR 로직으로 교체
   Future<OcrResult> processImageWithOCR(String imagePath) async {
     try {
+      // Mock 구현: 실제 OCR 대신 임시 결과 반환
+      // 추후 google_mlkit_text_recognition 패키지 활성화 시 아래 주석 해제
+      /*
       final inputImage = InputImage.fromFilePath(imagePath);
       final textRecognizer = TextRecognizer();
       final recognizedText = await textRecognizer.processImage(inputImage);
@@ -52,11 +58,15 @@ class PetOcrService {
       }
 
       await textRecognizer.close();
+      */
+
+      // Mock 데이터 반환
+      await Future.delayed(const Duration(milliseconds: 500)); // OCR 처리 시뮬레이션
 
       return OcrResult.success(
         imagePath: imagePath,
-        institutionName: institutionName,
-        registrationNumber: registrationNumber,
+        institutionName: null, // 사용자가 직접 입력하도록 유도
+        registrationNumber: null,
       );
     } catch (e) {
       return OcrResult.error(error: e.toString());

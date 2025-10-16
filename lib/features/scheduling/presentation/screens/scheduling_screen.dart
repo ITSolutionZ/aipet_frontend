@@ -1,13 +1,12 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:go_router/go_router.dart';
 
-import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/app/router/app_router.dart';
-
+import '../../../../shared/services/calendar_event_service.dart';
 import '../../domain/entities/calendar_event_entity.dart';
+import '../widgets/add_event_bottom_sheet.dart';
 import '../widgets/calendar_event_item.dart';
 
 /// 스케줄링 메인 화면
@@ -33,6 +32,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     super.initState();
     _scrollController = ScrollController();
     _selectedDay = DateTime.now();
+    _loadEventsFromDatabase();
   }
 
   @override
@@ -49,13 +49,14 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       backgroundColor: AppColors.pointOffWhite,
       appBar: DynamicAppBarStyles.brown(
         scrollController: _scrollController,
-        title: 'ペットカレンダー',
+        title: '',
       ),
       body: Column(
         children: [
           // テーブルカレンダー
           Container(
             color: AppColors.pureWhite,
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: TableCalendar<CalendarEventEntity>(
               firstDay: DateTime.utc(2020, 1, 1),
               lastDay: DateTime.utc(2030, 12, 31),
@@ -146,6 +147,30 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     );
   }
 
+  /// 데이터베이스에서 이벤트 로드
+  Future<void> _loadEventsFromDatabase() async {
+    try {
+      final events = await CalendarEventService.instance.getCalendarEvents();
+      setState(() {
+        _events.clear();
+        for (final event in events) {
+          final eventDate = DateTime(
+            event.startTime.year,
+            event.startTime.month,
+            event.startTime.day,
+          );
+          if (_events.containsKey(eventDate)) {
+            _events[eventDate]!.add(event);
+          } else {
+            _events[eventDate] = [event];
+          }
+        }
+      });
+    } catch (e) {
+      debugPrint('이벤트 로드 실패: $e');
+    }
+  }
+
   /// 특정 날짜의 이벤트 가져오기
   List<CalendarEventEntity> _getEventsForDay(DateTime day) {
     return _events[DateTime(day.year, day.month, day.day)] ?? [];
@@ -184,7 +209,18 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
 
     final events = _getEventsForDay(_selectedDay!);
 
-    if (events.isEmpty) {
+    // 시간순으로 정렬 (전일 이벤트는 상단에, 그 외는 시작 시간순)
+    final sortedEvents = [...events]
+      ..sort((a, b) {
+        // 전일 이벤트 우선 정렬
+        if (a.isAllDay == true && b.isAllDay != true) return -1;
+        if (a.isAllDay != true && b.isAllDay == true) return 1;
+
+        // 둘 다 전일 이벤트이거나 둘 다 일반 이벤트인 경우 시작 시간순 정렬
+        return a.startTime.compareTo(b.startTime);
+      });
+
+    if (sortedEvents.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -201,7 +237,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              DateFormat('M월 d일').format(_selectedDay!),
+              DateFormat('M月d日', 'ja_JP').format(_selectedDay!),
               style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
             ),
             const SizedBox(height: 16),
@@ -221,9 +257,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: events.length,
+      itemCount: sortedEvents.length,
       itemBuilder: (context, index) {
-        final event = events[index];
+        final event = sortedEvents[index];
         return CalendarEventItem(
           event: event,
           onTap: () => _showEventDetail(event),
@@ -234,14 +270,14 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     );
   }
 
-  /// 새 이벤트 추가 페이지로 이동
+  /// 새 이벤트 추가 바텀시트 표시
   void _showAddEventDialog() async {
     final selectedDate = _selectedDay ?? DateTime.now();
-    final result = await context.pushNamed(
-      'add-event',
-      queryParameters: {
-        'date': selectedDate.toIso8601String(),
-      },
+    final result = await showModalBottomSheet<CalendarEventEntity>(
+      context: context,
+      isScrollControlled: true, // 100% 높이를 위해 필요
+      backgroundColor: Colors.transparent, // 투명 배경으로 설정
+      builder: (context) => AddEventBottomSheet(selectedDate: selectedDate),
     );
 
     // 결과가 CalendarEventEntity인 경우 이벤트 추가
@@ -251,27 +287,44 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   }
 
   /// 이벤트 추가
-  void _addEvent(CalendarEventEntity event) {
-    setState(() {
-      final eventDate = DateTime(
-        event.startTime.year,
-        event.startTime.month,
-        event.startTime.day,
-      );
+  Future<void> _addEvent(CalendarEventEntity event) async {
+    try {
+      // SQLite에 저장
+      await CalendarEventService.instance.saveCalendarEvent(event);
 
-      if (_events.containsKey(eventDate)) {
-        _events[eventDate]!.add(event);
-      } else {
-        _events[eventDate] = [event];
+      setState(() {
+        final eventDate = DateTime(
+          event.startTime.year,
+          event.startTime.month,
+          event.startTime.day,
+        );
+
+        if (_events.containsKey(eventDate)) {
+          _events[eventDate]!.add(event);
+        } else {
+          _events[eventDate] = [event];
+        }
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${event.title} 일정이 추가되었습니다'),
+            backgroundColor: AppColors.pointGreen,
+          ),
+        );
       }
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${event.title} 일정이 추가되었습니다'),
-        backgroundColor: AppColors.pointGreen,
-      ),
-    );
+    } catch (e) {
+      debugPrint('이벤트 저장 실패: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('일정 저장에 실패했습니다: $e'),
+            backgroundColor: AppColors.pointRed,
+          ),
+        );
+      }
+    }
   }
 
   /// 이벤트 상세 보기
@@ -288,7 +341,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
             const SizedBox(height: 8),
             Text(event.description),
             const SizedBox(height: 8),
-            Text('시간: ${DateFormat('HH:mm').format(event.startTime)} - ${DateFormat('HH:mm').format(event.endTime)}'),
+            Text(
+              '시간: ${DateFormat('HH:mm', 'ja_JP').format(event.startTime)} - ${DateFormat('HH:mm', 'ja_JP').format(event.endTime)}',
+            ),
           ],
         ),
         actions: [
@@ -301,14 +356,16 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     );
   }
 
-  /// 이벤트 편집 페이지로 이동
+  /// 이벤트 편집 바텀시트 표시
   void _showEditEventDialog(CalendarEventEntity event) async {
-    final result = await context.pushNamed(
-      'edit-event',
-      extra: {
-        'event': event,
-        'selectedDate': event.startTime,
-      },
+    final result = await showModalBottomSheet<CalendarEventEntity>(
+      context: context,
+      isScrollControlled: true, // 100% 높이를 위해 필요
+      backgroundColor: Colors.transparent, // 투명 배경으로 설정
+      builder: (context) => AddEventBottomSheet(
+        selectedDate: event.startTime,
+        initialEvent: event,
+      ),
     );
 
     // 결과가 CalendarEventEntity인 경우 이벤트 업데이트
@@ -318,42 +375,62 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   }
 
   /// 이벤트 업데이트
-  void _updateEvent(CalendarEventEntity oldEvent, CalendarEventEntity newEvent) {
-    setState(() {
-      // 기존 이벤트 제거
-      final oldEventDate = DateTime(
-        oldEvent.startTime.year,
-        oldEvent.startTime.month,
-        oldEvent.startTime.day,
-      );
+  Future<void> _updateEvent(
+    CalendarEventEntity oldEvent,
+    CalendarEventEntity newEvent,
+  ) async {
+    try {
+      // SQLite에 업데이트
+      await CalendarEventService.instance.updateCalendarEvent(newEvent);
 
-      if (_events.containsKey(oldEventDate)) {
-        _events[oldEventDate]!.removeWhere((e) => e.id == oldEvent.id);
-        if (_events[oldEventDate]!.isEmpty) {
-          _events.remove(oldEventDate);
+      setState(() {
+        // 기존 이벤트 제거
+        final oldEventDate = DateTime(
+          oldEvent.startTime.year,
+          oldEvent.startTime.month,
+          oldEvent.startTime.day,
+        );
+
+        if (_events.containsKey(oldEventDate)) {
+          _events[oldEventDate]!.removeWhere((e) => e.id == oldEvent.id);
+          if (_events[oldEventDate]!.isEmpty) {
+            _events.remove(oldEventDate);
+          }
         }
+
+        // 새 이벤트 추가 (날짜가 변경될 수 있으므로)
+        final newEventDate = DateTime(
+          newEvent.startTime.year,
+          newEvent.startTime.month,
+          newEvent.startTime.day,
+        );
+
+        if (_events.containsKey(newEventDate)) {
+          _events[newEventDate]!.add(newEvent);
+        } else {
+          _events[newEventDate] = [newEvent];
+        }
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${newEvent.title} 일정이 수정되었습니다'),
+            backgroundColor: AppColors.pointBlue,
+          ),
+        );
       }
-
-      // 새 이벤트 추가 (날짜가 변경될 수 있으므로)
-      final newEventDate = DateTime(
-        newEvent.startTime.year,
-        newEvent.startTime.month,
-        newEvent.startTime.day,
-      );
-
-      if (_events.containsKey(newEventDate)) {
-        _events[newEventDate]!.add(newEvent);
-      } else {
-        _events[newEventDate] = [newEvent];
+    } catch (e) {
+      debugPrint('이벤트 업데이트 실패: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('일정 수정에 실패했습니다: $e'),
+            backgroundColor: AppColors.pointRed,
+          ),
+        );
       }
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${newEvent.title} 일정이 수정되었습니다'),
-        backgroundColor: AppColors.pointBlue,
-      ),
-    );
+    }
   }
 
   /// 이벤트 삭제 확인 다이얼로그
@@ -382,28 +459,44 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   }
 
   /// 이벤트 삭제
-  void _deleteEvent(CalendarEventEntity event) {
-    setState(() {
-      final eventDate = DateTime(
-        event.startTime.year,
-        event.startTime.month,
-        event.startTime.day,
-      );
+  Future<void> _deleteEvent(CalendarEventEntity event) async {
+    try {
+      // SQLite에서 삭제
+      await CalendarEventService.instance.deleteCalendarEvent(event.id);
 
-      if (_events.containsKey(eventDate)) {
-        _events[eventDate]!.removeWhere((e) => e.id == event.id);
-        if (_events[eventDate]!.isEmpty) {
-          _events.remove(eventDate);
+      setState(() {
+        final eventDate = DateTime(
+          event.startTime.year,
+          event.startTime.month,
+          event.startTime.day,
+        );
+
+        if (_events.containsKey(eventDate)) {
+          _events[eventDate]!.removeWhere((e) => e.id == event.id);
+          if (_events[eventDate]!.isEmpty) {
+            _events.remove(eventDate);
+          }
         }
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${event.title} 일정이 삭제되었습니다'),
+            backgroundColor: AppColors.pointRed,
+          ),
+        );
       }
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${event.title} 일정이 삭제되었습니다'),
-        backgroundColor: AppColors.pointRed,
-      ),
-    );
+    } catch (e) {
+      debugPrint('이벤트 삭제 실패: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('일정 삭제에 실패했습니다: $e'),
+            backgroundColor: AppColors.pointRed,
+          ),
+        );
+      }
+    }
   }
-
 }

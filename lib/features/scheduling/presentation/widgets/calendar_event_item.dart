@@ -82,12 +82,60 @@ class CalendarEventItem extends StatelessWidget {
                 ),
               ),
 
-              // 시간 정보
+              // 시간 정보とアラーム
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  // 알람 카테고리 표시
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: _getAlarmCategoryColor().withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                        color: _getAlarmCategoryColor().withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      event.type.alarmCategory.displayName,
+                      style: AppFonts.bodySmall.copyWith(
+                        color: _getAlarmCategoryColor(),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 8,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  // アラームアイコン
+                  if (event.hasAlarm) ...[
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.alarm,
+                          size: 14,
+                          color: AppColors.pointBrown,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${event.alarmSettings.length}',
+                          style: AppFonts.bodySmall.copyWith(
+                            color: AppColors.pointBrown,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                  ],
+                  // 時間表示
                   Text(
-                    DateFormat('HH:mm').format(event.startTime),
+                    DateFormat('HH:mm', 'ja_JP').format(event.startTime),
                     style: AppFonts.bodySmall.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -95,7 +143,7 @@ class CalendarEventItem extends StatelessWidget {
                   if (!event.isAllDay!) ...[
                     const SizedBox(height: 2),
                     Text(
-                      DateFormat('HH:mm').format(event.endTime),
+                      DateFormat('HH:mm', 'ja_JP').format(event.endTime),
                       style: AppFonts.bodySmall.copyWith(
                         color: AppColors.pointGray,
                       ),
@@ -138,10 +186,7 @@ class CalendarEventItem extends StatelessWidget {
                     ),
                   ),
                 ],
-                child: const Icon(
-                  Icons.more_vert,
-                  color: AppColors.pointGray,
-                ),
+                child: const Icon(Icons.more_vert, color: AppColors.pointGray),
               ),
             ],
           ),
@@ -154,12 +199,16 @@ class CalendarEventItem extends StatelessWidget {
     switch (event.type) {
       case CalendarEventType.feeding:
         return AppColors.pointGreen;
-      case CalendarEventType.watering:
-        return AppColors.pointBlue;
       case CalendarEventType.medication:
-        return AppColors.pointRed;
+        return AppColors.pointPink;
+      case CalendarEventType.walking:
+        return AppColors.pointBrown;
       case CalendarEventType.exercise:
         return AppColors.pointOrange;
+      case CalendarEventType.system:
+        return AppColors.pointBlue;
+      case CalendarEventType.watering:
+        return AppColors.pointBlue;
       case CalendarEventType.grooming:
         return AppColors.tonePeach;
       case CalendarEventType.veterinary:
@@ -168,6 +217,18 @@ class CalendarEventItem extends StatelessWidget {
         return AppColors.pointBlue;
       case CalendarEventType.other:
         return AppColors.pointGray;
+    }
+  }
+
+  /// 알람 카테고리별 색상 반환
+  Color _getAlarmCategoryColor() {
+    switch (event.type.alarmCategory) {
+      case AlarmCategory.meal:
+        return AppColors.pointGreen;
+      case AlarmCategory.walk:
+        return AppColors.pointBrown;
+      case AlarmCategory.system:
+        return AppColors.pointBlue;
     }
   }
 }

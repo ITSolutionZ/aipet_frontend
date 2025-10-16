@@ -455,11 +455,7 @@ class ShellRoutes {
           GoRoute(
             path: 'alarm-time-settings',
             name: 'alarm-time-settings',
-            builder: (context, state) => const Scaffold(
-              body: Center(
-                child: Text('Alarm Time Settings Screen - Coming Soon'),
-              ),
-            ),
+            builder: (context, state) => const AlarmTimeSettingsScreen(),
           ),
           GoRoute(
             path: 'location-setting',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'app/app.dart';
@@ -12,6 +13,9 @@ import 'app/app.dart';
 void main() async {
   // Flutter 위젯 바인딩 초기화 (Sentry 호환)
   SentryWidgetsFlutterBinding.ensureInitialized();
+
+  // 일본어 로케일 데이터 초기화
+  await initializeDateFormatting('ja_JP', null);
 
   // .env 파일 로드
   try {

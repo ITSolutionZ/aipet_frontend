@@ -154,8 +154,8 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                         const SizedBox(height: 4),
                         Text(
                           DateFormat(
-                            'yyyy년 M월 d일 (E)',
-                            'ko_KR',
+                            'yyyy年 M月 d日 (E)',
+                            'ja_JP',
                           ).format(widget.selectedDate),
                           style: AppFonts.titleMedium.copyWith(
                             fontWeight: FontWeight.bold,
@@ -405,7 +405,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              time != null ? DateFormat('HH:mm').format(time) : '시간 선택',
+              time != null ? DateFormat('HH:mm', 'ja_JP').format(time) : '시간 선택',
               style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
           ],

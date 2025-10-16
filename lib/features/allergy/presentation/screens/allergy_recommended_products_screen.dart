@@ -104,7 +104,7 @@ class _AllergyRecommendedProductsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
+      backgroundColor: const Color(0xFFF8F8F8), // PDF 출력에 적합한 고정 배경색
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -126,7 +126,7 @@ class _AllergyRecommendedProductsScreenState
               // 의심 원료 안내
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
-                color: const Color(0xFFFF6B9D).withValues(alpha: 0.05),
+                color: const Color(0x0DFFFF6B), // 투명도 대신 고정 색상 사용
                 child: Row(
                   children: [
                     const Icon(
@@ -203,10 +203,10 @@ class _AllergyRecommendedProductsScreenState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.error_outline,
                 size: 64,
-                color: AppColors.pointGray.withValues(alpha: 0.5),
+                color: Color(0x80AAAAAA), // 투명도 대신 고정 색상 사용
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
@@ -235,10 +235,10 @@ class _AllergyRecommendedProductsScreenState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.shopping_bag_outlined,
                 size: 64,
-                color: AppColors.pointGray.withValues(alpha: 0.5),
+                color: Color(0x80AAAAAA), // 투명도 대신 고정 색상 사용
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
@@ -305,12 +305,8 @@ class _AllergyRecommendedProductsScreenState
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
         ],
       ),
       child: InkWell(
@@ -328,7 +324,7 @@ class _AllergyRecommendedProductsScreenState
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: AppColors.pointGray.withValues(alpha: 0.1),
+                  color: const Color(0x1AAAAAAA), // 투명도 대신 고정 색상 사용
                   borderRadius: BorderRadius.circular(AppRadius.small),
                 ),
                 child: ClipRRect(
@@ -338,17 +334,17 @@ class _AllergyRecommendedProductsScreenState
                           product.imageUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
-                            return Icon(
+                            return const Icon(
                               Icons.pets,
                               size: 40,
-                              color: AppColors.pointGray.withValues(alpha: 0.5),
+                              color: Color(0x80AAAAAA), // 투명도 대신 고정 색상 사용
                             );
                           },
                         )
-                      : Icon(
+                      : const Icon(
                           Icons.pets,
                           size: 40,
-                          color: AppColors.pointGray.withValues(alpha: 0.5),
+                          color: Color(0x80AAAAAA), // 투명도 대신 고정 색상 사용
                         ),
                 ),
               ),
@@ -418,7 +414,7 @@ class _AllergyRecommendedProductsScreenState
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4CAF50).withValues(alpha: 0.1),
+                  color: const Color(0x1A4CAF50), // 투명도 대신 고정 색상 사용
                   borderRadius: BorderRadius.circular(AppRadius.small),
                   border: Border.all(color: const Color(0xFF4CAF50), width: 1),
                 ),

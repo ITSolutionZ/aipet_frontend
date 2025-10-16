@@ -906,6 +906,8 @@ class _AllergyProductSelectionScreenState
 
       final message = widget.hasAllergy ? 'アレルギー商品に追加しました' : 'アレルギーなし商品に追加しました';
 
+      // 기존 스낵바 제거 후 새 스낵바 표시
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
@@ -1087,6 +1089,8 @@ class _AllergyProductSelectionScreenState
         ? 'アレルギー食材に追加しました: $ingredient'
         : 'アレルギーなし食材に追加しました: $ingredient';
 
+    // 기존 스낵바 제거 후 새 스낵바 표시
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
