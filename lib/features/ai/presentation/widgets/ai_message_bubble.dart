@@ -46,7 +46,12 @@ class AiMessageBubble extends ConsumerWidget {
                   ),
                 ],
               ),
-              child: const Icon(Icons.smart_toy, color: Colors.white, size: 18),
+              child: Image.asset(
+                'assets/icons/logos/aipet_white.png',
+                width: 18,
+                height: 18,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(width: AppSpacing.sm),
           ],

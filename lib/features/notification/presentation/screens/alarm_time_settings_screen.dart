@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/notification/presentation/controllers/alarm_time_settings_controller.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/widgets/layout/card.dart';
 import 'package:flutter/material.dart';
@@ -80,67 +81,8 @@ class _AlarmTimeSettingsScreenState
               children: [
                 const SizedBox(height: AppSpacing.md),
 
-                const SectionHeaderComponent(title: '食事アラーム時間'),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                _buildTimeSettingTile(
-                  title: '朝食',
-                  subtitle: '朝食アラーム時間',
-                  time: state.morningTime,
-                  onTap: () =>
-                      _selectTime(context, '朝食時間', state.morningTime, (time) {
-                        ref
-                            .read(alarmTimeSettingsControllerProvider.notifier)
-                            .selectTime('morning', time);
-                      }),
-                ),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                _buildTimeSettingTile(
-                  title: '昼食',
-                  subtitle: '昼食アラーム時間',
-                  time: state.lunchTime,
-                  onTap: () =>
-                      _selectTime(context, '昼食時間', state.lunchTime, (time) {
-                        ref
-                            .read(alarmTimeSettingsControllerProvider.notifier)
-                            .selectTime('lunch', time);
-                      }),
-                ),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                _buildTimeSettingTile(
-                  title: '夕食',
-                  subtitle: '夕食アラーム時間',
-                  time: state.dinnerTime,
-                  onTap: () =>
-                      _selectTime(context, '夕食時間', state.dinnerTime, (time) {
-                        ref
-                            .read(alarmTimeSettingsControllerProvider.notifier)
-                            .selectTime('dinner', time);
-                      }),
-                ),
-
-                const SizedBox(height: AppSpacing.xl * 2),
-
-                const SectionHeaderComponent(title: '散歩アラーム時間'),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                _buildTimeSettingTile(
-                  title: '散歩時間',
-                  subtitle: '散歩アラーム時間',
-                  time: state.walkTime,
-                  onTap: () =>
-                      _selectTime(context, '散歩時間', state.walkTime, (time) {
-                        ref
-                            .read(alarmTimeSettingsControllerProvider.notifier)
-                            .selectTime('walk', time);
-                      }),
-                ),
+                // 알람 카테고리별 설정 구성
+                ...AlarmCategory.values.map((category) => _buildCategorySection(category, state)),
 
                 const SizedBox(height: AppSpacing.xl * 3),
 
@@ -160,6 +102,87 @@ class _AlarmTimeSettingsScreenState
           ),
         );
       },
+    );
+  }
+
+  /// 알람 카테고리별 섹션 구성
+  Widget _buildCategorySection(AlarmCategory category, dynamic state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SectionHeaderComponent(title: category.displayName),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              category.description,
+              style: AppFonts.bodySmall.copyWith(
+                color: AppColors.pointGray,
+                height: 1.3,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
+
+        // 해당 카테고리에 속하는 이벤트 타입별 시간 설정
+        ...CalendarEventType.values
+            .where((type) => type.alarmCategory == category)
+            .map((type) => Column(
+                  children: [
+                    _buildEventTypeTimeSettingTile(type, state),
+                    const SizedBox(height: AppSpacing.lg),
+                  ],
+                )),
+
+        const SizedBox(height: AppSpacing.xl),
+      ],
+    );
+  }
+
+  /// 이벤트 타입별 시간 설정 타일
+  Widget _buildEventTypeTimeSettingTile(CalendarEventType eventType, dynamic state) {
+    // 기본값 설정 (실제 구현에서는 state에서 가져와야 함)
+    TimeOfDay defaultTime = const TimeOfDay(hour: 9, minute: 0);
+
+    // 이벤트 타입별 기본 시간 설정
+    switch (eventType) {
+      case CalendarEventType.feeding:
+        defaultTime = state.morningTime ?? const TimeOfDay(hour: 8, minute: 0);
+        break;
+      case CalendarEventType.medication:
+        defaultTime = const TimeOfDay(hour: 9, minute: 0);
+        break;
+      case CalendarEventType.walking:
+        defaultTime = state.walkTime ?? const TimeOfDay(hour: 7, minute: 0);
+        break;
+      case CalendarEventType.exercise:
+        defaultTime = const TimeOfDay(hour: 17, minute: 0);
+        break;
+      case CalendarEventType.system:
+        defaultTime = const TimeOfDay(hour: 10, minute: 0);
+        break;
+      default:
+        defaultTime = const TimeOfDay(hour: 9, minute: 0);
+        break;
+    }
+
+    return _buildTimeSettingTile(
+      title: '${eventType.emoji} ${eventType.displayName}',
+      subtitle: '${eventType.displayName}アラーム時間',
+      time: defaultTime,
+      onTap: () => _selectTime(
+        context,
+        '${eventType.displayName}時間',
+        defaultTime,
+        (time) {
+          // TODO: 실제 구현에서는 이벤트 타입별로 시간을 저장해야 함
+          ref
+              .read(alarmTimeSettingsControllerProvider.notifier)
+              .selectTime(eventType.name, time);
+        },
+      ),
     );
   }
 

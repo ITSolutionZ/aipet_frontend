@@ -24,7 +24,7 @@ class _SavedAnalysisListScreenState
     final savedAnalysesAsync = ref.watch(savedAnalysisNotifierProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
+      backgroundColor: const Color(0xFFF8F8F8), // PDF 출력에 적합한 고정 배경색
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -75,10 +75,10 @@ class _SavedAnalysisListScreenState
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.history,
               size: 64,
-              color: AppColors.pointGray.withValues(alpha: 0.5),
+              color: Color(0x80AAAAAA), // 투명도 대신 고정 색상 사용
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
@@ -144,11 +144,11 @@ class _SavedAnalysisListScreenState
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black12,
             blurRadius: 4,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -220,7 +220,7 @@ class _SavedAnalysisListScreenState
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFF6B9D).withValues(alpha: 0.1),
+                          color: const Color(0x1AFF6B9D), // 투명도 대신 고정 색상 사용
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(

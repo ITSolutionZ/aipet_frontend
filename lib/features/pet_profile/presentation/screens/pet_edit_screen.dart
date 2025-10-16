@@ -30,8 +30,8 @@ class _PetEditScreenState extends ConsumerState<PetEditScreen> {
   bool _isBirthDateUnknown = false;
 
   // 관심사 선택
-  List<String> _selectedDiseases = [];
-  List<String> _selectedFunctionalFoods = [];
+  final List<String> _selectedDiseases = [];
+  final List<String> _selectedFunctionalFoods = [];
 
   // 프로필 이미지
   String? _selectedImagePath;

@@ -11,8 +11,8 @@ import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
 import 'package:aipet_frontend/features/pet_health/presentation/screens/weight_tracking_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen.dart';
-import 'package:aipet_frontend/features/scheduling/presentation/screens/add_event_screen.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/screens/add_event_screen.dart';
 import 'package:aipet_frontend/features/shopping/presentation/screens/pet_search_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/live_walk_screen.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,9 @@ class StandaloneRoutes {
       name: 'add-event',
       builder: (context, state) {
         // 쿼리 파라미터에서 선택된 날짜 가져오기
-        final dateString = state.uri.queryParameters['date'] ?? DateTime.now().toIso8601String();
+        final dateString =
+            state.uri.queryParameters['date'] ??
+            DateTime.now().toIso8601String();
         final selectedDate = DateTime.tryParse(dateString) ?? DateTime.now();
 
         return AddEventScreen(selectedDate: selectedDate);
@@ -48,12 +50,10 @@ class StandaloneRoutes {
         // extra에서 이벤트 데이터와 선택된 날짜 가져오기
         final extra = state.extra as Map<String, dynamic>?;
         final event = extra?['event'] as CalendarEventEntity?;
-        final selectedDate = extra?['selectedDate'] as DateTime? ?? DateTime.now();
+        final selectedDate =
+            extra?['selectedDate'] as DateTime? ?? DateTime.now();
 
-        return AddEventScreen(
-          selectedDate: selectedDate,
-          initialEvent: event,
-        );
+        return AddEventScreen(selectedDate: selectedDate, initialEvent: event);
       },
     ),
 
