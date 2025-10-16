@@ -19,10 +19,11 @@ import 'package:flutter/material.dart';
 class PetRegistrationLogic {
   PetRegistrationLogic();
 
-  /// 펫 등록 폼 검증 및 제출
-  Future<void> submitPetRegistration({
+  /// 펫 등록 폼 검증 및 제출 (신규 등록 또는 편집)
+  Future<String> submitPetRegistration({
     required GlobalKey<FormState> formKey,
     required PetRegistrationController controller,
+    String? petId, // 편집 모드용 petId
   }) async {
     // 폼 검증 전에 텍스트 컨트롤러와 state 동기화
     debugPrint(
@@ -85,9 +86,18 @@ class PetRegistrationLogic {
       throw PetRegistrationException(genderValidation);
     }
 
-    debugPrint('✅ All validations passed, proceeding with registration');
-    // 실제 등록 처리
-    await controller.submitForm();
+    debugPrint(
+      '✅ All validations passed, proceeding with ${petId != null ? "update" : "registration"}',
+    );
+
+    // 펫 등록/편집 실행
+    if (petId != null && petId.isNotEmpty) {
+      // 편집 모드: 기존 펫 정보 업데이트
+      return controller.updatePetForm(petId);
+    } else {
+      // 신규 등록 모드
+      return controller.submitForm();
+    }
   }
 
   /// 생년월일 선택 로직
@@ -177,7 +187,9 @@ class PetRegistrationLogic {
   }
 
   /// 成功メッセージ生成
-  String getSuccessMessage() => 'ペット登録が完了しました！';
+  String getSuccessMessage({bool isEditMode = false}) {
+    return isEditMode ? 'ペット情報が更新されました！' : 'ペット登録が完了しました！';
+  }
 
   /// エラーメッセージ生成
   String getErrorMessage(dynamic error) {

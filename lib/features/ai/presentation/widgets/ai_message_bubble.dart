@@ -24,24 +24,32 @@ class AiMessageBubble extends ConsumerWidget {
     // final userProfileAsync = ref.watch(userProfileNotifierProvider);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         mainAxisAlignment: isUser
             ? MainAxisAlignment.end
             : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isUser) ...[
             Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: const BoxDecoration(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
                 color: AppColors.pointBrown,
                 shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Image.asset(
-                'assets/icons/logos/aipet_logo.png',
-                width: 20,
-                height: 20,
+                'assets/icons/logos/aipet_white.png',
+                width: 18,
+                height: 18,
                 color: Colors.white,
               ),
             ),
@@ -53,28 +61,32 @@ class AiMessageBubble extends ConsumerWidget {
                   ? () => _showFavoriteDialog(context)
                   : null,
               child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.75,
+                ),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
+                  horizontal: 16,
+                  vertical: 12,
                 ),
                 decoration: BoxDecoration(
                   color: isUser ? AppColors.pointBrown : Colors.white,
-                  borderRadius: BorderRadius.circular(AppRadius.medium)
-                      .copyWith(
-                        bottomLeft: isUser
-                            ? const Radius.circular(AppRadius.medium)
-                            : Radius.zero,
-                        bottomRight: isUser
-                            ? Radius.zero
-                            : const Radius.circular(AppRadius.medium),
-                      ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(20),
+                    topRight: const Radius.circular(20),
+                    bottomLeft: isUser
+                        ? const Radius.circular(20)
+                        : const Radius.circular(4),
+                    bottomRight: isUser
+                        ? const Radius.circular(4)
+                        : const Radius.circular(20),
+                  ),
                   border: isFavorite && !isUser
-                      ? Border.all(color: Colors.amber, width: 2)
+                      ? Border.all(color: AppColors.pointBrown, width: 2)
                       : null,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 4,
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -85,16 +97,17 @@ class AiMessageBubble extends ConsumerWidget {
                     // 메시지 내용
                     Text(
                       message.content,
-                      style: AppFonts.bodyMedium.copyWith(
+                      style: AppFonts.bodySmall.copyWith(
                         color: isUser ? Colors.white : AppColors.pointDark,
                         height: 1.4,
+                        fontSize: 14,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: 6),
 
                     // 하단 메타 정보 (시간, 즐겨찾기 등)
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           _formatTime(message.timestamp),
@@ -102,10 +115,17 @@ class AiMessageBubble extends ConsumerWidget {
                             color: isUser
                                 ? Colors.white70
                                 : AppColors.pointGray,
+                            fontSize: 10,
                           ),
                         ),
-                        if (isFavorite && !isUser)
-                          const Icon(Icons.star, color: Colors.amber, size: 16),
+                        if (isFavorite && !isUser) ...[
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.star,
+                            color: AppColors.pointBrown,
+                            size: 14,
+                          ),
+                        ],
                       ],
                     ),
                   ],
@@ -115,7 +135,19 @@ class AiMessageBubble extends ConsumerWidget {
           ),
           if (isUser) ...[
             const SizedBox(width: AppSpacing.sm),
-            _buildDefaultUserIcon(),
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: AppColors.pointGray.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.person,
+                color: AppColors.pointGray,
+                size: 18,
+              ),
+            ),
           ],
         ],
       ),
@@ -163,17 +195,6 @@ class AiMessageBubble extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildDefaultUserIcon() {
-    return Container(
-      color: AppColors.pointGray.withValues(alpha: 0.3),
-      child: const Icon(
-        Icons.person,
-        color: AppColors.pointGray,
-        size: 20, // 16에서 20으로 증가
       ),
     );
   }

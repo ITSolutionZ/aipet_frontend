@@ -19,6 +19,7 @@ import 'package:aipet_frontend/features/pet_profile/presentation/screens/qr_scan
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/sharing_profiles_screen.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/presentation.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/screens/today_appointments_screen.dart';
+import 'package:aipet_frontend/features/settings/presentation/screens/database_dashboard_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/settings_screens.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/walk_calendar_screen.dart';
@@ -68,13 +69,18 @@ class ShellRoutes {
             },
           ),
           GoRoute(
-            path: 'pet-profile',
+            path: 'pet-profile/:petId',
             name: 'pet-profile',
             builder: (context, state) {
-              // 쿼리 파라미터에서 petId 추출
-              final petId = state.uri.queryParameters['petId'] ?? 'default';
+              // 경로 파라미터에서 petId 추출
+              final petId = state.pathParameters['petId'] ?? 'default';
               return PetProfileScreen(petId: petId);
             },
+          ),
+          GoRoute(
+            path: 'pet-management',
+            name: 'pet-management',
+            builder: (context, state) => const PetManagementScreen(),
           ),
           GoRoute(
             path: 'sharing-profiles',
@@ -449,16 +455,17 @@ class ShellRoutes {
           GoRoute(
             path: 'alarm-time-settings',
             name: 'alarm-time-settings',
-            builder: (context, state) => const Scaffold(
-              body: Center(
-                child: Text('Alarm Time Settings Screen - Coming Soon'),
-              ),
-            ),
+            builder: (context, state) => const AlarmTimeSettingsScreen(),
           ),
           GoRoute(
             path: 'location-setting',
             name: 'location-setting',
             builder: (context, state) => const LocationSettingScreen(),
+          ),
+          GoRoute(
+            path: 'database-dashboard',
+            name: 'database-dashboard',
+            builder: (context, state) => const DatabaseDashboardScreen(),
           ),
         ],
       ),

@@ -125,92 +125,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     return SingleChildScrollView(
       controller: scrollController,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch, // 배너가 전체 너비를 차지하도록 수정
         children: [
           // 펫 프로필 배너
-          const PetProfileBanner(),
-          
-          // 검색바
+          PetProfileBanner(scrollOffset: scrollOffset),
+
+          // 검색바 (간격 줄임)
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: HomeSearchBarWidget(
               onTap: _handleSearchTap,
               onChanged: _handleSearchChanged,
             ),
           ),
-          const SizedBox(height: AppSpacing.lg),
-
-          // 펫이 없을 때 등록 안내
-          if (!dashboard.hasPets) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.md),
-                ),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(AppSpacing.md),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.primary.withValues(alpha: 0.1),
-                        AppColors.primary.withValues(alpha: 0.05),
-                      ],
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      const Icon(
-                        Icons.pets,
-                        size: 48,
-                        color: AppColors.primary,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      Text(
-                        'まだペットが登録されていません',
-                        style: AppTextStyles.titleMedium.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        '最初のペットを登録して、\nAIPetを始めましょう！',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      ElevatedButton(
-                        onPressed: () => context.push('/pet-type-selection'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.xl,
-                            vertical: AppSpacing.md,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppSpacing.lg),
-                          ),
-                        ),
-                        child: const Text('ペット登録'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-          ],
-
+          const SizedBox(height: AppSpacing.md), // 간격 줄임
           // 날씨 정보
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -243,29 +171,200 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          // 오늘의 예약 (펫이 있고, 예약이 있을 경우)
-          if (dashboard.hasPets && dashboard.hasTodayAppointments) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: TodayAppointmentsWidget(
-                appointments: dashboard.upcomingAppointments,
-                onAppointmentTap: _handleAppointmentTap,
-                onAppointmentComplete: _handleAppointmentComplete,
+          // 오늘의 일정 카드
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.md),
+              ),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppSpacing.md),
+                  color: AppColors.pureWhite,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.schedule,
+                          color: AppColors.pointBlue,
+                          size: 24,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          '今日の予定',
+                          style: AppTextStyles.titleMedium.copyWith(
+                            color: AppColors.pointBlue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    if (dashboard.hasPets &&
+                        dashboard.hasTodayAppointments) ...[
+                      ...dashboard.upcomingAppointments
+                          .take(3)
+                          .map(
+                            (appointment) => Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: AppSpacing.sm,
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.pointBlue,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppSpacing.sm),
+                                  Expanded(
+                                    child: Text(
+                                      appointment.title,
+                                      style: AppTextStyles.bodyMedium,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${appointment.scheduledTime.hour}:${appointment.scheduledTime.minute.toString().padLeft(2, '0')}',
+                                    style: AppTextStyles.bodySmall.copyWith(
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                    ] else ...[
+                      Text(
+                        '今日の予定はありません',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
-          ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
 
-          // 산책 요약 (펫이 있을 경우)
-          if (dashboard.hasPets) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: WalkSummaryWidget(
-                totalMinutes: dashboard.walkSummary.todayDuration.inMinutes,
-                isWeeklyRecord: dashboard.walkSummary.isWeeklyRecord,
+          // 산책 서머리 카드
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.md),
+              ),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppSpacing.md),
+                  color: AppColors.pureWhite,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.directions_walk,
+                          color: AppColors.pointGreen,
+                          size: 24,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          '散歩サマリー',
+                          style: AppTextStyles.titleMedium.copyWith(
+                            color: AppColors.pointGreen,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    if (dashboard.hasPets) ...[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '今日の散歩時間',
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                Text(
+                                  '${dashboard.walkSummary.todayDuration.inMinutes}分',
+                                  style: AppTextStyles.titleMedium.copyWith(
+                                    color: AppColors.pointGreen,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (dashboard.walkSummary.isWeeklyRecord) ...[
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.sm,
+                                vertical: AppSpacing.xs,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.pointGreen,
+                                borderRadius: BorderRadius.circular(
+                                  AppSpacing.sm,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.emoji_events,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ),
+                                  const SizedBox(width: AppSpacing.xs),
+                                  Text(
+                                    '週間記録更新！',
+                                    style: AppTextStyles.bodySmall.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ] else ...[
+                      Text(
+                        'ペットを登録して散歩を記録しましょう',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
-          ],
+          ),
 
           // 하단 여백
           SizedBox(height: AppSpacing.xl + MediaQuery.of(context).padding.top),
@@ -323,16 +422,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void _handleSearchChanged(String query) {
     final controller = ref.read(homeControllerProvider);
     controller.handleSearch(query);
-  }
-
-  void _handleAppointmentTap(AppointmentSummary appointment) {
-    final controller = ref.read(homeControllerProvider);
-    controller.navigateToAppointmentDetail(context, appointment);
-  }
-
-  void _handleAppointmentComplete(AppointmentSummary appointment) {
-    final controller = ref.read(homeControllerProvider);
-    controller.completeAppointment(context, appointment);
   }
 
   /// Pull-to-Refresh 핸들러

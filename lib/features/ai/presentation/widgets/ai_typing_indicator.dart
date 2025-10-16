@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 🎯 AI Typing Indicator Animation State Provider
-final aiTypingIndicatorProvider = StateNotifierProvider<AiTypingIndicatorController, bool>(
-  (ref) => AiTypingIndicatorController(),
-);
+final aiTypingIndicatorProvider =
+    StateNotifierProvider<AiTypingIndicatorController, bool>(
+      (ref) => AiTypingIndicatorController(),
+    );
 
 class AiTypingIndicatorController extends StateNotifier<bool> {
   AiTypingIndicatorController() : super(false);
@@ -84,9 +85,12 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
         children: [
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
-            decoration: const BoxDecoration(color: AppColors.pointBrown, shape: BoxShape.circle),
+            decoration: const BoxDecoration(
+              color: AppColors.pointBrown,
+              shape: BoxShape.circle,
+            ),
             child: Image.asset(
-              'assets/icons/logo_notinclude_text.png',
+              'assets/icons/logos/aipet_white.png',
               width: 20,
               height: 20,
               color: Colors.white,
@@ -94,7 +98,10 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
           ),
           const SizedBox(width: AppSpacing.sm),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(
@@ -132,7 +139,9 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
           width: 8,
           height: 8,
           decoration: BoxDecoration(
-            color: AppColors.pointBrown.withValues(alpha: _animations[index].value),
+            color: AppColors.pointBrown.withValues(
+              alpha: _animations[index].value,
+            ),
             shape: BoxShape.circle,
           ),
         );

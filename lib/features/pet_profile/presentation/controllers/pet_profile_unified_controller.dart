@@ -37,6 +37,7 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
     state = state.copyWith(
       selectedPet: pet,
       editFormData: _initializeEditFormData(pet),
+      isLoading: false,
       errorMessage: null,
     );
   }
@@ -80,17 +81,42 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
   Future<void> loadPetProfile(String petId) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
-    final result = await _logic.loadPetProfile(petId);
+    debugPrint('🔍 Loading pet profile with ID: $petId');
 
-    if (result.isSuccess) {
-      final pet = result.dataOrNull;
-      if (pet != null) {
-        selectPet(pet);
+    try {
+      final result = await _logic.loadPetProfile(petId);
+
+      if (result.isSuccess) {
+        final pet = result.dataOrNull;
+        if (pet != null) {
+          debugPrint('✅ Pet profile loaded successfully: ${pet.name}');
+          // 펫 선택 후 로딩 상태 해제
+          state = state.copyWith(
+            selectedPet: pet,
+            editFormData: _initializeEditFormData(pet),
+            isLoading: false,
+            errorMessage: null,
+          );
+        } else {
+          debugPrint('❌ Pet not found with ID: $petId');
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: 'ペットが見つかりません (ID: $petId)',
+          );
+        }
       } else {
-        state = state.copyWith(isLoading: false, errorMessage: 'ペットが見つかりません');
+        debugPrint('❌ Failed to load pet profile: ${result.message}');
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: result.message,
+        );
       }
-    } else {
-      state = state.copyWith(isLoading: false, errorMessage: result.message);
+    } catch (e) {
+      debugPrint('❌ Exception while loading pet profile: $e');
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'ペット情報の読み込み中にエラーが発生しました: ${e.toString()}',
+      );
     }
   }
 

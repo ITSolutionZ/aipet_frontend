@@ -8,7 +8,8 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   final LocalStorageService _localStorageService;
 
   PetProfileRepositoryImpl({LocalStorageService? localStorageService})
-    : _localStorageService = localStorageService ?? LocalStorageService.instance;
+    : _localStorageService =
+          localStorageService ?? LocalStorageService.instance;
 
   @override
   Future<Result<List<PetProfileEntity>>> getAllPets() async {
@@ -34,23 +35,51 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     }
   }
 
-
   @override
   Future<Result<PetProfileEntity?>> getPetById(String id) async {
     try {
       debugPrint('=== getPetById called with id: $id ===');
+
+      // 먼저 모든 펫 목록을 확인해보자
+      final allPets = await _localStorageService.pet.getAllPets();
+      debugPrint(
+        'Available pets: ${allPets.map((p) => '${p['petId']}: ${p['name']}').toList()}',
+      );
 
       // 로컬 저장소에서 펫 데이터 로드
       final petData = await _localStorageService.pet.getPetById(id);
 
       if (petData == null) {
         debugPrint('Pet not found with id: $id');
+        debugPrint(
+          'Available pet IDs: ${allPets.map((p) => p['petId']).toList()}',
+        );
         return Result.success('해당 ID의 펫을 찾을 수 없습니다', null);
       }
 
       debugPrint('Found pet data: ${petData.keys.toList()}');
+      debugPrint('📋 === 펫 데이터 로드 로그 ===');
+      debugPrint('📋 펫 ID: ${petData['petId']}');
+      debugPrint('📋 펫 이름: ${petData['name']}');
+      debugPrint('📋 펫 타입: ${petData['type']}');
+      debugPrint('📋 펫 품종: ${petData['breed']}');
+      debugPrint('📋 펫 성별: ${petData['gender']}');
+      debugPrint('📋 펫 체중: ${petData['weight']}');
+      debugPrint('📋 펫 이미지: ${petData['imagePath']}');
+      debugPrint('📋 보호자 이름: ${petData['guardianName']}');
+      debugPrint('📋 기관 이름: ${petData['institutionName']}');
+      debugPrint('📋 등록번호: ${petData['registrationNumber']}');
+      debugPrint('📋 중성화 여부: ${petData['neutered']}');
+      debugPrint('📋 추가 정보: ${petData['additionalInfo']}');
+      debugPrint('📋 ================================');
+
       final pet = _safeCreatePetEntity(petData);
       debugPrint('Created PetProfileEntity: ${pet.name}');
+      debugPrint('📋 === PetProfileEntity 생성 후 ===');
+      debugPrint('📋 엔티티 이름: ${pet.name}');
+      debugPrint('📋 엔티티 이미지: ${pet.imagePath}');
+      debugPrint('📋 엔티티 추가정보: ${pet.additionalInfo}');
+      debugPrint('📋 ================================');
       return Result.success('펫 정보를 성공적으로 조회했습니다', pet);
     } catch (error) {
       debugPrint('getPetById error: $error');
@@ -86,8 +115,11 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
       final updatedPet = pet.copyWith(updatedAt: DateTime.now());
 
       // 로컬 저장소에 저장
-      final success = await _localStorageService.pet.updatePet(pet.id, updatedPet.toJson());
-      
+      final success = await _localStorageService.pet.updatePet(
+        pet.id,
+        updatedPet.toJson(),
+      );
+
       if (!success) {
         return Result.failure('해당 펫을 찾을 수 없습니다');
       }
@@ -104,7 +136,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     try {
       // 로컬 저장소에서 삭제
       final success = await _localStorageService.pet.deletePet(id);
-      
+
       if (!success) {
         return Result.failure('해당 펫을 찾을 수 없습니다');
       }
@@ -121,7 +153,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     try {
       // 로컬 저장소에서 펫 정보 가져오기
       final petData = await _localStorageService.pet.getPetById(petId);
-      
+
       if (petData == null) {
         return Result.failure('해당 펫을 찾을 수 없습니다');
       }
@@ -148,7 +180,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     try {
       // 로컬 저장소에서 펫 정보 가져오기
       final petData = await _localStorageService.pet.getPetById(petId);
-      
+
       if (petData == null) {
         return Result.failure('해당 펫을 찾을 수 없습니다');
       }
@@ -171,15 +203,13 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     try {
       // 로컬 저장소에서 펫 정보 가져오기
       final petData = await _localStorageService.pet.getPetById(petId);
-      
+
       if (petData == null) {
         return Result.failure('해당 펫을 찾을 수 없습니다');
       }
 
       // 가족 관리자 목록 가져오기
-      final familyManagers = List<String>.from(
-        petData['familyManagers'] ?? [],
-      );
+      final familyManagers = List<String>.from(petData['familyManagers'] ?? []);
       if (!familyManagers.contains(userId)) {
         familyManagers.add(userId);
         petData['familyManagers'] = familyManagers;
@@ -200,15 +230,13 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     try {
       // 로컬 저장소에서 펫 정보 가져오기
       final petData = await _localStorageService.pet.getPetById(petId);
-      
+
       if (petData == null) {
         return Result.failure('해당 펫을 찾을 수 없습니다');
       }
 
       // 가족 관리자 목록에서 제거
-      final familyManagers = List<String>.from(
-        petData['familyManagers'] ?? [],
-      );
+      final familyManagers = List<String>.from(petData['familyManagers'] ?? []);
       familyManagers.remove(userId);
       petData['familyManagers'] = familyManagers;
       petData['updatedAt'] = DateTime.now().toIso8601String();
@@ -233,8 +261,43 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
       debugPrint('Pet data: $petData');
 
       // 수동으로 안전하게 PetProfileEntity 생성
+      debugPrint('📋 === _safeCreatePetEntity 수동 생성 로그 ===');
+      debugPrint('📋 마이크로칩 ID (camelCase): ${petData['microchipId']}');
+      debugPrint('📋 마이크로칩 ID (snake_case): ${petData['microchip_id']}');
+      debugPrint('📋 등록번호 (camelCase): ${petData['registrationNumber']}');
+      debugPrint('📋 등록번호 (snake_case): ${petData['registration_number']}');
+      debugPrint('📋 보호자 이름 (camelCase): ${petData['guardianName']}');
+      debugPrint('📋 보호자 이름 (snake_case): ${petData['guardian_name']}');
+      debugPrint('📋 기관 이름 (camelCase): ${petData['institutionName']}');
+      debugPrint('📋 기관 이름 (snake_case): ${petData['institution_name']}');
+      debugPrint('📋 추가 정보 키들: ${petData['additionalInfo']?.keys.toList()}');
+      debugPrint('📋 ===========================================');
+
+      // snake_case 필드를 additionalInfo에 포함
+      final additionalInfo = Map<String, dynamic>.from(
+        petData['additionalInfo'] as Map<String, dynamic>? ?? {},
+      );
+
+      // 데이터베이스의 snake_case 필드들을 additionalInfo에 추가
+      if (petData['registration_number'] != null) {
+        additionalInfo['registrationNumber'] = petData['registration_number'];
+      }
+      if (petData['guardian_name'] != null) {
+        additionalInfo['guardianName'] = petData['guardian_name'];
+      }
+      if (petData['institution_name'] != null) {
+        additionalInfo['institutionName'] = petData['institution_name'];
+      }
+      if (petData['is_neutered'] != null) {
+        additionalInfo['isNeutered'] = petData['is_neutered'] == 1;
+      }
+
       return PetProfileEntity(
-        id: petData['id']?.toString() ?? '',
+        id:
+            petData['petId']?.toString() ??
+            petData['id']?.toString() ??
+            petData['data']?['id']?.toString() ??
+            '',
         name: petData['name']?.toString() ?? '',
         type:
             petData['typeName']?.toString() ??
@@ -244,14 +307,15 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
         birthDate: _parseDate(petData['birthDate']) ?? DateTime.now(),
         gender: petData['gender']?.toString() ?? 'unknown',
         weight: _parseDouble(petData['weight']) ?? 0.0,
-        imagePath: petData['imagePath']?.toString(),
+        imagePath:
+            petData['profile_image']?.toString() ??
+            petData['imagePath']?.toString(),
         ownerId: petData['ownerId']?.toString() ?? 'unknown',
         createdAt: _parseDate(petData['createdAt']) ?? DateTime.now(),
         updatedAt: _parseDate(petData['updatedAt']) ?? DateTime.now(),
         isActive: petData['isActive'] as bool? ?? true,
-        additionalInfo:
-            petData['additionalInfo'] as Map<String, dynamic>? ?? {},
-        neutered: petData['neutered'] as bool? ?? false,
+        additionalInfo: additionalInfo,
+        neutered: petData['is_neutered'] == 1 || petData['neutered'] == true,
       );
     }
   }

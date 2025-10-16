@@ -10,6 +10,9 @@ import 'package:aipet_frontend/features/notification/presentation/screens/notifi
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
 import 'package:aipet_frontend/features/pet_health/presentation/screens/weight_tracking_screen.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/screens/add_event_screen.dart';
 import 'package:aipet_frontend/features/shopping/presentation/screens/pet_search_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/live_walk_screen.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +29,52 @@ import 'route_constants.dart';
 /// 이 라우트들은 Shell과 독립적으로 실행되며, 전체화면 경험을 제공합니다.
 class StandaloneRoutes {
   static List<RouteBase> get routes => [
+    // Calendar Event Add/Edit Routes
+    GoRoute(
+      path: RouteConstants.addEventRoute,
+      name: 'add-event',
+      builder: (context, state) {
+        // 쿼리 파라미터에서 선택된 날짜 가져오기
+        final dateString =
+            state.uri.queryParameters['date'] ??
+            DateTime.now().toIso8601String();
+        final selectedDate = DateTime.tryParse(dateString) ?? DateTime.now();
+
+        return AddEventScreen(selectedDate: selectedDate);
+      },
+    ),
+    GoRoute(
+      path: RouteConstants.editEventRoute,
+      name: 'edit-event',
+      builder: (context, state) {
+        // extra에서 이벤트 데이터와 선택된 날짜 가져오기
+        final extra = state.extra as Map<String, dynamic>?;
+        final event = extra?['event'] as CalendarEventEntity?;
+        final selectedDate =
+            extra?['selectedDate'] as DateTime? ?? DateTime.now();
+
+        return AddEventScreen(selectedDate: selectedDate, initialEvent: event);
+      },
+    ),
+
+    // Pet Profile (독립 라우트)
+    GoRoute(
+      path: '/pet-profile/:petId',
+      name: 'pet-profile-standalone',
+      builder: (context, state) {
+        final petId = state.pathParameters['petId'] ?? 'default';
+        return PetProfileScreen(petId: petId);
+      },
+    ),
     // Daily Health Pet Registration
     GoRoute(
       path: RouteConstants.dailyPetRegistrationRoute,
       name: 'daily-pet-registration',
-      builder: (context, state) => const DailyPetRegistrationScreen(),
+      builder: (context, state) {
+        // 쿼리 파라미터에서 petId 추출 (편집 모드용)
+        final petId = state.uri.queryParameters['petId'];
+        return DailyPetRegistrationScreen(petId: petId);
+      },
     ),
     // Facility Calendar
     GoRoute(

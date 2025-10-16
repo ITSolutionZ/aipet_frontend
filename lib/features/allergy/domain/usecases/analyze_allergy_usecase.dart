@@ -21,11 +21,11 @@ class AnalyzeAllergyUseCase {
   }) async {
     // 비즈니스 로직: 입력 데이터 검증
     if (allergyProducts.isEmpty) {
-      throw Exception('알레르기 반응이 있었던 제품을 최소 1개 이상 선택해주세요');
+      throw Exception('あれるリアルグアゲンハイゲンエンテン アレルギー反応があった商品を最低1つ以上選択してください');
     }
 
     if (nonAllergyProducts.isEmpty) {
-      throw Exception('알레르기 반응이 없었던 제품을 최소 1개 이상 선택해주세요');
+      throw Exception('あれるリアルグアゲンハイゲンエンテン アレルギー反応がなかった商品を最低1つ以上選択してください');
     }
 
     // 1. 기본 알레르기 분석
@@ -159,25 +159,25 @@ class AnalyzeAllergyUseCase {
     // 고위험 성분 기반 권장사항
     if (ingredientRisk.highRiskIngredients.isNotEmpty) {
       recommendations.add(
-        '${ingredientRisk.highRiskIngredients.join(', ')}이 포함된 제품은 피해주세요',
+        '${ingredientRisk.highRiskIngredients.join(', ')}が含まれている商品は避けてください',
       );
     }
 
     // 패턴 기반 권장사항
     if (patternAnalysis != null && patternAnalysis.predictedRisks.isNotEmpty) {
       recommendations.add(
-        '과거 패턴을 고려할 때 ${patternAnalysis.predictedRisks.join(', ')}에 주의하세요',
+        '過去のパターンを考慮した場合 ${patternAnalysis.predictedRisks.join(', ')}に注意してください',
       );
     }
 
     // 일반적인 관리 권장사항
     recommendations.addAll([
-      '새로운 사료 도입 시 점진적으로 바꿔주세요',
-      '알레르기 증상 발생 시 즉시 사용을 중단하고 수의사와 상담하세요',
-      '정기적인 알레르기 테스트를 받아보시는 것을 권장합니다',
+      '新しいドッグフードを導入する場合は段階的に変えてください',
+      'アレルギーの症状が出た場合はすぐに使用を中止し、獣医と相談してください',
+      '定期的なアレルギーテストを受けることをお勧めします',
     ]);
 
-    return recommendations.toSet().toList(); // 중복 제거
+    return recommendations.toSet().toList(); // 重複排除
   }
 
   /// 회피 가이드라인 생성
@@ -188,15 +188,15 @@ class AnalyzeAllergyUseCase {
 
     // 의심 성분 회피
     for (final ingredient in analysis.basicAnalysis.suspectedIngredients) {
-      guidelines.add('$ingredient이 포함된 모든 제품을 피하세요');
+      guidelines.add('$ingredientが含まれているすべての商品を避けてください');
     }
 
     // 교차 반응 주의
-    guidelines.add('관련 성분들도 함께 주의해서 확인하세요');
+    guidelines.add('関連成分も注意して確認してください');
 
     // 대체 제품 안내
     if (analysis.alternativeProducts.isNotEmpty) {
-      guidelines.add('추천 대체 제품들을 우선적으로 고려해보세요');
+      guidelines.add('推奨の代替商品を優先的に検討してください');
     }
 
     return guidelines;
@@ -208,7 +208,7 @@ class AnalyzeAllergyUseCase {
     List<String> potentialAllergens,
   ) async {
     // TODO: 개별 펫의 히스토리 기반 계산
-    return 0.5; // 임시값
+    return 0.5; // 仮値
   }
 
   /// 전체 위험도 계산
@@ -225,15 +225,15 @@ class AnalyzeAllergyUseCase {
     switch (riskLevel) {
       case 'high':
         return [
-          '즉시 해당 성분이 포함된 모든 제품 사용 중단',
-          '수의사와 긴급 상담',
-          '알레르기 테스트 예약',
-          '응급처치 방법 숙지',
+          'すぐにその成分を含むすべての商品の使用を中止してください',
+          '獣医と緊急相談',
+          'アレルギーテストの予約',
+          '緊急処置の方法を確認してください',
         ];
       case 'moderate':
-        return ['해당 성분 포함 제품 사용 주의', '수의사 상담 예약', '증상 모니터링 강화', '대체 제품 준비'];
+        return ['その成分を含む商品の使用に注意してください', '獣医と相談の予約', '症状の監視を強化', '代替商品の準備'];
       default:
-        return ['정기적인 모니터링', '예방적 관리', '정기 건강검진'];
+        return ['定期的な監視', '予防的な管理', '定期的な健康検査'];
     }
   }
 

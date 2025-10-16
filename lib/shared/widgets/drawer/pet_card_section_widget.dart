@@ -170,8 +170,14 @@ class PetCardSectionWidget extends ConsumerWidget {
               // TextButton 대신 GestureDetector 사용
               onTap: () async {
                 final petId = pet.id;
-                // 먼저 네비게이션 실행
-                await context.push('/pet-profile/$petId');
+
+                // petId가 null이거나 비어있는 경우 에러 방지
+                if (petId.isEmpty) {
+                  return;
+                }
+
+                // Shell 라우트 내의 펫 프로필로 이동
+                await context.push('/home/pet-profile/$petId');
                 // 네비게이션 완료 후 drawer 자동으로 닫힘
               },
               child: Container(

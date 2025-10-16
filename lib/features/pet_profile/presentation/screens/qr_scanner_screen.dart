@@ -53,7 +53,6 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
           onPressed: () => context.pop(),
         ),
         title: null, // タイトルを削除
-        centerTitle: true,
       ),
       body: _buildBody(),
     );

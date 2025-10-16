@@ -31,7 +31,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
               shape: BoxShape.circle,
             ),
             child: Image.asset(
-              'assets/icons/logos/aipet_logo.png',
+              'assets/icons/logos/aipet_white.png',
               width: 20,
               height: 20,
               color: Colors.white,

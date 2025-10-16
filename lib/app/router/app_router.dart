@@ -32,6 +32,8 @@ class AppRouter {
   static const String tokenExchangeRoute =
       RouteConstants.tokenExchangeRoute; // Changed
   static const String schedulingRoute = RouteConstants.schedulingRoute;
+  static const String addEventRoute = RouteConstants.addEventRoute;
+  static const String editEventRoute = RouteConstants.editEventRoute;
   static const String aiRoute = RouteConstants.aiRoute;
   static const String aiFavoriteMessagesRoute =
       RouteConstants.aiFavoriteMessagesRoute;
@@ -44,6 +46,7 @@ class AppRouter {
 
   // 추가된 라우트 상수들
   static const String petProfileRoute = RouteConstants.petProfileRoute;
+  static const String petEditRoute = RouteConstants.petEditRoute;
   static const String profileEditRoute = RouteConstants.profileEditRoute;
   static const String accountDeleteRoute = RouteConstants.accountDeleteRoute;
   static const String pushNotificationRoute =
@@ -105,6 +108,9 @@ class AppRouter {
       initialLocation: splashRoute, // 스플래시 시퀀스로 시작
       debugLogDiagnostics: false,
       routes: [
+        // 루트 경로 리다이렉트
+        GoRoute(path: '/', redirect: (context, state) => splashRoute),
+
         // 1. Splash Shell 라우트 (스플래시 시퀀스 → 온보딩) - 최우선
         SplashShellRoutes.splashShellRoute,
 
