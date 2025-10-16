@@ -15,11 +15,15 @@ class AnalysisDetailSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        boxShadow: [
+        border: Border.all(
+          color: const Color(0x0D000000), // 투명도 대신 고정 색상 사용
+          width: 1,
+        ),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black12, // 투명도 대신 고정 색상 사용
             blurRadius: 4,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),

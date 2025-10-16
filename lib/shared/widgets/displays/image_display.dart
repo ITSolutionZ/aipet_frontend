@@ -34,7 +34,8 @@ class ImageDisplay extends StatefulWidget {
   ImageDisplayState createState() => ImageDisplayState();
 }
 
-class ImageDisplayState extends State<ImageDisplay> with AutomaticKeepAliveClientMixin {
+class ImageDisplayState extends State<ImageDisplay>
+    with AutomaticKeepAliveClientMixin {
   late ImageProvider? _imageProvider;
   ImageStream? _imageStream;
   ImageStreamListener? _listener;
@@ -101,10 +102,14 @@ class ImageDisplayState extends State<ImageDisplay> with AutomaticKeepAliveClien
 
     // 이미지 경로가 있는 경우
     if (widget.imagePath != null && widget.imagePath!.isNotEmpty) {
-      if (widget.imagePath!.startsWith('http') || widget.imagePath!.startsWith('https')) {
+      if (widget.imagePath!.startsWith('http') ||
+          widget.imagePath!.startsWith('https')) {
         return NetworkImage(widget.imagePath!);
-      } else {
+      } else if (widget.imagePath!.startsWith('assets/')) {
         return AssetImage(widget.imagePath!);
+      } else {
+        // 로컬 파일 경로인 경우 FileImage 사용
+        return FileImage(File(widget.imagePath!));
       }
     }
 
@@ -113,8 +118,11 @@ class ImageDisplayState extends State<ImageDisplay> with AutomaticKeepAliveClien
       final String path = widget.imageFile as String;
       if (path.startsWith('http') || path.startsWith('https')) {
         return NetworkImage(path);
-      } else {
+      } else if (path.startsWith('assets/')) {
         return AssetImage(path);
+      } else {
+        // 로컬 파일 경로인 경우 FileImage 사용
+        return FileImage(File(path));
       }
     }
 
@@ -135,7 +143,10 @@ class ImageDisplayState extends State<ImageDisplay> with AutomaticKeepAliveClien
             decoration: BoxDecoration(
               color: AppColors.pointGray.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.large),
-              border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.2), width: 1),
+              border: Border.all(
+                color: AppColors.pointGray.withValues(alpha: 0.2),
+                width: 1,
+              ),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.large),
@@ -163,12 +174,17 @@ class ImageDisplayState extends State<ImageDisplay> with AutomaticKeepAliveClien
                     ),
                   ],
                 ),
-                child: const Icon(Icons.camera_alt, color: AppColors.pureWhite, size: 18),
+                child: const Icon(
+                  Icons.camera_alt,
+                  color: AppColors.pureWhite,
+                  size: 18,
+                ),
               ),
             ),
 
           // 배지
-          if (widget.badge != null) Positioned(top: 8, right: 8, child: widget.badge!),
+          if (widget.badge != null)
+            Positioned(top: 8, right: 8, child: widget.badge!),
         ],
       ),
     );
@@ -201,7 +217,8 @@ class ImageDisplayState extends State<ImageDisplay> with AutomaticKeepAliveClien
             height: 24,
             child: CircularProgressIndicator(
               value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
                   : null,
               strokeWidth: 2,
               color: AppColors.pointBrown,
@@ -247,7 +264,9 @@ class ImageDisplayState extends State<ImageDisplay> with AutomaticKeepAliveClien
           const SizedBox(height: 8),
           Text(
             'No Image',
-            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray.withValues(alpha: 0.6)),
+            style: AppFonts.bodySmall.copyWith(
+              color: AppColors.pointGray.withValues(alpha: 0.6),
+            ),
           ),
         ],
       ),

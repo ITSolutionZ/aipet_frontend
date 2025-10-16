@@ -1,15 +1,15 @@
+import 'local_ai_service.dart';
 import 'local_database_service.dart';
+import 'local_facility_service.dart';
 import 'local_pet_service.dart';
 import 'local_schedule_service.dart';
-import 'local_ai_service.dart';
-import 'local_facility_service.dart';
 import 'local_user_service.dart';
 
+export 'local_ai_service.dart';
 export 'local_database_service.dart';
+export 'local_facility_service.dart';
 export 'local_pet_service.dart';
 export 'local_schedule_service.dart';
-export 'local_ai_service.dart';
-export 'local_facility_service.dart';
 export 'local_user_service.dart';
 
 /// 통합 로컬 스토리지 서비스
@@ -35,7 +35,7 @@ class LocalStorageService {
   Future<void> initialize() async {
     // 데이터베이스 초기화
     await database.database;
-    
+
     // 필요한 초기 설정 수행
     await _performInitialSetup();
   }
@@ -89,26 +89,25 @@ class LocalStorageService {
   /// 데이터 백업
   Future<Map<String, dynamic>> backupData() async {
     final backup = <String, dynamic>{};
-    
+
     // 모든 펫 정보
     backup['pets'] = await pet.getAllPets();
-    
+
     // 모든 스케줄
     backup['schedules'] = await schedule.getAllSchedules();
-    
-    // 사용자 정보
-    backup['userInfo'] = await user.loadUserInfo();
-    backup['userSettings'] = await user.loadUserSettings();
-    
+
+    // 사용자 프로필 정보
+    backup['userProfile'] = await user.loadUserProfile();
+
     // AI 설정
     backup['aiSettings'] = await ai.loadAiSettings();
     backup['aiCategories'] = await ai.loadAiCategories();
-    
+
     // 시설 즐겨찾기
     backup['facilityFavorites'] = await facility.getFavorites();
-    
+
     backup['backupDate'] = DateTime.now().toIso8601String();
-    
+
     return backup;
   }
 
@@ -116,32 +115,29 @@ class LocalStorageService {
   Future<void> restoreData(Map<String, dynamic> backup) async {
     // 기존 데이터 삭제
     await clearAllData();
-    
+
     // 데이터베이스 재초기화
     await initialize();
-    
+
     // 펫 정보 복원
     if (backup['pets'] != null) {
       for (final petData in backup['pets']) {
         await pet.addPet(petData);
       }
     }
-    
+
     // 스케줄 복원
     if (backup['schedules'] != null) {
       for (final scheduleData in backup['schedules']) {
         await schedule.addSchedule(scheduleData);
       }
     }
-    
-    // 사용자 정보 복원
-    if (backup['userInfo'] != null) {
-      await user.saveUserInfo(backup['userInfo']);
+
+    // 사용자 프로필 정보 복원
+    if (backup['userProfile'] != null) {
+      await user.saveUserProfile(backup['userProfile']);
     }
-    if (backup['userSettings'] != null) {
-      await user.saveUserSettings(backup['userSettings']);
-    }
-    
+
     // AI 설정 복원
     if (backup['aiSettings'] != null) {
       await ai.saveAiSettings(backup['aiSettings']);
@@ -149,7 +145,7 @@ class LocalStorageService {
     if (backup['aiCategories'] != null) {
       await ai.saveAiCategories(backup['aiCategories']);
     }
-    
+
     // 시설 즐겨찾기 복원
     if (backup['facilityFavorites'] != null) {
       for (final favoriteData in backup['facilityFavorites']) {

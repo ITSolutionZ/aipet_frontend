@@ -33,6 +33,8 @@ class RouteConstants {
   // ===== HOME TAB SUB-ROUTES =====
   static const String petEmptyRoute = '/home/pet-empty';
   static const String petProfileRoute = '/home/pet-profile';
+  static const String petManagementRoute = '/home/pet-management';
+  static const String petEditRoute = '/home/pet-edit';
   static const String sharingProfilesRoute = '/home/sharing-profiles';
   static const String vaccinesRoute = '/home/vaccines';
   static const String tricksRoute = '/home/tricks';
@@ -45,6 +47,8 @@ class RouteConstants {
   static const String savedAnalysisListRoute = '/home/allergy/saved-analyses';
 
   // ===== SCHEDULING TAB SUB-ROUTES =====
+  static const String addEventRoute = '/scheduling/add-event';
+  static const String editEventRoute = '/scheduling/edit-event';
   static const String feedingScheduleRoute = '/scheduling/feeding-schedule';
   static const String feedingRecordsRoute = '/scheduling/feeding-records';
   static const String feedingAnalysisRoute = '/scheduling/feeding-analysis';

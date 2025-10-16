@@ -5,6 +5,9 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsRepositoryImpl implements SettingsRepository {
+  // LocalUserService 인스턴스 (사용자 프로필용)
+  final LocalUserService _userService = LocalUserService();
+
   // SharedPreferences 키 상수
   static const String _keyUserProfile = 'user_profile';
   static const String _keyAppSettings = 'app_settings';
@@ -36,22 +39,22 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<Map<String, dynamic>>> getUserProfile() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final profileJson = prefs.getString(_keyUserProfile);
+      // LocalUserService를 사용하여 SQLite에서 프로필 로드
+      final profile = await _userService.loadUserProfile();
 
-      if (profileJson != null) {
-        final profileMap = jsonDecode(profileJson) as Map<String, dynamic>;
-        final profile = {
-          'id': profileMap['id'] as String,
-          'name': profileMap['name'] as String,
-          'email': profileMap['email'] as String,
-          'avatarPath': profileMap['avatarPath'] as String?,
-          'createdAt': DateTime.parse(profileMap['createdAt'] as String),
-          'lastLoginAt': profileMap['lastLoginAt'] != null
-              ? DateTime.parse(profileMap['lastLoginAt'] as String)
-              : null,
+      if (profile != null) {
+        // UserProfileEntity를 Map으로 변환
+        final profileMap = {
+          'id': profile.id,
+          'name': profile.userName,
+          'email': profile.email,
+          'avatarPath': profile.profileImage,
+          'nameKatakana': profile.nameKatakana,
+          'contact': profile.contact,
+          'createdAt': profile.createdAt,
+          'lastLoginAt': profile.updatedAt, // lastLoginAt 대신 updatedAt 사용
         };
-        return Result.success('ユーザープロフィールを取得しました', profile);
+        return Result.success('ユーザープロフィールを取得しました', profileMap);
       }
 
       return Result.success('デフォルトプロフィールを取得しました', _defaultUserProfile);
@@ -65,18 +68,60 @@ class SettingsRepositoryImpl implements SettingsRepository {
     Map<String, dynamic> profile,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final profileMap = {
-        'id': profile['id'],
-        'name': profile['name'],
-        'email': profile['email'],
-        'avatarPath': profile['avatarPath'],
-        'createdAt': (profile['createdAt'] as DateTime).toIso8601String(),
-        'lastLoginAt': (profile['lastLoginAt'] as DateTime?)?.toIso8601String(),
-      };
+      // 기존 프로필 로드
+      final existingProfile = await _userService.loadUserProfile();
 
-      await prefs.setString(_keyUserProfile, jsonEncode(profileMap));
-      return Result.success('プロフィールが更新されました', profile);
+      if (existingProfile != null) {
+        // 기존 프로필 업데이트
+        final updatedProfile = existingProfile.copyWith(
+          userName: (profile['name'] as String?) ?? existingProfile.userName,
+          email: (profile['email'] as String?) ?? existingProfile.email,
+          profileImage: profile['avatarPath'] as String?,
+          nameKatakana: profile['nameKatakana'] as String?,
+          contact: profile['contact'] as String?,
+          updatedAt: DateTime.now(),
+        );
+
+        await _userService.saveUserProfile(updatedProfile);
+
+        // 업데이트된 프로필을 Map으로 반환
+        final resultMap = {
+          'id': updatedProfile.id,
+          'name': updatedProfile.userName,
+          'email': updatedProfile.email,
+          'avatarPath': updatedProfile.profileImage,
+          'nameKatakana': updatedProfile.nameKatakana,
+          'contact': updatedProfile.contact,
+          'createdAt': updatedProfile.createdAt,
+          'lastLoginAt': updatedProfile.updatedAt,
+        };
+
+        return Result.success('プロフィールが更新されました', resultMap);
+      } else {
+        // 새 프로필 생성
+        final newProfile = await _userService.createUserProfile(
+          userName: profile['name'] as String,
+          email: profile['email'] as String,
+          nameKatakana: profile['nameKatakana'] as String?,
+          contact: profile['contact'] as String?,
+          profileImage: profile['avatarPath'] as String?,
+        );
+
+        await _userService.saveUserProfile(newProfile);
+
+        final resultMap = {
+          'id': newProfile.id,
+          'name': newProfile.userName,
+          'email': newProfile.email,
+          'avatarPath': newProfile.profileImage,
+          'nameKatakana': newProfile.nameKatakana,
+          'contact': newProfile.contact,
+          'createdAt': newProfile.createdAt,
+          'lastLoginAt': newProfile.updatedAt,
+        };
+
+        return Result.success('プロフィールが作成されました', resultMap);
+      }
     } catch (e) {
       return Result.failure('プロフィールの更新に失敗しました: ${e.toString()}');
     }

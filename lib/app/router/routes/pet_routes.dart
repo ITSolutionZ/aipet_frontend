@@ -1,6 +1,8 @@
 import 'package:aipet_frontend/features/pet_activities/presentation/screens/learn_trick_screen.dart';
 import 'package:aipet_frontend/features/pet_feeding/presentation/screens/pet_feeding_screens.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_edit_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/vaccine_screen.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:go_router/go_router.dart';
 
 import 'route_constants.dart';
@@ -11,6 +13,32 @@ import 'route_constants.dart';
 /// 이 라우트들은 Shell 밖에서 독립적으로 실행되며, 펫 관리 기능을 담당합니다.
 class PetRoutes {
   static List<RouteBase> get routes => [
+    // ===== PET EDIT =====
+    GoRoute(
+      path: RouteConstants.petEditRoute,
+      name: 'pet-edit',
+      builder: (context, state) {
+        final petId = state.uri.queryParameters['petId'] ?? 'default';
+        // TODO: petId로 실제 PetProfileEntity를 가져와야 함
+        // 임시로 기본 펫 엔티티 생성
+        final pet = PetProfileEntity(
+          id: petId,
+          name: '멍멍이',
+          type: '개',
+          breed: '아이누견',
+          gender: 'Male',
+          birthDate: DateTime(2020, 1, 1),
+          weight: 15.0,
+          imagePath: null,
+          additionalInfo: {},
+          ownerId: 'default_owner',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        return PetEditScreen(pet: pet);
+      },
+    ),
+
     // ===== PET PROFILE & HEALTH =====
     GoRoute(
       path: RouteConstants.vaccinesRoute,

@@ -73,22 +73,18 @@ class HomeMenuItems {
         },
       ),
       MenuItem(
-        title: '家族探し',
-        iconPath: 'assets/icons/home_menu/adopt.png',
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('家族探し機能は準備中です'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        },
-      ),
-      MenuItem(
         title: 'カート',
         iconPath: 'assets/icons/home_menu/shopping.png',
         onTap: () {
           context.push(RouteConstants.petSearchRoute);
+        },
+      ),
+      MenuItem(
+        title: 'ペット管理',
+        iconPath: 'assets/icons/home_menu/note.png',
+        onTap: () {
+          // 펫 관리 화면으로 이동 (펫 목록 또는 펫 등록)
+          context.push(RouteConstants.petManagementRoute);
         },
       ),
       // Pet Activities 메뉴 - 개발 중으로 인해 임시 숨김

@@ -39,7 +39,8 @@ class _AppbarBannerImageState extends State<AppbarBannerImage> {
     _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
       if (mounted) {
         setState(() {
-          _currentBannerIndex = (_currentBannerIndex + 1) % _bannerImages.length;
+          _currentBannerIndex =
+              (_currentBannerIndex + 1) % _bannerImages.length;
         });
       }
     });
@@ -56,8 +57,9 @@ class _AppbarBannerImageState extends State<AppbarBannerImage> {
         _bannerImages[_currentBannerIndex],
         key: ValueKey(_currentBannerIndex),
         width: double.infinity,
-        height: double.infinity, // 전체 높이를 채우도록 변경
-        fit: BoxFit.cover, // 비율을 유지하면서 전체 영역을 채움
+        height: double.infinity,
+        fit: BoxFit.cover,
+        alignment: Alignment.centerLeft, // 이미지를 왼쪽 중앙에 정렬
         errorBuilder: (context, error, stackTrace) {
           return Container(
             width: double.infinity,

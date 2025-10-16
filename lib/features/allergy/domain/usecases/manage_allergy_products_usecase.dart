@@ -21,7 +21,7 @@ class ManageAllergyProductsUseCase {
   }) async {
     // 비즈니스 로직: 입력 검증
     if (avoidIngredients.isEmpty) {
-      throw Exception('회피할 성분을 최소 1개 이상 지정해주세요');
+      throw Exception('避ける成分を最低1つ以上指定してください');
     }
 
     // 1. 대체 제품 추천
@@ -207,9 +207,9 @@ class ManageAllergyProductsUseCase {
   bool _hasRelatedIngredients(String ingredients, List<String> avoidList) {
     // 관련 성분 체크 로직
     final relatedMap = {
-      '닭고기': ['치킨', '가금류', '포울트리'],
-      '소고기': ['비프', '쇠고기'],
-      '밀': ['글루텐', '소맥'],
+      '鶏肉': ['チキン', 'ガムレウ', 'ポウルトリ'],
+      '牛肉': ['ビーフ', 'ショウギ'],
+      '麦': ['グルテン', 'ソマック'],
     };
 
     for (final avoid in avoidList) {
@@ -329,11 +329,11 @@ class ManageAllergyProductsUseCase {
     final pros = <String>[];
 
     if (safety.level == SafetyLevel.safe) {
-      pros.add('알레르기 유발 성분 없음');
+      pros.add('アレルギーを引き起こす成分が含まれていません');
     }
 
     if ((product.price ?? 0) < 50000) {
-      pros.add('합리적인 가격');
+      pros.add('合理的な価格');
     }
 
     return pros;
@@ -346,11 +346,11 @@ class ManageAllergyProductsUseCase {
     final cons = <String>[];
 
     if (safety.level == SafetyLevel.unsafe) {
-      cons.add('알레르기 유발 성분 포함');
+      cons.add('アレルギーを引き起こす成分が含まれています');
     }
 
     if ((product.price ?? 0) > 100000) {
-      cons.add('높은 가격');
+      cons.add('高い価格');
     }
 
     return cons;
@@ -367,9 +367,9 @@ class ManageAllergyProductsUseCase {
   ) {
     switch (level) {
       case SafetyLevel.unsafe:
-        return ['이 제품은 알레르기 유발 성분이 포함되어 있습니다', '사용을 권장하지 않습니다'];
+        return ['この商品にはアレルギーを引き起こす成分が含まれています', '使用を推奨しません'];
       case SafetyLevel.warning:
-        return ['관련 성분이 포함되어 있어 주의가 필요합니다', '소량부터 시작하여 반응을 관찰하세요'];
+        return ['関連成分が含まれているため注意が必要です', '少量から始めて反応を観察してください'];
       case SafetyLevel.safe:
         return [];
     }

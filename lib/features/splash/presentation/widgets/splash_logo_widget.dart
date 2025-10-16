@@ -47,8 +47,8 @@ class SplashLogoWidget extends StatelessWidget {
   /// 앱 로고만 표시 (크게)
   Widget _buildAppLogoWithCompanyLogo() {
     return Container(
-      width: 200, // 로고 크기 증가
-      height: 200, // 로고 크기 증가
+      width: AppConstants.splashAppLogoSize, // 앱 상수에서 로고 크기 가져오기
+      height: AppConstants.splashAppLogoSize, // 앱 상수에서 로고 크기 가져오기
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,

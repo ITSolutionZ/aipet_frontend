@@ -15,11 +15,15 @@ class SuspectedIngredientsSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        boxShadow: [
+        border: Border.all(
+          color: const Color(0x0D000000), // 투명도 대신 고정 색상 사용
+          width: 1,
+        ),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black12, // 투명도 대신 고정 색상 사용
             blurRadius: 4,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -49,10 +53,10 @@ class SuspectedIngredientsSection extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: AppSpacing.sm),
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: const Color(0xFFFF6B9D).withValues(alpha: 0.05),
+                color: const Color(0x0DFFFF6B), // 투명도 대신 고정 색상 사용
                 borderRadius: BorderRadius.circular(AppRadius.small),
                 border: Border.all(
-                  color: const Color(0xFFFF6B9D).withValues(alpha: 0.2),
+                  color: const Color(0x33FF6B9D), // 투명도 대신 고정 색상 사용
                 ),
               ),
               child: Row(

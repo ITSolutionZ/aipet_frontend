@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aipet_frontend/features/home/data/repositories/home_repository_impl.dart';
 import 'package:aipet_frontend/shared/services/local_walk_storage_service.dart';
+import 'package:aipet_frontend/shared/services/svg_cache_service.dart';
 import 'package:aipet_frontend/shared/services/ultra_fast_cache_service.dart';
 import 'package:flutter/material.dart';
 
@@ -28,10 +29,13 @@ class PreloadService {
     debugPrint('🚀 PreloadService: 앱 시작 프리로딩 시작');
 
     try {
-      // 백그라운드에서 홈 데이터 프리로딩
+      // 1. SVG 파일들 프리로딩 (최우선 - UI 렌더링 필요)
+      unawaited(_preloadSvgFiles());
+
+      // 2. 백그라운드에서 홈 데이터 프리로딩
       unawaited(_preloadHomeData());
 
-      // 산책 기록 로컬 데이터 프리로딩
+      // 3. 산책 기록 로컬 데이터 프리로딩
       unawaited(_preloadWalkData());
 
       _preloadCompleted = true;
@@ -40,6 +44,23 @@ class PreloadService {
       debugPrint('❌ PreloadService: 프리로딩 실패 - $e');
     } finally {
       _isPreloading = false;
+    }
+  }
+
+  /// SVG 파일들 프리로딩
+  Future<void> _preloadSvgFiles() async {
+    try {
+      debugPrint('🎨 PreloadService: SVG 파일들 캐싱 시작');
+      final stopwatch = Stopwatch()..start();
+
+      await SvgCacheService().preloadAllSvgs();
+
+      stopwatch.stop();
+      debugPrint(
+        '✅ PreloadService: SVG 파일들 캐싱 완료 (${stopwatch.elapsedMilliseconds}ms)',
+      );
+    } catch (e) {
+      debugPrint('❌ PreloadService: SVG 파일들 캐싱 실패 - $e');
     }
   }
 

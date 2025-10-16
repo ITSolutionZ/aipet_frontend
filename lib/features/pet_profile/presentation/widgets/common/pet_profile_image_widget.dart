@@ -87,10 +87,14 @@ class PetProfileImageWidget extends StatelessWidget {
 
   Widget _buildDefaultImage() {
     return Container(
-      color: AppColors.pointGray.withValues(
-        alpha: PetProfileConstants.iconBackgroundOpacity,
+      color: AppColors.pointOffWhite,
+      child: Image.asset(
+        'assets/icons/logos/aipet_logo.png',
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return Icon(Icons.pets, size: size * 0.4, color: AppColors.pointGray);
+        },
       ),
-      child: Icon(Icons.pets, size: size * 0.4, color: AppColors.pointGray),
     );
   }
 
@@ -100,10 +104,14 @@ class PetProfileImageWidget extends StatelessWidget {
     StackTrace? stackTrace,
   ) {
     return Container(
-      color: AppColors.pointGray.withValues(
-        alpha: PetProfileConstants.iconBackgroundOpacity,
+      color: AppColors.pointOffWhite,
+      child: Image.asset(
+        'assets/icons/logos/aipet_logo.png',
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return Icon(Icons.pets, size: size * 0.4, color: AppColors.pointGray);
+        },
       ),
-      child: Icon(Icons.pets, size: size * 0.4, color: AppColors.pointGray),
     );
   }
 

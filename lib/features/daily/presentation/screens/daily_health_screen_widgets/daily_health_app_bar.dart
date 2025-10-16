@@ -9,10 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DailyHealthAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final DailyHealthLogic logic;
 
-  const DailyHealthAppBar({
-    super.key,
-    required this.logic,
-  });
+  const DailyHealthAppBar({super.key, required this.logic});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -23,8 +20,8 @@ class DailyHealthAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final controller = ref.read(dailyHealthScreenControllerProvider.notifier);
 
     return AppBar(
-      backgroundColor: AppColors.pointBrown,
-      foregroundColor: AppColors.pointOffWhite,
+      backgroundColor: AppColors.pureWhite,
+      foregroundColor: AppColors.pointBrown,
       elevation: 0,
       automaticallyImplyLeading: false,
       leading: AppBarPetSelectorWidget(
@@ -35,14 +32,10 @@ class DailyHealthAppBar extends ConsumerWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () => logic.navigateToCalendarScreen(context),
-          icon: const Icon(
-            Icons.calendar_today,
-            color: AppColors.pointOffWhite,
-          ),
+          icon: const Icon(Icons.calendar_today, color: AppColors.pointBrown),
           tooltip: 'カレンダー',
         ),
       ],
     );
   }
 }
-

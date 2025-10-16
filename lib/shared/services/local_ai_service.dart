@@ -14,24 +14,24 @@ class LocalAiService {
     final db = await _dbService.database;
     final id = DateTime.now().millisecondsSinceEpoch.toString();
 
-    await db.insert(
-      'ai_chats',
-      {
-        'id': id,
-        'conversation_id': conversationId,
-        'message': message,
-        'is_user': isUser ? 1 : 0,
-        'timestamp': DateTime.now().toIso8601String(),
-        'metadata': metadata?.toString(),
-      },
-    );
+    await db.insert('ai_chats', {
+      'id': id,
+      'conversation_id': conversationId,
+      'message': message,
+      'is_user': isUser ? 1 : 0,
+      'timestamp': DateTime.now().toIso8601String(),
+      'metadata': metadata?.toString(),
+    });
     return id;
   }
 
   /// 대화 내역 조회
-  Future<List<Map<String, dynamic>>> getChatHistory(String conversationId, {int limit = 100}) async {
+  Future<List<Map<String, dynamic>>> getChatHistory(
+    String conversationId, {
+    int limit = 100,
+  }) async {
     final db = await _dbService.database;
-    return await db.query(
+    return db.query(
       'ai_chats',
       where: 'conversation_id = ?',
       whereArgs: [conversationId],
@@ -65,28 +65,28 @@ class LocalAiService {
 
   /// AI 설정 저장 (SharedPreferences 사용)
   Future<bool> saveAiSettings(Map<String, dynamic> settings) async {
-    return await _dbService.saveJsonToPrefs('ai_settings', settings);
+    return _dbService.saveJsonToPrefs('ai_settings', settings);
   }
 
   /// AI 설정 로드
   Future<Map<String, dynamic>?> loadAiSettings() async {
-    return await _dbService.loadJsonFromPrefs('ai_settings');
+    return _dbService.loadJsonFromPrefs('ai_settings');
   }
 
   /// AI 추천 카테고리 저장
   Future<bool> saveAiCategories(List<Map<String, dynamic>> categories) async {
-    return await _dbService.saveListToPrefs('ai_categories', categories);
+    return _dbService.saveListToPrefs('ai_categories', categories);
   }
 
   /// AI 추천 카테고리 로드
   Future<List<Map<String, dynamic>>?> loadAiCategories() async {
-    return await _dbService.loadListFromPrefs('ai_categories');
+    return _dbService.loadListFromPrefs('ai_categories');
   }
 
   /// AI 키워드 저장
   Future<bool> saveAiKeywords(List<String> keywords) async {
     final data = keywords.map((k) => {'keyword': k}).toList();
-    return await _dbService.saveListToPrefs('ai_keywords', data);
+    return _dbService.saveListToPrefs('ai_keywords', data);
   }
 
   /// AI 키워드 로드
@@ -100,8 +100,12 @@ class LocalAiService {
 
   /// 최근 검색어 저장
   Future<bool> saveRecentSearches(List<String> searches) async {
-    final data = searches.map((s) => {'search': s, 'timestamp': DateTime.now().toIso8601String()}).toList();
-    return await _dbService.saveListToPrefs('ai_recent_searches', data);
+    final data = searches
+        .map(
+          (s) => {'search': s, 'timestamp': DateTime.now().toIso8601String()},
+        )
+        .toList();
+    return _dbService.saveListToPrefs('ai_recent_searches', data);
   }
 
   /// 최근 검색어 로드

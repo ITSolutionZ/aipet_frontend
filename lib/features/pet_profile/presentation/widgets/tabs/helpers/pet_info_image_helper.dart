@@ -41,8 +41,14 @@ class PetInfoImageHelper {
     StackTrace? stackTrace,
   ) {
     return Container(
-      color: AppColors.pointGray.withValues(alpha: 0.2),
-      child: const Icon(Icons.pets, size: 40, color: AppColors.pointGray),
+      color: AppColors.pointOffWhite,
+      child: Image.asset(
+        'assets/icons/logos/aipet_logo.png',
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return const Icon(Icons.pets, size: 40, color: AppColors.pointGray);
+        },
+      ),
     );
   }
 
