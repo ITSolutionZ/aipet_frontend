@@ -3,20 +3,23 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/ui/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'helpers/helpers.dart';
 
-/// Pet Basic Info Tab 상태 관리 Provider
-final petBasicInfoTabProvider =
-    StateNotifierProvider.family<
-      PetBasicInfoTabController,
-      PetBasicInfoTabState,
-      String
-    >((ref, tabId) => PetBasicInfoTabController());
+part 'pet_basic_info_tab.g.dart';
 
 /// Pet Basic Info Tab 컨트롤러
-class PetBasicInfoTabController extends StateNotifier<PetBasicInfoTabState> {
-  PetBasicInfoTabController() : super(const PetBasicInfoTabState());
+@riverpod
+class PetBasicInfoTabController extends _$PetBasicInfoTabController {
+  @override
+  PetBasicInfoTabState build(String tabId) {
+    // Dispose 시 컨트롤러 정리
+    ref.onDispose(() {
+      _disposeControllers();
+    });
+    return const PetBasicInfoTabState();
+  }
 
   /// 펫 정보로 컨트롤러 초기화
   void initialize(PetProfileEntity pet) {
@@ -65,12 +68,6 @@ class PetBasicInfoTabController extends StateNotifier<PetBasicInfoTabState> {
   /// 선택된 이미지 경로 업데이트
   void updateSelectedImage(String? imagePath) {
     state = state.copyWith(selectedImagePath: imagePath);
-  }
-
-  @override
-  void dispose() {
-    _disposeControllers();
-    super.dispose();
   }
 
   /// 텍스트 컨트롤러들 정리
@@ -163,7 +160,9 @@ class PetBasicInfoTab extends ConsumerWidget {
   /// 컨트롤러 초기화
   void _initializeController(WidgetRef ref, String tabId) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(petBasicInfoTabProvider(tabId).notifier).initialize(pet);
+      ref
+          .read(petBasicInfoTabControllerProvider(tabId).notifier)
+          .initialize(pet);
     });
   }
 
@@ -192,7 +191,7 @@ class PetBasicInfoTab extends ConsumerWidget {
     WidgetRef ref,
     String tabId,
   ) {
-    final tabState = ref.watch(petBasicInfoTabProvider(tabId));
+    final tabState = ref.watch(petBasicInfoTabControllerProvider(tabId));
     final displayImagePath = tabState.selectedImagePath ?? pet.imagePath;
 
     return Column(
@@ -266,7 +265,7 @@ class PetBasicInfoTab extends ConsumerWidget {
     WidgetRef ref,
     String tabId,
   ) {
-    final tabState = ref.watch(petBasicInfoTabProvider(tabId));
+    final tabState = ref.watch(petBasicInfoTabControllerProvider(tabId));
 
     return Column(
       children: [
@@ -512,7 +511,7 @@ class PetBasicInfoTab extends ConsumerWidget {
 
   /// 마이크로칩 등록번호 가져오기
   String _getMicrochipRegistrationNumber(WidgetRef ref, String tabId) {
-    final tabState = ref.watch(petBasicInfoTabProvider(tabId));
+    final tabState = ref.watch(petBasicInfoTabControllerProvider(tabId));
 
     return isEditMode
         ? (tabState.microchipController?.text ??

@@ -2,17 +2,17 @@ import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// 🎯 Walk Edit Form State Provider
-final walkEditFormProvider =
-    StateNotifierProvider.family<
-      WalkEditFormController,
-      WalkEditFormState,
-      String
-    >((ref, formId) => WalkEditFormController());
+part 'walk_edit_form.g.dart';
 
-class WalkEditFormController extends StateNotifier<WalkEditFormState> {
-  WalkEditFormController() : super(const WalkEditFormState());
+/// 🎯 Walk Edit Form Controller
+@riverpod
+class WalkEditFormController extends _$WalkEditFormController {
+  @override
+  WalkEditFormState build(String formId) {
+    return const WalkEditFormState();
+  }
 
   void initialize(WalkRecordEntity walkRecord) {
     // notes에서 activities JSON과 일반 메모 분리
@@ -222,7 +222,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
     // Initialize Riverpod state
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
-          .read(walkEditFormProvider(_formId).notifier)
+          .read(walkEditFormControllerProvider(_formId).notifier)
           .initialize(widget.walkRecord);
     });
   }
@@ -242,12 +242,12 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
     // Add listeners to sync with Riverpod state
     _distanceController.addListener(() {
       ref
-          .read(walkEditFormProvider(_formId).notifier)
+          .read(walkEditFormControllerProvider(_formId).notifier)
           .updateDistance(_distanceController.text);
     });
     _notesController.addListener(() {
       ref
-          .read(walkEditFormProvider(_formId).notifier)
+          .read(walkEditFormControllerProvider(_formId).notifier)
           .updateNotes(_notesController.text);
     });
   }
@@ -285,7 +285,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
 
   @override
   Widget build(BuildContext context) {
-    final formState = ref.watch(walkEditFormProvider(_formId));
+    final formState = ref.watch(walkEditFormControllerProvider(_formId));
 
     return Form(
       key: _formKey,
@@ -318,7 +318,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
                 child: WalkFormFields.buildStartTimeField(
                   initialValue: formState.startTime,
                   onChanged: (time) => ref
-                      .read(walkEditFormProvider(_formId).notifier)
+                      .read(walkEditFormControllerProvider(_formId).notifier)
                       .updateStartTime(time),
                 ),
               ),
@@ -327,7 +327,7 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
                 child: WalkFormFields.buildStartTimeField(
                   initialValue: formState.endTime,
                   onChanged: (time) => ref
-                      .read(walkEditFormProvider(_formId).notifier)
+                      .read(walkEditFormControllerProvider(_formId).notifier)
                       .updateEndTime(time),
                 ),
               ),
@@ -357,16 +357,18 @@ class _WalkEditFormState extends ConsumerState<WalkEditForm> {
   void _handleSave() async {
     if (!_formKey.currentState!.validate()) return;
 
-    ref.read(walkEditFormProvider(_formId).notifier).setLoading(true);
+    ref.read(walkEditFormControllerProvider(_formId).notifier).setLoading(true);
 
     try {
       final updatedWalk = ref
-          .read(walkEditFormProvider(_formId).notifier)
+          .read(walkEditFormControllerProvider(_formId).notifier)
           .buildUpdatedWalkRecord();
       widget.onSave(updatedWalk);
     } finally {
       if (mounted) {
-        ref.read(walkEditFormProvider(_formId).notifier).setLoading(false);
+        ref
+            .read(walkEditFormControllerProvider(_formId).notifier)
+            .setLoading(false);
       }
     }
   }

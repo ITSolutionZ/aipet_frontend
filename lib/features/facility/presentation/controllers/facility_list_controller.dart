@@ -13,8 +13,8 @@ class FacilityListController {
   /// 초기 데이터 로드
   Future<void> loadInitialData() async {
     try {
-      final facilityList = await ref.read(facilityListNotifierProvider.future);
-      final searchResults = ref.read(searchResultsNotifierProvider.notifier);
+      final facilityList = await ref.read(facilityListProvider.future);
+      final searchResults = ref.read(searchResultsProvider.notifier);
 
       searchResults.setSearchResults(facilityList);
     } catch (error) {
@@ -25,12 +25,10 @@ class FacilityListController {
   /// 검색어 변경 처리
   Future<void> handleSearchChanged(String query) async {
     try {
-      ref.read(searchQueryNotifierProvider.notifier).setQuery(query);
+      ref.read(searchQueryProvider.notifier).setQuery(query);
 
-      final facilityListNotifier = ref.read(
-        facilityListNotifierProvider.notifier,
-      );
-      final searchResults = ref.read(searchResultsNotifierProvider.notifier);
+      final facilityListNotifier = ref.read(facilityListProvider.notifier);
+      final searchResults = ref.read(searchResultsProvider.notifier);
 
       final results = facilityListNotifier.search(query);
       searchResults.setSearchResults(results);
@@ -42,13 +40,11 @@ class FacilityListController {
   /// 필터 변경 처리
   Future<void> handleFilterChanged(FacilityType? type) async {
     try {
-      ref.read(selectedFacilityTypeNotifierProvider.notifier).setType(type);
+      ref.read(selectedFacilityTypeProvider.notifier).setType(type);
 
-      final facilityListNotifier = ref.read(
-        facilityListNotifierProvider.notifier,
-      );
-      final searchResults = ref.read(searchResultsNotifierProvider.notifier);
-      final query = ref.read(searchQueryNotifierProvider);
+      final facilityListNotifier = ref.read(facilityListProvider.notifier);
+      final searchResults = ref.read(searchResultsProvider.notifier);
+      final query = ref.read(searchQueryProvider);
 
       List<Facility> results;
       if (type != null) {
@@ -77,7 +73,7 @@ class FacilityListController {
   /// 정렬 변경 처리
   Future<void> handleSortChanged(String sortType) async {
     try {
-      final searchResults = ref.read(searchResultsNotifierProvider.notifier);
+      final searchResults = ref.read(searchResultsProvider.notifier);
 
       switch (sortType) {
         case 'distance':
@@ -103,7 +99,7 @@ class FacilityListController {
   /// 즐겨찾기 토글 처리
   Future<void> handleFavoriteToggle(String facilityId) async {
     try {
-      final facilityList = ref.read(facilityListNotifierProvider.notifier);
+      final facilityList = ref.read(facilityListProvider.notifier);
       await facilityList.toggleFavorite(facilityId);
 
       await refreshSearchResults();
@@ -116,13 +112,11 @@ class FacilityListController {
   /// 검색 결과 새로고침
   Future<void> refreshSearchResults() async {
     try {
-      final query = ref.read(searchQueryNotifierProvider);
-      final selectedType = ref.read(selectedFacilityTypeNotifierProvider);
+      final query = ref.read(searchQueryProvider);
+      final selectedType = ref.read(selectedFacilityTypeProvider);
 
-      final facilityListNotifier = ref.read(
-        facilityListNotifierProvider.notifier,
-      );
-      final searchResults = ref.read(searchResultsNotifierProvider.notifier);
+      final facilityListNotifier = ref.read(facilityListProvider.notifier);
+      final searchResults = ref.read(searchResultsProvider.notifier);
 
       List<Facility> results;
       if (selectedType != null) {
@@ -151,8 +145,8 @@ class FacilityListController {
   /// 모든 필터 초기화
   Future<void> clearAllFilters() async {
     try {
-      ref.read(searchQueryNotifierProvider.notifier).setQuery('');
-      ref.read(selectedFacilityTypeNotifierProvider.notifier).setType(null);
+      ref.read(searchQueryProvider.notifier).setQuery('');
+      ref.read(selectedFacilityTypeProvider.notifier).setType(null);
 
       await loadInitialData();
       _showSuccessMessage('모든 필터가 초기화되었습니다');
@@ -195,8 +189,8 @@ class FacilityListController {
 
   /// 검색 상태 확인
   bool get hasActiveFilters {
-    final query = ref.read(searchQueryNotifierProvider);
-    final selectedType = ref.read(selectedFacilityTypeNotifierProvider);
+    final query = ref.read(searchQueryProvider);
+    final selectedType = ref.read(selectedFacilityTypeProvider);
     return query.isNotEmpty || selectedType != null;
   }
 

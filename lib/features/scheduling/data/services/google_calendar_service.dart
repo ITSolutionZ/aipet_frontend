@@ -17,7 +17,8 @@ class GoogleCalendarService {
   }
 
   void _initializeService() {
-    _googleSignIn = GoogleSignIn(scopes: [_calendarScope]);
+    // TODO: GoogleSignIn API 7.2.0+ 업데이트 필요
+    // _googleSignIn = GoogleSignIn(scopes: [_calendarScope]);
     _isInitialized = true;
   }
 
@@ -28,6 +29,11 @@ class GoogleCalendarService {
         _initializeService();
       }
 
+      // TODO: GoogleSignIn API 7.2.0+ 업데이트 필요
+      log('Google Calendar API - temporarily disabled due to API migration');
+      return false;
+
+      /*
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
       if (account == null) {
         log('Google Sign In cancelled by user');
@@ -43,6 +49,7 @@ class GoogleCalendarService {
       _calendarApi = calendar.CalendarApi(httpClient);
       log('Google Calendar API authenticated successfully');
       return true;
+      */
     } catch (e) {
       log('Google Calendar authentication failed: $e');
       return false;
@@ -54,7 +61,8 @@ class GoogleCalendarService {
 
   /// 로그아웃
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
+    // TODO: GoogleSignIn API 7.2.0+ 업데이트 필요
+    // await _googleSignIn.signOut();
     _calendarApi = null;
   }
 

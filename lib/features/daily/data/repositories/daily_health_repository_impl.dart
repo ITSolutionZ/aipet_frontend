@@ -189,7 +189,7 @@ class DailyHealthRepositoryImpl implements DailyHealthRepository {
 
 /// Repository Provider
 @riverpod
-DailyHealthRepository dailyHealthRepository(DailyHealthRepositoryRef ref) {
+DailyHealthRepository dailyHealthRepository(Ref ref) {
   final localDatasource = ref.watch(dailyHealthLocalDatasourceProvider);
   final remoteDatasource = ref.watch(dailyHealthRemoteDatasourceProvider);
 

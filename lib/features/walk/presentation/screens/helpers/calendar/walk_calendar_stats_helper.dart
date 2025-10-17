@@ -1,8 +1,7 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../pet_profile/data/providers/pet_profile_providers.dart';
+import '../../../../../pet_profile/data/providers/pet_profile_providers.dart';
 
 /// 달력 통계 계산 헬퍼
 class WalkCalendarStatsHelper {

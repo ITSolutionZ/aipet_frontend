@@ -247,17 +247,17 @@ class FacilityRepositoryNotifier extends _$FacilityRepositoryNotifier {
 
 /// 근처 시설 조회 Provider (Google Places API + 로컬 저장소)
 @riverpod
-Future<Result<List<Facility>>> nearbyFacilities(NearbyFacilitiesRef ref) async {
-  final repository = ref.watch(facilityRepositoryNotifierProvider);
+Future<Result<List<Facility>>> nearbyFacilities(Ref ref) async {
+  final repository = ref.watch(facilityRepositoryProvider);
   return repository.getNearbyFacilities();
 }
 
 /// 타입별 시설 조회 Provider (Google Places API + 로컬 저장소)
 @riverpod
 Future<Result<List<Facility>>> facilitiesByType(
-  FacilitiesByTypeRef ref,
+  Ref ref,
   FacilityType type,
 ) async {
-  final repository = ref.watch(facilityRepositoryNotifierProvider);
+  final repository = ref.watch(facilityRepositoryProvider);
   return repository.getFacilitiesByType(type);
 }

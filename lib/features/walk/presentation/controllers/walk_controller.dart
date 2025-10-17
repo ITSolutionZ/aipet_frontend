@@ -41,7 +41,7 @@ class WalkController extends BaseController {
       final walkRecords = await _getAllWalkRecordsUseCase();
 
       ref
-          .read(walkRecordsNotifierProvider.notifier)
+          .read(walkRecordsProvider.notifier)
           .setWalkRecords(walkRecords);
 
       debugPrint('✅ WalkController: ${walkRecords.length}개 산책 기록 로드 완료');
@@ -73,7 +73,7 @@ class WalkController extends BaseController {
 
       // Repository가 로컬 저장 및 API 동기화 처리
       final newWalk = await _startWalkUseCase(item);
-      ref.read(walkRecordsNotifierProvider.notifier).addWalkRecord(newWalk);
+      ref.read(walkRecordsProvider.notifier).addWalkRecord(newWalk);
 
       debugPrint('✅ WalkController: 산책 생성 완료 - ID: ${newWalk.id}');
       return Result.success('散歩が開始されました', newWalk);
@@ -90,7 +90,7 @@ class WalkController extends BaseController {
 
       // Repository가 로컬 업데이트 및 API 동기화 처리
       await _updateWalkRecordUseCase(item);
-      ref.read(walkRecordsNotifierProvider.notifier).updateWalkRecord(item);
+      ref.read(walkRecordsProvider.notifier).updateWalkRecord(item);
 
       debugPrint('✅ WalkController: 산책 업데이트 완료 - ID: ${item.id}');
       return Result.success('散歩記録が更新されました', item);
@@ -107,7 +107,7 @@ class WalkController extends BaseController {
 
       // Repository가 로컬 삭제 및 API 동기화 처리
       await _repository.deleteWalkRecord(id);
-      ref.read(walkRecordsNotifierProvider.notifier).removeWalkRecord(id);
+      ref.read(walkRecordsProvider.notifier).removeWalkRecord(id);
 
       debugPrint('✅ WalkController: 산책 삭제 완료 - ID: $id');
       return Result.success('散歩記録が削除されました');
@@ -147,8 +147,8 @@ class WalkController extends BaseController {
       final walkRecord = await _startWalkUseCase.call(newWalkRecord);
 
       // Provider에 결과 저장
-      ref.read(currentWalkNotifierProvider.notifier).startWalk(walkRecord);
-      ref.read(walkRecordsNotifierProvider.notifier).addWalkRecord(walkRecord);
+      ref.read(currentWalkProvider.notifier).startWalk(walkRecord);
+      ref.read(walkRecordsProvider.notifier).addWalkRecord(walkRecord);
 
       // 실시간 위치 추적 시작
       _startLocationTrackingWithRecovery();
@@ -164,14 +164,14 @@ class WalkController extends BaseController {
   /// 위치 추적 시작 (복구 기능 포함)
   void _startLocationTrackingWithRecovery() {
     safeExecute(() async {
-      ref.read(locationTrackingNotifierProvider.notifier).startTracking();
+      ref.read(locationTrackingProvider.notifier).startTracking();
       return true;
     }, errorMessage: '位置追跡開始');
   }
 
   /// 산책 종료
   Future<WalkResult> endCurrentWalk({double? distance, String? notes}) async {
-    final currentWalk = ref.read(currentWalkNotifierProvider);
+    final currentWalk = ref.read(currentWalkProvider);
     if (currentWalk == null) {
       debugPrint('⚠️ WalkController: 진행 중인 산책 없음');
       return Result.failure('進行中の散歩がありません');
@@ -189,12 +189,12 @@ class WalkController extends BaseController {
         );
 
         // 실시간 위치 추적 중지
-        ref.read(locationTrackingNotifierProvider.notifier).stopTracking();
+        ref.read(locationTrackingProvider.notifier).stopTracking();
 
         // Provider에 결과 저장
-        ref.read(currentWalkNotifierProvider.notifier).endWalk();
+        ref.read(currentWalkProvider.notifier).endWalk();
         ref
-            .read(walkRecordsNotifierProvider.notifier)
+            .read(walkRecordsProvider.notifier)
             .updateWalkRecord(completedWalk);
 
         debugPrint('✅ WalkController: 산책 종료 완료 - ID: ${currentWalk.id}');
@@ -225,7 +225,7 @@ class WalkController extends BaseController {
 
         // Provider에 결과 저장
         ref
-            .read(walkRecordsNotifierProvider.notifier)
+            .read(walkRecordsProvider.notifier)
             .updateWalkRecord(walkRecord);
         debugPrint('✅ Provider 상태 업데이트 완료');
 
@@ -247,7 +247,7 @@ class WalkController extends BaseController {
   /// 산책 일시정지
   Result<bool> pauseCurrentWalk() {
     try {
-      ref.read(currentWalkNotifierProvider.notifier).pauseWalk();
+      ref.read(currentWalkProvider.notifier).pauseWalk();
       return Result.success('산책이 일시정지되었습니다', true);
     } catch (e) {
       return Result.failure('산책 일시정지에 실패했습니다: ${e.toString()}');
@@ -257,7 +257,7 @@ class WalkController extends BaseController {
   /// 산책 재개
   Result<bool> resumeCurrentWalk() {
     try {
-      ref.read(currentWalkNotifierProvider.notifier).resumeWalk();
+      ref.read(currentWalkProvider.notifier).resumeWalk();
       return Result.success('산책이 재개되었습니다', true);
     } catch (e) {
       return Result.failure('산책 재개에 실패했습니다: ${e.toString()}');
@@ -275,7 +275,7 @@ class WalkController extends BaseController {
       await _repository.deleteWalkRecord(recordId);
 
       // Provider에서도 제거
-      ref.read(walkRecordsNotifierProvider.notifier).removeWalkRecord(recordId);
+      ref.read(walkRecordsProvider.notifier).removeWalkRecord(recordId);
 
       debugPrint('✅ 산책 기록 삭제 완료 - ID: $recordId');
       return true;
@@ -296,15 +296,15 @@ class WalkController extends BaseController {
         print('🔧 WalkController.togglePet 시작: ${pet.name} (${pet.id})');
       }
 
-      ref.read(selectedPetsNotifierProvider.notifier).togglePet(pet);
+      ref.read(selectedPetsProvider.notifier).togglePet(pet);
 
       if (kDebugMode) {
-        final current = ref.read(selectedPetsNotifierProvider);
+        final current = ref.read(selectedPetsProvider);
         print('🔧 현재 선택된 펫: ${current.map((p) => p.name).join(', ')}');
       }
 
       final isSelected = ref
-          .read(selectedPetsNotifierProvider)
+          .read(selectedPetsProvider)
           .any((p) => p.id == pet.id);
       return Result.success(
         isSelected ? '${pet.name}を選択しました' : '${pet.name}の選択を解除しました',
@@ -325,10 +325,10 @@ class WalkController extends BaseController {
         print('🔧 WalkController.setSelectedPet 시작: ${pet.name} (${pet.id})');
       }
 
-      ref.read(selectedPetsNotifierProvider.notifier).setSelectedPet(pet);
+      ref.read(selectedPetsProvider.notifier).setSelectedPet(pet);
 
       if (kDebugMode) {
-        final current = ref.read(selectedPetsNotifierProvider);
+        final current = ref.read(selectedPetsProvider);
         print('🔧 현재 Provider 값: ${current.map((p) => p.name).join(', ')}');
       }
 
@@ -344,7 +344,7 @@ class WalkController extends BaseController {
   /// 지도 확장 상태 토글
   Result<bool> toggleMapExpanded() {
     try {
-      ref.read(mapExpandedNotifierProvider.notifier).toggleExpanded();
+      ref.read(mapExpandedProvider.notifier).toggleExpanded();
       return Result.success('地図の拡大状態が変更されました', true);
     } catch (e) {
       return Result.failure('지도 상태 변경에 실패했습니다: ${e.toString()}');
@@ -353,12 +353,12 @@ class WalkController extends BaseController {
 
   /// 현재 진행 중인 산책 가져오기
   WalkRecordEntity? getCurrentWalk() {
-    return ref.read(currentWalkNotifierProvider);
+    return ref.read(currentWalkProvider);
   }
 
   /// 산책 기록 목록 가져오기
   List<WalkRecordEntity> getWalkRecords() {
-    return ref.read(walkRecordsNotifierProvider);
+    return ref.read(walkRecordsProvider);
   }
 
   /// 특정 반려동물의 산책 기록 가져오기
@@ -381,7 +381,7 @@ class WalkController extends BaseController {
   /// 최근 산책 기록 가져오기
   List<WalkRecordEntity> getRecentWalkRecords({int limit = 10}) {
     return ref
-        .read(walkRecordsNotifierProvider.notifier)
+        .read(walkRecordsProvider.notifier)
         .getRecentWalkRecords();
   }
 
@@ -389,7 +389,7 @@ class WalkController extends BaseController {
   Result<bool> addLocationToCurrentWalk(WalkLocation location) {
     try {
       ref
-          .read(currentWalkNotifierProvider.notifier)
+          .read(currentWalkProvider.notifier)
           .addLocationToCurrentWalk(location);
       return Result.success('位置情報が追加されました', true);
     } catch (e) {

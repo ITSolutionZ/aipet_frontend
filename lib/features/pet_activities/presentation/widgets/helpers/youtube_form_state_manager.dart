@@ -1,4 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'youtube_form_state_manager.g.dart';
 
 /// YouTube 비디오 폼 상태
 class YouTubeFormState {
@@ -42,8 +44,12 @@ class YouTubeFormState {
 }
 
 /// YouTube 폼 상태 관리 컨트롤러
-class YouTubeFormStateManager extends StateNotifier<YouTubeFormState> {
-  YouTubeFormStateManager() : super(const YouTubeFormState());
+@riverpod
+class YouTubeFormStateManager extends _$YouTubeFormStateManager {
+  @override
+  YouTubeFormState build() {
+    return const YouTubeFormState();
+  }
 
   /// 로딩 상태 설정
   void setLoading(bool isLoading) {
@@ -120,9 +126,3 @@ class YouTubeFormStateManager extends StateNotifier<YouTubeFormState> {
     };
   }
 }
-
-/// YouTube 폼 상태 프로바이더
-final youtubeFormStateProvider =
-    StateNotifierProvider<YouTubeFormStateManager, YouTubeFormState>(
-      (ref) => YouTubeFormStateManager(),
-    );

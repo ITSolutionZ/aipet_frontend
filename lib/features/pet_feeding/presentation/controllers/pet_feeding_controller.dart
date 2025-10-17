@@ -1,9 +1,15 @@
 import 'package:aipet_frontend/features/pet_feeding/data/services/pet_feeding_local_storage_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'pet_feeding_controller.g.dart';
 
 /// 펫 급여 컨트롤러
-class PetFeedingController extends StateNotifier<PetFeedingState> {
-  PetFeedingController() : super(const PetFeedingState());
+@riverpod
+class PetFeedingController extends _$PetFeedingController {
+  @override
+  PetFeedingState build() {
+    return const PetFeedingState();
+  }
 
   /// 급여 기록 로드
   Future<void> loadFeedingRecords(String petId) async {
@@ -44,9 +50,3 @@ class PetFeedingState {
     );
   }
 }
-
-/// 컨트롤러 프로바이더
-final petFeedingControllerProvider =
-    StateNotifierProvider<PetFeedingController, PetFeedingState>((ref) {
-      return PetFeedingController();
-    });

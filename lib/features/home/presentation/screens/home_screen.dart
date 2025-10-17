@@ -71,7 +71,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final dashboardState = ref.watch(homeDashboardNotifierProvider);
+    final dashboardState = ref.watch(homeDashboardProvider);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -432,7 +432,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     await _cacheManager.refreshHomeDashboard();
 
     // 대시보드 데이터 다시 로드
-    ref.invalidate(homeDashboardNotifierProvider);
+    ref.invalidate(homeDashboardProvider);
 
     // debugPrint('✅ HomeScreen: Pull-to-Refresh 완료');
   }

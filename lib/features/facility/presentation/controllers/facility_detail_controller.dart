@@ -12,9 +12,7 @@ class FacilityDetailController extends BaseFacilityController {
   /// 시설 정보 로드
   Future<Facility?> loadFacilityById(String facilityId) async {
     try {
-      final facilityListAsync = await ref.read(
-        facilityListNotifierProvider.future,
-      );
+      final facilityListAsync = await ref.read(facilityListProvider.future);
       return facilityListAsync.firstWhere(
         (facility) => facility.id == facilityId,
         orElse: () => FacilityFactory.createDefault(facilityId),
@@ -54,7 +52,7 @@ class FacilityDetailController extends BaseFacilityController {
   /// 즐겨찾기 토글
   Future<void> handleFavoriteToggle(String facilityId) async {
     try {
-      final facilityList = ref.read(facilityListNotifierProvider.notifier);
+      final facilityList = ref.read(facilityListProvider.notifier);
       await facilityList.toggleFavorite(facilityId);
 
       final facility = await loadFacilityById(facilityId);

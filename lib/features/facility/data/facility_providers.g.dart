@@ -370,7 +370,7 @@ final class NearbyFacilitiesProvider
   }
 }
 
-String _$nearbyFacilitiesHash() => r'5be28f599095f9f50957c767b03c3da3bca9e53b';
+String _$nearbyFacilitiesHash() => r'1d7107b1fbcd9e6c2cdfb0020a5f6534e4111d6a';
 
 /// 타입별 시설 조회 Provider (Google Places API + 로컬 저장소)
 
@@ -434,7 +434,7 @@ final class FacilitiesByTypeProvider
   }
 }
 
-String _$facilitiesByTypeHash() => r'18a1a6397f852cae1a35431124dc53035cf6a81b';
+String _$facilitiesByTypeHash() => r'67cd5167fd4fd2feeeb96b2da1222cb2eecf60b1';
 
 /// 타입별 시설 조회 Provider (Google Places API + 로컬 저장소)
 

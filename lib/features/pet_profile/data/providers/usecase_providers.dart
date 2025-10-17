@@ -6,40 +6,49 @@ import 'package:aipet_frontend/features/pet_profile/domain/usecases/get_pet_prof
 import 'package:aipet_frontend/features/pet_profile/domain/usecases/manage_family_managers_usecase.dart';
 import 'package:aipet_frontend/features/pet_profile/domain/usecases/update_pet_profile_usecase.dart';
 import 'package:aipet_frontend/features/pet_profile/domain/usecases/update_pet_usecase.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'usecase_providers.g.dart';
 
 /// UseCase 프로바이더들
-final getAllPetsUseCaseProvider = Provider<GetAllPetsUseCase>((ref) {
+@riverpod
+GetAllPetsUseCase getAllPetsUseCase(Ref ref) {
   final repository = ref.watch(petProfileRepositoryProvider);
   return GetAllPetsUseCase(repository);
-});
+}
 
-final getPetProfileUseCaseProvider = Provider<GetPetProfileUseCase>((ref) {
+@riverpod
+GetPetProfileUseCase getPetProfileUseCase(Ref ref) {
   final repository = ref.watch(petProfileRepositoryProvider);
   return GetPetProfileUseCase(repository);
-});
+}
 
-final createPetUseCaseProvider = Provider<CreatePetUseCase>((ref) {
+@riverpod
+CreatePetUseCase createPetUseCase(Ref ref) {
   final repository = ref.watch(petProfileRepositoryProvider);
   return CreatePetUseCase(repository);
-});
+}
 
-final updatePetUseCaseProvider = Provider<UpdatePetUseCase>((ref) {
+@riverpod
+UpdatePetUseCase updatePetUseCase(Ref ref) {
   final repository = ref.watch(petProfileRepositoryProvider);
   return UpdatePetUseCase(repository);
-});
+}
 
-final updatePetProfileUseCaseProvider = Provider<UpdatePetProfileUseCase>((ref) {
+@riverpod
+UpdatePetProfileUseCase updatePetProfileUseCase(Ref ref) {
   final repository = ref.watch(petProfileRepositoryProvider);
   return UpdatePetProfileUseCase(repository);
-});
+}
 
-final deletePetUseCaseProvider = Provider<DeletePetUseCase>((ref) {
+@riverpod
+DeletePetUseCase deletePetUseCase(Ref ref) {
   final repository = ref.watch(petProfileRepositoryProvider);
   return DeletePetUseCase(repository);
-});
+}
 
-final manageFamilyManagersUseCaseProvider = Provider<ManageFamilyManagersUseCase>((ref) {
+@riverpod
+ManageFamilyManagersUseCase manageFamilyManagersUseCase(Ref ref) {
   final repository = ref.watch(petProfileRepositoryProvider);
   return ManageFamilyManagersUseCase(repository);
-});
+}

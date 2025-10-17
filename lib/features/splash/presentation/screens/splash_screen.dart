@@ -41,7 +41,12 @@ class SplashAnimationNotifier extends _$SplashAnimationNotifier {
     return Tween<double>(
       begin: AppConstants.splashFadeStart,
       end: AppConstants.splashFadeEnd,
-    ).animate(CurvedAnimation(parent: controller, curve: AppConstants.splashFadeInterval));
+    ).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: AppConstants.splashFadeInterval,
+      ),
+    );
   }
 
   /// Scale 애니메이션 생성
@@ -49,7 +54,12 @@ class SplashAnimationNotifier extends _$SplashAnimationNotifier {
     return Tween<double>(
       begin: AppConstants.splashScaleStart,
       end: AppConstants.splashScaleEnd,
-    ).animate(CurvedAnimation(parent: controller, curve: AppConstants.splashScaleInterval));
+    ).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: AppConstants.splashScaleInterval,
+      ),
+    );
   }
 
   void startAnimation() {
@@ -67,7 +77,11 @@ class SplashAnimationState {
   final Animation<double>? fadeAnimation;
   final Animation<double>? scaleAnimation;
 
-  const SplashAnimationState({this.animationController, this.fadeAnimation, this.scaleAnimation});
+  const SplashAnimationState({
+    this.animationController,
+    this.fadeAnimation,
+    this.scaleAnimation,
+  });
 
   SplashAnimationState copyWith({
     AnimationController? animationController,
@@ -95,7 +109,8 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with SingleTickerProviderStateMixin {
   StreamSubscription<Result<SplashState>>? _splashSequenceSubscription;
 
   @override
@@ -116,8 +131,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
   Future<void> _preloadImages() async {
     try {
       await Future.wait([
-        precacheImage(const AssetImage(AppConstants.splashAppLogoPath), context),
-        precacheImage(const AssetImage(AppConstants.splashCompanyLogoPath), context),
+        precacheImage(
+          const AssetImage(AppConstants.splashAppLogoPath),
+          context,
+        ),
+        precacheImage(
+          const AssetImage(AppConstants.splashCompanyLogoPath),
+          context,
+        ),
       ]);
     } catch (error) {
       // 이미지 프리로딩 실패는 치명적이지 않으므로 로그만 남김
@@ -134,8 +155,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     await _preloadImages();
 
     // 애니메이션 초기화
-    ref.read(splashAnimationNotifierProvider.notifier).initializeAnimations(this);
-    ref.read(splashAnimationNotifierProvider.notifier).startAnimation();
+    ref.read(splashAnimationProvider.notifier).initializeAnimations(this);
+    ref.read(splashAnimationProvider.notifier).startAnimation();
 
     // 스플래시 시퀀스 시작
     _startSplashSequence();
@@ -143,7 +164,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
 
   /// 스플래시 시퀀스 시작
   void _startSplashSequence() {
-    final controller = ref.read(splashControllerNotifierProvider.notifier);
+    final controller = ref.read(splashControllerProvider.notifier);
     _splashSequenceSubscription = controller.startSplashSequence().listen(
       (result) => _handleSplashResult(result),
       onError: (error) => _handleSplashError(error),
@@ -154,7 +175,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
   void _handleSplashResult(Result<SplashState> result) {
     if (result.isSuccess && result.dataOrNull != null) {
       // 상태 업데이트 - SplashStateNotifier를 사용
-      ref.read(splashStateNotifierProvider.notifier).updateState(result.dataOrNull!);
+      ref.read(splashStateProvider.notifier).updateState(result.dataOrNull!);
 
       // 완료 시 다음 화면으로 이동
       if (result.dataOrNull!.isCompleted) {
@@ -173,7 +194,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     if (mounted) {
       // 에러 상태를 UI에 반영
       ref
-          .read(splashStateNotifierProvider.notifier)
+          .read(splashStateProvider.notifier)
           .updateState(
             SplashState.loading(), // 에러 시 로딩 상태로 표시
           );
@@ -188,19 +209,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     // 에러 복구를 위한 간단한 시퀀스
     Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
-        ref.read(splashStateNotifierProvider.notifier).setLoading();
+        ref.read(splashStateProvider.notifier).setLoading();
       }
     });
 
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
-        ref.read(splashStateNotifierProvider.notifier).setAppLogo();
+        ref.read(splashStateProvider.notifier).setAppLogo();
       }
     });
 
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
-        ref.read(splashStateNotifierProvider.notifier).setCompleted();
+        ref.read(splashStateProvider.notifier).setCompleted();
         if (mounted) {
           _navigateToNext();
         }
@@ -267,8 +288,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
         child: Center(
           child: Consumer(
             builder: (context, ref, child) {
-              final animationState = ref.watch(splashAnimationNotifierProvider);
-              final splashState = ref.watch(splashStateNotifierProvider);
+              final animationState = ref.watch(splashAnimationProvider);
+              final splashState = ref.watch(splashStateProvider);
 
               return animationState.animationController != null
                   ? AnimatedBuilder(

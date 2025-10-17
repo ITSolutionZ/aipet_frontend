@@ -15,7 +15,7 @@ class PetInfoValidationHelper {
     PetProfileEntity pet,
     VoidCallback onToggleEdit,
   ) {
-    final tabState = ref.read(petBasicInfoTabProvider(tabId));
+    final tabState = ref.read(petBasicInfoTabControllerProvider(tabId));
 
     // バリデーション
     if (tabState.nameController?.text.trim().isEmpty ?? true) {
@@ -50,7 +50,7 @@ class PetInfoValidationHelper {
     VoidCallback onToggleEdit,
   ) {
     // Reset controllers to original values
-    ref.read(petBasicInfoTabProvider(tabId).notifier).initialize(pet);
+    ref.read(petBasicInfoTabControllerProvider(tabId).notifier).initialize(pet);
     onToggleEdit();
   }
 

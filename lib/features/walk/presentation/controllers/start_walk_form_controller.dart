@@ -1,12 +1,14 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// 🎯 Start Walk Form State Provider
-final startWalkFormProvider = StateNotifierProvider<StartWalkFormController, StartWalkFormState>(
-  (ref) => StartWalkFormController(),
-);
+part 'start_walk_form_controller.g.dart';
 
-class StartWalkFormController extends StateNotifier<StartWalkFormState> {
-  StartWalkFormController() : super(const StartWalkFormState(title: '', selectedPetId: 'pet1'));
+/// 🎯 Start Walk Form Controller
+@riverpod
+class StartWalkFormController extends _$StartWalkFormController {
+  @override
+  StartWalkFormState build() {
+    return const StartWalkFormState(title: '', selectedPetId: 'pet1');
+  }
 
   void updateTitle(String title) {
     state = state.copyWith(title: title);

@@ -1,15 +1,23 @@
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
 import 'package:aipet_frontend/features/notification/domain/usecases/notification_usecases.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// 알림 시간 설정 컨트롤러
-class AlarmTimeSettingsController extends StateNotifier<AlarmTimeSettingsState> {
-  final GetNotificationSettingsUseCase _getNotificationSettingsUseCase;
+part 'alarm_time_settings_controller.g.dart';
 
-  AlarmTimeSettingsController(this._getNotificationSettingsUseCase)
-    : super(const AlarmTimeSettingsState());
+/// 알림 시간 설정 컨트롤러
+@riverpod
+class AlarmTimeSettingsController extends _$AlarmTimeSettingsController {
+  late final GetNotificationSettingsUseCase _getNotificationSettingsUseCase;
+
+  @override
+  AlarmTimeSettingsState build() {
+    _getNotificationSettingsUseCase = ref.read(
+      getNotificationSettingsUseCaseProvider,
+    );
+    return const AlarmTimeSettingsState();
+  }
 
   /// 알림 시간 로드
   Future<void> loadAlarmTimes(String userId) async {
@@ -19,10 +27,18 @@ class AlarmTimeSettingsController extends StateNotifier<AlarmTimeSettingsState> 
       // SharedPreferences에서 저장된 시간 정보 로드
       final prefs = await SharedPreferences.getInstance();
 
-      final morningTime = _parseTimeString(prefs.getString('morning_alarm_time') ?? '8:0');
-      final lunchTime = _parseTimeString(prefs.getString('lunch_alarm_time') ?? '12:0');
-      final dinnerTime = _parseTimeString(prefs.getString('dinner_alarm_time') ?? '18:0');
-      final walkTime = _parseTimeString(prefs.getString('walk_alarm_time') ?? '16:0');
+      final morningTime = _parseTimeString(
+        prefs.getString('morning_alarm_time') ?? '8:0',
+      );
+      final lunchTime = _parseTimeString(
+        prefs.getString('lunch_alarm_time') ?? '12:0',
+      );
+      final dinnerTime = _parseTimeString(
+        prefs.getString('dinner_alarm_time') ?? '18:0',
+      );
+      final walkTime = _parseTimeString(
+        prefs.getString('walk_alarm_time') ?? '16:0',
+      );
 
       state = state.copyWith(
         morningTime: morningTime,
@@ -71,7 +87,10 @@ class AlarmTimeSettingsController extends StateNotifier<AlarmTimeSettingsState> 
         'dinner_alarm_time',
         '${state.dinnerTime.hour}:${state.dinnerTime.minute}',
       );
-      await prefs.setString('walk_alarm_time', '${state.walkTime.hour}:${state.walkTime.minute}');
+      await prefs.setString(
+        'walk_alarm_time',
+        '${state.walkTime.hour}:${state.walkTime.minute}',
+      );
 
       state = state.copyWith(isSaved: true);
     } catch (e) {
@@ -126,9 +145,3 @@ class AlarmTimeSettingsState {
     );
   }
 }
-
-/// 컨트롤러 프로바이더
-final alarmTimeSettingsControllerProvider =
-    StateNotifierProvider<AlarmTimeSettingsController, AlarmTimeSettingsState>((ref) {
-      return AlarmTimeSettingsController(ref.read(getNotificationSettingsUseCaseProvider));
-    });

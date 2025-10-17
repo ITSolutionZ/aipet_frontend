@@ -43,9 +43,7 @@ class GetDailyHealthRecordUseCase {
 
 /// Use Case Provider
 @riverpod
-GetDailyHealthRecordUseCase getDailyHealthRecordUseCase(
-  GetDailyHealthRecordUseCaseRef ref,
-) {
+GetDailyHealthRecordUseCase getDailyHealthRecordUseCase(Ref ref) {
   final repository = ref.watch(dailyHealthRepositoryProvider);
   return GetDailyHealthRecordUseCase(repository);
 }

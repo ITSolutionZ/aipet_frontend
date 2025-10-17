@@ -116,11 +116,7 @@ class FeedingChartSection extends StatelessWidget {
                     break;
                 }
                 // meta: TitleMeta, fitInside: SideTitleFitInsideData?
-                return SideTitleWidget(
-                  axisSide: meta.axisSide,
-                  space: 8,
-                  child: text,
-                );
+                return SideTitleWidget(meta: meta, space: 8, child: text);
               },
             ),
           ),

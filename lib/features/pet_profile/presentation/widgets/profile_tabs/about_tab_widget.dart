@@ -55,7 +55,7 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final state = ref.watch(petProfileNotifierProvider);
+        final state = ref.watch(petProfileProvider);
         final pet = state.selectedPet;
 
         if (pet == null) {
@@ -105,11 +105,16 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
             CircleAvatar(
               radius: 50,
               backgroundColor: Colors.grey.withValues(alpha: 0.2),
-              backgroundImage: (widget.selectedImagePath ?? pet.imagePath) != null
+              backgroundImage:
+                  (widget.selectedImagePath ?? pet.imagePath) != null
                   ? AssetImage(widget.selectedImagePath ?? pet.imagePath!)
                   : null,
               child: (widget.selectedImagePath ?? pet.imagePath) == null
-                  ? const Icon(Icons.pets, size: 50, color: AppColors.pointBrown)
+                  ? const Icon(
+                      Icons.pets,
+                      size: 50,
+                      color: AppColors.pointBrown,
+                    )
                   : null,
             ),
             if (widget.isEditMode)
@@ -132,7 +137,11 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.camera_alt, color: Colors.white, size: 18),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ),
                 ),
               ),
@@ -170,7 +179,11 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    const Icon(Icons.edit, size: 20, color: AppColors.pointBlue),
+                    const Icon(
+                      Icons.edit,
+                      size: 20,
+                      color: AppColors.pointBlue,
+                    ),
                   ],
                 ],
               ),
@@ -208,17 +221,24 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
           TextField(
             controller: widget.appearanceController,
             maxLines: 3,
-            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark.withValues(alpha: 0.8)),
+            style: AppFonts.bodyMedium.copyWith(
+              color: AppColors.pointDark.withValues(alpha: 0.8),
+            ),
             decoration: InputDecoration(
               hintText: 'ペットの外観や特徴を入力してください',
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadius.medium),
+              ),
               contentPadding: const EdgeInsets.all(AppSpacing.md),
             ),
           )
         else
           Text(
-            pet.additionalInfo?['appearance'] ?? 'No appearance description available',
-            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark.withValues(alpha: 0.8)),
+            pet.additionalInfo?['appearance'] ??
+                'No appearance description available',
+            style: AppFonts.bodyMedium.copyWith(
+              color: AppColors.pointDark.withValues(alpha: 0.8),
+            ),
           ),
       ],
     );
@@ -238,14 +258,18 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
         const SizedBox(height: AppSpacing.md),
         _buildAttributeCard(
           '性別',
-          _getGenderString(widget.isEditMode ? widget.editingGender : pet.gender),
+          _getGenderString(
+            widget.isEditMode ? widget.editingGender : pet.gender,
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
         _buildAttributeCard('サイズ', pet.size ?? '未設定'),
         const SizedBox(height: AppSpacing.sm),
         _buildAttributeCard(
           '体重',
-          _getWeightString(widget.isEditMode ? widget.editingWeight : pet.weight),
+          _getWeightString(
+            widget.isEditMode ? widget.editingWeight : pet.weight,
+          ),
         ),
       ],
     );
@@ -282,7 +306,12 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
         const SizedBox(height: AppSpacing.md),
         _buildDateCard('誕生日', pet.birthDate, Icons.cake, AppColors.pointPink),
         const SizedBox(height: AppSpacing.sm),
-        _buildDateCard('家に来た日', pet.arrivalDate, Icons.home, AppColors.pointBlue),
+        _buildDateCard(
+          '家に来た日',
+          pet.arrivalDate,
+          Icons.home,
+          AppColors.pointBlue,
+        ),
       ],
     );
   }
@@ -322,13 +351,21 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
             ),
           ),
           const Spacer(),
-          Text(value, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark)),
+          Text(
+            value,
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildDateCard(String title, DateTime? date, IconData icon, Color color) {
+  Widget _buildDateCard(
+    String title,
+    DateTime? date,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(

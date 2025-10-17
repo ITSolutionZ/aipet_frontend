@@ -3,7 +3,6 @@ import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_ent
 import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/repositories/pet_activities_repository.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/usecases/pet_activities_usecases.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pet_activities_providers.g.dart';
@@ -42,12 +41,10 @@ GetYouTubeVideosUseCase getYouTubeVideosUseCase(Ref ref) {
 }
 
 /// YouTube 비디오 목록 프로바이더
-final youTubeVideosProvider = FutureProvider.family<List<YouTubeVideoEntity>, String>((
-  ref,
-  petId,
-) async {
+@riverpod
+Future<List<YouTubeVideoEntity>> youTubeVideos(Ref ref, String petId) async {
   final repository = ref.read(petActivitiesRepositoryProvider);
   final useCase = GetYouTubeVideosUseCase(repository);
   final result = await useCase.call(petId);
   return result.dataOrNull ?? [];
-});
+}

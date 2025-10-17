@@ -38,7 +38,7 @@ class _NotificationListWidgetState
   @override
   Widget build(BuildContext context) {
     // Riverpod Provider를 사용하여 알림 목록 관리
-    final notificationsAsync = ref.watch(notificationsNotifierProvider);
+    final notificationsAsync = ref.watch(notificationsProvider);
 
     return notificationsAsync.when(
       data: (notifications) => _buildNotificationList(notifications),
@@ -66,7 +66,7 @@ class _NotificationListWidgetState
 
     return RefreshIndicator(
       onRefresh: () async {
-        await ref.read(notificationsNotifierProvider.notifier).refresh();
+        await ref.read(notificationsProvider.notifier).refresh();
       },
       child: ListView.separated(
         padding: EdgeInsets.zero,
@@ -117,7 +117,7 @@ class _NotificationListWidgetState
 
     try {
       await ref
-          .read(notificationsNotifierProvider.notifier)
+          .read(notificationsProvider.notifier)
           .markAsRead(notification.id);
       widget.onNotificationTap?.call();
     } catch (e) {
@@ -153,7 +153,7 @@ class _NotificationListWidgetState
   Future<void> _deleteNotification(NotificationModel notification) async {
     try {
       await ref
-          .read(notificationsNotifierProvider.notifier)
+          .read(notificationsProvider.notifier)
           .deleteNotification(notification.id);
       widget.onNotificationDelete?.call();
     } catch (e) {

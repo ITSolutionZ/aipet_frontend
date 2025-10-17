@@ -13,7 +13,7 @@ class RecipeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final recipesAsync = ref.watch(recipesNotifierProvider);
+    final recipesAsync = ref.watch(recipesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -29,11 +29,24 @@ class RecipeScreen extends ConsumerWidget {
                 const CircleAvatar(
                   radius: 12,
                   backgroundColor: Colors.white,
-                  child: Icon(Icons.pets, size: 16, color: AppColors.pointBrown),
+                  child: Icon(
+                    Icons.pets,
+                    size: 16,
+                    color: AppColors.pointBrown,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.xs),
-                Text('Maxi', style: AppFonts.bodyMedium.copyWith(color: const Color(0xFF5B4034))),
-                const Icon(Icons.keyboard_arrow_down, color: Color(0xFF5B4034), size: 20),
+                Text(
+                  'Maxi',
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: const Color(0xFF5B4034),
+                  ),
+                ),
+                const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Color(0xFF5B4034),
+                  size: 20,
+                ),
               ],
             ),
           ),
@@ -61,11 +74,14 @@ class RecipeScreen extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: AppSpacing.md),
-              Text('レシピの読み込みに失敗しました', style: AppFonts.bodyLarge.copyWith(color: Colors.red)),
+              Text(
+                'レシピの読み込みに失敗しました',
+                style: AppFonts.bodyLarge.copyWith(color: Colors.red),
+              ),
               const SizedBox(height: AppSpacing.sm),
               ElevatedButton(
                 onPressed: () {
-                  ref.read(recipesNotifierProvider.notifier).refresh();
+                  ref.read(recipesProvider.notifier).refresh();
                 },
                 child: const Text('再試行'),
               ),
@@ -95,7 +111,9 @@ class RecipeScreen extends ConsumerWidget {
               backgroundColor: AppColors.pointBlue,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.large)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.large),
+              ),
             ),
           ),
         ),
@@ -103,7 +121,11 @@ class RecipeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecipeCard(BuildContext context, WidgetRef ref, RecipeEntity recipe) {
+  Widget _buildRecipeCard(
+    BuildContext context,
+    WidgetRef ref,
+    RecipeEntity recipe,
+  ) {
     return GestureDetector(
       onTap: () {
         // 레시피 상세 화면으로 이동
@@ -131,7 +153,9 @@ class RecipeScreen extends ConsumerWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.grey.withValues(alpha: 0.1),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.large)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(AppRadius.large),
+                  ),
                 ),
                 child: Icon(
                   Icons.restaurant,
@@ -170,7 +194,11 @@ class RecipeScreen extends ConsumerWidget {
                     const Spacer(),
                     Row(
                       children: [
-                        const Icon(Icons.access_time, size: 14, color: AppColors.pointBlue),
+                        const Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: AppColors.pointBlue,
+                        ),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           recipe.cookingTime,
@@ -186,8 +214,12 @@ class RecipeScreen extends ConsumerWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: _getDifficultyColor(recipe.difficulty).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(AppRadius.small),
+                            color: _getDifficultyColor(
+                              recipe.difficulty,
+                            ).withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.small,
+                            ),
                           ),
                           child: Text(
                             recipe.difficulty,
@@ -227,7 +259,11 @@ class RecipeScreen extends ConsumerWidget {
     context.push(AppRouter.addRecipeRoute);
   }
 
-  void _showRecipeDetailDialog(BuildContext context, WidgetRef ref, RecipeEntity recipe) {
+  void _showRecipeDetailDialog(
+    BuildContext context,
+    WidgetRef ref,
+    RecipeEntity recipe,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -251,7 +287,10 @@ class RecipeScreen extends ConsumerWidget {
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('閉じる')),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('閉じる'),
+          ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -272,11 +311,14 @@ class RecipeScreen extends ConsumerWidget {
         title: const Text('レシピを削除'),
         content: const Text('このレシピを削除しますか？'),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('キャンセル')),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('キャンセル'),
+          ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              ref.read(recipesNotifierProvider.notifier).deleteRecipe(recipeId);
+              ref.read(recipesProvider.notifier).deleteRecipe(recipeId);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: const Text('削除'),

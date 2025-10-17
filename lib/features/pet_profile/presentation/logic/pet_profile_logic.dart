@@ -50,7 +50,7 @@ class PetProfileLogic {
 
       if (result.isSuccess) {
         // 펫 목록 새로고침
-        await _ref.read(petProfilesNotifierProvider.notifier).refresh();
+        await _ref.read(petProfilesProvider.notifier).refresh();
         return Result.success('ペット情報を更新しました', result.dataOrNull!);
       } else {
         return Result.failure(result.message);
@@ -68,7 +68,7 @@ class PetProfileLogic {
 
       if (result.isSuccess) {
         // 펫 목록 새로고침
-        await _ref.read(petProfilesNotifierProvider.notifier).refresh();
+        await _ref.read(petProfilesProvider.notifier).refresh();
         return Result.success('ペットを削除しました', null);
       } else {
         return Result.failure(result.message);
@@ -86,7 +86,7 @@ class PetProfileLogic {
 
       if (result.isSuccess) {
         // 펫 목록 새로고침
-        await _ref.read(petProfilesNotifierProvider.notifier).refresh();
+        await _ref.read(petProfilesProvider.notifier).refresh();
         return Result.success('画像をアップロードしました', result.dataOrNull!);
       } else {
         return Result.failure(result.message);

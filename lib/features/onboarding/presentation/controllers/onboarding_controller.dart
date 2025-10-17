@@ -35,7 +35,7 @@ class OnboardingController extends BaseController {
     final result = await _nextPageUseCase();
     if (result.isSuccess) {
       // Update UI state after successful navigation
-      ref.read(onboardingNotifierProvider.notifier).nextPage();
+      ref.read(onboardingProvider.notifier).nextPage();
     }
     return result;
   }
@@ -45,7 +45,7 @@ class OnboardingController extends BaseController {
     final result = await _previousPageUseCase();
     if (result.isSuccess) {
       // Update UI state after successful navigation
-      ref.read(onboardingNotifierProvider.notifier).previousPage();
+      ref.read(onboardingProvider.notifier).previousPage();
     }
     return result;
   }
@@ -55,7 +55,7 @@ class OnboardingController extends BaseController {
     final result = await _goToPageUseCase(page);
     if (result.isSuccess) {
       // Update UI state after successful navigation
-      ref.read(onboardingNotifierProvider.notifier).goToPage(page);
+      ref.read(onboardingProvider.notifier).goToPage(page);
     }
     return result;
   }
@@ -71,7 +71,7 @@ class OnboardingController extends BaseController {
     final result = await _completeUseCase();
     if (result.isSuccess) {
       // Update UI state after successful completion
-      ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
+      ref.read(onboardingProvider.notifier).completeOnboarding();
     }
     return result;
   }
@@ -96,7 +96,7 @@ class OnboardingController extends BaseController {
   Future<Result<void>> initializeOnboarding() async {
     try {
       // Start onboarding tracking
-      ref.read(onboardingNotifierProvider.notifier).startOnboarding();
+      ref.read(onboardingProvider.notifier).startOnboarding();
       return Result.success(null.toString(), '온보딩이 시작되었습니다');
     } catch (error) {
       return Result.failure('온보딩 초기화 중 오류가 발생했습니다: $error');

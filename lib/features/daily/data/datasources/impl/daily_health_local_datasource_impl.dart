@@ -345,17 +345,13 @@ class DailyHealthRemoteDatasourceImpl implements DailyHealthRemoteDatasource {
 
 /// Local Datasource Provider
 @riverpod
-DailyHealthLocalDatasource dailyHealthLocalDatasource(
-  DailyHealthLocalDatasourceRef ref,
-) {
+DailyHealthLocalDatasource dailyHealthLocalDatasource(Ref ref) {
   return DailyHealthLocalDatasourceImpl();
 }
 
 /// Remote Datasource Provider (개발 중 - Local과 동일)
 @riverpod
-DailyHealthRemoteDatasource dailyHealthRemoteDatasource(
-  DailyHealthRemoteDatasourceRef ref,
-) {
+DailyHealthRemoteDatasource dailyHealthRemoteDatasource(Ref ref) {
   final localDatasource = DailyHealthLocalDatasourceImpl();
   return DailyHealthRemoteDatasourceImpl(localDatasource);
 }

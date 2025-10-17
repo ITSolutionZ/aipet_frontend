@@ -32,7 +32,7 @@ class _SharingProfilesScreenState extends ConsumerState<SharingProfilesScreen>
 
   @override
   Widget build(BuildContext context) {
-    final petsAsync = ref.watch(petProfilesNotifierProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,

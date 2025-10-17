@@ -41,7 +41,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final walkRecords = ref.watch(walkRecordsNotifierProvider);
+    final walkRecords = ref.watch(walkRecordsProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -419,7 +419,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   /// 산책 기록 정리 (6개월 이상 된 기록 삭제)
   Future<void> _cleanOldRecords() async {
     try {
-      final walkRecords = ref.read(walkRecordsNotifierProvider);
+      final walkRecords = ref.read(walkRecordsProvider);
       final recentRecords = WalkCalendarDataHelper.filterRecentRecords(
         walkRecords,
       );
@@ -430,7 +430,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
 
         // 2. 상태 업데이트
         ref
-            .read(walkRecordsNotifierProvider.notifier)
+            .read(walkRecordsProvider.notifier)
             .setWalkRecords(recentRecords);
 
         final deletedCount = WalkCalendarDataHelper.calculateDeletedCount(

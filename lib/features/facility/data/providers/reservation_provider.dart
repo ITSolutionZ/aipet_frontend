@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'reservation_provider.g.dart';
@@ -233,7 +232,7 @@ class ReservationsNotifier extends _$ReservationsNotifier {
 /// 예약 대기 상태 예약 목록
 @riverpod
 List<HospitalReservation> pendingReservations(Ref ref) {
-  final reservations = ref.watch(reservationsNotifierProvider);
+  final reservations = ref.watch(reservationsProvider);
   return reservations.maybeWhen(
     data: (reservationList) => reservationList
         .where((r) => r.status == ReservationStatus.pending)
@@ -245,7 +244,7 @@ List<HospitalReservation> pendingReservations(Ref ref) {
 /// 예약 완료 상태 예약 목록
 @riverpod
 List<HospitalReservation> confirmedReservations(Ref ref) {
-  final reservations = ref.watch(reservationsNotifierProvider);
+  final reservations = ref.watch(reservationsProvider);
   return reservations.maybeWhen(
     data: (reservationList) => reservationList
         .where((r) => r.status == ReservationStatus.confirmed)
@@ -257,7 +256,7 @@ List<HospitalReservation> confirmedReservations(Ref ref) {
 /// 예약 취소 상태 예약 목록
 @riverpod
 List<HospitalReservation> cancelledReservations(Ref ref) {
-  final reservations = ref.watch(reservationsNotifierProvider);
+  final reservations = ref.watch(reservationsProvider);
   return reservations.maybeWhen(
     data: (reservationList) => reservationList
         .where((r) => r.status == ReservationStatus.cancelled)

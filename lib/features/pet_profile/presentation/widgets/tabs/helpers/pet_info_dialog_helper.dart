@@ -17,7 +17,9 @@ class PetInfoDialogHelper {
       builder: (context) => AlertDialog(
         title: const Text('名前編集'),
         content: TextField(
-          controller: ref.read(petBasicInfoTabProvider(tabId)).nameController,
+          controller: ref
+              .read(petBasicInfoTabControllerProvider(tabId))
+              .nameController,
           decoration: const InputDecoration(
             labelText: 'ペットの名前',
             hintText: '名前を入力してください',
@@ -56,11 +58,11 @@ class PetInfoDialogHelper {
               title: const Text('オス'),
               value: 'Male',
               groupValue: ref
-                  .watch(petBasicInfoTabProvider(tabId))
+                  .watch(petBasicInfoTabControllerProvider(tabId))
                   .editingGender,
               onChanged: (value) {
                 ref
-                    .read(petBasicInfoTabProvider(tabId).notifier)
+                    .read(petBasicInfoTabControllerProvider(tabId).notifier)
                     .updateGender(value);
               },
             ),
@@ -68,11 +70,11 @@ class PetInfoDialogHelper {
               title: const Text('メス'),
               value: 'Female',
               groupValue: ref
-                  .watch(petBasicInfoTabProvider(tabId))
+                  .watch(petBasicInfoTabControllerProvider(tabId))
                   .editingGender,
               onChanged: (value) {
                 ref
-                    .read(petBasicInfoTabProvider(tabId).notifier)
+                    .read(petBasicInfoTabControllerProvider(tabId).notifier)
                     .updateGender(value);
               },
             ),
@@ -100,7 +102,7 @@ class PetInfoDialogHelper {
     WidgetRef ref,
     String tabId,
   ) {
-    final tabState = ref.read(petBasicInfoTabProvider(tabId));
+    final tabState = ref.read(petBasicInfoTabControllerProvider(tabId));
     final weightController = TextEditingController(
       text: tabState.editingWeight?.toString() ?? '',
     );
@@ -128,10 +130,10 @@ class PetInfoDialogHelper {
               final weight = double.tryParse(weightController.text);
               if (weight != null && weight > 0) {
                 ref
-                    .read(petBasicInfoTabProvider(tabId).notifier)
+                    .read(petBasicInfoTabControllerProvider(tabId).notifier)
                     .updateWeight(weight);
                 ref
-                    .read(petBasicInfoTabProvider(tabId))
+                    .read(petBasicInfoTabControllerProvider(tabId))
                     .weightController
                     ?.text = weight
                     .toString();
@@ -159,7 +161,7 @@ class PetInfoDialogHelper {
         title: const Text('外見編集'),
         content: TextField(
           controller: ref
-              .read(petBasicInfoTabProvider(tabId))
+              .read(petBasicInfoTabControllerProvider(tabId))
               .appearanceController,
           maxLines: 3,
           decoration: const InputDecoration(
@@ -195,7 +197,7 @@ class PetInfoDialogHelper {
         title: const Text('マイクロチップ編集'),
         content: TextField(
           controller: ref
-              .read(petBasicInfoTabProvider(tabId))
+              .read(petBasicInfoTabControllerProvider(tabId))
               .microchipController,
           decoration: const InputDecoration(
             labelText: 'マイクロチップID',

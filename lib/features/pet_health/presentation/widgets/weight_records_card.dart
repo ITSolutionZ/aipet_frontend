@@ -2,16 +2,17 @@ import 'package:aipet_frontend/features/pet_health/data/services/pet_health_loca
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// 🎯 Weight Records State Provider
-final weightRecordsStateProvider =
-    StateNotifierProvider<WeightRecordsController, WeightRecordsState>(
-      (ref) => WeightRecordsController(),
-    );
+part 'weight_records_card.g.dart';
 
-class WeightRecordsController extends StateNotifier<WeightRecordsState> {
-  WeightRecordsController()
-    : super(WeightRecordsState(selectedYear: DateTime.now().year));
+/// 🎯 Weight Records Controller
+@riverpod
+class WeightRecordsController extends _$WeightRecordsController {
+  @override
+  WeightRecordsState build() {
+    return WeightRecordsState(selectedYear: DateTime.now().year);
+  }
 
   void toggleMonth(String monthKey) {
     final expandedMonths = Set<String>.from(state.expandedMonths);
@@ -81,7 +82,7 @@ class _WeightRecordsCardState extends ConsumerState<WeightRecordsCard> {
 
   @override
   Widget build(BuildContext context) {
-    final controllerState = ref.watch(weightRecordsStateProvider);
+    final controllerState = ref.watch(weightRecordsControllerProvider);
     final weightRecords = _weightRecords;
     final availableYears = _getAvailableYears(weightRecords);
     final filteredRecords = weightRecords.where((record) {
@@ -94,7 +95,7 @@ class _WeightRecordsCardState extends ConsumerState<WeightRecordsCard> {
     if (controllerState.expandedMonths.isEmpty && groupedRecords.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref
-            .read(weightRecordsStateProvider.notifier)
+            .read(weightRecordsControllerProvider.notifier)
             .initializeWithFirstMonth(groupedRecords.keys.toList());
       });
     }
@@ -156,7 +157,7 @@ class _WeightRecordsCardState extends ConsumerState<WeightRecordsCard> {
                       onSelected: (selected) {
                         if (selected) {
                           ref
-                              .read(weightRecordsStateProvider.notifier)
+                              .read(weightRecordsControllerProvider.notifier)
                               .setSelectedYear(year);
                         }
                       },
@@ -264,7 +265,7 @@ class _WeightRecordsCardState extends ConsumerState<WeightRecordsCard> {
           InkWell(
             onTap: () {
               ref
-                  .read(weightRecordsStateProvider.notifier)
+                  .read(weightRecordsControllerProvider.notifier)
                   .toggleMonth(monthKey);
             },
             borderRadius: BorderRadius.circular(AppRadius.medium),
