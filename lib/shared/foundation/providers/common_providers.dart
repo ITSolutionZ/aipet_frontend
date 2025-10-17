@@ -214,7 +214,12 @@ class CommonListNotifier extends _$CommonListNotifier {
 
   /// 리스트 설정
   void setItems(List<dynamic> items) {
-    state = state.copyWith(items: items, isLoading: false, error: null, isSuccess: true);
+    state = state.copyWith(
+      items: items,
+      isLoading: false,
+      error: null,
+      isSuccess: true,
+    );
   }
 
   /// 항목 추가
@@ -296,7 +301,10 @@ class CommonFormNotifier extends _$CommonFormNotifier {
   void clearValidationError(String field) {
     final newErrors = Map<String, String>.from(state.validationErrors);
     newErrors.remove(field);
-    state = state.copyWith(validationErrors: newErrors, canSubmit: newErrors.isEmpty);
+    state = state.copyWith(
+      validationErrors: newErrors,
+      canSubmit: newErrors.isEmpty,
+    );
   }
 
   /// 모든 유효성 검사 에러 제거
@@ -348,7 +356,8 @@ class CommonSelectionNotifier extends _$CommonSelectionNotifier {
         state = state.copyWith(selectedItems: newItems);
       } else {
         // 최대 선택 개수 확인
-        if (state.maxSelection == null || state.selectedItems.length < state.maxSelection!) {
+        if (state.maxSelection == null ||
+            state.selectedItems.length < state.maxSelection!) {
           final newItems = [...state.selectedItems, item];
           state = state.copyWith(selectedItems: newItems);
         }
@@ -382,25 +391,5 @@ class CommonSelectionNotifier extends _$CommonSelectionNotifier {
   /// 최대 선택 개수 설정
   void setMaxSelection(int? maxSelection) {
     state = state.copyWith(maxSelection: maxSelection);
-  }
-}
-
-/// 공통 Provider 팩토리
-class CommonProviderFactory {
-  /// 리스트 상태 Provider 생성
-  static AutoDisposeNotifierProvider<CommonListNotifier, CommonListState<dynamic>>
-  createListProvider() {
-    return commonListNotifierProvider;
-  }
-
-  /// 폼 상태 Provider 생성
-  static AutoDisposeNotifierProvider<CommonFormNotifier, CommonFormState> createFormProvider() {
-    return commonFormNotifierProvider;
-  }
-
-  /// 선택 상태 Provider 생성
-  static AutoDisposeNotifierProvider<CommonSelectionNotifier, CommonSelectionState<dynamic>>
-  createSelectionProvider() {
-    return commonSelectionNotifierProvider;
   }
 }

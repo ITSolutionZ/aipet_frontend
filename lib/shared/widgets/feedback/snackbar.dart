@@ -2,8 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'banner_type.dart';
+
+part 'snackbar.g.dart';
 
 /// GlassSnackbar: bottom floating notification with glass style and optional action button
 class GlassSnackbar extends StatelessWidget {
@@ -85,7 +88,11 @@ class GlassSnackbar extends StatelessWidget {
                 Flexible(
                   child: Text(
                     message,
-                    style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.3),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      height: 1.3,
+                    ),
                   ),
                 ),
                 if (actionLabel != null && onAction != null) ...[
@@ -95,7 +102,10 @@ class GlassSnackbar extends StatelessWidget {
                     style: TextButton.styleFrom(foregroundColor: baseColor),
                     child: Text(
                       actionLabel!,
-                      style: TextStyle(color: baseColor, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: baseColor,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -116,13 +126,10 @@ class GlassSnackbar extends StatelessWidget {
 }
 
 /// 🎯 Snackbar Visibility State Provider
-final snackbarVisibilityProvider =
-    StateNotifierProvider.family<SnackbarVisibilityController, bool, String>(
-      (ref, snackbarId) => SnackbarVisibilityController(),
-    );
-
-class SnackbarVisibilityController extends StateNotifier<bool> {
-  SnackbarVisibilityController() : super(false);
+@riverpod
+class SnackbarVisibilityController extends _$SnackbarVisibilityController {
+  @override
+  bool build(String snackbarId) => false;
 
   void show() {
     state = true;
@@ -137,10 +144,15 @@ class GlassSnackbarWidget extends ConsumerStatefulWidget {
   final GlassSnackbar snackbar;
   final OverlayEntry overlayEntry;
 
-  const GlassSnackbarWidget({super.key, required this.snackbar, required this.overlayEntry});
+  const GlassSnackbarWidget({
+    super.key,
+    required this.snackbar,
+    required this.overlayEntry,
+  });
 
   @override
-  ConsumerState<GlassSnackbarWidget> createState() => _GlassSnackbarWidgetState();
+  ConsumerState<GlassSnackbarWidget> createState() =>
+      _GlassSnackbarWidgetState();
 }
 
 class _GlassSnackbarWidgetState extends ConsumerState<GlassSnackbarWidget> {
@@ -151,7 +163,9 @@ class _GlassSnackbarWidgetState extends ConsumerState<GlassSnackbarWidget> {
     super.initState();
     // Start hidden and then show
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(snackbarVisibilityProvider(_snackbarId).notifier).show();
+      ref
+          .read(snackbarVisibilityControllerProvider(_snackbarId).notifier)
+          .show();
     });
 
     if (widget.snackbar.duration > Duration.zero) {
@@ -162,10 +176,12 @@ class _GlassSnackbarWidgetState extends ConsumerState<GlassSnackbarWidget> {
   }
 
   Future<void> _dismiss() async {
-    final isVisible = ref.read(snackbarVisibilityProvider(_snackbarId));
+    final isVisible = ref.read(
+      snackbarVisibilityControllerProvider(_snackbarId),
+    );
     if (!isVisible) return;
 
-    ref.read(snackbarVisibilityProvider(_snackbarId).notifier).hide();
+    ref.read(snackbarVisibilityControllerProvider(_snackbarId).notifier).hide();
     await Future.delayed(const Duration(milliseconds: 300));
     widget.overlayEntry.remove();
     widget.snackbar.onDismissed?.call();
@@ -174,7 +190,9 @@ class _GlassSnackbarWidgetState extends ConsumerState<GlassSnackbarWidget> {
   @override
   Widget build(BuildContext context) {
     final snackbar = widget.snackbar;
-    final isVisible = ref.watch(snackbarVisibilityProvider(_snackbarId));
+    final isVisible = ref.watch(
+      snackbarVisibilityControllerProvider(_snackbarId),
+    );
 
     final snackbarWithClose = snackbar.onClose == null
         ? snackbar
@@ -219,7 +237,8 @@ class _GlassSnackbarWidgetState extends ConsumerState<GlassSnackbarWidget> {
 void showGlassSnackbar(BuildContext context, GlassSnackbar snackbar) {
   late OverlayEntry overlay;
   overlay = OverlayEntry(
-    builder: (ctx) => GlassSnackbarWidget(snackbar: snackbar, overlayEntry: overlay),
+    builder: (ctx) =>
+        GlassSnackbarWidget(snackbar: snackbar, overlayEntry: overlay),
   );
 
   Overlay.of(context).insert(overlay);

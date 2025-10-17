@@ -2,15 +2,15 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'weight_input.g.dart';
 
 /// 🎯 Weight Input State Provider
-final weightInputProvider =
-    StateNotifierProvider.family<WeightInputController, WeightInputState, String>(
-      (ref, inputId) => WeightInputController(),
-    );
-
-class WeightInputController extends StateNotifier<WeightInputState> {
-  WeightInputController() : super(const WeightInputState());
+@riverpod
+class WeightInputController extends _$WeightInputController {
+  @override
+  WeightInputState build(String inputId) => const WeightInputState();
 
   void initialize(double weight, {TextEditingController? controller, FocusNode? focusNode}) {
     final textController = controller ?? TextEditingController(text: weight.toStringAsFixed(1));
@@ -28,13 +28,6 @@ class WeightInputController extends StateNotifier<WeightInputState> {
     if (state.controller != null) {
       state.controller!.text = weight.toStringAsFixed(1);
     }
-  }
-
-  @override
-  void dispose() {
-    state.controller?.dispose();
-    state.focusNode?.dispose();
-    super.dispose();
   }
 }
 
@@ -93,10 +86,10 @@ class _WeightInputState extends ConsumerState<WeightInput> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
-          .read(weightInputProvider(_inputId).notifier)
+          .read(weightInputControllerProvider(_inputId).notifier)
           .initialize(widget.weight, controller: widget.controller, focusNode: widget.focusNode);
 
-      final state = ref.read(weightInputProvider(_inputId));
+      final state = ref.read(weightInputControllerProvider(_inputId));
       state.focusNode?.addListener(() {
         if (!(state.focusNode?.hasFocus ?? false)) {
           _validateAndUpdate();
@@ -109,20 +102,17 @@ class _WeightInputState extends ConsumerState<WeightInput> {
   void didUpdateWidget(WeightInput oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.weight != widget.weight) {
-      ref.read(weightInputProvider(_inputId).notifier).updateWeight(widget.weight);
+      ref.read(weightInputControllerProvider(_inputId).notifier).updateWeight(widget.weight);
     }
   }
 
   @override
   void dispose() {
-    if (widget.controller == null || widget.focusNode == null) {
-      ref.read(weightInputProvider(_inputId).notifier).dispose();
-    }
     super.dispose();
   }
 
   void _validateAndUpdate() {
-    final state = ref.read(weightInputProvider(_inputId));
+    final state = ref.read(weightInputControllerProvider(_inputId));
     if (state.controller == null) return;
 
     final text = state.controller!.text.trim();
@@ -146,7 +136,7 @@ class _WeightInputState extends ConsumerState<WeightInput> {
 
   @override
   Widget build(BuildContext context) {
-    final inputState = ref.watch(weightInputProvider(_inputId));
+    final inputState = ref.watch(weightInputControllerProvider(_inputId));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
