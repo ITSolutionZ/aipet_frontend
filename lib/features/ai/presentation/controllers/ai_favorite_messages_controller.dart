@@ -8,7 +8,7 @@ part 'ai_favorite_messages_controller.g.dart';
 /// AI 즐겨찾기 메시지 컨트롤러
 @riverpod
 AiFavoriteMessagesController aiFavoriteMessagesController(
-  AiFavoriteMessagesControllerRef ref,
+  Ref ref,
 ) {
   return AiFavoriteMessagesController();
 }
@@ -88,6 +88,8 @@ class AiFavoriteMessagesController {
 
 --- AI Pet アプリより ---''';
 
-    await Share.share(shareText);
+    await SharePlus.instance.share(
+      ShareParams(text: shareText, subject: 'AI Pet アプリより'),
+    );
   }
 }

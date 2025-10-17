@@ -25,7 +25,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
 
     // 초기 데이터 로드
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(aiChatNotifierProvider.notifier).initializeChat();
+      ref.read(aiChatProvider.notifier).initializeChat();
     });
   }
 
@@ -47,11 +47,11 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
   }
 
   Future<void> _saveCurrentChatBeforeExit() async {
-    final chatState = ref.read(aiChatNotifierProvider);
+    final chatState = ref.read(aiChatProvider);
     if (chatState.messages.isNotEmpty) {
       try {
         await ref
-            .read(aiChatNotifierProvider.notifier)
+            .read(aiChatProvider.notifier)
             .saveCurrentChatToHistory(isManualSave: false);
       } catch (error) {
         // 백그라운드 저장 실패는 로그만 남기고 UI에는 표시하지 않음
@@ -69,7 +69,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
     _scrollToBottom();
 
     // 노티파이어를 통해 메시지 전송
-    await ref.read(aiChatNotifierProvider.notifier).sendMessage(content);
+    await ref.read(aiChatProvider.notifier).sendMessage(content);
 
     // AI 응답 완료 후 다시 스크롤
     _scrollToBottom();
@@ -88,11 +88,11 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
   }
 
   Future<void> _clearChatHistory() async {
-    await ref.read(aiChatNotifierProvider.notifier).clearChatHistory();
+    await ref.read(aiChatProvider.notifier).clearChatHistory();
   }
 
   Future<void> _saveCurrentChat() async {
-    final chatState = ref.read(aiChatNotifierProvider);
+    final chatState = ref.read(aiChatProvider);
     if (chatState.messages.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -104,7 +104,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
 
     try {
       await ref
-          .read(aiChatNotifierProvider.notifier)
+          .read(aiChatProvider.notifier)
           .saveCurrentChatToHistory(isManualSave: true);
       if (mounted) {
         ScaffoldMessenger.of(
@@ -185,7 +185,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
         return AiPetSelectionBubble(
           selectedPet: chatState.selectedPet,
           onPetSelected: (pet) {
-            ref.read(aiChatNotifierProvider.notifier).selectPet(pet);
+            ref.read(aiChatProvider.notifier).selectPet(pet);
           },
         );
       }
@@ -225,7 +225,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
             isFavorite: chatState.favoriteMessageIds.contains(message.id),
             onFavoriteToggle: (msg) async {
               await ref
-                  .read(aiChatNotifierProvider.notifier)
+                  .read(aiChatProvider.notifier)
                   .toggleFavorite(msg);
             },
           ),
@@ -242,7 +242,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
         return AiCategorySelectionBubble(
           selectedCategory: chatState.selectedCategory,
           onCategorySelected: (category) {
-            ref.read(aiChatNotifierProvider.notifier).selectCategory(category);
+            ref.read(aiChatProvider.notifier).selectCategory(category);
           },
         );
       }
@@ -287,7 +287,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
   @override
   Widget build(BuildContext context) {
     // UI에서 직접 Provider 상태 감지
-    final chatState = ref.watch(aiChatNotifierProvider);
+    final chatState = ref.watch(aiChatProvider);
 
     // 디버그 로그
     debugPrint('🐾 AI Chat Debug:');

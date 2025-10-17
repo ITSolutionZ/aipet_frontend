@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -50,6 +51,13 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       appBar: DynamicAppBarStyles.brown(
         scrollController: _scrollController,
         title: '',
+        actions: [
+          IconButton(
+            onPressed: _openAlarmSetup,
+            icon: const Icon(Icons.alarm_add, color: Colors.white),
+            tooltip: '알람 설정',
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -498,5 +506,12 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
         );
       }
     }
+  }
+
+  /// 알람 설정 화면 열기
+  void _openAlarmSetup() {
+    context.push(
+      '/scheduling/new-event?date=${_selectedDay?.toIso8601String()}',
+    );
   }
 }

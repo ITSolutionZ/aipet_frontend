@@ -1,10 +1,10 @@
-import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/widgets/walk/live_walk_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../shared/domain/entities/pet_profile_entity.dart';
+import '../../../pet_profile/data/providers/pet_profile_providers.dart';
 import 'helpers/live/helpers.dart';
 
 /// 실시간 산책 화면
@@ -111,7 +111,7 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
   /// 펫 리스트 위젯
   Widget _buildPetInfoCard() {
     // 로컬 저장소에서 펫 데이터 가져오기
-    final petsAsync = ref.watch(petListProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return petsAsync.when(
       data: (pets) => _buildPetList(pets),

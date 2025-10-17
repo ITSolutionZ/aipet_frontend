@@ -25,7 +25,7 @@ class DailyHealthRecordSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final petsAsync = ref.watch(petProfilesNotifierProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     // 현재 선택된 펫의 몸무게, 타입, 이름 가져오기
     double? currentWeight;

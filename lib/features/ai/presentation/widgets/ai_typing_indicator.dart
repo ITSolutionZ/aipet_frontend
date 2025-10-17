@@ -2,24 +2,6 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// 🎯 AI Typing Indicator Animation State Provider
-final aiTypingIndicatorProvider =
-    StateNotifierProvider<AiTypingIndicatorController, bool>(
-      (ref) => AiTypingIndicatorController(),
-    );
-
-class AiTypingIndicatorController extends StateNotifier<bool> {
-  AiTypingIndicatorController() : super(false);
-
-  void startAnimation() {
-    state = true;
-  }
-
-  void stopAnimation() {
-    state = false;
-  }
-}
-
 /// AI 타이핑 인디케이터 위젯
 class AiTypingIndicator extends ConsumerStatefulWidget {
   const AiTypingIndicator({super.key});
@@ -51,9 +33,8 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
       ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
     }).toList();
 
-    // Riverpod 상태 변경 시 애니메이션 시작/종료
+    // 애니메이션 시작
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(aiTypingIndicatorProvider.notifier).startAnimation();
       _startAnimations();
     });
   }

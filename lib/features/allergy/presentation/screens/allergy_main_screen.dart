@@ -36,7 +36,7 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final petsAsync = ref.watch(petProfilesNotifierProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -75,7 +75,7 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen> {
             );
           },
           loading: () => const SizedBox.shrink(),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (error, stackTrace) => const SizedBox.shrink(),
         ),
         centerTitle: true,
       ),

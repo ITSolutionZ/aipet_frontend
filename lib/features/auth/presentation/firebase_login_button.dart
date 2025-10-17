@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 🎯 Firebase Login State Provider
-final firebaseLoginProvider = StateNotifierProvider<FirebaseLoginController, FirebaseLoginState>(
-  (ref) => FirebaseLoginController(),
-);
+final firebaseLoginProvider =
+    NotifierProvider<FirebaseLoginController, FirebaseLoginState>(
+      FirebaseLoginController.new,
+    );
 
-class FirebaseLoginController extends StateNotifier<FirebaseLoginState> {
-  FirebaseLoginController() : super(const FirebaseLoginState()) {
+class FirebaseLoginController extends Notifier<FirebaseLoginState> {
+  @override
+  FirebaseLoginState build() {
     _checkCurrentUser();
     _listenToAuthChanges();
+    return const FirebaseLoginState();
   }
 
   void _checkCurrentUser() {
@@ -28,7 +31,10 @@ class FirebaseLoginController extends StateNotifier<FirebaseLoginState> {
     state = state.copyWith(isLoading: isLoading);
   }
 
-  Future<void> signInAnonymously({VoidCallback? onSuccess, Function(String)? onError}) async {
+  Future<void> signInAnonymously({
+    VoidCallback? onSuccess,
+    Function(String)? onError,
+  }) async {
     if (state.isLoading) return;
 
     setLoading(true);
@@ -79,7 +85,11 @@ class FirebaseLoginButton extends ConsumerWidget {
   final VoidCallback? onLoginSuccess;
   final Function(String)? onLoginError;
 
-  const FirebaseLoginButton({super.key, this.onLoginSuccess, this.onLoginError});
+  const FirebaseLoginButton({
+    super.key,
+    this.onLoginSuccess,
+    this.onLoginError,
+  });
 
   void _showSnackBar(BuildContext context, String message, Color color) {
     ScaffoldMessenger.of(
@@ -109,12 +119,18 @@ class FirebaseLoginButton extends ConsumerWidget {
                       children: [
                         const Text(
                           'Firebase 로그인 완료',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'UID: ${authState.currentUser!.uid}',
-                          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
                         ),
                       ],
                     ),
@@ -155,7 +171,10 @@ class FirebaseLoginButton extends ConsumerWidget {
                     children: [
                       Text(
                         'Firebase 로그인 필요',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(height: 4),
                       Text(
@@ -180,7 +199,11 @@ class FirebaseLoginButton extends ConsumerWidget {
                               onSuccess: onLoginSuccess,
                               onError: (error) {
                                 onLoginError?.call(error);
-                                _showSnackBar(context, 'ログイン失敗: $error', Colors.red);
+                                _showSnackBar(
+                                  context,
+                                  'ログイン失敗: $error',
+                                  Colors.red,
+                                );
                               },
                             );
                       },
@@ -194,7 +217,9 @@ class FirebaseLoginButton extends ConsumerWidget {
                         width: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       )
                     : const Text('Firebase 익명 로그인'),

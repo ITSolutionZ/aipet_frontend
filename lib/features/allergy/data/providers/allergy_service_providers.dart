@@ -6,6 +6,6 @@ part 'allergy_service_providers.g.dart';
 
 /// 알레르기 분석 서비스 Provider
 @riverpod
-AllergyAnalysisService allergyAnalysisService(AllergyAnalysisServiceRef ref) {
+AllergyAnalysisService allergyAnalysisService(Ref ref) {
   return OpenAIAllergyAnalysisService();
 }

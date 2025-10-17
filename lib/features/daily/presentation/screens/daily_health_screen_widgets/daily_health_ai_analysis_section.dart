@@ -101,8 +101,11 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
       }
 
       // 펫 정보 가져오기
-      final petsAsync = await ref.read(petProfilesNotifierProvider.future);
-      final pet = petsAsync.firstWhere((p) => p.id == petId);
+      final petsAsync = await ref.read(petProfilesProvider.future);
+      final pet = petsAsync.firstWhere(
+        (p) => p.id == petId,
+        orElse: () => throw Exception('ペットが見つかりません'),
+      );
 
       // 형식에 따른 파일 생성
       late final String filePath;

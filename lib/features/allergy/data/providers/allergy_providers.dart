@@ -216,24 +216,18 @@ class AllergyAnalysisLocalDatasourceImpl
 
 // Datasource Providers
 @riverpod
-AllergyAnalysisDatasource allergyAnalysisDatasource(
-  AllergyAnalysisDatasourceRef ref,
-) {
+AllergyAnalysisDatasource allergyAnalysisDatasource(Ref ref) {
   return AllergyAnalysisDatasourceImpl();
 }
 
 @riverpod
-AllergyAnalysisLocalDatasource allergyAnalysisLocalDatasource(
-  AllergyAnalysisLocalDatasourceRef ref,
-) {
+AllergyAnalysisLocalDatasource allergyAnalysisLocalDatasource(Ref ref) {
   return AllergyAnalysisLocalDatasourceImpl();
 }
 
 // Repository Providers
 @riverpod
-AllergyAnalysisRepository allergyAnalysisRepository(
-  AllergyAnalysisRepositoryRef ref,
-) {
+AllergyAnalysisRepository allergyAnalysisRepository(Ref ref) {
   final service = ref.watch(allergyAnalysisServiceProvider);
   final datasource = ref.watch(allergyAnalysisDatasourceProvider);
 
@@ -242,17 +236,14 @@ AllergyAnalysisRepository allergyAnalysisRepository(
 
 /// 제품 목록 Provider
 @riverpod
-Future<List<ProductEntity>> allergyProducts(
-  AllergyProductsRef ref, {
-  String? category,
-}) async {
+Future<List<ProductEntity>> allergyProducts(Ref ref, {String? category}) async {
   final datasource = ref.watch(allergyAnalysisLocalDatasourceProvider);
   return datasource.getLocalProducts();
 }
 
 /// 브랜드 정보 조회 Provider (제품의 brandId로 브랜드명 찾기)
 @riverpod
-String getBrandName(GetBrandNameRef ref, String brandId) {
+String getBrandName(Ref ref, String brandId) {
   // TODO: 실제로는 brand repository나 datasource에서 가져와야 함
   // 현재는 임시로 brandId를 반환
   return brandId;

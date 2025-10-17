@@ -1,7 +1,9 @@
 import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
 import 'package:aipet_frontend/features/daily/presentation/logic/daily_health_input_logic.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'daily_health_form_controller.g.dart';
 
 /// Daily Health Form Controller
 ///
@@ -12,20 +14,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 ///
 /// **사용 위치**: DailyHealthInputScreen에서 사용
 /// **관련 파일**: DailyHealthInputLogic (폼 검증 및 제출 로직)
-class DailyHealthFormController extends StateNotifier<DailyHealthFormData> {
-  final Ref ref;
-  final DailyHealthRecord? existingRecord;
+@riverpod
+class DailyHealthFormController extends _$DailyHealthFormController {
   late final DailyHealthInputLogic _logic;
   late final TextEditingController _temperatureController;
   late final TextEditingController _notesController;
 
-  DailyHealthFormController({required this.ref, this.existingRecord})
-    : super(DailyHealthFormData.initial()) {
+  @override
+  DailyHealthFormData build(DailyHealthRecord? existingRecord) {
     _logic = DailyHealthInputLogic(ref: ref, existingRecord: existingRecord);
     _temperatureController = TextEditingController();
     _notesController = TextEditingController();
 
     _initializeForm();
+
+    return DailyHealthFormData.initial();
   }
 
   /// TextEditingController 접근자들
@@ -87,23 +90,13 @@ class DailyHealthFormController extends StateNotifier<DailyHealthFormData> {
     _temperatureController.text = formData.temperature?.toString() ?? '';
     _notesController.text = formData.notes ?? '';
   }
-
-  @override
-  void dispose() {
-    _temperatureController.dispose();
-    _notesController.dispose();
-    super.dispose();
-  }
 }
 
-/// DailyHealthFormController Provider
-final dailyHealthFormControllerProvider = StateNotifierProvider.autoDispose
-    .family<DailyHealthFormController, DailyHealthFormData, DailyHealthRecord?>(
-      (ref, existingRecord) =>
-          DailyHealthFormController(ref: ref, existingRecord: existingRecord),
-    );
-
 /// 로딩 상태 관리 Provider
-final dailyHealthInputLoadingProvider = StateProvider.autoDispose<bool>(
-  (ref) => false,
-);
+@riverpod
+class DailyHealthInputLoading extends _$DailyHealthInputLoading {
+  @override
+  bool build() => false;
+
+  void setLoading(bool value) => state = value;
+}

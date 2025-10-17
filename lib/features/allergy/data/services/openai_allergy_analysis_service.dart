@@ -4,6 +4,7 @@ import 'package:aipet_frontend/features/allergy/domain/entities/allergy_analysis
 import 'package:aipet_frontend/features/allergy/domain/entities/product_entity.dart';
 import 'package:aipet_frontend/features/allergy/domain/services/allergy_analysis_service.dart';
 import 'package:aipet_frontend/shared/core/constants/environment_constants.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 /// OpenAI를 사용한 알레르기 분석 서비스
@@ -68,7 +69,7 @@ class OpenAIAllergyAnalysisService implements AllergyAnalysisService {
       }
     } catch (e) {
       // 에러 발생 시 기본 분석 결과 반환
-      print('OpenAI Analysis Error: $e');
+      debugPrint('OpenAI Analysis Error: $e');
       return _getFallbackResult(allergyProducts, nonAllergyProducts);
     }
   }

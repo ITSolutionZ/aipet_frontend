@@ -36,14 +36,14 @@ class _AiChatHistoryListScreenState
 
   void _onSearchChanged() {
     ref
-        .read(aiChatHistoryListNotifierProvider.notifier)
+        .read(aiChatHistoryListProvider.notifier)
         .updateSearchQuery(_searchController.text);
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(aiChatHistoryListNotifierProvider);
-    final notifier = ref.read(aiChatHistoryListNotifierProvider.notifier);
+    final state = ref.watch(aiChatHistoryListProvider);
+    final notifier = ref.read(aiChatHistoryListProvider.notifier);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),

@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/features/daily/data/services/reservation_local_storage_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+part 'reservation_list_provider.g.dart';
 
 /// 예약 목록 상태 관리
 class ReservationListState {
@@ -30,8 +32,12 @@ class ReservationListState {
 }
 
 /// 예약 목록 Notifier
-class ReservationListNotifier extends StateNotifier<ReservationListState> {
-  ReservationListNotifier() : super(const ReservationListState());
+@riverpod
+class ReservationListNotifier extends _$ReservationListNotifier {
+  @override
+  ReservationListState build() {
+    return const ReservationListState();
+  }
 
   /// 예약 목록 로드 (로컬 저장소)
   Future<void> loadReservations({String? petId, String? status}) async {
@@ -165,9 +171,3 @@ class ReservationListNotifier extends StateNotifier<ReservationListState> {
     }
   }
 }
-
-/// 예약 목록 Provider
-final reservationListProvider =
-    StateNotifierProvider<ReservationListNotifier, ReservationListState>(
-      (ref) => ReservationListNotifier(),
-    );

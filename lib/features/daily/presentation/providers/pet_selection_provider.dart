@@ -1,6 +1,8 @@
-import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
 import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'pet_selection_provider.g.dart';
 
 /// 펫 선택 상태 관리
 class PetSelectionState {
@@ -37,10 +39,12 @@ class PetSelectionState {
 }
 
 /// 펫 선택 Notifier
-class PetSelectionNotifier extends StateNotifier<PetSelectionState> {
-  PetSelectionNotifier(this.ref) : super(const PetSelectionState());
-
-  final Ref ref;
+@riverpod
+class PetSelectionNotifier extends _$PetSelectionNotifier {
+  @override
+  PetSelectionState build() {
+    return const PetSelectionState();
+  }
 
   /// 펫 목록 로드
   Future<void> loadPets() async {
@@ -84,9 +88,3 @@ class PetSelectionNotifier extends StateNotifier<PetSelectionState> {
     return '全体';
   }
 }
-
-/// 펫 선택 Provider
-final petSelectionProvider =
-    StateNotifierProvider<PetSelectionNotifier, PetSelectionState>(
-      (ref) => PetSelectionNotifier(ref),
-    );

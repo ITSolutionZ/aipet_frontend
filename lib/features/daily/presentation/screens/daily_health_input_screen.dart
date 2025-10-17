@@ -158,7 +158,7 @@ class DailyHealthInputScreen extends ConsumerWidget {
     final loadingNotifier = ref.read(dailyHealthInputLoadingProvider.notifier);
 
     try {
-      loadingNotifier.state = true;
+      loadingNotifier.setLoading(true);
       await controller.saveHealthRecord();
 
       if (context.mounted) {
@@ -170,7 +170,7 @@ class DailyHealthInputScreen extends ConsumerWidget {
         _showErrorMessage(context, controller.logic.getErrorMessage(error));
       }
     } finally {
-      loadingNotifier.state = false;
+      loadingNotifier.setLoading(false);
     }
   }
 

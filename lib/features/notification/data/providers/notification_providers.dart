@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/notification/data/repositories/notification_repository_impl.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aipet_frontend/shared/services/calendar_event_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'notification_providers.g.dart';
@@ -11,45 +12,118 @@ NotificationRepositoryImpl notificationRepository(Ref ref) {
   return NotificationRepositoryImpl();
 }
 
-// 알림 목록 프로바이더
+// 알림 목록 프로바이더 (캘린더 이벤트의 알람 데이터 사용)
 @riverpod
 class NotificationsNotifier extends _$NotificationsNotifier {
   @override
   Future<List<NotificationModel>> build() async {
-    final repository = ref.watch(notificationRepositoryProvider);
-    // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
-    const String userId = 'current_user'; // 임시 사용자 ID
+    // 캘린더 이벤트에서 알람이 설정된 이벤트만 가져오기
+    final calendarEvents = await CalendarEventService.instance
+        .getCalendarEvents();
 
-    final result = await repository.getAllNotifications(userId: userId);
-    if (result.isSuccess) {
-      return result.dataOrNull ?? [];
+    debugPrint('📅 캘린더 이벤트 총 개수: ${calendarEvents.length}');
+
+    // 알람이 설정된 이벤트를 NotificationModel로 변환
+    final notifications = <NotificationModel>[];
+
+    for (final event in calendarEvents) {
+      debugPrint(
+        '📌 이벤트: ${event.title}, hasAlarm: ${event.hasAlarm}, alarmSettings 개수: ${event.alarmSettings.length}',
+      );
+
+      if (event.hasAlarm && event.alarmSettings.isNotEmpty) {
+        // 각 알람 설정마다 알림 생성
+        for (int i = 0; i < event.alarmSettings.length; i++) {
+          final alarmSetting = event.alarmSettings[i];
+          debugPrint(
+            '  ⏰ 알람 $i: enabled=${alarmSetting.isEnabled}, minutesBefore=${alarmSetting.minutesBefore}',
+          );
+
+          if (alarmSetting.isEnabled) {
+            final alarmTime = event.startTime.subtract(
+              Duration(minutes: alarmSetting.minutesBefore),
+            );
+
+            notifications.add(
+              NotificationModel(
+                id: '${event.id}_alarm_$i',
+                title: event.title,
+                body:
+                    alarmSetting.message ??
+                    '${alarmSetting.minutesBefore}分前にお知らせします',
+                type: _mapEventTypeToNotificationType(event.type),
+                createdAt: event.createdAt ?? DateTime.now(),
+                expiresAt: alarmTime.add(
+                  const Duration(hours: 1),
+                ), // 알람 시간 1시간 후 만료
+                data: {
+                  'userId': 'local_user',
+                  'eventId': event.id,
+                  'eventType': event.type.name,
+                  'alarmIndex': i,
+                  'alarmTime': alarmTime.toIso8601String(),
+                  'petId': event.petId,
+                  'petName': event.petName,
+                },
+              ),
+            );
+          }
+        }
+      }
     }
-    throw Exception('알림 목록 조회 실패: ${result.error}');
+
+    // 알람 시간 순으로 정렬 (data에서 alarmTime 추출)
+    notifications.sort((a, b) {
+      final aAlarmTime = a.data?['alarmTime'] as String?;
+      final bAlarmTime = b.data?['alarmTime'] as String?;
+
+      if (aAlarmTime != null && bAlarmTime != null) {
+        return DateTime.parse(aAlarmTime).compareTo(DateTime.parse(bAlarmTime));
+      }
+      return a.createdAt.compareTo(b.createdAt);
+    });
+
+    debugPrint('🔔 생성된 알림 개수: ${notifications.length}');
+
+    return notifications;
+  }
+
+  /// 캘린더 이벤트 타입을 알림 타입으로 매핑
+  NotificationType _mapEventTypeToNotificationType(dynamic eventType) {
+    final typeString = eventType.toString().split('.').last;
+    switch (typeString) {
+      case 'feeding':
+        return NotificationType.feeding;
+      case 'medication':
+        return NotificationType.medication;
+      case 'walking':
+      case 'exercise':
+        return NotificationType.walk;
+      case 'veterinary':
+        return NotificationType.health;
+      default:
+        return NotificationType.system;
+    }
   }
 
   /// 알림 새로고침
   Future<void> refresh() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final repository = ref.read(notificationRepositoryProvider);
-      // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
-      const String userId = 'current_user'; // 임시 사용자 ID
-
-      final result = await repository.getAllNotifications(userId: userId);
-      if (result.isSuccess) {
-        return result.dataOrNull ?? [];
-      }
-      throw Exception('알림 목록 새로고침 실패: ${result.error}');
+      return build();
     });
   }
 
   /// 알림 읽음 처리
   Future<void> markAsRead(String id) async {
     final repository = ref.read(notificationRepositoryProvider);
-    // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
-    const String userId = 'current_user'; // 임시 사용자 ID
+    const String userId = 'local_user'; // 로컬 사용자 ID
 
-    final result = await repository.markAsRead(userId: userId, notificationId: id, isRead: true);
+    final result = await repository.markAsRead(
+      userId: userId,
+      notificationId: id,
+      isRead: true,
+    );
 
     if (result.isSuccess) {
       await refresh();
@@ -61,10 +135,12 @@ class NotificationsNotifier extends _$NotificationsNotifier {
   /// 알림 삭제
   Future<void> deleteNotification(String id) async {
     final repository = ref.read(notificationRepositoryProvider);
-    // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
-    const String userId = 'current_user'; // 임시 사용자 ID
+    const String userId = 'local_user'; // 로컬 사용자 ID
 
-    final result = await repository.deleteNotification(userId: userId, notificationId: id);
+    final result = await repository.deleteNotification(
+      userId: userId,
+      notificationId: id,
+    );
 
     if (result.isSuccess) {
       await refresh();
@@ -78,10 +154,12 @@ class NotificationsNotifier extends _$NotificationsNotifier {
 @riverpod
 Future<NotificationModel?> notificationById(Ref ref, String id) async {
   final repository = ref.watch(notificationRepositoryProvider);
-  // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
-  const String userId = 'current_user'; // 임시 사용자 ID
+  const String userId = 'local_user'; // 로컬 사용자 ID
 
-  final result = await repository.getNotificationById(userId: userId, notificationId: id);
+  final result = await repository.getNotificationById(
+    userId: userId,
+    notificationId: id,
+  );
 
   if (result.isSuccess) {
     return result.dataOrNull;
@@ -93,8 +171,7 @@ Future<NotificationModel?> notificationById(Ref ref, String id) async {
 @riverpod
 Future<int> unreadNotificationCount(Ref ref) async {
   final repository = ref.watch(notificationRepositoryProvider);
-  // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
-  const String userId = 'current_user'; // 임시 사용자 ID
+  const String userId = 'local_user'; // 로컬 사용자 ID
 
   final result = await repository.getNotificationStats(userId);
   if (result.isSuccess) {
@@ -110,8 +187,7 @@ class NotificationSettingsNotifier extends _$NotificationSettingsNotifier {
   @override
   Future<Map<String, dynamic>> build() async {
     final repository = ref.watch(notificationRepositoryProvider);
-    // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
-    const String userId = 'current_user'; // 임시 사용자 ID
+    const String userId = 'local_user'; // 로컬 사용자 ID
 
     final result = await repository.getNotificationSettings(userId);
     if (result.isSuccess) {
@@ -123,15 +199,20 @@ class NotificationSettingsNotifier extends _$NotificationSettingsNotifier {
   /// 설정 저장
   Future<void> saveSettings(Map<String, dynamic> settings) async {
     final repository = ref.read(notificationRepositoryProvider);
-    // TODO: 실제 사용자 ID를 가져오는 로직 구현 필요
-    const String userId = 'current_user'; // 임시 사용자 ID
+    const String userId = 'local_user'; // 로컬 사용자 ID
 
-    final result = await repository.updateNotificationSettings(userId: userId, settings: settings);
+    final result = await repository.updateNotificationSettings(
+      userId: userId,
+      settings: settings,
+    );
 
     if (result.isSuccess) {
       state = AsyncValue.data(settings);
     } else {
-      state = AsyncValue.error(Exception('설정 저장 실패: ${result.error}'), StackTrace.current);
+      state = AsyncValue.error(
+        Exception('설정 저장 실패: ${result.error}'),
+        StackTrace.current,
+      );
     }
   }
 }

@@ -64,7 +64,7 @@ class HospitalDialogs {
                 );
 
                 await ref
-                    .read(registeredHospitalsNotifierProvider.notifier)
+                    .read(registeredHospitalsProvider.notifier)
                     .addHospital(hospital);
 
                 if (!context.mounted) return;
@@ -106,7 +106,7 @@ class HospitalDialogs {
           ElevatedButton(
             onPressed: () async {
               await ref
-                  .read(registeredHospitalsNotifierProvider.notifier)
+                  .read(registeredHospitalsProvider.notifier)
                   .removeHospital(hospital.id);
 
               if (!context.mounted) return;

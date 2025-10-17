@@ -5,6 +5,8 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../pet_profile/data/providers/pet_profile_providers.dart';
+
 /// 펫 선택 관련 헬퍼
 class WalkListPetHelper {
   /// 펫 선택 토글 처리
@@ -33,7 +35,7 @@ class WalkListPetHelper {
     required WidgetRef ref,
     required List<WalkPetInfo> selectedPets,
   }) {
-    final petsAsync = ref.watch(petListProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return petsAsync.maybeWhen(
       data: (pets) {

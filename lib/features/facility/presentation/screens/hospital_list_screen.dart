@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/features/facility/data/facility_providers.dart';
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:aipet_frontend/features/facility/presentation/screens/facility_detail_screen.dart';
 import 'package:aipet_frontend/shared/shared.dart';

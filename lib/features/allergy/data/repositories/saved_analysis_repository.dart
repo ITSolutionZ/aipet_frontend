@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/features/allergy/domain/entities/saved_analysis_entity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// 저장된 알레르기 분석 결과 Repository
@@ -20,7 +21,7 @@ class SavedAnalysisRepository {
       final List<dynamic> jsonList = jsonDecode(jsonString);
       return jsonList.map((json) => _fromJson(json)).toList();
     } catch (e) {
-      print('Error loading saved analyses: $e');
+      debugPrint('Error loading saved analyses: $e');
       return [];
     }
   }
@@ -38,7 +39,7 @@ class SavedAnalysisRepository {
       final jsonList = analyses.map((a) => _toJson(a)).toList();
       await prefs.setString(_key, jsonEncode(jsonList));
     } catch (e) {
-      print('Error saving analysis: $e');
+      debugPrint('Error saving analysis: $e');
       rethrow;
     }
   }
@@ -56,7 +57,7 @@ class SavedAnalysisRepository {
       final jsonList = analyses.map((a) => _toJson(a)).toList();
       await prefs.setString(_key, jsonEncode(jsonList));
     } catch (e) {
-      print('Error deleting analysis: $e');
+      debugPrint('Error deleting analysis: $e');
       rethrow;
     }
   }
@@ -67,7 +68,7 @@ class SavedAnalysisRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_key);
     } catch (e) {
-      print('Error deleting all analyses: $e');
+      debugPrint('Error deleting all analyses: $e');
       rethrow;
     }
   }

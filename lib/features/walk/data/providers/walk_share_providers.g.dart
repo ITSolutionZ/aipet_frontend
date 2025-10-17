@@ -6,259 +6,355 @@ part of 'walk_share_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+/// WalkShareRepository 프로바이더
+
+@ProviderFor(walkShareRepository)
+const walkShareRepositoryProvider = WalkShareRepositoryProvider._();
+
+/// WalkShareRepository 프로바이더
+
+final class WalkShareRepositoryProvider
+    extends
+        $FunctionalProvider<
+          WalkShareRepository,
+          WalkShareRepository,
+          WalkShareRepository
+        >
+    with $Provider<WalkShareRepository> {
+  /// WalkShareRepository 프로바이더
+  const WalkShareRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'walkShareRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$walkShareRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<WalkShareRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  WalkShareRepository create(Ref ref) {
+    return walkShareRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(WalkShareRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<WalkShareRepository>(value),
+    );
+  }
+}
+
 String _$walkShareRepositoryHash() =>
     r'efdcda7778f22e7c32618b8445397a6fb9234544';
 
-/// WalkShareRepository 프로바이더
-///
-/// Copied from [walkShareRepository].
-@ProviderFor(walkShareRepository)
-final walkShareRepositoryProvider =
-    AutoDisposeProvider<WalkShareRepository>.internal(
-      walkShareRepository,
-      name: r'walkShareRepositoryProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$walkShareRepositoryHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+/// CopyToClipboardUseCase 프로바이더
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef WalkShareRepositoryRef = AutoDisposeProviderRef<WalkShareRepository>;
+@ProviderFor(copyToClipboardUseCase)
+const copyToClipboardUseCaseProvider = CopyToClipboardUseCaseProvider._();
+
+/// CopyToClipboardUseCase 프로바이더
+
+final class CopyToClipboardUseCaseProvider
+    extends
+        $FunctionalProvider<
+          CopyToClipboardUseCase,
+          CopyToClipboardUseCase,
+          CopyToClipboardUseCase
+        >
+    with $Provider<CopyToClipboardUseCase> {
+  /// CopyToClipboardUseCase 프로바이더
+  const CopyToClipboardUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'copyToClipboardUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$copyToClipboardUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<CopyToClipboardUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  CopyToClipboardUseCase create(Ref ref) {
+    return copyToClipboardUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CopyToClipboardUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CopyToClipboardUseCase>(value),
+    );
+  }
+}
+
 String _$copyToClipboardUseCaseHash() =>
     r'e8b280e15e5c756ffa1800c0a26b01eb654311eb';
 
-/// CopyToClipboardUseCase 프로바이더
-///
-/// Copied from [copyToClipboardUseCase].
-@ProviderFor(copyToClipboardUseCase)
-final copyToClipboardUseCaseProvider =
-    AutoDisposeProvider<CopyToClipboardUseCase>.internal(
-      copyToClipboardUseCase,
-      name: r'copyToClipboardUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$copyToClipboardUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+/// SaveAsImageUseCase 프로바이더
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef CopyToClipboardUseCaseRef =
-    AutoDisposeProviderRef<CopyToClipboardUseCase>;
+@ProviderFor(saveAsImageUseCase)
+const saveAsImageUseCaseProvider = SaveAsImageUseCaseProvider._();
+
+/// SaveAsImageUseCase 프로바이더
+
+final class SaveAsImageUseCaseProvider
+    extends
+        $FunctionalProvider<
+          SaveAsImageUseCase,
+          SaveAsImageUseCase,
+          SaveAsImageUseCase
+        >
+    with $Provider<SaveAsImageUseCase> {
+  /// SaveAsImageUseCase 프로바이더
+  const SaveAsImageUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'saveAsImageUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$saveAsImageUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<SaveAsImageUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SaveAsImageUseCase create(Ref ref) {
+    return saveAsImageUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SaveAsImageUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SaveAsImageUseCase>(value),
+    );
+  }
+}
+
 String _$saveAsImageUseCaseHash() =>
     r'c368be0d27b643412a5056a102cfff8f5882b872';
 
-/// SaveAsImageUseCase 프로바이더
-///
-/// Copied from [saveAsImageUseCase].
-@ProviderFor(saveAsImageUseCase)
-final saveAsImageUseCaseProvider =
-    AutoDisposeProvider<SaveAsImageUseCase>.internal(
-      saveAsImageUseCase,
-      name: r'saveAsImageUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$saveAsImageUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+/// SystemShareUseCase 프로바이더
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SaveAsImageUseCaseRef = AutoDisposeProviderRef<SaveAsImageUseCase>;
+@ProviderFor(systemShareUseCase)
+const systemShareUseCaseProvider = SystemShareUseCaseProvider._();
+
+/// SystemShareUseCase 프로바이더
+
+final class SystemShareUseCaseProvider
+    extends
+        $FunctionalProvider<
+          SystemShareUseCase,
+          SystemShareUseCase,
+          SystemShareUseCase
+        >
+    with $Provider<SystemShareUseCase> {
+  /// SystemShareUseCase 프로바이더
+  const SystemShareUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'systemShareUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$systemShareUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<SystemShareUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SystemShareUseCase create(Ref ref) {
+    return systemShareUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SystemShareUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SystemShareUseCase>(value),
+    );
+  }
+}
+
 String _$systemShareUseCaseHash() =>
     r'942246126102f77748df296b8db934373e67c3e9';
 
-/// SystemShareUseCase 프로바이더
-///
-/// Copied from [systemShareUseCase].
-@ProviderFor(systemShareUseCase)
-final systemShareUseCaseProvider =
-    AutoDisposeProvider<SystemShareUseCase>.internal(
-      systemShareUseCase,
-      name: r'systemShareUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$systemShareUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+/// GenerateShareTextUseCase 프로바이더
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SystemShareUseCaseRef = AutoDisposeProviderRef<SystemShareUseCase>;
+@ProviderFor(generateShareTextUseCase)
+const generateShareTextUseCaseProvider = GenerateShareTextUseCaseProvider._();
+
+/// GenerateShareTextUseCase 프로바이더
+
+final class GenerateShareTextUseCaseProvider
+    extends
+        $FunctionalProvider<
+          GenerateShareTextUseCase,
+          GenerateShareTextUseCase,
+          GenerateShareTextUseCase
+        >
+    with $Provider<GenerateShareTextUseCase> {
+  /// GenerateShareTextUseCase 프로바이더
+  const GenerateShareTextUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'generateShareTextUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$generateShareTextUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<GenerateShareTextUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  GenerateShareTextUseCase create(Ref ref) {
+    return generateShareTextUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GenerateShareTextUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GenerateShareTextUseCase>(value),
+    );
+  }
+}
+
 String _$generateShareTextUseCaseHash() =>
     r'6b7aad80cd6872e52e7fbcffc92b0cb1c0b31503';
 
-/// GenerateShareTextUseCase 프로바이더
-///
-/// Copied from [generateShareTextUseCase].
-@ProviderFor(generateShareTextUseCase)
-final generateShareTextUseCaseProvider =
-    AutoDisposeProvider<GenerateShareTextUseCase>.internal(
-      generateShareTextUseCase,
-      name: r'generateShareTextUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$generateShareTextUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef GenerateShareTextUseCaseRef =
-    AutoDisposeProviderRef<GenerateShareTextUseCase>;
-String _$shareTextHash() => r'bf44cd31a08b720cbae18c060799e2ea9039c9fd';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
 /// 공유 텍스트 프로바이더
-///
-/// Copied from [shareText].
+
 @ProviderFor(shareText)
-const shareTextProvider = ShareTextFamily();
+const shareTextProvider = ShareTextFamily._();
 
 /// 공유 텍스트 프로바이더
-///
-/// Copied from [shareText].
-class ShareTextFamily extends Family<String> {
-  /// 공유 텍스트 프로바이더
-  ///
-  /// Copied from [shareText].
-  const ShareTextFamily();
 
+final class ShareTextProvider
+    extends $FunctionalProvider<String, String, String>
+    with $Provider<String> {
   /// 공유 텍스트 프로바이더
-  ///
-  /// Copied from [shareText].
-  ShareTextProvider call(WalkRecordEntity walkRecord) {
-    return ShareTextProvider(walkRecord);
+  const ShareTextProvider._({
+    required ShareTextFamily super.from,
+    required WalkRecordEntity super.argument,
+  }) : super(
+         retry: null,
+         name: r'shareTextProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$shareTextHash();
+
+  @override
+  String toString() {
+    return r'shareTextProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  ShareTextProvider getProviderOverride(covariant ShareTextProvider provider) {
-    return call(provider.walkRecord);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    final argument = this.argument as WalkRecordEntity;
+    return shareText(ref, argument);
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'shareTextProvider';
-}
-
-/// 공유 텍스트 프로바이더
-///
-/// Copied from [shareText].
-class ShareTextProvider extends AutoDisposeProvider<String> {
-  /// 공유 텍스트 프로바이더
-  ///
-  /// Copied from [shareText].
-  ShareTextProvider(WalkRecordEntity walkRecord)
-    : this._internal(
-        (ref) => shareText(ref as ShareTextRef, walkRecord),
-        from: shareTextProvider,
-        name: r'shareTextProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$shareTextHash,
-        dependencies: ShareTextFamily._dependencies,
-        allTransitiveDependencies: ShareTextFamily._allTransitiveDependencies,
-        walkRecord: walkRecord,
-      );
-
-  ShareTextProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.walkRecord,
-  }) : super.internal();
-
-  final WalkRecordEntity walkRecord;
-
-  @override
-  Override overrideWith(String Function(ShareTextRef provider) create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
       origin: this,
-      override: ShareTextProvider._internal(
-        (ref) => create(ref as ShareTextRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        walkRecord: walkRecord,
-      ),
+      providerOverride: $SyncValueProvider<String>(value),
     );
-  }
-
-  @override
-  AutoDisposeProviderElement<String> createElement() {
-    return _ShareTextProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ShareTextProvider && other.walkRecord == walkRecord;
+    return other is ShareTextProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, walkRecord.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ShareTextRef on AutoDisposeProviderRef<String> {
-  /// The parameter `walkRecord` of this provider.
-  WalkRecordEntity get walkRecord;
-}
+String _$shareTextHash() => r'bf44cd31a08b720cbae18c060799e2ea9039c9fd';
 
-class _ShareTextProviderElement extends AutoDisposeProviderElement<String>
-    with ShareTextRef {
-  _ShareTextProviderElement(super.provider);
+/// 공유 텍스트 프로바이더
+
+final class ShareTextFamily extends $Family
+    with $FunctionalFamilyOverride<String, WalkRecordEntity> {
+  const ShareTextFamily._()
+    : super(
+        retry: null,
+        name: r'shareTextProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// 공유 텍스트 프로바이더
+
+  ShareTextProvider call(WalkRecordEntity walkRecord) =>
+      ShareTextProvider._(argument: walkRecord, from: this);
 
   @override
-  WalkRecordEntity get walkRecord => (origin as ShareTextProvider).walkRecord;
+  String toString() => r'shareTextProvider';
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
