@@ -80,7 +80,18 @@ class _AddEventDialogState extends State<AddEventDialog> {
       ),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: AppColors.pureWhite,
+          borderRadius: BorderRadius.circular(AppRadius.large),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.pointGray.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Form(
           key: _formKey,
           child: Column(
@@ -90,20 +101,13 @@ class _AddEventDialogState extends State<AddEventDialog> {
               // 헤더
               Row(
                 children: [
-                  Text(
-                    widget.initialEvent != null ? '일정 편집' : '새 일정 추가',
-                    style: AppFonts.titleLarge.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Spacer(),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(Icons.close, color: AppColors.pointGray),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
 
               // 폼 내용을 스크롤 가능하게
               Expanded(
@@ -112,13 +116,21 @@ class _AddEventDialogState extends State<AddEventDialog> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // 제목
-                      Text('제목', style: AppFonts.titleSmall),
-                      const SizedBox(height: 8),
+                      Text('제목', style: AppFonts.titleMedium),
+                      const SizedBox(height: AppSpacing.sm),
                       TextFormField(
                         controller: _titleController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: '일정 제목을 입력하세요',
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.medium,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm,
+                          ),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -127,21 +139,23 @@ class _AddEventDialogState extends State<AddEventDialog> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // 일정 타입
-                      Text('카테고리', style: AppFonts.titleSmall),
-                      const SizedBox(height: 8),
+                      Text('카테고리', style: AppFonts.titleMedium),
+                      const SizedBox(height: AppSpacing.sm),
                       Container(
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppColors.pointGray),
+                          borderRadius: BorderRadius.circular(AppRadius.medium),
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<CalendarEventType>(
                             value: _selectedType,
                             isExpanded: true,
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                            ),
                             items: CalendarEventType.values.map((type) {
                               return DropdownMenuItem(
                                 value: type,
@@ -151,7 +165,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
                                       type.emoji,
                                       style: const TextStyle(fontSize: 20),
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: AppSpacing.sm),
                                     Text(type.displayName),
                                   ],
                                 ),
@@ -167,7 +181,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // 하루 종일 토글
                       Row(
@@ -179,11 +193,12 @@ class _AddEventDialogState extends State<AddEventDialog> {
                                 _isAllDay = value ?? false;
                               });
                             },
+                            activeColor: AppColors.pointBlue,
                           ),
                           Text('하루 종일', style: AppFonts.bodyMedium),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
 
                       // 시간 설정 (하루 종일이 아닐 때만)
                       if (!_isAllDay) ...[
@@ -193,20 +208,29 @@ class _AddEventDialogState extends State<AddEventDialog> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('시작 시간', style: AppFonts.titleSmall),
-                                  const SizedBox(height: 8),
+                                  Text('시작 시간', style: AppFonts.titleMedium),
+                                  const SizedBox(height: AppSpacing.sm),
                                   InkWell(
                                     onTap: _selectStartTime,
                                     child: Container(
-                                      padding: const EdgeInsets.all(12),
+                                      padding: const EdgeInsets.all(
+                                        AppSpacing.md,
+                                      ),
                                       decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: AppColors.pointGray,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          AppRadius.medium,
+                                        ),
                                       ),
                                       child: Row(
                                         children: [
-                                          const Icon(Icons.access_time),
-                                          const SizedBox(width: 8),
+                                          const Icon(
+                                            Icons.access_time,
+                                            color: AppColors.pointBlue,
+                                          ),
+                                          const SizedBox(width: AppSpacing.sm),
                                           Text(
                                             _startTime != null
                                                 ? DateFormat(
@@ -221,25 +245,34 @@ class _AddEventDialogState extends State<AddEventDialog> {
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            const SizedBox(width: AppSpacing.md),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('종료 시간', style: AppFonts.titleSmall),
-                                  const SizedBox(height: 8),
+                                  Text('종료 시간', style: AppFonts.titleMedium),
+                                  const SizedBox(height: AppSpacing.sm),
                                   InkWell(
                                     onTap: _selectEndTime,
                                     child: Container(
-                                      padding: const EdgeInsets.all(12),
+                                      padding: const EdgeInsets.all(
+                                        AppSpacing.md,
+                                      ),
                                       decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: AppColors.pointGray,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          AppRadius.medium,
+                                        ),
                                       ),
                                       child: Row(
                                         children: [
-                                          const Icon(Icons.access_time),
-                                          const SizedBox(width: 8),
+                                          const Icon(
+                                            Icons.access_time,
+                                            color: AppColors.pointBlue,
+                                          ),
+                                          const SizedBox(width: AppSpacing.sm),
                                           Text(
                                             _endTime != null
                                                 ? DateFormat(
@@ -256,30 +289,46 @@ class _AddEventDialogState extends State<AddEventDialog> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                       ],
 
                       // 설명
-                      Text('설명', style: AppFonts.titleSmall),
-                      const SizedBox(height: 8),
+                      Text('설명', style: AppFonts.titleMedium),
+                      const SizedBox(height: AppSpacing.sm),
                       TextFormField(
                         controller: _descriptionController,
                         maxLines: 3,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: '일정 설명을 입력하세요 (선택사항)',
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.medium,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // 위치
-                      Text('위치', style: AppFonts.titleSmall),
-                      const SizedBox(height: 8),
+                      Text('위치', style: AppFonts.titleMedium),
+                      const SizedBox(height: AppSpacing.sm),
                       TextFormField(
                         controller: _locationController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: '위치를 입력하세요 (선택사항)',
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.medium,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm,
+                          ),
                         ),
                       ),
                     ],
@@ -287,7 +336,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
 
               // 버튼
               Row(
@@ -295,16 +344,25 @@ class _AddEventDialogState extends State<AddEventDialog> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.pointGray),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.medium),
+                        ),
+                      ),
                       child: const Text('취소'),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _saveEvent,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.pointBrown,
+                        backgroundColor: AppColors.pointBlue,
                         foregroundColor: AppColors.pureWhite,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.medium),
+                        ),
                       ),
                       child: const Text('저장'),
                     ),

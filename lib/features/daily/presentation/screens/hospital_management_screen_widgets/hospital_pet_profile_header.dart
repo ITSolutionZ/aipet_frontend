@@ -18,7 +18,7 @@ class HospitalPetProfileHeader extends ConsumerWidget {
       ),
       child: Consumer(
         builder: (context, ref, child) {
-          final petsAsync = ref.watch(petProfilesNotifierProvider);
+          final petsAsync = ref.watch(petProfilesProvider);
 
           return petsAsync.when(
             data: (pets) {

@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/features/ai/data/repositories/ai_repository_impl.dart';
 import 'package:aipet_frontend/features/ai/data/services/openai_service.dart';
 import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'ai_providers.g.dart';

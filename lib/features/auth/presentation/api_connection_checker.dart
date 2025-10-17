@@ -35,17 +35,16 @@ class ApiConnectionState {
 }
 
 /// API 연결 상태 관리 Notifier
-class ApiConnectionNotifier extends StateNotifier<ApiConnectionState> {
-  ApiConnectionNotifier()
-    : super(
-        const ApiConnectionState(
-          isChecking: false,
-          status: 'Unknown',
-          statusColor: Colors.grey,
-        ),
-      ) {
+class ApiConnectionNotifier extends Notifier<ApiConnectionState> {
+  @override
+  ApiConnectionState build() {
     // 위젯이 빌드될 때 자동으로 연결 확인
     Future.microtask(() => checkApiConnection());
+    return const ApiConnectionState(
+      isChecking: false,
+      status: 'Unknown',
+      statusColor: Colors.grey,
+    );
   }
 
   Future<void> checkApiConnection() async {
@@ -223,6 +222,6 @@ class ApiConnectionChecker extends ConsumerWidget {
 
 /// API 연결 상태 Provider
 final apiConnectionProvider =
-    StateNotifierProvider<ApiConnectionNotifier, ApiConnectionState>(
-      (ref) => ApiConnectionNotifier(),
+    NotifierProvider<ApiConnectionNotifier, ApiConnectionState>(
+      ApiConnectionNotifier.new,
     );

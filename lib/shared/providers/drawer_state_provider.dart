@@ -1,4 +1,14 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'drawer_state_provider.g.dart';
 
 /// ドロワー状態管理プロバイダー
-final drawerStateProvider = StateProvider<bool>((ref) => false);
+@riverpod
+class DrawerState extends _$DrawerState {
+  @override
+  bool build() => false;
+
+  void toggle() => state = !state;
+  void open() => state = true;
+  void close() => state = false;
+}

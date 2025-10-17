@@ -6,28 +6,72 @@ part of 'app_initialization_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appInitializationHash() => r'2e5e1ee14460eed155d4ea76cbac55975f0e5071';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+/// 앱 초기화 상태를 관리하는 Provider
+///
+/// 앱 시작 시 필요한 모든 초기화 작업을 관리하고 상태를 추적합니다.
+
+@ProviderFor(AppInitialization)
+const appInitializationProvider = AppInitializationProvider._();
 
 /// 앱 초기화 상태를 관리하는 Provider
 ///
 /// 앱 시작 시 필요한 모든 초기화 작업을 관리하고 상태를 추적합니다.
-///
-/// Copied from [AppInitialization].
-@ProviderFor(AppInitialization)
-final appInitializationProvider =
-    AutoDisposeNotifierProvider<
-      AppInitialization,
-      AppInitializationState
-    >.internal(
-      AppInitialization.new,
-      name: r'appInitializationProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$appInitializationHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+final class AppInitializationProvider
+    extends $NotifierProvider<AppInitialization, AppInitializationState> {
+  /// 앱 초기화 상태를 관리하는 Provider
+  ///
+  /// 앱 시작 시 필요한 모든 초기화 작업을 관리하고 상태를 추적합니다.
+  const AppInitializationProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appInitializationProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
-typedef _$AppInitialization = AutoDisposeNotifier<AppInitializationState>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+  @override
+  String debugGetCreateSourceHash() => _$appInitializationHash();
+
+  @$internal
+  @override
+  AppInitialization create() => AppInitialization();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AppInitializationState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AppInitializationState>(value),
+    );
+  }
+}
+
+String _$appInitializationHash() => r'27953a3279a64c62c37a5f8fad5aa469690eb4c7';
+
+/// 앱 초기화 상태를 관리하는 Provider
+///
+/// 앱 시작 시 필요한 모든 초기화 작업을 관리하고 상태를 추적합니다.
+
+abstract class _$AppInitialization extends $Notifier<AppInitializationState> {
+  AppInitializationState build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref =
+        this.ref as $Ref<AppInitializationState, AppInitializationState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AppInitializationState, AppInitializationState>,
+              AppInitializationState,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

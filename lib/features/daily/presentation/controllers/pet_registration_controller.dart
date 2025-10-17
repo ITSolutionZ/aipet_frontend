@@ -3,7 +3,9 @@ import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_p
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/services/pet_user_relation_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'pet_registration_controller.g.dart';
 
 /// Pet Registration Controller
 ///
@@ -15,26 +17,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 ///
 /// **사용 위치**: DailyPetRegistrationScreen에서 사용
 /// **관련 파일**: PetRegistrationLogic (UI 로직 및 폼 제출)
-class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
-  final Ref _ref;
-  final PetRegistrationValidator _validator;
-  final PetOcrService _ocrService;
-  final PetRegistrationStorageService _storageService;
+@riverpod
+class PetRegistrationController extends _$PetRegistrationController {
+  late final PetRegistrationValidator _validator;
+  late final PetOcrService _ocrService;
+  late final PetRegistrationStorageService _storageService;
 
-  PetRegistrationController(
-    this._ref, {
-    PetRegistrationValidator? validator,
-    PetOcrService? ocrService,
-    PetRegistrationStorageService? storageService,
-  }) : _validator = validator ?? PetRegistrationValidator(),
-       _ocrService = ocrService ?? PetOcrService(),
-       _storageService = storageService ?? PetRegistrationStorageService(),
-       super(PetRegistrationFormData.initialFormData) {
+  @override
+  PetRegistrationFormData build() {
+    _validator = PetRegistrationValidator();
+    _ocrService = PetOcrService();
+    _storageService = PetRegistrationStorageService();
+
     debugPrint(
-      '🏗️ PetRegistrationController: Constructor called, starting initialization',
+      '🏗️ PetRegistrationController: Build called, starting initialization',
     );
     _loadSavedFormData();
-    debugPrint('🏗️ PetRegistrationController: Constructor completed');
+    debugPrint('🏗️ PetRegistrationController: Build completed');
+
+    return PetRegistrationFormData.initialFormData;
   }
 
   // Controllers
@@ -464,8 +465,8 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
       debugPrint('📋 ================================');
 
       // 펫 프로필 저장
-      final petProfilesNotifier = _ref.read(
-        petProfilesNotifierProvider.notifier,
+      final petProfilesNotifier = ref.read(
+        petProfilesProvider.notifier,
       );
       final createdPet = await petProfilesNotifier.createPet(petEntity);
 
@@ -543,8 +544,8 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
       );
 
       // 펫 프로필 업데이트
-      final petProfilesNotifier = _ref.read(
-        petProfilesNotifierProvider.notifier,
+      final petProfilesNotifier = ref.read(
+        petProfilesProvider.notifier,
       );
       await petProfilesNotifier.updatePet(petEntity);
 
@@ -564,9 +565,3 @@ class PetRegistrationController extends StateNotifier<PetRegistrationFormData> {
     }
   }
 }
-
-/// 펫 등록 컨트롤러 프로바이더
-final petRegistrationControllerProvider =
-    StateNotifierProvider<PetRegistrationController, PetRegistrationFormData>(
-      (ref) => PetRegistrationController(ref),
-    );

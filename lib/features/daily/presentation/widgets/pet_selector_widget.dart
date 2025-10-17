@@ -17,7 +17,7 @@ class PetSelectorWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final petsAsync = ref.watch(petProfilesNotifierProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return petsAsync.when(
       data: (pets) => _buildPetSelector(pets),
@@ -169,7 +169,7 @@ class PetSelectorWidget extends ConsumerWidget {
   Widget _buildErrorState(Object error, WidgetRef ref) {
     return Center(
       child: IconButton(
-        onPressed: () => ref.invalidate(petProfilesNotifierProvider),
+        onPressed: () => ref.invalidate(petProfilesProvider),
         icon: const Icon(Icons.refresh, color: Colors.red),
       ),
     );

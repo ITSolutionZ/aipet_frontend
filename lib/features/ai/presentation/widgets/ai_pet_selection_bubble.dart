@@ -111,7 +111,7 @@ class AiPetSelectionBubble extends ConsumerWidget {
                   Consumer(
                     builder: (context, ref, child) {
                       // 실제 펫 데이터 사용
-                      final petsAsync = ref.watch(petProfilesNotifierProvider);
+                      final petsAsync = ref.watch(petProfilesProvider);
                       return petsAsync.when(
                         data: (pets) => _buildPetSelection(pets),
                         loading: () =>

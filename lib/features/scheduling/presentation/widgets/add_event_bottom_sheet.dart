@@ -16,7 +16,8 @@ class AddEventBottomSheet extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<AddEventBottomSheet> createState() => _AddEventBottomSheetState();
+  ConsumerState<AddEventBottomSheet> createState() =>
+      _AddEventBottomSheetState();
 }
 
 class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
@@ -72,7 +73,9 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
 
   /// 이벤트 타입에 따라 알람 설정 업데이트
   void _updateAlarmForEventType(CalendarEventType type) {
-    final shouldHaveDefaultAlarm = CalendarEventEntity.shouldHaveDefaultAlarm(type);
+    final shouldHaveDefaultAlarm = CalendarEventEntity.shouldHaveDefaultAlarm(
+      type,
+    );
 
     if (shouldHaveDefaultAlarm && widget.initialEvent == null) {
       setState(() {
@@ -102,7 +105,7 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
     return Container(
       height: MediaQuery.of(context).size.height * 1.0, // 100% height
       decoration: const BoxDecoration(
-        color: AppColors.pointOffWhite,
+        color: Colors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppRadius.large),
           topRight: Radius.circular(AppRadius.large),
@@ -114,9 +117,7 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
           _buildHeader(isEditing),
 
           // コンテンツ
-          Expanded(
-            child: _buildContent(isEditing),
-          ),
+          Expanded(child: _buildContent(isEditing)),
         ],
       ),
     );
@@ -124,13 +125,20 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
 
   Widget _buildHeader(bool isEditing) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: const BoxDecoration(
-        color: AppColors.pointBrown,
+        color: Colors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppRadius.large),
           topRight: Radius.circular(AppRadius.large),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 8,
+            offset: Offset(0, -2),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -139,38 +147,36 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.pureWhite.withValues(alpha: 0.7),
+              color: AppColors.pointGray,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           // ヘッダー
           Row(
             children: [
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.close, color: AppColors.pureWhite),
+                icon: const Icon(Icons.close, color: AppColors.pointGray),
               ),
               Expanded(
                 child: Text(
                   isEditing ? '일정 편집' : '새 일정 추가',
-                  style: AppFonts.titleMedium.copyWith(
-                    color: AppColors.pureWhite,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppFonts.titleLarge,
                   textAlign: TextAlign.center,
                 ),
               ),
               TextButton(
                 onPressed: _saveEvent,
-                child: Text(
-                  '저장',
-                  style: AppFonts.titleSmall.copyWith(
-                    color: AppColors.pureWhite,
-                    fontWeight: FontWeight.bold,
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColors.pointBlue,
+                  foregroundColor: AppColors.pureWhite,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.medium),
                   ),
                 ),
+                child: Text('저장', style: AppFonts.titleMedium),
               ),
             ],
           ),
@@ -183,7 +189,7 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -207,12 +213,12 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.pointBrown.withValues(alpha: 0.1),
+                      color: AppColors.pointBlue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppRadius.small),
                     ),
                     child: const Icon(
                       Icons.calendar_today,
-                      color: AppColors.pointBrown,
+                      color: AppColors.pointBlue,
                       size: 24,
                     ),
                   ),
@@ -243,68 +249,94 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
             ),
             const SizedBox(height: 24),
 
-            // 제목
-            _buildSectionTitle('タイトル'),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                hintText: 'スケジュールのタイトルを入力してください',
-                prefixIcon: const Icon(Icons.title),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                ),
-                filled: true,
-                fillColor: AppColors.pureWhite,
+            // 제목 카드
+            _buildCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle('제목'),
+                  const SizedBox(height: AppSpacing.sm),
+                  TextFormField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      hintText: '일정 제목을 입력하세요',
+                      prefixIcon: const Icon(
+                        Icons.title,
+                        color: AppColors.pointBlue,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.medium),
+                        borderSide: const BorderSide(
+                          color: AppColors.pointGray,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.sm,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return '제목을 입력해주세요';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'タイトルを入力してください';
-                }
-                return null;
-              },
             ),
             const SizedBox(height: 24),
 
-            // 카테고리
-            _buildSectionTitle('カテゴリ'),
-            const SizedBox(height: 8),
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.pureWhite,
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<CalendarEventType>(
-                  value: _selectedType,
-                  isExpanded: true,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  items: CalendarEventType.values.map((type) {
-                    return DropdownMenuItem(
-                      value: type,
-                      child: Row(
-                        children: [
-                          Text(
-                            type.emoji,
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(type.displayName, style: AppFonts.bodyMedium),
-                        ],
+            // 카테고리 카드
+            _buildCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle('카테고리'),
+                  const SizedBox(height: AppSpacing.sm),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.pointGray),
+                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<CalendarEventType>(
+                        value: _selectedType,
+                        isExpanded: true,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                        ),
+                        items: CalendarEventType.values.map((type) {
+                          return DropdownMenuItem(
+                            value: type,
+                            child: Row(
+                              children: [
+                                Text(
+                                  type.emoji,
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                                const SizedBox(width: AppSpacing.sm),
+                                Text(
+                                  type.displayName,
+                                  style: AppFonts.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _selectedType = value;
+                            });
+                            // 이벤트 타입 변경 시 알람 설정 업데이트
+                            _updateAlarmForEventType(value);
+                          }
+                        },
                       ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedType = value;
-                      });
-                      // 이벤트 타입 변경 시 알람 설정 업데이트
-                      _updateAlarmForEventType(value);
-                    }
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 24),
@@ -320,7 +352,7 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
                 children: [
                   Icon(
                     _isAllDay ? Icons.event : Icons.schedule,
-                    color: AppColors.pointBrown,
+                    color: AppColors.pointBlue,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -338,7 +370,7 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
                         _isAllDay = value;
                       });
                     },
-                    activeColor: AppColors.pointBrown,
+                    activeColor: AppColors.pointBlue,
                   ),
                 ],
               ),
@@ -388,7 +420,9 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
                     children: [
                       Icon(
                         _hasAlarm ? Icons.alarm_on : Icons.alarm_off,
-                        color: _hasAlarm ? AppColors.pointBrown : AppColors.pointGray,
+                        color: _hasAlarm
+                            ? AppColors.pointBlue
+                            : AppColors.pointGray,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -405,11 +439,13 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
                           setState(() {
                             _hasAlarm = value;
                             if (value && _alarmSettings.isEmpty) {
-                              _alarmSettings = [const AlarmSetting(minutesBefore: 10)];
+                              _alarmSettings = [
+                                const AlarmSetting(minutesBefore: 10),
+                              ];
                             }
                           });
                         },
-                        activeColor: AppColors.pointBrown,
+                        activeColor: AppColors.pointBlue,
                       ),
                     ],
                   ),
@@ -431,16 +467,19 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
               controller: _descriptionController,
               maxLines: 4,
               decoration: InputDecoration(
-                hintText: 'スケジュールの説明を入力してください（任意）',
+                hintText: '일정 설명을 입력하세요 (선택사항)',
                 prefixIcon: const Padding(
                   padding: EdgeInsets.only(bottom: 60),
-                  child: Icon(Icons.description),
+                  child: Icon(Icons.description, color: AppColors.pointBlue),
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.medium),
+                  borderSide: const BorderSide(color: AppColors.pointGray),
                 ),
-                filled: true,
-                fillColor: AppColors.pureWhite,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -451,13 +490,19 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
             TextFormField(
               controller: _locationController,
               decoration: InputDecoration(
-                hintText: '場所を入力してください（任意）',
-                prefixIcon: const Icon(Icons.location_on),
+                hintText: '위치를 입력하세요 (선택사항)',
+                prefixIcon: const Icon(
+                  Icons.location_on,
+                  color: AppColors.pointBlue,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.medium),
+                  borderSide: const BorderSide(color: AppColors.pointGray),
                 ),
-                filled: true,
-                fillColor: AppColors.pureWhite,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
               ),
             ),
             const SizedBox(height: 32),
@@ -469,7 +514,7 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
               child: ElevatedButton(
                 onPressed: _saveEvent,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.pointBrown,
+                  backgroundColor: AppColors.pointBlue,
                   foregroundColor: AppColors.pureWhite,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -493,10 +538,29 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: AppFonts.titleSmall.copyWith(
-        fontWeight: FontWeight.bold,
-        color: AppColors.pointBrown,
+      style: AppFonts.titleMedium.copyWith(
+        fontWeight: FontWeight.w600,
+        color: AppColors.pointGray,
       ),
+    );
+  }
+
+  Widget _buildCard({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: child,
     );
   }
 
@@ -583,9 +647,9 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
       // 종료 시간이 시작 시간보다 이후인지 확인
       if (_startTime != null && newEndTime.isBefore(_startTime!)) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('終了時間は開始時間より遅い必要があります')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('終了時間は開始時間より遅い必要があります')));
         }
         return;
       }
@@ -691,7 +755,7 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
             padding: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
               border: Border.all(
-                color: AppColors.pointBrown.withValues(alpha: 0.3),
+                color: AppColors.pointBlue.withValues(alpha: 0.3),
                 style: BorderStyle.solid,
               ),
               borderRadius: BorderRadius.circular(AppRadius.small),
@@ -699,16 +763,12 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.add,
-                  color: AppColors.pointBrown,
-                  size: 20,
-                ),
+                const Icon(Icons.add, color: AppColors.pointBlue, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'アラームを追加',
                   style: AppFonts.bodyMedium.copyWith(
-                    color: AppColors.pointBrown,
+                    color: AppColors.pointBlue,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -726,19 +786,13 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.pointBrown.withValues(alpha: 0.05),
+        color: AppColors.pointBlue.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(AppRadius.small),
-        border: Border.all(
-          color: AppColors.pointBrown.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: AppColors.pointBlue.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
-          Icon(
-            alarm.type.icon,
-            size: 20,
-            color: AppColors.pointBrown,
-          ),
+          Icon(alarm.type.icon, size: 20, color: AppColors.pointBlue),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

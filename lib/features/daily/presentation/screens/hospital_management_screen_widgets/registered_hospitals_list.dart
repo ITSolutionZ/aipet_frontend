@@ -65,7 +65,7 @@ class RegisteredHospitalsList extends ConsumerWidget {
           Consumer(
             builder: (context, ref, child) {
               final hospitalsAsync = ref.watch(
-                registeredHospitalsNotifierProvider,
+                registeredHospitalsProvider,
               );
 
               return hospitalsAsync.when(

@@ -35,16 +35,15 @@ class AuthState {
 }
 
 /// 인증 컨트롤러 (Clean Architecture 적용)
-class CleanAuthController extends StateNotifier<AuthState> {
-  final AuthenticateUseCase _authenticateUseCase;
-  final SessionManagementUseCase _sessionManagementUseCase;
+class CleanAuthController extends Notifier<AuthState> {
+  late final AuthenticateUseCase _authenticateUseCase;
+  late final SessionManagementUseCase _sessionManagementUseCase;
 
-  CleanAuthController({
-    required AuthenticateUseCase authenticateUseCase,
-    required SessionManagementUseCase sessionManagementUseCase,
-  })  : _authenticateUseCase = authenticateUseCase,
-        _sessionManagementUseCase = sessionManagementUseCase,
-        super(const AuthState());
+  @override
+  AuthState build() {
+    // provider를 통해 의존성 주입 (이 부분은 provider에서 처리해야 함)
+    return const AuthState();
+  }
 
   /// 초기화 - 현재 세션 상태 확인
   Future<void> initialize() async {
@@ -53,7 +52,8 @@ class CleanAuthController extends StateNotifier<AuthState> {
     try {
       final sessionResult = await _sessionManagementUseCase.getSessionStatus();
       if (sessionResult.isSuccess) {
-        final status = sessionResult.dataOrNull ?? AuthenticationStatus.unauthenticated;
+        final status =
+            sessionResult.dataOrNull ?? AuthenticationStatus.unauthenticated;
 
         if (status == AuthenticationStatus.authenticated) {
           final userResult = await _authenticateUseCase.getCurrentUser();
@@ -101,18 +101,12 @@ class CleanAuthController extends StateNotifier<AuthState> {
         );
         return result;
       } else {
-        state = state.copyWith(
-          errorMessage: result.message,
-          isLoading: false,
-        );
+        state = state.copyWith(errorMessage: result.message, isLoading: false);
         return result;
       }
     } catch (error) {
       final errorMessage = 'ログインに失敗しました: ${error.toString()}';
-      state = state.copyWith(
-        errorMessage: errorMessage,
-        isLoading: false,
-      );
+      state = state.copyWith(errorMessage: errorMessage, isLoading: false);
       return Result.failure(errorMessage);
     }
   }
@@ -136,18 +130,13 @@ class CleanAuthController extends StateNotifier<AuthState> {
         );
         return result;
       } else {
-        state = state.copyWith(
-          errorMessage: result.message,
-          isLoading: false,
-        );
+        state = state.copyWith(errorMessage: result.message, isLoading: false);
         return result;
       }
     } catch (error) {
-      final errorMessage = '${provider.displayName}ログインに失敗しました: ${error.toString()}';
-      state = state.copyWith(
-        errorMessage: errorMessage,
-        isLoading: false,
-      );
+      final errorMessage =
+          '${provider.displayName}ログインに失敗しました: ${error.toString()}';
+      state = state.copyWith(errorMessage: errorMessage, isLoading: false);
       return Result.failure(errorMessage);
     }
   }
@@ -177,18 +166,12 @@ class CleanAuthController extends StateNotifier<AuthState> {
         );
         return result;
       } else {
-        state = state.copyWith(
-          errorMessage: result.message,
-          isLoading: false,
-        );
+        state = state.copyWith(errorMessage: result.message, isLoading: false);
         return result;
       }
     } catch (error) {
       final errorMessage = '会員登録に失敗しました: ${error.toString()}';
-      state = state.copyWith(
-        errorMessage: errorMessage,
-        isLoading: false,
-      );
+      state = state.copyWith(errorMessage: errorMessage, isLoading: false);
       return Result.failure(errorMessage);
     }
   }
@@ -208,18 +191,12 @@ class CleanAuthController extends StateNotifier<AuthState> {
         );
         return result;
       } else {
-        state = state.copyWith(
-          errorMessage: result.message,
-          isLoading: false,
-        );
+        state = state.copyWith(errorMessage: result.message, isLoading: false);
         return result;
       }
     } catch (error) {
       final errorMessage = 'ログアウトに失敗しました: ${error.toString()}';
-      state = state.copyWith(
-        errorMessage: errorMessage,
-        isLoading: false,
-      );
+      state = state.copyWith(errorMessage: errorMessage, isLoading: false);
       return Result.failure(errorMessage);
     }
   }
@@ -239,10 +216,7 @@ class CleanAuthController extends StateNotifier<AuthState> {
       return result;
     } catch (error) {
       final errorMessage = 'パスワード再設定に失敗しました: ${error.toString()}';
-      state = state.copyWith(
-        errorMessage: errorMessage,
-        isLoading: false,
-      );
+      state = state.copyWith(errorMessage: errorMessage, isLoading: false);
       return Result.failure(errorMessage);
     }
   }
@@ -262,10 +236,7 @@ class CleanAuthController extends StateNotifier<AuthState> {
       return result;
     } catch (error) {
       final errorMessage = '確認メール再送信に失敗しました: ${error.toString()}';
-      state = state.copyWith(
-        errorMessage: errorMessage,
-        isLoading: false,
-      );
+      state = state.copyWith(errorMessage: errorMessage, isLoading: false);
       return Result.failure(errorMessage);
     }
   }
@@ -290,24 +261,15 @@ class CleanAuthController extends StateNotifier<AuthState> {
           photoURL: photoURL,
         );
 
-        state = state.copyWith(
-          user: updatedUser,
-          isLoading: false,
-        );
+        state = state.copyWith(user: updatedUser, isLoading: false);
       } else {
-        state = state.copyWith(
-          errorMessage: result.message,
-          isLoading: false,
-        );
+        state = state.copyWith(errorMessage: result.message, isLoading: false);
       }
 
       return result;
     } catch (error) {
       final errorMessage = 'プロフィール更新に失敗しました: ${error.toString()}';
-      state = state.copyWith(
-        errorMessage: errorMessage,
-        isLoading: false,
-      );
+      state = state.copyWith(errorMessage: errorMessage, isLoading: false);
       return Result.failure(errorMessage);
     }
   }
@@ -326,19 +288,13 @@ class CleanAuthController extends StateNotifier<AuthState> {
           isLoading: false,
         );
       } else {
-        state = state.copyWith(
-          errorMessage: result.message,
-          isLoading: false,
-        );
+        state = state.copyWith(errorMessage: result.message, isLoading: false);
       }
 
       return result;
     } catch (error) {
       final errorMessage = 'アカウント削除に失敗しました: ${error.toString()}';
-      state = state.copyWith(
-        errorMessage: errorMessage,
-        isLoading: false,
-      );
+      state = state.copyWith(errorMessage: errorMessage, isLoading: false);
       return Result.failure(errorMessage);
     }
   }

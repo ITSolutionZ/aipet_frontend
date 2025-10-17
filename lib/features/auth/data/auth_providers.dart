@@ -31,15 +31,16 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 ///
 /// 로그인/회원가입 폼 상태 관리
 final authFormStateNotifierProvider =
-    StateNotifierProvider<AuthFormStateNotifier, AuthFormState>(
-      (ref) => AuthFormStateNotifier(),
+    NotifierProvider<AuthFormStateNotifier, AuthFormState>(
+      AuthFormStateNotifier.new,
     );
 
 /// AuthFormStateNotifier
 ///
 /// 폼 상태 관리 로직
-class AuthFormStateNotifier extends StateNotifier<AuthFormState> {
-  AuthFormStateNotifier() : super(const AuthFormState());
+class AuthFormStateNotifier extends Notifier<AuthFormState> {
+  @override
+  AuthFormState build() => const AuthFormState();
 
   void updateEmail(String email) {
     state = state.copyWith(email: email);

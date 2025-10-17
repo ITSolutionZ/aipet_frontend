@@ -60,7 +60,10 @@ class TokenExchangeState {
 
   @override
   int get hashCode =>
-      isLoading.hashCode ^ isSuccess.hashCode ^ errorMessage.hashCode ^ serverToken.hashCode;
+      isLoading.hashCode ^
+      isSuccess.hashCode ^
+      errorMessage.hashCode ^
+      serverToken.hashCode;
 
   @override
   String toString() {
@@ -68,11 +71,12 @@ class TokenExchangeState {
   }
 }
 
-/// 토큰 교환을 관리하는 StateNotifier
-class AuthController extends StateNotifier<TokenExchangeState> {
-  final AuthRepository _authRepository;
+/// 토큰 교환을 관리하는 Notifier
+class AuthController extends Notifier<TokenExchangeState> {
+  AuthRepository get _authRepository => ref.read(authRepositoryProvider);
 
-  AuthController(this._authRepository) : super(const TokenExchangeState.initial());
+  @override
+  TokenExchangeState build() => const TokenExchangeState.initial();
 
   /// 서버 토큰 교환 실행
   Future<void> exchangeServerToken() async {
@@ -86,7 +90,9 @@ class AuthController extends StateNotifier<TokenExchangeState> {
       // Firebase 로그인 상태 확인 및 최신 idToken 획득
       final idToken = await _authRepository.getCurrentUserIdToken();
       if (idToken == null) {
-        throw Exception('Firebase 사용자가 로그인되지 않았습니다. 먼저 Firebase Auth로 로그인해주세요.');
+        throw Exception(
+          'Firebase 사용자가 로그인되지 않았습니다. 먼저 Firebase Auth로 로그인해주세요.',
+        );
       }
 
       // 서버 JWT로 교환
@@ -220,7 +226,5 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 /// AuthController Provider
-final authControllerProvider = StateNotifierProvider<AuthController, TokenExchangeState>((ref) {
-  final authRepository = ref.watch(authRepositoryProvider);
-  return AuthController(authRepository);
-});
+final authControllerProvider =
+    NotifierProvider<AuthController, TokenExchangeState>(AuthController.new);

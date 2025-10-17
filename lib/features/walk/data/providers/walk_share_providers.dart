@@ -2,7 +2,6 @@ import 'package:aipet_frontend/features/walk/data/repositories/walk_share_reposi
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/repositories/walk_share_repository.dart';
 import 'package:aipet_frontend/features/walk/domain/usecases/walk_share_usecases.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'walk_share_providers.g.dart';

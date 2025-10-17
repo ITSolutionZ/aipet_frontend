@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../features/pet_profile/data/providers/pet_profile_providers.dart';
 import '../../../../shared/domain/entities/pet_profile_entity.dart';
 import 'helpers/helpers.dart';
 
@@ -55,17 +56,22 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
       controller: _controller,
     );
 
-    // 로컬 저장소에서 펫 불러와서 첫 번째 펫을 기본으로 설정 (펫이 있을 경우에만)
+    // SQLite에서 펫 불러와서 첫 번째 펫을 기본으로 설정 (펫이 있을 경우에만)
     try {
-      final petsAsync = await ref.read(petListProvider.future);
+      final petsAsync = await ref.read(petProfilesProvider.future);
+      debugPrint('🐕 SQLite에서 로드된 펫 개수: ${petsAsync.length}');
+
       if (petsAsync.isNotEmpty) {
         final firstPet = petsAsync.first;
+        debugPrint('🐕 첫 번째 펫: ${firstPet.name} (ID: ${firstPet.id})');
         _controller.setSelectedPet(WalkPetInfo.fromPetProfile(firstPet));
+      } else {
+        debugPrint('🐕 SQLite에 저장된 펫이 없습니다');
       }
       // 펫이 없어도 산책 화면에는 접근 가능하도록 함
     } catch (e) {
       // 펫 데이터 로드 실패해도 산책 화면은 표시
-      debugPrint('펫 데이터 로드 실패, 하지만 산책 화면은 표시: $e');
+      debugPrint('🐕 SQLite 펫 데이터 로드 실패, 하지만 산책 화면은 표시: $e');
     }
   }
 
@@ -194,7 +200,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   /// 중앙 하단 펫 리스트 위젯
   Widget _buildPetFloatingButton(List<WalkPetInfo> selectedPets) {
     // 로컬 저장소에서 펫 데이터 가져오기
-    final petsAsync = ref.watch(petListProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return petsAsync.when(
       data: (pets) => _buildPetSelectionList(pets, selectedPets),

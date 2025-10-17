@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:aipet_frontend/features/daily/data/providers/vaccine_provider.dart';
 import 'package:aipet_frontend/features/daily/presentation/controllers/daily_health_controller.dart';
 import 'package:aipet_frontend/features/daily/presentation/logic/daily_health_logic.dart';
-import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'daily_health_screen_controller.g.dart';
 
 /// Daily Health Screen의 상태 데이터
 class DailyHealthScreenData {
@@ -29,13 +31,15 @@ class DailyHealthScreenData {
 ///
 /// **사용 위치**: DailyHealthScreen에서 사용
 /// **관련 파일**: DailyHealthLogic (UI 로직), DailyHealthController (데이터 CRUD)
-class DailyHealthScreenController extends StateNotifier<DailyHealthScreenData> {
-  final Ref ref;
+@riverpod
+class DailyHealthScreenController extends _$DailyHealthScreenController {
   late final DailyHealthLogic _logic;
 
-  DailyHealthScreenController(this.ref) : super(const DailyHealthScreenData()) {
+  @override
+  DailyHealthScreenData build() {
     _logic = DailyHealthLogic();
     _initializePetSelection();
+    return const DailyHealthScreenData();
   }
 
   /// 로직 인스턴스 접근
@@ -43,7 +47,7 @@ class DailyHealthScreenController extends StateNotifier<DailyHealthScreenData> {
 
   /// 펫 선택 초기화
   void _initializePetSelection() {
-    final pets = ref.read(petProfilesNotifierProvider).value;
+    final pets = ref.read(petProfilesProvider).value;
     final selectedPetId = _logic.initializePetSelection(pets);
     if (selectedPetId != null) {
       state = state.copyWith(selectedPetId: selectedPetId);
@@ -88,9 +92,3 @@ class DailyHealthScreenController extends StateNotifier<DailyHealthScreenData> {
     _initializePetSelection();
   }
 }
-
-/// Daily Health Screen Controller Provider
-final dailyHealthScreenControllerProvider =
-    StateNotifierProvider<DailyHealthScreenController, DailyHealthScreenData>(
-      (ref) => DailyHealthScreenController(ref),
-    );

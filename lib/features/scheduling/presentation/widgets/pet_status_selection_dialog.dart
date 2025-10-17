@@ -2,18 +2,44 @@ import 'package:aipet_frontend/shared/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// 🎯 Pet Status Selection State Provider
-final petStatusSelectionProvider =
-    StateNotifierProvider.family<PetStatusSelectionController, PetStatusSelectionState, String>(
-      (ref, dialogId) => PetStatusSelectionController(),
+part 'pet_status_selection_dialog.g.dart';
+
+/// 🎯 Pet Status Selection State
+class PetStatusSelectionState {
+  final List<String> selectedStatuses;
+  final Map<String, String> statusValues;
+
+  const PetStatusSelectionState({
+    this.selectedStatuses = const [],
+    this.statusValues = const {},
+  });
+
+  PetStatusSelectionState copyWith({
+    List<String>? selectedStatuses,
+    Map<String, String>? statusValues,
+  }) {
+    return PetStatusSelectionState(
+      selectedStatuses: selectedStatuses ?? this.selectedStatuses,
+      statusValues: statusValues ?? this.statusValues,
     );
+  }
+}
 
-class PetStatusSelectionController extends StateNotifier<PetStatusSelectionState> {
-  PetStatusSelectionController() : super(const PetStatusSelectionState());
+/// 🎯 Pet Status Selection Provider
+@riverpod
+class PetStatusSelection extends _$PetStatusSelection {
+  @override
+  PetStatusSelectionState build(String dialogId) {
+    return const PetStatusSelectionState();
+  }
 
   void initialize(List<String> selectedStatuses, Map<String, String> statusValues) {
-    state = state.copyWith(selectedStatuses: selectedStatuses, statusValues: statusValues);
+    state = state.copyWith(
+      selectedStatuses: selectedStatuses,
+      statusValues: statusValues,
+    );
   }
 
   void toggleStatus(String status) {
@@ -30,23 +56,6 @@ class PetStatusSelectionController extends StateNotifier<PetStatusSelectionState
     final statusValues = Map<String, String>.from(state.statusValues);
     statusValues[status] = value;
     state = state.copyWith(statusValues: statusValues);
-  }
-}
-
-class PetStatusSelectionState {
-  final List<String> selectedStatuses;
-  final Map<String, String> statusValues;
-
-  const PetStatusSelectionState({this.selectedStatuses = const [], this.statusValues = const {}});
-
-  PetStatusSelectionState copyWith({
-    List<String>? selectedStatuses,
-    Map<String, String>? statusValues,
-  }) {
-    return PetStatusSelectionState(
-      selectedStatuses: selectedStatuses ?? this.selectedStatuses,
-      statusValues: statusValues ?? this.statusValues,
-    );
   }
 }
 

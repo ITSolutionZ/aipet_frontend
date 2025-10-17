@@ -12,7 +12,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatState = ref.watch(aiChatNotifierProvider);
+    final chatState = ref.watch(aiChatProvider);
     final favoriteController = ref.read(aiFavoriteMessagesControllerProvider);
 
     // 채팅 상태에서 즐겨찾기 QA 목록 가져오기
@@ -134,12 +134,12 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
   }
 
   void _deleteFavorite(AiFavoriteQaEntity favorite, WidgetRef ref) {
-    final notifier = ref.read(aiChatNotifierProvider.notifier);
+    final notifier = ref.read(aiChatProvider.notifier);
     notifier.removeFavorite(favorite.id);
   }
 
   void _clearAllFavorites(WidgetRef ref) {
-    final notifier = ref.read(aiChatNotifierProvider.notifier);
+    final notifier = ref.read(aiChatProvider.notifier);
     notifier.clearAllFavorites();
   }
 }

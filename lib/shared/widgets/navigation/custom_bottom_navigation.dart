@@ -25,16 +25,16 @@ class CustomBottomNavigation extends StatelessWidget {
           decoration: const BoxDecoration(
             color: Colors.transparent, // 완전히 투명한 배경
           ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildNavItem(Icons.home, 0, '홈'),
-                  _buildNavItem(Icons.smart_toy, 1, 'AI'),
-                  _buildNavItem(Icons.calendar_today, 2, '캘린더'),
-                  _buildNavItem(Icons.notifications, 3, '알람'),
-                  _buildNavItem(Icons.settings, 4, '설정'),
-                ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildNavItem(Icons.home, 0, '홈'),
+              _buildNavItem(Icons.smart_toy, 1, 'AI'),
+              _buildNavItem(Icons.directions_walk, 2, '散歩'),
+              _buildNavItem(Icons.calendar_today, 3, 'カレンダー'),
+              _buildNavItem(Icons.settings, 4, '設定'),
+            ],
           ),
         ),
       ),
@@ -47,12 +47,18 @@ class CustomBottomNavigation extends StatelessWidget {
     return GestureDetector(
       onTap: () => onItemTapped(index),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
         child: Icon(
           icon,
           color: isSelected
-              ? AppColors.pointBrown // 선택된 아이콘: 다크 브라운
-              : AppColors.pointDark.withValues(alpha: 0.6), // 비선택 아이콘: 더 진한 색상으로 가시성 향상
+              ? AppColors
+                    .pointBrown // 선택된 아이콘: 다크 브라운
+              : AppColors.pointDark.withValues(
+                  alpha: 0.6,
+                ), // 비선택 아이콘: 더 진한 색상으로 가시성 향상
           size: 24, // 아이콘 크기 약간 증가
         ),
       ),

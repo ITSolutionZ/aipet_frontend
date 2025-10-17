@@ -365,7 +365,7 @@ class AiChatNotifier extends _$AiChatNotifier {
     String? walkGuide;
 
     try {
-      final dashboardAsync = ref.read(homeDashboardNotifierProvider);
+      final dashboardAsync = ref.read(homeDashboardProvider);
       if (dashboardAsync.hasValue && dashboardAsync.value != null) {
         final dashboard = dashboardAsync.value!;
         final weather = dashboard.weather;
@@ -573,16 +573,16 @@ class AiChatController extends BaseController {
   AiChatController(super.ref);
 
   /// 채팅 상태 스트림 제공 (UI에서 구독)
-  AiChatState get chatState => ref.read(aiChatNotifierProvider);
+  AiChatState get chatState => ref.read(aiChatProvider);
 
   /// 채팅 상태 변경 감지 (UI에서 사용)
   AiChatState watchChatState() {
-    return ref.watch(aiChatNotifierProvider);
+    return ref.watch(aiChatProvider);
   }
 
   Future<Result<void>> initializeChat() async {
     try {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      final notifier = ref.read(aiChatProvider.notifier);
       await notifier.initializeChat();
       return Result.success('チャットが初期化されました', null);
     } catch (error) {
@@ -592,7 +592,7 @@ class AiChatController extends BaseController {
 
   /// 펫 선택
   void selectPet(PetProfileEntity? pet) {
-    final notifier = ref.read(aiChatNotifierProvider.notifier);
+    final notifier = ref.read(aiChatProvider.notifier);
     notifier.selectPet(pet);
   }
 
@@ -602,7 +602,7 @@ class AiChatController extends BaseController {
     }
 
     try {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      final notifier = ref.read(aiChatProvider.notifier);
       await notifier.sendMessage(content);
       return Result.success('メッセージが送信されました', null);
     } catch (error) {
@@ -612,7 +612,7 @@ class AiChatController extends BaseController {
 
   Future<Result<void>> clearChatHistory() async {
     try {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      final notifier = ref.read(aiChatProvider.notifier);
       await notifier.clearChatHistory();
       return Result.success('チャット履歴がクリアされました', null);
     } catch (error) {
@@ -654,19 +654,19 @@ class AiChatController extends BaseController {
 
   /// 카테고리 선택
   void selectCategory(AiCategoryEntity category) {
-    final notifier = ref.read(aiChatNotifierProvider.notifier);
+    final notifier = ref.read(aiChatProvider.notifier);
     notifier.selectCategory(category);
   }
 
   /// 즐겨찾기 토글
   Future<void> toggleFavorite(AiMessageEntity message) async {
-    final notifier = ref.read(aiChatNotifierProvider.notifier);
+    final notifier = ref.read(aiChatProvider.notifier);
     await notifier.toggleFavorite(message);
   }
 
   Future<Result<void>> saveCurrentChatManually() async {
     try {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      final notifier = ref.read(aiChatProvider.notifier);
       await notifier.saveCurrentChatToHistory(isManualSave: true);
       return Result.success('チャット履歴が保存されました', null);
     } catch (error) {
@@ -676,7 +676,7 @@ class AiChatController extends BaseController {
 
   Future<Result<void>> saveCurrentChatOnTabSwitch() async {
     try {
-      final notifier = ref.read(aiChatNotifierProvider.notifier);
+      final notifier = ref.read(aiChatProvider.notifier);
       await notifier.saveCurrentChatToHistory(isManualSave: false);
       return Result.success('チャット履歴が自動保存されました', null);
     } catch (error) {

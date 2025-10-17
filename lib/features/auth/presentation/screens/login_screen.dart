@@ -2,7 +2,8 @@ import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/auth/data/auth_providers.dart';
 import 'package:aipet_frontend/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:aipet_frontend/features/auth/presentation/widgets/auth_widgets.dart';
-import 'package:aipet_frontend/features/auth/presentation/widgets/error_message.dart' as auth_error;
+import 'package:aipet_frontend/features/auth/presentation/widgets/error_message.dart'
+    as auth_error;
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,7 +77,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     // 이메일 입력
                     Text(
                       'メールアドレス',
-                      style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     TextFormField(
@@ -98,13 +101,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         return null;
                       },
                       onChanged: (value) {
-                        ref.read(authFormStateNotifierProvider.notifier).updateEmail(value);
+                        ref
+                            .read(authFormStateNotifierProvider.notifier)
+                            .updateEmail(value);
                       },
                     ),
                     const SizedBox(height: AppSpacing.md),
 
                     // 패스워드 입력
-                    Text('パスワード', style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+                    Text(
+                      'パスワード',
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                     TextFormField(
                       controller: _passwordController,
@@ -115,7 +125,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         border: const OutlineInputBorder(),
                         prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
-                          icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
                           onPressed: () {
                             setState(() {
                               _isPasswordVisible = !_isPasswordVisible;
@@ -144,7 +158,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ? null
                               : (value) {
                                   ref
-                                      .read(authFormStateNotifierProvider.notifier)
+                                      .read(
+                                        authFormStateNotifierProvider.notifier,
+                                      )
                                       .toggleRememberMe();
                                 },
                         ),
@@ -159,7 +175,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         message: authState.error!,
                         type: auth_error.ErrorType.error,
                         onDismiss: () {
-                          ref.read(authFormStateNotifierProvider.notifier).clearError();
+                          ref
+                              .read(authFormStateNotifierProvider.notifier)
+                              .clearError();
                         },
                       ),
                       const SizedBox(height: AppSpacing.md),
@@ -174,7 +192,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.pointBlue,
                           foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                         child: _isLoading
                             ? const SizedBox(
@@ -182,12 +202,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 height: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
                                 ),
                               )
                             : Text(
                                 'ログイン',
-                                style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+                                style: AppFonts.bodyMedium.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                       ),
                     ),
@@ -245,7 +269,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       children: [
                         Text(
                           'アカウントをお持ちでない方は',
-                          style: AppFonts.bodySmall.copyWith(color: Colors.grey.shade600),
+                          style: AppFonts.bodySmall.copyWith(
+                            color: Colors.grey.shade600,
+                          ),
                         ),
                         TextButton(
                           onPressed: _isLoading
@@ -284,15 +310,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     try {
-      final authController = AuthController(ref);
-      final result = await authController.login(password: _passwordController.text);
+      final authController = ref.read(authControllerProvider.notifier);
+      final result = await authController.login(
+        password: _passwordController.text,
+      );
 
       if (result.isSuccess) {
         // 로그인 성공
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.isSuccess ? result.data ?? '' : result.message),
+              content: Text(
+                result.isSuccess ? result.data ?? '' : result.message,
+              ),
               backgroundColor: Colors.green,
             ),
           );
@@ -303,7 +333,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.isSuccess ? result.data ?? '' : result.message),
+              content: Text(
+                result.isSuccess ? result.data ?? '' : result.message,
+              ),
               backgroundColor: Colors.red,
             ),
           );
@@ -312,7 +344,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('ログインに失敗しました: ${e.toString()}'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('ログインに失敗しました: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -331,14 +366,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     try {
-      final authController = AuthController(ref);
+      final authController = ref.read(authControllerProvider.notifier);
       final result = await authController.loginWithGoogle();
 
       if (result.isSuccess) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.isSuccess ? result.data ?? '' : result.message),
+              content: Text(
+                result.isSuccess ? result.data ?? '' : result.message,
+              ),
               backgroundColor: Colors.green,
             ),
           );
@@ -348,7 +385,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.isSuccess ? result.data ?? '' : result.message),
+              content: Text(
+                result.isSuccess ? result.data ?? '' : result.message,
+              ),
               backgroundColor: Colors.red,
             ),
           );
@@ -379,14 +418,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     try {
-      final authController = AuthController(ref);
+      final authController = ref.read(authControllerProvider.notifier);
       final result = await authController.loginWithApple();
 
       if (result.isSuccess) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.isSuccess ? result.data ?? '' : result.message),
+              content: Text(
+                result.isSuccess ? result.data ?? '' : result.message,
+              ),
               backgroundColor: Colors.green,
             ),
           );
@@ -396,7 +437,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.isSuccess ? result.data ?? '' : result.message),
+              content: Text(
+                result.isSuccess ? result.data ?? '' : result.message,
+              ),
               backgroundColor: Colors.red,
             ),
           );
@@ -405,7 +448,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Appleログインに失敗しました: ${e.toString()}'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Appleログインに失敗しました: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -424,14 +470,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     try {
-      final authController = AuthController(ref);
+      final authController = ref.read(authControllerProvider.notifier);
       final result = await authController.loginWithLine();
 
       if (result.isSuccess) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.isSuccess ? result.data ?? '' : result.message),
+              content: Text(
+                result.isSuccess ? result.data ?? '' : result.message,
+              ),
               backgroundColor: Colors.green,
             ),
           );
@@ -441,7 +489,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result.isSuccess ? result.data ?? '' : result.message),
+              content: Text(
+                result.isSuccess ? result.data ?? '' : result.message,
+              ),
               backgroundColor: Colors.red,
             ),
           );
@@ -450,7 +500,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('LINEログインに失敗しました: ${e.toString()}'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('LINEログインに失敗しました: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -464,6 +517,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   /// 이메일 유효성 검사
   bool _isValidEmail(String email) {
-    return RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(email);
+    return RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    ).hasMatch(email);
   }
 }

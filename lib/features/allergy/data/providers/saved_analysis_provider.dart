@@ -6,9 +6,7 @@ part 'saved_analysis_provider.g.dart';
 
 /// 저장된 알레르기 분석 Repository Provider
 @riverpod
-SavedAnalysisRepository savedAnalysisRepository(
-  SavedAnalysisRepositoryRef ref,
-) {
+SavedAnalysisRepository savedAnalysisRepository(Ref ref) {
   return SavedAnalysisRepository();
 }
 
@@ -45,10 +43,12 @@ class SavedAnalysisNotifier extends _$SavedAnalysisNotifier {
 
   /// 특정 펫의 분석 결과만 가져오기
   List<SavedAnalysisEntity> getByPetId(String petId) {
-    return state.valueOrNull
-            ?.where((analysis) => analysis.petId == petId)
-            .toList() ??
-        [];
+    return state.when(
+      data: (analyses) =>
+          analyses.where((analysis) => analysis.petId == petId).toList(),
+      loading: () => [],
+      error: (error, stackTrace) => [],
+    );
   }
 
   /// 모든 분석 결과 삭제

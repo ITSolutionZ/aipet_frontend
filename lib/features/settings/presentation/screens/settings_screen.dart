@@ -109,7 +109,7 @@ class SettingsScreen extends ConsumerWidget {
           const SectionHeaderWidget(title: 'システム'),
           SettingsTileWidget(
             icon: Icons.notifications,
-            title: 'プッシュ通知',
+            title: '',
             backgroundColor: const Color(0xFF7A9CC6),
             onTap: () => context.push(AppRouter.pushNotificationRoute),
           ),

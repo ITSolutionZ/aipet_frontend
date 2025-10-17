@@ -4,7 +4,9 @@ import '../../../allergy/domain/entities/product_entity.dart';
 /// 알레르기 분석 데이터소스 인터페이스
 abstract class AllergyAnalysisDatasource {
   /// 성분별 위험도 데이터 조회
-  Future<Map<String, IngredientRisk>> getIngredientRiskData(List<String> ingredients);
+  Future<Map<String, IngredientRisk>> getIngredientRiskData(
+    List<String> ingredients,
+  );
 
   /// 모든 제품 목록 조회
   Future<List<ProductEntity>> getAllProducts({
@@ -29,7 +31,8 @@ abstract class AllergyAnalysisDatasource {
 }
 
 /// Local 알레르기 분석 데이터소스
-abstract class AllergyAnalysisLocalDatasource extends AllergyAnalysisDatasource {
+abstract class AllergyAnalysisLocalDatasource
+    extends AllergyAnalysisDatasource {
   /// 캐시된 성분 위험도 데이터 조회
   Future<Map<String, IngredientRisk>> getCachedIngredientRiskData();
 
@@ -44,9 +47,12 @@ abstract class AllergyAnalysisLocalDatasource extends AllergyAnalysisDatasource 
 }
 
 /// Remote 알레르기 분석 데이터소스
-abstract class AllergyAnalysisRemoteDatasource extends AllergyAnalysisDatasource {
+abstract class AllergyAnalysisRemoteDatasource
+    extends AllergyAnalysisDatasource {
   /// 서버에서 성분 위험도 데이터 조회
-  Future<Map<String, IngredientRisk>> fetchIngredientRiskData(List<String> ingredients);
+  Future<Map<String, IngredientRisk>> fetchIngredientRiskData(
+    List<String> ingredients,
+  );
 
   /// 서버에서 제품 목록 조회
   Future<List<ProductEntity>> fetchProducts({
@@ -60,4 +66,3 @@ abstract class AllergyAnalysisRemoteDatasource extends AllergyAnalysisDatasource
   /// 서버에 알레르기 리포트 업로드
   Future<void> uploadAllergyReport(AllergyReport report);
 }
-

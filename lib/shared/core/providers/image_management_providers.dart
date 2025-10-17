@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/shared/core/domain/domain.dart';
 import 'package:aipet_frontend/shared/core/services/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'image_management_providers.g.dart';
@@ -39,7 +38,9 @@ class SavedImagesNotifier extends _$SavedImagesNotifier {
 
     if (deleteResult.isSuccess) {
       final currentState = await future;
-      state = AsyncData(currentState.where((path) => path != imagePath).toList());
+      state = AsyncData(
+        currentState.where((path) => path != imagePath).toList(),
+      );
     } else {
       throw Exception(deleteResult.error);
     }
@@ -121,12 +122,20 @@ class ImageUploadNotifier extends _$ImageUploadNotifier {
 
   /// 업로드 완료
   void completeUpload() {
-    state = state.copyWith(isUploading: false, currentUploadPath: null, progress: 1.0);
+    state = state.copyWith(
+      isUploading: false,
+      currentUploadPath: null,
+      progress: 1.0,
+    );
   }
 
   /// 업로드 에러
   void setError(String error) {
-    state = state.copyWith(isUploading: false, error: error, currentUploadPath: null);
+    state = state.copyWith(
+      isUploading: false,
+      error: error,
+      currentUploadPath: null,
+    );
   }
 
   /// 상태 초기화
@@ -177,7 +186,11 @@ class ImageCompressionNotifier extends _$ImageCompressionNotifier {
     int? maxWidth,
     int? maxHeight,
   }) async {
-    state = state.copyWith(isCompressing: true, currentImagePath: imagePath, error: null);
+    state = state.copyWith(
+      isCompressing: true,
+      currentImagePath: imagePath,
+      error: null,
+    );
 
     try {
       final service = ref.read(imageManagementServiceProvider);
@@ -200,7 +213,11 @@ class ImageCompressionNotifier extends _$ImageCompressionNotifier {
         return result;
       }
     } catch (error) {
-      state = state.copyWith(isCompressing: false, error: error.toString(), currentImagePath: null);
+      state = state.copyWith(
+        isCompressing: false,
+        error: error.toString(),
+        currentImagePath: null,
+      );
       return Result.failure('이미지 압축 중 오류가 발생했습니다: ${error.toString()}');
     }
   }
@@ -217,9 +234,17 @@ class ImageCompressionState {
   final String? currentImagePath;
   final String? error;
 
-  const ImageCompressionState({this.isCompressing = false, this.currentImagePath, this.error});
+  const ImageCompressionState({
+    this.isCompressing = false,
+    this.currentImagePath,
+    this.error,
+  });
 
-  ImageCompressionState copyWith({bool? isCompressing, String? currentImagePath, String? error}) {
+  ImageCompressionState copyWith({
+    bool? isCompressing,
+    String? currentImagePath,
+    String? error,
+  }) {
     return ImageCompressionState(
       isCompressing: isCompressing ?? this.isCompressing,
       currentImagePath: currentImagePath ?? this.currentImagePath,
@@ -236,8 +261,12 @@ Future<StorageStats> storageStats(Ref ref) async {
   final imagesResult = await service.getAllSavedImages();
   final totalSizeResult = await service.getTotalStorageSize();
 
-  final imageCount = imagesResult.isSuccess ? (imagesResult.dataOrNull?.length ?? 0) : 0;
-  final totalSize = totalSizeResult.isSuccess ? (totalSizeResult.dataOrNull ?? 0) : 0;
+  final imageCount = imagesResult.isSuccess
+      ? (imagesResult.dataOrNull?.length ?? 0)
+      : 0;
+  final totalSize = totalSizeResult.isSuccess
+      ? (totalSizeResult.dataOrNull ?? 0)
+      : 0;
 
   return StorageStats(imageCount: imageCount, totalSizeInBytes: totalSize);
 }
@@ -247,7 +276,10 @@ class StorageStats {
   final int imageCount;
   final int totalSizeInBytes;
 
-  const StorageStats({required this.imageCount, required this.totalSizeInBytes});
+  const StorageStats({
+    required this.imageCount,
+    required this.totalSizeInBytes,
+  });
 
   /// 크기를 사람이 읽기 쉬운 형태로 변환
   String get formattedSize {

@@ -6,123 +6,321 @@ part of 'splash_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$splashRepositoryHash() => r'89da06c2948df192ff41ba131dd4008faba9f393';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+/// 스플래시 Repository Provider
+
+@ProviderFor(splashRepository)
+const splashRepositoryProvider = SplashRepositoryProvider._();
 
 /// 스플래시 Repository Provider
-///
-/// Copied from [splashRepository].
-@ProviderFor(splashRepository)
-final splashRepositoryProvider = AutoDisposeProvider<SplashRepository>.internal(
-  splashRepository,
-  name: r'splashRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$splashRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SplashRepositoryRef = AutoDisposeProviderRef<SplashRepository>;
+final class SplashRepositoryProvider
+    extends
+        $FunctionalProvider<
+          SplashRepository,
+          SplashRepository,
+          SplashRepository
+        >
+    with $Provider<SplashRepository> {
+  /// 스플래시 Repository Provider
+  const SplashRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'splashRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$splashRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<SplashRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  SplashRepository create(Ref ref) {
+    return splashRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SplashRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SplashRepository>(value),
+    );
+  }
+}
+
+String _$splashRepositoryHash() => r'89da06c2948df192ff41ba131dd4008faba9f393';
+
+/// 스플래시 UseCase Provider들
+
+@ProviderFor(manageSplashSequenceUseCase)
+const manageSplashSequenceUseCaseProvider =
+    ManageSplashSequenceUseCaseProvider._();
+
+/// 스플래시 UseCase Provider들
+
+final class ManageSplashSequenceUseCaseProvider
+    extends
+        $FunctionalProvider<
+          ManageSplashSequenceUseCase,
+          ManageSplashSequenceUseCase,
+          ManageSplashSequenceUseCase
+        >
+    with $Provider<ManageSplashSequenceUseCase> {
+  /// 스플래시 UseCase Provider들
+  const ManageSplashSequenceUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'manageSplashSequenceUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$manageSplashSequenceUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<ManageSplashSequenceUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ManageSplashSequenceUseCase create(Ref ref) {
+    return manageSplashSequenceUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ManageSplashSequenceUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ManageSplashSequenceUseCase>(value),
+    );
+  }
+}
+
 String _$manageSplashSequenceUseCaseHash() =>
     r'834471e69ff111d4b2578490d8c31c915f89fe61';
 
-/// 스플래시 UseCase Provider들
-///
-/// Copied from [manageSplashSequenceUseCase].
-@ProviderFor(manageSplashSequenceUseCase)
-final manageSplashSequenceUseCaseProvider =
-    AutoDisposeProvider<ManageSplashSequenceUseCase>.internal(
-      manageSplashSequenceUseCase,
-      name: r'manageSplashSequenceUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$manageSplashSequenceUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+@ProviderFor(getSplashConfigUseCase)
+const getSplashConfigUseCaseProvider = GetSplashConfigUseCaseProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ManageSplashSequenceUseCaseRef =
-    AutoDisposeProviderRef<ManageSplashSequenceUseCase>;
+final class GetSplashConfigUseCaseProvider
+    extends
+        $FunctionalProvider<
+          GetSplashConfigUseCase,
+          GetSplashConfigUseCase,
+          GetSplashConfigUseCase
+        >
+    with $Provider<GetSplashConfigUseCase> {
+  const GetSplashConfigUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getSplashConfigUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getSplashConfigUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<GetSplashConfigUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  GetSplashConfigUseCase create(Ref ref) {
+    return getSplashConfigUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GetSplashConfigUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GetSplashConfigUseCase>(value),
+    );
+  }
+}
+
 String _$getSplashConfigUseCaseHash() =>
     r'50f9b0fc220df43ddee8dd015f6227e9b56fc7e0';
 
-/// See also [getSplashConfigUseCase].
-@ProviderFor(getSplashConfigUseCase)
-final getSplashConfigUseCaseProvider =
-    AutoDisposeProvider<GetSplashConfigUseCase>.internal(
-      getSplashConfigUseCase,
-      name: r'getSplashConfigUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$getSplashConfigUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+/// 스플래시 설정 Provider
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef GetSplashConfigUseCaseRef =
-    AutoDisposeProviderRef<GetSplashConfigUseCase>;
-String _$splashConfigHash() => r'2706786331e2026a3a99b8cd1a9567a74d81254e';
+@ProviderFor(splashConfig)
+const splashConfigProvider = SplashConfigProvider._();
 
 /// 스플래시 설정 Provider
-///
-/// Copied from [splashConfig].
-@ProviderFor(splashConfig)
-final splashConfigProvider = AutoDisposeFutureProvider<SplashEntity>.internal(
-  splashConfig,
-  name: r'splashConfigProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$splashConfigHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SplashConfigRef = AutoDisposeFutureProviderRef<SplashEntity>;
+final class SplashConfigProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SplashEntity>,
+          SplashEntity,
+          FutureOr<SplashEntity>
+        >
+    with $FutureModifier<SplashEntity>, $FutureProvider<SplashEntity> {
+  /// 스플래시 설정 Provider
+  const SplashConfigProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'splashConfigProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$splashConfigHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SplashEntity> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SplashEntity> create(Ref ref) {
+    return splashConfig(ref);
+  }
+}
+
+String _$splashConfigHash() => r'2706786331e2026a3a99b8cd1a9567a74d81254e';
+
+/// 스플래시 상태 관리 Notifier
+
+@ProviderFor(SplashStateNotifier)
+const splashStateProvider = SplashStateNotifierProvider._();
+
+/// 스플래시 상태 관리 Notifier
+final class SplashStateNotifierProvider
+    extends $NotifierProvider<SplashStateNotifier, SplashState> {
+  /// 스플래시 상태 관리 Notifier
+  const SplashStateNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'splashStateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$splashStateNotifierHash();
+
+  @$internal
+  @override
+  SplashStateNotifier create() => SplashStateNotifier();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SplashState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SplashState>(value),
+    );
+  }
+}
+
 String _$splashStateNotifierHash() =>
     r'ce3c88494fae991c22fa7ae6d8b4b4eef192f5fe';
 
 /// 스플래시 상태 관리 Notifier
-///
-/// Copied from [SplashStateNotifier].
-@ProviderFor(SplashStateNotifier)
-final splashStateNotifierProvider =
-    AutoDisposeNotifierProvider<SplashStateNotifier, SplashState>.internal(
-      SplashStateNotifier.new,
-      name: r'splashStateNotifierProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$splashStateNotifierHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$SplashStateNotifier = AutoDisposeNotifier<SplashState>;
+abstract class _$SplashStateNotifier extends $Notifier<SplashState> {
+  SplashState build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<SplashState, SplashState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SplashState, SplashState>,
+              SplashState,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+/// 스플래시 Controller Provider
+
+@ProviderFor(SplashControllerNotifier)
+const splashControllerProvider = SplashControllerNotifierProvider._();
+
+/// 스플래시 Controller Provider
+final class SplashControllerNotifierProvider
+    extends $NotifierProvider<SplashControllerNotifier, void> {
+  /// 스플래시 Controller Provider
+  const SplashControllerNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'splashControllerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$splashControllerNotifierHash();
+
+  @$internal
+  @override
+  SplashControllerNotifier create() => SplashControllerNotifier();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
+  }
+}
+
 String _$splashControllerNotifierHash() =>
     r'b0ac8b58307f2e99b5a47b6a7905cfaf8353c619';
 
 /// 스플래시 Controller Provider
-///
-/// Copied from [SplashControllerNotifier].
-@ProviderFor(SplashControllerNotifier)
-final splashControllerNotifierProvider =
-    AutoDisposeNotifierProvider<SplashControllerNotifier, void>.internal(
-      SplashControllerNotifier.new,
-      name: r'splashControllerNotifierProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$splashControllerNotifierHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$SplashControllerNotifier = AutoDisposeNotifier<void>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$SplashControllerNotifier extends $Notifier<void> {
+  void build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    build();
+    final ref = this.ref as $Ref<void, void>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<void, void>,
+              void,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, null);
+  }
+}

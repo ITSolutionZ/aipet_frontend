@@ -6,227 +6,276 @@ part of 'notification_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(notificationRepository)
+const notificationRepositoryProvider = NotificationRepositoryProvider._();
+
+final class NotificationRepositoryProvider
+    extends
+        $FunctionalProvider<
+          NotificationRepositoryImpl,
+          NotificationRepositoryImpl,
+          NotificationRepositoryImpl
+        >
+    with $Provider<NotificationRepositoryImpl> {
+  const NotificationRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notificationRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$notificationRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<NotificationRepositoryImpl> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  NotificationRepositoryImpl create(Ref ref) {
+    return notificationRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(NotificationRepositoryImpl value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<NotificationRepositoryImpl>(value),
+    );
+  }
+}
+
 String _$notificationRepositoryHash() =>
     r'b1b68c99378a50cdc78044b490f38283b29a4e66';
 
-/// See also [notificationRepository].
-@ProviderFor(notificationRepository)
-final notificationRepositoryProvider =
-    AutoDisposeProvider<NotificationRepositoryImpl>.internal(
-      notificationRepository,
-      name: r'notificationRepositoryProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$notificationRepositoryHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+@ProviderFor(NotificationsNotifier)
+const notificationsProvider = NotificationsNotifierProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef NotificationRepositoryRef =
-    AutoDisposeProviderRef<NotificationRepositoryImpl>;
-String _$notificationByIdHash() => r'94fc19802148e34144efa20a2facf4099e62a6d7';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [notificationById].
-@ProviderFor(notificationById)
-const notificationByIdProvider = NotificationByIdFamily();
-
-/// See also [notificationById].
-class NotificationByIdFamily extends Family<AsyncValue<NotificationModel?>> {
-  /// See also [notificationById].
-  const NotificationByIdFamily();
-
-  /// See also [notificationById].
-  NotificationByIdProvider call(String id) {
-    return NotificationByIdProvider(id);
-  }
-
-  @override
-  NotificationByIdProvider getProviderOverride(
-    covariant NotificationByIdProvider provider,
-  ) {
-    return call(provider.id);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'notificationByIdProvider';
-}
-
-/// See also [notificationById].
-class NotificationByIdProvider
-    extends AutoDisposeFutureProvider<NotificationModel?> {
-  /// See also [notificationById].
-  NotificationByIdProvider(String id)
-    : this._internal(
-        (ref) => notificationById(ref as NotificationByIdRef, id),
-        from: notificationByIdProvider,
-        name: r'notificationByIdProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$notificationByIdHash,
-        dependencies: NotificationByIdFamily._dependencies,
-        allTransitiveDependencies:
-            NotificationByIdFamily._allTransitiveDependencies,
-        id: id,
+final class NotificationsNotifierProvider
+    extends
+        $AsyncNotifierProvider<NotificationsNotifier, List<NotificationModel>> {
+  const NotificationsNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notificationsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
 
-  NotificationByIdProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
+  @override
+  String debugGetCreateSourceHash() => _$notificationsNotifierHash();
 
-  final String id;
+  @$internal
+  @override
+  NotificationsNotifier create() => NotificationsNotifier();
+}
+
+String _$notificationsNotifierHash() =>
+    r'541543f1897e9d4de5d01fad33bd9736112ec642';
+
+abstract class _$NotificationsNotifier
+    extends $AsyncNotifier<List<NotificationModel>> {
+  FutureOr<List<NotificationModel>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<List<NotificationModel>>,
+              List<NotificationModel>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<List<NotificationModel>>,
+                List<NotificationModel>
+              >,
+              AsyncValue<List<NotificationModel>>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(notificationById)
+const notificationByIdProvider = NotificationByIdFamily._();
+
+final class NotificationByIdProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<NotificationModel?>,
+          NotificationModel?,
+          FutureOr<NotificationModel?>
+        >
+    with
+        $FutureModifier<NotificationModel?>,
+        $FutureProvider<NotificationModel?> {
+  const NotificationByIdProvider._({
+    required NotificationByIdFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'notificationByIdProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
-  Override overrideWith(
-    FutureOr<NotificationModel?> Function(NotificationByIdRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: NotificationByIdProvider._internal(
-        (ref) => create(ref as NotificationByIdRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
+  String debugGetCreateSourceHash() => _$notificationByIdHash();
+
+  @override
+  String toString() {
+    return r'notificationByIdProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  AutoDisposeFutureProviderElement<NotificationModel?> createElement() {
-    return _NotificationByIdProviderElement(this);
+  $FutureProviderElement<NotificationModel?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<NotificationModel?> create(Ref ref) {
+    final argument = this.argument as String;
+    return notificationById(ref, argument);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is NotificationByIdProvider && other.id == id;
+    return other is NotificationByIdProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin NotificationByIdRef on AutoDisposeFutureProviderRef<NotificationModel?> {
-  /// The parameter `id` of this provider.
-  String get id;
-}
+String _$notificationByIdHash() => r'b155bb39b7170ab418b07edf5d273fa995e1fe03';
 
-class _NotificationByIdProviderElement
-    extends AutoDisposeFutureProviderElement<NotificationModel?>
-    with NotificationByIdRef {
-  _NotificationByIdProviderElement(super.provider);
+final class NotificationByIdFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<NotificationModel?>, String> {
+  const NotificationByIdFamily._()
+    : super(
+        retry: null,
+        name: r'notificationByIdProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  NotificationByIdProvider call(String id) =>
+      NotificationByIdProvider._(argument: id, from: this);
 
   @override
-  String get id => (origin as NotificationByIdProvider).id;
+  String toString() => r'notificationByIdProvider';
+}
+
+@ProviderFor(unreadNotificationCount)
+const unreadNotificationCountProvider = UnreadNotificationCountProvider._();
+
+final class UnreadNotificationCountProvider
+    extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
+    with $FutureModifier<int>, $FutureProvider<int> {
+  const UnreadNotificationCountProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'unreadNotificationCountProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$unreadNotificationCountHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<int> create(Ref ref) {
+    return unreadNotificationCount(ref);
+  }
 }
 
 String _$unreadNotificationCountHash() =>
-    r'1b7342c5955756ea13e347a0003d50e1e289c554';
+    r'cb7dbb2ba3f7700cf56a4081aad87a794c340aba';
 
-/// See also [unreadNotificationCount].
-@ProviderFor(unreadNotificationCount)
-final unreadNotificationCountProvider = AutoDisposeFutureProvider<int>.internal(
-  unreadNotificationCount,
-  name: r'unreadNotificationCountProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$unreadNotificationCountHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef UnreadNotificationCountRef = AutoDisposeFutureProviderRef<int>;
-String _$notificationsNotifierHash() =>
-    r'71cb19a2333f408f2f5ea7a42a6b27cea93ccf88';
-
-/// See also [NotificationsNotifier].
-@ProviderFor(NotificationsNotifier)
-final notificationsNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<
-      NotificationsNotifier,
-      List<NotificationModel>
-    >.internal(
-      NotificationsNotifier.new,
-      name: r'notificationsNotifierProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$notificationsNotifierHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$NotificationsNotifier =
-    AutoDisposeAsyncNotifier<List<NotificationModel>>;
-String _$notificationSettingsNotifierHash() =>
-    r'f4208d88107136fa8b97303a4dde12095616e62f';
-
-/// See also [NotificationSettingsNotifier].
 @ProviderFor(NotificationSettingsNotifier)
-final notificationSettingsNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<
-      NotificationSettingsNotifier,
-      Map<String, dynamic>
-    >.internal(
-      NotificationSettingsNotifier.new,
-      name: r'notificationSettingsNotifierProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$notificationSettingsNotifierHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+const notificationSettingsProvider = NotificationSettingsNotifierProvider._();
 
-typedef _$NotificationSettingsNotifier =
-    AutoDisposeAsyncNotifier<Map<String, dynamic>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class NotificationSettingsNotifierProvider
+    extends
+        $AsyncNotifierProvider<
+          NotificationSettingsNotifier,
+          Map<String, dynamic>
+        > {
+  const NotificationSettingsNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notificationSettingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$notificationSettingsNotifierHash();
+
+  @$internal
+  @override
+  NotificationSettingsNotifier create() => NotificationSettingsNotifier();
+}
+
+String _$notificationSettingsNotifierHash() =>
+    r'3a711f4a80bd1b221b2aa369a086fa1e7a061aea';
+
+abstract class _$NotificationSettingsNotifier
+    extends $AsyncNotifier<Map<String, dynamic>> {
+  FutureOr<Map<String, dynamic>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<Map<String, dynamic>>, Map<String, dynamic>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<Map<String, dynamic>>,
+                Map<String, dynamic>
+              >,
+              AsyncValue<Map<String, dynamic>>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

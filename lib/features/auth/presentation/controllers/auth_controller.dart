@@ -28,7 +28,7 @@ typedef AuthValidationResult = Result<void>;
 /// 인증 관련 비즈니스 로직을 관리하는 컨트롤러입니다.
 /// UseCase 패턴을 사용하여 인증 로직을 처리하고,
 /// 폼 상태 관리를 담당합니다.
-class AuthController extends StateNotifier<AuthFormState> {
+class AuthController extends Notifier<AuthFormState> {
   /// 로그인 UseCase
   late final LoginUseCase _loginUseCase;
 
@@ -44,22 +44,19 @@ class AuthController extends StateNotifier<AuthFormState> {
   /// 소셜 로그인 UseCase
   late final SocialLoginUseCase _socialLoginUseCase;
 
-  /// Riverpod Ref 객체
-  final WidgetRef _ref;
-
-  /// 생성자
-  ///
-  /// [ref] Riverpod Ref 객체
-  AuthController(this._ref) : super(const AuthFormState()) {
-    final repository = _ref.read(authRepositoryProvider);
+  @override
+  AuthFormState build() {
+    final repository = ref.read(authRepositoryProvider);
     _loginUseCase = LoginUseCase(repository);
     _signupUseCase = SignupUseCase(repository);
     _logoutUseCase = LogoutUseCase(repository);
     _getCurrentUserUseCase = GetCurrentUserUseCase(repository);
     _socialLoginUseCase = SocialLoginUseCase(repository);
+
+    return const AuthFormState();
   }
 
-  AuthFormState get currentState => _ref.read(authFormStateNotifierProvider);
+  AuthFormState get currentState => ref.read(authFormStateNotifierProvider);
 
   AuthFormState get formData => currentState;
 
@@ -74,31 +71,29 @@ class AuthController extends StateNotifier<AuthFormState> {
 
   void initializeForm() {
     // 폼 초기화 로직
-    _ref.read(authFormStateNotifierProvider.notifier).resetState();
+    ref.read(authFormStateNotifierProvider.notifier).resetState();
   }
 
   void updateEmail(String email) {
-    _ref.read(authFormStateNotifierProvider.notifier).updateEmail(email);
+    ref.read(authFormStateNotifierProvider.notifier).updateEmail(email);
   }
 
   void updateUsername(String username) {
-    _ref.read(authFormStateNotifierProvider.notifier).updateUsername(username);
+    ref.read(authFormStateNotifierProvider.notifier).updateUsername(username);
   }
 
   void togglePasswordVisibility() {
-    _ref
-        .read(authFormStateNotifierProvider.notifier)
-        .togglePasswordVisibility();
+    ref.read(authFormStateNotifierProvider.notifier).togglePasswordVisibility();
   }
 
   void toggleConfirmPasswordVisibility() {
-    _ref
+    ref
         .read(authFormStateNotifierProvider.notifier)
         .toggleConfirmPasswordVisibility();
   }
 
   void toggleRememberMe() {
-    _ref.read(authFormStateNotifierProvider.notifier).toggleRememberMe();
+    ref.read(authFormStateNotifierProvider.notifier).toggleRememberMe();
   }
 
   /// 실제 로그인 성공 처리
@@ -109,7 +104,7 @@ class AuthController extends StateNotifier<AuthFormState> {
     debugPrint('✅ AuthController: 로그인 성공 처리');
 
     // 폼 상태 업데이트
-    _ref.read(authFormStateNotifierProvider.notifier).handleLoginSuccess();
+    ref.read(authFormStateNotifierProvider.notifier).handleLoginSuccess();
   }
 
   /// 로그인 성공 시 펫 데이터 로드
@@ -254,7 +249,7 @@ class AuthController extends StateNotifier<AuthFormState> {
   /// 저장된 로그인 정보 불러오기
   Future<void> loadSavedCredentials() async {
     try {
-      await _ref
+      await ref
           .read(authFormStateNotifierProvider.notifier)
           .loadSavedCredentials();
     } catch (error) {
@@ -265,7 +260,7 @@ class AuthController extends StateNotifier<AuthFormState> {
   /// 저장된 로그인 정보 삭제
   Future<bool> clearSavedCredentials() async {
     try {
-      await _ref
+      await ref
           .read(authFormStateNotifierProvider.notifier)
           .clearSavedCredentials();
       return true;
@@ -286,7 +281,7 @@ class AuthController extends StateNotifier<AuthFormState> {
         await clearSavedCredentials();
 
         // 인증 상태 초기화
-        _ref.read(authFormStateNotifierProvider.notifier).resetState();
+        ref.read(authFormStateNotifierProvider.notifier).resetState();
 
         return Result.success('ログアウトが完了しました', '');
       } else {
@@ -335,11 +330,11 @@ class AuthController extends StateNotifier<AuthFormState> {
 
   /// 에러 메시지 초기화
   void clearError() {
-    _ref.read(authFormStateNotifierProvider.notifier).clearError();
+    ref.read(authFormStateNotifierProvider.notifier).clearError();
   }
 
   void resetForm() {
-    _ref.read(authFormStateNotifierProvider.notifier).resetState();
+    ref.read(authFormStateNotifierProvider.notifier).resetState();
   }
 
   /// 현재 사용자 정보 가져오기
@@ -413,3 +408,8 @@ class AuthController extends StateNotifier<AuthFormState> {
     }
   }
 }
+
+/// AuthController Provider
+final authControllerProvider = NotifierProvider<AuthController, AuthFormState>(
+  AuthController.new,
+);

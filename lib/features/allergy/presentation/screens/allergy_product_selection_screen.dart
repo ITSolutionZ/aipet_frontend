@@ -79,7 +79,7 @@ class _AllergyProductSelectionScreenState
 
   /// 선택된 펫의 종류 가져오기
   String _getPetTypeFromSelectedPet() {
-    final petsAsync = ref.read(petProfilesNotifierProvider);
+    final petsAsync = ref.read(petProfilesProvider);
     return petsAsync.when(
       data: (pets) {
         final selectedPet = pets.firstWhere(
@@ -89,7 +89,7 @@ class _AllergyProductSelectionScreenState
         return _getPetType(selectedPet);
       },
       loading: () => 'ドッグ',
-      error: (_, __) => 'ドッグ',
+      error: (error, stackTrace) => 'ドッグ',
     );
   }
 
@@ -167,7 +167,7 @@ class _AllergyProductSelectionScreenState
 
   /// 펫 종류와 카테고리를 결합한 상품 로드
   void _loadProductsForPetAndCategory() {
-    final petsAsync = ref.read(petProfilesNotifierProvider);
+    final petsAsync = ref.read(petProfilesProvider);
     petsAsync.whenData((pets) {
       final selectedPet = pets.firstWhere(
         (pet) => pet.id == widget.petId,

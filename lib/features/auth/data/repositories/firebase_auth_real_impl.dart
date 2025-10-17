@@ -10,7 +10,8 @@ import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// TODO: Re-enable when Google Sign-In is reimplemented for google_sign_in 7.2.0+
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -33,8 +34,9 @@ class FirebaseAuthRealImpl implements AuthRepository {
   /// Firebase Auth 인스턴스
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  /// Google Sign-In 인스턴스 (이메일, 프로필 스코프 포함)
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+  // Google Sign-In 인스턴스 (이메일, 프로필 스코프 포함)
+  // TODO: Update to google_sign_in 7.2.0+ API - currently commented out due to API changes
+  // GoogleSignIn get _googleSignIn => GoogleSignIn(...);
 
   /// LINE OAuth 서비스 인스턴스
   final LineOAuthService _lineOAuthService = LineOAuthService();
@@ -107,36 +109,25 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
   @override
   Future<Result<AuthUser>> signInWithGoogle() async {
+    // TODO: Google Sign-In implementation needs to be updated for google_sign_in 7.2.0+
+    // The API has changed significantly. For now, return a failure.
+    // When implementing, refer to: https://pub.dev/packages/google_sign_in
+
+    if (kDebugMode) {
+      debugPrint('⚠️ Google Sign-In は現在利用できません (API更新が必要)');
+    }
+
+    return Result.failure('Google ログインは現在利用できません。開発中です。');
+
+    /* TODO: Update to new API
     try {
-      // Google Sign-In 플로우
+      // New google_sign_in 7.2.0+ API
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-      if (googleUser == null) {
-        return Result.failure('Google ログインがキャンセルされました');
-      }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final userCredential = await _firebaseAuth.signInWithCredential(
-        credential,
-      );
-
-      if (userCredential.user != null) {
-        final user = _mapFirebaseUserToAuthUser(userCredential.user!);
-        return Result.success('Googleログインが完了しました', user);
-      } else {
-        return Result.failure('Google ログインに失敗しました');
-      }
-    } on FirebaseAuthException catch (e) {
-      return Result.failure(_getFirebaseErrorMessage(e));
+      // ... implementation
     } catch (e) {
       return Result.failure('Google ログインに失敗しました: ${e.toString()}');
     }
+    */
   }
 
   @override
@@ -216,7 +207,8 @@ class FirebaseAuthRealImpl implements AuthRepository {
   Future<void> signOut() async {
     try {
       await _firebaseAuth.signOut();
-      await _googleSignIn.signOut();
+      // TODO: Google Sign-Out when Google Sign-In is re-implemented
+      // await _googleSignIn.signOut();
       // LINE 로그아웃은 별도 구현이 필요할 수 있음 (현재는 Firebase 로그아웃으로 처리)
     } catch (e) {
       // 로그아웃 실패는 무시

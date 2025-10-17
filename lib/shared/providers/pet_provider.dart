@@ -71,7 +71,7 @@ class SelectedPetId extends _$SelectedPetId {
 
 /// 選択中のペットプロバイダー
 @riverpod
-Future<PetProfileEntity?> selectedPet(SelectedPetRef ref) async {
+Future<PetProfileEntity?> selectedPet(Ref ref) async {
   final selectedId = await ref.watch(selectedPetIdProvider.future);
   if (selectedId == null || selectedId.isEmpty) return null;
 

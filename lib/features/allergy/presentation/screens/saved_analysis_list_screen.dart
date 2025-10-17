@@ -21,7 +21,7 @@ class _SavedAnalysisListScreenState
     extends ConsumerState<SavedAnalysisListScreen> {
   @override
   Widget build(BuildContext context) {
-    final savedAnalysesAsync = ref.watch(savedAnalysisNotifierProvider);
+    final savedAnalysesAsync = ref.watch(savedAnalysisProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8), // PDF 출력에 적합한 고정 배경색
@@ -125,7 +125,7 @@ class _SavedAnalysisListScreenState
             const SizedBox(height: AppSpacing.md),
             ElevatedButton(
               onPressed: () {
-                ref.invalidate(savedAnalysisNotifierProvider);
+                ref.invalidate(savedAnalysisProvider);
               },
               child: const Text('再試行'),
             ),
@@ -145,11 +145,7 @@ class _SavedAnalysisListScreenState
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
         boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
+          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
         ],
       ),
       child: Material(
