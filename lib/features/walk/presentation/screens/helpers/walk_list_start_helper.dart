@@ -13,7 +13,7 @@ class WalkListStartHelper {
     required WidgetRef ref,
     required WalkController controller,
   }) async {
-    final selectedPets = ref.read(selectedPetsNotifierProvider);
+    final selectedPets = ref.read(selectedPetsProvider);
 
     if (selectedPets.isEmpty) {
       _showNoPetSelectedSnackBar(context);

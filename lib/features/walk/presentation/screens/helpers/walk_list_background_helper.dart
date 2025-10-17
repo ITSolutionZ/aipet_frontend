@@ -49,7 +49,7 @@ class WalkListBackgroundHelper {
         );
       } else if (shouldEnd == false) {
         // 계속하기 선택 시 provider에 복원
-        ref.read(currentWalkNotifierProvider.notifier).startWalk(currentWalk);
+        ref.read(currentWalkProvider.notifier).startWalk(currentWalk);
       }
     } catch (e) {
       debugPrint('❌ 백그라운드 산책 확인 실패: $e');
@@ -108,7 +108,7 @@ class WalkListBackgroundHelper {
     await LocalWalkStorageService.saveCurrentWalk(null);
 
     // Provider 상태도 명시적으로 클리어
-    ref.read(currentWalkNotifierProvider.notifier).endWalk();
+    ref.read(currentWalkProvider.notifier).endWalk();
 
     if (!context.mounted) return;
 

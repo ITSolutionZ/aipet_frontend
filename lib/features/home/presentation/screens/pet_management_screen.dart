@@ -14,7 +14,7 @@ class PetManagementScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final petsAsync = ref.watch(petProfilesNotifierProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,

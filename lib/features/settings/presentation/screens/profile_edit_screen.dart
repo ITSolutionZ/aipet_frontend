@@ -5,17 +5,29 @@ import 'package:aipet_frontend/features/settings/presentation/controllers/user_p
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// 프로필 편집 폼 상태 관리
-final profileEditFormProvider =
-    StateNotifierProvider<ProfileEditFormController, ProfileEditFormState>(
-      (ref) => ProfileEditFormController(ref),
-    );
+part 'profile_edit_screen.g.dart';
 
-class ProfileEditFormController extends StateNotifier<ProfileEditFormState> {
-  final Ref ref;
+/// 프로필 편집 폼 컨트롤러
+@riverpod
+class ProfileEditFormController extends _$ProfileEditFormController {
+  @override
+  ProfileEditFormState build() {
+    // Dispose 시 컨트롤러 정리
+    ref.onDispose(() {
+      _disposeControllers();
+    });
+    return const ProfileEditFormState();
+  }
 
-  ProfileEditFormController(this.ref) : super(const ProfileEditFormState());
+  void _disposeControllers() {
+    state.formKey?.currentState?.dispose();
+    state.userNameController?.dispose();
+    state.emailController?.dispose();
+    state.nameKatakanaController?.dispose();
+    state.contactController?.dispose();
+  }
 
   void initialize() {
     final formKey = GlobalKey<FormState>();
@@ -54,7 +66,7 @@ class ProfileEditFormController extends StateNotifier<ProfileEditFormState> {
       emailController.text = profile.email;
       nameKatakanaController.text = profile.nameKatakana ?? '';
       contactController.text = profile.contact ?? '';
-      print('📝 초기화 시 프로필 데이터 설정: ${profile.userName}');
+      debugPrint('📝 초기화 시 프로필 데이터 설정: ${profile.userName}');
     }
 
     state = state.copyWith(
@@ -68,18 +80,9 @@ class ProfileEditFormController extends StateNotifier<ProfileEditFormState> {
 
   /// 선택된 이미지 업데이트
   void updateImage(File image) {
-    print('🖼️ ProfileEditFormController: 이미지 업데이트 시작 - ${image.path}');
+    debugPrint('🖼️ ProfileEditFormController: 이미지 업데이트 시작 - ${image.path}');
     state = state.copyWith(selectedImage: image);
-    print('🖼️ ProfileEditFormController: 이미지 상태 업데이트 완료');
-  }
-
-  @override
-  void dispose() {
-    state.userNameController?.dispose();
-    state.emailController?.dispose();
-    state.nameKatakanaController?.dispose();
-    state.contactController?.dispose();
-    super.dispose();
+    debugPrint('🖼️ ProfileEditFormController: 이미지 상태 업데이트 완료');
   }
 }
 
@@ -139,28 +142,30 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     super.initState();
     // 폼 컨트롤러 초기화 (프로필은 자동으로 로드됨)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(profileEditFormProvider.notifier).initialize();
+      ref.read(profileEditFormControllerProvider.notifier).initialize();
     });
   }
 
   /// 이미지 선택 다이얼로그 표시
   Future<void> _showImagePicker() async {
-    print('🖼️ 이미지 선택 다이얼로그 시작');
+    debugPrint('🖼️ 이미지 선택 다이얼로그 시작');
     final File? selectedImage = await _imagePickerService.showImageSourceDialog(
       context,
     );
     if (selectedImage != null) {
-      print('🖼️ 이미지 선택됨: ${selectedImage.path}');
+      debugPrint('🖼️ 이미지 선택됨: ${selectedImage.path}');
       // 선택된 이미지를 상태에 저장
-      ref.read(profileEditFormProvider.notifier).updateImage(selectedImage);
-      print('🖼️ 이미지 상태 업데이트 완료');
+      ref
+          .read(profileEditFormControllerProvider.notifier)
+          .updateImage(selectedImage);
+      debugPrint('🖼️ 이미지 상태 업데이트 완료');
     } else {
-      print('🖼️ 이미지 선택 취소됨');
+      debugPrint('🖼️ 이미지 선택 취소됨');
     }
   }
 
   Future<void> _saveProfile() async {
-    final formState = ref.read(profileEditFormProvider);
+    final formState = ref.read(profileEditFormControllerProvider);
     if (formState.formKey?.currentState?.validate() ?? false) {
       final controller = ref.read(userProfileControllerProvider.notifier);
 
@@ -185,11 +190,11 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
       if (mounted) {
         if (success) {
-          // 다른 화면에서 참조하는 userProfileNotifierProvider도 업데이트
+          // 다른 화면에서 참조하는 userProfileProvider도 업데이트
           try {
-            await ref.read(userProfileNotifierProvider.notifier).refresh();
+            await ref.read(userProfileProvider.notifier).refresh();
           } catch (e) {
-            print('⚠️ userProfileNotifierProvider refresh 실패: $e');
+            debugPrint('⚠️ userProfileProvider refresh 실패: $e');
           }
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -214,13 +219,13 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(userProfileControllerProvider);
-    final formState = ref.watch(profileEditFormProvider);
+    final formState = ref.watch(profileEditFormControllerProvider);
 
     // 프로필 데이터가 로드되면 컨트롤러에 값 설정
     ref.listen(userProfileControllerProvider, (previous, next) {
       if (next.profile != null && previous?.profile != next.profile) {
         final profile = next.profile!;
-        print('📝 프로필 데이터 로드됨: ${profile.userName}');
+        debugPrint('📝 프로필 데이터 로드됨: ${profile.userName}');
 
         // 텍스트 컨트롤러에 값 설정 (기존 텍스트와 다를 때만)
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -237,7 +242,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           if (formState.contactController?.text != (profile.contact ?? '')) {
             formState.contactController?.text = profile.contact ?? '';
           }
-          print('📝 텍스트 필드에 값 설정 완료');
+          debugPrint('📝 텍스트 필드에 값 설정 완료');
         });
       }
     });
@@ -370,7 +375,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
   /// 프로필 이미지 섹션 위젯
   Widget _buildProfileImageSection() {
-    final formState = ref.watch(profileEditFormProvider);
+    final formState = ref.watch(profileEditFormControllerProvider);
     final profileState = ref.watch(userProfileControllerProvider);
 
     return Column(
@@ -385,7 +390,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
               border: Border.all(color: AppColors.pointBrown, width: 3),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -416,22 +421,22 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     ProfileEditFormState formState,
     UserProfileState profileState,
   ) {
-    print('🖼️ _buildProfileImage 호출됨');
-    print('🖼️ formState.selectedImage: ${formState.selectedImage?.path}');
-    print(
+    debugPrint('🖼️ _buildProfileImage 호출됨');
+    debugPrint('🖼️ formState.selectedImage: ${formState.selectedImage?.path}');
+    debugPrint(
       '🖼️ profileState.profile?.profileImage: ${profileState.profile?.profileImage}',
     );
 
     // 선택된 이미지가 있으면 표시
     if (formState.selectedImage != null) {
-      print('🖼️ 선택된 이미지 표시: ${formState.selectedImage!.path}');
+      debugPrint('🖼️ 선택된 이미지 표시: ${formState.selectedImage!.path}');
       return Image.file(
         formState.selectedImage!,
         fit: BoxFit.cover,
         width: 120,
         height: 120,
         errorBuilder: (context, error, stackTrace) {
-          print('🖼️ 이미지 로드 에러: $error');
+          debugPrint('🖼️ 이미지 로드 에러: $error');
           return _buildDefaultProfileImage();
         },
       );
@@ -440,19 +445,19 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     // 기존 프로필 이미지가 있으면 표시
     if (profileState.profile?.profileImage != null &&
         profileState.profile!.profileImage!.isNotEmpty) {
-      print('🖼️ 기존 프로필 이미지 표시: ${profileState.profile!.profileImage}');
+      debugPrint('🖼️ 기존 프로필 이미지 표시: ${profileState.profile!.profileImage}');
       return _buildProfileImageWidget(profileState.profile!.profileImage!);
     }
 
     // 기본 이미지 표시
-    print('🖼️ 기본 이미지 표시');
+    debugPrint('🖼️ 기본 이미지 표시');
     return _buildDefaultProfileImage();
   }
 
   /// 프로필 이미지 위젯 빌드 (이미지 타입 감지)
   Widget _buildProfileImageWidget(String imagePath) {
     final imageType = ImageService.getImageType(imagePath);
-    print('🖼️ 이미지 타입 감지: $imageType, 경로: $imagePath');
+    debugPrint('🖼️ 이미지 타입 감지: $imageType, 경로: $imagePath');
 
     switch (imageType) {
       case ImageType.file:
@@ -462,7 +467,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           width: 120,
           height: 120,
           errorBuilder: (context, error, stackTrace) {
-            print('🖼️ 파일 이미지 로드 에러: $error');
+            debugPrint('🖼️ 파일 이미지 로드 에러: $error');
             return _buildDefaultProfileImage();
           },
         );
@@ -473,7 +478,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           width: 120,
           height: 120,
           errorBuilder: (context, error, stackTrace) {
-            print('🖼️ 네트워크 이미지 로드 에러: $error');
+            debugPrint('🖼️ 네트워크 이미지 로드 에러: $error');
             return _buildDefaultProfileImage();
           },
         );
@@ -484,7 +489,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           width: 120,
           height: 120,
           errorBuilder: (context, error, stackTrace) {
-            print('🖼️ 에셋 이미지 로드 에러: $error');
+            debugPrint('🖼️ 에셋 이미지 로드 에러: $error');
             return _buildDefaultProfileImage();
           },
         );
@@ -538,10 +543,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.pointOffWhite.withOpacity(0.5),
+        color: AppColors.pointOffWhite.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppRadius.medium),
         border: Border.all(
-          color: AppColors.pointGray.withOpacity(0.3),
+          color: AppColors.pointGray.withValues(alpha: 0.3),
           width: 1,
         ),
       ),

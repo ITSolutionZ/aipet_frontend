@@ -69,7 +69,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
 
   /// ユーザープロフィール情報の読み込み
   void _loadUserProfile() {
-    final userProfileAsync = ref.read(userProfileNotifierProvider);
+    final userProfileAsync = ref.read(userProfileProvider);
     userProfileAsync.whenData((profile) {
       _nameController.text = profile['name'] ?? '';
       // 電話番号はデフォルト値で設定
@@ -81,7 +81,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
 
   /// デフォルトペット選択 (最初のペット)
   void _loadDefaultPet() {
-    final petsAsync = ref.read(petProfilesNotifierProvider);
+    final petsAsync = ref.read(petProfilesProvider);
     petsAsync.whenData((pets) {
       if (pets.isNotEmpty && _selectedPet == null) {
         setState(() {
@@ -370,7 +370,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
   Widget _buildPetSelector() {
     return Consumer(
       builder: (context, ref, child) {
-        final petsAsync = ref.watch(petProfilesNotifierProvider);
+        final petsAsync = ref.watch(petProfilesProvider);
 
         return Container(
           padding: const EdgeInsets.all(AppSpacing.md),
@@ -1369,7 +1369,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
 
         // 로컬 저장소에 예약 정보 저장
         await ref
-            .read(reservationsNotifierProvider.notifier)
+            .read(reservationsProvider.notifier)
             .addReservation(reservation);
 
         // 성공 메시지 표시

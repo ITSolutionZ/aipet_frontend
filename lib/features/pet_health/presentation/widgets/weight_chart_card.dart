@@ -3,15 +3,17 @@ import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// 🎯 Weight Chart State Provider
-final weightChartStateProvider =
-    StateNotifierProvider<WeightChartController, WeightChartState>(
-      (ref) => WeightChartController(),
-    );
+part 'weight_chart_card.g.dart';
 
-class WeightChartController extends StateNotifier<WeightChartState> {
-  WeightChartController() : super(const WeightChartState());
+/// 🎯 Weight Chart Controller
+@riverpod
+class WeightChartController extends _$WeightChartController {
+  @override
+  WeightChartState build() {
+    return const WeightChartState();
+  }
 
   void updateMonthOffset(int offset) {
     state = state.copyWith(currentMonthOffset: offset);
@@ -64,7 +66,7 @@ class _WeightChartCardState extends ConsumerState<WeightChartCard> {
 
   @override
   Widget build(BuildContext context) {
-    final chartState = ref.watch(weightChartStateProvider);
+    final chartState = ref.watch(weightChartControllerProvider);
     final weightRecords = _weightRecords;
 
     return Container(
@@ -257,23 +259,23 @@ class _WeightChartCardState extends ConsumerState<WeightChartCard> {
     return Listener(
       onPointerDown: (event) {
         ref
-            .read(weightChartStateProvider.notifier)
+            .read(weightChartControllerProvider.notifier)
             .setDragStart(event.localPosition.dx);
       },
       onPointerUp: (event) {
-        final chartState = ref.read(weightChartStateProvider);
+        final chartState = ref.read(weightChartControllerProvider);
         final swipeDistance = event.localPosition.dx - chartState.dragStartX;
         const swipeThreshold = 30.0; // 낮은 임계값
 
         if (swipeDistance > swipeThreshold) {
           // 오른쪽으로 스와이프 (이전 월)
           ref
-              .read(weightChartStateProvider.notifier)
+              .read(weightChartControllerProvider.notifier)
               .updateMonthOffset(chartState.currentMonthOffset - 1);
         } else if (swipeDistance < -swipeThreshold) {
           // 왼쪽으로 스와이프 (다음 월)
           ref
-              .read(weightChartStateProvider.notifier)
+              .read(weightChartControllerProvider.notifier)
               .updateMonthOffset(chartState.currentMonthOffset + 1);
         }
       },
@@ -290,7 +292,7 @@ class _WeightChartCardState extends ConsumerState<WeightChartCard> {
                 enabled: false, // 터치 비활성화하여 스와이프 감지 허용
                 touchTooltipData: BarTouchTooltipData(
                   tooltipBorder: BorderSide.none,
-                  tooltipRoundedRadius: 8,
+                  // tooltipRoundedRadius는 f1_chart에서 제거됨
                   tooltipPadding: const EdgeInsets.all(8),
                   fitInsideHorizontally: true,
                   fitInsideVertically: true,
@@ -347,7 +349,7 @@ class _WeightChartCardState extends ConsumerState<WeightChartCard> {
                         );
                         final monthName = '${targetDate.month}月';
                         return SideTitleWidget(
-                          axisSide: meta.axisSide,
+                          meta: meta,
                           child: Text(
                             monthName,
                             style: AppFonts.bodySmall.copyWith(
@@ -435,7 +437,7 @@ class _WeightChartCardState extends ConsumerState<WeightChartCard> {
                   enabled: false, // 터치 비활성화하여 스와이프 감지 허용
                   touchTooltipData: LineTouchTooltipData(
                     tooltipBorder: BorderSide.none,
-                    tooltipRoundedRadius: 8,
+                    // tooltipRoundedRadius는 f1_chart에서 제거됨
                     tooltipPadding: const EdgeInsets.all(8),
                     fitInsideHorizontally: true,
                     fitInsideVertically: true,

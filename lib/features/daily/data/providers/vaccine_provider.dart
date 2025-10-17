@@ -6,7 +6,7 @@ part 'vaccine_provider.g.dart';
 /// 펫별 접종 예정 백신 프로바이더
 @riverpod
 Future<List<Map<String, dynamic>>> scheduledVaccines(
-  ScheduledVaccinesRef ref,
+  Ref ref,
   String petId,
 ) async {
   // 로컬 저장소에서 백신 기록 조회
@@ -31,7 +31,7 @@ Future<List<Map<String, dynamic>>> scheduledVaccines(
 /// 펫별 접종 완료 백신 프로바이더
 @riverpod
 Future<List<Map<String, dynamic>>> completedVaccines(
-  CompletedVaccinesRef ref,
+  Ref ref,
   String petId,
 ) async {
   // 로컬 저장소에서 백신 기록 조회
@@ -50,7 +50,7 @@ Future<List<Map<String, dynamic>>> completedVaccines(
 /// 펫별 전체 백신 기록 프로바이더
 @riverpod
 Future<List<Map<String, dynamic>>> petVaccineRecords(
-  PetVaccineRecordsRef ref,
+  Ref ref,
   String petId,
 ) async {
   // 로컬 저장소에서 해당 펫의 모든 백신 기록 조회

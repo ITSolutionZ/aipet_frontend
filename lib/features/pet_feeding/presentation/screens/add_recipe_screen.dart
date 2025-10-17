@@ -356,7 +356,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
         updatedAt: DateTime.now(),
       );
 
-      await ref.read(recipesNotifierProvider.notifier).createRecipe(recipe);
+      await ref.read(recipesProvider.notifier).createRecipe(recipe);
 
       if (mounted) {
         UiService.showSuccess(context, 'レシピが正常に保存されました！');

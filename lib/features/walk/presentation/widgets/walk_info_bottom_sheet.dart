@@ -5,19 +5,21 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../pet_profile/data/providers/pet_profile_providers.dart';
 import 'dialogs/edit_walk_bottom_sheet.dart';
 import 'helpers/helpers.dart';
 
-/// 🎯 Walk Info Bottom Sheet Expansion State Provider
-final walkInfoBottomSheetProvider =
-    StateNotifierProvider.family<WalkInfoExpansionController, bool, String>(
-      (ref, sheetId) => WalkInfoExpansionController(),
-    );
+part 'walk_info_bottom_sheet.g.dart';
 
-class WalkInfoExpansionController extends StateNotifier<bool> {
-  WalkInfoExpansionController() : super(false);
+/// 🎯 Walk Info Bottom Sheet Expansion Controller
+@riverpod
+class WalkInfoExpansionController extends _$WalkInfoExpansionController {
+  @override
+  bool build(String sheetId) {
+    return false;
+  }
 
   void toggle() {
     state = !state;
@@ -32,22 +34,28 @@ class WalkInfoBottomSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sheetId = walkRecord.id;
-    final isExpanded = ref.watch(walkInfoBottomSheetProvider(sheetId));
+    final isExpanded = ref.watch(walkInfoExpansionControllerProvider(sheetId));
 
     return GestureDetector(
       onVerticalDragEnd: (details) {
         // 위로 스와이프하면 확장
         if (details.primaryVelocity! < -500 && !isExpanded) {
-          ref.read(walkInfoBottomSheetProvider(sheetId).notifier).toggle();
+          ref
+              .read(walkInfoExpansionControllerProvider(sheetId).notifier)
+              .toggle();
         }
         // 아래로 스와이프하면 축소
         else if (details.primaryVelocity! > 500 && isExpanded) {
-          ref.read(walkInfoBottomSheetProvider(sheetId).notifier).toggle();
+          ref
+              .read(walkInfoExpansionControllerProvider(sheetId).notifier)
+              .toggle();
         }
       },
       onTap: () {
         // 탭으로도 토글 가능
-        ref.read(walkInfoBottomSheetProvider(sheetId).notifier).toggle();
+        ref
+            .read(walkInfoExpansionControllerProvider(sheetId).notifier)
+            .toggle();
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),

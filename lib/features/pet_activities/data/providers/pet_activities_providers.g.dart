@@ -294,3 +294,89 @@ final class GetYouTubeVideosUseCaseProvider
 
 String _$getYouTubeVideosUseCaseHash() =>
     r'e2edc584a6ee8bb22cbb93548dd3cf1ba24f69fc';
+
+/// YouTube 비디오 목록 프로바이더
+
+@ProviderFor(youTubeVideos)
+const youTubeVideosProvider = YouTubeVideosFamily._();
+
+/// YouTube 비디오 목록 프로바이더
+
+final class YouTubeVideosProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<YouTubeVideoEntity>>,
+          List<YouTubeVideoEntity>,
+          FutureOr<List<YouTubeVideoEntity>>
+        >
+    with
+        $FutureModifier<List<YouTubeVideoEntity>>,
+        $FutureProvider<List<YouTubeVideoEntity>> {
+  /// YouTube 비디오 목록 프로바이더
+  const YouTubeVideosProvider._({
+    required YouTubeVideosFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'youTubeVideosProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$youTubeVideosHash();
+
+  @override
+  String toString() {
+    return r'youTubeVideosProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<List<YouTubeVideoEntity>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<YouTubeVideoEntity>> create(Ref ref) {
+    final argument = this.argument as String;
+    return youTubeVideos(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is YouTubeVideosProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$youTubeVideosHash() => r'09b2f4d7967c458cf7a98a3542d7f175c77c6dca';
+
+/// YouTube 비디오 목록 프로바이더
+
+final class YouTubeVideosFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<List<YouTubeVideoEntity>>, String> {
+  const YouTubeVideosFamily._()
+    : super(
+        retry: null,
+        name: r'youTubeVideosProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// YouTube 비디오 목록 프로바이더
+
+  YouTubeVideosProvider call(String petId) =>
+      YouTubeVideosProvider._(argument: petId, from: this);
+
+  @override
+  String toString() => r'youTubeVideosProvider';
+}

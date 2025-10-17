@@ -95,7 +95,7 @@ class PetInfoImageHelper {
     final imagePath = await ImageService.pickFromCamera(context);
     if (imagePath != null && context.mounted) {
       ref
-          .read(petBasicInfoTabProvider(tabId).notifier)
+          .read(petBasicInfoTabControllerProvider(tabId).notifier)
           .updateSelectedImage(imagePath);
       SnackBarService.showSuccess(context, '写真が選択されました');
     }
@@ -110,7 +110,7 @@ class PetInfoImageHelper {
     final imagePath = await ImageService.pickFromGallery(context);
     if (imagePath != null && context.mounted) {
       ref
-          .read(petBasicInfoTabProvider(tabId).notifier)
+          .read(petBasicInfoTabControllerProvider(tabId).notifier)
           .updateSelectedImage(imagePath);
       SnackBarService.showSuccess(context, '画像が選択されました');
     }

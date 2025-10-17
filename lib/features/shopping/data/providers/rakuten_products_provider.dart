@@ -1,7 +1,9 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/rakuten_pet_product_model.dart';
 import '../services/rakuten_api_service.dart';
+
+part 'rakuten_products_provider.g.dart';
 
 /// ラクテン商品検索状態
 class RakutenProductsState {
@@ -57,8 +59,12 @@ class RakutenProductsState {
 }
 
 /// ラクテン商品検索コントローラー
-class RakutenProductsNotifier extends StateNotifier<RakutenProductsState> {
-  RakutenProductsNotifier() : super(const RakutenProductsState());
+@riverpod
+class RakutenProductsNotifier extends _$RakutenProductsNotifier {
+  @override
+  RakutenProductsState build() {
+    return const RakutenProductsState();
+  }
 
   final RakutenApiService _apiService = RakutenApiService();
 
@@ -372,9 +378,3 @@ class RakutenProductsNotifier extends StateNotifier<RakutenProductsState> {
     state = const RakutenProductsState();
   }
 }
-
-/// プロバイダー
-final rakutenProductsProvider =
-    StateNotifierProvider<RakutenProductsNotifier, RakutenProductsState>(
-      (ref) => RakutenProductsNotifier(),
-    );

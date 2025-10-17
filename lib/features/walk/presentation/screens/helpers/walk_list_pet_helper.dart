@@ -1,11 +1,10 @@
 import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
-import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../pet_profile/data/providers/pet_profile_providers.dart';
+import '../../../../pet_profile/data/providers/pet_profile_providers.dart';
 
 /// 펫 선택 관련 헬퍼
 class WalkListPetHelper {
@@ -26,7 +25,7 @@ class WalkListPetHelper {
 
   /// 선택된 펫 로깅
   static void _logSelectedPets(WidgetRef ref) {
-    final currentSelected = ref.read(selectedPetsNotifierProvider);
+    final currentSelected = ref.read(selectedPetsProvider);
     debugPrint('✅ 선택된 펫들: ${currentSelected.map((p) => p.name).join(', ')}');
   }
 

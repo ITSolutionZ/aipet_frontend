@@ -1,32 +1,44 @@
+import 'package:aipet_frontend/features/facility/data/facility_providers.dart';
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:aipet_frontend/features/facility/domain/usecases/filter_facilities_by_type_usecase.dart';
 import 'package:aipet_frontend/features/facility/domain/usecases/get_facility_by_id_usecase.dart';
 import 'package:aipet_frontend/features/facility/domain/usecases/load_facilities_usecase.dart';
 import 'package:aipet_frontend/features/facility/domain/usecases/search_facilities_usecase.dart';
 import 'package:aipet_frontend/features/facility/domain/usecases/set_current_location_usecase.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class FacilityController extends StateNotifier<FacilityState> {
-  FacilityController(
-    this._loadFacilitiesUseCase,
-    this._searchFacilitiesUseCase,
-    this._filterFacilitiesByTypeUseCase,
-    this._getFacilityByIdUseCase,
-    this._setCurrentLocationUseCase,
-  ) : super(FacilityState.initial());
+part 'facility_controller.g.dart';
 
-  final LoadFacilitiesUseCase _loadFacilitiesUseCase;
-  final SearchFacilitiesUseCase _searchFacilitiesUseCase;
-  final FilterFacilitiesByTypeUseCase _filterFacilitiesByTypeUseCase;
-  final GetFacilityByIdUseCase _getFacilityByIdUseCase;
-  final SetCurrentLocationUseCase _setCurrentLocationUseCase;
+@riverpod
+class FacilityController extends _$FacilityController {
+  late final LoadFacilitiesUseCase _loadFacilitiesUseCase;
+  late final SearchFacilitiesUseCase _searchFacilitiesUseCase;
+  late final FilterFacilitiesByTypeUseCase _filterFacilitiesByTypeUseCase;
+  late final GetFacilityByIdUseCase _getFacilityByIdUseCase;
+  late final SetCurrentLocationUseCase _setCurrentLocationUseCase;
+
+  @override
+  FacilityState build() {
+    final repository = ref.watch(facilityRepositoryProvider);
+    _loadFacilitiesUseCase = LoadFacilitiesUseCase(repository);
+    _searchFacilitiesUseCase = SearchFacilitiesUseCase(repository);
+    _filterFacilitiesByTypeUseCase = FilterFacilitiesByTypeUseCase(repository);
+    _getFacilityByIdUseCase = GetFacilityByIdUseCase(repository);
+    _setCurrentLocationUseCase = SetCurrentLocationUseCase(repository);
+
+    return FacilityState.initial();
+  }
 
   Future<void> loadFacilities() async {
     state = state.copyWith(isLoading: true, error: null);
 
     final result = await _loadFacilitiesUseCase();
     if (result.isSuccess) {
-      state = state.copyWith(isLoading: false, facilities: result.dataOrNull ?? [], error: null);
+      state = state.copyWith(
+        isLoading: false,
+        facilities: result.dataOrNull ?? [],
+        error: null,
+      );
     } else {
       state = state.copyWith(isLoading: false, error: result.message);
     }
@@ -42,7 +54,11 @@ class FacilityController extends StateNotifier<FacilityState> {
 
     final result = await _searchFacilitiesUseCase(query);
     if (result.isSuccess) {
-      state = state.copyWith(isLoading: false, facilities: result.dataOrNull ?? [], error: null);
+      state = state.copyWith(
+        isLoading: false,
+        facilities: result.dataOrNull ?? [],
+        error: null,
+      );
     } else {
       state = state.copyWith(isLoading: false, error: result.message);
     }
@@ -88,7 +104,11 @@ class FacilityController extends StateNotifier<FacilityState> {
     }
   }
 
-  Future<void> setCurrentLocation(double latitude, double longitude, String address) async {
+  Future<void> setCurrentLocation(
+    double latitude,
+    double longitude,
+    String address,
+  ) async {
     try {
       await _setCurrentLocationUseCase(latitude, longitude, address);
 
@@ -133,7 +153,8 @@ class FacilityState {
     this.currentAddress,
   });
 
-  factory FacilityState.initial() => const FacilityState(isLoading: false, facilities: []);
+  factory FacilityState.initial() =>
+      const FacilityState(isLoading: false, facilities: []);
 
   FacilityState copyWith({
     bool? isLoading,

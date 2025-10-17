@@ -4,13 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final facilityGoogleMapProvider =
-    StateNotifierProvider.family<
-      FacilityGoogleMapController,
-      FacilityGoogleMapState,
-      FacilityGoogleMapParams
-    >((ref, params) => FacilityGoogleMapController(params));
+part 'facility_google_map_widget.g.dart';
 
 class FacilityGoogleMapParams {
   final Facility facility;
@@ -50,14 +46,18 @@ class FacilityGoogleMapState {
   }
 }
 
-class FacilityGoogleMapController
-    extends StateNotifier<FacilityGoogleMapState> {
-  final FacilityGoogleMapParams params;
+@riverpod
+class FacilityGoogleMapController extends _$FacilityGoogleMapController {
   final LocationCacheService _locationCache = LocationCacheService.instance;
+  @override
+  late final FacilityGoogleMapParams params;
 
-  FacilityGoogleMapController(this.params)
-    : super(const FacilityGoogleMapState()) {
-    getCurrentLocation();
+  @override
+  FacilityGoogleMapState build(FacilityGoogleMapParams params) {
+    this.params = params;
+    // 비동기 초기화는 build 후에 실행
+    Future.microtask(() => getCurrentLocation());
+    return const FacilityGoogleMapState();
   }
 
   Future<void> getCurrentLocation() async {
@@ -235,8 +235,10 @@ class FacilityGoogleMapWidget extends ConsumerWidget {
       onMapTap: onMapTap,
       onFacilityTap: onFacilityTap,
     );
-    final controller = ref.read(facilityGoogleMapProvider(params).notifier);
-    final state = ref.watch(facilityGoogleMapProvider(params));
+    final controller = ref.read(
+      facilityGoogleMapControllerProvider(params).notifier,
+    );
+    final state = ref.watch(facilityGoogleMapControllerProvider(params));
     return Container(
       height: 200,
       decoration: BoxDecoration(

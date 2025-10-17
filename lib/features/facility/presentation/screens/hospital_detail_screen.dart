@@ -63,9 +63,7 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
             actions: [
               Consumer(
                 builder: (context, ref, child) {
-                  final hospitalsAsync = ref.watch(
-                    registeredHospitalsNotifierProvider,
-                  );
+                  final hospitalsAsync = ref.watch(registeredHospitalsProvider);
                   final isFavorite = hospitalsAsync.maybeWhen(
                     data: (hospitals) =>
                         hospitals.any((h) => h.id == widget.hospitalId),
@@ -849,7 +847,7 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
     if (isFavorite) {
       // 즐겨찾기 제거
       await ref
-          .read(registeredHospitalsNotifierProvider.notifier)
+          .read(registeredHospitalsProvider.notifier)
           .removeHospital(widget.hospitalId);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -869,7 +867,7 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
         registeredAt: DateTime.now(),
       );
       await ref
-          .read(registeredHospitalsNotifierProvider.notifier)
+          .read(registeredHospitalsProvider.notifier)
           .addHospital(hospital);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

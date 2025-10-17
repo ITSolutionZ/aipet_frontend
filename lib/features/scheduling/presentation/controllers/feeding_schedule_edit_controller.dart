@@ -1,24 +1,21 @@
 import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'feeding_schedule_edit_controller.g.dart';
 
 /// 급여 스케줄 편집 컨트롤러
-class FeedingScheduleEditController
-    extends StateNotifier<FeedingScheduleEditState> {
-  FeedingScheduleEditController({
-    required String mealType,
-    required String currentTime,
-    required String currentAmount,
-    required String petId,
-  }) : super(
-         FeedingScheduleEditState(
-           mealType: mealType,
-           currentTime: currentTime,
-           currentAmount: currentAmount,
-           petId: petId,
-         ),
-       ) {
+@riverpod
+class FeedingScheduleEditController extends _$FeedingScheduleEditController {
+  @override
+  FeedingScheduleEditState build(Map<String, String> params) {
     _loadPetInfo();
+    return FeedingScheduleEditState(
+      mealType: params['mealType']!,
+      currentTime: params['currentTime']!,
+      currentAmount: params['currentAmount']!,
+      petId: params['petId']!,
+    );
   }
 
   /// 펫 정보 및 사이즈 가이드 로드
@@ -157,18 +154,3 @@ class FeedingScheduleEditState {
     );
   }
 }
-
-/// 컨트롤러 프로바이더
-final feedingScheduleEditControllerProvider =
-    StateNotifierProvider.family<
-      FeedingScheduleEditController,
-      FeedingScheduleEditState,
-      Map<String, String>
-    >((ref, params) {
-      return FeedingScheduleEditController(
-        mealType: params['mealType'] ?? '',
-        currentTime: params['currentTime'] ?? '',
-        currentAmount: params['currentAmount'] ?? '',
-        petId: params['petId'] ?? '1',
-      );
-    });

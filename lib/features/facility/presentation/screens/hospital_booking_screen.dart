@@ -60,7 +60,7 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
 
   void _loadUserData() {
     // 유저 프로필에서 실제 데이터 불러오기
-    final userProfileAsync = ref.read(userProfileNotifierProvider);
+    final userProfileAsync = ref.read(userProfileProvider);
     userProfileAsync.whenData((profile) {
       setState(() {
         _nameController.text = profile['name'] ?? '';
@@ -72,14 +72,14 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
 
   void _loadSelectedPet() {
     // 현재 선택된 펫 가져오기
-    final selectedPet = ref.read(selectedPetProfileNotifierProvider);
+    final selectedPet = ref.read(selectedPetProfileProvider);
     if (selectedPet != null) {
       setState(() {
         _selectedPet = selectedPet;
       });
     } else {
       // 선택된 펫이 없으면 첫 번째 펫을 기본으로 선택
-      final pets = ref.read(petProfilesNotifierProvider);
+      final pets = ref.read(petProfilesProvider);
       pets.whenData((petList) {
         if (petList.isNotEmpty) {
           setState(() {
@@ -87,7 +87,7 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
           });
           // 전역 상태도 업데이트
           ref
-              .read(selectedPetProfileNotifierProvider.notifier)
+              .read(selectedPetProfileProvider.notifier)
               .selectPet(petList.first);
         }
       });
@@ -203,7 +203,7 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
   Widget _buildPetSection() {
     return Consumer(
       builder: (context, ref, child) {
-        final petsAsync = ref.watch(petProfilesNotifierProvider);
+        final petsAsync = ref.watch(petProfilesProvider);
 
         return petsAsync.when(
           data: (pets) {
@@ -353,9 +353,7 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
                 _selectedPet = value;
               });
               if (value != null) {
-                ref
-                    .read(selectedPetProfileNotifierProvider.notifier)
-                    .selectPet(value);
+                ref.read(selectedPetProfileProvider.notifier).selectPet(value);
               }
             },
             activeColor: AppColors.pointBrown,

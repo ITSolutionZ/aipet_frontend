@@ -2,11 +2,17 @@ import 'dart:developer' as developer;
 
 import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'add_feeding_record_controller.g.dart';
 
 /// 급여 기록 추가 컨트롤러
-class AddFeedingRecordController extends StateNotifier<AddFeedingRecordState> {
-  AddFeedingRecordController() : super(AddFeedingRecordState());
+@riverpod
+class AddFeedingRecordController extends _$AddFeedingRecordController {
+  @override
+  AddFeedingRecordState build() {
+    return AddFeedingRecordState();
+  }
 
   /// 펫 정보 및 사이즈 가이드 로드
   Future<void> loadPetInfo(String petId) async {
@@ -164,11 +170,3 @@ class AddFeedingRecordState {
     );
   }
 }
-
-/// 컨트롤러 프로바이더
-final addFeedingRecordControllerProvider =
-    StateNotifierProvider<AddFeedingRecordController, AddFeedingRecordState>((
-      ref,
-    ) {
-      return AddFeedingRecordController();
-    });

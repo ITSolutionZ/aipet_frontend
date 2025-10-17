@@ -2,7 +2,11 @@ import 'package:aipet_frontend/features/scheduling/domain/entities/schedule_enti
 import 'package:aipet_frontend/features/scheduling/domain/repositories/schedule_repository.dart';
 import 'package:aipet_frontend/features/scheduling/domain/usecases/get_schedules_usecase.dart';
 import 'package:aipet_frontend/features/scheduling/domain/usecases/manage_schedules_usecase.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../data/repositories/schedule_repository_impl.dart';
+
+part 'schedule_controller.g.dart';
 
 /// 스케줄 상태
 class ScheduleState {
@@ -46,43 +50,37 @@ class ScheduleState {
 }
 
 /// 스케줄 컨트롤러
-class ScheduleController extends StateNotifier<ScheduleState> {
-  final GetAllSchedulesUseCase _getAllSchedulesUseCase;
-  final GetSchedulesByDateUseCase _getSchedulesByDateUseCase;
-  final GetTodaySchedulesUseCase _getTodaySchedulesUseCase;
-  final GetThisWeekSchedulesUseCase _getThisWeekSchedulesUseCase;
-  final GetSchedulesByTypeUseCase _getSchedulesByTypeUseCase;
-  final CreateScheduleUseCase _createScheduleUseCase;
-  final UpdateScheduleUseCase _updateScheduleUseCase;
-  final DeleteScheduleUseCase _deleteScheduleUseCase;
-  final UpdateScheduleStatusUseCase _updateScheduleStatusUseCase;
+@riverpod
+class ScheduleController extends _$ScheduleController {
+  late final GetAllSchedulesUseCase _getAllSchedulesUseCase;
+  late final GetSchedulesByDateUseCase _getSchedulesByDateUseCase;
+  late final GetTodaySchedulesUseCase _getTodaySchedulesUseCase;
+  late final GetThisWeekSchedulesUseCase _getThisWeekSchedulesUseCase;
+  late final GetSchedulesByTypeUseCase _getSchedulesByTypeUseCase;
+  late final CreateScheduleUseCase _createScheduleUseCase;
+  late final UpdateScheduleUseCase _updateScheduleUseCase;
+  late final DeleteScheduleUseCase _deleteScheduleUseCase;
+  late final UpdateScheduleStatusUseCase _updateScheduleStatusUseCase;
   // final MarkScheduleAsCompletedUseCase _markScheduleAsCompletedUseCase; // 今後実装予定
-  final CancelScheduleUseCase _cancelScheduleUseCase;
+  late final CancelScheduleUseCase _cancelScheduleUseCase;
 
-  ScheduleController({
-    required GetAllSchedulesUseCase getAllSchedulesUseCase,
-    required GetSchedulesByDateUseCase getSchedulesByDateUseCase,
-    required GetTodaySchedulesUseCase getTodaySchedulesUseCase,
-    required GetThisWeekSchedulesUseCase getThisWeekSchedulesUseCase,
-    required GetSchedulesByTypeUseCase getSchedulesByTypeUseCase,
-    required CreateScheduleUseCase createScheduleUseCase,
-    required UpdateScheduleUseCase updateScheduleUseCase,
-    required DeleteScheduleUseCase deleteScheduleUseCase,
-    required UpdateScheduleStatusUseCase updateScheduleStatusUseCase,
-    // required MarkScheduleAsCompletedUseCase markScheduleAsCompletedUseCase, // 今後実装予定
-    required CancelScheduleUseCase cancelScheduleUseCase,
-  }) : _getAllSchedulesUseCase = getAllSchedulesUseCase,
-       _getSchedulesByDateUseCase = getSchedulesByDateUseCase,
-       _getTodaySchedulesUseCase = getTodaySchedulesUseCase,
-       _getThisWeekSchedulesUseCase = getThisWeekSchedulesUseCase,
-       _getSchedulesByTypeUseCase = getSchedulesByTypeUseCase,
-       _createScheduleUseCase = createScheduleUseCase,
-       _updateScheduleUseCase = updateScheduleUseCase,
-       _deleteScheduleUseCase = deleteScheduleUseCase,
-       _updateScheduleStatusUseCase = updateScheduleStatusUseCase,
-       // _markScheduleAsCompletedUseCase = markScheduleAsCompletedUseCase, // 今後実装予定
-       _cancelScheduleUseCase = cancelScheduleUseCase,
-       super(ScheduleState(selectedDate: DateTime.now()));
+  @override
+  ScheduleState build() {
+    // UseCase 의존성 주입 - Repository에서 직접 생성
+    final repository = ref.read(scheduleRepositoryProvider);
+    _getAllSchedulesUseCase = GetAllSchedulesUseCase(repository);
+    _getSchedulesByDateUseCase = GetSchedulesByDateUseCase(repository);
+    _getTodaySchedulesUseCase = GetTodaySchedulesUseCase(repository);
+    _getThisWeekSchedulesUseCase = GetThisWeekSchedulesUseCase(repository);
+    _getSchedulesByTypeUseCase = GetSchedulesByTypeUseCase(repository);
+    _createScheduleUseCase = CreateScheduleUseCase(repository);
+    _updateScheduleUseCase = UpdateScheduleUseCase(repository);
+    _deleteScheduleUseCase = DeleteScheduleUseCase(repository);
+    _updateScheduleStatusUseCase = UpdateScheduleStatusUseCase(repository);
+    _cancelScheduleUseCase = CancelScheduleUseCase(repository);
+
+    return ScheduleState(selectedDate: DateTime.now());
+  }
 
   /// 모든 스케줄 로드
   Future<void> loadAllSchedules() async {
@@ -118,7 +116,11 @@ class ScheduleController extends StateNotifier<ScheduleState> {
 
     try {
       final schedules = await _getTodaySchedulesUseCase();
-      state = state.copyWith(isLoading: false, schedules: schedules, selectedDate: DateTime.now());
+      state = state.copyWith(
+        isLoading: false,
+        schedules: schedules,
+        selectedDate: DateTime.now(),
+      );
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());
     }
@@ -198,11 +200,15 @@ class ScheduleController extends StateNotifier<ScheduleState> {
 
     try {
       await _deleteScheduleUseCase(id);
-      final updatedSchedules = state.schedules.where((s) => s.id != id).toList();
+      final updatedSchedules = state.schedules
+          .where((s) => s.id != id)
+          .toList();
       state = state.copyWith(
         isLoading: false,
         schedules: updatedSchedules,
-        selectedSchedule: state.selectedSchedule?.id == id ? null : state.selectedSchedule,
+        selectedSchedule: state.selectedSchedule?.id == id
+            ? null
+            : state.selectedSchedule,
       );
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());

@@ -77,9 +77,9 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedPets = ref.watch(selectedPetsNotifierProvider);
-    final walkRecords = ref.watch(walkRecordsNotifierProvider);
-    final currentWalk = ref.watch(currentWalkNotifierProvider);
+    final selectedPets = ref.watch(selectedPetsProvider);
+    final walkRecords = ref.watch(walkRecordsProvider);
+    final currentWalk = ref.watch(currentWalkProvider);
 
     // 산책 시작 시 타이머 시작
     if (currentWalk != null && _timer == null) {
@@ -278,10 +278,10 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
     if (_isPaused) {
       // 위치 추적 중지
-      ref.read(locationTrackingNotifierProvider.notifier).stopTracking();
+      ref.read(locationTrackingProvider.notifier).stopTracking();
     } else {
       // 위치 추적 재개
-      ref.read(locationTrackingNotifierProvider.notifier).startTracking();
+      ref.read(locationTrackingProvider.notifier).startTracking();
     }
   }
 
@@ -306,7 +306,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
   /// 산책 정보 카드
   Widget _buildWalkInfoCard(WalkRecordEntity currentWalk) {
-    final selectedPets = ref.watch(selectedPetsNotifierProvider);
+    final selectedPets = ref.watch(selectedPetsProvider);
     final distance = currentWalk.distance ?? 0.0;
     final recommendedTime = WalkListPetHelper.getRecommendedWalkTime(
       ref: ref,
@@ -322,7 +322,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
   /// 산책 종료 확인 다이얼로그
   void _showEndWalkDialog() {
-    final currentWalk = ref.read(currentWalkNotifierProvider);
+    final currentWalk = ref.read(currentWalkProvider);
     if (currentWalk == null) return;
 
     WalkListDialogHelper.showEndWalkDialog(

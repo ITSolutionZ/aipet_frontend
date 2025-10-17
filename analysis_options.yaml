@@ -71,3 +71,5 @@ analyzer:
     must_be_immutable: error
     prefer_const_constructors: error
     prefer_const_literals_to_create_immutables: error
+    # Freezed 관련 에러 무시 (생성된 파일 관련)
+    non_abstract_class_inherits_abstract_member: ignore
