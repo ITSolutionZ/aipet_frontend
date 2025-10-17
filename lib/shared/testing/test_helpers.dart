@@ -5,11 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class TestHelpers {
   /// 테스트용 ProviderScope 래퍼
   static Widget wrapWithProviderScope(Widget child) {
-    return ProviderScope(
-      child: MaterialApp(
-        home: child,
-      ),
-    );
+    return ProviderScope(child: MaterialApp(home: child));
   }
 
   /// 테스트용 딜레이

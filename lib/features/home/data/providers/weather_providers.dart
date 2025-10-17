@@ -8,20 +8,22 @@ part 'weather_providers.g.dart';
 
 /// Dio 인스턴스 프로바이더
 @riverpod
-Dio dio(Ref ref) {
-  return Dio(
-    BaseOptions(
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
-      headers: {'Content-Type': 'application/json'},
+Future<Dio> dio(Ref ref) async {
+  return Future.value(
+    Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        headers: {'Content-Type': 'application/json'},
+      ),
     ),
   );
 }
 
 /// OpenWeatherMap 서비스 프로바이더
 @riverpod
-OpenWeatherMapService openWeatherMapService(Ref ref) {
-  final dio = ref.watch(dioProvider);
+Future<OpenWeatherMapService> openWeatherMapService(Ref ref) async {
+  final dio = await ref.watch(dioProvider.future);
 
   // 환경 변수에서 API 키 가져오기
   const apiKey = String.fromEnvironment(
@@ -40,7 +42,7 @@ class CurrentWeather extends _$CurrentWeather {
     double latitude = 35.6762, // 도쿄 기본 좌표
     double longitude = 139.6503,
   }) async {
-    final service = ref.watch(openWeatherMapServiceProvider);
+    final service = await ref.watch(openWeatherMapServiceProvider.future);
 
     final result = await service.getCurrentWeather(
       latitude: latitude,
@@ -48,7 +50,7 @@ class CurrentWeather extends _$CurrentWeather {
     );
 
     if (result.isSuccess && result.data != null) {
-      return result.data!;
+      return result.dataOrThrow;
     } else {
       // 에러 발생 시 Mock 데이터 반환 (개발용)
       return _getMockWeatherData();
@@ -60,14 +62,14 @@ class CurrentWeather extends _$CurrentWeather {
     state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(() async {
-      final service = ref.read(openWeatherMapServiceProvider);
+      final service = await ref.read(openWeatherMapServiceProvider.future);
       final result = await service.getCurrentWeather(
         latitude: latitude ?? 35.6762,
         longitude: longitude ?? 139.6503,
       );
 
       if (result.isSuccess && result.data != null) {
-        return result.data!;
+        return result.dataOrThrow;
       } else {
         // 에러 발생 시 Mock 데이터 반환
         return _getMockWeatherData();
@@ -117,18 +119,20 @@ class LocationBasedWeather extends _$LocationBasedWeather {
 
       // 현재 위치 가져오기
       final Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
 
       // 현재 위치로 날씨 정보 가져오기
-      final service = ref.read(openWeatherMapServiceProvider);
+      final service = await ref.read(openWeatherMapServiceProvider.future);
       final result = await service.getCurrentWeather(
         latitude: position.latitude,
         longitude: position.longitude,
       );
 
       if (result.isSuccess && result.data != null) {
-        return result.data!;
+        return result.dataOrThrow;
       } else {
         return _getWeatherWithDefaultLocation();
       }
@@ -154,18 +158,20 @@ class LocationBasedWeather extends _$LocationBasedWeather {
       try {
         // 현재 위치 가져오기
         final Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+          ),
         );
 
         // 현재 위치로 날씨 정보 업데이트
-        final service = ref.read(openWeatherMapServiceProvider);
+        final service = await ref.read(openWeatherMapServiceProvider.future);
         final result = await service.getCurrentWeather(
           latitude: position.latitude,
           longitude: position.longitude,
         );
 
         if (result.isSuccess && result.data != null) {
-          return result.data!;
+          return result.dataOrThrow;
         } else {
           return _getWeatherWithDefaultLocation();
         }

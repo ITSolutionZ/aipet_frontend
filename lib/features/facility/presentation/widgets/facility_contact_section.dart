@@ -17,15 +17,21 @@ class FacilityContactSection extends StatelessWidget {
       } else {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('電話アプリを開けません。'), backgroundColor: Colors.red),
+            const SnackBar(
+              content: Text('電話アプリを開けません。'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('電話をかけることができません: $e'), backgroundColor: Colors.red));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('電話をかけることができません: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -41,15 +47,21 @@ class FacilityContactSection extends StatelessWidget {
       } else {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('メールアプリを開けません。'), backgroundColor: Colors.red),
+            const SnackBar(
+              content: Text('メールアプリを開けません。'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('メールを送信できません: $e'), backgroundColor: Colors.red));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('メールを送信できません: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }

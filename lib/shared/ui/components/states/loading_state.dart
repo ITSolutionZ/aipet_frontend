@@ -24,7 +24,11 @@ class LoadingState extends StatelessWidget {
 
   /// 기본 로딩 상태 팩토리
   factory LoadingState.basic({String? message, double size = 40}) {
-    return LoadingState(message: message, size: size, padding: const EdgeInsets.all(AppSpacing.xl));
+    return LoadingState(
+      message: message,
+      size: size,
+      padding: const EdgeInsets.all(AppSpacing.xl),
+    );
   }
 
   /// 작은 로딩 인디케이터 팩토리
@@ -50,7 +54,11 @@ class LoadingState extends StatelessWidget {
 
   /// 전체 화면 로딩 팩토리
   factory LoadingState.fullScreen({String message = '読み込み中...'}) {
-    return LoadingState(message: message, size: 50, padding: const EdgeInsets.all(AppSpacing.xl));
+    return LoadingState(
+      message: message,
+      size: 50,
+      padding: const EdgeInsets.all(AppSpacing.xl),
+    );
   }
 
   /// 인라인 로딩 팩토리 (리스트나 카드 내부용)
@@ -110,7 +118,9 @@ class LoadingState extends StatelessWidget {
       height: size ?? 40,
       child: CircularProgressIndicator(
         strokeWidth: _getStrokeWidth(),
-        valueColor: AlwaysStoppedAnimation<Color>(color ?? AppColors.pointBrown),
+        valueColor: AlwaysStoppedAnimation<Color>(
+          color ?? AppColors.pointBrown,
+        ),
       ),
     );
   }

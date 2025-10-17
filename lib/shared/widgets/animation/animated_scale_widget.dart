@@ -27,7 +27,8 @@ class AnimatedScaleWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<AnimatedScaleWidget> createState() => _AnimatedScaleWidgetState();
+  ConsumerState<AnimatedScaleWidget> createState() =>
+      _AnimatedScaleWidgetState();
 }
 
 class _AnimatedScaleWidgetState extends ConsumerState<AnimatedScaleWidget>
@@ -70,7 +71,8 @@ class _AnimatedScaleWidgetState extends ConsumerState<AnimatedScaleWidget>
   void didUpdateWidget(AnimatedScaleWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.beginScale != oldWidget.beginScale || widget.endScale != oldWidget.endScale) {
+    if (widget.beginScale != oldWidget.beginScale ||
+        widget.endScale != oldWidget.endScale) {
       _initializeAnimations();
     }
 
@@ -105,7 +107,10 @@ class _AnimatedScaleWidgetState extends ConsumerState<AnimatedScaleWidget>
         return Transform.scale(
           scale: _scaleAnimation.value,
           alignment: widget.alignment,
-          child: Opacity(opacity: _fadeAnimation.value.clamp(0.0, 1.0), child: widget.child),
+          child: Opacity(
+            opacity: _fadeAnimation.value.clamp(0.0, 1.0),
+            child: widget.child,
+          ),
         );
       },
     );
@@ -136,7 +141,8 @@ class StaggeredScaleWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<StaggeredScaleWidget> createState() => _StaggeredScaleWidgetState();
+  ConsumerState<StaggeredScaleWidget> createState() =>
+      _StaggeredScaleWidgetState();
 }
 
 class _StaggeredScaleWidgetState extends ConsumerState<StaggeredScaleWidget>
@@ -267,7 +273,8 @@ class AnimatedButtonWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<AnimatedButtonWidget> createState() => _AnimatedButtonWidgetState();
+  ConsumerState<AnimatedButtonWidget> createState() =>
+      _AnimatedButtonWidgetState();
 }
 
 class _AnimatedButtonWidgetState extends ConsumerState<AnimatedButtonWidget>
@@ -322,7 +329,10 @@ class _AnimatedButtonWidgetState extends ConsumerState<AnimatedButtonWidget>
         builder: (context, child) {
           return Transform.scale(
             scale: _scaleAnimation.value,
-            child: Opacity(opacity: widget.enabled ? 1.0 : 0.5, child: widget.child),
+            child: Opacity(
+              opacity: widget.enabled ? 1.0 : 0.5,
+              child: widget.child,
+            ),
           );
         },
       ),

@@ -59,7 +59,9 @@ class ProfileEditController {
 
   PetProfileEntity createUpdatedPet(PetProfileEntity originalPet) {
     return originalPet.copyWith(
-      name: nameController.text.trim().isNotEmpty ? nameController.text.trim() : originalPet.name,
+      name: nameController.text.trim().isNotEmpty
+          ? nameController.text.trim()
+          : originalPet.name,
       imagePath: selectedImagePath ?? originalPet.imagePath,
       additionalInfo: {
         ...?originalPet.additionalInfo,

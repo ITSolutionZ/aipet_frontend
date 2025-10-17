@@ -80,7 +80,10 @@ class PetContentFilterService {
       return PetContentValidationResult(
         isValid: true,
         reason: 'ペット関連のご質問です',
-        confidence: (0.55 + (matchCount.clamp(1, 5) * 0.08)).clamp(0.6, 0.95), // Changed
+        confidence: (0.55 + (matchCount.clamp(1, 5) * 0.08)).clamp(
+          0.6,
+          0.95,
+        ), // Changed
       );
     }
 
@@ -105,7 +108,8 @@ class PetContentFilterService {
             'messages': [
               {
                 'role': 'system',
-                'content': '''あなたはユーザーのメッセージが**反\u200bりょう動物（ペット）**に関する内容かを判定する分類器です（日本語対応）。
+                'content':
+                    '''あなたはユーザーのメッセージが**反\u200bりょう動物（ペット）**に関する内容かを判定する分類器です（日本語対応）。
 判定基準:
 - ペットの健康・行動・しつけ/訓練・ケア・フード/トイレ/用品・病院/獣医・予防接種・グルーミング等なら "YES"
 - 政治・経済・芸能・ゲーム・料理などペットと無関係なら "NO"

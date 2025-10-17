@@ -75,7 +75,10 @@ class DeleteHealthRecordUseCase {
   }
 
   /// 오래된 건강 기록 삭제 (예: 1년 이상 된 기록)
-  Future<Result<Map<String, int>>> deleteOldHealthRecords(String petId, int daysOld) async {
+  Future<Result<Map<String, int>>> deleteOldHealthRecords(
+    String petId,
+    int daysOld,
+  ) async {
     try {
       final cutoffDate = DateTime.now().subtract(Duration(days: daysOld));
       int deletedWeightRecords = 0;
@@ -124,7 +127,8 @@ class DeleteHealthRecordUseCase {
       // 날짜 범위 내 체중 기록 삭제
       final weightRecords = await repository.getWeightRecords(petId);
       for (final record in weightRecords) {
-        if (record.recordedDate.isAfter(startDate) && record.recordedDate.isBefore(endDate)) {
+        if (record.recordedDate.isAfter(startDate) &&
+            record.recordedDate.isBefore(endDate)) {
           await repository.deleteWeightRecord(record.id);
           deletedWeightRecords++;
         }

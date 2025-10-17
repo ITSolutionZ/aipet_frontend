@@ -26,7 +26,10 @@ class DioClient {
         connectTimeout: Duration(milliseconds: config.apiTimeoutMs),
         receiveTimeout: Duration(milliseconds: config.apiTimeoutMs),
         sendTimeout: Duration(milliseconds: config.apiTimeoutMs),
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
       ),
     );
 
@@ -50,7 +53,10 @@ class DioClient {
 /// 인증 인터셉터 - 모든 요청에 서버 JWT 자동 부착
 class _AuthInterceptor extends Interceptor {
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     try {
       final serverJWT = await SecureStorage.getServerJWT();
       if (serverJWT != null && serverJWT.isNotEmpty) {
@@ -92,14 +98,18 @@ class _LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    debugPrint('✅ RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+    debugPrint(
+      '✅ RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
+    );
     debugPrint('📦 Data: ${response.data}');
     handler.next(response);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    debugPrint('❌ ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
+    debugPrint(
+      '❌ ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}',
+    );
     debugPrint('📦 Error: ${err.message}');
     handler.next(err);
   }

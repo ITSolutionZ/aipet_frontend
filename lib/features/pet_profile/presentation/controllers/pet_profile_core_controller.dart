@@ -12,24 +12,39 @@ class PetProfileCoreController extends CrudController<PetProfileEntity> {
   PetProfileCoreController(super.ref);
 
   // UseCase 인스턴스 - Dependency Injection 사용
-  late final GetAllPetsUseCase _getAllPetsUseCase = ref.read(getAllPetsUseCaseProvider);
-  late final GetPetProfileUseCase _getPetProfileUseCase = ref.read(getPetProfileUseCaseProvider);
-  late final CreatePetUseCase _createPetUseCase = ref.read(createPetUseCaseProvider);
-  late final UpdatePetUseCase _updatePetUseCase = ref.read(updatePetUseCaseProvider);
-  late final DeletePetUseCase _deletePetUseCase = ref.read(deletePetUseCaseProvider);
+  late final GetAllPetsUseCase _getAllPetsUseCase = ref.read(
+    getAllPetsUseCaseProvider,
+  );
+  late final GetPetProfileUseCase _getPetProfileUseCase = ref.read(
+    getPetProfileUseCaseProvider,
+  );
+  late final CreatePetUseCase _createPetUseCase = ref.read(
+    createPetUseCaseProvider,
+  );
+  late final UpdatePetUseCase _updatePetUseCase = ref.read(
+    updatePetUseCaseProvider,
+  );
+  late final DeletePetUseCase _deletePetUseCase = ref.read(
+    deletePetUseCaseProvider,
+  );
 
   @override
   Future<core_result.Result<List<PetProfileEntity>>> getAll() async {
     try {
       final result = await _getAllPetsUseCase.call();
       if (result.isSuccess) {
-        return core_result.Result.success('펫 목록을 성공적으로 가져왔습니다', result.dataOrNull!);
+        return core_result.Result.success(
+          '펫 목록을 성공적으로 가져왔습니다',
+          result.dataOrNull!,
+        );
       } else {
         return core_result.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return core_result.Result.failure('펫 목록을 가져오는데 실패했습니다: ${error.toString()}');
+      return core_result.Result.failure(
+        '펫 목록을 가져오는데 실패했습니다: ${error.toString()}',
+      );
     }
   }
 
@@ -38,22 +53,32 @@ class PetProfileCoreController extends CrudController<PetProfileEntity> {
     try {
       final result = await _getPetProfileUseCase.call(id);
       if (result.isSuccess && result.dataOrNull != null) {
-        return core_result.Result.success('펫 정보를 성공적으로 가져왔습니다', result.dataOrNull!);
+        return core_result.Result.success(
+          '펫 정보를 성공적으로 가져왔습니다',
+          result.dataOrNull!,
+        );
       } else {
         return core_result.Result.failure(result.message);
       }
     } catch (error, stackTrace) {
       handleError(error, stackTrace);
-      return core_result.Result.failure('펫 정보를 가져오는데 실패했습니다: ${error.toString()}');
+      return core_result.Result.failure(
+        '펫 정보를 가져오는데 실패했습니다: ${error.toString()}',
+      );
     }
   }
 
   @override
-  Future<core_result.Result<PetProfileEntity>> create(PetProfileEntity entity) async {
+  Future<core_result.Result<PetProfileEntity>> create(
+    PetProfileEntity entity,
+  ) async {
     try {
       final result = await _createPetUseCase.call(entity);
       if (result.isSuccess) {
-        return core_result.Result.success('펫이 성공적으로 생성되었습니다', result.dataOrNull!);
+        return core_result.Result.success(
+          '펫이 성공적으로 생성되었습니다',
+          result.dataOrNull!,
+        );
       } else {
         return core_result.Result.failure(result.message);
       }
@@ -64,11 +89,16 @@ class PetProfileCoreController extends CrudController<PetProfileEntity> {
   }
 
   @override
-  Future<core_result.Result<PetProfileEntity>> update(PetProfileEntity entity) async {
+  Future<core_result.Result<PetProfileEntity>> update(
+    PetProfileEntity entity,
+  ) async {
     try {
       final result = await _updatePetUseCase.call(entity);
       if (result.isSuccess) {
-        return core_result.Result.success('펫 정보가 성공적으로 업데이트되었습니다', result.dataOrNull!);
+        return core_result.Result.success(
+          '펫 정보가 성공적으로 업데이트되었습니다',
+          result.dataOrNull!,
+        );
       } else {
         return core_result.Result.failure(result.message);
       }
@@ -83,7 +113,10 @@ class PetProfileCoreController extends CrudController<PetProfileEntity> {
     try {
       final result = await _deletePetUseCase.call(id);
       if (result.isSuccess) {
-        return core_result.Result.success('펫이 성공적으로 삭제되었습니다', result.dataOrNull);
+        return core_result.Result.success(
+          '펫이 성공적으로 삭제되었습니다',
+          result.dataOrNull,
+        );
       } else {
         return core_result.Result.failure(result.message);
       }

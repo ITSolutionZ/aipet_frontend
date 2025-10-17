@@ -132,10 +132,19 @@ class TestNotificationUseCase {
       }
 
       // 권한 확인
-      diagnostics['permissions'] = {'push': true, 'local': true, 'scheduled': true};
+      diagnostics['permissions'] = {
+        'push': true,
+        'local': true,
+        'scheduled': true,
+      };
 
       // 설정 확인
-      diagnostics['settings'] = {'enabled': true, 'sound': true, 'vibration': true, 'badge': true};
+      diagnostics['settings'] = {
+        'enabled': true,
+        'sound': true,
+        'vibration': true,
+        'badge': true,
+      };
 
       return Result.success('通知システムの診断が完了しました', diagnostics);
     } catch (error) {

@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../pet_profile/data/providers/pet_profile_providers.dart';

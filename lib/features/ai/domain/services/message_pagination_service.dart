@@ -27,19 +27,25 @@ class MessagePaginationService {
   ///
   /// [messages] 전체 메시지 목록
   /// [return] 메모리 제한이 적용된 메시지 목록
-  static Result<List<AiMessageEntity>> limitMessagesInMemory(List<AiMessageEntity> messages) {
+  static Result<List<AiMessageEntity>> limitMessagesInMemory(
+    List<AiMessageEntity> messages,
+  ) {
     try {
       if (messages.length <= maxMessagesInMemory) {
         return Result.success('Messages within memory limit', messages);
       }
 
       // 최신 메시지부터 maxMessagesInMemory개만 유지
-      final limitedMessages = messages.skip(messages.length - maxMessagesInMemory).toList();
+      final limitedMessages = messages
+          .skip(messages.length - maxMessagesInMemory)
+          .toList();
 
       final removedCount = messages.length - limitedMessages.length;
 
       if (kDebugMode) {
-        debugPrint('[$_tag] Memory limit applied: removed $removedCount old messages');
+        debugPrint(
+          '[$_tag] Memory limit applied: removed $removedCount old messages',
+        );
         debugPrint('[$_tag] Memory messages count: ${limitedMessages.length}');
       }
 
@@ -133,7 +139,9 @@ class MessagePaginationService {
   ///
   /// [messages] 메시지 목록
   /// [return] 중복이 제거된 메시지 목록
-  static Result<List<AiMessageEntity>> removeDuplicateMessages(List<AiMessageEntity> messages) {
+  static Result<List<AiMessageEntity>> removeDuplicateMessages(
+    List<AiMessageEntity> messages,
+  ) {
     try {
       final seen = <String>{};
       final uniqueMessages = <AiMessageEntity>[];
@@ -151,7 +159,10 @@ class MessagePaginationService {
         debugPrint('[$_tag] Removed $removedCount duplicate messages');
       }
 
-      return Result.success('Duplicates removed: $removedCount messages', uniqueMessages);
+      return Result.success(
+        'Duplicates removed: $removedCount messages',
+        uniqueMessages,
+      );
     } catch (error) {
       return Result.failure('중복 제거 중 에러가 발생했습니다: $error');
     }
@@ -193,7 +204,9 @@ class MessagePaginationService {
     final usageMB = usageBytes / (1024 * 1024);
 
     if (kDebugMode && usageMB > memoryThresholdMb * 0.8) {
-      debugPrint('[$_tag] Memory usage approaching threshold: ${usageMB.toStringAsFixed(1)}MB');
+      debugPrint(
+        '[$_tag] Memory usage approaching threshold: ${usageMB.toStringAsFixed(1)}MB',
+      );
     }
 
     return usageMB > memoryThresholdMb;
@@ -203,7 +216,9 @@ class MessagePaginationService {
   ///
   /// [messages] 최적화할 메시지 목록
   /// [return] 최적화된 메시지 목록
-  static Result<List<AiMessageEntity>> optimizeMessages(List<AiMessageEntity> messages) {
+  static Result<List<AiMessageEntity>> optimizeMessages(
+    List<AiMessageEntity> messages,
+  ) {
     try {
       // 1. 중복 제거
       final deduplicatedResult = removeDuplicateMessages(messages);
@@ -214,7 +229,9 @@ class MessagePaginationService {
       // 2. 시간순 정렬
       final sortedResult = sortMessagesByTime(deduplicatedResult.dataOrNull!);
       if (!sortedResult.isSuccess) {
-        return Result.failure('정렬 실패: ${sortedResult.error?.toString() ?? 'Unknown error'}');
+        return Result.failure(
+          '정렬 실패: ${sortedResult.error?.toString() ?? 'Unknown error'}',
+        );
       }
 
       // 3. 메모리 제한 적용
@@ -226,13 +243,16 @@ class MessagePaginationService {
       }
 
       final optimizedMessages = limitedResult.dataOrNull!;
-      final memoryUsageMB = estimateMemoryUsage(optimizedMessages) / (1024 * 1024);
+      final memoryUsageMB =
+          estimateMemoryUsage(optimizedMessages) / (1024 * 1024);
 
       if (kDebugMode) {
         debugPrint('[$_tag] Messages optimized:');
         debugPrint('[$_tag] - Original count: ${messages.length}');
         debugPrint('[$_tag] - Optimized count: ${optimizedMessages.length}');
-        debugPrint('[$_tag] - Estimated memory: ${memoryUsageMB.toStringAsFixed(2)}MB');
+        debugPrint(
+          '[$_tag] - Estimated memory: ${memoryUsageMB.toStringAsFixed(2)}MB',
+        );
       }
 
       return Result.success(
@@ -253,9 +273,16 @@ class MessagePaginationService {
   /// [return] 메시지 통계 정보
   static MessageStatistics generateStatistics(List<AiMessageEntity> messages) {
     try {
-      final userMessages = messages.where((m) => m.type == MessageType.user).length;
-      final assistantMessages = messages.where((m) => m.type == MessageType.assistant).length;
-      final totalCharacters = messages.fold<int>(0, (sum, m) => sum + m.content.length);
+      final userMessages = messages
+          .where((m) => m.type == MessageType.user)
+          .length;
+      final assistantMessages = messages
+          .where((m) => m.type == MessageType.assistant)
+          .length;
+      final totalCharacters = messages.fold<int>(
+        0,
+        (sum, m) => sum + m.content.length,
+      );
       final memoryUsageBytes = estimateMemoryUsage(messages);
 
       return MessageStatistics(

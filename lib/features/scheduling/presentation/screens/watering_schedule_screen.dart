@@ -8,10 +8,12 @@ class WateringScheduleScreen extends ConsumerStatefulWidget {
   const WateringScheduleScreen({super.key});
 
   @override
-  ConsumerState<WateringScheduleScreen> createState() => _WateringScheduleScreenState();
+  ConsumerState<WateringScheduleScreen> createState() =>
+      _WateringScheduleScreenState();
 }
 
-class _WateringScheduleScreenState extends ConsumerState<WateringScheduleScreen> {
+class _WateringScheduleScreenState
+    extends ConsumerState<WateringScheduleScreen> {
   String petName = 'Max';
   List<Map<String, dynamic>>? _todayWaterings;
   List<Map<String, dynamic>>? _scheduleItems;
@@ -123,15 +125,21 @@ class _WateringScheduleScreenState extends ConsumerState<WateringScheduleScreen>
                 child: Row(
                   children: [
                     Icon(
-                      watering['completed'] ? Icons.check_circle : Icons.schedule,
-                      color: watering['completed'] ? AppColors.pointGreen : AppColors.pointGray,
+                      watering['completed']
+                          ? Icons.check_circle
+                          : Icons.schedule,
+                      color: watering['completed']
+                          ? AppColors.pointGreen
+                          : AppColors.pointGray,
                       size: 20,
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       '${watering['time']} - ${watering['amount']}',
                       style: AppFonts.bodyMedium.copyWith(
-                        color: watering['completed'] ? AppColors.pointGreen : AppColors.pointDark,
+                        color: watering['completed']
+                            ? AppColors.pointGreen
+                            : AppColors.pointDark,
                       ),
                     ),
                   ],
@@ -159,7 +167,11 @@ class _WateringScheduleScreenState extends ConsumerState<WateringScheduleScreen>
             color: AppColors.pointBlue.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.water_drop, color: AppColors.pointBlue, size: 24),
+          child: const Icon(
+            Icons.water_drop,
+            color: AppColors.pointBlue,
+            size: 24,
+          ),
         ),
         title: Text(
           meal,
@@ -177,7 +189,11 @@ class _WateringScheduleScreenState extends ConsumerState<WateringScheduleScreen>
           onPressed: () {
             context.pushNamed(
               'watering-schedule-edit',
-              queryParameters: {'mealType': meal, 'time': time, 'amount': amount},
+              queryParameters: {
+                'mealType': meal,
+                'time': time,
+                'amount': amount,
+              },
             );
           },
         ),

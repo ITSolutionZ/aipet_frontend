@@ -6,7 +6,11 @@ class FeedingGuideCard extends StatelessWidget {
   final Map<String, dynamic> petInfo;
   final Map<String, dynamic> sizeGuide;
 
-  const FeedingGuideCard({super.key, required this.petInfo, required this.sizeGuide});
+  const FeedingGuideCard({
+    super.key,
+    required this.petInfo,
+    required this.sizeGuide,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +19,10 @@ class FeedingGuideCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3), width: 1.0),
+        border: Border.all(
+          color: AppColors.pointGray.withValues(alpha: 0.3),
+          width: 1.0,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -34,7 +41,10 @@ class FeedingGuideCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            CircleAvatar(radius: 20, backgroundImage: AssetImage(petInfo['imagePath'])),
+            CircleAvatar(
+              radius: 20,
+              backgroundImage: AssetImage(petInfo['imagePath']),
+            ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
@@ -65,7 +75,9 @@ class FeedingGuideCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.tonePeach.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppRadius.small),
-            border: Border.all(color: AppColors.tonePeach.withValues(alpha: 0.3)),
+            border: Border.all(
+              color: AppColors.tonePeach.withValues(alpha: 0.3),
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

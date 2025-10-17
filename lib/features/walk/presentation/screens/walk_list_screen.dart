@@ -5,8 +5,7 @@ import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_widgets.dart';
-import 'package:aipet_frontend/shared/shared.dart'
-    hide MapWidget, WalkRecordCardWidget;
+import 'package:aipet_frontend/shared/shared.dart' hide MapWidget;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

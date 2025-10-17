@@ -181,12 +181,12 @@ enum LoginMethod {
   anonymous;
 
   bool get isSocial => [
-        LoginMethod.google,
-        LoginMethod.apple,
-        LoginMethod.line,
-        LoginMethod.facebook,
-        LoginMethod.twitter
-      ].contains(this);
+    LoginMethod.google,
+    LoginMethod.apple,
+    LoginMethod.line,
+    LoginMethod.facebook,
+    LoginMethod.twitter,
+  ].contains(this);
 
   bool get isEmailPassword => this == LoginMethod.emailPassword;
   bool get isAnonymous => this == LoginMethod.anonymous;

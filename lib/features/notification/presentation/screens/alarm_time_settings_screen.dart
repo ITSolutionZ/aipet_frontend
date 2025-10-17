@@ -82,7 +82,9 @@ class _AlarmTimeSettingsScreenState
                 const SizedBox(height: AppSpacing.md),
 
                 // 알람 카테고리별 설정 구성
-                ...AlarmCategory.values.map((category) => _buildCategorySection(category, state)),
+                ...AlarmCategory.values.map(
+                  (category) => _buildCategorySection(category, state),
+                ),
 
                 const SizedBox(height: AppSpacing.xl * 3),
 
@@ -129,12 +131,14 @@ class _AlarmTimeSettingsScreenState
         // 해당 카테고리에 속하는 이벤트 타입별 시간 설정
         ...CalendarEventType.values
             .where((type) => type.alarmCategory == category)
-            .map((type) => Column(
-                  children: [
-                    _buildEventTypeTimeSettingTile(type, state),
-                    const SizedBox(height: AppSpacing.lg),
-                  ],
-                )),
+            .map(
+              (type) => Column(
+                children: [
+                  _buildEventTypeTimeSettingTile(type, state),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
+              ),
+            ),
 
         const SizedBox(height: AppSpacing.xl),
       ],
@@ -142,7 +146,10 @@ class _AlarmTimeSettingsScreenState
   }
 
   /// 이벤트 타입별 시간 설정 타일
-  Widget _buildEventTypeTimeSettingTile(CalendarEventType eventType, dynamic state) {
+  Widget _buildEventTypeTimeSettingTile(
+    CalendarEventType eventType,
+    dynamic state,
+  ) {
     // 기본값 설정 (실제 구현에서는 state에서 가져와야 함)
     TimeOfDay defaultTime = const TimeOfDay(hour: 9, minute: 0);
 

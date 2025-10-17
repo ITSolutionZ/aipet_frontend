@@ -47,7 +47,9 @@ class FeedingMainScreen extends ConsumerWidget {
                     title: '給餌スケジュール',
                     subtitle: '食事時間と量設定',
                     color: AppColors.pointBlue,
-                    onTap: () => context.go('${AppRouter.feedingScheduleRoute}?petId=default'),
+                    onTap: () => context.go(
+                      '${AppRouter.feedingScheduleRoute}?petId=default',
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   _buildMenuCard(
@@ -65,7 +67,9 @@ class FeedingMainScreen extends ConsumerWidget {
                     title: '給餌分析',
                     subtitle: '食事パターン分析',
                     color: AppColors.pointBrown,
-                    onTap: () => context.go('${AppRouter.feedingAnalysisRoute}?petId=default'),
+                    onTap: () => context.go(
+                      '${AppRouter.feedingAnalysisRoute}?petId=default',
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   _buildMenuCard(
@@ -140,7 +144,9 @@ class FeedingMainScreen extends ConsumerWidget {
     return Card(
       elevation: 4,
       color: Colors.white, // 배경색 명시적으로 설정
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+      ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -175,7 +181,9 @@ class FeedingMainScreen extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       subtitle,
-                      style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointGray,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -184,7 +192,11 @@ class FeedingMainScreen extends ConsumerWidget {
               ),
 
               // 화살표 아이콘
-              const Icon(Icons.arrow_forward_ios, color: AppColors.pointGray, size: 16),
+              const Icon(
+                Icons.arrow_forward_ios,
+                color: AppColors.pointGray,
+                size: 16,
+              ),
             ],
           ),
         ),

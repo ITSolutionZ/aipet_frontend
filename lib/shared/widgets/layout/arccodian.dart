@@ -85,7 +85,12 @@ class GlassAccordion extends ConsumerWidget {
           ),
         )
         .toList();
-    return GlassAccordion(key: key, items: items, multiOpen: multiOpen, accordionId: accordionId);
+    return GlassAccordion(
+      key: key,
+      items: items,
+      multiOpen: multiOpen,
+      accordionId: accordionId,
+    );
   }
 
   @override
@@ -96,7 +101,9 @@ class GlassAccordion extends ConsumerWidget {
     // Initialize the accordion state if it's empty
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (openStates.isEmpty && items.isNotEmpty) {
-        ref.read(glassAccordionControllerProvider(effectiveId).notifier).initialize(items);
+        ref
+            .read(glassAccordionControllerProvider(effectiveId).notifier)
+            .initialize(items);
       }
     });
 
@@ -106,8 +113,9 @@ class GlassAccordion extends ConsumerWidget {
           _AccordionItemCard(
             item: items[i],
             isOpen: i < openStates.length ? openStates[i] : false,
-            onToggle: () =>
-                ref.read(glassAccordionControllerProvider(effectiveId).notifier).toggle(i, multiOpen),
+            onToggle: () => ref
+                .read(glassAccordionControllerProvider(effectiveId).notifier)
+                .toggle(i, multiOpen),
             duration: animationDuration,
             curve: animationCurve,
             borderRadius: borderRadius,
@@ -139,12 +147,14 @@ class _AccordionItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = Theme.of(
-      context,
-    ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: Colors.white);
-    final bodyStyle = Theme.of(
-      context,
-    ).textTheme.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.9), height: 1.5);
+    final titleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
+      fontWeight: FontWeight.w700,
+      color: Colors.white,
+    );
+    final bodyStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color: Colors.white.withValues(alpha: 0.9),
+      height: 1.5,
+    );
 
     return GlassCard(
       margin: const EdgeInsets.symmetric(vertical: 6),
@@ -161,7 +171,10 @@ class _AccordionItemCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
               child: Row(
                 children: [
-                  if (item.leading != null) ...[item.leading!, const SizedBox(width: 10)],
+                  if (item.leading != null) ...[
+                    item.leading!,
+                    const SizedBox(width: 10),
+                  ],
                   Expanded(child: Text(item.title, style: titleStyle)),
                   AnimatedRotation(
                     turns: isOpen ? 0.5 : 0.0,
@@ -177,10 +190,15 @@ class _AccordionItemCard extends StatelessWidget {
           // Body
           AnimatedCrossFade(
             duration: duration,
-            crossFadeState: isOpen ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            crossFadeState: isOpen
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
             firstChild: Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: DefaultTextStyle.merge(style: bodyStyle, child: item.content),
+              child: DefaultTextStyle.merge(
+                style: bodyStyle,
+                child: item.content,
+              ),
             ),
             secondChild: const SizedBox.shrink(),
             sizeCurve: curve,

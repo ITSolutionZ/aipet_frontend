@@ -116,7 +116,11 @@ class FeedingChartSection extends StatelessWidget {
                     break;
                 }
                 // meta: TitleMeta, fitInside: SideTitleFitInsideData?
-                return SideTitleWidget(meta: meta, space: 8, child: text);
+                return SideTitleWidget(
+                  axisSide: AxisSide.bottom,
+                  space: 8,
+                  child: text,
+                );
               },
             ),
           ),
@@ -227,7 +231,7 @@ class FeedingChartSection extends StatelessWidget {
           enabled: true,
           touchTooltipData: LineTouchTooltipData(
             getTooltipColor: (touchedSpot) => AppColors.pointDark,
-            tooltipBorderRadius: BorderRadius.circular(8),
+            tooltipRoundedRadius: 8,
             getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
               return touchedBarSpots.map((barSpot) {
                 final flSpot = barSpot;

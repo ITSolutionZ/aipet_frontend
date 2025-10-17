@@ -2,11 +2,9 @@ import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart'
 import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
-import 'package:aipet_frontend/features/walk/presentation/widgets/dialogs/edit_walk_bottom_sheet.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_record_card_widget.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -629,89 +627,5 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
 
   void _showWalkDetails(WalkRecordEntity walkRecord) {
     context.push('/walk/detail', extra: walkRecord);
-  }
-
-  void _showWalkOptions(WalkRecordEntity walkRecord) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.edit),
-              title: const Text('編集'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _showEditWalkDialog(context, walkRecord);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.share),
-              title: const Text('共有'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _shareWalkRecord(context, walkRecord);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete, color: AppColors.pointPink),
-              title: const Text(
-                '削除',
-                style: TextStyle(color: AppColors.pointPink),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                _controller.deleteWalkRecord(walkRecord.id);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// 산책 기록 편집 다이얼로그 표시
-  void _showEditWalkDialog(BuildContext context, WalkRecordEntity walk) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) =>
-          EditWalkBottomSheet(walkRecord: walk, controller: _controller),
-    );
-  }
-
-  /// 산책 기록 공유
-  void _shareWalkRecord(BuildContext context, WalkRecordEntity walk) {
-    final duration = walk.duration ?? const Duration(hours: 0);
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes.remainder(60);
-
-    final shareText =
-        '''
-🐾 散歩記録
-
-ペット: ${walk.petName}
-日付: ${walk.startTime.year}/${walk.startTime.month}/${walk.startTime.day}
-時間: $hours時間 $minutes分
-距離: ${walk.distance?.toStringAsFixed(2) ?? '0.00'} km
-
-${walk.notes ?? ''}
-
-#ペット散歩 #${walk.petName}
-''';
-
-    // クリップボードにコピー
-    Clipboard.setData(ClipboardData(text: shareText));
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('散歩記録をクリップボードにコピーしました'),
-        duration: Duration(seconds: 2),
-        backgroundColor: AppColors.pointGreen,
-      ),
-    );
   }
 }

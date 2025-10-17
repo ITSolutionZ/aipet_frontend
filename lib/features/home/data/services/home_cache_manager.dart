@@ -79,12 +79,20 @@ class HomeCacheManager {
   /// 캐시 상태 확인 (디버그용)
   Map<String, bool> getCacheStatus() {
     return {
-      'homeDashboard': _cacheService.getMemoryCache<dynamic>(CacheKeys.homeDashboard) != null,
-      'weather': _cacheService.getMemoryCache<dynamic>(CacheKeys.weather) != null,
-      'petProfiles': _cacheService.getMemoryCache<dynamic>(CacheKeys.petProfiles) != null,
-      'walkSummary': _cacheService.getMemoryCache<dynamic>(CacheKeys.walkSummary) != null,
-      'healthSummary': _cacheService.getMemoryCache<dynamic>(CacheKeys.healthSummary) != null,
-      'appointments': _cacheService.getMemoryCache<dynamic>(CacheKeys.appointments) != null,
+      'homeDashboard':
+          _cacheService.getMemoryCache<dynamic>(CacheKeys.homeDashboard) !=
+          null,
+      'weather':
+          _cacheService.getMemoryCache<dynamic>(CacheKeys.weather) != null,
+      'petProfiles':
+          _cacheService.getMemoryCache<dynamic>(CacheKeys.petProfiles) != null,
+      'walkSummary':
+          _cacheService.getMemoryCache<dynamic>(CacheKeys.walkSummary) != null,
+      'healthSummary':
+          _cacheService.getMemoryCache<dynamic>(CacheKeys.healthSummary) !=
+          null,
+      'appointments':
+          _cacheService.getMemoryCache<dynamic>(CacheKeys.appointments) != null,
     };
   }
 }

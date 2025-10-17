@@ -23,7 +23,9 @@ class MealStatusWidget extends StatelessWidget {
             ? AppColors.pointGreen.withValues(alpha: 0.1)
             : AppColors.pointGray.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: isCompleted ? AppColors.pointGreen : AppColors.pointGray),
+        border: Border.all(
+          color: isCompleted ? AppColors.pointGreen : AppColors.pointGray,
+        ),
       ),
       child: Column(
         children: [

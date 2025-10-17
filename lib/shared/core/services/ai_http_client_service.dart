@@ -87,7 +87,11 @@ class AiHttpClientService extends BaseLoggingService {
   }) async {
     return trackApiPerformance('api_$endpoint', () async {
       try {
-        final response = await _httpClient.post<T>(endpoint, data: data, fromJson: fromJson);
+        final response = await _httpClient.post<T>(
+          endpoint,
+          data: data,
+          fromJson: fromJson,
+        );
 
         if (response.isSuccess) {
           return Result.success('API 호출이 성공했습니다', response.data as T);
@@ -135,7 +139,11 @@ class AiHttpClientService extends BaseLoggingService {
   }) async {
     return trackApiPerformance('put_$endpoint', () async {
       try {
-        final response = await _httpClient.put<T>(endpoint, data: data, fromJson: fromJson);
+        final response = await _httpClient.put<T>(
+          endpoint,
+          data: data,
+          fromJson: fromJson,
+        );
 
         if (response.isSuccess) {
           return Result.success('PUT 요청이 성공했습니다', response.data as T);
@@ -156,7 +164,10 @@ class AiHttpClientService extends BaseLoggingService {
   }) async {
     return trackApiPerformance('delete_$endpoint', () async {
       try {
-        final response = await _httpClient.delete<T>(endpoint, fromJson: fromJson);
+        final response = await _httpClient.delete<T>(
+          endpoint,
+          fromJson: fromJson,
+        );
 
         if (response.isSuccess) {
           return Result.success('DELETE 요청이 성공했습니다', response.data as T);

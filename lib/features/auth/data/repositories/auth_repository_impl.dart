@@ -11,10 +11,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDatasource _remoteDatasource;
   final AuthLocalDatasource _localDatasource;
 
-  const AuthRepositoryImpl(
-    this._remoteDatasource,
-    this._localDatasource,
-  );
+  const AuthRepositoryImpl(this._remoteDatasource, this._localDatasource);
 
   @override
   Future<Result<AuthUser>> signInWithEmailAndPassword(

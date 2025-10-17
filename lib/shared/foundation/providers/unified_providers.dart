@@ -17,7 +17,9 @@ final unifiedErrorHandlerProvider = Provider<UnifiedErrorHandler>((ref) {
 });
 
 /// 통합 유효성 검사 서비스 프로바이더
-final unifiedValidationServiceProvider = Provider<UnifiedValidationService>((ref) {
+final unifiedValidationServiceProvider = Provider<UnifiedValidationService>((
+  ref,
+) {
   return UnifiedValidationService();
 });
 
@@ -96,7 +98,6 @@ class _Error extends UnifiedState {
   const _Error(this.error);
 }
 
-
 /// 공통 폼 상태 프로바이더
 @riverpod
 class UnifiedFormNotifierController extends _$UnifiedFormNotifierController {
@@ -169,4 +170,3 @@ class UnifiedFormState {
   /// 폼 유효성 검사
   bool get isValid => error == null && errors.isEmpty;
 }
-

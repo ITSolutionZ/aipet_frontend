@@ -20,7 +20,11 @@ class EncryptionService {
   /// [prefs] SharedPreferences 인스턴스
   ///
   /// Returns 암호화 성공 여부
-  static Future<bool> encryptAndSave(String key, String value, dynamic prefs) async {
+  static Future<bool> encryptAndSave(
+    String key,
+    String value,
+    dynamic prefs,
+  ) async {
     try {
       // 암호화 키와 IV 생성/가져오기
       final encryptionKey = await _getOrCreateKey(key, prefs);
@@ -99,7 +103,10 @@ class EncryptionService {
     if (existingKey == null) {
       // 새로운 키 생성
       final random = Random.secure();
-      final keyBytes = List<int>.generate(_keyLength, (i) => random.nextInt(256));
+      final keyBytes = List<int>.generate(
+        _keyLength,
+        (i) => random.nextInt(256),
+      );
       existingKey = base64Encode(keyBytes);
       await prefs.setString(keyString, existingKey);
     }
@@ -141,7 +148,11 @@ class EncryptionService {
   /// AES 복호화 (간단한 구현)
   ///
   /// 실제 프로덕션에서는 더 강력한 암호화 라이브러리를 사용해야 합니다.
-  static String _decryptAES(Uint8List encryptedData, Uint8List key, Uint8List iv) {
+  static String _decryptAES(
+    Uint8List encryptedData,
+    Uint8List key,
+    Uint8List iv,
+  ) {
     // 간단한 XOR 기반 복호화 (실제 프로덕션에서는 AES 라이브러리 사용)
     final result = Uint8List(encryptedData.length);
 

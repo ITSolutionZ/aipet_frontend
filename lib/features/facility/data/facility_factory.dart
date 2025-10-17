@@ -81,7 +81,9 @@ class FacilityFactory {
 
   /// 시설 검증
   static bool isValid(Facility facility) {
-    return facility.id.isNotEmpty && facility.name.isNotEmpty && facility.address.isNotEmpty;
+    return facility.id.isNotEmpty &&
+        facility.name.isNotEmpty &&
+        facility.address.isNotEmpty;
   }
 
   /// 시설 복사 (특정 필드만 업데이트)

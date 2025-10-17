@@ -16,10 +16,12 @@ class NotificationDetailScreen extends ConsumerStatefulWidget {
   const NotificationDetailScreen({super.key, required this.notificationId});
 
   @override
-  ConsumerState<NotificationDetailScreen> createState() => _NotificationDetailScreenState();
+  ConsumerState<NotificationDetailScreen> createState() =>
+      _NotificationDetailScreenState();
 }
 
-class _NotificationDetailScreenState extends ConsumerState<NotificationDetailScreen> {
+class _NotificationDetailScreenState
+    extends ConsumerState<NotificationDetailScreen> {
   NotificationModel? _notification;
   bool _isLoading = true;
   late final NotificationDetailController _controller;
@@ -60,7 +62,8 @@ class _NotificationDetailScreenState extends ConsumerState<NotificationDetailScr
       });
 
       // 읽음 처리
-      if (notification != null && notification.status == NotificationStatus.unread) {
+      if (notification != null &&
+          notification.status == NotificationStatus.unread) {
         await _markAsRead(notification);
       }
     } catch (error) {
@@ -69,7 +72,10 @@ class _NotificationDetailScreenState extends ConsumerState<NotificationDetailScr
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('通知を読み込む際にエラーが発生しました: $error'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('通知を読み込む際にエラーが発生しました: $error'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -94,7 +100,11 @@ class _NotificationDetailScreenState extends ConsumerState<NotificationDetailScr
   void _handleDelete() {
     final notification = _notification;
     if (notification != null) {
-      _controller.deleteNotification(context, 'default_user_id', notification.id);
+      _controller.deleteNotification(
+        context,
+        'default_user_id',
+        notification.id,
+      );
     }
   }
 

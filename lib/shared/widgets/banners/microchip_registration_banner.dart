@@ -80,7 +80,11 @@ class MicrochipRegistrationBanner extends StatelessWidget {
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
                         color: AppColors.pointOffWhite,
-                        child: const Icon(Icons.pets, size: 60, color: AppColors.pointBrown),
+                        child: const Icon(
+                          Icons.pets,
+                          size: 60,
+                          color: AppColors.pointBrown,
+                        ),
                       );
                     },
                   ),
@@ -103,9 +107,13 @@ class MicrochipRegistrationBanner extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.pointBrown,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(AppRadius.medium),
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.medium,
+                              ),
                             ),
                           ),
                           child: Text(
@@ -129,7 +137,9 @@ class MicrochipRegistrationBanner extends StatelessWidget {
                             },
                             child: Text(
                               '後で',
-                              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+                              style: AppFonts.bodyMedium.copyWith(
+                                color: AppColors.pointGray,
+                              ),
                             ),
                           ),
                         ),
@@ -148,7 +158,10 @@ class MicrochipRegistrationBanner extends StatelessWidget {
   /// 배너 콘텐츠 빌드
   Widget _buildBannerContent() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.large),
@@ -183,7 +196,11 @@ class MicrochipRegistrationBanner extends StatelessWidget {
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     color: AppColors.pointOffWhite,
-                    child: const Icon(Icons.pets, size: 60, color: AppColors.pointBrown),
+                    child: const Icon(
+                      Icons.pets,
+                      size: 60,
+                      color: AppColors.pointBrown,
+                    ),
                   );
                 },
               ),
@@ -203,7 +220,9 @@ class MicrochipRegistrationBanner extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.pointBrown,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppRadius.medium),
                       ),
@@ -226,7 +245,9 @@ class MicrochipRegistrationBanner extends StatelessWidget {
                       onPressed: onDismiss,
                       child: Text(
                         '後で',
-                        style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+                        style: AppFonts.bodyMedium.copyWith(
+                          color: AppColors.pointGray,
+                        ),
                       ),
                     ),
                   ),

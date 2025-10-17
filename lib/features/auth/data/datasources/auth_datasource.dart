@@ -5,10 +5,16 @@ import '../../domain/entities/auth_entities.dart';
 /// 기본 인증 데이터소스 인터페이스
 abstract class AuthDatasource {
   /// 이메일/비밀번호로 로그인
-  Future<Result<AuthUser>> signInWithEmailAndPassword(String email, String password);
+  Future<Result<AuthUser>> signInWithEmailAndPassword(
+    String email,
+    String password,
+  );
 
   /// 이메일/비밀번호로 회원가입
-  Future<Result<AuthUser>> createUserWithEmailAndPassword(String email, String password);
+  Future<Result<AuthUser>> createUserWithEmailAndPassword(
+    String email,
+    String password,
+  );
 
   /// 로그아웃
   Future<void> signOut();

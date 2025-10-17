@@ -10,6 +10,92 @@ import 'package:aipet_frontend/shared/foundation/errors/app_exception.dart';
 sealed class Result<T> {
   const Result();
 
+  /// 성공 결과 생성
+  static Result<T> success<T>(String message, [T? data]) {
+    return Success(data as T, message);
+  }
+
+  /// 실패 결과 생성
+  static Result<T> failure<T>(
+    String message, {
+    Exception? exception,
+    String? code,
+  }) {
+    return Failure(message, exception: exception, code: code);
+  }
+
+  /// 예외로부터 실패 결과 생성
+  static Result<T> fromException<T>(Exception exception) {
+    return Failure(
+      exception.toString().replaceFirst('Exception: ', ''),
+      exception: exception,
+    );
+  }
+
+  /// AppException으로부터 실패 결과 생성
+  static Result<T> fromAppException<T>(AppException exception) {
+    return Failure(
+      exception.message,
+      exception: exception,
+      code: exception.code,
+    );
+  }
+
+  /// 여러 Result를 하나로 결합 (모든 것이 성공해야 성공)
+  static Result<List<T>> combine<T>(List<Result<T>> results) {
+    final failures = results.where((r) => r.isFailure).toList();
+    if (failures.isNotEmpty) {
+      return Failure(
+        '複数の操作が失敗しました: ${failures.map((f) => f.errorOrNull).join(', ')}',
+      );
+    }
+
+    final data = results.map((r) => (r as Success<T>).data).toList();
+    return Success(data);
+  }
+
+  /// 여러 Result를 하나로 결합 (비동기)
+  static Future<Result<List<T>>> combineAsync<T>(
+    List<Future<Result<T>>> results,
+  ) async {
+    final awaitedResults = await Future.wait(results);
+    return combine(awaitedResults);
+  }
+
+  /// 조건부 성공/실패
+  static Result<T> conditional<T>(
+    bool condition,
+    T data,
+    String failureMessage,
+  ) {
+    return condition ? Success(data) : Failure(failureMessage);
+  }
+
+  /// null 체크 후 성공/실패
+  static Result<T> fromNullable<T>(T? data, String failureMessage) {
+    return data != null ? Success(data) : Failure(failureMessage);
+  }
+
+  /// 비동기 작업을 Result로 래핑
+  static Future<Result<T>> wrapAsync<T>(Future<T> Function() operation) async {
+    try {
+      final result = await operation();
+      return Success(result);
+    } catch (e) {
+      return fromException(Exception(e.toString()));
+    }
+  }
+
+  /// 동기 작업을 Result로 래핑
+  static Result<T> wrap<T>(T Function() operation) {
+    try {
+      final result = operation();
+      return Success(result);
+    } catch (e) {
+      return fromException(Exception(e.toString()));
+    }
+  }
+
   /// 성공 여부 확인
   bool get isSuccess => this is Success<T>;
 
@@ -26,10 +112,12 @@ sealed class Result<T> {
   String? get errorOrNull => isFailure ? (this as Failure<T>).message : null;
 
   /// 실패 시 예외 반환, 성공 시 null
-  Exception? get exceptionOrNull => isFailure ? (this as Failure<T>).exception : null;
+  Exception? get exceptionOrNull =>
+      isFailure ? (this as Failure<T>).exception : null;
 
   /// 성공 시 데이터 반환, 실패 시 기본값
-  T dataOr(T defaultValue) => isSuccess ? (this as Success<T>).data : defaultValue;
+  T dataOr(T defaultValue) =>
+      isSuccess ? (this as Success<T>).data : defaultValue;
 
   /// 성공 시 데이터 반환, 실패 시 예외 발생
   T get dataOrThrow {
@@ -47,10 +135,10 @@ sealed class Result<T> {
       try {
         return Success(transform((this as Success<T>).data));
       } catch (e) {
-        return Failure('変換中にエラーが発生しました: ${e.toString()}');
+        return Result.failure('変換中にエラーが発生しました: ${e.toString()}');
       }
     } else {
-      return Failure((this as Failure<T>).message);
+      return Result.failure((this as Failure<T>).message);
     }
   }
 
@@ -61,10 +149,10 @@ sealed class Result<T> {
         final result = await transform((this as Success<T>).data);
         return Success(result);
       } catch (e) {
-        return Failure('非同期変換中にエラーが発生しました: ${e.toString()}');
+        return Result.failure('非同期変換中にエラーが発生しました: ${e.toString()}');
       }
     } else {
-      return Failure((this as Failure<T>).message);
+      return Result.failure((this as Failure<T>).message);
     }
   }
 
@@ -73,16 +161,18 @@ sealed class Result<T> {
     if (isSuccess) {
       return transform((this as Success<T>).data);
     } else {
-      return Failure((this as Failure<T>).message);
+      return Result.failure((this as Failure<T>).message);
     }
   }
 
   /// 성공 시 비동기 체이닝, 실패 시 그대로 반환
-  Future<Result<U>> flatMapAsync<U>(Future<Result<U>> Function(T data) transform) async {
+  Future<Result<U>> flatMapAsync<U>(
+    Future<Result<U>> Function(T data) transform,
+  ) async {
     if (isSuccess) {
       return transform((this as Success<T>).data);
     } else {
-      return Failure((this as Failure<T>).message);
+      return Result.failure((this as Failure<T>).message);
     }
   }
 
@@ -103,7 +193,9 @@ sealed class Result<T> {
   }
 
   /// 성공 시 비동기 콜백 실행
-  Future<Result<T>> onSuccessAsync(Future<void> Function(T data) callback) async {
+  Future<Result<T>> onSuccessAsync(
+    Future<void> Function(T data) callback,
+  ) async {
     if (isSuccess) {
       await callback((this as Success<T>).data);
     }
@@ -111,7 +203,9 @@ sealed class Result<T> {
   }
 
   /// 실패 시 비동기 콜백 실행
-  Future<Result<T>> onFailureAsync(Future<void> Function(String message) callback) async {
+  Future<Result<T>> onFailureAsync(
+    Future<void> Function(String message) callback,
+  ) async {
     if (isFailure) {
       await callback((this as Failure<T>).message);
     }
@@ -122,7 +216,10 @@ sealed class Result<T> {
   Future<Result<T>> toFuture() => Future.value(this);
 
   /// 성공 시 다른 값 반환, 실패 시 기본값 반환
-  U fold<U>(U Function(T data) onSuccess, U Function(String message) onFailure) {
+  U fold<U>(
+    U Function(T data) onSuccess,
+    U Function(String message) onFailure,
+  ) {
     if (isSuccess) {
       return onSuccess((this as Success<T>).data);
     } else {
@@ -163,8 +260,9 @@ sealed class Result<T> {
   }
 
   @override
-  int get hashCode =>
-      isSuccess ? (this as Success<T>).data.hashCode : (this as Failure<T>).message.hashCode;
+  int get hashCode => isSuccess
+      ? (this as Success<T>).data.hashCode
+      : (this as Failure<T>).message.hashCode;
 }
 
 /// 성공 결과
@@ -196,83 +294,14 @@ class Failure<T> extends Result<T> {
   bool get isFailure => true;
 }
 
-/// Result 팩토리 함수들
-class ResultFactory {
-  /// 성공 결과 생성
-  static Result<T> success<T>(T data, [String? message]) {
-    return Success(data, message);
-  }
-
-  /// 실패 결과 생성
-  static Result<T> failure<T>(String message, {Exception? exception, String? code}) {
-    return Failure(message, exception: exception, code: code);
-  }
-
-  /// 예외로부터 실패 결과 생성
-  static Result<T> fromException<T>(Exception exception) {
-    return Failure(exception.toString().replaceFirst('Exception: ', ''), exception: exception);
-  }
-
-  /// AppException으로부터 실패 결과 생성
-  static Result<T> fromAppException<T>(AppException exception) {
-    return Failure(exception.message, exception: exception, code: exception.code);
-  }
-
-  /// 여러 Result를 하나로 결합 (모든 것이 성공해야 성공)
-  static Result<List<T>> combine<T>(List<Result<T>> results) {
-    final failures = results.where((r) => r.isFailure).toList();
-    if (failures.isNotEmpty) {
-      return Failure('複数の操作が失敗しました: ${failures.map((f) => f.errorOrNull).join(', ')}');
-    }
-
-    final data = results.map((r) => (r as Success<T>).data).toList();
-    return Success(data);
-  }
-
-  /// 여러 Result를 하나로 결합 (비동기)
-  static Future<Result<List<T>>> combineAsync<T>(List<Future<Result<T>>> results) async {
-    final awaitedResults = await Future.wait(results);
-    return combine(awaitedResults);
-  }
-
-  /// 조건부 성공/실패
-  static Result<T> conditional<T>(bool condition, T data, String failureMessage) {
-    return condition ? Success(data) : Failure(failureMessage);
-  }
-
-  /// null 체크 후 성공/실패
-  static Result<T> fromNullable<T>(T? data, String failureMessage) {
-    return data != null ? Success(data) : Failure(failureMessage);
-  }
-
-  /// 비동기 작업을 Result로 래핑
-  static Future<Result<T>> wrapAsync<T>(Future<T> Function() operation) async {
-    try {
-      final result = await operation();
-      return Success(result);
-    } catch (e) {
-      return fromException(Exception(e.toString()));
-    }
-  }
-
-  /// 동기 작업을 Result로 래핑
-  static Result<T> wrap<T>(T Function() operation) {
-    try {
-      final result = operation();
-      return Success(result);
-    } catch (e) {
-      return fromException(Exception(e.toString()));
-    }
-  }
-}
-
 /// Result 확장 메서드들
 extension ResultExtensions<T> on Result<T> {
   /// 성공 시 데이터 반환, 실패 시 null
   T? get dataOrNull => isSuccess ? (this as Success<T>).data : null;
 
   /// 성공 시 데이터 반환, 실패 시 기본값
-  T dataOr(T defaultValue) => isSuccess ? (this as Success<T>).data : defaultValue;
+  T dataOr(T defaultValue) =>
+      isSuccess ? (this as Success<T>).data : defaultValue;
 
   /// 성공 시 데이터 반환, 실패 시 예외 발생
   T get dataOrThrow {

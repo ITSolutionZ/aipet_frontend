@@ -11,19 +11,33 @@ class SettingsController extends BaseController {
   SettingsController(super.ref);
 
   // ✅ Riverpod Provider를 통한 의존성 주입 (Mockito 데이터 사용)
-  late final GetUserProfileUseCase _getUserProfileUseCase = ref.read(getUserProfileUseCaseProvider);
+  late final GetUserProfileUseCase _getUserProfileUseCase = ref.read(
+    getUserProfileUseCaseProvider,
+  );
   late final UpdateUserProfileUseCase _updateUserProfileUseCase = ref.read(
     updateUserProfileUseCaseProvider,
   );
-  late final ChangePasswordUseCase _changePasswordUseCase = ref.read(changePasswordUseCaseProvider);
-  late final GetAppSettingsUseCase _getAppSettingsUseCase = ref.read(getAppSettingsUseCaseProvider);
+  late final ChangePasswordUseCase _changePasswordUseCase = ref.read(
+    changePasswordUseCaseProvider,
+  );
+  late final GetAppSettingsUseCase _getAppSettingsUseCase = ref.read(
+    getAppSettingsUseCaseProvider,
+  );
   late final SaveAppSettingsUseCase _saveAppSettingsUseCase = ref.read(
     saveAppSettingsUseCaseProvider,
   );
-  late final DeleteAccountUseCase _deleteAccountUseCase = ref.read(deleteAccountUseCaseProvider);
-  late final ExportAppDataUseCase _exportAppDataUseCase = ref.read(exportAppDataUseCaseProvider);
-  late final ImportAppDataUseCase _importAppDataUseCase = ref.read(importAppDataUseCaseProvider);
-  late final ClearAppCacheUseCase _clearAppCacheUseCase = ref.read(clearAppCacheUseCaseProvider);
+  late final DeleteAccountUseCase _deleteAccountUseCase = ref.read(
+    deleteAccountUseCaseProvider,
+  );
+  late final ExportAppDataUseCase _exportAppDataUseCase = ref.read(
+    exportAppDataUseCaseProvider,
+  );
+  late final ImportAppDataUseCase _importAppDataUseCase = ref.read(
+    importAppDataUseCaseProvider,
+  );
+  late final ClearAppCacheUseCase _clearAppCacheUseCase = ref.read(
+    clearAppCacheUseCaseProvider,
+  );
 
   /// 사용자 프로필 로드
   Future<Result<Map<String, dynamic>>> loadUserProfile() async {
@@ -40,7 +54,9 @@ class SettingsController extends BaseController {
   }
 
   /// 프로필 업데이트
-  Future<Result<Map<String, dynamic>>> updateProfile(Map<String, dynamic> profile) async {
+  Future<Result<Map<String, dynamic>>> updateProfile(
+    Map<String, dynamic> profile,
+  ) async {
     final result = await safeExecute<Result<Map<String, dynamic>>>(() async {
       final useCaseResult = await _updateUserProfileUseCase.call(profile);
       if (useCaseResult.isSuccess) {
@@ -115,7 +131,9 @@ class SettingsController extends BaseController {
   }
 
   /// 앱 설정 저장
-  Future<Result<Map<String, dynamic>>> saveAppSettings(Map<String, dynamic> settings) async {
+  Future<Result<Map<String, dynamic>>> saveAppSettings(
+    Map<String, dynamic> settings,
+  ) async {
     final result = await safeExecute<Result<Map<String, dynamic>>>(() async {
       final useCaseResult = await _saveAppSettingsUseCase.call(settings);
       if (useCaseResult.isSuccess) {

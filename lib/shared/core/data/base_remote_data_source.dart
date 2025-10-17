@@ -13,7 +13,10 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
   Map<String, dynamic> toJson(T data);
 
   @override
-  Future<ResultState<T>> fetchData(String endpoint, {Map<String, dynamic>? queryParameters}) async {
+  Future<ResultState<T>> fetchData(
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
     try {
       final response = await apiClient.get<Map<String, dynamic>>(
         endpoint,
@@ -21,23 +24,28 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Failure(ApiErrorHandler.handleError(
-          DioException(
-            requestOptions: response.requestOptions,
-            message: 'Empty response data',
+        return Result.failure(
+          ApiErrorHandler.handleError(
+            DioException(
+              requestOptions: response.requestOptions,
+              message: 'Empty response data',
+            ),
           ),
-        ));
+        );
       }
 
       final data = fromJson(response.data!);
       return Success(data);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
   @override
-  Future<ResultState<List<T>>> fetchList(String endpoint, {Map<String, dynamic>? queryParameters}) async {
+  Future<ResultState<List<T>>> fetchList(
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
     try {
       final response = await apiClient.get<Map<String, dynamic>>(
         endpoint,
@@ -45,22 +53,25 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Failure(ApiErrorHandler.handleError(
-          DioException(
-            requestOptions: response.requestOptions,
-            message: 'Empty response data',
+        return Result.failure(
+          ApiErrorHandler.handleError(
+            DioException(
+              requestOptions: response.requestOptions,
+              message: 'Empty response data',
+            ),
           ),
-        ));
+        );
       }
 
-      final List<dynamic> dataList = response.data!['data'] ?? response.data!['items'] ?? [];
+      final List<dynamic> dataList =
+          response.data!['data'] ?? response.data!['items'] ?? [];
       final result = dataList
           .map((json) => fromJson(json as Map<String, dynamic>))
           .toList();
 
       return Success(result);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -73,19 +84,21 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Failure(ApiErrorHandler.handleError(
-          DioException(
-            requestOptions: response.requestOptions,
-            message: 'Empty response data',
+        return Result.failure(
+          ApiErrorHandler.handleError(
+            DioException(
+              requestOptions: response.requestOptions,
+              message: 'Empty response data',
+            ),
           ),
-        ));
+        );
       }
 
       final responseData = response.data!['data'] ?? response.data!;
       final result = fromJson(responseData as Map<String, dynamic>);
       return Success(result);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -98,19 +111,21 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Failure(ApiErrorHandler.handleError(
-          DioException(
-            requestOptions: response.requestOptions,
-            message: 'Empty response data',
+        return Result.failure(
+          ApiErrorHandler.handleError(
+            DioException(
+              requestOptions: response.requestOptions,
+              message: 'Empty response data',
+            ),
           ),
-        ));
+        );
       }
 
       final responseData = response.data!['data'] ?? response.data!;
       final result = fromJson(responseData as Map<String, dynamic>);
       return Success(result);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -120,7 +135,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       await apiClient.delete('$endpoint/$id');
       return const Success(null);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -134,10 +149,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       final formData = FormData();
 
       formData.files.add(
-        MapEntry(
-          fieldName,
-          await MultipartFile.fromFile(filePath),
-        ),
+        MapEntry(fieldName, await MultipartFile.fromFile(filePath)),
       );
 
       if (additionalData != null) {
@@ -152,17 +164,19 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Failure(ApiErrorHandler.handleError(
-          DioException(
-            requestOptions: response.requestOptions,
-            message: 'Empty response data',
+        return Result.failure(
+          ApiErrorHandler.handleError(
+            DioException(
+              requestOptions: response.requestOptions,
+              message: 'Empty response data',
+            ),
           ),
-        ));
+        );
       }
 
       return Success(response.data!);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -185,22 +199,25 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Failure(ApiErrorHandler.handleError(
-          DioException(
-            requestOptions: response.requestOptions,
-            message: 'Empty response data',
+        return Result.failure(
+          ApiErrorHandler.handleError(
+            DioException(
+              requestOptions: response.requestOptions,
+              message: 'Empty response data',
+            ),
           ),
-        ));
+        );
       }
 
-      final List<dynamic> dataList = response.data!['data'] ?? response.data!['items'] ?? [];
+      final List<dynamic> dataList =
+          response.data!['data'] ?? response.data!['items'] ?? [];
       final result = dataList
           .map((json) => fromJson(json as Map<String, dynamic>))
           .toList();
 
       return Success(result);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 }

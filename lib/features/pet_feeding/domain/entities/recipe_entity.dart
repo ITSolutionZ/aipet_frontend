@@ -48,7 +48,9 @@ class RecipeEntity {
       isFavorite: json['isFavorite'] as bool? ?? false,
       userId: json['userId'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
     );
   }
 

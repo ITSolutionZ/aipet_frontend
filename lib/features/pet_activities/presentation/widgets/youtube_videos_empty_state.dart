@@ -24,7 +24,11 @@ class YouTubeVideosEmptyState extends StatelessWidget {
                 color: AppColors.pointBlue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(60),
               ),
-              child: const Icon(Icons.video_library, size: 60, color: AppColors.pointBlue),
+              child: const Icon(
+                Icons.video_library,
+                size: 60,
+                color: AppColors.pointBlue,
+              ),
             ),
             const SizedBox(height: AppSpacing.xl),
 
@@ -41,7 +45,9 @@ class YouTubeVideosEmptyState extends StatelessWidget {
 
             Text(
               'YouTubeビデオを追加して\nペットのトレーニングを始めましょう',
-              style: AppFonts.bodyMedium.copyWith(color: AppColors.textSecondary),
+              style: AppFonts.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),

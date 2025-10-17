@@ -56,4 +56,3 @@ class PdfFontSet {
 
   const PdfFontSet({required this.regular, required this.bold});
 }
-

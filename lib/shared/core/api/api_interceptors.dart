@@ -9,10 +9,14 @@ class AuthInterceptor extends Interceptor {
   AuthInterceptor();
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     final token = await SecureStorageService.getToken();
     if (token != null) {
-      options.headers[ApiConstants.authHeaderKey] = '${ApiConstants.bearerPrefix}$token';
+      options.headers[ApiConstants.authHeaderKey] =
+          '${ApiConstants.bearerPrefix}$token';
     }
     handler.next(options);
   }
@@ -33,7 +37,8 @@ class AuthInterceptor extends Interceptor {
             await SecureStorageService.saveToken(newToken);
 
             final opts = err.requestOptions;
-            opts.headers[ApiConstants.authHeaderKey] = '${ApiConstants.bearerPrefix}$newToken';
+            opts.headers[ApiConstants.authHeaderKey] =
+                '${ApiConstants.bearerPrefix}$newToken';
 
             final dio = Dio();
             final response = await dio.fetch(opts);
@@ -135,11 +140,9 @@ class RetryInterceptor extends Interceptor {
   final int maxRetryAttempts;
   final Duration retryDelay;
 
-  RetryInterceptor({
-    int? maxRetryAttempts,
-    Duration? retryDelay,
-  })  : maxRetryAttempts = maxRetryAttempts ?? ApiConfig.maxRetryAttempts,
-        retryDelay = retryDelay ?? ApiConfig.retryDelay;
+  RetryInterceptor({int? maxRetryAttempts, Duration? retryDelay})
+    : maxRetryAttempts = maxRetryAttempts ?? ApiConfig.maxRetryAttempts,
+      retryDelay = retryDelay ?? ApiConfig.retryDelay;
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {

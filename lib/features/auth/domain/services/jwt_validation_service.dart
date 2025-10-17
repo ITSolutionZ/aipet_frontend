@@ -38,7 +38,9 @@ class JwtValidationService {
       // 3. Header 검증
       final headerResult = _validateJwtPart(parts[0], 'header');
       if (!headerResult.isSuccess) {
-        return Result.failure('Header 검증 실패: ${headerResult.error?.toString() ?? 'Unknown error'}');
+        return Result.failure(
+          'Header 검증 실패: ${headerResult.error?.toString() ?? 'Unknown error'}',
+        );
       }
 
       // 4. Payload 검증
@@ -168,7 +170,10 @@ class JwtValidationService {
   }
 
   /// JWT 부분(Header/Payload) 검증 및 디코딩
-  static Result<Map<String, dynamic>> _validateJwtPart(String part, String partName) {
+  static Result<Map<String, dynamic>> _validateJwtPart(
+    String part,
+    String partName,
+  ) {
     try {
       // Base64URL 디코딩
       String normalizedPart = part;
@@ -227,7 +232,9 @@ class JwtValidationService {
   ///
   /// [validationResult] 검증된 JWT 결과
   /// [return] 보안 등급 정보
-  static JwtSecurityLevel evaluateSecurityLevel(JwtValidationResult validationResult) {
+  static JwtSecurityLevel evaluateSecurityLevel(
+    JwtValidationResult validationResult,
+  ) {
     int score = 0;
     final issues = <String>[];
 
@@ -258,7 +265,9 @@ class JwtValidationService {
     // 만료 시간 설정 여부
     if (validationResult.expirationTime != null) {
       score += 20;
-      final remaining = validationResult.expirationTime!.difference(DateTime.now());
+      final remaining = validationResult.expirationTime!.difference(
+        DateTime.now(),
+      );
       if (remaining.inHours > 24) {
         score -= 10;
         issues.add('토큰 만료 시간이 너무 깁니다 (${remaining.inHours}시간)');
@@ -300,7 +309,10 @@ class JwtValidationService {
     );
   }
 
-  static String _getSecurityRecommendation(SecurityLevel level, List<String> issues) {
+  static String _getSecurityRecommendation(
+    SecurityLevel level,
+    List<String> issues,
+  ) {
     switch (level) {
       case SecurityLevel.high:
         return '토큰 보안 수준이 양호합니다';

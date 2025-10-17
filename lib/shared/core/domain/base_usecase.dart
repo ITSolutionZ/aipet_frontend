@@ -15,7 +15,10 @@ mixin UseCaseMixin<T, P> {
   /// 공통 에러 처리
   Result<T> handleError(dynamic error, String operation) {
     final errorMessage = _getErrorMessage(error, operation);
-    return Result.failure(errorMessage, error is Exception ? error : Exception(error.toString()));
+    return Result.failure(
+      errorMessage,
+      error is Exception ? error : Exception(error.toString()),
+    );
   }
 
   /// 에러 메시지 생성
@@ -24,7 +27,8 @@ mixin UseCaseMixin<T, P> {
       final errorMessage = error.toString();
 
       // 네트워크 관련 에러
-      if (errorMessage.contains('SocketException') || errorMessage.contains('HandshakeException')) {
+      if (errorMessage.contains('SocketException') ||
+          errorMessage.contains('HandshakeException')) {
         return 'ネットワーク接続エラーが発生しました';
       }
 
@@ -55,7 +59,8 @@ mixin UseCaseMixin<T, P> {
 }
 
 /// Repository를 사용하는 UseCase 기본 클래스
-abstract class RepositoryUseCase<T, P, R> extends BaseUseCase<T, P> with UseCaseMixin<T, P> {
+abstract class RepositoryUseCase<T, P, R> extends BaseUseCase<T, P>
+    with UseCaseMixin<T, P> {
   final R repository;
 
   RepositoryUseCase(this.repository);

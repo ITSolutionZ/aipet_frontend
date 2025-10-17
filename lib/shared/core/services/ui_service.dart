@@ -66,11 +66,14 @@ class UiService {
       return 'ネットワーク接続を確認してください';
     } else if (errorString.contains('timeout')) {
       return 'タイムアウトが発生しました';
-    } else if (errorString.contains('unauthorized') || errorString.contains('401')) {
+    } else if (errorString.contains('unauthorized') ||
+        errorString.contains('401')) {
       return '認証が必要です';
-    } else if (errorString.contains('forbidden') || errorString.contains('403')) {
+    } else if (errorString.contains('forbidden') ||
+        errorString.contains('403')) {
       return 'アクセスが拒否されました';
-    } else if (errorString.contains('not found') || errorString.contains('404')) {
+    } else if (errorString.contains('not found') ||
+        errorString.contains('404')) {
       return 'リソースが見つかりません';
     } else if (errorString.contains('server') || errorString.contains('500')) {
       return 'サーバーエラーが発生しました';
@@ -118,7 +121,11 @@ class UiService {
         backgroundColor: backgroundColor,
         duration: duration,
         action: severity == ErrorSeverity.critical && onRetry != null
-            ? SnackBarAction(label: 'Retry', textColor: Colors.white, onPressed: onRetry)
+            ? SnackBarAction(
+                label: 'Retry',
+                textColor: Colors.white,
+                onPressed: onRetry,
+              )
             : null,
       ),
     );
@@ -141,7 +148,10 @@ class UiService {
           title: Text(title),
           content: Text(content),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(cancelText)),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(cancelText),
+            ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
               child: Text(confirmText),
@@ -163,7 +173,11 @@ class UiService {
       builder: (BuildContext context) {
         return AlertDialog(
           content: Row(
-            children: [const CircularProgressIndicator(), const SizedBox(width: 16), Text(message)],
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(width: 16),
+              Text(message),
+            ],
           ),
         );
       },

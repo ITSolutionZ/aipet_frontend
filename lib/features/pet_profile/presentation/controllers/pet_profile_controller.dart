@@ -43,7 +43,8 @@ class PetProfileState {
 /// 펫 프로필 컨트롤러 (Clean Architecture 적용)
 @riverpod
 class PetProfileNotifier extends _$PetProfileNotifier {
-  GetPetProfileUseCase get _getPetProfileUseCase => ref.read(getPetProfileUseCaseProvider);
+  GetPetProfileUseCase get _getPetProfileUseCase =>
+      ref.read(getPetProfileUseCaseProvider);
 
   @override
   PetProfileState build() => const PetProfileState();
@@ -69,21 +70,30 @@ class PetProfileNotifier extends _$PetProfileNotifier {
   }
 
   /// 펫 프로필 로드
-  Future<Result<void>> loadPetProfile({required String petId, required String requesterId}) async {
+  Future<Result<void>> loadPetProfile({
+    required String petId,
+    required String requesterId,
+  }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
       final result = await _getPetProfileUseCase.call(petId);
 
       if (result.isSuccess) {
-        state = state.copyWith(selectedPet: result.dataOrNull, isLoading: false);
+        state = state.copyWith(
+          selectedPet: result.dataOrNull,
+          isLoading: false,
+        );
         return Result.success('Pet profile loaded successfully');
       } else {
         state = state.copyWith(isLoading: false, errorMessage: result.message);
         return Result.failure(result.message);
       }
     } catch (error) {
-      state = state.copyWith(isLoading: false, errorMessage: 'Failed to load pet profile: $error');
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Failed to load pet profile: $error',
+      );
       return Result.failure('Failed to load pet profile: $error');
     }
   }

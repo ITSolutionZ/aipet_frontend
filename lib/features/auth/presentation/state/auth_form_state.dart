@@ -54,7 +54,8 @@ class AuthFormState {
       username: username ?? this.username,
       password: password ?? this.password,
       isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
-      isConfirmPasswordVisible: isConfirmPasswordVisible ?? this.isConfirmPasswordVisible,
+      isConfirmPasswordVisible:
+          isConfirmPasswordVisible ?? this.isConfirmPasswordVisible,
       rememberMe: rememberMe ?? this.rememberMe,
       isLoading: isLoading ?? this.isLoading,
       error: error,

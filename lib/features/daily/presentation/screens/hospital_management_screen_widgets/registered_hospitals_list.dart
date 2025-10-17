@@ -64,9 +64,7 @@ class RegisteredHospitalsList extends ConsumerWidget {
           const SizedBox(height: AppSpacing.md),
           Consumer(
             builder: (context, ref, child) {
-              final hospitalsAsync = ref.watch(
-                registeredHospitalsProvider,
-              );
+              final hospitalsAsync = ref.watch(registeredHospitalsProvider);
 
               return hospitalsAsync.when(
                 data: (hospitals) {

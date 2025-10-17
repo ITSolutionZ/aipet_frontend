@@ -224,9 +224,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
             message: message,
             isFavorite: chatState.favoriteMessageIds.contains(message.id),
             onFavoriteToggle: (msg) async {
-              await ref
-                  .read(aiChatProvider.notifier)
-                  .toggleFavorite(msg);
+              await ref.read(aiChatProvider.notifier).toggleFavorite(msg);
             },
           ),
         ],

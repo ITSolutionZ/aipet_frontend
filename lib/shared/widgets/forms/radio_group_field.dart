@@ -220,7 +220,7 @@ class _RadioGroupWidget<T> extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.primary.withOpacity(0.1)
+                ? AppColors.primary.withValues(alpha: 0.1)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(AppRadius.small),
           ),
@@ -290,7 +290,7 @@ class _RadioGroupWidget<T> extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.primary.withOpacity(0.1)
+                ? AppColors.primary.withValues(alpha: 0.1)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(AppRadius.small),
             border: Border.all(

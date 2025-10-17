@@ -4,6 +4,7 @@ export 'controllers/pet_profile_controllers.dart';
 export 'controllers/pet_profile_unified_controller.dart';
 export 'logic/pet_profile_logic.dart';
 export 'screens/pet_profile_screens.dart';
+export 'utils/utils.dart';
 export 'widgets/common/pet_info_card_widget.dart';
 export 'widgets/common/pet_profile_image_widget.dart';
 export 'widgets/dialogs/pet_edit_dialogs.dart';

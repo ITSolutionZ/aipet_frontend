@@ -82,9 +82,7 @@ class RecipeUpdateHelper {
   }
 
   /// 레시피 전체 업데이트
-  static Map<String, dynamic> updateRecipe(
-    Map<String, dynamic> recipe,
-  ) {
+  static Map<String, dynamic> updateRecipe(Map<String, dynamic> recipe) {
     final updatedRecipe = Map<String, dynamic>.from(recipe);
     updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
     updatedRecipe['version'] = (updatedRecipe['version'] ?? 0) + 1;
@@ -118,7 +116,8 @@ class RecipeUpdateHelper {
     Map<String, dynamic> existingRecipe,
   ) {
     final updatedRecipe = Map<String, dynamic>.from(existingRecipe);
-    updatedRecipe['isFavorite'] = !(existingRecipe['isFavorite'] as bool? ?? false);
+    updatedRecipe['isFavorite'] =
+        !(existingRecipe['isFavorite'] as bool? ?? false);
     updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
     return updatedRecipe;
   }

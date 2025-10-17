@@ -18,8 +18,12 @@ class DailyHealthInputScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(dailyHealthFormControllerProvider(existingRecord));
-    final formControllerNotifier = ref.read(dailyHealthFormControllerProvider(existingRecord).notifier);
+    final formController = ref.watch(
+      dailyHealthFormControllerProvider(existingRecord),
+    );
+    final formControllerNotifier = ref.read(
+      dailyHealthFormControllerProvider(existingRecord).notifier,
+    );
 
     return Scaffold(
       backgroundColor: AppColors.backgroundGray,
@@ -84,9 +88,7 @@ class DailyHealthInputScreen extends ConsumerWidget {
               onChanged: controller.updateSymptoms,
             ),
             const SizedBox(height: AppSpacing.lg),
-            NotesInputSection(
-              controller: controller.notesController,
-            ),
+            NotesInputSection(controller: controller.notesController),
             const SizedBox(height: AppSpacing.xl),
             _buildActionButtons(context, ref, controller, isLoading),
           ],
@@ -95,7 +97,10 @@ class DailyHealthInputScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildPetSelector(DailyHealthFormData formData, DailyHealthFormController controller) {
+  Widget _buildPetSelector(
+    DailyHealthFormData formData,
+    DailyHealthFormController controller,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -138,7 +143,9 @@ class DailyHealthInputScreen extends ConsumerWidget {
     final buttons = [
       ActionButtonData.primary(
         text: controller.logic.saveButtonText,
-        onPressed: isLoading ? null : () => _handleSave(context, ref, controller),
+        onPressed: isLoading
+            ? null
+            : () => _handleSave(context, ref, controller),
         isLoading: isLoading,
       ),
       ActionButtonData.outlined(
@@ -176,19 +183,13 @@ class DailyHealthInputScreen extends ConsumerWidget {
 
   void _showSuccessMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.pointGreen,
-      ),
+      SnackBar(content: Text(message), backgroundColor: AppColors.pointGreen),
     );
   }
 
   void _showErrorMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.pointRed,
-      ),
+      SnackBar(content: Text(message), backgroundColor: AppColors.pointRed),
     );
   }
 }

@@ -45,10 +45,7 @@ class PetInfo {
 }
 
 class VaccineRecord {
-  const VaccineRecord({
-    required this.name,
-    required this.date,
-  });
+  const VaccineRecord({required this.name, required this.date});
 
   final String name;
   final DateTime date;
@@ -62,10 +59,7 @@ class VaccineRecord {
 }
 
 class WeightRecord {
-  const WeightRecord({
-    required this.date,
-    required this.value,
-  });
+  const WeightRecord({required this.date, required this.value});
 
   final DateTime date;
   final double value;
@@ -79,10 +73,7 @@ class WeightRecord {
 }
 
 class AllergyInfo {
-  const AllergyInfo({
-    required this.source,
-    required this.items,
-  });
+  const AllergyInfo({required this.source, required this.items});
 
   final String source;
   final List<String> items;
@@ -96,10 +87,7 @@ class AllergyInfo {
 }
 
 class ReportPeriod {
-  const ReportPeriod({
-    required this.from,
-    required this.to,
-  });
+  const ReportPeriod({required this.from, required this.to});
 
   final DateTime from;
   final DateTime to;

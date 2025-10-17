@@ -61,4 +61,3 @@ class PdfFileManager {
         .replaceAll(RegExp(r'[^A-Za-z0-9가-힣ぁ-んァ-ン一-龥_\-]'), '_');
   }
 }
-

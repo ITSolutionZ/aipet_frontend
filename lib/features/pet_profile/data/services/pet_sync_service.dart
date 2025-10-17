@@ -64,7 +64,7 @@ class PetSyncService {
     SyncDirection direction,
   ) async {
     if (_currentStatus == SyncStatus.syncing) {
-      return Failure(SyncError('동기화가 이미 진행 중입니다.'));
+      return Result.failure(SyncError('동기화가 이미 진행 중입니다.'));
     }
 
     _updateSyncStatus(SyncStatus.syncing);
@@ -80,7 +80,7 @@ class PetSyncService {
       }
     } catch (e) {
       _updateSyncStatus(SyncStatus.failed);
-      return Failure(SyncError('동기화 실패', details: e.toString()));
+      return Result.failure(SyncError('동기화 실패', details: e.toString()));
     }
   }
 
@@ -106,7 +106,9 @@ class PetSyncService {
       return Success(syncedPets);
     } catch (e) {
       _updateSyncStatus(SyncStatus.failed);
-      return Failure(SyncError('로컬에서 원격으로 동기화 실패', details: e.toString()));
+      return Result.failure(
+        SyncError('로컬에서 원격으로 동기화 실패', details: e.toString()),
+      );
     }
   }
 
@@ -115,7 +117,7 @@ class PetSyncService {
       final remotePetsResult = await _petApiService.getAllPets();
       if (remotePetsResult.isFailure) {
         _updateSyncStatus(SyncStatus.failed);
-        return Failure(remotePetsResult.errorOrNull!);
+        return Result.failure(remotePetsResult.errorOrNull!);
       }
 
       final remotePets = remotePetsResult.dataOrNull!;
@@ -138,7 +140,9 @@ class PetSyncService {
       return Success(domainPets);
     } catch (e) {
       _updateSyncStatus(SyncStatus.failed);
-      return Failure(SyncError('원격에서 로컬로 동기화 실패', details: e.toString()));
+      return Result.failure(
+        SyncError('원격에서 로컬로 동기화 실패', details: e.toString()),
+      );
     }
   }
 
@@ -163,7 +167,7 @@ class PetSyncService {
       return Success(allSyncedPets);
     } catch (e) {
       _updateSyncStatus(SyncStatus.failed);
-      return Failure(SyncError('양방향 동기화 실패', details: e.toString()));
+      return Result.failure(SyncError('양방향 동기화 실패', details: e.toString()));
     }
   }
 

@@ -41,14 +41,24 @@ class WalkInfoWidgets {
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.xs),
                       decoration: BoxDecoration(
-                        color: (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
+                        color: (iconColor ?? AppColors.pointBlue).withValues(
+                          alpha: 0.1,
+                        ),
                         borderRadius: BorderRadius.circular(AppRadius.small),
                       ),
-                      child: Icon(icon, size: 20, color: iconColor ?? AppColors.pointBlue),
+                      child: Icon(
+                        icon,
+                        size: 20,
+                        color: iconColor ?? AppColors.pointBlue,
+                      ),
                     ),
                     const Spacer(),
                     if (onTap != null)
-                      const Icon(Icons.chevron_right, size: 16, color: AppColors.pointGray),
+                      const Icon(
+                        Icons.chevron_right,
+                        size: 16,
+                        color: AppColors.pointGray,
+                      ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.sm),
@@ -60,7 +70,12 @@ class WalkInfoWidgets {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
-                Text(label, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
+                Text(
+                  label,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray,
+                  ),
+                ),
               ],
             ),
           ),
@@ -84,7 +99,10 @@ class WalkInfoWidgets {
         children: [
           Icon(icon, size: 20, color: iconColor ?? AppColors.pointGray),
           const SizedBox(width: AppSpacing.sm),
-          Text(label, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
+          Text(
+            label,
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+          ),
           const Spacer(),
           Text(
             value,
@@ -106,7 +124,10 @@ class WalkInfoWidgets {
     Color? textColor,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: backgroundColor ?? color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
@@ -114,7 +135,10 @@ class WalkInfoWidgets {
       ),
       child: Text(
         status,
-        style: AppFonts.bodySmall.copyWith(color: textColor ?? color, fontWeight: FontWeight.w600),
+        style: AppFonts.bodySmall.copyWith(
+          color: textColor ?? color,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -148,13 +172,19 @@ class WalkInfoWidgets {
         ),
         if (subtitle != null) ...[
           const SizedBox(height: AppSpacing.xs),
-          Text(subtitle, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
+          Text(
+            subtitle,
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+          ),
         ],
         const SizedBox(height: AppSpacing.sm),
         LinearProgressIndicator(
           value: progress.clamp(0.0, 1.0),
-          backgroundColor: backgroundColor ?? AppColors.pointGray.withValues(alpha: 0.2),
-          valueColor: AlwaysStoppedAnimation<Color>(progressColor ?? AppColors.pointBlue),
+          backgroundColor:
+              backgroundColor ?? AppColors.pointGray.withValues(alpha: 0.2),
+          valueColor: AlwaysStoppedAnimation<Color>(
+            progressColor ?? AppColors.pointBlue,
+          ),
           minHeight: 6,
         ),
       ],
@@ -177,19 +207,36 @@ class WalkInfoWidgets {
         Column(
           children: [
             if (!isFirst)
-              Container(width: 2, height: 12, color: AppColors.pointGray.withValues(alpha: 0.3)),
+              Container(
+                width: 2,
+                height: 12,
+                color: AppColors.pointGray.withValues(alpha: 0.3),
+              ),
             Container(
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: (iconColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
+                color: (iconColor ?? AppColors.pointBlue).withValues(
+                  alpha: 0.1,
+                ),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: iconColor ?? AppColors.pointBlue, width: 2),
+                border: Border.all(
+                  color: iconColor ?? AppColors.pointBlue,
+                  width: 2,
+                ),
               ),
-              child: Icon(icon, size: 16, color: iconColor ?? AppColors.pointBlue),
+              child: Icon(
+                icon,
+                size: 16,
+                color: iconColor ?? AppColors.pointBlue,
+              ),
             ),
             if (!isLast)
-              Container(width: 2, height: 12, color: AppColors.pointGray.withValues(alpha: 0.3)),
+              Container(
+                width: 2,
+                height: 12,
+                color: AppColors.pointGray.withValues(alpha: 0.3),
+              ),
           ],
         ),
         const SizedBox(width: AppSpacing.md),
@@ -210,12 +257,22 @@ class WalkInfoWidgets {
                         ),
                       ),
                     ),
-                    Text(time, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
+                    Text(
+                      time,
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointGray,
+                      ),
+                    ),
                   ],
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: AppSpacing.xs),
-                  Text(subtitle, style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray)),
+                  Text(
+                    subtitle,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.pointGray,
+                    ),
+                  ),
                 ],
                 const SizedBox(height: AppSpacing.md),
               ],
@@ -231,7 +288,11 @@ class WalkInfoWidgets {
     if (distanceKm == null) {
       return const Text(
         '--km',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.pointGray),
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: AppColors.pointGray,
+        ),
       );
     }
 
@@ -248,7 +309,11 @@ class WalkInfoWidgets {
           ),
           const TextSpan(
             text: 'km',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.pointGray),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: AppColors.pointGray,
+            ),
           ),
         ],
       ),
@@ -260,7 +325,11 @@ class WalkInfoWidgets {
     if (duration == null) {
       return const Text(
         '--:--',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.pointGray),
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: AppColors.pointGray,
+        ),
       );
     }
 
@@ -298,7 +367,11 @@ class WalkInfoWidgets {
           ),
           const TextSpan(
             text: 'm',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.pointGray),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: AppColors.pointGray,
+            ),
           ),
         ],
       ),

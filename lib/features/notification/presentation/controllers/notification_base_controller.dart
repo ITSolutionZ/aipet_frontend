@@ -44,7 +44,10 @@ class NotificationBaseController extends BaseController {
   }
 
   /// 알림 새로고침 (UI 피드백 포함)
-  Future<void> refreshNotificationsWithFeedback(BuildContext context, String userId) async {
+  Future<void> refreshNotificationsWithFeedback(
+    BuildContext context,
+    String userId,
+  ) async {
     try {
       await _getNotificationsUseCase.call(userId);
       if (context.mounted) {
@@ -58,7 +61,11 @@ class NotificationBaseController extends BaseController {
   }
 
   /// 알림 읽음 처리 (UI 피드백 포함)
-  Future<void> markAsReadWithFeedback(BuildContext context, String userId, String id) async {
+  Future<void> markAsReadWithFeedback(
+    BuildContext context,
+    String userId,
+    String id,
+  ) async {
     try {
       await _markAsReadUseCase.call(userId, id);
       if (context.mounted) {
@@ -122,7 +129,9 @@ class NotificationBaseController extends BaseController {
   }
 
   /// 알림 권한 요청 (UI 피드백 포함)
-  Future<bool> requestNotificationPermissionWithFeedback(BuildContext context) async {
+  Future<bool> requestNotificationPermissionWithFeedback(
+    BuildContext context,
+  ) async {
     try {
       final result = await _requestPermissionUseCase.call();
       if (context.mounted) {
@@ -145,7 +154,9 @@ class NotificationBaseController extends BaseController {
   Future<int> getUnreadCount(String userId) async {
     try {
       final notifications = await _getNotificationsUseCase.call(userId);
-      return notifications.dataOrNull?.where((n) => n.status == NotificationStatus.unread).length ??
+      return notifications.dataOrNull
+              ?.where((n) => n.status == NotificationStatus.unread)
+              .length ??
           0;
     } catch (error) {
       handleError(error);
@@ -199,7 +210,10 @@ class NotificationBaseController extends BaseController {
                 onPressed: () => Navigator.of(context).pop(false),
                 child: const Text('拒否'),
               ),
-              TextButton(onPressed: () => Navigator.of(context).pop(true), child: const Text('許可')),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('許可'),
+              ),
             ],
           ),
         ) ??

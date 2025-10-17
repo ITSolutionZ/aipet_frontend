@@ -27,17 +27,18 @@ class AuthUserModel {
       email: json['email'],
       displayName: json['display_name'] ?? json['displayName'],
       photoURL: json['photo_url'] ?? json['photoURL'],
-      isEmailVerified: json['email_verified'] ?? json['isEmailVerified'] ?? false,
+      isEmailVerified:
+          json['email_verified'] ?? json['isEmailVerified'] ?? false,
       lastSignInTime: json['last_sign_in_time'] != null
           ? DateTime.parse(json['last_sign_in_time'])
           : json['lastSignInTime'] != null
-              ? DateTime.parse(json['lastSignInTime'])
-              : null,
+          ? DateTime.parse(json['lastSignInTime'])
+          : null,
       creationTime: json['creation_time'] != null
           ? DateTime.parse(json['creation_time'])
           : json['creationTime'] != null
-              ? DateTime.parse(json['creationTime'])
-              : DateTime.now(),
+          ? DateTime.parse(json['creationTime'])
+          : DateTime.now(),
       customData: json['custom_data'] ?? json['customData'],
     );
   }
@@ -194,10 +195,7 @@ class AuthCredentialsModel {
   final String email;
   final String password;
 
-  const AuthCredentialsModel({
-    required this.email,
-    required this.password,
-  });
+  const AuthCredentialsModel({required this.email, required this.password});
 
   factory AuthCredentialsModel.fromJson(Map<String, dynamic> json) {
     return AuthCredentialsModel(
@@ -207,10 +205,7 @@ class AuthCredentialsModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'password': password,
-    };
+    return {'email': email, 'password': password};
   }
 }
 

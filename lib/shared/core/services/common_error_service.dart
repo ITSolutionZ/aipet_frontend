@@ -69,7 +69,8 @@ class CommonErrorService {
   CommonErrorService._internal();
 
   // 에러 스트림
-  final StreamController<ErrorInfo> _errorController = StreamController<ErrorInfo>.broadcast();
+  final StreamController<ErrorInfo> _errorController =
+      StreamController<ErrorInfo>.broadcast();
 
   Stream<ErrorInfo> get errorStream => _errorController.stream;
 
@@ -131,7 +132,10 @@ class CommonErrorService {
       severity: ErrorSeverity.high,
       type: ErrorType.unknown,
       stackTrace: details.stack,
-      context: {'library': details.library, 'context': details.context?.toString()},
+      context: {
+        'library': details.library,
+        'context': details.context?.toString(),
+      },
     );
   }
 
@@ -190,7 +194,8 @@ class CommonErrorService {
   /// 에러 카운터 업데이트
   void _updateErrorCounters(ErrorInfo errorInfo) {
     _errorCounters[errorInfo.type] = (_errorCounters[errorInfo.type] ?? 0) + 1;
-    _severityCounters[errorInfo.severity] = (_severityCounters[errorInfo.severity] ?? 0) + 1;
+    _severityCounters[errorInfo.severity] =
+        (_severityCounters[errorInfo.severity] ?? 0) + 1;
   }
 
   /// 에러 로그 기록
@@ -274,8 +279,12 @@ class CommonErrorService {
   Map<String, dynamic> getErrorStats() {
     return {
       'totalErrors': _errorHistory.length,
-      'errorCounters': _errorCounters.map((key, value) => MapEntry(key.name, value)),
-      'severityCounters': _severityCounters.map((key, value) => MapEntry(key.name, value)),
+      'errorCounters': _errorCounters.map(
+        (key, value) => MapEntry(key.name, value),
+      ),
+      'severityCounters': _severityCounters.map(
+        (key, value) => MapEntry(key.name, value),
+      ),
       'recentErrors': _errorHistory.take(10).map((e) => e.toJson()).toList(),
     };
   }
@@ -558,7 +567,9 @@ class CommonErrorService {
       '504',
     ];
 
-    return recoverableErrors.any((recoverable) => errorString.contains(recoverable));
+    return recoverableErrors.any(
+      (recoverable) => errorString.contains(recoverable),
+    );
   }
 
   /// 에러에 따른 재시도 권장 여부 확인

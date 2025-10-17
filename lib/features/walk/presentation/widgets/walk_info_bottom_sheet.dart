@@ -42,7 +42,10 @@ class WalkInfoBottomSheet extends StatelessWidget {
           const SizedBox(height: 20),
 
           // 제목
-          const Text('산책 정보', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const Text(
+            '산책 정보',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 16),
 
           // 산책 정보 표시

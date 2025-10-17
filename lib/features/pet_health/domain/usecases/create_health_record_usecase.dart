@@ -10,7 +10,9 @@ class CreateHealthRecordUseCase {
   CreateHealthRecordUseCase(this.repository);
 
   /// 체중 기록 생성
-  Future<Result<WeightRecordEntity>> createWeightRecord(WeightRecordEntity weightRecord) async {
+  Future<Result<WeightRecordEntity>> createWeightRecord(
+    WeightRecordEntity weightRecord,
+  ) async {
     try {
       final result = await repository.addWeightRecord(weightRecord);
       return Result.success('体重記録を作成しました', result);
@@ -20,7 +22,9 @@ class CreateHealthRecordUseCase {
   }
 
   /// 백신 기록 생성
-  Future<Result<VaccineRecordEntity>> createVaccineRecord(VaccineRecordEntity vaccineRecord) async {
+  Future<Result<VaccineRecordEntity>> createVaccineRecord(
+    VaccineRecordEntity vaccineRecord,
+  ) async {
     try {
       final result = await repository.addVaccineRecord(vaccineRecord);
       return Result.success('ワクチン記録を作成しました', result);

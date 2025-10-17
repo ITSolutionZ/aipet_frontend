@@ -163,12 +163,14 @@ test('should send message and return AI response', () async {
 
 ### 📊 스크립트 정리 현황
 
-#### ✅ 현재 활성 스크립트 (15개)
+#### ✅ 현재 활성 스크립트 (17개)
 
 - `dev_setup.sh` - 개발 환경 설정
 - `build_runner.sh` - 코드 생성
 - `format_code.sh` - 코드 포맷팅
-- `fix_all_errors.sh` - 통합 에러 수정 (신규)
+- `fix_all_errors.sh` - 통합 에러 수정 ⭐ (개선됨)
+- `remove_duplicates.sh` - const/Result 중복 제거 전용 🆕
+- `prevent_bad_patterns.sh` - 잘못된 패턴 방지 🆕
 - `run_mockito_tests.sh` - 테스트 실행
 - `generate_tests.sh` - 테스트 생성
 - `optimize_performance.sh` - 성능 최적화
@@ -189,8 +191,40 @@ test('should send message and return AI response', () async {
 
 1. **개발 시작 시**: `dev_setup.sh` 실행
 2. **에러 발생 시**: `fix_all_errors.sh` 실행
-3. **코드 변경 후**: `format_code.sh` 실행
-4. **테스트 실행**: `run_mockito_tests.sh` 실행
+3. **중복 제거만 필요시**: `remove_duplicates.sh` 실행 🆕
+4. **잘못된 패턴 수정**: `prevent_bad_patterns.sh` 실행 🆕
+5. **코드 변경 후**: `format_code.sh` 실행
+6. **테스트 실행**: `run_mockito_tests.sh` 실행
+
+### 🆕 새로운 스크립트 상세 설명
+
+#### `remove_duplicates.sh` - 중복 제거 전용
+
+```bash
+./scripts/remove_duplicates.sh
+```
+
+- `const const const` → `const` 중복 제거
+- `ResultResult` → `Result` 중복 제거
+- 최대 10회 반복 실행으로 완전 제거 보장
+- 실행 전후 중복 개수 리포트
+
+#### `prevent_bad_patterns.sh` - 잘못된 패턴 방지
+
+```bash
+./scripts/prevent_bad_patterns.sh
+```
+
+- `pw.const` 패턴 제거 (PDF 라이브러리)
+- 변수명 중간 const 삽입 수정 (`Timeoconst ut` → `Timeout`)
+- Duration 매개변수 수정 (`minutes =` → `minutes:`)
+- Result.Result 패턴 수정
+
+### ⚠️ 주의사항
+
+- 스크립트 실행 후 반드시 `dart format lib/` 실행 권장
+- 중요한 변경 전에는 git commit으로 백업
+- 스크립트가 const/Result를 중복으로 추가하는 문제 해결됨 ✅
 
 ---
 
@@ -321,16 +355,37 @@ test('should send message and return AI response', () async {
 
 ### 📊 スクリプト整理状況
 
-#### ✅ 現在のアクティブスクリプト (15個)
+#### ✅ 現在のアクティブスクリプト (15 個)
 
-統合および整理により、33個から15個に削減されました。
+統合および整理により、33 個から 17 個に。新規スクリプト 2 個追加。
 
 #### 🎯 使用推奨事項
 
 1. **開発開始時**: `dev_setup.sh` 実行
 2. **エラー発生時**: `fix_all_errors.sh` 実行
-3. **コード変更後**: `format_code.sh` 実行
-4. **テスト実行**: `run_mockito_tests.sh` 実行
+3. **重複除去のみ必要**: `remove_duplicates.sh` 実行 🆕
+4. **誤パターン修正**: `prevent_bad_patterns.sh` 実行 🆕
+5. **コード変更後**: `format_code.sh` 実行
+6. **テスト実行**: `run_mockito_tests.sh` 実行
+
+### 🆕 新スクリプト詳細
+
+#### `remove_duplicates.sh` - 重複除去専用
+
+- `const const const` → `const` 重複除去
+- `ResultResult` → `Result` 重複除去
+- 最大 10 回反復実行で完全除去保証
+
+#### `prevent_bad_patterns.sh` - 誤パターン防止
+
+- `pw.const` パターン除去 (PDF ライブラリ)
+- 変数名中の const 挿入修正
+- Duration パラメータ修正
+
+### ⚠️ 注意事項
+
+- スクリプト実行後は `dart format lib/` 実行推奨
+- const/Result 重複追加問題が解決されました ✅
 
 ---
 
