@@ -52,10 +52,7 @@ class DailyHealthController extends _$DailyHealthController {
 
 /// 특정 펫의 건강 기록 Provider (로컬 저장소)
 @riverpod
-Future<DailyHealthRecord?> dailyHealthRecord(
-  DailyHealthRecordRef ref,
-  String petId,
-) async {
+Future<DailyHealthRecord?> dailyHealthRecord(Ref ref, String petId) async {
   // 로컬 저장소에서 오늘의 건강 기록 조회
   final today = DateTime.now();
   final startOfDay = DateTime(today.year, today.month, today.day);
@@ -73,10 +70,7 @@ Future<DailyHealthRecord?> dailyHealthRecord(
 
 /// 특정 펫의 건강 분석 Provider (로컬 저장소)
 @riverpod
-Future<HealthAnalysis?> dailyHealthAnalysis(
-  DailyHealthAnalysisRef ref,
-  String petId,
-) async {
+Future<HealthAnalysis?> dailyHealthAnalysis(Ref ref, String petId) async {
   // 로컬 저장소에서 건강 분석 히스토리 조회
   final localDatasource = ref.watch(dailyHealthLocalDatasourceProvider);
   final analyses = await localDatasource.getHealthAnalysisHistory(petId);

@@ -11,32 +11,25 @@ part 'health_report_provider.g.dart';
 
 /// Health Report OpenAI Service Provider
 @riverpod
-HealthReportOpenAIService healthReportOpenAIService(
-  HealthReportOpenAIServiceRef ref,
-) {
+HealthReportOpenAIService healthReportOpenAIService(Ref ref) {
   return HealthReportOpenAIService();
 }
 
 /// Health Report PDF Service Provider
 @riverpod
-HealthReportPdfService healthReportPdfService(HealthReportPdfServiceRef ref) {
+HealthReportPdfService healthReportPdfService(Ref ref) {
   return HealthReportPdfService();
 }
 
 /// Health Data Collection Service Provider
 @riverpod
-HealthDataCollectionService healthDataCollectionService(
-  HealthDataCollectionServiceRef ref,
-) {
+HealthDataCollectionService healthDataCollectionService(Ref ref) {
   return HealthDataCollectionService();
 }
 
 /// AI 건강 리포트 생성 Provider
 @riverpod
-Future<String> generateHealthReport(
-  GenerateHealthReportRef ref,
-  PetProfileEntity pet,
-) async {
+Future<String> generateHealthReport(Ref ref, PetProfileEntity pet) async {
   final collectionService = ref.read(healthDataCollectionServiceProvider);
   final aiService = ref.read(healthReportOpenAIServiceProvider);
 
@@ -76,10 +69,7 @@ Future<String> generateHealthReport(
 
 /// PDF 건강 리포트 생성 및 저장 Provider
 @riverpod
-Future<File> generateHealthReportPdf(
-  GenerateHealthReportPdfRef ref,
-  PetProfileEntity pet,
-) async {
+Future<File> generateHealthReportPdf(Ref ref, PetProfileEntity pet) async {
   try {
     final collectionService = ref.read(healthDataCollectionServiceProvider);
     final pdfService = ref.read(healthReportPdfServiceProvider);
@@ -142,20 +132,14 @@ Future<File> generateHealthReportPdf(
 
 /// 리포트 생성 가능 여부 확인 Provider
 @riverpod
-Future<bool> canGenerateReport(
-  CanGenerateReportRef ref,
-  PetProfileEntity pet,
-) async {
+Future<bool> canGenerateReport(Ref ref, PetProfileEntity pet) async {
   final collectionService = ref.read(healthDataCollectionServiceProvider);
   return collectionService.canGenerateReport(pet);
 }
 
 /// 건강 데이터를 JSON 파일로 생성하는 Provider
 @riverpod
-Future<File> generateHealthDataJson(
-  GenerateHealthDataJsonRef ref,
-  PetProfileEntity pet,
-) async {
+Future<File> generateHealthDataJson(Ref ref, PetProfileEntity pet) async {
   final collectionService = ref.read(healthDataCollectionServiceProvider);
 
   // 건강 데이터 수집
@@ -172,10 +156,7 @@ Future<File> generateHealthDataJson(
 
 /// AI 건강 리포트 PNG 이미지 생성 Provider
 @riverpod
-Future<File> generateHealthReportPng(
-  GenerateHealthReportPngRef ref,
-  PetProfileEntity pet,
-) async {
+Future<File> generateHealthReportPng(Ref ref, PetProfileEntity pet) async {
   try {
     final collectionService = ref.read(healthDataCollectionServiceProvider);
     final pdfService = ref.read(healthReportPdfServiceProvider);

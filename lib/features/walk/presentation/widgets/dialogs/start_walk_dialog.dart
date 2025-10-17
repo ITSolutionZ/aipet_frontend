@@ -3,18 +3,17 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// 🎯 Start Walk Dialog Form State Provider
-final startWalkDialogFormProvider =
-    StateNotifierProvider<
-      StartWalkDialogFormController,
-      StartWalkDialogFormState
-    >((ref) => StartWalkDialogFormController());
+part 'start_walk_dialog.g.dart';
 
-class StartWalkDialogFormController
-    extends StateNotifier<StartWalkDialogFormState> {
-  StartWalkDialogFormController()
-    : super(const StartWalkDialogFormState(title: '', selectedPetId: 'pet1'));
+/// 🎯 Start Walk Dialog Form Controller
+@riverpod
+class StartWalkDialogFormController extends _$StartWalkDialogFormController {
+  @override
+  StartWalkDialogFormState build() {
+    return const StartWalkDialogFormState(title: '', selectedPetId: 'pet1');
+  }
 
   void updateTitle(String title) {
     state = state.copyWith(title: title);
@@ -54,8 +53,10 @@ class StartWalkDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formState = ref.watch(startWalkDialogFormProvider);
-    final formController = ref.read(startWalkDialogFormProvider.notifier);
+    final formState = ref.watch(startWalkDialogFormControllerProvider);
+    final formController = ref.read(
+      startWalkDialogFormControllerProvider.notifier,
+    );
 
     return AlertDialog(
       title: Text(

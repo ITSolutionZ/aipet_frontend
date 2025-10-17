@@ -1,11 +1,15 @@
 import 'package:aipet_frontend/features/scheduling/data/services/feeding_local_storage_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'feeding_analysis_controller.g.dart';
 
 /// 급여 분석 컨트롤러
-class FeedingAnalysisController extends StateNotifier<FeedingAnalysisState> {
-  FeedingAnalysisController({required String petId})
-    : super(FeedingAnalysisState(petId: petId)) {
+@riverpod
+class FeedingAnalysisController extends _$FeedingAnalysisController {
+  @override
+  FeedingAnalysisState build(String petId) {
     _loadAnalysisData();
+    return FeedingAnalysisState(petId: petId);
   }
 
   /// 분석 데이터 로드
@@ -69,13 +73,3 @@ class FeedingAnalysisState {
     );
   }
 }
-
-/// 컨트롤러 프로바이더
-final feedingAnalysisControllerProvider =
-    StateNotifierProvider.family<
-      FeedingAnalysisController,
-      FeedingAnalysisState,
-      String
-    >((ref, petId) {
-      return FeedingAnalysisController(petId: petId);
-    });

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/pet_info.dart';
 import 'map/walk_map_camera_controller.dart';
@@ -11,24 +12,21 @@ import 'map/walk_map_marker_builder.dart';
 import 'map/walk_map_polyline_builder.dart';
 import 'utils/custom_marker_builder.dart';
 
-final mapWidgetProvider = StateNotifierProvider.family
-    .autoDispose<MapWidgetController, MapWidgetState, MapWidgetParams>((
-      ref,
-      params,
-    ) {
-      // keepAlive를 사용하여 dispose 방지
-      ref.keepAlive();
+part 'map_widget.g.dart';
 
-      final controller = MapWidgetController(params);
-      debugPrint('🗺️ MapWidgetProvider 생성됨 - keepAlive 설정');
+/// 전역 지도 컨트롤러 Notifier (현재 위치 이동용)
+class GlobalMapControllerNotifier extends Notifier<GoogleMapController?> {
+  @override
+  GoogleMapController? build() => null;
 
-      return controller;
-    });
+  void setController(GoogleMapController? controller) => state = controller;
+}
 
-/// 전역 지도 컨트롤러 Provider (현재 위치 이동용)
-final globalMapControllerProvider = StateProvider<GoogleMapController?>(
-  (ref) => null,
-);
+/// 전역 지도 컨트롤러 Provider
+final globalMapControllerProvider =
+    NotifierProvider<GlobalMapControllerNotifier, GoogleMapController?>(
+      GlobalMapControllerNotifier.new,
+    );
 
 class MapWidgetParams {
   final List<WalkRecordEntity> walkRecords;
@@ -98,8 +96,10 @@ class MapWidgetState {
   }
 }
 
-class MapWidgetController extends StateNotifier<MapWidgetState> {
-  final MapWidgetParams params;
+@riverpod
+class MapWidgetController extends _$MapWidgetController {
+  @override
+  late final MapWidgetParams params;
   final LocationCacheService _locationCache = LocationCacheService.instance;
 
   // 전역 캐싱 (한 번만 생성)
@@ -109,12 +109,22 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
   static bool _iconsLoading = false;
   static bool _iconsLoaded = false;
 
-  MapWidgetController(this.params) : super(const MapWidgetState()) {
-    // 즉시 기본 위치를 설정한 후 실제 위치를 가져오도록 변경
-    _setDefaultLocation();
-    getCurrentLocation();
-    _loadCustomIconsOnce();
-    setupMarkersAndPolylines();
+  @override
+  MapWidgetState build(MapWidgetParams params) {
+    this.params = params;
+    // keepAlive를 사용하여 dispose 방지
+    ref.keepAlive();
+    debugPrint('🗺️ MapWidgetProvider 생성됨 - keepAlive 설정');
+
+    // 비동기 초기화
+    Future.microtask(() {
+      _setDefaultLocation();
+      getCurrentLocation();
+      _loadCustomIconsOnce();
+      setupMarkersAndPolylines();
+    });
+
+    return const MapWidgetState();
   }
 
   /// 커스텀 아이콘 로드 (전역 싱글톤, 한 번만)
@@ -149,17 +159,17 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
       final poopIcon = await CustomMarkerBuilder.createCircleMarker(
         iconPath: 'assets/icons/poop.png',
         backgroundColor: const Color(0xFFFF9800),
-        size: 40,
+        size: 24,
       );
       final peeIcon = await CustomMarkerBuilder.createCircleMarker(
         iconPath: 'assets/icons/marking.png',
         backgroundColor: const Color(0xFF2196F3),
-        size: 40,
+        size: 24,
       );
       final noEntryIcon = await CustomMarkerBuilder.createCircleMarker(
         iconPath: 'assets/icons/no-entry.png',
         backgroundColor: const Color(0xFFF44336),
-        size: 40,
+        size: 24,
       );
 
       _cachedPoopIcon = poopIcon;
@@ -174,7 +184,7 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
       );
 
       setupMarkersAndPolylines();
-      debugPrint('✅ MapWidget: 원형 마커 로드 완료 (40px)');
+      debugPrint('✅ MapWidget: 원형 마커 로드 완료 (24px)');
     } catch (e) {
       debugPrint('⚠️ MapWidget: 마커 로드 실패 - $e');
     } finally {
@@ -402,7 +412,7 @@ class MapWidgetController extends StateNotifier<MapWidgetState> {
   void setMapController(GoogleMapController controller, WidgetRef ref) {
     state = state.copyWith(mapController: controller);
     // 전역 provider에도 저장
-    ref.read(globalMapControllerProvider.notifier).state = controller;
+    ref.read(globalMapControllerProvider.notifier).setController(controller);
   }
 }
 
@@ -428,8 +438,8 @@ class MapWidget extends ConsumerWidget {
       petActivities: petActivities,
       onActivityMarkerTap: onActivityMarkerTap,
     );
-    final controller = ref.read(mapWidgetProvider(params).notifier);
-    final state = ref.watch(mapWidgetProvider(params));
+    final controller = ref.read(mapWidgetControllerProvider(params).notifier);
+    final state = ref.watch(mapWidgetControllerProvider(params));
 
     debugPrint(
       '🗺️ MapWidget: build() - currentPosition: ${state.currentPosition != null ? '있음' : 'null'}',

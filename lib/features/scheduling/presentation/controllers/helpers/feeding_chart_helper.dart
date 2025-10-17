@@ -54,7 +54,7 @@ class FeedingChartHelper {
           getTitlesWidget: (double value, TitleMeta meta) {
             const days = ['6日前', '5日前', '4日前', '3日前', '2日前', '昨日', '今日'];
             return SideTitleWidget(
-              axisSide: meta.axisSide,
+              meta: meta,
               child: Text(
                 days[value.toInt()],
                 style: AppFonts.bodySmall.copyWith(

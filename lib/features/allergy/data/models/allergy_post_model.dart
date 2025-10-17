@@ -5,11 +5,9 @@ import '../../domain/entities/allergy_post_entity.dart';
 part 'allergy_post_model.freezed.dart';
 part 'allergy_post_model.g.dart';
 
-/// 알레르기 게시글 모델 (API 통신용)
+/// 알레르ギー投稿モデル (API通信用)
 @freezed
 class AllergyPostModel with _$AllergyPostModel {
-  const AllergyPostModel._();
-
   const factory AllergyPostModel({
     required String id,
     required String authorId,

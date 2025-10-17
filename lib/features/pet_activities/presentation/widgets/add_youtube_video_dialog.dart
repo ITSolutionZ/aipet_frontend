@@ -4,17 +4,18 @@ import 'package:aipet_frontend/features/pet_activities/presentation/widgets/help
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// 🎯 Add YouTube Video Dialog State Provider
-final addYouTubeVideoDialogProvider =
-    StateNotifierProvider<
-      AddYouTubeVideoDialogController,
-      AddYouTubeVideoDialogState
-    >((ref) => AddYouTubeVideoDialogController());
+part 'add_youtube_video_dialog.g.dart';
 
+/// 🎯 Add YouTube Video Dialog Controller
+@riverpod
 class AddYouTubeVideoDialogController
-    extends StateNotifier<AddYouTubeVideoDialogState> {
-  AddYouTubeVideoDialogController() : super(const AddYouTubeVideoDialogState());
+    extends _$AddYouTubeVideoDialogController {
+  @override
+  AddYouTubeVideoDialogState build() {
+    return const AddYouTubeVideoDialogState();
+  }
 
   void setLoading(bool isLoading) {
     state = state.copyWith(isLoading: isLoading);
@@ -99,7 +100,7 @@ class _AddYouTubeVideoDialogContentState
     _descriptionController.dispose();
     _tagController.dispose();
     // Reset the form state
-    ref.read(addYouTubeVideoDialogProvider.notifier).resetForm();
+    ref.read(addYouTubeVideoDialogControllerProvider.notifier).resetForm();
     super.dispose();
   }
 
@@ -113,7 +114,7 @@ class _AddYouTubeVideoDialogContentState
       return;
     }
 
-    ref.read(addYouTubeVideoDialogProvider.notifier).setLoading(true);
+    ref.read(addYouTubeVideoDialogControllerProvider.notifier).setLoading(true);
 
     try {
       // YouTube API 호출 시뮬레이션
@@ -131,13 +132,15 @@ class _AddYouTubeVideoDialogContentState
     } catch (error) {
       _showError('YouTubeビデオ情報を取得できませんでした。');
     } finally {
-      ref.read(addYouTubeVideoDialogProvider.notifier).setLoading(false);
+      ref
+          .read(addYouTubeVideoDialogControllerProvider.notifier)
+          .setLoading(false);
     }
   }
 
   void _addTag() {
     final tag = _tagController.text.trim();
-    final currentTags = ref.read(addYouTubeVideoDialogProvider).tags;
+    final currentTags = ref.read(addYouTubeVideoDialogControllerProvider).tags;
 
     // 태그 검증 (헬퍼 위임)
     final errorMessage = YouTubeTagManager.validateTag(tag);
@@ -147,7 +150,7 @@ class _AddYouTubeVideoDialogContentState
     }
 
     if (YouTubeTagManager.canAddTag(tag, currentTags)) {
-      ref.read(addYouTubeVideoDialogProvider.notifier).addTag(tag);
+      ref.read(addYouTubeVideoDialogControllerProvider.notifier).addTag(tag);
       _tagController.clear();
     } else {
       _showError('このタグは既に追加されています');
@@ -155,7 +158,7 @@ class _AddYouTubeVideoDialogContentState
   }
 
   void _removeTag(String tag) {
-    ref.read(addYouTubeVideoDialogProvider.notifier).removeTag(tag);
+    ref.read(addYouTubeVideoDialogControllerProvider.notifier).removeTag(tag);
   }
 
   void _showError(String message) {
@@ -173,7 +176,7 @@ class _AddYouTubeVideoDialogContentState
       return;
     }
 
-    final state = ref.read(addYouTubeVideoDialogProvider);
+    final state = ref.read(addYouTubeVideoDialogControllerProvider);
 
     Navigator.pop(context, {
       'url': url,
@@ -185,7 +188,7 @@ class _AddYouTubeVideoDialogContentState
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(addYouTubeVideoDialogProvider);
+    final state = ref.watch(addYouTubeVideoDialogControllerProvider);
 
     return AlertDialog(
       title: const Text('YouTubeビデオを追加'),

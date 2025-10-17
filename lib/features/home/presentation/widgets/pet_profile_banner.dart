@@ -16,7 +16,7 @@ class PetProfileBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final petsAsync = ref.watch(petProfilesNotifierProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.35, // 배너 높이 더 증가
@@ -450,7 +450,7 @@ class PetProfileBanner extends ConsumerWidget {
       );
 
       // 펫 삭제 실행
-      await ref.read(petProfilesNotifierProvider.notifier).deletePet(pet.id);
+      await ref.read(petProfilesProvider.notifier).deletePet(pet.id);
 
       // 로딩 인디케이터 닫기
       if (context.mounted) {

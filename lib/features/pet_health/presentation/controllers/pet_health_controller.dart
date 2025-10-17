@@ -1,9 +1,15 @@
 import 'package:aipet_frontend/features/pet_health/data/services/pet_health_local_storage_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'pet_health_controller.g.dart';
 
 /// 펫 건강 컨트롤러
-class PetHealthController extends StateNotifier<PetHealthState> {
-  PetHealthController() : super(const PetHealthState());
+@riverpod
+class PetHealthController extends _$PetHealthController {
+  @override
+  PetHealthState build() {
+    return const PetHealthState();
+  }
 
   /// 건강 기록 로드
   Future<void> loadHealthRecords(String petId) async {
@@ -52,9 +58,3 @@ class PetHealthState {
     );
   }
 }
-
-/// 컨트롤러 프로바이더
-final petHealthControllerProvider =
-    StateNotifierProvider<PetHealthController, PetHealthState>((ref) {
-      return PetHealthController();
-    });

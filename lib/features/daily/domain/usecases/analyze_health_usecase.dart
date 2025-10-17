@@ -91,7 +91,7 @@ class AnalyzeHealthUseCase {
 
 /// Use Case Provider
 @riverpod
-AnalyzeHealthUseCase analyzeHealthUseCase(AnalyzeHealthUseCaseRef ref) {
+AnalyzeHealthUseCase analyzeHealthUseCase(Ref ref) {
   final repository = ref.watch(dailyHealthRepositoryProvider);
   return AnalyzeHealthUseCase(repository);
 }

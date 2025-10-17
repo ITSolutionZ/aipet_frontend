@@ -26,7 +26,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     // 온보딩 시작 시 시청 횟수 증가
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(onboardingNotifierProvider.notifier).startOnboarding();
+      ref.read(onboardingProvider.notifier).startOnboarding();
     });
   }
 
@@ -41,7 +41,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _nextPage() {
-    final currentPage = ref.read(onboardingNotifierProvider).currentPage;
+    final currentPage = ref.read(onboardingProvider).currentPage;
     if (currentPage < OnboardingData.pages.length - 1) {
       _pageController.nextPage(
         duration: OnboardingConstants.pageTransitionDuration,
@@ -62,7 +62,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final onboardingState = ref.watch(onboardingNotifierProvider);
+    final onboardingState = ref.watch(onboardingProvider);
     final currentPage = OnboardingData.pages[onboardingState.currentPage];
 
     return Scaffold(
@@ -92,7 +92,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
                     // Skip 버튼 (1회 이상 온보딩을 본 사용자에게만 표시, 마지막 페이지가 아닐 때)
                     if (onboardingState.hasSeenOnboardingBefore &&
-                        onboardingState.currentPage < OnboardingData.pages.length - 1)
+                        onboardingState.currentPage <
+                            OnboardingData.pages.length - 1)
                       Positioned(
                         top: MediaQuery.of(context).padding.top + AppSpacing.md,
                         right: AppSpacing.md,

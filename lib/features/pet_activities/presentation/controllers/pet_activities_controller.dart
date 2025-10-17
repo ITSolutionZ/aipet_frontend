@@ -3,11 +3,17 @@ import 'package:aipet_frontend/features/pet_activities/domain/entities/trick_ent
 import 'package:aipet_frontend/features/pet_activities/domain/entities/video_bookmark_entity.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/entities/video_progress_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'pet_activities_controller.g.dart';
 
 /// 펫 활동 컨트롤러
-class PetActivitiesController extends StateNotifier<PetActivitiesState> {
-  PetActivitiesController() : super(const PetActivitiesState());
+@riverpod
+class PetActivitiesController extends _$PetActivitiesController {
+  @override
+  PetActivitiesState build() {
+    return const PetActivitiesState();
+  }
 
   /// 트릭 목록 로드
   Future<void> loadTricks({String? petId}) async {
@@ -213,9 +219,3 @@ class PetActivitiesState {
     );
   }
 }
-
-/// 컨트롤러 프로바이더
-final petActivitiesControllerProvider =
-    StateNotifierProvider<PetActivitiesController, PetActivitiesState>((ref) {
-      return PetActivitiesController();
-    });

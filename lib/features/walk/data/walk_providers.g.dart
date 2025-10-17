@@ -55,13 +55,13 @@ String _$walkRecordsNotifierHash() =>
 
 /// See also [WalkRecordsNotifier].
 @ProviderFor(WalkRecordsNotifier)
-final walkRecordsNotifierProvider =
+final walkRecordsProvider =
     AutoDisposeNotifierProvider<
       WalkRecordsNotifier,
       List<WalkRecordEntity>
     >.internal(
       WalkRecordsNotifier.new,
-      name: r'walkRecordsNotifierProvider',
+      name: r'walkRecordsProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$walkRecordsNotifierHash,
@@ -75,13 +75,13 @@ String _$currentWalkNotifierHash() =>
 
 /// See also [CurrentWalkNotifier].
 @ProviderFor(CurrentWalkNotifier)
-final currentWalkNotifierProvider =
+final currentWalkProvider =
     AutoDisposeNotifierProvider<
       CurrentWalkNotifier,
       WalkRecordEntity?
     >.internal(
       CurrentWalkNotifier.new,
-      name: r'currentWalkNotifierProvider',
+      name: r'currentWalkProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$currentWalkNotifierHash,
@@ -112,10 +112,10 @@ String _$mapExpandedNotifierHash() =>
 
 /// See also [MapExpandedNotifier].
 @ProviderFor(MapExpandedNotifier)
-final mapExpandedNotifierProvider =
+final mapExpandedProvider =
     AutoDisposeNotifierProvider<MapExpandedNotifier, bool>.internal(
       MapExpandedNotifier.new,
-      name: r'mapExpandedNotifierProvider',
+      name: r'mapExpandedProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$mapExpandedNotifierHash,
@@ -129,10 +129,10 @@ String _$locationTrackingNotifierHash() =>
 
 /// See also [LocationTrackingNotifier].
 @ProviderFor(LocationTrackingNotifier)
-final locationTrackingNotifierProvider =
+final locationTrackingProvider =
     AutoDisposeNotifierProvider<LocationTrackingNotifier, bool>.internal(
       LocationTrackingNotifier.new,
-      name: r'locationTrackingNotifierProvider',
+      name: r'locationTrackingProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
           : _$locationTrackingNotifierHash,

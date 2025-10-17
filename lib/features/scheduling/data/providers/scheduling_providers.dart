@@ -1,15 +1,14 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// 홈에서 선택된 펫을 관리하는 Provider
-final homeSelectedPetNotifierProvider = StateNotifierProvider<HomeSelectedPetNotifier, String?>((
-  ref,
-) {
-  return HomeSelectedPetNotifier();
-});
+part 'scheduling_providers.g.dart';
 
-/// 홈에서 선택된 펫을 관리하는 StateNotifier
-class HomeSelectedPetNotifier extends StateNotifier<String?> {
-  HomeSelectedPetNotifier() : super(null);
+/// 홈에서 선택된 펫을 관리하는 Notifier
+@riverpod
+class HomeSelectedPetNotifier extends _$HomeSelectedPetNotifier {
+  @override
+  String? build() {
+    return null;
+  }
 
   /// 펫 선택
   void selectPet(String petId) {

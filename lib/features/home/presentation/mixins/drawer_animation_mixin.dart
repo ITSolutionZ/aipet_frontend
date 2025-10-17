@@ -34,40 +34,32 @@ mixin DrawerAnimationMixin<T extends ConsumerStatefulWidget>
   }
 
   /// ドロワーを開く
-  void openDrawer(WidgetRef ref, {StateProvider<bool>? drawerStateProvider}) {
+  void openDrawer(WidgetRef ref) {
     if (mounted) {
       setState(() {
         isDrawerOpen = true;
       });
-      // プロバイダーがあれば状態を更新
-      if (drawerStateProvider != null) {
-        ref.read(drawerStateProvider.notifier).state = true;
-      }
       drawerAnimationController?.forward();
     }
   }
 
   /// ドロワーを閉じる
-  void closeDrawer(WidgetRef ref, {StateProvider<bool>? drawerStateProvider}) {
+  void closeDrawer(WidgetRef ref) {
     drawerAnimationController?.reverse().then((_) {
       if (mounted) {
         setState(() {
           isDrawerOpen = false;
         });
-        // プロバイダーがあれば状態を更新
-        if (drawerStateProvider != null) {
-          ref.read(drawerStateProvider.notifier).state = false;
-        }
       }
     });
   }
 
   /// ドロワーの開閉を切り替え
-  void toggleDrawer(WidgetRef ref, {StateProvider<bool>? drawerStateProvider}) {
+  void toggleDrawer(WidgetRef ref) {
     if (isDrawerOpen) {
-      closeDrawer(ref, drawerStateProvider: drawerStateProvider);
+      closeDrawer(ref);
     } else {
-      openDrawer(ref, drawerStateProvider: drawerStateProvider);
+      openDrawer(ref);
     }
   }
 

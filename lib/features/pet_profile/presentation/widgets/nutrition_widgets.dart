@@ -1,6 +1,9 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'nutrition_widgets.g.dart';
 
 /// 음식 타입 선택 카드
 class FoodTypeCard extends StatelessWidget {
@@ -24,10 +27,14 @@ class FoodTypeCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.pointBrown.withValues(alpha: 0.1) : Colors.white,
+          color: isSelected
+              ? AppColors.pointBrown.withValues(alpha: 0.1)
+              : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(
-            color: isSelected ? AppColors.pointBrown : Colors.grey.withValues(alpha: 0.3),
+            color: isSelected
+                ? AppColors.pointBrown
+                : Colors.grey.withValues(alpha: 0.3),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
@@ -49,7 +56,11 @@ class FoodTypeCard extends StatelessWidget {
                     : Colors.grey.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: isSelected ? AppColors.pointBrown : Colors.grey, size: 30),
+              child: Icon(
+                icon,
+                color: isSelected ? AppColors.pointBrown : Colors.grey,
+                size: 30,
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
@@ -127,7 +138,11 @@ class NutritionItemCard extends StatelessWidget {
                 color: AppColors.pointBlue.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.add, color: AppColors.pointBlue, size: 20),
+              child: const Icon(
+                Icons.add,
+                color: AppColors.pointBlue,
+                size: 20,
+              ),
             ),
           ],
         ),
@@ -184,33 +199,46 @@ class ScheduledMealCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
-                    const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
+                    const Icon(
+                      Icons.calendar_today,
+                      size: 16,
+                      color: Colors.grey,
+                    ),
                     const SizedBox(width: AppSpacing.xs),
-                    Text(schedule, style: AppFonts.bodyMedium.copyWith(color: Colors.grey)),
+                    Text(
+                      schedule,
+                      style: AppFonts.bodyMedium.copyWith(color: Colors.grey),
+                    ),
                     const SizedBox(width: AppSpacing.md),
                     const Icon(Icons.access_time, size: 16, color: Colors.grey),
                     const SizedBox(width: AppSpacing.xs),
-                    Text(time, style: AppFonts.bodyMedium.copyWith(color: Colors.grey)),
+                    Text(
+                      time,
+                      style: AppFonts.bodyMedium.copyWith(color: Colors.grey),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
-          Switch(value: isEnabled, onChanged: onToggle, activeColor: AppColors.pointBlue),
+          Switch(
+            value: isEnabled,
+            onChanged: onToggle,
+            activeColor: AppColors.pointBlue,
+          ),
         ],
       ),
     );
   }
 }
 
-/// 🎯 Nutrition Tab State Provider
-final nutritionTabProvider =
-    StateNotifierProvider.family<NutritionTabController, NutritionTabState, String>(
-      (ref, petId) => NutritionTabController(),
-    );
-
-class NutritionTabController extends StateNotifier<NutritionTabState> {
-  NutritionTabController() : super(const NutritionTabState());
+/// 🎯 Nutrition Tab Controller
+@riverpod
+class NutritionTabController extends _$NutritionTabController {
+  @override
+  NutritionTabState build(String petId) {
+    return const NutritionTabState();
+  }
 
   void selectFoodType(String foodType) {
     state = state.copyWith(selectedFoodType: foodType);
@@ -232,7 +260,10 @@ class NutritionTabState {
     this.mealSchedules = const {'breakfast': true, 'dinner': true},
   });
 
-  NutritionTabState copyWith({String? selectedFoodType, Map<String, bool>? mealSchedules}) {
+  NutritionTabState copyWith({
+    String? selectedFoodType,
+    Map<String, bool>? mealSchedules,
+  }) {
     return NutritionTabState(
       selectedFoodType: selectedFoodType ?? this.selectedFoodType,
       mealSchedules: mealSchedules ?? this.mealSchedules,
@@ -248,8 +279,8 @@ class NutritionTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(nutritionTabProvider(petId));
-    final notifier = ref.read(nutritionTabProvider(petId).notifier);
+    final state = ref.watch(nutritionTabControllerProvider(petId));
+    final notifier = ref.read(nutritionTabControllerProvider(petId).notifier);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),

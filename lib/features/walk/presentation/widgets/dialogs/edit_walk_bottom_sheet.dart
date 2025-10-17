@@ -4,11 +4,20 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../presentation.dart';
 
+part 'edit_walk_bottom_sheet.g.dart';
+
 /// 선택된 공동 관리자 ID 상태 Provider
-final selectedCoManagerProvider = StateProvider<String?>((ref) => null);
+@riverpod
+class SelectedCoManager extends _$SelectedCoManager {
+  @override
+  String? build() => null;
+
+  void select(String? id) => state = id;
+}
 
 class EditWalkBottomSheet extends ConsumerWidget {
   final WalkRecordEntity walkRecord;
@@ -91,8 +100,9 @@ class EditWalkBottomSheet extends ConsumerWidget {
                 WalkCoManagerSelector(
                   selectedCoManagerId: selectedCoManagerId,
                   onChanged: (managerId) {
-                    ref.read(selectedCoManagerProvider.notifier).state =
-                        managerId;
+                    ref
+                        .read(selectedCoManagerProvider.notifier)
+                        .select(managerId);
                   },
                 ),
               ],
@@ -124,7 +134,7 @@ class EditWalkBottomSheet extends ConsumerWidget {
           ),
         );
         // 상태 초기화
-        ref.read(selectedCoManagerProvider.notifier).state = null;
+        ref.read(selectedCoManagerProvider.notifier).select(null);
       }
     } catch (e) {
       if (context.mounted) {

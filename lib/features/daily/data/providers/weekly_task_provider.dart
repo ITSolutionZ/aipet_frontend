@@ -7,9 +7,7 @@ part 'weekly_task_provider.g.dart';
 
 /// WeeklyTaskOpenAIService 프로바이더
 @riverpod
-WeeklyTaskOpenAIService weeklyTaskOpenAIService(
-  WeeklyTaskOpenAIServiceRef ref,
-) {
+WeeklyTaskOpenAIService weeklyTaskOpenAIService(Ref ref) {
   return WeeklyTaskOpenAIService();
 }
 
@@ -18,7 +16,7 @@ WeeklyTaskOpenAIService weeklyTaskOpenAIService(
 /// 1주일 동안 캐싱하여 불필요한 API 호출 방지
 @Riverpod(keepAlive: true)
 Future<String> weeklyTasks(
-  WeeklyTasksRef ref, {
+  Ref ref, {
   required String petType,
   required int weekOfYear,
 }) async {
