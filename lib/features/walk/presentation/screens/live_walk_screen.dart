@@ -1,10 +1,10 @@
-import 'package:aipet_frontend/shared/widgets/walk/live_walk_widget.dart';
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../shared/domain/entities/pet_profile_entity.dart';
-import '../../../pet_profile/data/providers/pet_profile_providers.dart';
+import '../widgets/live_walk/live_walk_widget.dart';
 import 'helpers/live/helpers.dart';
 
 /// 실시간 산책 화면

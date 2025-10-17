@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
+import 'package:aipet_frontend/shared/services/local_database_service.dart';
 import 'package:sqflite/sqflite.dart';
-
-import 'local_database_service.dart';
 
 /// 캘린더 이벤트 로컬 저장 서비스
 class CalendarEventService {
   static CalendarEventService? _instance;
+  final LocalDatabaseService _dbService = LocalDatabaseService.instance;
 
   CalendarEventService._();
 
@@ -18,7 +18,7 @@ class CalendarEventService {
 
   /// 캘린더 이벤트 저장
   Future<void> saveCalendarEvent(CalendarEventEntity event) async {
-    final db = await LocalDatabaseService.instance.database;
+    final db = await _dbService.database;
 
     await db.insert('calendar_events', {
       'id': event.id,

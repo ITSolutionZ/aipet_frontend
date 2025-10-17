@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/walk/presentation/controllers/start_walk_form_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/live_walk/walk_form_fields.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/start_walk_info_section.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/start_walk_pet_selector.dart';
 import 'package:aipet_frontend/shared/shared.dart';

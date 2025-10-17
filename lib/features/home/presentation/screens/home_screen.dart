@@ -5,7 +5,6 @@ import 'package:aipet_frontend/features/home/presentation/mixins/scroll_tracking
 import 'package:aipet_frontend/features/home/presentation/widgets/auto_banner_carousel.dart';
 import 'package:aipet_frontend/features/home/presentation/widgets/pet_profile_banner.dart';
 import 'package:aipet_frontend/features/home/presentation/widgets/widgets.dart';
-import 'package:aipet_frontend/shared/services/home_cache_manager.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/features/pet/data/services/pet_local_storage_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/services/pet_local_storage_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pet_provider.g.dart';

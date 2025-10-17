@@ -5,6 +5,7 @@ export 'mappers/weather_mapper.dart';
 export 'models/weather_model.dart';
 export 'providers/weather_providers.dart';
 export 'repositories/home_repository_impl.dart';
+export 'services/home_cache_manager.dart';
 export 'services/openweathermap_service.dart';
 export 'services/weather_advice_service.dart';
 export 'services/weather_openai_service.dart';

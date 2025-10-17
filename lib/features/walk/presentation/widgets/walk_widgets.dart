@@ -1,6 +1,7 @@
 library;
 
 export 'excuse_record_bottom_sheet.dart';
+export 'live_walk/live_walk.dart';
 export 'map_widget.dart';
 export 'pet_selector_widget.dart';
 export 'start_walk_info_section.dart';

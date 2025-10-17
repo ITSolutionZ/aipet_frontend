@@ -1,9 +1,9 @@
 import 'package:aipet_frontend/app/security/security_bootstrap.dart';
+import 'package:aipet_frontend/features/pet/data/data.dart';
 import 'package:aipet_frontend/shared/monitoring/app_monitoring_dashboard.dart';
 import 'package:aipet_frontend/shared/performance/memory_optimizer.dart';
 import 'package:aipet_frontend/shared/performance/performance_monitor.dart';
 import 'package:aipet_frontend/shared/security/environment_config.dart';
-import 'package:aipet_frontend/shared/services/pet_local_storage_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

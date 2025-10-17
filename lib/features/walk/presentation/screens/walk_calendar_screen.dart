@@ -1,9 +1,10 @@
 import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
+import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/dialogs/edit_walk_bottom_sheet.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_record_card_widget.dart';
-import 'package:aipet_frontend/shared/shared.dart' hide WalkRecordCardWidget;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -387,7 +388,6 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                   child: WalkRecordCardWidget(
                     walkRecord: walkRecord,
                     onTap: () => _showWalkDetails(walkRecord),
-                    onLongPress: () => _showWalkOptions(walkRecord),
                   ),
                 );
               },
@@ -429,9 +429,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
         await LocalWalkStorageService.saveWalkRecords(recentRecords);
 
         // 2. 상태 업데이트
-        ref
-            .read(walkRecordsProvider.notifier)
-            .setWalkRecords(recentRecords);
+        ref.read(walkRecordsProvider.notifier).setWalkRecords(recentRecords);
 
         final deletedCount = WalkCalendarDataHelper.calculateDeletedCount(
           walkRecords,

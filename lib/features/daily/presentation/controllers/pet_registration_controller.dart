@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration/pet_registration.dart';
+import 'package:aipet_frontend/features/pet/data/data.dart';
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/services/pet_user_relation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -465,9 +465,7 @@ class PetRegistrationController extends _$PetRegistrationController {
       debugPrint('📋 ================================');
 
       // 펫 프로필 저장
-      final petProfilesNotifier = ref.read(
-        petProfilesProvider.notifier,
-      );
+      final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
       final createdPet = await petProfilesNotifier.createPet(petEntity);
 
       debugPrint('✅ Pet profile saved successfully to repository');
@@ -544,9 +542,7 @@ class PetRegistrationController extends _$PetRegistrationController {
       );
 
       // 펫 프로필 업데이트
-      final petProfilesNotifier = ref.read(
-        petProfilesProvider.notifier,
-      );
+      final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
       await petProfilesNotifier.updatePet(petEntity);
 
       debugPrint('✅ Pet profile updated successfully');
