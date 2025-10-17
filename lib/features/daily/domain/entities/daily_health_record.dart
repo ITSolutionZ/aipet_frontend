@@ -29,7 +29,7 @@ enum SymptomSeverity {
 
 /// 건강 증상 엔티티
 @freezed
-class HealthSymptom with _$HealthSymptom {
+abstract class HealthSymptom with _$HealthSymptom {
   const factory HealthSymptom({
     required String id,
     required String name,
@@ -37,13 +37,15 @@ class HealthSymptom with _$HealthSymptom {
     String? description,
   }) = _HealthSymptom;
 
+  const HealthSymptom._();
+
   factory HealthSymptom.fromJson(Map<String, dynamic> json) =>
       _$HealthSymptomFromJson(json);
 }
 
 /// 일일 건강 기록 엔티티
 @freezed
-class DailyHealthRecord with _$DailyHealthRecord {
+abstract class DailyHealthRecord with _$DailyHealthRecord {
   const factory DailyHealthRecord({
     required String id,
     required String petId,
@@ -55,6 +57,8 @@ class DailyHealthRecord with _$DailyHealthRecord {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) = _DailyHealthRecord;
+
+  const DailyHealthRecord._();
 
   factory DailyHealthRecord.fromJson(Map<String, dynamic> json) =>
       _$DailyHealthRecordFromJson(json);

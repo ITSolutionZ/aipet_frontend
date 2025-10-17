@@ -52,4 +52,6 @@ class SharingProfilesState with _$SharingProfilesState {
     @Default(false) bool isLoading,
     String? error,
   }) = _SharingProfilesState;
+
+  const SharingProfilesState._();
 }

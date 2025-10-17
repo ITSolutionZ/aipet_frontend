@@ -42,6 +42,8 @@ class AllergyPostEntity with _$AllergyPostEntity {
     /// 수정일
     DateTime? updatedAt,
   }) = _AllergyPostEntity;
+
+  const AllergyPostEntity._();
 }
 
 /// 알레르기 타입
