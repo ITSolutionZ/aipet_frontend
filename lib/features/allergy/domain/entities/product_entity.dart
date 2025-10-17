@@ -4,7 +4,7 @@ part 'product_entity.freezed.dart';
 
 /// 제품 엔티티
 @freezed
-class ProductEntity with _$ProductEntity {
+abstract class ProductEntity with _$ProductEntity {
   const factory ProductEntity({
     /// 제품 ID
     required String id,

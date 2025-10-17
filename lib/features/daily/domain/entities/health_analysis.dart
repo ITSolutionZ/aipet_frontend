@@ -15,7 +15,7 @@ enum RiskLevel {
 
 /// 건강 분석 엔티티
 @freezed
-class HealthAnalysis with _$HealthAnalysis {
+abstract class HealthAnalysis with _$HealthAnalysis {
   const factory HealthAnalysis({
     required String id,
     required String petId,

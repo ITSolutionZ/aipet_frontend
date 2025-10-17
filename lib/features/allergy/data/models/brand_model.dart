@@ -7,7 +7,7 @@ part 'brand_model.g.dart';
 
 /// 브랜드 모델 (API 통신용)
 @freezed
-class BrandModel with _$BrandModel {
+abstract class BrandModel with _$BrandModel {
   const factory BrandModel({
     required String id,
     required String name,

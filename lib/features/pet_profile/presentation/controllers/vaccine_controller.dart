@@ -107,7 +107,7 @@ class VaccineController extends _$VaccineController {
 
 /// 백신 관리 상태
 @freezed
-class VaccineState with _$VaccineState {
+abstract class VaccineState with _$VaccineState {
   const factory VaccineState({
     @Default([]) List<VaccineRecord> vaccines,
     @Default(true) bool isLoading,
@@ -119,7 +119,7 @@ class VaccineState with _$VaccineState {
 
 /// 백신 기록 엔티티
 @freezed
-class VaccineRecord with _$VaccineRecord {
+abstract class VaccineRecord with _$VaccineRecord {
   const factory VaccineRecord({
     required String id,
     required String name,
@@ -134,7 +134,7 @@ class VaccineRecord with _$VaccineRecord {
 
 /// 수의사 정보
 @freezed
-class VeterinarianInfo with _$VeterinarianInfo {
+abstract class VeterinarianInfo with _$VeterinarianInfo {
   const factory VeterinarianInfo({
     required String name,
     required String clinic,
