@@ -17,7 +17,10 @@ import 'package:aipet_frontend/features/pet_profile/presentation/screens/link_re
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/qr_scanner_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/sharing_profiles_screen.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/presentation.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/screens/alarm_setup_screen.dart';
+import 'package:aipet_frontend/features/scheduling/presentation/screens/new_event_setup_screen.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/screens/today_appointments_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/database_dashboard_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/settings_screens.dart';
@@ -328,6 +331,58 @@ class ShellRoutes {
             name: 'health',
             builder: (context, state) => const HealthMainScreen(),
           ),
+          GoRoute(
+            path: 'alarm-setup',
+            name: 'alarm-setup',
+            builder: (context, state) {
+              final dateStr = state.uri.queryParameters['date'];
+              final eventTypeStr = state.uri.queryParameters['eventType'];
+
+              DateTime? initialDate;
+              if (dateStr != null) {
+                initialDate = DateTime.tryParse(dateStr);
+              }
+
+              CalendarEventType? eventType;
+              if (eventTypeStr != null) {
+                eventType = CalendarEventType.values.firstWhere(
+                  (type) => type.name == eventTypeStr,
+                  orElse: () => CalendarEventType.feeding,
+                );
+              }
+
+              return AlarmSetupScreen(
+                initialDate: initialDate,
+                eventType: eventType,
+              );
+            },
+          ),
+          GoRoute(
+            path: 'new-event',
+            name: 'new-event',
+            builder: (context, state) {
+              final dateStr = state.uri.queryParameters['date'];
+              final eventTypeStr = state.uri.queryParameters['eventType'];
+
+              DateTime? initialDate;
+              if (dateStr != null) {
+                initialDate = DateTime.tryParse(dateStr);
+              }
+
+              CalendarEventType? eventType;
+              if (eventTypeStr != null) {
+                eventType = CalendarEventType.values.firstWhere(
+                  (type) => type.name == eventTypeStr,
+                  orElse: () => CalendarEventType.feeding,
+                );
+              }
+
+              return NewEventSetupScreen(
+                initialDate: initialDate,
+                eventType: eventType,
+              );
+            },
+          ),
         ],
       ),
 
@@ -435,7 +490,7 @@ class ShellRoutes {
       GoRoute(
         path: RouteConstants.settingsRoute,
         name: 'settings',
-        builder: (context, state) => const SettingsScreen(),
+        builder: (context, state) => const SchedulingScreen(),
         routes: [
           GoRoute(
             path: 'profile-edit',

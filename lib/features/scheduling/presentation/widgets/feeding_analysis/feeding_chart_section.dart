@@ -63,13 +63,20 @@ class FeedingChartSection extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: 50,
           getDrawingHorizontalLine: (value) {
-            return FlLine(color: AppColors.pointGray.withValues(alpha: 0.3), strokeWidth: 1);
+            return FlLine(
+              color: AppColors.pointGray.withValues(alpha: 0.3),
+              strokeWidth: 1,
+            );
           },
         ),
         titlesData: FlTitlesData(
           show: true,
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
@@ -108,7 +115,12 @@ class FeedingChartSection extends StatelessWidget {
                     text = const Text('', style: style);
                     break;
                 }
-                return SideTitleWidget(axisSide: meta.axisSide, child: text);
+                // meta: TitleMeta, fitInside: SideTitleFitInsideData?
+                return SideTitleWidget(
+                  axisSide: meta.axisSide,
+                  space: 8,
+                  child: text,
+                );
               },
             ),
           ),
@@ -141,11 +153,19 @@ class FeedingChartSection extends StatelessWidget {
             spots: chartData
                 .asMap()
                 .entries
-                .map((entry) => FlSpot(entry.key.toDouble(), entry.value['actual'].toDouble()))
+                .map(
+                  (entry) => FlSpot(
+                    entry.key.toDouble(),
+                    entry.value['actual'].toDouble(),
+                  ),
+                )
                 .toList(),
             isCurved: true,
             gradient: LinearGradient(
-              colors: [AppColors.pointBrown.withValues(alpha: 0.8), AppColors.pointBrown],
+              colors: [
+                AppColors.pointBrown.withValues(alpha: 0.8),
+                AppColors.pointBrown,
+              ],
             ),
             barWidth: 4,
             isStrokeCapRound: true,
@@ -177,11 +197,19 @@ class FeedingChartSection extends StatelessWidget {
             spots: chartData
                 .asMap()
                 .entries
-                .map((entry) => FlSpot(entry.key.toDouble(), entry.value['target'].toDouble()))
+                .map(
+                  (entry) => FlSpot(
+                    entry.key.toDouble(),
+                    entry.value['target'].toDouble(),
+                  ),
+                )
                 .toList(),
             isCurved: true,
             gradient: LinearGradient(
-              colors: [AppColors.pointBlue.withValues(alpha: 0.8), AppColors.pointBlue],
+              colors: [
+                AppColors.pointBlue.withValues(alpha: 0.8),
+                AppColors.pointBlue,
+              ],
             ),
             barWidth: 3,
             isStrokeCapRound: true,
@@ -203,15 +231,20 @@ class FeedingChartSection extends StatelessWidget {
           enabled: true,
           touchTooltipData: LineTouchTooltipData(
             getTooltipColor: (touchedSpot) => AppColors.pointDark,
-            tooltipRoundedRadius: 8,
+            tooltipBorderRadius: BorderRadius.circular(8),
             getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
               return touchedBarSpots.map((barSpot) {
                 final flSpot = barSpot;
                 final lineIndex = barSpot.barIndex;
 
                 return LineTooltipItem(
-                  lineIndex == 0 ? '実際: ${flSpot.y.toInt()}g' : '目標: ${flSpot.y.toInt()}g',
-                  const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  lineIndex == 0
+                      ? '実際: ${flSpot.y.toInt()}g'
+                      : '目標: ${flSpot.y.toInt()}g',
+                  const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 );
               }).toList();
             },
@@ -228,12 +261,18 @@ class FeedingChartSection extends StatelessWidget {
         Container(
           width: 12,
           height: 12,
-          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(6)),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(6),
+          ),
         ),
         const SizedBox(width: AppSpacing.xs),
         Text(
           label,
-          style: AppFonts.fredoka(fontSize: AppFonts.sm, color: AppColors.pointGray),
+          style: AppFonts.fredoka(
+            fontSize: AppFonts.sm,
+            color: AppColors.pointGray,
+          ),
         ),
       ],
     );

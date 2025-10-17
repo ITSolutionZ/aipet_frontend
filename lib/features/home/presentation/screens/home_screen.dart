@@ -410,8 +410,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   void _handleNotificationTap() {
-    // 알림 화면으로 이동
-    context.push('/notification');
+    // 알림 목록 화면으로 이동
+    context.push('/notifications');
   }
 
   void _handleSearchTap() {

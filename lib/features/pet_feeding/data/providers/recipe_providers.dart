@@ -3,7 +3,6 @@ import 'package:aipet_frontend/features/pet_feeding/domain/entities/recipe_entit
 import 'package:aipet_frontend/features/pet_feeding/domain/usecases/create_recipe_usecase.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/usecases/delete_recipe_usecase.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/usecases/get_all_recipes_usecase.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'recipe_providers.g.dart';
@@ -91,7 +90,10 @@ Future<List<RecipeEntity>> searchRecipes(Ref ref, String query) async {
 
 // 난이도별 레시피 프로바이더
 @riverpod
-Future<List<RecipeEntity>> recipesByDifficulty(Ref ref, String difficulty) async {
+Future<List<RecipeEntity>> recipesByDifficulty(
+  Ref ref,
+  String difficulty,
+) async {
   final repository = ref.watch(recipeRepositoryProvider);
   return repository.getRecipesByDifficulty(difficulty);
 }

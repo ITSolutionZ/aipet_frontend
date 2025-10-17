@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../pet_profile/data/providers/pet_profile_providers.dart';
 import 'dialogs/edit_walk_bottom_sheet.dart';
 import 'helpers/helpers.dart';
 
@@ -108,7 +109,7 @@ class WalkInfoBottomSheet extends ConsumerWidget {
     bool isExpanded,
   ) {
     // 로컬 저장소에서 펫 정보 가져오기
-    final petsAsync = ref.watch(petListProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
     final pet = petsAsync.maybeWhen(
       data: (pets) {
         if (pets.isEmpty) return null;

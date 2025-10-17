@@ -21,9 +21,9 @@ class MainNavigationScreen extends ConsumerWidget {
       return 0;
     } else if (location.startsWith('/ai')) {
       return 1;
-    } else if (location.startsWith('/scheduling')) {
+    } else if (location.startsWith('/walk')) {
       return 2;
-    } else if (location.startsWith('/settings/push-notification')) {
+    } else if (location.startsWith('/scheduling')) {
       return 3;
     } else if (location.startsWith('/settings')) {
       return 4;
@@ -41,13 +41,16 @@ class MainNavigationScreen extends ConsumerWidget {
         context.go('/ai');
         break;
       case 2:
-        context.go('/scheduling');
+        context.go('/walk');
         break;
       case 3:
-        context.go('/settings/push-notification');
+        context.go('/scheduling');
         break;
       case 4:
         context.go('/settings');
+        break;
+      default:
+        context.go('/home');
         break;
     }
   }

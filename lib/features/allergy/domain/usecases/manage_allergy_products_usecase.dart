@@ -311,7 +311,7 @@ class ManageAllergyProductsUseCase {
 
   double _calculatePriceScore(ProductEntity product) {
     // 가격 점수 계산 (가성비)
-    final price = product.price ?? 0;
+    final price = product.price;
     if (price < 30000) return 1.0;
     if (price < 80000) return 0.7;
     return 0.4;
@@ -332,7 +332,7 @@ class ManageAllergyProductsUseCase {
       pros.add('アレルギーを引き起こす成分が含まれていません');
     }
 
-    if ((product.price ?? 0) < 50000) {
+    if (product.price < 50000) {
       pros.add('合理的な価格');
     }
 
@@ -349,7 +349,7 @@ class ManageAllergyProductsUseCase {
       cons.add('アレルギーを引き起こす成分が含まれています');
     }
 
-    if ((product.price ?? 0) > 100000) {
+    if (product.price > 100000) {
       cons.add('高い価格');
     }
 
@@ -468,8 +468,6 @@ enum SafetyLevel { safe, warning, unsafe }
 
 /// Use Case Provider
 @riverpod
-ManageAllergyProductsUseCase manageAllergyProductsUseCase(
-  ManageAllergyProductsUseCaseRef ref,
-) {
+ManageAllergyProductsUseCase manageAllergyProductsUseCase(Ref ref) {
   throw UnimplementedError('Repository provider not implemented');
 }

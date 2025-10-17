@@ -29,10 +29,12 @@ class NotificationListWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<NotificationListWidget> createState() => _NotificationListWidgetState();
+  ConsumerState<NotificationListWidget> createState() =>
+      _NotificationListWidgetState();
 }
 
-class _NotificationListWidgetState extends ConsumerState<NotificationListWidget> {
+class _NotificationListWidgetState
+    extends ConsumerState<NotificationListWidget> {
   @override
   Widget build(BuildContext context) {
     // Riverpod Provider를 사용하여 알림 목록 관리
@@ -46,8 +48,14 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
   }
 
   Widget _buildNotificationList(List<NotificationModel> notifications) {
+    debugPrint('📱 NotificationListWidget - 받은 알림 개수: ${notifications.length}');
+
     // 필터링 적용
     final filteredNotifications = _applyFilters(notifications);
+
+    debugPrint(
+      '📱 필터링 후 알림 개수: ${filteredNotifications.length}, 필터: ${widget.filterType}',
+    );
 
     if (filteredNotifications.isEmpty) {
       if (widget.showEmptyState) {
@@ -84,15 +92,22 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
 
   List<NotificationModel> _applyFilters(List<NotificationModel> notifications) {
     return notifications.where((notification) {
-      if (widget.filterStatus != null && notification.status != widget.filterStatus) {
+      if (widget.filterStatus != null &&
+          notification.status != widget.filterStatus) {
+        debugPrint('  ❌ 필터링: ${notification.title} - status 불일치');
         return false;
       }
       if (widget.filterType != null && notification.type != widget.filterType) {
+        debugPrint('  ❌ 필터링: ${notification.title} - type 불일치');
         return false;
       }
       if (notification.isExpired) {
+        debugPrint(
+          '  ❌ 필터링: ${notification.title} - 만료됨 (expiresAt: ${notification.expiresAt})',
+        );
         return false;
       }
+      debugPrint('  ✅ 통과: ${notification.title}');
       return true;
     }).toList();
   }
@@ -101,7 +116,9 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
     if (!notification.isUnread) return; // 이미 읽음인 경우 처리하지 않음
 
     try {
-      await ref.read(notificationsNotifierProvider.notifier).markAsRead(notification.id);
+      await ref
+          .read(notificationsNotifierProvider.notifier)
+          .markAsRead(notification.id);
       widget.onNotificationTap?.call();
     } catch (e) {
       if (kDebugMode) {}
@@ -119,7 +136,10 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
         title: const Text('通知削除'),
         content: const Text('この通知を削除しますか？'),
         actions: [
-          TextButton(onPressed: () => context.pop(false), child: const Text('キャンセル')),
+          TextButton(
+            onPressed: () => context.pop(false),
+            child: const Text('キャンセル'),
+          ),
           TextButton(
             onPressed: () => context.pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -132,7 +152,9 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
 
   Future<void> _deleteNotification(NotificationModel notification) async {
     try {
-      await ref.read(notificationsNotifierProvider.notifier).deleteNotification(notification.id);
+      await ref
+          .read(notificationsNotifierProvider.notifier)
+          .deleteNotification(notification.id);
       widget.onNotificationDelete?.call();
     } catch (e) {
       if (kDebugMode) {}
@@ -141,7 +163,10 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
 
   Widget _buildLoadMoreButton() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
       child: InkWell(
         onTap: () {
           // 더보기 기능 구현 시 추가
@@ -182,9 +207,15 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
         children: [
           const Icon(Icons.error_outline, size: 64, color: AppColors.pointGray),
           const SizedBox(height: AppSpacing.md),
-          Text('エラーが発生しました', style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray)),
+          Text(
+            'エラーが発生しました',
+            style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
+          ),
           const SizedBox(height: AppSpacing.sm),
-          Text('通知の読み込みに失敗しました', style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray)),
+          Text(
+            '通知の読み込みに失敗しました',
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+          ),
         ],
       ),
     );
@@ -195,9 +226,16 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.notifications_none, size: 64, color: AppColors.pointGray),
+          const Icon(
+            Icons.notifications_none,
+            size: 64,
+            color: AppColors.pointGray,
+          ),
           const SizedBox(height: AppSpacing.md),
-          Text('通知がありません', style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray)),
+          Text(
+            '通知がありません',
+            style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
+          ),
           const SizedBox(height: AppSpacing.sm),
           Text(
             '新しい通知が届くとここに表示されます',
@@ -225,7 +263,10 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
         _deleteNotification(notification);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+        margin: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.xs,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -245,7 +286,9 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
                 _markAsRead(notification);
               }
               // 알림 상세 화면으로 이동
-              context.push('${RouteConstants.notificationDetailRoute}?id=${notification.id}');
+              context.push(
+                '${RouteConstants.notificationDetailRoute}?id=${notification.id}',
+              );
             },
             borderRadius: BorderRadius.circular(AppRadius.medium),
             child: Padding(
@@ -263,7 +306,9 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
                       children: [
                         Text(
                           notification.title,
-                          style: NotificationUIUtils.getTitleStyle(notification.isUnread),
+                          style: NotificationUIUtils.getTitleStyle(
+                            notification.isUnread,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -282,7 +327,9 @@ class _NotificationListWidgetState extends ConsumerState<NotificationListWidget>
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        DateFormatService.formatRelativeTime(notification.createdAt),
+                        DateFormatService.formatRelativeTime(
+                          notification.createdAt,
+                        ),
                         style: NotificationUIUtils.timeStyle,
                       ),
                       if (notification.isUnread) ...[

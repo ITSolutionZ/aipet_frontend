@@ -77,38 +77,34 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
     final isEditing = widget.initialEvent != null;
 
     return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: AppColors.pointBrown,
-        foregroundColor: AppColors.pureWhite,
-        title: Text(
-          isEditing ? '일정 편집' : '새 일정 추가',
-          style: AppFonts.titleMedium.copyWith(
-            color: AppColors.pureWhite,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: Text(isEditing ? '일정 수정' : '새 일정', style: AppFonts.titleLarge),
+        backgroundColor: Colors.white,
+        elevation: 0,
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.close, color: AppColors.pointGray),
         ),
         actions: [
           TextButton(
             onPressed: _saveEvent,
-            child: Text(
-              '저장',
-              style: AppFonts.titleSmall.copyWith(
-                color: AppColors.pureWhite,
-                fontWeight: FontWeight.bold,
+            style: TextButton.styleFrom(
+              backgroundColor: AppColors.pointBlue,
+              foregroundColor: AppColors.pureWhite,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
             ),
+            child: Text('저장', style: AppFonts.titleMedium),
           ),
+          const SizedBox(width: AppSpacing.md),
         ],
       ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -132,12 +128,12 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.pointBrown.withValues(alpha: 0.1),
+                        color: AppColors.pointBlue.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppRadius.small),
                       ),
                       child: const Icon(
                         Icons.calendar_today,
-                        color: AppColors.pointBrown,
+                        color: AppColors.pointBlue,
                         size: 24,
                       ),
                     ),
@@ -175,12 +171,18 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                 controller: _titleController,
                 decoration: InputDecoration(
                   hintText: '일정 제목을 입력하세요',
-                  prefixIcon: const Icon(Icons.title),
+                  prefixIcon: const Icon(
+                    Icons.title,
+                    color: AppColors.pointBlue,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppRadius.medium),
+                    borderSide: const BorderSide(color: AppColors.pointGray),
                   ),
-                  filled: true,
-                  fillColor: AppColors.pureWhite,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -261,7 +263,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                           _isAllDay = value;
                         });
                       },
-                      activeColor: AppColors.pointBrown,
+                      activeColor: AppColors.pointBlue,
                     ),
                   ],
                 ),
@@ -341,7 +343,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                 child: ElevatedButton(
                   onPressed: _saveEvent,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.pointBrown,
+                    backgroundColor: AppColors.pointBlue,
                     foregroundColor: AppColors.pureWhite,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -366,9 +368,9 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: AppFonts.titleSmall.copyWith(
-        fontWeight: FontWeight.bold,
-        color: AppColors.pointBrown,
+      style: AppFonts.titleMedium.copyWith(
+        fontWeight: FontWeight.w600,
+        color: AppColors.pointGray,
       ),
     );
   }
@@ -405,7 +407,9 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              time != null ? DateFormat('HH:mm', 'ja_JP').format(time) : '시간 선택',
+              time != null
+                  ? DateFormat('HH:mm', 'ja_JP').format(time)
+                  : '시간 선택',
               style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
           ],

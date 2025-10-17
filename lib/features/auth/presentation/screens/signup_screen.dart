@@ -6,14 +6,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 /// 회원가입 화면 폼 상태 관리
-final signupFormProvider = StateNotifierProvider<SignupFormController, SignupFormState>(
-  (ref) => SignupFormController(ref),
-);
+final signupFormProvider =
+    NotifierProvider<SignupFormController, SignupFormState>(
+      SignupFormController.new,
+    );
 
-class SignupFormController extends StateNotifier<SignupFormState> {
-  final Ref ref;
+class SignupFormController extends Notifier<SignupFormState> {
+  @override
+  SignupFormState build() {
+    // 컨트롤러 dispose 처리
+    ref.onDispose(() {
+      state.emailController?.dispose();
+      state.passwordController?.dispose();
+      state.confirmPasswordController?.dispose();
+      state.usernameController?.dispose();
+    });
 
-  SignupFormController(this.ref) : super(const SignupFormState());
+    return const SignupFormState();
+  }
 
   void initialize() {
     final formKey = GlobalKey<FormState>();
@@ -29,15 +39,6 @@ class SignupFormController extends StateNotifier<SignupFormState> {
       confirmPasswordController: confirmPasswordController,
       usernameController: usernameController,
     );
-  }
-
-  @override
-  void dispose() {
-    state.emailController?.dispose();
-    state.passwordController?.dispose();
-    state.confirmPasswordController?.dispose();
-    state.usernameController?.dispose();
-    super.dispose();
   }
 }
 
@@ -67,7 +68,8 @@ class SignupFormState {
       formKey: formKey ?? this.formKey,
       emailController: emailController ?? this.emailController,
       passwordController: passwordController ?? this.passwordController,
-      confirmPasswordController: confirmPasswordController ?? this.confirmPasswordController,
+      confirmPasswordController:
+          confirmPasswordController ?? this.confirmPasswordController,
       usernameController: usernameController ?? this.usernameController,
     );
   }
@@ -114,7 +116,9 @@ class SignupScreen extends ConsumerWidget {
                 // 부제목
                 Text(
                   '基本ユーザのプロフィールを登録しましょう',
-                  style: AppFonts.bodyMedium.copyWith(color: AppColors.pointBrown),
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointBrown,
+                  ),
                   textAlign: TextAlign.center,
                 ),
 
@@ -152,7 +156,9 @@ class SignupScreen extends ConsumerWidget {
                   },
                   validator: (value) {
                     // 공통 ValidationService 사용
-                    final result = ValidationService.validatePassword(value ?? '');
+                    final result = ValidationService.validatePassword(
+                      value ?? '',
+                    );
                     return result.isSuccess ? null : result.message;
                   },
                 ),
@@ -194,7 +200,9 @@ class SignupScreen extends ConsumerWidget {
                   onChanged: (value) => {}, // Mock implementation
                   validator: (value) {
                     // 공통 ValidationService 사용
-                    final result = ValidationService.validateUsername(value ?? '');
+                    final result = ValidationService.validateUsername(
+                      value ?? '',
+                    );
                     return result.isSuccess ? null : result.message;
                   },
                 ),

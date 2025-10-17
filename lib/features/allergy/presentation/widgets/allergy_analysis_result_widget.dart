@@ -34,9 +34,9 @@ class AllergyAnalysisResultWidget extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   '알레르기 분석 결과',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -89,9 +89,9 @@ class AllergyAnalysisResultWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: confidenceColor.withOpacity(0.1),
+        color: confidenceColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: confidenceColor.withOpacity(0.3)),
+        border: Border.all(color: confidenceColor.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -119,9 +119,9 @@ class AllergyAnalysisResultWidget extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               '의심 성분',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -136,11 +136,13 @@ class AllergyAnalysisResultWidget extends StatelessWidget {
             spacing: 8,
             runSpacing: 4,
             children: analysisResult.suspectedIngredients
-                .map((ingredient) => Chip(
-                      label: Text(ingredient),
-                      backgroundColor: Colors.red.withOpacity(0.1),
-                      side: BorderSide(color: Colors.red.withOpacity(0.3)),
-                    ))
+                .map(
+                  (ingredient) => Chip(
+                    label: Text(ingredient),
+                    backgroundColor: Colors.red.withValues(alpha: 0.1),
+                    side: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
+                  ),
+                )
                 .toList(),
           ),
       ],
@@ -157,23 +159,25 @@ class AllergyAnalysisResultWidget extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               '권장사항',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),
         const SizedBox(height: 8),
-        ...analysisResult.recommendations.map((recommendation) => Padding(
-              padding: const EdgeInsets.only(left: 16, bottom: 4),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('• ', style: TextStyle(color: Colors.blue)),
-                  Expanded(child: Text(recommendation)),
-                ],
-              ),
-            )),
+        ...analysisResult.recommendations.map(
+          (recommendation) => Padding(
+            padding: const EdgeInsets.only(left: 16, bottom: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('• ', style: TextStyle(color: Colors.blue)),
+                Expanded(child: Text(recommendation)),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -188,9 +192,9 @@ class AllergyAnalysisResultWidget extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               '추천 제품 (${recommendedProducts.length}개)',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),

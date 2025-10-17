@@ -22,7 +22,7 @@ class _SavedAnalysisAccordionState
     extends ConsumerState<SavedAnalysisAccordion> {
   @override
   Widget build(BuildContext context) {
-    final savedAnalysesAsync = ref.watch(savedAnalysisNotifierProvider);
+    final savedAnalysesAsync = ref.watch(savedAnalysisProvider);
 
     return savedAnalysesAsync.when(
       data: (savedAnalyses) {
@@ -150,7 +150,7 @@ class _SavedAnalysisAccordionState
         icon: const Icon(Icons.arrow_back, color: AppColors.pointDark),
         onPressed: () => Navigator.pop(context),
       ),
-      error: (_, __) => IconButton(
+      error: (error, stackTrace) => IconButton(
         icon: const Icon(Icons.arrow_back, color: AppColors.pointDark),
         onPressed: () => Navigator.pop(context),
       ),

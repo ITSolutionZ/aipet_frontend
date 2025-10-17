@@ -1,12 +1,8 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import '../../domain/entities/allergy_analysis_entities.dart';
 import '../../domain/entities/product_entity.dart';
 import '../../domain/repositories/allergy_analysis_repository.dart';
 import '../../domain/services/allergy_analysis_service.dart';
 import '../datasources/allergy_analysis_datasource.dart';
-
-part 'allergy_analysis_repository_impl.g.dart';
 
 /// 알레르기 분석 Repository 구현체
 class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
@@ -384,12 +380,4 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
   String _generateReportId() {
     return 'report_${DateTime.now().millisecondsSinceEpoch}';
   }
-}
-
-/// Repository Provider
-@riverpod
-AllergyAnalysisRepository allergyAnalysisRepository(
-  AllergyAnalysisRepositoryRef ref,
-) {
-  throw UnimplementedError('Service and Datasource providers not implemented');
 }

@@ -1,5 +1,7 @@
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'facility_state_provider.g.dart';
 
 /// 🎯 Facility 통합 상태 관리
 ///
@@ -102,13 +104,10 @@ class FacilityState {
 }
 
 /// Facility 상태 프로바이더
-final facilityStateProvider = StateNotifierProvider<FacilityStateNotifier, FacilityState>(
-  (ref) => FacilityStateNotifier(),
-);
-
-/// Facility 상태 관리자
-class FacilityStateNotifier extends StateNotifier<FacilityState> {
-  FacilityStateNotifier() : super(const FacilityState());
+@riverpod
+class FacilityStateNotifier extends _$FacilityStateNotifier {
+  @override
+  FacilityState build() => const FacilityState();
 
   /// 시설 리스트 설정
   void setFacilities(List<Facility> facilities) {

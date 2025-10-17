@@ -21,7 +21,7 @@ class DailyHealthDateHeaderSection extends ConsumerWidget {
     final formattedDate = logic.formatDate(today);
     final weekday = logic.getWeekdayName(today.weekday);
     final screenData = ref.watch(dailyHealthScreenControllerProvider);
-    final petsAsync = ref.watch(petProfilesNotifierProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return petsAsync.when(
       data: (pets) {

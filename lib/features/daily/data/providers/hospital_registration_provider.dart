@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'hospital_registration_provider.g.dart';
@@ -117,7 +116,7 @@ class RegisteredHospitalsNotifier extends _$RegisteredHospitalsNotifier {
 /// 등록된 병원 여부 확인 프로바이더
 @riverpod
 bool hasRegisteredHospital(Ref ref) {
-  final hospitals = ref.watch(registeredHospitalsNotifierProvider);
+  final hospitals = ref.watch(registeredHospitalsProvider);
   return hospitals.maybeWhen(
     data: (hospitalList) => hospitalList.isNotEmpty,
     orElse: () => false,

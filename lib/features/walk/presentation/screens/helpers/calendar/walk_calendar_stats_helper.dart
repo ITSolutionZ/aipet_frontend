@@ -2,6 +2,8 @@ import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../pet_profile/data/providers/pet_profile_providers.dart';
+
 /// 달력 통계 계산 헬퍼
 class WalkCalendarStatsHelper {
   /// 총 거리 계산
@@ -29,7 +31,7 @@ class WalkCalendarStatsHelper {
     if (recordsForDay.isEmpty) return 0;
 
     // 로컬 저장소에서 펫의 1일 권장 시간 가져오기
-    final petsAsync = ref.read(petListProvider);
+    final petsAsync = ref.read(petProfilesProvider);
     final recommendedMinutes = petsAsync.maybeWhen(
       data: (pets) {
         if (pets.isEmpty) return 30;

@@ -288,6 +288,6 @@ class RiskAssessmentResult {
 
 /// Use Case Provider
 @riverpod
-AnalyzeAllergyUseCase analyzeAllergyUseCase(AnalyzeAllergyUseCaseRef ref) {
+AnalyzeAllergyUseCase analyzeAllergyUseCase(Ref ref) {
   throw UnimplementedError('Repository provider not implemented');
 }

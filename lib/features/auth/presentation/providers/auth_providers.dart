@@ -188,16 +188,9 @@ final sessionManagementUseCaseProvider = Provider<SessionManagementUseCase>((
 
 /// Clean Auth Controller Provider
 final cleanAuthControllerProvider =
-    StateNotifierProvider<CleanAuthController, AuthState>((ref) {
-      final authenticateUseCase = ref.watch(authenticateUseCaseProvider);
-      final sessionManagementUseCase = ref.watch(
-        sessionManagementUseCaseProvider,
-      );
-
-      return CleanAuthController(
-        authenticateUseCase: authenticateUseCase,
-        sessionManagementUseCase: sessionManagementUseCase,
-      );
+    NotifierProvider<CleanAuthController, AuthState>(() {
+      final controller = CleanAuthController();
+      return controller;
     });
 
 /// 현재 사용자 Provider (computed)

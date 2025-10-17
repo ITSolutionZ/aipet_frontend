@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/domain/entities/pet_profile_entity.dart';
+import '../../../pet_profile/data/providers/pet_profile_providers.dart';
 
 class WalkRecordCardWidget extends ConsumerWidget {
   final WalkRecordEntity walkRecord;
@@ -19,8 +20,8 @@ class WalkRecordCardWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 로컬 저장소에서 이 산책에 참여한 펫만 가져오기
-    final petsAsync = ref.watch(petListProvider);
+    // SQLite에서 이 산책에 참여한 펫만 가져오기
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return petsAsync.when(
       data: (pets) {

@@ -30,7 +30,7 @@ class DailyHealthInputLogic {
     }
 
     // 새 레코드의 경우 기본값으로 초기화
-    final pets = ref.read(petProfilesNotifierProvider).value;
+    final pets = ref.read(petProfilesProvider).value;
     final defaultPetId = pets != null && pets.isNotEmpty ? pets.first.id : null;
 
     return DailyHealthFormData.initial(defaultPetId: defaultPetId);

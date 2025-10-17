@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../pet_profile/data/providers/pet_profile_providers.dart';
+
 class WalkDetailScreen extends ConsumerWidget {
   final WalkRecordEntity walkRecord;
 
@@ -17,14 +19,14 @@ class WalkDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Provider에서 최신 데이터 가져오기 (수정 반영을 위해)
-    final walkRecords = ref.watch(walkRecordsNotifierProvider);
+    final walkRecords = ref.watch(walkRecordsProvider);
     final currentWalkRecord = walkRecords.firstWhere(
       (r) => r.id == walkRecord.id,
       orElse: () => walkRecord, // 찾지 못하면 원본 사용
     );
 
-    // 로컬 저장소에서 펫 데이터 가져오기
-    final petsAsync = ref.watch(petListProvider);
+    // SQLite에서 펫 데이터 가져오기
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
@@ -177,7 +179,7 @@ class WalkDetailScreen extends ConsumerWidget {
             child: Consumer(
               builder: (context, ref, child) {
                 // Provider에서 최신 데이터 가져오기
-                final walkRecords = ref.watch(walkRecordsNotifierProvider);
+                final walkRecords = ref.watch(walkRecordsProvider);
                 final latestWalkRecord = walkRecords.firstWhere(
                   (r) => r.id == currentWalkRecord.id,
                   orElse: () => currentWalkRecord,

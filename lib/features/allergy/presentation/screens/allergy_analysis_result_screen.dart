@@ -274,11 +274,13 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
       }
 
       // PDF 미리보기 및 다운로드 (비동기로 실행)
-      unawaited(Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => pdf,
-        name:
-            '${petName}_アレルギー分析結果_${DateFormat('yyyyMMdd').format(DateTime.now())}.pdf',
-      ));
+      unawaited(
+        Printing.layoutPdf(
+          onLayout: (PdfPageFormat format) async => pdf,
+          name:
+              '${petName}_アレルギー分析結果_${DateFormat('yyyyMMdd').format(DateTime.now())}.pdf',
+        ),
+      );
 
       // 완료 모달 표시 (PDF 미리보기와 동시에)
       if (context.mounted) {
@@ -754,7 +756,7 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
 
     try {
       await ref
-          .read(savedAnalysisNotifierProvider.notifier)
+          .read(savedAnalysisProvider.notifier)
           .saveAnalysis(savedAnalysis);
     } catch (e) {
       if (context.mounted) {
