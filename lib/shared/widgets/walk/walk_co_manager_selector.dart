@@ -1,15 +1,15 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'walk_co_manager_selector.g.dart';
 
 /// 🎯 Walk Co-Manager Selection State Provider
-final walkCoManagerSelectorProvider =
-    StateNotifierProvider.family<WalkCoManagerSelectorController, String?, String?>(
-      (ref, initialValue) => WalkCoManagerSelectorController(initialValue),
-    );
-
-class WalkCoManagerSelectorController extends StateNotifier<String?> {
-  WalkCoManagerSelectorController(super.initialValue);
+@riverpod
+class WalkCoManagerSelectorController extends _$WalkCoManagerSelectorController {
+  @override
+  String? build(String? initialValue) => initialValue;
 
   void selectCoManager(String? managerId) {
     state = managerId;
@@ -25,8 +25,8 @@ class WalkCoManagerSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(walkCoManagerSelectorProvider(selectedCoManagerId).notifier);
-    final selectedId = ref.watch(walkCoManagerSelectorProvider(selectedCoManagerId));
+    final controller = ref.read(walkCoManagerSelectorControllerProvider(selectedCoManagerId).notifier);
+    final selectedId = ref.watch(walkCoManagerSelectorControllerProvider(selectedCoManagerId));
 
     // TODO: 실제로는 API에서 공동관리자 목록을 가져와야 함
     final coManagers = [

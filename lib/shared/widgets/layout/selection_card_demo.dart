@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'selection_card.dart';
 
-/// 🎯 Selection Card Demo State Provider
-final selectionCardDemoProvider = StateNotifierProvider<SelectionCardDemoController, String?>(
-  (ref) => SelectionCardDemoController(),
-);
+part 'selection_card_demo.g.dart';
 
-class SelectionCardDemoController extends StateNotifier<String?> {
-  SelectionCardDemoController() : super(null);
+/// 🎯 Selection Card Demo State Provider
+@riverpod
+class SelectionCardDemoController extends _$SelectionCardDemoController {
+  @override
+  String? build() => null;
 
   void selectPayment(String? payment) {
     state = payment;
@@ -16,13 +17,10 @@ class SelectionCardDemoController extends StateNotifier<String?> {
 }
 
 /// 🎯 Payment Selection Example State Provider
-final paymentSelectionExampleProvider =
-    StateNotifierProvider<PaymentSelectionExampleController, String?>(
-      (ref) => PaymentSelectionExampleController(),
-    );
-
-class PaymentSelectionExampleController extends StateNotifier<String?> {
-  PaymentSelectionExampleController() : super('credit'); // 기본 선택
+@riverpod
+class PaymentSelectionExampleController extends _$PaymentSelectionExampleController {
+  @override
+  String? build() => 'credit'; // 기본 선택
 
   void selectPayment(String? payment) {
     state = payment;
@@ -35,8 +33,8 @@ class SelectionCardDemo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedPayment = ref.watch(selectionCardDemoProvider);
-    final controller = ref.read(selectionCardDemoProvider.notifier);
+    final selectedPayment = ref.watch(selectionCardDemoControllerProvider);
+    final controller = ref.read(selectionCardDemoControllerProvider.notifier);
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -90,8 +88,8 @@ class PaymentSelectionExample extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedPayment = ref.watch(paymentSelectionExampleProvider);
-    final controller = ref.read(paymentSelectionExampleProvider.notifier);
+    final selectedPayment = ref.watch(paymentSelectionExampleControllerProvider);
+    final controller = ref.read(paymentSelectionExampleControllerProvider.notifier);
 
     return Column(
       children: [

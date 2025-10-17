@@ -2,15 +2,15 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'common_input_field.g.dart';
 
 /// 🎯 Common Input Field State Provider
-final commonInputFieldStateProvider =
-    StateNotifierProvider.family<CommonInputFieldController, CommonInputFieldState, String>(
-      (ref, fieldId) => CommonInputFieldController(),
-    );
-
-class CommonInputFieldController extends StateNotifier<CommonInputFieldState> {
-  CommonInputFieldController() : super(const CommonInputFieldState());
+@riverpod
+class CommonInputFieldController extends _$CommonInputFieldController {
+  @override
+  CommonInputFieldState build(String fieldId) => const CommonInputFieldState();
 
   void setFocus(bool hasFocus) {
     state = state.copyWith(isFocused: hasFocus);
@@ -167,7 +167,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.fieldId != null) {
         ref
-            .read(commonInputFieldStateProvider(widget.fieldId!).notifier)
+            .read(commonInputFieldControllerProvider(widget.fieldId!).notifier)
             .setObscureText(widget.obscureText);
       }
     });
@@ -188,7 +188,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
   void _onFocusChange() {
     final hasFocus = _focusNode.hasFocus;
     if (widget.fieldId != null) {
-      ref.read(commonInputFieldStateProvider(widget.fieldId!).notifier).setFocus(hasFocus);
+      ref.read(commonInputFieldControllerProvider(widget.fieldId!).notifier).setFocus(hasFocus);
     }
     widget.onFocusChange?.call(hasFocus);
   }
@@ -196,7 +196,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
   @override
   Widget build(BuildContext context) {
     final effectiveFieldId = widget.fieldId ?? 'default_common_input_field';
-    final fieldState = ref.watch(commonInputFieldStateProvider(effectiveFieldId));
+    final fieldState = ref.watch(commonInputFieldControllerProvider(effectiveFieldId));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,7 +328,7 @@ class _CommonInputFieldState extends ConsumerState<CommonInputField> {
         ),
         onPressed: () {
           if (widget.fieldId != null) {
-            ref.read(commonInputFieldStateProvider(widget.fieldId!).notifier).toggleObscureText();
+            ref.read(commonInputFieldControllerProvider(widget.fieldId!).notifier).toggleObscureText();
           }
         },
       );

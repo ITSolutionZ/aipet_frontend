@@ -3,6 +3,9 @@ import 'package:aipet_frontend/shared/core/services/unified_error_handler.dart';
 import 'package:aipet_frontend/shared/core/services/unified_validation_service.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'unified_providers.g.dart';
 
 /// 🎯 통합 프로바이더들
 ///
@@ -34,11 +37,31 @@ class _LoggingService extends BaseLoggingService {
 }
 
 /// 공통 상태 관리 프로바이더
-final unifiedStateNotifierProvider = StateNotifierProvider<UnifiedStateNotifier, UnifiedState>((
-  ref,
-) {
-  return UnifiedStateNotifier();
-});
+@riverpod
+class UnifiedStateNotifierController extends _$UnifiedStateNotifierController {
+  @override
+  UnifiedState build() => const UnifiedState.initial();
+
+  /// 로딩 상태 설정
+  void setLoading() {
+    state = const UnifiedState.loading();
+  }
+
+  /// 성공 상태 설정
+  void setSuccess(String message) {
+    state = UnifiedState.success(message);
+  }
+
+  /// 에러 상태 설정
+  void setError(String error) {
+    state = UnifiedState.error(error);
+  }
+
+  /// 초기 상태로 리셋
+  void reset() {
+    state = const UnifiedState.initial();
+  }
+}
 
 /// 통합 상태 클래스
 sealed class UnifiedState {
@@ -73,87 +96,77 @@ class _Error extends UnifiedState {
   const _Error(this.error);
 }
 
-/// 공통 상태 관리 노티파이어
-class UnifiedStateNotifier extends StateNotifier<UnifiedState> {
-  UnifiedStateNotifier() : super(const UnifiedState.initial());
 
-  /// 로딩 상태 설정
-  void setLoading() {
-    state = const UnifiedState.loading();
+/// 공통 폼 상태 프로바이더
+@riverpod
+class UnifiedFormNotifierController extends _$UnifiedFormNotifierController {
+  @override
+  UnifiedFormState build() => const UnifiedFormState();
+
+  /// 필드 값 업데이트
+  void updateField(String key, dynamic value) {
+    final newFields = Map<String, dynamic>.from(state.fields);
+    newFields[key] = value;
+    state = state.copyWith(fields: newFields);
   }
 
-  /// 성공 상태 설정
-  void setSuccess(String message) {
-    state = UnifiedState.success(message);
+  /// 에러 설정
+  void setFieldError(String key, String error) {
+    final newErrors = Map<String, String>.from(state.errors);
+    newErrors[key] = error;
+    state = state.copyWith(errors: newErrors);
   }
 
-  /// 에러 상태 설정
-  void setError(String error) {
-    state = UnifiedState.error(error);
+  /// 에러 초기화
+  void clearFieldError(String key) {
+    final newErrors = Map<String, String>.from(state.errors);
+    newErrors.remove(key);
+    state = state.copyWith(errors: newErrors);
   }
 
-  /// 초기 상태로 리셋
-  void reset() {
-    state = const UnifiedState.initial();
+  /// 모든 에러 초기화
+  void clearAllErrors() {
+    state = state.copyWith(errors: {});
+  }
+
+  /// 폼 리셋
+  void resetForm() {
+    state = const UnifiedFormState();
   }
 }
 
-/// 공통 폼 상태 프로바이더
-final unifiedFormNotifierProvider = StateNotifierProvider<UnifiedFormNotifier, UnifiedFormState>((
-  ref,
-) {
-  return UnifiedFormNotifier();
-});
-
 /// 통합 폼 상태 클래스
 class UnifiedFormState {
-  final Map<String, String> fields;
+  final Map<String, dynamic> fields;
+  final Map<String, String> errors;
   final bool isLoading;
   final String? error;
 
-  const UnifiedFormState({this.fields = const {}, this.isLoading = false, this.error});
+  const UnifiedFormState({
+    this.fields = const {},
+    this.errors = const {},
+    this.isLoading = false,
+    this.error,
+  });
 
-  UnifiedFormState copyWith({Map<String, String>? fields, bool? isLoading, String? error}) {
+  UnifiedFormState copyWith({
+    Map<String, dynamic>? fields,
+    Map<String, String>? errors,
+    bool? isLoading,
+    String? error,
+  }) {
     return UnifiedFormState(
       fields: fields ?? this.fields,
+      errors: errors ?? this.errors,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
     );
   }
 
   /// 특정 필드 값 가져오기
-  String getField(String key) => fields[key] ?? '';
+  dynamic getField(String key) => fields[key];
 
   /// 폼 유효성 검사
-  bool get isValid => error == null && fields.values.every((value) => value.isNotEmpty);
+  bool get isValid => error == null && errors.isEmpty;
 }
 
-/// 공통 폼 상태 관리 노티파이어
-class UnifiedFormNotifier extends StateNotifier<UnifiedFormState> {
-  UnifiedFormNotifier() : super(const UnifiedFormState());
-
-  /// 필드 업데이트
-  void updateField(String key, String value) {
-    state = state.copyWith(fields: {...state.fields, key: value});
-  }
-
-  /// 에러 설정
-  void setError(String error) {
-    state = state.copyWith(error: error);
-  }
-
-  /// 에러 클리어
-  void clearError() {
-    state = state.copyWith(error: null);
-  }
-
-  /// 로딩 상태 설정
-  void setLoading(bool isLoading) {
-    state = state.copyWith(isLoading: isLoading);
-  }
-
-  /// 폼 리셋
-  void reset() {
-    state = const UnifiedFormState();
-  }
-}

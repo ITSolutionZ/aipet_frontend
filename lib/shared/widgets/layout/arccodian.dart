@@ -1,6 +1,9 @@
 import 'package:aipet_frontend/shared/widgets/layout/card.dart'; // GlassCard
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'arccodian.g.dart';
 
 /// AccordionItem: 단일 아코디언 항목 정의
 class AccordionItem {
@@ -18,13 +21,10 @@ class AccordionItem {
 }
 
 /// 🎯 Glass Accordion State Provider
-final glassAccordionProvider =
-    StateNotifierProvider.family<GlassAccordionController, List<bool>, String>(
-      (ref, accordionId) => GlassAccordionController(),
-    );
-
-class GlassAccordionController extends StateNotifier<List<bool>> {
-  GlassAccordionController() : super([]);
+@riverpod
+class GlassAccordionController extends _$GlassAccordionController {
+  @override
+  List<bool> build(String accordionId) => [];
 
   void initialize(List<AccordionItem> items) {
     state = items.map((e) => e.initiallyOpen).toList();
@@ -91,12 +91,12 @@ class GlassAccordion extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final effectiveId = accordionId ?? 'default_accordion';
-    final openStates = ref.watch(glassAccordionProvider(effectiveId));
+    final openStates = ref.watch(glassAccordionControllerProvider(effectiveId));
 
     // Initialize the accordion state if it's empty
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (openStates.isEmpty && items.isNotEmpty) {
-        ref.read(glassAccordionProvider(effectiveId).notifier).initialize(items);
+        ref.read(glassAccordionControllerProvider(effectiveId).notifier).initialize(items);
       }
     });
 
@@ -107,7 +107,7 @@ class GlassAccordion extends ConsumerWidget {
             item: items[i],
             isOpen: i < openStates.length ? openStates[i] : false,
             onToggle: () =>
-                ref.read(glassAccordionProvider(effectiveId).notifier).toggle(i, multiOpen),
+                ref.read(glassAccordionControllerProvider(effectiveId).notifier).toggle(i, multiOpen),
             duration: animationDuration,
             curve: animationCurve,
             borderRadius: borderRadius,

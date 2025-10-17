@@ -2,15 +2,15 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'app_text_field.g.dart';
 
 /// 🎯 App Text Field Focus State Provider
-final appTextFieldFocusProvider =
-    StateNotifierProvider.family<AppTextFieldFocusController, bool, String>(
-      (ref, fieldId) => AppTextFieldFocusController(),
-    );
-
-class AppTextFieldFocusController extends StateNotifier<bool> {
-  AppTextFieldFocusController() : super(false);
+@riverpod
+class AppTextFieldFocusController extends _$AppTextFieldFocusController {
+  @override
+  bool build(String fieldId) => false;
 
   void setFocus(bool hasFocus) {
     state = hasFocus;
@@ -96,14 +96,14 @@ class _AppTextFieldState extends ConsumerState<AppTextField> {
 
   void _onFocusChanged() {
     if (widget.fieldId != null) {
-      ref.read(appTextFieldFocusProvider(widget.fieldId!).notifier).setFocus(_focusNode.hasFocus);
+      ref.read(appTextFieldFocusControllerProvider(widget.fieldId!).notifier).setFocus(_focusNode.hasFocus);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final hasFocus = widget.fieldId != null
-        ? ref.watch(appTextFieldFocusProvider(widget.fieldId!))
+        ? ref.watch(appTextFieldFocusControllerProvider(widget.fieldId!))
         : _focusNode.hasFocus;
 
     return Semantics(

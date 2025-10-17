@@ -10,8 +10,10 @@ class RepositoryProviderHelper {
   }
 
   /// Repository Provider 생성 (파라미터 필요)
-  static ProviderFamily<T, P> createRepositoryWithParam<T, P>(T Function(P param) factory) {
-    return Provider.family<T, P>((ref, param) => factory(param));
+  static Provider<T> Function(P) createRepositoryWithParam<T, P>(
+    T Function(P param) factory,
+  ) {
+    return (P param) => Provider<T>((ref) => factory(param));
   }
 }
 
@@ -31,11 +33,11 @@ class UseCaseProviderHelper {
   }
 
   /// UseCase Provider 생성 (파라미터 필요)
-  static ProviderFamily<T, P> createUseCaseWithParam<T, P, R>(
+  static Provider<T> Function(P) createUseCaseWithParam<T, P, R>(
     T Function(R repository, P param) factory,
     Provider<R> repositoryProvider,
   ) {
-    return Provider.family<T, P>((ref, param) {
+    return (P param) => Provider<T>((ref) {
       final repository = ref.read(repositoryProvider);
       return factory(repository, param);
     });
@@ -47,15 +49,16 @@ class NotifierProviderHelper {
   NotifierProviderHelper._();
 
   /// 기본 Notifier Provider 생성
-  static NotifierProvider<T, S> createNotifier<T extends Notifier<S>, S>(T Function() factory) {
+  static NotifierProvider<T, S> createNotifier<T extends Notifier<S>, S>(
+    T Function() factory,
+  ) {
     return NotifierProvider<T, S>(factory);
   }
 
   /// Family Notifier Provider 생성
-  static NotifierProviderFamily<T, S, P> createFamilyNotifier<T extends FamilyNotifier<S, P>, S, P>(
-    T Function() factory,
-  ) {
-    return NotifierProviderFamily<T, S, P>(factory);
+  static NotifierProvider<T, S> Function(P)
+  createFamilyNotifier<T extends Notifier<S>, S, P>(T Function(P) factory) {
+    return (P param) => NotifierProvider<T, S>(() => factory(param));
   }
 }
 
@@ -90,10 +93,10 @@ class CommonProviders {
   }
 
   /// CRUD Notifier Provider 생성
-  static Map<String, NotifierProvider> createCrudNotifierProviders<T extends Notifier<S>, S>({
-    required String prefix,
-    required T Function() notifierFactory,
-  }) {
+  static Map<String, NotifierProvider> createCrudNotifierProviders<
+    T extends Notifier<S>,
+    S
+  >({required String prefix, required T Function() notifierFactory}) {
     return {'${prefix}Notifier': NotifierProvider<T, S>(notifierFactory)};
   }
 }
@@ -120,15 +123,18 @@ class RepositoryProviderBuilder {
   }
 
   /// 파라미터가 있는 Repository Provider 생성
-  ProviderFamily<T, P> buildWithParam<T, P>(T Function(P param) factory) {
-    return Provider.family<T, P>((ref, param) => factory(param));
+  Provider<T> Function(P) buildWithParam<T, P>(T Function(P param) factory) {
+    return (P param) => Provider<T>((ref) => factory(param));
   }
 }
 
 /// UseCase Provider 빌더
 class UseCaseProviderBuilder {
   /// Repository 의존 UseCase Provider 생성
-  Provider<T> build<T, R>(T Function(R repository) factory, Provider<R> repositoryProvider) {
+  Provider<T> build<T, R>(
+    T Function(R repository) factory,
+    Provider<R> repositoryProvider,
+  ) {
     return Provider<T>((ref) {
       final repository = ref.read(repositoryProvider);
       return factory(repository);
@@ -136,11 +142,11 @@ class UseCaseProviderBuilder {
   }
 
   /// 파라미터가 있는 UseCase Provider 생성
-  ProviderFamily<T, P> buildWithParam<T, P, R>(
+  Provider<T> Function(P) buildWithParam<T, P, R>(
     T Function(R repository, P param) factory,
     Provider<R> repositoryProvider,
   ) {
-    return Provider.family<T, P>((ref, param) {
+    return (P param) => Provider<T>((ref) {
       final repository = ref.read(repositoryProvider);
       return factory(repository, param);
     });
@@ -155,9 +161,9 @@ class NotifierProviderBuilder {
   }
 
   /// Family Notifier Provider 생성
-  NotifierProviderFamily<T, S, P> buildFamily<T extends FamilyNotifier<S, P>, S, P>(
-    T Function() factory,
+  NotifierProvider<T, S> Function(P) buildFamily<T extends Notifier<S>, S, P>(
+    T Function(P) factory,
   ) {
-    return NotifierProviderFamily<T, S, P>(factory);
+    return (P param) => NotifierProvider<T, S>(() => factory(param));
   }
 }

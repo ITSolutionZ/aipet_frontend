@@ -12,6 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'live_walk_widget.g.dart';
 
 enum WalkTimerState { ready, running, paused, stopped }
 
@@ -92,18 +95,16 @@ class LiveWalkState {
   }
 }
 
-final liveWalkProvider =
-    StateNotifierProvider<LiveWalkController, LiveWalkState>(
-      (ref) => LiveWalkController(),
-    );
-
-class LiveWalkController extends StateNotifier<LiveWalkState> {
+@riverpod
+class LiveWalkController extends _$LiveWalkController {
   final _timerManager = LiveWalkTimerManager();
   final _locationTracker = LiveWalkLocationTracker();
 
-  LiveWalkController() : super(const LiveWalkState()) {
+  @override
+  LiveWalkState build() {
     _initializeCurrentLocation();
     _loadSavedWalk();
+    return const LiveWalkState();
   }
 
   Future<void> _initializeCurrentLocation() async {
@@ -418,13 +419,6 @@ class LiveWalkController extends StateNotifier<LiveWalkState> {
       );
     }
   }
-
-  @override
-  void dispose() {
-    _timerManager.stopTimer();
-    _locationTracker.stopTracking();
-    super.dispose();
-  }
 }
 
 class LiveWalkWidget extends ConsumerWidget {
@@ -435,8 +429,8 @@ class LiveWalkWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final walkState = ref.watch(liveWalkProvider);
-    final walkController = ref.read(liveWalkProvider.notifier);
+    final walkState = ref.watch(liveWalkControllerProvider);
+    final walkController = ref.read(liveWalkControllerProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(

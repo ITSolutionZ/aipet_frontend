@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'animated_slide_widget.g.dart';
 
 /// 슬라이드 방향
 enum SlideDirection { fromLeft, fromRight, fromTop, fromBottom }
 
 /// 🎯 Animated Slide State Provider
-final animatedSlideProvider =
-    StateNotifierProvider.family<AnimatedSlideController, AnimatedSlideState, String>(
-      (ref, animationId) => AnimatedSlideController(),
-    );
-
-class AnimatedSlideController extends StateNotifier<AnimatedSlideState> {
-  AnimatedSlideController() : super(const AnimatedSlideState());
+@riverpod
+class AnimatedSlideController extends _$AnimatedSlideController {
+  @override
+  AnimatedSlideState build(String animationId) => const AnimatedSlideState();
 
   void initializeController(TickerProvider vsync, Duration duration) {
     final controller = AnimationController(duration: duration, vsync: vsync);
@@ -59,12 +59,6 @@ class AnimatedSlideController extends StateNotifier<AnimatedSlideState> {
 
   void reverseAnimation() {
     state.controller?.reverse();
-  }
-
-  @override
-  void dispose() {
-    state.controller?.dispose();
-    super.dispose();
   }
 }
 
@@ -126,14 +120,14 @@ class _AnimatedSlideWidgetState extends ConsumerState<AnimatedSlideWidget>
     // Initialize Riverpod controller
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
-          .read(animatedSlideProvider(_animationId).notifier)
+          .read(animatedSlideControllerProvider(_animationId).notifier)
           .initializeController(this, widget.duration);
       ref
-          .read(animatedSlideProvider(_animationId).notifier)
+          .read(animatedSlideControllerProvider(_animationId).notifier)
           .updateAnimations(widget.direction, widget.slideDistance, widget.curve);
 
       // Add status listener
-      final state = ref.read(animatedSlideProvider(_animationId));
+      final state = ref.read(animatedSlideControllerProvider(_animationId));
       state.slideAnimation?.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           widget.onAnimationComplete?.call();
@@ -141,7 +135,7 @@ class _AnimatedSlideWidgetState extends ConsumerState<AnimatedSlideWidget>
       });
 
       if (widget.show) {
-        ref.read(animatedSlideProvider(_animationId).notifier).startAnimation(widget.delay);
+        ref.read(animatedSlideControllerProvider(_animationId).notifier).startAnimation(widget.delay);
       }
     });
   }
@@ -153,28 +147,27 @@ class _AnimatedSlideWidgetState extends ConsumerState<AnimatedSlideWidget>
     if (widget.direction != oldWidget.direction ||
         widget.slideDistance != oldWidget.slideDistance) {
       ref
-          .read(animatedSlideProvider(_animationId).notifier)
+          .read(animatedSlideControllerProvider(_animationId).notifier)
           .updateAnimations(widget.direction, widget.slideDistance, widget.curve);
     }
 
     if (widget.show != oldWidget.show) {
       if (widget.show) {
-        ref.read(animatedSlideProvider(_animationId).notifier).startAnimation(widget.delay);
+        ref.read(animatedSlideControllerProvider(_animationId).notifier).startAnimation(widget.delay);
       } else {
-        ref.read(animatedSlideProvider(_animationId).notifier).reverseAnimation();
+        ref.read(animatedSlideControllerProvider(_animationId).notifier).reverseAnimation();
       }
     }
   }
 
   @override
   void dispose() {
-    ref.read(animatedSlideProvider(_animationId).notifier).dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final animationState = ref.watch(animatedSlideProvider(_animationId));
+    final animationState = ref.watch(animatedSlideControllerProvider(_animationId));
 
     if (animationState.controller == null ||
         animationState.slideAnimation == null ||
@@ -195,13 +188,10 @@ class _AnimatedSlideWidgetState extends ConsumerState<AnimatedSlideWidget>
 }
 
 /// 🎯 Staggered Slide State Provider
-final staggeredSlideProvider =
-    StateNotifierProvider.family<StaggeredSlideController, StaggeredSlideState, String>(
-      (ref, staggeredId) => StaggeredSlideController(),
-    );
-
-class StaggeredSlideController extends StateNotifier<StaggeredSlideState> {
-  StaggeredSlideController() : super(const StaggeredSlideState());
+@riverpod
+class StaggeredSlideController extends _$StaggeredSlideController {
+  @override
+  StaggeredSlideState build(String staggeredId) => const StaggeredSlideState();
 
   void initializeControllers(TickerProvider vsync, int childrenCount, Duration duration) {
     final controllers = List.generate(
@@ -209,14 +199,6 @@ class StaggeredSlideController extends StateNotifier<StaggeredSlideState> {
       (index) => AnimationController(duration: duration, vsync: vsync),
     );
     state = state.copyWith(controllers: controllers);
-  }
-
-  @override
-  void dispose() {
-    for (final controller in state.controllers) {
-      controller.dispose();
-    }
-    super.dispose();
   }
 }
 
