@@ -30,7 +30,7 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final liveWalkState = ref.watch(liveWalkProvider);
+    final liveWalkState = ref.watch(liveWalkControllerProvider);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -94,14 +94,15 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
 
   /// 뒤로가기 버튼 처리
   void _handleBackButton(BuildContext context) {
-    final liveWalkState = ref.read(liveWalkProvider);
+    final liveWalkState = ref.read(liveWalkControllerProvider);
 
     if (liveWalkState.isRunning || liveWalkState.isPaused) {
       // 산책 중이면 확인 다이얼로그
       LiveWalkDialogHelper.showBackConfirmDialog(
         context: context,
         ref: ref,
-        onConfirm: () => ref.read(liveWalkProvider.notifier).stopWalk(),
+        onConfirm: () =>
+            ref.read(liveWalkControllerProvider.notifier).stopWalk(),
       );
     } else {
       context.pop();
@@ -160,10 +161,10 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
       _showStopWalkDialog();
     } else if (state.isPaused) {
       // 산책 재개
-      ref.read(liveWalkProvider.notifier).resumeWalk();
+      ref.read(liveWalkControllerProvider.notifier).resumeWalk();
     } else {
       // 산책 시작
-      ref.read(liveWalkProvider.notifier).startWalk();
+      ref.read(liveWalkControllerProvider.notifier).startWalk();
     }
   }
 
@@ -171,7 +172,7 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
   void _showStopWalkDialog() {
     LiveWalkDialogHelper.showStopWalkDialog(
       context: context,
-      onConfirm: () => ref.read(liveWalkProvider.notifier).stopWalk(),
+      onConfirm: () => ref.read(liveWalkControllerProvider.notifier).stopWalk(),
     );
   }
 
@@ -185,7 +186,7 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
     LiveWalkSheetHelper.showWalkOptionsSheet(
       context: context,
       ref: ref,
-      onPause: () => ref.read(liveWalkProvider.notifier).pauseWalk(),
+      onPause: () => ref.read(liveWalkControllerProvider.notifier).pauseWalk(),
       onCancel: _showCancelWalkDialog,
     );
   }
@@ -194,7 +195,8 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
   void _showCancelWalkDialog() {
     LiveWalkDialogHelper.showCancelWalkDialog(
       context: context,
-      onConfirm: () => ref.read(liveWalkProvider.notifier).resetWalk(),
+      onConfirm: () =>
+          ref.read(liveWalkControllerProvider.notifier).resetWalk(),
     );
   }
 }

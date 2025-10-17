@@ -13,7 +13,7 @@ class PetCardSectionWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Repository를 통해 PetProfileEntity 데이터 사용
-    final petsAsync = ref.watch(petProfilesNotifierProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
