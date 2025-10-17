@@ -16,6 +16,8 @@ class ProductModel with _$ProductModel {
     required String category,
   }) = _ProductModel;
 
+  const ProductModel._();
+
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
       _$ProductModelFromJson(json);
 

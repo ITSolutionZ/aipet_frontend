@@ -9,7 +9,7 @@ part 'pet_profile_unified_controller.g.dart';
 
 /// Pet Profile 통합 상태
 @freezed
-class PetProfileUnifiedState with _$PetProfileUnifiedState {
+abstract class PetProfileUnifiedState with _$PetProfileUnifiedState {
   const factory PetProfileUnifiedState({
     @Default(null) PetProfileEntity? selectedPet,
     @Default(null) TabController? tabController,
@@ -19,6 +19,8 @@ class PetProfileUnifiedState with _$PetProfileUnifiedState {
     @Default(0) int currentTabIndex,
     @Default({}) Map<String, dynamic> editFormData,
   }) = _PetProfileUnifiedState;
+
+  const PetProfileUnifiedState._();
 }
 
 /// Pet Profile 통합 컨트롤러

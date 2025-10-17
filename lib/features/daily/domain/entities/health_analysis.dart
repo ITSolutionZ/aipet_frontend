@@ -28,6 +28,8 @@ class HealthAnalysis with _$HealthAnalysis {
     DateTime? updatedAt,
   }) = _HealthAnalysis;
 
+  const HealthAnalysis._();
+
   factory HealthAnalysis.fromJson(Map<String, dynamic> json) =>
       _$HealthAnalysisFromJson(json);
 }

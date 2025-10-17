@@ -70,4 +70,6 @@ class LinkRegistrationState with _$LinkRegistrationState {
     @Default('') String link,
     @Default(false) bool isLoading,
   }) = _LinkRegistrationState;
+
+  const LinkRegistrationState._();
 }

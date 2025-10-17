@@ -21,4 +21,6 @@ class SavedAnalysisEntity with _$SavedAnalysisEntity {
     /// 저장 일시
     required DateTime savedAt,
   }) = _SavedAnalysisEntity;
+
+  const SavedAnalysisEntity._();
 }

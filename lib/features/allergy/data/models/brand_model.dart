@@ -17,6 +17,8 @@ class BrandModel with _$BrandModel {
     String? officialUrl,
   }) = _BrandModel;
 
+  const BrandModel._();
+
   factory BrandModel.fromJson(Map<String, dynamic> json) =>
       _$BrandModelFromJson(json);
 

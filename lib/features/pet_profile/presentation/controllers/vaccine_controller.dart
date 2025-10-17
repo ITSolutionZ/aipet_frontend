@@ -113,6 +113,8 @@ class VaccineState with _$VaccineState {
     @Default(true) bool isLoading,
     String? error,
   }) = _VaccineState;
+
+  const VaccineState._();
 }
 
 /// 백신 기록 엔티티

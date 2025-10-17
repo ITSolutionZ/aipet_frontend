@@ -5,7 +5,7 @@ part 'calendar_event_entity.freezed.dart';
 part 'calendar_event_entity.g.dart';
 
 @freezed
-class CalendarEventEntity with _$CalendarEventEntity {
+abstract class CalendarEventEntity with _$CalendarEventEntity {
   const factory CalendarEventEntity({
     required String id,
     required String title,
@@ -28,6 +28,8 @@ class CalendarEventEntity with _$CalendarEventEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) = _CalendarEventEntity;
+
+  const CalendarEventEntity._();
 
   factory CalendarEventEntity.fromJson(Map<String, dynamic> json) =>
       _$CalendarEventEntityFromJson(json);
@@ -119,7 +121,7 @@ class CalendarEventEntity with _$CalendarEventEntity {
 }
 
 @freezed
-class CalendarEventRecurrence with _$CalendarEventRecurrence {
+abstract class CalendarEventRecurrence with _$CalendarEventRecurrence {
   const factory CalendarEventRecurrence({
     required CalendarRecurrenceType type,
     int? interval,
@@ -129,12 +131,14 @@ class CalendarEventRecurrence with _$CalendarEventRecurrence {
     int? count,
   }) = _CalendarEventRecurrence;
 
+  const CalendarEventRecurrence._();
+
   factory CalendarEventRecurrence.fromJson(Map<String, dynamic> json) =>
       _$CalendarEventRecurrenceFromJson(json);
 }
 
 @freezed
-class AlarmSetting with _$AlarmSetting {
+abstract class AlarmSetting with _$AlarmSetting {
   const factory AlarmSetting({
     required int minutesBefore,
     @Default(AlarmType.notification) AlarmType type,
@@ -142,6 +146,8 @@ class AlarmSetting with _$AlarmSetting {
     String? soundPath,
     String? message,
   }) = _AlarmSetting;
+
+  const AlarmSetting._();
 
   factory AlarmSetting.fromJson(Map<String, dynamic> json) =>
       _$AlarmSettingFromJson(json);

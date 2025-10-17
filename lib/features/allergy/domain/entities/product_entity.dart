@@ -33,4 +33,6 @@ class ProductEntity with _$ProductEntity {
     /// 상품 이미지 URL (optional)
     String? imageUrl,
   }) = _ProductEntity;
+
+  const ProductEntity._();
 }

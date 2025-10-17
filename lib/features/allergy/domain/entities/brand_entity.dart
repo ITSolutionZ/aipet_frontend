@@ -24,4 +24,6 @@ class BrandEntity with _$BrandEntity {
     /// 공식 사이트 URL
     String? officialUrl,
   }) = _BrandEntity;
+
+  const BrandEntity._();
 }

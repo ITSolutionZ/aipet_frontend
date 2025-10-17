@@ -11,7 +11,7 @@ part 'pet_profile_entity.g.dart';
 /// - Backward Compatibility: 既存コード互換性保証
 /// - Rich Domain Logic: ビジネスロジック内包
 @freezed
-class PetProfileEntity with _$PetProfileEntity {
+abstract class PetProfileEntity with _$PetProfileEntity {
   const factory PetProfileEntity({
     required String id,
     required String name,
@@ -31,6 +31,8 @@ class PetProfileEntity with _$PetProfileEntity {
     @Default(true) bool isActive,
     Map<String, dynamic>? additionalInfo,
   }) = _PetProfileEntity;
+
+  const PetProfileEntity._();
 
   /// JSON 직렬화를 위한 팩토리 생성자
   factory PetProfileEntity.fromJson(Map<String, dynamic> json) =>
