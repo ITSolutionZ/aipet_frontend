@@ -87,9 +87,17 @@ class WalkLocation {
   final double longitude;
   final DateTime timestamp;
 
-  const WalkLocation({required this.latitude, required this.longitude, required this.timestamp});
+  const WalkLocation({
+    required this.latitude,
+    required this.longitude,
+    required this.timestamp,
+  });
 
-  WalkLocation copyWith({double? latitude, double? longitude, DateTime? timestamp}) {
+  WalkLocation copyWith({
+    double? latitude,
+    double? longitude,
+    DateTime? timestamp,
+  }) {
     return WalkLocation(
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,

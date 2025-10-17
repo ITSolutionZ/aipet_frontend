@@ -13,10 +13,12 @@ class AddFeedingRecordScreen extends ConsumerStatefulWidget {
   const AddFeedingRecordScreen({super.key});
 
   @override
-  ConsumerState<AddFeedingRecordScreen> createState() => _AddFeedingRecordScreenState();
+  ConsumerState<AddFeedingRecordScreen> createState() =>
+      _AddFeedingRecordScreenState();
 }
 
-class _AddFeedingRecordScreenState extends ConsumerState<AddFeedingRecordScreen> {
+class _AddFeedingRecordScreenState
+    extends ConsumerState<AddFeedingRecordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _mealController = TextEditingController();
   final _amountController = TextEditingController();
@@ -63,9 +65,13 @@ class _AddFeedingRecordScreenState extends ConsumerState<AddFeedingRecordScreen>
     }
 
     // 펫 현재 상태 로드
-    final currentStatus = await FeedingLocalStorageService.getPetStatus(_selectedPetId);
+    final currentStatus = await FeedingLocalStorageService.getPetStatus(
+      _selectedPetId,
+    );
     setState(() {
-      _selectedStatuses = List<String>.from(currentStatus['selectedStatuses'] ?? []);
+      _selectedStatuses = List<String>.from(
+        currentStatus['selectedStatuses'] ?? [],
+      );
       _statusValues = Map<String, String>.from(currentStatus);
       _statusValues.remove('selectedStatuses');
       _statusValues.remove('lastUpdated');
@@ -198,15 +204,22 @@ class _AddFeedingRecordScreenState extends ConsumerState<AddFeedingRecordScreen>
                 },
               )
               .toList(),
-          onStatusUpdated: (List<String> selectedStatuses, Map<String, String> statusValues) async {
-            setState(() {
-              _selectedStatuses = selectedStatuses;
-              _statusValues = statusValues;
-            });
+          onStatusUpdated:
+              (
+                List<String> selectedStatuses,
+                Map<String, String> statusValues,
+              ) async {
+                setState(() {
+                  _selectedStatuses = selectedStatuses;
+                  _statusValues = statusValues;
+                });
 
-            // 로컬 저장소에 상태 업데이트
-            await FeedingLocalStorageService.updatePetStatus(petId, statusValues);
-          },
+                // 로컬 저장소에 상태 업데이트
+                await FeedingLocalStorageService.updatePetStatus(
+                  petId,
+                  statusValues,
+                );
+              },
         );
       },
     );
@@ -311,12 +324,19 @@ class _AddFeedingRecordScreenState extends ConsumerState<AddFeedingRecordScreen>
 
                       // 급여 가이드 카드
                       if (_selectedPetInfo != null && _petSizeGuide != null)
-                        FeedingGuideCard(petInfo: _selectedPetInfo!, sizeGuide: _petSizeGuide!),
+                        FeedingGuideCard(
+                          petInfo: _selectedPetInfo!,
+                          sizeGuide: _petSizeGuide!,
+                        ),
 
                       const SizedBox(height: AppSpacing.lg),
 
                       // 저장 버튼
-                      ActionButton.primary(text: '保存', onPressed: _saveRecord, isEnabled: true),
+                      ActionButton.primary(
+                        text: '保存',
+                        onPressed: _saveRecord,
+                        isEnabled: true,
+                      ),
                     ],
                   ),
                 ]),

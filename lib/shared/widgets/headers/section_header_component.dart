@@ -13,7 +13,11 @@ class SectionHeaderComponent extends StatelessWidget {
       title,
       style:
           style ??
-          const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+          const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
     );
   }
 }

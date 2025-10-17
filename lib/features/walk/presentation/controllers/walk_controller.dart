@@ -40,9 +40,7 @@ class WalkController extends BaseController {
       // Hybrid Repository가 자동으로 API, 로컬, Mock 순서로 시도
       final walkRecords = await _getAllWalkRecordsUseCase();
 
-      ref
-          .read(walkRecordsProvider.notifier)
-          .setWalkRecords(walkRecords);
+      ref.read(walkRecordsProvider.notifier).setWalkRecords(walkRecords);
 
       debugPrint('✅ WalkController: ${walkRecords.length}개 산책 기록 로드 완료');
       return Result.success('散歩記録をロードしました', walkRecords);
@@ -193,9 +191,7 @@ class WalkController extends BaseController {
 
         // Provider에 결과 저장
         ref.read(currentWalkProvider.notifier).endWalk();
-        ref
-            .read(walkRecordsProvider.notifier)
-            .updateWalkRecord(completedWalk);
+        ref.read(walkRecordsProvider.notifier).updateWalkRecord(completedWalk);
 
         debugPrint('✅ WalkController: 산책 종료 완료 - ID: ${currentWalk.id}');
         return completedWalk;
@@ -224,9 +220,7 @@ class WalkController extends BaseController {
         debugPrint('✅ Repository 업데이트 완료');
 
         // Provider에 결과 저장
-        ref
-            .read(walkRecordsProvider.notifier)
-            .updateWalkRecord(walkRecord);
+        ref.read(walkRecordsProvider.notifier).updateWalkRecord(walkRecord);
         debugPrint('✅ Provider 상태 업데이트 완료');
 
         return walkRecord;
@@ -380,17 +374,13 @@ class WalkController extends BaseController {
 
   /// 최근 산책 기록 가져오기
   List<WalkRecordEntity> getRecentWalkRecords({int limit = 10}) {
-    return ref
-        .read(walkRecordsProvider.notifier)
-        .getRecentWalkRecords();
+    return ref.read(walkRecordsProvider.notifier).getRecentWalkRecords();
   }
 
   /// 위치 정보 추가
   Result<bool> addLocationToCurrentWalk(WalkLocation location) {
     try {
-      ref
-          .read(currentWalkProvider.notifier)
-          .addLocationToCurrentWalk(location);
+      ref.read(currentWalkProvider.notifier).addLocationToCurrentWalk(location);
       return Result.success('位置情報が追加されました', true);
     } catch (e) {
       return Result.failure('위치 정보 추가에 실패했습니다: ${e.toString()}');

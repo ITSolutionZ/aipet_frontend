@@ -386,8 +386,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     setState(() {
       _isDrawerOpen = true;
     });
-    // ドロワー状態をプロバイダーに保存
-    ref.read(drawerStateProvider.notifier).state = true;
     _drawerAnimationController?.forward();
   }
 
@@ -397,8 +395,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         setState(() {
           _isDrawerOpen = false;
         });
-        // ドロワー状態をプロバイダーに保存
-        ref.read(drawerStateProvider.notifier).state = false;
       }
     });
   }

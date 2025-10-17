@@ -106,10 +106,7 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
         }
       } else {
         debugPrint('❌ Failed to load pet profile: ${result.message}');
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: result.message,
-        );
+        state = state.copyWith(isLoading: false, errorMessage: result.message);
       }
     } catch (e) {
       debugPrint('❌ Exception while loading pet profile: $e');

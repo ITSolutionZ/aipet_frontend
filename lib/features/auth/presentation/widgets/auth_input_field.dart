@@ -26,7 +26,12 @@ class AuthInputField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppFonts.bodyMedium.copyWith(color: labelColor ?? AppColors.pointGray)),
+        Text(
+          label,
+          style: AppFonts.bodyMedium.copyWith(
+            color: labelColor ?? AppColors.pointGray,
+          ),
+        ),
         const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: controller,
@@ -36,15 +41,22 @@ class AuthInputField extends StatelessWidget {
             prefixIcon: Icon(prefixIcon, color: AppColors.pointGray, size: 20),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
-              borderSide: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.3)),
+              borderSide: BorderSide(
+                color: AppColors.pointGray.withValues(alpha: 0.3),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
-              borderSide: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.3)),
+              borderSide: BorderSide(
+                color: AppColors.pointGray.withValues(alpha: 0.3),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
-              borderSide: const BorderSide(color: AppColors.pointBrown, width: 2),
+              borderSide: const BorderSide(
+                color: AppColors.pointBrown,
+                width: 2,
+              ),
             ),
             filled: true,
             fillColor: Colors.white,

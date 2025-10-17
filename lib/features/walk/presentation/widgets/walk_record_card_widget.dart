@@ -28,9 +28,9 @@ class WalkRecordCardWidget extends StatelessWidget {
                   Expanded(
                     child: Text(
                       '산책 기록',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const Icon(Icons.chevron_right, color: Colors.grey),
@@ -43,7 +43,10 @@ class WalkRecordCardWidget extends StatelessWidget {
                 children: [
                   Icon(Icons.access_time, size: 16, color: Colors.grey),
                   SizedBox(width: 4),
-                  Text('시간 정보가 여기에 표시됩니다', style: TextStyle(color: Colors.grey)),
+                  Text(
+                    '시간 정보가 여기에 표시됩니다',
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ],
               ),
               const SizedBox(height: 4),
@@ -51,7 +54,10 @@ class WalkRecordCardWidget extends StatelessWidget {
                 children: [
                   Icon(Icons.route, size: 16, color: Colors.grey),
                   SizedBox(width: 4),
-                  Text('경로 정보가 여기에 표시됩니다', style: TextStyle(color: Colors.grey)),
+                  Text(
+                    '경로 정보가 여기에 표시됩니다',
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ],
               ),
             ],

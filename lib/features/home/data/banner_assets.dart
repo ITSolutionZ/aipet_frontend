@@ -4,7 +4,8 @@
 /// scripts/update_banner_assets.sh 스크립트를 실행하여 업데이트하세요.
 class BannerAssets {
   // === 앱바 배너 (상단 헤더용) ===
-  static const String _appbarBasePath = 'assets/images/home_banner/appbar_banners/';
+  static const String _appbarBasePath =
+      'assets/images/home_banner/appbar_banners/';
 
   static const List<String> _appbarBannerFileNames = [
     'appbar_banner1.png',
@@ -13,8 +14,9 @@ class BannerAssets {
   ];
 
   /// 앱바 배너 이미지 목록
-  static List<String> get appbarBannerImages =>
-      _appbarBannerFileNames.map((fileName) => '$_appbarBasePath$fileName').toList();
+  static List<String> get appbarBannerImages => _appbarBannerFileNames
+      .map((fileName) => '$_appbarBasePath$fileName')
+      .toList();
 
   /// 앱바 배너 개수
   static int get appbarBannerCount => _appbarBannerFileNames.length;
@@ -38,8 +40,9 @@ class BannerAssets {
   ];
 
   /// 홈 콘텐츠 배너 이미지 목록
-  static List<String> get homeBannerImages =>
-      _homeBannerFileNames.map((fileName) => '$_homeBasePath$fileName').toList();
+  static List<String> get homeBannerImages => _homeBannerFileNames
+      .map((fileName) => '$_homeBasePath$fileName')
+      .toList();
 
   /// 홈 콘텐츠 배너 개수
   static int get homeBannerCount => _homeBannerFileNames.length;

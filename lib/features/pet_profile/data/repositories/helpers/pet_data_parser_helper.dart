@@ -17,7 +17,8 @@ class PetDataParserHelper {
       return PetProfileEntity(
         id: petData['id']?.toString() ?? '',
         name: petData['name']?.toString() ?? '',
-        type: petData['typeName']?.toString() ??
+        type:
+            petData['typeName']?.toString() ??
             petData['type']?.toString() ??
             'dog',
         breed: petData['breed']?.toString(),
@@ -29,7 +30,8 @@ class PetDataParserHelper {
         createdAt: parseDate(petData['createdAt']) ?? DateTime.now(),
         updatedAt: parseDate(petData['updatedAt']) ?? DateTime.now(),
         isActive: petData['isActive'] as bool? ?? true,
-        additionalInfo: petData['additionalInfo'] as Map<String, dynamic>? ?? {},
+        additionalInfo:
+            petData['additionalInfo'] as Map<String, dynamic>? ?? {},
         neutered: petData['neutered'] as bool? ?? false,
       );
     }

@@ -20,8 +20,15 @@ class AccountDeleteScreen extends StatelessWidget {
             Container(
               width: 80,
               height: 80,
-              decoration: BoxDecoration(color: Colors.red[100], shape: BoxShape.circle),
-              child: Icon(Icons.error_outline, size: 40, color: Colors.red[400]),
+              decoration: BoxDecoration(
+                color: Colors.red[100],
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.error_outline,
+                size: 40,
+                color: Colors.red[400],
+              ),
             ),
 
             const SizedBox(height: AppSpacing.xl),
@@ -29,7 +36,11 @@ class AccountDeleteScreen extends StatelessWidget {
             // タイトル
             const Text(
               'アカウント削除',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
 
             const SizedBox(height: AppSpacing.xl),
@@ -41,12 +52,20 @@ class AccountDeleteScreen extends StatelessWidget {
                 children: [
                   Text(
                     'アカウント削除はアプリ',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600], height: 1.5),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                      height: 1.5,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   Text(
                     '会員登録を意味します。',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600], height: 1.5),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                      height: 1.5,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -58,7 +77,11 @@ class AccountDeleteScreen extends StatelessWidget {
             // 確認メッセージ
             Text(
               'アカウント削除しますか？',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.red[500]),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.red[500],
+              ),
               textAlign: TextAlign.center,
             ),
 
@@ -106,7 +129,9 @@ class AccountDeleteScreen extends StatelessWidget {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.medium),
+          ),
           title: Row(
             children: [
               Icon(Icons.warning, color: Colors.red[400]),
@@ -142,9 +167,12 @@ class AccountDeleteScreen extends StatelessWidget {
 
   void _deleteAccount(BuildContext context) {
     // TODO: アカウント削除処理
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('アカウントが削除されました'), backgroundColor: Colors.red));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('アカウントが削除されました'),
+        backgroundColor: Colors.red,
+      ),
+    );
 
     // 複数回pop()してログイン画面に戻る
     Navigator.of(context).popUntil((route) => route.isFirst);

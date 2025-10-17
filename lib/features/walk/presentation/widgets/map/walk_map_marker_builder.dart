@@ -55,7 +55,10 @@ class WalkMapMarkerBuilder {
   }
 
   /// 선택된 펫 마커 생성
-  static Marker buildSelectedPetMarker(WalkPetInfo pet, Position currentPosition) {
+  static Marker buildSelectedPetMarker(
+    WalkPetInfo pet,
+    Position currentPosition,
+  ) {
     return Marker(
       markerId: const MarkerId('selected_pet'),
       position: LatLng(

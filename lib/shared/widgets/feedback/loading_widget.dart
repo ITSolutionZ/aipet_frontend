@@ -89,7 +89,9 @@ class LoadingWidget extends StatelessWidget {
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   loadingState.loadingMessage!,
-                  style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointDark,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -108,7 +110,11 @@ class LoadingWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.pointPink),
+            const Icon(
+              Icons.error_outline,
+              size: 64,
+              color: AppColors.pointPink,
+            ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               '오류가 발생했습니다',
@@ -184,7 +190,12 @@ class SimpleLoadingIndicator extends StatelessWidget {
   final double size;
   final Color? color;
 
-  const SimpleLoadingIndicator({super.key, this.message, this.size = 24.0, this.color});
+  const SimpleLoadingIndicator({
+    super.key,
+    this.message,
+    this.size = 24.0,
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +207,9 @@ class SimpleLoadingIndicator extends StatelessWidget {
             width: size,
             height: size,
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(color ?? AppColors.pointBrown),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                color ?? AppColors.pointBrown,
+              ),
             ),
           ),
           if (message != null) ...[
@@ -219,7 +232,12 @@ class ButtonLoadingIndicator extends StatelessWidget {
   final double size;
   final Color? color;
 
-  const ButtonLoadingIndicator({super.key, this.message, this.size = 16.0, this.color});
+  const ButtonLoadingIndicator({
+    super.key,
+    this.message,
+    this.size = 16.0,
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +254,10 @@ class ButtonLoadingIndicator extends StatelessWidget {
         ),
         if (message != null) ...[
           const SizedBox(width: AppSpacing.sm),
-          Text(message!, style: AppFonts.bodySmall.copyWith(color: color ?? Colors.white)),
+          Text(
+            message!,
+            style: AppFonts.bodySmall.copyWith(color: color ?? Colors.white),
+          ),
         ],
       ],
     );

@@ -1,14 +1,15 @@
 import 'dart:developer';
 
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart'; // TODO: GoogleSignIn API 7.2.0+ 업데이트 필요
 import 'package:googleapis/calendar/v3.dart' as calendar;
 
 import '../../domain/entities/calendar_event_entity.dart';
 
 class GoogleCalendarService {
-  static const String _calendarScope = calendar.CalendarApi.calendarScope;
+  // TODO: GoogleSignIn API 7.2.0+ 업데이트 필요
+  // static const String _calendarScope = calendar.CalendarApi.calendarScope;
+  // late GoogleSignIn _googleSignIn;
 
-  late GoogleSignIn _googleSignIn;
   calendar.CalendarApi? _calendarApi;
   bool _isInitialized = false;
 

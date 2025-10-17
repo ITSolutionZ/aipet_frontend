@@ -57,11 +57,11 @@ class PetImageUploadService {
         return Success(response.imageUrl);
       }
 
-      return Failure(
+      return Result.failure(
         uploadResult.errorOrNull ?? UnknownError(details: 'Upload failed'),
       );
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -90,13 +90,13 @@ class PetImageUploadService {
         if (uploadResult.isSuccess) {
           uploadedUrls.add(uploadResult.dataOrNull!);
         } else {
-          return Failure(uploadResult.errorOrNull!);
+          return Result.failure(uploadResult.errorOrNull!);
         }
       }
 
       return Success(uploadedUrls);
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -109,7 +109,9 @@ class PetImageUploadService {
       final image = img.decodeImage(bytes);
 
       if (image == null) {
-        return Failure(ValidationError(field: 'image', reason: '画像の処理に失敗しました'));
+        return Result.failure(
+          ValidationError(field: 'image', reason: '画像の処理に失敗しました'),
+        );
       }
 
       img.Image processedImage = image;
@@ -137,7 +139,7 @@ class PetImageUploadService {
 
       return Success(processedFile);
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -212,7 +214,9 @@ class PetImageUploadService {
 
       return const Success(null);
     } catch (e) {
-      return Failure(CacheError('キャッシュ画像の取得に失敗しました', details: e.toString()));
+      return Result.failure(
+        CacheError('キャッシュ画像の取得に失敗しました', details: e.toString()),
+      );
     }
   }
 
@@ -232,7 +236,9 @@ class PetImageUploadService {
 
       return const Success(null);
     } catch (e) {
-      return Failure(CacheError('画像キャッシュの削除に失敗しました', details: e.toString()));
+      return Result.failure(
+        CacheError('画像キャッシュの削除に失敗しました', details: e.toString()),
+      );
     }
   }
 
@@ -244,7 +250,7 @@ class PetImageUploadService {
       final image = img.decodeImage(bytes);
 
       if (image == null) {
-        return Failure(
+        return Result.failure(
           ValidationError(field: 'image', reason: '画像メタデータを読み取れません'),
         );
       }
@@ -259,14 +265,14 @@ class PetImageUploadService {
 
       return Success(metadata);
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 
   Future<ResultState<bool>> validateImageFile(File imageFile) async {
     try {
       if (!await imageFile.exists()) {
-        return Failure(
+        return Result.failure(
           ValidationError(field: 'image', reason: '画像ファイルが存在しません'),
         );
       }
@@ -275,7 +281,7 @@ class PetImageUploadService {
       const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
       if (!allowedExtensions.contains(extension)) {
-        return Failure(
+        return Result.failure(
           ValidationError(field: 'image', reason: 'サポートされていない画像形式です'),
         );
       }
@@ -284,19 +290,19 @@ class PetImageUploadService {
       const maxSizeBytes = 10 * 1024 * 1024; // 10MB
 
       if (sizeBytes > maxSizeBytes) {
-        return Failure(
+        return Result.failure(
           ValidationError(field: 'image', reason: '画像サイズが大きすぎます（最大10MB）'),
         );
       }
 
       final metadataResult = await getImageMetadata(imageFile);
       if (metadataResult.isFailure) {
-        return Failure(metadataResult.errorOrNull!);
+        return Result.failure(metadataResult.errorOrNull!);
       }
 
       return const Success(true);
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 }

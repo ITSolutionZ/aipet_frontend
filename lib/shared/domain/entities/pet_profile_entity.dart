@@ -32,12 +32,13 @@ class PetProfileEntity with _$PetProfileEntity {
     Map<String, dynamic>? additionalInfo,
   }) = _PetProfileEntity;
 
-  const PetProfileEntity._();
-
   /// JSON 직렬화를 위한 팩토리 생성자
   factory PetProfileEntity.fromJson(Map<String, dynamic> json) =>
       _$PetProfileEntityFromJson(json);
+}
 
+/// PetProfileEntity 확장 메서드
+extension PetProfileEntityX on PetProfileEntity {
   /// 펫 나이 계산 (생년월일 기준)
   int get age {
     final now = DateTime.now();

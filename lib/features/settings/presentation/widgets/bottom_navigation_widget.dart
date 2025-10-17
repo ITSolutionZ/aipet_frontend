@@ -19,7 +19,10 @@ class BottomNavigationWidget extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -38,7 +41,9 @@ class BottomNavigationWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.white.withValues(alpha: 0.2) : Colors.transparent,
+        color: isSelected
+            ? Colors.white.withValues(alpha: 0.2)
+            : Colors.transparent,
         shape: BoxShape.circle,
       ),
       child: Icon(icon, color: Colors.white, size: 24),

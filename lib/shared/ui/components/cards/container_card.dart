@@ -115,7 +115,9 @@ class ContainerCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.pureWhite,
         borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.medium),
-        border: borderColor != null ? Border.all(color: borderColor!, width: 1) : null,
+        border: borderColor != null
+            ? Border.all(color: borderColor!, width: 1)
+            : null,
         boxShadow: elevation != null && elevation! > 0
             ? [
                 BoxShadow(

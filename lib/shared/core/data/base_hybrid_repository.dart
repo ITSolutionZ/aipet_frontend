@@ -39,11 +39,11 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
         return cachedResult;
       }
 
-      return Failure(
+      return Result.failure(
         remoteResult.errorOrNull ?? NetworkError(details: 'No data available'),
       );
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -77,11 +77,11 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
         return cachedResult;
       }
 
-      return Failure(
+      return Result.failure(
         remoteResult.errorOrNull ?? NetworkError(details: 'No data available'),
       );
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -104,12 +104,12 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
         return Success(remoteResult.dataOrNull as T);
       }
 
-      return Failure(
+      return Result.failure(
         remoteResult.errorOrNull ??
             UnknownError(details: 'Create operation failed'),
       );
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -137,12 +137,12 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
         return Success(remoteResult.dataOrNull as T);
       }
 
-      return Failure(
+      return Result.failure(
         remoteResult.errorOrNull ??
             UnknownError(details: 'Update operation failed'),
       );
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -162,12 +162,12 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
         return const Success(null);
       }
 
-      return Failure(
+      return Result.failure(
         remoteResult.errorOrNull ??
             UnknownError(details: 'Delete operation failed'),
       );
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -176,7 +176,7 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
     try {
       return const Success(null);
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -187,11 +187,11 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
       if (result.isSuccess) {
         return const Success(null);
       }
-      return Failure(
+      return Result.failure(
         result.errorOrNull ?? UnknownError(details: 'Cache clear failed'),
       );
     } catch (e) {
-      return Failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: e.toString()));
     }
   }
 

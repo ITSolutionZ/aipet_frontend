@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
+import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
@@ -7,9 +8,7 @@ part 'ai_favorite_messages_controller.g.dart';
 
 /// AI 즐겨찾기 메시지 컨트롤러
 @riverpod
-AiFavoriteMessagesController aiFavoriteMessagesController(
-  Ref ref,
-) {
+AiFavoriteMessagesController aiFavoriteMessagesController(Ref ref) {
   return AiFavoriteMessagesController();
 }
 

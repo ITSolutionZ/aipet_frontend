@@ -7,7 +7,8 @@ import 'package:flutter/foundation.dart';
 ///
 /// 앱의 성능을 실시간으로 모니터링하고 성능 지표를 수집합니다.
 class PerformanceMonitorService {
-  static final PerformanceMonitorService _instance = PerformanceMonitorService._internal();
+  static final PerformanceMonitorService _instance =
+      PerformanceMonitorService._internal();
   factory PerformanceMonitorService() => _instance;
   PerformanceMonitorService._internal();
 
@@ -52,7 +53,8 @@ class PerformanceMonitorService {
   }
 
   /// 스트림 컨트롤러가 닫혔는지 확인
-  bool get _isDisposed => _metricController.isClosed || _issueController.isClosed;
+  bool get _isDisposed =>
+      _metricController.isClosed || _issueController.isClosed;
 
   /// 성능 메트릭 수집
   void _collectMetrics() {
@@ -86,7 +88,8 @@ class PerformanceMonitorService {
     try {
       // Flutter의 메모리 정보 가져오기 (시뮬레이션)
       // 실제 구현에서는 플랫폼별 메모리 측정 API 사용
-      return 50.0 + (DateTime.now().millisecondsSinceEpoch % 20); // 50-70MB 시뮬레이션
+      return 50.0 +
+          (DateTime.now().millisecondsSinceEpoch % 20); // 50-70MB 시뮬레이션
     } catch (e) {
       if (kDebugMode) {}
     }
@@ -105,7 +108,8 @@ class PerformanceMonitorService {
     try {
       // Flutter의 프레임 정보 가져오기 (시뮬레이션)
       // 실제 구현에서는 Flutter의 프레임 측정 API 사용
-      return 55.0 + (DateTime.now().millisecondsSinceEpoch % 10); // 55-65fps 시뮬레이션
+      return 55.0 +
+          (DateTime.now().millisecondsSinceEpoch % 10); // 55-65fps 시뮬레이션
     } catch (e) {
       if (kDebugMode) {}
     }
@@ -199,16 +203,21 @@ class PerformanceMonitorService {
     }
 
     final avgMemoryUsage =
-        _metrics.map((m) => m.memoryUsage).reduce((a, b) => a + b) / _metrics.length;
+        _metrics.map((m) => m.memoryUsage).reduce((a, b) => a + b) /
+        _metrics.length;
 
-    final avgFrameRate = _metrics.map((m) => m.frameRate).reduce((a, b) => a + b) / _metrics.length;
+    final avgFrameRate =
+        _metrics.map((m) => m.frameRate).reduce((a, b) => a + b) /
+        _metrics.length;
 
     return PerformanceReport(
       timestamp: DateTime.now(),
       metrics: List.from(_metrics),
       averageMemoryUsage: avgMemoryUsage,
       averageFrameRate: avgFrameRate,
-      totalIssues: _metrics.where((m) => m.memoryUsage > 100 || m.frameRate < 30).length,
+      totalIssues: _metrics
+          .where((m) => m.memoryUsage > 100 || m.frameRate < 30)
+          .length,
     );
   }
 
@@ -248,7 +257,12 @@ class PerformanceMetric {
 }
 
 /// 성능 이슈 타입
-enum PerformanceIssueType { highMemoryUsage, lowFrameRate, highCpuUsage, excessiveWidgetRebuilds }
+enum PerformanceIssueType {
+  highMemoryUsage,
+  lowFrameRate,
+  highCpuUsage,
+  excessiveWidgetRebuilds,
+}
 
 /// 성능 이슈 심각도
 enum PerformanceIssueSeverity { info, warning, critical }

@@ -10,7 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// 홈 화면 로딩을 3초 이내로 단축하기 위한 특별한 캐시 시스템
 class UltraFastCacheService {
-  static final UltraFastCacheService _instance = UltraFastCacheService._internal();
+  static final UltraFastCacheService _instance =
+      UltraFastCacheService._internal();
   factory UltraFastCacheService() => _instance;
   UltraFastCacheService._internal();
 
@@ -150,7 +151,9 @@ class UltraFastCacheService {
       'currentTime': dashboard.currentTime,
       'weather': _serializeWeather(dashboard.weather),
       'petProfiles': dashboard.petProfiles.map(_serializePetSummary).toList(),
-      'upcomingAppointments': dashboard.upcomingAppointments.map(_serializeAppointment).toList(),
+      'upcomingAppointments': dashboard.upcomingAppointments
+          .map(_serializeAppointment)
+          .toList(),
       'petHealthSummary': _serializeHealthSummary(dashboard.petHealthSummary),
       'walkSummary': _serializeWalkSummary(dashboard.walkSummary),
     };
@@ -167,8 +170,12 @@ class UltraFastCacheService {
       upcomingAppointments: (data['upcomingAppointments'] as List)
           .map((e) => _deserializeAppointment(e as Map<String, dynamic>))
           .toList(),
-      petHealthSummary: _deserializeHealthSummary(data['petHealthSummary'] as Map<String, dynamic>),
-      walkSummary: _deserializeWalkSummary(data['walkSummary'] as Map<String, dynamic>),
+      petHealthSummary: _deserializeHealthSummary(
+        data['petHealthSummary'] as Map<String, dynamic>,
+      ),
+      walkSummary: _deserializeWalkSummary(
+        data['walkSummary'] as Map<String, dynamic>,
+      ),
     );
   }
 
@@ -247,7 +254,9 @@ class UltraFastCacheService {
     return AppointmentSummary(
       id: data['id'] as String,
       title: data['title'] as String,
-      scheduledTime: DateTime.fromMillisecondsSinceEpoch(data['scheduledTime'] as int),
+      scheduledTime: DateTime.fromMillisecondsSinceEpoch(
+        data['scheduledTime'] as int,
+      ),
       type: data['type'] as String,
       petName: data['petName'] as String,
     );
@@ -258,10 +267,9 @@ class UltraFastCacheService {
       'totalPets': health.totalPets,
       'healthyPets': health.healthyPets,
       'petsNeedingAttention': health.petsNeedingAttention,
-      'alerts': health.alerts.map((a) => {
-        'petName': a.petName,
-        'message': a.message,
-      }).toList(),
+      'alerts': health.alerts
+          .map((a) => {'petName': a.petName, 'message': a.message})
+          .toList(),
     };
   }
 
@@ -271,10 +279,12 @@ class UltraFastCacheService {
       healthyPets: data['healthyPets'] as int,
       petsNeedingAttention: data['petsNeedingAttention'] as int,
       alerts: (data['alerts'] as List)
-          .map((a) => HealthAlert(
-                petName: a['petName'] as String,
-                message: a['message'] as String,
-              ))
+          .map(
+            (a) => HealthAlert(
+              petName: a['petName'] as String,
+              message: a['message'] as String,
+            ),
+          )
           .toList(),
     );
   }

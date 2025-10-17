@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
+import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

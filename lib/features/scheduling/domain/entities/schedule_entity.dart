@@ -265,7 +265,8 @@ class ScheduleEntity {
   bool get isRecurringSchedule => isRecurring && recurrenceRule != null;
 
   /// 스케줄이 알림이 있는지 확인
-  bool get hasReminders => hasReminder && (reminderTime != null || reminderTimes != null);
+  bool get hasReminders =>
+      hasReminder && (reminderTime != null || reminderTimes != null);
 
   /// 스케줄의 총 시간 (분)
   int get totalMinutes {
@@ -299,14 +300,18 @@ class ScheduleEntity {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
     final endOfWeek = startOfWeek.add(const Duration(days: 6));
-    return startDateTime.isAfter(startOfWeek.subtract(const Duration(days: 1))) &&
+    return startDateTime.isAfter(
+          startOfWeek.subtract(const Duration(days: 1)),
+        ) &&
         startDateTime.isBefore(endOfWeek.add(const Duration(days: 1)));
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ScheduleEntity && runtimeType == other.runtimeType && id == other.id;
+      other is ScheduleEntity &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
 
   @override
   int get hashCode => id.hashCode;

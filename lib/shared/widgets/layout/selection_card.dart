@@ -58,7 +58,9 @@ class SelectionCardList<T> extends StatelessWidget {
           (item) => _SelectionCard<T>(
             item: item,
             isSelected: selectedValue == item.value,
-            onTap: item.enabled && onChanged != null ? () => onChanged!(item.value) : null,
+            onTap: item.enabled && onChanged != null
+                ? () => onChanged!(item.value)
+                : null,
             margin: itemMargin,
             borderRadius: borderRadius,
           ),
@@ -97,7 +99,9 @@ class _SelectionCard<T> extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: isSelected ? theme.primaryColor.withValues(alpha: 0.1) : Colors.white,
+              color: isSelected
+                  ? theme.primaryColor.withValues(alpha: 0.1)
+                  : Colors.white,
               borderRadius: BorderRadius.circular(borderRadius),
               border: Border.all(
                 color: isSelected ? theme.primaryColor : Colors.grey[300]!,
@@ -113,18 +117,25 @@ class _SelectionCard<T> extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isSelected ? theme.primaryColor : Colors.grey[400]!,
+                      color: isSelected
+                          ? theme.primaryColor
+                          : Colors.grey[400]!,
                       width: 2,
                     ),
                     color: isSelected ? theme.primaryColor : Colors.transparent,
                   ),
-                  child: isSelected ? const Icon(Icons.circle, size: 8, color: Colors.white) : null,
+                  child: isSelected
+                      ? const Icon(Icons.circle, size: 8, color: Colors.white)
+                      : null,
                 ),
 
                 const SizedBox(width: 12),
 
                 // Leading widget (optional)
-                if (item.leading != null) ...[item.leading!, const SizedBox(width: 12)],
+                if (item.leading != null) ...[
+                  item.leading!,
+                  const SizedBox(width: 12),
+                ],
 
                 // Content
                 Expanded(
@@ -139,13 +150,18 @@ class _SelectionCard<T> extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: item.enabled ? Colors.black87 : Colors.grey[400],
+                                color: item.enabled
+                                    ? Colors.black87
+                                    : Colors.grey[400],
                               ),
                             ),
                           ),
                           if (isSelected && item.title == 'クレジットカード払い')
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.blue[100],
                                 borderRadius: BorderRadius.circular(4),
@@ -167,7 +183,9 @@ class _SelectionCard<T> extends StatelessWidget {
                           item.subtitle!,
                           style: TextStyle(
                             fontSize: 14,
-                            color: item.enabled ? Colors.grey[600] : Colors.grey[400],
+                            color: item.enabled
+                                ? Colors.grey[600]
+                                : Colors.grey[400],
                           ),
                         ),
                       ],
@@ -176,7 +194,10 @@ class _SelectionCard<T> extends StatelessWidget {
                 ),
 
                 // Trailing widget (optional)
-                if (item.trailing != null) ...[const SizedBox(width: 12), item.trailing!],
+                if (item.trailing != null) ...[
+                  const SizedBox(width: 12),
+                  item.trailing!,
+                ],
               ],
             ),
           ),
@@ -218,7 +239,11 @@ class InfoCardList extends StatelessWidget {
           const SizedBox(height: 12),
         ],
         ...items.map(
-          (item) => _InfoCard(item: item, margin: itemMargin, borderRadius: borderRadius),
+          (item) => _InfoCard(
+            item: item,
+            margin: itemMargin,
+            borderRadius: borderRadius,
+          ),
         ),
       ],
     );
@@ -246,7 +271,11 @@ class _InfoCard extends StatelessWidget {
   final EdgeInsetsGeometry margin;
   final double borderRadius;
 
-  const _InfoCard({required this.item, required this.margin, required this.borderRadius});
+  const _InfoCard({
+    required this.item,
+    required this.margin,
+    required this.borderRadius,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -267,7 +296,10 @@ class _InfoCard extends StatelessWidget {
             child: Row(
               children: [
                 // Leading widget (optional)
-                if (item.leading != null) ...[item.leading!, const SizedBox(width: 12)],
+                if (item.leading != null) ...[
+                  item.leading!,
+                  const SizedBox(width: 12),
+                ],
 
                 // Content
                 Expanded(
@@ -286,7 +318,10 @@ class _InfoCard extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           item.subtitle!,
-                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
                         ),
                       ],
                     ],
@@ -295,7 +330,10 @@ class _InfoCard extends StatelessWidget {
 
                 // Trailing text (optional)
                 if (item.trailingText != null)
-                  Text(item.trailingText!, style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                  Text(
+                    item.trailingText!,
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  ),
               ],
             ),
           ),

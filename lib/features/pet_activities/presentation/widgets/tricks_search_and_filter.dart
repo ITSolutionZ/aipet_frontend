@@ -99,7 +99,9 @@ class TricksSearchAndFilter extends StatelessWidget {
               selectedColor: AppColors.pointGreen.withValues(alpha: 0.2),
               checkmarkColor: AppColors.pointGreen,
               labelStyle: TextStyle(
-                color: isSelected ? AppColors.pointGreen : AppColors.textSecondary,
+                color: isSelected
+                    ? AppColors.pointGreen
+                    : AppColors.textSecondary,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),

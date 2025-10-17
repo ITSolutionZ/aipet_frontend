@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/ai/data/services/local_ai_service.dart';
 import 'package:aipet_frontend/features/facility/data/services/local_facility_service.dart';
-import 'package:aipet_frontend/features/pet/data/services/local_pet_service.dart';
+import 'package:aipet_frontend/features/pet_profile/data/services/local_pet_service.dart';
 import 'package:aipet_frontend/features/scheduling/data/services/local_schedule_service.dart';
 import 'package:aipet_frontend/features/settings/data/services/local_user_service.dart';
 
@@ -8,7 +8,7 @@ import 'local_database_service.dart';
 
 export 'package:aipet_frontend/features/ai/data/services/local_ai_service.dart';
 export 'package:aipet_frontend/features/facility/data/services/local_facility_service.dart';
-export 'package:aipet_frontend/features/pet/data/services/local_pet_service.dart';
+export 'package:aipet_frontend/features/pet_profile/data/services/local_pet_service.dart';
 export 'package:aipet_frontend/features/scheduling/data/services/local_schedule_service.dart';
 export 'package:aipet_frontend/features/settings/data/services/local_user_service.dart';
 

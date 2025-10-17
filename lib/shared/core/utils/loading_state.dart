@@ -5,7 +5,12 @@ class LoadingState {
   final String? error;
   final DateTime? lastUpdated;
 
-  const LoadingState({this.isLoading = false, this.loadingMessage, this.error, this.lastUpdated});
+  const LoadingState({
+    this.isLoading = false,
+    this.loadingMessage,
+    this.error,
+    this.lastUpdated,
+  });
 
   /// 초기 상태 (로딩 중이 아님)
   factory LoadingState.initial() {
@@ -14,7 +19,11 @@ class LoadingState {
 
   /// 로딩 시작 상태
   factory LoadingState.loading([String? message]) {
-    return LoadingState(isLoading: true, loadingMessage: message, lastUpdated: DateTime.now());
+    return LoadingState(
+      isLoading: true,
+      loadingMessage: message,
+      lastUpdated: DateTime.now(),
+    );
   }
 
   /// 로딩 완료 상태
@@ -24,7 +33,11 @@ class LoadingState {
 
   /// 에러 상태
   factory LoadingState.error(String error) {
-    return LoadingState(isLoading: false, error: error, lastUpdated: DateTime.now());
+    return LoadingState(
+      isLoading: false,
+      error: error,
+      lastUpdated: DateTime.now(),
+    );
   }
 
   /// 복사본 생성
@@ -69,7 +82,10 @@ class LoadingState {
 
   @override
   int get hashCode =>
-      isLoading.hashCode ^ loadingMessage.hashCode ^ error.hashCode ^ lastUpdated.hashCode;
+      isLoading.hashCode ^
+      loadingMessage.hashCode ^
+      error.hashCode ^
+      lastUpdated.hashCode;
 
   @override
   String toString() {
@@ -125,7 +141,10 @@ mixin LoadingStateMixin {
   }
 
   /// 안전한 비동기 작업 실행
-  Future<T?> executeWithLoading<T>(Future<T> Function() action, {String? loadingMessage}) async {
+  Future<T?> executeWithLoading<T>(
+    Future<T> Function() action, {
+    String? loadingMessage,
+  }) async {
     try {
       startLoading(loadingMessage);
       final result = await action();

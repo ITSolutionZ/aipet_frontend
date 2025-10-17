@@ -9,7 +9,10 @@ class SelectCategoryResult {
   final List<AiMessageEntity> messages;
   final List<AiSuggestedQuestionEntity> suggestedQuestions;
 
-  const SelectCategoryResult({required this.messages, required this.suggestedQuestions});
+  const SelectCategoryResult({
+    required this.messages,
+    required this.suggestedQuestions,
+  });
 }
 
 class SelectCategoryUseCase {
@@ -39,10 +42,11 @@ class SelectCategoryUseCase {
         timestamp: DateTime.now().add(const Duration(milliseconds: 500)),
       );
 
-      final personalizedQuestions = await _repository.getPersonalizedSuggestedQuestions(
-        category: category.id,
-        pet: selectedPet,
-      );
+      final personalizedQuestions = await _repository
+          .getPersonalizedSuggestedQuestions(
+            category: category.id,
+            pet: selectedPet,
+          );
 
       final result = SelectCategoryResult(
         messages: [userMessage, aiMessage],

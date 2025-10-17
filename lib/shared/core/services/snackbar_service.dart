@@ -164,7 +164,9 @@ class SnackBarService {
       backgroundColor: backgroundColor,
       duration: duration ?? _defaultDuration,
       behavior: behavior ?? SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+      ),
       margin: const EdgeInsets.all(AppSpacing.md),
       action: action,
       elevation: 6,
@@ -190,7 +192,11 @@ class SnackBarService {
       icon: Icons.wifi_off,
       duration: _longDuration,
       action: onRetry != null
-          ? SnackBarAction(label: '재시도', textColor: AppColors.pointOffWhite, onPressed: onRetry)
+          ? SnackBarAction(
+              label: '재시도',
+              textColor: AppColors.pointOffWhite,
+              onPressed: onRetry,
+            )
           : null,
     );
   }
@@ -234,7 +240,11 @@ class SnackBarService {
       icon: Icons.lock,
       duration: _longDuration,
       action: onSettings != null
-          ? SnackBarAction(label: '설정', textColor: AppColors.pointOffWhite, onPressed: onSettings)
+          ? SnackBarAction(
+              label: '설정',
+              textColor: AppColors.pointOffWhite,
+              onPressed: onSettings,
+            )
           : null,
     );
   }

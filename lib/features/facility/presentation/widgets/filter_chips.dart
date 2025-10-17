@@ -5,7 +5,11 @@ class FilterChips extends StatelessWidget {
   final String currentFilter;
   final Function(String) onFilterChanged;
 
-  const FilterChips({super.key, required this.currentFilter, required this.onFilterChanged});
+  const FilterChips({
+    super.key,
+    required this.currentFilter,
+    required this.onFilterChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,11 @@ class FilterChips extends StatelessWidget {
       label: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: isSelected ? Colors.white : Colors.grey[600]),
+          Icon(
+            icon,
+            size: 16,
+            color: isSelected ? Colors.white : Colors.grey[600],
+          ),
           const SizedBox(width: AppSpacing.xs),
           Text(
             label,
@@ -51,7 +59,9 @@ class FilterChips extends StatelessWidget {
       selectedColor: Colors.blue,
       checkmarkColor: Colors.white,
       side: BorderSide.none,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+      ),
     );
   }
 }

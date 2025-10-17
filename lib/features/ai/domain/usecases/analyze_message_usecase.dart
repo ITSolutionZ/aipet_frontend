@@ -9,7 +9,9 @@ class AnalyzeMessageUseCase {
   const AnalyzeMessageUseCase(this._repository);
 
   /// 메시지 분석 실행
-  Future<Result<List<AiAnalysisEntity>>> call(AnalyzeMessageParams params) async {
+  Future<Result<List<AiAnalysisEntity>>> call(
+    AnalyzeMessageParams params,
+  ) async {
     try {
       final result = await _repository.analyzeMessage(
         message: params.message,

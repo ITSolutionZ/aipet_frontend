@@ -116,7 +116,10 @@ class ButtonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Widget card = Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md,
+      ),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.pureWhite,
         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -140,7 +143,10 @@ class ButtonCard extends StatelessWidget {
           children: [
             if (icon != null) ...[
               IconTheme(
-                data: IconThemeData(color: textColor ?? AppColors.pointDark, size: 24),
+                data: IconThemeData(
+                  color: textColor ?? AppColors.pointDark,
+                  size: 24,
+                ),
                 child: icon!,
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -160,7 +166,9 @@ class ButtonCard extends StatelessWidget {
                   Text(
                     subtitle!,
                     style: AppFonts.bodySmall.copyWith(
-                      color: (textColor ?? AppColors.pointDark).withValues(alpha: 0.7),
+                      color: (textColor ?? AppColors.pointDark).withValues(
+                        alpha: 0.7,
+                      ),
                     ),
                   ),
                 ],
@@ -185,7 +193,12 @@ class ButtonCard extends StatelessWidget {
     }
 
     if (semanticLabel != null) {
-      button = Semantics(label: semanticLabel, button: true, enabled: isEnabled, child: button);
+      button = Semantics(
+        label: semanticLabel,
+        button: true,
+        enabled: isEnabled,
+        child: button,
+      );
     }
 
     return button;

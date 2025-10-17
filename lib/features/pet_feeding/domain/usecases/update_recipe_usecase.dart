@@ -26,7 +26,10 @@ class UpdateRecipeUseCase {
   }
 
   /// 레시피 이름 수정
-  Future<Result<Map<String, dynamic>>> updateRecipeName(String recipeId, String newName) async {
+  Future<Result<Map<String, dynamic>>> updateRecipeName(
+    String recipeId,
+    String newName,
+  ) async {
     try {
       // 이름 검증 (헬퍼 위임)
       final nameValidation = RecipeValidationHelper.validateRecipeName(newName);
@@ -40,7 +43,10 @@ class UpdateRecipeUseCase {
       }
 
       // 이름 업데이트 (헬퍼 위임)
-      final updatedRecipe = RecipeUpdateHelper.updateName(existingRecipe, newName);
+      final updatedRecipe = RecipeUpdateHelper.updateName(
+        existingRecipe,
+        newName,
+      );
 
       return Result.success('レシピ名を更新しました', updatedRecipe);
     } catch (error) {
@@ -55,7 +61,9 @@ class UpdateRecipeUseCase {
   ) async {
     try {
       // 재료 검증 (헬퍼 위임)
-      final ingredientsValidation = RecipeValidationHelper.validateIngredients(ingredients);
+      final ingredientsValidation = RecipeValidationHelper.validateIngredients(
+        ingredients,
+      );
       if (!ingredientsValidation.isSuccess) {
         return Result.failure(ingredientsValidation.message);
       }
@@ -84,7 +92,8 @@ class UpdateRecipeUseCase {
   ) async {
     try {
       // 조리 방법 검증 (헬퍼 위임)
-      final instructionsValidation = RecipeValidationHelper.validateInstructions(instructions);
+      final instructionsValidation =
+          RecipeValidationHelper.validateInstructions(instructions);
       if (!instructionsValidation.isSuccess) {
         return Result.failure(instructionsValidation.message);
       }
@@ -113,7 +122,9 @@ class UpdateRecipeUseCase {
   ) async {
     try {
       // 영양 정보 검증 (헬퍼 위임)
-      final nutritionValidation = RecipeValidationHelper.validateNutrition(nutritionInfo);
+      final nutritionValidation = RecipeValidationHelper.validateNutrition(
+        nutritionInfo,
+      );
       if (!nutritionValidation.isSuccess) {
         return Result.failure(nutritionValidation.message);
       }
@@ -142,7 +153,9 @@ class UpdateRecipeUseCase {
   ) async {
     try {
       // 카테고리 검증 (헬퍼 위임)
-      final categoryValidation = RecipeValidationHelper.validateCategory(category);
+      final categoryValidation = RecipeValidationHelper.validateCategory(
+        category,
+      );
       if (!categoryValidation.isSuccess) {
         return Result.failure(categoryValidation.message);
       }
@@ -171,7 +184,9 @@ class UpdateRecipeUseCase {
   ) async {
     try {
       // 난이도 검증 (헬퍼 위임)
-      final difficultyValidation = RecipeValidationHelper.validateDifficulty(difficulty);
+      final difficultyValidation = RecipeValidationHelper.validateDifficulty(
+        difficulty,
+      );
       if (!difficultyValidation.isSuccess) {
         return Result.failure(difficultyValidation.message);
       }
@@ -200,7 +215,9 @@ class UpdateRecipeUseCase {
   ) async {
     try {
       // 준비 시간 검증 (헬퍼 위임)
-      final prepTimeValidation = RecipeValidationHelper.validatePrepTime(prepTimeMinutes);
+      final prepTimeValidation = RecipeValidationHelper.validatePrepTime(
+        prepTimeMinutes,
+      );
       if (!prepTimeValidation.isSuccess) {
         return Result.failure(prepTimeValidation.message);
       }
@@ -243,7 +260,6 @@ class UpdateRecipeUseCase {
       return Result.failure('複数のレシピの更新に失敗しました: ${error.toString()}');
     }
   }
-
 
   /// 레시피 ID로 조회 (Mock)
   Future<Map<String, dynamic>?> _getRecipeById(String recipeId) async {

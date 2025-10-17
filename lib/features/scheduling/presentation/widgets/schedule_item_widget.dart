@@ -27,7 +27,11 @@ class ScheduleItemWidget extends StatelessWidget {
             color: AppColors.pointBrown.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
           ),
-          child: const Icon(Icons.restaurant, color: AppColors.pointBrown, size: 20),
+          child: const Icon(
+            Icons.restaurant,
+            color: AppColors.pointBrown,
+            size: 20,
+          ),
         ),
         title: Text(
           meal,

@@ -52,7 +52,8 @@ class ProgressBar extends StatelessWidget {
           width: double.infinity,
           height: height,
           decoration: BoxDecoration(
-            color: backgroundColor ?? AppColors.pointGray.withValues(alpha: 0.2),
+            color:
+                backgroundColor ?? AppColors.pointGray.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(height / 2),
           ),
           child: FractionallySizedBox(
@@ -86,7 +87,9 @@ class ProgressBar extends StatelessWidget {
                       ? TextAlign.end
                       : TextAlign.center,
                   style: AppFonts.bodySmall.copyWith(
-                    color: isCompleted || isCurrent ? AppColors.pointDark : AppColors.pointGray,
+                    color: isCompleted || isCurrent
+                        ? AppColors.pointDark
+                        : AppColors.pointGray,
                     fontWeight: isCurrent ? FontWeight.w600 : FontWeight.normal,
                   ),
                 ),

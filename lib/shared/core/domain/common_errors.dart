@@ -232,7 +232,8 @@ class ErrorUtils {
   static AppError fromException(Exception exception) {
     final message = exception.toString();
 
-    if (message.contains('SocketException') || message.contains('NetworkException')) {
+    if (message.contains('SocketException') ||
+        message.contains('NetworkException')) {
       return NetworkError();
     }
 
@@ -253,7 +254,8 @@ class ErrorUtils {
 
   /// 에러 심각도에 따른 처리 여부 확인
   static bool shouldRetry(AppError error) {
-    return error.severity == ErrorSeverity.low || error.severity == ErrorSeverity.medium;
+    return error.severity == ErrorSeverity.low ||
+        error.severity == ErrorSeverity.medium;
   }
 
   /// 에러 로깅 필요 여부 확인

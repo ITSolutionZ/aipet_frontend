@@ -96,8 +96,13 @@ class ActionButton extends StatelessWidget {
     final effectiveWidth = width;
     final effectiveHeight = height ?? 48.0;
     final effectivePadding =
-        padding ?? const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm);
-    final effectiveBorderRadius = borderRadius ?? BorderRadius.circular(AppRadius.medium);
+        padding ??
+        const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.sm,
+        );
+    final effectiveBorderRadius =
+        borderRadius ?? BorderRadius.circular(AppRadius.medium);
 
     final colors = _getColors();
     final currentBackgroundColor = isEnabled
@@ -144,7 +149,10 @@ class ActionButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: effectiveBorderRadius,
           side: variant == ActionButtonVariant.outlined
-              ? BorderSide(color: isEnabled ? AppColors.pointBrown : AppColors.pointGray, width: 1)
+              ? BorderSide(
+                  color: isEnabled ? AppColors.pointBrown : AppColors.pointGray,
+                  width: 1,
+                )
               : BorderSide.none,
         ),
         elevation: variant == ActionButtonVariant.outlined ? 0 : 2,
@@ -156,14 +164,19 @@ class ActionButton extends StatelessWidget {
               height: 20,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(currentForegroundColor),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  currentForegroundColor,
+                ),
               ),
             )
           : Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (icon != null) ...[icon!, const SizedBox(width: AppSpacing.xs)],
+                if (icon != null) ...[
+                  icon!,
+                  const SizedBox(width: AppSpacing.xs),
+                ],
                 Flexible(
                   child: Text(
                     text,
@@ -186,23 +199,30 @@ class ActionButton extends StatelessWidget {
           backgroundColor: backgroundColor ?? AppColors.pointBrown,
           foregroundColor: foregroundColor ?? AppColors.pureWhite,
           disabledBackgroundColor:
-              disabledBackgroundColor ?? AppColors.pointPink.withValues(alpha: 0.3),
-          disabledForegroundColor: disabledForegroundColor ?? AppColors.pointGray,
+              disabledBackgroundColor ??
+              AppColors.pointPink.withValues(alpha: 0.3),
+          disabledForegroundColor:
+              disabledForegroundColor ?? AppColors.pointGray,
         );
       case ActionButtonVariant.secondary:
         return _ButtonColors(
-          backgroundColor: backgroundColor ?? AppColors.pointPink.withValues(alpha: 0.1),
+          backgroundColor:
+              backgroundColor ?? AppColors.pointPink.withValues(alpha: 0.1),
           foregroundColor: foregroundColor ?? AppColors.pointBrown,
           disabledBackgroundColor:
-              disabledBackgroundColor ?? AppColors.pointGray.withValues(alpha: 0.1),
-          disabledForegroundColor: disabledForegroundColor ?? AppColors.pointGray,
+              disabledBackgroundColor ??
+              AppColors.pointGray.withValues(alpha: 0.1),
+          disabledForegroundColor:
+              disabledForegroundColor ?? AppColors.pointGray,
         );
       case ActionButtonVariant.outlined:
         return _ButtonColors(
           backgroundColor: backgroundColor ?? Colors.transparent,
           foregroundColor: foregroundColor ?? AppColors.pointBrown,
-          disabledBackgroundColor: disabledBackgroundColor ?? Colors.transparent,
-          disabledForegroundColor: disabledForegroundColor ?? AppColors.pointGray,
+          disabledBackgroundColor:
+              disabledBackgroundColor ?? Colors.transparent,
+          disabledForegroundColor:
+              disabledForegroundColor ?? AppColors.pointGray,
         );
     }
   }

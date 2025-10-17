@@ -174,7 +174,9 @@ class PetEntity {
       gender: json['gender'] as String?,
       size: json['size'] as String?,
       weight: (json['weight'] as num?)?.toDouble(),
-      birthDate: json['birthDate'] != null ? DateTime.parse(json['birthDate'] as String) : null,
+      birthDate: json['birthDate'] != null
+          ? DateTime.parse(json['birthDate'] as String)
+          : null,
       imagePath: json['imagePath'] as String?,
       microchipId: json['microchipId'] as String?,
       adoptionDate: json['adoptionDate'] != null
@@ -227,7 +229,9 @@ enum PetGender {
   final String displayName;
 
   static PetGender? fromString(String value) {
-    return PetGender.values.where((gender) => gender.value == value).firstOrNull;
+    return PetGender.values
+        .where((gender) => gender.value == value)
+        .firstOrNull;
   }
 }
 

@@ -163,8 +163,12 @@ class AiMessageService {
       return MessageStatistics.empty();
     }
 
-    final userMessages = messages.where((m) => m.type == MessageType.user).toList();
-    final aiMessages = messages.where((m) => m.type == MessageType.assistant).toList();
+    final userMessages = messages
+        .where((m) => m.type == MessageType.user)
+        .toList();
+    final aiMessages = messages
+        .where((m) => m.type == MessageType.assistant)
+        .toList();
 
     final totalWords = messages.fold<int>(
       0,
@@ -184,7 +188,9 @@ class AiMessageService {
       aiMessages: aiMessages.length,
       totalWords: totalWords,
       averageResponseTimeMs: avgResponseTime,
-      lastMessageTime: messages.isNotEmpty ? messages.last.timestamp : DateTime.now(),
+      lastMessageTime: messages.isNotEmpty
+          ? messages.last.timestamp
+          : DateTime.now(),
     );
   }
 

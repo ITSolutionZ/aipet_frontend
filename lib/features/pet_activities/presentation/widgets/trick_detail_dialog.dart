@@ -11,7 +11,9 @@ class TrickDetailDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.lg)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.lg),
+      ),
       child: Container(
         constraints: const BoxConstraints(maxHeight: 600),
         child: Column(
@@ -40,9 +42,16 @@ class TrickDetailDialog extends StatelessWidget {
                     child: trick.imagePath != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(AppSpacing.sm),
-                            child: Image.asset(trick.imagePath!, fit: BoxFit.cover),
+                            child: Image.asset(
+                              trick.imagePath!,
+                              fit: BoxFit.cover,
+                            ),
                           )
-                        : const Icon(Icons.pets, color: AppColors.pointBrown, size: 30),
+                        : const Icon(
+                            Icons.pets,
+                            color: AppColors.pointBrown,
+                            size: 30,
+                          ),
                   ),
                   const SizedBox(width: AppSpacing.md),
 
@@ -53,12 +62,16 @@ class TrickDetailDialog extends StatelessWidget {
                       children: [
                         Text(
                           trick.name,
-                          style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
+                          style: AppFonts.titleMedium.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           trick.description,
-                          style: AppFonts.bodyMedium.copyWith(color: AppColors.textSecondary),
+                          style: AppFonts.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -166,9 +179,16 @@ class TrickDetailDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoChip({required IconData icon, required String label, required Color color}) {
+  Widget _buildInfoChip({
+    required IconData icon,
+    required String label,
+    required Color color,
+  }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.sm),
@@ -180,7 +200,10 @@ class TrickDetailDialog extends StatelessWidget {
           const SizedBox(width: AppSpacing.xs),
           Text(
             label,
-            style: AppFonts.bodySmall.copyWith(color: color, fontWeight: FontWeight.bold),
+            style: AppFonts.bodySmall.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -190,7 +213,10 @@ class TrickDetailDialog extends StatelessWidget {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: AppFonts.titleSmall.copyWith(fontWeight: FontWeight.bold, color: AppColors.pointDark),
+      style: AppFonts.titleSmall.copyWith(
+        fontWeight: FontWeight.bold,
+        color: AppColors.pointDark,
+      ),
     );
   }
 
@@ -230,7 +256,11 @@ class TrickDetailDialog extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.lightbulb_outline, color: AppColors.pointBrown, size: 20),
+          const Icon(
+            Icons.lightbulb_outline,
+            color: AppColors.pointBrown,
+            size: 20,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(tip, style: AppFonts.bodyMedium)),
         ],
@@ -247,7 +277,11 @@ class TrickDetailDialog extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.play_circle_outline, color: AppColors.pointBlue, size: 24),
+          const Icon(
+            Icons.play_circle_outline,
+            color: AppColors.pointBlue,
+            size: 24,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -258,7 +292,11 @@ class TrickDetailDialog extends StatelessWidget {
               ),
             ),
           ),
-          const Icon(Icons.arrow_forward_ios, color: AppColors.pointBlue, size: 16),
+          const Icon(
+            Icons.arrow_forward_ios,
+            color: AppColors.pointBlue,
+            size: 16,
+          ),
         ],
       ),
     );

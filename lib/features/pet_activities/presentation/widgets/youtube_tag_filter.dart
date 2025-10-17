@@ -19,7 +19,10 @@ class YouTubeTagFilter extends StatelessWidget {
     if (allTags.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
+      ),
       color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

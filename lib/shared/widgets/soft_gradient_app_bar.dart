@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 /// 감성적인 브라운 그라데이션 AppBar
-class SoftGradientAppBar extends StatelessWidget implements PreferredSizeWidget {
+class SoftGradientAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
   final Widget? leading;
@@ -77,11 +78,16 @@ class SoftGradientAppBar extends StatelessWidget implements PreferredSizeWidget 
 }
 
 /// 뒤로가기 버튼이 있는 감성적 AppBar
-class SoftGradientBackAppBar extends StatelessWidget implements PreferredSizeWidget {
+class SoftGradientBackAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onBackPressed;
 
-  const SoftGradientBackAppBar({super.key, required this.title, this.onBackPressed});
+  const SoftGradientBackAppBar({
+    super.key,
+    required this.title,
+    this.onBackPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -108,11 +114,16 @@ class SoftGradientBackAppBar extends StatelessWidget implements PreferredSizeWid
 }
 
 /// Drawer가 있는 감성적 AppBar
-class SoftGradientDrawerAppBar extends StatelessWidget implements PreferredSizeWidget {
+class SoftGradientDrawerAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final String title;
   final Widget? selectedPetInfo;
 
-  const SoftGradientDrawerAppBar({super.key, required this.title, this.selectedPetInfo});
+  const SoftGradientDrawerAppBar({
+    super.key,
+    required this.title,
+    this.selectedPetInfo,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -8,8 +8,6 @@ part 'product_model.g.dart';
 /// 제품 모델 (API 통신용)
 @freezed
 class ProductModel with _$ProductModel {
-  const ProductModel._();
-
   const factory ProductModel({
     required String id,
     required String name,

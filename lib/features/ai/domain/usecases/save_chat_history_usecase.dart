@@ -52,10 +52,16 @@ class SaveChatHistoryUseCase {
     String? petName,
     String? categoryName,
   }) async {
-    final userMessages = messages.where((m) => m.isUser).map((m) => m.content).toList();
+    final userMessages = messages
+        .where((m) => m.isUser)
+        .map((m) => m.content)
+        .toList();
 
     if (userMessages.isEmpty) {
-      return AiChatSummary(title: '${petName ?? 'ペット'}の相談', content: '${categoryName ?? '一般的な'}相談');
+      return AiChatSummary(
+        title: '${petName ?? 'ペット'}の相談',
+        content: '${categoryName ?? '一般的な'}相談',
+      );
     }
 
     try {
@@ -66,7 +72,9 @@ class SaveChatHistoryUseCase {
       );
     } catch (error) {
       final firstMessage = userMessages.first;
-      final title = firstMessage.length > 20 ? '${firstMessage.substring(0, 20)}...' : firstMessage;
+      final title = firstMessage.length > 20
+          ? '${firstMessage.substring(0, 20)}...'
+          : firstMessage;
 
       return AiChatSummary(
         title: title,

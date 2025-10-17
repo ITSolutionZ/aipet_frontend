@@ -6,7 +6,10 @@ class AiChatSummary {
   const AiChatSummary({required this.title, required this.content});
 
   AiChatSummary copyWith({String? title, String? content}) {
-    return AiChatSummary(title: title ?? this.title, content: content ?? this.content);
+    return AiChatSummary(
+      title: title ?? this.title,
+      content: content ?? this.content,
+    );
   }
 
   @override

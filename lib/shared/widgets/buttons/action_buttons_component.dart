@@ -49,7 +49,9 @@ class ActionButtonsComponent extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.pointBrown,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.md,
+                    ),
                   ),
                 ),
               ),
@@ -63,7 +65,9 @@ class ActionButtonsComponent extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.pointPink,
                     side: const BorderSide(color: AppColors.pointPink),
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.md,
+                    ),
                   ),
                 ),
               ),

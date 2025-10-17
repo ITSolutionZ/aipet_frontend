@@ -11,10 +11,12 @@ class EnhancedExchangeTokenButton extends ConsumerStatefulWidget {
   const EnhancedExchangeTokenButton({super.key});
 
   @override
-  ConsumerState<EnhancedExchangeTokenButton> createState() => _EnhancedExchangeTokenButtonState();
+  ConsumerState<EnhancedExchangeTokenButton> createState() =>
+      _EnhancedExchangeTokenButtonState();
 }
 
-class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTokenButton> {
+class _EnhancedExchangeTokenButtonState
+    extends ConsumerState<EnhancedExchangeTokenButton> {
   DateTime? _tokenExpiry;
   bool _isExpired = false;
   bool _isExpiringSoon = false;
@@ -57,11 +59,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.blue.shade50,
-              Colors.grey.shade100,
-              Colors.white,
-            ],
+            colors: [Colors.blue.shade50, Colors.grey.shade100, Colors.white],
           ),
         ),
         child: Padding(
@@ -70,39 +68,40 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-            // API 연결 상태 확인 // Changed
-            const ApiConnectionChecker(),
-            const SizedBox(height: 24),
+              // API 연결 상태 확인 // Changed
+              const ApiConnectionChecker(),
+              const SizedBox(height: 24),
 
-            // Firebase 로그인 버튼 // Changed
-            FirebaseLoginButton(
-              onLoginSuccess: () {
-                // 로그인 성공 시 토큰 상태 새로고침
-                _checkTokenStatus();
-              },
-            ),
-            const SizedBox(height: 24),
+              // Firebase 로그인 버튼 // Changed
+              FirebaseLoginButton(
+                onLoginSuccess: () {
+                  // 로그인 성공 시 토큰 상태 새로고침
+                  _checkTokenStatus();
+                },
+              ),
+              const SizedBox(height: 24),
 
-            // 토큰 상태 카드 // Changed
-            _buildTokenStatusCard(),
-            const SizedBox(height: 24),
+              // 토큰 상태 카드 // Changed
+              _buildTokenStatusCard(),
+              const SizedBox(height: 24),
 
-            // 기존 상태 표시 카드
-            _buildStatusCard(tokenState),
-            const SizedBox(height: 32),
+              // 기존 상태 표시 카드
+              _buildStatusCard(tokenState),
+              const SizedBox(height: 32),
 
-            // 교환 버튼
-            _buildExchangeButton(context, ref, tokenState),
-            const SizedBox(height: 16),
+              // 교환 버튼
+              _buildExchangeButton(context, ref, tokenState),
+              const SizedBox(height: 16),
 
-            // 상태 새로고침 버튼 // Changed
-            _buildRefreshButton(),
-            const SizedBox(height: 16),
+              // 상태 새로고침 버튼 // Changed
+              _buildRefreshButton(),
+              const SizedBox(height: 16),
 
-            // 리셋 버튼
-            if (tokenState.isSuccess || tokenState.errorMessage != null) _buildResetButton(ref),
-          ],
-        ),
+              // 리셋 버튼
+              if (tokenState.isSuccess || tokenState.errorMessage != null)
+                _buildResetButton(ref),
+            ],
+          ),
         ),
       ),
     );
@@ -124,10 +123,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
       cardGradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.grey.withAlpha(40),
-          Colors.grey.withAlpha(20),
-        ],
+        colors: [Colors.grey.withAlpha(40), Colors.grey.withAlpha(20)],
       );
     } else if (_isExpired) {
       icon = Icons.timer_off;
@@ -137,10 +133,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
       cardGradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.red.withAlpha(60),
-          Colors.red.withAlpha(30),
-        ],
+        colors: [Colors.red.withAlpha(60), Colors.red.withAlpha(30)],
       );
     } else if (_isExpiringSoon) {
       icon = Icons.warning;
@@ -150,10 +143,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
       cardGradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.orange.withAlpha(60),
-          Colors.orange.withAlpha(30),
-        ],
+        colors: [Colors.orange.withAlpha(60), Colors.orange.withAlpha(30)],
       );
     } else {
       icon = Icons.check_circle;
@@ -163,10 +153,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
       cardGradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.green.withAlpha(60),
-          Colors.green.withAlpha(30),
-        ],
+        colors: [Colors.green.withAlpha(60), Colors.green.withAlpha(30)],
       );
     }
 
@@ -191,10 +178,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade700,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
                 ),
               ],
             ),
@@ -211,10 +195,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.cyan.withAlpha(40),
-          Colors.cyan.withAlpha(20),
-        ],
+        colors: [Colors.cyan.withAlpha(40), Colors.cyan.withAlpha(20)],
       ),
       borderColor: Colors.cyan.shade300,
       child: Padding(
@@ -222,11 +203,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.refresh,
-              color: Colors.cyan.shade600,
-              size: 20,
-            ),
+            Icon(Icons.refresh, color: Colors.cyan.shade600, size: 20),
             const SizedBox(width: 8),
             Text(
               '토큰 상태 새로고침',
@@ -273,10 +250,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
       cardGradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.orange.withAlpha(60),
-          Colors.orange.withAlpha(30),
-        ],
+        colors: [Colors.orange.withAlpha(60), Colors.orange.withAlpha(30)],
       );
     } else if (state.isSuccess) {
       icon = Icons.check_circle;
@@ -286,10 +260,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
       cardGradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.green.withAlpha(60),
-          Colors.green.withAlpha(30),
-        ],
+        colors: [Colors.green.withAlpha(60), Colors.green.withAlpha(30)],
       );
     } else if (state.errorMessage != null) {
       icon = Icons.error;
@@ -299,10 +270,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
       cardGradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.red.withAlpha(60),
-          Colors.red.withAlpha(30),
-        ],
+        colors: [Colors.red.withAlpha(60), Colors.red.withAlpha(30)],
       );
     } else {
       icon = Icons.info;
@@ -312,10 +280,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
       cardGradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.blue.withAlpha(40),
-          Colors.blue.withAlpha(20),
-        ],
+        colors: [Colors.blue.withAlpha(40), Colors.blue.withAlpha(20)],
       );
     }
 
@@ -342,10 +307,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
             const SizedBox(height: 8),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade700,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
               textAlign: TextAlign.center,
             ),
           ],
@@ -354,12 +316,18 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
     );
   }
 
-  Widget _buildExchangeButton(BuildContext context, WidgetRef ref, TokenExchangeState state) {
+  Widget _buildExchangeButton(
+    BuildContext context,
+    WidgetRef ref,
+    TokenExchangeState state,
+  ) {
     return GlassCard(
       onTap: state.isLoading
           ? null
           : () async {
-              await ref.read(authControllerProvider.notifier).exchangeServerToken();
+              await ref
+                  .read(authControllerProvider.notifier)
+                  .exchangeServerToken();
 
               // 토큰 상태 새로고침 // Changed
               await _checkTokenStatus();
@@ -368,7 +336,10 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
                 final newState = ref.read(authControllerProvider);
                 if (newState.isSuccess) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('✅ 서버 JWT 저장 완료!'), backgroundColor: Colors.green),
+                    const SnackBar(
+                      content: Text('✅ 서버 JWT 저장 완료!'),
+                      backgroundColor: Colors.green,
+                    ),
                   );
                 } else if (newState.errorMessage != null) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -384,14 +355,8 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: state.isLoading
-            ? [
-                Colors.grey.withAlpha(40),
-                Colors.grey.withAlpha(20),
-              ]
-            : [
-                Colors.blue.withAlpha(80),
-                Colors.blue.withAlpha(40),
-              ],
+            ? [Colors.grey.withAlpha(40), Colors.grey.withAlpha(20)]
+            : [Colors.blue.withAlpha(80), Colors.blue.withAlpha(40)],
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -405,7 +370,9 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade600),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.blue.shade600,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -441,10 +408,7 @@ class _EnhancedExchangeTokenButtonState extends ConsumerState<EnhancedExchangeTo
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          Colors.grey.withAlpha(30),
-          Colors.grey.withAlpha(15),
-        ],
+        colors: [Colors.grey.withAlpha(30), Colors.grey.withAlpha(15)],
       ),
       borderColor: Colors.grey.shade400,
       child: Padding(

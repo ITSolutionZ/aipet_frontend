@@ -18,11 +18,14 @@ class HomeDashboardController extends BaseController {
     GetWeatherDataUseCase? getWeatherDataUseCase,
   }) : _repository = repository ?? HomeRepositoryImpl(),
        _getDashboardDataUseCase =
-           getDashboardDataUseCase ?? GetDashboardDataUseCase(repository ?? HomeRepositoryImpl()),
+           getDashboardDataUseCase ??
+           GetDashboardDataUseCase(repository ?? HomeRepositoryImpl()),
        _getPetSummaryUseCase =
-           getPetSummaryUseCase ?? GetPetSummaryUseCase(repository ?? HomeRepositoryImpl()),
+           getPetSummaryUseCase ??
+           GetPetSummaryUseCase(repository ?? HomeRepositoryImpl()),
        _getWeatherDataUseCase =
-           getWeatherDataUseCase ?? GetWeatherDataUseCase(repository ?? HomeRepositoryImpl());
+           getWeatherDataUseCase ??
+           GetWeatherDataUseCase(repository ?? HomeRepositoryImpl());
 
   /// 홈 화면 초기화
   Future<app_result.Result<HomeDashboardEntity>> initializeHome() async {
@@ -49,9 +52,13 @@ class HomeDashboardController extends BaseController {
 
   /// 날씨 정보 로드
   /// [userTriggered] 사용자가 직접 요청한 경우 true
-  Future<app_result.Result<WeatherEntity?>> loadWeatherInfo({bool userTriggered = false}) async {
+  Future<app_result.Result<WeatherEntity?>> loadWeatherInfo({
+    bool userTriggered = false,
+  }) async {
     try {
-      final weather = await _getWeatherDataUseCase.call(userTriggered: userTriggered);
+      final weather = await _getWeatherDataUseCase.call(
+        userTriggered: userTriggered,
+      );
 
       return app_result.Result.success('天気情報がロードされました', weather.data);
     } catch (error) {
@@ -89,7 +96,8 @@ class HomeDashboardController extends BaseController {
   }
 
   /// 예약 정보 로드
-  Future<app_result.Result<List<AppointmentSummary>>> loadAppointmentInfo() async {
+  Future<app_result.Result<List<AppointmentSummary>>>
+  loadAppointmentInfo() async {
     final appointments = await ErrorHandlingService.handleAsync(
       _repository.getUpcomingAppointments(),
       context: '예약 정보 로드',

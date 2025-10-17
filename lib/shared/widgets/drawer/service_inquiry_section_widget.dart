@@ -22,7 +22,11 @@ class ServiceInquirySectionWidget extends StatelessWidget {
               SizedBox(width: 8),
               Text(
                 'サービスお問い合わせ',
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),

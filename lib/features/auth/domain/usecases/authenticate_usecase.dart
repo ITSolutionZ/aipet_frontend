@@ -47,7 +47,9 @@ class AuthenticateUseCase {
           return Result.failure('Twitter ログインは現在サポートされていません');
       }
     } catch (error) {
-      return Result.failure('${provider.displayName}ログインに失敗しました: ${error.toString()}');
+      return Result.failure(
+        '${provider.displayName}ログインに失敗しました: ${error.toString()}',
+      );
     }
   }
 
@@ -65,7 +67,10 @@ class AuthenticateUseCase {
     }
 
     try {
-      final result = await _repository.createUserWithEmailAndPassword(email, password);
+      final result = await _repository.createUserWithEmailAndPassword(
+        email,
+        password,
+      );
 
       // 회원가입 성공 시 프로필 업데이트
       if (result.isSuccess && displayName != null && displayName.isNotEmpty) {
@@ -178,7 +183,11 @@ class AuthenticateUseCase {
   }
 
   /// 회원가입 유효성 검사
-  Result<void> _validateRegistration(String email, String password, String confirmPassword) {
+  Result<void> _validateRegistration(
+    String email,
+    String password,
+    String confirmPassword,
+  ) {
     final emailPasswordValidation = _validateEmailPassword(email, password);
     if (!emailPasswordValidation.isSuccess) {
       return emailPasswordValidation;
@@ -211,12 +220,14 @@ class AuthenticateUseCase {
     final hasUppercase = password.contains(RegExp(r'[A-Z]'));
     final hasLowercase = password.contains(RegExp(r'[a-z]'));
     final hasDigits = password.contains(RegExp(r'[0-9]'));
-    final hasSpecialCharacters = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    final hasSpecialCharacters = password.contains(
+      RegExp(r'[!@#$%^&*(),.?":{}|<>]'),
+    );
 
     return password.length >= 8 &&
-           hasUppercase &&
-           hasLowercase &&
-           hasDigits &&
-           hasSpecialCharacters;
+        hasUppercase &&
+        hasLowercase &&
+        hasDigits &&
+        hasSpecialCharacters;
   }
 }

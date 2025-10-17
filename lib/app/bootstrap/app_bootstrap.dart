@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/app/security/security_bootstrap.dart';
-import 'package:aipet_frontend/features/pet/data/data.dart';
+import 'package:aipet_frontend/features/pet_profile/data/data.dart';
 import 'package:aipet_frontend/shared/monitoring/app_monitoring_dashboard.dart';
 import 'package:aipet_frontend/shared/performance/memory_optimizer.dart';
 import 'package:aipet_frontend/shared/performance/performance_monitor.dart';

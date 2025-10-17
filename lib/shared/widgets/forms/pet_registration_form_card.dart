@@ -136,10 +136,7 @@ class PetRegistrationTextField extends StatelessWidget {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: AppColors.error,
-                width: 1,
-              ),
+              borderSide: const BorderSide(color: AppColors.error, width: 1),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -189,10 +186,7 @@ class PetRegistrationSelectionCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            if (icon != null) ...[
-              icon!,
-              const SizedBox(width: AppSpacing.sm),
-            ],
+            if (icon != null) ...[icon!, const SizedBox(width: AppSpacing.sm)],
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,8 +194,12 @@ class PetRegistrationSelectionCard extends StatelessWidget {
                   Text(
                     label,
                     style: AppFonts.bodyMedium.copyWith(
-                      color: isSelected ? AppColors.pointBrown : AppColors.pointDark,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      color: isSelected
+                          ? AppColors.pointBrown
+                          : AppColors.pointDark,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                   ),
                   if (value != null) ...[
@@ -267,7 +265,8 @@ class PetProfileImageCard extends StatelessWidget {
                   width: size,
                   height: size,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
+                  errorBuilder: (context, error, stackTrace) =>
+                      _buildPlaceholder(),
                 ),
               )
             else
@@ -283,10 +282,7 @@ class PetProfileImageCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.pointBrown,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.pureWhite,
-                      width: 2,
-                    ),
+                    border: Border.all(color: AppColors.pureWhite, width: 2),
                   ),
                   child: const Icon(
                     Icons.camera_alt,
@@ -309,11 +305,7 @@ class PetProfileImageCard extends StatelessWidget {
         color: AppColors.cardBackgroundGray.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(size / 2),
       ),
-      child: Icon(
-        Icons.pets,
-        color: AppColors.pointGray,
-        size: size * 0.4,
-      ),
+      child: Icon(Icons.pets, color: AppColors.pointGray, size: size * 0.4),
     );
   }
 }

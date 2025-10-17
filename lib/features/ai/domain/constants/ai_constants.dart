@@ -125,7 +125,8 @@ class AiSystemPrompts {
 重要：ペットに関係のない質問（政治、経済、エンターテイメント、ゲーム、料理など）には答えず、
 "ペットに関する質問のみお答えできます"と回答してください。''';
 
-  static const String contentFilterPrompt = '''あなたはユーザーのメッセージが**ペット**に関する内容かを判定する分類器です（日本語対応）。
+  static const String contentFilterPrompt =
+      '''あなたはユーザーのメッセージが**ペット**に関する内容かを判定する分類器です（日本語対応）。
 判定基準:
 - ペットの健康・行動・しつけ/訓練・ケア・フード/トイレ/用品・病院/獣医・予防接種・グルーミング等なら "YES"
 - 政治・経済・芸能・ゲーム・料理などペットと無関係なら "NO"
@@ -133,7 +134,12 @@ class AiSystemPrompts {
 
 出力は **YES / NO / MAYBE** のいずれか**1語のみ**。余計な説明を出力しないこと。''';
 
-  static String buildPetContextPrompt(String petName, String petType, int age, String breed) {
+  static String buildPetContextPrompt(
+    String petName,
+    String petType,
+    int age,
+    String breed,
+  ) {
     return '''
 【相談対象のペット情報】
 ・名前：$petName

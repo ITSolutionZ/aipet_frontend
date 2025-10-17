@@ -18,7 +18,11 @@ class StartWalkInfoSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.info_outline, size: 18, color: AppColors.pointGreen),
+              const Icon(
+                Icons.info_outline,
+                size: 18,
+                color: AppColors.pointGreen,
+              ),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 '散歩について',
@@ -33,11 +37,18 @@ class StartWalkInfoSection extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
-              const Icon(Icons.location_on, size: 16, color: AppColors.pointGreen),
+              const Icon(
+                Icons.location_on,
+                size: 16,
+                color: AppColors.pointGreen,
+              ),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 'GPS位置情報を使用してルートを記録',
-                style: AppFonts.base(fontSize: AppFonts.sm, color: AppColors.pointGreen),
+                style: AppFonts.base(
+                  fontSize: AppFonts.sm,
+                  color: AppColors.pointGreen,
+                ),
               ),
             ],
           ),
@@ -48,18 +59,28 @@ class StartWalkInfoSection extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               Text(
                 '歩いた時間と距離を自動測定',
-                style: AppFonts.base(fontSize: AppFonts.sm, color: AppColors.pointGreen),
+                style: AppFonts.base(
+                  fontSize: AppFonts.sm,
+                  color: AppColors.pointGreen,
+                ),
               ),
             ],
           ),
           const SizedBox(height: AppSpacing.xs),
           Row(
             children: [
-              const Icon(Icons.camera_alt, size: 16, color: AppColors.pointGreen),
+              const Icon(
+                Icons.camera_alt,
+                size: 16,
+                color: AppColors.pointGreen,
+              ),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 '散歩中の思い出を写真で記録可能',
-                style: AppFonts.base(fontSize: AppFonts.sm, color: AppColors.pointGreen),
+                style: AppFonts.base(
+                  fontSize: AppFonts.sm,
+                  color: AppColors.pointGreen,
+                ),
               ),
             ],
           ),

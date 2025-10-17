@@ -12,17 +12,16 @@ class HealthReportPdfAdapter {
   Future<File> fromTemplate(HealthReportTemplate template) async {
     // DTO를 서비스가 요구하는 Map 형태로 변환
     final vaccineData = template.report.vaccines
-        .map((vaccine) => {
-              'vaccineName': vaccine.name,
-              'vaccinatedDate': vaccine.date,
-            })
+        .map(
+          (vaccine) => {
+            'vaccineName': vaccine.name,
+            'vaccinatedDate': vaccine.date,
+          },
+        )
         .toList();
 
     final weightHistory = template.report.weights
-        .map((weight) => {
-              'date': weight.date,
-              'weight': weight.value,
-            })
+        .map((weight) => {'date': weight.date, 'weight': weight.value})
         .toList();
 
     final allergyInfo = {

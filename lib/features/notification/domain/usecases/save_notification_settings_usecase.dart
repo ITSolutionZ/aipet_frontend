@@ -9,7 +9,10 @@ class SaveNotificationSettingsUseCase {
   const SaveNotificationSettingsUseCase(this._repository);
 
   /// 알림 설정 저장
-  Future<Result<void>> call(String userId, Map<String, dynamic> settings) async {
+  Future<Result<void>> call(
+    String userId,
+    Map<String, dynamic> settings,
+  ) async {
     try {
       if (userId.trim().isEmpty) {
         return Result.failure('ユーザーIDが無効です');
@@ -67,7 +70,9 @@ class SaveNotificationSettingsUseCase {
         return Result.failure('現在の設定の取得に失敗しました');
       }
 
-      final currentSettings = Map<String, dynamic>.from(currentSettingsResult.dataOrNull!);
+      final currentSettings = Map<String, dynamic>.from(
+        currentSettingsResult.dataOrNull!,
+      );
       currentSettings[notificationType] = typeSettings;
 
       return await call(userId, currentSettings);
@@ -98,7 +103,11 @@ class SaveNotificationSettingsUseCase {
         final type = entry.key;
         final settings = entry.value;
 
-        final result = await saveNotificationTypeSettings(userId, type, settings);
+        final result = await saveNotificationTypeSettings(
+          userId,
+          type,
+          settings,
+        );
         if (result.isSuccess) {
           results[type] = 'success';
           successCount++;
@@ -130,7 +139,8 @@ class SaveNotificationSettingsUseCase {
 
       // 기본 설정 조회
       final getSettingsUseCase = GetNotificationSettingsUseCase(_repository);
-      final defaultSettingsResult = await getSettingsUseCase.getDefaultSettings();
+      final defaultSettingsResult = await getSettingsUseCase
+          .getDefaultSettings();
 
       if (!defaultSettingsResult.isSuccess) {
         return Result.failure('デフォルト設定の取得に失敗しました');
@@ -147,7 +157,11 @@ class SaveNotificationSettingsUseCase {
   Future<Result<bool>> _validateSettings(Map<String, dynamic> settings) async {
     try {
       // 필수 설정 확인
-      final requiredKeys = ['pushNotifications', 'healthReminders', 'walkReminders'];
+      final requiredKeys = [
+        'pushNotifications',
+        'healthReminders',
+        'walkReminders',
+      ];
       for (final key in requiredKeys) {
         if (!settings.containsKey(key)) {
           return Result.failure('必須設定が不足しています: $key');

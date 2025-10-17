@@ -51,7 +51,10 @@ class GetSchedulesByDateRangeUseCase {
 
   GetSchedulesByDateRangeUseCase(this.repository);
 
-  Future<List<ScheduleEntity>> call(DateTime startDate, DateTime endDate) async {
+  Future<List<ScheduleEntity>> call(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
     return repository.getSchedulesByDateRange(startDate, endDate);
   }
 }

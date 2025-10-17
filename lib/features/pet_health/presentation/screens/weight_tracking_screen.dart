@@ -43,10 +43,19 @@ class WeightTrackingScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('体重を記録'),
-        content: const Column(mainAxisSize: MainAxisSize.min, children: [Text('体重記録機能は実装予定です。')]),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [Text('体重記録機能は実装予定です。')],
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('キャンセル')),
-          ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: const Text('記録')),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('記録'),
+          ),
         ],
       ),
     );
