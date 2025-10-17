@@ -5,7 +5,7 @@ part 'pet_profile_entity.g.dart';
 
 /// ペットプロフィールエンティティ
 @freezed
-class PetProfileEntity with _$PetProfileEntity {
+abstract class PetProfileEntity with _$PetProfileEntity {
   const factory PetProfileEntity({
     required String id,
     required String name,

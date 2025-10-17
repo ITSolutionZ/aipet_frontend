@@ -7,7 +7,7 @@ part 'allergy_post_model.g.dart';
 
 /// 알레르ギー投稿モデル (API通信用)
 @freezed
-class AllergyPostModel with _$AllergyPostModel {
+abstract class AllergyPostModel with _$AllergyPostModel {
   const AllergyPostModel._(); // カスタムメソッドのためのプライベートコンストラクタ
 
   const factory AllergyPostModel({
