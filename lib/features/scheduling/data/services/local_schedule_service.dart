@@ -1,4 +1,4 @@
-import 'local_database_service.dart';
+import 'package:aipet_frontend/shared/services/local_database_service.dart';
 
 /// 스케줄 로컬 스토리지 서비스
 class LocalScheduleService {

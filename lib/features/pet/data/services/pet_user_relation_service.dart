@@ -1,6 +1,5 @@
+import 'package:aipet_frontend/shared/services/local_database_service.dart';
 import 'package:uuid/uuid.dart';
-
-import 'local_database_service.dart';
 
 /// 펫-사용자 관계 관리 서비스
 ///

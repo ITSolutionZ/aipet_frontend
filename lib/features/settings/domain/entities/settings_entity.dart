@@ -1,41 +1,9 @@
 library;
 
-/// 사용자 프로필 엔티티
-class UserProfileEntity {
-  final String id;
-  final String name;
-  final String email;
-  final String? avatarPath;
-  final DateTime createdAt;
-  final DateTime? lastLoginAt;
+import 'package:flutter/material.dart';
 
-  const UserProfileEntity({
-    required this.id,
-    required this.name,
-    required this.email,
-    this.avatarPath,
-    required this.createdAt,
-    this.lastLoginAt,
-  });
-
-  UserProfileEntity copyWith({
-    String? id,
-    String? name,
-    String? email,
-    String? avatarPath,
-    DateTime? createdAt,
-    DateTime? lastLoginAt,
-  }) {
-    return UserProfileEntity(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      email: email ?? this.email,
-      avatarPath: avatarPath ?? this.avatarPath,
-      createdAt: createdAt ?? this.createdAt,
-      lastLoginAt: lastLoginAt ?? this.lastLoginAt,
-    );
-  }
-}
+// UserProfileEntity는 shared/domain/entities에서 import
+export 'package:aipet_frontend/shared/domain/entities/user_profile_entity.dart';
 
 /// 앱 설정 엔티티
 class AppSettingsEntity {
@@ -74,8 +42,8 @@ class AppSettingsEntity {
   }
 }
 
-/// 테마 모드 열거형
-enum ThemeMode { light, dark, system }
+// ThemeMode는 Flutter Material에서 제공하는 것을 사용
+// import 'package:flutter/material.dart' 필요
 
 /// 데이터 동기화 빈도 열거형
 enum DataSyncFrequency { realtime, hourly, daily, manual }

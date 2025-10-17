@@ -1,5 +1,7 @@
-import 'package:aipet_frontend/features/splash/domain/repositories/splash_repository.dart';
 import 'package:aipet_frontend/shared/shared.dart';
+
+import '../repositories/splash_repository.dart';
+import '../splash_entity.dart';
 
 /// 스플래시 설정 가져오기 UseCase
 class GetSplashConfigUseCase {

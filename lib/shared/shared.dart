@@ -2,17 +2,11 @@ library;
 
 // ignore_for_file: deprecated_member_use_from_same_package
 
-/// AI 기능 보조 모듈
-export 'ai_support.dart';
-
 /// 공유 도메인 모듈
 export 'core/domain/domain.dart';
 
 /// 공유 데이터 모듈
 export 'data/data.dart';
-
-/// 공유 엔티티 모듈
-export 'entities/entities.dart';
 
 /// 핵심 공통 기능 모듈
 export 'foundation.dart';
@@ -28,6 +22,3 @@ export 'testing.dart';
 
 /// UI 관련 공통 리소스
 export 'ui.dart';
-
-/// 유틸리티 모듈
-export 'utils/pet_data_reset_util.dart';

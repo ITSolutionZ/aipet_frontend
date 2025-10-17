@@ -63,18 +63,8 @@ export 'performance/performance_monitor_widget.dart';
 // Responsive
 export 'responsive/responsive_widgets.dart';
 export 'section_header_widget.dart';
-// Settings
-export 'settings_tile_widget.dart';
 // Soft gradient components
 export 'soft_gradient_app_bar.dart';
 export 'soft_gradient_sliver_app_bar.dart';
 // Tiles
 export 'tiles/settings_tile_component.dart';
-// Walk widgets
-export 'walk/walk_co_manager_selector.dart';
-export 'walk/walk_form_fields.dart';
-export 'walk/walk_info_widgets.dart';
-export 'walk/walk_pet_tag.dart';
-export 'walk_detail_map_widget.dart';
-export 'walk_info_bottom_sheet.dart';
-export 'walk_record_card_widget.dart';

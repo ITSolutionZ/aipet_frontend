@@ -13,7 +13,6 @@ export 'core/utils/loading_state.dart';
 export 'core/utils/string_utils.dart';
 export 'core/utils/utils.dart';
 export 'core/utils/validation_utils.dart';
-export 'factories/facility_factory.dart';
 export 'foundation/controllers/base_facility_controller.dart';
 export 'foundation/controllers/crud_controller.dart';
 export 'foundation/controllers/form_controller.dart';
@@ -33,10 +32,7 @@ export 'foundation/types/types.dart' hide Success, Failure;
 // 고급 유틸리티 및 확장 메서드
 export 'foundation/utils/utils.dart';
 export 'services/base_logging_service.dart';
-export 'services/facility_error_handler.dart';
-export 'services/facility_search_service.dart';
 export 'services/weather_icon_service.dart';
 export 'utils/notification_ui_utils.dart';
-export 'utils/pet_image_utils.dart';
 export 'utils/summary_card_utils.dart';
 export 'utils/weather_utils.dart';

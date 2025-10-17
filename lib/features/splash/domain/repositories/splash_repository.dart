@@ -1,5 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 
+import '../splash_entity.dart';
+
 /// 스플래시 관련 Repository 인터페이스
 abstract class SplashRepository {
   /// 스플래시 설정 가져오기

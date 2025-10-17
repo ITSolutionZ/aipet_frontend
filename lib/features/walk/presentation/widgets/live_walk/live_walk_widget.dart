@@ -7,12 +7,13 @@ import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_c
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_marker_builder.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_polyline_builder.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/walk/helpers/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import 'helpers/helpers.dart';
 
 part 'live_walk_widget.g.dart';
 

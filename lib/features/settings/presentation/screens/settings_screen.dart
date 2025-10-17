@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
+import 'package:aipet_frontend/features/settings/presentation/widgets/settings_tile_widget.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
