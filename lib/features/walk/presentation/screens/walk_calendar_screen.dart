@@ -164,25 +164,10 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
 
                           return Positioned(
                             bottom: 1,
-                            child: Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                color: WalkCalendarUiHelper.getMarkerColor(
-                                  events.length,
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '${events.length}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                            child: Image.asset(
+                              'assets/icons/walk_logo/finished.png',
+                              width: 20,
+                              height: 20,
                             ),
                           );
                         },
