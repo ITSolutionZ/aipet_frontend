@@ -122,6 +122,7 @@ class ImageService {
       // ディレクトリが存在しない場合は作成
       if (!await imagesDir.exists()) {
         await imagesDir.create(recursive: true);
+        debugPrint('📁 Created pet_images directory: ${imagesDir.path}');
       }
 
       // ユニークなファイル名を生成
@@ -132,12 +133,21 @@ class ImageService {
 
       // ファイルをコピー
       final File tempFile = File(tempPath);
-      await tempFile.copy(newPath);
+      final File savedFile = await tempFile.copy(newPath);
 
-      debugPrint('📁 Image copied to persistent storage: $newPath');
-      return newPath;
+      // ファイルが正しく保存されたか確認
+      if (await savedFile.exists()) {
+        final fileSize = await savedFile.length();
+        debugPrint('📁 Image copied to persistent storage: $newPath');
+        debugPrint('📁 File size: $fileSize bytes');
+        debugPrint('📁 File exists: ${await savedFile.exists()}');
+        return newPath;
+      } else {
+        debugPrint('❌ Failed to copy image to persistent storage');
+        return tempPath;
+      }
     } catch (e) {
-      debugPrint('Error copying image to persistent storage: $e');
+      debugPrint('❌ Error copying image to persistent storage: $e');
       // エラーの場合は元のパスを返す
       return tempPath;
     }

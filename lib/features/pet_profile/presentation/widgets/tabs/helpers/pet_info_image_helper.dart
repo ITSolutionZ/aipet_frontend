@@ -18,7 +18,14 @@ class PetInfoImageHelper {
     switch (imageType) {
       case ImageType.file:
         final file = File(imagePath);
-        debugPrint('🖼️ File exists: ${file.existsSync()}');
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint('❌ File does not exist: $imagePath');
+          return _buildErrorWidget(null, 'File not found', null);
+        }
+
         return Image.file(
           file,
           fit: BoxFit.cover,
@@ -50,10 +57,11 @@ class PetInfoImageHelper {
 
   /// 에러 위젯 빌드
   static Widget _buildErrorWidget(
-    BuildContext context,
+    BuildContext? context,
     Object error,
     StackTrace? stackTrace,
   ) {
+    debugPrint('🖼️ Building error widget for: $error');
     return Container(
       color: AppColors.pointOffWhite,
       child: Image.asset(

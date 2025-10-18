@@ -1,5 +1,3 @@
-import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
-import 'package:aipet_frontend/features/walk/data/services/mock_walk_data_generator.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
@@ -55,33 +53,7 @@ class SelectedPetsNotifier extends _$SelectedPetsNotifier {
 class WalkRecordsNotifier extends _$WalkRecordsNotifier {
   @override
   List<WalkRecordEntity> build() {
-    // TODO: 목업 데이터 삭제 - 테스트 완료 후 제거
-    // 목업 데이터 생성 및 초기화
-    final mockRecords = MockWalkDataGenerator.generateMockWalkRecords();
-    debugPrint('🚀 목업 산책 데이터 생성 완료: ${mockRecords.length}개');
-
-    // 디버그: 각 산책 기록의 경로 확인
-    for (final record in mockRecords) {
-      debugPrint('  ✅ 산책 ${record.id}: 경로 포인트=${record.route.length}개, 상태=${record.status}, 펫=${record.petName}');
-    }
-
-    // 목업 데이터를 로컬 스토리지에 저장 (테스트용)
-    _saveToLocal(mockRecords);
-
-    return mockRecords;
-  }
-
-  /// 목업 데이터를 로컬 스토리지에 저장 (비동기 작업)
-  Future<void> _saveToLocal(List<WalkRecordEntity> records) async {
-    try {
-      // 로컬 스토리지 초기화
-      await LocalWalkStorageService.clearAllData();
-      // 목업 데이터 저장
-      await LocalWalkStorageService.saveWalkRecords(records);
-      debugPrint('💾 목업 데이터를 로컬 스토리지에 저장 완료');
-    } catch (e) {
-      debugPrint('❌ 목업 데이터 저장 실패: $e');
-    }
+    return [];
   }
 
   void addWalkRecord(WalkRecordEntity record) {

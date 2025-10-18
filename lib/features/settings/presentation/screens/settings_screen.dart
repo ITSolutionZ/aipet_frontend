@@ -87,15 +87,15 @@ class SettingsScreen extends ConsumerWidget {
             title: 'ペット情報編集',
             backgroundColor: const Color(0xFFA88B5A),
             onTap: () {
-              // ペットプロフィール画面へ移動
-              context.push('${AppRouter.petProfileRoute}?petId=default');
+              // 管理中の反応動物画面へ移動
+              context.push(AppRouter.petManagementRoute);
             },
           ),
           SettingsTileWidget(
             icon: Icons.lock,
-            title: 'パスワード変更',
+            title: 'セキュリティ設定',
             backgroundColor: const Color(0xFFA88B5A),
-            onTap: () {},
+            onTap: () => context.push('/settings/biometric-security'),
           ),
           SettingsTileWidget(
             icon: Icons.delete,
@@ -110,7 +110,7 @@ class SettingsScreen extends ConsumerWidget {
           const SectionHeaderWidget(title: 'システム'),
           SettingsTileWidget(
             icon: Icons.notifications,
-            title: '',
+            title: 'アラーム設定',
             backgroundColor: const Color(0xFF7A9CC6),
             onTap: () => context.push(AppRouter.pushNotificationRoute),
           ),

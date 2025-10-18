@@ -161,18 +161,26 @@ class ImagePickerService {
       final Directory dir = Directory(imagesDir);
       if (!await dir.exists()) {
         await dir.create(recursive: true);
+        debugPrint('📁 Created profile_images directory: $imagesDir');
       }
 
       // 파일 저장
       final String filePath = path.join(imagesDir, fileName);
       final File savedFile = await imageFile.copy(filePath);
 
-      debugPrint('💾 User profile image saved: $filePath');
-      debugPrint('💾 File exists: ${savedFile.existsSync()}');
-
-      return savedFile.path;
+      // 파일이 제대로 저장되었는지 확인
+      if (await savedFile.exists()) {
+        final fileSize = await savedFile.length();
+        debugPrint('💾 User profile image saved: $filePath');
+        debugPrint('💾 File size: $fileSize bytes');
+        debugPrint('💾 File exists: ${await savedFile.exists()}');
+        return savedFile.path;
+      } else {
+        debugPrint('❌ Failed to save user profile image');
+        return null;
+      }
     } catch (e) {
-      debugPrint('이미지 저장 실패: $e');
+      debugPrint('❌ 이미지 저장 실패: $e');
       return null;
     }
   }

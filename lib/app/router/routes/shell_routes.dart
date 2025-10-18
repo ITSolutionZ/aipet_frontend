@@ -22,6 +22,7 @@ import 'package:aipet_frontend/features/scheduling/presentation/presentation.dar
 import 'package:aipet_frontend/features/scheduling/presentation/screens/alarm_setup_screen.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/screens/new_event_setup_screen.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/screens/today_appointments_screen.dart';
+import 'package:aipet_frontend/features/settings/presentation/screens/biometric_security_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/database_dashboard_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/settings_screens.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
@@ -490,7 +491,7 @@ class ShellRoutes {
       GoRoute(
         path: RouteConstants.settingsRoute,
         name: 'settings',
-        builder: (context, state) => const SchedulingScreen(),
+        builder: (context, state) => const SettingsScreen(),
         routes: [
           GoRoute(
             path: 'profile-edit',
@@ -501,6 +502,11 @@ class ShellRoutes {
             path: 'account-delete',
             name: 'account-delete',
             builder: (context, state) => const AccountDeleteScreen(),
+          ),
+          GoRoute(
+            path: 'biometric-security',
+            name: 'biometric-security',
+            builder: (context, state) => const BiometricSecurityScreen(),
           ),
           GoRoute(
             path: 'push-notification',
