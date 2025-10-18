@@ -30,6 +30,7 @@ class LiveWalkState {
   final Set<Polyline> polylines;
   final Set<Marker> markers;
   final WalkRecordEntity? currentWalkRecord;
+  final Map<String, DateTime>? proximityWarnings; // 금지구역 경고 이력
 
   const LiveWalkState({
     this.timerState = WalkTimerState.ready,
@@ -42,6 +43,7 @@ class LiveWalkState {
     this.polylines = const {},
     this.markers = const {},
     this.currentWalkRecord,
+    this.proximityWarnings,
   });
 
   LiveWalkState copyWith({
@@ -55,6 +57,7 @@ class LiveWalkState {
     Set<Polyline>? polylines,
     Set<Marker>? markers,
     WalkRecordEntity? currentWalkRecord,
+    Map<String, DateTime>? proximityWarnings,
   }) {
     return LiveWalkState(
       timerState: timerState ?? this.timerState,
@@ -67,6 +70,7 @@ class LiveWalkState {
       polylines: polylines ?? this.polylines,
       markers: markers ?? this.markers,
       currentWalkRecord: currentWalkRecord ?? this.currentWalkRecord,
+      proximityWarnings: proximityWarnings ?? this.proximityWarnings,
     );
   }
 
