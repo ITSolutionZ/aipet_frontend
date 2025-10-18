@@ -315,7 +315,7 @@ class AiLocalStorageService extends BaseLoggingService {
   Future<void> saveFavoriteQA(AiFavoriteQaEntity favoriteQA) async {
     try {
       final prefs = await _prefs;
-      final favoriteQAs = loadFavoriteQAs();
+      final favoriteQAs = await loadFavoriteQAs();
 
       favoriteQAs.removeWhere((qa) => qa.id == favoriteQA.id);
       favoriteQAs.add(favoriteQA);
@@ -332,9 +332,9 @@ class AiLocalStorageService extends BaseLoggingService {
   }
 
   /// 즐겨찾기 QA 목록 로드
-  List<AiFavoriteQaEntity> loadFavoriteQAs() {
+  Future<List<AiFavoriteQaEntity>> loadFavoriteQAs() async {
     try {
-      final prefs = SharedPreferences.getInstance() as SharedPreferences;
+      final prefs = await _prefs;
       final jsonString = prefs.getString(_favoriteQAsKey);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -358,7 +358,7 @@ class AiLocalStorageService extends BaseLoggingService {
   Future<void> removeFavoriteQA(String qaId) async {
     try {
       final prefs = await _prefs;
-      final favoriteQAs = loadFavoriteQAs();
+      final favoriteQAs = await loadFavoriteQAs();
 
       favoriteQAs.removeWhere((qa) => qa.id == qaId);
 

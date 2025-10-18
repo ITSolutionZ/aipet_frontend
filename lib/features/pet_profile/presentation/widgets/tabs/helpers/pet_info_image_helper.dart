@@ -10,26 +10,40 @@ import '../pet_basic_info_tab.dart';
 class PetInfoImageHelper {
   /// 이미지 위젯 빌드
   static Widget buildImageWidget(String imagePath) {
+    debugPrint('🖼️ buildImageWidget - imagePath: $imagePath');
+
     final imageType = ImageService.getImageType(imagePath);
+    debugPrint('🖼️ imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
+        final file = File(imagePath);
+        debugPrint('🖼️ File exists: ${file.existsSync()}');
         return Image.file(
-          File(imagePath),
+          file,
           fit: BoxFit.cover,
-          errorBuilder: _buildErrorWidget,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ Image.file error: $error');
+            return _buildErrorWidget(context, error, stackTrace);
+          },
         );
       case ImageType.network:
         return Image.network(
           imagePath,
           fit: BoxFit.cover,
-          errorBuilder: _buildErrorWidget,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ Image.network error: $error');
+            return _buildErrorWidget(context, error, stackTrace);
+          },
         );
       case ImageType.asset:
         return Image.asset(
           imagePath,
           fit: BoxFit.cover,
-          errorBuilder: _buildErrorWidget,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ Image.asset error: $error');
+            return _buildErrorWidget(context, error, stackTrace);
+          },
         );
     }
   }
@@ -108,7 +122,14 @@ class PetInfoImageHelper {
     String tabId,
   ) async {
     final imagePath = await ImageService.pickFromGallery(context);
+    debugPrint('📸 Selected image path: $imagePath');
+
     if (imagePath != null && context.mounted) {
+      // ファイルが実際に存在するか確認
+      final file = File(imagePath);
+      final exists = file.existsSync();
+      debugPrint('📸 File exists: $exists');
+
       ref
           .read(petBasicInfoTabControllerProvider(tabId).notifier)
           .updateSelectedImage(imagePath);

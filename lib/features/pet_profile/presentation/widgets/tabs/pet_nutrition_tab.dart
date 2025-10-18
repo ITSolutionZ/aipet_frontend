@@ -10,72 +10,73 @@ class PetNutritionTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 保存された食事情報を取得
+    final additionalInfo = pet.additionalInfo ?? {};
+    final food = additionalInfo['food'] as String? ?? '';
+    final supplement = additionalInfo['supplement'] as String? ?? '';
+    final treat = additionalInfo['treat'] as String? ?? '';
+    final forbiddenIngredients =
+        (additionalInfo['forbiddenIngredients'] as List<dynamic>?)
+            ?.cast<String>() ??
+        [];
+
+    debugPrint('🍽️ PetNutritionTab - 保存された食事情報:');
+    debugPrint('   - food: $food');
+    debugPrint('   - supplement: $supplement');
+    debugPrint('   - treat: $treat');
+    debugPrint('   - forbiddenIngredients: $forbiddenIngredients');
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
-          _buildFoodPreferencesSection(),
+          _buildFoodPreferencesSection(food, supplement, treat),
           const SizedBox(height: AppSpacing.lg),
           _buildNutritionInfoSection(),
           const SizedBox(height: AppSpacing.lg),
           _buildFeedingScheduleSection(),
           const SizedBox(height: AppSpacing.lg),
-          _buildDietaryRestrictionsSection(),
+          _buildDietaryRestrictionsSection(forbiddenIngredients),
         ],
       ),
     );
   }
 
-  Widget _buildFoodPreferencesSection() {
+  Widget _buildFoodPreferencesSection(
+    String food,
+    String supplement,
+    String treat,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'フードタイプ',
+          '食べる餌',
           style: AppFonts.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.pointDark,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        Row(
-          children: [
-            Expanded(
-              child: _buildFoodTypeCard(
-                icon: Icons.pets,
-                title: 'ドライフード',
-                isSelected: true,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: _buildFoodTypeCard(
-                icon: Icons.water_drop,
-                title: 'ウェットフード',
-                isSelected: false,
-              ),
-            ),
-          ],
+        _buildFoodItem(
+          icon: Icons.restaurant,
+          title: '食べる餌',
+          value: food.isEmpty ? '餌を検索または選択してください' : food,
+          isEmpty: food.isEmpty,
         ),
-        const SizedBox(height: AppSpacing.sm),
-        Row(
-          children: [
-            Expanded(
-              child: _buildFoodTypeCard(
-                icon: Icons.eco,
-                title: '生食',
-                isSelected: false,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: _buildFoodTypeCard(
-                icon: Icons.kitchen,
-                title: '手作り',
-                isSelected: true,
-              ),
-            ),
-          ],
+        const SizedBox(height: AppSpacing.md),
+        _buildFoodItem(
+          icon: Icons.medical_services,
+          title: '食べる栄養剤',
+          value: supplement.isEmpty ? '栄養剤を検索または選択してください' : supplement,
+          isEmpty: supplement.isEmpty,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        _buildFoodItem(
+          icon: Icons.cake,
+          title: '食べるおやつ',
+          value: treat.isEmpty ? 'おやつを検索または選択してください' : treat,
+          isEmpty: treat.isEmpty,
         ),
       ],
     );
@@ -153,76 +154,79 @@ class PetNutritionTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildDietaryRestrictionsSection() {
+  Widget _buildDietaryRestrictionsSection(List<String> forbiddenIngredients) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '食事制限・アレルギー',
-          style: AppFonts.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.pointDark,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '食べてはいけない原料',
+              style: AppFonts.titleMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.pointDark,
+              ),
+            ),
+            Text(
+              '${forbiddenIngredients.length}/8',
+              style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+            ),
+          ],
         ),
         const SizedBox(height: AppSpacing.md),
-        GenericInfoCard.withIcon(
-          icon: Icons.warning,
-          iconColor: AppColors.pointPink,
-          iconBackgroundColor: AppColors.pointPink.withValues(alpha: 0.1),
-          title: 'アレルギー',
-          subtitle: '鶏肉、小麦',
-          badge: '注意',
-          badgeColor: AppColors.pointPink,
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        GenericInfoCard.withIcon(
-          icon: Icons.block,
-          iconColor: AppColors.pointGray,
-          iconBackgroundColor: AppColors.pointGray.withValues(alpha: 0.1),
-          title: '禁止食品',
-          subtitle: 'チョコレート、玉ねぎ、ブドウ',
-          badge: '禁止',
-          badgeColor: AppColors.pointGray,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFoodTypeCard({
-    required IconData icon,
-    required String title,
-    required bool isSelected,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? AppColors.pointBrown.withValues(alpha: 0.1)
-            : Colors.white,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(
-          color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
-          width: isSelected ? 2 : 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            icon,
-            size: 32,
-            color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            title,
-            style: AppFonts.bodySmall.copyWith(
-              color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        if (forbiddenIngredients.isEmpty)
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              color: AppColors.pointOffWhite,
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+              border: Border.all(
+                color: AppColors.pointGray.withValues(alpha: 0.3),
+                width: 1,
+              ),
             ),
-            textAlign: TextAlign.center,
+            child: Column(
+              children: [
+                Icon(
+                  Icons.inventory_2_outlined,
+                  size: 48,
+                  color: AppColors.pointGray.withValues(alpha: 0.5),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'まだ原料が登録されていません',
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointGray,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'ペットが食べてはいけない原料を登録してください。最大8個まで登録できます。',
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray.withValues(alpha: 0.7),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          )
+        else
+          ...forbiddenIngredients.map(
+            (ingredient) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: GenericInfoCard.withIcon(
+                icon: Icons.warning,
+                iconColor: AppColors.pointPink,
+                iconBackgroundColor: AppColors.pointPink.withValues(alpha: 0.1),
+                title: ingredient,
+                subtitle: '禁止原料',
+                badge: '禁止',
+                badgeColor: AppColors.pointPink,
+              ),
+            ),
           ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -255,6 +259,65 @@ class PetNutritionTab extends ConsumerWidget {
       subtitle: '$schedule • $time',
       badge: amount,
       badgeColor: AppColors.pointBrown,
+    );
+  }
+
+  Widget _buildFoodItem({
+    required IconData icon,
+    required String title,
+    required String value,
+    required bool isEmpty,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: isEmpty ? AppColors.pointOffWhite : Colors.white,
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        border: Border.all(
+          color: isEmpty
+              ? AppColors.pointGray.withValues(alpha: 0.3)
+              : AppColors.pointBrown.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: isEmpty ? AppColors.pointGray : AppColors.pointBrown,
+            size: 24,
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  value,
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: isEmpty ? AppColors.pointGray : AppColors.pointDark,
+                    fontWeight: isEmpty ? FontWeight.normal : FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (!isEmpty)
+            const Icon(
+              Icons.check_circle,
+              color: AppColors.pointGreen,
+              size: 20,
+            ),
+        ],
+      ),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_controller.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
@@ -49,6 +51,21 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
   String _getWeightString(dynamic weight) {
     if (weight == null) return '未設定';
     return '${weight}kg';
+  }
+
+  /// 背景画像を取得
+  ImageProvider? _getBackgroundImage(String? imagePath) {
+    if (imagePath == null) return null;
+
+    final imageType = ImageService.getImageType(imagePath);
+    switch (imageType) {
+      case ImageType.file:
+        return FileImage(File(imagePath));
+      case ImageType.network:
+        return NetworkImage(imagePath);
+      case ImageType.asset:
+        return AssetImage(imagePath);
+    }
   }
 
   @override
@@ -105,10 +122,9 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
             CircleAvatar(
               radius: 50,
               backgroundColor: Colors.grey.withValues(alpha: 0.2),
-              backgroundImage:
-                  (widget.selectedImagePath ?? pet.imagePath) != null
-                  ? AssetImage(widget.selectedImagePath ?? pet.imagePath!)
-                  : null,
+              backgroundImage: _getBackgroundImage(
+                widget.selectedImagePath ?? pet.imagePath,
+              ),
               child: (widget.selectedImagePath ?? pet.imagePath) == null
                   ? const Icon(
                       Icons.pets,

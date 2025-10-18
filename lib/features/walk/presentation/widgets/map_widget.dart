@@ -157,17 +157,17 @@ class MapWidgetController extends _$MapWidgetController {
     try {
       // 작은 사이즈로 원형 마커 생성 (메모리 효율적)
       final poopIcon = await CustomMarkerBuilder.createCircleMarker(
-        iconPath: 'assets/icons/poop.png',
+        iconPath: 'assets/icons/walk_logo/poop.png',
         backgroundColor: const Color(0xFFFF9800),
         size: 24,
       );
       final peeIcon = await CustomMarkerBuilder.createCircleMarker(
-        iconPath: 'assets/icons/marking.png',
+        iconPath: 'assets/icons/walk_logo/marking.png',
         backgroundColor: const Color(0xFF2196F3),
         size: 24,
       );
       final noEntryIcon = await CustomMarkerBuilder.createCircleMarker(
-        iconPath: 'assets/icons/no-entry.png',
+        iconPath: 'assets/icons/walk_logo/no-entry.png',
         backgroundColor: const Color(0xFFF44336),
         size: 24,
       );

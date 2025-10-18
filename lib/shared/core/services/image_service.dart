@@ -39,13 +39,17 @@ class ImageService {
       );
 
       if (image != null) {
+        // 画像を永続的なディレクトリにコピー
+        final persistentPath = await _copyToPersistentStorage(image.path);
+
         if (context.mounted) {
           SnackBarService.showSuccess(context, '이미지가 선택되었습니다');
         }
-        return image.path;
+        return persistentPath;
       }
       return null;
     } catch (e) {
+      debugPrint('pickFromGallery error: $e');
       if (context.mounted) {
         SnackBarService.showPermissionRequired(
           context,
@@ -78,13 +82,17 @@ class ImageService {
       );
 
       if (image != null) {
+        // 画像を永続的なディレクトリにコピー
+        final persistentPath = await _copyToPersistentStorage(image.path);
+
         if (context.mounted) {
           SnackBarService.showSuccess(context, '사진이 촬영되었습니다');
         }
-        return image.path;
+        return persistentPath;
       }
       return null;
     } catch (e) {
+      debugPrint('pickFromCamera error: $e');
       if (context.mounted) {
         final isSimulator = e.toString().contains('simulator');
         final message = isSimulator
@@ -102,6 +110,36 @@ class ImageService {
         }
       }
       return null;
+    }
+  }
+
+  /// 画像を永続的なストレージにコピー
+  static Future<String> _copyToPersistentStorage(String tempPath) async {
+    try {
+      final appDir = await getApplicationDocumentsDirectory();
+      final imagesDir = Directory('${appDir.path}/pet_images');
+
+      // ディレクトリが存在しない場合は作成
+      if (!await imagesDir.exists()) {
+        await imagesDir.create(recursive: true);
+      }
+
+      // ユニークなファイル名を生成
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final extension = tempPath.split('.').last;
+      final newFileName = 'pet_$timestamp.$extension';
+      final newPath = '${imagesDir.path}/$newFileName';
+
+      // ファイルをコピー
+      final File tempFile = File(tempPath);
+      await tempFile.copy(newPath);
+
+      debugPrint('📁 Image copied to persistent storage: $newPath');
+      return newPath;
+    } catch (e) {
+      debugPrint('Error copying image to persistent storage: $e');
+      // エラーの場合は元のパスを返す
+      return tempPath;
     }
   }
 
