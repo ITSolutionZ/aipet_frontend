@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 /// QR 코드 생성 탭 위젯
 class GenerateCodeTab extends StatelessWidget {
@@ -284,17 +285,39 @@ class QRCodeModal extends StatelessWidget {
                   color: AppColors.pointGray.withValues(alpha: 0.3),
                 ),
               ),
-              child: Container(
-                width: 200.0,
-                height: 200.0,
-                color: Colors.grey.withValues(alpha: 0.3),
-                child: const Center(
-                  child: Text(
-                    'QR Code\n(패키지 필요)',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
-                  ),
+              child: QrImageView(
+                data: qrData,
+                version: QrVersions.auto,
+                size: 180,
+                backgroundColor: AppColors.pureWhite,
+                dataModuleStyle: const QrDataModuleStyle(
+                  dataModuleShape: QrDataModuleShape.square,
+                  color: AppColors.pointDark,
                 ),
+                eyeStyle: const QrEyeStyle(
+                  eyeShape: QrEyeShape.square,
+                  color: AppColors.pointDark,
+                ),
+                gapless: false,
+                embeddedImage: const AssetImage(
+                  'assets/icons/logo_notinclude_text.png',
+                ),
+                embeddedImageStyle: const QrEmbeddedImageStyle(
+                  size: Size(40, 40), // QR 코드 크기의 약 22% (180의 22%)
+                  color: AppColors.pointBrown,
+                ),
+                errorStateBuilder: (cxt, err) {
+                  return const Center(
+                    child: Text(
+                      'QR 코드 생성 중 오류가 발생했습니다',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.pointGray,
+                        fontSize: 12,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(height: AppSpacing.lg),

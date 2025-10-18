@@ -10,6 +10,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'notification_controller_providers.g.dart';
 
+// Service Provider
+@riverpod
+NotificationService notificationService(Ref ref) {
+  return NotificationService();
+}
+
 // Repository Provider
 @riverpod
 NotificationRepository notificationRepository(Ref ref) {
@@ -58,19 +64,13 @@ RequestNotificationPermissionUseCase requestNotificationPermissionUseCase(
   Ref ref,
 ) {
   return RequestNotificationPermissionUseCase(
-    ref.read(
-      notificationRepositoryProvider as ProviderListenable<NotificationService>,
-    ),
+    ref.read(notificationServiceProvider),
   );
 }
 
 @riverpod
 TestNotificationUseCase testNotificationUseCase(Ref ref) {
-  return TestNotificationUseCase(
-    ref.read(
-      notificationRepositoryProvider as ProviderListenable<NotificationService>,
-    ),
-  );
+  return TestNotificationUseCase(ref.read(notificationServiceProvider));
 }
 
 // Controller Factory Providers - Consumer에서 WidgetRef를 받아서 사용

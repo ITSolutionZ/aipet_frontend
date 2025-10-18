@@ -46,6 +46,7 @@ class AppRouter {
 
   // 추가된 라우트 상수들
   static const String petProfileRoute = RouteConstants.petProfileRoute;
+  static const String petManagementRoute = RouteConstants.petManagementRoute;
   static const String petEditRoute = RouteConstants.petEditRoute;
   static const String profileEditRoute = RouteConstants.profileEditRoute;
   static const String accountDeleteRoute = RouteConstants.accountDeleteRoute;

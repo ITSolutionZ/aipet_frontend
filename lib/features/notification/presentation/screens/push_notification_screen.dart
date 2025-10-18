@@ -19,9 +19,11 @@ class PushNotificationScreen extends ConsumerStatefulWidget {
 
 class _PushNotificationScreenState
     extends ConsumerState<PushNotificationScreen> {
-  bool _foodAlarmEnabled = false;
-  bool _walkAlarmEnabled = false;
+  bool _foodAlarmEnabled = true;
+  bool _walkAlarmEnabled = true;
+  bool _medicineAlarmEnabled = true;
   bool _systemAlarmEnabled = true;
+  bool _reservationAlarmEnabled = true;
   bool _isLoading = true;
   late final NotificationUIController _uiController;
 
@@ -50,7 +52,9 @@ class _PushNotificationScreenState
             settings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ?? {};
         _foodAlarmEnabled = typeSettings['feeding'] as bool? ?? false;
         _walkAlarmEnabled = typeSettings['walk'] as bool? ?? false;
+        _medicineAlarmEnabled = typeSettings['medicine'] as bool? ?? false;
         _systemAlarmEnabled = typeSettings['system'] as bool? ?? true;
+        _reservationAlarmEnabled = typeSettings['reservation'] as bool? ?? true;
         _isLoading = false;
       });
     } catch (e) {
@@ -80,8 +84,9 @@ class _PushNotificationScreenState
       );
       newTypeSettings['feeding'] = _foodAlarmEnabled;
       newTypeSettings['walk'] = _walkAlarmEnabled;
+      newTypeSettings['medicine'] = _medicineAlarmEnabled;
       newTypeSettings['system'] = _systemAlarmEnabled;
-
+      newTypeSettings['reservation'] = _reservationAlarmEnabled;
       // 새로운 설정 생성
       final newSettings = Map<String, dynamic>.from(
         currentSettings.dataOrNull ?? {},
@@ -120,17 +125,25 @@ class _PushNotificationScreenState
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: AppColors.pointOffWhite,
-        appBar: SoftGradientDrawerAppBar(title: 'プッシュ通知'),
-        body: Center(child: CircularProgressIndicator()),
+        appBar: AppBar(
+          title: const Text('プッシュ通知'),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.pop(),
+          ),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      drawer: const AppDrawer(),
-      appBar: const SoftGradientDrawerAppBar(title: 'プッシュ通知'),
+      appBar: const SoftGradientAppBar(title: 'プッシュ通知'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -197,7 +210,30 @@ class _PushNotificationScreenState
                 });
               },
             ),
+            const SizedBox(height: AppSpacing.lg),
 
+            AlarmToggleComponent(
+              title: '薬のアラーム',
+              subtitle: '薬の服用時間をお知らせいたします',
+              value: _medicineAlarmEnabled,
+              onChanged: (value) {
+                setState(() {
+                  _medicineAlarmEnabled = value;
+                });
+              },
+            ),
+
+            const SizedBox(height: AppSpacing.lg),
+            AlarmToggleComponent(
+              title: '予約アラーム',
+              subtitle: '予約時間をお知らせいたします',
+              value: _reservationAlarmEnabled,
+              onChanged: (value) {
+                setState(() {
+                  _reservationAlarmEnabled = value;
+                });
+              },
+            ),
             const SizedBox(height: AppSpacing.lg),
 
             AlarmToggleComponent(

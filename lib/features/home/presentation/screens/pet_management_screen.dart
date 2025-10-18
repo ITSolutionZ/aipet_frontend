@@ -9,21 +9,26 @@ import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 /// 펫 관리 화면
-class PetManagementScreen extends ConsumerWidget {
+class PetManagementScreen extends ConsumerStatefulWidget {
   const PetManagementScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PetManagementScreen> createState() =>
+      _PetManagementScreenState();
+}
+
+class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
+  // 0: 관리중인 반려동물, 1: 숨김 반려동물
+  int _selectedTabIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
     final petsAsync = ref.watch(petProfilesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.pureWhite,
-        foregroundColor: AppColors.pointBrown,
-        elevation: 0,
-        title: const Text('반려동물관리'),
-        centerTitle: false,
+      appBar: SoftGradientAppBar(
+        title: '',
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back, color: AppColors.pointDark),
@@ -39,40 +44,76 @@ class PetManagementScreen extends ConsumerWidget {
         children: [
           // 탭 섹션
           Container(
-            color: AppColors.pureWhite,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.pureWhite,
+                  AppColors.pointOffWhite.withValues(alpha: 0.9),
+                  AppColors.pureWhite,
+                ],
+                stops: const [0.0, 0.5, 1.0],
+              ),
+            ),
             child: Row(
               children: [
+                // 관리중인 반려동물 탭
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: AppColors.pointBrown,
-                          width: 2,
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedTabIndex = 0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: _selectedTabIndex == 0
+                                ? AppColors.pointBrown
+                                : AppColors.pointOffWhite,
+                            width: 2,
+                          ),
                         ),
                       ),
-                    ),
-                    child: const Text(
-                      '관리중인 반려동물',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.pointDark,
+                      child: Text(
+                        '관리중인 반려동물',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: _selectedTabIndex == 0
+                              ? AppColors.pointDark
+                              : AppColors.pointGray,
+                        ),
                       ),
                     ),
                   ),
                 ),
+                // 숨김 반려동물 탭
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: const Text(
-                      '숨김 반려동물',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.pointGray,
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedTabIndex = 1),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: _selectedTabIndex == 1
+                                ? AppColors.pointBrown
+                                : AppColors.pointOffWhite,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        '숨김 반려동물',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: _selectedTabIndex == 1
+                              ? AppColors.pointDark
+                              : AppColors.pointGray,
+                        ),
                       ),
                     ),
                   ),
@@ -83,7 +124,18 @@ class PetManagementScreen extends ConsumerWidget {
 
           // 버튼 섹션
           Container(
-            color: AppColors.pureWhite,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.pureWhite,
+                  AppColors.pointOffWhite.withValues(alpha: 0.7),
+                  AppColors.pureWhite,
+                ],
+                stops: const [0.0, 0.5, 1.0],
+              ),
+            ),
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
@@ -133,17 +185,37 @@ class PetManagementScreen extends ConsumerWidget {
           // 펫 리스트 섹션
           Expanded(
             child: Container(
-              color: AppColors.pointOffWhite,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.pointOffWhite.withValues(alpha: 0.9),
+                    AppColors.pointOffWhite,
+                    AppColors.pointOffWhite.withValues(alpha: 0.8),
+                  ],
+                  stops: const [0.0, 0.5, 1.0],
+                ),
+              ),
               padding: const EdgeInsets.all(16),
               child: petsAsync.when(
                 data: (pets) {
-                  if (pets.isEmpty) {
+                  // 탭에 따라 펫 필터링
+                  final filteredPets = _selectedTabIndex == 0
+                      ? pets
+                            .where((p) => p.petStatus != PetStatus.hidden)
+                            .toList()
+                      : pets
+                            .where((p) => p.petStatus == PetStatus.hidden)
+                            .toList();
+
+                  if (filteredPets.isEmpty) {
                     return _buildEmptyState(context);
                   }
                   return ListView.builder(
-                    itemCount: pets.length,
+                    itemCount: filteredPets.length,
                     itemBuilder: (context, index) {
-                      return _buildPetCard(context, pets[index]);
+                      return _buildPetCard(context, filteredPets[index]);
                     },
                   );
                 },
@@ -163,140 +235,327 @@ class PetManagementScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/daily-pet-registration'),
-        backgroundColor: AppColors.pointDark,
-        child: const Icon(Icons.add, color: AppColors.pureWhite),
+        backgroundColor: AppColors.pointBrown,
+        foregroundColor: AppColors.pureWhite,
+        child: const Icon(Icons.add),
       ),
     );
   }
 
   /// 펫 카드 위젯
   Widget _buildPetCard(BuildContext context, PetProfileEntity pet) {
-    return GestureDetector(
-      onTap: () => _navigateToEditScreen(context, pet),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.pureWhite,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.pointGray.withValues(alpha: 0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+    return Dismissible(
+      key: Key('pet_${pet.id}'),
+      direction: DismissDirection.horizontal,
+      background: _buildSwipeBackground(true), // 삭제 배경
+      secondaryBackground: _buildSwipeBackground(false), // 숨김 배경
+      resizeDuration: const Duration(milliseconds: 200),
+      confirmDismiss: (direction) async {
+        return _showSwipeActionDialog(context, pet, direction);
+      },
+      onDismissed: (direction) {
+        if (direction == DismissDirection.startToEnd) {
+          _deletePet(context, pet);
+        } else {
+          _hidePet(context, pet);
+        }
+      },
+      child: GestureDetector(
+        onTap: () => _navigateToEditScreen(context, pet),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.pureWhite,
+                AppColors.pointOffWhite.withValues(alpha: 0.3),
+                AppColors.pureWhite,
+              ],
+              stops: const [0.0, 0.5, 1.0],
             ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // 펫 이미지
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: AppColors.pointOffWhite,
-                borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.pointGray.withValues(alpha: 0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-              child: pet.imagePath != null && pet.imagePath!.isNotEmpty
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: _buildPetImage(pet),
-                    )
-                  : const Icon(
-                      Icons.pets,
-                      color: AppColors.pointGray,
-                      size: 30,
-                    ),
-            ),
-            const SizedBox(width: 12),
-
-            // 펫 정보
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        pet.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.pointDark,
-                        ),
+            ],
+          ),
+          child: Row(
+            children: [
+              // 펫 이미지
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: AppColors.pointOffWhite,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: pet.imagePath != null && pet.imagePath!.isNotEmpty
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: _buildPetImage(pet),
+                      )
+                    : const Icon(
+                        Icons.pets,
+                        color: AppColors.pointGray,
+                        size: 30,
                       ),
-                      const SizedBox(width: 8),
-                      const Icon(
-                        Icons.edit,
-                        size: 16,
+              ),
+              const SizedBox(width: 12),
+
+              // 펫 정보
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          pet.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.pointDark,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(
+                          Icons.edit,
+                          size: 16,
+                          color: AppColors.pointGray,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '나이 • ${pet.typeName}',
+                      style: const TextStyle(
+                        fontSize: 12,
                         color: AppColors.pointGray,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '나이 • ${pet.typeName}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.pointGray,
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '몸무게 • ${pet.weight}kg',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.pointGray,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  const Text(
-                    '등록요청자 • 없음',
-                    style: TextStyle(fontSize: 12, color: AppColors.pointGray),
-                  ),
-                  const SizedBox(height: 2),
-                  const Text(
-                    '의료병원 • 없음',
-                    style: TextStyle(fontSize: 12, color: AppColors.pointGray),
-                  ),
-                ],
-              ),
-            ),
-
-            // 공유 버튼
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.pointBrown.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: GestureDetector(
-                onTap: () => _showQRCode(context, pet),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.folder_shared_outlined,
-                      size: 14,
-                      color: AppColors.pointBrown,
-                    ),
-                    SizedBox(width: 4),
+                    const SizedBox(height: 2),
                     Text(
-                      '공동관리자 초대하기',
+                      '몸무게 • ${pet.weight}kg',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.pointGray,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    const Text(
+                      '등록요청자 • 없음',
                       style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.pointBrown,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        color: AppColors.pointGray,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    const Text(
+                      '의료병원 • 없음',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.pointGray,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+
+              // 공유 버튼
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.pointBrown.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: GestureDetector(
+                  onTap: () => _showQRCode(context, pet),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.folder_shared_outlined,
+                        size: 14,
+                        color: AppColors.pointBrown,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        '공동관리자 초대하기',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppColors.pointBrown,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  /// 스와이프 배경 위젯
+  Widget _buildSwipeBackground(bool isDelete) {
+    return Container(
+      alignment: isDelete ? Alignment.centerLeft : Alignment.centerRight,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: isDelete ? Alignment.centerLeft : Alignment.centerRight,
+          end: isDelete ? Alignment.centerRight : Alignment.centerLeft,
+          colors: isDelete
+              ? [
+                  Colors.red.withValues(alpha: 0.8),
+                  Colors.red.withValues(alpha: 0.6),
+                ]
+              : [
+                  Colors.orange.withValues(alpha: 0.8),
+                  Colors.orange.withValues(alpha: 0.6),
+                ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            isDelete ? Icons.delete : Icons.visibility_off,
+            color: Colors.white,
+            size: 24,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            isDelete ? '삭제' : '숨김',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 스와이프 액션 다이얼로그 표시
+  Future<bool> _showSwipeActionDialog(
+    BuildContext context,
+    PetProfileEntity pet,
+    DismissDirection direction,
+  ) async {
+    final isDelete = direction == DismissDirection.startToEnd;
+    final action = isDelete ? '삭제' : '숨김';
+    final message = isDelete
+        ? '${pet.name}을(를) 영구적으로 삭제하시겠습니까?'
+        : '${pet.name}을(를) 숨김 처리하시겠습니까?';
+
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('펫 $action'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('취소'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: TextButton.styleFrom(
+                  foregroundColor: isDelete ? Colors.red : Colors.orange,
+                ),
+                child: Text(action),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
+  /// 펫 삭제 처리
+  void _deletePet(BuildContext context, PetProfileEntity pet) {
+    final petName = pet.name;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    // 리포지토리를 통해 삭제
+    final notifier = ref.read(petProfilesProvider.notifier);
+    notifier
+        .deletePet(pet.id)
+        .then((_) {
+          // mounted 체크 후 성공 메시지 표시
+          if (mounted) {
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Text('$petName이(가) 삭제되었습니다'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        })
+        .catchError((error) {
+          // mounted 체크 후 에러 메시지 표시
+          if (mounted) {
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Text('삭제 중 오류가 발생했습니다: ${error.toString()}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        });
+  }
+
+  /// 펫 숨김 처리
+  void _hidePet(BuildContext context, PetProfileEntity pet) {
+    // 펫 상태를 숨김으로 업데이트
+    final hiddenPet = pet.copyWith(petStatus: PetStatus.hidden);
+    final petName = pet.name;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    // 리포지토리를 통해 업데이트
+    final notifier = ref.read(petProfilesProvider.notifier);
+    notifier
+        .updatePet(hiddenPet)
+        .then((_) {
+          // mounted 체크 후 성공 메시지 표시 및 탭 전환
+          if (mounted) {
+            // 숨김 탭으로 자동 전환
+            setState(() {
+              _selectedTabIndex = 1;
+            });
+
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Text('$petName이(가) 숨김 처리되었습니다'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+        })
+        .catchError((error) {
+          // mounted 체크 후 에러 메시지 표시
+          if (mounted) {
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Text('숨김 처리 중 오류가 발생했습니다: ${error.toString()}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        });
   }
 
   /// 빈 상태 위젯
@@ -384,8 +643,13 @@ class PetManagementScreen extends ConsumerWidget {
                     color: AppColors.pointDark,
                   ),
                   gapless: false,
-                  embeddedImage: null,
-                  embeddedImageStyle: null,
+                  embeddedImage: const AssetImage(
+                    'assets/icons/logo_notinclude_text.png',
+                  ),
+                  embeddedImageStyle: const QrEmbeddedImageStyle(
+                    size: Size(40, 40), // QR 코드 크기의 약 22% (180의 22%)
+                    color: AppColors.pointBrown,
+                  ),
                   errorStateBuilder: (cxt, err) {
                     return const Center(
                       child: Text(

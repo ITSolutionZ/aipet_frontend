@@ -30,12 +30,19 @@ class PetCardSectionWidget extends ConsumerWidget {
           // ペットデータに応じて表示を切り替え
           petsAsync.when(
             data: (pets) {
-              if (pets.isEmpty) {
+              // 🚫 사망한 펫 필터링 (드로워에서 표시하면 안됨)
+              final activePets = pets
+                  .where(
+                    (pet) => pet.petStatus != PetStatus.deceased,
+                  )
+                  .toList();
+
+              if (activePets.isEmpty) {
                 // ペットがいない場合は登録促進メッセージ
                 return _buildEmptyPetState(context);
               } else {
                 // 複数ペット対応のスライド可能なカードビュー
-                return _buildPetCardsSlider(context, pets);
+                return _buildPetCardsSlider(context, activePets);
               }
             },
             loading: () => _buildLoadingState(),
