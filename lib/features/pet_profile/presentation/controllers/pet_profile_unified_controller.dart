@@ -302,22 +302,28 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
     debugPrint('📋 forbiddenIngredients: ${formData['forbiddenIngredients']}');
 
     // 기존 additionalInfo의 모든 필드를 보존
-    final updatedAdditionalInfo = Map<String, dynamic>.from(pet.additionalInfo ?? {});
+    final updatedAdditionalInfo = Map<String, dynamic>.from(
+      pet.additionalInfo ?? {},
+    );
 
     // 폼에서 수정된 필드들 업데이트
-    updatedAdditionalInfo['appearance'] = formData['appearance'] as String? ?? '';
-    updatedAdditionalInfo['microchipId'] = formData['microchipId'] as String? ?? '';
+    updatedAdditionalInfo['appearance'] =
+        formData['appearance'] as String? ?? '';
+    updatedAdditionalInfo['microchipId'] =
+        formData['microchipId'] as String? ?? '';
 
     // ✅ List 타입 필드들 안전하게 업데이트
     if (formData.containsKey('forbiddenIngredients')) {
       final forbiddenIngredients = formData['forbiddenIngredients'];
       if (forbiddenIngredients is List && forbiddenIngredients.isNotEmpty) {
-        updatedAdditionalInfo['forbiddenIngredients'] =
-            List<String>.from(forbiddenIngredients.whereType<String>());
+        updatedAdditionalInfo['forbiddenIngredients'] = List<String>.from(
+          forbiddenIngredients.whereType<String>(),
+        );
         debugPrint(
           '✅ forbiddenIngredients updated: ${updatedAdditionalInfo['forbiddenIngredients']}',
         );
-      } else if (forbiddenIngredients == null || forbiddenIngredients is! List) {
+      } else if (forbiddenIngredients == null ||
+          forbiddenIngredients is! List) {
         // null 또는 리스트가 아닌 경우 제거
         updatedAdditionalInfo.remove('forbiddenIngredients');
       }
@@ -328,7 +334,9 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
       if (formData.containsKey(key)) {
         final value = formData[key];
         if (value is List && value.isNotEmpty) {
-          updatedAdditionalInfo[key] = List<String>.from(value.whereType<String>());
+          updatedAdditionalInfo[key] = List<String>.from(
+            value.whereType<String>(),
+          );
         } else if (value == null || value is! List) {
           updatedAdditionalInfo.remove(key);
         }

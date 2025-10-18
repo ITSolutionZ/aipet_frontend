@@ -350,7 +350,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     return MapWidget(
       key: const ValueKey('walk_map_widget'),
       walkRecords: walkRecords,
-      selectedPet: selectedPets.isNotEmpty ? selectedPets.first : null,
+      // selectedPet은 MapWidget 내부에서 selectedPetsProvider를 watch하여 처리
       petActivities: _petActivities,
       onActivityMarkerTap: (index) => _deleteActivityMarker(index),
     );

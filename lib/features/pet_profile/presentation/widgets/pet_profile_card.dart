@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -213,7 +215,7 @@ class PetProfileHeader extends StatelessWidget {
               radius: 50,
               backgroundColor: AppColors.pointOffWhite,
               backgroundImage: (selectedImagePath ?? imagePath) != null
-                  ? AssetImage(selectedImagePath ?? imagePath!)
+                  ? _getImageProvider(selectedImagePath ?? imagePath!)
                   : null,
               child: (selectedImagePath ?? imagePath) == null
                   ? Image.asset(
@@ -298,5 +300,16 @@ class PetProfileHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  /// 이미지 경로에 따라 적절한 ImageProvider 반환
+  ImageProvider _getImageProvider(String imagePath) {
+    if (imagePath.startsWith('assets/')) {
+      return AssetImage(imagePath);
+    } else if (imagePath.startsWith('http')) {
+      return NetworkImage(imagePath);
+    } else {
+      return FileImage(File(imagePath));
+    }
   }
 }

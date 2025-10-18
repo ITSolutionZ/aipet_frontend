@@ -60,13 +60,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // 로고 섹션
-                const Column(
+                Column(
                   children: [
-                    SizedBox(height: AppSpacing.lg),
-                    AuthLogo(),
-                    SizedBox(height: AppSpacing.lg),
-                    Divider(),
-                    SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
+                    const AuthLogo(width: 120, height: 120),
+                    const SizedBox(height: AppSpacing.md),
+                    // 앱 이름
+                    Text(
+                      'AIPET',
+                      style: AppFonts.titleLarge.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.pointBrown,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'ITSOLUTIONZ',
+                      style: AppFonts.bodyMedium.copyWith(
+                        color: AppColors.pointBrown.withValues(alpha: 0.7),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    const Divider(),
+                    const SizedBox(height: AppSpacing.lg),
                   ],
                 ),
 
