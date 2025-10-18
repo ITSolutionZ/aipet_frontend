@@ -10,6 +10,12 @@ class WalkRecordCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formattedTime = _formatTime(walkRecord.startTime);
+    final formattedDuration = _formatDuration(walkRecord.calculatedDuration);
+    final formattedDistance = _formatDistance(walkRecord.distance ?? 0.0);
+    final statusLabel = _getStatusLabel(walkRecord.status);
+    final statusColor = _getStatusColor(walkRecord.status);
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: InkWell(
@@ -23,14 +29,33 @@ class WalkRecordCardWidget extends StatelessWidget {
               // 산책 기록 헤더
               Row(
                 children: [
-                  const Icon(Icons.pets, color: Colors.blue),
-                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: statusColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(Icons.pets, color: statusColor, size: 20),
+                  ),
+                  const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      '산책 기록',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          walkRecord.petName,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          statusLabel,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: statusColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const Icon(Icons.chevron_right, color: Colors.grey),
@@ -39,24 +64,31 @@ class WalkRecordCardWidget extends StatelessWidget {
               const SizedBox(height: 12),
 
               // 산책 정보
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.access_time, size: 16, color: Colors.grey),
-                  SizedBox(width: 4),
+                  const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                  const SizedBox(width: 4),
                   Text(
-                    '시간 정보가 여기에 표시됩니다',
-                    style: TextStyle(color: Colors.grey),
+                    formattedTime,
+                    style: const TextStyle(color: Colors.grey, fontSize: 13),
+                  ),
+                  const SizedBox(width: 16),
+                  const Icon(Icons.timer, size: 16, color: Colors.grey),
+                  const SizedBox(width: 4),
+                  Text(
+                    formattedDuration,
+                    style: const TextStyle(color: Colors.grey, fontSize: 13),
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              const Row(
+              const SizedBox(height: 8),
+              Row(
                 children: [
-                  Icon(Icons.route, size: 16, color: Colors.grey),
-                  SizedBox(width: 4),
+                  const Icon(Icons.route, size: 16, color: Colors.grey),
+                  const SizedBox(width: 4),
                   Text(
-                    '경로 정보가 여기에 표시됩니다',
-                    style: TextStyle(color: Colors.grey),
+                    '$formattedDistance km (経路: ${walkRecord.route.length}ポイント)',
+                    style: const TextStyle(color: Colors.grey, fontSize: 13),
                   ),
                 ],
               ),
@@ -65,5 +97,44 @@ class WalkRecordCardWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatTime(DateTime dateTime) {
+    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  String _formatDuration(Duration duration) {
+    final minutes = duration.inMinutes;
+    return '$minutes分';
+  }
+
+  String _formatDistance(double distance) {
+    return distance.toStringAsFixed(2);
+  }
+
+  String _getStatusLabel(WalkStatus status) {
+    switch (status) {
+      case WalkStatus.completed:
+        return '完了';
+      case WalkStatus.inProgress:
+        return '進行中';
+      case WalkStatus.paused:
+        return '一時停止';
+      case WalkStatus.cancelled:
+        return 'キャンセル';
+    }
+  }
+
+  Color _getStatusColor(WalkStatus status) {
+    switch (status) {
+      case WalkStatus.completed:
+        return Colors.green;
+      case WalkStatus.inProgress:
+        return Colors.blue;
+      case WalkStatus.paused:
+        return Colors.orange;
+      case WalkStatus.cancelled:
+        return Colors.red;
+    }
   }
 }
