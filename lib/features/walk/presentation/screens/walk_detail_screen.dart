@@ -170,22 +170,72 @@ class WalkDetailScreen extends ConsumerWidget {
           // 지도 위젯
           WalkDetailMapWidget(walkRecord: currentWalkRecord),
 
-          // 하단 정보 카드
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Consumer(
-              builder: (context, ref, child) {
-                // Provider에서 최신 데이터 가져오기
-                final walkRecords = ref.watch(walkRecordsProvider);
-                final latestWalkRecord = walkRecords.firstWhere(
-                  (r) => r.id == currentWalkRecord.id,
-                  orElse: () => currentWalkRecord,
-                );
-                return WalkInfoBottomSheet(walkRecord: latestWalkRecord);
-              },
-            ),
+          // 드래그 가능한 바텀시트
+          Consumer(
+            builder: (context, ref, child) {
+              // Provider에서 최신 데이터 가져오기
+              final walkRecords = ref.watch(walkRecordsProvider);
+              final latestWalkRecord = walkRecords.firstWhere(
+                (r) => r.id == currentWalkRecord.id,
+                orElse: () => currentWalkRecord,
+              );
+              return DraggableScrollableSheet(
+                initialChildSize: 0.3, // 30% 높이로 시작
+                minChildSize: 0.15, // 최소 15% (최소화)
+                maxChildSize: 0.8, // 최대 80% (확장)
+                snap: true,
+                snapSizes: const [0.15, 0.3, 0.8], // 스냅 포인트
+                builder: (context, scrollController) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
+                    child: CustomScrollView(
+                      controller: scrollController,
+                      slivers: [
+                        // 핸들 바
+                        SliverAppBar(
+                          automaticallyImplyLeading: false,
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          flexibleSpace: Center(
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              margin: const EdgeInsets.only(top: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ),
+                          toolbarHeight: 28,
+                        ),
+
+                        // 산책 정보 내용
+                        SliverList(
+                          delegate: SliverChildListDelegate([
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                              child: WalkInfoBottomSheet(
+                                walkRecord: latestWalkRecord,
+                                showHeader: false, // 내부 핸들 바 숨김
+                              ),
+                            ),
+                          ]),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
