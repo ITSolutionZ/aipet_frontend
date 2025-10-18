@@ -243,19 +243,24 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   /// 통계 및 산책 기록 빌드 (데이터 없으면 empty 위젯)
   Widget _buildStatisticsAndRecords(List<WalkRecordEntity> walkRecords) {
     final selectedDate = _selectedDay ?? DateTime.now();
+    debugPrint('📅 캘린더: 선택 날짜=${selectedDate.year}-${selectedDate.month}-${selectedDate.day}, 전체 산책=${walkRecords.length}개');
+
     var recordsForDay = WalkCalendarDataHelper.getEventsForDay(
       selectedDate,
       walkRecords,
     );
+    debugPrint('📅 캘린더: 선택 날짜의 산책 기록=${recordsForDay.length}개');
 
     // 펫 필터 적용
     recordsForDay = WalkCalendarDataHelper.applyPetFilter(
       recordsForDay,
       _selectedPetFilter,
     );
+    debugPrint('📅 캘린더: 필터 후 산책 기록=${recordsForDay.length}개');
 
     // 데이터가 없으면 empty 위젯 표시
     if (recordsForDay.isEmpty) {
+      debugPrint('❌ 캘린더: 선택된 날짜에 산책 기록이 없습니다');
       return WalkCalendarUiHelper.buildEmptyState(selectedDate);
     }
 
