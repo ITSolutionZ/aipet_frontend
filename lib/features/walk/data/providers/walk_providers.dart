@@ -1,6 +1,9 @@
+import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
+import 'package:aipet_frontend/features/walk/data/services/mock_walk_data_generator.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'walk_providers.g.dart';
@@ -52,7 +55,11 @@ class SelectedPetsNotifier extends _$SelectedPetsNotifier {
 class WalkRecordsNotifier extends _$WalkRecordsNotifier {
   @override
   List<WalkRecordEntity> build() {
-    return [];
+    // TODO: 목업 데이터 삭제 - 테스트 완료 후 제거
+    // 목업 데이터 생성 및 초기화
+    final mockRecords = MockWalkDataGenerator.generateMockWalkRecords();
+    debugPrint('🚀 목업 산책 데이터 생성 완료: ${mockRecords.length}개');
+    return mockRecords;
   }
 
   void addWalkRecord(WalkRecordEntity record) {
@@ -79,6 +86,12 @@ class WalkRecordsNotifier extends _$WalkRecordsNotifier {
 
   List<WalkRecordEntity> getRecentWalkRecords() {
     return state;
+  }
+
+  /// 모든 데이터 삭제 (테스트 완료 후)
+  void clearAllMockData() {
+    debugPrint('🗑️  목업 데이터 삭제 완료');
+    state = [];
   }
 }
 
