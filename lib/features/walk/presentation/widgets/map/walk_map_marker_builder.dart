@@ -195,33 +195,38 @@ class WalkMapMarkerBuilder {
       if (!notes.startsWith('activities:')) return [];
 
       final jsonStr = notes.substring('activities:'.length);
-      // 간단한 파싱: JSON 형식으로 변환하여 파싱
       final activities = <Map<String, dynamic>>[];
 
-      // 정규표현식으로 각 활동 객체 추출
-      final regex = RegExp(r'\{([^}]+)\}');
+      // 정규표현식으로 각 활동 객체 추출 (더 유연한 패턴)
+      final regex = RegExp(r'\{[^}]+\}');
       final matches = regex.allMatches(jsonStr);
 
       for (final match in matches) {
-        final activityJson = '{${match.group(1)}}';
+        final activityJson = match.group(0) ?? '';
         try {
-          // 간단한 파싱으로 latitude, longitude, type 추출
+          // 'type': 'poop', 'latitude': 37.7755, 'longitude': -122.4190 형식 파싱
           final typeMatch = RegExp(r"'type':\s*'([^']+)'").firstMatch(
             activityJson,
           );
-          final latMatch = RegExp(r"'latitude':\s*([^,}]+)").firstMatch(
-            activityJson,
-          );
-          final lngMatch = RegExp(r"'longitude':\s*([^,}]+)").firstMatch(
-            activityJson,
-          );
+          final latMatch = RegExp(
+            r"'latitude':\s*([0-9.-]+)",
+          ).firstMatch(activityJson);
+          final lngMatch = RegExp(
+            r"'longitude':\s*([0-9.-]+)",
+          ).firstMatch(activityJson);
 
           if (typeMatch != null && latMatch != null && lngMatch != null) {
-            activities.add({
-              'type': typeMatch.group(1),
-              'latitude': double.tryParse(latMatch.group(1) ?? '0') ?? 0.0,
-              'longitude': double.tryParse(lngMatch.group(1) ?? '0') ?? 0.0,
-            });
+            final type = typeMatch.group(1) ?? 'unknown';
+            final lat = double.tryParse(latMatch.group(1) ?? '0') ?? 0.0;
+            final lng = double.tryParse(lngMatch.group(1) ?? '0') ?? 0.0;
+
+            if (lat != 0 && lng != 0) {
+              activities.add({
+                'type': type,
+                'latitude': lat,
+                'longitude': lng,
+              });
+            }
           }
         } catch (e) {
           // 파싱 실패시 무시

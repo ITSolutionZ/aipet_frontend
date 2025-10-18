@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_marker_builder.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_polyline_builder.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -25,16 +26,30 @@ class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
     _initializeMap();
   }
 
-  void _initializeMap() {
+  void _initializeMap() async {
     // Polyline 생성
     polylines = WalkMapPolylineBuilder.buildAllPolylines(
       [widget.walkRecord],
     );
 
     // 마커 생성 (시작점, 종료점, 활동 마커)
-    markers = WalkMapMarkerBuilder.buildAllMarkers(
+    final initialMarkers = WalkMapMarkerBuilder.buildAllMarkers(
       walkRecords: [widget.walkRecord],
     );
+
+    debugPrint('🗺️ 마커 생성 완료: ${initialMarkers.length}개');
+    debugPrint('📍 notes 데이터: ${widget.walkRecord.notes}');
+
+    // 금지구역 마커 로드 및 추가
+    markers = await WalkMapMarkerBuilder.loadAndBuildNoEntryZoneMarkers(
+      initialMarkers,
+    );
+
+    debugPrint('🚫 최종 마커 개수: ${markers.length}개 (금지구역 포함)');
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
