@@ -8,8 +8,9 @@ class MockWalkDataGenerator {
   /// 목업 산책 기록 생성 (테스트용)
   static List<WalkRecordEntity> generateMockWalkRecords() {
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
 
-    // 산책 1: 완료된 산책 (경로 포함)
+    // 산책 1: 완료된 산책 (경로 포함) - 오늘 오전 10시
     final walk1Route = _generateMockRoute(
       startLat: 37.7749,
       startLng: -122.4194,
@@ -21,8 +22,8 @@ class MockWalkDataGenerator {
       id: 'walk_001',
       petId: 'pet1',
       petName: 'マックス',
-      startTime: now.subtract(const Duration(days: 1, hours: 10)),
-      endTime: now.subtract(const Duration(days: 1, hours: 9, minutes: 30)),
+      startTime: today.add(const Duration(hours: 10)),
+      endTime: today.add(const Duration(hours: 10, minutes: 30)),
       duration: const Duration(minutes: 30),
       distance: 2.5,
       route: walk1Route,
@@ -31,11 +32,11 @@ class MockWalkDataGenerator {
         {'type': 'marking', 'lat': 37.7760, 'lng': -122.4185},
       ]),
       status: WalkStatus.completed,
-      createdAt: now.subtract(const Duration(days: 1, hours: 10)),
-      updatedAt: now.subtract(const Duration(days: 1, hours: 9)),
+      createdAt: today.add(const Duration(hours: 10)),
+      updatedAt: today.add(const Duration(hours: 10, minutes: 30)),
     );
 
-    // 산책 2: 진행 중인 산책
+    // 산책 2: 진행 중인 산책 - 오늘 오후 2시
     final walk2Route = _generateMockRoute(
       startLat: 37.7749,
       startLng: -122.4194,
@@ -47,7 +48,7 @@ class MockWalkDataGenerator {
       id: 'walk_002',
       petId: 'pet1',
       petName: 'マックス',
-      startTime: now.subtract(const Duration(minutes: 15)),
+      startTime: today.add(const Duration(hours: 14)),
       endTime: null,
       duration: null,
       distance: 1.2,
@@ -56,11 +57,11 @@ class MockWalkDataGenerator {
         {'type': 'poop', 'lat': 37.7752, 'lng': -122.4192},
       ]),
       status: WalkStatus.inProgress,
-      createdAt: now.subtract(const Duration(minutes: 15)),
+      createdAt: today.add(const Duration(hours: 14)),
       updatedAt: now,
     );
 
-    // 산책 3: 일시정지된 산책
+    // 산책 3: 일시정지된 산책 - 오늘 오후 4시
     final walk3Route = _generateMockRoute(
       startLat: 37.7749,
       startLng: -122.4194,
@@ -72,7 +73,7 @@ class MockWalkDataGenerator {
       id: 'walk_003',
       petId: 'pet2',
       petName: 'ベラ',
-      startTime: now.subtract(const Duration(hours: 3)),
+      startTime: today.add(const Duration(hours: 16)),
       endTime: null,
       duration: const Duration(minutes: 25),
       distance: 1.8,
@@ -83,11 +84,11 @@ class MockWalkDataGenerator {
         {'type': 'marking', 'lat': 37.7756, 'lng': -122.4191},
       ]),
       status: WalkStatus.paused,
-      createdAt: now.subtract(const Duration(hours: 3)),
-      updatedAt: now.subtract(const Duration(minutes: 5)),
+      createdAt: today.add(const Duration(hours: 16)),
+      updatedAt: today.add(const Duration(hours: 16, minutes: 25)),
     );
 
-    // 산책 4: 취소된 산책
+    // 산책 4: 취소된 산책 - 어제
     final walk4Route = _generateMockRoute(
       startLat: 37.7749,
       startLng: -122.4194,
@@ -95,19 +96,20 @@ class MockWalkDataGenerator {
       distanceKm: 0.8,
     );
 
+    final yesterday = today.subtract(const Duration(days: 1));
     final walk4 = WalkRecordEntity(
       id: 'walk_004',
       petId: 'pet1',
       petName: 'マックス',
-      startTime: now.subtract(const Duration(days: 2, hours: 2)),
-      endTime: now.subtract(const Duration(days: 2, hours: 1, minutes: 45)),
+      startTime: yesterday.add(const Duration(hours: 10)),
+      endTime: yesterday.add(const Duration(hours: 10, minutes: 15)),
       duration: const Duration(minutes: 15),
       distance: 0.8,
       route: walk4Route,
       notes: null,
       status: WalkStatus.cancelled,
-      createdAt: now.subtract(const Duration(days: 2, hours: 2)),
-      updatedAt: now.subtract(const Duration(days: 2, hours: 1, minutes: 45)),
+      createdAt: yesterday.add(const Duration(hours: 10)),
+      updatedAt: yesterday.add(const Duration(hours: 10, minutes: 15)),
     );
 
     return [walk1, walk2, walk3, walk4];
