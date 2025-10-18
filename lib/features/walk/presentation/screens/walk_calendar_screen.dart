@@ -113,11 +113,14 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                       selectedDayPredicate: (day) =>
                           isSameDay(_selectedDay, day),
                       calendarFormat: _calendarFormat,
-                      eventLoader: (day) =>
-                          WalkCalendarDataHelper.getEventsForDay(
-                            day,
-                            walkRecords,
-                          ),
+                      eventLoader: (day) {
+                        final events = WalkCalendarDataHelper.getEventsForDay(
+                          day,
+                          walkRecords,
+                        );
+                        // 완료된 산책만 필터링 (스탬프는 완료된 날에만)
+                        return events.where((e) => e.status == WalkStatus.completed).toList();
+                      },
                       onDaySelected: (selectedDay, focusedDay) {
                         setState(() {
                           _selectedDay = selectedDay;
