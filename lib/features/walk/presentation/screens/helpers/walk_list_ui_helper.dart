@@ -276,21 +276,58 @@ class WalkListUiHelper {
           ],
         ),
         child: Center(
-          child: Image.asset(
-            iconPath,
-            width: 28,
-            height: 28,
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(
-                Icons.pets,
-                size: 28,
-                color: AppColors.pointBrown,
-              );
-            },
-          ),
+          child: _buildActivityIcon(iconPath),
         ),
       ),
     );
+  }
+
+  /// 활동 타입에 따른 아이콘 빌드
+  static Widget _buildActivityIcon(String iconPath) {
+    // iconPath에서 파일명만 추출
+    final fileName = iconPath.split('/').last.split('.').first.toLowerCase();
+
+    switch (fileName) {
+      case 'no-entry':
+        return Tooltip(
+          message: '立入禁止',
+          child: const Icon(
+            Icons.block,
+            size: 28,
+            color: AppColors.pointPink,
+          ),
+        );
+      case 'poop':
+        return const Tooltip(
+          message: '排便',
+          child: Text(
+            '💩',
+            style: TextStyle(fontSize: 28),
+          ),
+        );
+      case 'marking':
+        return Tooltip(
+          message: '排尿',
+          child: const Icon(
+            Icons.water_drop,
+            size: 28,
+            color: AppColors.pointBlue,
+          ),
+        );
+      default:
+        return Image.asset(
+          iconPath,
+          width: 28,
+          height: 28,
+          errorBuilder: (context, error, stackTrace) {
+            return const Icon(
+              Icons.pets,
+              size: 28,
+              color: AppColors.pointBrown,
+            );
+          },
+        );
+    }
   }
 
   /// 시작 버튼 빌드
