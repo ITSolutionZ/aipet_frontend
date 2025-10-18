@@ -97,7 +97,7 @@ class WalkAlertHelper {
                     const SizedBox(height: 4),
                     Text(
                       '$recommendedTime 分',
-                      style: AppTextStyles.bodyLarge.copyWith(
+                      style: AppTextStyles.bodyMedium.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -112,7 +112,7 @@ class WalkAlertHelper {
                     const SizedBox(height: 4),
                     Text(
                       '$elapsedMinutes 分',
-                      style: AppTextStyles.bodyLarge.copyWith(
+                      style: AppTextStyles.bodyMedium.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.pointPink,
                       ),
