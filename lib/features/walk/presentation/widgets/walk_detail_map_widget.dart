@@ -45,7 +45,10 @@ class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('🗺️ WalkDetailMapWidget: 산책 ID=${widget.walkRecord.id}, 경로 포인트=${widget.walkRecord.route.length}');
+
     if (widget.walkRecord.route.isEmpty) {
+      debugPrint('❌ 경로 데이터가 없습니다. 산책 기록: ${widget.walkRecord.toString().substring(0, 100)}...');
       return Container(
         height: 300,
         decoration: BoxDecoration(
