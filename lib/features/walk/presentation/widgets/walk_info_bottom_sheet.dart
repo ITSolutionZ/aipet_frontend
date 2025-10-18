@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 /// 산책 정보 바텀시트
 class WalkInfoBottomSheet extends StatelessWidget {
   final WalkRecordEntity walkRecord;
+  final bool showHeader;
 
-  const WalkInfoBottomSheet({super.key, required this.walkRecord});
+  const WalkInfoBottomSheet({
+    super.key,
+    required this.walkRecord,
+    this.showHeader = true,
+  });
 
   static Future<void> show(BuildContext context, WalkRecordEntity walkRecord) {
     return showModalBottomSheet(
@@ -114,18 +119,13 @@ class WalkInfoBottomSheet extends StatelessWidget {
     final duration = walkRecord.calculatedDuration;
     final distance = walkRecord.calculatedDistance;
 
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: const EdgeInsets.all(20),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 핸들 바
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 핸들 바 (showHeader가 true일 때만 표시)
+          if (showHeader) ...[
             Center(
               child: Container(
                 width: 40,
@@ -137,277 +137,278 @@ class WalkInfoBottomSheet extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+          ],
 
-            // 제목
-            const Text(
-              '산책 정보',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          // 제목
+          const Text(
+            '산책 정보',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+
+          // 펫 정보
+          Row(
+            children: [
+              const Icon(Icons.pets, color: Colors.blue, size: 24),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    walkRecord.petName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    walkRecord.dateString,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // 산책 시간 정보
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(height: 16),
-
-            // 펫 정보
-            Row(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.pets, color: Colors.blue, size: 24),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Text(
+                  '시간',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
                   children: [
+                    const Icon(Icons.access_time, size: 16, color: Colors.blue),
+                    const SizedBox(width: 8),
                     Text(
-                      walkRecord.petName,
+                      _formatTime(walkRecord.startTime),
                       style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
+                    const SizedBox(width: 8),
+                    const Text('~', style: TextStyle(fontSize: 14)),
+                    const SizedBox(width: 8),
                     Text(
-                      walkRecord.dateString,
+                      walkRecord.endTime != null
+                          ? _formatTime(walkRecord.endTime!)
+                          : '진행 중',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: walkRecord.endTime == null ? Colors.orange : Colors.black,
                       ),
                     ),
                   ],
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+          ),
+          const SizedBox(height: 12),
 
-            // 산책 시간 정보
+          // 산책 기간 및 거리
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '기간',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _formatDuration(duration),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '거리',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _formatDistance(distance),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // 활동 기록
+          if (activities.isNotEmpty) ...[
+            Text(
+              '활동 기록 (${activities.length})',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: activities.length,
+              itemBuilder: (context, index) {
+                final activity = activities[index];
+                final activityType = activity['type'] as String? ?? 'unknown';
+                final timestamp = activity['timestamp'] is String
+                    ? DateTime.parse(activity['timestamp'] as String)
+                    : DateTime.now();
+                final latitude = activity['latitude'] as double? ?? 0.0;
+                final longitude = activity['longitude'] as double? ?? 0.0;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _getActivityColor(activityType).withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: _getActivityColor(activityType).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Center(
+                              child: _getActivityIcon(activityType),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _getActivityLabel(activityType),
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: _getActivityColor(activityType),
+                                  ),
+                                ),
+                                Text(
+                                  _formatTime(timestamp),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on, size: 12, color: Colors.grey),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              '위치: $latitude, $longitude',
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.grey[600],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ] else ...[
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '시간',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w600,
-                    ),
+              child: Center(
+                child: Text(
+                  '기록된 활동이 없습니다',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey[600],
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.access_time, size: 16, color: Colors.blue),
-                      const SizedBox(width: 8),
-                      Text(
-                        _formatTime(walkRecord.startTime),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      const Text('~', style: TextStyle(fontSize: 14)),
-                      const SizedBox(width: 8),
-                      Text(
-                        walkRecord.endTime != null
-                            ? _formatTime(walkRecord.endTime!)
-                            : '진행 중',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: walkRecord.endTime == null ? Colors.orange : Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
-            const SizedBox(height: 12),
-
-            // 산책 기간 및 거리
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '기간',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _formatDuration(duration),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '거리',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _formatDistance(distance),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          ],
+          if (showHeader) ...[
             const SizedBox(height: 20),
-
-            // 활동 기록
-            if (activities.isNotEmpty) ...[
-              Text(
-                '활동 기록 (${activities.length})',
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: activities.length,
-                itemBuilder: (context, index) {
-                  final activity = activities[index];
-                  final activityType = activity['type'] as String? ?? 'unknown';
-                  final timestamp = activity['timestamp'] is String
-                      ? DateTime.parse(activity['timestamp'] as String)
-                      : DateTime.now();
-                  final latitude = activity['latitude'] as double? ?? 0.0;
-                  final longitude = activity['longitude'] as double? ?? 0.0;
-
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: _getActivityColor(activityType).withValues(alpha: 0.3),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: _getActivityColor(activityType).withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: _getActivityIcon(activityType),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _getActivityLabel(activityType),
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: _getActivityColor(activityType),
-                                    ),
-                                  ),
-                                  Text(
-                                    _formatTime(timestamp),
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(Icons.location_on, size: 12, color: Colors.grey),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                '위치: $latitude, $longitude',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey[600],
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ] else ...[
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Center(
-                  child: Text(
-                    '기록된 활동이 없습니다',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-            const SizedBox(height: 20),
-
-            // 닫기 버튼
+            // 닫기 버튼 (모달로 사용될 때만 표시)
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -416,7 +417,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
               ),
             ),
           ],
-        ),
+        ],
       ),
     );
   }
