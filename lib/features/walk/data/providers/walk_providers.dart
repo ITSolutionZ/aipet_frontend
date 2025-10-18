@@ -59,6 +59,12 @@ class WalkRecordsNotifier extends _$WalkRecordsNotifier {
     // 목업 데이터 생성 및 초기화
     final mockRecords = MockWalkDataGenerator.generateMockWalkRecords();
     debugPrint('🚀 목업 산책 데이터 생성 완료: ${mockRecords.length}개');
+
+    // 디버그: 각 산책 기록의 경로 확인
+    for (final record in mockRecords) {
+      debugPrint('  ✅ 산책 ${record.id}: 경로 포인트=${record.route.length}개, 상태=${record.status}, 펫=${record.petName}');
+    }
+
     return mockRecords;
   }
 

@@ -112,6 +112,20 @@ class MockWalkDataGenerator {
       updatedAt: yesterday.add(const Duration(hours: 10, minutes: 15)),
     );
 
+    debugPrint('═══════════════════════════════════════════');
+    debugPrint('🎬 목업 산책 데이터 최종 확인:');
+    for (final walk in [walk1, walk2, walk3, walk4]) {
+      debugPrint('  산책 ${walk.id}:');
+      debugPrint('    - 펫: ${walk.petName}');
+      debugPrint('    - 상태: ${walk.status}');
+      debugPrint('    - 경로 포인트: ${walk.route.length}개');
+      if (walk.route.isNotEmpty) {
+        debugPrint('      첫 번째: (${walk.route.first.latitude}, ${walk.route.first.longitude})');
+        debugPrint('      마지막: (${walk.route.last.latitude}, ${walk.route.last.longitude})');
+      }
+    }
+    debugPrint('═══════════════════════════════════════════');
+
     return [walk1, walk2, walk3, walk4];
   }
 
