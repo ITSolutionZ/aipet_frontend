@@ -24,6 +24,11 @@ class PetBasicInfoTabController extends _$PetBasicInfoTabController {
   /// 펫 정보로 컨트롤러 초기화
   void initialize(PetProfileEntity pet) {
     final controllers = _createTextControllers(pet);
+    final healthConditions =
+        (pet.additionalInfo?['healthConditions'] as List<dynamic>?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        [];
 
     state = state.copyWith(
       nameController: controllers.name,
@@ -32,6 +37,7 @@ class PetBasicInfoTabController extends _$PetBasicInfoTabController {
       microchipController: controllers.microchip,
       editingGender: pet.gender,
       editingWeight: pet.weight,
+      editingHealthConditions: healthConditions,
     );
   }
 
@@ -70,6 +76,20 @@ class PetBasicInfoTabController extends _$PetBasicInfoTabController {
     state = state.copyWith(selectedImagePath: imagePath);
   }
 
+  /// 건강 상태 토글
+  void toggleHealthCondition(String condition) {
+    final current = state.editingHealthConditions ?? [];
+    final updated = List<String>.from(current);
+
+    if (updated.contains(condition)) {
+      updated.remove(condition);
+    } else {
+      updated.add(condition);
+    }
+
+    state = state.copyWith(editingHealthConditions: updated);
+  }
+
   /// 텍스트 컨트롤러들 정리
   void _disposeControllers() {
     state.nameController?.dispose();
@@ -88,6 +108,7 @@ class PetBasicInfoTabState {
   final String? editingGender;
   final double? editingWeight;
   final String? selectedImagePath;
+  final List<String>? editingHealthConditions;
 
   const PetBasicInfoTabState({
     this.nameController,
@@ -97,6 +118,7 @@ class PetBasicInfoTabState {
     this.editingGender,
     this.editingWeight,
     this.selectedImagePath,
+    this.editingHealthConditions,
   });
 
   PetBasicInfoTabState copyWith({
@@ -107,6 +129,7 @@ class PetBasicInfoTabState {
     String? editingGender,
     double? editingWeight,
     String? selectedImagePath,
+    List<String>? editingHealthConditions,
   }) {
     return PetBasicInfoTabState(
       nameController: nameController ?? this.nameController,
@@ -116,6 +139,7 @@ class PetBasicInfoTabState {
       editingGender: editingGender ?? this.editingGender,
       editingWeight: editingWeight ?? this.editingWeight,
       selectedImagePath: selectedImagePath ?? this.selectedImagePath,
+      editingHealthConditions: editingHealthConditions ?? this.editingHealthConditions,
     );
   }
 }
@@ -167,6 +191,8 @@ class PetBasicInfoTab extends ConsumerWidget {
         _buildMicrochipCard(context, ref, tabId),
         const SizedBox(height: AppSpacing.lg),
         _buildDateCard(),
+        const SizedBox(height: AppSpacing.lg),
+        _buildHealthStatusCard(context, ref, tabId),
         const SizedBox(height: AppSpacing.lg),
         _buildCaretakerSection(context),
         const SizedBox(height: AppSpacing.xl),
@@ -529,6 +555,141 @@ class PetBasicInfoTab extends ConsumerWidget {
   /// 생년월일 포맷팅
   String _formatBirthDate(DateTime birthDate) {
     return '${birthDate.year}年${birthDate.month}月${birthDate.day}日';
+  }
+
+  /// 건강 상태 카드
+  Widget _buildHealthStatusCard(BuildContext context, WidgetRef ref, String tabId) {
+    final tabState = ref.watch(petBasicInfoTabControllerProvider(tabId));
+    final healthConditions = tabState.editingHealthConditions ?? [];
+    final hasHealthConditions = healthConditions.isNotEmpty;
+
+    return GenericInfoCard.withIcon(
+      icon: Icons.health_and_safety,
+      iconColor: AppColors.pointGreen,
+      iconBackgroundColor: AppColors.pointGreen.withValues(alpha: 0.1),
+      title: '健康状態',
+      subtitle: hasHealthConditions ? healthConditions.join('、') : '未設定',
+      badge: hasHealthConditions ? '要注意' : '良好',
+      badgeColor: hasHealthConditions ? AppColors.pointPink : AppColors.pointGreen,
+      trailing: isEditMode ? _buildEditHealthStatusButton(context, ref, tabId) : null,
+    );
+  }
+
+  /// 건강 상태 편집 버튼
+  Widget _buildEditHealthStatusButton(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+  ) {
+    return IconButton(
+      icon: const Icon(Icons.edit, size: 16),
+      onPressed: () => _showHealthStatusDialog(context, ref, tabId),
+    );
+  }
+
+  /// 건강 상태 선택 다이얼로그
+  void _showHealthStatusDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => _buildHealthStatusDialog(context, ref, tabId),
+    );
+  }
+
+  /// 건강 상태 선택 다이얼로그 빌드
+  Widget _buildHealthStatusDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+  ) {
+    final tabState = ref.watch(petBasicInfoTabControllerProvider(tabId));
+    final selectedConditions = tabState.editingHealthConditions ?? [];
+
+    return AlertDialog(
+      title: const Text('健康状態を選択'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHealthConditionCheckbox(
+              context,
+              ref,
+              tabId,
+              'arthritis',
+              '関節炎',
+              selectedConditions,
+            ),
+            _buildHealthConditionCheckbox(
+              context,
+              ref,
+              tabId,
+              'heart_disease',
+              '心臓病',
+              selectedConditions,
+            ),
+            _buildHealthConditionCheckbox(
+              context,
+              ref,
+              tabId,
+              'obesity',
+              '肥満',
+              selectedConditions,
+            ),
+            _buildHealthConditionCheckbox(
+              context,
+              ref,
+              tabId,
+              'pregnancy',
+              '妊娠中',
+              selectedConditions,
+            ),
+            _buildHealthConditionCheckbox(
+              context,
+              ref,
+              tabId,
+              'recovery',
+              '回復中',
+              selectedConditions,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('キャンセル'),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('完了'),
+        ),
+      ],
+    );
+  }
+
+  /// 건강 상태 체크박스
+  Widget _buildHealthConditionCheckbox(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+    String condition,
+    String label,
+    List<String> selectedConditions,
+  ) {
+    final isSelected = selectedConditions.contains(condition);
+
+    return CheckboxListTile(
+      value: isSelected,
+      onChanged: (_) {
+        ref
+            .read(petBasicInfoTabControllerProvider(tabId).notifier)
+            .toggleHealthCondition(condition);
+      },
+      title: Text(label),
+    );
   }
 
   /// 보호자 섹션
