@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../data/providers/walk_providers.dart';
 import '../../domain/entities/pet_info.dart';
 import 'map/walk_map_camera_controller.dart';
 import 'map/walk_map_marker_builder.dart';
@@ -432,9 +433,15 @@ class MapWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // selectedPetsProvider를 직접 watch하여 내부에서 처리
+    final selectedPets = ref.watch(selectedPetsProvider);
+    final currentSelectedPet = selectedPets.isNotEmpty
+        ? selectedPets.first
+        : null;
+
     final params = MapWidgetParams(
       walkRecords: walkRecords,
-      selectedPet: selectedPet,
+      selectedPet: currentSelectedPet,
       petActivities: petActivities,
       onActivityMarkerTap: onActivityMarkerTap,
     );

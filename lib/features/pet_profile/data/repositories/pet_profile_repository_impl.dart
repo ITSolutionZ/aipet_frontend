@@ -303,15 +303,25 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
           petData['type']?.toString() ??
           'dog',
       breed: petData['breed']?.toString(),
-      birthDate: _parseDate(petData['birthDate']) ?? DateTime.now(),
+      // ✅ birth_date (snake_case) 필드도 확인
+      birthDate:
+          _parseDate(petData['birthDate']) ??
+          _parseDate(petData['birth_date']) ??
+          DateTime.now(),
       gender: petData['gender']?.toString() ?? 'unknown',
       weight: _parseDouble(petData['weight']) ?? 0.0,
       imagePath:
           petData['profile_image']?.toString() ??
           petData['imagePath']?.toString(),
       ownerId: petData['ownerId']?.toString() ?? 'unknown',
-      createdAt: _parseDate(petData['createdAt']) ?? DateTime.now(),
-      updatedAt: _parseDate(petData['updatedAt']) ?? DateTime.now(),
+      createdAt:
+          _parseDate(petData['createdAt']) ??
+          _parseDate(petData['created_at']) ??
+          DateTime.now(),
+      updatedAt:
+          _parseDate(petData['updatedAt']) ??
+          _parseDate(petData['updated_at']) ??
+          DateTime.now(),
       isActive: petData['isActive'] as bool? ?? true,
       additionalInfo: additionalInfo,
       neutered: petData['is_neutered'] == 1 || petData['neutered'] == true,
