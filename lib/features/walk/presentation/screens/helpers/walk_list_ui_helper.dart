@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -123,25 +125,65 @@ class WalkListUiHelper {
       ),
       child: ClipOval(
         child: pet.imagePath?.isNotEmpty == true
-            ? Image.asset(
-                pet.imagePath!,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(
-                    Icons.pets,
-                    color: isSelected
-                        ? AppColors.pointPink
-                        : AppColors.pointGray,
-                    size: 22,
-                  );
-                },
-              )
+            ? _buildImageWidget(pet.imagePath!, isSelected)
             : Icon(
                 Icons.pets,
                 color: isSelected ? AppColors.pointPink : AppColors.pointGray,
                 size: 22,
               ),
       ),
+    );
+  }
+
+  /// 이미지 타입에 따라 적절한 이미지 위젯 빌드
+  static Widget _buildImageWidget(String imagePath, bool isSelected) {
+    try {
+      // 1. assets 이미지인지 확인
+      if (imagePath.startsWith('assets/')) {
+        return Image.asset(
+          imagePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildDefaultIcon(isSelected);
+          },
+        );
+      }
+
+      // 2. 네트워크 이미지인지 확인
+      if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        return Image.network(
+          imagePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildDefaultIcon(isSelected);
+          },
+        );
+      }
+
+      // 3. 로컬 파일 경로인지 확인
+      if (imagePath.isNotEmpty) {
+        final file = File(imagePath);
+        return Image.file(
+          file,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildDefaultIcon(isSelected);
+          },
+        );
+      }
+
+      return _buildDefaultIcon(isSelected);
+    } catch (e) {
+      return _buildDefaultIcon(isSelected);
+    }
+  }
+
+  /// 기본 펫 아이콘 빌드
+  static Widget _buildDefaultIcon(bool isSelected) {
+    return Icon(
+      Icons.pets,
+      color: isSelected ? AppColors.pointPink : AppColors.pointGray,
+      size: 22,
     );
   }
 
@@ -424,7 +466,7 @@ class WalkListUiHelper {
   /// 권장 산책 시간 계산 (분 단위) - 펫의 상태를 고려하여 동적 조정
   static int _getRecommendedWalkTime(PetProfileEntity pet) {
     // 기본 산책 시간 계산
-    int baseWalkTime = _calculateBaseWalkTime(pet);
+    final baseWalkTime = _calculateBaseWalkTime(pet);
 
     // 펫의 상태에 따라 조정
     return _adjustWalkTimeByHealth(pet, baseWalkTime);
