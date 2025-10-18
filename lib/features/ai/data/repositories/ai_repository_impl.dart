@@ -324,8 +324,8 @@ class AiRepositoryImpl implements AiRepository {
   }
 
   @override
-  List<AiFavoriteQaEntity> getFavoriteQAs() {
-    // 로컬 저장소에서 즐겨찾기 QA 목록 가져오기 (동기적)
+  Future<List<AiFavoriteQaEntity>> getFavoriteQAs() async {
+    // 로컬 저장소에서 즐겨찾기 QA 목록 가져오기
     return _localStorageService.loadFavoriteQAs();
   }
 

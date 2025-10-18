@@ -167,6 +167,9 @@ class ImagePickerService {
       final String filePath = path.join(imagesDir, fileName);
       final File savedFile = await imageFile.copy(filePath);
 
+      debugPrint('💾 User profile image saved: $filePath');
+      debugPrint('💾 File exists: ${savedFile.existsSync()}');
+
       return savedFile.path;
     } catch (e) {
       debugPrint('이미지 저장 실패: $e');

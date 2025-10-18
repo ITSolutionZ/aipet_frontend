@@ -57,7 +57,7 @@ abstract class AiRepository {
   });
 
   /// 즐겨찾기 QA 목록 가져오기
-  List<AiFavoriteQaEntity> getFavoriteQAs();
+  Future<List<AiFavoriteQaEntity>> getFavoriteQAs();
 
   /// 채팅 요약 생성
   Future<AiChatSummaryEntity> createChatSummary(

@@ -268,6 +268,9 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
 
   /// 편집 폼 데이터 초기화
   Map<String, dynamic> _initializeEditFormData(PetProfileEntity pet) {
+    debugPrint('📋 Initializing edit form data for pet: ${pet.name}');
+    debugPrint('📋 additionalInfo: ${pet.additionalInfo}');
+
     return {
       'name': pet.name,
       'gender': pet.gender,
@@ -276,6 +279,16 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
       'appearance': pet.additionalInfo?['appearance'] ?? '',
       'microchipId': pet.additionalInfo?['microchipId'] ?? '',
       'neutered': pet.neutered ?? false,
+      // ✅ forbiddenIngredients와 다른 additionalInfo 필드들도 보존
+      'forbiddenIngredients': _safeCopyList(
+        pet.additionalInfo?['forbiddenIngredients'],
+      ),
+      'food': _safeCopyList(pet.additionalInfo?['food']),
+      'supplement': _safeCopyList(pet.additionalInfo?['supplement']),
+      'medication': _safeCopyList(pet.additionalInfo?['medication']),
+      'allergy': _safeCopyList(pet.additionalInfo?['allergy']),
+      // 추가 필드들
+      ...?_extractOtherAdditionalInfo(pet.additionalInfo),
     };
   }
 
@@ -284,18 +297,90 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
     final pet = state.selectedPet!;
     final formData = state.editFormData;
 
+    debugPrint('🔄 Building updated pet from form data');
+    debugPrint('📋 Form data keys: ${formData.keys.toList()}');
+    debugPrint('📋 forbiddenIngredients: ${formData['forbiddenIngredients']}');
+
+    // 기존 additionalInfo의 모든 필드를 보존
+    final updatedAdditionalInfo = Map<String, dynamic>.from(pet.additionalInfo ?? {});
+
+    // 폼에서 수정된 필드들 업데이트
+    updatedAdditionalInfo['appearance'] = formData['appearance'] as String? ?? '';
+    updatedAdditionalInfo['microchipId'] = formData['microchipId'] as String? ?? '';
+
+    // ✅ List 타입 필드들 안전하게 업데이트
+    if (formData.containsKey('forbiddenIngredients')) {
+      final forbiddenIngredients = formData['forbiddenIngredients'];
+      if (forbiddenIngredients is List && forbiddenIngredients.isNotEmpty) {
+        updatedAdditionalInfo['forbiddenIngredients'] =
+            List<String>.from(forbiddenIngredients.whereType<String>());
+        debugPrint(
+          '✅ forbiddenIngredients updated: ${updatedAdditionalInfo['forbiddenIngredients']}',
+        );
+      } else if (forbiddenIngredients == null || forbiddenIngredients is! List) {
+        // null 또는 리스트가 아닌 경우 제거
+        updatedAdditionalInfo.remove('forbiddenIngredients');
+      }
+    }
+
+    // 다른 List 필드들도 동일하게 처리
+    for (final key in ['food', 'supplement', 'medication', 'allergy']) {
+      if (formData.containsKey(key)) {
+        final value = formData[key];
+        if (value is List && value.isNotEmpty) {
+          updatedAdditionalInfo[key] = List<String>.from(value.whereType<String>());
+        } else if (value == null || value is! List) {
+          updatedAdditionalInfo.remove(key);
+        }
+      }
+    }
+
+    debugPrint('✅ Updated additionalInfo: $updatedAdditionalInfo');
+
     return pet.copyWith(
       name: formData['name'] as String? ?? pet.name,
       gender: formData['gender'] as String? ?? pet.gender,
       weight: formData['weight'] as double? ?? pet.weight,
       breed: formData['breed'] as String? ?? pet.breed,
       neutered: formData['neutered'] as bool? ?? pet.neutered,
-      additionalInfo: {
-        ...pet.additionalInfo ?? {},
-        'appearance': formData['appearance'] as String? ?? '',
-        'microchipId': formData['microchipId'] as String? ?? '',
-      },
+      additionalInfo: updatedAdditionalInfo,
       updatedAt: DateTime.now(),
     );
+  }
+
+  /// List 필드를 안전하게 복사
+  List<String>? _safeCopyList(dynamic value) {
+    if (value == null) return null;
+    if (value is List<String>) return List<String>.from(value);
+    if (value is List) {
+      return List<String>.from(value.whereType<String>());
+    }
+    return null;
+  }
+
+  /// additionalInfo에서 다른 필드들 추출
+  Map<String, dynamic>? _extractOtherAdditionalInfo(
+    Map<String, dynamic>? additionalInfo,
+  ) {
+    if (additionalInfo == null) return null;
+
+    final excludeKeys = {
+      'appearance',
+      'microchipId',
+      'forbiddenIngredients',
+      'food',
+      'supplement',
+      'medication',
+      'allergy',
+    };
+
+    final result = <String, dynamic>{};
+    additionalInfo.forEach((key, value) {
+      if (!excludeKeys.contains(key)) {
+        result[key] = value;
+      }
+    });
+
+    return result.isEmpty ? null : result;
   }
 }

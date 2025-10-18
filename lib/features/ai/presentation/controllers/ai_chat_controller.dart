@@ -139,7 +139,7 @@ class AiChatNotifier extends _$AiChatNotifier {
         try {
           // AiLocalStorageService를 직접 사용
           final aiLocalStorageService = AiLocalStorageService();
-          final favoriteQAs = aiLocalStorageService.loadFavoriteQAs();
+          final favoriteQAs = await aiLocalStorageService.loadFavoriteQAs();
           final favoriteIds = favoriteQAs.map((qa) => qa.id).toList();
 
           state = state.copyWith(

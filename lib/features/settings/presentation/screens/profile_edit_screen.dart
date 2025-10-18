@@ -173,11 +173,15 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
       // 선택된 이미지가 있으면 저장
       if (formState.selectedImage != null) {
+        debugPrint(
+          '📸 ProfileEditScreen - Selected image: ${formState.selectedImage!.path}',
+        );
         final fileName = 'profile_${DateTime.now().millisecondsSinceEpoch}.jpg';
         imagePath = await _imagePickerService.saveImageToAppDirectory(
           formState.selectedImage!,
           fileName,
         );
+        debugPrint('💾 ProfileEditScreen - Saved image path: $imagePath');
       }
 
       final success = await controller.saveProfile(

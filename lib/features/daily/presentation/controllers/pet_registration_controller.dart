@@ -464,6 +464,9 @@ class PetRegistrationController extends _$PetRegistrationController {
       debugPrint('📋 ================================');
 
       // 펫 프로필 저장
+      if (!ref.mounted) {
+        throw Exception('컨트롤러가 이미 제거되었습니다');
+      }
       final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
       final createdPet = await petProfilesNotifier.createPet(petEntity);
 
@@ -541,6 +544,9 @@ class PetRegistrationController extends _$PetRegistrationController {
       );
 
       // 펫 프로필 업데이트
+      if (!ref.mounted) {
+        throw Exception('컨트롤러가 이미 제거되었습니다');
+      }
       final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
       await petProfilesNotifier.updatePet(petEntity);
 

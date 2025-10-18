@@ -144,7 +144,6 @@ class PetBasicInfoTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tabId = _generateTabId();
-    _initializeController(ref, tabId);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -155,15 +154,6 @@ class PetBasicInfoTab extends ConsumerWidget {
   /// 탭 ID 생성
   String _generateTabId() {
     return DateTime.now().millisecondsSinceEpoch.toString();
-  }
-
-  /// 컨트롤러 초기화
-  void _initializeController(WidgetRef ref, String tabId) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(petBasicInfoTabControllerProvider(tabId).notifier)
-          .initialize(pet);
-    });
   }
 
   /// 탭 컨텐츠 구성
@@ -677,6 +667,11 @@ class PetBasicInfoTab extends ConsumerWidget {
     WidgetRef ref,
     String tabId,
   ) {
+    // 편집 모드일 때만 버튼 표시
+    if (!isEditMode) {
+      return const SizedBox.shrink();
+    }
+
     return ActionButtonGroup.toggle(
       isEditMode: isEditMode,
       onEdit: onToggleEdit,

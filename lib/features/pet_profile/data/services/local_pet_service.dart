@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aipet_frontend/shared/services/local_database_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
@@ -18,13 +20,36 @@ class LocalPetService {
         orderBy: 'created_at DESC',
       );
       debugPrint('🐾 LocalPetService.getAllPets: ${results.length}개 펫 조회 완료');
-      return results;
+
+      // additionalInfo를 JSON 문자열에서 Map으로 파싱
+      return results.map((pet) => _parsePetData(pet)).toList();
     } catch (error, stackTrace) {
       debugPrint('❌ LocalPetService.getAllPets: 에러 발생 - $error');
       debugPrint('📍 StackTrace: $stackTrace');
       // 에러 발생 시 빈 리스트 반환
       return [];
     }
+  }
+
+  /// 펫 데이터 파싱 - additionalInfo를 JSON에서 Map으로 변환
+  Map<String, dynamic> _parsePetData(Map<String, dynamic> petData) {
+    // read-onlyマップを変更可能なマップにコピー
+    final parsedData = Map<String, dynamic>.from(petData);
+
+    try {
+      if (parsedData['additionalInfo'] is String) {
+        final additionalInfoJson = parsedData['additionalInfo'] as String;
+        debugPrint('📖 Parsing additionalInfo from JSON: $additionalInfoJson');
+        parsedData['additionalInfo'] = jsonDecode(additionalInfoJson);
+        debugPrint('✅ additionalInfo parsed: ${parsedData['additionalInfo']}');
+      }
+    } catch (e) {
+      debugPrint('⚠️  additionalInfo 파싱 실패: $e');
+      debugPrint('⚠️  원본 데이터: ${parsedData['additionalInfo']}');
+      // 파싱 실패 시 빈 Map 사용
+      parsedData['additionalInfo'] = {};
+    }
+    return parsedData;
   }
 
   /// 특정 펫 조회
@@ -37,10 +62,14 @@ class LocalPetService {
         where: 'petId = ?',
         whereArgs: [petId],
       );
-      final result = results.isNotEmpty ? results.first : null;
+      var result = results.isNotEmpty ? results.first : null;
       debugPrint(
         '🐾 LocalPetService.getPetById: ${result != null ? "펫 발견" : "펫 없음"}',
       );
+      // additionalInfo 파싱
+      if (result != null) {
+        result = _parsePetData(result);
+      }
       return result;
     } catch (error, stackTrace) {
       debugPrint('❌ LocalPetService.getPetById: 에러 발생 - $error');
@@ -98,7 +127,10 @@ class LocalPetService {
       'is_active': 1,
       'created_at': now,
       'updated_at': now,
-      'data': petData.toString(),
+      // ✅ additionalInfo 전체를 JSON 문자열로 저장
+      'additionalInfo': jsonEncode(
+        _sanitizeAdditionalInfoForDb(additionalInfo),
+      ),
     };
 
     debugPrint('💾 LocalPetService.addPet - 저장할 데이터:');
@@ -126,14 +158,112 @@ class LocalPetService {
 
   /// 펫 정보 업데이트
   Future<bool> updatePet(String petId, Map<String, dynamic> petData) async {
-    final db = await _dbService.database;
-    final count = await db.update(
-      'pets',
-      {...petData, 'updated_at': DateTime.now().toIso8601String()},
-      where: 'petId = ?',
-      whereArgs: [petId],
-    );
-    return count > 0;
+    try {
+      debugPrint('🐾 LocalPetService.updatePet: $petId 업데이트 시작');
+      debugPrint('🔍 petData keys: ${petData.keys.toList()}');
+      debugPrint(
+        '🔍 additionalInfo type: ${petData['additionalInfo']?.runtimeType}',
+      );
+
+      final db = await _dbService.database;
+
+      // additionalInfo에서 값 추출
+      final additionalInfo =
+          petData['additionalInfo'] as Map<String, dynamic>? ?? {};
+
+      // SQLite에 저장할 데이터 준비
+      final updateData = {
+        'name': petData['name'],
+        'type': petData['type'],
+        'breed': petData['breed'],
+        'age': petData['age'],
+        'weight': petData['weight'],
+        'gender': petData['gender'],
+        'birth_date': petData['birthDate']?.toString(),
+        'profile_image': petData['imagePath'] ?? petData['profileImage'],
+        'registration_number': additionalInfo['registrationNumber'],
+        'guardian_name': additionalInfo['guardianName'],
+        'institution_name': additionalInfo['institutionName'],
+        'is_neutered':
+            (additionalInfo['isNeutered'] == true ||
+                petData['neutered'] == true)
+            ? 1
+            : 0,
+        'updated_at': DateTime.now().toIso8601String(),
+        // ✅ additionalInfo 전체를 JSON 문자열로 저장
+        'additionalInfo': jsonEncode(
+          _sanitizeAdditionalInfoForDb(additionalInfo),
+        ),
+      };
+
+      debugPrint('💾 LocalPetService.updatePet - 저장할 데이터:');
+      debugPrint(
+        '   - registration_number: ${updateData['registration_number']}',
+      );
+      debugPrint('   - guardian_name: ${updateData['guardian_name']}');
+      debugPrint('   - institution_name: ${updateData['institution_name']}');
+      debugPrint('   - additionalInfo (JSON): ${updateData['additionalInfo']}');
+
+      final count = await db.update(
+        'pets',
+        updateData,
+        where: 'petId = ?',
+        whereArgs: [petId],
+      );
+
+      debugPrint('✅ LocalPetService.updatePet: $count개 행 업데이트됨');
+      return count > 0;
+    } catch (e, stackTrace) {
+      debugPrint('❌ LocalPetService.updatePet: 에러 발생 - $e');
+      debugPrint('📍 StackTrace: $stackTrace');
+      rethrow;
+    }
+  }
+
+  /// additionalInfo를 데이터베이스에 저장 가능한 형태로 정제
+  Map<String, dynamic> _sanitizeAdditionalInfoForDb(
+    Map<String, dynamic> additionalInfo,
+  ) {
+    if (additionalInfo.isEmpty) {
+      return {};
+    }
+
+    final result = <String, dynamic>{};
+
+    additionalInfo.forEach((key, value) {
+      try {
+        // List 타입 필드 처리
+        if (value is List) {
+          // List<String>으로 변환
+          final sanitizedList = List<String>.from(value.whereType<String>());
+          if (sanitizedList.isNotEmpty) {
+            result[key] = sanitizedList;
+            debugPrint('💾 [$key] List saved: ${sanitizedList.length} items');
+          }
+        }
+        // String 타입 필드 처리
+        else if (value is String) {
+          result[key] = value;
+        }
+        // num 타입 필드 처리
+        else if (value is num) {
+          result[key] = value;
+        }
+        // bool 타입 필드 처리
+        else if (value is bool) {
+          result[key] = value;
+        }
+        // null은 제외
+        else if (value != null) {
+          result[key] = value.toString();
+          debugPrint('⚠️  [$key] 알 수 없는 타입 변환됨: ${value.runtimeType}');
+        }
+      } catch (e) {
+        debugPrint('⚠️  [$key] 필드 정제 실패: $e');
+      }
+    });
+
+    return result;
   }
 
   /// 펫 삭제 (소프트 삭제)

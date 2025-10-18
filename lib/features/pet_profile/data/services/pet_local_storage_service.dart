@@ -23,25 +23,42 @@ class PetLocalStorageService {
       }
 
       return petsJson.map((json) {
-        final data = jsonDecode(json) as Map<String, dynamic>;
-        return PetProfileEntity(
-          id: data['id'] as String,
-          name: data['name'] as String,
-          type: data['type'] as String,
-          breed: data['breed'] as String? ?? '',
-          birthDate: DateTime.parse(data['birthDate'] as String),
-          gender: data['gender'] as String,
-          weight: (data['weight'] as num).toDouble(),
-          imagePath: data['imagePath'] as String?,
-          ownerId: data['ownerId'] as String,
-          createdAt: DateTime.parse(data['createdAt'] as String),
-          updatedAt: DateTime.parse(data['updatedAt'] as String),
-          isActive: data['isActive'] as bool? ?? true,
-          additionalInfo: data['additionalInfo'] as Map<String, dynamic>? ?? {},
-        );
+        try {
+          final data = jsonDecode(json) as Map<String, dynamic>;
+
+          // additionalInfo를 안전하게 복원
+          final additionalInfo = data['additionalInfo'] is Map<String, dynamic>
+              ? _sanitizeAdditionalInfo(data['additionalInfo'] as Map<String, dynamic>)
+              : <String, dynamic>{};
+
+          debugPrint('📖 Loading pet: ${data['name']}');
+          debugPrint('📖 additionalInfo keys: ${additionalInfo.keys.toList()}');
+          debugPrint('📖 forbiddenIngredients: ${additionalInfo['forbiddenIngredients']}');
+
+          return PetProfileEntity(
+            id: data['id'] as String,
+            name: data['name'] as String,
+            type: data['type'] as String,
+            breed: data['breed'] as String? ?? '',
+            birthDate: DateTime.parse(data['birthDate'] as String),
+            gender: data['gender'] as String,
+            weight: (data['weight'] as num).toDouble(),
+            imagePath: data['imagePath'] as String?,
+            ownerId: data['ownerId'] as String,
+            createdAt: DateTime.parse(data['createdAt'] as String),
+            updatedAt: DateTime.parse(data['updatedAt'] as String),
+            isActive: data['isActive'] as bool? ?? true,
+            additionalInfo: additionalInfo,
+          );
+        } catch (e, stackTrace) {
+          debugPrint('⚠️  펫 파싱 실패: $e');
+          debugPrint('⚠️  스택트레이스: $stackTrace');
+          rethrow;
+        }
       }).toList();
-    } catch (e) {
-      debugPrint('ペット取得エラー: $e');
+    } catch (e, stackTrace) {
+      debugPrint('❌ ペット取得エラー: $e');
+      debugPrint('❌ スタックトレース: $stackTrace');
       return [];
     }
   }
@@ -61,6 +78,13 @@ class PetLocalStorageService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final petsJson = pets.map((pet) {
+        // additionalInfo를 안전하게 직렬화
+        final safeAdditionalInfo = _sanitizeAdditionalInfo(pet.additionalInfo);
+
+        debugPrint('💾 Saving pet: ${pet.name}');
+        debugPrint('💾 additionalInfo keys: ${safeAdditionalInfo.keys.toList()}');
+        debugPrint('💾 forbiddenIngredients: ${safeAdditionalInfo['forbiddenIngredients']}');
+
         return jsonEncode({
           'id': pet.id,
           'name': pet.name,
@@ -74,15 +98,68 @@ class PetLocalStorageService {
           'createdAt': pet.createdAt.toIso8601String(),
           'updatedAt': pet.updatedAt.toIso8601String(),
           'isActive': pet.isActive,
-          'additionalInfo': pet.additionalInfo,
+          'additionalInfo': safeAdditionalInfo,
         });
       }).toList();
 
       await prefs.setStringList(_keyPets, petsJson);
       debugPrint('✅ ペット保存成功: ${pets.length}匹');
-    } catch (e) {
-      debugPrint('ペット保存エラー: $e');
+    } catch (e, stackTrace) {
+      debugPrint('❌ ペット保存エラー: $e');
+      debugPrint('❌ スタックトレース: $stackTrace');
+      rethrow; // 에러를 상위로 전달
     }
+  }
+
+  /// additionalInfo를 JSON 직렬화 가능한 형태로 정제
+  static Map<String, dynamic> _sanitizeAdditionalInfo(
+    Map<String, dynamic>? additionalInfo,
+  ) {
+    if (additionalInfo == null || additionalInfo.isEmpty) {
+      return {};
+    }
+
+    final result = <String, dynamic>{};
+
+    additionalInfo.forEach((key, value) {
+      try {
+        // List 타입 필드 처리
+        if (value is List) {
+          // List<String>으로 변환
+          final sanitizedList = List<String>.from(value.whereType<String>());
+          if (sanitizedList.isNotEmpty) {
+            result[key] = sanitizedList;
+            debugPrint('💾 [$key] List saved: ${sanitizedList.length} items');
+          }
+        }
+        // String 타입 필드 처리
+        else if (value is String) {
+          result[key] = value;
+        }
+        // num 타입 필드 처리
+        else if (value is num) {
+          result[key] = value;
+        }
+        // bool 타입 필드 처리
+        else if (value is bool) {
+          result[key] = value;
+        }
+        // Map 타입 필드 처리 (재귀적으로 정제)
+        else if (value is Map<String, dynamic>) {
+          result[key] = _sanitizeAdditionalInfo(value);
+        }
+        // 기타 타입은 toString() 처리
+        else if (value != null) {
+          result[key] = value.toString();
+          debugPrint('⚠️  [$key] 알 수 없는 타입 변환됨: ${value.runtimeType}');
+        }
+      } catch (e) {
+        debugPrint('⚠️  [$key] 필드 정제 실패: $e');
+        // 실패한 필드는 제외
+      }
+    });
+
+    return result;
   }
 
   /// ペットを追加

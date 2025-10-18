@@ -108,16 +108,26 @@ class ProfileHeaderWidget extends ConsumerWidget {
 
   /// 프로필 이미지 위젯 빌드 (이미지 타입 감지)
   Widget _buildProfileImageWidget(String imagePath) {
+    debugPrint('🖼️ ProfileHeaderWidget - imagePath: $imagePath');
+
     final imageType = ImageService.getImageType(imagePath);
+    debugPrint('🖼️ ProfileHeaderWidget - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
+        // ファイルが存在するかチェック
+        final file = File(imagePath);
+        debugPrint(
+          '🖼️ ProfileHeaderWidget - File exists: ${file.existsSync()}',
+        );
+
         return Image.file(
-          File(imagePath),
+          file,
           fit: BoxFit.cover,
           width: 100,
           height: 100,
           errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ ProfileHeaderWidget - File image error: $error');
             return _buildDefaultUserImage();
           },
         );
@@ -128,6 +138,7 @@ class ProfileHeaderWidget extends ConsumerWidget {
           width: 100,
           height: 100,
           errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ ProfileHeaderWidget - Network image error: $error');
             return _buildDefaultUserImage();
           },
         );
@@ -138,6 +149,7 @@ class ProfileHeaderWidget extends ConsumerWidget {
           width: 100,
           height: 100,
           errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ ProfileHeaderWidget - Asset image error: $error');
             return _buildDefaultUserImage();
           },
         );
