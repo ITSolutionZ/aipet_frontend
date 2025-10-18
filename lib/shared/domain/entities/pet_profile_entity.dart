@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'pet_status.dart';
+
 part 'pet_profile_entity.freezed.dart';
 part 'pet_profile_entity.g.dart';
 
@@ -29,6 +31,7 @@ abstract class PetProfileEntity with _$PetProfileEntity {
     required DateTime createdAt,
     required DateTime updatedAt,
     @Default(true) bool isActive,
+    @Default(PetStatus.active) PetStatus petStatus,
     Map<String, dynamic>? additionalInfo,
   }) = _PetProfileEntity;
 
