@@ -275,9 +275,7 @@ class WalkListUiHelper {
             ),
           ],
         ),
-        child: Center(
-          child: _buildActivityIcon(iconPath),
-        ),
+        child: Center(child: _buildActivityIcon(iconPath)),
       ),
     );
   }
@@ -289,30 +287,19 @@ class WalkListUiHelper {
 
     switch (fileName) {
       case 'no-entry':
-        return Tooltip(
+        return const Tooltip(
           message: '立入禁止',
-          child: const Icon(
-            Icons.block,
-            size: 28,
-            color: AppColors.pointPink,
-          ),
+          child: Icon(Icons.block, size: 28, color: AppColors.pointPink),
         );
       case 'poop':
         return const Tooltip(
           message: '排便',
-          child: Text(
-            '💩',
-            style: TextStyle(fontSize: 28),
-          ),
+          child: Text('💩', style: TextStyle(fontSize: 28)),
         );
       case 'marking':
-        return Tooltip(
+        return const Tooltip(
           message: '排尿',
-          child: const Icon(
-            Icons.water_drop,
-            size: 28,
-            color: AppColors.pointBlue,
-          ),
+          child: Icon(Icons.water_drop, size: 28, color: AppColors.pointBlue),
         );
       default:
         return Image.asset(
@@ -552,7 +539,8 @@ class WalkListUiHelper {
     final additionalInfo = pet.additionalInfo ?? {};
 
     // 현재 건강 상태 확인
-    final currentHealthStatus = additionalInfo['currentHealthStatus'] as String?;
+    final currentHealthStatus =
+        additionalInfo['currentHealthStatus'] as String?;
     final isRecovering = additionalInfo['isRecovering'] as bool? ?? false;
 
     // 나이 계산

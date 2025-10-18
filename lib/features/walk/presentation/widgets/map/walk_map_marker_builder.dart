@@ -1,3 +1,5 @@
+import 'package:aipet_frontend/features/walk/data/services/no_entry_zone_storage_service.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/no_entry_zone_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
@@ -230,6 +232,37 @@ class WalkMapMarkerBuilder {
       return activities;
     } catch (e) {
       return [];
+    }
+  }
+
+  /// 금지구역 마커 생성
+  static Marker buildNoEntryZoneMarker(NoEntryZone zone, int index) {
+    return Marker(
+      markerId: MarkerId('no_entry_$index'),
+      position: LatLng(zone.latitude, zone.longitude),
+      infoWindow: InfoWindow(
+        title: '🚫 立入禁止',
+        snippet: '${zone.description ?? '金止区域'} (${zone.radiusMeters.toInt()}m)',
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    );
+  }
+
+  /// 모든 금지구역 마커 로드 및 추가
+  static Future<Set<Marker>> loadAndBuildNoEntryZoneMarkers(
+    Set<Marker> existingMarkers,
+  ) async {
+    try {
+      final zones = await NoEntryZoneStorageService.loadNoEntryZones();
+      final markers = Set<Marker>.from(existingMarkers);
+
+      for (int i = 0; i < zones.length; i++) {
+        markers.add(buildNoEntryZoneMarker(zones[i], i));
+      }
+
+      return markers;
+    } catch (e) {
+      return existingMarkers;
     }
   }
 
