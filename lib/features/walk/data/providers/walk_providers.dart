@@ -4,7 +4,7 @@ import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:flutter/foundation.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart' hide Family;
 
 part 'walk_providers.g.dart';
 
@@ -65,7 +65,23 @@ class WalkRecordsNotifier extends _$WalkRecordsNotifier {
       debugPrint('  ✅ 산책 ${record.id}: 경로 포인트=${record.route.length}개, 상태=${record.status}, 펫=${record.petName}');
     }
 
+    // 목업 데이터를 로컬 스토리지에 저장 (테스트용)
+    _saveToLocal(mockRecords);
+
     return mockRecords;
+  }
+
+  /// 목업 데이터를 로컬 스토리지에 저장 (비동기 작업)
+  Future<void> _saveToLocal(List<WalkRecordEntity> records) async {
+    try {
+      // 로컬 스토리지 초기화
+      await LocalWalkStorageService.clearAllData();
+      // 목업 데이터 저장
+      await LocalWalkStorageService.saveWalkRecords(records);
+      debugPrint('💾 목업 데이터를 로컬 스토리지에 저장 완료');
+    } catch (e) {
+      debugPrint('❌ 목업 데이터 저장 실패: $e');
+    }
   }
 
   void addWalkRecord(WalkRecordEntity record) {
