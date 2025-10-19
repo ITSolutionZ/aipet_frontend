@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,7 +82,7 @@ class ProfileHeaderWidget extends ConsumerWidget {
     );
   }
 
-  /// 사용자 프로필 이미지 위젯
+  /// 사용자 프로필 이미지 위젯 - 강화된 로컬 저장 지원
   Widget _buildUserProfileImage(UserProfileState profileState) {
     // 프로필 이미지가 있으면 표시
     if (profileState.profile?.profileImage != null &&
@@ -89,18 +90,31 @@ class ProfileHeaderWidget extends ConsumerWidget {
       return _buildProfileImageWidget(profileState.profile!.profileImage!);
     }
 
-    // 기본 이미지 표시
-    return Image.asset(
-      'assets/icons/logos/aipet_logo.png',
-      fit: BoxFit.cover,
-      width: 100,
-      height: 100,
-      errorBuilder: (context, error, stackTrace) {
-        return Container(
+    // SharedPreferences에서 저장된 이미지 경로 확인
+    return FutureBuilder<String?>(
+      future: ImagePickerService().loadUserProfileImagePath(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          debugPrint(
+            '🖼️ ProfileHeaderWidget - Loading from preferences: ${snapshot.data}',
+          );
+          return _buildProfileImageWidget(snapshot.data!);
+        }
+
+        // 기본 이미지 표시
+        return Image.asset(
+          'assets/icons/logos/aipet_logo.png',
+          fit: BoxFit.cover,
           width: 100,
           height: 100,
-          color: Colors.grey[300],
-          child: const Icon(Icons.person, size: 50),
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: 100,
+              height: 100,
+              color: Colors.grey[300],
+              child: const Icon(Icons.person, size: 50),
+            );
+          },
         );
       },
     );
@@ -110,13 +124,18 @@ class ProfileHeaderWidget extends ConsumerWidget {
   Widget _buildProfileImageWidget(String imagePath) {
     debugPrint('🖼️ ProfileHeaderWidget - imagePath: $imagePath');
 
-    final imageType = ImageService.getImageType(imagePath);
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
+    debugPrint('🖼️ ProfileHeaderWidget - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
     debugPrint('🖼️ ProfileHeaderWidget - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         // ファイルが存在するかチェック
-        final file = File(imagePath);
+        final file = File(absolutePath);
         debugPrint(
           '🖼️ ProfileHeaderWidget - File exists: ${file.existsSync()}',
         );
@@ -133,7 +152,7 @@ class ProfileHeaderWidget extends ConsumerWidget {
         );
       case ImageType.network:
         return Image.network(
-          imagePath,
+          absolutePath,
           fit: BoxFit.cover,
           width: 100,
           height: 100,
@@ -144,7 +163,7 @@ class ProfileHeaderWidget extends ConsumerWidget {
         );
       case ImageType.asset:
         return Image.asset(
-          imagePath,
+          absolutePath,
           fit: BoxFit.cover,
           width: 100,
           height: 100,

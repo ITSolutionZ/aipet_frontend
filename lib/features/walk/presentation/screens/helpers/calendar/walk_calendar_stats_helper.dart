@@ -57,7 +57,7 @@ class WalkCalendarStatsHelper {
   /// 권장 산책 시간 계산 (분 단위) - 펫의 상태를 고려하여 동적 조정
   static int _getRecommendedWalkTime(PetProfileEntity pet) {
     // 기본 산책 시간 계산
-    int baseWalkTime = _calculateBaseWalkTime(pet);
+    final int baseWalkTime = _calculateBaseWalkTime(pet);
 
     // 펫의 상태에 따라 조정
     return _adjustWalkTimeByHealth(pet, baseWalkTime);
@@ -103,7 +103,8 @@ class WalkCalendarStatsHelper {
     final additionalInfo = pet.additionalInfo ?? {};
 
     // 현재 건강 상태 확인
-    final currentHealthStatus = additionalInfo['currentHealthStatus'] as String?;
+    final currentHealthStatus =
+        additionalInfo['currentHealthStatus'] as String?;
     final isRecovering = additionalInfo['isRecovering'] as bool? ?? false;
 
     // 나이 계산

@@ -68,7 +68,14 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
     final result = await repository.createPet(pet);
     if (result.isSuccess) {
       if (ref.mounted) {
-        await refresh();
+        try {
+          await refresh();
+        } catch (e) {
+          debugPrint(
+            '⚠️ PetProfilesNotifier.createPet: Refresh failed (provider disposed): $e',
+          );
+          // Provider가 disposed된 경우 무시하고 계속 진행
+        }
       }
       return result.dataOrNull!;
     } else {
@@ -90,7 +97,14 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
     final result = await repository.updatePet(pet);
     if (result.isSuccess) {
       if (ref.mounted) {
-        await refresh();
+        try {
+          await refresh();
+        } catch (e) {
+          debugPrint(
+            '⚠️ PetProfilesNotifier.updatePet: Refresh failed (provider disposed): $e',
+          );
+          // Provider가 disposed된 경우 무시하고 계속 진행
+        }
       }
     } else {
       throw Exception(result.error);
@@ -110,7 +124,14 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
     final result = await repository.deletePet(id);
     if (result.isSuccess) {
       if (ref.mounted) {
-        await refresh();
+        try {
+          await refresh();
+        } catch (e) {
+          debugPrint(
+            '⚠️ PetProfilesNotifier.deletePet: Refresh failed (provider disposed): $e',
+          );
+          // Provider가 disposed된 경우 무시하고 계속 진행
+        }
       }
     } else {
       throw Exception(result.error);
@@ -190,52 +211,55 @@ class PetList extends _$PetList {
   /// ペットを追加
   Future<void> addPet(PetProfileEntity pet) async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      await PetLocalStorageService.addPet(pet);
-      return PetLocalStorageService.getPets();
-    }).then((result) {
-      // 상태 업데이트 후 mounted 확인
-      if (!ref.mounted) {
-        debugPrint(
-          '⚠️ PetList.addPet: Provider is disposed after operation',
-        );
-      }
-      return result;
-    });
+    state =
+        await AsyncValue.guard(() async {
+          await PetLocalStorageService.addPet(pet);
+          return PetLocalStorageService.getPets();
+        }).then((result) {
+          // 상태 업데이트 후 mounted 확인
+          if (!ref.mounted) {
+            debugPrint(
+              '⚠️ PetList.addPet: Provider is disposed after operation',
+            );
+          }
+          return result;
+        });
   }
 
   /// ペットを更新
   Future<void> updatePet(PetProfileEntity pet) async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      await PetLocalStorageService.updatePet(pet);
-      return PetLocalStorageService.getPets();
-    }).then((result) {
-      // 상태 업데이트 후 mounted 확인
-      if (!ref.mounted) {
-        debugPrint(
-          '⚠️ PetList.updatePet: Provider is disposed after operation',
-        );
-      }
-      return result;
-    });
+    state =
+        await AsyncValue.guard(() async {
+          await PetLocalStorageService.updatePet(pet);
+          return PetLocalStorageService.getPets();
+        }).then((result) {
+          // 상태 업데이트 후 mounted 확인
+          if (!ref.mounted) {
+            debugPrint(
+              '⚠️ PetList.updatePet: Provider is disposed after operation',
+            );
+          }
+          return result;
+        });
   }
 
   /// ペットを削除
   Future<void> deletePet(String id) async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      await PetLocalStorageService.deletePet(id);
-      return PetLocalStorageService.getPets();
-    }).then((result) {
-      // 상태 업데이트 후 mounted 확인
-      if (!ref.mounted) {
-        debugPrint(
-          '⚠️ PetList.deletePet: Provider is disposed after operation',
-        );
-      }
-      return result;
-    });
+    state =
+        await AsyncValue.guard(() async {
+          await PetLocalStorageService.deletePet(id);
+          return PetLocalStorageService.getPets();
+        }).then((result) {
+          // 상태 업데이트 후 mounted 확인
+          if (!ref.mounted) {
+            debugPrint(
+              '⚠️ PetList.deletePet: Provider is disposed after operation',
+            );
+          }
+          return result;
+        });
   }
 
   /// リフレッシュ

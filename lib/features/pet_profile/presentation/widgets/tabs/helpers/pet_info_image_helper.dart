@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,22 +9,28 @@ import '../pet_basic_info_tab.dart';
 
 /// Pet 이미지 처리 헬퍼
 class PetInfoImageHelper {
-  /// 이미지 위젯 빌드
+  /// 이미지 위젯 빌드 - 강화된 로컬 저장 지원
   static Widget buildImageWidget(String imagePath) {
     debugPrint('🖼️ buildImageWidget - imagePath: $imagePath');
 
-    final imageType = ImageService.getImageType(imagePath);
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
+    debugPrint('🖼️ absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
     debugPrint('🖼️ imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
-        final file = File(imagePath);
+        final file = File(absolutePath);
         final fileExists = file.existsSync();
         debugPrint('🖼️ File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ File does not exist: $imagePath');
-          return _buildErrorWidget(null, 'File not found', null);
+          debugPrint('❌ File does not exist: $absolutePath');
+          // 백업에서 복원 시도
+          return _buildImageWithBackup(imagePath);
         }
 
         return Image.file(
@@ -36,7 +43,7 @@ class PetInfoImageHelper {
         );
       case ImageType.network:
         return Image.network(
-          imagePath,
+          absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             debugPrint('🖼️ Image.network error: $error');
@@ -45,7 +52,7 @@ class PetInfoImageHelper {
         );
       case ImageType.asset:
         return Image.asset(
-          imagePath,
+          absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             debugPrint('🖼️ Image.asset error: $error');
@@ -53,6 +60,34 @@ class PetInfoImageHelper {
           },
         );
     }
+  }
+
+  /// 백업에서 이미지 복원 시도
+  static Widget _buildImageWithBackup(String originalPath) {
+    return FutureBuilder<List<String>>(
+      future: ImageService.loadPetImagePaths(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          // 가장 최근 이미지 사용
+          final latestImagePath = snapshot.data!.last;
+          debugPrint('🔄 Using backup image: $latestImagePath');
+
+          final file = File(latestImagePath);
+          if (file.existsSync()) {
+            return Image.file(
+              file,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return _buildErrorWidget(context, error, stackTrace);
+              },
+            );
+          }
+        }
+
+        // 백업도 없으면 에러 위젯 표시
+        return _buildErrorWidget(null, 'No backup found', null);
+      },
+    );
   }
 
   /// 에러 위젯 빌드

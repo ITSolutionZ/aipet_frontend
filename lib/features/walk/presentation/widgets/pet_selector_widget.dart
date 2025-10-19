@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -181,20 +184,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(24),
-                child: Image.asset(
-                  pet.imageUrl ?? '',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[300],
-                      child: Icon(
-                        Icons.pets,
-                        color: Colors.grey[600],
-                        size: 24,
-                      ),
-                    );
-                  },
-                ),
+                child: _buildPetImage(pet.imageUrl),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
@@ -232,5 +222,78 @@ class _PetSelectorBottomSheet extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// 펫 이미지 위젯 빌드 - 강화된 로컬 저장 지원
+  Widget _buildPetImage(String? imageUrl) {
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return Container(
+        color: Colors.grey[300],
+        child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
+      );
+    }
+
+    debugPrint('🖼️ PetSelectorWidget - imageUrl: $imageUrl');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(imageUrl) ?? imageUrl;
+    debugPrint('🖼️ PetSelectorWidget - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ PetSelectorWidget - imageType: $imageType');
+
+    switch (imageType) {
+      case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ PetSelectorWidget - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint(
+            '❌ PetSelectorWidget - File does not exist: $absolutePath',
+          );
+          return Container(
+            color: Colors.grey[300],
+            child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
+          );
+        }
+
+        return Image.file(
+          file,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ PetSelectorWidget - File image error: $error');
+            return Container(
+              color: Colors.grey[300],
+              child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
+            );
+          },
+        );
+      case ImageType.network:
+        return Image.network(
+          absolutePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ PetSelectorWidget - Network image error: $error');
+            return Container(
+              color: Colors.grey[300],
+              child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
+            );
+          },
+        );
+      case ImageType.asset:
+        return Image.asset(
+          absolutePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ PetSelectorWidget - Asset image error: $error');
+            return Container(
+              color: Colors.grey[300],
+              child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
+            );
+          },
+        );
+    }
   }
 }

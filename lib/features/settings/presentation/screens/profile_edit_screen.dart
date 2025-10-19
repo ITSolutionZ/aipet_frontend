@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aipet_frontend/features/settings/data/providers/settings_providers.dart';
 import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -168,7 +169,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     final formState = ref.read(profileEditFormControllerProvider);
     if (formState.formKey?.currentState?.validate() ?? false) {
       // 비동기 작업 전에 ref.read() 호출 (모두 한 번에)
-      late final controller;
+      late final UserProfileController controller;
       dynamic userProfileNotifier;
 
       try {
@@ -485,42 +486,60 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     return _buildDefaultProfileImage();
   }
 
-  /// 프로필 이미지 위젯 빌드 (이미지 타입 감지)
+  /// 프로필 이미지 위젯 빌드 (이미지 타입 감지) - 강화된 로컬 저장 지원
   Widget _buildProfileImageWidget(String imagePath) {
-    final imageType = ImageService.getImageType(imagePath);
-    debugPrint('🖼️ 이미지 타입 감지: $imageType, 경로: $imagePath');
+    debugPrint('🖼️ ProfileEditScreen - imagePath: $imagePath');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
+    debugPrint('🖼️ ProfileEditScreen - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ ProfileEditScreen - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ ProfileEditScreen - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint(
+            '❌ ProfileEditScreen - File does not exist: $absolutePath',
+          );
+          return _buildDefaultProfileImage();
+        }
+
         return Image.file(
-          File(imagePath),
+          file,
           fit: BoxFit.cover,
           width: 120,
           height: 120,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ 파일 이미지 로드 에러: $error');
+            debugPrint('🖼️ ProfileEditScreen - File image error: $error');
             return _buildDefaultProfileImage();
           },
         );
       case ImageType.network:
         return Image.network(
-          imagePath,
+          absolutePath,
           fit: BoxFit.cover,
           width: 120,
           height: 120,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ 네트워크 이미지 로드 에러: $error');
+            debugPrint('🖼️ ProfileEditScreen - Network image error: $error');
             return _buildDefaultProfileImage();
           },
         );
       case ImageType.asset:
         return Image.asset(
-          imagePath,
+          absolutePath,
           fit: BoxFit.cover,
           width: 120,
           height: 120,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ 에셋 이미지 로드 에러: $error');
+            debugPrint('🖼️ ProfileEditScreen - Asset image error: $error');
             return _buildDefaultProfileImage();
           },
         );
