@@ -120,8 +120,12 @@ class MockWalkDataGenerator {
       debugPrint('    - 상태: ${walk.status}');
       debugPrint('    - 경로 포인트: ${walk.route.length}개');
       if (walk.route.isNotEmpty) {
-        debugPrint('      첫 번째: (${walk.route.first.latitude}, ${walk.route.first.longitude})');
-        debugPrint('      마지막: (${walk.route.last.latitude}, ${walk.route.last.longitude})');
+        debugPrint(
+          '      첫 번째: (${walk.route.first.latitude}, ${walk.route.first.longitude})',
+        );
+        debugPrint(
+          '      마지막: (${walk.route.last.latitude}, ${walk.route.last.longitude})',
+        );
       }
     }
     debugPrint('═══════════════════════════════════════════');
@@ -161,8 +165,8 @@ class MockWalkDataGenerator {
     required double distanceKm,
   }) {
     final route = <WalkLocation>[];
-    final latChange = 0.01;
-    final lngChange = 0.015;
+    const latChange = 0.01;
+    const lngChange = 0.015;
 
     final now = DateTime.now();
 
@@ -188,7 +192,9 @@ class MockWalkDataGenerator {
   }
 
   /// 활동 정보를 notes 형식으로 변환
-  static String? _generateMockActivities(List<Map<String, dynamic>> activities) {
+  static String? _generateMockActivities(
+    List<Map<String, dynamic>> activities,
+  ) {
     if (activities.isEmpty) return null;
 
     final activitiesJson = activities.map((a) {

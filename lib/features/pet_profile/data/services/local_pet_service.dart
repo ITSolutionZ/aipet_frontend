@@ -125,6 +125,7 @@ class LocalPetService {
           ? 1
           : 0,
       'is_active': 1,
+      'pet_status': petData['petStatus']?.toString() ?? 'active',
       'created_at': now,
       'updated_at': now,
       // ✅ additionalInfo 전체를 JSON 문자열로 저장
@@ -189,6 +190,7 @@ class LocalPetService {
                 petData['neutered'] == true)
             ? 1
             : 0,
+        'pet_status': petData['petStatus']?.toString() ?? 'active',
         'updated_at': DateTime.now().toIso8601String(),
         // ✅ additionalInfo 전체를 JSON 문자열로 저장
         'additionalInfo': jsonEncode(

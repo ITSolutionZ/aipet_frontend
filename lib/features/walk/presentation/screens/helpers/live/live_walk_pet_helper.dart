@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -118,19 +121,7 @@ class LiveWalkPetHelper {
       ),
       child: ClipOval(
         child: pet.imagePath?.isNotEmpty == true
-            ? Image.asset(
-                pet.imagePath!,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(
-                    Icons.pets,
-                    color: isSelected
-                        ? AppColors.pointPink
-                        : AppColors.pointGray,
-                    size: 25,
-                  );
-                },
-              )
+            ? _buildPetImage(pet.imagePath!, isSelected)
             : Icon(
                 Icons.pets,
                 color: isSelected ? AppColors.pointPink : AppColors.pointGray,
@@ -138,5 +129,85 @@ class LiveWalkPetHelper {
               ),
       ),
     );
+  }
+
+  /// 펫 이미지 위젯 빌드 - 강화된 로컬 저장 지원
+  static Widget _buildPetImage(String imagePath, bool isSelected) {
+    try {
+      debugPrint('🖼️ LiveWalkPetHelper - imagePath: $imagePath');
+
+      // 상대 경로를 절대 경로로 변환
+      final storageService = ImageStorageService();
+      final absolutePath =
+          storageService.getAbsolutePath(imagePath) ?? imagePath;
+      debugPrint('🖼️ LiveWalkPetHelper - absolutePath: $absolutePath');
+
+      final imageType = ImageService.getImageType(absolutePath);
+      debugPrint('🖼️ LiveWalkPetHelper - imageType: $imageType');
+
+      switch (imageType) {
+        case ImageType.file:
+          final file = File(absolutePath);
+          final fileExists = file.existsSync();
+          debugPrint('🖼️ LiveWalkPetHelper - File exists: $fileExists');
+
+          if (!fileExists) {
+            debugPrint(
+              '❌ LiveWalkPetHelper - File does not exist: $absolutePath',
+            );
+            return Icon(
+              Icons.pets,
+              color: isSelected ? AppColors.pointPink : AppColors.pointGray,
+              size: 25,
+            );
+          }
+
+          return Image.file(
+            file,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              debugPrint('🖼️ LiveWalkPetHelper - File image error: $error');
+              return Icon(
+                Icons.pets,
+                color: isSelected ? AppColors.pointPink : AppColors.pointGray,
+                size: 25,
+              );
+            },
+          );
+        case ImageType.network:
+          return Image.network(
+            absolutePath,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              debugPrint('🖼️ LiveWalkPetHelper - Network image error: $error');
+              return Icon(
+                Icons.pets,
+                color: isSelected ? AppColors.pointPink : AppColors.pointGray,
+                size: 25,
+              );
+            },
+          );
+        case ImageType.asset:
+          return Image.asset(
+            absolutePath,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              debugPrint('🖼️ LiveWalkPetHelper - Asset image error: $error');
+              return Icon(
+                Icons.pets,
+                color: isSelected ? AppColors.pointPink : AppColors.pointGray,
+                size: 25,
+              );
+            },
+          );
+      }
+    } catch (e) {
+      debugPrint('❌ LiveWalkPetHelper - Image load error: $e');
+      return Icon(
+        Icons.pets,
+        color: isSelected ? AppColors.pointPink : AppColors.pointGray,
+        size: 25,
+      );
+    }
   }
 }

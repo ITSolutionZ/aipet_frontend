@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_detail_map_widget.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_info_bottom_sheet.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -144,10 +147,53 @@ class WalkDetailScreen extends ConsumerWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(size / 2),
-        child: Image.asset(
-          pet?.imagePath ?? 'assets/images/dogs/shiba.png',
+        child: _buildPetImage(pet?.imagePath, size),
+      ),
+    );
+  }
+
+  /// 펫 이미지 위젯 빌드 - 강화된 로컬 저장 지원
+  Widget _buildPetImage(String? imagePath, double size) {
+    if (imagePath == null || imagePath.isEmpty) {
+      return Container(
+        color: AppColors.pointGray.withValues(alpha: 0.3),
+        child: Icon(Icons.pets, color: AppColors.pointGray, size: size * 0.5),
+      );
+    }
+
+    debugPrint('🖼️ WalkDetailScreen - imagePath: $imagePath');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
+    debugPrint('🖼️ WalkDetailScreen - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ WalkDetailScreen - imageType: $imageType');
+
+    switch (imageType) {
+      case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ WalkDetailScreen - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint('❌ WalkDetailScreen - File does not exist: $absolutePath');
+          return Container(
+            color: AppColors.pointGray.withValues(alpha: 0.3),
+            child: Icon(
+              Icons.pets,
+              color: AppColors.pointGray,
+              size: size * 0.5,
+            ),
+          );
+        }
+
+        return Image.file(
+          file,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ WalkDetailScreen - File image error: $error');
             return Container(
               color: AppColors.pointGray.withValues(alpha: 0.3),
               child: Icon(
@@ -157,9 +203,40 @@ class WalkDetailScreen extends ConsumerWidget {
               ),
             );
           },
-        ),
-      ),
-    );
+        );
+      case ImageType.network:
+        return Image.network(
+          absolutePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ WalkDetailScreen - Network image error: $error');
+            return Container(
+              color: AppColors.pointGray.withValues(alpha: 0.3),
+              child: Icon(
+                Icons.pets,
+                color: AppColors.pointGray,
+                size: size * 0.5,
+              ),
+            );
+          },
+        );
+      case ImageType.asset:
+        return Image.asset(
+          absolutePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ WalkDetailScreen - Asset image error: $error');
+            return Container(
+              color: AppColors.pointGray.withValues(alpha: 0.3),
+              child: Icon(
+                Icons.pets,
+                color: AppColors.pointGray,
+                size: size * 0.5,
+              ),
+            );
+          },
+        );
+    }
   }
 
   Widget _buildMapSection(WalkRecordEntity currentWalkRecord) {

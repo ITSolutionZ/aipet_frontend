@@ -31,7 +31,7 @@ class LocalDatabaseService {
 
     return openDatabase(
       path,
-      version: 9, // additionalInfoカラム追加のためバージョンアップ
+      version: 10, // petStatusカラム追加のためバージョンアップ
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -56,6 +56,7 @@ class LocalDatabaseService {
         institution_name TEXT,
         is_neutered INTEGER DEFAULT 0,
         is_active INTEGER DEFAULT 1,
+        pet_status TEXT DEFAULT 'active',
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
         data TEXT,
@@ -226,6 +227,20 @@ class LocalDatabaseService {
 
   /// 데이터베이스 업그레이드
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // 버전 10에서 petStatusカラム追加
+    if (oldVersion < 10) {
+      // petStatusカラムを追加
+      try {
+        await db.execute(
+          'ALTER TABLE pets ADD COLUMN pet_status TEXT DEFAULT \'active\'',
+        );
+        debugPrint('✅ petStatusカラムを追加しました');
+      } catch (e) {
+        debugPrint('⚠️ petStatusカラムの追加に失敗: $e');
+        // カラムが既に存在する場合は無視
+      }
+    }
+
     // 버전 9에서 additionalInfoカラム追加
     if (oldVersion < 9) {
       // additionalInfoカラムを追加

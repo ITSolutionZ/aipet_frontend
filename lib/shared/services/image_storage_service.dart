@@ -32,7 +32,9 @@ class ImageStorageService {
       // 기본 디렉토리 생성
       if (!await _baseDirectory!.exists()) {
         await _baseDirectory!.create(recursive: true);
-        debugPrint('📁 ImageStorageService initialized: ${_baseDirectory!.path}');
+        debugPrint(
+          '📁 ImageStorageService initialized: ${_baseDirectory!.path}',
+        );
       }
 
       // 서브 디렉토리 생성
@@ -118,7 +120,8 @@ class ImageStorageService {
         debugPrint('✅ Image saved successfully');
         debugPrint('   Path: $targetPath');
         debugPrint('   Size: ${(fileSize / 1024).toStringAsFixed(2)} KB');
-        return targetPath;
+        // 상대 경로 반환 (앱 재시작 시에도 유효)
+        return relativePath;
       } else {
         debugPrint('❌ Failed to verify saved image');
         return null;
@@ -129,12 +132,26 @@ class ImageStorageService {
     }
   }
 
+  /// 상대 경로를 절대 경로로 변환
+  String? getAbsolutePath(String? relativePath) {
+    if (relativePath == null || relativePath.isEmpty) return null;
+    if (_baseDirectory == null) return null;
+
+    // 이미 절대 경로인 경우 그대로 반환
+    if (relativePath.startsWith('/')) return relativePath;
+
+    // 상대 경로를 절대 경로로 변환
+    return '${_baseDirectory!.path}/$relativePath';
+  }
+
   /// 이미지 존재 여부 확인
   Future<bool> imageExists(String imagePath) async {
     try {
       if (imagePath.isEmpty) return false;
 
-      final file = File(imagePath);
+      // 상대 경로인 경우 절대 경로로 변환
+      final absolutePath = getAbsolutePath(imagePath) ?? imagePath;
+      final file = File(absolutePath);
       return await file.exists();
     } catch (e) {
       debugPrint('⚠️ Error checking image existence: $e');

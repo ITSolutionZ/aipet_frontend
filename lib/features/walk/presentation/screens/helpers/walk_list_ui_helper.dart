@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -135,45 +136,62 @@ class WalkListUiHelper {
     );
   }
 
-  /// 이미지 타입에 따라 적절한 이미지 위젯 빌드
+  /// 이미지 타입에 따라 적절한 이미지 위젯 빌드 - 강화된 로컬 저장 지원
   static Widget _buildImageWidget(String imagePath, bool isSelected) {
     try {
-      // 1. assets 이미지인지 확인
-      if (imagePath.startsWith('assets/')) {
-        return Image.asset(
-          imagePath,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return _buildDefaultIcon(isSelected);
-          },
-        );
-      }
+      debugPrint('🖼️ WalkListUIHelper - imagePath: $imagePath');
 
-      // 2. 네트워크 이미지인지 확인
-      if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-        return Image.network(
-          imagePath,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return _buildDefaultIcon(isSelected);
-          },
-        );
-      }
+      // 상대 경로를 절대 경로로 변환
+      final storageService = ImageStorageService();
+      final absolutePath =
+          storageService.getAbsolutePath(imagePath) ?? imagePath;
+      debugPrint('🖼️ WalkListUIHelper - absolutePath: $absolutePath');
 
-      // 3. 로컬 파일 경로인지 확인
-      if (imagePath.isNotEmpty) {
-        final file = File(imagePath);
-        return Image.file(
-          file,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return _buildDefaultIcon(isSelected);
-          },
-        );
-      }
+      final imageType = ImageService.getImageType(absolutePath);
+      debugPrint('🖼️ WalkListUIHelper - imageType: $imageType');
 
-      return _buildDefaultIcon(isSelected);
+      switch (imageType) {
+        case ImageType.file:
+          final file = File(absolutePath);
+          final fileExists = file.existsSync();
+          debugPrint('🖼️ WalkListUIHelper - File exists: $fileExists');
+
+          if (!fileExists) {
+            debugPrint(
+              '❌ WalkListUIHelper - File does not exist: $absolutePath',
+            );
+            return _buildDefaultIcon(isSelected);
+          }
+
+          return Image.file(
+            file,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              debugPrint('🖼️ WalkListUIHelper - File image error: $error');
+              return _buildDefaultIcon(isSelected);
+            },
+          );
+        case ImageType.network:
+          return Image.network(
+            absolutePath,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              debugPrint('🖼️ WalkListUIHelper - Network image error: $error');
+              return _buildDefaultIcon(isSelected);
+            },
+          );
+        case ImageType.asset:
+          return Image.asset(
+            absolutePath,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              debugPrint('🖼️ WalkListUIHelper - Asset image error: $error');
+              return _buildDefaultIcon(isSelected);
+            },
+          );
+      }
     } catch (e) {
+      debugPrint('❌ WalkListUIHelper - Image load error: $e');
       return _buildDefaultIcon(isSelected);
     }
   }

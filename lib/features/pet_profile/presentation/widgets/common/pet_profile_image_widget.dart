@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aipet_frontend/features/pet_profile/presentation/constants/pet_profile_constants.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -61,24 +62,43 @@ class PetProfileImageWidget extends StatelessWidget {
   }
 
   Widget _buildImageWidget(String imagePath) {
-    final imageType = ImageService.getImageType(imagePath);
+    debugPrint('🖼️ PetProfileImageWidget - imagePath: $imagePath');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
+    debugPrint('🖼️ PetProfileImageWidget - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ PetProfileImageWidget - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ PetProfileImageWidget - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint(
+            '❌ PetProfileImageWidget - File does not exist: $absolutePath',
+          );
+          return _buildDefaultImage();
+        }
+
         return Image.file(
-          File(imagePath),
+          file,
           fit: BoxFit.cover,
           errorBuilder: _buildErrorWidget,
         );
       case ImageType.network:
         return Image.network(
-          imagePath,
+          absolutePath,
           fit: BoxFit.cover,
           errorBuilder: _buildErrorWidget,
         );
       case ImageType.asset:
         return Image.asset(
-          imagePath,
+          absolutePath,
           fit: BoxFit.cover,
           errorBuilder: _buildErrorWidget,
         );

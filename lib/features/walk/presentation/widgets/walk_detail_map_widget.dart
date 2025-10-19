@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_marker_builder.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_polyline_builder.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -28,9 +27,7 @@ class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
 
   void _initializeMap() async {
     // Polyline 생성
-    polylines = WalkMapPolylineBuilder.buildAllPolylines(
-      [widget.walkRecord],
-    );
+    polylines = WalkMapPolylineBuilder.buildAllPolylines([widget.walkRecord]);
 
     // 마커 생성 (시작점, 종료점, 활동 마커)
     final initialMarkers = WalkMapMarkerBuilder.buildAllMarkers(
@@ -60,11 +57,15 @@ class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🗺️ WalkDetailMapWidget: 산책 ID=${widget.walkRecord.id}, 경로 포인트=${widget.walkRecord.route.length}');
+    debugPrint(
+      '🗺️ WalkDetailMapWidget: 산책 ID=${widget.walkRecord.id}, 경로 포인트=${widget.walkRecord.route.length}',
+    );
 
     if (widget.walkRecord.route.isEmpty) {
       final recordStr = widget.walkRecord.toString();
-      final preview = recordStr.length > 100 ? recordStr.substring(0, 100) : recordStr;
+      final preview = recordStr.length > 100
+          ? recordStr.substring(0, 100)
+          : recordStr;
       debugPrint('❌ 경로 데이터가 없습니다. 산책 기록: $preview...');
       return Container(
         height: 300,
