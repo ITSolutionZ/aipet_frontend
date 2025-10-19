@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -113,37 +114,21 @@ class ImageService {
     }
   }
 
-  /// 画像を永続的なストレージにコピー
+  /// 画像を永続的なストレージにコピー (ImageStorageService 사용)
   static Future<String> _copyToPersistentStorage(String tempPath) async {
     try {
-      final appDir = await getApplicationDocumentsDirectory();
-      final imagesDir = Directory('${appDir.path}/pet_images');
+      final tempFile = File(tempPath);
+      final storageService = ImageStorageService();
 
-      // ディレクトリが存在しない場合は作成
-      if (!await imagesDir.exists()) {
-        await imagesDir.create(recursive: true);
-        debugPrint('📁 Created pet_images directory: ${imagesDir.path}');
-      }
+      // ImageStorageService를 사용하여 펫 이미지 저장
+      final savedPath = await storageService.savePetImage(tempFile);
 
-      // ユニークなファイル名を生成
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final extension = tempPath.split('.').last;
-      final newFileName = 'pet_$timestamp.$extension';
-      final newPath = '${imagesDir.path}/$newFileName';
-
-      // ファイルをコピー
-      final File tempFile = File(tempPath);
-      final File savedFile = await tempFile.copy(newPath);
-
-      // ファイルが正しく保存されたか確認
-      if (await savedFile.exists()) {
-        final fileSize = await savedFile.length();
-        debugPrint('📁 Image copied to persistent storage: $newPath');
-        debugPrint('📁 File size: $fileSize bytes');
-        debugPrint('📁 File exists: ${await savedFile.exists()}');
-        return newPath;
+      if (savedPath != null) {
+        debugPrint('✅ Image saved using ImageStorageService: $savedPath');
+        return savedPath;
       } else {
-        debugPrint('❌ Failed to copy image to persistent storage');
+        debugPrint('❌ Failed to save image using ImageStorageService');
+        // 실패 시 임시 경로 반환 (기존 동작 유지)
         return tempPath;
       }
     } catch (e) {
