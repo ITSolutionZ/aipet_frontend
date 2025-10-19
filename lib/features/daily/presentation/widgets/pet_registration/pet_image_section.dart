@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -129,13 +130,31 @@ class PetImageSection extends StatelessWidget {
   }
 
   ImageProvider<Object> _getImageProvider(String path) {
-    if (path.startsWith('http')) {
-      return NetworkImage(path);
+    debugPrint('🖼️ PetImageSection - path: $path');
+    
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(path) ?? path;
+    debugPrint('🖼️ PetImageSection - absolutePath: $absolutePath');
+    
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ PetImageSection - imageType: $imageType');
+    
+    switch (imageType) {
+      case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ PetImageSection - File exists: $fileExists');
+        
+        if (!fileExists) {
+          debugPrint('❌ PetImageSection - File does not exist: $absolutePath');
+          return const AssetImage('assets/icons/logos/aipet_logo.png');
+        }
+        return FileImage(file);
+      case ImageType.network:
+        return NetworkImage(absolutePath);
+      case ImageType.asset:
+        return AssetImage(absolutePath);
     }
-    if (path.startsWith('assets/')) {
-      return AssetImage(path);
-    }
-    // 로컬 파일 경로인 경우 FileImage 사용
-    return FileImage(File(path));
   }
 }
