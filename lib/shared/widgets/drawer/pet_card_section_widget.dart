@@ -30,10 +30,11 @@ class PetCardSectionWidget extends ConsumerWidget {
           // ペットデータに応じて表示を切り替え
           petsAsync.when(
             data: (pets) {
-              // 🚫 사망한 펫 필터링 (드로워에서 표시하면 안됨)
+              // 🚫 사망한 펫과 숨김 펫 필터링 (드로워에서 표시하면 안됨)
               final activePets = pets
                   .where(
-                    (pet) => pet.petStatus != PetStatus.deceased,
+                    (pet) => pet.petStatus != PetStatus.deceased &&
+                        pet.petStatus != PetStatus.hidden,
                   )
                   .toList();
 
