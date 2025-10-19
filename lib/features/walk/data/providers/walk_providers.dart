@@ -1,8 +1,7 @@
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:flutter/foundation.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart' hide Family;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'walk_providers.g.dart';
 
@@ -82,11 +81,6 @@ class WalkRecordsNotifier extends _$WalkRecordsNotifier {
     return state;
   }
 
-  /// 모든 데이터 삭제 (테스트 완료 후)
-  void clearAllMockData() {
-    debugPrint('🗑️  목업 데이터 삭제 완료');
-    state = [];
-  }
 }
 
 /// 지도 확장 상태 관리
