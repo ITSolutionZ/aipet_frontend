@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class AuthLogo extends StatelessWidget {
   const AuthLogo({
     super.key,
-    this.width = 300,
-    this.height = 300,
+    this.width = 120,
+    this.height = 120,
     this.imagePath = 'assets/icons/logos/aipet_logo.png',
     this.backgroundColor = Colors.transparent,
   });
@@ -19,15 +19,30 @@ class AuthLogo extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(color: backgroundColor),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
         child: Image.asset(
           imagePath,
           width: width,
           height: height,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) =>
-              const SizedBox(width: 200, height: 200),
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('AuthLogo: Failed to load image: $imagePath');
+            debugPrint('AuthLogo: Error: $error');
+            return Container(
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                color: Colors.grey.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(Icons.pets, size: 80, color: Colors.grey),
+            );
+          },
         ),
       ),
     );

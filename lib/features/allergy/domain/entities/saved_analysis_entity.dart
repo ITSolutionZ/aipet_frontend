@@ -4,7 +4,7 @@ part 'saved_analysis_entity.freezed.dart';
 
 /// 저장된 알레르기 분석 결과 엔티티
 @freezed
-class SavedAnalysisEntity with _$SavedAnalysisEntity {
+abstract class SavedAnalysisEntity with _$SavedAnalysisEntity {
   const factory SavedAnalysisEntity({
     /// ID
     required String id,
@@ -21,4 +21,6 @@ class SavedAnalysisEntity with _$SavedAnalysisEntity {
     /// 저장 일시
     required DateTime savedAt,
   }) = _SavedAnalysisEntity;
+
+  const SavedAnalysisEntity._();
 }

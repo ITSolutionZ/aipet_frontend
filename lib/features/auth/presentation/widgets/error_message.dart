@@ -70,16 +70,25 @@ class ErrorMessage extends StatelessWidget {
   _ErrorTheme _getThemeByType(ErrorType type) {
     switch (type) {
       case ErrorType.error:
-        return const _ErrorTheme(backgroundColor: Colors.red, icon: Icons.error_outline);
+        return const _ErrorTheme(
+          backgroundColor: Colors.red,
+          icon: Icons.error_outline,
+        );
       case ErrorType.warning:
         return const _ErrorTheme(
           backgroundColor: Colors.orange,
           icon: Icons.warning_amber_outlined,
         );
       case ErrorType.info:
-        return const _ErrorTheme(backgroundColor: Colors.blue, icon: Icons.info_outline);
+        return const _ErrorTheme(
+          backgroundColor: Colors.blue,
+          icon: Icons.info_outline,
+        );
       case ErrorType.success:
-        return const _ErrorTheme(backgroundColor: Colors.green, icon: Icons.check_circle_outline);
+        return const _ErrorTheme(
+          backgroundColor: Colors.green,
+          icon: Icons.check_circle_outline,
+        );
     }
   }
 }
@@ -104,7 +113,11 @@ class SimpleErrorMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ErrorMessage(message: message, type: ErrorType.error, onDismiss: onDismiss);
+    return ErrorMessage(
+      message: message,
+      type: ErrorType.error,
+      onDismiss: onDismiss,
+    );
   }
 }
 
@@ -117,7 +130,11 @@ class SuccessMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ErrorMessage(message: message, type: ErrorType.success, onDismiss: onDismiss);
+    return ErrorMessage(
+      message: message,
+      type: ErrorType.success,
+      onDismiss: onDismiss,
+    );
   }
 }
 
@@ -130,7 +147,11 @@ class WarningMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ErrorMessage(message: message, type: ErrorType.warning, onDismiss: onDismiss);
+    return ErrorMessage(
+      message: message,
+      type: ErrorType.warning,
+      onDismiss: onDismiss,
+    );
   }
 }
 
@@ -143,6 +164,10 @@ class InfoMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ErrorMessage(message: message, type: ErrorType.info, onDismiss: onDismiss);
+    return ErrorMessage(
+      message: message,
+      type: ErrorType.info,
+      onDismiss: onDismiss,
+    );
   }
 }

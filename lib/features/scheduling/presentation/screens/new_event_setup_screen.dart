@@ -1,6 +1,7 @@
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/services/calendar_event_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,7 +51,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final petsAsync = ref.watch(petListProvider);
+    final petsAsync = ref.watch(petProfilesProvider);
     final pets = petsAsync.when(
       data: (data) => data,
       loading: () => <PetProfileEntity>[],
@@ -276,7 +277,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         borderRadius: BorderRadius.circular(AppRadius.large),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),

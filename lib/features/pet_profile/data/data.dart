@@ -5,3 +5,8 @@ export 'providers/usecase_providers.dart';
 export 'repositories/pet_profile_repository_impl.dart';
 export 'repositories/repositories.dart';
 export 'services/link_registration_service.dart';
+export 'services/local_pet_service.dart';
+export 'services/pet_cache_clear_service.dart';
+export 'services/pet_local_storage_service.dart';
+export 'services/pet_login_service.dart';
+export 'services/pet_user_relation_service.dart';

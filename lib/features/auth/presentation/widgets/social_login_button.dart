@@ -6,7 +6,12 @@ class SocialLoginButton extends StatelessWidget {
   final bool isLoading;
   final Widget child;
 
-  const SocialLoginButton({super.key, this.onPressed, this.isLoading = false, required this.child});
+  const SocialLoginButton({
+    super.key,
+    this.onPressed,
+    this.isLoading = false,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +23,13 @@ class SocialLoginButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
           foregroundColor: AppColors.pointDark,
-          side: BorderSide(color: AppColors.pointGray.withValues(alpha: 0.3), width: 1),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+          side: BorderSide(
+            color: AppColors.pointGray.withValues(alpha: 0.3),
+            width: 1,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.medium),
+          ),
           elevation: 0,
         ),
         child: isLoading
@@ -28,7 +38,9 @@ class SocialLoginButton extends StatelessWidget {
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    AppColors.pointBrown,
+                  ),
                 ),
               )
             : child,

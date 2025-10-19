@@ -1,7 +1,7 @@
 library;
 
+import 'package:aipet_frontend/features/settings/domain/entities/settings_entity.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/entities/settings_entity.dart';
 
 /// 설정 관련 Repository 인터페이스
 abstract class SettingsRepository {
@@ -9,7 +9,9 @@ abstract class SettingsRepository {
   Future<Result<UserProfileEntity>> getUserProfile();
 
   /// 사용자 프로필 업데이트
-  Future<Result<UserProfileEntity>> updateUserProfile(UserProfileEntity profile);
+  Future<Result<UserProfileEntity>> updateUserProfile(
+    UserProfileEntity profile,
+  );
 
   /// 비밀번호 변경
   Future<Result<void>> changePassword(PasswordChangeRequest request);

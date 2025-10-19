@@ -9,7 +9,11 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
   final PetProfileEntity pet;
   final VoidCallback? onImageTap;
 
-  const PetProfileBasicInfoForm({super.key, required this.pet, this.onImageTap});
+  const PetProfileBasicInfoForm({
+    super.key,
+    required this.pet,
+    this.onImageTap,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -80,7 +84,10 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileImage(BuildContext context, PetProfileFormState formState) {
+  Widget _buildProfileImage(
+    BuildContext context,
+    PetProfileFormState formState,
+  ) {
     final imagePath = formState.isEditMode
         ? formState.selectedImagePath ?? pet.imagePath
         : pet.imagePath;
@@ -102,13 +109,21 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       color: AppColors.pointOffWhite,
-                      child: const Icon(Icons.pets, size: 60, color: AppColors.pointBrown),
+                      child: const Icon(
+                        Icons.pets,
+                        size: 60,
+                        color: AppColors.pointBrown,
+                      ),
                     );
                   },
                 )
               : Container(
                   color: AppColors.pointOffWhite,
-                  child: const Icon(Icons.pets, size: 60, color: AppColors.pointBrown),
+                  child: const Icon(
+                    Icons.pets,
+                    size: 60,
+                    color: AppColors.pointBrown,
+                  ),
                 ),
         ),
       ),
@@ -128,7 +143,10 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
           ),
         ),
         Expanded(
-          child: Text(value, style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark)),
+          child: Text(
+            value,
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
+          ),
         ),
       ],
     );
@@ -140,7 +158,11 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
     PetProfileFormController formController,
   ) {
     if (!formState.isEditMode) {
-      return _buildInfoRow('성별', pet.gender == 'male' ? '수컷' : '암컷', Icons.pets);
+      return _buildInfoRow(
+        '성별',
+        pet.gender == 'male' ? '수컷' : '암컷',
+        Icons.pets,
+      );
     }
 
     return Column(
@@ -216,7 +238,10 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
             prefixIcon: Icon(Icons.category),
           ),
           items: types.map((type) {
-            return DropdownMenuItem<String>(value: type['value'], child: Text(type['label']!));
+            return DropdownMenuItem<String>(
+              value: type['value'],
+              child: Text(type['label']!),
+            );
           }).toList(),
           onChanged: formController.updateType,
         ),

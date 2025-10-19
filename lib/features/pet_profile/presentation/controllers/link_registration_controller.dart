@@ -65,9 +65,11 @@ class LinkRegistrationController extends _$LinkRegistrationController {
 
 /// 링크 등록 상태
 @freezed
-class LinkRegistrationState with _$LinkRegistrationState {
+abstract class LinkRegistrationState with _$LinkRegistrationState {
   const factory LinkRegistrationState({
     @Default('') String link,
     @Default(false) bool isLoading,
   }) = _LinkRegistrationState;
+
+  const LinkRegistrationState._();
 }

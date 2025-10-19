@@ -98,7 +98,7 @@ class CreateFacilityUseCase {
         );
 
         if (result.isSuccess && result.data != null) {
-          facilities.add(result.data!);
+          facilities.add(result.dataOrThrow);
         } else {
           return Result.failure('施設一括作成中にエラーが発生しました: ${result.message}');
         }

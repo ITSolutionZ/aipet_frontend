@@ -124,14 +124,18 @@ class ActionButtonGroup extends StatelessWidget {
         backgroundColor: color,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+        ),
       ),
       child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
     );
   }
 
   Widget _buildSecondaryButton() {
-    final label = isEditMode ? (editSecondaryLabel ?? '') : (secondaryLabel ?? '');
+    final label = isEditMode
+        ? (editSecondaryLabel ?? '')
+        : (secondaryLabel ?? '');
     final color = secondaryColor ?? AppColors.pointGray;
 
     return OutlinedButton(
@@ -140,7 +144,9 @@ class ActionButtonGroup extends StatelessWidget {
         foregroundColor: color,
         side: BorderSide(color: color, width: 1.5),
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.medium)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+        ),
       ),
       child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
     );

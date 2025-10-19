@@ -177,11 +177,7 @@ class _NoPetHealthView extends ConsumerWidget {
               ),
               child: Column(
                 children: [
-                  const Icon(
-                    Icons.pets,
-                    size: 48,
-                    color: AppColors.primary,
-                  ),
+                  const Icon(Icons.pets, size: 48, color: AppColors.primary),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     'ペットを登録して健康管理を始めましょう',
@@ -268,7 +264,8 @@ class _NoPetHealthView extends ConsumerWidget {
                       _buildQuickActionCard(
                         icon: Icons.schedule,
                         title: '予約管理',
-                        onTap: () => context.push('/home/daily/hospital-management'),
+                        onTap: () =>
+                            context.push('/home/daily/hospital-management'),
                       ),
                       _buildQuickActionCard(
                         icon: Icons.info_outline,
@@ -302,11 +299,7 @@ class _NoPetHealthView extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 24,
-              color: AppColors.primary,
-            ),
+            Icon(icon, size: 24, color: AppColors.primary),
             const SizedBox(height: AppSpacing.xs),
             Text(
               title,

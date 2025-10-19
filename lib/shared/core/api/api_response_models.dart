@@ -22,8 +22,12 @@ class ApiResponse<T> {
     return ApiResponse<T>(
       success: json['success'] ?? true,
       message: json['message'] ?? '',
-      data: json['data'] != null && fromJsonT != null ? fromJsonT(json['data']) : json['data'],
-      pagination: json['pagination'] != null ? ApiPagination.fromJson(json['pagination']) : null,
+      data: json['data'] != null && fromJsonT != null
+          ? fromJsonT(json['data'])
+          : json['data'],
+      pagination: json['pagination'] != null
+          ? ApiPagination.fromJson(json['pagination'])
+          : null,
       errors: json['errors'] != null
           ? (json['errors'] as List).map((e) => ApiError.fromJson(e)).toList()
           : null,
@@ -71,7 +75,9 @@ class ApiListResponse<T> {
       success: json['success'] ?? true,
       message: json['message'] ?? '',
       items: items,
-      pagination: json['pagination'] != null ? ApiPagination.fromJson(json['pagination']) : null,
+      pagination: json['pagination'] != null
+          ? ApiPagination.fromJson(json['pagination'])
+          : null,
       errors: json['errors'] != null
           ? (json['errors'] as List).map((e) => ApiError.fromJson(e)).toList()
           : null,
@@ -113,7 +119,8 @@ class ApiPagination {
       currentPage: json['current_page'] ?? json['page'] ?? 1,
       totalPages: json['total_pages'] ?? json['last_page'] ?? 1,
       totalItems: json['total_items'] ?? json['total'] ?? 0,
-      itemsPerPage: json['items_per_page'] ?? json['per_page'] ?? json['limit'] ?? 20,
+      itemsPerPage:
+          json['items_per_page'] ?? json['per_page'] ?? json['limit'] ?? 20,
       hasNext: json['has_next'] ?? (json['next_page_url'] != null),
       hasPrevious: json['has_previous'] ?? (json['prev_page_url'] != null),
     );

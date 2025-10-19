@@ -25,7 +25,7 @@ dependencies:
   webview_flutter: ^4.8.0
   flutter_svg: ^2.2.1
   lottie: ^3.1.3
-  fl_chart: ^1.1.0
+  fl_chart: ^0.69.0
   http: ^1.5.0
   path_provider: ^2.1.4
   crypto: ^3.0.3
@@ -57,12 +57,14 @@ dependencies:
   googleapis: ^15.0.0
   googleapis_auth: ^2.0.0
   extension_google_sign_in_as_googleapis_auth: ^3.0.0
+  local_auth: ^2.3.0
 
   mockito: ^5.4.4
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
   meta: any
   mobile_scanner: ^7.1.2
+  uuid: any
 dev_dependencies:
   sentry_dart_plugin: ^3.1.1
   flutter_test:

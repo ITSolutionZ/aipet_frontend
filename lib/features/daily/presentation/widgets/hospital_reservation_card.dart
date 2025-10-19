@@ -67,11 +67,7 @@ class HospitalReservationCard extends StatelessWidget {
             ),
           ),
           // 구분선
-          Container(
-            width: 1,
-            height: 40,
-            color: AppColors.backgroundGray,
-          ),
+          Container(width: 1, height: 40, color: AppColors.backgroundGray),
           // 예약상황 섹션
           Expanded(
             child: InkWell(

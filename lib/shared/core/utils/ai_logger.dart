@@ -11,7 +11,8 @@ class AiLogger {
 
   /// API 응답 성공 로그
   static void logApiSuccess(String response) {
-    final truncatedResponse = response.length > AiConstants.maxResponseLengthForLog
+    final truncatedResponse =
+        response.length > AiConstants.maxResponseLengthForLog
         ? '${response.substring(0, AiConstants.maxResponseLengthForLog)}...'
         : response;
     debugPrint('${AiConstants.apiResponseSuccessMessage}: $truncatedResponse');
@@ -30,7 +31,11 @@ class AiLogger {
   }
 
   /// 펫 컨텍스트와 함께 API 호출 시작 로그
-  static void logApiStartWithPet(String message, {String? petName, String? petType}) {
+  static void logApiStartWithPet(
+    String message, {
+    String? petName,
+    String? petType,
+  }) {
     logApiStart(message, context: '펫 컨텍스트');
     logPetContext(petName, petType);
   }

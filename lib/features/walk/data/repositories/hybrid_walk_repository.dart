@@ -1,8 +1,8 @@
+import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/features/walk/data/services/walk_api_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_statistics_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
-import 'package:aipet_frontend/shared/services/local_walk_storage_service.dart';
 import 'package:flutter/foundation.dart';
 
 import 'helpers/helpers.dart';
@@ -128,7 +128,7 @@ class HybridWalkRepository implements WalkRepository {
       try {
         final apiResult = await _apiService.startWalk(walkRecord);
         if (apiResult.isSuccess && apiResult.data != null) {
-          final syncedRecord = apiResult.data!;
+          final syncedRecord = apiResult.dataOrThrow;
           // API 응답으로 로컬 업데이트
           await LocalWalkStorageService.updateWalkRecord(syncedRecord);
           await LocalWalkStorageService.saveCurrentWalk(syncedRecord);
@@ -189,7 +189,7 @@ class HybridWalkRepository implements WalkRepository {
           notes: notes,
         );
         if (apiResult.isSuccess && apiResult.data != null) {
-          final syncedRecord = apiResult.data!;
+          final syncedRecord = apiResult.dataOrThrow;
           await LocalWalkStorageService.updateWalkRecord(syncedRecord);
           debugPrint('✅ HybridWalkRepository: API 동기화 완료 - ID: $recordId');
           return syncedRecord;
@@ -308,7 +308,7 @@ class HybridWalkRepository implements WalkRepository {
 
         if (apiResult.isSuccess && apiResult.data != null) {
           debugPrint('✅ HybridWalkRepository: API 통계 데이터 로드 완료');
-          return apiResult.data!;
+          return apiResult.dataOrThrow;
         }
       } catch (e) {
         debugPrint('⚠️ HybridWalkRepository: API 호출 실패 - $e');

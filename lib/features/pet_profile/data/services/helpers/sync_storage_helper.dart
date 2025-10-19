@@ -13,7 +13,9 @@ class SyncStorageHelper {
   /// Pending 로컬 변경사항 가져오기
   static Future<List<Map<String, dynamic>>> getPendingLocalChanges() async {
     try {
-      final changesJson = await SecureStorageService.getJson('pending_pet_changes');
+      final changesJson = await SecureStorageService.getJson(
+        'pending_pet_changes',
+      );
       if (changesJson != null && changesJson['changes'] is List) {
         return List<Map<String, dynamic>>.from(changesJson['changes']);
       }
@@ -24,7 +26,10 @@ class SyncStorageHelper {
   }
 
   /// Pending 변경사항 추가
-  static Future<void> addPendingChange(String type, PetProfileEntity pet) async {
+  static Future<void> addPendingChange(
+    String type,
+    PetProfileEntity pet,
+  ) async {
     try {
       final existingChanges = await getPendingLocalChanges();
       existingChanges.add({
@@ -68,19 +73,26 @@ class SyncStorageHelper {
     CacheService cacheService,
   ) async {
     try {
-      final cachedData = await cacheService.getPersistentCache('synced_pet_profiles');
+      final cachedData = await cacheService.getPersistentCache(
+        'synced_pet_profiles',
+      );
       if (cachedData == null) {
         return const Success([]);
       }
 
       final petsData = cachedData['pets'] as List<dynamic>;
       final pets = petsData
-          .map((petData) => PetProfileEntity.fromJson(Map<String, dynamic>.from(petData)))
+          .map(
+            (petData) =>
+                PetProfileEntity.fromJson(Map<String, dynamic>.from(petData)),
+          )
           .toList();
 
       return Success(pets);
     } catch (e) {
-      return Failure(CacheError('캐시된 펫 데이터 로드 실패', details: e.toString()));
+      return Result.failure(
+        CacheError('캐시된 펫 데이터 로드 실패', details: e.toString()),
+      );
     }
   }
 
@@ -94,7 +106,9 @@ class SyncStorageHelper {
       }
       return const Success(null);
     } catch (e) {
-      return Failure(CacheError('마지막 동기화 시간 조회 실패', details: e.toString()));
+      return Result.failure(
+        CacheError('마지막 동기화 시간 조회 실패', details: e.toString()),
+      );
     }
   }
 
@@ -132,7 +146,7 @@ class SyncStorageHelper {
           if (result.isSuccess) {
             return Success(result.dataOrNull!.toDomain());
           }
-          return Failure(result.errorOrNull!);
+          return Result.failure(result.errorOrNull!);
 
         case 'update':
           final petId = data['id'] as String;
@@ -143,7 +157,7 @@ class SyncStorageHelper {
           if (result.isSuccess) {
             return Success(result.dataOrNull!.toDomain());
           }
-          return Failure(result.errorOrNull!);
+          return Result.failure(result.errorOrNull!);
 
         case 'delete':
           final petId = data['id'] as String;
@@ -151,16 +165,15 @@ class SyncStorageHelper {
           if (result.isSuccess) {
             return const Success(null);
           }
-          return Failure(result.errorOrNull!);
+          return Result.failure(result.errorOrNull!);
 
         default:
-          return Failure(ValidationError(
-            field: 'sync_type',
-            reason: '알 수 없는 동기화 타입: $type',
-          ));
+          return Result.failure(
+            ValidationError(field: 'sync_type', reason: '알 수 없는 동기화 타입: $type'),
+          );
       }
     } catch (e) {
-      return Failure(SyncError('동기화 변경사항 적용 실패', details: e.toString()));
+      return Result.failure(SyncError('동기화 변경사항 적용 실패', details: e.toString()));
     }
   }
 }

@@ -97,7 +97,11 @@ class WateringMainScreen extends StatelessWidget {
                 child: Icon(icon, color: color, size: 32),
               ),
               const SizedBox(height: AppSpacing.md),
-              Text(title, style: AppFonts.titleMedium, textAlign: TextAlign.center),
+              Text(
+                title,
+                style: AppFonts.titleMedium,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 subtitle,

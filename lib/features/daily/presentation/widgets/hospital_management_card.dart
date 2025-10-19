@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 class HospitalManagementCard extends StatelessWidget {
   final VoidCallback? onTap;
 
-  const HospitalManagementCard({
-    super.key,
-    this.onTap,
-  });
+  const HospitalManagementCard({super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {

@@ -61,9 +61,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
                 const SizedBox(width: 40), // 균형 맞추기
                 Text(
                   'QRコードスキャナー',
-                  style: AppTextStyles.h2.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
                 ),
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -83,10 +81,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border(
-                bottom: BorderSide(
-                  color: Colors.grey.shade300,
-                  width: 1,
-                ),
+                bottom: BorderSide(color: Colors.grey.shade300, width: 1),
               ),
             ),
             child: TabBar(
@@ -297,7 +292,6 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
     );
   }
 
-
   /// QR 코드 스캔 메서드
   void _scanQRCode(BuildContext context, String scanType) {
     Navigator.of(context).pop(); // 현재 바텀시트 닫기
@@ -315,7 +309,11 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
   }
 
   /// QR 코드 스캔 결과 처리
-  void _handleQRCodeScanned(BuildContext context, String qrData, String scanType) {
+  void _handleQRCodeScanned(
+    BuildContext context,
+    String qrData,
+    String scanType,
+  ) {
     if (scanType == 'pet_registration') {
       // 펫 등록용 QR 코드 처리
       if (qrData.startsWith('AIPET:')) {
@@ -347,10 +345,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
   /// 에러 메시지 표시
   void _showErrorMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 

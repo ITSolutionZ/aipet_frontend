@@ -4,7 +4,7 @@ part 'allergy_post_entity.freezed.dart';
 
 /// 알레르기 커뮤니티 게시글 엔티티
 @freezed
-class AllergyPostEntity with _$AllergyPostEntity {
+abstract class AllergyPostEntity with _$AllergyPostEntity {
   const factory AllergyPostEntity({
     /// 게시글 ID
     required String id,
@@ -42,6 +42,8 @@ class AllergyPostEntity with _$AllergyPostEntity {
     /// 수정일
     DateTime? updatedAt,
   }) = _AllergyPostEntity;
+
+  const AllergyPostEntity._();
 }
 
 /// 알레르기 타입

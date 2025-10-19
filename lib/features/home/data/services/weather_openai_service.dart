@@ -57,17 +57,22 @@ class WeatherOpenAIService extends BaseLoggingService {
             choice['message']['content'] != null) {
           final content = choice['message']['content'].toString().trim();
           if (content.isEmpty) {
-            return Result.failure('Empty response content from OpenAI API');
+            return Result<String>.failure(
+              'Empty response content from OpenAI API',
+            );
           }
           debugPrint('✅ WeatherOpenAI: Success - $content');
-          return Result.success('Weather advice generated successfully', content);
+          return Result<String>.success(
+            'Weather advice generated successfully',
+            content,
+          );
         }
       }
 
-      return Result.failure('No valid response from OpenAI API');
+      return Result<String>.failure('No valid response from OpenAI API');
     } catch (e) {
       debugPrint('❌ WeatherOpenAI: Exception - $e');
-      return Result.failure('OpenAI API call failed: $e');
+      return Result<String>.failure('OpenAI API call failed: $e');
     }
   }
 }

@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/dialogs/app_lock_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 개발용 로그인 화면
 ///
@@ -19,6 +23,57 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
   final _emailController = TextEditingController(text: 'dev@example.com');
   final _passwordController = TextEditingController(text: 'password123');
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 앱 시작 시 앱 잠금이 설정되어 있으면 잠금 해제 다이얼로그 표시
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAppLock();
+    });
+  }
+
+  Future<void> _checkAppLock() async {
+    final prefs = await SharedPreferences.getInstance();
+    final pinEnabled = prefs.getBool('pin_enabled') ?? false;
+    final biometricEnabled = prefs.getBool('biometric_enabled') ?? false;
+
+    if ((pinEnabled || biometricEnabled) && mounted) {
+      unawaited(
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AppLockDialog(
+            enablePin: pinEnabled,
+            enableBiometric: biometricEnabled,
+            onSuccess: () {
+              // PIN/생체인증 성공 - 자동 로그인 수행
+              _autoLogin();
+            },
+          ),
+        ),
+      );
+    }
+  }
+
+  /// PIN/생체인증 성공 시 자동 로그인
+  Future<void> _autoLogin() async {
+    // 개발용 딜레이
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('開発モードでログインしました'),
+          backgroundColor: AppColors.pointGreen,
+        ),
+      );
+
+      if (mounted) {
+        context.go(AppRouter.homeRoute);
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -47,7 +102,9 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
         );
 
         // 홈 화면으로 이동
-        context.go(AppRouter.homeRoute);
+        if (mounted) {
+          context.go(AppRouter.homeRoute);
+        }
       }
     } catch (error) {
       if (mounted) {
@@ -113,13 +170,15 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
       children: [
         // 로고 이미지
         Image.asset(
-          'assets/icons/aipet_logo.png',
-          width: 180,
-          height: 180,
+          'assets/icons/logos/aipet_logo.png',
+          width: 120,
+          height: 120,
+          fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {
+            debugPrint('로고 로드 실패: $error');
             return Container(
-              width: 180,
-              height: 180,
+              width: 120,
+              height: 120,
               decoration: BoxDecoration(
                 color: AppColors.pointBrown.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppSpacing.md),

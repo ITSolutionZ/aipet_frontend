@@ -65,7 +65,10 @@ class NotificationController extends BaseController {
   }
 
   /// 개별 알림 가져오기
-  Future<NotificationModel?> getNotificationById(String userId, String id) async {
+  Future<NotificationModel?> getNotificationById(
+    String userId,
+    String id,
+  ) async {
     try {
       final result = await _getNotificationByIdUseCase.call(userId, id);
       return result.dataOrNull;
@@ -80,7 +83,9 @@ class NotificationController extends BaseController {
     try {
       final result = await _getNotificationsUseCase.call(userId);
       final notifications = result.dataOrNull ?? [];
-      return notifications.where((n) => n.status == NotificationStatus.unread).length;
+      return notifications
+          .where((n) => n.status == NotificationStatus.unread)
+          .length;
     } catch (error) {
       handleError(error);
       return 0;
@@ -99,7 +104,10 @@ class NotificationController extends BaseController {
   }
 
   /// 알림 설정 저장
-  Future<void> saveNotificationSettings(String userId, Map<String, dynamic> settings) async {
+  Future<void> saveNotificationSettings(
+    String userId,
+    Map<String, dynamic> settings,
+  ) async {
     try {
       await _saveSettingsUseCase.call(userId, settings);
     } catch (error) {

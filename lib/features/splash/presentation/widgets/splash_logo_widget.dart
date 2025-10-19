@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/splash/domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';

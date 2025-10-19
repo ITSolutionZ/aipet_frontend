@@ -13,10 +13,15 @@ class HomeHeaderWidget extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('おかえりなさい！', style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'おかえりなさい！',
+              style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.bold),
+            ),
             Text(
               '今日も一緒に頑張りましょう',
-              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ),

@@ -19,7 +19,10 @@ class GetYouTubeVideosUseCase {
   }
 
   /// 태그로 필터링된 YouTube 비디오 목록을 조회합니다.
-  Future<Result<List<YouTubeVideoEntity>>> getByTags(String petId, List<String> tags) async {
+  Future<Result<List<YouTubeVideoEntity>>> getByTags(
+    String petId,
+    List<String> tags,
+  ) async {
     try {
       final allVideosResult = await call(petId);
       if (!allVideosResult.isSuccess) {
@@ -43,7 +46,10 @@ class GetYouTubeVideosUseCase {
   }
 
   /// 검색어로 YouTube 비디오를 검색합니다.
-  Future<Result<List<YouTubeVideoEntity>>> search(String petId, String query) async {
+  Future<Result<List<YouTubeVideoEntity>>> search(
+    String petId,
+    String query,
+  ) async {
     try {
       final allVideosResult = await call(petId);
       if (!allVideosResult.isSuccess) {

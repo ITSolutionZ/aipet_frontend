@@ -184,7 +184,8 @@ class WalkRouteServiceImpl implements WalkRouteService {
 
       // 3점 평균으로 스무딩
       final smoothedLat = (prev.latitude + curr.latitude + next.latitude) / 3;
-      final smoothedLng = (prev.longitude + curr.longitude + next.longitude) / 3;
+      final smoothedLng =
+          (prev.longitude + curr.longitude + next.longitude) / 3;
 
       smoothed.add(
         WalkLocation(
@@ -212,7 +213,8 @@ class WalkRouteServiceImpl implements WalkRouteService {
 
     final y = math.sin(deltaLng) * math.cos(lat2);
     final x =
-        math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(deltaLng);
+        math.cos(lat1) * math.sin(lat2) -
+        math.sin(lat1) * math.cos(lat2) * math.cos(deltaLng);
 
     final bearing = math.atan2(y, x) * 180 / math.pi;
     return (bearing + 360) % 360;

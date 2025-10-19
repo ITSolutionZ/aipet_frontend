@@ -32,7 +32,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
 
       return response;
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -41,7 +41,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       final response = await fetchData(ApiEndpoints.petById(petId));
       return response;
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -55,14 +55,14 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final petData = response.data!['data'] ?? response.data!;
       final pet = PetProfileApiModel.fromJson(petData);
       return Success(pet);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -77,14 +77,14 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final petData = response.data!['data'] ?? response.data!;
       final pet = PetProfileApiModel.fromJson(petData);
       return Success(pet);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -93,7 +93,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       await deleteData(ApiEndpoints.pets, petId);
       return const Success(null);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -119,11 +119,11 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
         return Success(uploadResponse);
       }
 
-      return Failure(
+      return Result.failure(
         response.errorOrNull ?? UnknownError(details: 'Image upload failed'),
       );
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -138,7 +138,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
       return const Success(null);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -151,14 +151,14 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final settingsData = response.data!['data'] ?? response.data!;
       final settings = PetSharingSettings.fromJson(settingsData);
       return Success(settings);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -173,7 +173,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
       return const Success(null);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -187,7 +187,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
       return const Success(null);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -198,14 +198,14 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final managersData = response.data!['data'] ?? response.data!;
       final managers = List<String>.from(managersData['family_managers'] ?? []);
       return Success(managers);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -216,14 +216,14 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final statusData = response.data!['data'] ?? response.data!;
       final status = PetSyncStatus.fromJson(statusData);
       return Success(status);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -250,7 +250,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
 
       return response;
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -267,7 +267,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
 
       return response;
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -281,7 +281,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
       return const Success(null);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return Result.failure(ApiErrorHandler.handleError(e));
     }
   }
 }

@@ -8,7 +8,12 @@ class Result<T> {
   final T? data;
   final Exception? error;
 
-  const Result._({required this.isSuccess, required this.message, this.data, this.error});
+  const Result._({
+    required this.isSuccess,
+    required this.message,
+    this.data,
+    this.error,
+  });
 
   /// 성공 결과 생성
   factory Result.success(String message, [T? data]) =>
@@ -88,4 +93,5 @@ class Result<T> {
 }
 
 /// 실패 결과를 빠르게 생성하는 헬퍼 함수
-Result<T> Failure<T>(String message, [Exception? error]) => Result<T>.failure(message, error);
+Result<T> Failure<T>(String message, [Exception? error]) =>
+    Result<T>.failure(message, error);

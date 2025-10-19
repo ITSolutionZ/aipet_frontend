@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/features/walk/data/services/walk_api_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/shared/services/local_walk_storage_service.dart';
 import 'package:flutter/foundation.dart';
 
 /// Walk API 호출 헬퍼
@@ -18,7 +18,7 @@ class WalkApiHelper {
       final apiResult = await apiService.getWalkRecordById(recordId);
 
       if (apiResult.isSuccess && apiResult.data != null) {
-        final record = apiResult.data!;
+        final record = apiResult.dataOrThrow;
         // API 성공 시 로컬 캐시 업데이트
         await LocalWalkStorageService.updateWalkRecord(record);
         debugPrint('✅ HybridWalkRepository: API 데이터 로드 완료 - ID: $recordId');
@@ -45,12 +45,10 @@ class WalkApiHelper {
       final apiResult = await apiService.getAllWalkRecords();
 
       if (apiResult.isSuccess && apiResult.data != null) {
-        final records = apiResult.data!;
+        final records = apiResult.dataOrThrow;
         // API 성공 시 로컬 캐시 동기화
         await LocalWalkStorageService.saveWalkRecords(records);
-        debugPrint(
-          '✅ HybridWalkRepository: API 데이터 ${records.length}개 로드 완료',
-        );
+        debugPrint('✅ HybridWalkRepository: API 데이터 ${records.length}개 로드 완료');
         return records;
       }
     } catch (e) {
@@ -69,13 +67,11 @@ class WalkApiHelper {
     if (!useApi) return null;
 
     try {
-      debugPrint(
-        '🔄 HybridWalkRepository: API에서 펫 산책 기록 조회 - Pet ID: $petId',
-      );
+      debugPrint('🔄 HybridWalkRepository: API에서 펫 산책 기록 조회 - Pet ID: $petId');
       final apiResult = await apiService.getWalkRecordsByPetId(petId);
 
       if (apiResult.isSuccess && apiResult.data != null) {
-        final records = apiResult.data!;
+        final records = apiResult.dataOrThrow;
         debugPrint('✅ HybridWalkRepository: API 펫 데이터 ${records.length}개 로드');
         return records;
       }

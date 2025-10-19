@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -213,7 +216,7 @@ class PetProfileHeader extends StatelessWidget {
               radius: 50,
               backgroundColor: AppColors.pointOffWhite,
               backgroundImage: (selectedImagePath ?? imagePath) != null
-                  ? AssetImage(selectedImagePath ?? imagePath!)
+                  ? _getImageProvider(selectedImagePath ?? imagePath!)
                   : null,
               child: (selectedImagePath ?? imagePath) == null
                   ? Image.asset(
@@ -298,5 +301,37 @@ class PetProfileHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  /// 이미지 경로에 따라 적절한 ImageProvider 반환 - 강화된 로컬 저장 지원
+  ImageProvider _getImageProvider(String imagePath) {
+    debugPrint('🖼️ PetProfileCard - imagePath: $imagePath');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
+    debugPrint('🖼️ PetProfileCard - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ PetProfileCard - imageType: $imageType');
+
+    switch (imageType) {
+      case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ PetProfileCard - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint('❌ PetProfileCard - File does not exist: $absolutePath');
+          // 기본 이미지 반환
+          return const AssetImage('assets/icons/logos/aipet_logo.png');
+        }
+
+        return FileImage(file);
+      case ImageType.network:
+        return NetworkImage(absolutePath);
+      case ImageType.asset:
+        return AssetImage(absolutePath);
+    }
   }
 }

@@ -19,8 +19,9 @@ class WalkInfoShareHelper {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor:
-              result.isSuccess ? AppColors.pointGreen : AppColors.pointPink,
+          backgroundColor: result.isSuccess
+              ? AppColors.pointGreen
+              : AppColors.pointPink,
         ),
       );
     }
@@ -39,8 +40,9 @@ class WalkInfoShareHelper {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor:
-              result.isSuccess ? AppColors.pointGreen : AppColors.pointPink,
+          backgroundColor: result.isSuccess
+              ? AppColors.pointGreen
+              : AppColors.pointPink,
         ),
       );
     }
@@ -59,8 +61,9 @@ class WalkInfoShareHelper {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor:
-              result.isSuccess ? AppColors.pointGreen : AppColors.pointPink,
+          backgroundColor: result.isSuccess
+              ? AppColors.pointGreen
+              : AppColors.pointPink,
         ),
       );
     }

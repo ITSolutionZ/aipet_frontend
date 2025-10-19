@@ -38,7 +38,9 @@ class AiFavoriteManager {
       // 유효성 검증
       final validationResult = _validateForFavorite(message, userQuestion);
       if (!validationResult.isSuccess) {
-        return Result.failure(validationResult.error?.toString() ?? 'Validation failed');
+        return Result.failure(
+          validationResult.error?.toString() ?? 'Validation failed',
+        );
       }
 
       // 새로운 즐겨찾기 항목 생성
@@ -55,7 +57,8 @@ class AiFavoriteManager {
 
       // 업데이트된 목록 생성
       final updatedIds = List<String>.from(currentFavoriteIds)..add(message.id);
-      final updatedQAs = List<AiFavoriteQaEntity>.from(currentFavoriteQAs)..add(favoriteQA);
+      final updatedQAs = List<AiFavoriteQaEntity>.from(currentFavoriteQAs)
+        ..add(favoriteQA);
 
       // 즐겨찾기 개수 제한 (100개)
       const maxFavorites = 100;
@@ -70,7 +73,9 @@ class AiFavoriteManager {
         }
 
         if (kDebugMode) {
-          debugPrint('[$_tag] Removed $removeCount old favorites (limit: $maxFavorites)');
+          debugPrint(
+            '[$_tag] Removed $removeCount old favorites (limit: $maxFavorites)',
+          );
         }
       }
 
@@ -83,7 +88,9 @@ class AiFavoriteManager {
       );
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ⭐ Added to favorites: ${message.id} (total: ${updatedIds.length})');
+        debugPrint(
+          '[$_tag] ⭐ Added to favorites: ${message.id} (total: ${updatedIds.length})',
+        );
       }
 
       return Result.success(result.message, result);
@@ -119,7 +126,8 @@ class AiFavoriteManager {
       );
 
       // 업데이트된 목록 생성
-      final updatedIds = List<String>.from(currentFavoriteIds)..remove(messageId);
+      final updatedIds = List<String>.from(currentFavoriteIds)
+        ..remove(messageId);
       final updatedQAs = List<AiFavoriteQaEntity>.from(currentFavoriteQAs)
         ..removeWhere((qa) => qa.id == messageId);
 
@@ -141,7 +149,9 @@ class AiFavoriteManager {
       return Result.success(result.message, result);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error removing from favorites: $error\n$stackTrace');
+        debugPrint(
+          '[$_tag] Error removing from favorites: $error\n$stackTrace',
+        );
       }
       return Result.failure('즐겨찾기 제거 중 오류 발생: $error');
     }
@@ -197,7 +207,9 @@ class AiFavoriteManager {
 
       // 카테고리 필터
       if (categoryId != null && categoryId.isNotEmpty) {
-        filteredList = filteredList.where((qa) => qa.categoryId == categoryId).toList();
+        filteredList = filteredList
+            .where((qa) => qa.categoryId == categoryId)
+            .toList();
       }
 
       // 펫 필터
@@ -209,7 +221,9 @@ class AiFavoriteManager {
       filteredList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       if (kDebugMode) {
-        debugPrint('[$_tag] 🔍 Favorites filtered: ${favoriteQAs.length} → ${filteredList.length}');
+        debugPrint(
+          '[$_tag] 🔍 Favorites filtered: ${favoriteQAs.length} → ${filteredList.length}',
+        );
       }
 
       return Result.success('Favorites filtered successfully', filteredList);
@@ -225,7 +239,9 @@ class AiFavoriteManager {
   ///
   /// [favoriteQAs] 통계를 생성할 즐겨찾기 목록
   /// [return] 즐겨찾기 통계
-  static FavoriteStatistics generateStatistics(List<AiFavoriteQaEntity> favoriteQAs) {
+  static FavoriteStatistics generateStatistics(
+    List<AiFavoriteQaEntity> favoriteQAs,
+  ) {
     try {
       if (favoriteQAs.isEmpty) {
         return FavoriteStatistics.empty();
@@ -239,7 +255,8 @@ class AiFavoriteManager {
       for (final qa in favoriteQAs) {
         // 카테고리 분포
         final category = qa.categoryName ?? 'Unknown';
-        categoryDistribution[category] = (categoryDistribution[category] ?? 0) + 1;
+        categoryDistribution[category] =
+            (categoryDistribution[category] ?? 0) + 1;
 
         // 펫 분포
         final petName = qa.pet?.name ?? 'No Pet';
@@ -287,7 +304,9 @@ class AiFavoriteManager {
 
       // 1. 길이 일치 확인
       if (favoriteIds.length != favoriteQAs.length) {
-        issues.add('ID 목록과 QA 목록의 길이가 일치하지 않음 (${favoriteIds.length} vs ${favoriteQAs.length})');
+        issues.add(
+          'ID 목록과 QA 목록의 길이가 일치하지 않음 (${favoriteIds.length} vs ${favoriteQAs.length})',
+        );
       }
 
       // 2. ID 일치 확인
@@ -335,7 +354,10 @@ class AiFavoriteManager {
   }
 
   // 내부 헬퍼 메서드들
-  static Result<bool> _validateForFavorite(AiMessageEntity message, String userQuestion) {
+  static Result<bool> _validateForFavorite(
+    AiMessageEntity message,
+    String userQuestion,
+  ) {
     if (message.type != MessageType.assistant) {
       return Result.failure('AI 응답 메시지만 즐겨찾기에 추가할 수 있습니다');
     }

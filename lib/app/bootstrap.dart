@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:aipet_frontend/features/auth/data/services/firebase_token_service.dart';
 import 'package:aipet_frontend/features/auth/data/services/token_storage_auth_token_repository.dart';
+import 'package:aipet_frontend/features/pet_profile/data/data.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/utils/utils.dart';
 import 'package:aipet_frontend/firebase_options.dart';
 import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 import 'package:aipet_frontend/shared/services/local_storage_service.dart';
-import 'package:aipet_frontend/shared/services/pet_cache_clear_service.dart';
 import 'package:aipet_frontend/shared/services/preload_service.dart';
-import 'package:aipet_frontend/shared/utils/pet_data_reset_util.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

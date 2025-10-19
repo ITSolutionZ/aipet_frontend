@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 class DailyHealthActionButtons extends StatelessWidget {
   final DailyHealthLogic logic;
 
-  const DailyHealthActionButtons({
-    super.key,
-    required this.logic,
-  });
+  const DailyHealthActionButtons({super.key, required this.logic});
 
   @override
   Widget build(BuildContext context) {
@@ -60,4 +57,3 @@ class DailyHealthActionButtons extends StatelessWidget {
     );
   }
 }
-

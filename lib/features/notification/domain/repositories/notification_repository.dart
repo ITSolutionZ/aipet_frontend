@@ -45,7 +45,10 @@ abstract class NotificationRepository {
   ///
   /// [userId] 사용자 ID
   /// [notificationId] 삭제할 알림 ID
-  Future<Result<bool>> deleteNotification({required String userId, required String notificationId});
+  Future<Result<bool>> deleteNotification({
+    required String userId,
+    required String notificationId,
+  });
 
   /// 알림 설정 조회
   ///

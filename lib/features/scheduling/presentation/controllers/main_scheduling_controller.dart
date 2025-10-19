@@ -253,19 +253,27 @@ class MainSchedulingController extends BaseController {
   }
 
   /// 작업 완료 처리
-  Future<Result<Map<String, dynamic>>> markTaskAsCompleted(String taskId) async {
+  Future<Result<Map<String, dynamic>>> markTaskAsCompleted(
+    String taskId,
+  ) async {
     try {
       // Mock complete task logic
       await Future.delayed(const Duration(milliseconds: 300));
 
-      return Result.success('작업이 완료되었습니다', {'completedAt': DateTime.now(), 'taskId': taskId});
+      return Result.success('작업이 완료되었습니다', {
+        'completedAt': DateTime.now(),
+        'taskId': taskId,
+      });
     } catch (error) {
       return Result.failure('작업 완료 처리 실패: $error');
     }
   }
 
   /// 작업 연기 처리
-  Future<Result<Map<String, dynamic>>> postponeTask(String taskId, Duration delay) async {
+  Future<Result<Map<String, dynamic>>> postponeTask(
+    String taskId,
+    Duration delay,
+  ) async {
     try {
       // Mock postpone task logic
       await Future.delayed(const Duration(milliseconds: 300));

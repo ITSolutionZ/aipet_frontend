@@ -1,59 +1,16 @@
 import 'dart:developer';
 
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart' as calendar;
 
 import '../../domain/entities/calendar_event_entity.dart';
 
+/// Google Calendar Service
+/// 현재는 로컬 유저만 사용하므로, 향후 기능 확장을 위해 구조만 유지
 class GoogleCalendarService {
-  static const String _calendarScope = calendar.CalendarApi.calendarScope;
-
-  late GoogleSignIn _googleSignIn;
   calendar.CalendarApi? _calendarApi;
-  bool _isInitialized = false;
 
   GoogleCalendarService() {
-    _initializeService();
-  }
-
-  void _initializeService() {
-    // TODO: GoogleSignIn API 7.2.0+ 업데이트 필요
-    // _googleSignIn = GoogleSignIn(scopes: [_calendarScope]);
-    _isInitialized = true;
-  }
-
-  /// Google Calendar API 인증 및 초기화
-  Future<bool> authenticate() async {
-    try {
-      if (!_isInitialized) {
-        _initializeService();
-      }
-
-      // TODO: GoogleSignIn API 7.2.0+ 업데이트 필요
-      log('Google Calendar API - temporarily disabled due to API migration');
-      return false;
-
-      /*
-      final GoogleSignInAccount? account = await _googleSignIn.signIn();
-      if (account == null) {
-        log('Google Sign In cancelled by user');
-        return false;
-      }
-
-      final httpClient = await _googleSignIn.authenticatedClient();
-      if (httpClient == null) {
-        log('Failed to get authenticated client');
-        return false;
-      }
-
-      _calendarApi = calendar.CalendarApi(httpClient);
-      log('Google Calendar API authenticated successfully');
-      return true;
-      */
-    } catch (e) {
-      log('Google Calendar authentication failed: $e');
-      return false;
-    }
+    log('🔐 Google Calendar Service initialized');
   }
 
   /// 인증 상태 확인
@@ -61,9 +18,12 @@ class GoogleCalendarService {
 
   /// 로그아웃
   Future<void> signOut() async {
-    // TODO: GoogleSignIn API 7.2.0+ 업데이트 필요
-    // await _googleSignIn.signOut();
-    _calendarApi = null;
+    try {
+      _calendarApi = null;
+      log('✅ Signed out from Google');
+    } catch (e) {
+      log('❌ Sign out failed: $e');
+    }
   }
 
   /// Google Calendar에서 이벤트 목록 가져오기

@@ -15,7 +15,7 @@ enum RiskLevel {
 
 /// 건강 분석 엔티티
 @freezed
-class HealthAnalysis with _$HealthAnalysis {
+abstract class HealthAnalysis with _$HealthAnalysis {
   const factory HealthAnalysis({
     required String id,
     required String petId,
@@ -27,6 +27,8 @@ class HealthAnalysis with _$HealthAnalysis {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) = _HealthAnalysis;
+
+  const HealthAnalysis._();
 
   factory HealthAnalysis.fromJson(Map<String, dynamic> json) =>
       _$HealthAnalysisFromJson(json);

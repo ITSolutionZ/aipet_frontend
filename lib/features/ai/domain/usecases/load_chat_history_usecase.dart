@@ -8,7 +8,9 @@ class LoadChatHistoryUseCase {
 
   const LoadChatHistoryUseCase(this._repository);
 
-  Future<Result<List<AiMessageEntity>>> call(LoadChatHistoryParams params) async {
+  Future<Result<List<AiMessageEntity>>> call(
+    LoadChatHistoryParams params,
+  ) async {
     try {
       final result = await _repository.loadChatHistory(
         userId: params.userId,
@@ -35,5 +37,10 @@ class LoadChatHistoryParams {
   final int? limit;
   final int? offset;
 
-  const LoadChatHistoryParams({required this.userId, this.petId, this.limit, this.offset});
+  const LoadChatHistoryParams({
+    required this.userId,
+    this.petId,
+    this.limit,
+    this.offset,
+  });
 }

@@ -49,7 +49,10 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       final currentPage = prefs.getInt(_keyOnboardingCurrentPage) ?? 0;
       final isCompleted = prefs.getBool(_keyOnboardingCompleted) ?? false;
 
-      _currentState = OnboardingState(currentPage: currentPage, isCompleted: isCompleted);
+      _currentState = OnboardingState(
+        currentPage: currentPage,
+        isCompleted: isCompleted,
+      );
 
       return Result.success('온보딩 상태 로드 성공', _currentState!);
     } catch (e) {

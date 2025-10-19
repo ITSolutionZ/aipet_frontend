@@ -15,7 +15,9 @@ class LinkRegistrationService {
       'message': 'リンクが正常に登録されました',
       'linkId': 'link-${DateTime.now().millisecondsSinceEpoch}',
       'registeredLink': link,
-      'expiresAt': DateTime.now().add(const Duration(days: 30)).toIso8601String(),
+      'expiresAt': DateTime.now()
+          .add(const Duration(days: 30))
+          .toIso8601String(),
     };
   }
 

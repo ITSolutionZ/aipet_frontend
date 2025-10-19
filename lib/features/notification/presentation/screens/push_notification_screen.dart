@@ -13,13 +13,17 @@ class PushNotificationScreen extends ConsumerStatefulWidget {
   const PushNotificationScreen({super.key});
 
   @override
-  ConsumerState<PushNotificationScreen> createState() => _PushNotificationScreenState();
+  ConsumerState<PushNotificationScreen> createState() =>
+      _PushNotificationScreenState();
 }
 
-class _PushNotificationScreenState extends ConsumerState<PushNotificationScreen> {
-  bool _foodAlarmEnabled = false;
-  bool _walkAlarmEnabled = false;
+class _PushNotificationScreenState
+    extends ConsumerState<PushNotificationScreen> {
+  bool _foodAlarmEnabled = true;
+  bool _walkAlarmEnabled = true;
+  bool _medicineAlarmEnabled = true;
   bool _systemAlarmEnabled = true;
+  bool _reservationAlarmEnabled = true;
   bool _isLoading = true;
   late final NotificationUIController _uiController;
 
@@ -44,10 +48,13 @@ class _PushNotificationScreenState extends ConsumerState<PushNotificationScreen>
 
       setState(() {
         // settings가 Map<String, dynamic>이므로 적절히 처리
-        final typeSettings = settings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ?? {};
+        final typeSettings =
+            settings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ?? {};
         _foodAlarmEnabled = typeSettings['feeding'] as bool? ?? false;
         _walkAlarmEnabled = typeSettings['walk'] as bool? ?? false;
+        _medicineAlarmEnabled = typeSettings['medicine'] as bool? ?? false;
         _systemAlarmEnabled = typeSettings['system'] as bool? ?? true;
+        _reservationAlarmEnabled = typeSettings['reservation'] as bool? ?? true;
         _isLoading = false;
       });
     } catch (e) {
@@ -63,21 +70,27 @@ class _PushNotificationScreenState extends ConsumerState<PushNotificationScreen>
     if (!mounted) return;
 
     try {
-      final getSettingsUseCase = ref.read(getNotificationSettingsUseCaseProvider);
+      final getSettingsUseCase = ref.read(
+        getNotificationSettingsUseCaseProvider,
+      );
       final currentSettings = await getSettingsUseCase('default_user_id');
 
       if (!mounted) return;
 
       // 새로운 타입 설정 생성
       final newTypeSettings = Map<String, dynamic>.from(
-        currentSettings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ?? {},
+        currentSettings.dataOrNull?['typeSettings'] as Map<String, dynamic>? ??
+            {},
       );
       newTypeSettings['feeding'] = _foodAlarmEnabled;
       newTypeSettings['walk'] = _walkAlarmEnabled;
+      newTypeSettings['medicine'] = _medicineAlarmEnabled;
       newTypeSettings['system'] = _systemAlarmEnabled;
-
+      newTypeSettings['reservation'] = _reservationAlarmEnabled;
       // 새로운 설정 생성
-      final newSettings = Map<String, dynamic>.from(currentSettings.dataOrNull ?? {});
+      final newSettings = Map<String, dynamic>.from(
+        currentSettings.dataOrNull ?? {},
+      );
       newSettings['typeSettings'] = newTypeSettings;
 
       if (!mounted) return;
@@ -112,17 +125,25 @@ class _PushNotificationScreenState extends ConsumerState<PushNotificationScreen>
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: AppColors.pointOffWhite,
-        appBar: SoftGradientDrawerAppBar(title: 'プッシュ通知'),
-        body: Center(child: CircularProgressIndicator()),
+        appBar: AppBar(
+          title: const Text('プッシュ通知'),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.pop(),
+          ),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      drawer: const AppDrawer(),
-      appBar: const SoftGradientDrawerAppBar(title: 'プッシュ通知'),
+      appBar: const SoftGradientAppBar(title: 'プッシュ通知'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -137,16 +158,25 @@ class _PushNotificationScreenState extends ConsumerState<PushNotificationScreen>
               decoration: BoxDecoration(
                 color: AppColors.pointBrown.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(AppRadius.medium),
-                border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.1)),
+                border: Border.all(
+                  color: AppColors.pointBrown.withValues(alpha: 0.1),
+                ),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.info_outline, color: AppColors.pointBrown, size: 20),
+                  const Icon(
+                    Icons.info_outline,
+                    color: AppColors.pointBrown,
+                    size: 20,
+                  ),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'アラームをオンにすると、設定した時間にお知らせを受け取ることができます',
-                      style: AppFonts.bodySmall.copyWith(color: AppColors.pointBrown, height: 1.3),
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointBrown,
+                        height: 1.3,
+                      ),
                     ),
                   ),
                 ],
@@ -180,7 +210,30 @@ class _PushNotificationScreenState extends ConsumerState<PushNotificationScreen>
                 });
               },
             ),
+            const SizedBox(height: AppSpacing.lg),
 
+            AlarmToggleComponent(
+              title: '薬のアラーム',
+              subtitle: '薬の服用時間をお知らせいたします',
+              value: _medicineAlarmEnabled,
+              onChanged: (value) {
+                setState(() {
+                  _medicineAlarmEnabled = value;
+                });
+              },
+            ),
+
+            const SizedBox(height: AppSpacing.lg),
+            AlarmToggleComponent(
+              title: '予約アラーム',
+              subtitle: '予約時間をお知らせいたします',
+              value: _reservationAlarmEnabled,
+              onChanged: (value) {
+                setState(() {
+                  _reservationAlarmEnabled = value;
+                });
+              },
+            ),
             const SizedBox(height: AppSpacing.lg),
 
             AlarmToggleComponent(

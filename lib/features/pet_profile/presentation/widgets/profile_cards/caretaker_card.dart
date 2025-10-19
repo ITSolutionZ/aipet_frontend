@@ -6,7 +6,12 @@ class CaretakerCard extends StatelessWidget {
   final String email;
   final String? name;
 
-  const CaretakerCard({super.key, required this.ownerId, required this.email, this.name});
+  const CaretakerCard({
+    super.key,
+    required this.ownerId,
+    required this.email,
+    this.name,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +35,11 @@ class CaretakerCard extends StatelessWidget {
           CircleAvatar(
             radius: 20,
             backgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
-            child: const Icon(Icons.person, color: AppColors.pointBrown, size: 20),
+            child: const Icon(
+              Icons.person,
+              color: AppColors.pointBrown,
+              size: 20,
+            ),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(

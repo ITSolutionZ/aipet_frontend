@@ -8,7 +8,7 @@ class EnvironmentConstants {
 
   /// Google Maps API 키
   static String get googleMapsApiKey =>
-    dotenv.env['GOOGLE_MAPS_API_KEY']?.isNotEmpty == true
+      dotenv.env['GOOGLE_MAPS_API_KEY']?.isNotEmpty == true
       ? dotenv.env['GOOGLE_MAPS_API_KEY']!
       : dotenv.env['GOOGLE_PUBLIC_API_KEY'] ?? '';
 
@@ -24,17 +24,23 @@ class EnvironmentConstants {
   // ========== API Base URLs ==========
 
   /// Development API Base URL
-  static String get devApiBaseUrl => dotenv.env['DEV_API_BASE_URL'] ?? 'https://dev-api.aipet.com';
+  static String get devApiBaseUrl =>
+      dotenv.env['DEV_API_BASE_URL'] ?? 'https://dev-api.aipet.com';
 
   /// Staging API Base URL
-  static String get stagingApiBaseUrl => dotenv.env['STAGING_API_BASE_URL'] ?? 'https://staging-api.aipet.com';
+  static String get stagingApiBaseUrl =>
+      dotenv.env['STAGING_API_BASE_URL'] ?? 'https://staging-api.aipet.com';
 
   /// Production API Base URL
-  static String get prodApiBaseUrl => dotenv.env['PROD_API_BASE_URL'] ?? 'https://api.aipet.com';
+  static String get prodApiBaseUrl =>
+      dotenv.env['PROD_API_BASE_URL'] ?? 'https://api.aipet.com';
 
   /// Current environment API Base URL
   static String get apiBaseUrl {
-    const environment = String.fromEnvironment('ENVIRONMENT', defaultValue: 'development');
+    const environment = String.fromEnvironment(
+      'ENVIRONMENT',
+      defaultValue: 'development',
+    );
     switch (environment) {
       case 'production':
         return prodApiBaseUrl;
@@ -67,7 +73,9 @@ class EnvironmentConstants {
   static List<String> get missingEnvironmentVariables {
     final missing = <String>[];
 
-    if (googleMapsApiKey.isEmpty) missing.add('GOOGLE_MAPS_API_KEY or GOOGLE_PUBLIC_API_KEY');
+    if (googleMapsApiKey.isEmpty) {
+      missing.add('GOOGLE_MAPS_API_KEY or GOOGLE_PUBLIC_API_KEY');
+    }
     if (weatherApiKey.isEmpty) missing.add('WEATHER_API_KEY');
     if (openAiApiKey.isEmpty) missing.add('OPENAI_API_KEY');
     if (lineChannelId.isEmpty) missing.add('LINE_CHANNEL_ID');

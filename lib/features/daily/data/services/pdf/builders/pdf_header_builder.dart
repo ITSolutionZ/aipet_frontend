@@ -45,12 +45,8 @@ class PdfHeaderBuilder {
     if (backgroundImage == null) return pw.SizedBox.expand();
     return pw.Container(
       decoration: pw.BoxDecoration(
-        image: pw.DecorationImage(
-          image: backgroundImage,
-          fit: pw.BoxFit.cover,
-        ),
+        image: pw.DecorationImage(image: backgroundImage, fit: pw.BoxFit.cover),
       ),
     );
   }
 }
-

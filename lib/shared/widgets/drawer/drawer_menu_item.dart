@@ -28,7 +28,7 @@ class DrawerMenuItem extends StatelessWidget {
       ),
       onTap: onTap,
       selected: isSelected,
-      selectedTileColor: Colors.white.withOpacity(0.1),
+      selectedTileColor: Colors.white.withValues(alpha: 0.1),
     );
   }
 }

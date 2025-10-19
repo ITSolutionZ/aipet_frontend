@@ -80,6 +80,7 @@ class WalkRecordsNotifier extends _$WalkRecordsNotifier {
   List<WalkRecordEntity> getRecentWalkRecords() {
     return state;
   }
+
 }
 
 /// 지도 확장 상태 관리

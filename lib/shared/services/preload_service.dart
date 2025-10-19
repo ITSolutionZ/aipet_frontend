@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/features/home/data/repositories/home_repository_impl.dart';
-import 'package:aipet_frontend/shared/services/local_walk_storage_service.dart';
+import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/shared/services/svg_cache_service.dart';
 import 'package:aipet_frontend/shared/services/ultra_fast_cache_service.dart';
 import 'package:flutter/material.dart';

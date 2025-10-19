@@ -39,18 +39,14 @@ class RecipeMapperHelper {
   }
 
   /// 레시피 업데이트 시 타임스탬프 추가
-  static Map<String, dynamic> addUpdateTimestamp(
-    Map<String, dynamic> recipe,
-  ) {
+  static Map<String, dynamic> addUpdateTimestamp(Map<String, dynamic> recipe) {
     final updatedRecipe = Map<String, dynamic>.from(recipe);
     updatedRecipe['updatedAt'] = DateTime.now().toIso8601String();
     return updatedRecipe;
   }
 
   /// 레시피 생성 시 타임스탬프 추가
-  static Map<String, dynamic> addCreateTimestamp(
-    Map<String, dynamic> recipe,
-  ) {
+  static Map<String, dynamic> addCreateTimestamp(Map<String, dynamic> recipe) {
     final newRecipe = Map<String, dynamic>.from(recipe);
     if (newRecipe['createdAt'] == null) {
       newRecipe['createdAt'] = DateTime.now().toIso8601String();

@@ -83,12 +83,18 @@ class EntityUtils {
   }
 
   /// Entity 리스트에서 ID로 필터링
-  static List<T> filterByIds<T extends BaseEntity>(List<T> entities, List<String> ids) {
+  static List<T> filterByIds<T extends BaseEntity>(
+    List<T> entities,
+    List<String> ids,
+  ) {
     return entities.where((entity) => ids.contains(entity.id)).toList();
   }
 
   /// Entity 리스트 정렬 (생성일시 기준)
-  static List<T> sortByCreatedAt<T extends BaseEntity>(List<T> entities, {bool ascending = true}) {
+  static List<T> sortByCreatedAt<T extends BaseEntity>(
+    List<T> entities, {
+    bool ascending = true,
+  }) {
     final sorted = List<T>.from(entities);
     sorted.sort((a, b) {
       final comparison = a.createdAt.compareTo(b.createdAt);
@@ -98,7 +104,10 @@ class EntityUtils {
   }
 
   /// Entity 리스트 정렬 (업데이트일시 기준)
-  static List<T> sortByUpdatedAt<T extends BaseEntity>(List<T> entities, {bool ascending = true}) {
+  static List<T> sortByUpdatedAt<T extends BaseEntity>(
+    List<T> entities, {
+    bool ascending = true,
+  }) {
     final sorted = List<T>.from(entities);
     sorted.sort((a, b) {
       final aUpdated = a.updatedAt ?? a.createdAt;
@@ -128,14 +137,20 @@ class EntityUtils {
     DateTime endDate,
   ) {
     return entities.where((entity) {
-      return entity.createdAt.isAfter(startDate) && entity.createdAt.isBefore(endDate);
+      return entity.createdAt.isAfter(startDate) &&
+          entity.createdAt.isBefore(endDate);
     }).toList();
   }
 
   /// Entity 리스트에서 최근 N일 필터링
-  static List<T> filterByRecentDays<T extends BaseEntity>(List<T> entities, int days) {
+  static List<T> filterByRecentDays<T extends BaseEntity>(
+    List<T> entities,
+    int days,
+  ) {
     final cutoffDate = DateTime.now().subtract(Duration(days: days));
-    return entities.where((entity) => entity.createdAt.isAfter(cutoffDate)).toList();
+    return entities
+        .where((entity) => entity.createdAt.isAfter(cutoffDate))
+        .toList();
   }
 }
 

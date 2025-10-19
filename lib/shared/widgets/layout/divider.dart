@@ -28,8 +28,12 @@ class SharedDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     if (glass) {
       final gradient = LinearGradient(
-        begin: axis == Axis.horizontal ? Alignment.centerLeft : Alignment.topCenter,
-        end: axis == Axis.horizontal ? Alignment.centerRight : Alignment.bottomCenter,
+        begin: axis == Axis.horizontal
+            ? Alignment.centerLeft
+            : Alignment.topCenter,
+        end: axis == Axis.horizontal
+            ? Alignment.centerRight
+            : Alignment.bottomCenter,
         colors: [
           Colors.white.withAlpha((opacity * 0).toInt()),
           Colors.white.withAlpha((opacity).toInt()),
@@ -48,7 +52,9 @@ class SharedDivider extends StatelessWidget {
       }
       return line;
     } else {
-      final dividerColor = (color ?? Colors.white).withAlpha((255 * opacity).toInt());
+      final dividerColor = (color ?? Colors.white).withAlpha(
+        (255 * opacity).toInt(),
+      );
 
       final line = Container(
         width: axis == Axis.horizontal ? double.infinity : thickness,

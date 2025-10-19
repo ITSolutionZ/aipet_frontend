@@ -16,7 +16,9 @@ sealed class TypedId<T> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TypedId<T> && runtimeType == other.runtimeType && value == other.value;
+      other is TypedId<T> &&
+          runtimeType == other.runtimeType &&
+          value == other.value;
 
   @override
   int get hashCode => value.hashCode;
@@ -29,7 +31,8 @@ sealed class TypedId<T> {
 final class AiMessageId extends TypedId<AiMessageId> {
   const AiMessageId(super.value);
 
-  factory AiMessageId.generate() => AiMessageId('ai_${DateTime.now().millisecondsSinceEpoch}');
+  factory AiMessageId.generate() =>
+      AiMessageId('ai_${DateTime.now().millisecondsSinceEpoch}');
 }
 
 /// Auth 사용자 ID
@@ -141,17 +144,20 @@ sealed class Optional<T> {
   };
 
   /// 값이 있으면 변환, 없으면 기본값
-  Optional<U> mapOr<U>(U Function(T value) transform, U defaultValue) => switch (this) {
-    Some<T>(value: final value) => Some(transform(value)),
-    None<T>() => Some(defaultValue),
-  };
-
-  /// 값이 있으면 변환, 없으면 계산된 기본값
-  Optional<U> mapOrElse<U>(U Function(T value) transform, U Function() defaultValueSupplier) =>
+  Optional<U> mapOr<U>(U Function(T value) transform, U defaultValue) =>
       switch (this) {
         Some<T>(value: final value) => Some(transform(value)),
-        None<T>() => Some(defaultValueSupplier()),
+        None<T>() => Some(defaultValue),
       };
+
+  /// 값이 있으면 변환, 없으면 계산된 기본값
+  Optional<U> mapOrElse<U>(
+    U Function(T value) transform,
+    U Function() defaultValueSupplier,
+  ) => switch (this) {
+    Some<T>(value: final value) => Some(transform(value)),
+    None<T>() => Some(defaultValueSupplier()),
+  };
 }
 
 /// 값이 있음
@@ -209,10 +215,11 @@ sealed class Either<L, R> {
   };
 
   /// 값에 따라 변환
-  T fold<T>(T Function(L left) onLeft, T Function(R right) onRight) => switch (this) {
-    Left<L, R>(value: final value) => onLeft(value),
-    Right<L, R>(value: final value) => onRight(value),
-  };
+  T fold<T>(T Function(L left) onLeft, T Function(R right) onRight) =>
+      switch (this) {
+        Left<L, R>(value: final value) => onLeft(value),
+        Right<L, R>(value: final value) => onRight(value),
+      };
 
   /// 오른쪽 값만 변환
   Either<L, U> map<U>(U Function(R right) transform) => switch (this) {
@@ -270,7 +277,8 @@ class TypeGuards {
   static bool isNotEmpty(String? value) => value != null && value.isNotEmpty;
 
   /// 빈 리스트가 아닌지 확인
-  static bool isNotEmptyList<T>(List<T>? list) => list != null && list.isNotEmpty;
+  static bool isNotEmptyList<T>(List<T>? list) =>
+      list != null && list.isNotEmpty;
 
   /// 유효한 이메일인지 확인
   static bool isValidEmail(String? email) {
@@ -312,7 +320,10 @@ class TypeSafeBuilder<T> {
   }
 
   /// 검증 추가
-  TypeSafeBuilder<T> validate(bool Function(T value) validator, String errorMessage) {
+  TypeSafeBuilder<T> validate(
+    bool Function(T value) validator,
+    String errorMessage,
+  ) {
     if (_value != null && !validator(_value as T)) {
       _errors.add(errorMessage);
     }
@@ -352,10 +363,12 @@ extension ListTypeSafetyExtensions<T> on List<T>? {
   List<T>? get nonEmpty => this?.isNotEmpty == true ? this : null;
 
   /// 첫 번째 요소가 타입 U인지 확인하고 반환
-  U? firstAs<U>() => this?.isNotEmpty == true && this!.first is U ? this!.first as U : null;
+  U? firstAs<U>() =>
+      this?.isNotEmpty == true && this!.first is U ? this!.first as U : null;
 
   /// 마지막 요소가 타입 U인지 확인하고 반환
-  U? lastAs<U>() => this?.isNotEmpty == true && this!.last is U ? this!.last as U : null;
+  U? lastAs<U>() =>
+      this?.isNotEmpty == true && this!.last is U ? this!.last as U : null;
 }
 
 /// 맵 타입 안전성 확장
@@ -364,5 +377,6 @@ extension MapTypeSafetyExtensions<K, V> on Map<K, V>? {
   T? getAs<T>(K key) => this?[key] is T ? this![key] as T : null;
 
   /// 키로 값을 안전하게 가져오기 (기본값 포함)
-  T getAsOr<T>(K key, T defaultValue) => this?[key] is T ? this![key] as T : defaultValue;
+  T getAsOr<T>(K key, T defaultValue) =>
+      this?[key] is T ? this![key] as T : defaultValue;
 }

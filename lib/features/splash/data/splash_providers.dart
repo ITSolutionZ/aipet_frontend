@@ -1,6 +1,4 @@
-import 'package:aipet_frontend/features/splash/domain/repositories/splash_repository.dart';
-import 'package:aipet_frontend/features/splash/domain/usecases/get_splash_config_usecase.dart';
-import 'package:aipet_frontend/features/splash/domain/usecases/manage_splash_sequence_usecase.dart';
+import 'package:aipet_frontend/features/splash/domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/features/splash/data/data.dart';
 import 'package:aipet_frontend/features/splash/domain/domain.dart';
-import 'package:aipet_frontend/shared/constants/splash_constants.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 /// 스플래시 화면 컨트롤러

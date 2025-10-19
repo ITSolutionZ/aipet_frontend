@@ -9,7 +9,7 @@ class NotificationDisplayHelper {
   static AndroidNotificationDetails getAndroidDetails() {
     return const AndroidNotificationDetails(
       'aipet_channel',
-      'AI Pet 알림',
+      '', // 앱 타이틀 제거
       channelDescription: 'AI Pet 앱의 모든 알림',
       importance: Importance.defaultImportance,
       priority: Priority.defaultPriority,

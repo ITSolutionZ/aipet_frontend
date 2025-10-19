@@ -6,9 +6,17 @@ class SetCurrentLocationUseCase {
 
   SetCurrentLocationUseCase(this.repository);
 
-  Future<Result<void>> call(double latitude, double longitude, String address) async {
+  Future<Result<void>> call(
+    double latitude,
+    double longitude,
+    String address,
+  ) async {
     try {
-      final result = await repository.setCurrentLocation(latitude, longitude, address);
+      final result = await repository.setCurrentLocation(
+        latitude,
+        longitude,
+        address,
+      );
       if (result.isSuccess) {
         return Result.success('現在地を設定しました', null);
       } else {

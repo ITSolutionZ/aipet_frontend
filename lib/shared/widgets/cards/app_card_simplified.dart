@@ -150,7 +150,11 @@ class AppCard extends StatelessWidget {
     );
 
     if (onTap != null) {
-      cardWidget = InkWell(onTap: onTap, borderRadius: borderRadius, child: cardWidget);
+      cardWidget = InkWell(
+        onTap: onTap,
+        borderRadius: borderRadius,
+        child: cardWidget,
+      );
     }
 
     return cardWidget;
@@ -180,7 +184,10 @@ class InfoCard extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          if (leading != null) ...[leading!, const SizedBox(width: AppSpacing.md)],
+          if (leading != null) ...[
+            leading!,
+            const SizedBox(width: AppSpacing.md),
+          ],
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,12 +196,17 @@ class InfoCard extends StatelessWidget {
                 if (subtitle != null)
                   Text(
                     subtitle!,
-                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
               ],
             ),
           ),
-          if (trailing != null) ...[const SizedBox(width: AppSpacing.md), trailing!],
+          if (trailing != null) ...[
+            const SizedBox(width: AppSpacing.md),
+            trailing!,
+          ],
         ],
       ),
     );
@@ -227,7 +239,12 @@ class SummaryCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
+              Text(
+                title,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
               if (icon != null) Icon(icon, color: accentColor, size: 20),
             ],
           ),
@@ -243,7 +260,9 @@ class SummaryCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Text(
               subtitle!,
-              style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ],

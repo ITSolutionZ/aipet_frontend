@@ -17,9 +17,14 @@ class FacilityDetailHeader extends StatelessWidget {
           height: 300,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(facility.imagePath ?? 'assets/images/placeholder.png'),
+              image: AssetImage(
+                facility.imagePath ?? 'assets/images/placeholder.png',
+              ),
               fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(Colors.black.withValues(alpha: 0.3), BlendMode.darken),
+              colorFilter: ColorFilter.mode(
+                Colors.black.withValues(alpha: 0.3),
+                BlendMode.darken,
+              ),
             ),
           ),
         ),
@@ -73,8 +78,12 @@ class FacilityDetailHeader extends StatelessWidget {
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        facility.type == FacilityType.grooming ? 'トリミング' : '動物病院',
-                        style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+                        facility.type == FacilityType.grooming
+                            ? 'トリミング'
+                            : '動物病院',
+                        style: AppFonts.bodyMedium.copyWith(
+                          color: AppColors.pointGray,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Row(
@@ -91,19 +100,33 @@ class FacilityDetailHeader extends StatelessWidget {
                           Row(
                             children: List.generate(5, (index) {
                               if (index < facility.rating.floor()) {
-                                return const Icon(Icons.star, color: Colors.amber, size: 16);
+                                return const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                  size: 16,
+                                );
                               } else if (index == facility.rating.floor() &&
                                   facility.rating % 1 > 0) {
-                                return const Icon(Icons.star_half, color: Colors.amber, size: 16);
+                                return const Icon(
+                                  Icons.star_half,
+                                  color: Colors.amber,
+                                  size: 16,
+                                );
                               } else {
-                                return const Icon(Icons.star_border, color: Colors.amber, size: 16);
+                                return const Icon(
+                                  Icons.star_border,
+                                  color: Colors.amber,
+                                  size: 16,
+                                );
                               }
                             }),
                           ),
                           const SizedBox(width: AppSpacing.xs),
                           Text(
                             '${facility.reviewCount} レビュー',
-                            style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                            style: AppFonts.bodySmall.copyWith(
+                              color: AppColors.pointGray,
+                            ),
                           ),
                         ],
                       ),

@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/splash/domain/repositories/splash_repository.dart';
+import 'package:aipet_frontend/features/splash/domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 /// 스플래시 Repository 구현체
@@ -58,17 +58,25 @@ class SplashRepositoryImpl implements SplashRepository {
       await Future.delayed(const Duration(milliseconds: 1500));
 
       // 3단계: 앱 로고 표시 - 무조건 2초간 표시 (회사 로고 포함)
-      yield Result.success('AI Petアプリロゴ表示中...', SplashState.appLogo('assets/icons/aipet_logo.png'));
+      yield Result.success(
+        'AI Petアプリロゴ表示中...',
+        SplashState.appLogo('assets/icons/aipet_logo.png'),
+      );
 
       // 앱 로고 2초 대기 (조건 없음, 무조건 대기)
       await Future.delayed(const Duration(seconds: 2));
 
       // 4단계: 완료 - 온보딩으로 이동 준비
-      yield Result.success('スプラッシュシーケンス完了 - オンボーディングへ移動', SplashState.completed());
+      yield Result.success(
+        'スプラッシュシーケンス完了 - オンボーディングへ移動',
+        SplashState.completed(),
+      );
     } catch (error) {
       // 에러 발생 시에도 순차적 진행 보장
       // 로딩 애니메이션 1.5초
-      yield Result.success('ローディングアニメーション表示中... (エラー復旧, SplashState.loading())');
+      yield Result.success(
+        'ローディングアニメーション表示中... (エラー復旧, SplashState.loading())',
+      );
       await Future.delayed(const Duration(milliseconds: 1500));
 
       // 앱 로고 2초 (회사 로고 포함)

@@ -13,9 +13,11 @@ class AiConfigService {
   final AiCacheService _cacheService;
 
   /// 생성자 - 의존성 주입
-  const AiConfigService({required AiDataService dataService, required AiCacheService cacheService})
-    : _dataService = dataService,
-      _cacheService = cacheService;
+  const AiConfigService({
+    required AiDataService dataService,
+    required AiCacheService cacheService,
+  }) : _dataService = dataService,
+       _cacheService = cacheService;
 
   /// 팩토리 생성자 - 기본 설정으로 인스턴스 생성
   factory AiConfigService.createDefault() {
@@ -23,7 +25,10 @@ class AiConfigService {
     final cacheService = AiCacheService();
     final dataService = AiDataService(cacheService, dioService);
 
-    return AiConfigService(dataService: dataService, cacheService: cacheService);
+    return AiConfigService(
+      dataService: dataService,
+      cacheService: cacheService,
+    );
   }
 
   /// 현재 Mock 모드 여부
@@ -34,7 +39,11 @@ class AiConfigService {
     try {
       return await _dataService.getCategories();
     } catch (e) {
-      throw AiConfigException(AiErrorKeys.configError, configKey: 'categories', originalError: e);
+      throw AiConfigException(
+        AiErrorKeys.configError,
+        configKey: 'categories',
+        originalError: e,
+      );
     }
   }
 

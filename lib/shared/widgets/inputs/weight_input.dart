@@ -12,8 +12,13 @@ class WeightInputController extends _$WeightInputController {
   @override
   WeightInputState build(String inputId) => const WeightInputState();
 
-  void initialize(double weight, {TextEditingController? controller, FocusNode? focusNode}) {
-    final textController = controller ?? TextEditingController(text: weight.toStringAsFixed(1));
+  void initialize(
+    double weight, {
+    TextEditingController? controller,
+    FocusNode? focusNode,
+  }) {
+    final textController =
+        controller ?? TextEditingController(text: weight.toStringAsFixed(1));
     final inputFocusNode = focusNode ?? FocusNode();
 
     state = state.copyWith(
@@ -36,7 +41,11 @@ class WeightInputState {
   final FocusNode? focusNode;
   final double currentWeight;
 
-  const WeightInputState({this.controller, this.focusNode, this.currentWeight = 0.0});
+  const WeightInputState({
+    this.controller,
+    this.focusNode,
+    this.currentWeight = 0.0,
+  });
 
   WeightInputState copyWith({
     TextEditingController? controller,
@@ -87,7 +96,11 @@ class _WeightInputState extends ConsumerState<WeightInput> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(weightInputControllerProvider(_inputId).notifier)
-          .initialize(widget.weight, controller: widget.controller, focusNode: widget.focusNode);
+          .initialize(
+            widget.weight,
+            controller: widget.controller,
+            focusNode: widget.focusNode,
+          );
 
       final state = ref.read(weightInputControllerProvider(_inputId));
       state.focusNode?.addListener(() {
@@ -102,7 +115,9 @@ class _WeightInputState extends ConsumerState<WeightInput> {
   void didUpdateWidget(WeightInput oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.weight != widget.weight) {
-      ref.read(weightInputControllerProvider(_inputId).notifier).updateWeight(widget.weight);
+      ref
+          .read(weightInputControllerProvider(_inputId).notifier)
+          .updateWeight(widget.weight);
     }
   }
 
@@ -118,7 +133,9 @@ class _WeightInputState extends ConsumerState<WeightInput> {
     final text = state.controller!.text.trim();
     if (text.isNotEmpty) {
       final newWeight = double.tryParse(text);
-      if (newWeight != null && newWeight >= widget.minWeight && newWeight <= widget.maxWeight) {
+      if (newWeight != null &&
+          newWeight >= widget.minWeight &&
+          newWeight <= widget.maxWeight) {
         widget.onWeightChanged(newWeight);
       } else {
         state.controller!.text = widget.weight.toStringAsFixed(1);
@@ -167,7 +184,9 @@ class _WeightInputState extends ConsumerState<WeightInput> {
               color: AppColors.pointDark,
               fontWeight: FontWeight.bold,
             ),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+            ],
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(
@@ -175,7 +194,9 @@ class _WeightInputState extends ConsumerState<WeightInput> {
                 vertical: AppSpacing.lg,
               ),
               suffixText: widget.unit,
-              suffixStyle: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+              suffixStyle: AppFonts.bodyMedium.copyWith(
+                color: AppColors.pointGray,
+              ),
             ),
             onChanged: (value) {
               final newWeight = double.tryParse(value.trim());
@@ -193,7 +214,10 @@ class _WeightInputState extends ConsumerState<WeightInput> {
         ),
         if (widget.errorText != null) ...[
           const SizedBox(height: AppSpacing.xs),
-          Text(widget.errorText!, style: AppFonts.bodySmall.copyWith(color: AppColors.pointPink)),
+          Text(
+            widget.errorText!,
+            style: AppFonts.bodySmall.copyWith(color: AppColors.pointPink),
+          ),
         ],
       ],
     );

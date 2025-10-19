@@ -22,9 +22,14 @@ class NotificationUIController extends BaseController {
   );
 
   /// 알림 목록 가져오기 (UI 피드백 포함)
-  Future<List<dynamic>> getNotificationsWithFeedback(BuildContext context, String userId) async {
+  Future<List<dynamic>> getNotificationsWithFeedback(
+    BuildContext context,
+    String userId,
+  ) async {
     try {
-      final notifications = await _notificationController.getNotifications(userId);
+      final notifications = await _notificationController.getNotifications(
+        userId,
+      );
       return notifications;
     } catch (error) {
       if (context.mounted) {
@@ -35,7 +40,10 @@ class NotificationUIController extends BaseController {
   }
 
   /// 알림 새로고침 (UI 피드백 포함)
-  Future<void> refreshNotificationsWithFeedback(BuildContext context, String userId) async {
+  Future<void> refreshNotificationsWithFeedback(
+    BuildContext context,
+    String userId,
+  ) async {
     try {
       await _notificationController.refreshNotifications(userId);
       if (context.mounted) {
@@ -49,7 +57,11 @@ class NotificationUIController extends BaseController {
   }
 
   /// 알림 읽음 처리 (UI 피드백 포함)
-  Future<void> markAsReadWithFeedback(BuildContext context, String userId, String id) async {
+  Future<void> markAsReadWithFeedback(
+    BuildContext context,
+    String userId,
+    String id,
+  ) async {
     try {
       await _notificationController.markAsRead(userId, id);
       if (context.mounted) {
@@ -113,9 +125,12 @@ class NotificationUIController extends BaseController {
   }
 
   /// 알림 권한 요청 (UI 피드백 포함)
-  Future<bool> requestNotificationPermissionWithFeedback(BuildContext context) async {
+  Future<bool> requestNotificationPermissionWithFeedback(
+    BuildContext context,
+  ) async {
     try {
-      final result = await _notificationController.requestNotificationPermission();
+      final result = await _notificationController
+          .requestNotificationPermission();
       if (context.mounted) {
         if (result) {
           showSuccessSnackBar(context, 'アラーム通知の許可が許可されました。');
@@ -179,7 +194,10 @@ class NotificationUIController extends BaseController {
             title: const Text('アラーム通知の削除'),
             content: const Text('このアラーム通知を削除しますか？'),
             actions: [
-              TextButton(onPressed: () => context.pop(false), child: const Text('キャンセル')),
+              TextButton(
+                onPressed: () => context.pop(false),
+                child: const Text('キャンセル'),
+              ),
               TextButton(
                 onPressed: () => context.pop(true),
                 style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -199,8 +217,14 @@ class NotificationUIController extends BaseController {
             title: const Text('アラーム通知の許可'),
             content: const Text('アラーム通知を受け取るには許可が必要です。許可しますか？'),
             actions: [
-              TextButton(onPressed: () => context.pop(false), child: const Text('拒否')),
-              TextButton(onPressed: () => context.pop(true), child: const Text('許可')),
+              TextButton(
+                onPressed: () => context.pop(false),
+                child: const Text('拒否'),
+              ),
+              TextButton(
+                onPressed: () => context.pop(true),
+                child: const Text('許可'),
+              ),
             ],
           ),
         ) ??

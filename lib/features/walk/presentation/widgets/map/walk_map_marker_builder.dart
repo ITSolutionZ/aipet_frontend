@@ -1,3 +1,5 @@
+import 'package:aipet_frontend/features/walk/data/services/no_entry_zone_storage_service.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/no_entry_zone_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
@@ -55,7 +57,10 @@ class WalkMapMarkerBuilder {
   }
 
   /// 선택된 펫 마커 생성
-  static Marker buildSelectedPetMarker(WalkPetInfo pet, Position currentPosition) {
+  static Marker buildSelectedPetMarker(
+    WalkPetInfo pet,
+    Position currentPosition,
+  ) {
     return Marker(
       markerId: const MarkerId('selected_pet'),
       position: LatLng(
@@ -93,6 +98,19 @@ class WalkMapMarkerBuilder {
         if (_isValidLocation(walkRecord.route.last)) {
           markers.add(buildWalkEndMarker(walkRecord, i));
         }
+
+        // 활동 마커들 추가
+        final activities = _parseActivitiesFromNotes(walkRecord.notes);
+        for (int j = 0; j < activities.length; j++) {
+          final activity = activities[j];
+          markers.add(
+            buildActivityMarker(
+              activity,
+              walkRecord,
+              '$i-activity-$j',
+            ),
+          );
+        }
       }
     }
 
@@ -102,6 +120,155 @@ class WalkMapMarkerBuilder {
     }
 
     return markers;
+  }
+
+  /// 활동 마커 생성
+  static Marker buildActivityMarker(
+    Map<String, dynamic> activity,
+    WalkRecordEntity walkRecord,
+    String markerId,
+  ) {
+    final latitude = activity['latitude'] as double? ?? 0.0;
+    final longitude = activity['longitude'] as double? ?? 0.0;
+    final activityType = activity['type'] as String? ?? 'unknown';
+
+    final icon = _getActivityIcon(activityType);
+    final title = _getActivityTitle(activityType);
+
+    return Marker(
+      markerId: MarkerId(markerId),
+      position: LatLng(latitude, longitude),
+      infoWindow: InfoWindow(
+        title: '${walkRecord.petName} - $title',
+        snippet: '活動記録',
+      ),
+      icon: icon,
+    );
+  }
+
+  /// 활동 타입에 따른 마커 아이콘 가져오기
+  static BitmapDescriptor _getActivityIcon(String activityType) {
+    switch (activityType.toLowerCase()) {
+      case 'poop':
+        // 배변: 주황색
+        return BitmapDescriptor.defaultMarkerWithHue(
+          BitmapDescriptor.hueOrange,
+        );
+      case 'pee':
+      case 'marking':
+        // 배뇨: 파란색
+        return BitmapDescriptor.defaultMarkerWithHue(
+          BitmapDescriptor.hueAzure,
+        );
+      case 'no-entry':
+        // 금지 구역: 빨간색
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+      default:
+        // 기타: 노란색
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
+    }
+  }
+
+  /// 활동 타입의 제목 가져오기
+  static String _getActivityTitle(String activityType) {
+    switch (activityType.toLowerCase()) {
+      case 'poop':
+        return '💩 排便';
+      case 'pee':
+      case 'marking':
+        return '💧 排尿';
+      case 'no-entry':
+        return '🚫 立入禁止';
+      default:
+        return '活動記録';
+    }
+  }
+
+  /// notes 필드에서 활동 정보 파싱
+  static List<Map<String, dynamic>> _parseActivitiesFromNotes(
+    String? notes,
+  ) {
+    if (notes == null || notes.isEmpty) return [];
+
+    try {
+      // notes 형식: "activities:[{...}, {...}]"
+      if (!notes.startsWith('activities:')) return [];
+
+      final jsonStr = notes.substring('activities:'.length);
+      final activities = <Map<String, dynamic>>[];
+
+      // 정규표현식으로 각 활동 객체 추출 (더 유연한 패턴)
+      final regex = RegExp(r'\{[^}]+\}');
+      final matches = regex.allMatches(jsonStr);
+
+      for (final match in matches) {
+        final activityJson = match.group(0) ?? '';
+        try {
+          // 'type': 'poop', 'latitude': 37.7755, 'longitude': -122.4190 형식 파싱
+          final typeMatch = RegExp(r"'type':\s*'([^']+)'").firstMatch(
+            activityJson,
+          );
+          final latMatch = RegExp(
+            r"'latitude':\s*([0-9.-]+)",
+          ).firstMatch(activityJson);
+          final lngMatch = RegExp(
+            r"'longitude':\s*([0-9.-]+)",
+          ).firstMatch(activityJson);
+
+          if (typeMatch != null && latMatch != null && lngMatch != null) {
+            final type = typeMatch.group(1) ?? 'unknown';
+            final lat = double.tryParse(latMatch.group(1) ?? '0') ?? 0.0;
+            final lng = double.tryParse(lngMatch.group(1) ?? '0') ?? 0.0;
+
+            if (lat != 0 && lng != 0) {
+              activities.add({
+                'type': type,
+                'latitude': lat,
+                'longitude': lng,
+              });
+            }
+          }
+        } catch (e) {
+          // 파싱 실패시 무시
+          continue;
+        }
+      }
+
+      return activities;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// 금지구역 마커 생성
+  static Marker buildNoEntryZoneMarker(NoEntryZone zone, int index) {
+    return Marker(
+      markerId: MarkerId('no_entry_$index'),
+      position: LatLng(zone.latitude, zone.longitude),
+      infoWindow: InfoWindow(
+        title: '🚫 立入禁止',
+        snippet: '${zone.description ?? '金止区域'} (${zone.radiusMeters.toInt()}m)',
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    );
+  }
+
+  /// 모든 금지구역 마커 로드 및 추가
+  static Future<Set<Marker>> loadAndBuildNoEntryZoneMarkers(
+    Set<Marker> existingMarkers,
+  ) async {
+    try {
+      final zones = await NoEntryZoneStorageService.loadNoEntryZones();
+      final markers = Set<Marker>.from(existingMarkers);
+
+      for (int i = 0; i < zones.length; i++) {
+        markers.add(buildNoEntryZoneMarker(zones[i], i));
+      }
+
+      return markers;
+    } catch (e) {
+      return existingMarkers;
+    }
   }
 
   /// 유효한 위치인지 확인

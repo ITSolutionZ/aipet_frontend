@@ -58,22 +58,16 @@ class AiOpenAIException extends AiException {
 
 /// 콘텐츠 검증 관련 에러
 class AiContentValidationException extends AiException {
-  final String? reason;
-  final double? confidence;
-
   AiContentValidationException(
     super.message, {
     super.code,
     super.originalError,
     super.timestamp,
     super.context,
-    this.reason,
-    this.confidence,
   });
 
   @override
-  String toString() =>
-      'AiContentValidationException: $message${reason != null ? ' (Reason: $reason)' : ''}';
+  String toString() => 'AiContentValidationException: $message';
 }
 
 /// 로컬 저장소 관련 에러
@@ -203,7 +197,7 @@ class AiErrorHandler {
   }
 
   /// 에러를 적절한 AiException 타입으로 변환
-  static AiException convertToAiException(dynamic error) {
+  static AiException? convertToAiException(dynamic error) {
     if (error is AiException) {
       return error;
     }
@@ -230,26 +224,10 @@ class AiErrorHandler {
       if (message.contains('content') ||
           message.contains('validation') ||
           message.contains('pet')) {
-        return AiContentValidationException(message, originalError: error);
+        return AiContentValidationException(message);
       }
-
-      // 로컬 저장소 관련 에러 판별
-      if (message.contains('storage') ||
-          message.contains('SharedPreferences') ||
-          message.contains('save') ||
-          message.contains('load')) {
-        return AiLocalStorageException(message, originalError: error);
-      }
-
-      // 기본 AiException으로 변환
-      return AiBusinessLogicException(message, originalError: error);
     }
-
-    // 알 수 없는 에러
-    return AiBusinessLogicException(
-      'Unknown error: $error',
-      originalError: error,
-    );
+    return null;
   }
 
   /// 에러 메시지를 사용자 친화적으로 변환

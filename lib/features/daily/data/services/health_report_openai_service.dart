@@ -243,5 +243,4 @@ $vaccineText
         return 'ペット';
     }
   }
-
 }

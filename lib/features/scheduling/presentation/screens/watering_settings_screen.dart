@@ -8,10 +8,12 @@ class WateringSettingsScreen extends ConsumerStatefulWidget {
   const WateringSettingsScreen({super.key});
 
   @override
-  ConsumerState<WateringSettingsScreen> createState() => _WateringSettingsScreenState();
+  ConsumerState<WateringSettingsScreen> createState() =>
+      _WateringSettingsScreenState();
 }
 
-class _WateringSettingsScreenState extends ConsumerState<WateringSettingsScreen> {
+class _WateringSettingsScreenState
+    extends ConsumerState<WateringSettingsScreen> {
   bool _autoWateringEnabled = false;
   bool _notificationsEnabled = true;
   bool _lowWaterAlertEnabled = true;
@@ -206,7 +208,10 @@ class _WateringSettingsScreenState extends ConsumerState<WateringSettingsScreen>
               leading: Icon(Icons.water_drop, color: AppColors.pointBlue),
               title: Text('スマート給水器'),
               subtitle: Text('接続済み - バッテリー残量: 85%'),
-              trailing: Icon(Icons.signal_cellular_4_bar, color: AppColors.pointGreen),
+              trailing: Icon(
+                Icons.signal_cellular_4_bar,
+                color: AppColors.pointGreen,
+              ),
             ),
             const Divider(),
             ListTile(
@@ -335,7 +340,10 @@ class _WateringSettingsScreenState extends ConsumerState<WateringSettingsScreen>
           title: const Text('給水器を再設定'),
           content: const Text('新しい給水器を接続しますか？現在の設定は保持されます。'),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('キャンセル')),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('キャンセル'),
+            ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -377,7 +385,10 @@ class _WateringSettingsScreenState extends ConsumerState<WateringSettingsScreen>
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('閉じる')),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('閉じる'),
+            ),
           ],
         );
       },
@@ -393,7 +404,10 @@ class _WateringSettingsScreenState extends ConsumerState<WateringSettingsScreen>
           title: const Text('データエクスポート'),
           content: const Text('給水データをCSVファイルとしてエクスポートしますか？'),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('キャンセル')),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('キャンセル'),
+            ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();

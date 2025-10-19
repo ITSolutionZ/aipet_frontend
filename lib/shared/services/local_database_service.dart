@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -30,7 +31,7 @@ class LocalDatabaseService {
 
     return openDatabase(
       path,
-      version: 8, // 캘린더 이벤트 테이블 강제 생성을 위해 버전 업데이트
+      version: 10, // petStatusカラム追加のためバージョンアップ
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -55,9 +56,11 @@ class LocalDatabaseService {
         institution_name TEXT,
         is_neutered INTEGER DEFAULT 0,
         is_active INTEGER DEFAULT 1,
+        pet_status TEXT DEFAULT 'active',
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
-        data TEXT
+        data TEXT,
+        additionalInfo TEXT
       )
     ''');
 
@@ -224,6 +227,32 @@ class LocalDatabaseService {
 
   /// 데이터베이스 업그레이드
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // 버전 10에서 petStatusカラム追加
+    if (oldVersion < 10) {
+      // petStatusカラムを追加
+      try {
+        await db.execute(
+          'ALTER TABLE pets ADD COLUMN pet_status TEXT DEFAULT \'active\'',
+        );
+        debugPrint('✅ petStatusカラムを追加しました');
+      } catch (e) {
+        debugPrint('⚠️ petStatusカラムの追加に失敗: $e');
+        // カラムが既に存在する場合は無視
+      }
+    }
+
+    // 버전 9에서 additionalInfoカラム追加
+    if (oldVersion < 9) {
+      // additionalInfoカラムを追加
+      try {
+        await db.execute('ALTER TABLE pets ADD COLUMN additionalInfo TEXT');
+        debugPrint('✅ additionalInfoカラムを追加しました');
+      } catch (e) {
+        debugPrint('⚠️ additionalInfoカラムの追加に失敗: $e');
+        // カラムが既に存在する場合は無視
+      }
+    }
+
     // 버전 7에서 8로 업그레이드 시 캘린더 이벤트 테이블 강제 생성
     if (oldVersion < 8) {
       // 기존 테이블이 있으면 삭제하고 새로 생성

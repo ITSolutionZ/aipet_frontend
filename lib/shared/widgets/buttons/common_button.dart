@@ -242,7 +242,10 @@ class CommonButton extends StatelessWidget {
 
   BorderSide _getBorderSide(bool isEnabled) {
     if (!isEnabled) {
-      return BorderSide(color: AppColors.pointOffWhite.withValues(alpha: 0.1), width: 1);
+      return BorderSide(
+        color: AppColors.pointOffWhite.withValues(alpha: 0.1),
+        width: 1,
+      );
     }
 
     switch (type) {
@@ -258,11 +261,20 @@ class CommonButton extends StatelessWidget {
   EdgeInsets _getPadding() {
     switch (size) {
       case ButtonSize.small:
-        return const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs);
+        return const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        );
       case ButtonSize.medium:
-        return const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm);
+        return const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        );
       case ButtonSize.large:
-        return const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md);
+        return const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.md,
+        );
     }
   }
 
@@ -292,11 +304,20 @@ class CommonButton extends StatelessWidget {
 
     switch (size) {
       case ButtonSize.small:
-        return AppFonts.bodySmall.copyWith(color: _getTextColor(), fontWeight: FontWeight.w500);
+        return AppFonts.bodySmall.copyWith(
+          color: _getTextColor(),
+          fontWeight: FontWeight.w500,
+        );
       case ButtonSize.medium:
-        return AppFonts.bodyMedium.copyWith(color: _getTextColor(), fontWeight: FontWeight.w500);
+        return AppFonts.bodyMedium.copyWith(
+          color: _getTextColor(),
+          fontWeight: FontWeight.w500,
+        );
       case ButtonSize.large:
-        return AppFonts.bodyLarge.copyWith(color: _getTextColor(), fontWeight: FontWeight.w600);
+        return AppFonts.bodyLarge.copyWith(
+          color: _getTextColor(),
+          fontWeight: FontWeight.w600,
+        );
     }
   }
 }

@@ -11,19 +11,46 @@ abstract class LocalDataSource<T> {
 }
 
 abstract class RemoteDataSource<T> {
-  Future<ResultState<T>> fetchData(String endpoint, {Map<String, dynamic>? queryParameters});
-  Future<ResultState<List<T>>> fetchList(String endpoint, {Map<String, dynamic>? queryParameters});
+  Future<ResultState<T>> fetchData(
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+  });
+  Future<ResultState<List<T>>> fetchList(
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+  });
   Future<ResultState<T>> createData(String endpoint, T data);
   Future<ResultState<T>> updateData(String endpoint, String id, T data);
   Future<ResultState<void>> deleteData(String endpoint, String id);
 }
 
 abstract class HybridRepository<T> {
-  Future<ResultState<T?>> getData(String key, String endpoint, {Map<String, dynamic>? queryParameters});
-  Future<ResultState<List<T>>> getList(String key, String endpoint, {Map<String, dynamic>? queryParameters});
-  Future<ResultState<T>> createData(String endpoint, T data, {String? cacheKey});
-  Future<ResultState<T>> updateData(String endpoint, String id, T data, {String? cacheKey});
-  Future<ResultState<void>> deleteData(String endpoint, String id, {String? cacheKey});
+  Future<ResultState<T?>> getData(
+    String key,
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+  });
+  Future<ResultState<List<T>>> getList(
+    String key,
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+  });
+  Future<ResultState<T>> createData(
+    String endpoint,
+    T data, {
+    String? cacheKey,
+  });
+  Future<ResultState<T>> updateData(
+    String endpoint,
+    String id,
+    T data, {
+    String? cacheKey,
+  });
+  Future<ResultState<void>> deleteData(
+    String endpoint,
+    String id, {
+    String? cacheKey,
+  });
   Future<ResultState<void>> sync();
   Future<ResultState<void>> clearCache();
 }

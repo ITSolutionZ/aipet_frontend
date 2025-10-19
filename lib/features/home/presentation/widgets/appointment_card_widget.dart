@@ -8,7 +8,12 @@ class AppointmentCardWidget extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onComplete;
 
-  const AppointmentCardWidget({super.key, required this.appointment, this.onTap, this.onComplete});
+  const AppointmentCardWidget({
+    super.key,
+    required this.appointment,
+    this.onTap,
+    this.onComplete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +67,15 @@ class AppointmentCardWidget extends StatelessWidget {
                   children: [
                     Text(
                       appointment.title,
-                      style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       appointment.petName,
-                      style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ],
                 ),

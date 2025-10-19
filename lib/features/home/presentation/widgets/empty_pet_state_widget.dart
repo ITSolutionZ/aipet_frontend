@@ -14,7 +14,11 @@ class EmptyPetStateWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.pets, size: 80, color: AppColors.textSecondary.withValues(alpha: 0.5)),
+            Icon(
+              Icons.pets,
+              size: 80,
+              color: AppColors.textSecondary.withValues(alpha: 0.5),
+            ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               'まだペットが登録されていません',
@@ -24,7 +28,9 @@ class EmptyPetStateWidget extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             Text(
               '最初のペットを登録して、\nAIPetを始めましょう！',
-              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),

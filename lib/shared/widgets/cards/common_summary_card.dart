@@ -123,7 +123,13 @@ class StatCard extends StatelessWidget {
         onTap: onTap,
       );
     } else {
-      return MetricCard.simple(title: title, value: value, unit: unit, icon: icon, onTap: onTap);
+      return MetricCard.simple(
+        title: title,
+        value: value,
+        unit: unit,
+        icon: icon,
+        onTap: onTap,
+      );
     }
   }
 }
@@ -155,6 +161,11 @@ class ActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ButtonCard.primary(title: title, subtitle: subtitle, icon: icon, onTap: onTap);
+    return ButtonCard.primary(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      onTap: onTap,
+    );
   }
 }

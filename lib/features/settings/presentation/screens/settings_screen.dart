@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
+import 'package:aipet_frontend/features/settings/presentation/widgets/settings_tile_widget.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,15 +88,15 @@ class SettingsScreen extends ConsumerWidget {
             title: 'ペット情報編集',
             backgroundColor: const Color(0xFFA88B5A),
             onTap: () {
-              // ペットプロフィール画面へ移動
-              context.push('${AppRouter.petProfileRoute}?petId=default');
+              // 管理中の反応動物画面へ移動
+              context.push(AppRouter.petManagementRoute);
             },
           ),
           SettingsTileWidget(
             icon: Icons.lock,
-            title: 'パスワード変更',
+            title: 'セキュリティ設定',
             backgroundColor: const Color(0xFFA88B5A),
-            onTap: () {},
+            onTap: () => context.push('/settings/biometric-security'),
           ),
           SettingsTileWidget(
             icon: Icons.delete,
@@ -109,7 +111,7 @@ class SettingsScreen extends ConsumerWidget {
           const SectionHeaderWidget(title: 'システム'),
           SettingsTileWidget(
             icon: Icons.notifications,
-            title: '',
+            title: 'アラーム設定',
             backgroundColor: const Color(0xFF7A9CC6),
             onTap: () => context.push(AppRouter.pushNotificationRoute),
           ),
@@ -197,38 +199,58 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  /// 프로필 이미지 위젯 빌드 (이미지 타입 감지)
+  /// 프로필 이미지 위젯 빌드 (이미지 타입 감지) - 강화된 로컬 저장 지원
   Widget _buildProfileImageWidget(String imagePath, {double size = 35}) {
-    final imageType = ImageService.getImageType(imagePath);
+    debugPrint('🖼️ SettingsScreen - imagePath: $imagePath');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
+    debugPrint('🖼️ SettingsScreen - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ SettingsScreen - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ SettingsScreen - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint('❌ SettingsScreen - File does not exist: $absolutePath');
+          return _buildDefaultUserImage(size);
+        }
+
         return Image.file(
-          File(imagePath),
+          file,
           fit: BoxFit.cover,
           width: size,
           height: size,
           errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ SettingsScreen - File image error: $error');
             return _buildDefaultUserImage(size);
           },
         );
       case ImageType.network:
         return Image.network(
-          imagePath,
+          absolutePath,
           fit: BoxFit.cover,
           width: size,
           height: size,
           errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ SettingsScreen - Network image error: $error');
             return _buildDefaultUserImage(size);
           },
         );
       case ImageType.asset:
         return Image.asset(
-          imagePath,
+          absolutePath,
           fit: BoxFit.cover,
           width: size,
           height: size,
           errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ SettingsScreen - Asset image error: $error');
             return _buildDefaultUserImage(size);
           },
         );

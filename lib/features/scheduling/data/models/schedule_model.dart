@@ -46,7 +46,9 @@ class ScheduleModel extends ScheduleEntity {
       endDateTime: json['endDateTime'] != null
           ? DateTime.parse(json['endDateTime'] as String)
           : null,
-      duration: json['duration'] != null ? Duration(minutes: json['duration'] as int) : null,
+      duration: json['duration'] != null
+          ? Duration(minutes: json['duration'] as int)
+          : null,
       type: ScheduleType.values.firstWhere(
         (e) => e.name == json['type'],
         orElse: () => ScheduleType.custom,
@@ -70,13 +72,17 @@ class ScheduleModel extends ScheduleEntity {
       staffName: json['staffName'] as String?,
       staffPhone: json['staffPhone'] as String?,
       price: json['price'] as double?,
-      services: json['services'] != null ? List<String>.from(json['services'] as List) : null,
+      services: json['services'] != null
+          ? List<String>.from(json['services'] as List)
+          : null,
       hasReminder: json['hasReminder'] as bool? ?? false,
       reminderTime: json['reminderTime'] != null
           ? Duration(minutes: json['reminderTime'] as int)
           : null,
       reminderTimes: json['reminderTimes'] != null
-          ? (json['reminderTimes'] as List).map((e) => Duration(minutes: e as int)).toList()
+          ? (json['reminderTimes'] as List)
+                .map((e) => Duration(minutes: e as int))
+                .toList()
           : null,
       isRecurring: json['isRecurring'] as bool? ?? false,
       recurrenceRule: json['recurrenceRule'] as String?,
@@ -84,7 +90,9 @@ class ScheduleModel extends ScheduleEntity {
       specialRequests: json['specialRequests'] as String?,
       customData: json['customData'] as Map<String, dynamic>?,
       createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
     );
   }
 

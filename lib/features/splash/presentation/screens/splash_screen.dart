@@ -4,6 +4,7 @@ import 'package:aipet_frontend/app/bootstrap/app_bootstrap.dart';
 import 'package:aipet_frontend/app/providers/app_initialization_provider.dart';
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/splash/data/data.dart';
+import 'package:aipet_frontend/features/splash/domain/domain.dart';
 import 'package:aipet_frontend/features/splash/presentation/widgets/splash_logo_widget.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';

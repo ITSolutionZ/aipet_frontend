@@ -153,7 +153,7 @@ class FeedingChart extends StatelessWidget {
               getTitlesWidget: (double value, TitleMeta meta) {
                 const days = ['6日前', '5日前', '4日前', '3日前', '2日前', '昨日', '今日'];
                 return SideTitleWidget(
-                  meta: meta,
+                  axisSide: AxisSide.bottom,
                   child: Text(
                     days[value.toInt()],
                     style: AppFonts.bodySmall.copyWith(
@@ -171,7 +171,7 @@ class FeedingChart extends StatelessWidget {
               interval: 50,
               getTitlesWidget: (double value, TitleMeta meta) {
                 return SideTitleWidget(
-                  meta: meta,
+                  axisSide: AxisSide.left,
                   child: Text(
                     '${value.toInt()}g',
                     style: AppFonts.bodySmall.copyWith(

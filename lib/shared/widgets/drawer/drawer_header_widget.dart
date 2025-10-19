@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
 import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
-import 'package:aipet_frontend/shared/data/datasources/drawer_local_datasource.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -102,46 +103,67 @@ class DrawerHeaderWidget extends ConsumerWidget {
     );
   }
 
-  /// 사용자 프로필 이미지 위젯
+  /// 사용자 프로필 이미지 위젯 - 강화된 로컬 저장 지원
   Widget _buildUserProfileImage(String? imagePath) {
     if (imagePath == null || imagePath.isEmpty) {
-      return Image.asset(
-        'assets/icons/logos/aipet_logo.png',
-        fit: BoxFit.cover,
-        width: 60,
-        height: 60,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            width: 60,
-            height: 60,
-            color: Colors.grey[300],
-            child: const Icon(Icons.person, size: 30, color: Colors.grey),
-          );
-        },
-      );
+      return _buildDefaultUserImage();
     }
 
-    // 이미지 타입에 따라 처리
-    if (imagePath.startsWith('assets/')) {
-      return Image.asset(
-        imagePath,
-        fit: BoxFit.cover,
-        width: 60,
-        height: 60,
-        errorBuilder: (context, error, stackTrace) {
+    debugPrint('🖼️ DrawerHeaderWidget - imagePath: $imagePath');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
+    debugPrint('🖼️ DrawerHeaderWidget - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ DrawerHeaderWidget - imageType: $imageType');
+
+    switch (imageType) {
+      case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ DrawerHeaderWidget - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint(
+            '❌ DrawerHeaderWidget - File does not exist: $absolutePath',
+          );
           return _buildDefaultUserImage();
-        },
-      );
-    } else {
-      return Image.file(
-        File(imagePath),
-        fit: BoxFit.cover,
-        width: 60,
-        height: 60,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildDefaultUserImage();
-        },
-      );
+        }
+
+        return Image.file(
+          file,
+          fit: BoxFit.cover,
+          width: 60,
+          height: 60,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ DrawerHeaderWidget - File image error: $error');
+            return _buildDefaultUserImage();
+          },
+        );
+      case ImageType.network:
+        return Image.network(
+          absolutePath,
+          fit: BoxFit.cover,
+          width: 60,
+          height: 60,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ DrawerHeaderWidget - Network image error: $error');
+            return _buildDefaultUserImage();
+          },
+        );
+      case ImageType.asset:
+        return Image.asset(
+          absolutePath,
+          fit: BoxFit.cover,
+          width: 60,
+          height: 60,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ DrawerHeaderWidget - Asset image error: $error');
+            return _buildDefaultUserImage();
+          },
+        );
     }
   }
 

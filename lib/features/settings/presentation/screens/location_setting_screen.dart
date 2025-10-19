@@ -36,7 +36,7 @@ class _LocationSettingScreenState extends ConsumerState<LocationSettingScreen> {
     final result = await repository.getUserLocation();
 
     if (result.isSuccess && result.data != null) {
-      final location = result.data!;
+      final location = result.dataOrThrow;
       setState(() {
         _postalCodeController.text = location['postalCode'] ?? '';
         _addressController.text = location['address'] ?? '';
@@ -70,7 +70,7 @@ class _LocationSettingScreenState extends ConsumerState<LocationSettingScreen> {
       });
 
       if (result.isSuccess && result.data != null) {
-        _addressController.text = result.data!.fullAddress;
+        _addressController.text = result.dataOrThrow.fullAddress;
         setState(() {
           _errorMessage = null;
         });

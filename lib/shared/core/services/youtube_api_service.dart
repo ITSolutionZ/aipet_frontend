@@ -40,7 +40,9 @@ class YouTubeApiService {
         'videoSyndicated': 'true',
       };
 
-      final uri = Uri.parse('$_baseUrl/search').replace(queryParameters: params);
+      final uri = Uri.parse(
+        '$_baseUrl/search',
+      ).replace(queryParameters: params);
 
       debugPrint('🎥 YouTube API 검색: $searchQuery');
 
@@ -92,7 +94,9 @@ class YouTubeApiService {
         'key': apiKey,
       };
 
-      final uri = Uri.parse('$_baseUrl/videos').replace(queryParameters: params);
+      final uri = Uri.parse(
+        '$_baseUrl/videos',
+      ).replace(queryParameters: params);
 
       debugPrint('🏆 YouTube 인기 동물 비디오 요청');
 
@@ -135,7 +139,9 @@ class YouTubeApiService {
         'key': apiKey,
       };
 
-      final uri = Uri.parse('$_baseUrl/videos').replace(queryParameters: params);
+      final uri = Uri.parse(
+        '$_baseUrl/videos',
+      ).replace(queryParameters: params);
 
       final response = await http.get(uri).timeout(_timeout);
 
@@ -190,8 +196,10 @@ class YouTubeApiService {
         channelTitle: snippet['channelTitle'] as String? ?? '알 수 없는 채널',
         publishedAt: _parseDateTime(snippet['publishedAt'] as String?),
         duration: _parseDuration(contentDetails?['duration'] as String?),
-        viewCount: int.tryParse(statistics?['viewCount'] as String? ?? '0') ?? 0,
-        likeCount: int.tryParse(statistics?['likeCount'] as String? ?? '0') ?? 0,
+        viewCount:
+            int.tryParse(statistics?['viewCount'] as String? ?? '0') ?? 0,
+        likeCount:
+            int.tryParse(statistics?['likeCount'] as String? ?? '0') ?? 0,
         url: 'https://www.youtube.com/watch?v=$videoId',
         embedUrl: 'https://www.youtube.com/embed/$videoId',
       );

@@ -46,7 +46,9 @@ class YouTubeVideosController {
       }
     } catch (error) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('비디오 등록 실패: $error')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('비디오 등록 실패: $error')));
       }
     }
   }
@@ -54,20 +56,29 @@ class YouTubeVideosController {
   /// YouTube 비디오를 삭제합니다.
   Future<void> deleteVideo(String videoId) async {
     try {
-      await ref.read(petActivitiesRepositoryProvider).deleteYouTubeVideo(videoId);
+      await ref
+          .read(petActivitiesRepositoryProvider)
+          .deleteYouTubeVideo(videoId);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('비디오가 삭제되었습니다.')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('비디오가 삭제되었습니다.')));
       }
     } catch (error) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('비디오 삭제 실패: $error')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('비디오 삭제 실패: $error')));
       }
     }
   }
 
   /// 태그로 필터링된 비디오를 검색합니다.
-  Future<List<YouTubeVideoEntity>> searchByTags(String petId, List<String> tags) async {
+  Future<List<YouTubeVideoEntity>> searchByTags(
+    String petId,
+    List<String> tags,
+  ) async {
     final repository = ref.read(petActivitiesRepositoryProvider);
     final useCase = GetYouTubeVideosUseCase(repository);
     final result = await useCase.getByTags(petId, tags);
@@ -75,7 +86,10 @@ class YouTubeVideosController {
   }
 
   /// 검색어로 비디오를 검색합니다.
-  Future<List<YouTubeVideoEntity>> searchVideos(String petId, String query) async {
+  Future<List<YouTubeVideoEntity>> searchVideos(
+    String petId,
+    String query,
+  ) async {
     final repository = ref.read(petActivitiesRepositoryProvider);
     final useCase = GetYouTubeVideosUseCase(repository);
     final result = await useCase.search(petId, query);

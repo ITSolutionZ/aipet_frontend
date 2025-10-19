@@ -64,7 +64,9 @@ class TrickCategorySection extends StatelessWidget {
   Widget _buildTrickCard(TrickEntity trick) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+      ),
       child: InkWell(
         onTap: () => onShowTrickDetail(trick),
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -85,7 +87,11 @@ class TrickCategorySection extends StatelessWidget {
                         borderRadius: BorderRadius.circular(AppSpacing.sm),
                         child: Image.asset(trick.imagePath!, fit: BoxFit.cover),
                       )
-                    : const Icon(Icons.pets, color: AppColors.pointBrown, size: 30),
+                    : const Icon(
+                        Icons.pets,
+                        color: AppColors.pointBrown,
+                        size: 30,
+                      ),
               ),
               const SizedBox(width: AppSpacing.md),
 
@@ -96,12 +102,16 @@ class TrickCategorySection extends StatelessWidget {
                   children: [
                     Text(
                       trick.name,
-                      style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       trick.description,
-                      style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -112,7 +122,9 @@ class TrickCategorySection extends StatelessWidget {
                         const SizedBox(width: AppSpacing.sm),
                         Text(
                           '${trick.estimatedTime}分',
-                          style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+                          style: AppFonts.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -156,14 +168,20 @@ class TrickCategorySection extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.sm),
       ),
       child: Text(
         text,
-        style: AppFonts.bodySmall.copyWith(color: color, fontWeight: FontWeight.bold),
+        style: AppFonts.bodySmall.copyWith(
+          color: color,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

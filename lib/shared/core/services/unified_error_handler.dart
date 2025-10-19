@@ -11,7 +11,10 @@ class UnifiedErrorHandler {
   static final ErrorHandlerService _errorHandler = ErrorHandlerService();
 
   /// AI 에러를 공통 에러로 변환
-  static Future<void> handleAiError(AiException error, {Map<String, dynamic>? context}) async {
+  static Future<void> handleAiError(
+    AiException error, {
+    Map<String, dynamic>? context,
+  }) async {
     final severity = _mapAiErrorToSeverity(error);
     final type = _mapAiErrorToType(error);
 
@@ -25,7 +28,10 @@ class UnifiedErrorHandler {
   }
 
   /// Auth 에러를 공통 에러로 변환
-  static Future<void> handleAuthError(AuthError error, {Map<String, dynamic>? context}) async {
+  static Future<void> handleAuthError(
+    AuthError error, {
+    Map<String, dynamic>? context,
+  }) async {
     final severity = _mapAuthErrorToSeverity(error);
     final type = _mapAuthErrorToType(error);
 
@@ -101,14 +107,20 @@ class UnifiedErrorHandler {
   }
 
   /// 통합 에러 처리 (AI 또는 Auth 에러 자동 감지)
-  static Future<void> handleUnifiedError(dynamic error, {Map<String, dynamic>? context}) async {
+  static Future<void> handleUnifiedError(
+    dynamic error, {
+    Map<String, dynamic>? context,
+  }) async {
     if (error is AiException) {
       await handleAiError(error, context: context);
     } else if (error is AuthError) {
       await handleAuthError(error, context: context);
     } else {
       // 기타 에러는 공통 에러 핸들러로 처리
-      await _errorHandler.handleError(error, context: {'service': 'unknown', ...?context});
+      await _errorHandler.handleError(
+        error,
+        context: {'service': 'unknown', ...?context},
+      );
     }
   }
 
@@ -126,10 +138,17 @@ class UnifiedErrorHandler {
     return {
       'total_ai_errors': aiErrors.length,
       'openai_errors': aiErrors
-          .where((e) => e.context?['errorCode']?.toString().contains('OPENAI') ?? false)
+          .where(
+            (e) =>
+                e.context?['errorCode']?.toString().contains('OPENAI') ?? false,
+          )
           .length,
-      'network_errors': aiErrors.where((e) => e.type == ErrorType.network).length,
-      'validation_errors': aiErrors.where((e) => e.type == ErrorType.validation).length,
+      'network_errors': aiErrors
+          .where((e) => e.type == ErrorType.network)
+          .length,
+      'validation_errors': aiErrors
+          .where((e) => e.type == ErrorType.validation)
+          .length,
     };
   }
 
@@ -138,9 +157,15 @@ class UnifiedErrorHandler {
     final authErrors = getErrorHistoryByService('auth');
     return {
       'total_auth_errors': authErrors.length,
-      'authentication_errors': authErrors.where((e) => e.type == ErrorType.authentication).length,
-      'network_errors': authErrors.where((e) => e.type == ErrorType.network).length,
-      'validation_errors': authErrors.where((e) => e.type == ErrorType.validation).length,
+      'authentication_errors': authErrors
+          .where((e) => e.type == ErrorType.authentication)
+          .length,
+      'network_errors': authErrors
+          .where((e) => e.type == ErrorType.network)
+          .length,
+      'validation_errors': authErrors
+          .where((e) => e.type == ErrorType.validation)
+          .length,
     };
   }
 }

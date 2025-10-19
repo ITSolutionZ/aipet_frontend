@@ -12,7 +12,9 @@ class WeatherAdviceService {
   /// 날씨 정보를 바탕으로 반려견 산책 어드바이스 생성
   Future<String> generateWalkingAdvice(WeatherEntity weather) async {
     try {
-      debugPrint('🌤️ WeatherAdviceService: Building prompt for weather advice');
+      debugPrint(
+        '🌤️ WeatherAdviceService: Building prompt for weather advice',
+      );
       final prompt = _buildWeatherPrompt(weather);
 
       debugPrint('📡 WeatherAdviceService: Calling Weather OpenAI API...');
@@ -20,10 +22,14 @@ class WeatherAdviceService {
 
       if (result.isSuccess && result.dataOrNull != null) {
         final advice = result.dataOrNull!;
-        debugPrint('✅ WeatherAdviceService: Weather OpenAI API success - $advice');
+        debugPrint(
+          '✅ WeatherAdviceService: Weather OpenAI API success - $advice',
+        );
         return advice;
       } else {
-        debugPrint('⚠️ WeatherAdviceService: Weather OpenAI API failed - ${result.message}');
+        debugPrint(
+          '⚠️ WeatherAdviceService: Weather OpenAI API failed - ${result.message}',
+        );
         // API 실패 시 기본 어드바이스 반환
         return _getDefaultAdvice(weather);
       }

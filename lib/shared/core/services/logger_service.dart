@@ -63,9 +63,13 @@ class LoggerService {
   }) {
     if (kDebugMode) {
       final sanitizedUrl = _sanitizeUrl(url);
-      final requestInfo = requestData != null ? ' | Request: ${_sanitizeData(requestData)}' : '';
+      final requestInfo = requestData != null
+          ? ' | Request: ${_sanitizeData(requestData)}'
+          : '';
       final statusInfo = statusCode != null ? ' | Status: $statusCode' : '';
-      final durationInfo = duration != null ? ' | Duration: ${duration.inMilliseconds}ms' : '';
+      final durationInfo = duration != null
+          ? ' | Duration: ${duration.inMilliseconds}ms'
+          : '';
 
       final logLevel = isError ? 'ERROR' : 'INFO';
       developer.log(
@@ -76,17 +80,28 @@ class LoggerService {
   }
 
   /// 네비게이션 로그
-  static void navigation(String action, String route, {Map<String, dynamic>? params}) {
+  static void navigation(
+    String action,
+    String route, {
+    Map<String, dynamic>? params,
+  }) {
     if (kDebugMode) {
-      final paramsInfo = params != null ? ' | Params: ${_sanitizeData(params)}' : '';
-      developer.log('[$_tag] NAV: $action -> $route$paramsInfo', name: 'AIPet.Navigation');
+      final paramsInfo = params != null
+          ? ' | Params: ${_sanitizeData(params)}'
+          : '';
+      developer.log(
+        '[$_tag] NAV: $action -> $route$paramsInfo',
+        name: 'AIPet.Navigation',
+      );
     }
   }
 
   /// 사용자 액션 로그
   static void userAction(String action, {Map<String, dynamic>? context}) {
     if (kDebugMode) {
-      final contextInfo = context != null ? ' | Context: ${_sanitizeData(context)}' : '';
+      final contextInfo = context != null
+          ? ' | Context: ${_sanitizeData(context)}'
+          : '';
       developer.log('[$_tag] USER: $action$contextInfo', name: 'AIPet.User');
     }
   }
@@ -190,12 +205,16 @@ class LoggerService {
     }
 
     // 신용카드 번호 패턴
-    if (RegExp(r'^\d{4}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}$').hasMatch(value)) {
+    if (RegExp(
+      r'^\d{4}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}$',
+    ).hasMatch(value)) {
       return true;
     }
 
     // JWT 토큰 패턴
-    if (RegExp(r'^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$').hasMatch(value)) {
+    if (RegExp(
+      r'^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$',
+    ).hasMatch(value)) {
       return true;
     }
 
