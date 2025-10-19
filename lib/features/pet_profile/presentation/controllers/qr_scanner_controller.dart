@@ -42,9 +42,11 @@ class QRScannerController extends _$QRScannerController {
 
 /// QR 스캐너 상태
 @freezed
-class QRScannerState with _$QRScannerState {
+abstract class QRScannerState with _$QRScannerState {
   const factory QRScannerState({
     @Default(false) bool hasPermission,
     @Default(true) bool isLoading,
   }) = _QRScannerState;
+
+  const QRScannerState._();
 }

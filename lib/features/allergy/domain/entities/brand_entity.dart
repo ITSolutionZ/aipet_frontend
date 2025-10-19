@@ -4,7 +4,7 @@ part 'brand_entity.freezed.dart';
 
 /// 펫푸드 브랜드 엔티티
 @freezed
-class BrandEntity with _$BrandEntity {
+abstract class BrandEntity with _$BrandEntity {
   const factory BrandEntity({
     /// 브랜드 ID
     required String id,
@@ -24,4 +24,6 @@ class BrandEntity with _$BrandEntity {
     /// 공식 사이트 URL
     String? officialUrl,
   }) = _BrandEntity;
+
+  const BrandEntity._();
 }

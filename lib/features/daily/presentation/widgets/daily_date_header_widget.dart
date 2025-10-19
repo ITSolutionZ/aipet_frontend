@@ -98,16 +98,16 @@ class DailyDateHeaderWidget extends StatelessWidget {
   int _getWeekOfYear(DateTime date) {
     // 해당 연도의 1월 1일
     final firstDayOfYear = DateTime(date.year, 1, 1);
-    
+
     // 1월 1일부터 현재 날짜까지의 일수
     final daysSinceFirstDay = date.difference(firstDayOfYear).inDays;
-    
+
     // 1월 1일의 요일 (월요일=1, 일요일=7)
     final firstDayWeekday = firstDayOfYear.weekday;
-    
+
     // 첫 주의 일수 계산 (월요일 시작 기준)
     final daysInFirstWeek = 8 - firstDayWeekday;
-    
+
     // 주차 계산
     if (daysSinceFirstDay < daysInFirstWeek) {
       return 1;

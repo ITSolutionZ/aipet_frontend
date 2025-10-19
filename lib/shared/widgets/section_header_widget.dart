@@ -22,7 +22,8 @@ class SectionHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding:
+          padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -35,9 +36,9 @@ class SectionHeaderWidget extends StatelessWidget {
                   title,
                   style:
                       titleStyle ??
-                      Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                      Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 4),
@@ -45,9 +46,9 @@ class SectionHeaderWidget extends StatelessWidget {
                     subtitle!,
                     style:
                         subtitleStyle ??
-                        Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
+                        Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey.shade600,
+                        ),
                   ),
                 ],
               ],

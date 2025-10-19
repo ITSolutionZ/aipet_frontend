@@ -47,9 +47,11 @@ class SharingProfilesController extends _$SharingProfilesController {
 
 /// 프로필 공유 상태
 @freezed
-class SharingProfilesState with _$SharingProfilesState {
+abstract class SharingProfilesState with _$SharingProfilesState {
   const factory SharingProfilesState({
     @Default(false) bool isLoading,
     String? error,
   }) = _SharingProfilesState;
+
+  const SharingProfilesState._();
 }

@@ -10,10 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DailyHealthDateHeaderSection extends ConsumerWidget {
   final DailyHealthLogic logic;
 
-  const DailyHealthDateHeaderSection({
-    super.key,
-    required this.logic,
-  });
+  const DailyHealthDateHeaderSection({super.key, required this.logic});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -94,12 +91,16 @@ class DailyHealthDateHeaderSection extends ConsumerWidget {
 
     return weeklyTaskAsync.when(
       data: (task) {
-        final normalizedTask = task.replaceAll('\\n', ' ').replaceAll('\n', ' ');
+        final normalizedTask = task
+            .replaceAll('\\n', ' ')
+            .replaceAll('\n', ' ');
         return Row(
           children: [
             Text(
               '$weekOfYear週目 : ',
-              style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+              style: AppFonts.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             Expanded(
               child: Text(
@@ -172,9 +173,7 @@ class DailyHealthDateHeaderSection extends ConsumerWidget {
           const SizedBox(width: AppSpacing.sm),
           Text(
             weekday,
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -217,11 +216,8 @@ class DailyHealthDateHeaderSection extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Consumer(
-                  builder: (context, ref, child) => _buildWeeklyTaskRow(
-                    ref,
-                    'dog',
-                    _getWeekOfYear(today),
-                  ),
+                  builder: (context, ref, child) =>
+                      _buildWeeklyTaskRow(ref, 'dog', _getWeekOfYear(today)),
                 ),
               ],
             ),
@@ -229,9 +225,7 @@ class DailyHealthDateHeaderSection extends ConsumerWidget {
           const SizedBox(width: AppSpacing.sm),
           Text(
             weekday,
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -268,4 +262,3 @@ class DailyHealthDateHeaderSection extends ConsumerWidget {
     return (daysSinceBirth / 7).floor() + 1;
   }
 }
-

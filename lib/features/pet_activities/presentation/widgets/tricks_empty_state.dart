@@ -24,7 +24,11 @@ class TricksEmptyState extends StatelessWidget {
                 color: AppColors.pointBrown.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(60),
               ),
-              child: const Icon(Icons.pets, size: 60, color: AppColors.pointBrown),
+              child: const Icon(
+                Icons.pets,
+                size: 60,
+                color: AppColors.pointBrown,
+              ),
             ),
             const SizedBox(height: AppSpacing.xl),
 
@@ -41,7 +45,9 @@ class TricksEmptyState extends StatelessWidget {
 
             Text(
               '新しいトリックを探してみましょう',
-              style: AppFonts.bodyMedium.copyWith(color: AppColors.textSecondary),
+              style: AppFonts.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),

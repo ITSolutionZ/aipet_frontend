@@ -12,7 +12,11 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
   final WalkRecordEntity walkRecord;
   final WalkController controller;
 
-  const WalkOptionsBottomSheet({super.key, required this.walkRecord, required this.controller});
+  const WalkOptionsBottomSheet({
+    super.key,
+    required this.walkRecord,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,7 +43,10 @@ class WalkOptionsBottomSheet extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(Icons.delete, color: AppColors.pointPink),
-            title: const Text('削除', style: TextStyle(color: AppColors.pointPink)),
+            title: const Text(
+              '削除',
+              style: TextStyle(color: AppColors.pointPink),
+            ),
             onTap: () {
               context.pop();
               WalkDeleteDialog.show(context, walkRecord, controller);

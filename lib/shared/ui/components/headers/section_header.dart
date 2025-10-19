@@ -31,7 +31,11 @@ class SectionHeader extends StatelessWidget {
   });
 
   /// 기본 섹션 헤더 팩토리
-  factory SectionHeader.basic({required String title, String? subtitle, Widget? action}) {
+  factory SectionHeader.basic({
+    required String title,
+    String? subtitle,
+    Widget? action,
+  }) {
     return SectionHeader(
       title: title,
       subtitle: subtitle,
@@ -93,7 +97,10 @@ class SectionHeader extends StatelessWidget {
       subtitle: subtitle,
       action: action,
       leading: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
         decoration: BoxDecoration(
           color: (countColor ?? AppColors.pointBlue).withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.small),
@@ -119,7 +126,10 @@ class SectionHeader extends StatelessWidget {
       children: [
         Row(
           children: [
-            if (leading != null) ...[leading!, const SizedBox(width: AppSpacing.md)],
+            if (leading != null) ...[
+              leading!,
+              const SizedBox(width: AppSpacing.md),
+            ],
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,18 +149,28 @@ class SectionHeader extends StatelessWidget {
                     Text(
                       subtitle!,
                       style:
-                          subtitleStyle ?? AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+                          subtitleStyle ??
+                          AppFonts.bodyMedium.copyWith(
+                            color: AppColors.pointGray,
+                          ),
                     ),
                   ],
                 ],
               ),
             ),
-            if (action != null) ...[const SizedBox(width: AppSpacing.md), action!],
+            if (action != null) ...[
+              const SizedBox(width: AppSpacing.md),
+              action!,
+            ],
           ],
         ),
         if (showDivider) ...[
           const SizedBox(height: AppSpacing.md),
-          Divider(color: AppColors.pointGray.withValues(alpha: 0.3), thickness: 1, height: 1),
+          Divider(
+            color: AppColors.pointGray.withValues(alpha: 0.3),
+            thickness: 1,
+            height: 1,
+          ),
         ],
       ],
     );

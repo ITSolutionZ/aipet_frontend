@@ -101,7 +101,8 @@ class WeatherEntity {
 
   /// 위험 상황 여부 (모달 표시 필요)
   bool get isDangerous {
-    return humanRiskLevel == WBGTRiskLevel.danger || humanRiskLevel == WBGTRiskLevel.extreme;
+    return humanRiskLevel == WBGTRiskLevel.danger ||
+        humanRiskLevel == WBGTRiskLevel.extreme;
   }
 
   /// 풍속 레벨

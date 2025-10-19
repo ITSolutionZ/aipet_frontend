@@ -21,7 +21,10 @@ class TodayMealsCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3), width: 1.0),
+        border: Border.all(
+          color: AppColors.pointGray.withValues(alpha: 0.3),
+          width: 1.0,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),

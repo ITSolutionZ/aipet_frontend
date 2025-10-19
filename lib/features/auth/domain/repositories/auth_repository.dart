@@ -8,10 +8,16 @@ import '../entities/auth_entities.dart';
 /// 추후 Mockito를 사용한 테스트와 실제 Firebase Auth 구현을 쉽게 전환할 수 있습니다.
 abstract class AuthRepository {
   /// 이메일/비밀번호로 로그인
-  Future<Result<AuthUser>> signInWithEmailAndPassword(String email, String password);
+  Future<Result<AuthUser>> signInWithEmailAndPassword(
+    String email,
+    String password,
+  );
 
   /// 이메일/비밀번호로 회원가입
-  Future<Result<AuthUser>> createUserWithEmailAndPassword(String email, String password);
+  Future<Result<AuthUser>> createUserWithEmailAndPassword(
+    String email,
+    String password,
+  );
 
   /// 소셜 로그인 (Google)
   Future<Result<AuthUser>> signInWithGoogle();
@@ -69,14 +75,23 @@ class AuthResult {
   final AuthUser? user;
   final String? errorCode;
 
-  const AuthResult._({required this.isSuccess, required this.message, this.user, this.errorCode});
+  const AuthResult._({
+    required this.isSuccess,
+    required this.message,
+    this.user,
+    this.errorCode,
+  });
 
   factory AuthResult.success(String message, {AuthUser? user}) {
     return AuthResult._(isSuccess: true, message: message, user: user);
   }
 
   factory AuthResult.failure(String message, {String? errorCode}) {
-    return AuthResult._(isSuccess: false, message: message, errorCode: errorCode);
+    return AuthResult._(
+      isSuccess: false,
+      message: message,
+      errorCode: errorCode,
+    );
   }
 
   /// 공통 Result 패턴으로 변환
@@ -88,4 +103,3 @@ class AuthResult {
     }
   }
 }
-

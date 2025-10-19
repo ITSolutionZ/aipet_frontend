@@ -50,25 +50,41 @@ class InputValidationService {
 
       // 4. SQL Injection 패턴 검사
       if (_containsSqlInjectionPatterns(trimmedInput)) {
-        _logSecurityThreat('SQL injection attempt detected', fieldName, trimmedInput);
+        _logSecurityThreat(
+          'SQL injection attempt detected',
+          fieldName,
+          trimmedInput,
+        );
         return Result.failure('$fieldNameに不正なSQL文字列が含まれています');
       }
 
       // 5. 명령어 실행 패턴 검사
       if (_containsCommandInjectionPatterns(trimmedInput)) {
-        _logSecurityThreat('Command injection attempt detected', fieldName, trimmedInput);
+        _logSecurityThreat(
+          'Command injection attempt detected',
+          fieldName,
+          trimmedInput,
+        );
         return Result.failure('$fieldNameに不正なコマンドが含まれています');
       }
 
       // 6. 파일 경로 탐색 패턴 검사
       if (_containsPathTraversalPatterns(trimmedInput)) {
-        _logSecurityThreat('Path traversal attempt detected', fieldName, trimmedInput);
+        _logSecurityThreat(
+          'Path traversal attempt detected',
+          fieldName,
+          trimmedInput,
+        );
         return Result.failure('$fieldNameに不正なパス文字列が含まれています');
       }
 
       // 7. 제어 문자 검사
       if (_containsControlCharacters(trimmedInput)) {
-        _logSecurityThreat('Control character detected', fieldName, trimmedInput);
+        _logSecurityThreat(
+          'Control character detected',
+          fieldName,
+          trimmedInput,
+        );
         return Result.failure('$fieldNameに不正な制御文字が含まれています');
       }
 
@@ -191,7 +207,9 @@ class InputValidationService {
     }
 
     // 기존 이메일 검증 로직 활용
-    final emailValidation = ValidationService.validateEmail(securityResult.data!);
+    final emailValidation = ValidationService.validateEmail(
+      securityResult.dataOrThrow,
+    );
     if (!emailValidation.isSuccess) {
       return Result.failure(emailValidation.message);
     }
@@ -214,7 +232,9 @@ class InputValidationService {
     }
 
     // 기존 비밀번호 검증 로직 활용
-    final passwordValidation = ValidationService.validatePassword(securityResult.data!);
+    final passwordValidation = ValidationService.validatePassword(
+      securityResult.dataOrThrow,
+    );
     if (!passwordValidation.isSuccess) {
       return Result.failure(passwordValidation.message);
     }
@@ -237,7 +257,9 @@ class InputValidationService {
     }
 
     // 기존 펫 이름 검증 로직 활용
-    final petNameValidation = ValidationService.validatePetName(securityResult.data!);
+    final petNameValidation = ValidationService.validatePetName(
+      securityResult.dataOrThrow,
+    );
     if (!petNameValidation.isSuccess) {
       return Result.failure(petNameValidation.message);
     }
@@ -266,7 +288,7 @@ class InputValidationService {
 
     // 숫자 형식 검증
     final validationResult = ValidationService.validateNumberField(
-      securityResult.data!,
+      securityResult.dataOrThrow,
       fieldName,
       min: min,
       max: max,
@@ -277,7 +299,7 @@ class InputValidationService {
     }
 
     // 숫자로 변환
-    final number = double.tryParse(securityResult.data!);
+    final number = double.tryParse(securityResult.dataOrThrow);
     if (number == null) {
       return Result.failure('$fieldNameは有効な数値ではありません');
     }
@@ -358,12 +380,14 @@ class InputValidationService {
     }
 
     // 전화번호 패턴 검증 (숫자, 하이픈, 공백, 괄호만)
-    if (!_isValidPhoneNumber(securityResult.data!)) {
+    if (!_isValidPhoneNumber(securityResult.dataOrThrow)) {
       return Result.failure('電話番号は数字、ハイフン、スペース、括弧のみ使用できます');
     }
 
     // 기존 전화번호 검증 로직 활용
-    final phoneValidation = ValidationService.validatePhoneNumber(securityResult.data!);
+    final phoneValidation = ValidationService.validatePhoneNumber(
+      securityResult.dataOrThrow,
+    );
     if (!phoneValidation.isSuccess) {
       return Result.failure(phoneValidation.message);
     }
@@ -383,7 +407,11 @@ class InputValidationService {
   }
 
   /// 보안 위협 로깅
-  static void _logSecurityThreat(String threatType, String fieldName, String? input) {
+  static void _logSecurityThreat(
+    String threatType,
+    String fieldName,
+    String? input,
+  ) {
     if (kDebugMode) {
       debugPrint('[$_tag] 🚨 SECURITY THREAT DETECTED 🚨');
       debugPrint('[$_tag] Type: $threatType');
@@ -417,11 +445,23 @@ class InputValidationService {
     try {
       return input
           .trim()
-          .replaceAll(RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]'), '') // 제어 문자 제거
+          .replaceAll(
+            RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]'),
+            '',
+          ) // 제어 문자 제거
           .replaceAll(RegExp(r'\s+'), ' ') // 연속 공백을 단일 공백으로
-          .replaceAll(RegExp(r'<script[^>]*>.*?</script>', caseSensitive: false), '') // 스크립트 태그 제거
-          .replaceAll(RegExp(r'javascript:', caseSensitive: false), '') // javascript: 제거
-          .replaceAll(RegExp(r'on\w+\s*=', caseSensitive: false), ''); // 이벤트 핸들러 제거
+          .replaceAll(
+            RegExp(r'<script[^>]*>.*?</script>', caseSensitive: false),
+            '',
+          ) // 스크립트 태그 제거
+          .replaceAll(
+            RegExp(r'javascript:', caseSensitive: false),
+            '',
+          ) // javascript: 제거
+          .replaceAll(
+            RegExp(r'on\w+\s*=', caseSensitive: false),
+            '',
+          ); // 이벤트 핸들러 제거
     } catch (error) {
       if (kDebugMode) {
         debugPrint('[$_tag] Sanitization error: $error');
@@ -460,7 +500,7 @@ class InputValidationService {
           return Result.failure(result.message);
         }
 
-        validatedInputs[fieldName] = result.data!;
+        validatedInputs[fieldName] = result.dataOrThrow;
       }
 
       return Result.success('全ての入力検証が完了しました', validatedInputs);

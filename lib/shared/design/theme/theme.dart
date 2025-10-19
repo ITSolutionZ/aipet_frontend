@@ -44,6 +44,9 @@ class AppTheme {
       unselectedItemColor: AppColors.pointGray,
       type: BottomNavigationBarType.fixed,
     ),
-    textTheme: TextTheme(bodyMedium: AppTextStyles.body, titleLarge: AppTextStyles.h1),
+    textTheme: TextTheme(
+      bodyMedium: AppTextStyles.body,
+      titleLarge: AppTextStyles.h1,
+    ),
   );
 }

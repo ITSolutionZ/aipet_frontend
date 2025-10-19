@@ -7,9 +7,7 @@ part 'product_model.g.dart';
 
 /// 제품 모델 (API 통신용)
 @freezed
-class ProductModel with _$ProductModel {
-  const ProductModel._();
-
+abstract class ProductModel with _$ProductModel {
   const factory ProductModel({
     required String id,
     required String name,
@@ -17,6 +15,8 @@ class ProductModel with _$ProductModel {
     required String brandId,
     required String category,
   }) = _ProductModel;
+
+  const ProductModel._();
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
       _$ProductModelFromJson(json);

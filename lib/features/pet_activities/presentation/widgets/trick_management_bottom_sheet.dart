@@ -8,12 +8,16 @@ class TrickManagementBottomSheet extends StatelessWidget {
 
   const TrickManagementBottomSheet({super.key, required this.onResetProgress});
 
-  static void show(BuildContext context, {required VoidCallback onResetProgress}) {
+  static void show(
+    BuildContext context, {
+    required VoidCallback onResetProgress,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => TrickManagementBottomSheet(onResetProgress: onResetProgress),
+      builder: (context) =>
+          TrickManagementBottomSheet(onResetProgress: onResetProgress),
     );
   }
 
@@ -45,7 +49,12 @@ class TrickManagementBottomSheet extends StatelessWidget {
               const SizedBox(height: AppSpacing.lg),
 
               // 제목
-              Text('トリック管理', style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                'トリック管理',
+                style: AppFonts.titleMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: AppSpacing.lg),
 
               // 메뉴 항목들
@@ -128,15 +137,26 @@ class TrickManagementBottomSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
+                  Text(
+                    title,
+                    style: AppFonts.bodyMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   Text(
                     subtitle,
-                    style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.textSecondary),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: AppColors.textSecondary,
+            ),
           ],
         ),
       ),

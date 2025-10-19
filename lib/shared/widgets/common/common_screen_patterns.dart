@@ -22,7 +22,11 @@ class CommonScreenPatterns {
       backgroundColor: backgroundColor ?? Colors.white,
       appBar:
           appBar ??
-          _buildStandardAppBar(title: title, actions: actions, showBackButton: showBackButton),
+          _buildStandardAppBar(
+            title: title,
+            actions: actions,
+            showBackButton: showBackButton,
+          ),
       body: body,
       floatingActionButton:
           floatingActionButton ??
@@ -119,7 +123,9 @@ class CommonCardPatterns {
     final card = Card(
       elevation: elevation ?? AppConstants.defaultCardElevation,
       shape: RoundedRectangleBorder(
-        borderRadius: borderRadius ?? BorderRadius.circular(AppConstants.defaultBorderRadius),
+        borderRadius:
+            borderRadius ??
+            BorderRadius.circular(AppConstants.defaultBorderRadius),
       ),
       color: backgroundColor,
       margin: margin,
@@ -132,7 +138,9 @@ class CommonCardPatterns {
     if (onTap != null) {
       return InkWell(
         onTap: onTap,
-        borderRadius: borderRadius ?? BorderRadius.circular(AppConstants.defaultBorderRadius),
+        borderRadius:
+            borderRadius ??
+            BorderRadius.circular(AppConstants.defaultBorderRadius),
         child: card,
       );
     }
@@ -154,16 +162,29 @@ class CommonCardPatterns {
       backgroundColor: backgroundColor,
       child: Row(
         children: [
-          Icon(icon, color: iconColor ?? Colors.blue, size: AppConstants.defaultIconSize),
+          Icon(
+            icon,
+            color: iconColor ?? Colors.blue,
+            size: AppConstants.defaultIconSize,
+          ),
           const SizedBox(width: AppConstants.spacingMD),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 4),
-                  Text(subtitle, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
                 ],
               ],
             ),
@@ -184,7 +205,9 @@ class CommonCardPatterns {
     Color? unselectedColor,
     VoidCallback? onTap,
   }) {
-    final color = isSelected ? (selectedColor ?? Colors.blue) : (unselectedColor ?? Colors.grey);
+    final color = isSelected
+        ? (selectedColor ?? Colors.blue)
+        : (unselectedColor ?? Colors.grey);
 
     return buildCard(
       onTap: onTap,
@@ -195,14 +218,21 @@ class CommonCardPatterns {
           const SizedBox(height: AppConstants.spacingSM),
           Text(
             title,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: color),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
             textAlign: TextAlign.center,
           ),
           if (subtitle != null) ...[
             const SizedBox(height: 4),
             Text(
               subtitle,
-              style: TextStyle(fontSize: 14, color: color.withValues(alpha: 0.7)),
+              style: TextStyle(
+                fontSize: 14,
+                color: color.withValues(alpha: 0.7),
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -283,7 +313,10 @@ class CommonDialogPatterns {
   }
 
   /// 로딩 다이얼로그
-  static Future<void> showLoadingDialog({required BuildContext context, String? message}) {
+  static Future<void> showLoadingDialog({
+    required BuildContext context,
+    String? message,
+  }) {
     return showStandardDialog<void>(
       context: context,
       title: '',
@@ -291,7 +324,10 @@ class CommonDialogPatterns {
         mainAxisSize: MainAxisSize.min,
         children: [
           const CircularProgressIndicator(),
-          if (message != null) ...[const SizedBox(height: AppConstants.spacingMD), Text(message)],
+          if (message != null) ...[
+            const SizedBox(height: AppConstants.spacingMD),
+            Text(message),
+          ],
         ],
       ),
       actions: [],
@@ -331,7 +367,11 @@ class CommonListPatterns {
     VoidCallback? onTap,
   }) {
     return buildListItem(
-      leading: Icon(icon, color: iconColor ?? Colors.blue, size: AppConstants.defaultIconSize),
+      leading: Icon(
+        icon,
+        color: iconColor ?? Colors.blue,
+        size: AppConstants.defaultIconSize,
+      ),
       title: Text(title),
       subtitle: subtitle != null ? Text(subtitle) : null,
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -354,7 +394,11 @@ class CommonListPatterns {
           const SizedBox(height: AppConstants.spacingLG),
           Text(
             title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.grey),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey,
+            ),
           ),
           if (subtitle != null) ...[
             const SizedBox(height: AppConstants.spacingSM),
@@ -364,7 +408,10 @@ class CommonListPatterns {
               textAlign: TextAlign.center,
             ),
           ],
-          if (action != null) ...[const SizedBox(height: AppConstants.spacingLG), action],
+          if (action != null) ...[
+            const SizedBox(height: AppConstants.spacingLG),
+            action,
+          ],
         ],
       ),
     );
@@ -377,14 +424,20 @@ class CommonListPatterns {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(),
-          if (message != null) ...[const SizedBox(height: AppConstants.spacingMD), Text(message)],
+          if (message != null) ...[
+            const SizedBox(height: AppConstants.spacingMD),
+            Text(message),
+          ],
         ],
       ),
     );
   }
 
   /// 에러 상태 위젯
-  static Widget buildErrorState({required String message, VoidCallback? onRetry}) {
+  static Widget buildErrorState({
+    required String message,
+    VoidCallback? onRetry,
+  }) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -398,7 +451,10 @@ class CommonListPatterns {
           ),
           if (onRetry != null) ...[
             const SizedBox(height: AppConstants.spacingLG),
-            ElevatedButton(onPressed: onRetry, child: const Text(AppTexts.retry)),
+            ElevatedButton(
+              onPressed: onRetry,
+              child: const Text(AppTexts.retry),
+            ),
           ],
         ],
       ),

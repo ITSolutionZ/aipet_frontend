@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_detail_map_widget.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_info_bottom_sheet.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/shared.dart'
-    hide WalkDetailMapWidget, WalkInfoBottomSheet;
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -145,10 +147,53 @@ class WalkDetailScreen extends ConsumerWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(size / 2),
-        child: Image.asset(
-          pet?.imagePath ?? 'assets/images/dogs/shiba.png',
+        child: _buildPetImage(pet?.imagePath, size),
+      ),
+    );
+  }
+
+  /// 펫 이미지 위젯 빌드 - 강화된 로컬 저장 지원
+  Widget _buildPetImage(String? imagePath, double size) {
+    if (imagePath == null || imagePath.isEmpty) {
+      return Container(
+        color: AppColors.pointGray.withValues(alpha: 0.3),
+        child: Icon(Icons.pets, color: AppColors.pointGray, size: size * 0.5),
+      );
+    }
+
+    debugPrint('🖼️ WalkDetailScreen - imagePath: $imagePath');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
+    debugPrint('🖼️ WalkDetailScreen - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ WalkDetailScreen - imageType: $imageType');
+
+    switch (imageType) {
+      case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ WalkDetailScreen - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint('❌ WalkDetailScreen - File does not exist: $absolutePath');
+          return Container(
+            color: AppColors.pointGray.withValues(alpha: 0.3),
+            child: Icon(
+              Icons.pets,
+              color: AppColors.pointGray,
+              size: size * 0.5,
+            ),
+          );
+        }
+
+        return Image.file(
+          file,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ WalkDetailScreen - File image error: $error');
             return Container(
               color: AppColors.pointGray.withValues(alpha: 0.3),
               child: Icon(
@@ -158,9 +203,40 @@ class WalkDetailScreen extends ConsumerWidget {
               ),
             );
           },
-        ),
-      ),
-    );
+        );
+      case ImageType.network:
+        return Image.network(
+          absolutePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ WalkDetailScreen - Network image error: $error');
+            return Container(
+              color: AppColors.pointGray.withValues(alpha: 0.3),
+              child: Icon(
+                Icons.pets,
+                color: AppColors.pointGray,
+                size: size * 0.5,
+              ),
+            );
+          },
+        );
+      case ImageType.asset:
+        return Image.asset(
+          absolutePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ WalkDetailScreen - Asset image error: $error');
+            return Container(
+              color: AppColors.pointGray.withValues(alpha: 0.3),
+              child: Icon(
+                Icons.pets,
+                color: AppColors.pointGray,
+                size: size * 0.5,
+              ),
+            );
+          },
+        );
+    }
   }
 
   Widget _buildMapSection(WalkRecordEntity currentWalkRecord) {
@@ -171,22 +247,72 @@ class WalkDetailScreen extends ConsumerWidget {
           // 지도 위젯
           WalkDetailMapWidget(walkRecord: currentWalkRecord),
 
-          // 하단 정보 카드
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Consumer(
-              builder: (context, ref, child) {
-                // Provider에서 최신 데이터 가져오기
-                final walkRecords = ref.watch(walkRecordsProvider);
-                final latestWalkRecord = walkRecords.firstWhere(
-                  (r) => r.id == currentWalkRecord.id,
-                  orElse: () => currentWalkRecord,
-                );
-                return WalkInfoBottomSheet(walkRecord: latestWalkRecord);
-              },
-            ),
+          // 드래그 가능한 바텀시트
+          Consumer(
+            builder: (context, ref, child) {
+              // Provider에서 최신 데이터 가져오기
+              final walkRecords = ref.watch(walkRecordsProvider);
+              final latestWalkRecord = walkRecords.firstWhere(
+                (r) => r.id == currentWalkRecord.id,
+                orElse: () => currentWalkRecord,
+              );
+              return DraggableScrollableSheet(
+                initialChildSize: 0.3, // 30% 높이로 시작
+                minChildSize: 0.15, // 최소 15% (최소화)
+                maxChildSize: 0.8, // 최대 80% (확장)
+                snap: true,
+                snapSizes: const [0.15, 0.3, 0.8], // 스냅 포인트
+                builder: (context, scrollController) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
+                    child: CustomScrollView(
+                      controller: scrollController,
+                      slivers: [
+                        // 핸들 바
+                        SliverAppBar(
+                          automaticallyImplyLeading: false,
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          flexibleSpace: Center(
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              margin: const EdgeInsets.only(top: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ),
+                          toolbarHeight: 28,
+                        ),
+
+                        // 산책 정보 내용
+                        SliverList(
+                          delegate: SliverChildListDelegate([
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                              child: WalkInfoBottomSheet(
+                                walkRecord: latestWalkRecord,
+                                showHeader: false, // 내부 핸들 바 숨김
+                              ),
+                            ),
+                          ]),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ],
       ),

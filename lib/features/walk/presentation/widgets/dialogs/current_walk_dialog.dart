@@ -10,14 +10,21 @@ class CurrentWalkDialog extends StatelessWidget {
   final WalkRecordEntity walkRecord;
   final WalkController controller;
 
-  const CurrentWalkDialog({super.key, required this.walkRecord, required this.controller});
+  const CurrentWalkDialog({
+    super.key,
+    required this.walkRecord,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
         '散歩中',
-        style: AppFonts.fredoka(fontSize: AppFonts.lg, fontWeight: FontWeight.bold),
+        style: AppFonts.fredoka(
+          fontSize: AppFonts.lg,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,

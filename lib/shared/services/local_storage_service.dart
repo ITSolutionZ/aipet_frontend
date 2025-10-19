@@ -1,16 +1,18 @@
-import 'local_ai_service.dart';
-import 'local_database_service.dart';
-import 'local_facility_service.dart';
-import 'local_pet_service.dart';
-import 'local_schedule_service.dart';
-import 'local_user_service.dart';
+import 'package:aipet_frontend/features/ai/data/services/local_ai_service.dart';
+import 'package:aipet_frontend/features/facility/data/services/local_facility_service.dart';
+import 'package:aipet_frontend/features/pet_profile/data/services/local_pet_service.dart';
+import 'package:aipet_frontend/features/scheduling/data/services/local_schedule_service.dart';
+import 'package:aipet_frontend/features/settings/data/services/local_user_service.dart';
 
-export 'local_ai_service.dart';
+import 'local_database_service.dart';
+
+export 'package:aipet_frontend/features/ai/data/services/local_ai_service.dart';
+export 'package:aipet_frontend/features/facility/data/services/local_facility_service.dart';
+export 'package:aipet_frontend/features/pet_profile/data/services/local_pet_service.dart';
+export 'package:aipet_frontend/features/scheduling/data/services/local_schedule_service.dart';
+export 'package:aipet_frontend/features/settings/data/services/local_user_service.dart';
+
 export 'local_database_service.dart';
-export 'local_facility_service.dart';
-export 'local_pet_service.dart';
-export 'local_schedule_service.dart';
-export 'local_user_service.dart';
 
 /// 통합 로컬 스토리지 서비스
 /// 모든 로컬 데이터 접근을 위한 단일 진입점

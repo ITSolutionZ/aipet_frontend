@@ -1,7 +1,7 @@
+import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_statistics_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
-import 'package:aipet_frontend/shared/services/local_walk_storage_service.dart';
 
 /// 산책 리포지토리 구현체
 class WalkRepositoryImpl implements WalkRepository {
@@ -143,19 +143,19 @@ class WalkRepositoryImpl implements WalkRepository {
 
   @override
   Future<void> saveWalkRecord(WalkRecordEntity walkRecord) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    // Mock 구현 - 실제로는 데이터베이스에 저장
+    // 로컬 저장소에 기록 추가
+    await LocalWalkStorageService.addWalkRecord(walkRecord);
   }
 
   @override
   Future<void> updateWalkRecord(WalkRecordEntity walkRecord) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    // Mock 구현 - 실제로는 데이터베이스에 업데이트
+    // 로컬 저장소에 기록 업데이트
+    await LocalWalkStorageService.updateWalkRecord(walkRecord);
   }
 
   @override
   Future<void> deleteWalkRecord(String id) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    // Mock 구현 - 실제로는 데이터베이스에서 삭제
+    // 로컬 저장소에서 기록 삭제
+    await LocalWalkStorageService.deleteWalkRecord(id);
   }
 }

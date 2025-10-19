@@ -20,7 +20,9 @@ class AddYouTubeVideoButton extends StatelessWidget {
           backgroundColor: AppColors.pointBlue,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.md),
+          ),
         ),
       ),
     );

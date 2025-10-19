@@ -44,7 +44,9 @@ class EditableAttributeCard extends StatelessWidget {
         children: [
           Text(
             label,
-            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark.withValues(alpha: 0.7)),
+            style: AppFonts.bodyMedium.copyWith(
+              color: AppColors.pointDark.withValues(alpha: 0.7),
+            ),
           ),
           if (isEditMode)
             _buildEditableField()
@@ -89,7 +91,9 @@ class EditableAttributeCard extends StatelessWidget {
           width: 100,
           child: TextField(
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}'))],
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}')),
+            ],
             decoration: const InputDecoration(
               suffix: Text('kg'),
               isDense: true,

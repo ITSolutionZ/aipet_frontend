@@ -13,7 +13,9 @@ class LearnTrickCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.md)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+      ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -34,7 +36,11 @@ class LearnTrickCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(AppSpacing.sm),
                         child: Image.asset(trick.imagePath!, fit: BoxFit.cover),
                       )
-                    : const Icon(Icons.pets, color: AppColors.pointBrown, size: 30),
+                    : const Icon(
+                        Icons.pets,
+                        color: AppColors.pointBrown,
+                        size: 30,
+                      ),
               ),
               const SizedBox(width: AppSpacing.md),
 
@@ -45,12 +51,16 @@ class LearnTrickCard extends StatelessWidget {
                   children: [
                     Text(
                       trick.name,
-                      style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       trick.description,
-                      style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -61,7 +71,9 @@ class LearnTrickCard extends StatelessWidget {
                         const SizedBox(width: AppSpacing.sm),
                         Text(
                           '${trick.estimatedTime}分',
-                          style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+                          style: AppFonts.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -76,7 +88,11 @@ class LearnTrickCard extends StatelessWidget {
                   color: AppColors.pointGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.sm),
                 ),
-                child: const Icon(Icons.play_arrow, color: AppColors.pointGreen, size: 24),
+                child: const Icon(
+                  Icons.play_arrow,
+                  color: AppColors.pointGreen,
+                  size: 24,
+                ),
               ),
             ],
           ),
@@ -109,14 +125,20 @@ class LearnTrickCard extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.sm),
       ),
       child: Text(
         text,
-        style: AppFonts.bodySmall.copyWith(color: color, fontWeight: FontWeight.bold),
+        style: AppFonts.bodySmall.copyWith(
+          color: color,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

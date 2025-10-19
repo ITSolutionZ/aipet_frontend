@@ -2,6 +2,8 @@ import '../domain/common_errors.dart';
 
 sealed class ResultState<T> {
   const ResultState();
+
+  static Failure<T> failure<T>(AppError error) => Failure<T>(error);
 }
 
 class Success<T> extends ResultState<T> {
@@ -80,21 +82,21 @@ extension ResultStateExtensions<T> on ResultState<T> {
   ResultState<R> map<R>(R Function(T) transform) {
     return switch (this) {
       Success(data: final data) => Success(transform(data)),
-      Failure(error: final error) => Failure(error),
+      Failure(error: final error) => Result.failure(error),
     };
   }
 
   Future<ResultState<R>> mapAsync<R>(Future<R> Function(T) transform) async {
     return switch (this) {
       Success(data: final data) => Success(await transform(data)),
-      Failure(error: final error) => Failure(error),
+      Failure(error: final error) => Result.failure(error),
     };
   }
 
   ResultState<R> flatMap<R>(ResultState<R> Function(T) transform) {
     return switch (this) {
       Success(data: final data) => transform(data),
-      Failure(error: final error) => Failure(error),
+      Failure(error: final error) => Result.failure(error),
     };
   }
 }

@@ -6,7 +6,7 @@ part 'pet_profile_api_model.freezed.dart';
 part 'pet_profile_api_model.g.dart';
 
 @freezed
-class PetProfileApiModel with _$PetProfileApiModel {
+abstract class PetProfileApiModel with _$PetProfileApiModel {
   const factory PetProfileApiModel({
     required String id,
     required String name,
@@ -116,7 +116,7 @@ class PetProfileApiModel with _$PetProfileApiModel {
 }
 
 @freezed
-class PetImageUploadResponse with _$PetImageUploadResponse {
+abstract class PetImageUploadResponse with _$PetImageUploadResponse {
   const factory PetImageUploadResponse({
     required String imageUrl,
     required String imageId,
@@ -129,7 +129,7 @@ class PetImageUploadResponse with _$PetImageUploadResponse {
 }
 
 @freezed
-class PetProfileCreateRequest with _$PetProfileCreateRequest {
+abstract class PetProfileCreateRequest with _$PetProfileCreateRequest {
   const factory PetProfileCreateRequest({
     required String name,
     required String type,
@@ -167,7 +167,7 @@ class PetProfileCreateRequest with _$PetProfileCreateRequest {
 }
 
 @freezed
-class PetProfileUpdateRequest with _$PetProfileUpdateRequest {
+abstract class PetProfileUpdateRequest with _$PetProfileUpdateRequest {
   const factory PetProfileUpdateRequest({
     String? name,
     String? breed,
@@ -189,7 +189,7 @@ class PetProfileUpdateRequest with _$PetProfileUpdateRequest {
 }
 
 @freezed
-class PetSharingSettings with _$PetSharingSettings {
+abstract class PetSharingSettings with _$PetSharingSettings {
   const factory PetSharingSettings({
     required String petId,
     required bool isPublic,
@@ -203,7 +203,7 @@ class PetSharingSettings with _$PetSharingSettings {
 }
 
 @freezed
-class PetSyncStatus with _$PetSyncStatus {
+abstract class PetSyncStatus with _$PetSyncStatus {
   const factory PetSyncStatus({
     required String petId,
     required bool isSynced,

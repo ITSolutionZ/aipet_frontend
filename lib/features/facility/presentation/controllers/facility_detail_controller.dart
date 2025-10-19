@@ -1,8 +1,6 @@
-import 'package:aipet_frontend/features/facility/data/facility_providers.dart';
+import 'package:aipet_frontend/features/facility/data/data.dart';
 import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/factories/facility_factory.dart';
 import 'package:aipet_frontend/shared/foundation/controllers/base_facility_controller.dart';
-import 'package:aipet_frontend/shared/services/facility_error_handler.dart';
 import 'package:flutter/material.dart';
 
 /// 시설 상세 화면의 비즈니스 로직을 관리하는 컨트롤러

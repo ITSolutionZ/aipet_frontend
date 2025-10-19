@@ -49,19 +49,29 @@ find lib/ -name "*.dart" -type f | while read file; do
         # class name 추출하고 const 추가
         class_name=$(grep "class.*extends StatelessWidget" "$file" | head -n1 | sed 's/.*class \([A-Za-z0-9_]*\).*/\1/' 2>/dev/null)
         if [ ! -z "$class_name" ]; then
-            # const가 없는 생성자에만 const 추가 (중복 방지)
+            # const가 없는 생성자에만 const 추가 (중복 방지 강화)
             if ! grep -q "const $class_name({" "$file"; then
-                sed -i '' "s/^[[:space:]]*$class_name({/  const $class_name({/g" "$file"
+                # 이미 const가 있는지 한번 더 확인
+                if ! grep -q "  const $class_name({" "$file"; then
+                    sed -i '' "s/^[[:space:]]*$class_name({/  const $class_name({/g" "$file"
+                fi
             fi
         fi
     fi
 done
 
-# const 중복 제거 (안전장치)
-echo "🧹 Removing const duplicates..."
-find lib/ -name "*.dart" -exec sed -i '' 's/const const/const/g' {} \;
-find lib/ -name "*.dart" -exec sed -i '' 's/const const const/const/g' {} \;
-find lib/ -name "*.dart" -exec sed -i '' 's/const const const const/const/g' {} \;
+# const 중복 제거 (강화된 안전장치)
+echo "🧹 Removing const duplicates (강화)..."
+for i in {1..5}; do
+  find lib/ -name "*.dart" -exec sed -i '' 's/const const/const/g' {} \;
+done
+
+# 최종 검증
+CONST_DUPLICATES=$(grep -r "const const" lib/ --include="*.dart" 2>/dev/null | wc -l | tr -d ' ')
+if [ "$CONST_DUPLICATES" -gt 0 ]; then
+  echo "⚠️  여전히 const 중복 ${CONST_DUPLICATES}개 발견 - 추가 정리..."
+  find lib/ -name "*.dart" -exec sed -i '' 's/const const/const/g' {} \;
+fi
 
 echo "✅ Const constructor optimization completed!"
 echo "📝 Next steps:"

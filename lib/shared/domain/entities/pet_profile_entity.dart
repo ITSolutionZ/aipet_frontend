@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'pet_status.dart';
+
 part 'pet_profile_entity.freezed.dart';
 part 'pet_profile_entity.g.dart';
 
@@ -11,7 +13,7 @@ part 'pet_profile_entity.g.dart';
 /// - Backward Compatibility: 既存コード互換性保証
 /// - Rich Domain Logic: ビジネスロジック内包
 @freezed
-class PetProfileEntity with _$PetProfileEntity {
+abstract class PetProfileEntity with _$PetProfileEntity {
   const factory PetProfileEntity({
     required String id,
     required String name,
@@ -29,6 +31,7 @@ class PetProfileEntity with _$PetProfileEntity {
     required DateTime createdAt,
     required DateTime updatedAt,
     @Default(true) bool isActive,
+    @Default(PetStatus.active) PetStatus petStatus,
     Map<String, dynamic>? additionalInfo,
   }) = _PetProfileEntity;
 
@@ -37,7 +40,10 @@ class PetProfileEntity with _$PetProfileEntity {
   /// JSON 직렬화를 위한 팩토리 생성자
   factory PetProfileEntity.fromJson(Map<String, dynamic> json) =>
       _$PetProfileEntityFromJson(json);
+}
 
+/// PetProfileEntity 확장 메서드
+extension PetProfileEntityX on PetProfileEntity {
   /// 펫 나이 계산 (생년월일 기준)
   int get age {
     final now = DateTime.now();
@@ -121,40 +127,5 @@ class PetProfileEntity with _$PetProfileEntity {
       arrivalDate: arrivalDate ?? this.arrivalDate,
       neutered: neutered ?? this.neutered,
     );
-  }
-
-  /// 권장 산책 시간 (분 단위)
-  int get recommendedWalkTime {
-    // 개 타입일 경우
-    if (type.toLowerCase() == 'dog') {
-      // 크기와 몸무게에 따라 산책 시간 결정
-      if (size != null) {
-        switch (size!.toLowerCase()) {
-          case 'small': // 소형견 (< 10kg)
-            return 30;
-          case 'medium': // 중형견 (10-25kg)
-            return 45;
-          case 'large': // 대형견 (> 25kg)
-            return 60;
-        }
-      }
-
-      // size가 없으면 몸무게로 판단
-      if (weight < 10) {
-        return 30; // 소형견
-      } else if (weight < 25) {
-        return 45; // 중형견
-      } else {
-        return 60; // 대형견
-      }
-    }
-
-    // 고양이
-    if (type.toLowerCase() == 'cat') {
-      return 20;
-    }
-
-    // 기타 동물
-    return 15;
   }
 }

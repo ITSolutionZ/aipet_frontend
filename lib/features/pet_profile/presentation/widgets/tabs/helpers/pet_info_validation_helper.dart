@@ -67,6 +67,7 @@ class PetInfoValidationHelper {
         ...pet.additionalInfo ?? {},
         'appearance': tabState.appearanceController?.text.trim() ?? '',
         'microchipId': tabState.microchipController?.text.trim() ?? '',
+        'healthConditions': tabState.editingHealthConditions ?? [],
       },
     );
   }

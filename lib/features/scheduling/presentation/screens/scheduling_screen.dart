@@ -1,3 +1,5 @@
+import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,8 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../../shared/services/calendar_event_service.dart';
-import '../../domain/entities/calendar_event_entity.dart';
 import '../widgets/add_event_bottom_sheet.dart';
 import '../widgets/calendar_event_item.dart';
 

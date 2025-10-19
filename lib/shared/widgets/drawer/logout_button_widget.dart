@@ -37,7 +37,11 @@ class LogoutButtonWidget extends StatelessWidget {
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
                         color: Colors.grey[300],
-                        child: const Icon(Icons.person, color: Colors.grey, size: 16),
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.grey,
+                          size: 16,
+                        ),
                       );
                     },
                   ),
@@ -47,7 +51,11 @@ class LogoutButtonWidget extends StatelessWidget {
               // 로그아웃 텍스트
               const Text(
                 'ログアウト',
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               const Spacer(),
               // 로그아웃 아이콘

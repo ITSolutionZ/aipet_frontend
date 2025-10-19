@@ -270,7 +270,7 @@ class _ChipSelectorWidget<T> extends StatelessWidget {
               }
             : null,
         selectedColor:
-            option.selectedColor ?? AppColors.primary.withOpacity(0.2),
+            option.selectedColor ?? AppColors.primary.withValues(alpha: 0.2),
         checkmarkColor: option.selectedColor ?? AppColors.primary,
         backgroundColor:
             option.backgroundColor ?? AppColors.cardBackgroundWhite,

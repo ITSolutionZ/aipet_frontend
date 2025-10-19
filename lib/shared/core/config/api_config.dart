@@ -1,16 +1,15 @@
 import '../constants/environment_constants.dart';
 
-enum ApiEnvironment {
-  development,
-  staging,
-  production,
-}
+enum ApiEnvironment { development, staging, production }
 
 class ApiConfig {
   static const String apiVersion = 'v1';
 
   static ApiEnvironment get currentEnvironment {
-    const environment = String.fromEnvironment('ENVIRONMENT', defaultValue: 'development');
+    const environment = String.fromEnvironment(
+      'ENVIRONMENT',
+      defaultValue: 'development',
+    );
     switch (environment) {
       case 'production':
         return ApiEnvironment.production;
@@ -35,8 +34,10 @@ class ApiConfig {
 
   static String get fullApiUrl => '$baseUrl/api/$apiVersion';
 
-  static bool get isProduction => currentEnvironment == ApiEnvironment.production;
-  static bool get isDevelopment => currentEnvironment == ApiEnvironment.development;
+  static bool get isProduction =>
+      currentEnvironment == ApiEnvironment.production;
+  static bool get isDevelopment =>
+      currentEnvironment == ApiEnvironment.development;
   static bool get isStaging => currentEnvironment == ApiEnvironment.staging;
 
   static Duration get defaultTimeout {

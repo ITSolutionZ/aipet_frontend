@@ -19,7 +19,9 @@ class DateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateString = date != null ? '${date!.year}年${date!.month}月${date!.day}日' : '未設定';
+    final dateString = date != null
+        ? '${date!.year}年${date!.month}月${date!.day}日'
+        : '未設定';
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -39,7 +41,10 @@ class DateCard extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
             child: Icon(icon, color: color, size: 20),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -66,7 +71,10 @@ class DateCard extends StatelessWidget {
           if (age != null)
             Text(
               age!,
-              style: AppFonts.bodyMedium.copyWith(color: color, fontWeight: FontWeight.w600),
+              style: AppFonts.bodyMedium.copyWith(
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
             ),
         ],
       ),

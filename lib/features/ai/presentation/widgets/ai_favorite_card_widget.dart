@@ -41,7 +41,10 @@ class AiFavoriteCardWidget extends StatelessWidget {
       children: [
         if (favoriteQA.pet?.name != null) ...[
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: 2),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xs,
+              vertical: 2,
+            ),
             decoration: BoxDecoration(
               color: AppColors.pointBlue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.small),
@@ -58,7 +61,11 @@ class AiFavoriteCardWidget extends StatelessWidget {
           const SizedBox(width: AppSpacing.xs),
         ],
         PopupMenuButton<String>(
-          icon: const Icon(Icons.more_vert, size: 16, color: AppColors.pointGray),
+          icon: const Icon(
+            Icons.more_vert,
+            size: 16,
+            color: AppColors.pointGray,
+          ),
           onSelected: (value) {
             switch (value) {
               case 'share':
@@ -86,9 +93,18 @@ class AiFavoriteCardWidget extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.delete, size: 16, color: AppColors.pointPink),
+                  const Icon(
+                    Icons.delete,
+                    size: 16,
+                    color: AppColors.pointPink,
+                  ),
                   const SizedBox(width: AppSpacing.sm),
-                  Text('削除', style: AppFonts.bodySmall.copyWith(color: AppColors.pointPink)),
+                  Text(
+                    '削除',
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.pointPink,
+                    ),
+                  ),
                 ],
               ),
             ),

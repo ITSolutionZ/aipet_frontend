@@ -1,502 +1,454 @@
-import 'package:aipet_frontend/features/walk/data/providers/walk_share_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
-import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../pet_profile/data/providers/pet_profile_providers.dart';
-import 'dialogs/edit_walk_bottom_sheet.dart';
-import 'helpers/helpers.dart';
-
-part 'walk_info_bottom_sheet.g.dart';
-
-/// 🎯 Walk Info Bottom Sheet Expansion Controller
-@riverpod
-class WalkInfoExpansionController extends _$WalkInfoExpansionController {
-  @override
-  bool build(String sheetId) {
-    return false;
-  }
-
-  void toggle() {
-    state = !state;
-  }
-}
-
-class WalkInfoBottomSheet extends ConsumerWidget {
+/// 산책 정보 바텀시트
+class WalkInfoBottomSheet extends StatelessWidget {
   final WalkRecordEntity walkRecord;
+  final bool showHeader;
 
-  const WalkInfoBottomSheet({super.key, required this.walkRecord});
+  const WalkInfoBottomSheet({
+    super.key,
+    required this.walkRecord,
+    this.showHeader = true,
+  });
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final sheetId = walkRecord.id;
-    final isExpanded = ref.watch(walkInfoExpansionControllerProvider(sheetId));
-
-    return GestureDetector(
-      onVerticalDragEnd: (details) {
-        // 위로 스와이프하면 확장
-        if (details.primaryVelocity! < -500 && !isExpanded) {
-          ref
-              .read(walkInfoExpansionControllerProvider(sheetId).notifier)
-              .toggle();
-        }
-        // 아래로 스와이프하면 축소
-        else if (details.primaryVelocity! > 500 && isExpanded) {
-          ref
-              .read(walkInfoExpansionControllerProvider(sheetId).notifier)
-              .toggle();
-        }
-      },
-      onTap: () {
-        // 탭으로도 토글 가능
-        ref
-            .read(walkInfoExpansionControllerProvider(sheetId).notifier)
-            .toggle();
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        constraints: BoxConstraints(
-          maxHeight: isExpanded
-              ? MediaQuery.of(context).size.height * 0.75
-              : 220,
-          minHeight: 220,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(AppRadius.large),
-            topRight: Radius.circular(AppRadius.large),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // 드래그 핸들
-            _buildDragHandle(),
-
-            // 헤더
-            _buildHeader(context, ref, sheetId, isExpanded),
-
-            // 기본 정보 (항상 표시)
-            _buildBasicInfo(),
-
-            // 확장 상태일 때 추가 정보 표시
-            if (isExpanded)
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-                  child: _buildExpandedContent(context, ref),
-                ),
-              ),
-          ],
-        ),
-      ),
+  static Future<void> show(BuildContext context, WalkRecordEntity walkRecord) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => WalkInfoBottomSheet(walkRecord: walkRecord),
     );
   }
 
-  Widget _buildDragHandle() {
-    return WalkInfoUiHelper.buildDragHandle();
-  }
-
-  Widget _buildHeader(
-    BuildContext context,
-    WidgetRef ref,
-    String sheetId,
-    bool isExpanded,
-  ) {
-    // 로컬 저장소에서 펫 정보 가져오기
-    final petsAsync = ref.watch(petProfilesProvider);
-    final pet = petsAsync.maybeWhen(
-      data: (pets) {
-        if (pets.isEmpty) return null;
-        return pets.firstWhere(
-          (p) => p.id == walkRecord.petId,
-          orElse: () => pets.first,
-        );
-      },
-      orElse: () => null,
-    );
-
-    if (pet == null) {
-      return const SizedBox.shrink();
+  /// 활동 데이터 파싱
+  List<Map<String, dynamic>> _parseActivities() {
+    if (walkRecord.notes == null || walkRecord.notes!.isEmpty) {
+      return [];
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.md,
-      ),
-      child: Row(
+    try {
+      final notesStr = walkRecord.notes!;
+      if (notesStr.startsWith('activities:')) {
+        final activitiesStr = notesStr.replaceFirst('activities:', '');
+
+        debugPrint('📝 활동 파싱 시도: $activitiesStr');
+
+        // 더 간단한 파싱 방식 사용
+        final activities = <Map<String, dynamic>>[];
+        final regExp = RegExp(r"'type':\s*'(\w+)'.*?'latitude':\s*([\d.]+).*?'longitude':\s*([\d.]+)");
+        final matches = regExp.allMatches(activitiesStr);
+
+        for (final match in matches) {
+          activities.add({
+            'type': match.group(1),
+            'latitude': double.parse(match.group(2)!),
+            'longitude': double.parse(match.group(3)!),
+            'timestamp': DateTime.now().toIso8601String(),
+          });
+        }
+
+        return activities;
+      }
+    } catch (e) {
+      debugPrint('❌ 활동 파싱 오류: $e');
+    }
+
+    return [];
+  }
+
+  /// 활동 타입 라벨
+  String _getActivityLabel(String type) {
+    switch (type.toLowerCase()) {
+      case 'poop':
+        return '배변 💩';
+      case 'pee':
+      case 'marking':
+        return '배뇨 (마킹) 💧';
+      case 'no-entry':
+        return '금지구역 🚫';
+      default:
+        return type;
+    }
+  }
+
+  /// 활동 타입 색상
+  Color _getActivityColor(String type) {
+    switch (type.toLowerCase()) {
+      case 'poop':
+        return Colors.orange;
+      case 'pee':
+      case 'marking':
+        return Colors.blue;
+      case 'no-entry':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  /// 시간 포맷팅 (HH:MM 형식)
+  String _formatTime(DateTime dateTime) {
+    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  /// 시간 문자열 포맷팅
+  String _formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+
+    if (hours > 0) {
+      return '$hours時間$minutes分';
+    } else {
+      return '$minutes分';
+    }
+  }
+
+  /// 거리 포맷팅
+  String _formatDistance(double distanceInMeters) {
+    if (distanceInMeters < 1000) {
+      return '${distanceInMeters.toStringAsFixed(0)}m';
+    } else {
+      return '${(distanceInMeters / 1000).toStringAsFixed(2)}km';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final activities = _parseActivities();
+    final duration = walkRecord.calculatedDuration;
+    final distance = walkRecord.calculatedDistance;
+
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 펫 프로필 이미지
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.pointBrown.withValues(alpha: 0.3),
-                width: 2,
+          // 핸들 바 (showHeader가 true일 때만 표시)
+          if (showHeader) ...[
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-              image: pet.imagePath != null
-                  ? DecorationImage(
-                      image: AssetImage(pet.imagePath!),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
             ),
-            child: pet.imagePath == null
-                ? ClipOval(
-                    child: Image.asset(
-                      'assets/icons/aipet_logo.png',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(
-                          Icons.pets,
-                          color: AppColors.pointBrown,
-                          size: 24,
-                        );
-                      },
-                    ),
-                  )
-                : null,
+            const SizedBox(height: 20),
+          ],
+
+          // 제목
+          const Text(
+            '산책 정보',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const SizedBox(height: 16),
 
           // 펫 정보
-          Expanded(
+          Row(
+            children: [
+              const Icon(Icons.pets, color: Colors.blue, size: 24),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    walkRecord.petName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    walkRecord.dateString,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // 산책 시간 정보
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  walkRecord.petName,
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: AppColors.pointDark,
+                  '시간',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  '${pet.type} • ${pet.breed}',
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointGray,
-                  ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(Icons.access_time, size: 16, color: Colors.blue),
+                    const SizedBox(width: 8),
+                    Text(
+                      _formatTime(walkRecord.startTime),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Text('~', style: TextStyle(fontSize: 14)),
+                    const SizedBox(width: 8),
+                    Text(
+                      walkRecord.endTime != null
+                          ? _formatTime(walkRecord.endTime!)
+                          : '진행 중',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: walkRecord.endTime == null ? Colors.orange : Colors.black,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
+          const SizedBox(height: 12),
 
-          // 확장/축소 아이콘
-          Icon(
-            isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
-            color: AppColors.pointGray,
-            size: 24,
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 기본 정보 (항상 표시)
-  Widget _buildBasicInfo() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildInfoRow('開始時間', walkRecord.timeString),
-          const SizedBox(height: AppSpacing.md),
-          _buildInfoRow('距離', walkRecord.formattedDistance),
-          const SizedBox(height: AppSpacing.md),
-          _buildInfoRow('時間', walkRecord.formattedDuration),
-          const SizedBox(height: AppSpacing.md),
-        ],
-      ),
-    );
-  }
-
-  /// 확장된 콘텐츠 (드래그하면 표시)
-  Widget _buildExpandedContent(BuildContext context, WidgetRef ref) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Divider(color: AppColors.pointGray.withValues(alpha: 0.3)),
-          const SizedBox(height: AppSpacing.md),
-
-          // 추가 정보
-          _buildInfoRow('日付', walkRecord.dateString),
-          const SizedBox(height: AppSpacing.md),
-          _buildInfoRow('状態', _getStatusText(walkRecord.status)),
-
-          // 펫 활동 정보
-          if (walkRecord.notes != null &&
-              walkRecord.notes!.contains('activities:')) ...[
-            const SizedBox(height: AppSpacing.md),
-            _buildMemoSection(walkRecord.notes!),
-          ],
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // 액션 버튼들
+          // 산책 기간 및 거리
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    _showShareDialog(context, ref, walkRecord);
-                  },
-                  icon: const Icon(Icons.share, size: 16),
-                  label: const Text('共有'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.pointBrown,
-                    side: const BorderSide(color: AppColors.pointBrown),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '기간',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _formatDuration(duration),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: 12),
               Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    _showEditWalkDialog(context, ref, walkRecord);
-                  },
-                  icon: const Icon(Icons.edit, size: 16),
-                  label: const Text('編集'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.pointBrown,
-                    foregroundColor: AppColors.pointOffWhite,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '거리',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _formatDistance(distance),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.xl),
-        ],
-      ),
-    );
-  }
+          const SizedBox(height: 20),
 
-  Widget _buildInfoRow(String label, String value) {
-    return WalkInfoUiHelper.buildInfoRow(label, value);
-  }
-
-  /// 메모 섹션 빌드 (activities JSON 처리)
-  Widget _buildMemoSection(String notes) {
-    // activities JSON이 포함된 경우 파싱하여 별도 표시
-    if (notes.startsWith('activities:')) {
-      return _buildActivitiesSection(notes);
-    }
-
-    // 일반 메모
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'メモ',
-          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: AppColors.pointOffWhite,
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-          ),
-          child: Text(
-            notes,
-            style: AppFonts.bodySmall.copyWith(color: AppColors.pointDark),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// 펫 활동 섹션 빌드
-  Widget _buildActivitiesSection(String notes) {
-    try {
-      // "activities:[...]" 형식에서 JSON 부분 추출
-      final jsonStr = notes.substring('activities:'.length);
-      // activities 개수만 표시 (전체 JSON은 숨김)
-      final activityCount = _countActivities(jsonStr);
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'ペット活動',
-            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: AppColors.pointOffWhite,
-              borderRadius: BorderRadius.circular(AppRadius.medium),
+          // 활동 기록
+          if (activities.isNotEmpty) ...[
+            Text(
+              '활동 기록 (${activities.length})',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            child: Row(
-              children: [
-                const Icon(Icons.pets, size: 16, color: AppColors.pointBrown),
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  '$activityCount回の活動記録',
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointDark,
+            const SizedBox(height: 12),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: activities.length,
+              itemBuilder: (context, index) {
+                final activity = activities[index];
+                final activityType = activity['type'] as String? ?? 'unknown';
+                final timestamp = activity['timestamp'] is String
+                    ? DateTime.parse(activity['timestamp'] as String)
+                    : DateTime.now();
+                final latitude = activity['latitude'] as double? ?? 0.0;
+                final longitude = activity['longitude'] as double? ?? 0.0;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _getActivityColor(activityType).withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: _getActivityColor(activityType).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Center(
+                              child: _getActivityIcon(activityType),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _getActivityLabel(activityType),
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: _getActivityColor(activityType),
+                                  ),
+                                ),
+                                Text(
+                                  _formatTime(timestamp),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on, size: 12, color: Colors.grey),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              '위치: $latitude, $longitude',
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.grey[600],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ] else ...[
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Center(
+                child: Text(
+                  '기록된 활동이 없습니다',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey[600],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ],
-      );
-    } catch (e) {
-      // 파싱 실패 시 간단히 표시
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'メモ',
-            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: AppColors.pointOffWhite,
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-            ),
-            child: Text(
-              'ペット活動記録',
-              style: AppFonts.bodySmall.copyWith(color: AppColors.pointDark),
-            ),
-          ),
-        ],
-      );
-    }
-  }
-
-  /// activities 개수 카운트
-  int _countActivities(String jsonStr) {
-    return WalkInfoUiHelper.countActivities(jsonStr);
-  }
-
-  String _getStatusText(WalkStatus status) {
-    return WalkInfoUiHelper.getStatusText(status);
-  }
-
-  /// 산책 기록 공유 다이얼로그 표시
-  void _showShareDialog(
-    BuildContext context,
-    WidgetRef ref,
-    WalkRecordEntity walkRecord,
-  ) {
-    final shareText = ref.read(shareTextProvider(walkRecord));
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('共有'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.copy),
-              title: const Text('テキストをコピー'),
-              onTap: () {
-                context.pop();
-                _copyToClipboard(context, ref, shareText);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.image),
-              title: const Text('画像を保存'),
-              onTap: () {
-                context.pop();
-                _saveAsImage(context, ref, walkRecord);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.share),
-              title: const Text('システム共有'),
-              onTap: () {
-                context.pop();
-                _systemShare(context, ref, shareText);
-              },
+              ),
             ),
           ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('キャンセル'),
-          ),
+          if (showHeader) ...[
+            const SizedBox(height: 20),
+            // 닫기 버튼 (모달로 사용될 때만 표시)
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('닫기'),
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 
-  /// 클립보드에 복사
-  Future<void> _copyToClipboard(
-    BuildContext context,
-    WidgetRef ref,
-    String text,
-  ) async {
-    await WalkInfoShareHelper.copyToClipboard(
-      context: context,
-      ref: ref,
-      text: text,
-    );
-  }
-
-  /// 이미지로 저장
-  Future<void> _saveAsImage(
-    BuildContext context,
-    WidgetRef ref,
-    WalkRecordEntity walkRecord,
-  ) async {
-    await WalkInfoShareHelper.saveAsImage(
-      context: context,
-      ref: ref,
-      walkRecord: walkRecord,
-    );
-  }
-
-  /// 시스템 공유
-  Future<void> _systemShare(
-    BuildContext context,
-    WidgetRef ref,
-    String text,
-  ) async {
-    await WalkInfoShareHelper.systemShare(
-      context: context,
-      ref: ref,
-      text: text,
-    );
-  }
-
-  /// 산책 기록 수정 바텀 시트 표시
-  void _showEditWalkDialog(
-    BuildContext context,
-    WidgetRef ref,
-    WalkRecordEntity walkRecord,
-  ) {
-    EditWalkBottomSheet.show(context, walkRecord, WalkController(ref));
+  /// 활동 타입에 따른 아이콘 반환
+  Widget _getActivityIcon(String type) {
+    switch (type.toLowerCase()) {
+      case 'poop':
+        return const Text(
+          '💩',
+          style: TextStyle(fontSize: 16),
+        );
+      case 'pee':
+      case 'marking':
+        return const Icon(
+          Icons.water_drop,
+          size: 16,
+          color: Colors.blue,
+        );
+      case 'no-entry':
+        return const Icon(
+          Icons.block,
+          size: 16,
+          color: Colors.red,
+        );
+      default:
+        return const Icon(
+          Icons.info,
+          size: 16,
+          color: Colors.grey,
+        );
+    }
   }
 }

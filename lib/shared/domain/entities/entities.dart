@@ -5,3 +5,4 @@
 library;
 
 export 'pet_profile_entity.dart';
+export 'pet_status.dart';

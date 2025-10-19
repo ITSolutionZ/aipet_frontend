@@ -39,7 +39,9 @@ class AccessibleButton extends StatelessWidget {
     final effectiveBackgroundColor = backgroundColor ?? theme.primaryColor;
     final effectiveForegroundColor =
         foregroundColor ??
-        (theme.primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white);
+        (theme.primaryColor.computeLuminance() > 0.5
+            ? Colors.black
+            : Colors.white);
 
     return Semantics(
       button: true,
@@ -63,7 +65,12 @@ class AccessibleButton extends StatelessWidget {
               onTap: enabled && !isLoading ? onPressed : null,
               borderRadius: borderRadius ?? BorderRadius.circular(8.0),
               child: Container(
-                padding: padding ?? const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding:
+                    padding ??
+                    const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 12.0,
+                    ),
                 child: Center(
                   child: isLoading
                       ? SizedBox(
@@ -71,7 +78,9 @@ class AccessibleButton extends StatelessWidget {
                           height: 20.0,
                           child: CircularProgressIndicator(
                             strokeWidth: 2.0,
-                            valueColor: AlwaysStoppedAnimation<Color>(effectiveForegroundColor),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              effectiveForegroundColor,
+                            ),
                           ),
                         )
                       : DefaultTextStyle(
@@ -155,7 +164,9 @@ class AccessibleIconButton extends StatelessWidget {
                 padding: padding ?? EdgeInsets.all(effectiveSize * 0.25),
                 child: Icon(
                   icon,
-                  color: enabled ? effectiveIconColor : effectiveIconColor?.withValues(alpha: 0.5),
+                  color: enabled
+                      ? effectiveIconColor
+                      : effectiveIconColor?.withValues(alpha: 0.5),
                   size: effectiveSize * 0.5,
                 ),
               ),
@@ -219,12 +230,22 @@ class AccessibleToggleButton extends StatelessWidget {
               onTap: onChanged != null ? () => onChanged!(!value) : null,
               borderRadius: BorderRadius.circular(8.0),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
                 child: Center(
                   child: value
-                      ? (activeChild ?? const Text('활성화', style: TextStyle(color: Colors.white)))
+                      ? (activeChild ??
+                            const Text(
+                              '활성화',
+                              style: TextStyle(color: Colors.white),
+                            ))
                       : (inactiveChild ??
-                            const Text('비활성화', style: TextStyle(color: Colors.white))),
+                            const Text(
+                              '비활성화',
+                              style: TextStyle(color: Colors.white),
+                            )),
                 ),
               ),
             ),

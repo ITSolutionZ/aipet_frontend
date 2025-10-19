@@ -14,7 +14,10 @@ class WalkMapCameraController {
   }) async {
     await mapController.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(position.latitude, position.longitude), zoom: zoom),
+        CameraPosition(
+          target: LatLng(position.latitude, position.longitude),
+          zoom: zoom,
+        ),
       ),
     );
   }
@@ -35,7 +38,9 @@ class WalkMapCameraController {
     if (validPoints.length < 2) return;
 
     final bounds = _calculateBounds(validPoints);
-    await mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, padding));
+    await mapController.animateCamera(
+      CameraUpdate.newLatLngBounds(bounds, padding),
+    );
   }
 
   /// 여러 산책 경로가 모두 보이도록 카메라 조정
@@ -58,7 +63,9 @@ class WalkMapCameraController {
     if (allPoints.length < 2) return;
 
     final bounds = _calculateBounds(allPoints);
-    await mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, padding));
+    await mapController.animateCamera(
+      CameraUpdate.newLatLngBounds(bounds, padding),
+    );
   }
 
   /// 실시간 추적 모드 카메라 설정
@@ -85,7 +92,10 @@ class WalkMapCameraController {
   }
 
   /// 지도 줌 레벨 조정
-  static Future<void> zoomToLevel(GoogleMapController mapController, double zoomLevel) async {
+  static Future<void> zoomToLevel(
+    GoogleMapController mapController,
+    double zoomLevel,
+  ) async {
     await mapController.animateCamera(CameraUpdate.zoomTo(zoomLevel));
   }
 
@@ -95,7 +105,9 @@ class WalkMapCameraController {
     double latitude,
     double longitude,
   ) async {
-    await mapController.animateCamera(CameraUpdate.newLatLng(LatLng(latitude, longitude)));
+    await mapController.animateCamera(
+      CameraUpdate.newLatLng(LatLng(latitude, longitude)),
+    );
   }
 
   /// 경계 박스 계산
@@ -116,7 +128,10 @@ class WalkMapCameraController {
       maxLng = maxLng > point.longitude ? maxLng : point.longitude;
     }
 
-    return LatLngBounds(southwest: LatLng(minLat, minLng), northeast: LatLng(maxLat, maxLng));
+    return LatLngBounds(
+      southwest: LatLng(minLat, minLng),
+      northeast: LatLng(maxLat, maxLng),
+    );
   }
 
   /// 기본 카메라 위치 생성

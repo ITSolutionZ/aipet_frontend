@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/features/settings/data/services/local_user_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/user_profile_entity.dart';
-import 'package:aipet_frontend/shared/services/local_user_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_profile_controller.g.dart';
@@ -32,8 +32,7 @@ class UserProfileController extends _$UserProfileController {
 
   @override
   UserProfileState build() {
-    // 자동으로 프로필 로드
-    _loadProfile();
+    // build()에서는 비동기 작업을 피하고, 필요시 외부에서 loadProfile() 호출
     return const UserProfileState();
   }
 

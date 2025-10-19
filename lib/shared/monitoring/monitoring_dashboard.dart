@@ -10,7 +10,8 @@ import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 /// 성능 지표, 보안 상태, 에러 로그 등을 종합적으로 관리합니다.
 class MonitoringDashboard {
   static MonitoringDashboard? _instance;
-  static MonitoringDashboard get instance => _instance ??= MonitoringDashboard._();
+  static MonitoringDashboard get instance =>
+      _instance ??= MonitoringDashboard._();
 
   MonitoringDashboard._();
 
@@ -152,15 +153,22 @@ class MonitoringDashboard {
   /// 성능 분석
   void _analyzePerformance() {
     final recentMetrics = _metrics
-        .where((m) => m.timestamp.isAfter(DateTime.now().subtract(const Duration(minutes: 5))))
+        .where(
+          (m) => m.timestamp.isAfter(
+            DateTime.now().subtract(const Duration(minutes: 5)),
+          ),
+        )
         .toList();
 
     // API 응답 시간 분석
-    final apiMetrics = recentMetrics.where((m) => m.name == 'api_response_time').toList();
+    final apiMetrics = recentMetrics
+        .where((m) => m.name == 'api_response_time')
+        .toList();
 
     if (apiMetrics.isNotEmpty) {
       final avgResponseTime =
-          apiMetrics.map((m) => m.value).reduce((a, b) => a + b) / apiMetrics.length;
+          apiMetrics.map((m) => m.value).reduce((a, b) => a + b) /
+          apiMetrics.length;
 
       if (avgResponseTime > 2000) {
         // 2초 이상
@@ -177,11 +185,14 @@ class MonitoringDashboard {
     }
 
     // 메모리 사용량 분석
-    final memoryMetrics = recentMetrics.where((m) => m.name == 'memory_usage').toList();
+    final memoryMetrics = recentMetrics
+        .where((m) => m.name == 'memory_usage')
+        .toList();
 
     if (memoryMetrics.isNotEmpty) {
       final avgMemory =
-          memoryMetrics.map((m) => m.value).reduce((a, b) => a + b) / memoryMetrics.length;
+          memoryMetrics.map((m) => m.value).reduce((a, b) => a + b) /
+          memoryMetrics.length;
 
       if (avgMemory > 150) {
         // 150MB 이상
@@ -201,7 +212,12 @@ class MonitoringDashboard {
   /// 에러 로그 추가
   void addErrorLog(String error, String stackTrace, {String? context}) {
     _errorLogs.add(
-      ErrorLog(error: error, stackTrace: stackTrace, context: context, timestamp: DateTime.now()),
+      ErrorLog(
+        error: error,
+        stackTrace: stackTrace,
+        context: context,
+        timestamp: DateTime.now(),
+      ),
     );
 
     // 에러 메트릭 추가
@@ -226,9 +242,13 @@ class MonitoringDashboard {
     final now = DateTime.now();
     final last5Minutes = now.subtract(const Duration(minutes: 5));
 
-    final recentMetrics = _metrics.where((m) => m.timestamp.isAfter(last5Minutes)).toList();
+    final recentMetrics = _metrics
+        .where((m) => m.timestamp.isAfter(last5Minutes))
+        .toList();
 
-    final recentErrors = _errorLogs.where((e) => e.timestamp.isAfter(last5Minutes)).toList();
+    final recentErrors = _errorLogs
+        .where((e) => e.timestamp.isAfter(last5Minutes))
+        .toList();
 
     final recentSecurityAlerts = _securityAlerts
         .where((a) => a.timestamp.isAfter(last5Minutes))
@@ -247,17 +267,23 @@ class MonitoringDashboard {
   }
 
   double _calculateAverageResponseTime(List<MonitoringMetric> metrics) {
-    final apiMetrics = metrics.where((m) => m.name == 'api_response_time').toList();
+    final apiMetrics = metrics
+        .where((m) => m.name == 'api_response_time')
+        .toList();
     if (apiMetrics.isEmpty) return 0.0;
 
-    return apiMetrics.map((m) => m.value).reduce((a, b) => a + b) / apiMetrics.length;
+    return apiMetrics.map((m) => m.value).reduce((a, b) => a + b) /
+        apiMetrics.length;
   }
 
   double _calculateAverageMemoryUsage(List<MonitoringMetric> metrics) {
-    final memoryMetrics = metrics.where((m) => m.name == 'memory_usage').toList();
+    final memoryMetrics = metrics
+        .where((m) => m.name == 'memory_usage')
+        .toList();
     if (memoryMetrics.isEmpty) return 0.0;
 
-    return memoryMetrics.map((m) => m.value).reduce((a, b) => a + b) / memoryMetrics.length;
+    return memoryMetrics.map((m) => m.value).reduce((a, b) => a + b) /
+        memoryMetrics.length;
   }
 
   Duration _calculateUptime() {
@@ -277,30 +303,46 @@ class MonitoringDashboard {
     report.writeln('');
 
     report.writeln('## 🏥 Health Status');
-    report.writeln('- **Overall Health**: ${status.isHealthy ? "✅ Healthy" : "❌ Issues Detected"}');
-    report.writeln('- **Uptime**: ${status.uptime.inHours}h ${status.uptime.inMinutes % 60}m');
+    report.writeln(
+      '- **Overall Health**: ${status.isHealthy ? "✅ Healthy" : "❌ Issues Detected"}',
+    );
+    report.writeln(
+      '- **Uptime**: ${status.uptime.inHours}h ${status.uptime.inMinutes % 60}m',
+    );
     report.writeln('- **Total Metrics**: ${status.totalMetrics}');
     report.writeln('');
 
     report.writeln('## 📈 Performance Metrics');
-    report.writeln('- **Average Response Time**: ${status.avgResponseTime.toStringAsFixed(2)}ms');
-    report.writeln('- **Average Memory Usage**: ${status.avgMemoryUsage.toStringAsFixed(2)}MB');
+    report.writeln(
+      '- **Average Response Time**: ${status.avgResponseTime.toStringAsFixed(2)}ms',
+    );
+    report.writeln(
+      '- **Average Memory Usage**: ${status.avgMemoryUsage.toStringAsFixed(2)}MB',
+    );
     report.writeln('');
 
     report.writeln('## 🚨 Recent Issues');
     report.writeln('- **Errors (Last 5min)**: ${status.recentErrors}');
-    report.writeln('- **Security Alerts (Last 5min)**: ${status.recentSecurityAlerts}');
+    report.writeln(
+      '- **Security Alerts (Last 5min)**: ${status.recentSecurityAlerts}',
+    );
     report.writeln('');
 
     if (status.recentErrors > 0) {
       report.writeln('### Recent Error Logs');
       final recentErrors = _errorLogs
-          .where((e) => e.timestamp.isAfter(DateTime.now().subtract(const Duration(minutes: 5))))
+          .where(
+            (e) => e.timestamp.isAfter(
+              DateTime.now().subtract(const Duration(minutes: 5)),
+            ),
+          )
           .take(5)
           .toList();
 
       for (final error in recentErrors) {
-        report.writeln('- **${error.timestamp.toIso8601String()}**: ${error.error}');
+        report.writeln(
+          '- **${error.timestamp.toIso8601String()}**: ${error.error}',
+        );
         if (error.context != null) {
           report.writeln('  - Context: ${error.context}');
         }
@@ -311,12 +353,18 @@ class MonitoringDashboard {
     if (status.recentSecurityAlerts > 0) {
       report.writeln('### Recent Security Alerts');
       final recentAlerts = _securityAlerts
-          .where((a) => a.timestamp.isAfter(DateTime.now().subtract(const Duration(minutes: 5))))
+          .where(
+            (a) => a.timestamp.isAfter(
+              DateTime.now().subtract(const Duration(minutes: 5)),
+            ),
+          )
           .take(5)
           .toList();
 
       for (final alert in recentAlerts) {
-        report.writeln('- **${alert.timestamp.toIso8601String()}**: ${alert.message}');
+        report.writeln(
+          '- **${alert.timestamp.toIso8601String()}**: ${alert.message}',
+        );
         report.writeln('  - Severity: ${alert.severity.name}');
         report.writeln('  - Type: ${alert.type.name}');
       }

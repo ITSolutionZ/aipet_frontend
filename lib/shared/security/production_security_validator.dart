@@ -73,7 +73,11 @@ class ProductionSecurityValidator {
   /// 필수 환경 변수 검증
   static void _validateRequiredEnvVars() {
     // 필수 환경 변수 목록
-    const requiredEnvVars = ['FIREBASE_API_KEY', 'FIREBASE_PROJECT_ID', 'OPENAI_API_KEY'];
+    const requiredEnvVars = [
+      'FIREBASE_API_KEY',
+      'FIREBASE_PROJECT_ID',
+      'OPENAI_API_KEY',
+    ];
 
     for (final envVar in requiredEnvVars) {
       if (String.fromEnvironment(envVar).isEmpty) {

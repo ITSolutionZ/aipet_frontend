@@ -136,7 +136,11 @@ class AppStateData {
 class NavigationState extends _$NavigationState {
   @override
   NavigationStateData build() {
-    return const NavigationStateData(selectedIndex: 0, previousIndex: 0, canGoBack: false);
+    return const NavigationStateData(
+      selectedIndex: 0,
+      previousIndex: 0,
+      canGoBack: false,
+    );
   }
 
   /// 선택된 탭 인덱스 설정
@@ -162,7 +166,11 @@ class NavigationState extends _$NavigationState {
 
   /// 네비게이션 상태 초기화
   void reset() {
-    state = const NavigationStateData(selectedIndex: 0, previousIndex: 0, canGoBack: false);
+    state = const NavigationStateData(
+      selectedIndex: 0,
+      previousIndex: 0,
+      canGoBack: false,
+    );
   }
 }
 
@@ -178,7 +186,11 @@ class NavigationStateData {
     required this.canGoBack,
   });
 
-  NavigationStateData copyWith({int? selectedIndex, int? previousIndex, bool? canGoBack}) {
+  NavigationStateData copyWith({
+    int? selectedIndex,
+    int? previousIndex,
+    bool? canGoBack,
+  }) {
     return NavigationStateData(
       selectedIndex: selectedIndex ?? this.selectedIndex,
       previousIndex: previousIndex ?? this.previousIndex,

@@ -6,10 +6,10 @@ import 'package:aipet_frontend/features/auth/domain/usecases/logout_usecase.dart
 import 'package:aipet_frontend/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:aipet_frontend/features/auth/domain/usecases/social_login_usecase.dart';
 import 'package:aipet_frontend/features/auth/presentation/state/auth_form_state.dart';
+import 'package:aipet_frontend/features/pet_profile/data/data.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/utils/validation_utils.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/services/pet_login_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

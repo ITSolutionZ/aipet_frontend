@@ -7,7 +7,11 @@ class EndWalkUseCase {
 
   EndWalkUseCase(this.repository);
 
-  Future<WalkRecordEntity> call(String recordId, {double? distance, String? notes}) async {
+  Future<WalkRecordEntity> call(
+    String recordId, {
+    double? distance,
+    String? notes,
+  }) async {
     // 비즈니스 로직: 산책 종료 전 유효성 검증
     if (recordId.isEmpty) {
       throw ArgumentError('산책 기록 ID는 필수입니다.');

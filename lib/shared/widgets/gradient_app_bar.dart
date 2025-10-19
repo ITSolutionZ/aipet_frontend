@@ -26,7 +26,8 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => Size.fromHeight(
-      (toolbarHeight ?? kToolbarHeight) + (bottom?.preferredSize.height ?? 0));
+    (toolbarHeight ?? kToolbarHeight) + (bottom?.preferredSize.height ?? 0),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,8 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.transparent,
       flexibleSpace: Container(
         decoration: BoxDecoration(
-          gradient: gradient ??
+          gradient:
+              gradient ??
               LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,

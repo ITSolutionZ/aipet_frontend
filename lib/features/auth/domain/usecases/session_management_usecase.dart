@@ -40,7 +40,9 @@ class SessionManagementUseCase {
       // Firebase 토큰을 서버 토큰으로 교환
       final firebaseToken = await _repository.getCurrentUserIdToken();
       if (firebaseToken != null) {
-        final newServerToken = await _repository.exchangeServerToken(firebaseToken);
+        final newServerToken = await _repository.exchangeServerToken(
+          firebaseToken,
+        );
         await _repository.saveServerToken(newServerToken);
 
         // AuthToken 엔티티로 변환 (실제로는 토큰 정보를 파싱해야 함)

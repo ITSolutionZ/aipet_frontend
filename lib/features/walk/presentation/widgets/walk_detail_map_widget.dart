@@ -1,490 +1,145 @@
-import 'dart:convert';
-
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_marker_builder.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_polyline_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'utils/custom_marker_builder.dart';
-
-class WalkDetailMapWidget extends ConsumerStatefulWidget {
+/// 산책 상세 지도 위젯
+class WalkDetailMapWidget extends StatefulWidget {
   final WalkRecordEntity walkRecord;
 
   const WalkDetailMapWidget({super.key, required this.walkRecord});
 
   @override
-  ConsumerState<WalkDetailMapWidget> createState() =>
-      _WalkDetailMapWidgetState();
+  State<WalkDetailMapWidget> createState() => _WalkDetailMapWidgetState();
 }
 
-class _WalkDetailMapWidgetState extends ConsumerState<WalkDetailMapWidget> {
-  GoogleMapController? _mapController;
-  Position? _currentPosition;
-  final Set<Marker> _markers = {};
-  final Set<Polyline> _polylines = {};
-  final LocationCacheService _locationCache = LocationCacheService.instance;
-  BitmapDescriptor? _poopIcon;
-  BitmapDescriptor? _peeIcon;
-  BitmapDescriptor? _noEntryIcon;
+class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
+  late GoogleMapController mapController;
+  late Set<Polyline> polylines;
+  late Set<Marker> markers;
 
   @override
   void initState() {
     super.initState();
-    _loadCustomIcons();
-    _getCurrentLocation();
-    _setupWalkDetailMap();
+    _initializeMap();
   }
 
-  /// 커스텀 아이콘 로드
-  Future<void> _loadCustomIcons() async {
-    try {
-      // 작은 사이즈로 원형 마커 생성
-      final poopIcon = await CustomMarkerBuilder.createCircleMarker(
-        iconPath: 'assets/icons/poop.png',
-        backgroundColor: const Color(0xFFFF9800),
-        size: 40,
-      );
-      final peeIcon = await CustomMarkerBuilder.createCircleMarker(
-        iconPath: 'assets/icons/marking.png',
-        backgroundColor: const Color(0xFF2196F3),
-        size: 40,
-      );
-      final noEntryIcon = await CustomMarkerBuilder.createCircleMarker(
-        iconPath: 'assets/icons/no-entry.png',
-        backgroundColor: const Color(0xFFF44336),
-        size: 40,
-      );
+  void _initializeMap() async {
+    // Polyline 생성
+    polylines = WalkMapPolylineBuilder.buildAllPolylines([widget.walkRecord]);
 
-      setState(() {
-        _poopIcon = poopIcon;
-        _peeIcon = peeIcon;
-        _noEntryIcon = noEntryIcon;
-      });
+    // 마커 생성 (시작점, 종료점, 활동 마커)
+    final initialMarkers = WalkMapMarkerBuilder.buildAllMarkers(
+      walkRecords: [widget.walkRecord],
+    );
 
-      _setupWalkDetailMap();
-      debugPrint('✅ WalkDetailMap: 원형 마커 로드 완료 (40px)');
-    } catch (e) {
-      debugPrint('⚠️ WalkDetailMap: 마커 로드 실패 - $e');
-    }
-  }
+    debugPrint('🗺️ 마커 생성 완료: ${initialMarkers.length}개');
+    debugPrint('📍 notes 데이터: ${widget.walkRecord.notes}');
 
-  Future<void> _getCurrentLocation() async {
-    try {
-      // 1. 먼저 캐시된 위치 확인
-      final cachedPosition = _locationCache.getCachedPosition();
-      if (cachedPosition != null) {
-        setState(() {
-          _currentPosition = cachedPosition;
-        });
-        if (_mapController != null) {
-          await _mapController!.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                target: LatLng(
-                  cachedPosition.latitude,
-                  cachedPosition.longitude,
-                ),
-                zoom: 16.0,
-              ),
-            ),
-          );
-        }
-        return;
-      }
+    // 금지구역 마커 로드 및 추가
+    markers = await WalkMapMarkerBuilder.loadAndBuildNoEntryZoneMarkers(
+      initialMarkers,
+    );
 
-      // 2. 위치 권한 확인
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          _setDefaultLocation();
-          return;
-        }
-      }
+    debugPrint('🚫 최종 마커 개수: ${markers.length}개 (금지구역 포함)');
 
-      if (permission == LocationPermission.deniedForever) {
-        _setDefaultLocation();
-        return;
-      }
-
-      // 3. 현재 위치 가져오기
-      final Position position =
-          await Geolocator.getCurrentPosition(
-            locationSettings: const LocationSettings(
-              accuracy: LocationAccuracy.high,
-            ),
-          ).timeout(
-            const Duration(seconds: 5),
-            onTimeout: () {
-              throw Exception('位置情報の取得がタイムアウトしました');
-            },
-          );
-
-      // 4. 위치 정보 캐싱
-      _locationCache.cachePosition(position);
-
-      setState(() {
-        _currentPosition = position;
-      });
-
-      // 지도 컨트롤러가 준비되면 카메라 이동
-      if (_mapController != null) {
-        await _mapController!.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(position.latitude, position.longitude),
-              zoom: 16.0,
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      debugPrint('位置情報の取得に失敗: $e');
-      _setDefaultLocation();
-    }
-  }
-
-  void _setDefaultLocation() {
-    setState(() {
-      _currentPosition = Position(
-        latitude: 35.6092,
-        longitude: 139.7301,
-        timestamp: DateTime.now(),
-        accuracy: 0,
-        altitude: 0,
-        heading: 0,
-        speed: 0,
-        speedAccuracy: 0,
-        altitudeAccuracy: 0,
-        headingAccuracy: 0,
-      );
-    });
-  }
-
-  void _setupWalkDetailMap() {
-    debugPrint('🔄 WalkDetailMap: _setupWalkDetailMap 호출');
-
-    _markers.clear();
-    _polylines.clear();
-
-    // 산책 경로가 있는 경우 실제 경로 사용
-    if (widget.walkRecord.route.isNotEmpty) {
-      _setupWalkRoute();
-    } else {
-      // 산책 경로가 없는 경우 샘플 경로 생성
-      _setupSampleWalkRoute();
-    }
-
-    // 이 산책 기록의 배변/배뇨 마커 추가
-    _addActivityMarkers();
-
-    // 마커와 폴리라인 적용
     if (mounted) {
-      setState(() {
-        debugPrint(
-          '✅ WalkDetailMap: 마커 ${_markers.length}개, 폴리라인 ${_polylines.length}개 적용',
-        );
-      });
+      setState(() {});
     }
   }
 
-  /// 이 산책 기록의 활동 마커 추가 (배변/배뇨)
-  void _addActivityMarkers() {
-    if (widget.walkRecord.notes == null) return;
-
-    try {
-      final notes = widget.walkRecord.notes!;
-
-      // activities: 형식인지 확인
-      if (!notes.contains('activities:')) {
-        debugPrint(
-          'ℹ️ WalkDetailMap: 이 산책(${widget.walkRecord.id})에는 활동 기록 없음',
-        );
-        return;
-      }
-
-      // activities JSON 추출
-      String activitiesJsonStr;
-      if (notes.startsWith('activities:')) {
-        activitiesJsonStr = notes.substring('activities:'.length);
-      } else {
-        final parts = notes.split('activities:');
-        if (parts.length < 2) return;
-        activitiesJsonStr = parts[1];
-      }
-
-      // JSON 파싱
-      final activities = jsonDecode(activitiesJsonStr) as List<dynamic>;
-
-      debugPrint(
-        '🔄 WalkDetailMap: 산책 기록 ${widget.walkRecord.id}의 활동 ${activities.length}개 파싱 시작',
-      );
-
-      // 각 활동을 마커로 추가
-      for (int i = 0; i < activities.length; i++) {
-        final activity = activities[i] as Map<String, dynamic>;
-        final type = activity['type'] as String;
-        final lat = (activity['latitude'] as num).toDouble();
-        final lng = (activity['longitude'] as num).toDouble();
-        final timestamp = activity['timestamp'] as String;
-
-        // 커스텀 아이콘이 로드되었으면 사용, 아니면 기본 마커
-        BitmapDescriptor markerIcon;
-        if (type == 'poop' && _poopIcon != null) {
-          markerIcon = _poopIcon!;
-        } else if (type == 'pee' && _peeIcon != null) {
-          markerIcon = _peeIcon!;
-        } else if (type == 'no-entry' && _noEntryIcon != null) {
-          markerIcon = _noEntryIcon!;
-        } else {
-          // 기본 마커
-          double hue;
-          if (type == 'poop') {
-            hue = BitmapDescriptor.hueOrange;
-          } else if (type == 'pee') {
-            hue = BitmapDescriptor.hueAzure;
-          } else {
-            hue = BitmapDescriptor.hueRed;
-          }
-          markerIcon = BitmapDescriptor.defaultMarkerWithHue(hue);
-        }
-
-        String title;
-        switch (type) {
-          case 'poop':
-            title = '💩 排便';
-            break;
-          case 'pee':
-            title = '💧 排尿';
-            break;
-          case 'no-entry':
-            title = '🚫 立入禁止';
-            break;
-          default:
-            title = '記録';
-        }
-
-        _markers.add(
-          Marker(
-            markerId: MarkerId('activity_${widget.walkRecord.id}_$i'),
-            position: LatLng(lat, lng),
-            icon: markerIcon,
-            infoWindow: InfoWindow(
-              title: title,
-              snippet: timestamp.substring(11, 16), // HH:mm 形式
-            ),
-          ),
-        );
-
-        debugPrint('✅ 마커 추가: $title at ($lat, $lng)');
-      }
-
-      debugPrint(
-        '✅ WalkDetailMap: 산책 ${widget.walkRecord.id}의 ${activities.length}개 활동 마커 추가 완료 (총 ${_markers.length}개 마커)',
-      );
-    } catch (e) {
-      debugPrint('⚠️ WalkDetailMap: 활동 마커 파싱 실패 - $e');
-    }
-  }
-
-  void _setupWalkRoute() {
-    final route = widget.walkRecord.route;
-    if (route.length < 2) return;
-
-    // 시작점 마커 (공원)
-    if (route.first.latitude != 0 && route.first.longitude != 0) {
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('walk_start'),
-          position: LatLng(route.first.latitude, route.first.longitude),
-          infoWindow: InfoWindow(
-            title: '${widget.walkRecord.title} 開始',
-            snippet: '${widget.walkRecord.duration?.inMinutes ?? 0}分',
-          ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueGreen,
-          ),
-        ),
-      );
-    }
-
-    // 종료점 마커 (집)
-    if (route.last.latitude != 0 && route.last.longitude != 0) {
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('walk_end'),
-          position: LatLng(route.last.latitude, route.last.longitude),
-          infoWindow: InfoWindow(
-            title: '${widget.walkRecord.title} 終了',
-            snippet:
-                '${widget.walkRecord.distance?.toStringAsFixed(1) ?? '0.0'}km',
-          ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        ),
-      );
-    }
-
-    // 경로 폴리라인
-    if (route.length > 1) {
-      final points = route
-          .where((point) => point.latitude != 0 && point.longitude != 0)
-          .map((point) => LatLng(point.latitude, point.longitude))
-          .toList();
-
-      if (points.length > 1) {
-        _polylines.add(
-          Polyline(
-            polylineId: const PolylineId('walk_route'),
-            points: points,
-            color: AppColors.pointBrown,
-            width: 4,
-            geodesic: true,
-          ),
-        );
-      }
-    }
-  }
-
-  void _setupSampleWalkRoute() {
-    // 샘플 경로 생성 (도쿄 시나가와구 근처)
-    const baseLat = 35.6092;
-    const baseLng = 139.7301;
-
-    // 공원 (시작점)
-    const parkLat = baseLat + 0.002;
-    const parkLng = baseLng - 0.001;
-
-    // 병원 (중간점)
-    const hospitalLat = baseLat + 0.001;
-    const hospitalLng = baseLng + 0.002;
-
-    // 집 (종료점)
-    const homeLat = baseLat - 0.001;
-    const homeLng = baseLng + 0.001;
-
-    // 마커 추가
-    _markers.add(
-      Marker(
-        markerId: const MarkerId('park'),
-        position: const LatLng(parkLat, parkLng),
-        infoWindow: const InfoWindow(title: '公園', snippet: '散歩開始点'),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      ),
-    );
-
-    _markers.add(
-      Marker(
-        markerId: const MarkerId('hospital'),
-        position: const LatLng(hospitalLat, hospitalLng),
-        infoWindow: const InfoWindow(title: '병원', snippet: '중간 경유지'),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-      ),
-    );
-
-    _markers.add(
-      Marker(
-        markerId: const MarkerId('home'),
-        position: const LatLng(homeLat, homeLng),
-        infoWindow: const InfoWindow(title: '家', snippet: '散歩終了点'),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-      ),
-    );
-
-    // 샘플 경로 폴리라인
-    _polylines.add(
-      const Polyline(
-        polylineId: PolylineId('sample_route'),
-        points: [
-          LatLng(parkLat, parkLng),
-          LatLng(hospitalLat, hospitalLng),
-          LatLng(homeLat, homeLng),
-        ],
-        color: AppColors.pointBrown,
-        width: 4,
-        geodesic: true,
-      ),
-    );
+  @override
+  void dispose() {
+    mapController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        child: _currentPosition == null
-            ? _buildLoadingState()
-            : GoogleMap(
-                onMapCreated: (GoogleMapController controller) {
-                  _mapController = controller;
-                  _setupWalkDetailMap();
-
-                  // 초기 카메라 위치 설정
-                  controller.animateCamera(
-                    CameraUpdate.newCameraPosition(
-                      CameraPosition(
-                        target: LatLng(
-                          _currentPosition!.latitude,
-                          _currentPosition!.longitude,
-                        ),
-                        zoom: 16.0,
-                      ),
-                    ),
-                  );
-                },
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(
-                    _currentPosition!.latitude,
-                    _currentPosition!.longitude,
-                  ),
-                  zoom: 16.0,
-                ),
-                markers: _markers,
-                polylines: _polylines,
-                myLocationEnabled: true,
-                myLocationButtonEnabled: false,
-                zoomControlsEnabled: false,
-                mapToolbarEnabled: false,
-                compassEnabled: true,
-                onCameraMove: (CameraPosition position) {
-                  // 카메라 이동 시 추가 로직 (필요시)
-                },
-              ),
-      ),
+    debugPrint(
+      '🗺️ WalkDetailMapWidget: 산책 ID=${widget.walkRecord.id}, 경로 포인트=${widget.walkRecord.route.length}',
     );
-  }
 
-  Widget _buildLoadingState() {
-    return Container(
-      color: Colors.grey[100],
-      child: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.pointBrown),
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              '地図を読み込み中...',
-              style: TextStyle(color: AppColors.pointGray, fontSize: 14),
-            ),
-          ],
+    if (widget.walkRecord.route.isEmpty) {
+      final recordStr = widget.walkRecord.toString();
+      final preview = recordStr.length > 100
+          ? recordStr.substring(0, 100)
+          : recordStr;
+      debugPrint('❌ 경로 데이터가 없습니다. 산책 기록: $preview...');
+      return Container(
+        height: 300,
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(12),
         ),
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.map, size: 48, color: Colors.grey),
+              SizedBox(height: 8),
+              Text(
+                'ルート情報がありません',
+                style: TextStyle(color: Colors.grey, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final startLocation = widget.walkRecord.route.first;
+    final initialCamera = CameraPosition(
+      target: LatLng(startLocation.latitude, startLocation.longitude),
+      zoom: 15,
+    );
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: GoogleMap(
+        onMapCreated: (controller) {
+          mapController = controller;
+          // 초기 지도 카메라 설정
+          _fitMapToRoute();
+        },
+        initialCameraPosition: initialCamera,
+        polylines: polylines,
+        markers: markers,
+        myLocationEnabled: false,
+        zoomControlsEnabled: true,
+        mapToolbarEnabled: true,
       ),
     );
   }
 
-  @override
-  void didUpdateWidget(WalkDetailMapWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.walkRecord != widget.walkRecord) {
-      _setupWalkDetailMap();
+  /// 산책 경로를 모두 보이도록 지도 카메라 조정
+  Future<void> _fitMapToRoute() async {
+    if (widget.walkRecord.route.isEmpty) return;
+
+    try {
+      // 경로의 모든 포인트를 포함하는 바운드 계산
+      double minLat = widget.walkRecord.route.first.latitude;
+      double maxLat = widget.walkRecord.route.first.latitude;
+      double minLng = widget.walkRecord.route.first.longitude;
+      double maxLng = widget.walkRecord.route.first.longitude;
+
+      for (final location in widget.walkRecord.route) {
+        minLat = minLat > location.latitude ? location.latitude : minLat;
+        maxLat = maxLat < location.latitude ? location.latitude : maxLat;
+        minLng = minLng > location.longitude ? location.longitude : minLng;
+        maxLng = maxLng < location.longitude ? location.longitude : maxLng;
+      }
+
+      final bounds = LatLngBounds(
+        southwest: LatLng(minLat, minLng),
+        northeast: LatLng(maxLat, maxLng),
+      );
+
+      final cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 100);
+      await mapController.animateCamera(cameraUpdate);
+    } catch (e) {
+      debugPrint('지도 카메라 조정 실패: $e');
     }
   }
 }

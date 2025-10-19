@@ -47,11 +47,14 @@ class AiFavoriteEntity {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AiFavoriteEntity && runtimeType == other.runtimeType && id == other.id;
+      other is AiFavoriteEntity &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
 
   @override
   int get hashCode => id.hashCode;
 
   @override
-  String toString() => 'AiFavoriteEntity(id: $id, category: $category, petName: $petName)';
+  String toString() =>
+      'AiFavoriteEntity(id: $id, category: $category, petName: $petName)';
 }

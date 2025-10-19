@@ -8,10 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DailyHealthEmptyState extends StatelessWidget {
   final DailyHealthLogic logic;
 
-  const DailyHealthEmptyState({
-    super.key,
-    required this.logic,
-  });
+  const DailyHealthEmptyState({super.key, required this.logic});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +26,7 @@ class DailyHealthEmptyState extends StatelessWidget {
 class DailyHealthLoadingState extends StatelessWidget {
   final DailyHealthLogic logic;
 
-  const DailyHealthLoadingState({
-    super.key,
-    required this.logic,
-  });
+  const DailyHealthLoadingState({super.key, required this.logic});
 
   @override
   Widget build(BuildContext context) {
@@ -64,4 +58,3 @@ class DailyHealthErrorState extends ConsumerWidget {
     );
   }
 }
-

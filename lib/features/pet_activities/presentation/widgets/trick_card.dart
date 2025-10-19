@@ -10,7 +10,12 @@ class TrickCard extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onStartLearning;
 
-  const TrickCard({super.key, required this.trick, this.onTap, this.onStartLearning});
+  const TrickCard({
+    super.key,
+    required this.trick,
+    this.onTap,
+    this.onStartLearning,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,10 @@ class TrickCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3), width: 1.0),
+          border: Border.all(
+            color: AppColors.pointGray.withValues(alpha: 0.3),
+            width: 1.0,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
@@ -109,7 +117,8 @@ class TrickCard extends StatelessWidget {
             ? Image.asset(
                 trick.imagePath!,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildPlaceholderImage(),
               )
             : _buildPlaceholderImage(),
       ),
@@ -119,7 +128,9 @@ class TrickCard extends StatelessWidget {
   Widget _buildPlaceholderImage() {
     return Container(
       color: AppColors.pointBrown.withValues(alpha: 0.1),
-      child: const Center(child: Icon(Icons.pets, color: AppColors.pointBrown, size: 24)),
+      child: const Center(
+        child: Icon(Icons.pets, color: AppColors.pointBrown, size: 24),
+      ),
     );
   }
 
@@ -128,14 +139,21 @@ class TrickCard extends StatelessWidget {
     final color = _getDifficultyColor(difficulty);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: 2,
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.small),
       ),
       child: Text(
         difficulty.toUpperCase(),
-        style: AppFonts.bodySmall.copyWith(color: color, fontWeight: FontWeight.bold, fontSize: 10),
+        style: AppFonts.bodySmall.copyWith(
+          color: color,
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        ),
       ),
     );
   }
@@ -158,7 +176,9 @@ class TrickCard extends StatelessWidget {
           child: LinearProgressIndicator(
             value: trick.progress,
             backgroundColor: AppColors.pointDark.withValues(alpha: 0.1),
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.pointBlue),
+            valueColor: const AlwaysStoppedAnimation<Color>(
+              AppColors.pointBlue,
+            ),
           ),
         ),
       ],
@@ -172,7 +192,10 @@ class TrickCard extends StatelessWidget {
     if (isLearned) {
       return Container(
         padding: const EdgeInsets.all(AppSpacing.sm),
-        decoration: const BoxDecoration(color: AppColors.pointGreen, shape: BoxShape.circle),
+        decoration: const BoxDecoration(
+          color: AppColors.pointGreen,
+          shape: BoxShape.circle,
+        ),
         child: const Icon(Icons.check, color: Colors.white, size: 16),
       );
     }

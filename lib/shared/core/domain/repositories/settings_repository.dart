@@ -8,7 +8,10 @@ abstract class SettingsRepository {
   Future<Result<Map<String, dynamic>>> loadUserSettings(String userId);
 
   /// 사용자 설정 저장
-  Future<Result<void>> saveUserSettings(String userId, Map<String, dynamic> settings);
+  Future<Result<void>> saveUserSettings(
+    String userId,
+    Map<String, dynamic> settings,
+  );
 
   /// 앱 설정 로드
   Future<Result<Map<String, dynamic>>> loadAppSettings();

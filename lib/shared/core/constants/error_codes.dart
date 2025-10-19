@@ -15,7 +15,8 @@ class ErrorCodes {
   static const String httpConflict = 'HTTP_409_CONFLICT';
   static const String httpUnprocessableEntity = 'HTTP_422_UNPROCESSABLE_ENTITY';
   static const String httpTooManyRequests = 'HTTP_429_TOO_MANY_REQUESTS';
-  static const String httpInternalServerError = 'HTTP_500_INTERNAL_SERVER_ERROR';
+  static const String httpInternalServerError =
+      'HTTP_500_INTERNAL_SERVER_ERROR';
   static const String httpBadGateway = 'HTTP_502_BAD_GATEWAY';
   static const String httpServiceUnavailable = 'HTTP_503_SERVICE_UNAVAILABLE';
   static const String httpGatewayTimeout = 'HTTP_504_GATEWAY_TIMEOUT';
@@ -23,13 +24,16 @@ class ErrorCodes {
   // === Firebase Auth 관련 에러 ===
   static const String firebaseUserNotFound = 'FIREBASE_USER_NOT_FOUND';
   static const String firebaseWrongPassword = 'FIREBASE_WRONG_PASSWORD';
-  static const String firebaseEmailAlreadyInUse = 'FIREBASE_EMAIL_ALREADY_IN_USE';
+  static const String firebaseEmailAlreadyInUse =
+      'FIREBASE_EMAIL_ALREADY_IN_USE';
   static const String firebaseWeakPassword = 'FIREBASE_WEAK_PASSWORD';
   static const String firebaseInvalidEmail = 'FIREBASE_INVALID_EMAIL';
   static const String firebaseUserDisabled = 'FIREBASE_USER_DISABLED';
   static const String firebaseTooManyRequests = 'FIREBASE_TOO_MANY_REQUESTS';
-  static const String firebaseOperationNotAllowed = 'FIREBASE_OPERATION_NOT_ALLOWED';
-  static const String firebaseNetworkRequestFailed = 'FIREBASE_NETWORK_REQUEST_FAILED';
+  static const String firebaseOperationNotAllowed =
+      'FIREBASE_OPERATION_NOT_ALLOWED';
+  static const String firebaseNetworkRequestFailed =
+      'FIREBASE_NETWORK_REQUEST_FAILED';
   static const String firebaseUnknownError = 'FIREBASE_UNKNOWN_ERROR';
 
   // === 인증 관련 에러 ===
@@ -44,11 +48,14 @@ class ErrorCodes {
 
   // === 유효성 검사 관련 에러 ===
   static const String validationEmailInvalid = 'VALIDATION_EMAIL_INVALID';
-  static const String validationPasswordTooShort = 'VALIDATION_PASSWORD_TOO_SHORT';
-  static const String validationPasswordTooWeak = 'VALIDATION_PASSWORD_TOO_WEAK';
+  static const String validationPasswordTooShort =
+      'VALIDATION_PASSWORD_TOO_SHORT';
+  static const String validationPasswordTooWeak =
+      'VALIDATION_PASSWORD_TOO_WEAK';
   static const String validationFieldRequired = 'VALIDATION_FIELD_REQUIRED';
   static const String validationFieldTooLong = 'VALIDATION_FIELD_TOO_LONG';
-  static const String validationFieldInvalidFormat = 'VALIDATION_FIELD_INVALID_FORMAT';
+  static const String validationFieldInvalidFormat =
+      'VALIDATION_FIELD_INVALID_FORMAT';
 
   // === 저장소 관련 에러 ===
   static const String storageWriteFailed = 'STORAGE_WRITE_FAILED';
@@ -70,10 +77,14 @@ class ErrorCodes {
   static const String dataSyncFailed = 'DATA_SYNC_FAILED';
 
   // === 권한 관련 에러 ===
-  static const String permissionCameraNotGranted = 'PERMISSION_CAMERA_NOT_GRANTED';
-  static const String permissionLocationNotGranted = 'PERMISSION_LOCATION_NOT_GRANTED';
-  static const String permissionStorageNotGranted = 'PERMISSION_STORAGE_NOT_GRANTED';
-  static const String permissionNotificationNotGranted = 'PERMISSION_NOTIFICATION_NOT_GRANTED';
+  static const String permissionCameraNotGranted =
+      'PERMISSION_CAMERA_NOT_GRANTED';
+  static const String permissionLocationNotGranted =
+      'PERMISSION_LOCATION_NOT_GRANTED';
+  static const String permissionStorageNotGranted =
+      'PERMISSION_STORAGE_NOT_GRANTED';
+  static const String permissionNotificationNotGranted =
+      'PERMISSION_NOTIFICATION_NOT_GRANTED';
 
   /// 에러 코드에 대응하는 사용자 친화적인 메시지를 반환
   static String getErrorMessage(String errorCode) {

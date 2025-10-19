@@ -18,7 +18,10 @@ class ImageSourceSelectionWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('プロフィール写真変更', style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'プロフィール写真変更',
+            style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: AppSpacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -58,7 +61,10 @@ class ImageSourceSelectionWidget extends StatelessWidget {
           child: Container(
             width: 60,
             height: 60,
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
             child: Icon(icon, color: color, size: 30),
           ),
         ),

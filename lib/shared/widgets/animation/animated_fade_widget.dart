@@ -101,7 +101,8 @@ class StaggeredFadeWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<StaggeredFadeWidget> createState() => _StaggeredFadeWidgetState();
+  ConsumerState<StaggeredFadeWidget> createState() =>
+      _StaggeredFadeWidgetState();
 }
 
 class _StaggeredFadeWidgetState extends ConsumerState<StaggeredFadeWidget>
@@ -184,7 +185,10 @@ class _StaggeredFadeWidgetState extends ConsumerState<StaggeredFadeWidget>
     return Column(
       children: List.generate(
         widget.children.length,
-        (index) => FadeTransition(opacity: _animations[index], child: widget.children[index]),
+        (index) => FadeTransition(
+          opacity: _animations[index],
+          child: widget.children[index],
+        ),
       ),
     );
   }

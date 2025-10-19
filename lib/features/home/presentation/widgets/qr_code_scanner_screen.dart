@@ -47,10 +47,7 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
       body: Stack(
         children: [
           // QR 코드 스캐너
-          MobileScanner(
-            controller: controller,
-            onDetect: _onQRCodeDetected,
-          ),
+          MobileScanner(controller: controller, onDetect: _onQRCodeDetected),
 
           // 스캔 오버레이
           _buildScanOverlay(),
@@ -80,9 +77,7 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
 
   Widget _buildScanOverlay() {
     return Container(
-      decoration: const ShapeDecoration(
-        shape: _QRScannerOverlayShape(),
-      ),
+      decoration: const ShapeDecoration(shape: _QRScannerOverlayShape()),
     );
   }
 
@@ -129,9 +124,8 @@ class _QRScannerOverlayShape extends ShapeBorder {
       height: 250,
     );
 
-    final Path scanAreaPath = Path()..addRRect(
-      RRect.fromRectAndRadius(scanArea, const Radius.circular(12)),
-    );
+    final Path scanAreaPath = Path()
+      ..addRRect(RRect.fromRectAndRadius(scanArea, const Radius.circular(12)));
 
     return Path.combine(PathOperation.difference, outerPath, scanAreaPath);
   }

@@ -7,7 +7,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 /// 앱 시작시 미리 날씨 아이콘들을 로드하여 캐싱하고,
 /// 필요할 때 즉시 사용할 수 있도록 하는 서비스
 class WeatherIconCacheService {
-  static final WeatherIconCacheService _instance = WeatherIconCacheService._internal();
+  static final WeatherIconCacheService _instance =
+      WeatherIconCacheService._internal();
   factory WeatherIconCacheService() => _instance;
   WeatherIconCacheService._internal();
 
@@ -56,7 +57,8 @@ class WeatherIconCacheService {
         'assets/meteocons/design/fill/animation-ready/$fileName.svg',
       );
 
-      final htmlContent = '''
+      final htmlContent =
+          '''
         <!DOCTYPE html>
         <html>
         <head>

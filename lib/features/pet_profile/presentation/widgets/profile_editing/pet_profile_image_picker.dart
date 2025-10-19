@@ -203,7 +203,10 @@ class _ImagePickerBottomSheet extends StatelessWidget {
         // 성공 메시지 표시
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('画像を選択しました'), duration: Duration(seconds: 2)),
+            const SnackBar(
+              content: Text('画像を選択しました'),
+              duration: Duration(seconds: 2),
+            ),
           );
         }
       }
@@ -211,7 +214,10 @@ class _ImagePickerBottomSheet extends StatelessWidget {
       // 에러 처리
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('画像の選択に失敗しました: $error'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('画像の選択に失敗しました: $error'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -238,7 +244,10 @@ class _ImagePickerBottomSheet extends StatelessWidget {
         // 성공 메시지 표시
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('写真を撮影しました'), duration: Duration(seconds: 2)),
+            const SnackBar(
+              content: Text('写真を撮影しました'),
+              duration: Duration(seconds: 2),
+            ),
           );
         }
       }
@@ -246,7 +255,10 @@ class _ImagePickerBottomSheet extends StatelessWidget {
       // 에러 처리
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('写真の撮影に失敗しました: $error'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('写真の撮影に失敗しました: $error'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -289,7 +301,9 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(AppRadius.small),
-                    border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: AppColors.pointBrown.withValues(alpha: 0.3),
+                    ),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(AppRadius.small),
@@ -299,7 +313,10 @@ class _ImagePickerBottomSheet extends StatelessWidget {
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
                           color: AppColors.pointOffWhite,
-                          child: const Icon(Icons.pets, color: AppColors.pointBrown),
+                          child: const Icon(
+                            Icons.pets,
+                            color: AppColors.pointBrown,
+                          ),
                         );
                       },
                     ),
@@ -309,7 +326,12 @@ class _ImagePickerBottomSheet extends StatelessWidget {
             },
           ),
         ),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('취소'))],
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('취소'),
+          ),
+        ],
       ),
     );
   }

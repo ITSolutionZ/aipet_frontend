@@ -167,22 +167,40 @@ class WeatherService {
       }
 
       debugPrint('📱 GPS 위치 취득 시도 중...');
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.medium,
-          timeLimit: Duration(seconds: 10),
-        ),
-      );
+      final position =
+          await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.medium,
+              timeLimit: Duration(seconds: 10),
+            ),
+          ).timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              debugPrint('❌ GPS 위치 취득 타임아웃');
+              return Future.value(
+                Position(
+                  latitude: 35.6092,
+                  longitude: 139.7301,
+                  timestamp: DateTime.now(),
+                  accuracy: 0.0,
+                  altitude: 0.0,
+                  altitudeAccuracy: 0.0,
+                  heading: 0.0,
+                  headingAccuracy: 0.0,
+                  speed: 0.0,
+                  speedAccuracy: 0.0,
+                ),
+              );
+            },
+          );
 
-      debugPrint('✅ GPS 위치 취득 성공: ${position.latitude}, ${position.longitude}');
-
+      // 위치명 가져오기
       final locationName = await _getLocationName(
         position.latitude,
         position.longitude,
       );
 
-      debugPrint('🏷️ 위치명: $locationName');
-
+      debugPrint('✅ GPS 위치 취득 성공: $locationName');
       return WeatherLocation(
         latitude: position.latitude,
         longitude: position.longitude,
@@ -247,7 +265,7 @@ class WeatherService {
     } catch (e) {
       debugPrint('❌ 위치명 취득 실패: $e');
     }
-    return '現在地';
+    return Future.value('現在地');
   }
 
   WeatherLocation _getDefaultLocation() {

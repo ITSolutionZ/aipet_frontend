@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 🖼️ 중앙화된 이미지 관리 서비스
 ///
@@ -39,13 +42,17 @@ class ImageService {
       );
 
       if (image != null) {
+        // 画像を永続的なディレクトリにコピー
+        final persistentPath = await _copyToPersistentStorage(image.path);
+
         if (context.mounted) {
           SnackBarService.showSuccess(context, '이미지가 선택되었습니다');
         }
-        return image.path;
+        return persistentPath;
       }
       return null;
     } catch (e) {
+      debugPrint('pickFromGallery error: $e');
       if (context.mounted) {
         SnackBarService.showPermissionRequired(
           context,
@@ -78,13 +85,17 @@ class ImageService {
       );
 
       if (image != null) {
+        // 画像を永続的なディレクトリにコピー
+        final persistentPath = await _copyToPersistentStorage(image.path);
+
         if (context.mounted) {
           SnackBarService.showSuccess(context, '사진이 촬영되었습니다');
         }
-        return image.path;
+        return persistentPath;
       }
       return null;
     } catch (e) {
+      debugPrint('pickFromCamera error: $e');
       if (context.mounted) {
         final isSimulator = e.toString().contains('simulator');
         final message = isSimulator
@@ -105,6 +116,136 @@ class ImageService {
     }
   }
 
+  /// 画像を永続的なストレージにコピー (ImageStorageService 사용) - 강화된 로컬 저장
+  static Future<String> _copyToPersistentStorage(String tempPath) async {
+    try {
+      final tempFile = File(tempPath);
+      final storageService = ImageStorageService();
+
+      // ImageStorageService를 사용하여 펫 이미지 저장
+      final savedPath = await storageService.savePetImage(tempFile);
+
+      if (savedPath != null) {
+        debugPrint('✅ Image saved using ImageStorageService: $savedPath');
+
+        // SharedPreferences에 이미지 경로 저장
+        await _savePetImagePathToPreferences(savedPath);
+
+        // 추가 백업 저장
+        await _createPetImageBackup(tempFile, savedPath);
+
+        return savedPath;
+      } else {
+        debugPrint('❌ Failed to save image using ImageStorageService');
+        // 실패 시 임시 경로 반환 (기존 동작 유지)
+        return tempPath;
+      }
+    } catch (e) {
+      debugPrint('❌ Error copying image to persistent storage: $e');
+      // エラーの場合は元のパスを返す
+      return tempPath;
+    }
+  }
+
+  /// SharedPreferences에 펫 이미지 경로 저장
+  static Future<void> _savePetImagePathToPreferences(String imagePath) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final key = 'pet_image_$timestamp';
+      await prefs.setString(key, imagePath);
+      debugPrint('💾 Pet image path saved to preferences: $key -> $imagePath');
+    } catch (e) {
+      debugPrint('❌ Failed to save pet image path to preferences: $e');
+    }
+  }
+
+  /// 펫 이미지 백업 생성
+  static Future<void> _createPetImageBackup(
+    File originalFile,
+    String savedPath,
+  ) async {
+    try {
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String backupDir = path.join(appDir.path, 'pet_image_backups');
+
+      // 백업 디렉토리 생성
+      final Directory backupDirectory = Directory(backupDir);
+      if (!await backupDirectory.exists()) {
+        await backupDirectory.create(recursive: true);
+        debugPrint('📁 Created pet image backup directory: $backupDir');
+      }
+
+      // 백업 파일 생성
+      final String backupFileName =
+          'pet_backup_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final String backupPath = path.join(backupDir, backupFileName);
+      await originalFile.copy(backupPath);
+
+      debugPrint('💾 Pet image backup created: $backupPath');
+    } catch (e) {
+      debugPrint('❌ Failed to create pet image backup: $e');
+    }
+  }
+
+  /// 저장된 펫 이미지 경로들 로드
+  static Future<List<String>> loadPetImagePaths() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final keys = prefs
+          .getKeys()
+          .where((key) => key.startsWith('pet_image_'))
+          .toList();
+      final List<String> imagePaths = [];
+
+      for (final key in keys) {
+        final imagePath = prefs.getString(key);
+        if (imagePath != null && await File(imagePath).exists()) {
+          imagePaths.add(imagePath);
+          debugPrint('💾 Pet image path loaded: $key -> $imagePath');
+        }
+      }
+
+      // 백업에서 복원 시도
+      if (imagePaths.isEmpty) {
+        final backupPaths = await _restorePetImagesFromBackup();
+        imagePaths.addAll(backupPaths);
+      }
+
+      return imagePaths;
+    } catch (e) {
+      debugPrint('❌ Failed to load pet image paths: $e');
+      return [];
+    }
+  }
+
+  /// 백업에서 펫 이미지들 복원
+  static Future<List<String>> _restorePetImagesFromBackup() async {
+    try {
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String backupDir = path.join(appDir.path, 'pet_image_backups');
+      final Directory backupDirectory = Directory(backupDir);
+      final List<String> restoredPaths = [];
+
+      if (await backupDirectory.exists()) {
+        final List<FileSystemEntity> files = await backupDirectory
+            .list()
+            .toList();
+        for (final file in files) {
+          if (file is File && await file.exists()) {
+            restoredPaths.add(file.path);
+            debugPrint('🔄 Restored pet image from backup: ${file.path}');
+          }
+        }
+      }
+
+      return restoredPaths;
+    } catch (e) {
+      debugPrint('❌ Failed to restore pet images from backup: $e');
+      return [];
+    }
+  }
+
   /// 이미지 선택 옵션 표시
   ///
   /// 갤러리, 카메라, 기본 이미지 선택 옵션을 제공하는
@@ -117,14 +258,14 @@ class ImageService {
     String? currentImagePath,
   }) async {
     try {
-      print(
+      debugPrint(
         '📷 ImageService: showImagePickerOptions called with allowRemoval: $allowRemoval, currentImagePath: $currentImagePath',
       );
 
       final result = await showModalBottomSheet<String>(
         context: context,
         builder: (BuildContext context) {
-          print('📷 ImageService: Building bottom sheet');
+          debugPrint('📷 ImageService: Building bottom sheet');
           return SafeArea(
             child: Wrap(
               children: [
@@ -132,7 +273,7 @@ class ImageService {
                   leading: const Icon(Icons.photo_library),
                   title: const Text('갤러리에서 선택'),
                   onTap: () {
-                    print('📷 ImageService: Gallery option tapped');
+                    debugPrint('📷 ImageService: Gallery option tapped');
                     Navigator.pop(context, 'gallery');
                   },
                 ),
@@ -140,7 +281,7 @@ class ImageService {
                   leading: const Icon(Icons.photo_camera),
                   title: const Text('카메라로 촬영'),
                   onTap: () {
-                    print('📷 ImageService: Camera option tapped');
+                    debugPrint('📷 ImageService: Camera option tapped');
                     Navigator.pop(context, 'camera');
                   },
                 ),
@@ -149,7 +290,9 @@ class ImageService {
                     leading: const Icon(Icons.pets),
                     title: const Text('기본 이미지 선택'),
                     onTap: () {
-                      print('📷 ImageService: Default images option tapped');
+                      debugPrint(
+                        '📷 ImageService: Default images option tapped',
+                      );
                       Navigator.pop(context, 'default');
                     },
                   ),
@@ -158,7 +301,7 @@ class ImageService {
                     leading: const Icon(Icons.delete),
                     title: const Text('이미지 제거'),
                     onTap: () {
-                      print('📷 ImageService: Remove option tapped');
+                      debugPrint('📷 ImageService: Remove option tapped');
                       Navigator.pop(context, 'REMOVE');
                     },
                   ),
@@ -168,44 +311,44 @@ class ImageService {
         },
       );
 
-      print('📷 ImageService: Bottom sheet result: $result');
+      debugPrint('📷 ImageService: Bottom sheet result: $result');
 
       // 사용자가 취소한 경우
       if (result == null) {
-        print('📷 ImageService: User cancelled');
+        debugPrint('📷 ImageService: User cancelled');
         return null;
       }
 
       // 선택된 옵션에 따라 실제 이미지 선택 수행
       switch (result) {
         case 'gallery':
-          print('📷 ImageService: Opening gallery');
+          debugPrint('📷 ImageService: Opening gallery');
           final galleryResult = await pickFromGallery(context);
-          print('📷 ImageService: Gallery result: $galleryResult');
+          debugPrint('📷 ImageService: Gallery result: $galleryResult');
           return galleryResult;
         case 'camera':
-          print('📷 ImageService: Opening camera');
+          debugPrint('📷 ImageService: Opening camera');
           final cameraResult = await pickFromCamera(context);
-          print('📷 ImageService: Camera result: $cameraResult');
+          debugPrint('📷 ImageService: Camera result: $cameraResult');
           return cameraResult;
         case 'default':
-          print('📷 ImageService: Opening default images');
+          debugPrint('📷 ImageService: Opening default images');
           final defaultResult = await _showDefaultImageSelection(
             context,
             customDefaultImages,
           );
-          print('📷 ImageService: Default image result: $defaultResult');
+          debugPrint('📷 ImageService: Default image result: $defaultResult');
           return defaultResult;
         case 'REMOVE':
-          print('📷 ImageService: Removing image');
+          debugPrint('📷 ImageService: Removing image');
           return 'REMOVE';
         default:
-          print('📷 ImageService: Unknown result: $result');
+          debugPrint('📷 ImageService: Unknown result: $result');
           return null;
       }
     } catch (e, stackTrace) {
-      print('📷 ImageService: Exception in showImagePickerOptions: $e');
-      print('📷 ImageService: Stack trace: $stackTrace');
+      debugPrint('📷 ImageService: Exception in showImagePickerOptions: $e');
+      debugPrint('📷 ImageService: Stack trace: $stackTrace');
       return null;
     }
   }
@@ -427,7 +570,11 @@ class ImageService {
       return ImageType.network;
     } else if (imagePath.startsWith('assets/')) {
       return ImageType.asset;
+    } else if (imagePath.startsWith('/') || imagePath.contains('Documents/')) {
+      // 절대 경로 또는 Documents 폴더 경로인 경우 파일로 처리
+      return ImageType.file;
     } else {
+      // 상대 경로인 경우도 파일로 처리
       return ImageType.file;
     }
   }

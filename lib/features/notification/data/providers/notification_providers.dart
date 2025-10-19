@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/notification/data/repositories/notification_repository_impl.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/services/calendar_event_service.dart';
+import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

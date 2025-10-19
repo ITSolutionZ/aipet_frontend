@@ -8,16 +8,12 @@ import '../models/auth_models.dart';
 import 'token_manager_service.dart';
 
 enum AuthMode {
-  online,    // API 기반 인증
-  offline,   // 로컬 캐시 기반 인증
-  hybrid,    // 하이브리드 (온라인/오프라인 자동 전환)
+  online, // API 기반 인증
+  offline, // 로컬 캐시 기반 인증
+  hybrid, // 하이브리드 (온라인/오프라인 자동 전환)
 }
 
-enum NetworkStatus {
-  connected,
-  disconnected,
-  unknown,
-}
+enum NetworkStatus { connected, disconnected, unknown }
 
 class OfflineAuthStateManager {
   final TokenManagerService _tokenManager;
@@ -27,21 +23,26 @@ class OfflineAuthStateManager {
   NetworkStatus _networkStatus = NetworkStatus.unknown;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
-  final StreamController<AuthMode> _authModeController = StreamController.broadcast();
-  final StreamController<NetworkStatus> _networkStatusController = StreamController.broadcast();
+  final StreamController<AuthMode> _authModeController =
+      StreamController.broadcast();
+  final StreamController<NetworkStatus> _networkStatusController =
+      StreamController.broadcast();
 
   OfflineAuthStateManager(this._tokenManager, this._connectivity) {
     _initializeConnectivityListener();
   }
 
   Stream<AuthMode> get authModeStream => _authModeController.stream;
-  Stream<NetworkStatus> get networkStatusStream => _networkStatusController.stream;
+  Stream<NetworkStatus> get networkStatusStream =>
+      _networkStatusController.stream;
 
   AuthMode get currentMode => _currentMode;
   NetworkStatus get networkStatus => _networkStatus;
 
   void _initializeConnectivityListener() {
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((results) {
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((
+      results,
+    ) {
       _updateNetworkStatus(results);
     });
 
@@ -96,8 +97,7 @@ class OfflineAuthStateManager {
     try {
       await _syncOfflineChanges();
       await _refreshTokenIfNeeded();
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   Future<void> _syncOfflineChanges() async {
@@ -109,29 +109,27 @@ class OfflineAuthStateManager {
         }
         await _clearPendingChanges();
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   Future<List<Map<String, dynamic>>> _getPendingOfflineChanges() async {
     try {
-      final changesJson = await SecureStorageService.getJson('pending_auth_changes');
+      final changesJson = await SecureStorageService.getJson(
+        'pending_auth_changes',
+      );
       if (changesJson != null && changesJson['changes'] is List) {
         return List<Map<String, dynamic>>.from(changesJson['changes']);
       }
-    } catch (e) {
-    }
+    } catch (e) {}
     return [];
   }
 
-  Future<void> _syncChange(Map<String, dynamic> change) async {
-  }
+  Future<void> _syncChange(Map<String, dynamic> change) async {}
 
   Future<void> _clearPendingChanges() async {
     try {
       await SecureStorageService.remove('pending_auth_changes');
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   Future<void> _refreshTokenIfNeeded() async {
@@ -139,8 +137,7 @@ class OfflineAuthStateManager {
       if (_tokenManager.isTokenExpiringSoon) {
         await _tokenManager.refreshToken();
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   Future<ResultState<AuthUserModel?>> getCachedUser() async {
@@ -162,6 +159,7 @@ class OfflineAuthStateManager {
       await SecureStorageService.setJson('cached_user', user.toJson());
       return const Success(null);
     } catch (e) {
+      // AppErrorHandler가 정의되어 있지 않아, 단순히 e.toString()으로 에러 디테일 출력
       return Failure(CacheError('사용자 정보 캐시 실패', details: e.toString()));
     }
   }
@@ -171,7 +169,9 @@ class OfflineAuthStateManager {
       await SecureStorageService.remove('cached_user');
       return const Success(null);
     } catch (e) {
-      return Failure(CacheError('캐시된 사용자 정보 삭제 실패', details: e.toString()));
+      return Failure(
+        CacheError('캐시된 사용자 정보 삭제 실패', details: e.toString()),
+      );
     }
   }
 
@@ -187,10 +187,16 @@ class OfflineAuthStateManager {
         return false;
       }
 
-      final lastValidation = await SecureStorageService.getInt('last_offline_validation');
+      final lastValidation = await SecureStorageService.getInt(
+        'last_offline_validation',
+      );
       if (lastValidation != null) {
-        final lastValidationTime = DateTime.fromMillisecondsSinceEpoch(lastValidation);
-        final timeSinceValidation = DateTime.now().difference(lastValidationTime);
+        final lastValidationTime = DateTime.fromMillisecondsSinceEpoch(
+          lastValidation,
+        );
+        final timeSinceValidation = DateTime.now().difference(
+          lastValidationTime,
+        );
 
         if (timeSinceValidation.inHours > 24) {
           return false;
@@ -209,8 +215,7 @@ class OfflineAuthStateManager {
         'last_offline_validation',
         DateTime.now().millisecondsSinceEpoch,
       );
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   Future<void> addPendingChange(String type, Map<String, dynamic> data) async {
@@ -225,8 +230,7 @@ class OfflineAuthStateManager {
       await SecureStorageService.setJson('pending_auth_changes', {
         'changes': existingChanges,
       });
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   void setAuthMode(AuthMode mode) {
@@ -242,7 +246,9 @@ class OfflineAuthStateManager {
   }
 }
 
-final offlineAuthStateManagerProvider = Provider<OfflineAuthStateManager>((ref) {
+final offlineAuthStateManagerProvider = Provider<OfflineAuthStateManager>((
+  ref,
+) {
   final tokenManager = ref.read(tokenManagerServiceProvider);
   final connectivity = Connectivity();
   final manager = OfflineAuthStateManager(tokenManager, connectivity);

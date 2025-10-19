@@ -14,7 +14,8 @@ class AuthConfigService {
   static bool get useMockData => isMockMode;
 
   /// 인증 방식 선택
-  static AuthMode get authMode => isMockMode ? AuthMode.mock : AuthMode.firebase;
+  static AuthMode get authMode =>
+      isMockMode ? AuthMode.mock : AuthMode.firebase;
 
   /// 토큰 만료 시간 (Mock 모드용)
   static Duration get mockTokenExpiry => const Duration(hours: 24);
@@ -68,7 +69,11 @@ class AuthConfigConstants {
   static const String firebaseApiKey = 'firebase_api_key';
 
   // 소셜 로그인
-  static const List<String> supportedSocialProviders = ['google', 'apple', 'line'];
+  static const List<String> supportedSocialProviders = [
+    'google',
+    'apple',
+    'line',
+  ];
 
   // 보안 설정
   static const int minPasswordLength = 6;

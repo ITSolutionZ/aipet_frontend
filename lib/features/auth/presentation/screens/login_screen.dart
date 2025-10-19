@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/auth/data/auth_providers.dart';
 import 'package:aipet_frontend/features/auth/presentation/controllers/auth_controller.dart';
@@ -5,9 +7,11 @@ import 'package:aipet_frontend/features/auth/presentation/widgets/auth_widgets.d
 import 'package:aipet_frontend/features/auth/presentation/widgets/error_message.dart'
     as auth_error;
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/widgets/dialogs/app_lock_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 로그인 화면
 class LoginScreen extends ConsumerStatefulWidget {
@@ -30,7 +34,83 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     // 저장된 로그인 정보 불러오기
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(authFormStateNotifierProvider.notifier).loadSavedCredentials();
+
+      // 앱 잠금이 설정되어 있으면 잠금 해제 다이얼로그 표시
+      _checkAppLock();
     });
+  }
+
+  Future<void> _checkAppLock() async {
+    final prefs = await SharedPreferences.getInstance();
+    final pinEnabled = prefs.getBool('pin_enabled') ?? false;
+    final biometricEnabled = prefs.getBool('biometric_enabled') ?? false;
+
+    if ((pinEnabled || biometricEnabled) && mounted) {
+      unawaited(
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AppLockDialog(
+            enablePin: pinEnabled,
+            enableBiometric: biometricEnabled,
+            onSuccess: () {
+              // PIN/생체인증 성공 - 자동 로그인 수행
+              _autoLogin();
+            },
+          ),
+        ),
+      );
+    }
+  }
+
+  /// PIN/생체인증 성공 시 자동 로그인
+  Future<void> _autoLogin() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authController = ref.read(authControllerProvider.notifier);
+      final result = await authController.login(
+        password: '', // 개발용 빈 값으로 자동 로그인
+      );
+
+      if (result.isSuccess) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('ログインしました'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          context.go(AppRouter.homeRoute);
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('ログインに失敗しました: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -60,13 +140,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // 로고 섹션
-                const Column(
+                Column(
                   children: [
-                    SizedBox(height: AppSpacing.lg),
-                    AuthLogo(),
-                    SizedBox(height: AppSpacing.lg),
-                    Divider(),
-                    SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
+                    const AuthLogo(width: 120, height: 120),
+                    const SizedBox(height: AppSpacing.md),
+                    // 앱 이름
+                    Text(
+                      'AIPET',
+                      style: AppFonts.titleLarge.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.pointBrown,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'ITSOLUTIONZ',
+                      style: AppFonts.bodyMedium.copyWith(
+                        color: AppColors.pointBrown.withValues(alpha: 0.7),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    const Divider(),
+                    const SizedBox(height: AppSpacing.lg),
                   ],
                 ),
 

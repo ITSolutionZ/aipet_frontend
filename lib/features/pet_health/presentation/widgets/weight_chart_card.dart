@@ -349,7 +349,7 @@ class _WeightChartCardState extends ConsumerState<WeightChartCard> {
                         );
                         final monthName = '${targetDate.month}月';
                         return SideTitleWidget(
-                          meta: meta,
+                          axisSide: AxisSide.bottom,
                           child: Text(
                             monthName,
                             style: AppFonts.bodySmall.copyWith(

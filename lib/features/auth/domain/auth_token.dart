@@ -68,6 +68,9 @@ class AuthToken {
 
   @override
   int get hashCode {
-    return accessToken.hashCode ^ refreshToken.hashCode ^ expiresAt.hashCode ^ tokenType.hashCode;
+    return accessToken.hashCode ^
+        refreshToken.hashCode ^
+        expiresAt.hashCode ^
+        tokenType.hashCode;
   }
 }

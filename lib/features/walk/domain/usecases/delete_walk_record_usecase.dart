@@ -120,7 +120,9 @@ class DeleteWalkRecordUseCase {
   }
 
   /// 산책 기록 일괄 삭제
-  Future<Result<Map<String, dynamic>>> deleteMultipleWalkRecords(List<String> recordIds) async {
+  Future<Result<Map<String, dynamic>>> deleteMultipleWalkRecords(
+    List<String> recordIds,
+  ) async {
     try {
       if (recordIds.isEmpty) {
         return Result.failure('削除する記録IDが指定されていません');
@@ -155,7 +157,9 @@ class DeleteWalkRecordUseCase {
   }
 
   /// 사용자의 모든 산책 기록 삭제
-  Future<Result<Map<String, dynamic>>> deleteAllUserWalkRecords(String userId) async {
+  Future<Result<Map<String, dynamic>>> deleteAllUserWalkRecords(
+    String userId,
+  ) async {
     try {
       if (userId.trim().isEmpty) {
         return Result.failure('ユーザーIDが無効です');

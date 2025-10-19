@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../data/providers/walk_providers.dart';
 import '../../domain/entities/pet_info.dart';
 import 'map/walk_map_camera_controller.dart';
 import 'map/walk_map_marker_builder.dart';
@@ -157,17 +158,17 @@ class MapWidgetController extends _$MapWidgetController {
     try {
       // 작은 사이즈로 원형 마커 생성 (메모리 효율적)
       final poopIcon = await CustomMarkerBuilder.createCircleMarker(
-        iconPath: 'assets/icons/poop.png',
+        iconPath: 'assets/icons/walk_logo/poop.png',
         backgroundColor: const Color(0xFFFF9800),
         size: 24,
       );
       final peeIcon = await CustomMarkerBuilder.createCircleMarker(
-        iconPath: 'assets/icons/marking.png',
+        iconPath: 'assets/icons/walk_logo/marking.png',
         backgroundColor: const Color(0xFF2196F3),
         size: 24,
       );
       final noEntryIcon = await CustomMarkerBuilder.createCircleMarker(
-        iconPath: 'assets/icons/no-entry.png',
+        iconPath: 'assets/icons/walk_logo/no-entry.png',
         backgroundColor: const Color(0xFFF44336),
         size: 24,
       );
@@ -432,9 +433,15 @@ class MapWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // selectedPetsProvider를 직접 watch하여 내부에서 처리
+    final selectedPets = ref.watch(selectedPetsProvider);
+    final currentSelectedPet = selectedPets.isNotEmpty
+        ? selectedPets.first
+        : null;
+
     final params = MapWidgetParams(
       walkRecords: walkRecords,
-      selectedPet: selectedPet,
+      selectedPet: currentSelectedPet,
       petActivities: petActivities,
       onActivityMarkerTap: onActivityMarkerTap,
     );
