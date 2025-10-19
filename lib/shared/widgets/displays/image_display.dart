@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart' hide State;
 import 'package:flutter/material.dart';
 
@@ -100,29 +101,64 @@ class ImageDisplayState extends State<ImageDisplay>
       return FileImage(widget.imageFile as File);
     }
 
-    // 이미지 경로가 있는 경우
+    // 이미지 경로가 있는 경우 - 강화된 로컬 저장 지원
     if (widget.imagePath != null && widget.imagePath!.isNotEmpty) {
-      if (widget.imagePath!.startsWith('http') ||
-          widget.imagePath!.startsWith('https')) {
-        return NetworkImage(widget.imagePath!);
-      } else if (widget.imagePath!.startsWith('assets/')) {
-        return AssetImage(widget.imagePath!);
-      } else {
-        // 로컬 파일 경로인 경우 FileImage 사용
-        return FileImage(File(widget.imagePath!));
+      debugPrint('🖼️ ImageDisplay - imagePath: ${widget.imagePath}');
+      
+      // 상대 경로를 절대 경로로 변환
+      final storageService = ImageStorageService();
+      final absolutePath = storageService.getAbsolutePath(widget.imagePath!) ?? widget.imagePath!;
+      debugPrint('🖼️ ImageDisplay - absolutePath: $absolutePath');
+      
+      final imageType = ImageService.getImageType(absolutePath);
+      debugPrint('🖼️ ImageDisplay - imageType: $imageType');
+      
+      switch (imageType) {
+        case ImageType.file:
+          final file = File(absolutePath);
+          final fileExists = file.existsSync();
+          debugPrint('🖼️ ImageDisplay - File exists: $fileExists');
+          
+          if (!fileExists) {
+            debugPrint('❌ ImageDisplay - File does not exist: $absolutePath');
+            return null;
+          }
+          return FileImage(file);
+        case ImageType.network:
+          return NetworkImage(absolutePath);
+        case ImageType.asset:
+          return AssetImage(absolutePath);
       }
     }
 
-    // String 형태의 imageFile (경로)
+    // String 형태의 imageFile (경로) - 강화된 로컬 저장 지원
     if (widget.imageFile != null && widget.imageFile is String) {
       final String path = widget.imageFile as String;
-      if (path.startsWith('http') || path.startsWith('https')) {
-        return NetworkImage(path);
-      } else if (path.startsWith('assets/')) {
-        return AssetImage(path);
-      } else {
-        // 로컬 파일 경로인 경우 FileImage 사용
-        return FileImage(File(path));
+      debugPrint('🖼️ ImageDisplay - imageFile path: $path');
+      
+      // 상대 경로를 절대 경로로 변환
+      final storageService = ImageStorageService();
+      final absolutePath = storageService.getAbsolutePath(path) ?? path;
+      debugPrint('🖼️ ImageDisplay - absolutePath: $absolutePath');
+      
+      final imageType = ImageService.getImageType(absolutePath);
+      debugPrint('🖼️ ImageDisplay - imageType: $imageType');
+      
+      switch (imageType) {
+        case ImageType.file:
+          final file = File(absolutePath);
+          final fileExists = file.existsSync();
+          debugPrint('🖼️ ImageDisplay - File exists: $fileExists');
+          
+          if (!fileExists) {
+            debugPrint('❌ ImageDisplay - File does not exist: $absolutePath');
+            return null;
+          }
+          return FileImage(file);
+        case ImageType.network:
+          return NetworkImage(absolutePath);
+        case ImageType.asset:
+          return AssetImage(absolutePath);
       }
     }
 
