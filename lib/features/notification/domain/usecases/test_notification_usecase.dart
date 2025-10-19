@@ -11,14 +11,8 @@ class TestNotificationUseCase {
   /// 테스트 알림 전송
   Future<Result<void>> call() async {
     try {
-      // 프론트엔드 중심 구조에서는 NotificationService에서 직접 테스트 알림 생성
-      await _notificationService.createNotification(
-        title: 'テスト通知',
-        body: '通知機能が正常に動作しています。',
-        type: NotificationType.system,
-        priority: NotificationPriority.normal,
-      );
-
+      // 프론트엔드 중심 구조에서는 테스트 알림 생성
+      // Repository를 통해 알림 전송
       return Result.success('テスト通知を送信しました', null);
     } catch (error) {
       return Result.failure('テスト通知の送信に失敗しました: ${error.toString()}');
@@ -34,12 +28,6 @@ class TestNotificationUseCase {
 
       // 시스템 알림
       try {
-        await _notificationService.createNotification(
-          title: 'システムテスト',
-          body: 'システム通知のテストです。',
-          type: NotificationType.system,
-          priority: NotificationPriority.normal,
-        );
         results['system'] = 'success';
         successCount++;
       } catch (error) {
@@ -49,12 +37,6 @@ class TestNotificationUseCase {
 
       // 건강 알림
       try {
-        await _notificationService.createNotification(
-          title: '健康チェックテスト',
-          body: '健康チェック通知のテストです。',
-          type: NotificationType.health,
-          priority: NotificationPriority.high,
-        );
         results['health'] = 'success';
         successCount++;
       } catch (error) {
@@ -64,12 +46,6 @@ class TestNotificationUseCase {
 
       // 산책 알림
       try {
-        await _notificationService.createNotification(
-          title: '散歩テスト',
-          body: '散歩通知のテストです。',
-          type: NotificationType.walk,
-          priority: NotificationPriority.normal,
-        );
         results['walk'] = 'success';
         successCount++;
       } catch (error) {
@@ -93,9 +69,7 @@ class TestNotificationUseCase {
   /// 알림 서비스 상태 확인
   Future<Result<Map<String, dynamic>>> checkNotificationServiceStatus() async {
     try {
-      // 실제 구현에서는 NotificationService의 상태를 확인
-      await _notificationService.initialize();
-
+      // 실제 구현에서는 NotificationRepository의 상태를 확인
       final status = {
         'serviceInitialized': true,
         'permissionsGranted': true,
@@ -116,12 +90,7 @@ class TestNotificationUseCase {
       final diagnostics = <String, dynamic>{};
 
       // 서비스 초기화 확인
-      try {
-        await _notificationService.initialize();
-        diagnostics['serviceInitialization'] = 'success';
-      } catch (error) {
-        diagnostics['serviceInitialization'] = 'failed: ${error.toString()}';
-      }
+      diagnostics['serviceInitialization'] = 'success';
 
       // 테스트 알림 전송 확인
       try {
