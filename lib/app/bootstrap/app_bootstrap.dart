@@ -4,6 +4,7 @@ import 'package:aipet_frontend/shared/monitoring/app_monitoring_dashboard.dart';
 import 'package:aipet_frontend/shared/performance/memory_optimizer.dart';
 import 'package:aipet_frontend/shared/performance/performance_monitor.dart';
 import 'package:aipet_frontend/shared/security/environment_config.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -173,7 +174,16 @@ class AppBootstrap {
     }
 
     try {
-      // 펫 데이터 초기화 (로컬 저장소에서 로드)
+      // 1. 이미지 저장소 초기화 (가장 먼저 초기화)
+      final imageStorageService = ImageStorageService();
+      await imageStorageService.initialize();
+
+      if (kDebugMode) {
+        debugPrint('✅ ImageStorageService initialized');
+        await imageStorageService.printStorageStatus();
+      }
+
+      // 2. 펫 데이터 초기화 (로컬 저장소에서 로드)
       await PetLocalStorageService.getPets();
 
       if (kDebugMode) {

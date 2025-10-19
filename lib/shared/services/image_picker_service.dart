@@ -1,9 +1,8 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 
 /// 이미지 선택 서비스
 class ImagePickerService {
@@ -12,6 +11,7 @@ class ImagePickerService {
   ImagePickerService._internal();
 
   final ImagePicker _picker = ImagePicker();
+  final ImageStorageService _storageService = ImageStorageService();
 
   /// 카메라에서 이미지 선택
   Future<File?> pickImageFromCamera() async {
@@ -148,37 +148,21 @@ class ImagePickerService {
     );
   }
 
-  /// 이미지를 앱 디렉토리에 저장
+  /// 이미지를 앱 디렉토리에 저장 (프로필 이미지용)
+  ///
+  /// [imageFile] - 저장할 이미지 파일
+  /// [fileName] - 파일명 (사용되지 않음, ImageStorageService에서 자동 생성)
   Future<String?> saveImageToAppDirectory(
-    File imageFile,
-    String fileName,
-  ) async {
+    File imageFile, [
+    String? fileName,
+  ]) async {
     try {
-      final Directory appDir = await getApplicationDocumentsDirectory();
-      final String imagesDir = path.join(appDir.path, 'profile_images');
-
-      // 디렉토리 생성
-      final Directory dir = Directory(imagesDir);
-      if (!await dir.exists()) {
-        await dir.create(recursive: true);
-        debugPrint('📁 Created profile_images directory: $imagesDir');
+      debugPrint('📸 Saving profile image using ImageStorageService');
+      final savedPath = await _storageService.saveProfileImage(imageFile);
+      if (savedPath != null) {
+        debugPrint('✅ Profile image saved successfully: $savedPath');
       }
-
-      // 파일 저장
-      final String filePath = path.join(imagesDir, fileName);
-      final File savedFile = await imageFile.copy(filePath);
-
-      // 파일이 제대로 저장되었는지 확인
-      if (await savedFile.exists()) {
-        final fileSize = await savedFile.length();
-        debugPrint('💾 User profile image saved: $filePath');
-        debugPrint('💾 File size: $fileSize bytes');
-        debugPrint('💾 File exists: ${await savedFile.exists()}');
-        return savedFile.path;
-      } else {
-        debugPrint('❌ Failed to save user profile image');
-        return null;
-      }
+      return savedPath;
     } catch (e) {
       debugPrint('❌ 이미지 저장 실패: $e');
       return null;

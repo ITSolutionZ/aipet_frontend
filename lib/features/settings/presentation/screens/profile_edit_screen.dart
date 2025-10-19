@@ -176,10 +176,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
         debugPrint(
           '📸 ProfileEditScreen - Selected image: ${formState.selectedImage!.path}',
         );
-        final fileName = 'profile_${DateTime.now().millisecondsSinceEpoch}.jpg';
         imagePath = await _imagePickerService.saveImageToAppDirectory(
           formState.selectedImage!,
-          fileName,
         );
         debugPrint('💾 ProfileEditScreen - Saved image path: $imagePath');
       }
