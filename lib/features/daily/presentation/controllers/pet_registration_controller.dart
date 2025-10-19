@@ -478,6 +478,11 @@ class PetRegistrationController extends _$PetRegistrationController {
 
       final createdPet = await petProfilesNotifier.createPet(petEntity);
 
+      // 비동기 작업 후 ref 상태 확인
+      if (!ref.mounted) {
+        return createdPet.id;
+      }
+
       debugPrint('✅ Pet profile saved successfully to repository');
       debugPrint('✅ Created pet ID: ${createdPet.id}');
 
@@ -565,6 +570,11 @@ class PetRegistrationController extends _$PetRegistrationController {
       }
 
       await petProfilesNotifier.updatePet(petEntity);
+
+      // 비동기 작업 후 ref 상태 확인
+      if (!ref.mounted) {
+        return petId;
+      }
 
       debugPrint('✅ Pet profile updated successfully');
       debugPrint('✅ Updated pet ID: $petId');
