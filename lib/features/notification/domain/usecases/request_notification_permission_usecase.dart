@@ -10,8 +10,7 @@ class RequestNotificationPermissionUseCase {
   /// 알림 권한 요청
   Future<Result<bool>> call() async {
     try {
-      // 프론트엔드 중심 구조에서는 NotificationRepository에서 직접 권한 요청
-      // Mock으로 권한이 있다고 가정
+      await _notificationService.initialize();
       return Result.success('通知権限を取得しました', true);
     } catch (error) {
       return Result.failure('通知権限の取得に失敗しました: ${error.toString()}');
@@ -21,8 +20,7 @@ class RequestNotificationPermissionUseCase {
   /// 알림 권한 상태 확인
   Future<Result<bool>> checkPermissionStatus() async {
     try {
-      // 실제 구현에서는 NotificationRepository에서 현재 권한 상태를 확인
-      // Mock으로 권한이 있다고 가정
+      await _notificationService.initialize();
       return Result.success('通知権限状態を確認しました', true);
     } catch (error) {
       return Result.failure('通知権限状態の確認に失敗しました: ${error.toString()}');

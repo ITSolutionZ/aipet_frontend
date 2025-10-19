@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/notification/data/services/notification_service.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/notification_priority.dart';
+import 'package:aipet_frontend/features/notification/domain/entities/notification_type.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 
 /// 테스트 알림 UseCase
@@ -11,8 +12,12 @@ class TestNotificationUseCase {
   /// 테스트 알림 전송
   Future<Result<void>> call() async {
     try {
-      // 프론트엔드 중심 구조에서는 테스트 알림 생성
-      // Repository를 통해 알림 전송
+      await _notificationService.createNotification(
+        title: 'テスト通知',
+        body: '通知機能が正常に動作しています。',
+        type: NotificationType.system,
+        priority: NotificationPriority.normal,
+      );
       return Result.success('テスト通知を送信しました', null);
     } catch (error) {
       return Result.failure('テスト通知の送信に失敗しました: ${error.toString()}');
