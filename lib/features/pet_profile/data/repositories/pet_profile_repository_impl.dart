@@ -270,6 +270,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     debugPrint('📋 기관 이름 (camelCase): ${petData['institutionName']}');
     debugPrint('📋 기관 이름 (snake_case): ${petData['institution_name']}');
     debugPrint('📋 추가 정보 키들: ${petData['additionalInfo']?.keys.toList()}');
+    debugPrint('📋 펫 상태: ${petData['petStatus']}');
     debugPrint('📋 ===========================================');
 
     // snake_case 필드를 additionalInfo에 포함
@@ -290,6 +291,9 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     if (petData['is_neutered'] != null) {
       additionalInfo['isNeutered'] = petData['is_neutered'] == 1;
     }
+
+    // petStatus 파싱 (기본값: PetStatus.active)
+    final petStatus = _parsePetStatus(petData['petStatus']);
 
     return PetProfileEntity(
       id:
@@ -323,6 +327,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
           _parseDate(petData['updated_at']) ??
           DateTime.now(),
       isActive: petData['isActive'] as bool? ?? true,
+      petStatus: petStatus,
       additionalInfo: additionalInfo,
       neutered: petData['is_neutered'] == 1 || petData['neutered'] == true,
     );
@@ -354,5 +359,32 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     }
 
     return null;
+  }
+
+  /// PetStatus 파싱
+  PetStatus _parsePetStatus(dynamic statusValue) {
+    if (statusValue == null) return PetStatus.active;
+
+    // 이미 PetStatus enum이면 그대로 반환
+    if (statusValue is PetStatus) return statusValue;
+
+    // 문자열인 경우
+    if (statusValue is String) {
+      switch (statusValue.toLowerCase()) {
+        case 'active':
+          return PetStatus.active;
+        case 'deceased':
+          return PetStatus.deceased;
+        case 'hidden':
+          return PetStatus.hidden;
+        case 'missing':
+          return PetStatus.missing;
+        default:
+          return PetStatus.active;
+      }
+    }
+
+    // 기본값
+    return PetStatus.active;
   }
 }
