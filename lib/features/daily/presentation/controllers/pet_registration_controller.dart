@@ -464,10 +464,18 @@ class PetRegistrationController extends _$PetRegistrationController {
       debugPrint('📋 ================================');
 
       // 펫 프로필 저장
+      // 프로바이더 ref는 비동기 작업 전에 미리 획득해야 함
+      late final PetProfilesNotifier petProfilesNotifier;
       if (!ref.mounted) {
         throw Exception('컨트롤러가 이미 제거되었습니다');
       }
-      final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
+      petProfilesNotifier = ref.read(petProfilesProvider.notifier);
+
+      // ref.mounted를 다시 확인 (비동기 작업 후)
+      if (!ref.mounted) {
+        throw Exception('컨트롤러가 이미 제거되었습니다');
+      }
+
       final createdPet = await petProfilesNotifier.createPet(petEntity);
 
       debugPrint('✅ Pet profile saved successfully to repository');
@@ -544,10 +552,18 @@ class PetRegistrationController extends _$PetRegistrationController {
       );
 
       // 펫 프로필 업데이트
+      // 프로바이더 ref는 비동기 작업 전에 미리 획득해야 함
+      late final PetProfilesNotifier petProfilesNotifier;
       if (!ref.mounted) {
         throw Exception('컨트롤러가 이미 제거되었습니다');
       }
-      final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
+      petProfilesNotifier = ref.read(petProfilesProvider.notifier);
+
+      // ref.mounted를 다시 확인 (비동기 작업 후)
+      if (!ref.mounted) {
+        throw Exception('컨트롤러가 이미 제거되었습니다');
+      }
+
       await petProfilesNotifier.updatePet(petEntity);
 
       debugPrint('✅ Pet profile updated successfully');
