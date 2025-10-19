@@ -167,7 +167,29 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   Future<void> _saveProfile() async {
     final formState = ref.read(profileEditFormControllerProvider);
     if (formState.formKey?.currentState?.validate() ?? false) {
-      final controller = ref.read(userProfileControllerProvider.notifier);
+      // 비동기 작업 전에 ref.read() 호출 (모두 한 번에)
+      late final controller;
+      dynamic userProfileNotifier;
+
+      try {
+        controller = ref.read(userProfileControllerProvider.notifier);
+        try {
+          userProfileNotifier = ref.read(userProfileProvider.notifier);
+        } catch (e) {
+          userProfileNotifier = null;
+          debugPrint('⚠️ userProfileProvider notifier not available: $e');
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('エラーが発生しました: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
 
       String? imagePath;
 
@@ -182,6 +204,11 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
         debugPrint('💾 ProfileEditScreen - Saved image path: $imagePath');
       }
 
+      // 비동기 작업 후 mounted 확인
+      if (!mounted) {
+        return;
+      }
+
       final success = await controller.saveProfile(
         userName: formState.userNameController?.text ?? '',
         email: formState.emailController?.text ?? '',
@@ -193,10 +220,12 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
       if (mounted) {
         if (success) {
           // 다른 화면에서 참조하는 userProfileProvider도 업데이트
-          try {
-            await ref.read(userProfileProvider.notifier).refresh();
-          } catch (e) {
-            debugPrint('⚠️ userProfileProvider refresh 실패: $e');
+          if (userProfileNotifier != null) {
+            try {
+              await userProfileNotifier.refresh();
+            } catch (e) {
+              debugPrint('⚠️ userProfileProvider refresh 실패: $e');
+            }
           }
 
           ScaffoldMessenger.of(context).showSnackBar(
