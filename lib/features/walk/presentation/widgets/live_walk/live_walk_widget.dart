@@ -245,29 +245,26 @@ class LiveWalkController extends _$LiveWalkController {
   void pauseWalk() {
     if (state.timerState != WalkTimerState.running) return;
 
-    // 🚫 state.copyWith() 제거: Riverpod 전체 state 변경으로 인한 rebuild 방지
+    // 🚀 state 변경 완전 제거! (UI rebuild 방지)
     _timerManager.stopTimer();
     _locationTracker.stopTracking();
 
-    // ⏸️ timerState만 메모리에서 변경 (state는 변경하지 않음)
-    state = state.copyWith(timerState: WalkTimerState.paused);
-
+    // ⏸️ UI에서는 타이머 상태로 판단 (state는 변경 X)
     // 일시정지 상태 저장
     LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
   }
 
   void resumeWalk() {
-    if (state.timerState != WalkTimerState.paused) return;
+    if (state.timerState != WalkTimerState.running &&
+        state.timerState != WalkTimerState.paused) {
+      return;
+    }
 
-    // ▶️ timerState 업데이트 (state 전체는 변경하지 않음)
-    state = state.copyWith(timerState: WalkTimerState.running);
-
-    // ✅ 타이머는 ValueNotifier로 관리하여 main state 변경 없음
+    // 🚀 state 변경 제거 (UI rebuild 방지)
+    // ▶️ 타이머만 시작
     _timerManager.startTimer(() {
-      if (state.timerState == WalkTimerState.running) {
-        // 🚫 state 변경 대신 ValueNotifier 업데이트 (map 리빌드 방지)
-        _elapsedTimeNotifier.value = _timerManager.elapsedTime;
-      }
+      // ValueNotifier로만 업데이트 (state 변경 X)
+      _elapsedTimeNotifier.value = _timerManager.elapsedTime;
     });
     _startLocationTracking();
 
@@ -276,7 +273,7 @@ class LiveWalkController extends _$LiveWalkController {
   }
 
   void stopWalk() {
-    state = state.copyWith(timerState: WalkTimerState.stopped);
+    // 🚀 state 변경 제거! (UI rebuild 방지)
     _timerManager.stopTimer();
     _locationTracker.stopTracking();
 
@@ -346,16 +343,22 @@ class LiveWalkController extends _$LiveWalkController {
 
   Future<void> _updateLocation(WalkLocation location) async {
     try {
+      // 📊 위치 업데이트 수신 통지
+      final currentTime = DateTime.now().toIso8601String();
+      debugPrint(
+        '📍 위치 콜백 수신[$currentTime]: lat=${location.latitude.toStringAsFixed(6)}, lng=${location.longitude.toStringAsFixed(6)}, accuracy=${location.accuracy?.toStringAsFixed(1)}m',
+      );
+
       // WalkTrackingOptimizer를 사용한 위치 데이터 유효성 검증
       if (!WalkTrackingOptimizer.isValidLocation(location)) {
-        debugPrint('🚶 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
+        debugPrint('❌ 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
         return;
       }
 
       // 기존 경로가 있는 경우 WalkTrackingOptimizer로 위치 추가 여부 결정
       if (state.route.isNotEmpty) {
         if (!WalkTrackingOptimizer.shouldAddLocation(location, state.route)) {
-          debugPrint('🚶 위치 변화 무시: 최적화 필터에 의해 제외됨');
+          debugPrint('⏭️ 위치 변화 무시: 최적화 필터에 의해 제외됨');
           return;
         }
       }
@@ -376,13 +379,13 @@ class LiveWalkController extends _$LiveWalkController {
         // GPS 오차 범위 내 이동은 무시
         if (distance < minDistance) {
           debugPrint(
-            '🚶 위치 변화 무시: ${distance.toStringAsFixed(2)}m (최소 ${minDistance.toStringAsFixed(1)}m 필요, 정확도: ${accuracy.toStringAsFixed(1)}m)',
+            '🚫 GPS오차범위 무시: ${distance.toStringAsFixed(2)}m (최소 ${minDistance.toStringAsFixed(1)}m 필요, 정확도: ${accuracy.toStringAsFixed(1)}m)',
           );
           return;
         }
 
         debugPrint(
-          '🚶 위치 업데이트: ${distance.toStringAsFixed(2)}m 이동 (정확도: ${accuracy.toStringAsFixed(1)}m)',
+          '✅ 위치 변경 감지: ${distance.toStringAsFixed(2)}m 이동 (정확도: ${accuracy.toStringAsFixed(1)}m)',
         );
       }
 
@@ -393,6 +396,16 @@ class LiveWalkController extends _$LiveWalkController {
 
       final newRoute = [...state.route, smoothedLocation];
       final newDistance = _calculateTotalDistance(newRoute);
+
+      // 🚀 핵심: 거리가 실제로 변경되었을 때만 state를 업데이트
+      if (newDistance == state.distance) {
+        debugPrint('⏸️ 거리 변화 없음 (이전: ${state.distance}m, 현재: $newDistance m), state 업데이트 무시');
+        return;
+      }
+
+      debugPrint(
+        '📊 거리 변화 감지: ${state.distance}m -> $newDistance m (${(newDistance - state.distance).toStringAsFixed(1)}m 증가)',
+      );
 
       // WalkRecord 업데이트
       final updatedWalkRecord = state.currentWalkRecord?.copyWith(
@@ -422,15 +435,16 @@ class LiveWalkController extends _$LiveWalkController {
         currentWalkRecord: updatedWalkRecord,
       );
 
-      // 🚀 맵 업데이트는 _MapSection에서 자동으로 처리됨
+      debugPrint('🔄 State 업데이트됨: 거리 $newDistance m, 경로 포인트 ${newRoute.length}개');
+
+      // 맵 업데이트
       _updateMapPolylines();
       _updateMapMarkers();
-      // _moveMapToCurrentPosition(); // 제거: _MapSection에서 처리
 
       // 위치 업데이트 시 현재 상태 저장 (백그라운드에서 실행)
       LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord).ignore();
     } catch (e) {
-      debugPrint('위치 업데이트 실패: $e');
+      debugPrint('❌ 위치 업데이트 실패: $e');
     }
   }
 
@@ -621,76 +635,102 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
   }
 }
 
-/// 컨트롤 섹션 - 거리/상태 변경 시만 리빌드 (타이머는 ValueListenableBuilder로 독립)
-class _ControlSection extends StatelessWidget {
+/// 컨트롤 섹션 - ConsumerStatefulWidget (거리 변경 시만 listen & rebuild)
+/// 🚀 최적화: watch 제거, listen만 사용하여 필요할 때만 업데이트
+class _ControlSection extends ConsumerStatefulWidget {
   final LiveWalkController walkController;
 
   const _ControlSection({required this.walkController});
 
   @override
-  Widget build(BuildContext context) {
-    // 🚀 Consumer로 필요한 상태만 선택적으로 감시
-    return Consumer(
-      builder: (context, ref, child) {
-        // 거리와 상태만 감시 (타이머는 제외)
-        final distance = ref.watch(
+  ConsumerState<_ControlSection> createState() => _ControlSectionState();
+}
+
+class _ControlSectionState extends ConsumerState<_ControlSection> {
+  double _cachedDistance = 0;
+  WalkTimerState _cachedTimerState = WalkTimerState.ready;
+  int _cachedRouteLength = 0;
+  WalkRecordEntity? _cachedCurrentWalkRecord;
+
+  @override
+  void initState() {
+    super.initState();
+    // 🚀 거리만 listen (타이머 상태 제거!)
+    Future.microtask(() {
+      if (mounted) {
+        ref.listen(
           liveWalkControllerProvider.select((state) => state.distance),
+          (prev, next) {
+            if (mounted) {
+              debugPrint('📊 Distance changed: $prev -> $next');
+              setState(() {
+                _cachedDistance = next;
+              });
+            }
+          },
         );
-        final timerState = ref.watch(
-          liveWalkControllerProvider.select((state) => state.timerState),
-        );
-        final routeLength = ref.watch(
-          liveWalkControllerProvider.select((state) => state.route.length),
-        );
-        final currentWalkRecord = ref.watch(
-          liveWalkControllerProvider.select((state) => state.currentWalkRecord),
-        );
+      }
+    });
+  }
 
-        debugPrint(
-          '📊 _ControlSection rebuild - distance: $distance, state: $timerState',
-        );
+  @override
+  Widget build(BuildContext context) {
+    // 🚀 현재 상태 읽기 (ref.read는 watch가 아니므로 rebuild를 트리거하지 않음)
+    final currentState = ref.read(liveWalkControllerProvider);
 
-        final formattedDistance = '${(distance / 1000).toStringAsFixed(2)} km';
+    // 타이머 상태는 매번 업데이트 (listen 없이)
+    _cachedTimerState = currentState.timerState;
+    _cachedRouteLength = currentState.route.length;
+    _cachedCurrentWalkRecord = currentState.currentWalkRecord;
+    // 거리는 listen으로 업데이트됨 (초기값은 여기서)
+    if (_cachedDistance == 0) {
+      _cachedDistance = currentState.distance;
+    }
 
-        return Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                offset: Offset(0, -2),
+    debugPrint(
+      '📊 _ControlSection rebuild - distance: $_cachedDistance, state: $_cachedTimerState',
+    );
+
+    final formattedDistance =
+        '${(_cachedDistance / 1000).toStringAsFixed(2)} km';
+
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, -2),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildStatsRow(
+                distance: formattedDistance,
+                timerState: _cachedTimerState,
+                routeLength: _cachedRouteLength,
+                currentWalkRecord: _cachedCurrentWalkRecord,
+                elapsedTimeNotifier: widget.walkController.elapsedTimeNotifier,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _buildControlButtons(
+                context,
+                timerState: _cachedTimerState,
+                walkController: widget.walkController,
               ),
             ],
           ),
-          child: SafeArea(
-            top: false,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildStatsRow(
-                    distance: formattedDistance,
-                    timerState: timerState,
-                    routeLength: routeLength,
-                    currentWalkRecord: currentWalkRecord,
-                    elapsedTimeNotifier: walkController.elapsedTimeNotifier,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildControlButtons(
-                    context,
-                    timerState: timerState,
-                    walkController: walkController,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -1007,27 +1047,39 @@ class _MapSectionState extends ConsumerState<_MapSection> {
   Set<Polyline> _lastPolylines = {};
 
   @override
+  void initState() {
+    super.initState();
+    // 🚀 위치 변경만 listen (타이머 완전 무시)
+    Future.microtask(() {
+      if (mounted) {
+        ref.listen(
+          liveWalkControllerProvider.select((state) {
+            if (state.currentPosition == null) return null;
+            // 좌표를 String으로 변환하면 같은 위치에서는 같은 String
+            return '${state.currentPosition!.latitude.toStringAsFixed(6)},${state.currentPosition!.longitude.toStringAsFixed(6)}';
+          }),
+          (prev, next) {
+            debugPrint('🗺️ Position changed: $prev -> $next');
+            if (mounted) setState(() {}); // 위치 변경 시만 rebuild
+          },
+        );
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // 🚀 위치 변경만 감시 (타이머 완전 무시)
-    final positionKey = ref.watch(
-      liveWalkControllerProvider.select((state) {
-        if (state.currentPosition == null) return null;
-        // 좌표를 더 정밀하게 비교 (소수점 4자리까지)
-        return '${state.currentPosition!.latitude.toStringAsFixed(4)},${state.currentPosition!.longitude.toStringAsFixed(4)}';
-      }),
-    );
+    // 🚀 현재 상태를 ref.read로 가져옴 (watch 제거)
+    final currentState = ref.read(liveWalkControllerProvider);
 
-    final currentPosition = ref.watch(
-      liveWalkControllerProvider.select((state) => state.currentPosition),
-    );
+    final currentPosition = currentState.currentPosition;
+    final markers = currentState.markers;
+    final polylines = currentState.polylines;
 
-    final markers = ref.watch(
-      liveWalkControllerProvider.select((state) => state.markers),
-    );
-
-    final polylines = ref.watch(
-      liveWalkControllerProvider.select((state) => state.polylines),
-    );
+    // 좌표 키 계산
+    final positionKey = currentPosition == null
+        ? null
+        : '${currentPosition.latitude.toStringAsFixed(4)},${currentPosition.longitude.toStringAsFixed(4)}';
 
     if (currentPosition == null) {
       return Container(

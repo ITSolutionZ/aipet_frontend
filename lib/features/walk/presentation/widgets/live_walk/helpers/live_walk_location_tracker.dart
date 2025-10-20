@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart'
@@ -20,54 +19,47 @@ class LiveWalkLocationTracker {
     // 기존 추적 정지
     stopTracking();
 
-    // 최적화된 위치 추적 설정 사용 (더 보수적인 설정)
-    final config = WalkTrackingOptimizer.getAdaptiveTrackingConfig(
-      batteryLevel: 1.0, // 배터리 레벨은 추후 실제 값으로 대체
-      isCharging: false,
-      walkDuration: Duration.zero,
-      currentSpeed: 0.0,
-    );
-    
-    // 산책용 최적화: 더 긴 간격으로 설정
-    final optimizedConfig = LocationTrackingConfig(
-      accuracy: config.accuracy,
-      distanceFilter: math.max(config.distanceFilter, 8), // 최소 8m
-      updateInterval: Duration(
-        milliseconds: math.max(config.updateInterval.inMilliseconds, 3000), // 최소 3초
-      ),
-    );
+    // 🚀 Geolocator의 위치 스트림 사용 (더 효율적)
+    // Timer.periodic 대신 실제 GPS 신호를 활용하므로 불필요한 호출 감소
+    try {
+      _positionStream = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 8, // 최소 8m 이동할 때만 이벤트 발생
+          timeLimit: Duration(seconds: 30),
+        ),
+      ).listen(
+        (Position position) {
+          final location = WalkLocation(
+            latitude: position.latitude,
+            longitude: position.longitude,
+            timestamp: DateTime.now(),
+            accuracy: position.accuracy,
+            altitude: position.altitude,
+            speed: position.speed,
+            heading: position.heading,
+          );
 
-    // 최적화된 위치 업데이트 간격 사용
-    _locationTimer = Timer.periodic(optimizedConfig.updateInterval, (timer) async {
-      try {
-        final position = await Geolocator.getCurrentPosition(
-          locationSettings: LocationSettings(
-            accuracy: LocationAccuracy.high, // 기본값 사용
-            distanceFilter: optimizedConfig.distanceFilter,
-          ),
-        ).timeout(const Duration(seconds: 8));
-
-        final location = WalkLocation(
-          latitude: position.latitude,
-          longitude: position.longitude,
-          timestamp: DateTime.now(),
-          accuracy: position.accuracy,
-          altitude: position.altitude,
-          speed: position.speed,
-          heading: position.heading,
-        );
-
-        // 위치 데이터 유효성 검증
-        if (WalkTrackingOptimizer.isValidLocation(location)) {
-          onLocationUpdate(location);
-        } else {
-          debugPrint('🚶 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
-        }
-      } catch (e) {
-        debugPrint('위치 업데이트 실패: $e');
-        onError();
-      }
-    });
+          // 위치 데이터 유효성 검증
+          if (WalkTrackingOptimizer.isValidLocation(location)) {
+            debugPrint(
+              '📍 위치 업데이트 수신: (${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}) 정확도: ${location.accuracy?.toStringAsFixed(1)}m',
+            );
+            onLocationUpdate(location);
+          } else {
+            debugPrint('🚶 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
+          }
+        },
+        onError: (error) {
+          debugPrint('❌ 위치 추적 에러: $error');
+          onError();
+        },
+        cancelOnError: false,
+      );
+    } catch (e) {
+      debugPrint('❌ 위치 스트림 시작 실패: $e');
+      onError();
+    }
   }
 
   /// 위치 추적 정지
