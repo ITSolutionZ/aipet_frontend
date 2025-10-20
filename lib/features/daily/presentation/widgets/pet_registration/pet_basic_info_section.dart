@@ -7,6 +7,7 @@ class PetBasicInfoSection extends StatelessWidget {
   final TextEditingController birthDateController;
   final TextEditingController adoptionDateController;
   final TextEditingController weightController;
+  final TextEditingController appearanceController;
   final DateTime? selectedBirthDate;
   final DateTime? selectedAdoptionDate;
   final VoidCallback onBirthDateTap;
@@ -15,6 +16,8 @@ class PetBasicInfoSection extends StatelessWidget {
   final String? Function(String?)? birthDateValidator;
   final String? Function(String?)? adoptionDateValidator;
   final String? Function(String?)? weightValidator;
+  final String? Function(String?)? appearanceValidator;
+  final Function(String)? onAppearanceChanged;
 
   const PetBasicInfoSection({
     super.key,
@@ -22,6 +25,7 @@ class PetBasicInfoSection extends StatelessWidget {
     required this.birthDateController,
     required this.adoptionDateController,
     required this.weightController,
+    required this.appearanceController,
     required this.selectedBirthDate,
     required this.selectedAdoptionDate,
     required this.onBirthDateTap,
@@ -30,6 +34,8 @@ class PetBasicInfoSection extends StatelessWidget {
     this.birthDateValidator,
     this.adoptionDateValidator,
     this.weightValidator,
+    this.appearanceValidator,
+    this.onAppearanceChanged,
   });
 
   @override
@@ -152,6 +158,24 @@ class PetBasicInfoSection extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         Text(
           '1kg未満の場合、例：750gなら0.75と入力',
+          style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+
+        // 외견
+        _buildOptionalFieldLabel('外見'),
+        const SizedBox(height: AppSpacing.sm),
+        CommonFormField(
+          controller: appearanceController,
+          label: '',
+          hint: '例）茶色の毛、白い斑点、長い耳など',
+          maxLines: 3,
+          validator: appearanceValidator,
+          onChanged: onAppearanceChanged,
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'ペットの外見的特徴を記述してください',
           style: AppFonts.bodySmall.copyWith(color: AppColors.textSecondary),
         ),
       ],

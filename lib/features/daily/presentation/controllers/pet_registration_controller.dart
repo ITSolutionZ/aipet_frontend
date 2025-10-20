@@ -42,6 +42,7 @@ class PetRegistrationController extends _$PetRegistrationController {
   final _birthDateController = TextEditingController();
   final _adoptionDateController = TextEditingController();
   final _weightController = TextEditingController();
+  final _appearanceController = TextEditingController();
   final _guardianNameController = TextEditingController();
   final _institutionNameController = TextEditingController();
   final _registrationNumberController = TextEditingController();
@@ -51,6 +52,7 @@ class PetRegistrationController extends _$PetRegistrationController {
   TextEditingController get birthDateController => _birthDateController;
   TextEditingController get adoptionDateController => _adoptionDateController;
   TextEditingController get weightController => _weightController;
+  TextEditingController get appearanceController => _appearanceController;
   TextEditingController get guardianNameController => _guardianNameController;
   TextEditingController get institutionNameController =>
       _institutionNameController;
@@ -101,6 +103,11 @@ class PetRegistrationController extends _$PetRegistrationController {
   void updateWeight(String weightText) {
     final weight = double.tryParse(weightText);
     state = state.copyWith(weight: weight);
+    _autoSaveFormData();
+  }
+
+  void updateAppearance(String appearance) {
+    state = state.copyWith(appearance: appearance);
     _autoSaveFormData();
   }
 
@@ -304,6 +311,7 @@ class PetRegistrationController extends _$PetRegistrationController {
       birthDateController: _birthDateController,
       adoptionDateController: _adoptionDateController,
       weightController: _weightController,
+      appearanceController: _appearanceController,
       guardianNameController: _guardianNameController,
       institutionNameController: _institutionNameController,
       registrationNumberController: _registrationNumberController,
@@ -360,6 +368,8 @@ class PetRegistrationController extends _$PetRegistrationController {
   String? validateAdoptionDate(String? value) =>
       _validator.validateAdoptionDate(value);
   String? validateWeight(String? value) => _validator.validateWeight(value);
+  String? validateAppearance(String? value) =>
+      _validator.validateAppearance(value);
   String? validateBreed() => _validator.validateBreed(state.breed);
   String? validateGender() => _validator.validateGender(state.gender);
 
@@ -438,6 +448,7 @@ class PetRegistrationController extends _$PetRegistrationController {
           'adoptionDate': state.adoptionDate?.toIso8601String(),
           'forbiddenIngredients': state.forbiddenIngredients,
           'bodyPartsToManage': state.bodyPartsToManage,
+          'appearance': state.appearance,
           'food': state.food,
           'supplement': state.supplement,
           'treat': state.treat,
@@ -546,6 +557,7 @@ class PetRegistrationController extends _$PetRegistrationController {
           'adoptionDate': state.adoptionDate?.toIso8601String(),
           'forbiddenIngredients': state.forbiddenIngredients,
           'bodyPartsToManage': state.bodyPartsToManage,
+          'appearance': state.appearance,
           'food': state.food,
           'supplement': state.supplement,
           'treat': state.treat,

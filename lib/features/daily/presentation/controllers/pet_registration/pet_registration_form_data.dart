@@ -19,6 +19,7 @@ class PetRegistrationFormData {
   final DateTime? birthDate;
   final DateTime? adoptionDate;
   final double? weight;
+  final String? appearance;
   final String petType;
   final String breed;
   final String gender;
@@ -41,6 +42,7 @@ class PetRegistrationFormData {
     this.birthDate,
     this.adoptionDate,
     this.weight,
+    this.appearance,
     required this.petType,
     required this.breed,
     required this.gender,
@@ -64,6 +66,7 @@ class PetRegistrationFormData {
     DateTime? birthDate,
     DateTime? adoptionDate,
     double? weight,
+    String? appearance,
     String? petType,
     String? breed,
     String? gender,
@@ -88,6 +91,7 @@ class PetRegistrationFormData {
       birthDate: birthDate ?? this.birthDate,
       adoptionDate: adoptionDate ?? this.adoptionDate,
       weight: weight ?? this.weight,
+      appearance: appearance ?? this.appearance,
       petType: petType ?? this.petType,
       breed: breed ?? this.breed,
       gender: gender ?? this.gender,
@@ -116,6 +120,7 @@ class PetRegistrationFormData {
       'birthDate': birthDate?.toIso8601String(),
       'adoptionDate': adoptionDate?.toIso8601String(),
       'weight': weight,
+      'appearance': appearance,
       'petType': petType,
       'breed': breed,
       'gender': gender,
@@ -144,6 +149,7 @@ class PetRegistrationFormData {
           ? DateTime.parse(json['adoptionDate'])
           : null,
       weight: json['weight']?.toDouble(),
+      appearance: json['appearance'],
       petType: json['petType'] ?? 'dog',
       breed: json['breed'] ?? '',
       gender: json['gender'] ?? '',

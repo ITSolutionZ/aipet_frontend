@@ -64,6 +64,18 @@ class PetRegistrationValidator {
     return null;
   }
 
+  /// 외견 검증 (선택사항)
+  String? validateAppearance(String? value) {
+    // 외견은 선택사항이므로 빈 값이어도 됩니다
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+    if (value.length > 500) {
+      return '500文字以内で入力してください';
+    }
+    return null;
+  }
+
   /// 품종 검증
   String? validateBreed(String breed) {
     debugPrint('🔍 Validating breed: "$breed" (empty: ${breed.isEmpty})');
