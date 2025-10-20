@@ -565,14 +565,27 @@ class PetBasicInfoTab extends ConsumerWidget {
     final healthConditions = tabState.editingHealthConditions ?? [];
     final hasHealthConditions = healthConditions.isNotEmpty;
 
+    // 신체 부위 개수 확인
+    int bodyPartsCount = 0;
+    if (pet.additionalInfo != null && pet.additionalInfo!['bodyPartsToManage'] != null) {
+      final String bodyPartsString = pet.additionalInfo!['bodyPartsToManage'].toString();
+      final bodyPartsList = bodyPartsString.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      bodyPartsCount = bodyPartsList.length;
+    }
+
+    // 건강상태 결정: 3개 이상이면 "注意", 그 외는 "良好"
+    final isWarning = hasHealthConditions || bodyPartsCount >= 3;
+    final statusText = isWarning ? '注意' : '良好';
+    final statusColor = isWarning ? AppColors.pointPink : AppColors.pointGreen;
+
     return GenericInfoCard.withIcon(
       icon: Icons.health_and_safety,
-      iconColor: AppColors.pointGreen,
-      iconBackgroundColor: AppColors.pointGreen.withValues(alpha: 0.1),
+      iconColor: statusColor,
+      iconBackgroundColor: statusColor.withValues(alpha: 0.1),
       title: '健康状態',
       subtitle: hasHealthConditions ? healthConditions.join('、') : '未設定',
-      badge: hasHealthConditions ? '要注意' : '良好',
-      badgeColor: hasHealthConditions ? AppColors.pointPink : AppColors.pointGreen,
+      badge: statusText,
+      badgeColor: statusColor,
       trailing: isEditMode ? _buildEditHealthStatusButton(context, ref, tabId) : null,
     );
   }
