@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/features/onboarding/data/data.dart';
 import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
@@ -18,6 +20,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   late final OnboardingController _controller;
+  Timer? _autoNextTimer;
 
   @override
   void initState() {
@@ -27,17 +30,31 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     // 온보딩 시작 시 시청 횟수 증가
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(onboardingProvider.notifier).startOnboarding();
+      // 첫 페이지에서 3초 후 자동 넘김
+      _startAutoNextTimer();
     });
   }
 
   @override
   void dispose() {
+    _autoNextTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
 
+  void _startAutoNextTimer() {
+    _autoNextTimer?.cancel();
+    _autoNextTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted) {
+        _nextPage();
+      }
+    });
+  }
+
   void _onPageChanged(int page) {
     _controller.goToPage(page);
+    // 페이지 변경 시 새로운 타이머 시작
+    _startAutoNextTimer();
   }
 
   void _nextPage() {
