@@ -30,7 +30,10 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final liveWalkState = ref.watch(liveWalkControllerProvider);
+    // 🚀 watch 제거! screen에서는 state를 읽기만 함
+    // LiveWalkWidget이 자체적으로 필요한 상태만 감시하도록 분리
+    // ref.watch()를 사용하면 부모가 rebuild되어 모든 자식이 rebuild됨
+    final liveWalkState = ref.read(liveWalkControllerProvider);
 
     return Scaffold(
       backgroundColor: Colors.black,
