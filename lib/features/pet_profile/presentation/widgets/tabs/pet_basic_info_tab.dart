@@ -614,8 +614,6 @@ class PetBasicInfoTab extends ConsumerWidget {
     final statusText = isWarning ? '注意' : '良好';
     final statusColor = isWarning ? AppColors.pointPink : AppColors.pointGreen;
 
-    // 동물별 주요 질병 가져오기
-    final commonDiseases = _getCommonDiseasesForPet();
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -676,47 +674,30 @@ class PetBasicInfoTab extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // 기존 건강 조건 표시
+          // 선택된 건강 조건만 칩으로 표시
           if (hasHealthConditions) ...[
-            Text(
-              '現在の健康状態: ${healthConditions.join('、')}',
-              style: AppFonts.bodyMedium.copyWith(color: AppColors.textPrimary),
-            ),
-            const SizedBox(height: AppSpacing.md),
-          ],
-
-          // 동물별 주요 질병 칩 표시
-          if (commonDiseases.isNotEmpty) ...[
-            Text(
-              '${pet.type}の注意すべき病気',
-              style: AppFonts.bodySmall.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: AppSpacing.sm,
               runSpacing: AppSpacing.sm,
-              children: commonDiseases.map((disease) {
+              children: healthConditions.map((condition) {
                 return Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xs,
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.backgroundGray.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(AppSpacing.sm),
+                    color: statusColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppSpacing.lg),
                     border: Border.all(
-                      color: AppColors.borderGray.withValues(alpha: 0.5),
+                      color: statusColor.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
                   child: Text(
-                    disease,
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.w500,
+                    condition,
+                    style: AppFonts.bodyMedium.copyWith(
+                      color: statusColor,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 );
@@ -756,13 +737,14 @@ class PetBasicInfoTab extends ConsumerWidget {
     }
 
     final hasBodyParts = bodyParts.isNotEmpty;
-    final bodyPartsList = bodyParts.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    final bodyPartsList = bodyParts
+        .split(',')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
 
-    // 펫 종류별 주요 질병 가져오기
-    final commonDiseases = _getCommonDiseasesForPet();
-
-    // 신체 부위도 질병도 없으면 표시하지 않음
-    if (!hasBodyParts && commonDiseases.isEmpty) {
+    // 사용자가 작성한 신체부위가 없으면 표시하지 않음
+    if (!hasBodyParts) {
       return const SizedBox.shrink();
     }
 
@@ -807,76 +789,34 @@ class PetBasicInfoTab extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // 신체 부위 칩 표시 (있는 경우만)
-          if (hasBodyParts) ...[
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              children: bodyPartsList.map((part) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.sm,
+          // 사용자가 작성한 신체부위 칩 표시
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: bodyPartsList.map((part) {
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(AppSpacing.lg),
+                  border: Border.all(
+                    color: AppColors.pointGreen.withValues(alpha: 0.3),
+                    width: 1,
                   ),
-                  decoration: BoxDecoration(
-                    color: AppColors.pureWhite,
-                    borderRadius: BorderRadius.circular(AppSpacing.lg),
-                    border: Border.all(
-                      color: AppColors.pointGreen.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
+                ),
+                child: Text(
+                  part,
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointGreen,
+                    fontWeight: FontWeight.w600,
                   ),
-                  child: Text(
-                    part,
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointGreen,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-          ],
-
-          // 펫 종류별 주요 질병 표시
-          if (commonDiseases.isNotEmpty) ...[
-            Text(
-              '${pet.type}の注意すべき病気',
-              style: AppFonts.bodySmall.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              children: commonDiseases.map((disease) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.backgroundGray.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(AppSpacing.sm),
-                    border: Border.all(
-                      color: AppColors.borderGray.withValues(alpha: 0.5),
-                      width: 1,
-                    ),
-                  ),
-                  child: Text(
-                    disease,
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
+                ),
+              );
+            }).toList(),
+          ),
         ],
       ),
     );
