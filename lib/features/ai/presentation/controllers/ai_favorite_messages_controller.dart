@@ -1,5 +1,4 @@
 import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
-import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
@@ -75,7 +74,7 @@ class AiFavoriteMessagesController {
   /// QA 공유
   Future<void> shareQA(AiFavoriteQaEntity favorite) async {
     final petInfo = favorite.pet != null
-        ? '【${favorite.pet!.name} (${favorite.pet!.typeName})】'
+        ? '【${favorite.pet!.name} (${favorite.pet!.type})】'
         : '【一般的なペット相談】';
 
     final shareText =

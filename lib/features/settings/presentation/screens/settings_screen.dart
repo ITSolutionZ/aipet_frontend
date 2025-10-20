@@ -89,7 +89,7 @@ class SettingsScreen extends ConsumerWidget {
             backgroundColor: const Color(0xFFA88B5A),
             onTap: () {
               // 管理中の反応動物画面へ移動
-              context.push(AppRouter.petManagementRoute);
+              context.push(AppRouter.petEditRoute);
             },
           ),
           SettingsTileWidget(

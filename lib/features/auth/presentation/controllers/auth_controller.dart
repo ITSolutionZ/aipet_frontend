@@ -115,12 +115,14 @@ class AuthController extends Notifier<AuthFormState> {
     try {
       debugPrint('🐾 AuthController: 로그인 성공 시 펫 데이터 로드 시작 - 사용자: $userId');
 
-      // 펫 로그인 서비스를 통해 사용자 펫 데이터 로드
-      final pets = await PetLoginService.loadUserPetsOnLogin(userId);
+      // 펫 프로필 프로바이더를 통해 사용자 펫 데이터 로드
+      final petsAsync = ref.read(petProfilesProvider);
+      final pets = petsAsync.maybeWhen(
+        data: (data) => data,
+        orElse: () => <PetProfileEntity>[],
+      );
 
-      // 로그인 로그 생성 및 출력
-      final loginLog = PetLoginService.generateLoginLog(userId, pets);
-      debugPrint(loginLog);
+      debugPrint('🐾 로그인 성공 - 펫 ${pets.length}마리 로드됨');
 
       return pets;
     } catch (error, stackTrace) {

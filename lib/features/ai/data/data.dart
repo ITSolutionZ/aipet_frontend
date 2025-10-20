@@ -8,6 +8,5 @@ export 'services/ai_data_service.dart';
 export 'services/ai_dio_service.dart';
 export 'services/ai_keyword_service.dart';
 export 'services/ai_local_storage_service.dart';
-export 'services/local_ai_service.dart';
 export 'services/openai_service.dart';
 export 'services/pet_content_filter_service.dart';

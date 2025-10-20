@@ -104,21 +104,23 @@ class ImageDisplayState extends State<ImageDisplay>
     // 이미지 경로가 있는 경우 - 강화된 로컬 저장 지원
     if (widget.imagePath != null && widget.imagePath!.isNotEmpty) {
       debugPrint('🖼️ ImageDisplay - imagePath: ${widget.imagePath}');
-      
+
       // 상대 경로를 절대 경로로 변환
       final storageService = ImageStorageService();
-      final absolutePath = storageService.getAbsolutePath(widget.imagePath!) ?? widget.imagePath!;
+      final absolutePath =
+          storageService.getAbsolutePath(widget.imagePath!) ??
+          widget.imagePath!;
       debugPrint('🖼️ ImageDisplay - absolutePath: $absolutePath');
-      
+
       final imageType = ImageService.getImageType(absolutePath);
       debugPrint('🖼️ ImageDisplay - imageType: $imageType');
-      
+
       switch (imageType) {
         case ImageType.file:
           final file = File(absolutePath);
           final fileExists = file.existsSync();
           debugPrint('🖼️ ImageDisplay - File exists: $fileExists');
-          
+
           if (!fileExists) {
             debugPrint('❌ ImageDisplay - File does not exist: $absolutePath');
             return null;
@@ -135,21 +137,21 @@ class ImageDisplayState extends State<ImageDisplay>
     if (widget.imageFile != null && widget.imageFile is String) {
       final String path = widget.imageFile as String;
       debugPrint('🖼️ ImageDisplay - imageFile path: $path');
-      
+
       // 상대 경로를 절대 경로로 변환
       final storageService = ImageStorageService();
       final absolutePath = storageService.getAbsolutePath(path) ?? path;
       debugPrint('🖼️ ImageDisplay - absolutePath: $absolutePath');
-      
+
       final imageType = ImageService.getImageType(absolutePath);
       debugPrint('🖼️ ImageDisplay - imageType: $imageType');
-      
+
       switch (imageType) {
         case ImageType.file:
           final file = File(absolutePath);
           final fileExists = file.existsSync();
           debugPrint('🖼️ ImageDisplay - File exists: $fileExists');
-          
+
           if (!fileExists) {
             debugPrint('❌ ImageDisplay - File does not exist: $absolutePath');
             return null;
