@@ -24,7 +24,7 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(":app")
-    
+
     // Java 11을 모든 서브프로젝트에 적용
     afterEvaluate {
         if (project.hasProperty("android")) {
