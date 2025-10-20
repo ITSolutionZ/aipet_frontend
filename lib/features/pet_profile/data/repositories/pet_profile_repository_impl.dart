@@ -1,7 +1,7 @@
+import 'package:aipet_frontend/app/services/local_storage_service.dart';
 import 'package:aipet_frontend/features/pet_profile/domain/repositories/pet_profile_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/services/local_storage_service.dart';
 import 'package:flutter/foundation.dart';
 
 class PetProfileRepositoryImpl implements PetProfileRepository {

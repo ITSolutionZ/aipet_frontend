@@ -16,15 +16,17 @@ export 'image_service.dart';
 export 'logger_service.dart';
 export 'performance_monitor_service.dart';
 export 'performance_optimizer_service.dart';
-export 'pet_registration_error_handler.dart';
 export 'secure_storage_service.dart';
 export 'snackbar_service.dart';
 // MockDataService moved to shared/testing.dart
 export 'ui_notification_service.dart';
 export 'ui_service.dart';
-export 'unified_error_handler.dart';
 export 'unified_validation_service.dart';
 export 'user_experience_service.dart';
 export 'validation_service.dart';
 
-// notification_icon_service는 notification 기능 전용으로 data/services로 이동됨
+// Feature-specific services have been moved:
+// - notification_icon_service → notification/data/services/
+// - pet_registration_error_handler → pet_profile/domain/services/
+// - google_places_service → facility/data/services/
+// - youtube_api_service → pet_activities/data/services/

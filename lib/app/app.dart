@@ -5,3 +5,5 @@ export 'config/config.dart';
 export 'controllers/controllers.dart';
 export 'providers/providers.dart';
 export 'router/app_router.dart';
+export 'services/services.dart';
+export 'widgets/widgets.dart';

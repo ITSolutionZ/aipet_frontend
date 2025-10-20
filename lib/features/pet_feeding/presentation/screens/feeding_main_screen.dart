@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/app/widgets/widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

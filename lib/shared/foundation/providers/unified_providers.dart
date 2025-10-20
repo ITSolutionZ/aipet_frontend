@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/app/services/unified_error_handler.dart';
 import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
-import 'package:aipet_frontend/shared/core/services/unified_error_handler.dart';
 import 'package:aipet_frontend/shared/core/services/unified_validation_service.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
