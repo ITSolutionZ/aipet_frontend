@@ -2,6 +2,7 @@ import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_p
 import 'package:aipet_frontend/features/settings/data/providers/settings_providers.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/domain/entities/user_profile_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -71,11 +72,9 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
   void _loadUserProfile() {
     final userProfileAsync = ref.read(userProfileProvider);
     userProfileAsync.whenData((profile) {
-      _nameController.text = profile['name'] ?? '';
+      _nameController.text = profile.userName;
       // 電話番号はデフォルト値で設定
-      if (_phoneController.text.isEmpty) {
-        _phoneController.text = '010-0000-0000';
-      }
+      _phoneController.text = profile.contact ?? '010-0000-0000';
     });
   }
 
@@ -1415,4 +1414,8 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
       }
     }
   }
+}
+
+extension on UserProfileEntity {
+  void operator [](String other) {}
 }
