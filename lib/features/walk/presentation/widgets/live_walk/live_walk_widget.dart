@@ -7,7 +7,7 @@ import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optim
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_camera_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_marker_builder.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_polyline_builder.dart';
-import 'package:aipet_frontend/shared/shared.dart' hide State;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -704,7 +704,9 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
   @override
   Widget build(BuildContext context) {
     _buildCount++;
-    debugPrint('👨‍👧‍👦 LiveWalkWidget.build() 호출 #$_buildCount - ${DateTime.now()}');
+    debugPrint(
+      '👨‍👧‍👦 LiveWalkWidget.build() 호출 #$_buildCount - ${DateTime.now()}',
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -738,22 +740,26 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
     super.initState();
 
     // 🚀 timerState와 distance가 변경될 때만 setState 호출
-    Future.microtask(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        ref.listen(
-          liveWalkControllerProvider.select((s) => s.timerState),
-          (prev, next) {
+        ref.listen(liveWalkControllerProvider.select((s) => s.timerState), (
+          prev,
+          next,
+        ) {
+          if (prev != next) {
             debugPrint('⏰ timerState 변경: $prev -> $next');
             if (mounted) setState(() {});
-          },
-        );
-        ref.listen(
-          liveWalkControllerProvider.select((s) => s.distance),
-          (prev, next) {
+          }
+        });
+        ref.listen(liveWalkControllerProvider.select((s) => s.distance), (
+          prev,
+          next,
+        ) {
+          if (prev != next) {
             debugPrint('📏 distance 변경: $prev -> $next');
             if (mounted) setState(() {});
-          },
-        );
+          }
+        });
       }
     });
   }
@@ -767,9 +773,12 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
     final state = ref.read(liveWalkControllerProvider);
     final walkController = ref.read(liveWalkControllerProvider.notifier);
 
-    final formattedDistance = '${(state.distance / 1000).toStringAsFixed(2)} km';
+    final formattedDistance =
+        '${(state.distance / 1000).toStringAsFixed(2)} km';
 
-    debugPrint('📊 _ControlSection - distance: ${state.distance}, timerState: ${state.timerState}');
+    debugPrint(
+      '📊 _ControlSection - distance: ${state.distance}, timerState: ${state.timerState}',
+    );
 
     return Container(
       width: double.infinity,
@@ -1110,86 +1119,21 @@ class _TimerDisplay extends StatelessWidget {
 }
 
 /// 맵 섹션 - 위치 변경 시만 리빌드 (완전 분리)
-class _MapSection extends ConsumerStatefulWidget {
+class _MapSection extends ConsumerWidget {
   const _MapSection();
 
   @override
-  ConsumerState<_MapSection> createState() => _MapSectionState();
-}
-
-class _MapSectionState extends ConsumerState<_MapSection> {
-  GoogleMapController? _mapController;
-  String? _lastPositionKey;
-  Set<Marker> _lastMarkers = {};
-  Set<Polyline> _lastPolylines = {};
-  int _buildCallCount = 0;
-  DateTime? _lastBuildTime;
-  bool _isInitialized = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // 초기 setup 한 번만
-    if (!_isInitialized) {
-      _isInitialized = true;
-
-      // 🚀 위치, 마커, 폴리라인 변경만 listen (타이머 완전 무시)
-      Future.microtask(() {
-        if (mounted) {
-          // 위치 변경 listen
-          ref.listen(
-            liveWalkControllerProvider.select((state) {
-              if (state.currentPosition == null) return null;
-              return '${state.currentPosition!.latitude.toStringAsFixed(6)},${state.currentPosition!.longitude.toStringAsFixed(6)}';
-            }),
-            (prev, next) {
-              debugPrint('🗺️ 위치 변경 감지: $prev -> $next');
-              if (mounted) setState(() {}); // 위치 변경 시만 rebuild
-            },
-          );
-
-          // 마커 변경 listen
-          ref.listen(
-            liveWalkControllerProvider.select((state) => state.markers.length),
-            (prev, next) {
-              debugPrint('📍 마커 변경 감지: $prev -> $next');
-              if (mounted) setState(() {});
-            },
-          );
-
-          // 폴리라인 변경 listen
-          ref.listen(
-            liveWalkControllerProvider.select((state) => state.polylines.length),
-            (prev, next) {
-              debugPrint('🛣️ 폴리라인 변경 감지: $prev -> $next');
-              if (mounted) setState(() {});
-            },
-          );
-        }
-      });
-    }
-
-    _buildCallCount++;
-    final now = DateTime.now();
-    final timeSinceLastBuild = _lastBuildTime != null
-        ? now.difference(_lastBuildTime!).inMilliseconds
-        : 0;
-    _lastBuildTime = now;
-
-    debugPrint(
-      '🗺️ _MapSection.build() 호출 #$_buildCallCount (이전 빌드로부터 ${timeSinceLastBuild}ms 경과)',
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 🚀 위치, 마커, 폴리라인만 선택적으로 watch
+    final currentPosition = ref.watch(
+      liveWalkControllerProvider.select((s) => s.currentPosition),
     );
-
-    // 🚀 ref.read()만 사용 (watch 제거!)
-    final currentState = ref.read(liveWalkControllerProvider);
-
-    final currentPosition = currentState.currentPosition;
-    final markers = currentState.markers;
-    final polylines = currentState.polylines;
+    final markers = ref.watch(
+      liveWalkControllerProvider.select((s) => s.markers),
+    );
+    final polylines = ref.watch(
+      liveWalkControllerProvider.select((s) => s.polylines),
+    );
 
     if (currentPosition == null) {
       return Container(
@@ -1215,54 +1159,124 @@ class _MapSectionState extends ConsumerState<_MapSection> {
       );
     }
 
-    // 🚀 실제 변경이 있을 때만 업데이트
-    final positionKey =
-        '${currentPosition.latitude.toStringAsFixed(6)},${currentPosition.longitude.toStringAsFixed(6)}';
-    final shouldUpdate =
-        _lastPositionKey != positionKey ||
-        _lastMarkers != markers ||
-        _lastPolylines != polylines;
+    return _GoogleMapWidget(
+      currentPosition: currentPosition,
+      markers: markers,
+      polylines: polylines,
+      onMapCreated: (controller) {
+        ref
+            .read(liveWalkControllerProvider.notifier)
+            .setMapController(controller);
+      },
+    );
+  }
+}
 
-    if (shouldUpdate) {
-      debugPrint('🎨 맵 업데이트 필요: positionKey=$positionKey');
-      _lastPositionKey = positionKey;
-      _lastMarkers = markers;
-      _lastPolylines = polylines;
+/// GoogleMap 위젯 - 실제 데이터가 변경될 때만 rebuild
+class _GoogleMapWidget extends StatefulWidget {
+  final Position currentPosition;
+  final Set<Marker> markers;
+  final Set<Polyline> polylines;
+  final void Function(GoogleMapController) onMapCreated;
 
-      // 카메라 이동 (위치 변경 시에만)
-      if (_mapController != null && _lastPositionKey != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_mapController != null && mounted) {
-            WalkMapCameraController.moveToCurrentLocation(
-              _mapController!,
-              currentPosition,
-              zoom: 16.0,
-            );
-          }
-        });
-      }
+  const _GoogleMapWidget({
+    required this.currentPosition,
+    required this.markers,
+    required this.polylines,
+    required this.onMapCreated,
+  });
+
+  @override
+  State<_GoogleMapWidget> createState() => _GoogleMapWidgetState();
+}
+
+class _GoogleMapWidgetState extends State<_GoogleMapWidget> {
+  GoogleMapController? _mapController;
+  int _buildCount = 0;
+  DateTime? _lastBuildTime;
+
+  @override
+  void didUpdateWidget(_GoogleMapWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final oldPositionKey =
+        '${oldWidget.currentPosition.latitude.toStringAsFixed(6)},${oldWidget.currentPosition.longitude.toStringAsFixed(6)}';
+    final newPositionKey =
+        '${widget.currentPosition.latitude.toStringAsFixed(6)},${widget.currentPosition.longitude.toStringAsFixed(6)}';
+
+    // 🚀 위치가 실제로 변경된 경우에만 카메라 이동
+    if (oldPositionKey != newPositionKey) {
+      debugPrint('📍 GPS 위치 변경 감지: $oldPositionKey -> $newPositionKey');
+      _moveCamera();
+    } else {
+      debugPrint('⏸️ GPS 이동 없음 - 카메라 이동 생략');
     }
+
+    // 마커 변경 로그
+    if (oldWidget.markers != widget.markers) {
+      debugPrint(
+        '📍 마커 변경: ${oldWidget.markers.length} -> ${widget.markers.length}',
+      );
+    }
+
+    // 폴리라인 변경 로그
+    if (oldWidget.polylines != widget.polylines) {
+      debugPrint(
+        '🛣️ 폴리라인 변경: ${oldWidget.polylines.length} -> ${widget.polylines.length}',
+      );
+    }
+  }
+
+  void _moveCamera() {
+    if (_mapController != null && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_mapController != null && mounted) {
+          WalkMapCameraController.moveToCurrentLocation(
+            _mapController!,
+            widget.currentPosition,
+            zoom: 16.0,
+          );
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _buildCount++;
+    final now = DateTime.now();
+    final timeSinceLastBuild = _lastBuildTime != null
+        ? now.difference(_lastBuildTime!).inMilliseconds
+        : 0;
+    _lastBuildTime = now;
+
+    debugPrint(
+      '🗺️ GoogleMap build() #$_buildCount (이전 빌드로부터 ${timeSinceLastBuild}ms 경과)',
+    );
 
     return GoogleMap(
       key: const ValueKey('live_walk_map'),
       onMapCreated: (GoogleMapController controller) {
         _mapController = controller;
-        ref
-            .read(liveWalkControllerProvider.notifier)
-            .setMapController(controller);
+        widget.onMapCreated(controller);
+
+        // 초기 카메라 위치 설정
         WalkMapCameraController.moveToCurrentLocation(
           controller,
-          currentPosition,
+          widget.currentPosition,
           zoom: 16.0,
         );
       },
       initialCameraPosition: CameraPosition(
-        target: LatLng(currentPosition.latitude, currentPosition.longitude),
+        target: LatLng(
+          widget.currentPosition.latitude,
+          widget.currentPosition.longitude,
+        ),
         zoom: 16.0,
       ),
-      markers: markers,
-      polylines: polylines,
-      myLocationEnabled: true,
+      markers: widget.markers,
+      polylines: widget.polylines,
+      myLocationEnabled: false, // ✅ GPS 자동 업데이트 완전 차단
       myLocationButtonEnabled: false,
       zoomControlsEnabled: false,
       mapToolbarEnabled: false,
@@ -1275,6 +1289,7 @@ class _MapSectionState extends ConsumerState<_MapSection> {
 
   @override
   void dispose() {
+    _mapController?.dispose();
     _mapController = null;
     super.dispose();
   }
