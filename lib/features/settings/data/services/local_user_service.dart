@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/settings/domain/entities/settings_entity.dart';
 import 'package:aipet_frontend/shared/services/local_database_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 /// 사용자 프로필 로컬 서비스
@@ -50,7 +51,7 @@ class LocalUserService {
 
       return true;
     } catch (e) {
-      print('사용자 프로필 저장 실패: $e');
+      debugPrint('❌ 사용자 프로필 저장 실패: $e');
       return false;
     }
   }
@@ -75,7 +76,7 @@ class LocalUserService {
         updatedAt: DateTime.parse(profile['updated_at'] as String),
       );
     } catch (e) {
-      print('사용자 프로필 로드 실패: $e');
+      debugPrint('❌ 사용자 프로필 로드 실패: $e');
       return null;
     }
   }
@@ -87,7 +88,7 @@ class LocalUserService {
       await db.delete('user_profiles', where: 'id = ?', whereArgs: [id]);
       return true;
     } catch (e) {
-      print('사용자 프로필 삭제 실패: $e');
+      debugPrint('❌ 사용자 프로필 삭제 실패: $e');
       return false;
     }
   }
