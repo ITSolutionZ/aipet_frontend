@@ -243,51 +243,97 @@ class LiveWalkController extends _$LiveWalkController {
   }
 
   void pauseWalk() {
-    if (state.timerState != WalkTimerState.running) return;
+    try {
+      debugPrint('⏸️ pauseWalk() 시작');
 
-    _timerManager.stopTimer();
-    _locationTracker.stopTracking();
+      if (state.timerState != WalkTimerState.running) {
+        debugPrint('⏸️ pauseWalk() - 현재 상태가 running이 아님: ${state.timerState}');
+        return;
+      }
 
-    // 🚀 timerState만 변경! (다른 필드는 건드리지 않음)
-    // _ControlSection에서는 ref.read()를 사용하므로 자동 rebuild 안됨
-    state = state.copyWith(timerState: WalkTimerState.paused);
+      debugPrint('⏸️ pauseWalk() - 타이머 정지');
+      _timerManager.stopTimer();
 
-    // 일시정지 상태 저장
-    LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
+      debugPrint('⏸️ pauseWalk() - 위치 추적 정지');
+      _locationTracker.stopTracking();
+
+      // 🚀 timerState만 변경! (다른 필드는 건드리지 않음)
+      // _ControlSection에서는 ref.read()를 사용하므로 자동 rebuild 안됨
+      debugPrint('⏸️ pauseWalk() - state 업데이트');
+      state = state.copyWith(timerState: WalkTimerState.paused);
+
+      debugPrint('⏸️ pauseWalk() - 상태 저장');
+      // 일시정지 상태 저장
+      LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
+
+      debugPrint('✅ pauseWalk() 완료');
+    } catch (e) {
+      debugPrint('❌ pauseWalk() 에러: $e');
+      rethrow;
+    }
   }
 
   void resumeWalk() {
-    if (state.timerState != WalkTimerState.running &&
-        state.timerState != WalkTimerState.paused) {
-      return;
+    try {
+      debugPrint('▶️ resumeWalk() 시작');
+
+      if (state.timerState != WalkTimerState.running &&
+          state.timerState != WalkTimerState.paused) {
+        debugPrint('▶️ resumeWalk() - 상태가 running/paused 아님: ${state.timerState}');
+        return;
+      }
+
+      // 🚀 timerState만 변경!
+      debugPrint('▶️ resumeWalk() - state 업데이트');
+      state = state.copyWith(timerState: WalkTimerState.running);
+
+      debugPrint('▶️ resumeWalk() - 타이머 시작');
+      _timerManager.startTimer(() {
+        // ValueNotifier로만 업데이트 (state 변경 X)
+        _elapsedTimeNotifier.value = _timerManager.elapsedTime;
+      });
+
+      debugPrint('▶️ resumeWalk() - 위치 추적 시작');
+      _startLocationTracking();
+
+      debugPrint('▶️ resumeWalk() - 상태 저장');
+      // 재시작 상태 저장
+      LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
+
+      debugPrint('✅ resumeWalk() 완료');
+    } catch (e) {
+      debugPrint('❌ resumeWalk() 에러: $e');
+      rethrow;
     }
-
-    // 🚀 timerState만 변경!
-    state = state.copyWith(timerState: WalkTimerState.running);
-
-    _timerManager.startTimer(() {
-      // ValueNotifier로만 업데이트 (state 변경 X)
-      _elapsedTimeNotifier.value = _timerManager.elapsedTime;
-    });
-    _startLocationTracking();
-
-    // 재시작 상태 저장
-    LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
   }
 
   void stopWalk() {
-    // 🚀 timerState만 변경!
-    state = state.copyWith(timerState: WalkTimerState.stopped);
+    try {
+      debugPrint('⏹️ stopWalk() 시작');
 
-    _timerManager.stopTimer();
-    _locationTracker.stopTracking();
+      // 🚀 timerState만 변경!
+      debugPrint('⏹️ stopWalk() - state 업데이트');
+      state = state.copyWith(timerState: WalkTimerState.stopped);
 
-    // 완료된 산책 저장
-    if (state.currentWalkRecord != null) {
-      LiveWalkStorageManager.saveCompletedWalk(
-        state.currentWalkRecord!,
-        state.distance,
-      );
+      debugPrint('⏹️ stopWalk() - 타이머 정지');
+      _timerManager.stopTimer();
+
+      debugPrint('⏹️ stopWalk() - 위치 추적 정지');
+      _locationTracker.stopTracking();
+
+      debugPrint('⏹️ stopWalk() - 산책 저장');
+      // 완료된 산책 저장
+      if (state.currentWalkRecord != null) {
+        LiveWalkStorageManager.saveCompletedWalk(
+          state.currentWalkRecord!,
+          state.distance,
+        );
+      }
+
+      debugPrint('✅ stopWalk() 완료');
+    } catch (e) {
+      debugPrint('❌ stopWalk() 에러: $e');
+      rethrow;
     }
   }
 
