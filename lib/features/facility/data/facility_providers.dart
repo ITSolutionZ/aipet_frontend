@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../domain/domain.dart';
 import 'facility_repository_impl.dart';
 import 'services/facility_local_storage_service.dart';
+import 'services/google_places_service.dart';
 
 part 'facility_providers.g.dart';
 
@@ -241,7 +242,10 @@ class SelectedFacilityTypeNotifier extends _$SelectedFacilityTypeNotifier {
 @riverpod
 class FacilityRepositoryNotifier extends _$FacilityRepositoryNotifier {
   @override
-  FacilityRepository build() => FacilityRepositoryImpl();
+  FacilityRepository build() {
+    final googlePlacesService = ref.watch(googlePlacesServiceProvider);
+    return FacilityRepositoryImpl(googlePlacesService);
+  }
 }
 
 /// 근처 시설 조회 Provider (Google Places API + 로컬 저장소)

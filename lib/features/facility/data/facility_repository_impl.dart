@@ -1,10 +1,15 @@
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../domain/domain.dart';
 import 'services/facility_local_storage_service.dart';
 import 'services/google_places_service.dart';
 
 class FacilityRepositoryImpl implements FacilityRepository {
+  final GooglePlacesService _googlePlacesService;
+
+  FacilityRepositoryImpl(this._googlePlacesService);
+
   @override
   Future<Result<List<Facility>>> getNearbyFacilities() async {
     try {
@@ -18,22 +23,28 @@ class FacilityRepositoryImpl implements FacilityRepository {
       }
 
       // 2. 캐시가 없으면 현재 위치 기반으로 Google Places API 검색
-      final position =
-          await GooglePlacesService.getCurrentLocation() ??
-          GooglePlacesService.getDefaultLocation();
+      final position = await _getCurrentPosition();
 
-      final facilitiesData = await GooglePlacesService.searchAllPetFacilities(
+      final result = await _googlePlacesService.searchNearbyPetFacilities(
         latitude: position.latitude,
         longitude: position.longitude,
-        radiusMeters: 5000,
+        radius: 5000,
       );
 
-      // 3. 검색 결과를 로컬 저장소에 저장
-      if (facilitiesData.isNotEmpty) {
-        await FacilityLocalStorageService.addFacilities(facilitiesData);
+      if (!result.isSuccess) {
+        // 에러를 문자열로 안전하게 변환 후 반환
+        return Result.failure(result.error?.toString() ?? '시설 검색에 실패했습니다');
       }
 
-      final facilities = _convertToFacilityList(facilitiesData);
+      final facilities = result.dataOrNull ?? [];
+
+      // 3. 검색 결과를 로컬 저장소에 저장
+      if (facilities.isNotEmpty) {
+        await FacilityLocalStorageService.addFacilities(
+          facilities.map(_facilityToMap).toList(),
+        );
+      }
+
       return Result.success('근처 시설을 성공적으로 조회했습니다', facilities);
     } catch (e) {
       final appException = AppErrorHandler.convertToAppException(e);
@@ -66,22 +77,27 @@ class FacilityRepositoryImpl implements FacilityRepository {
       }
 
       // 3. 로컬 결과가 부족하면 Google Places API로 검색
-      final position =
-          await GooglePlacesService.getCurrentLocation() ??
-          GooglePlacesService.getDefaultLocation();
+      final position = await _getCurrentPosition();
 
-      final searchResults = await GooglePlacesService.textSearch(
-        query: '$query 動物',
+      final result = await _googlePlacesService.searchFacilitiesByText(
+        query: query,
         latitude: position.latitude,
         longitude: position.longitude,
+        radius: 10000,
       );
 
-      // 4. 검색 결과를 로컬 저장소에 추가
-      if (searchResults.isNotEmpty) {
-        await FacilityLocalStorageService.addFacilities(searchResults);
+      if (!result.isSuccess) {
+        return Result.success('검색 결과를 성공적으로 조회했습니다', localResults);
       }
 
-      final apiResults = _convertToFacilityList(searchResults);
+      final apiResults = result.dataOrNull ?? [];
+
+      // 4. 검색 결과를 로컬 저장소에 추가
+      if (apiResults.isNotEmpty) {
+        await FacilityLocalStorageService.addFacilities(
+          apiResults.map(_facilityToMap).toList(),
+        );
+      }
 
       // 5. 로컬 결과와 API 결과 합치기 (중복 제거)
       final allResults = <String, Facility>{};
@@ -117,56 +133,54 @@ class FacilityRepositoryImpl implements FacilityRepository {
       }
 
       // 3. 로컬 결과가 부족하면 Google Places API로 타입별 검색
-      final position =
-          await GooglePlacesService.getCurrentLocation() ??
-          GooglePlacesService.getDefaultLocation();
+      final position = await _getCurrentPosition();
 
-      List<Map<String, dynamic>> searchResults;
+      // 타입에 맞는 검색어 생성
+      String? placeType;
       switch (type) {
         case FacilityType.hospital:
         case FacilityType.veterinary:
-          searchResults = await GooglePlacesService.searchNearbyVeterinary(
-            latitude: position.latitude,
-            longitude: position.longitude,
-          );
+          placeType = 'veterinary_care';
           break;
         case FacilityType.grooming:
-          searchResults = await GooglePlacesService.searchNearbyGrooming(
-            latitude: position.latitude,
-            longitude: position.longitude,
-          );
           break;
         case FacilityType.petShop:
         case FacilityType.petStore:
-          searchResults = await GooglePlacesService.searchNearbyPetShop(
-            latitude: position.latitude,
-            longitude: position.longitude,
-          );
+          placeType = 'pet_store';
           break;
         case FacilityType.cafe:
-          searchResults = await GooglePlacesService.searchNearbyPetCafe(
-            latitude: position.latitude,
-            longitude: position.longitude,
-          );
           break;
         case FacilityType.park:
         case FacilityType.petPark:
         case FacilityType.dogRun:
-          searchResults = await GooglePlacesService.searchNearbyPetPark(
-            latitude: position.latitude,
-            longitude: position.longitude,
-          );
+          placeType = 'park';
           break;
         default:
-          searchResults = [];
+          break;
       }
+
+      final result = await _googlePlacesService.searchNearbyPetFacilities(
+        latitude: position.latitude,
+        longitude: position.longitude,
+        radius: 5000,
+        type: placeType,
+      );
+
+      if (!result.isSuccess) {
+        return Result.success(
+          '${type.name} タイプの施設を正常に照会しました',
+          filteredFacilities,
+        );
+      }
+
+      final apiResults = result.dataOrNull ?? [];
 
       // 4. 검색 결과를 로컬 저장소에 추가
-      if (searchResults.isNotEmpty) {
-        await FacilityLocalStorageService.addFacilities(searchResults);
+      if (apiResults.isNotEmpty) {
+        await FacilityLocalStorageService.addFacilities(
+          apiResults.map(_facilityToMap).toList(),
+        );
       }
-
-      final apiResults = _convertToFacilityList(searchResults);
 
       // 5. 로컬 결과와 API 결과 합치기
       final allResults = <String, Facility>{};
@@ -197,17 +211,19 @@ class FacilityRepositoryImpl implements FacilityRepository {
       }
 
       // 2. 로컬에 없으면 Google Places Details API로 상세 정보 가져오기
-      final detailsData = await GooglePlacesService.getPlaceDetails(id);
-      if (detailsData != null) {
-        detailsData['id'] = id;
+      final result = await _googlePlacesService.getFacilityDetails(id);
 
+      if (!result.isSuccess) {
+        return Result.failure('施設を見つけることができません');
+      }
+
+      final facilityDetail = result.dataOrNull;
+      if (facilityDetail != null) {
         // 로컬 저장소에 추가
-        await FacilityLocalStorageService.addFacility(detailsData);
-
-        final facilities = _convertToFacilityList([detailsData]);
-        if (facilities.isNotEmpty) {
-          return Result.success('施設情報を正常に照会しました', facilities.first);
-        }
+        await FacilityLocalStorageService.addFacility(
+          _facilityToMap(facilityDetail),
+        );
+        return Result.success('施設情報を正常に照会しました', facilityDetail);
       }
 
       return Result.failure('施設を見つけることができません');
@@ -225,18 +241,27 @@ class FacilityRepositoryImpl implements FacilityRepository {
   ) async {
     try {
       // Google Places API로 반경 내 시설 검색
-      final facilitiesData = await GooglePlacesService.searchAllPetFacilities(
+      final result = await _googlePlacesService.searchNearbyPetFacilities(
         latitude: latitude,
         longitude: longitude,
-        radiusMeters: radius * 1000, // km를 m로 변환
+        radius: (radius * 1000).toInt(), // km를 m로 변환
       );
 
-      // 로컬 저장소에 저장
-      if (facilitiesData.isNotEmpty) {
-        await FacilityLocalStorageService.addFacilities(facilitiesData);
+      if (!result.isSuccess) {
+        // 에러 메시지는 문자열로 변환하여 반환
+        final errorMessage = result.error?.toString() ?? '施設検索に失敗しました';
+        return Result.failure(errorMessage);
       }
 
-      final facilities = _convertToFacilityList(facilitiesData);
+      final facilities = result.dataOrNull ?? [];
+
+      // 로컬 저장소에 저장
+      if (facilities.isNotEmpty) {
+        await FacilityLocalStorageService.addFacilities(
+          facilities.map(_facilityToMap).toList(),
+        );
+      }
+
       return Result.success('半径内の施設を正常に照会しました', facilities);
     } catch (e) {
       final appException = AppErrorHandler.convertToAppException(e);
@@ -252,17 +277,27 @@ class FacilityRepositoryImpl implements FacilityRepository {
   ) async {
     try {
       // 현재 위치 기반으로 주변 시설 재검색
-      final facilitiesData = await GooglePlacesService.searchAllPetFacilities(
+      final result = await _googlePlacesService.searchNearbyPetFacilities(
         latitude: latitude,
         longitude: longitude,
-        radiusMeters: 5000,
+        radius: 5000,
       );
+
+      if (!result.isSuccess) {
+        // 에러 메시지는 문자열로 변환하여 반환
+        final errorMessage = result.error?.toString() ?? '施設検索に失敗しました';
+        return Result.failure(errorMessage);
+      }
+
+      final facilities = result.dataOrNull ?? [];
 
       // 기존 캐시 삭제 후 새로운 결과 저장
       await FacilityLocalStorageService.clearAllFacilities();
 
-      if (facilitiesData.isNotEmpty) {
-        await FacilityLocalStorageService.addFacilities(facilitiesData);
+      if (facilities.isNotEmpty) {
+        await FacilityLocalStorageService.addFacilities(
+          facilities.map(_facilityToMap).toList(),
+        );
       }
 
       return Result.success('現在地を正常に設定しました', null);
@@ -270,6 +305,79 @@ class FacilityRepositoryImpl implements FacilityRepository {
       final appException = AppErrorHandler.convertToAppException(e);
       return Result.failure(appException.toString());
     }
+  }
+
+  /// 현재 위치 가져오기 (위치 권한 처리 포함)
+  Future<Position> _getCurrentPosition() async {
+    try {
+      // 위치 권한 확인
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.deniedForever ||
+          permission == LocationPermission.denied) {
+        // 권한이 없으면 기본 위치 반환 (도쿄)
+        return Position(
+          latitude: 35.6762,
+          longitude: 139.6503,
+          timestamp: DateTime.now(),
+          accuracy: 0,
+          altitude: 0,
+          altitudeAccuracy: 0,
+          heading: 0,
+          headingAccuracy: 0,
+          speed: 0,
+          speedAccuracy: 0,
+        );
+      }
+
+      // 현재 위치 가져오기
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 100,
+        ),
+      );
+    } catch (e) {
+      // 에러 발생 시 기본 위치 반환 (도쿄)
+      return Position(
+        latitude: 35.6762,
+        longitude: 139.6503,
+        timestamp: DateTime.now(),
+        accuracy: 0,
+        altitude: 0,
+        altitudeAccuracy: 0,
+        heading: 0,
+        headingAccuracy: 0,
+        speed: 0,
+        speedAccuracy: 0,
+      );
+    }
+  }
+
+  /// Facility를 Map으로 변환
+  Map<String, dynamic> _facilityToMap(Facility facility) {
+    return {
+      'id': facility.id,
+      'name': facility.name,
+      'description': facility.description,
+      'address': facility.address,
+      'latitude': facility.latitude,
+      'longitude': facility.longitude,
+      'phone': facility.phone,
+      'email': facility.email,
+      'type': facility.type.name,
+      'rating': facility.rating,
+      'reviewCount': facility.reviewCount,
+      'imagePath': facility.imagePath,
+      'isFavorite': facility.isFavorite,
+      'hasHistory': facility.hasHistory,
+      'lastVisit': facility.lastVisit?.toIso8601String(),
+      'isOpen': facility.isOpen,
+      'createdAt': facility.createdAt?.toIso8601String(),
+    };
   }
 
   /// Map 데이터를 Facility 객체 리스트로 변환
