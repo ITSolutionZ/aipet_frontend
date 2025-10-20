@@ -72,7 +72,7 @@ class SplashLogoWidget extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(24.0), // 여백 증가
+        padding: const EdgeInsets.all(12.0), // 여백 감소 (로고 잘림 방지)
         child: ClipRRect(
           borderRadius: BorderRadius.circular(
             AppConstants.splashLogoRadius - 8,
