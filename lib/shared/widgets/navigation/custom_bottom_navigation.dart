@@ -31,9 +31,10 @@ class CustomBottomNavigation extends StatelessWidget {
             children: [
               _buildNavItem(Icons.home, 0, '홈'),
               _buildNavItem(Icons.smart_toy, 1, 'AI'),
-              _buildNavItem(Icons.directions_walk, 2, '散歩'),
-              _buildNavItem(Icons.calendar_today, 3, 'カレンダー'),
-              _buildNavItem(Icons.settings, 4, '設定'),
+              // DISABLED: Walk feature (임시 비활성화)
+              // _buildNavItem(Icons.directions_walk, 2, '散歩'),
+              _buildNavItem(Icons.calendar_today, 2, 'カレンダー'), // 인덱스 조정
+              _buildNavItem(Icons.settings, 3, '設定'), // 인덱스 조정
             ],
           ),
         ),
