@@ -41,10 +41,6 @@ class AppDrawer extends ConsumerWidget {
                   const PetCardSectionWidget(),
                   const SizedBox(height: 24),
 
-                  // マイブックマークセクション
-                  const MyBookmarkSectionWidget(),
-                  const SizedBox(height: 16),
-
                   // サービスお問い合わせセクション
                   const ServiceInquirySectionWidget(),
                   const SizedBox(height: 16),
