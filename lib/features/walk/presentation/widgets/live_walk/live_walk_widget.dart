@@ -610,8 +610,20 @@ class LiveWalkWidget extends ConsumerStatefulWidget {
 }
 
 class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
+  int _parentBuildCount = 0;
+  DateTime? _parentLastBuild;
+
   @override
   Widget build(BuildContext context) {
+    _parentBuildCount++;
+    final now = DateTime.now();
+    final timeSinceLastBuild = _parentLastBuild != null
+        ? now.difference(_parentLastBuild!).inMilliseconds
+        : 0;
+    _parentLastBuild = now;
+
+    debugPrint('👨‍👧‍👦 _LiveWalkWidgetState.build() 호출 #$_parentBuildCount (${timeSinceLastBuild}ms)');
+
     final walkController = ref.read(liveWalkControllerProvider.notifier);
 
     return Scaffold(
@@ -651,6 +663,8 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
   WalkTimerState _cachedTimerState = WalkTimerState.ready;
   int _cachedRouteLength = 0;
   WalkRecordEntity? _cachedCurrentWalkRecord;
+  int _controlBuildCount = 0;
+  DateTime? _controlLastBuild;
 
   @override
   void initState() {
@@ -675,6 +689,15 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
 
   @override
   Widget build(BuildContext context) {
+    _controlBuildCount++;
+    final now = DateTime.now();
+    final timeSinceLastBuild = _controlLastBuild != null
+        ? now.difference(_controlLastBuild!).inMilliseconds
+        : 0;
+    _controlLastBuild = now;
+
+    debugPrint('⚙️ _ControlSection.build() 호출 #$_controlBuildCount (${timeSinceLastBuild}ms)');
+
     // 🚀 현재 상태 읽기 (ref.read는 watch가 아니므로 rebuild를 트리거하지 않음)
     final currentState = ref.read(liveWalkControllerProvider);
 
@@ -1045,6 +1068,8 @@ class _MapSectionState extends ConsumerState<_MapSection> {
   String? _lastPositionKey;
   Set<Marker> _lastMarkers = {};
   Set<Polyline> _lastPolylines = {};
+  int _buildCallCount = 0;
+  DateTime? _lastBuildTime;
 
   @override
   void initState() {
@@ -1069,8 +1094,18 @@ class _MapSectionState extends ConsumerState<_MapSection> {
 
   @override
   Widget build(BuildContext context) {
+    _buildCallCount++;
+    final now = DateTime.now();
+    final timeSinceLastBuild = _lastBuildTime != null
+        ? now.difference(_lastBuildTime!).inMilliseconds
+        : 0;
+    _lastBuildTime = now;
+
+    debugPrint('🎨 _MapSection.build() 호출 #$_buildCallCount (이전 빌드로부터 ${timeSinceLastBuild}ms 경과)');
+
     // 🚀 현재 상태를 ref.read로 가져옴 (watch 제거)
     final currentState = ref.read(liveWalkControllerProvider);
+    debugPrint('📋 현재 state 객체 ID: ${currentState.hashCode}, distance: ${currentState.distance}m');
 
     final currentPosition = currentState.currentPosition;
     final markers = currentState.markers;
