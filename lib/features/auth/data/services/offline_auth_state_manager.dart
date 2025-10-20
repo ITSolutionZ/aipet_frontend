@@ -180,9 +180,7 @@ class OfflineAuthStateManager {
       await SecureStorageService.remove('cached_user');
       return const Success(null);
     } catch (e) {
-      return Failure(
-        CacheError('캐시된 사용자 정보 삭제 실패', details: e.toString()),
-      );
+      return Failure(CacheError('캐시된 사용자 정보 삭제 실패', details: e.toString()));
     }
   }
 

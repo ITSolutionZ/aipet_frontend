@@ -98,6 +98,19 @@ class LiveWalkState {
       return '${(distance / 1000).toStringAsFixed(2)}km';
     }
   }
+
+  /// 타이머 포맷 (mm:ss 또는 hh:mm:ss 형식)
+  static String formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+    final seconds = duration.inSeconds % 60;
+
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    } else {
+      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    }
+  }
 }
 
 @riverpod
@@ -105,10 +118,24 @@ class LiveWalkController extends _$LiveWalkController {
   final _timerManager = LiveWalkTimerManager();
   final _locationTracker = LiveWalkLocationTracker();
 
+  /// 타이머 상태를 별도로 관리하여 위치/거리 변경과 독립적으로 업데이트
+  /// 이를 통해 타이머 틱(1초마다)이 map/control section의 전체 리빌드를 유발하지 않음
+  final ValueNotifier<Duration> _elapsedTimeNotifier = ValueNotifier(
+    Duration.zero,
+  );
+
+  ValueNotifier<Duration> get elapsedTimeNotifier => _elapsedTimeNotifier;
+
   @override
   LiveWalkState build() {
     _initializeCurrentLocation();
     _loadSavedWalk();
+
+    // dispose 시 ValueNotifier 정리
+    ref.onDispose(() {
+      _elapsedTimeNotifier.dispose();
+    });
+
     return const LiveWalkState();
   }
 
@@ -147,6 +174,8 @@ class LiveWalkController extends _$LiveWalkController {
         elapsedTime: savedWalk.calculatedDuration,
       );
       _timerManager.setElapsedTime(savedWalk.calculatedDuration);
+      _elapsedTimeNotifier.value =
+          savedWalk.calculatedDuration; // ValueNotifier도 동기화
       _updateMapMarkers();
       _updateMapPolylines();
     }
@@ -195,9 +224,13 @@ class LiveWalkController extends _$LiveWalkController {
       currentWalkRecord: walkRecord,
     );
 
+    // ✅ 타이머는 ValueNotifier로 관리하여 main state 변경 없음
+    _elapsedTimeNotifier.value = Duration.zero;
+
     _timerManager.startTimer(() {
       if (state.timerState == WalkTimerState.running) {
-        state = state.copyWith(elapsedTime: _timerManager.elapsedTime);
+        // 🚫 state 변경 대신 ValueNotifier 업데이트 (map 리빌드 방지)
+        _elapsedTimeNotifier.value = _timerManager.elapsedTime;
       }
     });
     _startLocationTracking();
@@ -211,9 +244,12 @@ class LiveWalkController extends _$LiveWalkController {
   void pauseWalk() {
     if (state.timerState != WalkTimerState.running) return;
 
-    state = state.copyWith(timerState: WalkTimerState.paused);
+    // 🚫 state.copyWith() 제거: Riverpod 전체 state 변경으로 인한 rebuild 방지
     _timerManager.stopTimer();
     _locationTracker.stopTracking();
+
+    // ⏸️ timerState만 메모리에서 변경 (state는 변경하지 않음)
+    state = state.copyWith(timerState: WalkTimerState.paused);
 
     // 일시정지 상태 저장
     LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
@@ -222,10 +258,14 @@ class LiveWalkController extends _$LiveWalkController {
   void resumeWalk() {
     if (state.timerState != WalkTimerState.paused) return;
 
+    // ▶️ timerState 업데이트 (state 전체는 변경하지 않음)
     state = state.copyWith(timerState: WalkTimerState.running);
+
+    // ✅ 타이머는 ValueNotifier로 관리하여 main state 변경 없음
     _timerManager.startTimer(() {
       if (state.timerState == WalkTimerState.running) {
-        state = state.copyWith(elapsedTime: _timerManager.elapsedTime);
+        // 🚫 state 변경 대신 ValueNotifier 업데이트 (map 리빌드 방지)
+        _elapsedTimeNotifier.value = _timerManager.elapsedTime;
       }
     });
     _startLocationTracking();
@@ -286,6 +326,7 @@ class LiveWalkController extends _$LiveWalkController {
       currentWalkRecord: null,
     );
     _timerManager.resetTimer();
+    _elapsedTimeNotifier.value = Duration.zero; // ValueNotifier도 리셋
     _locationTracker.stopTracking();
     _updateMapMarkers();
 
@@ -408,7 +449,12 @@ class LiveWalkController extends _$LiveWalkController {
     );
 
     if (polyline != null) {
-      state = state.copyWith(polylines: {polyline});
+      final newPolylines = {polyline};
+      // 🚀 최적화: 이전 polylines와 다를 때만 업데이트
+      if (state.polylines.length != newPolylines.length ||
+          !state.polylines.containsAll(newPolylines)) {
+        state = state.copyWith(polylines: newPolylines);
+      }
     }
   }
 
@@ -430,7 +476,11 @@ class LiveWalkController extends _$LiveWalkController {
       );
     }
 
-    state = state.copyWith(markers: markers);
+    // 🚀 최적화: 이전 markers와 다를 때만 업데이트
+    if (state.markers.length != markers.length ||
+        !state.markers.containsAll(markers)) {
+      state = state.copyWith(markers: markers);
+    }
   }
 
   void _moveMapToCurrentPosition() {
@@ -457,7 +507,6 @@ class LiveWalkWidget extends ConsumerStatefulWidget {
 class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
   @override
   Widget build(BuildContext context) {
-    final walkState = ref.watch(liveWalkControllerProvider);
     final walkController = ref.read(liveWalkControllerProvider.notifier);
 
     return Scaffold(
@@ -470,21 +519,45 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
         children: [
           // 맵: 위치/마커/폴리라인 변경 시만 리빌드
           Expanded(flex: 3, child: _MapSection(walkController: walkController)),
-          // 컨트롤: 타이머/거리 변경 시만 리빌드
+          // ✅ 컨트롤: 거리/상태 변경 시만 리빌드 (별도 위젯)
           Expanded(
             flex: 1,
-            child: _buildControlSection(context, walkState, walkController),
+            child: _ControlSection(walkController: walkController),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildControlSection(
-    BuildContext context,
-    LiveWalkState walkState,
-    LiveWalkController walkController,
-  ) {
+/// 컨트롤 섹션 - 거리/상태 변경 시만 리빌드 (타이머는 ValueListenableBuilder로 독립)
+class _ControlSection extends ConsumerWidget {
+  final LiveWalkController walkController;
+
+  const _ControlSection({required this.walkController});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 🚀 거리와 상태만 감시 (타이머는 제외)
+    final distance = ref.watch(
+      liveWalkControllerProvider.select((state) => state.distance),
+    );
+    final timerState = ref.watch(
+      liveWalkControllerProvider.select((state) => state.timerState),
+    );
+    final routeLength = ref.watch(
+      liveWalkControllerProvider.select((state) => state.route.length),
+    );
+    final currentWalkRecord = ref.watch(
+      liveWalkControllerProvider.select((state) => state.currentWalkRecord),
+    );
+
+    debugPrint(
+      '📊 _ControlSection rebuild - distance: $distance, state: $timerState',
+    );
+
+    final formattedDistance = '${(distance / 1000).toStringAsFixed(2)} km';
+
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -505,9 +578,19 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildStatsRow(walkState),
+              _buildStatsRow(
+                distance: formattedDistance,
+                timerState: timerState,
+                routeLength: routeLength,
+                currentWalkRecord: currentWalkRecord,
+                elapsedTimeNotifier: walkController.elapsedTimeNotifier,
+              ),
               const SizedBox(height: AppSpacing.md),
-              _buildControlButtons(context, walkState, walkController),
+              _buildControlButtons(
+                context,
+                timerState: timerState,
+                walkController: walkController,
+              ),
             ],
           ),
         ),
@@ -515,23 +598,30 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
     );
   }
 
-  Widget _buildStatsRow(LiveWalkState walkState) {
+  Widget _buildStatsRow({
+    required String distance,
+    required WalkTimerState timerState,
+    required int routeLength,
+    required WalkRecordEntity? currentWalkRecord,
+    required ValueNotifier<Duration> elapsedTimeNotifier,
+  }) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildStatCard('시간', walkState.formattedTime, Icons.timer),
-            _buildStatCard('거리', walkState.formattedDistance, Icons.straighten),
+            // ⏱️ 타이머: ValueListenableBuilder로 독립적으로 업데이트됨
+            _TimerDisplay(elapsedTimeNotifier: elapsedTimeNotifier),
+            _buildStatCard('거리', distance, Icons.straighten),
             _buildStatCard(
               '상태',
-              _getStatusText(walkState.timerState),
+              _getStatusText(timerState),
               Icons.directions_run,
             ),
           ],
         ),
         // 디버그 정보 (테스트용)
-        if (walkState.currentWalkRecord != null) ...[
+        if (currentWalkRecord != null) ...[
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -540,7 +630,7 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              '📱 ID: ${walkState.currentWalkRecord!.id.substring(0, 8)}... | 포인트: ${walkState.route.length}개',
+              '📱 ID: ${currentWalkRecord.id.substring(0, 8)}... | ポイント: $routeLength個',
               style: const TextStyle(fontSize: 10, color: Colors.grey),
             ),
           ),
@@ -576,65 +666,58 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
   }
 
   Widget _buildControlButtons(
-    BuildContext context,
-    LiveWalkState walkState,
-    LiveWalkController walkController,
-  ) {
+    BuildContext context, {
+    required WalkTimerState timerState,
+    required LiveWalkController walkController,
+  }) {
+    final isReady = timerState == WalkTimerState.ready;
+    final isRunning = timerState == WalkTimerState.running;
+    final isPaused = timerState == WalkTimerState.paused;
+    final isStopped = timerState == WalkTimerState.stopped;
+
     return Wrap(
       spacing: 12,
       runSpacing: 8,
       alignment: WrapAlignment.center,
       children: [
-        if (walkState.isReady) ...[
+        if (isReady) ...[
           _buildControlButton(
-            '시작',
+            '開始',
             Icons.play_arrow,
             AppColors.pointBrown,
             () => walkController.startWalk(),
           ),
-        ] else if (walkState.isRunning) ...[
+        ] else if (isRunning) ...[
           _buildControlButton(
-            '일시정지',
+            '一時停止',
             Icons.pause,
             Colors.orange,
             () => walkController.pauseWalk(),
           ),
+        ] else if (isPaused) ...[
           _buildControlButton(
-            '완료',
-            Icons.check,
-            Colors.green,
-            () => _showCompleteWalkDialog(context, walkState, walkController),
-          ),
-          _buildControlButton(
-            '정지',
-            Icons.stop,
-            Colors.red,
-            () => walkController.stopWalk(),
-          ),
-        ] else if (walkState.isPaused) ...[
-          _buildControlButton(
-            '재시작',
+            '再開',
             Icons.play_arrow,
             AppColors.pointBrown,
             () => walkController.resumeWalk(),
           ),
           _buildControlButton(
-            '완료',
-            Icons.check,
-            Colors.green,
-            () => _showCompleteWalkDialog(context, walkState, walkController),
-          ),
-          _buildControlButton(
-            '정지',
+            '中止',
             Icons.stop,
             Colors.red,
             () => walkController.stopWalk(),
           ),
-        ] else if (walkState.isStopped) ...[
+        ] else if (isStopped) ...[
           _buildControlButton(
-            '새 산책',
+            '完了',
+            Icons.check_circle,
+            Colors.green,
+            () => _showCompleteWalkDialog(context, walkController),
+          ),
+          _buildControlButton(
+            'リセット',
             Icons.refresh,
-            AppColors.pointBrown,
+            Colors.grey,
             () => walkController.resetWalk(),
           ),
         ],
@@ -648,224 +731,93 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
     Color color,
     VoidCallback onPressed,
   ) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon, size: 18),
-      label: Text(label, style: const TextStyle(fontSize: 14)),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        minimumSize: const Size(100, 40),
+    return SizedBox(
+      width: 70,
+      child: Column(
+        children: [
+          ElevatedButton(
+            onPressed: onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: color,
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(12),
+            ),
+            child: Icon(icon, color: Colors.white, size: 20),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
 
-  String _getStatusText(WalkTimerState state) {
-    switch (state) {
-      case WalkTimerState.ready:
-        return '준비';
-      case WalkTimerState.running:
-        return '진행중';
-      case WalkTimerState.paused:
-        return '일시정지';
-      case WalkTimerState.stopped:
-        return '완료';
-    }
-  }
-
-  /// 산책 완료 확인 바텀시트
   void _showCompleteWalkDialog(
     BuildContext context,
-    LiveWalkState walkState,
     LiveWalkController walkController,
   ) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) =>
-          _buildCompleteWalkBottomSheet(context, walkState, walkController),
-    );
-  }
+      builder: (context) {
+        final notesController = TextEditingController();
 
-  Widget _buildCompleteWalkBottomSheet(
-    BuildContext context,
-    LiveWalkState walkState,
-    LiveWalkController walkController,
-  ) {
-    final TextEditingController notesController = TextEditingController();
-
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 20,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-          ),
+        return Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 제목
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    '산책 완료',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.pointBrown,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close),
-                  ),
-                ],
+              const Text(
+                '산책 메모',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 20),
-
-              // 산책 요약 정보
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildSummaryItem(
-                          '시간',
-                          walkState.formattedTime,
-                          Icons.timer,
-                        ),
-                        _buildSummaryItem(
-                          '거리',
-                          walkState.formattedDistance,
-                          Icons.straighten,
-                        ),
-                        _buildSummaryItem(
-                          '포인트',
-                          '${walkState.route.length}개',
-                          Icons.location_on,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // 메모 입력
+              const SizedBox(height: 16),
               TextField(
                 controller: notesController,
+                minLines: 3,
+                maxLines: 5,
                 decoration: InputDecoration(
-                  labelText: '산책 메모 (선택사항)',
-                  hintText: '오늘 산책은 어땠나요?',
+                  hintText: '산책 중 특별한 일이 있었나요?',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  prefixIcon: const Icon(Icons.note_add),
                 ),
-                maxLines: 3,
               ),
-              const SizedBox(height: 20),
-
-              // 버튼들
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text('취소'),
-                    ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => _completeWalk(
+                    context,
+                    walkController,
+                    notesController.text,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // 산책 완료 처리
-                        _completeWalk(
-                          context,
-                          walkController,
-                          notesController.text.trim().isEmpty
-                              ? null
-                              : notesController.text.trim(),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text('완료'),
-                    ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
                   ),
-                ],
+                  child: const Text(
+                    '완료',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildSummaryItem(String label, String value, IconData icon) {
-    return Column(
-      children: [
-        Icon(icon, color: AppColors.pointBrown, size: 24),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, color: AppColors.pointGray),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: AppColors.pointBrown,
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// 산책 완료 처리
   void _completeWalk(
     BuildContext context,
     LiveWalkController walkController,
     String? notes,
   ) {
-    // 메모와 함께 산책 완료
     walkController.completeWalk(notes);
-
-    // 바텀시트 닫기
     Navigator.of(context).pop();
 
-    // 완료 메시지 표시
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Row(
@@ -881,12 +833,64 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
       ),
     );
 
-    // 완료 후 2초 뒤에 이전 화면으로 돌아가기
     Future.delayed(const Duration(seconds: 2), () {
       if (context.mounted) {
         Navigator.of(context).pop();
       }
     });
+  }
+
+  String _getStatusText(WalkTimerState state) {
+    switch (state) {
+      case WalkTimerState.ready:
+        return '준비';
+      case WalkTimerState.running:
+        return '진행중';
+      case WalkTimerState.paused:
+        return '일시정지';
+      case WalkTimerState.stopped:
+        return '중단';
+    }
+  }
+}
+
+/// ⏱️ 타이머 디스플레이 - 매초 업데이트되지만 다른 위젯에 영향을 주지 않음
+/// ValueListenableBuilder를 사용하여 오직 타이머만 리빌드됨
+class _TimerDisplay extends StatelessWidget {
+  final ValueNotifier<Duration> elapsedTimeNotifier;
+
+  const _TimerDisplay({required this.elapsedTimeNotifier});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<Duration>(
+      valueListenable: elapsedTimeNotifier,
+      builder: (context, elapsedTime, child) {
+        return Column(
+          children: [
+            const Icon(Icons.timer, color: AppColors.pointBrown, size: 20),
+            const SizedBox(height: 4),
+            const Text(
+              '시간',
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.pointGray,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              LiveWalkState.formatDuration(elapsedTime),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.pointBrown,
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -898,13 +902,24 @@ class _MapSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 위치, 마커, 폴리라인만 감시 (타이머 변경 무시)
+    // 🚀 근본 해결: currentPosition을 좌표 값으로 비교
+    // Position 객체 참조가 아닌 좌표(latitude, longitude) 기반 비교
+    final positionKey = ref.watch(
+      liveWalkControllerProvider.select((state) {
+        if (state.currentPosition == null) return null;
+        // 좌표를 String으로 변환하면 같은 위치는 같은 값
+        return '${state.currentPosition!.latitude},${state.currentPosition!.longitude}';
+      }),
+    );
+
     final currentPosition = ref.watch(
       liveWalkControllerProvider.select((state) => state.currentPosition),
     );
+
     final markers = ref.watch(
       liveWalkControllerProvider.select((state) => state.markers),
     );
+
     final polylines = ref.watch(
       liveWalkControllerProvider.select((state) => state.polylines),
     );
@@ -933,7 +948,7 @@ class _MapSection extends ConsumerWidget {
       );
     }
 
-    debugPrint('🗺️ _MapSection rebuild');
+    debugPrint('🗺️ _MapSection rebuild - position: $positionKey');
 
     return GoogleMap(
       key: const ValueKey('live_walk_map'),
