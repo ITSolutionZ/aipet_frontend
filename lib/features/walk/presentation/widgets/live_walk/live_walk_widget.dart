@@ -677,7 +677,7 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Column(
+      body: const Column(
         children: [
           // 맵: 위치 변경 시만 리빌드 (완전 독립)
           Expanded(flex: 3, child: _MapSection()),
