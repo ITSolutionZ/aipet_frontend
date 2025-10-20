@@ -139,7 +139,8 @@ class PetBasicInfoTabState {
       editingGender: editingGender ?? this.editingGender,
       editingWeight: editingWeight ?? this.editingWeight,
       selectedImagePath: selectedImagePath ?? this.selectedImagePath,
-      editingHealthConditions: editingHealthConditions ?? this.editingHealthConditions,
+      editingHealthConditions:
+          editingHealthConditions ?? this.editingHealthConditions,
     );
   }
 }
@@ -164,6 +165,52 @@ class PetBasicInfoTab extends ConsumerWidget {
   static const double _smallIconSize = 20.0;
   static const double _borderWidth = 2.0;
   static const double _cardBorderRadius = 12.0;
+
+  // 동물별 주요 질병 데이터
+  static const Map<String, List<String>> _commonDiseases = {
+    'dog': [
+      '関節炎', // 관절염
+      '皮膚炎', // 피부염
+      '外耳炎', // 외이염
+      '歯周病', // 치주병
+      '心臓病', // 심장병
+      '糖尿病', // 당뇨병
+      '白内障', // 백내장
+      '股関節形成不全', // 고관절 형성부전
+    ],
+    'cat': [
+      '慢性腎臓病', // 만성신장병
+      '甲状腺機能亢進症', // 갑상선기능항진증
+      '糖尿病', // 당뇨병
+      '歯周病', // 치주병
+      '心臓病', // 심장병
+      '膀胱炎', // 방광염
+      '皮膚炎', // 피부염
+      '肥満', // 비만
+    ],
+    'rabbit': [
+      '歯の不正咬合', // 치아 부정교합
+      '消化器うっ滞', // 소화기 정체
+      '呼吸器感染症', // 호흡기 감염증
+      '皮膚炎', // 피부염
+      '肥満', // 비만
+      'ストレス', // 스트레스
+    ],
+    'hamster': [
+      '湿尾病', // 습미병
+      '呼吸器感染症', // 호흡기 감염증
+      '皮膚炎', // 피부염
+      '糖尿病', // 당뇨병
+      '腫瘍', // 종양
+    ],
+    'bird': [
+      '呼吸器感染症', // 호흡기 감염증
+      '羽毛引き抜き症', // 깃털 뽑기 증후군
+      '肝臓病', // 간장병
+      '肥満', // 비만
+      'ストレス', // 스트레스
+    ],
+  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -560,16 +607,26 @@ class PetBasicInfoTab extends ConsumerWidget {
   }
 
   /// 건강 상태 카드
-  Widget _buildHealthStatusCard(BuildContext context, WidgetRef ref, String tabId) {
+  Widget _buildHealthStatusCard(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+  ) {
     final tabState = ref.watch(petBasicInfoTabControllerProvider(tabId));
     final healthConditions = tabState.editingHealthConditions ?? [];
     final hasHealthConditions = healthConditions.isNotEmpty;
 
     // 신체 부위 개수 확인
     int bodyPartsCount = 0;
-    if (pet.additionalInfo != null && pet.additionalInfo!['bodyPartsToManage'] != null) {
-      final String bodyPartsString = pet.additionalInfo!['bodyPartsToManage'].toString();
-      final bodyPartsList = bodyPartsString.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    if (pet.additionalInfo != null &&
+        pet.additionalInfo!['bodyPartsToManage'] != null) {
+      final String bodyPartsString = pet.additionalInfo!['bodyPartsToManage']
+          .toString();
+      final bodyPartsList = bodyPartsString
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
       bodyPartsCount = bodyPartsList.length;
     }
 
@@ -578,16 +635,124 @@ class PetBasicInfoTab extends ConsumerWidget {
     final statusText = isWarning ? '注意' : '良好';
     final statusColor = isWarning ? AppColors.pointPink : AppColors.pointGreen;
 
-    return GenericInfoCard.withIcon(
-      icon: Icons.health_and_safety,
-      iconColor: statusColor,
-      iconBackgroundColor: statusColor.withValues(alpha: 0.1),
-      title: '健康状態',
-      subtitle: hasHealthConditions ? healthConditions.join('、') : '未設定',
-      badge: statusText,
-      badgeColor: statusColor,
-      trailing: isEditMode ? _buildEditHealthStatusButton(context, ref, tabId) : null,
+    // 동물별 주요 질병 가져오기
+    final commonDiseases = _getCommonDiseasesForPet();
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: statusColor.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(_cardBorderRadius),
+        border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.sm),
+                ),
+                child: Icon(
+                  Icons.health_and_safety,
+                  color: statusColor,
+                  size: _iconSize,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  '健康状態',
+                  style: AppFonts.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: statusColor,
+                  borderRadius: BorderRadius.circular(AppSpacing.lg),
+                ),
+                child: Text(
+                  statusText,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              if (isEditMode) ...[
+                const SizedBox(width: AppSpacing.sm),
+                _buildEditHealthStatusButton(context, ref, tabId),
+              ],
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+
+          // 기존 건강 조건 표시
+          if (hasHealthConditions) ...[
+            Text(
+              '現在の健康状態: ${healthConditions.join('、')}',
+              style: AppFonts.bodyMedium.copyWith(color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
+
+          // 동물별 주요 질병 칩 표시
+          if (commonDiseases.isNotEmpty) ...[
+            Text(
+              '${pet.type}の注意すべき病気',
+              style: AppFonts.bodySmall.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: commonDiseases.map((disease) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundGray.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(AppSpacing.sm),
+                    border: Border.all(
+                      color: AppColors.borderGray.withValues(alpha: 0.5),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    disease,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ],
+      ),
     );
+  }
+
+  /// 펫 타입에 따른 주요 질병 반환
+  List<String> _getCommonDiseasesForPet() {
+    final petType = pet.type.toLowerCase();
+    return _commonDiseases[petType] ?? [];
   }
 
   /// 건강 상태 편집 버튼
@@ -606,10 +771,11 @@ class PetBasicInfoTab extends ConsumerWidget {
   Widget _buildBodyPartsCard(BuildContext context) {
     // additionalInfo에서 bodyPartsToManage 가져오기
     String bodyParts = '';
-    if (pet.additionalInfo != null && pet.additionalInfo!['bodyPartsToManage'] != null) {
+    if (pet.additionalInfo != null &&
+        pet.additionalInfo!['bodyPartsToManage'] != null) {
       bodyParts = pet.additionalInfo!['bodyPartsToManage'].toString();
     }
-    
+
     final hasBodyParts = bodyParts.isNotEmpty;
 
     if (!hasBodyParts) {
@@ -660,7 +826,7 @@ class PetBasicInfoTab extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          
+
           // 신체 부위 칩 표시
           Wrap(
             spacing: AppSpacing.sm,
