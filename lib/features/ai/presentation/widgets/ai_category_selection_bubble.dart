@@ -1,7 +1,7 @@
-import 'package:aipet_frontend/features/ai/data/services/ai_category_service.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../domain/domain.dart';
 
 /// AI 메시지 버블 형태의 카테고리 선택 위젯
 class AiCategorySelectionBubble extends StatelessWidget {
@@ -104,7 +104,7 @@ class AiCategorySelectionBubble extends StatelessWidget {
     return Wrap(
       spacing: AppSpacing.sm,
       runSpacing: AppSpacing.sm,
-      children: AiCategoryService.getDefaultCategories().map((category) {
+      children: AiCategoryEntity.defaults.map((category) {
         return _buildCategoryChip(category);
       }).toList(),
     );

@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration/pet_registration_constants.dart';
-import 'package:aipet_frontend/shared/shared.dart' hide State;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 /// 펫 품종 선택 섹션

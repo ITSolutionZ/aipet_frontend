@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/home/data/services/openweathermap_service.dart';
-import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../data/data.dart';
 
 /// 날씨 아이콘 위젯 (정적 SVG)
 class WeatherIconWidget extends StatelessWidget {

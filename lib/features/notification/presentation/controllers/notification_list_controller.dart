@@ -1,8 +1,7 @@
-import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/notification/domain/usecases/notification_usecases.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/data.dart';
+import '../../domain/domain.dart';
 import 'notification_ui_controller.dart';
 
 /// 알림 목록 화면 컨트롤러

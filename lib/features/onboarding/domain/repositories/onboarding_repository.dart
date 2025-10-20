@@ -1,5 +1,6 @@
-import 'package:aipet_frontend/features/onboarding/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../entities/entities.dart';
 
 /// 온보딩 관리 리포지토리 인터페이스
 ///

@@ -1,11 +1,11 @@
-import 'package:aipet_frontend/features/ai/domain/domain.dart';
-import 'package:aipet_frontend/features/ai/domain/services/ai_favorite_manager.dart';
-import 'package:aipet_frontend/features/ai/domain/services/ai_message_manager.dart';
-import 'package:aipet_frontend/features/ai/domain/services/message_pagination_service.dart';
-import 'package:aipet_frontend/features/ai/presentation/controllers/ai_chat_controller.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
+
+import '../../presentation/controllers/ai_chat_controller.dart';
+import '../entities/entities.dart';
+import 'ai_favorite_manager.dart';
+import 'ai_message_manager.dart';
+import 'ai_message_service.dart';
 
 /// 🎛️ AI 채팅 상태 관리 서비스
 ///
@@ -13,6 +13,11 @@ import 'package:flutter/foundation.dart';
 /// - 상태 변경 로직
 /// - 상태 검증
 /// - 상태 복원 및 초기화
+///
+/// ## 아키텍처 노트
+/// - **Static Helper Class**: 상태 변환 로직을 제공하는 헬퍼
+/// - **불변성 보장**: copyWith 패턴으로 새 상태 객체 생성
+/// - **결합된 검증**: 메시지, 즐겨찾기, 펫/카테고리 상태 통합 검증
 class AiChatStateManager {
   static const String _tag = 'AiChatStateManager';
 
@@ -497,16 +502,7 @@ class StateSnapshot {
       hasSelectedCategory: false,
       isTyping: false,
       hasError: false,
-      messageStats: const MessageStatistics(
-        totalMessages: 0,
-        userMessages: 0,
-        assistantMessages: 0,
-        totalCharacters: 0,
-        memoryUsageBytes: 0,
-        memoryUsageMB: 0.0,
-        isMemoryHigh: false,
-        needsCleanup: false,
-      ),
+      messageStats: MessageStatistics.empty(),
       favoriteStats: FavoriteStatistics.empty(),
       memoryStatus: MemoryStatus.safe(),
       suggestedQuestionsCount: 0,

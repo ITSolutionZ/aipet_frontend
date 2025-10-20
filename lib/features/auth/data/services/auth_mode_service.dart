@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/features/auth/domain/entities/auth_entities.dart';
 import 'package:flutter/foundation.dart';
+
+import '../../domain/domain.dart';
 
 /// 🎯 Auth 모드 서비스 (테스트 전용)
 ///

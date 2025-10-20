@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:aipet_frontend/features/daily/data/services/weekly_task_openai_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../services/weekly_task_openai_service.dart';
 
 part 'weekly_task_provider.g.dart';
 

@@ -1,6 +1,6 @@
-import 'package:aipet_frontend/features/allergy/data/providers/saved_analysis_provider.dart';
-import 'package:aipet_frontend/features/allergy/domain/entities/saved_analysis_entity.dart';
-import 'package:aipet_frontend/features/allergy/presentation/screens/allergy_analysis_result_screen.dart';
+import '../../data/data.dart';
+import '../../domain/domain.dart';
+import 'allergy_analysis_result_screen.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

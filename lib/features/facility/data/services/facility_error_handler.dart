@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/core/services/unified_error_handler.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../domain/domain.dart';
 
 /// 🎯 Facility 전용 에러 핸들러
 ///

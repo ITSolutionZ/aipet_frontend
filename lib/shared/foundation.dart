@@ -28,7 +28,7 @@ export 'foundation/providers/unified_providers.dart';
 // 테스트 유틸리티
 export 'foundation/testing/testing.dart';
 // 고급 타입 시스템
-export 'foundation/types/types.dart' hide Success, Failure;
+export 'foundation/types/types.dart' hide Success, Failure, State;
 // 고급 유틸리티 및 확장 메서드
 export 'foundation/utils/utils.dart';
 export 'services/base_logging_service.dart';

@@ -1,8 +1,9 @@
-import 'package:aipet_frontend/features/home/data/services/openweathermap_service.dart';
-import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
 import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../domain/domain.dart';
+import '../services/openweathermap_service.dart';
 
 part 'weather_providers.g.dart';
 

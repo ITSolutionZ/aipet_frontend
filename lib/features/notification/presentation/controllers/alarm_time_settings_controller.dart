@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
-import 'package:aipet_frontend/features/notification/domain/usecases/notification_usecases.dart';
+import '../../domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import '../../domain/domain.dart';
 
 /// 🎯 Facility 검색/필터링 통합 서비스
 ///

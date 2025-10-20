@@ -1,12 +1,16 @@
 import 'dart:async';
 
-import 'package:aipet_frontend/features/ai/data/providers/ai_usecase_providers.dart';
-import 'package:aipet_frontend/features/ai/domain/domain.dart';
-// import 'package:aipet_frontend/shared/domain/entities/entities.dart'; // 임시 제거
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../data/providers/ai_usecase_providers.dart';
+import '../entities/ai_category_entity.dart';
+import '../entities/ai_message_entity.dart';
+import '../entities/ai_suggested_question_entity.dart';
+import '../usecases/load_chat_history_usecase.dart';
+import '../usecases/send_message_usecase.dart';
 
 /// 🎯 AI 메시지 전용 서비스
 ///
@@ -24,7 +28,7 @@ class AiMessageService {
 
   void _initializeUseCases() {
     _sendMessageUseCase = _ref.read(sendMessageUseCaseProvider);
-    _loadHistoryUseCase = _ref.read(loadChatHistoryUseCaseProviderProvider);
+    _loadHistoryUseCase = _ref.read(loadChatHistoryUseCaseProvider);
   }
 
   /// ✅ 메시지 전송 처리

@@ -1,8 +1,9 @@
-import 'package:aipet_frontend/features/ai/presentation/controllers/ai_chat_history_list_controller.dart';
-import 'package:aipet_frontend/features/ai/presentation/widgets/chat_history_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../controllers/ai_chat_history_list_controller.dart';
+import '../widgets/chat_history_widgets.dart';
 
 /// AI 채팅 히스토리 리스트 화면
 class AiChatHistoryListScreen extends ConsumerStatefulWidget {

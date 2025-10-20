@@ -1,17 +1,16 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/app/router/app_router.dart';
-import 'package:aipet_frontend/features/auth/data/auth_providers.dart';
-import 'package:aipet_frontend/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:aipet_frontend/features/auth/presentation/widgets/auth_widgets.dart';
-import 'package:aipet_frontend/features/auth/presentation/widgets/error_message.dart'
-    as auth_error;
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/dialogs/app_lock_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../data/data.dart';
+import '../controllers/auth_controller.dart';
+import '../widgets/auth_widgets.dart';
+import '../widgets/error_message.dart' as auth_error;
 
 /// 로그인 화면
 class LoginScreen extends ConsumerStatefulWidget {

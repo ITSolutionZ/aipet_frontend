@@ -1,23 +1,28 @@
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aipet_frontend/shared/utils/id_generator.dart';
 
-import '../../domain/entities/ai_chat_history_entity.dart';
-import '../../domain/entities/ai_chat_session_entity.dart';
-import '../../domain/entities/ai_message_entity.dart';
-import '../../domain/repositories/ai_chat_repository.dart';
-import '../datasources/ai_chat_datasource.dart';
+import '../../domain/domain.dart';
 import '../services/ai_local_storage_service.dart';
+import '../services/openai_service.dart';
 
 /// AI 채팅 Repository 구현체
+///
+/// AI 채팅 관련 기능(메시지, 세션, 히스토리, 요약)을 담당합니다.
+/// AiRepository에서 분리되어 채팅 기능만 집중 관리합니다.
 class AiChatRepositoryImpl implements AiChatRepository {
-  final AiChatDatasource _datasource;
+  final AiLocalStorageService _localStorageService;
+  final OpenAIService _openAIService;
 
-  const AiChatRepositoryImpl(this._datasource);
+  AiChatRepositoryImpl({required OpenAIService openAIService})
+    : _openAIService = openAIService,
+      _localStorageService = AiLocalStorageService();
+
+  /// ===== 채팅 기록 관련 =====
 
   @override
   Future<List<AiMessageEntity>> getChatHistory({String? sessionId}) async {
-    return _datasource.getChatHistory(sessionId: sessionId);
+    return _localStorageService.loadChatHistory();
   }
 
   @override
@@ -29,14 +34,25 @@ class AiChatRepositoryImpl implements AiChatRepository {
     int? offset,
   }) async {
     try {
-      final messages = await _datasource.loadChatHistory(
-        userId: userId,
-        petId: petId,
-        sessionId: sessionId,
-        limit: limit,
-        offset: offset,
-      );
-      return Result.success('채팅 기록을 로드했습니다', messages);
+      final messages = await _localStorageService.loadChatHistory();
+
+      // 펫 ID로 필터링
+      var filteredMessages = petId != null
+          ? messages.where((msg) => msg.petId == petId).toList()
+          : messages;
+
+      // 최신순 정렬
+      filteredMessages.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+      // offset과 limit 적용
+      if (offset != null && offset > 0) {
+        filteredMessages = filteredMessages.skip(offset).toList();
+      }
+      if (limit != null && limit > 0) {
+        filteredMessages = filteredMessages.take(limit).toList();
+      }
+
+      return Result.success('채팅 기록을 로드했습니다', filteredMessages);
     } catch (error) {
       return Result.failure('채팅 기록 로드 실패: ${error.toString()}');
     }
@@ -44,13 +60,15 @@ class AiChatRepositoryImpl implements AiChatRepository {
 
   @override
   Future<void> saveChatHistory(AiChatHistoryEntity chatHistory) async {
-    await _datasource.saveChatHistory(chatHistory);
+    await _localStorageService.saveChatHistory(chatHistory.messages);
   }
 
   @override
   Future<void> clearChatHistory({String? sessionId}) async {
-    await _datasource.clearChatHistory(sessionId: sessionId);
+    await _localStorageService.clearChatHistory();
   }
+
+  /// ===== 메시지 전송 =====
 
   @override
   Future<Result<AiMessageEntity>> sendMessage({
@@ -64,21 +82,33 @@ class AiChatRepositoryImpl implements AiChatRepository {
     try {
       // 비즈니스 로직: 메시지 검증
       if (message.trim().isEmpty) {
-        return Result.failure('메시지를 입력해주세요');
+        return Result.failure('メッセージを入力してください');
       }
 
-      final response = await _datasource.sendMessage(
-        message: message,
-        sessionId: sessionId,
+      // OpenAI API 호출
+      final response = await _openAIService.generateResponse(message);
+
+      if (!response.isSuccess) {
+        return Result.failure(response.message);
+      }
+
+      final responseContent = response.dataOrNull!;
+
+      // AI 메시지 생성
+      final aiMessage = AiMessageEntity(
+        id: IdGenerator.generateMessageId(),
+        content: responseContent,
+        type: MessageType.assistant,
+        timestamp: DateTime.now(),
         petId: petId,
-        categoryId: categoryId,
-        attachedImages: attachedImages,
-        context: context,
       );
 
-      return Result.success('메시지를 전송했습니다', response);
+      // 로컬 저장소에 저장
+      await _localStorageService.saveChatHistory([aiMessage]);
+
+      return Result.success('メッセージを送信しました', aiMessage);
     } catch (error) {
-      return Result.failure('메시지 전송 실패: ${error.toString()}');
+      return Result.failure('メッセージ送信失敗: ${error.toString()}');
     }
   }
 
@@ -91,23 +121,44 @@ class AiChatRepositoryImpl implements AiChatRepository {
     String? sessionId,
   }) async {
     try {
-      final response = await _datasource.sendMessageWithPetContext(
+      // OpenAI API 호출 (펫 컨텍스트 포함)
+      final response = await _openAIService.generateResponse(
         message,
         petContext: petContext,
         weatherAdvice: weatherAdvice,
         walkGuide: walkGuide,
-        sessionId: sessionId,
       );
 
-      return Result.success('펫 컨텍스트 메시지를 전송했습니다', response);
+      if (!response.isSuccess) {
+        return Result.failure(response.message);
+      }
+
+      final responseContent = response.dataOrNull!;
+
+      // AI 메시지 생성
+      final aiMessage = AiMessageEntity(
+        id: IdGenerator.generateMessageId(),
+        content: responseContent,
+        type: MessageType.assistant,
+        timestamp: DateTime.now(),
+        petId: petContext?.id,
+        petName: petContext?.name,
+      );
+
+      // 로컬 저장소에 저장
+      await _localStorageService.saveChatHistory([aiMessage]);
+
+      return Result.success('ペットコンテキストメッセージを送信しました', aiMessage);
     } catch (error) {
-      return Result.failure('펫 컨텍스트 메시지 전송 실패: ${error.toString()}');
+      return Result.failure('ペットコンテキストメッセージ送信失敗: ${error.toString()}');
     }
   }
 
+  /// ===== 채팅 세션 관련 =====
+
   @override
   Future<List<AiChatSessionEntity>> getChatSessions({String? petId}) async {
-    final sessions = await _datasource.getChatSessions();
+    final sessions = await _localStorageService.loadChatSessions();
 
     if (petId != null) {
       return sessions.where((session) => session.petId == petId).toList();
@@ -124,140 +175,18 @@ class AiChatRepositoryImpl implements AiChatRepository {
   }) async {
     // 비즈니스 로직: 제목 유효성 검사
     if (title.trim().isEmpty) {
-      throw Exception('세션 제목을 입력해주세요');
+      throw Exception('セッションタイトルを入力してください');
     }
 
-    return _datasource.createChatSession(
-      title.trim(),
-      petId: petId,
-      categoryId: categoryId,
-    );
-  }
-
-  @override
-  Future<void> deleteChatSession(String sessionId) async {
-    await _datasource.deleteChatSession(sessionId);
-  }
-
-  @override
-  Future<AiChatSessionEntity> updateChatSession(
-    AiChatSessionEntity session,
-  ) async {
-    return _datasource.updateChatSession(session);
-  }
-
-  @override
-  Future<List<AiChatHistoryEntity>> getChatHistories({
-    int limit = 30,
-    bool onlyManualSaved = false,
-    String? petId,
-  }) async {
-    final histories = await _datasource.getChatHistories(
-      limit: limit,
-      onlyManualSaved: onlyManualSaved,
-    );
-
-    if (petId != null) {
-      return histories.where((history) => history.pet?.id == petId).toList();
-    }
-
-    return histories;
-  }
-
-  @override
-  Future<void> deleteChatHistoryById(String historyId) async {
-    await _datasource.deleteChatHistory(historyId);
-  }
-}
-
-/// AI Chat Datasource Implementation
-class AiChatDatasourceImpl implements AiChatDatasource {
-  final AiLocalStorageService _localStorageService = AiLocalStorageService();
-
-  @override
-  Future<List<AiMessageEntity>> getChatHistory({String? sessionId}) async {
-    return _localStorageService.loadChatHistory();
-  }
-
-  @override
-  Future<List<AiMessageEntity>> loadChatHistory({
-    required String userId,
-    String? petId,
-    String? sessionId,
-    int? limit,
-    int? offset,
-  }) async {
-    return _localStorageService.loadChatHistory();
-  }
-
-  @override
-  Future<void> saveChatHistory(AiChatHistoryEntity chatHistory) async {
-    await _localStorageService.saveChatHistory(chatHistory.messages);
-  }
-
-  @override
-  Future<void> clearChatHistory({String? sessionId}) async {
-    await _localStorageService.clearChatHistory();
-  }
-
-  @override
-  Future<AiMessageEntity> sendMessage({
-    required String message,
-    required String sessionId,
-    String? petId,
-    String? categoryId,
-    List<String>? attachedImages,
-    Map<String, dynamic>? context,
-  }) async {
-    final aiMessage = AiMessageEntity(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      content: 'AI 응답: $message',
-      type: MessageType.assistant,
-      timestamp: DateTime.now(),
-    );
-    await _localStorageService.saveChatHistory([aiMessage]);
-    return aiMessage;
-  }
-
-  @override
-  Future<AiMessageEntity> sendMessageWithPetContext(
-    String message, {
-    PetProfileEntity? petContext,
-    String? weatherAdvice,
-    String? walkGuide,
-    String? sessionId,
-  }) async {
-    final aiMessage = AiMessageEntity(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      content: '펫 컨텍스트 AI 응답: $message',
-      type: MessageType.assistant,
-      timestamp: DateTime.now(),
-      petId: petContext?.id,
-      petName: petContext?.name,
-    );
-    await _localStorageService.saveChatHistory([aiMessage]);
-    return aiMessage;
-  }
-
-  @override
-  Future<List<AiChatSessionEntity>> getChatSessions() async {
-    return _localStorageService.loadChatSessions();
-  }
-
-  @override
-  Future<AiChatSessionEntity> createChatSession(
-    String title, {
-    String? petId,
-    String? categoryId,
-  }) async {
     final session = AiChatSessionEntity(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: title,
+      id: IdGenerator.generateSessionId(),
+      title: title.trim(),
       messages: [],
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       petId: petId,
     );
+
     await _localStorageService.saveChatSession(session);
     return session;
   }
@@ -275,27 +204,86 @@ class AiChatDatasourceImpl implements AiChatDatasource {
     return session;
   }
 
+  /// ===== 채팅 히스토리 관리 =====
+
   @override
   Future<List<AiChatHistoryEntity>> getChatHistories({
     int limit = 30,
     bool onlyManualSaved = false,
+    String? petId,
   }) async {
+    // Mock 데이터 반환 (추후 실제 구현으로 교체)
     return [];
   }
 
   @override
-  Future<void> deleteChatHistory(String historyId) async {
-    // Implementation for deleting chat history
+  Future<void> deleteChatHistoryById(String historyId) async {
+    await _localStorageService.clearChatHistory();
+  }
+
+  /// ===== 채팅 요약 관련 =====
+
+  @override
+  Future<AiChatSummaryEntity> createChatSummary(
+    List<AiMessageEntity> messages,
+    String category, {
+    String? petId,
+    String? petName,
+  }) async {
+    // 채팅 요약 생성 로직 (AiRepositoryImpl에서 이관)
+    final summary = messages.length > 1
+        ? '${messages[1].content.length > 50 ? messages[1].content.substring(0, 50) : messages[1].content}...'
+        : '相談内容';
+
+    final chatSummary = AiChatSummaryEntity(
+      id: '${DateTime.now().millisecondsSinceEpoch}',
+      title: '$categoryの相談',
+      summary: summary,
+      category: category,
+      petId: petId,
+      petName: petName,
+      messages: messages,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      messageCount: messages.length,
+      hasFavorites: false,
+    );
+
+    return chatSummary;
+  }
+
+  @override
+  Future<List<AiChatSummaryEntity>> getChatSummaries({
+    String? petId,
+    String? category,
+  }) async {
+    // 로컬 저장소에서 채팅 요약 목록 가져오기
+    return [];
+  }
+
+  @override
+  Future<void> deleteChatSummary(String summaryId) async {
+    // 로컬 저장소에서 채팅 요약 삭제
+  }
+
+  @override
+  Future<AiChatSummary> generateChatSummary({
+    required List<String> userMessages,
+    required String petName,
+    required String category,
+  }) async {
+    // 실제 ChatGPT API 호출로 요약 생성
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    // Mock 요약 생성
+    final combinedMessages = userMessages.join(' ');
+    final title = combinedMessages.length > 20
+        ? '${combinedMessages.substring(0, 20)}...'
+        : combinedMessages;
+
+    return AiChatSummary(
+      title: title.isNotEmpty ? title : '$petNameの$category相談',
+      content: '$petNameの$categoryについて相談した内容',
+    );
   }
 }
-
-/// AI Chat Datasource Provider
-final aiChatDatasourceProvider = Provider<AiChatDatasource>((ref) {
-  return AiChatDatasourceImpl();
-});
-
-/// Repository Provider
-final aiChatRepositoryProvider = Provider<AiChatRepository>((ref) {
-  final datasource = ref.watch(aiChatDatasourceProvider);
-  return AiChatRepositoryImpl(datasource);
-});

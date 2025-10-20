@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
+
+import '../entities/ai_message_entity.dart';
 
 /// 🧠 AI 채팅 메시지 페이징 및 메모리 관리 서비스
 ///
@@ -271,7 +272,9 @@ class MessagePaginationService {
   ///
   /// [messages] 메시지 목록
   /// [return] 메시지 통계 정보
-  static MessageStatistics generateStatistics(List<AiMessageEntity> messages) {
+  static MessageMemoryStatistics generateStatistics(
+    List<AiMessageEntity> messages,
+  ) {
     try {
       final userMessages = messages
           .where((m) => m.type == MessageType.user)
@@ -285,7 +288,7 @@ class MessagePaginationService {
       );
       final memoryUsageBytes = estimateMemoryUsage(messages);
 
-      return MessageStatistics(
+      return MessageMemoryStatistics(
         totalMessages: messages.length,
         userMessages: userMessages,
         assistantMessages: assistantMessages,
@@ -299,13 +302,13 @@ class MessagePaginationService {
       if (kDebugMode) {
         debugPrint('[$_tag] Error generating statistics: $error');
       }
-      return MessageStatistics.empty();
+      return MessageMemoryStatistics.empty();
     }
   }
 }
 
 /// 메시지 통계 정보 클래스
-class MessageStatistics {
+class MessageMemoryStatistics {
   final int totalMessages;
   final int userMessages;
   final int assistantMessages;
@@ -315,7 +318,7 @@ class MessageStatistics {
   final bool isMemoryHigh;
   final bool needsCleanup;
 
-  const MessageStatistics({
+  const MessageMemoryStatistics({
     required this.totalMessages,
     required this.userMessages,
     required this.assistantMessages,
@@ -326,8 +329,8 @@ class MessageStatistics {
     required this.needsCleanup,
   });
 
-  factory MessageStatistics.empty() {
-    return const MessageStatistics(
+  factory MessageMemoryStatistics.empty() {
+    return const MessageMemoryStatistics(
       totalMessages: 0,
       userMessages: 0,
       assistantMessages: 0,
@@ -341,7 +344,7 @@ class MessageStatistics {
 
   @override
   String toString() {
-    return 'MessageStatistics('
+    return 'MessageMemoryStatistics('
         'total: $totalMessages, '
         'user: $userMessages, '
         'assistant: $assistantMessages, '

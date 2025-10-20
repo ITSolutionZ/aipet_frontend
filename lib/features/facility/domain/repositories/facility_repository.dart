@@ -1,5 +1,6 @@
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../entities/facility_entity.dart';
 
 abstract class FacilityRepository {
   Future<Result<List<Facility>>> getNearbyFacilities();

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/features/pet_profile/presentation/utils/utils.dart';
+import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,23 +53,7 @@ class HospitalPetProfileHeader extends ConsumerWidget {
                       ],
                     ),
                     child: ClipOval(
-                      child: Image.asset(
-                        PetImageUtils.getImagePath(
-                          currentPet.imagePath,
-                          currentPet.type,
-                        ),
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Icon(
-                              Icons.pets,
-                              size: 40,
-                              color: Colors.grey,
-                            ),
-                          );
-                        },
-                      ),
+                      child: _buildPetImage(currentPet),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.lg),
@@ -106,6 +93,76 @@ class HospitalPetProfileHeader extends ConsumerWidget {
         },
       ),
     );
+  }
+
+  Widget _buildPetImage(PetProfileEntity pet) {
+    if (pet.imagePath == null || pet.imagePath!.isEmpty) {
+      return Container(
+        color: Colors.grey[300],
+        child: const Icon(Icons.pets, size: 40, color: Colors.grey),
+      );
+    }
+
+    debugPrint('🖼️ HospitalPetProfileHeader - imagePath: ${pet.imagePath}');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
+    debugPrint('🖼️ HospitalPetProfileHeader - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ HospitalPetProfileHeader - imageType: $imageType');
+
+    switch (imageType) {
+      case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ HospitalPetProfileHeader - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint('❌ HospitalPetProfileHeader - File does not exist: $absolutePath');
+          return Container(
+            color: Colors.grey[300],
+            child: const Icon(Icons.pets, size: 40, color: Colors.grey),
+          );
+        }
+
+        return Image.file(
+          file,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ HospitalPetProfileHeader - File image error: $error');
+            return Container(
+              color: Colors.grey[300],
+              child: const Icon(Icons.pets, size: 40, color: Colors.grey),
+            );
+          },
+        );
+      case ImageType.network:
+        return Image.network(
+          absolutePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ HospitalPetProfileHeader - Network image error: $error');
+            return Container(
+              color: Colors.grey[300],
+              child: const Icon(Icons.pets, size: 40, color: Colors.grey),
+            );
+          },
+        );
+      case ImageType.asset:
+        return Image.asset(
+          absolutePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ HospitalPetProfileHeader - Asset image error: $error');
+            return Container(
+              color: Colors.grey[300],
+              child: const Icon(Icons.pets, size: 40, color: Colors.grey),
+            );
+          },
+        );
+    }
   }
 
   String _getPetTypeInJapanese(String? type, String? breed) {

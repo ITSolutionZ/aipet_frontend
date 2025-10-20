@@ -1,7 +1,9 @@
-import 'package:aipet_frontend/features/ai/domain/domain.dart';
-import 'package:aipet_frontend/features/ai/domain/services/message_pagination_service.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
+
+import '../entities/ai_message_entity.dart';
+import 'ai_message_service.dart';
+import 'message_pagination_service.dart';
 
 /// 🧠 AI 메시지 관리 서비스
 ///
@@ -9,6 +11,11 @@ import 'package:flutter/foundation.dart';
 /// - 메시지 추가/제거
 /// - 메시지 검증 및 최적화
 /// - 메모리 관리
+///
+/// ## 아키텍처 노트
+/// - **Static Utility Class**: 모든 메서드가 static이며 상태를 가지지 않음
+/// - **순수 함수**: 입력에 대해 항상 동일한 출력 반환
+/// - **테스트 가능**: 의존성 없이 독립적으로 테스트 가능
 class AiMessageManager {
   static const String _tag = 'AiMessageManager';
 
@@ -209,7 +216,34 @@ class AiMessageManager {
   /// [messages] 통계를 생성할 메시지 목록
   /// [return] 메시지 통계
   static MessageStatistics generateStatistics(List<AiMessageEntity> messages) {
-    return MessagePaginationService.generateStatistics(messages);
+    try {
+      final userMessages = messages
+          .where((m) => m.type == MessageType.user)
+          .length;
+      final assistantMessages = messages
+          .where((m) => m.type == MessageType.assistant)
+          .length;
+      final totalWords = messages.fold<int>(
+        0,
+        (sum, m) => sum + m.content.split(' ').length,
+      );
+
+      return MessageStatistics(
+        totalMessages: messages.length,
+        userMessages: userMessages,
+        aiMessages: assistantMessages,
+        totalWords: totalWords,
+        averageResponseTimeMs: 0.0,
+        lastMessageTime: messages.isNotEmpty
+            ? messages.last.timestamp
+            : DateTime.now(),
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] Error generating statistics: $e');
+      }
+      return MessageStatistics.empty();
+    }
   }
 
   /// 메모리 사용량 확인 및 경고

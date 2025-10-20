@@ -1,9 +1,10 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
-import 'package:aipet_frontend/features/auth/presentation/widgets/auth_logo.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../widgets/auth_logo.dart';
 
 /// 회원가입 화면 폼 상태 관리
 final signupFormProvider =

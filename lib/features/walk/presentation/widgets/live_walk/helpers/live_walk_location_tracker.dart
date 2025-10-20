@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart'
+    hide LocationAccuracy;
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -17,31 +19,48 @@ class LiveWalkLocationTracker {
     // 기존 추적 정지
     stopTracking();
 
-    // 주기적 위치 업데이트 (3초마다)
-    _locationTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
-      try {
-        final position = await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.high,
-          ),
-        ).timeout(const Duration(seconds: 5));
+    // 🚀 Geolocator의 위치 스트림 사용 (더 효율적)
+    // Timer.periodic 대신 실제 GPS 신호를 활용하므로 불필요한 호출 감소
+    // GPS 오차 범위를 고려하여 distanceFilter를 크게 설정
+    try {
+      _positionStream = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 15, // 최소 15m 이동할 때만 이벤트 발생 (동일한 위치로 인한 깜빡임 방지)
+          timeLimit: Duration(seconds: 30),
+        ),
+      ).listen(
+        (Position position) {
+          final location = WalkLocation(
+            latitude: position.latitude,
+            longitude: position.longitude,
+            timestamp: DateTime.now(),
+            accuracy: position.accuracy,
+            altitude: position.altitude,
+            speed: position.speed,
+            heading: position.heading,
+          );
 
-        final location = WalkLocation(
-          latitude: position.latitude,
-          longitude: position.longitude,
-          timestamp: DateTime.now(),
-          accuracy: position.accuracy,
-          altitude: position.altitude,
-          speed: position.speed,
-          heading: position.heading,
-        );
-
-        onLocationUpdate(location);
-      } catch (e) {
-        debugPrint('위치 업데이트 실패: $e');
-        onError();
-      }
-    });
+          // 위치 데이터 유효성 검증
+          if (WalkTrackingOptimizer.isValidLocation(location)) {
+            debugPrint(
+              '📍 위치 업데이트 수신: (${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}) 정확도: ${location.accuracy?.toStringAsFixed(1)}m',
+            );
+            onLocationUpdate(location);
+          } else {
+            debugPrint('🚶 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
+          }
+        },
+        onError: (error) {
+          debugPrint('❌ 위치 추적 에러: $error');
+          onError();
+        },
+        cancelOnError: false,
+      );
+    } catch (e) {
+      debugPrint('❌ 위치 스트림 시작 실패: $e');
+      onError();
+    }
   }
 
   /// 위치 추적 정지

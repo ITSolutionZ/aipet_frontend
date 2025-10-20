@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../domain/domain.dart';
 
 /// 온보딩 배경 이미지를 정교하게 표시하는 위젯
 class OnboardingBackgroundImage extends StatelessWidget {

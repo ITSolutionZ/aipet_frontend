@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
-import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../domain/domain.dart';
 
 /// 날씨 정보 섹션 (온도, 위치, 바람, UV, 특이사항)
 class WeatherInfoSection extends StatelessWidget {

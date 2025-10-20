@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../../../../shared/domain/entities/pet_profile_entity.dart';
+import '../entities/ai_message_entity.dart';
 
 class SelectPetUseCase {
   const SelectPetUseCase();

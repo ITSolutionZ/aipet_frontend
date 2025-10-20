@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+
+import '../../domain/domain.dart';
 
 /// OpenWeatherMap One Call API 서비스
 class OpenWeatherMapService {

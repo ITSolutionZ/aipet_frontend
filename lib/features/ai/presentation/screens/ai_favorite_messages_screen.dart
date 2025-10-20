@@ -1,10 +1,11 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
-import 'package:aipet_frontend/features/ai/presentation/controllers/ai_chat_controller.dart';
-import 'package:aipet_frontend/features/ai/presentation/controllers/ai_favorite_messages_controller.dart';
-import 'package:aipet_frontend/features/ai/presentation/widgets/favorite_message_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../domain/domain.dart';
+import '../controllers/ai_chat_controller.dart';
+import '../controllers/ai_favorite_messages_controller.dart';
+import '../widgets/favorite_message_widgets.dart';
 
 /// AI 즐겨찾기 질문-답변 목록 화면 (펫별 그룹화)
 class AiFavoriteMessagesScreen extends ConsumerWidget {

@@ -1,12 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:aipet_frontend/features/auth/data/services/line_oauth_service.dart';
-import 'package:aipet_frontend/features/auth/domain/auth_error.dart'
-    as auth_errors;
-import 'package:aipet_frontend/features/auth/domain/entities/auth_entities.dart';
-import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -16,6 +11,9 @@ import 'package:http/http.dart' as http;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../../app/app.dart';
+import '../../domain/auth_error.dart' as auth_errors;
+import '../../domain/domain.dart';
+import '../services/line_oauth_service.dart';
 
 /// 🎯 실제 Firebase Auth 구현체
 ///

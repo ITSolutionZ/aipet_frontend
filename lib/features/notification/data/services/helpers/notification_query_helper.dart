@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import '../../../domain/domain.dart';
 
 /// 알림 조회/필터링 헬퍼
 class NotificationQueryHelper {

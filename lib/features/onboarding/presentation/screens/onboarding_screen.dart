@@ -1,11 +1,14 @@
+import 'dart:async';
+
 import 'package:aipet_frontend/app/router/app_router.dart';
-import 'package:aipet_frontend/features/onboarding/data/data.dart';
-import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
-import 'package:aipet_frontend/features/onboarding/presentation/controllers/onboarding_controller.dart';
-import 'package:aipet_frontend/features/onboarding/presentation/widgets/onboarding_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
+import '../controllers/onboarding_controller.dart';
+import '../widgets/onboarding_widgets.dart';
 import 'package:go_router/go_router.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -18,6 +21,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   late final OnboardingController _controller;
+  Timer? _autoNextTimer;
 
   @override
   void initState() {
@@ -27,21 +31,36 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     // 온보딩 시작 시 시청 횟수 증가
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(onboardingProvider.notifier).startOnboarding();
+      // 첫 페이지에서 3초 후 자동 넘김
+      _startAutoNextTimer();
     });
   }
 
   @override
   void dispose() {
+    _autoNextTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
 
+  void _startAutoNextTimer() {
+    _autoNextTimer?.cancel();
+    _autoNextTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted) {
+        _nextPage();
+      }
+    });
+  }
+
   void _onPageChanged(int page) {
     _controller.goToPage(page);
+    // 페이지 변경 시 새로운 타이머 시작
+    _startAutoNextTimer();
   }
 
   void _nextPage() {
-    final currentPage = ref.read(onboardingProvider).currentPage;
+    // PageController에서 직접 현재 페이지 가져오기 (ref.read 사용 안함)
+    final currentPage = _pageController.page?.round() ?? 0;
     if (currentPage < OnboardingData.pages.length - 1) {
       _pageController.nextPage(
         duration: OnboardingConstants.pageTransitionDuration,

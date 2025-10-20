@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/features/pet_profile/presentation/utils/utils.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -88,10 +90,7 @@ class PetSelectorWidget extends ConsumerWidget {
   }
 
   Widget _buildPetImage(PetProfileEntity pet) {
-    final imagePath = PetImageUtils.getImagePath(pet.imagePath, pet.type);
-
-    // 빈 문자열 체크
-    if (imagePath.isEmpty) {
+    if (pet.imagePath == null || pet.imagePath!.isEmpty) {
       return Container(
         width: 36,
         height: 36,
@@ -100,19 +99,68 @@ class PetSelectorWidget extends ConsumerWidget {
       );
     }
 
-    return Image.asset(
-      imagePath,
-      width: 36,
-      height: 36,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        return Container(
+    debugPrint('🖼️ DailyPetSelectorWidget - imagePath: ${pet.imagePath}');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
+    debugPrint('🖼️ DailyPetSelectorWidget - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ DailyPetSelectorWidget - imageType: $imageType');
+
+    switch (imageType) {
+      case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ DailyPetSelectorWidget - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint('❌ DailyPetSelectorWidget - File does not exist: $absolutePath');
+          return _buildDefaultPetIcon();
+        }
+
+        return Image.file(
+          file,
           width: 36,
           height: 36,
-          color: AppColors.pointGray.withValues(alpha: 0.2),
-          child: const Icon(Icons.pets, size: 20, color: AppColors.pointBrown),
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ DailyPetSelectorWidget - File image error: $error');
+            return _buildDefaultPetIcon();
+          },
         );
-      },
+      case ImageType.network:
+        return Image.network(
+          absolutePath,
+          width: 36,
+          height: 36,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ DailyPetSelectorWidget - Network image error: $error');
+            return _buildDefaultPetIcon();
+          },
+        );
+      case ImageType.asset:
+        return Image.asset(
+          absolutePath,
+          width: 36,
+          height: 36,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ DailyPetSelectorWidget - Asset image error: $error');
+            return _buildDefaultPetIcon();
+          },
+        );
+    }
+  }
+
+  Widget _buildDefaultPetIcon() {
+    return Container(
+      width: 36,
+      height: 36,
+      color: AppColors.pointGray.withValues(alpha: 0.2),
+      child: const Icon(Icons.pets, size: 20, color: AppColors.pointBrown),
     );
   }
 

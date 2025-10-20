@@ -1,8 +1,9 @@
-import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../repositories/ai_chat_repository.dart';
 
 class ClearChatHistoryUseCase {
-  final AiRepository _repository;
+  final AiChatRepository _repository;
 
   const ClearChatHistoryUseCase(this._repository);
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import '../../../domain/domain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';

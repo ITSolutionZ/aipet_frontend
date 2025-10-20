@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../domain/domain.dart';
 
 /// 예약 카드 위젯
 class AppointmentCardWidget extends StatelessWidget {

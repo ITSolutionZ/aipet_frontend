@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../widgets/live_walk/live_walk_widget.dart';
+import '../widgets/live_walk/live_walk_widget.dart'
+    show
+        LiveWalkWidget,
+        liveWalkControllerProvider,
+        WalkTimerState;
 import 'helpers/live/helpers.dart';
 
 /// 실시간 산책 화면
@@ -30,7 +34,8 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final liveWalkState = ref.watch(liveWalkControllerProvider);
+    // 🚀 ref.watch() 제거 - LiveWalkScreen은 상태를 감시하지 않음
+    // 각 하위 위젯이 필요한 상태만 독립적으로 감시하여 불필요한 rebuild 방지
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -75,17 +80,12 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
             child: Center(child: _buildPetInfoCard()),
           ),
 
-          // 하단 버튼들
+          // 하단 버튼들 (독립적으로 상태 감시)
           Positioned(
             bottom: MediaQuery.of(context).padding.bottom + 20,
             left: 20,
             right: 20,
-            child: LiveWalkUiHelper.buildBottomButtons(
-              isRunning: liveWalkState.isRunning,
-              isPaused: liveWalkState.isPaused,
-              onShowRecords: _showWalkRecordsList,
-              onWalkButtonPress: () => _handleWalkButton(liveWalkState),
-            ),
+            child: const _BottomButtonsWidget(),
           ),
         ],
       ),
@@ -111,75 +111,17 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
 
   /// 펫 리스트 위젯
   Widget _buildPetInfoCard() {
-    // 로컬 저장소에서 펫 데이터 가져오기
-    final petsAsync = ref.watch(petProfilesProvider);
-
-    return petsAsync.when(
-      data: (pets) => _buildPetList(pets),
-      loading: () => const CircularProgressIndicator(),
-      error: (error, stack) => const Icon(Icons.error),
+    // ConsumerWidget으로 분리하여 펫 목록 변경 시에만 rebuild
+    return _PetInfoCard(
+      selectedPetId: _selectedPetId,
+      onPetSelected: (petId) {
+        setState(() {
+          _selectedPetId = petId;
+        });
+      },
     );
   }
 
-  Widget _buildPetList(List<PetProfileEntity> pets) {
-    if (pets.isEmpty) {
-      return LiveWalkPetHelper.buildEmptyPetButton(context: context);
-    }
-
-    // 펫 리스트가 있는 경우: 가로 스크롤 펫 카드
-    return Center(
-      child: SizedBox(
-        height: 145,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          itemCount: pets.length,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemBuilder: (context, index) {
-            final pet = pets[index];
-            final isSelected = pet.id == _selectedPetId;
-
-            return LiveWalkPetHelper.buildPetCard(
-              pet: pet,
-              isSelected: isSelected,
-              onTap: () {
-                setState(() {
-                  _selectedPetId = pet.id;
-                });
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  /// 산책 버튼 처리
-  void _handleWalkButton(LiveWalkState state) {
-    if (state.isRunning) {
-      // 산책 종료
-      _showStopWalkDialog();
-    } else if (state.isPaused) {
-      // 산책 재개
-      ref.read(liveWalkControllerProvider.notifier).resumeWalk();
-    } else {
-      // 산책 시작
-      ref.read(liveWalkControllerProvider.notifier).startWalk();
-    }
-  }
-
-  /// 산책 종료 확인 다이얼로그
-  void _showStopWalkDialog() {
-    LiveWalkDialogHelper.showStopWalkDialog(
-      context: context,
-      onConfirm: () => ref.read(liveWalkControllerProvider.notifier).stopWalk(),
-    );
-  }
-
-  /// 산책 기록 목록 표시
-  void _showWalkRecordsList() {
-    LiveWalkSheetHelper.showWalkRecordsSheet(context);
-  }
 
   /// 옵션 메뉴 표시
   void _showWalkOptions() {
@@ -197,6 +139,113 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
       context: context,
       onConfirm: () =>
           ref.read(liveWalkControllerProvider.notifier).resetWalk(),
+    );
+  }
+}
+
+/// 하단 버튼 위젯 (독립적으로 상태 감시하여 rebuild)
+class _BottomButtonsWidget extends ConsumerWidget {
+  const _BottomButtonsWidget();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 🚀 필요한 상태만 select해서 watch
+    // timerState만 변경될 때만 이 위젯만 rebuild됨
+    final timerState = ref.watch(
+      liveWalkControllerProvider.select((state) => state.timerState),
+    );
+
+    final isRunning = timerState == WalkTimerState.running;
+    final isPaused = timerState == WalkTimerState.paused;
+
+    return LiveWalkUiHelper.buildBottomButtons(
+      isRunning: isRunning,
+      isPaused: isPaused,
+      onShowRecords: () => _showWalkRecordsList(context),
+      onWalkButtonPress: () => _handleWalkButton(context, ref),
+    );
+  }
+
+  /// 산책 버튼 처리
+  void _handleWalkButton(BuildContext context, WidgetRef ref) {
+    final state = ref.read(liveWalkControllerProvider);
+    final notifier = ref.read(liveWalkControllerProvider.notifier);
+
+    if (state.isRunning) {
+      // 산책 종료
+      _showStopWalkDialog(context, ref);
+    } else if (state.isPaused) {
+      // 산책 재개
+      notifier.resumeWalk();
+    } else {
+      // 산책 시작
+      notifier.startWalk();
+    }
+  }
+
+  /// 산책 종료 확인 다이얼로그
+  void _showStopWalkDialog(BuildContext context, WidgetRef ref) {
+    LiveWalkDialogHelper.showStopWalkDialog(
+      context: context,
+      onConfirm: () => ref.read(liveWalkControllerProvider.notifier).stopWalk(),
+    );
+  }
+
+  /// 산책 기록 목록 표시
+  void _showWalkRecordsList(BuildContext context) {
+    LiveWalkSheetHelper.showWalkRecordsSheet(context);
+  }
+}
+
+/// 펫 정보 카드 위젯 (독립적으로 rebuild)
+class _PetInfoCard extends ConsumerWidget {
+  final String? selectedPetId;
+  final Function(String) onPetSelected;
+
+  const _PetInfoCard({
+    required this.selectedPetId,
+    required this.onPetSelected,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 이 위젯만 petProfilesProvider를 watch하므로
+    // 펫 목록이 변경되어도 LiveWalkScreen 전체는 rebuild되지 않음
+    final petsAsync = ref.watch(petProfilesProvider);
+
+    return petsAsync.when(
+      data: (pets) => _buildPetList(context, pets),
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const Icon(Icons.error),
+    );
+  }
+
+  Widget _buildPetList(BuildContext context, List<PetProfileEntity> pets) {
+    if (pets.isEmpty) {
+      return LiveWalkPetHelper.buildEmptyPetButton(context: context);
+    }
+
+    // 펫 리스트가 있는 경우: 가로 스크롤 펫 카드
+    return Center(
+      child: SizedBox(
+        height: 145,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: pets.length,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemBuilder: (context, index) {
+            final pet = pets[index];
+            final isSelected = pet.id == selectedPetId;
+
+            return LiveWalkPetHelper.buildPetCard(
+              pet: pet,
+              isSelected: isSelected,
+              onTap: () => onPetSelected(pet.id),
+            );
+          },
+        ),
+      ),
     );
   }
 }

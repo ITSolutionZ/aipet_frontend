@@ -1,11 +1,7 @@
-import 'package:aipet_frontend/features/facility/data/facility_providers.dart';
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/features/facility/domain/usecases/filter_facilities_by_type_usecase.dart';
-import 'package:aipet_frontend/features/facility/domain/usecases/get_facility_by_id_usecase.dart';
-import 'package:aipet_frontend/features/facility/domain/usecases/load_facilities_usecase.dart';
-import 'package:aipet_frontend/features/facility/domain/usecases/search_facilities_usecase.dart';
-import 'package:aipet_frontend/features/facility/domain/usecases/set_current_location_usecase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
 
 part 'facility_controller.g.dart';
 

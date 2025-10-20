@@ -1,9 +1,8 @@
+import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/services/biometric_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../shared/design/design.dart';
-import '../../services/biometric_auth_service.dart';
 
 /// 앱 잠금 해제 다이얼로그 (PIN 또는 생체인증)
 class AppLockDialog extends StatefulWidget {

@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../domain/domain.dart';
 
 /// 체온 표시 카드 위젯
 class TemperatureDisplayCard extends StatelessWidget {

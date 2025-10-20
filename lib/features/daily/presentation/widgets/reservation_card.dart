@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/daily/data/services/reservation_local_storage_service.dart';
-import 'package:aipet_frontend/features/daily/presentation/widgets/cancel_reservation_modal.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../data/data.dart';
+import 'cancel_reservation_modal.dart';
 
 /// 예약 카드 위젯
 class ReservationCard extends StatelessWidget {

@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:aipet_frontend/features/allergy/data/providers/saved_analysis_provider.dart';
-import 'package:aipet_frontend/features/allergy/domain/entities/saved_analysis_entity.dart';
-import 'package:aipet_frontend/features/allergy/presentation/screens/allergy_analysis_result_screen_widgets/allergy_analysis_result_screen_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +11,10 @@ import 'package:lottie/lottie.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
+import 'allergy_analysis_result_screen_widgets/allergy_analysis_result_screen_widgets.dart';
 
 /// 알레르기 분석 결과 화면
 class AllergyAnalysisResultScreen extends ConsumerWidget {
@@ -38,7 +40,7 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
     final nonAllergyCount = analysisResult['nonAllergyProducts'] as int? ?? 0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8), // PDF 출력에 적합한 고정 배경색
+      backgroundColor: AppColors.pointOffWhite, // PDF 출력에 적합한 고정 배경색
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -133,9 +135,16 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: const Color(0x0D000000), width: 1),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+        border: Border.all(
+          color: AppColors.pointDark.withValues(alpha: 0.05),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -145,14 +154,15 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
             children: [
               const Icon(
                 Icons.picture_as_pdf,
-                color: AppColors.pointRed,
                 size: 20,
+                color: AppColors.pointRed,
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 'PDFレポート',
                 style: AppFonts.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: AppColors.pointRed,
                 ),
               ),
             ],
@@ -167,17 +177,17 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () => _downloadPdfReport(context),
-              icon: const Icon(Icons.download, color: Colors.white),
-              label: const Text(
+              icon: const Icon(
+                Icons.download,
+                size: 20,
+                color: AppColors.pureWhite,
+              ),
+              label: Text(
                 'PDFダウンロード',
-                style: TextStyle(color: Colors.white),
+                style: AppFonts.bodyMedium.copyWith(color: AppColors.pureWhite),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointRed,
-                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.small),
-                ),
               ),
             ),
           ),
@@ -732,14 +742,14 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
   /// 배경 이미지 로드
   Future<pw.MemoryImage?> _loadBackgroundImage() async {
     try {
-      debugPrint('🖼️ 배경 이미지 로드 시도: assets/images/aipet AI Report.png');
       final imageData = await rootBundle.load(
         'assets/images/aipet AI Report.png',
       );
-      debugPrint('🖼️ 배경 이미지 로드 성공: ${imageData.lengthInBytes} bytes');
       return pw.MemoryImage(imageData.buffer.asUint8List());
     } catch (e) {
-      debugPrint('🖼️ 배경 이미지 로드 실패: $e');
+      if (kDebugMode) {
+        debugPrint('배경 이미지 로드 실패: $e');
+      }
       return null;
     }
   }

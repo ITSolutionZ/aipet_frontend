@@ -1,8 +1,9 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
-import 'package:aipet_frontend/features/home/data/data.dart';
-import 'package:aipet_frontend/features/home/domain/domain.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart' as app_result;
-import 'package:aipet_frontend/shared/core/services/error_handling_service.dart';
+import 'package:aipet_frontend/shared/shared.dart' as app_result;
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
 
 class HomeDashboardController extends BaseController {
   final HomeRepository _repository;

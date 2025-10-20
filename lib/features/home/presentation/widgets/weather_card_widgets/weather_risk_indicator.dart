@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/home/data/services/weather_advice_service.dart';
-import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
-import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../../data/data.dart';
+import '../../../domain/domain.dart';
 
 /// 위험도 지시기 및 산책 어드바이스
 class WeatherRiskIndicator extends StatefulWidget {

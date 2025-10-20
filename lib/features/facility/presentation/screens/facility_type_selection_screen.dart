@@ -1,8 +1,9 @@
-import 'package:aipet_frontend/features/facility/presentation/screens/facility_list_screen.dart';
-import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import 'facility_list_screen.dart';
 
 class FacilityTypeSelectionScreen extends ConsumerStatefulWidget {
   const FacilityTypeSelectionScreen({super.key});

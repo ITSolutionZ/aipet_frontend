@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../domain/domain.dart';
 
 class AiCategorySelection extends StatelessWidget {
   final List<AiCategoryEntity> categories;
