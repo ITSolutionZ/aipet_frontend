@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/pet_activities/data/providers/pet_activities_providers.dart';
 import 'package:aipet_frontend/features/pet_activities/domain/entities/video_bookmark_entity.dart';
 import 'package:aipet_frontend/features/pet_activities/presentation/widgets/helpers/helpers.dart';
-import 'package:aipet_frontend/shared/shared.dart' hide State;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
