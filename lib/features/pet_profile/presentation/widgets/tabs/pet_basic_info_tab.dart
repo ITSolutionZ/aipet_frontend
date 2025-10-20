@@ -614,7 +614,6 @@ class PetBasicInfoTab extends ConsumerWidget {
     final statusText = isWarning ? '注意' : '良好';
     final statusColor = isWarning ? AppColors.pointPink : AppColors.pointGreen;
 
-
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(

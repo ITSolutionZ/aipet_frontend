@@ -113,4 +113,7 @@ class RouteConstants {
 
   // ===== SHOPPING =====
   static const String petSearchRoute = '/pet-search';
+
+  // ===== CONTACT =====
+  static const String contactFormRoute = '/contact-form';
 }

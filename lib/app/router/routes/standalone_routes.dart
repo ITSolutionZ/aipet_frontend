@@ -15,6 +15,7 @@ import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_even
 import 'package:aipet_frontend/features/scheduling/presentation/screens/add_event_screen.dart';
 import 'package:aipet_frontend/features/shopping/presentation/screens/pet_search_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/live_walk_screen.dart';
+import 'package:aipet_frontend/features/contact/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -216,6 +217,12 @@ class StandaloneRoutes {
       path: '/favorites',
       name: 'favorites',
       builder: (context, state) => const FavoritesScreen(),
+    ),
+    // Contact Form
+    GoRoute(
+      path: RouteConstants.contactFormRoute,
+      name: 'contact-form',
+      builder: (context, state) => const ContactFormScreen(),
     ),
   ];
 }
