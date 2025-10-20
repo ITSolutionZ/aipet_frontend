@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/shared.dart' hide State;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 /// QR 스캐너 화면의 UI 위젯들
