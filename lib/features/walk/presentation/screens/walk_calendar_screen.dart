@@ -80,127 +80,130 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
       body: Column(
         children: [
           // 달력 (포맷에 따라 높이 조절)
-          Container(
-            height: _getCalendarHeight(),
-            margin: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(AppSpacing.md),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                // 커스텀 헤더
-                _buildCustomHeader(),
+          Flexible(
+            flex: 2,
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(AppSpacing.md),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  // 커스텀 헤더
+                  _buildCustomHeader(),
 
-                // 달력
-                Expanded(
-                  child: TableCalendar(
-                    firstDay: DateTime.utc(2020, 1, 1),
-                    lastDay: DateTime.utc(2030, 12, 31),
-                    focusedDay: _focusedDay,
-                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                    calendarFormat: _calendarFormat,
-                    eventLoader: (day) {
-                      final events = WalkCalendarDataHelper.getEventsForDay(
-                        day,
-                        walkRecords,
-                      );
-                      // 완료된 산책만 필터링 (스탬프는 완료된 날에만)
-                      return events
-                          .where((e) => e.status == WalkStatus.completed)
-                          .toList();
-                    },
-                    onDaySelected: (selectedDay, focusedDay) {
-                      setState(() {
-                        _selectedDay = selectedDay;
-                        _focusedDay = focusedDay;
-                      });
-                    },
-                    onFormatChanged: (format) {
-                      setState(() {
-                        _calendarFormat = format;
-                      });
-                    },
-                    onPageChanged: (focusedDay) {
-                      setState(() {
-                        _focusedDay = focusedDay;
-                      });
-                    },
-                    // 헤더 숨기기 (커스텀 헤더 사용)
-                    headerVisible: false,
-                    daysOfWeekHeight: 30,
-                    // 커스텀 마커 빌더
-                    calendarBuilders: CalendarBuilders(
-                      // 요일을 일본어로 표시
-                      dowBuilder: (context, day) {
-                        const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
-                        final weekdayText = weekdays[day.weekday % 7];
-                        final isWeekend =
-                            day.weekday == DateTime.sunday ||
-                            day.weekday == DateTime.saturday;
+                  // 달력
+                  Expanded(
+                    child: TableCalendar(
+                      firstDay: DateTime.utc(2020, 1, 1),
+                      lastDay: DateTime.utc(2030, 12, 31),
+                      focusedDay: _focusedDay,
+                      selectedDayPredicate: (day) =>
+                          isSameDay(_selectedDay, day),
+                      calendarFormat: _calendarFormat,
+                      eventLoader: (day) {
+                        final events = WalkCalendarDataHelper.getEventsForDay(
+                          day,
+                          walkRecords,
+                        );
+                        // 완료된 산책만 필터링 (스탬프는 완료된 날에만)
+                        return events
+                            .where((e) => e.status == WalkStatus.completed)
+                            .toList();
+                      },
+                      onDaySelected: (selectedDay, focusedDay) {
+                        setState(() {
+                          _selectedDay = selectedDay;
+                          _focusedDay = focusedDay;
+                        });
+                      },
+                      onFormatChanged: (format) {
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      },
+                      onPageChanged: (focusedDay) {
+                        setState(() {
+                          _focusedDay = focusedDay;
+                        });
+                      },
+                      // 헤더 숨기기 (커스텀 헤더 사용)
+                      headerVisible: false,
+                      daysOfWeekHeight: 30,
+                      // 커스텀 마커 빌더
+                      calendarBuilders: CalendarBuilders(
+                        // 요일을 일본어로 표시
+                        dowBuilder: (context, day) {
+                          const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+                          final weekdayText = weekdays[day.weekday % 7];
+                          final isWeekend =
+                              day.weekday == DateTime.sunday ||
+                              day.weekday == DateTime.saturday;
 
-                        return Center(
-                          child: Text(
-                            weekdayText,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: isWeekend
-                                  ? AppColors.pointPink
-                                  : AppColors.textPrimary,
+                          return Center(
+                            child: Text(
+                              weekdayText,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: isWeekend
+                                    ? AppColors.pointPink
+                                    : AppColors.textPrimary,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      markerBuilder: (context, date, events) {
-                        if (events.isEmpty) return null;
+                          );
+                        },
+                        markerBuilder: (context, date, events) {
+                          if (events.isEmpty) return null;
 
-                        return Positioned(
-                          bottom: 1,
-                          child: Image.asset(
-                            'assets/icons/walk_logo/finished.png',
-                            width: 20,
-                            height: 20,
-                          ),
-                        );
-                      },
-                    ),
-                    // 스타일 설정
-                    calendarStyle: CalendarStyle(
-                      todayDecoration: BoxDecoration(
-                        color: AppColors.pointBrown.withValues(alpha: 0.3),
-                        shape: BoxShape.circle,
+                          return Positioned(
+                            bottom: 1,
+                            child: Image.asset(
+                              'assets/icons/walk_logo/finished.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                          );
+                        },
                       ),
-                      selectedDecoration: const BoxDecoration(
-                        color: AppColors.pointBrown,
-                        shape: BoxShape.circle,
+                      // 스타일 설정
+                      calendarStyle: CalendarStyle(
+                        todayDecoration: BoxDecoration(
+                          color: AppColors.pointBrown.withValues(alpha: 0.3),
+                          shape: BoxShape.circle,
+                        ),
+                        selectedDecoration: const BoxDecoration(
+                          color: AppColors.pointBrown,
+                          shape: BoxShape.circle,
+                        ),
+                        weekendTextStyle: const TextStyle(
+                          color: AppColors.pointPink,
+                        ),
+                        outsideDaysVisible: false,
                       ),
-                      weekendTextStyle: const TextStyle(
-                        color: AppColors.pointPink,
-                      ),
-                      outsideDaysVisible: false,
-                    ),
-                    daysOfWeekStyle: DaysOfWeekStyle(
-                      weekdayStyle: AppTextStyles.bodySmall.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      weekendStyle: AppTextStyles.bodySmall.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.pointPink,
+                      daysOfWeekStyle: DaysOfWeekStyle(
+                        weekdayStyle: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                        weekendStyle: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.pointPink,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
@@ -526,14 +529,6 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
       _focusedDay = DateTime.now();
       _selectedDay = DateTime.now();
     });
-  }
-
-  /// 달력 포맷에 따른 높이 계산
-  double _getCalendarHeight() {
-    return WalkCalendarUiHelper.calculateCalendarHeight(
-      context,
-      _calendarFormat,
-    );
   }
 
   // /// 선택된 날짜의 산책 기록 리스트 빌드 (사용 안 함 - _buildStatisticsAndRecords로 통합)
