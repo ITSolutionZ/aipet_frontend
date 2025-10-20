@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/app/services/unified_error_handler.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 import '../../domain/domain.dart';

@@ -1,6 +1,7 @@
 library;
 
 export 'bottom_navigation_widget.dart';
+export 'drawer/drawer_header_widget.dart';
 export 'form_field_widget.dart';
 export 'profile_header_widget.dart';
 export 'section_header_widget.dart';

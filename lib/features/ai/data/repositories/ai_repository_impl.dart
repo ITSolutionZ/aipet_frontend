@@ -1,8 +1,8 @@
 import 'dart:math';
 
+import 'package:aipet_frontend/app/services/local_storage_service.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/services/local_storage_service.dart';
 import 'package:aipet_frontend/shared/utils/id_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
