@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/config/app_config.dart';
 import '../../../../shared/services/base_logging_service.dart';
+import '../../domain/constants/ai_keywords.dart';
 import '../../domain/domain.dart';
 import 'ai_cache_service.dart';
-import 'ai_category_service.dart';
 import 'ai_dio_service.dart';
-import 'ai_keyword_service.dart';
 
 /// 🎯 AI 데이터 서비스
 ///
@@ -126,7 +125,7 @@ class AiDataService extends BaseLoggingService {
 
   // Private methods for Mock data
   List<AiCategoryEntity> _getMockCategories() {
-    return AiCategoryService.getDefaultCategories();
+    return AiCategoryEntity.defaults;
   }
 
   List<AiSuggestedQuestionEntity> _getMockSuggestedQuestions() {
@@ -166,7 +165,7 @@ class AiDataService extends BaseLoggingService {
 
   Map<String, List<String>> _getMockKeywordMapping() {
     return {
-      'health': AiKeywordService.getPetKeywords()
+      'health': AiKeywords.petRelated
           .where(
             (k) =>
                 k.contains('健康') ||
@@ -175,7 +174,7 @@ class AiDataService extends BaseLoggingService {
                 k.contains('sick'),
           )
           .toList(),
-      'food': AiKeywordService.getPetKeywords()
+      'food': AiKeywords.petRelated
           .where(
             (k) =>
                 k.contains('フード') ||
@@ -184,7 +183,7 @@ class AiDataService extends BaseLoggingService {
                 k.contains('feed'),
           )
           .toList(),
-      'behavior': AiKeywordService.getPetKeywords()
+      'behavior': AiKeywords.petRelated
           .where(
             (k) =>
                 k.contains('しつけ') ||

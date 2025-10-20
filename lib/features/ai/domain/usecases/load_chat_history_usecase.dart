@@ -1,10 +1,11 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../entities/ai_message_entity.dart';
+import '../repositories/ai_chat_repository.dart';
 
 /// 📜 채팅 히스토리 로드 UseCase
 class LoadChatHistoryUseCase {
-  final AiRepository _repository;
+  final AiChatRepository _repository;
 
   const LoadChatHistoryUseCase(this._repository);
 

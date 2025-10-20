@@ -1,7 +1,7 @@
-import 'package:aipet_frontend/features/ai/data/providers/ai_providers.dart';
-import 'package:aipet_frontend/features/ai/domain/usecases/ai_usecases.dart';
-import 'package:aipet_frontend/features/ai/domain/usecases/toggle_favorite_usecase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../domain/domain.dart';
+import 'ai_providers.dart';
 
 part 'ai_usecase_providers.g.dart';
 
@@ -13,7 +13,7 @@ InitializeChatUseCase initializeChatUseCase(Ref ref) {
 
 @riverpod
 SendMessageUseCase sendMessageUseCase(Ref ref) {
-  final repository = ref.watch(aiRepositoryProvider);
+  final repository = ref.watch(aiChatRepositoryProvider);
   return SendMessageUseCase(repository);
 }
 
@@ -36,19 +36,19 @@ FavoriteMessageUseCase favoriteMessageUseCase(Ref ref) {
 
 @riverpod
 SaveChatHistoryUseCase saveChatHistoryUseCase(Ref ref) {
-  final repository = ref.watch(aiRepositoryProvider);
+  final repository = ref.watch(aiChatRepositoryProvider);
   return SaveChatHistoryUseCase(repository);
 }
 
 @riverpod
 ClearChatHistoryUseCase clearChatHistoryUseCase(Ref ref) {
-  final repository = ref.watch(aiRepositoryProvider);
+  final repository = ref.watch(aiChatRepositoryProvider);
   return ClearChatHistoryUseCase(repository);
 }
 
 @riverpod
 GetChatHistoryUseCase getChatHistoryUseCase(Ref ref) {
-  final repository = ref.watch(aiRepositoryProvider);
+  final repository = ref.watch(aiChatRepositoryProvider);
   return GetChatHistoryUseCase(repository);
 }
 
@@ -60,24 +60,24 @@ GetSuggestedQuestionsUseCase getSuggestedQuestionsUseCase(Ref ref) {
 
 @riverpod
 ChatSessionUseCase chatSessionUseCase(Ref ref) {
-  final repository = ref.watch(aiRepositoryProvider);
+  final repository = ref.watch(aiChatRepositoryProvider);
   return ChatSessionUseCase(repository);
 }
 
 @riverpod
-LoadChatHistoryUseCase loadChatHistoryUseCaseProvider(Ref ref) {
-  final repository = ref.watch(aiRepositoryProvider);
+LoadChatHistoryUseCase loadChatHistoryUseCase(Ref ref) {
+  final repository = ref.watch(aiChatRepositoryProvider);
   return LoadChatHistoryUseCase(repository);
 }
 
 @riverpod
-AnalyzeMessageUseCase analyzeMessageUseCaseProvider(Ref ref) {
+AnalyzeMessageUseCase analyzeMessageUseCase(Ref ref) {
   final repository = ref.watch(aiRepositoryProvider);
   return AnalyzeMessageUseCase(repository);
 }
 
 @riverpod
-ToggleFavoriteUseCase toggleFavoriteUseCaseProvider(Ref ref) {
+ToggleFavoriteUseCase toggleFavoriteUseCase(Ref ref) {
   final repository = ref.watch(aiRepositoryProvider);
   return ToggleFavoriteUseCase(repository);
 }

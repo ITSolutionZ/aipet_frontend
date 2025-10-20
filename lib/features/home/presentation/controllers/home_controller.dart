@@ -1,7 +1,8 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
-import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../domain/domain.dart';
 
 /// ホーム画面のビジネスロジックを管理するコントローラー
 ///

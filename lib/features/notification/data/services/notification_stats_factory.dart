@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/notification/data/services/notification_local_storage_service.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import 'notification_local_storage_service.dart';
+import '../../domain/domain.dart';
 
 /// 통계 팩토리 (데이터 레이어에서 로컬 저장소 데이터 생성)
 class NotificationStatsFactory {

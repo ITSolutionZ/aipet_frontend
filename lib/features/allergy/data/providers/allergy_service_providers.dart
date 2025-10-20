@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/allergy/data/services/openai_allergy_analysis_service.dart';
-import 'package:aipet_frontend/features/allergy/domain/services/allergy_analysis_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../domain/domain.dart';
+import '../services/openai_allergy_analysis_service.dart';
 
 part 'allergy_service_providers.g.dart';
 

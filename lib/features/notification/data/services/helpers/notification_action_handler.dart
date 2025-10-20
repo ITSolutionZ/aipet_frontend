@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import '../../../domain/domain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

@@ -1,5 +1,6 @@
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../domain/domain.dart';
 
 part 'facility_state_provider.g.dart';
 

@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../domain/domain.dart';
 
 /// 온보딩 관리 리포지토리 구현체
 ///

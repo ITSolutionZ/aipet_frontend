@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:aipet_frontend/features/daily/data/services/health_data_collection_service.dart';
-import 'package:aipet_frontend/features/daily/data/services/health_report_openai_service.dart';
-import 'package:aipet_frontend/features/daily/data/services/health_report_pdf_service.dart';
-import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../services/health_data_collection_service.dart';
+import '../services/health_report_openai_service.dart';
+import '../services/health_report_pdf_service.dart';
 
 part 'health_report_provider.g.dart';
 

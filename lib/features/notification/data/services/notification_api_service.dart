@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/notification/data/services/notification_local_storage_service.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
+
+import '../../domain/domain.dart';
+import 'notification_local_storage_service.dart';
 
 /// 📱 알림 로컬 서비스 (API 대신 로컬 저장소 사용)
 ///

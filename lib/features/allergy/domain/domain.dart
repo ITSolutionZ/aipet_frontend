@@ -1,3 +1,5 @@
+export 'constants/allergy_constants.dart';
+export 'entities/allergy_analysis_entities.dart';
 export 'entities/allergy_post_entity.dart';
 export 'entities/brand_entity.dart';
 export 'entities/product_entity.dart';

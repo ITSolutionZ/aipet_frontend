@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/home/data/services/weather_openai_service.dart';
-import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
 import 'package:flutter/foundation.dart';
+
+import '../../domain/domain.dart';
+import 'weather_openai_service.dart';
 
 /// 날씨 정보를 바탕으로 산책 어드바이스를 생성하는 서비스
 class WeatherAdviceService {

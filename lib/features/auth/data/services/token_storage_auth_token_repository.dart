@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/features/auth/domain/auth_token.dart';
-import 'package:aipet_frontend/shared/core/services/auth_token_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import '../../domain/domain.dart';
 import 'token_storage_service.dart';
 
 /// [AuthTokenRepository] 구현체로서 기존 [TokenStorageService]를 래핑합니다.

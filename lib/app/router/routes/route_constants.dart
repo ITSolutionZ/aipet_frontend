@@ -42,6 +42,10 @@ class RouteConstants {
   static const String trainingVideosRoute = '/training-videos';
   static const String qrCodeRoute = '/home/qr';
   static const String allergyRoute = '/home/allergy';
+  static const String allergyProductSelectionRoute =
+      '/home/allergy/product-selection';
+  static const String allergyAnalysisResultRoute =
+      '/home/allergy/analysis-result';
   static const String allergyRecommendedProductsRoute =
       '/home/allergy/recommended-products';
   static const String savedAnalysisListRoute = '/home/allergy/saved-analyses';

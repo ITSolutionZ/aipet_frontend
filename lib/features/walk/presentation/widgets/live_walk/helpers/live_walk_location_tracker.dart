@@ -21,11 +21,12 @@ class LiveWalkLocationTracker {
 
     // 🚀 Geolocator의 위치 스트림 사용 (더 효율적)
     // Timer.periodic 대신 실제 GPS 신호를 활용하므로 불필요한 호출 감소
+    // GPS 오차 범위를 고려하여 distanceFilter를 크게 설정
     try {
       _positionStream = Geolocator.getPositionStream(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
-          distanceFilter: 8, // 최소 8m 이동할 때만 이벤트 발생
+          distanceFilter: 15, // 최소 15m 이동할 때만 이벤트 발생 (동일한 위치로 인한 깜빡임 방지)
           timeLimit: Duration(seconds: 30),
         ),
       ).listen(

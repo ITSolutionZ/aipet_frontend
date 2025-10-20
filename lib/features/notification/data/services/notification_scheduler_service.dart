@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import '../../domain/domain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

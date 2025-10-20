@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../domain/domain.dart';
 
 /// 빈 즐겨찾기 상태 위젯
 class EmptyFavoritesWidget extends StatelessWidget {

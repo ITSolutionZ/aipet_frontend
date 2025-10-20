@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
+import '../repositories/notification_repository.dart';
 import 'package:aipet_frontend/features/notification/domain/usecases/get_notification_settings_usecase.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
 
 /// 알림 설정 저장 UseCase
 class SaveNotificationSettingsUseCase {

@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:aipet_frontend/features/allergy/domain/entities/allergy_analysis_entities.dart';
-import 'package:aipet_frontend/features/allergy/domain/entities/product_entity.dart';
-import 'package:aipet_frontend/features/allergy/domain/services/allergy_analysis_service.dart';
-import 'package:aipet_frontend/shared/core/constants/environment_constants.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+
+import '../../domain/domain.dart';
 
 /// OpenAI를 사용한 알레르기 분석 서비스
 class OpenAIAllergyAnalysisService implements AllergyAnalysisService {
@@ -42,17 +41,17 @@ class OpenAIAllergyAnalysisService implements AllergyAnalysisService {
               'Authorization': 'Bearer $_apiKey',
             },
             body: jsonEncode({
-              'model': 'gpt-4o',
+              'model': AllergyConstants.openAiModel,
               'messages': [
                 {'role': 'system', 'content': _getSystemPrompt()},
                 {'role': 'user', 'content': prompt},
               ],
-              'temperature': 0.7,
-              'max_tokens': 1500,
+              'temperature': AllergyConstants.openAiTemperature,
+              'max_tokens': AllergyConstants.openAiMaxTokens,
             }),
           )
           .timeout(
-            const Duration(seconds: 30),
+            const Duration(seconds: AllergyConstants.openAiTimeoutSeconds),
             onTimeout: () {
               throw Exception('API Timeout');
             },
@@ -142,7 +141,7 @@ $nonAllergyProductNames
     return AllergyAnalysisResult(
       suspectedIngredients: _extractIngredients(content),
       analysis: content,
-      confidence: 0.7,
+      confidence: AllergyConstants.defaultConfidence,
       recommendations: [],
     );
   }
@@ -206,7 +205,7 @@ $nonAllergyProductNames
 
 ※ この分析はサンプルデータに基づく一般的な情報です。OpenAI APIと連携することで、より詳細な分析が可能になります。
 ''',
-      confidence: 0.5,
+      confidence: AllergyConstants.fallbackConfidence,
       recommendations: [
         '獣医師に相談し、正確なアレルギーテストを受けることをお勧めします',
         '疑わしい原料を含まないフードを試してみてください',

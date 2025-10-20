@@ -13,3 +13,4 @@ export 'save_chat_history_usecase.dart';
 export 'select_category_usecase.dart';
 export 'select_pet_usecase.dart';
 export 'send_message_usecase.dart';
+export 'toggle_favorite_usecase.dart';

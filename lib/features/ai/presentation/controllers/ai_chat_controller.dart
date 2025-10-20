@@ -1,21 +1,15 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
-import 'package:aipet_frontend/features/ai/data/providers/ai_usecase_providers.dart';
-import 'package:aipet_frontend/features/ai/data/services/ai_local_storage_service.dart';
-import 'package:aipet_frontend/features/ai/domain/domain.dart';
-import 'package:aipet_frontend/features/ai/domain/services/ai_chat_state_manager.dart';
-import 'package:aipet_frontend/features/ai/domain/services/ai_favorite_manager.dart';
-import 'package:aipet_frontend/features/ai/domain/services/ai_message_manager.dart';
-import 'package:aipet_frontend/features/ai/domain/services/message_pagination_service.dart';
-import 'package:aipet_frontend/features/home/data/home_providers.dart';
-import 'package:aipet_frontend/features/walk/domain/services/walk_recommendation_service.dart';
-import 'package:aipet_frontend/features/walk/domain/usecases/compute_walk_recommendation_usecase.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/services/local_storage_service.dart';
+import 'package:aipet_frontend/features/home/home.dart';
+import 'package:aipet_frontend/features/walk/walk.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../../../shared/domain/entities/pet_profile_entity.dart';
+import '../../data/data.dart';
+import '../../domain/domain.dart';
 
 part 'ai_chat_controller.g.dart';
 
@@ -41,18 +35,9 @@ class AiChatState {
   final List<String> favoriteMessageIds;
   final List<AiFavoriteQaEntity> favoriteQAs;
 
-  const AiChatState({
+  AiChatState({
     this.messages = const [],
-    this.messageStats = const MessageStatistics(
-      totalMessages: 0,
-      userMessages: 0,
-      assistantMessages: 0,
-      totalCharacters: 0,
-      memoryUsageBytes: 0,
-      memoryUsageMB: 0.0,
-      isMemoryHigh: false,
-      needsCleanup: false,
-    ),
+    MessageStatistics? messageStats,
     this.suggestedQuestions = const [],
     this.isTyping = false,
     this.error,
@@ -62,7 +47,7 @@ class AiChatState {
     this.hasCategorySelected = false,
     this.favoriteMessageIds = const [],
     this.favoriteQAs = const [],
-  });
+  }) : messageStats = messageStats ?? MessageStatistics.empty();
 
   AiChatState copyWith({
     List<AiMessageEntity>? messages,
@@ -79,8 +64,7 @@ class AiChatState {
   }) {
     final updatedMessages = messages ?? this.messages;
     final updatedStats =
-        messageStats ??
-        MessagePaginationService.generateStatistics(updatedMessages);
+        messageStats ?? AiMessageManager.generateStatistics(updatedMessages);
 
     return AiChatState(
       messages: updatedMessages,
@@ -117,7 +101,7 @@ class AiChatNotifier extends _$AiChatNotifier {
   @override
   AiChatState build() {
     // 초기 상태는 빈 상태로 시작하고, 실제 데이터는 repository를 통해 로드
-    return const AiChatState();
+    return AiChatState();
   }
 
   /// 초기 데이터 로드
@@ -519,8 +503,7 @@ class AiChatNotifier extends _$AiChatNotifier {
           }
         } else {
           state =
-              AiChatStateManager.initializeState().dataOrNull ??
-              const AiChatState();
+              AiChatStateManager.initializeState().dataOrNull ?? AiChatState();
         }
       } else {
         state =

@@ -60,9 +60,11 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Row(
+    // RepaintBoundary로 애니메이션을 격리하여 성능 최적화
+    return RepaintBoundary(
+      child: Container(
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
+        child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
@@ -108,6 +110,7 @@ class _AiTypingIndicatorState extends ConsumerState<AiTypingIndicator>
             ),
           ),
         ],
+        ),
       ),
     );
   }

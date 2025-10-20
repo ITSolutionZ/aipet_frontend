@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_qa_entity.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../domain/domain.dart';
 
 part 'ai_favorite_messages_controller.g.dart';
 

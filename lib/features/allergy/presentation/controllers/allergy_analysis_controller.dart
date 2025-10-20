@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/allergy_analysis_entities.dart';
@@ -98,8 +99,15 @@ class AllergyAnalysisController extends _$AllergyAnalysisController {
         recommendedProducts: recommendedProducts,
         report: report,
       );
-    } catch (error) {
-      state = state.copyWith(isLoading: false, error: error.toString());
+    } catch (error, stackTrace) {
+      if (kDebugMode) {
+        debugPrint('アレルギー分析エラー: $error');
+        debugPrint('StackTrace: $stackTrace');
+      }
+      state = state.copyWith(
+        isLoading: false,
+        error: 'アレルギー分析中にエラーが発生しました。もう一度お試しください。',
+      );
     }
   }
 
@@ -129,7 +137,13 @@ class AllergyAnalysisController extends _$AllergyAnalysisController {
         recommendedProducts: result.recommendedProducts,
       );
     } catch (error) {
-      state = state.copyWith(isLoading: false, error: error.toString());
+      if (kDebugMode) {
+        debugPrint('제품 추천 에러: $error');
+      }
+      state = state.copyWith(
+        isLoading: false,
+        error: '제품 추천 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+      );
     }
   }
 
@@ -161,7 +175,13 @@ class AllergyAnalysisController extends _$AllergyAnalysisController {
         state = state.copyWith(isLoading: false, error: null);
       }
     } catch (error) {
-      state = state.copyWith(isLoading: false, error: error.toString());
+      if (kDebugMode) {
+        debugPrint('제품 안전성 재평가 에러: $error');
+      }
+      state = state.copyWith(
+        isLoading: false,
+        error: '제품 안전성 재평가 중 오류가 발생했습니다.',
+      );
     }
   }
 
@@ -180,7 +200,10 @@ class AllergyAnalysisController extends _$AllergyAnalysisController {
         petType: petType,
       );
     } catch (error) {
-      state = state.copyWith(error: error.toString());
+      if (kDebugMode) {
+        debugPrint('제품 비교 분석 에러: $error');
+      }
+      state = state.copyWith(error: '제품 비교 분석 중 오류가 발생했습니다.');
       return null;
     }
   }

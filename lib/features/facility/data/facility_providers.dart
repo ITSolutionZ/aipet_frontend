@@ -1,10 +1,9 @@
-import 'package:aipet_frontend/features/facility/data/services/facility_local_storage_service.dart';
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/features/facility/domain/repositories/facility_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../domain/domain.dart';
 import 'facility_repository_impl.dart';
+import 'services/facility_local_storage_service.dart';
 
 part 'facility_providers.g.dart';
 

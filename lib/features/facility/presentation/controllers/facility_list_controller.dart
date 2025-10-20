@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/facility/data/facility_providers.dart';
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
 
 /// 시설 목록 화면의 비즈니스 로직을 관리하는 컨트롤러
 class FacilityListController {
