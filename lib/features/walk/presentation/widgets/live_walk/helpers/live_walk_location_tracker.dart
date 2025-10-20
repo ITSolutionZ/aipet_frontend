@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
-import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart' hide LocationAccuracy;
+import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart'
+    hide LocationAccuracy;
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -18,21 +20,30 @@ class LiveWalkLocationTracker {
     // 기존 추적 정지
     stopTracking();
 
-    // 최적화된 위치 추적 설정 사용
+    // 최적화된 위치 추적 설정 사용 (더 보수적인 설정)
     final config = WalkTrackingOptimizer.getAdaptiveTrackingConfig(
       batteryLevel: 1.0, // 배터리 레벨은 추후 실제 값으로 대체
       isCharging: false,
       walkDuration: Duration.zero,
       currentSpeed: 0.0,
     );
+    
+    // 산책용 최적화: 더 긴 간격으로 설정
+    final optimizedConfig = LocationTrackingConfig(
+      accuracy: config.accuracy,
+      distanceFilter: math.max(config.distanceFilter, 8), // 최소 8m
+      updateInterval: Duration(
+        milliseconds: math.max(config.updateInterval.inMilliseconds, 3000), // 최소 3초
+      ),
+    );
 
-    // 적응형 위치 업데이트 간격 사용
-    _locationTimer = Timer.periodic(config.updateInterval, (timer) async {
+    // 최적화된 위치 업데이트 간격 사용
+    _locationTimer = Timer.periodic(optimizedConfig.updateInterval, (timer) async {
       try {
         final position = await Geolocator.getCurrentPosition(
           locationSettings: LocationSettings(
             accuracy: LocationAccuracy.high, // 기본값 사용
-            distanceFilter: config.distanceFilter,
+            distanceFilter: optimizedConfig.distanceFilter,
           ),
         ).timeout(const Duration(seconds: 8));
 
