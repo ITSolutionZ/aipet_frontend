@@ -209,6 +209,7 @@ class PetBasicInfoTab extends ConsumerWidget {
       '肝臓病', // 간장병
       '肥満', // 비만
       'ストレス', // 스트레스
+      '卵巣腫瘍', // 난소 종양
     ],
   };
 
@@ -242,6 +243,8 @@ class PetBasicInfoTab extends ConsumerWidget {
         _buildHealthStatusCard(context, ref, tabId),
         const SizedBox(height: AppSpacing.lg),
         _buildBodyPartsCard(context),
+        const SizedBox(height: AppSpacing.lg),
+        _buildAppearanceCard(context),
         const SizedBox(height: AppSpacing.lg),
         _buildCaretakerSection(context),
         const SizedBox(height: AppSpacing.xl),
@@ -338,7 +341,6 @@ class PetBasicInfoTab extends ConsumerWidget {
         const SizedBox(height: AppSpacing.md),
         _buildWeightCard(context, ref, tabId, tabState),
         const SizedBox(height: AppSpacing.md),
-        _buildAppearanceCard(context, ref, tabId, tabState),
         const SizedBox(height: AppSpacing.md),
         _buildGuardianCard(),
         const SizedBox(height: AppSpacing.md),
@@ -393,28 +395,6 @@ class PetBasicInfoTab extends ConsumerWidget {
     );
   }
 
-  /// 외관 카드
-  Widget _buildAppearanceCard(
-    BuildContext context,
-    WidgetRef ref,
-    String tabId,
-    PetBasicInfoTabState tabState,
-  ) {
-    final displayAppearance = isEditMode
-        ? (tabState.appearanceController?.text ??
-              pet.additionalInfo?['appearance'] ??
-              '未設定')
-        : (pet.additionalInfo?['appearance'] ?? '未設定');
-
-    return _buildEditableAttributeCard(
-      context,
-      ref,
-      tabId,
-      '外見',
-      displayAppearance,
-      type: 'appearance',
-    );
-  }
 
   /// 보호자 카드
   Widget _buildGuardianCard() {
@@ -854,6 +834,75 @@ class PetBasicInfoTab extends ConsumerWidget {
                 ),
               );
             }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 외견 카드
+  Widget _buildAppearanceCard(BuildContext context) {
+    // additionalInfo에서 appearance 가져오기
+    String appearance = '';
+    if (pet.additionalInfo != null && pet.additionalInfo!['appearance'] != null) {
+      appearance = pet.additionalInfo!['appearance'].toString();
+    }
+    
+    final hasAppearance = appearance.isNotEmpty;
+
+    if (!hasAppearance) {
+      // 외견 정보가 없으면 표시하지 않음
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.pointBlue.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(_cardBorderRadius),
+        border: Border.all(
+          color: AppColors.pointBlue.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.pointBlue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.sm),
+                ),
+                child: const Icon(
+                  Icons.visibility_outlined,
+                  color: AppColors.pointBlue,
+                  size: _iconSize,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  '外見',
+                  style: AppFonts.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          
+          // 외견 정보 표시
+          Text(
+            appearance,
+            style: AppFonts.bodyMedium.copyWith(
+              color: AppColors.textPrimary,
+              height: 1.5,
+            ),
           ),
         ],
       ),

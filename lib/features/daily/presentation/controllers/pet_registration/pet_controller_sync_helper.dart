@@ -15,6 +15,7 @@ class PetControllerSyncHelper {
     required TextEditingController birthDateController,
     required TextEditingController adoptionDateController,
     required TextEditingController weightController,
+    required TextEditingController appearanceController,
     required TextEditingController guardianNameController,
     required TextEditingController institutionNameController,
     required TextEditingController registrationNumberController,
@@ -32,6 +33,8 @@ class PetControllerSyncHelper {
     if (formData.weight != null) {
       weightController.text = formData.weight.toString();
     }
+
+    appearanceController.text = formData.appearance ?? '';
 
     guardianNameController.text = formData.guardianName;
     institutionNameController.text = formData.institutionName;

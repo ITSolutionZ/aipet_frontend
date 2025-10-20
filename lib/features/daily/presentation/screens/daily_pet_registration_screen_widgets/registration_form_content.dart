@@ -55,6 +55,7 @@ class RegistrationFormContent extends ConsumerWidget {
             birthDateController: controller.birthDateController,
             adoptionDateController: controller.adoptionDateController,
             weightController: controller.weightController,
+            appearanceController: controller.appearanceController,
             selectedBirthDate: formData.birthDate,
             selectedAdoptionDate: formData.adoptionDate,
             onBirthDateTap: onBirthDateTap,
@@ -63,6 +64,8 @@ class RegistrationFormContent extends ConsumerWidget {
             birthDateValidator: controller.validateBirthDate,
             adoptionDateValidator: controller.validateAdoptionDate,
             weightValidator: controller.validateWeight,
+            appearanceValidator: controller.validateAppearance,
+            onAppearanceChanged: controller.updateAppearance,
           ),
           _buildSectionDivider(),
           PetTypeSection(
