@@ -668,7 +668,7 @@ class LiveWalkWidget extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(petName != null ? '${petName}の散歩' : '実時間 散歩'),
+        title: Text(petName != null ? '$petNameの散歩' : '実時間 散歩'),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
