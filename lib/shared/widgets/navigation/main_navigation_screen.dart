@@ -13,24 +13,20 @@ class MainNavigationScreen extends ConsumerWidget {
     final String location = GoRouterState.of(context).matchedLocation;
 
     // 홈에서 접근하는 라우트들은 선택 상태 없음
-    // DISABLED: Walk feature (임시 비활성화)
-    // if (location == '/walk-from-home') {
-    //   return -1; // 선택된 탭 없음
-    // }
+    if (location == '/walk-from-home') {
+      return -1; // 선택된 탭 없음
+    }
 
     if (location.startsWith('/home')) {
       return 0;
     } else if (location.startsWith('/ai')) {
       return 1;
-    }
-    // DISABLED: Walk feature (임시 비활성화)
-    // else if (location.startsWith('/walk')) {
-    //   return 2;
-    // }
-    else if (location.startsWith('/scheduling')) {
-      return 2; // Walk 비활성화로 인덱스 조정
+    } else if (location.startsWith('/walk')) {
+      return 2;
+    } else if (location.startsWith('/scheduling')) {
+      return 3;
     } else if (location.startsWith('/settings')) {
-      return 3; // Walk 비활성화로 인덱스 조정
+      return 4;
     }
 
     return 0; // 기본값
@@ -45,11 +41,12 @@ class MainNavigationScreen extends ConsumerWidget {
         context.go('/ai');
         break;
       case 2:
-        // DISABLED: Walk feature (임시 비활성화)
-        // context.go('/walk');
-        context.go('/scheduling'); // Walk 비활성화로 인해 scheduling으로 연결
+        context.go('/walk');
         break;
       case 3:
+        context.go('/scheduling');
+        break;
+      case 4:
         context.go('/settings');
         break;
       default:
