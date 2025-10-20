@@ -279,7 +279,9 @@ class LiveWalkController extends _$LiveWalkController {
 
       if (state.timerState != WalkTimerState.running &&
           state.timerState != WalkTimerState.paused) {
-        debugPrint('▶️ resumeWalk() - 상태가 running/paused 아님: ${state.timerState}');
+        debugPrint(
+          '▶️ resumeWalk() - 상태가 running/paused 아님: ${state.timerState}',
+        );
         return;
       }
 
@@ -450,7 +452,9 @@ class LiveWalkController extends _$LiveWalkController {
 
       // 🚀 핵심: 거리가 실제로 변경되었을 때만 state를 업데이트
       if (newDistance == state.distance) {
-        debugPrint('⏸️ 거리 변화 없음 (이전: ${state.distance}m, 현재: $newDistance m), state 업데이트 무시');
+        debugPrint(
+          '⏸️ 거리 변화 없음 (이전: ${state.distance}m, 현재: $newDistance m), state 업데이트 무시',
+        );
         return;
       }
 
@@ -486,7 +490,9 @@ class LiveWalkController extends _$LiveWalkController {
         currentWalkRecord: updatedWalkRecord,
       );
 
-      debugPrint('🔄 State 업데이트됨: 거리 $newDistance m, 경로 포인트 ${newRoute.length}개');
+      debugPrint(
+        '🔄 State 업데이트됨: 거리 $newDistance m, 경로 포인트 ${newRoute.length}개',
+      );
 
       // 맵 업데이트
       _updateMapPolylines();
@@ -650,48 +656,28 @@ class LiveWalkController extends _$LiveWalkController {
   }
 }
 
-class LiveWalkWidget extends ConsumerStatefulWidget {
+class LiveWalkWidget extends StatelessWidget {
   final String? petId;
   final String? petName;
 
   const LiveWalkWidget({super.key, this.petId, this.petName});
 
   @override
-  ConsumerState<LiveWalkWidget> createState() => _LiveWalkWidgetState();
-}
-
-class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
-  int _parentBuildCount = 0;
-  DateTime? _parentLastBuild;
-
-  @override
   Widget build(BuildContext context) {
-    _parentBuildCount++;
-    final now = DateTime.now();
-    final timeSinceLastBuild = _parentLastBuild != null
-        ? now.difference(_parentLastBuild!).inMilliseconds
-        : 0;
-    _parentLastBuild = now;
-
-    debugPrint('👨‍👧‍👦 _LiveWalkWidgetState.build() 호출 #$_parentBuildCount (${timeSinceLastBuild}ms)');
-
-    final walkController = ref.read(liveWalkControllerProvider.notifier);
+    debugPrint('👨‍👧‍👦 LiveWalkWidget.build() - 한 번만 호출되어야 함');
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.petName != null ? '${widget.petName}の散歩' : '実時間 散歩'),
+        title: Text(petName != null ? '${petName}の散歩' : '実時間 散歩'),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Column(
+      body: const Column(
         children: [
-          // 맵: 위치/마커/폴리라인 변경 시만 리빌드
-          Expanded(flex: 3, child: _MapSection(walkController: walkController)),
-          // ✅ 컨트롤: 거리/상태 변경 시만 리빌드 (별도 위젯)
-          Expanded(
-            flex: 1,
-            child: _ControlSection(walkController: walkController),
-          ),
+          // 맵: 위치 변경 시만 리빌드 (완전 독립)
+          Expanded(flex: 3, child: _MapSection()),
+          // 컨트롤: 거리 변경 시만 리빌드 (완전 독립)
+          Expanded(flex: 1, child: _ControlSection()),
         ],
       ),
     );
@@ -699,11 +685,8 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
 }
 
 /// 컨트롤 섹션 - ConsumerStatefulWidget (거리 변경 시만 listen & rebuild)
-/// 🚀 최적화: watch 제거, listen만 사용하여 필요할 때만 업데이트
 class _ControlSection extends ConsumerStatefulWidget {
-  final LiveWalkController walkController;
-
-  const _ControlSection({required this.walkController});
+  const _ControlSection();
 
   @override
   ConsumerState<_ControlSection> createState() => _ControlSectionState();
@@ -716,30 +699,42 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
   WalkRecordEntity? _cachedCurrentWalkRecord;
   int _controlBuildCount = 0;
   DateTime? _controlLastBuild;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    // 🚀 거리만 listen (타이머 상태 제거!)
-    Future.microtask(() {
-      if (mounted) {
-        ref.listen(
-          liveWalkControllerProvider.select((state) => state.distance),
-          (prev, next) {
-            if (mounted) {
-              debugPrint('📊 Distance changed: $prev -> $next');
-              setState(() {
-                _cachedDistance = next;
-              });
-            }
-          },
-        );
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    // 초기 설정
+    if (!_isInitialized) {
+      _isInitialized = true;
+      final currentState = ref.read(liveWalkControllerProvider);
+      _cachedDistance = currentState.distance;
+      _cachedTimerState = currentState.timerState;
+      _cachedRouteLength = currentState.route.length;
+      _cachedCurrentWalkRecord = currentState.currentWalkRecord;
+
+      // 거리 변경 listen 설정
+      Future.microtask(() {
+        if (mounted) {
+          ref.listen(
+            liveWalkControllerProvider.select((state) => state.distance),
+            (prev, next) {
+              if (mounted && _cachedDistance != next) {
+                debugPrint('📊 거리 변경 감지: $_cachedDistance -> $next');
+                setState(() {
+                  _cachedDistance = next;
+                });
+              }
+            },
+          );
+        }
+      });
+    }
+
     _controlBuildCount++;
     final now = DateTime.now();
     final timeSinceLastBuild = _controlLastBuild != null
@@ -747,24 +742,17 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
         : 0;
     _controlLastBuild = now;
 
-    debugPrint('⚙️ _ControlSection.build() 호출 #$_controlBuildCount (${timeSinceLastBuild}ms)');
+    debugPrint(
+      '⚙️ _ControlSection.build() 호출 #$_controlBuildCount (${timeSinceLastBuild}ms 경과)',
+    );
 
-    // 🚀 현재 상태 읽기 (ref.read는 watch가 아니므로 rebuild를 트리거하지 않음)
+    // 🚀 현재 상태를 ref.read로 가져옴 (watch 제거!)
     final currentState = ref.read(liveWalkControllerProvider);
-
-    // 타이머 상태는 매번 업데이트 (listen 없이)
     _cachedTimerState = currentState.timerState;
     _cachedRouteLength = currentState.route.length;
     _cachedCurrentWalkRecord = currentState.currentWalkRecord;
-    // 거리는 listen으로 업데이트됨 (초기값은 여기서)
-    if (_cachedDistance == 0) {
-      _cachedDistance = currentState.distance;
-    }
 
-    debugPrint(
-      '📊 _ControlSection rebuild - distance: $_cachedDistance, state: $_cachedTimerState',
-    );
-
+    final walkController = ref.read(liveWalkControllerProvider.notifier);
     final formattedDistance =
         '${(_cachedDistance / 1000).toStringAsFixed(2)} km';
 
@@ -793,13 +781,13 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
                 timerState: _cachedTimerState,
                 routeLength: _cachedRouteLength,
                 currentWalkRecord: _cachedCurrentWalkRecord,
-                elapsedTimeNotifier: widget.walkController.elapsedTimeNotifier,
+                elapsedTimeNotifier: walkController.elapsedTimeNotifier,
               ),
               const SizedBox(height: AppSpacing.md),
               _buildControlButtons(
                 context,
                 timerState: _cachedTimerState,
-                walkController: widget.walkController,
+                walkController: walkController,
               ),
             ],
           ),
@@ -1106,9 +1094,7 @@ class _TimerDisplay extends StatelessWidget {
 
 /// 맵 섹션 - 위치 변경 시만 리빌드 (완전 분리)
 class _MapSection extends ConsumerStatefulWidget {
-  final LiveWalkController walkController;
-
-  const _MapSection({required this.walkController});
+  const _MapSection();
 
   @override
   ConsumerState<_MapSection> createState() => _MapSectionState();
@@ -1121,30 +1107,36 @@ class _MapSectionState extends ConsumerState<_MapSection> {
   Set<Polyline> _lastPolylines = {};
   int _buildCallCount = 0;
   DateTime? _lastBuildTime;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    // 🚀 위치 변경만 listen (타이머 완전 무시)
-    Future.microtask(() {
-      if (mounted) {
-        ref.listen(
-          liveWalkControllerProvider.select((state) {
-            if (state.currentPosition == null) return null;
-            // 좌표를 String으로 변환하면 같은 위치에서는 같은 String
-            return '${state.currentPosition!.latitude.toStringAsFixed(6)},${state.currentPosition!.longitude.toStringAsFixed(6)}';
-          }),
-          (prev, next) {
-            debugPrint('🗺️ Position changed: $prev -> $next');
-            if (mounted) setState(() {}); // 위치 변경 시만 rebuild
-          },
-        );
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    // 초기 setup 한 번만
+    if (!_isInitialized) {
+      _isInitialized = true;
+
+      // 🚀 위치 변경만 listen (타이머 완전 무시)
+      Future.microtask(() {
+        if (mounted) {
+          ref.listen(
+            liveWalkControllerProvider.select((state) {
+              if (state.currentPosition == null) return null;
+              return '${state.currentPosition!.latitude.toStringAsFixed(6)},${state.currentPosition!.longitude.toStringAsFixed(6)}';
+            }),
+            (prev, next) {
+              debugPrint('🗺️ 위치 변경: $prev -> $next');
+              if (mounted) setState(() {}); // 위치 변경 시만 rebuild
+            },
+          );
+        }
+      });
+    }
+
     _buildCallCount++;
     final now = DateTime.now();
     final timeSinceLastBuild = _lastBuildTime != null
@@ -1152,20 +1144,16 @@ class _MapSectionState extends ConsumerState<_MapSection> {
         : 0;
     _lastBuildTime = now;
 
-    debugPrint('🎨 _MapSection.build() 호출 #$_buildCallCount (이전 빌드로부터 ${timeSinceLastBuild}ms 경과)');
+    debugPrint(
+      '🗺️ _MapSection.build() 호출 #$_buildCallCount (이전 빌드로부터 ${timeSinceLastBuild}ms 경과)',
+    );
 
-    // 🚀 현재 상태를 ref.read로 가져옴 (watch 제거)
+    // 🚀 ref.read()만 사용 (watch 제거!)
     final currentState = ref.read(liveWalkControllerProvider);
-    debugPrint('📋 현재 state 객체 ID: ${currentState.hashCode}, distance: ${currentState.distance}m');
 
     final currentPosition = currentState.currentPosition;
     final markers = currentState.markers;
     final polylines = currentState.polylines;
-
-    // 좌표 키 계산
-    final positionKey = currentPosition == null
-        ? null
-        : '${currentPosition.latitude.toStringAsFixed(4)},${currentPosition.longitude.toStringAsFixed(4)}';
 
     if (currentPosition == null) {
       return Container(
@@ -1192,13 +1180,15 @@ class _MapSectionState extends ConsumerState<_MapSection> {
     }
 
     // 🚀 실제 변경이 있을 때만 업데이트
+    final positionKey =
+        '${currentPosition.latitude.toStringAsFixed(6)},${currentPosition.longitude.toStringAsFixed(6)}';
     final shouldUpdate =
         _lastPositionKey != positionKey ||
         _lastMarkers != markers ||
         _lastPolylines != polylines;
 
     if (shouldUpdate) {
-      debugPrint('🗺️ _MapSection update - position: $positionKey');
+      debugPrint('🎨 맵 업데이트 필요: positionKey=$positionKey');
       _lastPositionKey = positionKey;
       _lastMarkers = markers;
       _lastPolylines = polylines;
@@ -1221,7 +1211,9 @@ class _MapSectionState extends ConsumerState<_MapSection> {
       key: const ValueKey('live_walk_map'),
       onMapCreated: (GoogleMapController controller) {
         _mapController = controller;
-        widget.walkController.setMapController(controller);
+        ref
+            .read(liveWalkControllerProvider.notifier)
+            .setMapController(controller);
         WalkMapCameraController.moveToCurrentLocation(
           controller,
           currentPosition,
