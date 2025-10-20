@@ -86,12 +86,6 @@ class _AllergyRecommendedProductsScreenState
         keyword = 'ペット $category';
     }
 
-    // 디버깅용 로그
-    debugPrint('🔍 AllergyRecommendedProductsScreen Debug:');
-    debugPrint('  - Category: $category');
-    debugPrint('  - Search Keyword: $keyword');
-    debugPrint('  - Suspected Ingredients: ${widget.suspectedIngredients}');
-
     notifier.searchPetProducts(keyword: keyword);
   }
 
@@ -447,7 +441,6 @@ class _AllergyRecommendedProductsScreenState
   /// 상품 페이지 열기
   void _openProductPage(RakutenPetProduct product) {
     // 상품 URL로 이동 (실제로는 url_launcher 패키지 사용)
-    debugPrint('상품 페이지 열기: ${product.itemUrl}');
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${product.itemName}の商品ページを開きます'),

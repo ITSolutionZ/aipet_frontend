@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/facility/data/data.dart';
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/foundation/controllers/base_facility_controller.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
 
 /// 시설 상세 화면의 비즈니스 로직을 관리하는 컨트롤러
 class FacilityDetailController extends BaseFacilityController {

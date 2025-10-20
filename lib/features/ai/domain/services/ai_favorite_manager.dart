@@ -1,7 +1,9 @@
-import 'package:aipet_frontend/features/ai/domain/domain.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
+
+import '../entities/ai_category_entity.dart';
+import '../entities/ai_favorite_qa_entity.dart';
+import '../entities/ai_message_entity.dart';
 
 /// ⭐ AI 즐겨찾기 관리 서비스
 ///
@@ -9,6 +11,11 @@ import 'package:flutter/foundation.dart';
 /// - 즐겨찾기 추가/제거
 /// - 즐겨찾기 목록 관리
 /// - 즐겨찾기 검색 및 필터링
+///
+/// ## 아키텍처 노트
+/// - **Static Utility Class**: 모든 메서드가 static이며 상태를 가지지 않음
+/// - **불변성 유지**: 원본 데이터를 변경하지 않고 새 리스트 반환
+/// - **Result 패턴**: 모든 작업의 성공/실패를 `Result<T>`로 반환
 class AiFavoriteManager {
   static const String _tag = 'AiFavoriteManager';
 

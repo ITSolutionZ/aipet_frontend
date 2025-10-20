@@ -1,15 +1,12 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/features/home/data/mappers/pet_mapper.dart';
-import 'package:aipet_frontend/features/home/data/mappers/weather_mapper.dart';
-import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
-import 'package:aipet_frontend/features/home/data/services/weather_service.dart';
-import 'package:aipet_frontend/features/home/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/services/cache_service.dart';
-import 'package:aipet_frontend/shared/services/local_storage_service.dart';
-import 'package:aipet_frontend/shared/services/ultra_fast_cache_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../domain/domain.dart';
+import '../mappers/pet_mapper.dart';
+import '../mappers/weather_mapper.dart';
+import '../models/weather_model.dart';
+import '../services/weather_service.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final WeatherService _weatherService = WeatherService();

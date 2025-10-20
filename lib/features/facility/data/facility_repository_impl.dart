@@ -1,9 +1,8 @@
-import 'package:aipet_frontend/features/facility/data/services/facility_local_storage_service.dart';
-import 'package:aipet_frontend/features/facility/data/services/google_places_service.dart';
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/features/facility/domain/repositories/facility_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/foundation/error_handler/app_error_handler.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../domain/domain.dart';
+import 'services/facility_local_storage_service.dart';
+import 'services/google_places_service.dart';
 
 class FacilityRepositoryImpl implements FacilityRepository {
   @override

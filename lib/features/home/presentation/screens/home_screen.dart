@@ -1,13 +1,14 @@
-import 'package:aipet_frontend/features/home/data/data.dart';
-import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
-import 'package:aipet_frontend/features/home/presentation/controllers/home_controller.dart';
-import 'package:aipet_frontend/features/home/presentation/mixins/scroll_tracking_mixin.dart';
-import 'package:aipet_frontend/features/home/presentation/widgets/auto_banner_carousel.dart';
-import 'package:aipet_frontend/features/home/presentation/widgets/pet_profile_banner.dart';
-import 'package:aipet_frontend/features/home/presentation/widgets/widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
+import '../controllers/home_controller.dart';
+import '../mixins/scroll_tracking_mixin.dart';
+import '../widgets/auto_banner_carousel.dart';
+import '../widgets/pet_profile_banner.dart';
+import '../widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 

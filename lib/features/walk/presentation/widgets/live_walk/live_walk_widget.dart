@@ -127,6 +127,12 @@ class LiveWalkController extends _$LiveWalkController {
 
   ValueNotifier<Duration> get elapsedTimeNotifier => _elapsedTimeNotifier;
 
+  // 🚀 마지막 위치 업데이트 시간 (너무 자주 업데이트되지 않도록)
+  DateTime? _lastLocationUpdateTime;
+
+  // 🚀 마지막으로 state에 저장된 위치 (중복 업데이트 방지)
+  Position? _lastSavedPosition;
+
   @override
   LiveWalkState build() {
     _initializeCurrentLocation();
@@ -224,6 +230,10 @@ class LiveWalkController extends _$LiveWalkController {
       distance: 0.0,
       currentWalkRecord: walkRecord,
     );
+
+    // 🚀 위치 추적 초기화 (시작 위치 저장)
+    _lastSavedPosition = currentPosition;
+    _lastLocationUpdateTime = DateTime.now();
 
     // ✅ 타이머는 ValueNotifier로 관리하여 main state 변경 없음
     _elapsedTimeNotifier.value = Duration.zero;
@@ -379,6 +389,11 @@ class LiveWalkController extends _$LiveWalkController {
     _timerManager.resetTimer();
     _elapsedTimeNotifier.value = Duration.zero; // ValueNotifier도 리셋
     _locationTracker.stopTracking();
+
+    // 🚀 위치 추적 상태 초기화
+    _lastSavedPosition = null;
+    _lastLocationUpdateTime = null;
+
     _updateMapMarkers();
 
     // 현재 산책 데이터 제거 (백그라운드에서 실행)
@@ -397,10 +412,21 @@ class LiveWalkController extends _$LiveWalkController {
   Future<void> _updateLocation(WalkLocation location) async {
     try {
       // 📊 위치 업데이트 수신 통지
-      final currentTime = DateTime.now().toIso8601String();
+      final now = DateTime.now();
       debugPrint(
-        '📍 위치 콜백 수신[$currentTime]: lat=${location.latitude.toStringAsFixed(6)}, lng=${location.longitude.toStringAsFixed(6)}, accuracy=${location.accuracy?.toStringAsFixed(1)}m',
+        '📍 위치 콜백 수신[${now.toIso8601String()}]: lat=${location.latitude.toStringAsFixed(6)}, lng=${location.longitude.toStringAsFixed(6)}, accuracy=${location.accuracy?.toStringAsFixed(1)}m',
       );
+
+      // 🚀 마지막 업데이트로부터 최소 3초 경과해야 함 (너무 자주 업데이트 방지)
+      if (_lastLocationUpdateTime != null) {
+        final timeSinceLastUpdate = now.difference(_lastLocationUpdateTime!);
+        if (timeSinceLastUpdate.inSeconds < 3) {
+          debugPrint(
+            '⏰ 업데이트 너무 빠름: ${timeSinceLastUpdate.inSeconds}초 경과 (최소 3초 필요)',
+          );
+          return;
+        }
+      }
 
       // WalkTrackingOptimizer를 사용한 위치 데이터 유효성 검증
       if (!WalkTrackingOptimizer.isValidLocation(location)) {
@@ -416,11 +442,11 @@ class LiveWalkController extends _$LiveWalkController {
         }
       }
 
-      // 위치가 실제로 변경되었는지 확인 (GPS 정확도와 최소 이동 거리 고려)
-      if (state.currentPosition != null) {
+      // 🚀 마지막으로 저장된 위치와 비교 (동일한 위치면 완전히 무시)
+      if (_lastSavedPosition != null) {
         final distance = _calculateDistance(
-          state.currentPosition!.latitude,
-          state.currentPosition!.longitude,
+          _lastSavedPosition!.latitude,
+          _lastSavedPosition!.longitude,
           location.latitude,
           location.longitude,
         );
@@ -432,13 +458,13 @@ class LiveWalkController extends _$LiveWalkController {
         // GPS 오차 범위 내 이동은 무시
         if (distance < minDistance) {
           debugPrint(
-            '🚫 GPS오차범위 무시: ${distance.toStringAsFixed(2)}m (최소 ${minDistance.toStringAsFixed(1)}m 필요, 정확도: ${accuracy.toStringAsFixed(1)}m)',
+            '🚫 동일한 위치로 판단 (GPS 오차범위): ${distance.toStringAsFixed(2)}m < ${minDistance.toStringAsFixed(1)}m (정확도: ${accuracy.toStringAsFixed(1)}m)',
           );
           return;
         }
 
         debugPrint(
-          '✅ 위치 변경 감지: ${distance.toStringAsFixed(2)}m 이동 (정확도: ${accuracy.toStringAsFixed(1)}m)',
+          '✅ 의미있는 위치 변경 감지: ${distance.toStringAsFixed(2)}m 이동 (최소: ${minDistance.toStringAsFixed(1)}m)',
         );
       }
 
@@ -489,6 +515,10 @@ class LiveWalkController extends _$LiveWalkController {
         distance: newDistance,
         currentWalkRecord: updatedWalkRecord,
       );
+
+      // 🚀 마지막 저장 위치 및 시간 업데이트
+      _lastSavedPosition = position;
+      _lastLocationUpdateTime = now;
 
       debugPrint(
         '🔄 State 업데이트됨: 거리 $newDistance m, 경로 포인트 ${newRoute.length}개',
@@ -545,17 +575,19 @@ class LiveWalkController extends _$LiveWalkController {
 
   /// GPS 정확도를 고려한 최소 이동 거리 계산
   /// 정확도가 낮을수록 더 큰 이동 거리가 필요함
+  /// 🚀 GPS 오차 범위 내 이동은 완전히 무시하여 불필요한 rebuild 방지
+  /// 구글맵처럼 동일한 위치에서는 완전히 업데이트 차단
   double _calculateMinimumDistance(double accuracy) {
-    // 기본 최소 거리: 3m
-    const double baseMinDistance = 3.0;
+    // 기본 최소 거리: 10m (더 크게 설정하여 동일 위치 판정)
+    const double baseMinDistance = 10.0;
 
-    // GPS 정확도가 10m 이하: 정확도 * 1.5
-    // GPS 정확도가 10m 초과: 정확도 * 2.0 (더 보수적)
-    final double accuracyMultiplier = accuracy <= 10.0 ? 1.5 : 2.0;
+    // GPS 정확도가 10m 이하: 정확도 * 2.5
+    // GPS 정확도가 10m 초과: 정확도 * 3.0
+    final double accuracyMultiplier = accuracy <= 10.0 ? 2.5 : 3.0;
     final double calculatedDistance = accuracy * accuracyMultiplier;
 
-    // 최소 3m, 최대 20m로 제한
-    return math.max(baseMinDistance, math.min(calculatedDistance, 20.0));
+    // 최소 10m, 최대 50m로 제한 (동일 위치로 인한 깜빡임 완전 방지)
+    return math.max(baseMinDistance, math.min(calculatedDistance, 50.0));
   }
 
   void _updateMapPolylines() {
@@ -667,9 +699,12 @@ class LiveWalkWidget extends ConsumerStatefulWidget {
 }
 
 class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
+  int _buildCount = 0;
+
   @override
   Widget build(BuildContext context) {
-    debugPrint('👨‍👧‍👦 LiveWalkWidget.build() - 한 번만 호출되어야 함');
+    _buildCount++;
+    debugPrint('👨‍👧‍👦 LiveWalkWidget.build() 호출 #$_buildCount - ${DateTime.now()}');
 
     return Scaffold(
       appBar: AppBar(
@@ -689,7 +724,7 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
   }
 }
 
-/// 컨트롤 섹션 - ConsumerStatefulWidget (거리 변경 시만 listen & rebuild)
+/// 컨트롤 섹션 - 거의 rebuild되지 않도록 최적화
 class _ControlSection extends ConsumerStatefulWidget {
   const _ControlSection();
 
@@ -698,68 +733,43 @@ class _ControlSection extends ConsumerStatefulWidget {
 }
 
 class _ControlSectionState extends ConsumerState<_ControlSection> {
-  double _cachedDistance = 0;
-  WalkTimerState _cachedTimerState = WalkTimerState.ready;
-  int _cachedRouteLength = 0;
-  WalkRecordEntity? _cachedCurrentWalkRecord;
-  int _controlBuildCount = 0;
-  DateTime? _controlLastBuild;
-  bool _isInitialized = false;
-
   @override
   void initState() {
     super.initState();
+
+    // 🚀 timerState와 distance가 변경될 때만 setState 호출
+    Future.microtask(() {
+      if (mounted) {
+        ref.listen(
+          liveWalkControllerProvider.select((s) => s.timerState),
+          (prev, next) {
+            debugPrint('⏰ timerState 변경: $prev -> $next');
+            if (mounted) setState(() {});
+          },
+        );
+        ref.listen(
+          liveWalkControllerProvider.select((s) => s.distance),
+          (prev, next) {
+            debugPrint('📏 distance 변경: $prev -> $next');
+            if (mounted) setState(() {});
+          },
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // 초기 설정
-    if (!_isInitialized) {
-      _isInitialized = true;
-      final currentState = ref.read(liveWalkControllerProvider);
-      _cachedDistance = currentState.distance;
-      _cachedTimerState = currentState.timerState;
-      _cachedRouteLength = currentState.route.length;
-      _cachedCurrentWalkRecord = currentState.currentWalkRecord;
+    debugPrint('🔄 _ControlSection.build() 호출됨 - ${DateTime.now()}');
 
-      // 거리 변경 listen 설정
-      Future.microtask(() {
-        if (mounted) {
-          ref.listen(
-            liveWalkControllerProvider.select((state) => state.distance),
-            (prev, next) {
-              if (mounted && _cachedDistance != next) {
-                debugPrint('📊 거리 변경 감지: $_cachedDistance -> $next');
-                setState(() {
-                  _cachedDistance = next;
-                });
-              }
-            },
-          );
-        }
-      });
-    }
-
-    _controlBuildCount++;
-    final now = DateTime.now();
-    final timeSinceLastBuild = _controlLastBuild != null
-        ? now.difference(_controlLastBuild!).inMilliseconds
-        : 0;
-    _controlLastBuild = now;
-
-    debugPrint(
-      '⚙️ _ControlSection.build() 호출 #$_controlBuildCount (${timeSinceLastBuild}ms 경과)',
-    );
-
-    // 🚀 현재 상태를 ref.read로 가져옴 (watch 제거!)
-    final currentState = ref.read(liveWalkControllerProvider);
-    _cachedTimerState = currentState.timerState;
-    _cachedRouteLength = currentState.route.length;
-    _cachedCurrentWalkRecord = currentState.currentWalkRecord;
-
+    // 🚀 watch 완전 제거! ref.read()만 사용
+    // listen으로 필요한 상태만 감지하여 setState 호출
+    final state = ref.read(liveWalkControllerProvider);
     final walkController = ref.read(liveWalkControllerProvider.notifier);
-    final formattedDistance =
-        '${(_cachedDistance / 1000).toStringAsFixed(2)} km';
+
+    final formattedDistance = '${(state.distance / 1000).toStringAsFixed(2)} km';
+
+    debugPrint('📊 _ControlSection - distance: ${state.distance}, timerState: ${state.timerState}');
 
     return Container(
       width: double.infinity,
@@ -782,16 +792,17 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildStatsRow(
+                context,
                 distance: formattedDistance,
-                timerState: _cachedTimerState,
-                routeLength: _cachedRouteLength,
-                currentWalkRecord: _cachedCurrentWalkRecord,
+                timerState: state.timerState,
+                routeLength: state.route.length,
+                currentWalkRecordId: state.currentWalkRecord?.id,
                 elapsedTimeNotifier: walkController.elapsedTimeNotifier,
               ),
               const SizedBox(height: AppSpacing.md),
               _buildControlButtons(
                 context,
-                timerState: _cachedTimerState,
+                timerState: state.timerState,
                 walkController: walkController,
               ),
             ],
@@ -801,11 +812,12 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
     );
   }
 
-  Widget _buildStatsRow({
+  Widget _buildStatsRow(
+    BuildContext context, {
     required String distance,
     required WalkTimerState timerState,
     required int routeLength,
-    required WalkRecordEntity? currentWalkRecord,
+    required String? currentWalkRecordId,
     required ValueNotifier<Duration> elapsedTimeNotifier,
   }) {
     return Column(
@@ -824,7 +836,7 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
           ],
         ),
         // 디버그 정보 (테스트용)
-        if (currentWalkRecord != null) ...[
+        if (currentWalkRecordId != null) ...[
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -833,7 +845,7 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              '📱 ID: ${currentWalkRecord.id.substring(0, 8)}... | ポイント: $routeLength個',
+              '📱 ID: ${currentWalkRecordId.substring(0, 8)}... | ポイント: $routeLength個',
               style: const TextStyle(fontSize: 10, color: Colors.grey),
             ),
           ),
@@ -1125,17 +1137,36 @@ class _MapSectionState extends ConsumerState<_MapSection> {
     if (!_isInitialized) {
       _isInitialized = true;
 
-      // 🚀 위치 변경만 listen (타이머 완전 무시)
+      // 🚀 위치, 마커, 폴리라인 변경만 listen (타이머 완전 무시)
       Future.microtask(() {
         if (mounted) {
+          // 위치 변경 listen
           ref.listen(
             liveWalkControllerProvider.select((state) {
               if (state.currentPosition == null) return null;
               return '${state.currentPosition!.latitude.toStringAsFixed(6)},${state.currentPosition!.longitude.toStringAsFixed(6)}';
             }),
             (prev, next) {
-              debugPrint('🗺️ 위치 변경: $prev -> $next');
+              debugPrint('🗺️ 위치 변경 감지: $prev -> $next');
               if (mounted) setState(() {}); // 위치 변경 시만 rebuild
+            },
+          );
+
+          // 마커 변경 listen
+          ref.listen(
+            liveWalkControllerProvider.select((state) => state.markers.length),
+            (prev, next) {
+              debugPrint('📍 마커 변경 감지: $prev -> $next');
+              if (mounted) setState(() {});
+            },
+          );
+
+          // 폴리라인 변경 listen
+          ref.listen(
+            liveWalkControllerProvider.select((state) => state.polylines.length),
+            (prev, next) {
+              debugPrint('🛣️ 폴리라인 변경 감지: $prev -> $next');
+              if (mounted) setState(() {});
             },
           );
         }

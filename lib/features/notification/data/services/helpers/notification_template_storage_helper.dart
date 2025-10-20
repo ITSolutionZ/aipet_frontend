@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import '../../../domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 

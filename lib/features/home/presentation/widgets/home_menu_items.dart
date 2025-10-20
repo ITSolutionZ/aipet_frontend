@@ -1,8 +1,9 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/features/home/presentation/widgets/home_menu_widget.dart';
-import 'package:aipet_frontend/features/home/presentation/widgets/qr_code_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import 'home_menu_widget.dart';
+import 'qr_code_bottom_sheet.dart';
 
 /// 홈 메뉴 아이템 정의
 class HomeMenuItems {

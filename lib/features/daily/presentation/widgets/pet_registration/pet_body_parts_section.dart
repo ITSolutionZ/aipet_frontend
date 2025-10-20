@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/shared.dart' hide State;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 /// 펫 신체 부위 관리 섹션

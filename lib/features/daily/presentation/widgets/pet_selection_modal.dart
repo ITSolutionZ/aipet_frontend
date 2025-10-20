@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/daily/presentation/providers/pet_selection_provider.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../providers/pet_selection_provider.dart';
 
 /// 펫 선택 모달
 class PetSelectionModal extends ConsumerWidget {

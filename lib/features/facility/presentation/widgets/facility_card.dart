@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
-import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../shared/ui/components/cards/info_card.dart';
+import '../../domain/domain.dart';
 
 class FacilityCard extends StatelessWidget {
   final Facility facility;

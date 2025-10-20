@@ -130,6 +130,30 @@ class ShellRoutes {
             builder: (context, state) => const AllergyMainScreen(),
             routes: [
               GoRoute(
+                path: 'product-selection',
+                name: 'allergy-product-selection',
+                builder: (context, state) {
+                  final args = state.extra as Map<String, dynamic>;
+                  return AllergyProductSelectionScreen(
+                    hasAllergy: args['hasAllergy'] as bool,
+                    petId: args['petId'] as String,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'analysis-result',
+                name: 'allergy-analysis-result',
+                builder: (context, state) {
+                  final args = state.extra as Map<String, dynamic>;
+                  return AllergyAnalysisResultScreen(
+                    analysisResult:
+                        args['analysisResult'] as Map<String, dynamic>,
+                    petName: args['petName'] as String,
+                    petId: args['petId'] as String,
+                  );
+                },
+              ),
+              GoRoute(
                 path: 'recommended-products',
                 name: 'allergy-recommended-products',
                 builder: (context, state) {

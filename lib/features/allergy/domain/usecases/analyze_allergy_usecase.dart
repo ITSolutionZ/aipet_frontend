@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../data/providers/allergy_providers.dart';
 import '../entities/allergy_analysis_entities.dart';
 import '../entities/product_entity.dart';
 import '../repositories/allergy_analysis_repository.dart';
@@ -289,5 +290,6 @@ class RiskAssessmentResult {
 /// Use Case Provider
 @riverpod
 AnalyzeAllergyUseCase analyzeAllergyUseCase(Ref ref) {
-  throw UnimplementedError('Repository provider not implemented');
+  final repository = ref.watch(allergyAnalysisRepositoryProvider);
+  return AnalyzeAllergyUseCase(repository);
 }

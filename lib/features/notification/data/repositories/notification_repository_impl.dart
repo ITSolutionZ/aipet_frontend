@@ -1,9 +1,9 @@
-import 'package:aipet_frontend/features/notification/data/services/notification_api_service.dart';
-import 'package:aipet_frontend/features/notification/data/services/notification_cache_service.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
+
+import '../../domain/domain.dart';
+import '../services/notification_api_service.dart';
+import '../services/notification_cache_service.dart';
 
 /// 📱 알림 Repository 구현체
 ///

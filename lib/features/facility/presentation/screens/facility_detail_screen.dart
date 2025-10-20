@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/facility/presentation/screens/facility_booking_screen.dart';
-import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'facility_booking_screen.dart';
 
 class FacilityDetailScreen extends ConsumerStatefulWidget {
   final Map<String, dynamic> facility;

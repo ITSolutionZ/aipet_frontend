@@ -1,5 +1,6 @@
-import 'package:aipet_frontend/features/home/domain/entities/pet_summary_entity.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../../domain/domain.dart';
 
 /// Pet 관련 데이터 변환 매퍼
 class PetMapper {

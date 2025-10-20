@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
-import 'package:aipet_frontend/features/home/domain/entities/weather_entity.dart';
+import '../../domain/domain.dart';
+import '../models/weather_model.dart';
 
 /// WeatherData를 WeatherEntity로 변환하는 매퍼
 class WeatherMapper {

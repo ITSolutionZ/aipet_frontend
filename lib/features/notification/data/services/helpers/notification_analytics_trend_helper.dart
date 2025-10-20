@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
+import '../../../domain/domain.dart';
 
 import 'notification_analytics_calculator_helper.dart';
 

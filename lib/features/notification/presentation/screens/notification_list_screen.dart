@@ -1,10 +1,11 @@
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/notification/presentation/components/lists/filter_chips_component.dart';
-import 'package:aipet_frontend/features/notification/presentation/controllers/notification_list_controller.dart';
-import 'package:aipet_frontend/features/notification/presentation/widgets/notification_list_widget.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../domain/domain.dart';
+import '../components/lists/filter_chips_component.dart';
+import '../controllers/notification_list_controller.dart';
+import '../widgets/notification_list_widget.dart';
 
 /// 알림 목록 화면 (리팩토링됨)
 class NotificationListScreen extends ConsumerStatefulWidget {

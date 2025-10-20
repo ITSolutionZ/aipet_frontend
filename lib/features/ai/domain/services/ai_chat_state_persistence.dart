@@ -1,10 +1,12 @@
 import 'dart:convert';
 
-import 'package:aipet_frontend/features/ai/domain/domain.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../entities/ai_category_entity.dart';
+import '../entities/ai_message_entity.dart';
 
 /// 🎯 AI 채팅 상태 영속화 관리자
 ///

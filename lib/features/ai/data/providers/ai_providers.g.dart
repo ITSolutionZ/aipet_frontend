@@ -10,24 +10,21 @@ part of 'ai_providers.dart';
 // ignore_for_file: type=lint, type=warning
 /// AI Repository Provider
 ///
-/// 환경에 따라 Mock/Real Repository를 자동으로 전환합니다.
-/// MockConfig.shouldUseMock 값에 따라 결정됩니다.
+/// AI 관련 추천, 즐겨찾기, 분석 기능을 담당합니다.
 
 @ProviderFor(aiRepository)
 const aiRepositoryProvider = AiRepositoryProvider._();
 
 /// AI Repository Provider
 ///
-/// 환경에 따라 Mock/Real Repository를 자동으로 전환합니다.
-/// MockConfig.shouldUseMock 값에 따라 결정됩니다.
+/// AI 관련 추천, 즐겨찾기, 분석 기능을 담당합니다.
 
 final class AiRepositoryProvider
     extends $FunctionalProvider<AiRepository, AiRepository, AiRepository>
     with $Provider<AiRepository> {
   /// AI Repository Provider
   ///
-  /// 환경에 따라 Mock/Real Repository를 자동으로 전환합니다.
-  /// MockConfig.shouldUseMock 값에 따라 결정됩니다.
+  /// AI 관련 추천, 즐겨찾기, 분석 기능을 담당합니다.
   const AiRepositoryProvider._()
     : super(
         from: null,
@@ -61,7 +58,64 @@ final class AiRepositoryProvider
   }
 }
 
-String _$aiRepositoryHash() => r'd4c5069ca9910dffd8a411be374bc3fd93fb6036';
+String _$aiRepositoryHash() => r'4379a2d7dfa462183b8403f8017504135a060097';
+
+/// AI Chat Repository Provider
+///
+/// AI 채팅 관련 기능을 담당합니다 (메시지, 세션, 히스토리, 요약).
+
+@ProviderFor(aiChatRepository)
+const aiChatRepositoryProvider = AiChatRepositoryProvider._();
+
+/// AI Chat Repository Provider
+///
+/// AI 채팅 관련 기능을 담당합니다 (메시지, 세션, 히스토리, 요약).
+
+final class AiChatRepositoryProvider
+    extends
+        $FunctionalProvider<
+          AiChatRepository,
+          AiChatRepository,
+          AiChatRepository
+        >
+    with $Provider<AiChatRepository> {
+  /// AI Chat Repository Provider
+  ///
+  /// AI 채팅 관련 기능을 담당합니다 (메시지, 세션, 히스토리, 요약).
+  const AiChatRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'aiChatRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$aiChatRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<AiChatRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AiChatRepository create(Ref ref) {
+    return aiChatRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AiChatRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AiChatRepository>(value),
+    );
+  }
+}
+
+String _$aiChatRepositoryHash() => r'f4a4272aa3e985097439e4bfcd5a5c635ab6e95d';
 
 /// Legacy AI Repository Provider (기존 구현체)
 ///
@@ -114,4 +168,4 @@ final class LegacyAiRepositoryProvider
 }
 
 String _$legacyAiRepositoryHash() =>
-    r'11056a4821d018f421422c2f58a5a21ee064ab8f';
+    r'1ecc5537430c458d8e59e60428b2d3ff707d9b25';

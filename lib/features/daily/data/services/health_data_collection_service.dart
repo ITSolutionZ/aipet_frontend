@@ -94,7 +94,10 @@ class HealthDataCollectionService {
     try {
       // 로컬에 저장된 알레르기 분석 결과 조회
       final repository = SavedAnalysisRepository();
-      final allAnalyses = await repository.loadAll();
+      final allAnalysesResult = await repository.loadAll();
+
+      // Result 패턴 처리
+      final allAnalyses = allAnalysesResult.dataOr([]);
 
       // 해당 펫의 가장 최근 분석 결과 찾기
       final petAnalyses = allAnalyses

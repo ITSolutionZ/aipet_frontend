@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/daily/domain/entities/health_analysis.dart';
-import 'package:aipet_frontend/shared/shared.dart' hide State;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../domain/domain.dart';
 
 /// 리포트 다운로드 형식
 enum ReportFormat { pdf, png, json }

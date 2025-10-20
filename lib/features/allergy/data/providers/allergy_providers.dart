@@ -1,5 +1,8 @@
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../domain/constants/allergy_constants.dart';
 import '../../domain/entities/allergy_analysis_entities.dart';
 import '../../domain/entities/product_entity.dart';
 import '../../domain/repositories/allergy_analysis_repository.dart';
@@ -78,29 +81,50 @@ class SelectedAllergyProducts extends _$SelectedAllergyProducts {
     }
   }
 
-  /// 알레르기 성분 분석
-  Future<Map<String, dynamic>> analyzeAllergyIngredients(
+  /// 알레르기 성분 분석 (Result 패턴)
+  Future<Result<Map<String, dynamic>>> analyzeAllergyIngredients(
     String petId,
     AllergyAnalysisService service,
   ) async {
-    final data = state[petId];
-    if (data == null) {
-      throw Exception('선택된 제품이 없습니다');
+    try {
+      final data = state[petId];
+      if (data == null) {
+        return Result.failure(AllergyConstants.noProductsSelectedError);
+      }
+
+      if (data.allergyProducts.isEmpty) {
+        return Result.failure(AllergyConstants.noAllergyProductsError);
+      }
+
+      if (data.nonAllergyProducts.isEmpty) {
+        return Result.failure(AllergyConstants.noNonAllergyProductsError);
+      }
+
+      final result = await service.analyzeIngredients(
+        allergyProducts: data.allergyProducts,
+        nonAllergyProducts: data.nonAllergyProducts,
+      );
+
+      final analysisData = {
+        'suspectedIngredients': result.suspectedIngredients,
+        'analysis': result.analysis,
+        'recommendations': result.recommendations,
+        'confidence': result.confidence,
+        'allergyProducts': data.allergyProducts.length,
+        'nonAllergyProducts': data.nonAllergyProducts.length,
+      };
+
+      return Result.success('分析が正常に完了しました', analysisData);
+    } catch (error, stackTrace) {
+      if (kDebugMode) {
+        debugPrint('アレルギー分析エラー: $error');
+        debugPrint('StackTrace: $stackTrace');
+      }
+      return Result.failure(
+        AllergyConstants.analysisErrorMessage,
+        error is Exception ? error : Exception(error.toString()),
+      );
     }
-
-    final result = await service.analyzeIngredients(
-      allergyProducts: data.allergyProducts,
-      nonAllergyProducts: data.nonAllergyProducts,
-    );
-
-    return {
-      'suspectedIngredients': result.suspectedIngredients,
-      'analysis': result.analysis,
-      'recommendations': result.recommendations,
-      'confidence': result.confidence,
-      'allergyProducts': data.allergyProducts.length,
-      'nonAllergyProducts': data.nonAllergyProducts.length,
-    };
   }
 }
 

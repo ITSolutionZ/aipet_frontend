@@ -6,6 +6,7 @@ library;
 export 'allergy_analyze_button.dart';
 export 'allergy_filter_section.dart';
 export 'allergy_info_section.dart';
+export 'allergy_product_card.dart';
 export 'allergy_products_tab.dart';
 export 'allergy_selected_pet_info.dart';
 export 'allergy_selected_products_list.dart';

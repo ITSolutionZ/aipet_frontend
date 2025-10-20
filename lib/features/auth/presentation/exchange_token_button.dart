@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/auth/application/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../application/auth_controller.dart';
 
 /// 서버 토큰 교환 버튼 위젯
 ///

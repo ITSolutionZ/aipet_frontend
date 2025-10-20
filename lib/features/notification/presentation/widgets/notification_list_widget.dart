@@ -1,11 +1,12 @@
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/features/notification/data/providers/notification_providers.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../data/providers/notification_providers.dart';
+import '../../domain/entities/entities.dart';
 
 /// 알림 목록 위젯
 ///

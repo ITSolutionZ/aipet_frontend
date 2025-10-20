@@ -1,15 +1,12 @@
-import 'package:aipet_frontend/features/allergy/data/providers/allergy_providers.dart';
-import 'package:aipet_frontend/features/allergy/data/providers/allergy_service_providers.dart';
-import 'package:aipet_frontend/features/allergy/presentation/screens/allergy_analysis_result_screen.dart';
-import 'package:aipet_frontend/features/allergy/presentation/screens/allergy_main_screen_widgets/allergy_main_screen_widgets.dart';
-import 'package:aipet_frontend/features/allergy/presentation/screens/allergy_product_selection_screen.dart';
-import 'package:aipet_frontend/features/allergy/presentation/widgets/allergy_pet_selector.dart';
-import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/shared.dart' hide State;
+import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../data/data.dart';
+import '../widgets/allergy_pet_selector.dart';
+import 'allergy_main_screen_widgets/allergy_main_screen_widgets.dart';
 
 /// 알레르기 메인 화면
 ///
@@ -97,14 +94,12 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen> {
               },
               onNavigateToProductSelection: (hasAllergy) {
                 if (_selectedPet != null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AllergyProductSelectionScreen(
-                        hasAllergy: hasAllergy,
-                        petId: _selectedPet!.id,
-                      ),
-                    ),
+                  context.push(
+                    '/home/allergy/product-selection',
+                    extra: {
+                      'hasAllergy': hasAllergy,
+                      'petId': _selectedPet!.id,
+                    },
                   );
                 }
               },
@@ -117,31 +112,12 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen> {
             const SizedBox(height: AppSpacing.sm),
 
             // 선택된 제품 리스트
-            if (_selectedPet != null) ...[
-              // 디버깅용 로그
-              Builder(
-                builder: (context) {
-                  final selectedProductsMap = ref.read(
-                    selectedAllergyProductsProvider,
-                  );
-                  debugPrint('🔍 AllergyMainScreen Debug:');
-                  debugPrint('  - Selected Pet ID: ${_selectedPet!.id}');
-                  debugPrint('  - Selected Pet Name: ${_selectedPet!.name}');
-                  debugPrint(
-                    '  - Provider State Keys: ${selectedProductsMap.keys}',
-                  );
-                  debugPrint(
-                    '  - Pet Data: ${selectedProductsMap[_selectedPet!.id]}',
-                  );
-                  return const SizedBox.shrink();
-                },
-              ),
+            if (_selectedPet != null)
               AllergySelectedProductsList(
                 selectedPet: _selectedPet!,
                 isAnalyzing: _isAnalyzing,
                 onAnalyze: _performAnalysis,
               ),
-            ],
             const SizedBox(height: AppSpacing.xl),
           ],
         ),
@@ -157,45 +133,37 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen> {
       _isAnalyzing = true;
     });
 
-    try {
-      // OpenAI 분석 실행
-      final analysisService = ref.read(allergyAnalysisServiceProvider);
-      final result = await ref
-          .read(selectedAllergyProductsProvider.notifier)
-          .analyzeAllergyIngredients(_selectedPet!.id, analysisService);
+    // OpenAI 분석 실행
+    final analysisService = ref.read(allergyAnalysisServiceProvider);
+    final result = await ref
+        .read(selectedAllergyProductsProvider.notifier)
+        .analyzeAllergyIngredients(_selectedPet!.id, analysisService);
 
-      if (mounted) {
-        setState(() {
-          _isAnalyzing = false;
-        });
+    if (!mounted) return;
 
-        // 분석 결과 페이지로 이동
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AllergyAnalysisResultScreen(
-              analysisResult: result,
-              petName: _selectedPet!.name,
-              petId: _selectedPet!.id,
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isAnalyzing = false;
-        });
+    setState(() {
+      _isAnalyzing = false;
+    });
 
-        // 에러 메시지 표시
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('分析エラー: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
+    if (result.isSuccess) {
+      // 분석 성공: 결과 페이지로 이동
+      context.push(
+        '/home/allergy/analysis-result',
+        extra: {
+          'analysisResult': result.data!,
+          'petName': _selectedPet!.name,
+          'petId': _selectedPet!.id,
+        },
+      );
+    } else {
+      // 분석 실패: 에러 메시지 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.message),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+        ),
+      );
     }
   }
 }

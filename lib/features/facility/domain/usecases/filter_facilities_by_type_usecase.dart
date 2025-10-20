@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
-import 'package:aipet_frontend/features/facility/domain/repositories/facility_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../entities/facility_entity.dart';
+import '../repositories/facility_repository.dart';
 
 class FilterFacilitiesByTypeUseCase {
   final FacilityRepository repository;

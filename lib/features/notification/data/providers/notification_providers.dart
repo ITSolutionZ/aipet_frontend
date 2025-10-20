@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/notification/data/repositories/notification_repository_impl.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../domain/domain.dart';
+import '../repositories/notification_repository_impl.dart';
 
 part 'notification_providers.g.dart';
 
