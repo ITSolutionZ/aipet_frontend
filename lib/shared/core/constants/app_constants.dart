@@ -219,7 +219,7 @@ class AppConstants {
   static const String splashLoadingLottiePath = 'assets/lottie/loading.json';
 
   /// 스플래시 크기
-  static const double splashAppLogoSize = 200.0; // 앱 로고 크기 (스크린에 맞게 조정)
+  static const double splashAppLogoSize = 250.0; // 앱 로고 크기 증가 (잘림 방지)
   static const double splashCompanyLogoWidth = 200.0; // ITZ 로고 크기
   static const double splashCompanyLogoHeight = 133.0; // 비율에 맞게 조정 (200 * 2/3)
   static const double splashLoadingLottieSize = 200.0;

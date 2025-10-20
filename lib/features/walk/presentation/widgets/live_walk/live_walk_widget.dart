@@ -390,9 +390,10 @@ class LiveWalkController extends _$LiveWalkController {
         currentWalkRecord: updatedWalkRecord,
       );
 
+      // 🚀 맵 업데이트는 _MapSection에서 자동으로 처리됨
       _updateMapPolylines();
       _updateMapMarkers();
-      _moveMapToCurrentPosition();
+      // _moveMapToCurrentPosition(); // 제거: _MapSection에서 처리
 
       // 위치 업데이트 시 현재 상태 저장 (백그라운드에서 실행)
       LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord).ignore();
@@ -450,12 +451,31 @@ class LiveWalkController extends _$LiveWalkController {
 
     if (polyline != null) {
       final newPolylines = {polyline};
-      // 🚀 최적화: 이전 polylines와 다를 때만 업데이트
+      // 🚀 엄격한 중복 방지: Set 내용을 정확히 비교
       if (state.polylines.length != newPolylines.length ||
-          !state.polylines.containsAll(newPolylines)) {
+          !_arePolylinesEqual(state.polylines, newPolylines)) {
+        debugPrint('🔄 Polylines 업데이트: ${state.polylines.length} -> ${newPolylines.length}');
         state = state.copyWith(polylines: newPolylines);
       }
     }
+  }
+
+  /// Polyline Set 비교 (정확한 내용 비교)
+  bool _arePolylinesEqual(Set<Polyline> set1, Set<Polyline> set2) {
+    if (set1.length != set2.length) return false;
+    
+    for (final polyline1 in set1) {
+      bool found = false;
+      for (final polyline2 in set2) {
+        if (polyline1.polylineId == polyline2.polylineId &&
+            polyline1.points.length == polyline2.points.length) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) return false;
+    }
+    return true;
   }
 
   void _updateMapMarkers() {
@@ -476,11 +496,31 @@ class LiveWalkController extends _$LiveWalkController {
       );
     }
 
-    // 🚀 최적화: 이전 markers와 다를 때만 업데이트
+    // 🚀 엄격한 중복 방지: Set 내용을 정확히 비교
     if (state.markers.length != markers.length ||
-        !state.markers.containsAll(markers)) {
+        !_areMarkersEqual(state.markers, markers)) {
+      debugPrint('🔄 Markers 업데이트: ${state.markers.length} -> ${markers.length}');
       state = state.copyWith(markers: markers);
     }
+  }
+
+  /// Marker Set 비교 (정확한 내용 비교)
+  bool _areMarkersEqual(Set<Marker> set1, Set<Marker> set2) {
+    if (set1.length != set2.length) return false;
+    
+    for (final marker1 in set1) {
+      bool found = false;
+      for (final marker2 in set2) {
+        if (marker1.markerId == marker2.markerId &&
+            marker1.position.latitude == marker2.position.latitude &&
+            marker1.position.longitude == marker2.position.longitude) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) return false;
+    }
+    return true;
   }
 
   void _moveMapToCurrentPosition() {
@@ -894,21 +934,30 @@ class _TimerDisplay extends StatelessWidget {
   }
 }
 
-/// 맵 섹션 - 위치 변경 시만 리빌드
-class _MapSection extends ConsumerWidget {
+/// 맵 섹션 - 위치 변경 시만 리빌드 (완전 분리)
+class _MapSection extends ConsumerStatefulWidget {
   final LiveWalkController walkController;
 
   const _MapSection({required this.walkController});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 🚀 근본 해결: currentPosition을 좌표 값으로 비교
-    // Position 객체 참조가 아닌 좌표(latitude, longitude) 기반 비교
+  ConsumerState<_MapSection> createState() => _MapSectionState();
+}
+
+class _MapSectionState extends ConsumerState<_MapSection> {
+  GoogleMapController? _mapController;
+  String? _lastPositionKey;
+  Set<Marker> _lastMarkers = {};
+  Set<Polyline> _lastPolylines = {};
+
+  @override
+  Widget build(BuildContext context) {
+    // 🚀 위치 변경만 감시 (타이머 완전 무시)
     final positionKey = ref.watch(
       liveWalkControllerProvider.select((state) {
         if (state.currentPosition == null) return null;
-        // 좌표를 String으로 변환하면 같은 위치는 같은 값
-        return '${state.currentPosition!.latitude},${state.currentPosition!.longitude}';
+        // 좌표를 String으로 변환하여 비교
+        return '${state.currentPosition!.latitude.toStringAsFixed(6)},${state.currentPosition!.longitude.toStringAsFixed(6)}';
       }),
     );
 
@@ -948,12 +997,36 @@ class _MapSection extends ConsumerWidget {
       );
     }
 
-    debugPrint('🗺️ _MapSection rebuild - position: $positionKey');
+    // 🚀 실제 변경이 있을 때만 업데이트
+    final shouldUpdate = _lastPositionKey != positionKey ||
+        _lastMarkers != markers ||
+        _lastPolylines != polylines;
+
+    if (shouldUpdate) {
+      debugPrint('🗺️ _MapSection update - position: $positionKey');
+      _lastPositionKey = positionKey;
+      _lastMarkers = markers;
+      _lastPolylines = polylines;
+
+      // 카메라 이동 (위치 변경 시에만)
+      if (_mapController != null && _lastPositionKey != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_mapController != null && mounted) {
+            WalkMapCameraController.moveToCurrentLocation(
+              _mapController!,
+              currentPosition,
+              zoom: 16.0,
+            );
+          }
+        });
+      }
+    }
 
     return GoogleMap(
       key: const ValueKey('live_walk_map'),
       onMapCreated: (GoogleMapController controller) {
-        walkController.setMapController(controller);
+        _mapController = controller;
+        widget.walkController.setMapController(controller);
         WalkMapCameraController.moveToCurrentLocation(
           controller,
           currentPosition,
@@ -975,5 +1048,11 @@ class _MapSection extends ConsumerWidget {
       indoorViewEnabled: false,
       trafficEnabled: false,
     );
+  }
+
+  @override
+  void dispose() {
+    _mapController = null;
+    super.dispose();
   }
 }
