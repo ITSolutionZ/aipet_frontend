@@ -395,7 +395,6 @@ class PetBasicInfoTab extends ConsumerWidget {
     );
   }
 
-
   /// 보호자 카드
   Widget _buildGuardianCard() {
     return _buildInfoOnlyCard(
@@ -757,14 +756,15 @@ class PetBasicInfoTab extends ConsumerWidget {
     }
 
     final hasBodyParts = bodyParts.isNotEmpty;
+    final bodyPartsList = bodyParts.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
 
-    if (!hasBodyParts) {
-      // 신체 부위가 없으면 표시하지 않음
+    // 펫 종류별 주요 질병 가져오기
+    final commonDiseases = _getCommonDiseasesForPet();
+
+    // 신체 부위도 질병도 없으면 표시하지 않음
+    if (!hasBodyParts && commonDiseases.isEmpty) {
       return const SizedBox.shrink();
     }
-
-    // 콤마로 구분된 신체 부위를 칩으로 표시
-    final bodyPartsList = bodyParts.split(',').map((e) => e.trim()).toList();
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -807,34 +807,76 @@ class PetBasicInfoTab extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // 신체 부위 칩 표시
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            children: bodyPartsList.map((part) {
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.pureWhite,
-                  borderRadius: BorderRadius.circular(AppSpacing.lg),
-                  border: Border.all(
-                    color: AppColors.pointGreen.withValues(alpha: 0.3),
-                    width: 1,
+          // 신체 부위 칩 표시 (있는 경우만)
+          if (hasBodyParts) ...[
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: bodyPartsList.map((part) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
                   ),
-                ),
-                child: Text(
-                  part,
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: AppColors.pointGreen,
-                    fontWeight: FontWeight.w600,
+                  decoration: BoxDecoration(
+                    color: AppColors.pureWhite,
+                    borderRadius: BorderRadius.circular(AppSpacing.lg),
+                    border: Border.all(
+                      color: AppColors.pointGreen.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
-          ),
+                  child: Text(
+                    part,
+                    style: AppFonts.bodyMedium.copyWith(
+                      color: AppColors.pointGreen,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+          ],
+
+          // 펫 종류별 주요 질병 표시
+          if (commonDiseases.isNotEmpty) ...[
+            Text(
+              '${pet.type}の注意すべき病気',
+              style: AppFonts.bodySmall.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: commonDiseases.map((disease) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundGray.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(AppSpacing.sm),
+                    border: Border.all(
+                      color: AppColors.borderGray.withValues(alpha: 0.5),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    disease,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
         ],
       ),
     );
@@ -844,10 +886,11 @@ class PetBasicInfoTab extends ConsumerWidget {
   Widget _buildAppearanceCard(BuildContext context) {
     // additionalInfo에서 appearance 가져오기
     String appearance = '';
-    if (pet.additionalInfo != null && pet.additionalInfo!['appearance'] != null) {
+    if (pet.additionalInfo != null &&
+        pet.additionalInfo!['appearance'] != null) {
       appearance = pet.additionalInfo!['appearance'].toString();
     }
-    
+
     final hasAppearance = appearance.isNotEmpty;
 
     if (!hasAppearance) {
@@ -895,7 +938,7 @@ class PetBasicInfoTab extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          
+
           // 외견 정보 표시
           Text(
             appearance,
