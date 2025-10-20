@@ -194,6 +194,8 @@ class PetBasicInfoTab extends ConsumerWidget {
         const SizedBox(height: AppSpacing.lg),
         _buildHealthStatusCard(context, ref, tabId),
         const SizedBox(height: AppSpacing.lg),
+        _buildBodyPartsCard(context),
+        const SizedBox(height: AppSpacing.lg),
         _buildCaretakerSection(context),
         const SizedBox(height: AppSpacing.xl),
         _buildActionButtons(context, ref, tabId),
@@ -584,6 +586,98 @@ class PetBasicInfoTab extends ConsumerWidget {
     return IconButton(
       icon: const Icon(Icons.edit, size: 16),
       onPressed: () => _showHealthStatusDialog(context, ref, tabId),
+    );
+  }
+
+  /// 신경쓰이는 신체 부위 카드
+  Widget _buildBodyPartsCard(BuildContext context) {
+    // additionalInfo에서 bodyPartsToManage 가져오기
+    String bodyParts = '';
+    if (pet.additionalInfo != null && pet.additionalInfo!['bodyPartsToManage'] != null) {
+      bodyParts = pet.additionalInfo!['bodyPartsToManage'].toString();
+    }
+    
+    final hasBodyParts = bodyParts.isNotEmpty;
+
+    if (!hasBodyParts) {
+      // 신체 부위가 없으면 표시하지 않음
+      return const SizedBox.shrink();
+    }
+
+    // 콤마로 구분된 신체 부위를 칩으로 표시
+    final bodyPartsList = bodyParts.split(',').map((e) => e.trim()).toList();
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.pointGreen.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(_cardBorderRadius),
+        border: Border.all(
+          color: AppColors.pointGreen.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.pointGreen.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.sm),
+                ),
+                child: const Icon(
+                  Icons.health_and_safety_outlined,
+                  color: AppColors.pointGreen,
+                  size: _iconSize,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  '気になる身体部位',
+                  style: AppFonts.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          
+          // 신체 부위 칩 표시
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: bodyPartsList.map((part) {
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(AppSpacing.lg),
+                  border: Border.all(
+                    color: AppColors.pointGreen.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Text(
+                  part,
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointGreen,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
     );
   }
 
