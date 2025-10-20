@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/features/pet_profile/presentation/utils/utils.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,10 +73,7 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
   }
 
   Widget _buildPetImage(PetProfileEntity pet) {
-    final imagePath = PetImageUtils.getImagePath(pet.imagePath, pet.type);
-
-    // 빈 문자열 체크
-    if (imagePath.isEmpty) {
+    if (pet.imagePath == null || pet.imagePath!.isEmpty) {
       return Container(
         width: 40,
         height: 40,
@@ -86,24 +85,78 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
       );
     }
 
-    return ClipOval(
-      child: Image.asset(
-        imagePath,
-        width: 40,
-        height: 40,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              color: Colors.transparent,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.pets, size: 20, color: Colors.white),
-          );
-        },
+    debugPrint('🖼️ AppBarPetSelectorWidget - imagePath: ${pet.imagePath}');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath = storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
+    debugPrint('🖼️ AppBarPetSelectorWidget - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ AppBarPetSelectorWidget - imageType: $imageType');
+
+    Widget imageWidget;
+
+    switch (imageType) {
+      case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ AppBarPetSelectorWidget - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint('❌ AppBarPetSelectorWidget - File does not exist: $absolutePath');
+          return _buildDefaultPetIcon();
+        }
+
+        imageWidget = Image.file(
+          file,
+          width: 40,
+          height: 40,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ AppBarPetSelectorWidget - File image error: $error');
+            return _buildDefaultPetIcon();
+          },
+        );
+        break;
+      case ImageType.network:
+        imageWidget = Image.network(
+          absolutePath,
+          width: 40,
+          height: 40,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ AppBarPetSelectorWidget - Network image error: $error');
+            return _buildDefaultPetIcon();
+          },
+        );
+        break;
+      case ImageType.asset:
+        imageWidget = Image.asset(
+          absolutePath,
+          width: 40,
+          height: 40,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ AppBarPetSelectorWidget - Asset image error: $error');
+            return _buildDefaultPetIcon();
+          },
+        );
+        break;
+    }
+
+    return ClipOval(child: imageWidget);
+  }
+
+  Widget _buildDefaultPetIcon() {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
+        shape: BoxShape.circle,
       ),
+      child: const Icon(Icons.pets, size: 20, color: Colors.white),
     );
   }
 

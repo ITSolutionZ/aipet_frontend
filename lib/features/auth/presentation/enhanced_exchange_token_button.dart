@@ -1,10 +1,10 @@
-import 'package:aipet_frontend/features/auth/application/auth_controller.dart';
-import 'package:aipet_frontend/shared/widgets/layout/card.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'api_connection_checker.dart'; // Changed
-import 'firebase_login_button.dart'; // Changed
+import '../application/auth_controller.dart';
+import 'api_connection_checker.dart';
+import 'firebase_login_button.dart';
 
 /// 개선된 토큰 교환 버튼 - 만료 시간 표시 및 자동 갱신 알림
 class EnhancedExchangeTokenButton extends ConsumerStatefulWidget {

@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/app/services/secure_storage.dart';
-import 'package:aipet_frontend/features/auth/data/repositories/firebase_auth_real_impl.dart';
-import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../data/data.dart';
+import '../domain/domain.dart';
 
 /// 토큰 교환 상태를 나타내는 클래스
 class TokenExchangeState {

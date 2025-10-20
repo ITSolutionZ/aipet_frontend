@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/notification/data/services/notification_service.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
 
 /// 알림 권한 요청 UseCase
 class RequestNotificationPermissionUseCase {

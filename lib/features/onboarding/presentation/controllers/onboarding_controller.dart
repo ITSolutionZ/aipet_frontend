@@ -1,7 +1,8 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
-import 'package:aipet_frontend/features/onboarding/data/data.dart';
-import 'package:aipet_frontend/features/onboarding/domain/domain.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
 
 /// 🎯 Professional UseCase-Driven Onboarding Controller
 ///

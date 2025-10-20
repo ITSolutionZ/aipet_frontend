@@ -1,8 +1,8 @@
-import 'package:aipet_frontend/features/daily/data/datasources/impl/daily_health_local_datasource_impl.dart';
-import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
-import 'package:aipet_frontend/features/daily/domain/entities/health_analysis.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
 
 part 'daily_health_controller.g.dart';
 

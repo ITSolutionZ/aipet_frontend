@@ -1,3 +1,6 @@
+// Dialogs
+export 'app_lock_dialog.dart';
+
 // TODO: Create individual dialog files when needed
 // export 'package:aipet_frontend/shared/widgets/dialogs/confirmation_dialog.dart';
 // export 'package:aipet_frontend/shared/widgets/dialogs/info_dialog.dart';

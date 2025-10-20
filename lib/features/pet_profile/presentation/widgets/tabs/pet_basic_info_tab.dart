@@ -139,7 +139,8 @@ class PetBasicInfoTabState {
       editingGender: editingGender ?? this.editingGender,
       editingWeight: editingWeight ?? this.editingWeight,
       selectedImagePath: selectedImagePath ?? this.selectedImagePath,
-      editingHealthConditions: editingHealthConditions ?? this.editingHealthConditions,
+      editingHealthConditions:
+          editingHealthConditions ?? this.editingHealthConditions,
     );
   }
 }
@@ -164,6 +165,53 @@ class PetBasicInfoTab extends ConsumerWidget {
   static const double _smallIconSize = 20.0;
   static const double _borderWidth = 2.0;
   static const double _cardBorderRadius = 12.0;
+
+  // 동물별 주요 질병 데이터
+  static const Map<String, List<String>> _commonDiseases = {
+    'dog': [
+      '関節炎', // 관절염
+      '皮膚炎', // 피부염
+      '外耳炎', // 외이염
+      '歯周病', // 치주병
+      '心臓病', // 심장병
+      '糖尿病', // 당뇨병
+      '白内障', // 백내장
+      '股関節形成不全', // 고관절 형성부전
+    ],
+    'cat': [
+      '慢性腎臓病', // 만성신장병
+      '甲状腺機能亢進症', // 갑상선기능항진증
+      '糖尿病', // 당뇨병
+      '歯周病', // 치주병
+      '心臓病', // 심장병
+      '膀胱炎', // 방광염
+      '皮膚炎', // 피부염
+      '肥満', // 비만
+    ],
+    'rabbit': [
+      '歯の不正咬合', // 치아 부정교합
+      '消化器うっ滞', // 소화기 정체
+      '呼吸器感染症', // 호흡기 감염증
+      '皮膚炎', // 피부염
+      '肥満', // 비만
+      'ストレス', // 스트레스
+    ],
+    'hamster': [
+      '湿尾病', // 습미병
+      '呼吸器感染症', // 호흡기 감염증
+      '皮膚炎', // 피부염
+      '糖尿病', // 당뇨병
+      '腫瘍', // 종양
+    ],
+    'bird': [
+      '呼吸器感染症', // 호흡기 감염증
+      '羽毛引き抜き症', // 깃털 뽑기 증후군
+      '肝臓病', // 간장병
+      '肥満', // 비만
+      'ストレス', // 스트레스
+      '卵巣腫瘍', // 난소 종양
+    ],
+  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -193,6 +241,10 @@ class PetBasicInfoTab extends ConsumerWidget {
         _buildDateCard(),
         const SizedBox(height: AppSpacing.lg),
         _buildHealthStatusCard(context, ref, tabId),
+        const SizedBox(height: AppSpacing.lg),
+        _buildBodyPartsCard(context),
+        const SizedBox(height: AppSpacing.lg),
+        _buildAppearanceCard(context),
         const SizedBox(height: AppSpacing.lg),
         _buildCaretakerSection(context),
         const SizedBox(height: AppSpacing.xl),
@@ -289,7 +341,6 @@ class PetBasicInfoTab extends ConsumerWidget {
         const SizedBox(height: AppSpacing.md),
         _buildWeightCard(context, ref, tabId, tabState),
         const SizedBox(height: AppSpacing.md),
-        _buildAppearanceCard(context, ref, tabId, tabState),
         const SizedBox(height: AppSpacing.md),
         _buildGuardianCard(),
         const SizedBox(height: AppSpacing.md),
@@ -341,29 +392,6 @@ class PetBasicInfoTab extends ConsumerWidget {
       '体重',
       displayWeight,
       type: 'weight',
-    );
-  }
-
-  /// 외관 카드
-  Widget _buildAppearanceCard(
-    BuildContext context,
-    WidgetRef ref,
-    String tabId,
-    PetBasicInfoTabState tabState,
-  ) {
-    final displayAppearance = isEditMode
-        ? (tabState.appearanceController?.text ??
-              pet.additionalInfo?['appearance'] ??
-              '未設定')
-        : (pet.additionalInfo?['appearance'] ?? '未設定');
-
-    return _buildEditableAttributeCard(
-      context,
-      ref,
-      tabId,
-      '外見',
-      displayAppearance,
-      type: 'appearance',
     );
   }
 
@@ -558,21 +586,132 @@ class PetBasicInfoTab extends ConsumerWidget {
   }
 
   /// 건강 상태 카드
-  Widget _buildHealthStatusCard(BuildContext context, WidgetRef ref, String tabId) {
+  Widget _buildHealthStatusCard(
+    BuildContext context,
+    WidgetRef ref,
+    String tabId,
+  ) {
     final tabState = ref.watch(petBasicInfoTabControllerProvider(tabId));
     final healthConditions = tabState.editingHealthConditions ?? [];
     final hasHealthConditions = healthConditions.isNotEmpty;
 
-    return GenericInfoCard.withIcon(
-      icon: Icons.health_and_safety,
-      iconColor: AppColors.pointGreen,
-      iconBackgroundColor: AppColors.pointGreen.withValues(alpha: 0.1),
-      title: '健康状態',
-      subtitle: hasHealthConditions ? healthConditions.join('、') : '未設定',
-      badge: hasHealthConditions ? '要注意' : '良好',
-      badgeColor: hasHealthConditions ? AppColors.pointPink : AppColors.pointGreen,
-      trailing: isEditMode ? _buildEditHealthStatusButton(context, ref, tabId) : null,
+    // 신체 부위 개수 확인
+    int bodyPartsCount = 0;
+    if (pet.additionalInfo != null &&
+        pet.additionalInfo!['bodyPartsToManage'] != null) {
+      final String bodyPartsString = pet.additionalInfo!['bodyPartsToManage']
+          .toString();
+      final bodyPartsList = bodyPartsString
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+      bodyPartsCount = bodyPartsList.length;
+    }
+
+    // 건강상태 결정: 3개 이상이면 "注意", 그 외는 "良好"
+    final isWarning = hasHealthConditions || bodyPartsCount >= 3;
+    final statusText = isWarning ? '注意' : '良好';
+    final statusColor = isWarning ? AppColors.pointPink : AppColors.pointGreen;
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: statusColor.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(_cardBorderRadius),
+        border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.sm),
+                ),
+                child: Icon(
+                  Icons.health_and_safety,
+                  color: statusColor,
+                  size: _iconSize,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  '健康状態',
+                  style: AppFonts.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: statusColor,
+                  borderRadius: BorderRadius.circular(AppSpacing.lg),
+                ),
+                child: Text(
+                  statusText,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              if (isEditMode) ...[
+                const SizedBox(width: AppSpacing.sm),
+                _buildEditHealthStatusButton(context, ref, tabId),
+              ],
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+
+          // 선택된 건강 조건만 칩으로 표시
+          if (hasHealthConditions) ...[
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: healthConditions.map((condition) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    color: statusColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppSpacing.lg),
+                    border: Border.all(
+                      color: statusColor.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    condition,
+                    style: AppFonts.bodyMedium.copyWith(
+                      color: statusColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ],
+      ),
     );
+  }
+
+  /// 펫 타입에 따른 주요 질병 반환
+  List<String> _getCommonDiseasesForPet() {
+    final petType = pet.type.toLowerCase();
+    return _commonDiseases[petType] ?? [];
   }
 
   /// 건강 상태 편집 버튼
@@ -584,6 +723,171 @@ class PetBasicInfoTab extends ConsumerWidget {
     return IconButton(
       icon: const Icon(Icons.edit, size: 16),
       onPressed: () => _showHealthStatusDialog(context, ref, tabId),
+    );
+  }
+
+  /// 신경쓰이는 신체 부위 카드
+  Widget _buildBodyPartsCard(BuildContext context) {
+    // additionalInfo에서 bodyPartsToManage 가져오기
+    String bodyParts = '';
+    if (pet.additionalInfo != null &&
+        pet.additionalInfo!['bodyPartsToManage'] != null) {
+      bodyParts = pet.additionalInfo!['bodyPartsToManage'].toString();
+    }
+
+    final hasBodyParts = bodyParts.isNotEmpty;
+    final bodyPartsList = bodyParts
+        .split(',')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+
+    // 사용자가 작성한 신체부위가 없으면 표시하지 않음
+    if (!hasBodyParts) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.pointGreen.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(_cardBorderRadius),
+        border: Border.all(
+          color: AppColors.pointGreen.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.pointGreen.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.sm),
+                ),
+                child: const Icon(
+                  Icons.health_and_safety_outlined,
+                  color: AppColors.pointGreen,
+                  size: _iconSize,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  '気になる身体部位',
+                  style: AppFonts.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+
+          // 사용자가 작성한 신체부위 칩 표시
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: bodyPartsList.map((part) {
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(AppSpacing.lg),
+                  border: Border.all(
+                    color: AppColors.pointGreen.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Text(
+                  part,
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointGreen,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 외견 카드
+  Widget _buildAppearanceCard(BuildContext context) {
+    // additionalInfo에서 appearance 가져오기
+    String appearance = '';
+    if (pet.additionalInfo != null &&
+        pet.additionalInfo!['appearance'] != null) {
+      appearance = pet.additionalInfo!['appearance'].toString();
+    }
+
+    final hasAppearance = appearance.isNotEmpty;
+
+    if (!hasAppearance) {
+      // 외견 정보가 없으면 표시하지 않음
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.pointBlue.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(_cardBorderRadius),
+        border: Border.all(
+          color: AppColors.pointBlue.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.pointBlue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.sm),
+                ),
+                child: const Icon(
+                  Icons.visibility_outlined,
+                  color: AppColors.pointBlue,
+                  size: _iconSize,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  '外見',
+                  style: AppFonts.titleSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+
+          // 외견 정보 표시
+          Text(
+            appearance,
+            style: AppFonts.bodyMedium.copyWith(
+              color: AppColors.textPrimary,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

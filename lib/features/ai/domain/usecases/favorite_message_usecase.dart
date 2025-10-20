@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_favorite_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../entities/ai_favorite_entity.dart';
+import '../entities/ai_message_entity.dart';
+import '../repositories/ai_repository.dart';
 
 /// 즐겨찾기 메시지 관리 UseCase
 class FavoriteMessageUseCase {

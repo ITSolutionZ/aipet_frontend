@@ -1,36 +1,46 @@
 import 'dart:convert';
 
-import 'package:aipet_frontend/features/allergy/domain/entities/saved_analysis_entity.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../domain/domain.dart';
 
 /// 저장된 알레르기 분석 결과 Repository
 class SavedAnalysisRepository {
   static const String _key = 'saved_allergy_analyses';
 
-  /// 모든 분석 결과 로드
-  Future<List<SavedAnalysisEntity>> loadAll() async {
+  /// 모든 분석 결과 로드 (Result 패턴)
+  Future<Result<List<SavedAnalysisEntity>>> loadAll() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final jsonString = prefs.getString(_key);
 
       if (jsonString == null || jsonString.isEmpty) {
-        return [];
+        return Result.success('データがありません', []);
       }
 
       final List<dynamic> jsonList = jsonDecode(jsonString);
-      return jsonList.map((json) => _fromJson(json)).toList();
+      final analyses = jsonList.map((json) => _fromJson(json)).toList();
+
+      return Result.success('${analyses.length}件の分析結果を読み込みました', analyses);
     } catch (e) {
-      debugPrint('Error loading saved analyses: $e');
-      return [];
+      if (kDebugMode) {
+        debugPrint('Error loading saved analyses: $e');
+      }
+      return Result.failure(
+        '分析結果の読み込み中にエラーが発生しました',
+        e is Exception ? e : Exception(e.toString()),
+      );
     }
   }
 
   /// 분석 결과 저장
-  Future<void> save(SavedAnalysisEntity analysis) async {
+  Future<Result<void>> save(SavedAnalysisEntity analysis) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final analyses = await loadAll();
+      final loadResult = await loadAll();
+      final analyses = loadResult.dataOr([]);
 
       // 새 분석 추가
       analyses.insert(0, analysis);
@@ -38,17 +48,25 @@ class SavedAnalysisRepository {
       // JSON으로 변환하여 저장
       final jsonList = analyses.map((a) => _toJson(a)).toList();
       await prefs.setString(_key, jsonEncode(jsonList));
+
+      return Result.success('分析結果を保存しました');
     } catch (e) {
-      debugPrint('Error saving analysis: $e');
-      rethrow;
+      if (kDebugMode) {
+        debugPrint('Error saving analysis: $e');
+      }
+      return Result.failure(
+        '分析結果の保存中にエラーが発生しました',
+        e is Exception ? e : Exception(e.toString()),
+      );
     }
   }
 
   /// 분석 결과 삭제
-  Future<void> delete(String id) async {
+  Future<Result<void>> delete(String id) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final analyses = await loadAll();
+      final loadResult = await loadAll();
+      final analyses = loadResult.dataOr([]);
 
       // ID로 찾아서 삭제
       analyses.removeWhere((analysis) => analysis.id == id);
@@ -56,20 +74,33 @@ class SavedAnalysisRepository {
       // JSON으로 변환하여 저장
       final jsonList = analyses.map((a) => _toJson(a)).toList();
       await prefs.setString(_key, jsonEncode(jsonList));
+
+      return Result.success('分析結果を削除しました');
     } catch (e) {
-      debugPrint('Error deleting analysis: $e');
-      rethrow;
+      if (kDebugMode) {
+        debugPrint('Error deleting analysis: $e');
+      }
+      return Result.failure(
+        '分析結果の削除中にエラーが発生しました',
+        e is Exception ? e : Exception(e.toString()),
+      );
     }
   }
 
   /// 모든 분석 결과 삭제
-  Future<void> deleteAll() async {
+  Future<Result<void>> deleteAll() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_key);
+      return Result.success('すべての分析結果を削除しました');
     } catch (e) {
-      debugPrint('Error deleting all analyses: $e');
-      rethrow;
+      if (kDebugMode) {
+        debugPrint('Error deleting all analyses: $e');
+      }
+      return Result.failure(
+        'すべての分析結果の削除中にエラーが発生しました',
+        e is Exception ? e : Exception(e.toString()),
+      );
     }
   }
 

@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../domain/domain.dart';
 
 /// AI 채팅 메시지 버블 위젯
 class AiMessageBubble extends ConsumerWidget {

@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/shared.dart' hide State;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 /// 펫 신체 부위 관리 섹션
@@ -19,22 +19,59 @@ class PetBodyPartsSection extends StatefulWidget {
 }
 
 class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
-  late TextEditingController _bodyPartsController;
-  bool _isEditing = false;
+  // 미리 정의된 신체 부위 옵션
+  static const List<String> _predefinedBodyParts = [
+    '目', // 눈
+    '耳', // 귀
+    '鼻', // 코
+    '口・歯', // 입/치아
+    '皮膚', // 피부
+    '足・関節', // 발/관절
+    'お腹', // 배
+    '心臓', // 심장
+    '呼吸器', // 호흡기
+  ];
+
+  List<String> _selectedBodyParts = [];
+  final List<TextEditingController> _customControllers = [
+    TextEditingController(),
+    TextEditingController(),
+  ];
 
   @override
   void initState() {
     super.initState();
-    _bodyPartsController = TextEditingController(
-      text: widget.bodyPartsToManage,
-    );
+    _loadSelectedBodyParts();
+  }
+
+  void _loadSelectedBodyParts() {
+    if (widget.bodyPartsToManage.isNotEmpty) {
+      final parts = widget.bodyPartsToManage
+          .split(',')
+          .map((e) => e.trim())
+          .toList();
+      _selectedBodyParts = parts
+          .where((p) => _predefinedBodyParts.contains(p))
+          .toList();
+
+      // 커스텀 항목 로드
+      final customParts = parts
+          .where((p) => !_predefinedBodyParts.contains(p))
+          .toList();
+      if (customParts.isNotEmpty) {
+        _customControllers[0].text = customParts[0];
+      }
+      if (customParts.length > 1) {
+        _customControllers[1].text = customParts[1];
+      }
+    }
   }
 
   @override
   void didUpdateWidget(PetBodyPartsSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.bodyPartsToManage != widget.bodyPartsToManage) {
-      _bodyPartsController.text = widget.bodyPartsToManage;
+      _loadSelectedBodyParts();
     }
   }
 
@@ -60,14 +97,6 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
                 ),
               ),
             ),
-            if (widget.bodyPartsToManage.isNotEmpty)
-              IconButton(
-                onPressed: _toggleEditing,
-                icon: Icon(
-                  _isEditing ? Icons.close : Icons.edit,
-                  color: AppColors.pointGreen,
-                ),
-              ),
           ],
         ),
         const SizedBox(height: AppSpacing.md),
@@ -84,7 +113,7 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
             ),
           ),
           child: Text(
-            'ペットの健康管理で特に気になる身体部位や症状を記録してください。\n今後の問診でも活用されます。',
+            'ペットの健康管理で特に気になる身体部位を選択してください。\nその他の項目は最大2個まで追加できます。',
             style: AppFonts.bodyMedium.copyWith(
               color: AppColors.textSecondary,
               height: 1.5,
@@ -94,108 +123,126 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
 
         const SizedBox(height: AppSpacing.lg),
 
-        // 텍스트에어리어 또는 표시 영역
-        if (_isEditing || widget.bodyPartsToManage.isEmpty) ...[
-          // 편집 모드
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: AppColors.borderGray.withValues(alpha: 0.5),
-                width: 1,
+        // 미리 정의된 신체 부위 칩
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: _predefinedBodyParts.map((bodyPart) {
+            final isSelected = _selectedBodyParts.contains(bodyPart);
+            return FilterChip(
+              label: Text(bodyPart),
+              selected: isSelected,
+              onSelected: (selected) {
+                setState(() {
+                  if (selected) {
+                    _selectedBodyParts.add(bodyPart);
+                  } else {
+                    _selectedBodyParts.remove(bodyPart);
+                  }
+                  _saveSelection();
+                });
+              },
+              selectedColor: AppColors.pointGreen.withValues(alpha: 0.2),
+              checkmarkColor: AppColors.pointGreen,
+              labelStyle: AppFonts.bodyMedium.copyWith(
+                color: isSelected
+                    ? AppColors.pointGreen
+                    : AppColors.textPrimary,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
-              borderRadius: BorderRadius.circular(AppSpacing.sm),
-            ),
-            child: TextField(
-              controller: _bodyPartsController,
-              maxLines: 5,
-              decoration: InputDecoration(
-                hintText: '例：左足の関節、皮膚の痒み、食欲不振など...',
-                hintStyle: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.all(AppSpacing.md),
+              side: BorderSide(
+                color: isSelected
+                    ? AppColors.pointGreen
+                    : AppColors.borderGray.withValues(alpha: 0.5),
+                width: isSelected ? 2 : 1,
               ),
-              style: AppFonts.bodyMedium.copyWith(color: AppColors.textPrimary),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.sm),
+              ),
+            );
+          }).toList(),
+        ),
 
-          // 버튼들
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: _saveBodyParts,
-                  icon: const Icon(Icons.save, size: 20),
-                  label: const Text('保存'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.pointGreen,
-                    side: const BorderSide(color: AppColors.pointGreen),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.md,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.sm),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: _clearBodyParts,
-                  icon: const Icon(Icons.clear, size: 20),
-                  label: const Text('クリア'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.textSecondary,
-                    side: BorderSide(
-                      color: AppColors.textSecondary.withValues(alpha: 0.5),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.md,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.sm),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+        const SizedBox(height: AppSpacing.lg),
+
+        // 기타 항목 (최대 2개)
+        Text(
+          'その他（最大2個）',
+          style: AppFonts.bodyMedium.copyWith(
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
           ),
-        ] else ...[
-          // 표시 모드
+        ),
+        const SizedBox(height: AppSpacing.sm),
+
+        // 기타 항목 1
+        CommonFormField(
+          controller: _customControllers[0],
+          label: 'その他 1',
+          hint: '例：左足の関節',
+          onChanged: (_) => _saveSelection(),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+
+        // 기타 항목 2
+        CommonFormField(
+          controller: _customControllers[1],
+          label: 'その他 2',
+          hint: '例：皮膚の痒み',
+          onChanged: (_) => _saveSelection(),
+        ),
+
+        const SizedBox(height: AppSpacing.lg),
+
+        // 선택된 항목 표시
+        if (_selectedBodyParts.isNotEmpty ||
+            _customControllers[0].text.isNotEmpty ||
+            _customControllers[1].text.isNotEmpty) ...[
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.backgroundGray.withValues(alpha: 0.1),
+              color: AppColors.pointGreen.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(AppSpacing.sm),
               border: Border.all(
-                color: AppColors.borderGray.withValues(alpha: 0.3),
+                color: AppColors.pointGreen.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
-            child: Text(
-              widget.bodyPartsToManage,
-              style: AppFonts.bodyMedium.copyWith(
-                color: AppColors.textPrimary,
-                height: 1.5,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '選択された部位',
+                  style: AppFonts.bodySmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.pointGreen,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  _getSelectedBodyPartsText(),
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // 편집 버튼
+          // 클리어 버튼
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: _toggleEditing,
-              icon: const Icon(Icons.edit, size: 20),
-              label: const Text('編集'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.pointGreen,
-                foregroundColor: Colors.white,
+            child: OutlinedButton.icon(
+              onPressed: _clearAllSelections,
+              icon: const Icon(Icons.clear, size: 20),
+              label: const Text('すべてクリア'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.textSecondary,
+                side: BorderSide(
+                  color: AppColors.textSecondary.withValues(alpha: 0.5),
+                ),
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSpacing.sm),
@@ -203,39 +250,76 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
               ),
             ),
           ),
+        ] else ...[
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              color: AppColors.backgroundGray.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(AppSpacing.sm),
+              border: Border.all(
+                color: AppColors.borderGray.withValues(alpha: 0.5),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.touch_app,
+                  size: 48,
+                  color: AppColors.textSecondary.withValues(alpha: 0.5),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  '気になる部位を選択してください',
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ],
     );
   }
 
-  void _toggleEditing() {
-    setState(() {
-      _isEditing = !_isEditing;
-      if (_isEditing) {
-        _bodyPartsController.text = widget.bodyPartsToManage;
-      }
-    });
+  void _saveSelection() {
+    final allParts = <String>[
+      ..._selectedBodyParts,
+      if (_customControllers[0].text.trim().isNotEmpty)
+        _customControllers[0].text.trim(),
+      if (_customControllers[1].text.trim().isNotEmpty)
+        _customControllers[1].text.trim(),
+    ];
+    widget.onUpdateBodyParts(allParts.join(', '));
   }
 
-  void _saveBodyParts() {
-    final text = _bodyPartsController.text.trim();
-    widget.onUpdateBodyParts(text);
-    setState(() {
-      _isEditing = false;
-    });
+  String _getSelectedBodyPartsText() {
+    final allParts = <String>[
+      ..._selectedBodyParts,
+      if (_customControllers[0].text.trim().isNotEmpty)
+        _customControllers[0].text.trim(),
+      if (_customControllers[1].text.trim().isNotEmpty)
+        _customControllers[1].text.trim(),
+    ];
+    return allParts.join('、');
   }
 
-  void _clearBodyParts() {
-    _bodyPartsController.clear();
+  void _clearAllSelections() {
+    setState(() {
+      _selectedBodyParts.clear();
+      _customControllers[0].clear();
+      _customControllers[1].clear();
+    });
     widget.onClearBodyParts();
-    setState(() {
-      _isEditing = false;
-    });
   }
 
   @override
   void dispose() {
-    _bodyPartsController.dispose();
+    for (final controller in _customControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 }

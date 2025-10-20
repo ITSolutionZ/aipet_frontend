@@ -1,7 +1,7 @@
-import 'package:aipet_frontend/features/auth/domain/entities/auth_entities.dart';
-import 'package:aipet_frontend/features/auth/domain/repositories/auth_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
+
+import '../../domain/domain.dart';
 
 /// 🎯 로컬 전용 AuthRepository 구현체 (개발 모드)
 ///

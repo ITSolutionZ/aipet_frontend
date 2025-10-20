@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/home/presentation/widgets/appbar_banner_image.dart';
-import 'package:aipet_frontend/features/home/presentation/widgets/home_search_bar_widget.dart';
-import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import 'appbar_banner_image.dart';
+import 'home_search_bar_widget.dart';
 
 /// 배너와 검색바 섹션
 class BannerSection extends StatelessWidget {

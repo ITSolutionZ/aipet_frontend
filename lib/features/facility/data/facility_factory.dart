@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/facility/domain/entities/facility_entity.dart';
+import '../domain/domain.dart';
 
 /// 🎯 Facility Factory
 ///

@@ -1,8 +1,8 @@
-import 'package:aipet_frontend/features/notification/data/repositories/notification_repository_impl.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../domain/domain.dart';
+import '../repositories/notification_repository_impl.dart';
 
 part 'notification_providers.g.dart';
 
@@ -17,93 +17,11 @@ NotificationRepositoryImpl notificationRepository(Ref ref) {
 class NotificationsNotifier extends _$NotificationsNotifier {
   @override
   Future<List<NotificationModel>> build() async {
-    // 캘린더 이벤트에서 알람이 설정된 이벤트만 가져오기
-    final calendarEvents = await CalendarEventService.instance
-        .getCalendarEvents();
+    // TODO: 캘린더 이벤트 연동 (추후 구현)
+    // 현재는 빈 리스트 반환
+    debugPrint('🔔 알림 리스트 로드 (현재는 빈 리스트)');
 
-    debugPrint('📅 캘린더 이벤트 총 개수: ${calendarEvents.length}');
-
-    // 알람이 설정된 이벤트를 NotificationModel로 변환
-    final notifications = <NotificationModel>[];
-
-    for (final event in calendarEvents) {
-      debugPrint(
-        '📌 이벤트: ${event.title}, hasAlarm: ${event.hasAlarm}, alarmSettings 개수: ${event.alarmSettings.length}',
-      );
-
-      if (event.hasAlarm && event.alarmSettings.isNotEmpty) {
-        // 각 알람 설정마다 알림 생성
-        for (int i = 0; i < event.alarmSettings.length; i++) {
-          final alarmSetting = event.alarmSettings[i];
-          debugPrint(
-            '  ⏰ 알람 $i: enabled=${alarmSetting.isEnabled}, minutesBefore=${alarmSetting.minutesBefore}',
-          );
-
-          if (alarmSetting.isEnabled) {
-            final alarmTime = event.startTime.subtract(
-              Duration(minutes: alarmSetting.minutesBefore),
-            );
-
-            notifications.add(
-              NotificationModel(
-                id: '${event.id}_alarm_$i',
-                title: event.title,
-                body:
-                    alarmSetting.message ??
-                    '${alarmSetting.minutesBefore}分前にお知らせします',
-                type: _mapEventTypeToNotificationType(event.type),
-                createdAt: event.createdAt ?? DateTime.now(),
-                expiresAt: alarmTime.add(
-                  const Duration(hours: 1),
-                ), // 알람 시간 1시간 후 만료
-                data: {
-                  'userId': 'local_user',
-                  'eventId': event.id,
-                  'eventType': event.type.name,
-                  'alarmIndex': i,
-                  'alarmTime': alarmTime.toIso8601String(),
-                  'petId': event.petId,
-                  'petName': event.petName,
-                },
-              ),
-            );
-          }
-        }
-      }
-    }
-
-    // 알람 시간 순으로 정렬 (data에서 alarmTime 추출)
-    notifications.sort((a, b) {
-      final aAlarmTime = a.data?['alarmTime'] as String?;
-      final bAlarmTime = b.data?['alarmTime'] as String?;
-
-      if (aAlarmTime != null && bAlarmTime != null) {
-        return DateTime.parse(aAlarmTime).compareTo(DateTime.parse(bAlarmTime));
-      }
-      return a.createdAt.compareTo(b.createdAt);
-    });
-
-    debugPrint('🔔 생성된 알림 개수: ${notifications.length}');
-
-    return notifications;
-  }
-
-  /// 캘린더 이벤트 타입을 알림 타입으로 매핑
-  NotificationType _mapEventTypeToNotificationType(dynamic eventType) {
-    final typeString = eventType.toString().split('.').last;
-    switch (typeString) {
-      case 'feeding':
-        return NotificationType.feeding;
-      case 'medication':
-        return NotificationType.medication;
-      case 'walking':
-      case 'exercise':
-        return NotificationType.walk;
-      case 'veterinary':
-        return NotificationType.health;
-      default:
-        return NotificationType.system;
-    }
+    return [];
   }
 
   /// 알림 새로고침

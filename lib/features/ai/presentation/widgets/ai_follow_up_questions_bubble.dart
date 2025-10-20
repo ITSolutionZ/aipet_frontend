@@ -1,7 +1,8 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../shared/domain/entities/pet_profile_entity.dart';
+import '../../domain/domain.dart';
 
 /// AI 후속 질문 제안 버블
 class AiFollowUpQuestionsBubble extends StatelessWidget {

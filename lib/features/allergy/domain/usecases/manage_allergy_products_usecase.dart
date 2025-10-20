@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../data/providers/allergy_providers.dart';
 import '../entities/product_entity.dart';
 import '../repositories/allergy_analysis_repository.dart';
 
@@ -469,5 +470,6 @@ enum SafetyLevel { safe, warning, unsafe }
 /// Use Case Provider
 @riverpod
 ManageAllergyProductsUseCase manageAllergyProductsUseCase(Ref ref) {
-  throw UnimplementedError('Repository provider not implemented');
+  final repository = ref.watch(allergyAnalysisRepositoryProvider);
+  return ManageAllergyProductsUseCase(repository);
 }

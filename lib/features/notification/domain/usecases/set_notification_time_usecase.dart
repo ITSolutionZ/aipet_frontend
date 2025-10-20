@@ -1,5 +1,6 @@
-import 'package:aipet_frontend/features/notification/domain/repositories/notification_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import '../repositories/notification_repository.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
 
 /// 알림 시간 설정 UseCase
 class SetNotificationTimeUseCase {

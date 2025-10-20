@@ -1,13 +1,14 @@
-import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
-import 'package:aipet_frontend/features/notification/domain/entities/entities.dart';
-import 'package:aipet_frontend/features/notification/presentation/components/cards/notification_detail_header_component.dart';
-import 'package:aipet_frontend/features/notification/presentation/components/cards/notification_detail_metadata_component.dart';
-import 'package:aipet_frontend/features/notification/presentation/components/forms/notification_detail_actions_component.dart';
-import 'package:aipet_frontend/features/notification/presentation/controllers/notification_detail_controller.dart';
-import 'package:aipet_frontend/features/notification/presentation/controllers/notification_ui_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
+import '../components/cards/notification_detail_header_component.dart';
+import '../components/cards/notification_detail_metadata_component.dart';
+import '../components/forms/notification_detail_actions_component.dart';
+import '../controllers/notification_detail_controller.dart';
+import '../controllers/notification_ui_controller.dart';
 
 /// 알림 상세 화면 (리팩토링됨)
 class NotificationDetailScreen extends ConsumerStatefulWidget {

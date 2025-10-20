@@ -42,6 +42,7 @@ class PetRegistrationController extends _$PetRegistrationController {
   final _birthDateController = TextEditingController();
   final _adoptionDateController = TextEditingController();
   final _weightController = TextEditingController();
+  final _appearanceController = TextEditingController();
   final _guardianNameController = TextEditingController();
   final _institutionNameController = TextEditingController();
   final _registrationNumberController = TextEditingController();
@@ -51,6 +52,7 @@ class PetRegistrationController extends _$PetRegistrationController {
   TextEditingController get birthDateController => _birthDateController;
   TextEditingController get adoptionDateController => _adoptionDateController;
   TextEditingController get weightController => _weightController;
+  TextEditingController get appearanceController => _appearanceController;
   TextEditingController get guardianNameController => _guardianNameController;
   TextEditingController get institutionNameController =>
       _institutionNameController;
@@ -101,6 +103,11 @@ class PetRegistrationController extends _$PetRegistrationController {
   void updateWeight(String weightText) {
     final weight = double.tryParse(weightText);
     state = state.copyWith(weight: weight);
+    _autoSaveFormData();
+  }
+
+  void updateAppearance(String appearance) {
+    state = state.copyWith(appearance: appearance);
     _autoSaveFormData();
   }
 
@@ -304,6 +311,7 @@ class PetRegistrationController extends _$PetRegistrationController {
       birthDateController: _birthDateController,
       adoptionDateController: _adoptionDateController,
       weightController: _weightController,
+      appearanceController: _appearanceController,
       guardianNameController: _guardianNameController,
       institutionNameController: _institutionNameController,
       registrationNumberController: _registrationNumberController,
@@ -360,6 +368,8 @@ class PetRegistrationController extends _$PetRegistrationController {
   String? validateAdoptionDate(String? value) =>
       _validator.validateAdoptionDate(value);
   String? validateWeight(String? value) => _validator.validateWeight(value);
+  String? validateAppearance(String? value) =>
+      _validator.validateAppearance(value);
   String? validateBreed() => _validator.validateBreed(state.breed);
   String? validateGender() => _validator.validateGender(state.gender);
 
@@ -387,6 +397,13 @@ class PetRegistrationController extends _$PetRegistrationController {
   // ================================
 
   Future<String> submitForm() async {
+    // ref.read는 메서드 시작 시 동기적으로 호출
+    if (!ref.mounted) {
+      throw Exception('컨트롤러가 이미 제거되었습니다');
+    }
+    final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
+    final relationService = PetUserRelationService.instance;
+
     // 텍스트 컨트롤러와 state 동기화 확인
     debugPrint('🔍 submitForm - Checking form validity:');
     debugPrint(
@@ -431,6 +448,7 @@ class PetRegistrationController extends _$PetRegistrationController {
           'adoptionDate': state.adoptionDate?.toIso8601String(),
           'forbiddenIngredients': state.forbiddenIngredients,
           'bodyPartsToManage': state.bodyPartsToManage,
+          'appearance': state.appearance,
           'food': state.food,
           'supplement': state.supplement,
           'treat': state.treat,
@@ -464,18 +482,6 @@ class PetRegistrationController extends _$PetRegistrationController {
       debugPrint('📋 ================================');
 
       // 펫 프로필 저장
-      // 프로바이더 ref는 비동기 작업 전에 미리 획득해야 함
-      late final PetProfilesNotifier petProfilesNotifier;
-      if (!ref.mounted) {
-        throw Exception('컨트롤러가 이미 제거되었습니다');
-      }
-      petProfilesNotifier = ref.read(petProfilesProvider.notifier);
-
-      // ref.mounted를 다시 확인 (비동기 작업 후)
-      if (!ref.mounted) {
-        throw Exception('컨트롤러가 이미 제거되었습니다');
-      }
-
       final createdPet = await petProfilesNotifier.createPet(petEntity);
 
       // 비동기 작업 후 ref 상태 확인
@@ -487,7 +493,6 @@ class PetRegistrationController extends _$PetRegistrationController {
       debugPrint('✅ Created pet ID: ${createdPet.id}');
 
       // 펫-사용자 관계 생성 (소유자로 등록)
-      final relationService = PetUserRelationService.instance;
       final relationSuccess = await relationService.addUserToPet(
         petId: createdPet.id,
         userId: 'local_user', // 현재 로컬 사용자 ID
@@ -521,6 +526,12 @@ class PetRegistrationController extends _$PetRegistrationController {
 
   /// 펫 정보 업데이트 (편집 모드)
   Future<String> updatePetForm(String petId) async {
+    // ref.read는 메서드 시작 시 동기적으로 호출
+    if (!ref.mounted) {
+      throw Exception('컨트롤러가 이미 제거되었습니다');
+    }
+    final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
+
     try {
       debugPrint('🔄 Updating pet profile for ID: $petId');
 
@@ -546,6 +557,7 @@ class PetRegistrationController extends _$PetRegistrationController {
           'adoptionDate': state.adoptionDate?.toIso8601String(),
           'forbiddenIngredients': state.forbiddenIngredients,
           'bodyPartsToManage': state.bodyPartsToManage,
+          'appearance': state.appearance,
           'food': state.food,
           'supplement': state.supplement,
           'treat': state.treat,
@@ -557,18 +569,6 @@ class PetRegistrationController extends _$PetRegistrationController {
       );
 
       // 펫 프로필 업데이트
-      // 프로바이더 ref는 비동기 작업 전에 미리 획득해야 함
-      late final PetProfilesNotifier petProfilesNotifier;
-      if (!ref.mounted) {
-        throw Exception('컨트롤러가 이미 제거되었습니다');
-      }
-      petProfilesNotifier = ref.read(petProfilesProvider.notifier);
-
-      // ref.mounted를 다시 확인 (비동기 작업 후)
-      if (!ref.mounted) {
-        throw Exception('컨트롤러가 이미 제거되었습니다');
-      }
-
       await petProfilesNotifier.updatePet(petEntity);
 
       // 비동기 작업 후 ref 상태 확인

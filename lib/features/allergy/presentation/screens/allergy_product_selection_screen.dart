@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:aipet_frontend/features/allergy/data/providers/allergy_providers.dart';
-import 'package:aipet_frontend/features/allergy/domain/entities/product_entity.dart';
-import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/features/shopping/data/models/rakuten_pet_product_model.dart';
-import 'package:aipet_frontend/features/shopping/data/providers/rakuten_products_provider.dart';
+import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
+import 'package:aipet_frontend/features/shopping/shopping.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
 
 /// 알레르기 제품 선택 화면
 ///
@@ -859,14 +859,6 @@ class _AllergyProductSelectionScreenState
       imageUrl: rakutenProduct.imageUrl, // 상품 이미지 URL 추가
     );
 
-    // 디버깅용 로그
-    debugPrint('🔍 Product Selection Debug:');
-    debugPrint('  - Pet ID: ${widget.petId}');
-    debugPrint('  - Product ID: ${product.id}');
-    debugPrint('  - Product Name: ${product.name}');
-    debugPrint('  - Has Allergy: ${widget.hasAllergy}');
-    debugPrint('  - Is Already Selected: $isAlreadySelected');
-
     if (isAlreadySelected) {
       // 이미 선택된 제품이면 선택 해제
       ref
@@ -898,12 +890,6 @@ class _AllergyProductSelectionScreenState
         _selectedProductIds.add(product.id);
       });
 
-      // Provider 상태 확인 로그
-      final currentState = ref.read(selectedAllergyProductsProvider);
-      debugPrint('🔍 After Product Addition:');
-      debugPrint('  - Provider State Keys: ${currentState.keys}');
-      debugPrint('  - Pet Data: ${currentState[widget.petId]}');
-
       final message = widget.hasAllergy ? 'アレルギー商品に追加しました' : 'アレルギーなし商品に追加しました';
 
       // 기존 스낵바 제거 후 새 스낵바 표시
@@ -916,11 +902,6 @@ class _AllergyProductSelectionScreenState
         ),
       );
     }
-
-    // 추가 후 상태 확인
-    final currentState = ref.read(selectedAllergyProductsProvider);
-    debugPrint('  - Current State Keys: ${currentState.keys}');
-    debugPrint('  - Pet Data: ${currentState[widget.petId]}');
   }
 
   /// 생식 입력 탭 (검색창 사용)
@@ -1076,14 +1057,6 @@ class _AllergyProductSelectionScreenState
     ref
         .read(selectedAllergyProductsProvider.notifier)
         .addProduct(widget.petId, product, widget.hasAllergy);
-
-    // Provider 상태 확인 로그
-    final currentState = ref.read(selectedAllergyProductsProvider);
-    debugPrint('🔍 After Raw Food Addition:');
-    debugPrint('  - Pet ID: ${widget.petId}');
-    debugPrint('  - Ingredient: $ingredient');
-    debugPrint('  - Provider State Keys: ${currentState.keys}');
-    debugPrint('  - Pet Data: ${currentState[widget.petId]}');
 
     final message = widget.hasAllergy
         ? 'アレルギー食材に追加しました: $ingredient'

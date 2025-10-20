@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -723,41 +724,62 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
     context.go('/daily-pet-registration?petId=${pet.id}');
   }
 
-  /// 펫 이미지 빌드 (파일 시스템, 에셋, 네트워크 이미지 모두 지원)
+  /// 펫 이미지 빌드 - 강화된 로컬 저장 지원
   Widget _buildPetImage(PetProfileEntity pet) {
     if (pet.imagePath == null || pet.imagePath!.isEmpty) {
       return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
     }
 
-    // 이미지 경로 타입에 따라 다른 위젯 반환
-    if (pet.imagePath!.startsWith('http') ||
-        pet.imagePath!.startsWith('https')) {
-      // 네트워크 이미지
-      return Image.network(
-        pet.imagePath!,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
+    debugPrint('🖼️ PetManagementScreen - imagePath: ${pet.imagePath}');
+
+    // 상대 경로를 절대 경로로 변환
+    final storageService = ImageStorageService();
+    final absolutePath =
+        storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
+    debugPrint('🖼️ PetManagementScreen - absolutePath: $absolutePath');
+
+    final imageType = ImageService.getImageType(absolutePath);
+    debugPrint('🖼️ PetManagementScreen - imageType: $imageType');
+
+    switch (imageType) {
+      case ImageType.file:
+        final file = File(absolutePath);
+        final fileExists = file.existsSync();
+        debugPrint('🖼️ PetManagementScreen - File exists: $fileExists');
+
+        if (!fileExists) {
+          debugPrint(
+            '❌ PetManagementScreen - File does not exist: $absolutePath',
+          );
           return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
-        },
-      );
-    } else if (pet.imagePath!.startsWith('assets/')) {
-      // 에셋 이미지
-      return Image.asset(
-        pet.imagePath!,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
-        },
-      );
-    } else {
-      // 파일 시스템 이미지
-      return Image.file(
-        File(pet.imagePath!),
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
-        },
-      );
+        }
+
+        return Image.file(
+          file,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ PetManagementScreen - File image error: $error');
+            return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
+          },
+        );
+      case ImageType.network:
+        return Image.network(
+          absolutePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ PetManagementScreen - Network image error: $error');
+            return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
+          },
+        );
+      case ImageType.asset:
+        return Image.asset(
+          absolutePath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🖼️ PetManagementScreen - Asset image error: $error');
+            return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
+          },
+        );
     }
   }
 }

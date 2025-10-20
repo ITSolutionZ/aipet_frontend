@@ -1,9 +1,10 @@
-import 'package:aipet_frontend/features/daily/data/providers/hospital_registration_provider.dart';
-import 'package:aipet_frontend/features/facility/presentation/screens/hospital_qr_scanner_screen.dart';
+import 'package:aipet_frontend/features/daily/daily.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import 'hospital_qr_scanner_screen.dart';
 
 class HospitalDetailScreen extends ConsumerStatefulWidget {
   final String hospitalId;

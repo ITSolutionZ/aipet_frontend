@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/settings/data/services/local_user_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/user_profile_entity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_profile_controller.g.dart';
@@ -50,20 +51,20 @@ class UserProfileController extends _$UserProfileController {
 
       // 프로필이 없으면 기본 사용자 생성
       if (profile == null) {
-        print('👤 사용자 프로필이 없음. 기본 사용자 생성 중...');
+        debugPrint('👤 사용자 프로필이 없음. 기본 사용자 생성 중...');
         final defaultProfile = await _userService.createUserProfile(
           userName: 'ゲストユーザー',
           email: 'guest@example.com',
         );
         await _userService.saveUserProfile(defaultProfile);
         state = state.copyWith(profile: defaultProfile, isLoading: false);
-        print('👤 기본 사용자 생성 완료: ${defaultProfile.userName}');
+        debugPrint('👤 기본 사용자 생성 완료: ${defaultProfile.userName}');
       } else {
         state = state.copyWith(profile: profile, isLoading: false);
-        print('👤 기존 사용자 프로필 로드 완료: ${profile.userName}');
+        debugPrint('👤 기존 사용자 프로필 로드 완료: ${profile.userName}');
       }
     } catch (e) {
-      print('❌ 프로필 로드 실패: $e');
+      debugPrint('❌ 프로필 로드 실패: $e');
       state = state.copyWith(isLoading: false, error: '프로필 로드 실패: $e');
     }
   }

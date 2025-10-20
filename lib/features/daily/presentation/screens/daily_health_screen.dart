@@ -1,15 +1,15 @@
-import 'package:aipet_frontend/features/daily/data/providers/hospital_registration_provider.dart';
-import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
-import 'package:aipet_frontend/features/daily/domain/entities/health_analysis.dart';
-import 'package:aipet_frontend/features/daily/presentation/controllers/daily_health_controller.dart';
-import 'package:aipet_frontend/features/daily/presentation/controllers/daily_health_screen_controller.dart';
-import 'package:aipet_frontend/features/daily/presentation/logic/daily_health_logic.dart';
-import 'package:aipet_frontend/features/daily/presentation/screens/daily_health_screen_widgets/daily_health_screen_widgets.dart';
-import 'package:aipet_frontend/features/daily/presentation/widgets/hospital_link_banner.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
+import '../controllers/daily_health_controller.dart';
+import '../controllers/daily_health_screen_controller.dart';
+import '../logic/daily_health_logic.dart';
+import '../widgets/hospital_link_banner.dart';
+import 'daily_health_screen_widgets/daily_health_screen_widgets.dart';
 
 /// Daily Health 화면 - 완전히 리팩토링된 버전
 ///

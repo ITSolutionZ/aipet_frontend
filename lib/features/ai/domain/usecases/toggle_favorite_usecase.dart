@@ -1,5 +1,6 @@
-import 'package:aipet_frontend/features/ai/domain/domain.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../repositories/ai_repository.dart';
 
 /// ⭐ 즐겨찾기 토글 UseCase
 class ToggleFavoriteUseCase {

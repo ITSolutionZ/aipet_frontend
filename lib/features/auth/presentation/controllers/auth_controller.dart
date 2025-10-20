@@ -1,17 +1,10 @@
-import 'package:aipet_frontend/features/auth/data/auth_providers.dart';
-import 'package:aipet_frontend/features/auth/domain/entities/auth_entities.dart';
-import 'package:aipet_frontend/features/auth/domain/usecases/get_current_user_usecase.dart';
-import 'package:aipet_frontend/features/auth/domain/usecases/login_usecase.dart';
-import 'package:aipet_frontend/features/auth/domain/usecases/logout_usecase.dart';
-import 'package:aipet_frontend/features/auth/domain/usecases/signup_usecase.dart';
-import 'package:aipet_frontend/features/auth/domain/usecases/social_login_usecase.dart';
-import 'package:aipet_frontend/features/auth/presentation/state/auth_form_state.dart';
-import 'package:aipet_frontend/features/pet_profile/data/data.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/core/utils/validation_utils.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
 
 /// 인증 작업 결과 타입 (Result 패턴 사용)
 ///
@@ -115,12 +108,14 @@ class AuthController extends Notifier<AuthFormState> {
     try {
       debugPrint('🐾 AuthController: 로그인 성공 시 펫 데이터 로드 시작 - 사용자: $userId');
 
-      // 펫 로그인 서비스를 통해 사용자 펫 데이터 로드
-      final pets = await PetLoginService.loadUserPetsOnLogin(userId);
+      // 펫 프로필 프로바이더를 통해 사용자 펫 데이터 로드
+      final petsAsync = ref.read(petProfilesProvider);
+      final pets = petsAsync.maybeWhen(
+        data: (data) => data,
+        orElse: () => <PetProfileEntity>[],
+      );
 
-      // 로그인 로그 생성 및 출력
-      final loginLog = PetLoginService.generateLoginLog(userId, pets);
-      debugPrint(loginLog);
+      debugPrint('🐾 로그인 성공 - 펫 ${pets.length}마리 로드됨');
 
       return pets;
     } catch (error, stackTrace) {

@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/allergy/domain/entities/allergy_post_entity.dart';
+import '../../domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

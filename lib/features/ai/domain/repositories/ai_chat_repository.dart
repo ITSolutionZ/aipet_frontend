@@ -1,11 +1,16 @@
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 import '../entities/ai_chat_history_entity.dart';
 import '../entities/ai_chat_session_entity.dart';
+import '../entities/ai_chat_summary.dart';
+import '../entities/ai_chat_summary_entity.dart';
 import '../entities/ai_message_entity.dart';
 
 /// AI 채팅 관련 Repository
+///
+/// ⚠️ 현재 미사용 (Future Use)
+/// 추후 채팅 기능을 AiRepository에서 분리할 때 사용 예정
+/// 현재는 AiRepository를 통해 모든 AI 기능 제공
 abstract class AiChatRepository {
   /// 채팅 기록 관련
   Future<List<AiMessageEntity>> getChatHistory({String? sessionId});
@@ -54,4 +59,25 @@ abstract class AiChatRepository {
     String? petId,
   });
   Future<void> deleteChatHistoryById(String historyId);
+
+  /// 채팅 요약 관련
+  Future<AiChatSummaryEntity> createChatSummary(
+    List<AiMessageEntity> messages,
+    String category, {
+    String? petId,
+    String? petName,
+  });
+
+  Future<List<AiChatSummaryEntity>> getChatSummaries({
+    String? petId,
+    String? category,
+  });
+
+  Future<void> deleteChatSummary(String summaryId);
+
+  Future<AiChatSummary> generateChatSummary({
+    required List<String> userMessages,
+    required String petName,
+    required String category,
+  });
 }

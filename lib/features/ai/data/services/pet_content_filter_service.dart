@@ -1,19 +1,18 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/features/ai/domain/constants/ai_constants.dart';
 import 'package:dio/dio.dart';
 
+import '../../domain/domain.dart';
 import 'ai_dio_service.dart';
-import 'ai_keyword_service.dart';
 
 /// 펫 관련 콘텐츠 필터링 서비스
 class PetContentFilterService {
   final AiDioService _dioService;
 
-  // 펫 관련 키워드 목록 (AiKeywordService를 통해 접근)
-  List<String> get _petKeywords => AiKeywordService.getPetKeywords();
+  // 펫 관련 키워드 목록
+  List<String> get _petKeywords => AiKeywords.petRelated;
 
-  // 제외할 키워드 (AiKeywordService를 통해 접근)
-  List<String> get _excludeKeywords => AiKeywordService.getExcludeKeywords();
+  // 제외할 키워드
+  List<String> get _excludeKeywords => AiKeywords.excluded;
 
   PetContentFilterService({AiDioService? dioService})
     : _dioService = dioService ?? AiDioService.instance;

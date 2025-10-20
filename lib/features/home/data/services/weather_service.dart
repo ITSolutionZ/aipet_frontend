@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/features/home/data/models/weather_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+
+import '../models/weather_model.dart';
 
 class WeatherService {
   static const String _oneCallUrl =

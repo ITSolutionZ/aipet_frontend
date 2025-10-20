@@ -1,13 +1,14 @@
-import 'package:aipet_frontend/features/ai/domain/entities/ai_category_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_history_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_chat_summary.dart';
-import 'package:aipet_frontend/features/ai/domain/entities/ai_message_entity.dart';
-import 'package:aipet_frontend/features/ai/domain/repositories/ai_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../../../../shared/domain/entities/pet_profile_entity.dart';
+import '../entities/ai_category_entity.dart';
+import '../entities/ai_chat_history_entity.dart';
+import '../entities/ai_chat_summary.dart';
+import '../entities/ai_message_entity.dart';
+import '../repositories/ai_chat_repository.dart';
 
 class SaveChatHistoryUseCase {
-  final AiRepository _repository;
+  final AiChatRepository _repository;
 
   const SaveChatHistoryUseCase(this._repository);
 

@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/notification/data/services/notification_icon_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../../data/data.dart';
 
 class AlarmToggleComponent extends StatelessWidget {
   final String title;

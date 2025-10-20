@@ -1,9 +1,9 @@
-import 'package:aipet_frontend/features/home/presentation/widgets/appbar_banner_image.dart';
-import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/shared/design/design.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'appbar_banner_image.dart';
 
 /// 홈 화면 상단 펫 프로필 배너
 class PetProfileBanner extends ConsumerWidget {

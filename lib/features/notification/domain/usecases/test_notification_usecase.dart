@@ -1,7 +1,8 @@
 import 'package:aipet_frontend/features/notification/data/services/notification_service.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/notification_priority.dart';
 import 'package:aipet_frontend/features/notification/domain/entities/notification_type.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
 
 /// 테스트 알림 UseCase
 class TestNotificationUseCase {

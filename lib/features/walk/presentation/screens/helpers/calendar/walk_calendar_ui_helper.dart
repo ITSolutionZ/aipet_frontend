@@ -10,14 +10,18 @@ class WalkCalendarUiHelper {
     CalendarFormat format,
   ) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final availableHeight = screenHeight - 
+        MediaQuery.of(context).padding.top - 
+        MediaQuery.of(context).padding.bottom - 
+        200; // 앱바, 하단 네비게이션, 여백 고려
 
     switch (format) {
       case CalendarFormat.month:
-        return screenHeight * 0.45; // 월간: 45%
+        return (availableHeight * 0.4).clamp(300.0, 400.0); // 월간: 40%, 최소 300, 최대 400
       case CalendarFormat.twoWeeks:
-        return screenHeight * 0.35; // 2주: 35%
+        return (availableHeight * 0.3).clamp(250.0, 350.0); // 2주: 30%, 최소 250, 최대 350
       case CalendarFormat.week:
-        return screenHeight * 0.25; // 1주: 25%
+        return (availableHeight * 0.2).clamp(200.0, 300.0); // 1주: 20%, 최소 200, 최대 300
     }
   }
 

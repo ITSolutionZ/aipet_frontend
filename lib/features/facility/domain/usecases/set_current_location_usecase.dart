@@ -1,5 +1,6 @@
-import 'package:aipet_frontend/features/facility/domain/repositories/facility_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../repositories/facility_repository.dart';
 
 class SetCurrentLocationUseCase {
   final FacilityRepository repository;

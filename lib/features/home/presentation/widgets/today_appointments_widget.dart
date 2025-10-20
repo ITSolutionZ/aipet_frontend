@@ -1,7 +1,7 @@
-import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
+import '../../domain/domain.dart';
 import 'appointment_card_widget.dart';
 
 /// 오늘의 예약 위젯

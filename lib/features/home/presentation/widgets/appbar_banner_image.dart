@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aipet_frontend/features/home/data/banner_assets.dart';
 import 'package:flutter/material.dart';
+
+import '../../data/data.dart';
 
 /// 앱바용 배너 이미지
 /// appbar_banners 폴더의 모든 배너 이미지가 자동으로 순환하며 표시

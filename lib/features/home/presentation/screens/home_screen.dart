@@ -1,13 +1,14 @@
-import 'package:aipet_frontend/features/home/data/data.dart';
-import 'package:aipet_frontend/features/home/domain/entities/home_dashboard_entity.dart';
-import 'package:aipet_frontend/features/home/presentation/controllers/home_controller.dart';
-import 'package:aipet_frontend/features/home/presentation/mixins/scroll_tracking_mixin.dart';
-import 'package:aipet_frontend/features/home/presentation/widgets/auto_banner_carousel.dart';
-import 'package:aipet_frontend/features/home/presentation/widgets/pet_profile_banner.dart';
-import 'package:aipet_frontend/features/home/presentation/widgets/widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
+import '../controllers/home_controller.dart';
+import '../mixins/scroll_tracking_mixin.dart';
+import '../widgets/auto_banner_carousel.dart';
+import '../widgets/pet_profile_banner.dart';
+import '../widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
@@ -30,7 +31,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   AnimationController? _drawerAnimationController;
   Animation<Offset>? _drawerSlideAnimation;
   bool _isDrawerOpen = false;
-  final HomeCacheManager _cacheManager = HomeCacheManager();
 
   @override
   void initState() {
@@ -62,9 +62,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    // 앱이 백그라운드에서 포그라운드로 돌아왔을 때 캐시 정리
+    // 앱이 백그라운드에서 포그라운드로 돌아왔을 때
     if (state == AppLifecycleState.resumed) {
-      _cacheManager.cleanupExpiredCache();
+      // TODO: 캐시 정리 로직 추가 필요시 구현
+      debugPrint('앱이 포그라운드로 돌아왔습니다');
     }
   }
 
@@ -422,9 +423,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   /// Pull-to-Refresh 핸들러
   Future<void> _handleRefresh() async {
     // debugPrint('🔄 HomeScreen: Pull-to-Refresh 시작');
-
-    // 캐시 새로고침
-    await _cacheManager.refreshHomeDashboard();
 
     // 대시보드 데이터 다시 로드
     ref.invalidate(homeDashboardProvider);

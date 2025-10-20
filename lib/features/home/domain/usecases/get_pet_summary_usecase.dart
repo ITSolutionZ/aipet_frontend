@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/features/home/domain/entities/pet_summary_entity.dart';
-import 'package:aipet_frontend/features/home/domain/repositories/home_repository.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../entities/pet_summary_entity.dart';
+import '../repositories/home_repository.dart';
 
 /// 펫 요약 조회 유스케이스
 class GetPetSummaryUseCase {

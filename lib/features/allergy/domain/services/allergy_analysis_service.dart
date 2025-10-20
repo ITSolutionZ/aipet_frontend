@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/features/allergy/domain/entities/allergy_analysis_entities.dart';
-import 'package:aipet_frontend/features/allergy/domain/entities/product_entity.dart';
+import '../entities/allergy_analysis_entities.dart';
+import '../entities/product_entity.dart';
 
 /// 알레르기 분석 서비스 인터페이스
 abstract class AllergyAnalysisService {

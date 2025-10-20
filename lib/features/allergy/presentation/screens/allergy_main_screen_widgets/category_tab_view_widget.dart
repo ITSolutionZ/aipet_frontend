@@ -1,6 +1,9 @@
-import 'package:aipet_frontend/features/allergy/domain/entities/product_entity.dart';
-import 'package:aipet_frontend/shared/shared.dart' hide State;
 import 'package:flutter/material.dart';
+
+import 'package:aipet_frontend/shared/shared.dart';
+
+import '../../../domain/domain.dart';
+import 'allergy_product_card.dart';
 
 /// 카테고리별 탭뷰를 위한 위젯
 class CategoryTabViewWidget extends StatefulWidget {
@@ -26,7 +29,10 @@ class _CategoryTabViewWidgetState extends State<CategoryTabViewWidget>
   @override
   void initState() {
     super.initState();
-    _categoryTabController = TabController(length: 4, vsync: this);
+    _categoryTabController = TabController(
+      length: AllergyConstants.categoryTabCount,
+      vsync: this,
+    );
   }
 
   @override
@@ -164,13 +170,7 @@ class _CategoryTabViewWidgetState extends State<CategoryTabViewWidget>
   }
 
   Widget _buildProductList(List<ProductEntity> products, String category) {
-    debugPrint('🔍 CategoryTabViewWidget._buildProductList:');
-    debugPrint('  - Category: $category');
-    debugPrint('  - Products count: ${products.length}');
-    debugPrint('  - Products: ${products.map((p) => p.name).toList()}');
-
     if (products.isEmpty) {
-      debugPrint('  - Showing empty state for category: $category');
       return Center(
         child: Text(
           '$categoryの商品がありません',
@@ -186,100 +186,11 @@ class _CategoryTabViewWidgetState extends State<CategoryTabViewWidget>
           const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, index) {
         final product = products[index];
-        return _buildProductCard(product);
+        return AllergyProductCard(
+          product: product,
+          onRemove: () => widget.onRemoveProduct(product.id),
+        );
       },
-    );
-  }
-
-  Widget _buildProductCard(ProductEntity product) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppRadius.small),
-        border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        children: [
-          // 상품 이미지
-          if (product.imageUrl != null && product.imageUrl!.isNotEmpty)
-            Container(
-              width: 60,
-              height: 60,
-              margin: const EdgeInsets.only(right: AppSpacing.md),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(AppRadius.small),
-                color: AppColors.pointOffWhite,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppRadius.small),
-                child: Image.network(
-                  product.imageUrl!,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: AppColors.pointOffWhite,
-                      child: const Icon(
-                        Icons.image_not_supported,
-                        color: AppColors.pointGray,
-                        size: 24,
-                      ),
-                    );
-                  },
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      color: AppColors.pointOffWhite,
-                      child: const Center(
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.pointBrown,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          // 상품 정보
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 브랜드명 (brandId 표시)
-                Text(
-                  product.brandId,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointBrown,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                // 제품명
-                Text(
-                  product.name,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointDark,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-          // 삭제 버튼
-          IconButton(
-            icon: const Icon(Icons.close, color: AppColors.pointGray, size: 20),
-            onPressed: () => widget.onRemoveProduct(product.id),
-          ),
-        ],
-      ),
     );
   }
 }
