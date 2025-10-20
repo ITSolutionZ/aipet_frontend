@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_camera_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_marker_builder.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_polyline_builder.dart';
@@ -345,35 +346,48 @@ class LiveWalkController extends _$LiveWalkController {
 
   Future<void> _updateLocation(WalkLocation location) async {
     try {
-      final position = await LiveWalkLocationTracker.getCurrentPosition();
-      if (position == null) return;
+      // WalkTrackingOptimizer를 사용한 위치 데이터 유효성 검증
+      if (!WalkTrackingOptimizer.isValidLocation(location)) {
+        debugPrint('🚶 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
+        return;
+      }
 
-      // 위치가 실제로 변경되었는지 확인 (최소 이동 거리: 5m)
+      // 기존 경로가 있는 경우 WalkTrackingOptimizer로 위치 추가 여부 결정
+      if (state.route.isNotEmpty) {
+        if (!WalkTrackingOptimizer.shouldAddLocation(location, state.route)) {
+          debugPrint('🚶 위치 변화 무시: 최적화 필터에 의해 제외됨');
+          return;
+        }
+      }
+
+      // 위치가 실제로 변경되었는지 확인 (GPS 정확도와 최소 이동 거리 고려)
       if (state.currentPosition != null) {
         final distance = _calculateDistance(
           state.currentPosition!.latitude,
           state.currentPosition!.longitude,
-          position.latitude,
-          position.longitude,
+          location.latitude,
+          location.longitude,
         );
 
-        // 5m 이하 이동은 무시 (GPS 오차 범위 내)
-        if (distance < 5) {
-          debugPrint('🚶 위치 변화 무시: ${distance.toStringAsFixed(2)}m (최소 5m 필요)');
+        // GPS 정확도와 최소 이동 거리를 동적으로 계산
+        final accuracy = location.accuracy ?? 10.0; // 기본값 10m
+        final minDistance = _calculateMinimumDistance(accuracy);
+        
+        // GPS 오차 범위 내 이동은 무시
+        if (distance < minDistance) {
+          debugPrint('🚶 위치 변화 무시: ${distance.toStringAsFixed(2)}m (최소 ${minDistance.toStringAsFixed(1)}m 필요, 정확도: ${accuracy.toStringAsFixed(1)}m)');
           return;
         }
 
-        debugPrint('🚶 위치 업데이트: ${distance.toStringAsFixed(2)}m 이동');
+        debugPrint('🚶 위치 업데이트: ${distance.toStringAsFixed(2)}m 이동 (정확도: ${accuracy.toStringAsFixed(1)}m)');
       }
 
-      final newLocation = WalkLocation(
-        latitude: position.latitude,
-        longitude: position.longitude,
-        timestamp: DateTime.now(),
-        accuracy: position.accuracy,
-      );
+      // WalkTrackingOptimizer를 사용한 위치 평활화 (선택적)
+      final smoothedLocation = state.route.length >= 3 
+        ? WalkTrackingOptimizer.smoothLocation(location, state.route)
+        : location;
 
-      final newRoute = [...state.route, newLocation];
+      final newRoute = [...state.route, smoothedLocation];
       final newDistance = _calculateTotalDistance(newRoute);
 
       // WalkRecord 업데이트
@@ -381,6 +395,20 @@ class LiveWalkController extends _$LiveWalkController {
         route: newRoute,
         distance: newDistance / 1000, // km로 변환
         updatedAt: DateTime.now(),
+      );
+
+      // Position 객체 생성 (기존 코드 호환성)
+      final position = Position(
+        latitude: smoothedLocation.latitude,
+        longitude: smoothedLocation.longitude,
+        timestamp: smoothedLocation.timestamp,
+        accuracy: smoothedLocation.accuracy ?? 0,
+        altitude: smoothedLocation.altitude ?? 0,
+        heading: smoothedLocation.heading ?? 0,
+        speed: smoothedLocation.speed ?? 0,
+        speedAccuracy: 0,
+        altitudeAccuracy: 0,
+        headingAccuracy: 0,
       );
 
       state = state.copyWith(
@@ -440,6 +468,21 @@ class LiveWalkController extends _$LiveWalkController {
     return earthRadius * c;
   }
 
+  /// GPS 정확도를 고려한 최소 이동 거리 계산
+  /// 정확도가 낮을수록 더 큰 이동 거리가 필요함
+  double _calculateMinimumDistance(double accuracy) {
+    // 기본 최소 거리: 3m
+    const double baseMinDistance = 3.0;
+    
+    // GPS 정확도가 10m 이하: 정확도 * 1.5
+    // GPS 정확도가 10m 초과: 정확도 * 2.0 (더 보수적)
+    final double accuracyMultiplier = accuracy <= 10.0 ? 1.5 : 2.0;
+    final double calculatedDistance = accuracy * accuracyMultiplier;
+    
+    // 최소 3m, 최대 20m로 제한
+    return math.max(baseMinDistance, math.min(calculatedDistance, 20.0));
+  }
+
   void _updateMapPolylines() {
     if (state.currentWalkRecord == null) return;
 
@@ -454,7 +497,9 @@ class LiveWalkController extends _$LiveWalkController {
       // 🚀 엄격한 중복 방지: Set 내용을 정확히 비교
       if (state.polylines.length != newPolylines.length ||
           !_arePolylinesEqual(state.polylines, newPolylines)) {
-        debugPrint('🔄 Polylines 업데이트: ${state.polylines.length} -> ${newPolylines.length}');
+        debugPrint(
+          '🔄 Polylines 업데이트: ${state.polylines.length} -> ${newPolylines.length}',
+        );
         state = state.copyWith(polylines: newPolylines);
       }
     }
@@ -463,7 +508,7 @@ class LiveWalkController extends _$LiveWalkController {
   /// Polyline Set 비교 (정확한 내용 비교)
   bool _arePolylinesEqual(Set<Polyline> set1, Set<Polyline> set2) {
     if (set1.length != set2.length) return false;
-    
+
     for (final polyline1 in set1) {
       bool found = false;
       for (final polyline2 in set2) {
@@ -499,7 +544,9 @@ class LiveWalkController extends _$LiveWalkController {
     // 🚀 엄격한 중복 방지: Set 내용을 정확히 비교
     if (state.markers.length != markers.length ||
         !_areMarkersEqual(state.markers, markers)) {
-      debugPrint('🔄 Markers 업데이트: ${state.markers.length} -> ${markers.length}');
+      debugPrint(
+        '🔄 Markers 업데이트: ${state.markers.length} -> ${markers.length}',
+      );
       state = state.copyWith(markers: markers);
     }
   }
@@ -507,7 +554,7 @@ class LiveWalkController extends _$LiveWalkController {
   /// Marker Set 비교 (정확한 내용 비교)
   bool _areMarkersEqual(Set<Marker> set1, Set<Marker> set2) {
     if (set1.length != set2.length) return false;
-    
+
     for (final marker1 in set1) {
       bool found = false;
       for (final marker2 in set2) {
@@ -956,8 +1003,8 @@ class _MapSectionState extends ConsumerState<_MapSection> {
     final positionKey = ref.watch(
       liveWalkControllerProvider.select((state) {
         if (state.currentPosition == null) return null;
-        // 좌표를 String으로 변환하여 비교
-        return '${state.currentPosition!.latitude.toStringAsFixed(6)},${state.currentPosition!.longitude.toStringAsFixed(6)}';
+        // 좌표를 더 정밀하게 비교 (소수점 4자리까지)
+        return '${state.currentPosition!.latitude.toStringAsFixed(4)},${state.currentPosition!.longitude.toStringAsFixed(4)}';
       }),
     );
 
@@ -998,7 +1045,8 @@ class _MapSectionState extends ConsumerState<_MapSection> {
     }
 
     // 🚀 실제 변경이 있을 때만 업데이트
-    final shouldUpdate = _lastPositionKey != positionKey ||
+    final shouldUpdate =
+        _lastPositionKey != positionKey ||
         _lastMarkers != markers ||
         _lastPolylines != polylines;
 
