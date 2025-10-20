@@ -245,11 +245,13 @@ class LiveWalkController extends _$LiveWalkController {
   void pauseWalk() {
     if (state.timerState != WalkTimerState.running) return;
 
-    // 🚀 state 변경 완전 제거! (UI rebuild 방지)
     _timerManager.stopTimer();
     _locationTracker.stopTracking();
 
-    // ⏸️ UI에서는 타이머 상태로 판단 (state는 변경 X)
+    // 🚀 timerState만 변경! (다른 필드는 건드리지 않음)
+    // _ControlSection에서는 ref.read()를 사용하므로 자동 rebuild 안됨
+    state = state.copyWith(timerState: WalkTimerState.paused);
+
     // 일시정지 상태 저장
     LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
   }
@@ -260,8 +262,9 @@ class LiveWalkController extends _$LiveWalkController {
       return;
     }
 
-    // 🚀 state 변경 제거 (UI rebuild 방지)
-    // ▶️ 타이머만 시작
+    // 🚀 timerState만 변경!
+    state = state.copyWith(timerState: WalkTimerState.running);
+
     _timerManager.startTimer(() {
       // ValueNotifier로만 업데이트 (state 변경 X)
       _elapsedTimeNotifier.value = _timerManager.elapsedTime;
@@ -273,7 +276,9 @@ class LiveWalkController extends _$LiveWalkController {
   }
 
   void stopWalk() {
-    // 🚀 state 변경 제거! (UI rebuild 방지)
+    // 🚀 timerState만 변경!
+    state = state.copyWith(timerState: WalkTimerState.stopped);
+
     _timerManager.stopTimer();
     _locationTracker.stopTracking();
 
